@@ -1,5 +1,4 @@
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
-import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { updateOrders } from 'modules/my-orders/actions/update-orders'
 import { CREATE_ORDER, CANCEL_ORDER, FILL_ORDER } from 'modules/transactions/constants/types'
 import logError from 'utils/log-error'
@@ -10,7 +9,6 @@ export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA'
 
 export function updateAccountBidsAsksData(data, marketId, callback = logError) {
   return (dispatch) => {
-    dispatch(convertTradeLogsToTransactions(CREATE_ORDER, data, marketId))
     dispatch(updateOrders(data, true))
     dispatch(loadAccountPositions({ market: marketId }, callback))
   }
@@ -18,7 +16,6 @@ export function updateAccountBidsAsksData(data, marketId, callback = logError) {
 
 export function updateAccountTradesData(data, marketId, callback = logError) {
   return (dispatch) => {
-    dispatch(convertTradeLogsToTransactions(FILL_ORDER, data, marketId))
     dispatch(updateOrders(data, true))
     dispatch(loadAccountPositions({ market: marketId }, callback))
   }
@@ -26,7 +23,6 @@ export function updateAccountTradesData(data, marketId, callback = logError) {
 
 export function updateAccountCancelsData(data, marketId) {
   return (dispatch) => {
-    dispatch(convertTradeLogsToTransactions(CANCEL_ORDER, data, marketId))
     dispatch(loadAccountOrders())
     dispatch(updateOrders(data, false))
   }

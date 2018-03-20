@@ -1,5 +1,5 @@
 import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data'
-import { DELETE_TRANSACTION, CLEAR_TRANSACTION_DATA } from 'modules/transactions/actions/delete-transaction'
+import { DELETE_TRANSACTION, DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH, CLEAR_TRANSACTION_DATA } from 'modules/transactions/actions/delete-transaction'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { PENDING } from 'modules/transactions/constants/statuses'
@@ -17,6 +17,13 @@ export default function (transactionsData = DEFAULT_STATE, action) {
         }
         return p
       }, { ...transactionsData })
+    case DELETE_TRANSACTIONS_WITH_TRANSACTION_HASH:
+      return Object.keys(transactionsData).reduce((p, transactionId) => {
+        if (action.transactionHash !== (transactionsData[transactionId] || {}).hash) {
+          p[transactionId] = transactionsData[transactionId]
+        }
+        return p
+      }, {})
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionId) => {
         if (action.transactionId !== transactionId) {

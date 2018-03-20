@@ -1,40 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { fix, strip0xPrefix, unfix } from 'speedomatic'
 import { augur } from 'services/augurjs'
+import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import * as TYPES from 'modules/transactions/constants/types'
+import { loadDataForMarketTransaction } from 'modules/transactions/actions/load-data-for-market-transaction'
+import getOutcomeName from 'modules/market/helpers/get-outcome-name'
 import { formatEther, formatPercent, formatRep, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
-import { loadMarketThenRetryConversion } from 'modules/transactions/actions/retry-conversion'
+import logError from 'utils/log-error'
 
-export function loadDataForMarketTransaction(label, log, isRetry, callback) {
-  return (dispatch, getState) => {
-    const { marketsData } = getState()
-    const marketId = log.marketId || log.market
-    const market = marketsData[marketId]
-    if (!market || !market.description) {
-      if (isRetry) return callback(log)
-      return dispatch(loadMarketThenRetryConversion(marketId, label, log, callback))
-    }
-    return market
-  }
-}
-
-export function loadDataForReportingTransaction(label, log, isRetry, callback) {
-  return (dispatch, getState) => {
-    const { marketsData, outcomesData } = getState()
-    const marketId = log.market || log.marketId
-    const market = marketsData[marketId]
-    if (!market || !market.description) {
-      if (isRetry) return callback(log)
-      return dispatch(loadMarketThenRetryConversion(marketId, label, log, callback))
-    }
-    return { marketId, market, outcomes: outcomesData[marketId] }
-  }
-}
-
-export const constructBasicTransaction = (hash, status, blockNumber, timestamp, gasFees) => (dispatch, getState) => {
+export const constructBasicTransaction = (hash, blockNumber, timestamp, gasFees, status = SUCCESS) => {
   const transaction = { hash, status }
   if (blockNumber) transaction.blockNumber = blockNumber
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000))
@@ -42,9 +18,9 @@ export const constructBasicTransaction = (hash, status, blockNumber, timestamp, 
   return transaction
 }
 
-export function constructDefaultTransaction(label, log) {
+export function constructDefaultTransaction(eventName, log) {
   const transaction = { data: {} }
-  transaction.type = label
+  transaction.type = eventName
   transaction.message = log.message
   transaction.description = log.description || JSON.stringify(log)
   return transaction
@@ -58,35 +34,7 @@ export function constructApprovalTransaction(log) {
   return transaction
 }
 
-export function constructCollectedFeesTransaction(log) {
-  const transaction = { data: {} }
-  const repGain = new BigNumber(log.repGain, 10)
-  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : new BigNumber(log.newRepBalance).minus(repGain).toFixed()
-  const action = log.inProgress ? 'reporting' : 'reported'
-  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`
-  transaction.type = `Reporting Payment`
-  if (log.totalReportingRep) {
-    const totalReportingRep = new BigNumber(log.totalReportingRep, 10)
-    if (!totalReportingRep.eq(ZERO)) {
-      const percentRep = formatPercent(new BigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 })
-      transaction.message = `${transaction.message} (${percentRep.full})`
-    }
-  }
-  transaction.description = `Reporting cycle #${log.period}`
-  if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
-    transaction.data.balances = [{
-      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEther(log.newCashBalance),
-    }, {
-      change: formatRep(log.repGain, { positiveSign: true }),
-      balance: formatRep(log.newRepBalance),
-    }]
-  }
-  transaction.bond = { label: 'reporting', value: formatEther(log.notReportingBond) }
-  return transaction
-}
-
-export function constructCreateMarketTransaction(log, description, dispatch) {
+export function constructCreateMarketTransaction(log, description) {
   const transaction = { data: {} }
   transaction.type = TYPES.CREATE_MARKET
   transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
@@ -99,9 +47,9 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   return transaction
 }
 
-export function constructTradingProceedsClaimedTransaction(log, market, dispatch) {
+export function constructTradingProceedsClaimedTransaction(log, market) {
   const transaction = { data: {} }
-  transaction.type = 'Claim Trading Payout'
+  transaction.type = TYPES.CLAIM_TRADING_PROCEEDS
   transaction.description = market.description
   if (log.payoutTokens) {
     transaction.data.balances = [{
@@ -138,52 +86,54 @@ export function constructTransferTransaction(log, address) {
   return transaction
 }
 
-export const constructCancelOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status) => (dispatch, getState) => {
-  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
+export const constructCancelOrderTransaction = (log, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status) => {
+  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: log.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
-  const formattedShares = formatShares(trade.amount)
-  const action = trade.inProgress ? 'canceling' : 'canceled'
-  return {
-    [trade.transactionHash]: {
-      type: TYPES.CANCEL_ORDER,
+  const formattedShares = formatShares(log.amount)
+  const action = log.inProgress ? 'canceling' : 'canceled'
+  const transaction = {
+    [log.transactionHash]: {
+      type: 'Cancel Order',
+      id: log.transactionHash,
       status,
       description,
       data: {
-        order: { type: trade.orderType, shares: formattedShares },
+        order: { type: log.orderType, shares: formattedShares },
         marketType,
         outcome: { name: outcomeName || outcomeId },
         outcomeId,
         marketId,
       },
-      message: `${action} order to ${trade.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
+      message: `${action} order to ${log.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
       numShares: formattedShares,
       noFeePrice: formattedPrice,
       avgPrice: formattedPrice,
-      timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      hash: trade.transactionHash,
-      totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber,
-      orderId: trade.orderId,
+      timestamp: formatDate(new Date(log.timestamp * 1000)),
+      hash: log.transactionHash,
+      totalReturn: log.inProgress ? null : formatEther(log.cashRefund),
+      gasFees: log.gasFees && new BigNumber(log.gasFees, 10).gt(ZERO) ? formatEther(log.gasFees) : null,
+      blockNumber: log.blockNumber,
+      orderId: log.orderId,
     },
   }
+  return transaction
 }
 
-export const constructCreateOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
+export const constructCreateOrderTransaction = (log, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => {
   let orderType
   let action
-  if (trade.orderType === TYPES.BUY) {
+  if (log.orderType === TYPES.BUY) {
     orderType = TYPES.BUY
-    action = trade.inProgress ? 'bidding' : 'bid'
+    action = log.inProgress ? 'bidding' : 'bid'
   } else {
     orderType = TYPES.SELL
-    action = trade.inProgress ? 'asking' : 'ask'
+    action = log.inProgress ? 'asking' : 'ask'
   }
-  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
+  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: log.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
-  const formattedShares = formatShares(trade.amount)
-  const fxpShares = fix(trade.amount)
-  const fxpPrice = fix(trade.price)
+  const formattedShares = formatShares(log.amount)
+  const fxpShares = fix(log.amount)
+  const fxpPrice = fix(log.price)
   const fxpSettlementFee = fix(settlementFee)
   const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).floor()
   const fxpTotalCost = fxpNoFeeCost.plus(fxpSettlementFee)
@@ -192,48 +142,45 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
     .floor()
     .minus(fxpSettlementFee)
   const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()
-  return {
-    [trade.transactionHash]: {
-      type: orderType,
-      status,
-      description,
-      data: {
-        marketType,
-        outcomeName: outcomeName || outcomeId,
-        outcomeId,
-        marketId,
-      },
-      message: `${action} ${formattedShares.full} for ${formatEther(unfix(trade.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
-      numShares: formattedShares,
-      noFeePrice: formatEther(displayPrice),
-      freeze: {
-        verb: trade.inProgress ? 'freezing' : 'froze',
-        noFeeCost: orderType === TYPES.SELL ? undefined : formatEther(unfix(fxpNoFeeCost)),
-        settlementFee: formatEther(settlementFee),
-      },
-      avgPrice: formattedPrice,
-      timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      hash: trade.transactionHash,
-      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
-      totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
-      totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber,
-      orderId: trade.orderId,
+  const transaction = {
+    type: orderType,
+    id: `${log.transactionHash}-${log.orderId}`,
+    tradeGroupId: log.tradeGroupId,
+    status,
+    description,
+    data: {
+      marketType,
+      outcomeName: outcomeName || outcomeId,
+      outcomeId,
+      marketId,
     },
+    message: `${action} ${formattedShares.full} for ${formatEther(unfix(log.orderType === TYPES.BUY ? fxpTotalCostPerShare : fxpTotalReturnPerShare)).full} / share`,
+    numShares: formattedShares,
+    noFeePrice: formatEther(displayPrice),
+    freeze: {
+      verb: log.inProgress ? 'freezing' : 'froze',
+      noFeeCost: orderType === TYPES.SELL ? undefined : formatEther(unfix(fxpNoFeeCost)),
+      settlementFee: formatEther(settlementFee),
+    },
+    avgPrice: formattedPrice,
+    timestamp: formatDate(new Date(log.timestamp * 1000)),
+    hash: log.transactionHash,
+    feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
+    totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
+    totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
+    gasFees: log.gasFees && new BigNumber(log.gasFees, 10).gt(ZERO) ? formatEther(log.gasFees) : null,
+    blockNumber: log.blockNumber,
+    orderId: log.orderId,
   }
+  return transaction
 }
 
-export const constructFillOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => (dispatch, getState) => {
-  if (!trade.amount) return null
-  if (!trade.price) return null
-  const transactionId = `${trade.transactionHash}-${trade.orderId}`
-  const { tradeGroupId } = trade
-  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
+export const constructFillOrderTransaction = (log, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status) => {
+  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: log.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
-  const formattedShares = formatShares(trade.amount)
-  const bnShares = new BigNumber(trade.amount, 10)
-  const bnPrice = new BigNumber(trade.price, 10)
+  const formattedShares = formatShares(log.amount)
+  const bnShares = new BigNumber(log.amount, 10)
+  const bnPrice = new BigNumber(log.price, 10)
   const bnSettlementFee = new BigNumber(settlementFee, 10)
   const bnTotalCost = bnPrice.times(bnShares).plus(bnSettlementFee)
   const bnTotalReturn = bnPrice.times(bnShares).minus(bnSettlementFee)
@@ -243,94 +190,90 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
   let perfectOrderType
   let formattedTotalCost
   let formattedTotalReturn
-  if (trade.isMaker) {
-    orderType = trade.orderType === TYPES.SELL ? TYPES.MATCH_BID : TYPES.MATCH_ASK
-    perfectOrderType = trade.orderType === TYPES.SELL ? 'bought' : 'sold'
-    formattedTotalCost = trade.orderType === TYPES.SELL ? formatEther(bnTotalCost) : undefined
-    formattedTotalReturn = trade.orderType === TYPES.BUY ? formatEther(bnTotalReturn) : undefined
+  if (log.isMaker) {
+    orderType = log.orderType === TYPES.SELL ? TYPES.MATCH_BID : TYPES.MATCH_ASK
+    perfectOrderType = log.orderType === TYPES.SELL ? 'bought' : 'sold'
+    formattedTotalCost = log.orderType === TYPES.SELL ? formatEther(bnTotalCost) : undefined
+    formattedTotalReturn = log.orderType === TYPES.BUY ? formatEther(bnTotalReturn) : undefined
   } else {
-    orderType = trade.orderType === TYPES.BUY ? TYPES.BUY : TYPES.SELL
-    perfectOrderType = trade.orderType === TYPES.BUY ? 'bought' : 'sold'
-    formattedTotalCost = trade.orderType === TYPES.BUY ? formatEther(bnTotalCost) : undefined
-    formattedTotalReturn = trade.orderType === TYPES.SELL ? formatEther(bnTotalReturn) : undefined
+    orderType = log.orderType === TYPES.BUY ? TYPES.BUY : TYPES.SELL
+    perfectOrderType = log.orderType === TYPES.BUY ? 'bought' : 'sold'
+    formattedTotalCost = log.orderType === TYPES.BUY ? formatEther(bnTotalCost) : undefined
+    formattedTotalReturn = log.orderType === TYPES.SELL ? formatEther(bnTotalReturn) : undefined
   }
-  const action = trade.inProgress ? orderType : perfectOrderType
+  const action = log.inProgress ? orderType : perfectOrderType
   const transaction = {
-    [transactionId]: {
-      type: orderType,
-      hash: trade.transactionHash,
-      tradeGroupId,
-      status,
-      description,
-      data: {
-        marketType,
-        outcomeName: outcomeName || outcomeId,
-        outcomeId,
-        marketId,
-      },
-      message: `${action} ${formattedShares.full} for ${formatEther(trade.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
-      numShares: formattedShares,
-      noFeePrice: formattedPrice,
-      avgPrice: formattedPrice,
-      timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      settlementFee: formatEther(settlementFee),
-      feePercent: formatPercent(bnSettlementFee.dividedBy(bnTotalCost).times(100)),
-      totalCost: formattedTotalCost,
-      totalReturn: formattedTotalReturn,
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber,
+    type: orderType,
+    id: `${log.transactionHash}-${log.orderId}`,
+    tradeGroupId: log.tradeGroupId,
+    status,
+    description,
+    data: {
+      marketType,
+      outcomeName: outcomeName || outcomeId,
+      outcomeId,
+      marketId,
     },
+    message: `${action} ${formattedShares.full} for ${formatEther(log.orderType === TYPES.BUY ? bnTotalCostPerShare : bnTotalReturnPerShare).full} / share`,
+    numShares: formattedShares,
+    noFeePrice: formattedPrice,
+    avgPrice: formattedPrice,
+    timestamp: formatDate(new Date(log.timestamp * 1000)),
+    settlementFee: formatEther(settlementFee),
+    feePercent: formatPercent(bnSettlementFee.dividedBy(bnTotalCost).times(100)),
+    totalCost: formattedTotalCost,
+    totalReturn: formattedTotalReturn,
+    gasFees: log.gasFees && new BigNumber(log.gasFees, 10).gt(ZERO) ? formatEther(log.gasFees) : null,
+    blockNumber: log.blockNumber,
   }
   return transaction
 }
 
-export const constructTradingTransaction = (label, trade, marketId, outcomeId, status) => (dispatch, getState) => {
-  console.log('constructTradingTransaction:', label, trade)
-  const { marketsData, outcomesData } = getState()
+export const constructTradingTransaction = (eventName, log, marketData, outcomeName, status = SUCCESS) => {
   const {
-    marketType, description, minPrice, maxPrice, settlementFee,
-  } = marketsData[marketId]
-  const marketOutcomesData = outcomesData[marketId]
-  let outcomeName
-  if (marketType === BINARY || marketType === SCALAR) {
-    outcomeName = null
-  } else {
-    outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeId] : {}).name
-  }
-  switch (label) {
-    case TYPES.CANCEL_ORDER: {
-      return dispatch(constructCancelOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status))
-    }
-    case TYPES.CREATE_ORDER: {
-      return dispatch(constructCreateOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status))
-    }
-    case TYPES.FILL_ORDER: {
-      return dispatch(constructFillOrderTransaction(trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, settlementFee, status))
-    }
+    marketType,
+    description,
+    minPrice,
+    maxPrice,
+    settlementFee,
+  } = marketData
+  switch (eventName) {
+    case TYPES.CANCEL_ORDER:
+      return constructCancelOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, status)
+    case TYPES.CREATE_ORDER:
+      return constructCreateOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, settlementFee, status)
+    case TYPES.FILL_ORDER:
+      return constructFillOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, settlementFee, status)
     default:
       return null
   }
 }
 
-export const constructTransaction = (label, log, isRetry, callback) => (dispatch, getState) => {
-  switch (label) {
+export const constructTransaction = (eventName, log, callback = logError) => (dispatch, getState) => {
+  console.info('constructTransaction', eventName, log)
+  switch (eventName) {
     case TYPES.APPROVAL:
-      return constructApprovalTransaction(log)
-    case TYPES.TRANSFER: {
-      const { loginAccount } = getState()
-      return constructTransferTransaction(log, loginAccount.address)
-    }
-    case TYPES.CREATE_MARKET: {
-      const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback))
-      if (!market || !market.description) break
-      return constructCreateMarketTransaction(log, market.description, dispatch)
-    }
-    case TYPES.PAYOUT: {
-      const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback))
-      if (!market || !market.description) break
-      return constructTradingProceedsClaimedTransaction(log, market, dispatch)
-    }
+      return callback(null, constructApprovalTransaction(log))
+    case TYPES.TRANSFER:
+      return callback(null, constructTransferTransaction(log, getState().loginAccount.address))
+    case TYPES.CREATE_MARKET:
+    case TYPES.CLAIM_TRADING_PROCEEDS:
+    case TYPES.CANCEL_ORDER:
+    case TYPES.CREATE_ORDER:
+    case TYPES.FILL_ORDER:
+      return dispatch(loadDataForMarketTransaction(eventName, log, (err, market) => {
+        if (err) return callback(err)
+        switch (eventName) {
+          case TYPES.CREATE_MARKET:
+            return callback(null, constructCreateMarketTransaction(log, market.description, dispatch))
+          case case TYPES.CLAIM_TRADING_PROCEEDS:
+            return callback(null, constructTradingProceedsClaimedTransaction(log, market, dispatch))
+          default:
+            callback(null, constructTradingTransaction(eventName, log, market, getOutcomeName(market.marketType, market.id, log.outcome, getState().outcomesData[market.id])))
+        }
+      }))
     default:
-      return constructDefaultTransaction(label, log)
+      console.warn(`constructing default transaction for event ${eventName} (no handler found)`)
+      callback(null, constructDefaultTransaction(eventName, log))
   }
 }

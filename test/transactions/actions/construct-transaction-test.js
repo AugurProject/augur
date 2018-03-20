@@ -17,7 +17,6 @@ import { formatDate } from 'utils/format-date'
 import {
   constructBasicTransaction,
   constructDefaultTransaction,
-  constructCollectedFeesTransaction,
   constructApprovalTransaction,
   constructTransferTransaction,
 } from 'modules/transactions/actions/construct-transaction'
@@ -38,20 +37,13 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
     CONSTRUCT_FILL_ORDER_TRANSACTION: 'CONSTRUCT_FILL_ORDER_TRANSACTION',
     CONSTRUCT_CREATE_ORDER_TRANSACTION: 'CONSTRUCT_CREATE_ORDER_TRANSACTION',
     CONSTRUCT_CANCEL_ORDER_TRANSACTION: 'CONSTRUCT_CANCEL_ORDER_TRANSACTION',
-    CONSTRUCT_PAYOUT_TRANSACTION: 'CONSTRUCT_PAYOUT_TRANSACTION',
+    CONSTRUCT_CLAIM_TRADING_PROCEEDS_TRANSACTION: 'CONSTRUCT_CLAIM_TRADING_PROCEEDS_TRANSACTION',
     CONSTRUCT_MARKET_TRANSACTION: 'CONSTRUCT_MARKET_TRANSACTION',
     CONSTRUCT_REPORTING_TRANSACTION: 'CONSTRUCT_REPORTING_TRANSACTION',
   }
 
-  const mockRetryConversion = {
-    loadMarketThenRetryConversion: sinon.stub().returns({
-      type: MOCK_ACTION_TYPES.LOAD_MARKET_THEN_RETRY_CONVERSION,
-    }),
-  }
-
   describe('loadDataForMarketTransaction', () => {
     const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      './retry-conversion': mockRetryConversion,
     })
 
     const test = (t) => {
@@ -72,10 +64,9 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const log = {
           market: '0xMARKETID',
         }
-        const isRetry = false
         const callback = () => {}
 
-        store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback))
+        store.dispatch(action.loadDataForMarketTransaction(label, log, callback))
 
         const actual = store.getActions()
 
@@ -86,25 +77,6 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         ]
 
         assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-      },
-    })
-
-    test({
-      description: `should return expected actions with no loaded markets AND isRetry`,
-      state: {
-        marketsData: {},
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-        }
-        const isRetry = true
-        const callback = sinon.spy()
-
-        store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback))
-
-        assert.isTrue(callback.calledOnce, `Didn't call callback once as expected`)
       },
     })
 
@@ -122,164 +94,17 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const log = {
           market: '0xMARKETID',
         }
-        const isRetry = false
         const callback = () => ({
           type: MOCK_ACTION_TYPES.CALLBACK,
         })
 
-        const actual = store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback))
+        const actual = store.dispatch(action.loadDataForMarketTransaction(label, log, callback))
 
         const expected = {
           description: 'market is loaded',
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-  })
-
-  describe('loadDataForReportingTransaction', () => {
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      './retry-conversion': mockRetryConversion,
-    })
-
-    const test = (t) => {
-      it(t.description, () => {
-        const store = mockStore(t.state || {})
-
-        t.assertions(store)
-      })
-    }
-
-    test({
-      description: `should dispatch the expected actions with no markets loaded and no eventMarketMap`,
-      state: {
-        marketsData: {},
-        outcomesData: {},
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-          // Lack of event market map is mocked by excluding the event
-        }
-        const isRetry = false
-        const callback = () => {}
-
-        store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
-
-        const actual = store.getActions()
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.LOAD_MARKET_THEN_RETRY_CONVERSION,
-          },
-        ]
-
-        assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-      },
-    })
-
-    test({
-      description: `should dispatch the expected actions with no markets loaded and no eventMarketMap and isRetry`,
-      state: {
-        marketsData: {},
-        outcomesData: {},
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-          // Lack of event market map is mocked by excluding the event
-        }
-        const isRetry = true
-        const callback = sinon.stub()
-
-        store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
-
-        assert.isTrue(callback.calledOnce, `Didn't call callback once as expected`)
-      },
-    })
-
-    test({
-      description: `should dispatch the expected actions with no markets loaded and with an eventMarketMap`,
-      state: {
-        marketsData: {},
-        outcomesData: {},
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-        }
-        const isRetry = false
-        const callback = () => {}
-
-        store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
-
-        const actual = store.getActions()
-
-        const expected = [
-          {
-            type: MOCK_ACTION_TYPES.LOAD_MARKET_THEN_RETRY_CONVERSION,
-          },
-        ]
-
-        assert.deepEqual(actual, expected, `Didn't return the expected actions`)
-      },
-    })
-
-    test({
-      description: `should dispatch the expected actions with no markets loaded and with an eventMarketMap and isRetry`,
-      state: {
-        marketsData: {},
-        outcomesData: {},
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-        }
-        const isRetry = true
-        const callback = sinon.stub()
-
-        store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
-
-        assert.isTrue(callback.calledOnce, `Didn't call callback once as expected`)
-      },
-    })
-
-    test({
-      description: `should return the expected object with markets loaded and with an eventMarketMap`,
-      state: {
-        marketsData: {
-          '0xMARKETID': {
-            description: 'testing',
-          },
-        },
-        outcomesData: {
-          '0xMARKETID': {},
-        },
-      },
-      assertions: (store) => {
-        const label = 'label'
-        const log = {
-          market: '0xMARKETID',
-        }
-        const isRetry = false
-        const callback = sinon.stub()
-
-        const result = store.dispatch(action.loadDataForReportingTransaction(label, log, isRetry, callback))
-
-        const expected = {
-          marketId: '0xMARKETID',
-          market: {
-            description: 'testing',
-          },
-          outcomes: {},
-        }
-
-        assert.deepEqual(result, expected, `Didn't return the expected actions`)
       },
     })
   })
@@ -310,7 +135,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const hash = '0xHASH'
         const status = 'status'
 
-        const actual = store.dispatch(constructBasicTransaction(hash, status))
+        const actual = store.dispatch(constructBasicTransaction(hash, null, null, null, status))
 
         const expected = {
           hash,
@@ -331,7 +156,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
         const gasFees = 0.001
 
 
-        const actual = store.dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees))
+        const actual = store.dispatch(constructBasicTransaction(hash, blockNumber, timestamp, gasFees, status))
 
         const expected = {
           hash,
@@ -411,181 +236,6 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           type: 'Approved to Send Tokens',
           description: `Approve ${log._spender} to send tokens`,
           message: 'approving',
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-  })
-
-  describe('constructCollectedFeesTransaction', () => {
-    const test = t => it(t.description, () => t.assertions())
-
-    test({
-      description: `should return the expected object with initialRepBalance undefined and no totalReportingRep and no cashFeesCollected and inProgress false`,
-      assertions: () => {
-        const log = {
-          repGain: '1',
-          inProgress: false,
-          newRepBalance: '1',
-          period: 1234,
-          notReportingBond: '1',
-        }
-
-        const actual = constructCollectedFeesTransaction(log)
-
-        const repGain = new BigNumber(log.repGain)
-        const initialRepBalance = new BigNumber(log.newRepBalance).minus(repGain).toFixed()
-
-        const expected = {
-          data: {},
-          type: 'Reporting Payment',
-          description: `Reporting cycle #${log.period}`,
-          bond: {
-            label: 'reporting',
-            value: formatEther(log.notReportingBond),
-          },
-          message: `reported with ${formatRep(initialRepBalance).full}`,
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-
-    test({
-      description: `should return the expected object with initialRepBalance and no totalReportingRep and no cashFeesCollected and inProgress false`,
-      assertions: () => {
-        const log = {
-          repGain: '1',
-          inProgress: false,
-          newRepBalance: '1',
-          period: 1234,
-          notReportingBond: '1',
-          initialRepBalance: '1',
-        }
-
-        const actual = constructCollectedFeesTransaction(log)
-
-        const expected = {
-          data: {},
-          type: 'Reporting Payment',
-          description: `Reporting cycle #${log.period}`,
-          bond: {
-            label: 'reporting',
-            value: formatEther(log.notReportingBond),
-          },
-          message: `reported with ${formatRep(log.initialRepBalance).full}`,
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-
-    test({
-      description: `should return the expected object with initialRepBalance and totalReportingRep equals zero and no cashFeesCollected and inProgress false`,
-      assertions: () => {
-        const log = {
-          repGain: '1',
-          inProgress: false,
-          newRepBalance: '1',
-          period: 1234,
-          notReportingBond: '1',
-          initialRepBalance: '1',
-          totalReportingRep: '0',
-        }
-
-        const actual = constructCollectedFeesTransaction(log)
-
-        const expected = {
-          data: {},
-          type: 'Reporting Payment',
-          description: `Reporting cycle #${log.period}`,
-          bond: {
-            label: 'reporting',
-            value: formatEther(log.notReportingBond),
-          },
-          message: `reported with ${formatRep(log.initialRepBalance).full}`,
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-
-    test({
-      description: `should return the expected object with initialRepBalance and totalReportingRep and no cashFeesCollected and inProgress false`,
-      assertions: () => {
-        const log = {
-          repGain: '1',
-          inProgress: false,
-          newRepBalance: '1',
-          period: 1234,
-          notReportingBond: '1',
-          initialRepBalance: '1',
-          totalReportingRep: '100',
-        }
-
-        const actual = constructCollectedFeesTransaction(log)
-
-        const totalReportingRep = new BigNumber(log.totalReportingRep)
-        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
-
-        const expected = {
-          data: {},
-          type: 'Reporting Payment',
-          description: `Reporting cycle #${log.period}`,
-          bond: {
-            label: 'reporting',
-            value: formatEther(log.notReportingBond),
-          },
-          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`,
-        }
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-
-    test({
-      description: `should return the expected object with initialRepBalance and totalReportingRep and cashFeesCollected and inProgress false`,
-      assertions: () => {
-        const log = {
-          repGain: '1',
-          inProgress: false,
-          period: 1234,
-          notReportingBond: '1',
-          initialRepBalance: '1',
-          newRepBalance: '1',
-          totalReportingRep: '100',
-          cashFeesCollected: '100',
-          newCashBalance: '101',
-        }
-
-        const actual = constructCollectedFeesTransaction(log)
-
-        const repGain = new BigNumber(log.repGain)
-
-        const totalReportingRep = new BigNumber(log.totalReportingRep)
-        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
-
-        const expected = {
-          data: {
-            balances: [
-              {
-                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-                balance: formatEther(log.newCashBalance),
-              },
-              {
-                change: formatRep(repGain, { positiveSign: true }),
-                balance: formatRep(log.newRepBalance),
-              },
-            ],
-          },
-          type: 'Reporting Payment',
-          description: `Reporting cycle #${log.period}`,
-          bond: {
-            label: 'reporting',
-            value: formatEther(log.notReportingBond),
-          },
-          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`,
         }
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`)
