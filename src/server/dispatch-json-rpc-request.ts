@@ -24,7 +24,6 @@ import { getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 
-
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
   switch (request.method) {
