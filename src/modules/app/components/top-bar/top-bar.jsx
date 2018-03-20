@@ -1,8 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
 import { Notifications } from 'modules/common/components/icons'
+
+import makePath from 'modules/routes/helpers/make-path'
+
+import { CATEGORIES } from 'modules/routes/constants/views'
 
 import Styles from 'modules/app/components/top-bar/top-bar.styles'
 
@@ -60,7 +65,9 @@ const TopBar = props => (
         </div>
       </div>
     }
-    <span className={Styles['TopBar__logo-text']}>Augur</span>
+    <span className={Styles['TopBar__logo-text']}>
+      <Link to={makePath(CATEGORIES)}>Augur</Link>
+    </span>
   </header>
 )
 

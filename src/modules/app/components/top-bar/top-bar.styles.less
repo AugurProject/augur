@@ -51,7 +51,13 @@
 }
 
 .TopBar__logo-text {
+  color: @color-white;
   display: none;
+  font-size: @font-size-medium;
+  letter-spacing: 0.0625em;
+  line-height: @font-size-medium;
+  margin: -2px 0.625rem 0 0;
+  text-transform: uppercase;
 }
 
 @media @breakpoint-mobile {
@@ -62,14 +68,7 @@
   .TopBar__stat { display: none; }
 
   .TopBar__logo-text {
-    color: @color-white;
     display: block;
-    float: right;
-    font-size: @font-size-medium;
-    letter-spacing: 0.0625em;
-    line-height: 1.4rem;
-    margin-right: 0.625rem;
-    text-transform: uppercase;
   }
 
   .TopBar__notification-icon {
