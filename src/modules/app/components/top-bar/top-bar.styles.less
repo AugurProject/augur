@@ -6,8 +6,10 @@
   height: 100%;
   padding-left: 18.4rem;
 
-  section {
+  > section {
+    align-items: center;
     display: flex;
+    height: 100%;
   }
 }
 
@@ -29,17 +31,11 @@
 
 .TopBar__notifications {
   color: @color-white;
-  display: inline-block;
-  font-size: @font-size-rather-large;
-  letter-spacing: 0.05em;
-  line-height: 2.6rem;
-  text-align: center;
 }
 
 .TopBar__notification-icon {
   margin-right: 2rem;
-  vertical-align: middle;
-  width: @font-size-rather-large;
+  width: 1.2rem;
 }
 
 .TopBar__stat-label {
