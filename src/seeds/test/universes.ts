@@ -7,6 +7,12 @@ exports.seed = async (knex: Knex): Promise<any> => {
     return knex.batchInsert("universes", [{
       universe: "0x000000000000000000000000000000000000000b",
       parentUniverse: null,
+      reputationToken: "REP_TOKEN",
+    }, {
+      universe: "CHILD_UNIVERSE",
+      parentUniverse: "0x000000000000000000000000000000000000000b",
+      reputationToken: "REP_TOKEN_CHILD",
+      payoutId: 7,
     }], 1000);
   });
 };

@@ -464,14 +464,14 @@ export interface UIReport {
 }
 
 export interface FeeWindowRow {
-    feeWindow: Address;
-    feeWindowId: number;
-    startBlockNumber: number;
-    universe: Address;
-    startTime: number;
-    endBlockNumber: null|number;
-    endTime: number;
-    fees: number|string;
+  feeWindow: Address;
+  feeWindowId: number;
+  startBlockNumber: number;
+  universe: Address;
+  startTime: number;
+  endBlockNumber: null|number;
+  endTime: number;
+  fees: number|string;
 }
 
 export interface InitialReportersRow {
@@ -507,4 +507,18 @@ export interface UnclaimedFeeWindows {
 
 export interface UIInitialReporters {
   [initialReporter: string]: InitialReportersRow;
+}
+
+export interface ForkMigrationTotalsRow extends Payout {
+  universe: Address;
+  repTotal: number;
+}
+
+export interface UIForkMigrationTotalsRow extends NormalizedPayout {
+  universe: Address;
+  repTotal: number;
+}
+
+export interface UIForkMigrationTotals {
+  [universe: string]: UIForkMigrationTotalsRow;
 }
