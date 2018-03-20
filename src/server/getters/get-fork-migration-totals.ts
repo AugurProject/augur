@@ -2,7 +2,6 @@ import * as Knex from "knex";
 import Augur from "augur.js";
 import { Address } from "../../types";
 import { ForkMigrationTotalsRow, UIForkMigrationTotals } from "../../types";
-import { normalizePayouts } from "./database";
 
 export function getForkMigrationTotals(db: Knex, augur: Augur, parentUniverse: Address, callback: (err: Error|null, result?: any) => void): void {
   const query = db.select([
