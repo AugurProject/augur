@@ -7,11 +7,11 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("account", 66).notNullable();
       table.string("marketId", 66).notNullable();
       table.integer("outcome").notNullable();
-      table.specificType("numShares", "NUMERIC").defaultTo(0).nullable();
-      table.specificType("numSharesAdjustedForUserIntention", "NUMERIC").defaultTo(0).nullable();
-      table.specificType("realizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
-      table.specificType("unrealizedProfitLoss", "NUMERIC").defaultTo(0).nullable();
-      table.specificType("averagePrice", "NUMERIC").defaultTo(0).nullable();
+      table.string("numShares", 255).defaultTo("0").nullable();
+      table.string("numSharesAdjustedForUserIntention", 255).defaultTo("0").nullable();
+      table.string("realizedProfitLoss", 255).defaultTo("0").nullable();
+      table.string("unrealizedProfitLoss", 255).defaultTo("0").nullable();
+      table.string("averagePrice", 255).defaultTo("0").nullable();
       table.timestamp("lastUpdated").defaultTo(knex.fn.now()).notNullable();
     });
   });

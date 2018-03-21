@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Address, UnclaimedFeeWindowsRow, UnclaimedFeeWindows } from "../../types";
+import { Address, UnclaimedFeeWindowsRow, UnclaimedFeeWindows, UnclaimedFeeWindowInfo } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getCurrentTime } from "../../blockchain/process-block";
 
 export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account: Address, includeCurrent: boolean, callback: (err: Error|null, result?: any) => void): void {
@@ -19,16 +20,17 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
     .where("balances.balance", ">", 0)
     .where("balances.owner", account);
   if (!includeCurrent) query = query.where("fee_windows.startTime", "<", getCurrentTime());
-  query.asCallback((err: Error|null, unclaimedFeeWindowsRows: Array<UnclaimedFeeWindowsRow>): void => {
+
+  query.asCallback((err: Error|null, unclaimedFeeWindowsRows: Array<UnclaimedFeeWindowsRow<BigNumber>>): void => {
     if (err) return callback(err);
-    callback(null, unclaimedFeeWindowsRows.reduce((acc: UnclaimedFeeWindows, cur) => {
-      const totalStake = Number(cur.participationTokenStake) + Number(cur.feeTokenStake);
-      acc[cur.feeWindow] = {
+    callback(null, unclaimedFeeWindowsRows.reduce((acc: UnclaimedFeeWindows<string>, cur) => {
+      const totalStake = cur.participationTokenStake.plus(cur.feeTokenStake);
+      acc[cur.feeWindow] = formatBigNumberAsFixed<UnclaimedFeeWindowInfo<BigNumber>, UnclaimedFeeWindowInfo<string>>({
         startTime: cur.startTime,
         endTime: cur.endTime,
         balance: cur.balance,
-        expectedFees: cur.balance * cur.totalFees / totalStake,
-      };
+        expectedFees: cur.balance.times(cur.totalFees).dividedBy(totalStake)
+      });
       return acc;
     }, {}));
   });

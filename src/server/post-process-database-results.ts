@@ -14,6 +14,9 @@ const whitelist: Whitelist = {
     size: true,
     amountStaked: true,
   },
+  disputes: {
+    amountStaked: true,
+  },
   markets: {
     numTicks: true,
     minPrice: true,
@@ -59,6 +62,13 @@ const whitelist: Whitelist = {
     price: true,
     volume: true,
   },
+  positions: {
+    numShares: true,
+    numSharesAdjustedForUserIntention: true,
+    realizedProfitLoss: true,
+    unrealizedProfitLoss: true,
+    averagePrice: true
+  },
   initial_reports: {
     amountStaked: true,
   },
@@ -67,6 +77,7 @@ const whitelist: Whitelist = {
   },
   token_supply: {
     supply: true,
+    participationTokenStake: true,
   },
   trading_proceeds: {
     numShares: true,

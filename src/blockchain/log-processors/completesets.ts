@@ -1,6 +1,7 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { refreshPositionInMarket } from "./order-filled/refresh-position-in-market";
 
@@ -10,7 +11,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
   const account = log.account;
   refreshPositionInMarket(db, augur, marketId, account, (err: Error|null) => {
     if (err) return callback(err);
-    const completeSetPurchasedData = {
+    const completeSetPurchasedData = formatBigNumberAsFixed({
       marketId,
       account,
       blockNumber,
@@ -18,7 +19,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
       logIndex: log.logIndex,
       tradeGroupId: log.tradeGroupId,
       numPurchased: log.numCompleteSets,
-    };
+    });
     augurEmitter.emit(log.eventName, completeSetPurchasedData);
     callback(null);
   });

@@ -9,7 +9,7 @@ import { updatePositionInMarket } from "./update-position-in-market";
 import { fixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 
 export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address, marketId: Address, numTicks: BigNumber, positionInMarket: Array<string>, callback: ErrorCallback): void {
-  db.select("outcome").from("positions").where({ account, marketId }).asCallback((err: Error|null, positionsRows?: Array<PositionsRow>): void => {
+  db.select("outcome").from("positions").where({ account, marketId }).asCallback((err: Error|null, positionsRows?: Array<PositionsRow<BigNumber>>): void => {
     if (err) return callback(err);
     const numOutcomes = positionInMarket.length;
     const realizedProfitLoss = new Array(numOutcomes);

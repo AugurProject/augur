@@ -167,14 +167,14 @@ export interface MarketsRow<BigNumberType> {
   isInvalid?: boolean|null;
 }
 
-export interface PositionsRow {
+export interface PositionsRow<BigNumberType> {
   outcome: number;
   marketId?: Address;
-  numShares?: string|number;
-  account?: Address;
-  realizedProfitLoss?: string|number;
-  unrealizedProfitLoss?: string|number;
-  numSharesAdjustedForUserIntention?: string|number;
+  numShares: BigNumberType|null;
+  account: Address|null;
+  realizedProfitLoss?: BigNumberType;
+  unrealizedProfitLoss?: BigNumberType;
+  numSharesAdjustedForUserIntention?: BigNumberType;
 }
 
 export interface OutcomesRow<BigNumberType> {
@@ -201,72 +201,72 @@ export interface BlocksRow {
   timestamp: number;
 }
 
-export interface DisputeTokensRow extends Payout {
+export interface DisputeTokensRow<BigNumberType> extends Payout<BigNumberType> {
   disputeToken: Address;
   marketId: Address;
-  amountStaked: number;
-  claimed: number;
-  winning: number|null;
+  amountStaked: BigNumberType;
+  claimed: BigNumberType;
+  winning: BigNumberType|null;
 }
 
-export interface DisputeTokensRowWithTokenState extends DisputeTokensRow {
+export interface DisputeTokensRowWithTokenState<BigNumberType> extends DisputeTokensRow<BigNumberType> {
   ReportingState: ReportingState;
 }
 
-export interface PayoutRow extends Payout {
+export interface PayoutRow<BigNumberType> extends Payout<BigNumberType> {
   payoutId: number;
   tentativeWinning: number;
 }
 
-export interface PayoutNumerators {
-  payout0: string|number;
-  payout1: string|number;
-  payout2: string|number|null;
-  payout3: string|number|null;
-  payout4: string|number|null;
-  payout5: string|number|null;
-  payout6: string|number|null;
-  payout7: string|number|null;
+export interface PayoutNumerators<BigNumberType> {
+  payout0: BigNumberType;
+  payout1: BigNumberType;
+  payout2: BigNumberType|null;
+  payout3: BigNumberType|null;
+  payout4: BigNumberType|null;
+  payout5: BigNumberType|null;
+  payout6: BigNumberType|null;
+  payout7: BigNumberType|null;
 }
 
-export interface Payout extends PayoutNumerators {
+export interface Payout<BigNumberType> extends PayoutNumerators<BigNumberType> {
   isInvalid: boolean|number;
 }
 
-export interface NormalizedPayoutNumerators {
-  payout: Array<number|string>;
+export interface NormalizedPayoutNumerators<BigNumberType> {
+  payout: Array<BigNumberType>;
 }
 
-export interface NormalizedPayout extends NormalizedPayoutNumerators {
+export interface NormalizedPayout<BigNumberType> extends NormalizedPayoutNumerators<BigNumberType> {
   isInvalid: boolean|number;
 }
 
-export interface UIDisputeTokenInfo extends Payout {
+export interface UIDisputeTokenInfo<BigNumberType> extends Payout<BigNumberType> {
   disputeToken: Address;
   marketId: Address;
-  amountStaked: number;
+  amountStaked: BigNumberType;
   claimed: boolean;
   winningToken: boolean|null;
   ReportingState: ReportingState;
 }
 
-export interface UIDisputeTokens {
-  [stakeToken: string]: UIDisputeTokenInfo;
+export interface UIDisputeTokens<BigNumberType> {
+  [stakeToken: string]: UIDisputeTokenInfo<BigNumberType>;
 }
 
-export interface StakeDetails extends NormalizedPayout {
-  stakeCompleted: string;
-  size?: string;
-  stakeCurrent?: string;
+export interface StakeDetails<BigNumberType> extends NormalizedPayout<BigNumberType> {
+  stakeCompleted: BigNumberType;
+  size?: BigNumberType;
+  stakeCurrent?: BigNumberType;
   tentativeWinning: boolean;
 }
 
-export interface UIStakeInfo {
+export interface UIStakeInfo<BigNumberType> {
   marketId: Address;
   disputeRound: number|null;
-  stakeCompletedTotal: string;
-  bondSizeOfNewStake: string;
-  stakes: Array<StakeDetails>;
+  stakeCompletedTotal: BigNumberType;
+  bondSizeOfNewStake: BigNumberType;
+  stakes: Array<StakeDetails<BigNumberType>>;
 }
 
 export interface UIFeeWindowCurrent {
@@ -330,7 +330,7 @@ export interface UIMarketInfo<BigNumberType> {
   resolutionSource?: string|null;
   numTicks: BigNumberType;
   tickSize: BigNumberType;
-  consensus: NormalizedPayout|null;
+  consensus: NormalizedPayout<BigNumberType>|null;
   outcomes: Array<UIOutcomeInfo<string>>;
 }
 
@@ -431,7 +431,7 @@ export interface MarketsRowWithCreationTime extends MarketsRow<BigNumber> {
   creationTime: number;
 }
 
-export interface JoinedReportsMarketsRow extends Payout {
+export interface JoinedReportsMarketsRow<BigNumberType> extends Payout<BigNumberType> {
   creationBlockNumber: number;
   creationTime: number;
   logIndex: number;
@@ -442,11 +442,11 @@ export interface JoinedReportsMarketsRow extends Payout {
   feeWindow: Address;
   crowdsourcerId: Address;
   marketType: string;
-  amountStaked: string|number;
+  amountStaked: BigNumberType;
 
 }
 
-export interface UIReport {
+export interface UIReport<BigNumberType> {
   creationBlockNumber: number;
   creationTime: number;
   logIndex: number;
@@ -454,8 +454,8 @@ export interface UIReport {
   blockHash: Bytes32;
   marketId: Address;
   feeWindow: Address;
-  payoutNumerators: Array<string|number|null>;
-  amountStaked: string|number;
+  payoutNumerators: Array<BigNumberType|null>;
+  amountStaked: BigNumberType;
   crowdsourcerId: Address;
   isCategorical: boolean;
   isScalar: boolean;
@@ -474,37 +474,37 @@ export interface FeeWindowRow {
     fees: number|string;
 }
 
-export interface InitialReportersRow {
+export interface InitialReportersRow<BigNumberType> {
   marketId: Address;
   reporter: Address;
-  amountStaked: number;
+  amountStaked: BigNumberType;
   initialReporter: number;
   redeemed: boolean;
   isDesignatedReporter: boolean;
-  repBalance: number;
+  repBalance: BigNumberType;
 }
 
-export interface UnclaimedFeeWindowsRow {
+export interface UnclaimedFeeWindowsRow<BigNumberType> {
   feeWindow: Address;
   startTime: number;
   endTime: number;
-  balance: number;
-  participationTokenStake: number;
-  feeTokenStake: number;
-  totalFees: number;
+  balance: BigNumberType;
+  participationTokenStake: BigNumberType;
+  feeTokenStake: BigNumberType;
+  totalFees: BigNumberType;
 }
 
-export interface UnclaimedFeeWindowInfo {
+export interface UnclaimedFeeWindowInfo<BigNumberType> {
   startTime: number;
   endTime: number;
-  balance: number;
-  expectedFees: number;
+  balance: BigNumberType;
+  expectedFees: BigNumberType;
 }
 
-export interface UnclaimedFeeWindows {
-  [feeWindow: string]: UnclaimedFeeWindowInfo;
+export interface UnclaimedFeeWindows<BigNumberType> {
+  [feeWindow: string]: UnclaimedFeeWindowInfo<BigNumberType>;
 }
 
-export interface UIInitialReporters {
-  [initialReporter: string]: InitialReportersRow;
+export interface UIInitialReporters<BigNumberType> {
+  [initialReporter: string]: InitialReportersRow<BigNumberType>;
 }

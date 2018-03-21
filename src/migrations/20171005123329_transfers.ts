@@ -8,7 +8,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       sender varchar(66),
       recipient varchar(66),
       token varchar(66) NOT NULL,
-      value numeric NOT NULL CONSTRAINT "nonnegativeTransferValue" CHECK (value >= 0),
+      value VARCHAR(255) NOT NULL,
       "blockNumber" integer NOT NULL CONSTRAINT "positiveTransferBlockNumber" CHECK ("blockNumber" > 0),
       UNIQUE("transactionHash", "logIndex")
     )`);

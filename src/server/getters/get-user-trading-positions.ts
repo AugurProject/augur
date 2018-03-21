@@ -1,14 +1,15 @@
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { Address, PositionsRow } from "../../types";
 import { queryModifier } from "./database";
 
-interface PositionsRowWithMarketType extends PositionsRow {
+interface PositionsRowWithMarketType<BigNumberType> extends PositionsRow<BigNumberType> {
   marketType: string;
 }
 
-interface PositionsRowWithNumSharesAdjusted extends PositionsRow {
-  numSharesAdjusted: string|number;
+interface PositionsRowWithNumSharesAdjusted<BigNumberType> extends PositionsRow<BigNumberType> {
+  numSharesAdjusted: BigNumberType;
 }
 
 // Look up a user's current trading positions. Should take account (address) as a required parameter and market and outcome as optional parameters. Response should include the user's position after the trade, in both "raw" and "adjusted" formats -- the latter meaning that short positions are shown as negative for binary and scalar markets, and realized and unrealized profit/loss.
@@ -19,25 +20,31 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
   if (universe != null) query.where("markets.universe", universe);
   if (marketId != null) query.where("positions.marketId", marketId);
   queryModifier(query, "outcome", "asc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err: Error|null, positionsRows?: Array<PositionsRowWithMarketType>): void => {
+  query.asCallback((err: Error|null, positionsRows?: Array<PositionsRowWithMarketType<BigNumber>>): void => {
     if (err) return callback(err);
     if (!positionsRows) return callback(new Error("Internal error retrieving positions"));
-    const positionsRowsWithNumSharesAdjusted: Array<PositionsRowWithNumSharesAdjusted> = positionsRows.map((positionsRow: PositionsRowWithMarketType): PositionsRowWithNumSharesAdjusted => {
-      let numSharesAdjusted;
+
+    let positionsRowsWithNumSharesAdjusted: Array<PositionsRowWithNumSharesAdjusted<BigNumber>> = positionsRows.map((positionsRow: PositionsRowWithMarketType<BigNumber>): PositionsRowWithNumSharesAdjusted<BigNumber> => {
+      let numSharesAdjusted: BigNumber | null;
       if (positionsRow.marketType === "categorical" || positionsRow.outcome === 0) {
         numSharesAdjusted = positionsRow.numShares;
       } else {
-        const otherOutcomeNumShares = positionsRows.filter((allPositionsRow: PositionsRowWithMarketType): boolean => allPositionsRow.marketId === positionsRow.marketId && allPositionsRow.outcome === 0)[0].numShares;
-        const bnNumShares = new BigNumber(positionsRow.numShares!, 10);
-        const bnOtherShares = new BigNumber(otherOutcomeNumShares!, 10);
-        numSharesAdjusted = bnNumShares.minus(bnOtherShares).toFixed()!;
+        const otherOutcomeNumShares = positionsRows.filter((allPositionsRow: PositionsRowWithMarketType<BigNumber>): boolean => allPositionsRow.marketId === positionsRow.marketId && allPositionsRow.outcome === 0)[0].numShares;
+        if ( positionsRow.numShares === null) {
+          numSharesAdjusted = otherOutcomeNumShares;
+        } else if ( otherOutcomeNumShares === null) {
+          numSharesAdjusted = positionsRow.numShares;
+        } else {
+          numSharesAdjusted = positionsRow.numShares.minus(otherOutcomeNumShares);
+        }
       }
       delete positionsRow.marketType;
       return Object.assign({}, positionsRow, { numSharesAdjusted: numSharesAdjusted! });
     });
+
     if (outcome != null) {
-      return callback(null, positionsRowsWithNumSharesAdjusted.filter((positionsRowWithNumSharesAdjusted: PositionsRowWithNumSharesAdjusted): boolean => positionsRowWithNumSharesAdjusted.outcome === outcome));
+      positionsRowsWithNumSharesAdjusted = positionsRowsWithNumSharesAdjusted.filter((positionsRowWithNumSharesAdjusted: PositionsRowWithNumSharesAdjusted<BigNumber>): boolean => positionsRowWithNumSharesAdjusted.outcome === outcome);
     }
-    callback(null, positionsRowsWithNumSharesAdjusted);
+    callback(null, positionsRowsWithNumSharesAdjusted.map(position => formatBigNumberAsFixed<PositionsRowWithNumSharesAdjusted<BigNumber>, PositionsRowWithNumSharesAdjusted<string>>(position)));
   });
 }

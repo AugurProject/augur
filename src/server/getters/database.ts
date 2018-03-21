@@ -23,17 +23,17 @@ export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, d
   return query;
 }
 
-export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<string> {
-  return formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>({
+export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {
+  return {
     id: outcomesRow.outcome,
     volume: outcomesRow.volume,
     price: outcomesRow.price,
     description: outcomesRow.description,
-  });
+  };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<string>>, winningPayoutRow: PayoutRow|null): UIMarketInfo<string> {
-  let consensus: NormalizedPayout|null;
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
+  let consensus: NormalizedPayout<BigNumber>|null;
   if (winningPayoutRow == null) {
     consensus = null;
   } else {
@@ -72,12 +72,12 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     numTicks: row.numTicks,
     tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
     consensus,
-    outcomes: outcomesInfo,
+    outcomes: _.map(outcomesInfo, (outcomeInfo) => formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>(outcomeInfo)),
   });
 }
 
-export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-  return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState, {
+export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState<BigNumber>): UIDisputeTokenInfo<BigNumber> {
+  return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState<BigNumber>, {
     isInvalid: !!disputeTokenRow.isInvalid,
     claimed: !!disputeTokenRow.claimed,
     winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
@@ -93,16 +93,16 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
-export function normalizePayouts(payoutRow: PayoutRow): NormalizedPayout {
+export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPayout<BigNumber> {
   const payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow];
+    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow<BigNumber>];
     if (payoutNumerator == null) break;
     payout.push(payoutNumerator);
   }
   return Object.assign(
     {},
-    { payout } as NormalizedPayoutNumerators,
+    { payout } as NormalizedPayoutNumerators<BigNumber>,
     { isInvalid: !!payoutRow.isInvalid },
   );
 }

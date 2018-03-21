@@ -47,7 +47,7 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
         if (err) return callback(err);
         if (stakes == null || stakes.InitialReports == null || stakes.Disputes == null) return callback(new Error("Bad results from stake query"));
         const totalStake = new BigNumber(stakes.InitialReports.totalInitialReportSize || 0, 10)
-          .add(new BigNumber(stakes.Disputes.totalDisputeStake || 0, 10));
+          .plus(new BigNumber(stakes.Disputes.totalDisputeStake || 0, 10));
         callback(null, Object.assign(
           {},
           feeWindowRow,

@@ -55,7 +55,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         payoutNumerators: [0, 1],
         invalid: false,
         blockNumber: 1500001,
-        amountStaked: 2829,
+        amountStaked: "2829",
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
         logIndex: 0,
       },
@@ -82,7 +82,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           reporter: "0x0000000000000000000000000000000000000b0b",
-          amountStaked: 2829,
+          amountStaked: new BigNumber("2829", 10),
           initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },

@@ -9,7 +9,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("transactionHash", 66).notNullable();
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)");
       table.integer("reporter").notNullable();
-      table.specificType("amountStaked", "NUMERIC").defaultTo(0).notNullable();
+      table.string("amountStaked", 255).defaultTo("0").notNullable();
 
       table.index(["crowdsourcerId"]);
       table.index(["reporter"]);

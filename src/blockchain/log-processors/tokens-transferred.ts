@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { parallel } from "async";
+import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
 import { TokenType } from "../../constants";
@@ -10,7 +11,7 @@ import { decreaseTokenBalance } from "./token/decrease-token-balance";
 
 export function processTokensTransferredLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const token = log.token || log.address;
-  const value = log.value || log.amount;
+  const value = new BigNumber(log.value || log.amount, 10).toFixed();
   const tokenTransferDataToInsert = {
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,

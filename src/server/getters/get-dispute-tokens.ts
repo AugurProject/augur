@@ -1,5 +1,6 @@
 import * as Knex from "knex";
-import { Address, ReportingState, DisputeTokensRowWithTokenState, DisputeTokenState, UIDisputeTokens } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { Address, ReportingState, DisputeTokensRowWithTokenState, DisputeTokenState, UIDisputeTokens, UIDisputeTokenInfo } from "../../types";
 import { getMarketsWithReportingState, reshapeDisputeTokensRowToUIDisputeTokenInfo } from "./database";
 
 export function getDisputeTokens(db: Knex, universe: Address, account: Address, disputeTokenState: DisputeTokenState|null, callback: (err: Error|null, result?: any) => void): void {
@@ -19,8 +20,12 @@ export function getDisputeTokens(db: Knex, universe: Address, account: Address, 
     } else {
       return callback(new Error("Invalid disputeTokenState"));
     }
-    query.asCallback((err: Error|null, disputeTokens: Array<DisputeTokensRowWithTokenState>): void => {
+    query.asCallback((err: Error|null, disputeTokens: Array<DisputeTokensRowWithTokenState<BigNumber>>): void => {
       if (err) return callback(err);
-      callback(null, disputeTokens.reduce((acc: UIDisputeTokens, cur) => {acc[cur.disputeToken] = reshapeDisputeTokensRowToUIDisputeTokenInfo(cur); return acc; }, {}));
+      callback(null, disputeTokens.reduce((acc: UIDisputeTokens<string>, cur) => {
+        const tokenInfo = reshapeDisputeTokensRowToUIDisputeTokenInfo(cur);
+        acc[cur.disputeToken] = formatBigNumberAsFixed<UIDisputeTokenInfo<BigNumber>, UIDisputeTokenInfo<string>>(tokenInfo);
+        return acc;
+      }, {}));
     });
 }

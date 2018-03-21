@@ -10,7 +10,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("startTime", "integer NOT NULL CONSTRAINT nonnegativeStartTime CHECK (startTime >= 0)");
       table.integer("endBlockNumber").nullable();
       table.specificType("endTime", "integer NOT NULL CONSTRAINT nonnegativeEndTime CHECK (endTime >= 0)");
-      table.integer("fees").defaultTo(0);
+      table.string("fees", 255).defaultTo("0");
       table.string("feeToken").notNullable();
     });
   });

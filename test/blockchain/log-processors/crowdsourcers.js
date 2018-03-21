@@ -81,7 +81,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         disputeCrowdsourcer: "0x0000000000000000002000000000000000000001",
         reporter: "0x0000000000000000000000000000000000000b0b",
         size: 20000,
-        amountStaked: 19381,
+        amountStaked: new BigNumber("19381", 10),
         payoutNumerators: [0, 1],
         invalid: false,
         blockNumber: 1400100,
@@ -121,7 +121,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           disputeId: 8,
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           reporter: "0x0000000000000000000000000000000000000b0b",
-          amountStaked: 19381,
+          amountStaked: new BigNumber("19381", 10),
         }]);
       },
       onContributedRemoved: (err, records) => {

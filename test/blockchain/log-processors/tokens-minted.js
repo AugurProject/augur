@@ -48,8 +48,8 @@ describe("blockchain/log-processors/tokens-minted", () => {
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
-          balance: 9011,
-          supply: 9011,
+          balance: new BigNumber("9011", 10),
+          supply: new BigNumber("9011", 10),
         }]);
       },
       onRemoved: (err, records) => {
@@ -57,8 +57,8 @@ describe("blockchain/log-processors/tokens-minted", () => {
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
-          balance: 9001,
-          supply: 9001,
+          balance: new BigNumber("9001", 10),
+          supply: new BigNumber("9001", 10),
         }]);
       },
     },

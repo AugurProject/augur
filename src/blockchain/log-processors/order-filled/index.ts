@@ -70,6 +70,8 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           marketCreatorFees,
           reporterFees,
         });
+
+        console.log("TRADE DATA: ", tradeData);
         augurEmitter.emit("OrderFilled", tradeData);
         db.insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
