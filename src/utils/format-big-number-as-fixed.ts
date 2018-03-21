@@ -1,4 +1,5 @@
 import { BigNumber } from "bignumber.js";
+import * as speedomatic from "speedomatic";
 
 export function formatBigNumberAsFixed<InputType, OutputType> (row: InputType): OutputType {
   if (row === null || typeof row !== "object") return row;
@@ -7,7 +8,7 @@ export function formatBigNumberAsFixed<InputType, OutputType> (row: InputType): 
   for (const key in row) {
     if (row.hasOwnProperty(key)) {
       const field: any = row[key];
-      if (field && field instanceof BigNumber) {
+      if (field && BigNumber.isBigNumber(field)) {
         copy[key] = field.toFixed();
       } else {
         copy[key] = field;
