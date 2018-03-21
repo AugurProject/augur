@@ -19,6 +19,7 @@
     "preversion": "npm test",
     "version": "npm run build && git add -A dist src/version.js package.json package-lock.json",
     "dp": "node scripts/dp",
+    "docker:build": "scripts/build-docker.sh",
     "upload:aura": "node scripts/dp upload aura",
     "upload:clique": "node scripts/dp upload clique",
     "upload:environment": "node scripts/dp upload environment",
