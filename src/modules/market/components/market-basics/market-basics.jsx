@@ -21,7 +21,7 @@ import moment from 'moment'
 
 const MarketBasics = (p) => {
   let ReportEndingIndicator = () => null
-  if (p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING || p.reportingState === constants.REPORTING_STATE.OPEN_REPORTING) {
+  if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING || p.reportingState === constants.REPORTING_STATE.OPEN_REPORTING) && !p.hideReportEndingIndicator) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
     const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
     const displayDate = formatDate(endDate)
@@ -88,6 +88,7 @@ MarketBasics.propTypes = {
   location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func,
+  hideReportEndingIndicator: PropTypes.bool,
 }
 
 export default MarketBasics

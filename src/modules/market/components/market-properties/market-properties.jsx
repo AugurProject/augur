@@ -12,7 +12,7 @@ import getValue from 'utils/get-value'
 import shareDenominationLabel from 'utils/share-denomination-label'
 import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
-import CaretDropdown from 'modules/common/components/caret-dropdown/caret-dropdown'
+import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
@@ -85,19 +85,15 @@ const MarketProperties = (p) => {
         </div>
       </section>
       { p.showAdditionalDetailsToggle &&
-        <section>
-          <div className={Styles[`MarketProperties__button-wrapper`]}>
-            <div>
-              additional details
-              <button
-                className={Styles[`MarketProperties__details-button`]}
-                onClick={() => p.toggleDetails()}
-              >
-                <CaretDropdown flipped={p.showingDetails} />
-              </button>
-            </div>
-          </div>
-        </section>
+        <button
+          className={Styles[`MarketProperties__additional-details`]}
+          onClick={() => p.toggleDetails()}
+        >
+          Additional Details
+          <span className={Styles['MarketProperties__additional-details-chevron']}>
+            <ChevronFlip pointDown={p.showingDetails} />
+          </span>
+        </button>
       }
     </article>
   )
