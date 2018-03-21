@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import MarketBasics from 'modules/market/components/market-basics/market-basics'
+import MarketBasics from 'modules/market/containers/market-basics'
 import MarketProperties from 'modules/market/containers/market-properties'
 import OutstandingReturns from 'modules/market/components/market-outstanding-returns/market-outstanding-returns'
 

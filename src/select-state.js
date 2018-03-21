@@ -46,6 +46,11 @@ export const selectCurrentTimestamp = createSelector(
   blockchain => blockchain.currentAugurTimestamp * 1000,
 )
 
+export const selectCurrentTimestampInSeconds = createSelector(
+  selectBlockchainState,
+  blockchain => blockchain.currentAugurTimestamp,
+)
+
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,
   blockchain => blockchain.currentBlockTimestamp,
