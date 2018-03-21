@@ -67,7 +67,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
             publicTrade: function (p) {
@@ -128,7 +128,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
             publicTrade: function (p) {
@@ -195,7 +195,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
             publicTrade: function (p) {
@@ -266,7 +266,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
             publicTrade: function (p) {
@@ -327,7 +327,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function () {
+            publicFillBestOrder: function () {
               assert.fail();
             },
             publicTrade: function (p) {
@@ -389,7 +389,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicTakeBestOrder: function (p) {
+            publicFillBestOrder: function (p) {
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 1);
