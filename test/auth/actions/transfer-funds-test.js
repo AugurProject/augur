@@ -99,6 +99,9 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       loginAccount: {
         address: '0xtest',
       },
+      blockchain: {
+        currentAugurTimestamp: 1521665,
+      },
     },
     assertions: (done, store) => {
       const assets = {

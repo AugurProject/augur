@@ -29,7 +29,7 @@ const MarketBasics = (p) => {
     ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
         <div>Reporting Ends {displayDate.formattedShort}</div>
-        <WrappedGraph startDate={p.endDate.value} endDate={endDate} />
+        <WrappedGraph startDate={p.endDate.value} endDate={endDate} currentTimestamp={p.s} />
       </div>
     )
   }
@@ -88,6 +88,7 @@ MarketBasics.propTypes = {
   location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func,
+  currentTimestamp: PropTypes.number.isRequired,
   hideReportEndingIndicator: PropTypes.bool,
 }
 
