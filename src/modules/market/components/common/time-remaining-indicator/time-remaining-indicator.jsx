@@ -15,8 +15,8 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
     }
 
     const currentOffsetFromStart = Date.now() - startDate.getTime()
-    // make sure not to divide a negative or else we are always going to be 0 for time elapsed.
-    let percentageElapsed = Math.abs(currentOffsetFromStart / duration)
+
+    let percentageElapsed = (currentOffsetFromStart / duration)
 
     percentageElapsed = (percentageElapsed > 1) ? 1 : percentageElapsed
     percentageElapsed = (percentageElapsed < 0) ? 0 : percentageElapsed
