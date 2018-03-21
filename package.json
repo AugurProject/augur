@@ -44,7 +44,7 @@
   "dependencies": {
     "@types/bignumber.js": "4.0.3",
     "async": "1.5.2",
-    "augur-core": "0.12.2-0",
+    "augur-core": "0.12.2",
     "bignumber.js": "2.3.0",
     "clone": "2.1.1",
     "columnify": "1.5.4",
