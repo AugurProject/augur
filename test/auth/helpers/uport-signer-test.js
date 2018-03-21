@@ -39,7 +39,7 @@ describe('modules/auth/helpers/uport-signer.js', () => {
   })
 
   afterEach(() => {
-    sinon.restore(Connect.prototype.sendTransaction)
+    Connect.prototype.sendTransaction.restore()
     store.clearActions()
   })
 
