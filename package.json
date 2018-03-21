@@ -41,7 +41,10 @@
     "release:dev": "npm version prerelease && git push && git push --tags && npm publish --tag dev",
     "release:patch": "npm version patch && git push && git push --tags && npm publish",
     "release:minor": "npm version minor && git push && git push --tags && npm publish",
-    "release:major": "npm version major && git push && git push --tags && npm publish"
+    "release:major": "npm version major && git push && git push --tags && npm publish",
+    "docker:pull": "docker pull augurproject/dev-node-parity:latest && docker pull augurproject/dev-node-geth:latest && docker pull augurproject/dev-pop-geth:latest",
+    "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 -v $HOME/docker:/geth/chain augurproject/dev-node-geth:latest",
+    "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545"
   },
   "dependencies": {
     "@types/bignumber.js": "4.0.3",
