@@ -17,6 +17,8 @@ describe('modules/auth/helpers/uport-signer.js', () => {
   const mockStore = configureMockStore(middlewares)
   const store = mockStore({})
 
+  let stubbedSendTransaction
+
   const stubbedUpdateModal = sinon.stub().returnsArg(0)
   __RewireAPI__.__Rewire__('updateModal', stubbedUpdateModal)
 
@@ -25,7 +27,11 @@ describe('modules/auth/helpers/uport-signer.js', () => {
   })
   __RewireAPI__.__Rewire__('closeModal', stubbedCloseModal)
 
-  const test = t => it(t.description, done => t.assertions(store, done))
+  const test = t => it(t.description, () => t.assertions(store))
+
+  beforeEach(() => {
+    stubbedSendTransaction = sinon.stub(Connect.prototype, 'sendTransaction').returnsPromise()
+  })
 
   after(() => {
     __RewireAPI__.__ResetDependency__('updateModal')
@@ -39,8 +45,7 @@ describe('modules/auth/helpers/uport-signer.js', () => {
 
   test({
     description: 'should call the expected actions from the `sendTransaction` callback',
-    assertions: (store, done) => {
-      const stubbedSendTransaction = sinon.stub(Connect.prototype, 'sendTransaction').returnsPromise()
+    assertions: (store) => {
       stubbedSendTransaction.yields('test-uri')
 
       uPortSigner({}, store.dispatch)
@@ -55,15 +60,12 @@ describe('modules/auth/helpers/uport-signer.js', () => {
       const actual = store.getActions()
 
       assert.deepEqual(actual, expected, `didn't dispatch the expected actions`)
-
-      done()
     },
   })
 
   test({
     description: `should dispatch the expected actions on 'resolve'`,
-    assertions: (store, done) => {
-      const stubbedSendTransaction = sinon.stub(Connect.prototype, 'sendTransaction').returnsPromise()
+    assertions: (store) => {
       stubbedSendTransaction.resolves()
 
       uPortSigner({}, store.dispatch)
@@ -77,15 +79,12 @@ describe('modules/auth/helpers/uport-signer.js', () => {
       const actual = store.getActions()
 
       assert.deepEqual(actual, expected, `didn't dispatch the expected actions`)
-
-      done()
     },
   })
 
   test({
     description: `should dispatch the expected actions on 'resolve'`,
-    assertions: (store, done) => {
-      const stubbedSendTransaction = sinon.stub(Connect.prototype, 'sendTransaction').returnsPromise()
+    assertions: (store) => {
       stubbedSendTransaction.rejects('test-err')
 
       uPortSigner({}, store.dispatch)
@@ -101,8 +100,6 @@ describe('modules/auth/helpers/uport-signer.js', () => {
       const actual = store.getActions()
 
       assert.deepEqual(actual, expected, `didn't dispatch the expected actions`)
-
-      done()
     },
   })
 })

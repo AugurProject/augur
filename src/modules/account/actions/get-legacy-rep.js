@@ -7,8 +7,6 @@ export default function (callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState()
 
-    console.log('loginAccount -- ', loginAccount)
-
     augur.api.LegacyReputationToken.faucet({
       _amount: 0,
       meta: loginAccount.meta,
