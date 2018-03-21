@@ -1,5 +1,3 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
 import sinon from 'sinon'
 import sinonStubPromise from 'sinon-stub-promise'
 import configureMockStore from 'redux-mock-store'

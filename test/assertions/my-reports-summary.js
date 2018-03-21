@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 import assertFormattedNumber from 'assertions/common/formatted-number'
 
 export default function (reportsSummary) {

@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import * as action from 'modules/app/actions/update-connection'
 
 describe('modules/app/actions/update-connection.js', () => {

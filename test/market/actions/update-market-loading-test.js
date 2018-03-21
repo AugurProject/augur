@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { UPDATE_MARKET_LOADING, REMOVE_MARKET_LOADING, updateMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading'
 

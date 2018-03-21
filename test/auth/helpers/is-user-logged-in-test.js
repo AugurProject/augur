@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import isUserLoggedIn from 'modules/auth/helpers/is-user-logged-in'
 
 describe('modules/auth/helpers/is-user-logged-in.js', () => {

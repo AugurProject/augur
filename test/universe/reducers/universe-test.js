@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import testState from 'test/testState'
 import { UPDATE_UNIVERSE } from 'modules/universe/actions/update-universe'
 import reducer from 'modules/universe/reducers/universe'

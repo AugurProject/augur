@@ -1,5 +1,4 @@
-import { describe } from 'mocha'
-import { assert } from 'chai'
+
 
 export default function (nav, label = 'Component Nav Item') {
   describe(`${label} Shape`, () => {

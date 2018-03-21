@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import * as updateTransactionsOldestLoadedBlock from 'modules/transactions/actions/update-transactions-oldest-loaded-block'
 

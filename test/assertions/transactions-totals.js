@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (transactionsTotals) {
   assert.isObject(transactionsTotals)

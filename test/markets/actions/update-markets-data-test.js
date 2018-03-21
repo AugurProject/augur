@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import * as updateMarketsDataReducer from 'modules/markets/actions/update-markets-data'
 

@@ -1,5 +1,5 @@
 import { describe, it, before } from 'mocha'
-import { assert } from 'chai'
+
 
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'

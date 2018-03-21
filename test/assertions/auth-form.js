@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (authForm) {
   assert.isDefined(authForm, `authForm isn't defined`)
