@@ -16,7 +16,7 @@ export const addLogToTransactions = (eventName, log, callback = logError) => (di
     if (transaction) {
       dispatch(updateTransactionsData({
         [transaction.id || hash]: {
-          ...dispatch(constructBasicTransaction(hash, log.blockNumber, log.timestamp)),
+          ...constructBasicTransaction(hash, log.blockNumber, log.timestamp),
           ...transaction,
         },
       }))
