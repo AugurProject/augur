@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import { selectCategories } from 'modules/categories/selectors/categories'
 
 describe(`modules/categories/selectors/categories.js`, () => {

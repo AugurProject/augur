@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import assertLink from 'assertions/common/link'
 
 export default function (navItem, label = 'Nav Item') {

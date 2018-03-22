@@ -1,5 +1,5 @@
 import { describe, it, afterEach } from 'mocha'
-import { assert } from 'chai'
+
 import mockStore from 'test/mockStore'
 
 import { listenToUpdates, __RewireAPI__ as ReWireModule } from 'modules/app/actions/listen-to-updates'

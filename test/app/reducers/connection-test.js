@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import testState from 'test/testState'
 import * as updateConnection from 'modules/app/actions/update-connection'
 import reducer from 'modules/app/reducers/connection'

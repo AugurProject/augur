@@ -6,7 +6,7 @@ import LedgerConnect from 'modules/auth/components/ledger-connect/ledger-connect
 import loginWithLedger from 'modules/auth/actions/login-with-ledger'
 
 const mapStateToProps = state => ({
-  networkId: augur.rpc.getNetworkID(),
+  networkId: parseInt(augur.rpc.getNetworkID(), 10),
 })
 
 const mapDispatchToProps = dispatch => ({

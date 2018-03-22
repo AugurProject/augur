@@ -1,5 +1,5 @@
 import { describe, it, before } from 'mocha'
-import { assert } from 'chai'
+
 import portfolioAssertions from 'assertions/portfolio'
 
 import sinon from 'sinon'

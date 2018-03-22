@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import sinon from 'sinon'
 
 import loginAccount, { selectLoginAccount, __RewireAPI__ as loginAccountRewireAPI } from 'modules/auth/selectors/login-account'

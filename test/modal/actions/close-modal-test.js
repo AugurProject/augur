@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { CLOSE_MODAL, closeModal } from 'modules/modal/actions/close-modal'
 
