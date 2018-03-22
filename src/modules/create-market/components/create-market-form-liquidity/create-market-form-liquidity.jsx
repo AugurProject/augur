@@ -406,13 +406,6 @@ export default class CreateMarketLiquidity extends Component {
                       >Yes
                       </button>
                     </li>
-                    <li>
-                      <button
-                        className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'No' })}
-                        onClick={() => this.setState({ selectedOutcome: 'No' })}
-                      >No
-                      </button>
-                    </li>
                   </ul>
                 </li>
               }
