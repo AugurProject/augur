@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import BigNumber from 'bignumber.js'
 
-describe.only('modules/create-market/actions/submit-new-market', () => {
+describe('modules/create-market/actions/submit-new-market', () => {
   const mockStore = configureMockStore([thunk])
   const pendingTransaction = { type: 'addPendingTransaction' }
   const clearNewMarket = { type: 'clearNewMarket' }
