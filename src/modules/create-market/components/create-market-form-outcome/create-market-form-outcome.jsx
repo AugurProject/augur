@@ -293,21 +293,6 @@ export default class CreateMarketOutcome extends Component {
         }
         {p.newMarket.type === SCALAR &&
         <li>
-          {validation.scalarSmallNum && validation.scalarSmallNum.length &&
-          <span className={StylesForm.CreateMarketForm__error}>
-            {InputErrorIcon}{validation.scalarSmallNum}
-          </span>
-          }
-          {validation.scalarBigNum && validation.scalarBigNum.length &&
-          <span className={StylesForm['CreateMarketForm__error--field-50']}>
-            {InputErrorIcon}{validation.scalarBigNum}
-          </span>
-          }
-          {validation.tickSize && validation.tickSize.length &&
-          <span className={StylesForm['CreateMarketForm__error--field-50']}>
-            {InputErrorIcon}{validation.tickSize}
-          </span>
-          }
           <div className={Styles.CreateMarketOutcome__scalar}>
             <div>
               <label htmlFor="cm__input--min">
@@ -324,6 +309,11 @@ export default class CreateMarketOutcome extends Component {
                   this.validateScalarNum(e.target.value, 'small')
                 }}
               />
+              {validation.scalarSmallNum && validation.scalarSmallNum.length &&
+              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+                {InputErrorIcon}{validation.scalarSmallNum}
+              </span>
+              }
             </div>
             <div>
               <label htmlFor="cm__input--max">
@@ -340,6 +330,11 @@ export default class CreateMarketOutcome extends Component {
                   this.validateScalarNum(e.target.value, 'big')
                 }}
               />
+              {validation.scalarBigNum && validation.scalarBigNum.length &&
+              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+                {InputErrorIcon}{validation.scalarBigNum}
+              </span>
+              }
             </div>
             <div>
               <label htmlFor="cm__input--denomination">
@@ -366,6 +361,11 @@ export default class CreateMarketOutcome extends Component {
                 placeholder="Tick Size"
                 onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
               />
+              {validation.tickSize && validation.tickSize.length &&
+              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+                {InputErrorIcon}{validation.tickSize}
+              </span>
+              }
             </div>
           </div>
         </li>
