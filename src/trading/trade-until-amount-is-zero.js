@@ -99,7 +99,7 @@ function tradeUntilAmountIsZero(p) {
       },
     });
     if (p.doNotCreateOrders) {
-      api().Trade.publicTakeBestOrder(tradePayload);
+      api().Trade.publicFillBestOrder(tradePayload);
     } else {
       api().Trade.publicTrade(tradePayload);
     }
