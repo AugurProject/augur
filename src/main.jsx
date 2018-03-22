@@ -23,15 +23,15 @@ if (process.env.NODE_ENV === 'development') {
 
   console.log(`
   *******************************************
-          DEVELOPMENT MODE
+              DEVELOPMENT MODE
   *******************************************
-          BUILD INFORMATION
+  BUILD INFORMATION
 
     branch            -- ${process.env.CURRENT_BRANCH}
     network           -- ${process.env.ETHEREUM_NETWORK}
     augur.js          -- v${augur.version}
   -------------------------------------------
-          ATTACHED PROPERTIES
+  ATTACHED PROPERTIES
 
     app element       -- window.app
     state data        -- window.state
