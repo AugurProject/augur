@@ -103,10 +103,10 @@ export default class CreateMarketDefine extends Component {
         <li className={Styles.CreateMarketDefine__question}>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
+            { p.newMarket.validations[p.newMarket.currentStep].description.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
+            }
           </label>
-          { p.newMarket.validations[p.newMarket.currentStep].description.length &&
-            <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
-          }
           <input
             id="cm__input--desc"
             type="text"
