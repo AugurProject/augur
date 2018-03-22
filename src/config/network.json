@@ -1,0 +1,110 @@
+{
+  "dev": {
+    "augur-node": "ws://127.0.0.1:9001",
+    "ethereum-node": {
+      "http": "http://127.0.0.1:8545",
+      "ws": "ws://127.0.0.1:8546",
+      "pollingIntervalMilliseconds": 500,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": true,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "ropsten": {
+    "augur-node": "wss://ropsten.augur.nodes.augur.net",
+    "ethereum-node": {
+      "http": "https://ropsten.ethereum.nodes.augur.net",
+      "ws": null,
+      "pollingIntervalMilliseconds": 10000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": true,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "rinkeby": {
+    "augur-node": "wss://rinkeby.augur.nodes.augur.net",
+    "ethereum-node": {
+      "http": "https://rinkeby.ethereum.nodes.augur.net",
+      "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net",
+      "pollingIntervalMilliseconds": 10000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": true,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "aura": {
+    "augur-node": "wss://aura.augur.nodes.augur.net",
+    "ethereum-node": {
+      "http": "https://aura.ethereum.nodes.augur.net",
+      "ws": null,
+      "pollingIntervalMilliseconds": 1000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": false,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "clique": {
+    "augur-node": "wss://clique.augur.nodes.augur.net",
+    "ethereum-node": {
+      "http": "https://clique.ethereum.nodes.augur.net",
+      "ws": null,
+      "pollingIntervalMilliseconds": 1000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": false,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "production": {
+    "augur-node": "ws://127.0.0.1:9001",
+    "ethereum-node": {
+      "http": "http://127.0.0.1:8545",
+      "ws": "ws://127.0.0.1:8546",
+      "pollingIntervalMilliseconds": 10000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": true,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  }
+}

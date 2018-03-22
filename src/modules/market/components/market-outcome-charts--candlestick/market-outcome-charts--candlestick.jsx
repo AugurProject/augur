@@ -5,6 +5,7 @@ import ReactFauxDOM from 'react-faux-dom'
 
 import { isEqual } from 'lodash'
 
+import findPeriodSeriesBounds from 'modules/market/helpers/find-period-series-bounds'
 import DerivePeriodTimeSeries from 'modules/market/workers/derive-period-time-series.worker'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
@@ -18,7 +19,6 @@ export default class MarketOutcomeCandlestick extends Component {
     selectedPeriod: PropTypes.object.isRequired,
     currentBlock: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
-    outcomeBounds: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketMin: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
@@ -37,8 +37,10 @@ export default class MarketOutcomeCandlestick extends Component {
       periodTimeSeries: [],
       chartWidth: 0,
       yScale: null,
-      // hoveredPeriod: {},
-      // hoveredPrice: null
+      outcomeBounds: {
+        min: null,
+        max: null,
+      },
     }
 
     this.drawCandlestick = this.drawCandlestick.bind(this)
@@ -51,7 +53,13 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentDidMount() {
-    this.drawCandlestick(this.state.periodTimeSeries, this.props.orderBookKeys, this.props.fixedPrecision)
+    this.drawCandlestick({
+      periodTimeSeries: this.state.periodTimeSeries,
+      orderBookKeys: this.props.orderBookKeys,
+      outcomeBounds: this.state.outcomeBounds,
+      fixedPrecision: this.props.fixedPrecision,
+      sharedChartMargins: this.props.sharedChartMargins,
+    })
 
     window.addEventListener('resize', this.drawCandlestickOnResize)
   }
@@ -66,10 +74,18 @@ export default class MarketOutcomeCandlestick extends Component {
 
     if (
       !isEqual(this.state.periodTimeSeries, nextState.periodTimeSeries) ||
+      !isEqual(this.state.outcomeBounds, nextState.outcomeBounds) ||
       !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
+      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       this.props.fixedPrecision !== nextProps.fixedPrecision
     ) {
-      this.drawCandlestick(nextState.periodTimeSeries, nextProps.orderBookKeys, nextProps.fixedPrecision)
+      this.drawCandlestick({
+        periodTimeSeries: nextState.periodTimeSeries,
+        orderBookKeys: nextProps.orderBookKeys,
+        outcomeBounds: nextState.outcomeBounds,
+        fixedPrecision: nextProps.fixedPrecision,
+        sharedChartMargins: nextProps.sharedChartMargins,
+      })
     }
 
     if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
@@ -91,19 +107,28 @@ export default class MarketOutcomeCandlestick extends Component {
     derivePeriodTimeSeriesWorker.onmessage = (event) => {
       this.setState({
         periodTimeSeries: event.data,
+        outcomeBounds: findPeriodSeriesBounds(event.data || []),
       })
 
       derivePeriodTimeSeriesWorker.terminate()
     }
   }
 
-  drawCandlestick(priceTimeSeries, orderBookKeys, fixedPrecision) {
+  drawCandlestick(options) {
+    const {
+      periodTimeSeries,
+      orderBookKeys,
+      outcomeBounds,
+      fixedPrecision,
+      sharedChartMargins,
+    } = options
+
     // TODO --
     // * Prevent collisions of x axis labels
     // * out of bounds shading (same color as depth)
     // * Handle dynamic width adjustment of y axis labels
 
-    if (this.candlestickChart) {
+    if (this.drawContainer) {
       // Faux DOM
       //  Tick Element (Fixed)
       const candleTicksContainer = new ReactFauxDOM.Element('div')
@@ -115,10 +140,10 @@ export default class MarketOutcomeCandlestick extends Component {
       candleChartContainer.setAttribute('key', 'candlestick_chart_container')
 
       const drawParams = determineDrawParams({
-        drawContainer: this.candlestickChart,
-        outcomeBounds: this.props.outcomeBounds,
-        sharedChartMargins: this.props.sharedChartMargins,
-        priceTimeSeries,
+        drawContainer: this.drawContainer,
+        sharedChartMargins,
+        outcomeBounds,
+        periodTimeSeries,
         orderBookKeys,
         fixedPrecision,
       })
@@ -135,27 +160,27 @@ export default class MarketOutcomeCandlestick extends Component {
 
       drawTicks({
         orderBookKeys,
-        priceTimeSeries,
+        periodTimeSeries,
         candleTicks,
         drawParams,
         fixedPrecision,
       })
 
       drawCandles({
-        priceTimeSeries,
+        periodTimeSeries,
         candleChart,
         drawParams,
       })
 
       drawVolume({
         fixedPrecision,
-        priceTimeSeries,
+        periodTimeSeries,
         candleChart,
         drawParams,
       })
 
       drawXAxisLabels({
-        priceTimeSeries,
+        periodTimeSeries,
         candleChart,
         drawParams,
       })
@@ -167,7 +192,7 @@ export default class MarketOutcomeCandlestick extends Component {
       attachHoverClickHandlers({
         updateHoveredPeriod: this.props.updateHoveredPeriod,
         updateHoveredPrice: this.props.updateHoveredPrice,
-        priceTimeSeries,
+        periodTimeSeries,
         fixedPrecision,
         candleChart,
         drawParams,
@@ -191,7 +216,7 @@ export default class MarketOutcomeCandlestick extends Component {
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <div
-          ref={(candlestickChart) => { this.candlestickChart = candlestickChart }}
+          ref={(drawContainer) => { this.drawContainer = drawContainer }}
           className={Styles.MarketOutcomeCandlestick__container}
         >
           {this.state.candleTicksContainer}
@@ -207,7 +232,7 @@ function determineDrawParams(options) {
     drawContainer,
     outcomeBounds,
     sharedChartMargins,
-    priceTimeSeries,
+    periodTimeSeries,
     orderBookKeys,
     fixedPrecision,
   } = options
@@ -230,9 +255,9 @@ function determineDrawParams(options) {
 
   // Domain
   //  X
-  const xDomain = priceTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.period], [])
+  const xDomain = periodTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.period], [])
 
-  const domainScaleWidth = ((candleDim.width + (candleDim.gap * 2)) * priceTimeSeries.length) - (candleDim.gap * 2)
+  const domainScaleWidth = ((candleDim.width + (candleDim.gap * 2)) * periodTimeSeries.length) - (candleDim.gap * 2)
 
   let drawableWidth = containerWidth
 
@@ -357,13 +382,13 @@ function drawTicks(options) {
 
 function drawCandles(options) {
   const {
-    priceTimeSeries,
+    periodTimeSeries,
     candleChart,
     drawParams,
   } = options
 
   candleChart.selectAll('rect.candle')
-    .data(priceTimeSeries)
+    .data(periodTimeSeries)
     .enter().append('rect')
     .attr('x', d => drawParams.xScale(d.period))
     .attr('y', d => drawParams.yScale(d3.max([d.open, d.close])))
@@ -372,7 +397,7 @@ function drawCandles(options) {
     .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
   candleChart.selectAll('line.stem')
-    .data(priceTimeSeries)
+    .data(periodTimeSeries)
     .enter().append('line')
     .attr('class', 'stem')
     .attr('x1', d => drawParams.xScale(d.period) + (drawParams.candleDim.width / 2))
@@ -384,19 +409,19 @@ function drawCandles(options) {
 
 function drawVolume(options) {
   const {
-    priceTimeSeries,
+    periodTimeSeries,
     candleChart,
     drawParams,
   } = options
 
-  const yVolumeDomain = priceTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.volume], [])
+  const yVolumeDomain = periodTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.volume], [])
 
   const yVolumeScale = d3.scaleLinear()
     .domain(d3.extent(yVolumeDomain))
     .range([drawParams.containerHeight - drawParams.chartDim.bottom, drawParams.chartDim.top + ((drawParams.containerHeight - drawParams.chartDim.bottom) * 0.66)])
 
   candleChart.selectAll('rect.volume')
-    .data(priceTimeSeries)
+    .data(periodTimeSeries)
     .enter().append('rect')
     .attr('x', d => drawParams.xScale(d.period))
     .attr('y', d => yVolumeScale(d.volume))
@@ -407,7 +432,7 @@ function drawVolume(options) {
 
 function drawXAxisLabels(options) {
   const {
-    priceTimeSeries,
+    periodTimeSeries,
     candleChart,
     drawParams,
   } = options
@@ -415,7 +440,7 @@ function drawXAxisLabels(options) {
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
-    .call(d3.axisBottom(drawParams.xScale).ticks(priceTimeSeries.length))
+    .call(d3.axisBottom(drawParams.xScale).ticks(periodTimeSeries.length))
     .select('path').remove()
 }
 
@@ -439,7 +464,7 @@ function attachHoverClickHandlers(options) {
   const {
     updateHoveredPeriod,
     updateHoveredPrice,
-    priceTimeSeries,
+    periodTimeSeries,
     fixedPrecision,
     candleChart,
     drawParams,
@@ -467,7 +492,7 @@ function attachHoverClickHandlers(options) {
     })
 
   candleChart.selectAll('rect.hover')
-    .data(priceTimeSeries)
+    .data(periodTimeSeries)
     .enter().append('rect')
     .attr('id', 'testing')
     .attr('x', d => drawParams.xScale(d.period) - (drawParams.candleDim.gap * 0.5))

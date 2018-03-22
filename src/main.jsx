@@ -23,13 +23,19 @@ if (process.env.NODE_ENV === 'development') {
 
   console.log(`
   *******************************************
-        DEVELOPMENT MODE (seadragon)
-    window.app        -- root app element
-    window.state      -- state data
-    window.augur      -- augur.js API methods
+          DEVELOPMENT MODE
+  *******************************************
+          BUILD INFORMATION
+
+    branch            -- ${process.env.CURRENT_BRANCH}
+    network           -- ${process.env.ETHEREUM_NETWORK}
+    augur.js          -- v${augur.version}
   -------------------------------------------
-          ADDITIONAL INFORMATION
-    augur.js version: ${augur.version}
+          ATTACHED PROPERTIES
+
+    app element       -- window.app
+    state data        -- window.state
+    augur.js API      -- window.augur
   *******************************************
   `)
 }

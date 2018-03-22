@@ -14,7 +14,6 @@ export default class MarketOutcomeCharts extends Component {
     priceTimeSeries: PropTypes.array.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
-    outcomeBounds: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
@@ -119,7 +118,6 @@ export default class MarketOutcomeCharts extends Component {
               currentBlock={p.currentBlock}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
-              outcomeBounds={p.outcomeBounds}
               orderBookKeys={p.orderBookKeys}
               marketMax={p.maxPrice}
               marketMin={p.minPrice}

@@ -42,10 +42,11 @@
         ],
         "rewire",
         ["module-resolver", {
-          "root": ["./src", "./test"],
           "alias": {
             "src": "./src",
             "test": "./test",
+            "assertions": "./test/assertions",
+            "config": "./src/config",
             "assets": "./src/assets",
             "modules": "./src/modules",
             "utils": "./src/utils",

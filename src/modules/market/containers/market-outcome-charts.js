@@ -6,33 +6,6 @@ import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 import { selectMarket } from 'modules/market/selectors/market'
-import { isEmpty } from 'lodash'
-
-// outcome specific trading price range
-const findBounds = memoize((priceTimeSeries = []) => {
-  const DEFAULT_BOUNDS = {
-    min: null,
-    max: null,
-  }
-
-  if (isEmpty(priceTimeSeries)) return DEFAULT_BOUNDS
-
-  return (priceTimeSeries).reduce((p, item, i) => {
-    const currentItem = item
-
-    if (i === 0) {
-      return {
-        min: currentItem.price,
-        max: currentItem.price,
-      }
-    }
-
-    return {
-      min: currentItem.price < p.min ? currentItem.price : p.min,
-      max: currentItem.price > p.max ? currentItem.price : p.max,
-    }
-  }, DEFAULT_BOUNDS)
-})
 
 const orderAndAssignCumulativeShares = memoize((orderBook) => {
   const rawBids = ((orderBook || {})[BIDS] || []).slice()
@@ -133,7 +106,6 @@ const mapStateToProps = (state, ownProps) => {
     currentBlock: state.blockchain.currentBlockNumber || 0,
     minPrice: market.minPrice || 0,
     maxPrice: market.maxPrice || 0,
-    outcomeBounds: findBounds(priceTimeSeries),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
     marketDepth,

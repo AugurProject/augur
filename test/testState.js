@@ -1,6 +1,6 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env-dev'
+import network from 'config/network'
 
 import { formatNumber, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
@@ -42,7 +42,7 @@ const testState = {
   favorites: {
     testMarketId: true,
   },
-  env,
+  env: network[`${process.env.ETHEREUM_NETWORK}`],
   loginAccount: {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
