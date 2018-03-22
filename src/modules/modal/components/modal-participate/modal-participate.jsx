@@ -126,19 +126,22 @@ export default class ModalParticipate extends Component {
                 onKeyDown={e => this.handleKeyDown(e)}
                 autoComplete="off"
                 maxButton
+                noFocus
                 onMaxButtonClick={() => this.handleMaxClick()}
               />
             </label>
-            {s.errors.length && s.errors.map((error, index) =>
-              (
-                <p
-                  key={error}
-                  className={Styles.ModalParticipate__error}
-                >
-                  {InputErrorIcon} {error}
-                </p>
-              ))
-            }
+            <div className={Styles['ModalParticipate__error-section']}>
+              {!!s.errors.length && s.errors.map((error, index) =>
+                (
+                  <p
+                    key={error}
+                    className={Styles.ModalParticipate__error}
+                  >
+                    {InputErrorIcon} {error}
+                  </p>
+                ))
+              }
+            </div>
             <div className={Styles['ModalParticipate__form-actions']}>
               <button
                 className={Styles.ModalParticipate__button}

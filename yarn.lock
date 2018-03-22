@@ -514,9 +514,9 @@ augur-core@0.12.2-0:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.8.6-0:
-  version "4.8.6-0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.6-0.tgz#36d3ff0be2fc6240472706b4fb3407a363610dd8"
+augur.js@4.8.6-1:
+  version "4.8.6-1"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.6-1.tgz#183a79c6d596380b81cfd19e918ec403e2f2f05a"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
