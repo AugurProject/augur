@@ -19,7 +19,7 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
       tradeGroupId: log.tradeGroupId,
       numPurchased: log.numCompleteSets,
     };
-    augurEmitter.emit(log.eventName, completeSetPurchasedData);
+    augurEmitter.emit(log.eventName, Object.assign({}, log, completeSetPurchasedData));
     callback(null);
   });
 }

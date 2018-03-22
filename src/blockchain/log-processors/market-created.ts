@@ -99,7 +99,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             },
           ], (err: Error|null): void => {
             if (err) return callback(err);
-            augurEmitter.emit("MarketCreated", marketsDataToInsert);
+            augurEmitter.emit("MarketCreated", Object.assign({}, log, marketsDataToInsert));
             db.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
