@@ -99,7 +99,8 @@ export default class CreateMarketForm extends Component {
         updatedMarket.validations[currentStep][fieldName] = `The ${humanName} field is required.`
         break
       case (value > max || value < min):
-        updatedMarket.validations[currentStep][fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
+        updatedMarket.validations[currentStep][fieldName] = `${humanName}`.charAt(0).toUpperCase()
+        updatedMarket.validations[currentStep][fieldName] += `${humanName} must be between ${min} and ${max}.`.slice(1)
         break
       default:
         updatedMarket.validations[currentStep][fieldName] = true

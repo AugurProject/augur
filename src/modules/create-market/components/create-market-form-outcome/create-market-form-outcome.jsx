@@ -137,7 +137,7 @@ export default class CreateMarketOutcome extends Component {
           updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax.toNumber()}`
           break
         case scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum):
-          updatedMarket.validations[currentStep].scalarSmallNum = 'Your minimum must be smaller than your maximum.'
+          updatedMarket.validations[currentStep].scalarSmallNum = 'Min must be less than max.'
           break
         default:
           updatedMarket.validations[currentStep].scalarSmallNum = true
@@ -158,7 +158,7 @@ export default class CreateMarketOutcome extends Component {
           updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax.toNumber()}`
           break
         case scalarSmallNum !== '' && scalarBigNum.lessThanOrEqualTo(scalarSmallNum):
-          updatedMarket.validations[currentStep].scalarBigNum = 'Your maximum must be larger than your minimum.'
+          updatedMarket.validations[currentStep].scalarBigNum = 'Max must be larger than min.'
           break
         default:
           updatedMarket.validations[currentStep].scalarBigNum = true
@@ -169,7 +169,7 @@ export default class CreateMarketOutcome extends Component {
 
     if (type === 'tickSize') {
       if (value < 0) {
-        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be below zero.'
+        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
       } else {
         updatedMarket.validations[currentStep].tickSize = true
       }
@@ -198,7 +198,7 @@ export default class CreateMarketOutcome extends Component {
         updatedMarket.validations[currentStep].outcomes = 'Please enter a max of 8 outcomes.'
         break
       case value !== '' && cleanedOutcomes.filter(outcome => outcome === value).length >= 2:
-        updatedMarket.validations[currentStep].outcomes = 'Outcome name must be unique.'
+        updatedMarket.validations[currentStep].outcomes = 'Outcome names must be unique.'
         break
       default:
         updatedMarket.validations[currentStep].outcomes = true

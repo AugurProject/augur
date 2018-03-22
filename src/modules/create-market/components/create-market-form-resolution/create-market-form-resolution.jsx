@@ -83,7 +83,7 @@ export default class CreateMarketResolution extends Component {
     const updatedMarket = { ...p.newMarket }
 
     if (!isAddress(value)) {
-      updatedMarket.validations[currentStep].designatedReporterAddress = 'The Designated Reporter Address must be a valid Ethereum Address.'
+      updatedMarket.validations[currentStep].designatedReporterAddress = 'Invalid Ethereum address.'
     } else {
       updatedMarket.validations[currentStep].designatedReporterAddress = true
     }
