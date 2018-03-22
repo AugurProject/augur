@@ -41,12 +41,12 @@
   > li a,
   > li button {
     background: none;
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
     font-size: 0.625rem;
-    height: 4rem;
+    justify-content: center;
     margin: 0;
-    padding: 0;
-    position: relative;
+    padding: 0.95rem 0 1rem;
     text-align: center;
     width: 100%;
 
@@ -61,21 +61,20 @@
 
     &:last-child { border: none; }
 
-    span {
-      bottom: 0.8rem;
+    > span {
       color: @color-white;
-      font-weight: 500;
-      left: 0;
+      display: block;
+      font-weight: 400;
       letter-spacing: 0.01875rem;
-      position: absolute;
-      right: 0;
       text-align: center;
       text-transform: uppercase;
+      width: 100%;
     }
 
-    svg {
+    > svg {
+      display: block;
       height: 1.5rem;
-      transform: translateY(0.5rem);
+      margin-bottom: 0.4rem;
       width: 1.5rem;
     }
 
