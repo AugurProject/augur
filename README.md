@@ -160,6 +160,13 @@ augur.js$ git commit -m 'Bumping contracts to new deploy for updated augur-contr
 augur.js$ npm run release:dev
 ```
 
+## NPM commands of interest
+
+This command is used to build pre-populated docker image and push to [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/). the image is tagged with`:latest` and with the version of augur-core used. ie `core-0.12.2`, see scripts/build-docker.sh for more details.
+* npm run docker:build
+
+
+
 ## Documentation
 
 [http://docs.augur.net](http://docs.augur.net)
