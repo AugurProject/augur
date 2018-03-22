@@ -1,14 +1,10 @@
-<<<<<<< Updated upstream
-
-
-import BigNumber from 'bignumber.js'
-=======
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
->>>>>>> Stashed changes
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import BigNumber from 'bignumber.js'
 
 describe.only('modules/create-market/actions/submit-new-market', () => {
   const mockStore = configureMockStore([thunk])
@@ -90,7 +86,10 @@ describe.only('modules/create-market/actions/submit-new-market', () => {
         },
         address: '0x1233',
       },
-      newMarket: { properties: 'value', orderBook: {} },
+      newMarket: {
+        properties: 'value',
+        orderBook: {},
+      },
     },
     buildCreateMarket: buildCreateMarketSuccess,
     assertions: (store) => {
@@ -147,7 +146,79 @@ describe.only('modules/create-market/actions/submit-new-market', () => {
         },
         address: '0x1233',
       },
-      newMarket: { properties: 'value', orderBook: {} },
+      newMarket: {
+        properties: 'value',
+        outcomes: [
+          'one',
+          'two',
+        ],
+        orderBook: {
+          one: [
+            {
+              type: BUY,
+              price: new BigNumber('0.1'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.6'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: BUY,
+              price: new BigNumber('0.2'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.7'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: BUY,
+              price: new BigNumber('0.3'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.8'),
+              quantity: new BigNumber('1'),
+            },
+          ],
+          two: [
+            {
+              type: BUY,
+              price: new BigNumber('0.1'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.6'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: BUY,
+              price: new BigNumber('0.2'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.7'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: BUY,
+              price: new BigNumber('0.3'),
+              quantity: new BigNumber('1'),
+            },
+            {
+              type: SELL,
+              price: new BigNumber('0.8'),
+              quantity: new BigNumber('1'),
+            },
+          ],
+        },
+      },
     },
     buildCreateMarket: buildCreateMarketSuccess,
     assertions: (store) => {
@@ -172,6 +243,8 @@ describe.only('modules/create-market/actions/submit-new-market', () => {
       const actual = store.getActions()
 
       const expected = [
+        pendingTransaction,
+        clearNewMarket,
         {
           outcomeId: 1,
           type: 'placeTrade',
@@ -221,53 +294,54 @@ describe.only('modules/create-market/actions/submit-new-market', () => {
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'placeTrade',
         },
         {
-          outcomeId: 0,
+          outcomeId: 1,
           type: 'updateTradesInProgress',
         },
+
       ]
       assert.isTrue(history.push.calledOnce, `didn't push a new path to history`)
       assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
