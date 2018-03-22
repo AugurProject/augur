@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { UPDATE_IS_MOBILE, updateIsMobile } from 'modules/app/actions/update-is-mobile'
 

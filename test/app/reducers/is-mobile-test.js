@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import isMobileReducer from 'modules/app/reducers/is-mobile'
 import { UPDATE_IS_MOBILE } from 'modules/app/actions/update-is-mobile'

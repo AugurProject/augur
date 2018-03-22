@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 export default function (link, label = 'Link') {
   describe(`${label} Shape`, () => {

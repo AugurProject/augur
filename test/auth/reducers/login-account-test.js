@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import { UPDATE_LOGIN_ACCOUNT, CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 import reducer from 'modules/auth/reducers/login-account'
 import testState from 'test/testState'

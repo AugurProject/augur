@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 import assertActivePage from './active-view'
 import assertPositionsSummary from './positions-summary'
 import assertTransactionsTotals from './transactions-totals'

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import store from 'src/store'
-import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
+import { selectAccountTradesState, selectCurrentTimestamp, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
 import { augur } from 'services/augurjs'
 import { dateToBlock } from 'utils/date-to-block-to-date'
 import { formatEther } from 'utils/format-number'
@@ -24,10 +24,11 @@ export const createPeriodPLSelector = period => createSelector(
   selectAccountTradesState,
   selectBlockchainState,
   selectOutcomesDataState,
-  (accountTrades, blockchain, outcomesData) => {
+  selectCurrentTimestamp,
+  (accountTrades, blockchain, outcomesData, currentTimestamp) => {
     if (!accountTrades || !blockchain) return null
 
-    const periodDate = new Date(Date.now() - (period*24*60*60*1000))
+    const periodDate = new Date(currentTimestamp - (period*24*60*60*1000))
     const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber)
 
     return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds

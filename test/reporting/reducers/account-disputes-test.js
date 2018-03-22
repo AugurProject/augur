@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha'
+
 import * as ActionTypes from 'redux'
-import { assert } from 'chai'
+
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import {
   REMOVE_ACCOUNT_DISPUTE,

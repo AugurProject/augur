@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (markets) {
   assert.isDefined(markets, `markets is not defined`)

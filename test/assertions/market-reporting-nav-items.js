@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 import assertComponentNavItem from 'assertions/common/component-nav'
 

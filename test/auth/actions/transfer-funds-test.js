@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
@@ -98,6 +98,9 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     state: {
       loginAccount: {
         address: '0xtest',
+      },
+      blockchain: {
+        currentAugurTimestamp: 1521665,
       },
     },
     assertions: (done, store) => {

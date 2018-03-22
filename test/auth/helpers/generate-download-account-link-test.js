@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import sinon from 'sinon'
 
 import generateDownloadAccountLink, { __RewireAPI__ as linkRewireAPI } from 'modules/auth/helpers/generate-download-account-link'

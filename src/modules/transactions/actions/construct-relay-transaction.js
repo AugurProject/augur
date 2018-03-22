@@ -1,6 +1,7 @@
 import { constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters'
 import { addNotification, updateNotification } from 'modules/notifications/actions/update-notifications'
+import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
 import makePath from 'modules/routes/helpers/make-path'
 
@@ -12,7 +13,7 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
   const { status } = tx
   const unpackedParams = unpackTransactionParameters(tx)
   // console.log('unpacked:', JSON.stringify(unpackedParams, null, 2))
-  const timestamp = tx.response.timestamp || parseInt(Date.now() / 1000, 10)
+  const timestamp = tx.response.timestamp || selectCurrentTimestampInSeconds(getState())
   const blockNumber = tx.response.blockNumber && parseInt(tx.response.blockNumber, 16)
   if (notifications.filter(notification => notification.id === hash).length) {
     dispatch(updateNotification(hash, {

@@ -7,7 +7,12 @@ import PropTypes from 'prop-types'
 * */
 export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   const TimeRemainingIndicator = (props) => {
-    const { startDate, endDate, ...otherProps } = props
+    const {
+      startDate,
+      endDate,
+      currentTimestamp,
+      ...otherProps
+    } = props
 
     const duration = endDate.getTime() - startDate.getTime()
     // Render null if given invalid input
@@ -15,7 +20,7 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
       return null
     }
 
-    const currentOffsetFromStart = Date.now() - startDate.getTime()
+    const currentOffsetFromStart = new Date(currentTimestamp) - startDate.getTime()
     let percentageElapsed = (currentOffsetFromStart / duration)
 
     percentageElapsed = (percentageElapsed > 1) ? 1 : percentageElapsed
@@ -29,6 +34,7 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   TimeRemainingIndicator.propTypes = {
     endDate: PropTypes.instanceOf(Date).isRequired,
     startDate: PropTypes.instanceOf(Date).isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
   }
 
   return TimeRemainingIndicator

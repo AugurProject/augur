@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 
 import { shallow } from 'enzyme'
 import { NoMarketsFound, ReportSection } from 'src/modules/reporting/components/reporting-report-markets/reporting-report-markets'
