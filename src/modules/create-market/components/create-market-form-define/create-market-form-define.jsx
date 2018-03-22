@@ -104,6 +104,9 @@ export default class CreateMarketDefine extends Component {
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
           </label>
+          { p.newMarket.validations[p.newMarket.currentStep].description.length &&
+            <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
+          }
           <input
             id="cm__input--desc"
             type="text"
@@ -120,9 +123,6 @@ export default class CreateMarketDefine extends Component {
         <li className={StylesForm['field--50']}>
           <label htmlFor="cm__input--cat">
             <span>Category</span>
-            { p.newMarket.validations[p.newMarket.currentStep].category.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].category }</span>
-            }
           </label>
           <input
             ref={(catInput) => { this.catInput = catInput }}
@@ -134,6 +134,9 @@ export default class CreateMarketDefine extends Component {
             placeholder="Help users find your market by defining its category"
             onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
           />
+          { p.newMarket.validations[p.newMarket.currentStep].category.length &&
+            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].category }</span>
+          }
         </li>
         <li className={StylesForm['field--50']}>
           <label>

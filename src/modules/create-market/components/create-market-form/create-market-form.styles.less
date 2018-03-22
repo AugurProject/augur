@@ -26,7 +26,14 @@
   white-space: nowrap;
 }
 
+.CreateMarketForm__error--bottom {
+  &:extend(.CreateMarketForm__error);
+  position: absolute;
+  margin-top: .675rem;
+}
+
 .CreateMarketForm__error > svg,
+.CreateMarketForm__error--bottom > svg,
 .CreateMarketForm__error--field-50 > svg {
   margin: 0 0.2rem;
   max-height: 1rem;
