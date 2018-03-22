@@ -32,8 +32,6 @@ function bindContractFunction(functionAbi) {
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
       payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
-      // returns: "null" is a workaround for unsolved no-response-to-initial-eth_call issue
-      assign(payload, { returns: "null" });
       if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = (params[0].meta || {}).signer;

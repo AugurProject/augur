@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "4.8.6-0",
+  "version": "4.8.6",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -9,6 +9,7 @@
     "dp": "./scripts/dp/index.js"
   },
   "scripts": {
+    "clean": "rimraf build; rimraf node_modules",
     "test": "mocha test/unit",
     "lint": "eslint src test/unit scripts",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
@@ -18,6 +19,7 @@
     "preversion": "npm test",
     "version": "npm run build && git add -A dist src/version.js package.json package-lock.json",
     "dp": "node scripts/dp",
+    "docker:build": "scripts/build-docker.sh",
     "upload:aura": "node scripts/dp upload aura",
     "upload:clique": "node scripts/dp upload clique",
     "upload:environment": "node scripts/dp upload environment",
@@ -39,12 +41,15 @@
     "release:dev": "npm version prerelease && git push && git push --tags && npm publish --tag dev",
     "release:patch": "npm version patch && git push && git push --tags && npm publish",
     "release:minor": "npm version minor && git push && git push --tags && npm publish",
-    "release:major": "npm version major && git push && git push --tags && npm publish"
+    "release:major": "npm version major && git push && git push --tags && npm publish",
+    "docker:pull": "docker pull augurproject/dev-node-parity:latest && docker pull augurproject/dev-node-geth:latest && docker pull augurproject/dev-pop-geth:latest",
+    "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 -v $HOME/docker:/geth/chain augurproject/dev-node-geth:latest",
+    "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545"
   },
   "dependencies": {
     "@types/bignumber.js": "4.0.3",
     "async": "1.5.2",
-    "augur-core": "0.12.2-0",
+    "augur-core": "0.12.2",
     "bignumber.js": "6.0.0",
     "clone": "2.1.1",
     "columnify": "1.5.4",
@@ -55,8 +60,9 @@
     "keccak": "1.2.0",
     "lodash.assign": "4.2.0",
     "lodash.isequal": "4.5.0",
-    "options-parser": "^0.4.0",
+    "options-parser": "0.4.0",
     "parrotsay-api": "0.1.1",
+    "rimraf": "2.6.2",
     "secure-random": "1.1.1",
     "speedomatic": "2.1.4",
     "uuid": "3.0.0",
