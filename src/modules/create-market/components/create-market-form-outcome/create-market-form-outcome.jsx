@@ -250,12 +250,12 @@ export default class CreateMarketOutcome extends Component {
         <li>
           <label htmlFor="cm__input--outcome1">
             <span>Potential Outcomes</span>
+            {validation.outcomes && validation.outcomes.length &&
+              <span className={StylesForm.CreateMarketForm__error}>
+                {InputErrorIcon}{validation.outcomes}
+              </span>
+            }
           </label>
-          {validation.outcomes && validation.outcomes.length &&
-          <span className={StylesForm.CreateMarketForm__error}>
-            {InputErrorIcon}{validation.outcomes}
-          </span>
-          }
           <div className={Styles.CreateMarketOutcome__categorical}>
             {
               [...Array(s.outcomeFieldCount).keys()].map((i) => {
