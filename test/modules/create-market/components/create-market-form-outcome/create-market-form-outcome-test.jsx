@@ -99,7 +99,7 @@ describe('create-market-form-outcome', () => {
           const newMarketObj = updateNewMarketSpy.args[0][0]
 
           assert.equal(newMarketObj.tickSize, '-7')
-          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size cannot be below zero.')
+          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size cannot be negative.')
         })
       })
 
