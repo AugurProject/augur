@@ -24,11 +24,16 @@
   width: 5em;
 }
 
-.MarketOutcomeCandlestick__chart {
+.MarketOutcomeCandlestick__container {
   cursor: cell;
   height: 100%;
+  position: relative;
 
   :global {
+    #candlestick_chart {
+      overflow: auto;
+    }
+
     #hovered_candlestick_price_label {
       .caps--small();
 
@@ -111,5 +116,22 @@
         fill: @color-lightgray;
       }
     }
+
+    #candle_visible_area {
+      overflow-x: scroll;
+    }
   }
+}
+
+.MarketOutcomeCandlestick__ticks-container {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.MarketOutcomeCandlestick__chart-container {
+  height: 100%;
+  overflow-x: auto;
+  position: absolute;
+  width: 100%;
 }
