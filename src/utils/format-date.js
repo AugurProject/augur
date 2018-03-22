@@ -79,11 +79,6 @@ export function dateHasPassed(unixTimestamp) {
   return (date.unix() >= unixTimestamp)
 }
 
-/** timestamps are always in seconds */
-export function getCurrentDateTimestamp() {
-  return Date.now() / 1000
-}
-
 export function getDaysRemaining(endTimestamp, startTimestamp) {
   if (!endTimestamp) return 0
   let start = startTimestamp

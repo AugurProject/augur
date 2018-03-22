@@ -23,7 +23,8 @@ This is true for all selectors, but especially important for this one.
 import BigNumber from 'bignumber.js'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
-import { formatDate, getCurrentDateTimestamp, convertUnixToFormattedDate } from 'utils/format-date'
+import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
+import { selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -75,6 +76,7 @@ export const selectMarket = (marketId) => {
     orderCancellation,
     smallestPositions,
     loginAccount,
+    ...state
   } = store.getState()
 
   const accountPositions = selectAccountPositions()
@@ -91,7 +93,7 @@ export const selectMarket = (marketId) => {
     marketLoading[marketId] || null,
     priceHistory[marketId],
     isMarketDataOpen(marketsData[marketId]),
-    isMarketDataExpired(marketsData[marketId], getCurrentDateTimestamp()),
+    isMarketDataExpired(marketsData[marketId], selectCurrentTimestampInSeconds(state)),
 
     !!favorites[marketId],
     outcomesData[marketId],
