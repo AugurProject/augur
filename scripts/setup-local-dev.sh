@@ -11,18 +11,17 @@ export ETHEREUM_WS=http://127.0.0.1:8546;
 
 export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a";
 
-SHOULD_SETUP_MARKETS=false;
+CONTAINER_NAME="geth-node";
+DOCKER_IMAGE="augurproject/dev-pop-geth:core-$(npm view augur-core version)";
 
-set +e;
-GETH_STATE=$(docker inspect -f {{.State.Running}} geth-node);
-if [[ "$GETH_STATE" != "true" ]]; then
-  echo "geth-node: ";
-  docker run -it -d --rm --name geth-node -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:latest;
-  SHOULD_SETUP_MARKETS=true;
-else
-  echo "geth-node: already running";
+if [ "$(docker ps -a | grep $CONTAINER_NAME)" ]; then
+  echo "Kill running container...";
+  docker kill $CONTAINER_NAME;
 fi
-set -e;
+
+echo "$CONTAINER_NAME: $DOCKER_IMAGE";
+docker pull $DOCKER_IMAGE;
+docker run -it -d --rm --name $CONTAINER_NAME -p 8545:8545 -p 8546:8546 $DOCKER_IMAGE;
 
 cd ../;
 
@@ -32,7 +31,8 @@ rm -rf node_modules;
 yarn;
 yarn run build;
 yarn link;
-$SHOULD_SETUP_MARKETS && yarn run deploy:environment;
+
+docker cp $CONTAINER_NAME:/augur.js/src/contracts/addresses.json src/contracts/addresses.json;
 
 popd;
 
