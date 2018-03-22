@@ -9,27 +9,27 @@ import { selectMarket } from 'modules/market/selectors/market'
 import { isEmpty } from 'lodash'
 
 // outcome specific trading price range
-const findBounds = memoize((outcome = {}) => {
+const findBounds = memoize((priceTimeSeries = []) => {
   const DEFAULT_BOUNDS = {
     min: null,
     max: null,
   }
 
-  if (isEmpty(outcome)) return DEFAULT_BOUNDS
+  if (isEmpty(priceTimeSeries)) return DEFAULT_BOUNDS
 
-  return (outcome.priceTimeSeries || []).reduce((p, item, i) => {
-    const currentItem = item[1]
+  return (priceTimeSeries).reduce((p, item, i) => {
+    const currentItem = item
 
     if (i === 0) {
       return {
-        min: currentItem,
-        max: currentItem,
+        min: currentItem.price,
+        max: currentItem.price,
       }
     }
 
     return {
-      min: currentItem < p.min ? currentItem : p.min,
-      max: currentItem > p.max ? currentItem : p.max,
+      min: currentItem.price < p.min ? currentItem.price : p.min,
+      max: currentItem.price > p.max ? currentItem.price : p.max,
     }
   }, DEFAULT_BOUNDS)
 })
@@ -133,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
     currentBlock: state.blockchain.currentBlockNumber || 0,
     minPrice: market.minPrice || 0,
     maxPrice: market.maxPrice || 0,
-    outcomeBounds: findBounds(outcome),
+    outcomeBounds: findBounds(priceTimeSeries),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
     marketDepth,

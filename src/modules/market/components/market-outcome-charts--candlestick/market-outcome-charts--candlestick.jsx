@@ -1,15 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import { ChevronDown, ChevronUp } from 'modules/common/components/icons'
-
-// import updatePeriodTimeSeries from 'modules/market/helpers/period-time-series'
-
-import DerivePeriodTimeSeries from 'modules/market/workers/derive-period-time-series.worker'
-
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
 import { isEqual } from 'lodash'
+
+import DerivePeriodTimeSeries from 'modules/market/workers/derive-period-time-series.worker'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
@@ -103,8 +99,6 @@ export default class MarketOutcomeCandlestick extends Component {
 
   drawCandlestick(priceTimeSeries, orderBookKeys, fixedPrecision) {
     // TODO --
-    // * x axis scale for proper fixed width display of candles
-    // * Handle scrolling of candles to left
     // * Prevent collisions of x axis labels
     // * out of bounds shading (same color as depth)
     // * Handle dynamic width adjustment of y axis labels
@@ -114,11 +108,11 @@ export default class MarketOutcomeCandlestick extends Component {
       //  Tick Element (Fixed)
       const candleTicksContainer = new ReactFauxDOM.Element('div')
       candleTicksContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__ticks-container']}`)
-      candleTicksContainer.setAttribute('key', 'candlestick_ticks')
+      candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
       //  Chart Element (Scrollable)
       const candleChartContainer = new ReactFauxDOM.Element('div')
       candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
-      candleChartContainer.setAttribute('key', 'candlestick_chart')
+      candleChartContainer.setAttribute('key', 'candlestick_chart_container')
 
       const drawParams = determineDrawParams({
         drawContainer: this.candlestickChart,
@@ -129,15 +123,13 @@ export default class MarketOutcomeCandlestick extends Component {
         fixedPrecision,
       })
 
-      console.log('drawParams -- ', drawParams)
-
-      // Chart Containers
       const candleTicks = d3.select(candleTicksContainer)
         .append('svg')
         .attr('width', drawParams.containerWidth)
         .attr('height', drawParams.containerHeight)
       const candleChart = d3.select(candleChartContainer)
         .append('svg')
+        .attr('id', 'candlestick_chart')
         .attr('height', drawParams.containerHeight)
         .attr('width', drawParams.drawableWidth)
 
@@ -168,14 +160,20 @@ export default class MarketOutcomeCandlestick extends Component {
         drawParams,
       })
 
-      attachHoverHandler({
+      drawCrosshairs({
+        candleTicks,
+      })
+
+      attachHoverClickHandlers({
+        updateHoveredPeriod: this.props.updateHoveredPeriod,
+        updateHoveredPrice: this.props.updateHoveredPrice,
         priceTimeSeries,
         fixedPrecision,
         candleChart,
         drawParams,
       })
 
-      // Set Chart to State
+      // Set react components to state for render
       this.setState({
         yScale: drawParams.yScale,
         chartWidth: drawParams.containerWidth,
@@ -245,6 +243,8 @@ function determineDrawParams(options) {
   } else {
     drawableWidth = domainScaleWidth
   }
+
+  console.log('diff calc -- ', orderBookKeys, outcomeBounds)
 
   //  Y
   // Determine bounding diff
@@ -384,11 +384,11 @@ function drawCandles(options) {
 
 function drawVolume(options) {
   const {
-    fixedPrecision,
     priceTimeSeries,
     candleChart,
     drawParams,
   } = options
+
   const yVolumeDomain = priceTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.volume], [])
 
   const yVolumeScale = d3.scaleLinear()
@@ -402,28 +402,7 @@ function drawVolume(options) {
     .attr('y', d => yVolumeScale(d.volume))
     .attr('height', d => drawParams.containerHeight - drawParams.chartDim.bottom - yVolumeScale(d.volume))
     .attr('width', d => drawParams.candleDim.width)
-    .attr('class', 'period-volume') // eslint-disable-line no-confusing-arrow
-
-  candleChart.append('rect')
-    .attr('class', 'overlay')
-    .attr('width', drawParams.drawableWidth)
-    .attr('height', drawParams.containerHeight)
-    .on('mousemove', () => this.props.updateHoveredPrice(drawParams.yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => this.props.updateHoveredPrice(null))
-    .on('click', () => {
-      const mouse = d3.mouse(d3.select('#outcome_candlestick').node())
-      const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
-
-      if (
-        orderPrice > this.props.marketMin &&
-        orderPrice < this.props.marketMax
-      ) {
-        this.props.updateSeletedOrderProperties({
-          selectedNav: orderPrice > this.props.orderBookKeys.mid ? BUY : SELL,
-          orderPrice,
-        })
-      }
-    })
+    .attr('class', 'period-volume')
 }
 
 function drawXAxisLabels(options) {
@@ -440,33 +419,13 @@ function drawXAxisLabels(options) {
     .select('path').remove()
 }
 
-function attachHoverHandler(options) {
-  const {
-    priceTimeSeries,
-    fixedPrecision,
-    candleChart,
-    drawParams,
-  } = options
+function drawCrosshairs(options) {
+  const { candleTicks } = options
 
-  candleChart.selectAll('rect.hover')
-    .data(priceTimeSeries)
-    .enter().append('rect')
-    .attr('x', d => drawParams.xScale(d.period))
-    .attr('y', 0)
-    .attr('height', drawParams.clientHeight - drawParams.chartDim.bottom)
-    .attr('width', d => (0.5 * (drawParams.width - (2 * drawParams.chartDim.stick))) / priceTimeSeries.length)
-    .attr('class', 'period-hover')
-    .on('mouseover', d => this.props.updateHoveredPeriod(d))
-    .on('mousemove', () => this.props.updateHoveredPrice(drawParams.yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => {
-      this.props.updateHoveredPeriod({})
-      this.props.updateHoveredPrice(null)
-    })
-
-  candleChart.append('text')
+  candleTicks.append('text')
     .attr('id', 'hovered_candlestick_price_label')
 
-  const crosshair = candleChart.append('g')
+  const crosshair = candleTicks.append('g')
     .attr('id', 'candlestick_crosshairs')
     .attr('class', 'line')
     .attr('style', { display: 'none' })
@@ -474,6 +433,54 @@ function attachHoverHandler(options) {
   crosshair.append('line')
     .attr('id', 'candlestick_crosshairY')
     .attr('class', 'crosshair')
+}
+
+function attachHoverClickHandlers(options) {
+  const {
+    updateHoveredPeriod,
+    updateHoveredPrice,
+    priceTimeSeries,
+    fixedPrecision,
+    candleChart,
+    drawParams,
+  } = options
+
+  candleChart.append('rect')
+    .attr('class', 'overlay')
+    .attr('width', drawParams.drawableWidth)
+    .attr('height', drawParams.containerHeight)
+    .on('mousemove', () => updateHoveredPrice(drawParams.yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
+    .on('mouseout', () => updateHoveredPrice(null))
+    .on('click', () => {
+      const mouse = d3.mouse(d3.select('#candlestick_chart').node())
+      const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
+
+      if (
+        orderPrice > this.props.marketMin &&
+        orderPrice < this.props.marketMax
+      ) {
+        this.props.updateSeletedOrderProperties({
+          selectedNav: orderPrice > this.props.orderBookKeys.mid ? BUY : SELL,
+          orderPrice,
+        })
+      }
+    })
+
+  candleChart.selectAll('rect.hover')
+    .data(priceTimeSeries)
+    .enter().append('rect')
+    .attr('id', 'testing')
+    .attr('x', d => drawParams.xScale(d.period) - (drawParams.candleDim.gap * 0.5))
+    .attr('y', 0)
+    .attr('height', drawParams.containerHeight - drawParams.chartDim.bottom)
+    .attr('width', drawParams.candleDim.width + drawParams.candleDim.gap)
+    .attr('class', 'period-hover')
+    .on('mouseover', d => updateHoveredPeriod(d))
+    .on('mousemove', () => updateHoveredPrice(drawParams.yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
+    .on('mouseout', () => {
+      updateHoveredPeriod({})
+      updateHoveredPrice(null)
+    })
 }
 
 function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
