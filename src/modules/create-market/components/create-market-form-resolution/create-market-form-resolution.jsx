@@ -183,7 +183,7 @@ export default class CreateMarketResolution extends Component {
                   />
                 }
                 { designatedReporterError &&
-                  <span className={StylesForm.CreateMarketForm__error}>
+                  <span className={StylesForm['CreateMarketForm__error--bottom']}>
                     {InputErrorIcon}{
                       p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
                     }
