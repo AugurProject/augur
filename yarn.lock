@@ -484,9 +484,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-core@0.12.2-0:
-  version "0.12.2-0"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.2-0.tgz#d4d36133dbf5d83f602c1f132bc9481b952bd6e3"
+augur-core@0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.2.tgz#b39d9bf42485ac84eb82311e7d9b80711e17b6dd"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -514,13 +514,13 @@ augur-core@0.12.2-0:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.8.6-1:
-  version "4.8.6-1"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.6-1.tgz#183a79c6d596380b81cfd19e918ec403e2f2f05a"
+augur.js@4.8.6:
+  version "4.8.6"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.8.6.tgz#1ff31af85269d912288aad29a8a8e0a9ca207151"
   dependencies:
     "@types/bignumber.js" "4.0.3"
     async "1.5.2"
-    augur-core "0.12.2-0"
+    augur-core "0.12.2"
     bignumber.js "2.3.0"
     clone "2.1.1"
     columnify "1.5.4"
@@ -531,8 +531,9 @@ augur.js@4.8.6-1:
     keccak "1.2.0"
     lodash.assign "4.2.0"
     lodash.isequal "4.5.0"
-    options-parser "^0.4.0"
+    options-parser "0.4.0"
     parrotsay-api "0.1.1"
+    rimraf "2.6.2"
     secure-random "1.1.1"
     speedomatic "^2.1.3"
     uuid "3.0.0"
@@ -6806,7 +6807,7 @@ optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
-options-parser@^0.4.0:
+options-parser@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/options-parser/-/options-parser-0.4.0.tgz#9ca1e7996a62399f40e63d7fb7932f1412f10b95"
 
