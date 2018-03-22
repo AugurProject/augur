@@ -262,7 +262,7 @@ export default class CreateMarketLiquidity extends Component {
       marketCreatorFeeRate: this.props.newMarket.settlementFee,
       reportingFeeRate: 0,
       shareBalances,
-      singleOutcomeOrderBook: this.props.newMarket.orderBook[outcome],
+      singleOutcomeOrderBook: this.props.newMarket.orderBook[outcome] || {},
     }
     const action = augur.trading.simulateTrade(orderInfo)
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
