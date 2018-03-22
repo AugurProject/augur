@@ -1,9 +1,9 @@
 
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { estimateSubmitNewMarket, __RewireAPI__ as estimateSubmitNewMarketReqireAPI } from 'modules/reporting/actions/estimate-submit-initial-report'
+import { estimateSubmitNewMarket, __RewireAPI__ as estimateSubmitNewMarketReqireAPI } from 'modules/create-market/actions/estimate-submit-new-market'
 
-describe.only(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
+describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
   const mockStore = configureMockStore([thunk])
   const newMarket = { properties: 'value' }
   const stateData = {
@@ -51,23 +51,24 @@ describe.only(`modules/create-market/actions/estimate-submit-new-market.js`, () 
   })
 
   test({
-    desciption: `should call callback with success and gas cost value`,
+    description: 'should call callback with success and gas cost value',
     state: stateData,
     buildCreateMarket: buildCreateMarketSuccess,
     assertions: (store) => {
-      store.dispatch(estimateSubmitNewMarket(newMarket, (value) => {
+      store.dispatch(estimateSubmitNewMarket(newMarket, (err, value) => {
+        assert.deepEqual(err, null, `Error value not as expected`)
         assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
       }))
     },
   })
 
   test({
-    desciption: `should call callback with failure and gas cost value`,
+    description: 'should call callback with failure and gas cost value',
     state: stateData,
     buildCreateMarket: buildCreateMarketFailure,
     assertions: (store) => {
-      store.dispatch(estimateSubmitNewMarket(newMarket, (value) => {
-        assert.deepEqual(value, 'Error', `Didn't value as expected`)
+      store.dispatch(estimateSubmitNewMarket(newMarket, (err, value) => {
+        assert.deepEqual(err, 'Error', `Didn't value as expected`)
       }))
     },
   })
