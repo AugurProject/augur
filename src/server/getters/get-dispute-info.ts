@@ -105,14 +105,18 @@ function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: Async
             .whereIn("marketId", marketIds)
         });
     })
-    .asCallback(callback);
+    .asCallback((err: Error|null, results: Array<StakeRow>) => {
+      if (err) return callback(err);
+
+      callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]));
+    });
 }
 
 function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean, callback: AsyncCallback) {
   // select crowdsourcers.marketId, crowdsourcers.payoutId, crowdsourcers.completed, sum(balances.balance) from crowdsourcers JOIN balances ON balances.token = crowdsourcers.crowdsourcerId;
  
   let query = db("crowdsourcers")
-    .select(["crowdsourcers.marketId", "crowdsourcers.payoutId", "balances.balance"])
+    .select(["crowdsourcers.marketId", "crowdsourcers.payoutId", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .whereIn("marketId", marketIds)
     .where("balances.owner", account || "");
@@ -126,7 +130,7 @@ function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|
   query.asCallback((err: Error|null, results: Array<StakeRow>) => {
     if (err) return callback(err);
 
-    callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["balance"]));
+    callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]));
   });
 }
 
