@@ -20,7 +20,7 @@ const PATHS = {
   TEST: path.resolve(__dirname, 'test'),
 };
 
-var gitRevisionPlugin = new GitRevisionPlugin()
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 // COMMON CONFIG
 let config = {
@@ -51,7 +51,7 @@ let config = {
       '.jsx'
     ],
     alias: {
-      // NOTE --  these aliases are utilized during build + linting, 
+      // NOTE --  these aliases are utilized during build + linting,
       //          only testing utilizes the aliases w/in .babelrc
       src: PATHS.APP,
       config: path.resolve(PATHS.APP, 'config'),

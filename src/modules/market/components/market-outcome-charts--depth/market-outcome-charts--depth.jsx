@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
-import { isEqual, isEmpty } from 'lodash'
+import { isEqual } from 'lodash'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS } from 'modules/order-book/constants/order-book-order-types'
@@ -104,10 +104,6 @@ export default class MarketOutcomeDepth extends Component {
 
       const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
-      // Ensure yDomain always has midmarket price at the center
-      // TODO -- can def clean this up...
-      // Can only use odd numbered intervals so midpoint is always centered
-      const intervals = 5
       const allowedFloat = 2 // TODO -- set this to the precision
 
       // Determine bounding diff

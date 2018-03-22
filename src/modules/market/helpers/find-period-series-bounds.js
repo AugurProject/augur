@@ -1,14 +1,14 @@
 import { isEmpty } from 'lodash'
 
-export default function findPeriodSeriesBounds(priceTimeSeries = []) {
+export default function findPeriodSeriesBounds(periodTimeSeries = []) {
   const DEFAULT_BOUNDS = {
     min: null,
     max: null,
   }
 
-  if (isEmpty(priceTimeSeries)) return DEFAULT_BOUNDS
+  if (isEmpty(periodTimeSeries)) return DEFAULT_BOUNDS
 
-  return (priceTimeSeries).reduce((p, item, i) => {
+  return (periodTimeSeries).reduce((p, item, i) => {
     const currentItem = item
 
     if (i === 0) {
