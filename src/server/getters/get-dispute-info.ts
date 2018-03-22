@@ -25,8 +25,8 @@ interface DisputesResult {
 
 interface StakeRow extends Payout<BigNumber> {
   marketId: Address;
-  amountStaked: BigNumber;
   payoutId: number;
+  amountStaked: BigNumber;
 }
 
 interface ActiveCrowdsourcer extends StakeRow {
@@ -86,13 +86,12 @@ function getCurrentStakes(db: Knex, marketIds: Array<Address>, callback: AsyncCa
   .whereIn("crowdsourcers.marketId", marketIds)
   .asCallback((err: Error|null, results: Array<ActiveCrowdsourcer>) => {
     if (err) return callback(err);
-    console.log(results);
     callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked", "size"]));
   });
 }
 
 function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: AsyncCallback) {
-  db.select(["marketId", "payoutId", "amountStaked"])
+  db.select("marketId", "payoutId", "amountStaked")
     .from((builder: QueryBuilder) => {
       return builder
         .from("crowdsourcers")
@@ -102,15 +101,11 @@ function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: Async
         .union((builder: QueryBuilder) => {
           return builder
             .from("initial_reports")
-            .select(["marketId", "payoutId", "amountStaked"])
+            .select("marketId", "payoutId", "amountStaked")
             .whereIn("marketId", marketIds)
         });
     })
-    .asCallback((err: Error|null, results: Array<StakeRow>) => {
-      if (err) return callback(err);
-
-      callback(null, _.groupBy(results, row => _.values(_.pick(row, ["marketId", "payoutId"]))));
-    });
+    .asCallback(callback);
 }
 
 function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean, callback: AsyncCallback) {
@@ -140,6 +135,7 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
 }
 
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo<string>|null>) => void): void {
+  console.log("----------------------------\nGet Dispute Info\n------------------------");
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
 
 
@@ -155,7 +151,10 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
     if (err) return callback(err);
     if (!stakeResults.markets) return callback(new Error("Could not retrieve markets"));
 
-    console.log("ACCOUNT STAKES COMPLETED (unfiltered)", stakeResults.accountStakesCompleted);
+    console.log("ACCOUNT STAKES COMPLETED (unfiltered)");
+    _.map(stakeResults.accountStakesCompleted, console.dir);
+    console.log("ACCOUNT STAKES CURRENT   (unfiltered)");
+    _.map(stakeResults.accountStakesCurrent, console.dir);
 
     const disputeDetailsByMarket: Array<DisputesResult> =
       _.map(marketIds, (marketId: Address): DisputesResult => {
@@ -175,22 +174,29 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
 }
 
 function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<string>|null {
+  console.log("----------------------------\nReshaping Market Row\n------------------------");
   const marketRow = stakeRows.markets[0];
   if (marketRow == null) return null;
-  const totalCompletedStakeOnAllPayouts = _.reduce(stakeRows.stakesCompleted,
-                                                   (result: BigNumber, completedStake: StakeRow): BigNumber => result.plus(completedStake.amountStaked),
-                                                   new BigNumber(0)
-                                                  );
+  const totalCompletedStakeOnAllPayouts = _.reduce(
+    stakeRows.stakesCompleted,
+    (result: BigNumber, completedStake: StakeRow): BigNumber => result.plus(completedStake.amountStaked),
+    ZERO
+  );
 
-  console.log("STAKEROWS: ", stakeRows.stakesCurrent);
+  console.log("TOTAL COMPLETED STAKE: ", totalCompletedStakeOnAllPayouts.toFixed());
+
   const stakeCompletedByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.stakesCompleted, "payoutId");
   const stakeCurrentByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.stakesCurrent, "payoutId");
   const accountStakeCompletedByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCompleted, "payoutId");
   const accountStakeCurrentByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCurrent, "payoutId");
 
-  console.log("ACCOUNT STAKES COMPLETED: ", stakeRows.accountStakesCompleted);
-  console.log("ACCOUNT STAKES COMPLETED BY PAYOUT: ", accountStakeCompletedByPayout);
+  console.log("ACCOUNT STAKES COMPLETED: ");
+  _.map(stakeRows.accountStakesCompleted, console.dir);
+  console.log("ACCOUNT STAKES COMPLETED BY PAYOUT: ");
+  _.map(accountStakeCompletedByPayout, console.dir);
+
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow<BigNumber>): StakeDetails<BigNumber> => {
+    console.log(`   ---------- PROCESSING PAYOUT ID ${payout.payoutId} ----------- `);
     const stakeCompletedRow = stakeCompletedByPayout[payout.payoutId];
     const stakeCurrentRow = stakeCurrentByPayout[payout.payoutId];
     const accountStakeCompletedRow = accountStakeCompletedByPayout[payout.payoutId];
@@ -201,7 +207,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
 
     let currentAmounts: StakeSizes<BigNumber> = {};
     console.log("ACCOUNT STAKE COMPLETED ROW: ", accountStakeCompletedRow);
-    const accountStakeCompleted = !accountStakeCompletedRow ? ZERO : accountStakeCompletedRow.amountStaked;
+    const accountStakeCompleted = accountStakeCompletedRow ? accountStakeCompletedRow.amountStaked : ZERO;
     if (payout.tentativeWinning !== 1 && isActiveMarketState(marketRow.reportingState)) {
       let bondSizeCurrent: BigNumber;
       let stakeCurrent: BigNumber;
@@ -213,7 +219,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
       } else {
           bondSizeCurrent = stakeCurrentRow.size;
           stakeCurrent = stakeCurrentRow.amountStaked;
-          accountStakeCurrent = !accountStakeCurrentRow ? ZERO : accountStakeCurrentRow.amountStaked;
+          accountStakeCurrent = accountStakeCurrentRow ? accountStakeCurrentRow.amountStaked : ZERO;
       }
       currentAmounts = {
         bondSizeCurrent: bondSizeCurrent,
