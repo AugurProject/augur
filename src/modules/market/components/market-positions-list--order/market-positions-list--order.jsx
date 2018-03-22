@@ -51,7 +51,7 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
-    // if (p.order.outcomeId === "1" && p.order.type === 'sell') console.log('or', p.order);
+
     return (
       <ul
         ref={(order) => { this.order = order }}
