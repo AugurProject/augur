@@ -247,8 +247,8 @@ export function formatNumber(num, opts = {
     if (blankZero) return formatBlank()
   }
 
-  const decimalsValue = TEN.exponentiatedBy(decimals);
-  const decimalsRoundedValue = TEN.exponentiatedBy(decimalsRounded);
+  const decimalsValue = TEN.exponentiatedBy(decimals)
+  const decimalsRoundedValue = TEN.exponentiatedBy(decimalsRounded)
 
   let roundingMode
   if (roundDown) {

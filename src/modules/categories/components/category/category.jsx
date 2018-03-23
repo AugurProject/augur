@@ -41,7 +41,7 @@ export default class Category extends Component {
     const s = this.state
 
     const isNullCategory = p.category === 'null-category' && p.popularity === 0
-    const roundedPop = BigNumber(p.popularity).integerValue(BigNumber.ROUND_HALF_EVEN);
+    const roundedPop = BigNumber(p.popularity).integerValue(BigNumber.ROUND_HALF_EVEN)
     let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
     if (roundedPop > 1000) {
       const thousands = roundedPop / 1000
