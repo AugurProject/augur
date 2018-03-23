@@ -20,6 +20,7 @@ export default class CreateMarketForm extends Component {
     categories: PropTypes.array.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
+    availableRep: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
     submitNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -175,6 +176,8 @@ export default class CreateMarketForm extends Component {
               <CreateMarketReview
                 meta={p.meta}
                 newMarket={p.newMarket}
+                availableEth={p.availableEth}
+                availableRep={p.availableRep}
                 universe={p.universe}
               />
             }
