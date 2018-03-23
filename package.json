@@ -43,7 +43,6 @@
   "homepage": "https://github.com/AugurProject/augur-node#readme",
   "dependencies": {
     "@types/async": "2.0.43",
-    "@types/bignumber.js": "4.0.3",
     "@types/express": "4.11.0",
     "@types/knex": "0.0.61",
     "@types/lodash": "4.14.77",
@@ -53,7 +52,7 @@
     "@types/ws": "3.0.2",
     "async": "1.5.2",
     "augur.js": "4.8.6",
-    "bignumber.js": "4.1.0",
+    "bignumber.js": "6.0.0",
     "express": "4.16.2",
     "knex": "0.13.0",
     "lodash.isnull": "3.0.0",
