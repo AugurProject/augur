@@ -28,6 +28,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "marketStateId" integer,
       "shortDescription" text NOT NULL,
       "longDescription" text,
+      "scalarDenomination" text,
       "designatedReporter" varchar(66) NOT NULL,
       "designatedReportStake" VARCHAR(255),
       "resolutionSource" text,

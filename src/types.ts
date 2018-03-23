@@ -64,6 +64,7 @@ export interface MarketCreatedLogExtraInfo {
   outcomeNames?: Array<string|number|null>;
   description?: string;
   longDescription?: string|null;
+  _scalarDenomination?: string|null;
   resolutionSource?: string|null;
   marketType?: string;
 }
@@ -159,6 +160,7 @@ export interface MarketsRow<BigNumberType> {
   reportingState?: ReportingState|null;
   shortDescription: string;
   longDescription?: string|null;
+  scalarDenomination?: string|null;
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
@@ -324,7 +326,8 @@ export interface UIMarketInfo<BigNumberType> {
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
   description: string;
-  extraInfo?: string|null;
+  details?: string|null;
+  scalarDenomination?: string|null;
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
@@ -464,14 +467,14 @@ export interface UIReport<BigNumberType> {
 }
 
 export interface FeeWindowRow {
-    feeWindow: Address;
-    feeWindowId: number;
-    startBlockNumber: number;
-    universe: Address;
-    startTime: number;
-    endBlockNumber: null|number;
-    endTime: number;
-    fees: number|string;
+  feeWindow: Address;
+  feeWindowId: number;
+  startBlockNumber: number;
+  universe: Address;
+  startTime: number;
+  endBlockNumber: null|number;
+  endTime: number;
+  fees: number|string;
 }
 
 export interface InitialReportersRow<BigNumberType> {
@@ -507,4 +510,18 @@ export interface UnclaimedFeeWindows<BigNumberType> {
 
 export interface UIInitialReporters<BigNumberType> {
   [initialReporter: string]: InitialReportersRow<BigNumberType>;
+}
+
+export interface ForkMigrationTotalsRow extends Payout {
+  universe: Address;
+  repTotal: number;
+}
+
+export interface UIForkMigrationTotalsRow extends NormalizedPayout {
+  universe: Address;
+  repTotal: number;
+}
+
+export interface UIForkMigrationTotals {
+  [universe: string]: UIForkMigrationTotalsRow;
 }

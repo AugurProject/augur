@@ -34,15 +34,26 @@ describe("blockchain/log-processors/universe-created", () => {
       log: {
         childUniverse: "0x000000000000000000000000000000000000000c",
         parentUniverse: "0x000000000000000000000000000000000000000b",
+        payoutNumerators: [0, 10000],
+        invalid: false,
+      },
+      augur: {
+        api: {
+          Universe: {
+            getReputationToken: (args, callback) => {
+              return callback(null, "0x0000000000000000000000000000000000000222");
+            },
+          },
+        },
       },
     },
     assertions: {
       onAdded: (err, records) => {
         assert.isNull(err);
-        assert.deepEqual(records, {
-          universe: "0x000000000000000000000000000000000000000c",
-          parentUniverse: "0x000000000000000000000000000000000000000b",
-        });
+        assert.equal(records.universe, "0x000000000000000000000000000000000000000c");
+        assert.equal(records.parentUniverse, "0x000000000000000000000000000000000000000b");
+        assert.equal(records.reputationToken, "0x0000000000000000000000000000000000000222");
+        assert.isNumber(records.payoutId);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
