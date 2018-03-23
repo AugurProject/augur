@@ -15,7 +15,7 @@ export ETHEREUM_PRIVATE_KEY=${ETHEREUM_PRIVATE_KEY:-fae42052f82bed612a724fec3632
 
 CONTAINER_NAME="geth-node";
 if $USE_POPULATED_CONTRACTS; then
-  DOCKER_IMAGE="augurproject/dev-pop-geth:core-$(npm view augur-core version)";
+  DOCKER_IMAGE="augurproject/dev-pop-geth:latest";
 else
   DOCKER_IMAGE="augurproject/dev-node-geth:latest";
 fi
