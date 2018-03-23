@@ -13,7 +13,7 @@ export function processOrderCanceledLog(db: Knex, augur: Augur, log: FormattedEv
     if (err) return callback(err);
     db.first("marketId", "outcome").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcome): void => {
       if (err) return callback(err);
-      augurEmitter.emit("OrderCanceled", Object.assign({}, ordersRow, log));
+      augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
       callback(null);
     });
   });
@@ -24,7 +24,7 @@ export function processOrderCanceledLogRemoval(db: Knex, augur: Augur, log: Form
     if (err) return callback(err);
     db.first("marketId", "outcome").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcome): void => {
       if (err) return callback(err);
-      augurEmitter.emit("OrderCanceled", Object.assign({}, ordersRow, log));
+      augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
       callback(null);
     });
   });

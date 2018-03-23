@@ -147,6 +147,5 @@ export function processDisputeCrowdsourcerRedeemedLog(db: Knex, augur: Augur, lo
 export function processDisputeCrowdsourcerRedeemedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   console.log("TODO: DisputeCrowdsourcerRedeemed removal");
   console.log(log);
-  augurEmitter.emit("DisputeCrowdsourcerRedeemed", log);
   callback(null);
 }
