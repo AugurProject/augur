@@ -18,7 +18,7 @@
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test",
     "build": "tsc",
-    "nuke": "rm -f package-lock.json; rm -f yarn-lock.json; rm -rf node_modules; rm -rf build && npm run clean",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; rm -rf build && npm run clean",
     "migrate": "node ./node_modules/knex/bin/cli.js migrate:latest --env build",
     "migrate_pg": "node ./node_modules/knex/bin/cli.js migrate:latest --env build_postgres",
     "seed": "node ./node_modules/knex/bin/cli.js seed:run --env build",
