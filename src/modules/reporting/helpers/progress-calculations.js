@@ -2,46 +2,64 @@ import { formatAttoRep } from 'utils/format-number'
 import BigNumber from 'bignumber.js'
 import { augur } from 'services/augurjs'
 
+
+const ONE = new BigNumber(1);
+const ONE_HUNDRED = new BigNumber(100);
+
+// Percentages are ALWAYS in number range so results are returned as number
 export const calculatePercentage = (size, totalStake) => {
-  if (size === 0) return 0
   if (size === null || totalStake === null) return 0
   if (typeof size === 'undefined' || typeof totalStake === 'undefined') return 0
-  const BNSize = new BigNumber(size)
-  const BNtotalStake = new BigNumber(totalStake)
-  if (BNSize.lt(0) || BNtotalStake.lt(0)) return 0
-  if (BNtotalStake.isEqualTo(0)) return 0
-  const ratio = BNSize.minus(BNtotalStake).dividedBy(BNSize)
-  return (new BigNumber(1).minus(ratio).times(new BigNumber(100))).integerValue().toNumber()
+
+  // NB: Remove whence paramaters are converted outside
+  size = new BigNumber(size, 10);
+  totalStake = new BigNumber(totalStake, 10);
+  // NB: Remove whence paramaters are converted outside
+
+  if (size.isEqualTo(0)) return 0
+  if (size.lt(0) || totalStake.lt(0)) return 0
+  if (totalStake.isEqualTo(0)) return 0
+
+  const ratio = size.minus(totalStake).dividedBy(size)
+  return (ONE.minus(ratio).times(ONE_HUNDRED)).integerValue().toNumber()
 }
 
 export const calculateNonAccountPercentage = (size, stakeCurrent, accountStakeCurrent) => {
-  const result = calculatePercentage(size, new BigNumber(stakeCurrent).minus(new BigNumber(accountStakeCurrent)))
-  return result
+  // NB: Remove whence paramaters are converted outside
+  stakeCurrent = new BigNumber(stakeCurrent, 10);
+  accountStakeCurrent = new BigNumber(accountStakeCurrent, 10);
+  // NB: Remove whence paramaters are converted outside
+
+  return calculatePercentage(size, stakeCurrent.minus(accountStakeCurrent))
 }
 
 export const calculateAddedStakePercentage = (size, accountStake, addedStake) => {
-  const attoRep = convertRepToAttoRep(addedStake)
-  const addedAccountStake = new BigNumber(accountStake).plus(new BigNumber(attoRep))
-  const result = calculatePercentage(size, new BigNumber(addedAccountStake).toNumber())
-  return result
+  // NB: Remove whence paramaters are converted outside
+  accountStake = new BigNumber(accountStake, 10);
+  addedStake = new BigNumber(addedStake, 10);
+  // NB: Remove whence paramaters are converted outside
+
+  return calculatePercentage(size, accountStake.plus(convertRepToAttoRep(addedStake)))
 }
 
 export const calculateTentativeRemainingRep = (size, totalStake, tentativeStake) => {
-  const attoRep = convertRepToAttoRep(tentativeStake)
-  const result = calculateRemainingValue(size, new BigNumber(totalStake).plus(new BigNumber(attoRep)).toNumber())
-  if (result <= 0) return '0'
+  // NB: Remove whence paramaters are converted outside
+  totalStake = new BigNumber(totalStake, 10);
+  tentativeStake = new BigNumber(tentativeStake, 10);
+  // NB: Remove whence paramaters are converted outside
+
+  const result = calculateRemainingValue(size, totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber();
+  if (result < 0) return '0'
+
   return formatAttoRep(result, { decimals: 4, denomination: ' REP' }).formatted
 }
 
 const calculateRemainingValue = (total, portion) => {
-  const result = new BigNumber(total).minus(new BigNumber(portion)).toNumber()
-  return result
+  return total.minus(portion);
 }
 
 const convertRepToAttoRep = (num) => {
-  if (!num || num === 0 || isNaN(num)) return 0
-  const { ETHER } = augur.rpc.constants
-  const result = new BigNumber(num).times(ETHER).toNumber()
-  return result
+  if (!num || num.isEqualTo(0) ) return augur.constants.ZERO
+  return num.times(augur.rpc.constants.ETHER)
 }
 
