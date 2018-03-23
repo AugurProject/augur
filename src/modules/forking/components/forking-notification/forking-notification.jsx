@@ -18,7 +18,9 @@ class ForkingNotification extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.location !== this.props.location) {
-      this.state.isExpanded = false
+      this.setState({
+        isExpanded: false,
+      })
     }
   }
 

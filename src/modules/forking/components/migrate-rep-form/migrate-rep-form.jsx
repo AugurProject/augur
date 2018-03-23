@@ -52,13 +52,14 @@ export default class MigrateRepForm extends Component {
     if (this.props.repAmount) this.state.inputRepAmount = this.props.repAmount.toString()
 
     this.componentWillReceiveProps(this.props)
-
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
       if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
-        this.state.inputSelectedOutcome = nextProps.selectedOutcome
+        this.setState({
+          inputSelectedOutcome: nextProps.selectedOutcome,
+        })
       }
     }
   }
@@ -96,8 +97,10 @@ export default class MigrateRepForm extends Component {
 
     MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
 
-    this.state.inputSelectedOutcome = ''
-    this.state.maxRep = this.calculateMaxRep(selectedOutcome)
+    this.setState({
+      inputSelectedOutcome: '',
+      maxRep: this.calculateMaxRep(selectedOutcome),
+    })
 
     this.props.updateState({
       validations: updatedValidations,
@@ -138,9 +141,10 @@ export default class MigrateRepForm extends Component {
 
     MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
 
-    this.state.inputSelectedOutcome = value
-
-    this.state.maxRep = this.calculateMaxRep(value)
+    this.setState({
+      inputSelectedOutcome: value,
+      maxRep: this.calculateMaxRep(value),
+    })
 
     this.props.updateState({
       validations: updatedValidations,
