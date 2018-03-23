@@ -217,12 +217,8 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           reportingRoundsCompleted: 0,
           reportingState: "DESIGNATED_REPORTING",
           resolutionSource: "http://www.trusted-third-party.com",
-<<<<<<< HEAD
-          sharesOutstanding: new BigNumber("0", 10),
-=======
           scalarDenomination: null,
-          sharesOutstanding: 0,
->>>>>>> bn6
+          sharesOutstanding: new BigNumber("0", 10),
           shortDescription: "This is a categorical test market created by b0b.",
           tag1: "test tag 1",
           tag2: "test tag 2",
