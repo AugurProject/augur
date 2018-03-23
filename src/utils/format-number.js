@@ -287,9 +287,7 @@ export function formatNumber(num, opts = {
     o.formatted = (bigUnitPostfix)
       ? addBigUnitPostfix(value, o.formattedValue)
       : addCommas(o.formattedValue)
-    if (bigUnitPostfix && value.gt(new BigNumber('10000'))) {
-      o.fullPrecision = value.toFixed()
-    }
+    o.fullPrecision = value.toFixed()
     o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue)
     o.rounded = (bigUnitPostfix)
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
