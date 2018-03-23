@@ -14,7 +14,7 @@ const getOrderBookSeries = memoize((orderBook) => {
     orderBook[type].forEach((order) => {
       const matchedPriceIndex = p[type].findIndex(existing => existing[0] === order.price.value)
 
-      totalQuantity = totalQuantity.plus(order.shares.value)
+      totalQuantity = totalQuantity.plus(new BigNumber(order.shares.value.toString()))
 
       if (matchedPriceIndex > -1) {
         p[type][matchedPriceIndex][1] = totalQuantity.toNumber()

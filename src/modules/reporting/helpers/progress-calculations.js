@@ -5,7 +5,7 @@ import { augur } from 'services/augurjs'
 export const calculatePercentage = (size, totalStake) => {
   if (size === 0) return 0
   if (size === null || totalStake === null) return 0
-  if (typeof size === "undefined" || typeof totalStake === "undefined") return 0
+  if (typeof size === 'undefined' || typeof totalStake === 'undefined') return 0
   const BNSize = new BigNumber(size)
   const BNtotalStake = new BigNumber(totalStake)
   if (BNSize.lt(0) || BNtotalStake.lt(0)) return 0
