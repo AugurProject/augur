@@ -18,7 +18,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
           if (!tradesRow) return callback(new Error("trade not found"));
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
           let amount = new BigNumber(calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!)), 10);
-          if (isIncrease !== true) amount = amount.neg();
+          if (isIncrease !== true) amount = amount.negated();
           db.raw(`UPDATE markets SET volume = volume + :amount WHERE "marketId" = :marketId`, { amount: amount.toFixed(), marketId }).asCallback((err: Error|null): void => {
             if (err) return callback(err);
             db.raw(`UPDATE outcomes SET volume = volume + :amount WHERE "marketId" = :marketId AND outcome = :outcome`, { amount: amount.toFixed(), marketId, outcome }).asCallback((err: Error|null): void => {

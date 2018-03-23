@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import { PRECISION } from "../constants";
 
-export function roundToPrecision(value: string|number, minimumValue: string|number, round?: string, roundingMode?: number): string {
+export function roundToPrecision(value: string|number, minimumValue: string|number, round?: string, roundingMode?: 0|1|2|3|4|5|6|7|8): string {
   const bnValue: BigNumber = new BigNumber(value, 10);
   const bnMinimumValue: BigNumber = new BigNumber(minimumValue, 10);
   const bnAbsValue: BigNumber = bnValue.abs();
