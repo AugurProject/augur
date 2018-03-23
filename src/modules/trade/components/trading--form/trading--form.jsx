@@ -86,7 +86,7 @@ class MarketTradingForm extends Component {
       // limitPrice is being defaulted and we had no value in the input box
       const priceChange = (prevTradePrice === null && nextTradePrice !== null)
       // limitPrice is being updated in the background, but we have no limitPrice input set.
-      const forcePriceUpdate = (prevTradePrice === nextTradePrice) && (nextTradePrice !== null) && isNaN(new BigNumber(this.state[this.INPUT_TYPES.PRICE])) && isNaN(new BigNumber(nextProps[this.INPUT_TYPES.PRICE]))
+      const forcePriceUpdate = (prevTradePrice === nextTradePrice) && (nextTradePrice !== null) && isNaN(this.state[this.INPUT_TYPES.PRICE] && new BigNumber(this.state[this.INPUT_TYPES.PRICE])) && isNaN(nextProps[this.INPUT_TYPES.PRICE] && new BigNumber(nextProps[this.INPUT_TYPES.PRICE]))
 
       if ((priceChange || forcePriceUpdate)) {
         // if limitPrice input hasn't been changed and we have defaulted the limitPrice, populate the field so as to not confuse the user as to where estimates are coming from.
@@ -116,7 +116,7 @@ class MarketTradingForm extends Component {
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
-    if (value.lt(this.props.minPrice) || value.gt(this.props.maxPrice)) {
+    if (value && (value.lt(this.props.minPrice) || value.gt(this.props.maxPrice))) {
       errorCount += 1
       passedTest = false
       errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${this.props.minPrice} - ${this.props.maxPrice}`)
@@ -133,13 +133,13 @@ class MarketTradingForm extends Component {
     let isOrderValid = true
     let errorCount = 0
 
-    let value = new BigNumber(order[this.INPUT_TYPES.QUANTITY])
+    let value = order[this.INPUT_TYPES.QUANTITY] && new BigNumber(order[this.INPUT_TYPES.QUANTITY])
     const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(value, errors, isOrderValid)
     isOrderValid = quantityValid
     errorCount += quantityErrorCount
     errors = { ...errors, ...quantityErrors }
 
-    value = new BigNumber(order[this.INPUT_TYPES.PRICE])
+    value = order[this.INPUT_TYPES.PRICE] && new BigNumber(order[this.INPUT_TYPES.PRICE])
     const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(value, errors, isOrderValid)
     isOrderValid = priceValid
     errorCount += priceErrorCount

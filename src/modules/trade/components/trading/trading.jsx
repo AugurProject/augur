@@ -71,7 +71,7 @@ class MarketTrading extends Component {
     const s = this.state
     const p = this.props
 
-    const hasFunds = p.availableFunds.gt(0)
+    const hasFunds = p.availableFunds && p.availableFunds.gt(0)
     const hasSelectedOutcome = s.selectedOutcome !== null
 
     let initialMessage = ''
