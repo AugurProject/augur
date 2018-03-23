@@ -4,9 +4,9 @@ import * as _ from "lodash";
 import { Address } from "../../types";
 
 interface FeeDetails {
-  ethFees: string,
-  repToReclaim: string,
-  repEarned: string,
+  ethFees: string;
+  repToReclaim: string;
+  repEarned: string;
 }
 
 export function getReportingFees(db: Knex, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
