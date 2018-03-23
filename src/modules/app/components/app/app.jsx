@@ -423,6 +423,7 @@ export default class AppView extends Component {
               unseenCount={unseenCount}
               toggleNotifications={this.toggleNotifications}
               stats={p.coreStats}
+              currentBasePath={this.state.currentBasePath}
             />
           </section>
           <section className={Styles.Main}>
