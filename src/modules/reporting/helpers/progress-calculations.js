@@ -5,12 +5,13 @@ import { augur } from 'services/augurjs'
 export const calculatePercentage = (size, totalStake) => {
   if (size === 0) return 0
   if (size === null || totalStake === null) return 0
+  if (typeof size === "undefined" || typeof totalStake === "undefined") return 0
   const BNSize = new BigNumber(size)
   const BNtotalStake = new BigNumber(totalStake)
   if (BNSize.lt(0) || BNtotalStake.lt(0)) return 0
-  if (BNtotalStake.equals(0)) return 0
+  if (BNtotalStake.isEqualTo(0)) return 0
   const ratio = BNSize.minus(BNtotalStake).dividedBy(BNSize)
-  return (new BigNumber(1).minus(ratio).times(new BigNumber(100))).round(0).toNumber()
+  return (new BigNumber(1).minus(ratio).times(new BigNumber(100))).integerValue().toNumber()
 }
 
 export const calculateNonAccountPercentage = (size, stakeCurrent, accountStakeCurrent) => {
@@ -40,7 +41,7 @@ const calculateRemainingValue = (total, portion) => {
 const convertRepToAttoRep = (num) => {
   if (!num || num === 0 || isNaN(num)) return 0
   const { ETHER } = augur.rpc.constants
-  const result = new BigNumber(num).mul(ETHER).toNumber()
+  const result = new BigNumber(num).times(ETHER).toNumber()
   return result
 }
 

@@ -613,7 +613,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true }),
+                change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
               },
             ],
           },
@@ -643,7 +643,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true }),
+                change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
               },
             ],
           },

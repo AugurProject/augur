@@ -247,19 +247,15 @@ export function formatNumber(num, opts = {
     if (blankZero) return formatBlank()
   }
 
-  const decimalsValue = TEN.toPower(new BigNumber(decimals, 10))
-  const decimalsRoundedValue = TEN.toPower(new BigNumber(decimalsRounded, 10))
+  const decimalsValue = TEN.exponentiatedBy(decimals);
+  const decimalsRoundedValue = TEN.exponentiatedBy(decimalsRounded);
 
-  let round
   let roundingMode
   if (roundDown) {
-    round = 'floor'
     roundingMode = BigNumber.ROUND_DOWN
   } else if (roundUp) {
-    round = 'ceil'
     roundingMode = BigNumber.ROUND_UP
   } else {
-    round = 'round'
     roundingMode = BigNumber.ROUND_HALF_EVEN
   }
   if (isNaN(parseFloat(num))) {
@@ -280,7 +276,7 @@ export function formatNumber(num, opts = {
         o.formattedValue = value.toPrecision(decimals, roundingMode)
       }
     } else {
-      o.formattedValue = value.times(decimalsValue)[round]()
+      o.formattedValue = value.times(decimalsValue).integerValue(roundingMode)
         .dividedBy(decimalsValue)
         .toFixed(decimals)
     }
@@ -290,7 +286,7 @@ export function formatNumber(num, opts = {
     if (bigUnitPostfix && value.gt(new BigNumber('10000'))) {
       o.fullPrecision = value.toFixed()
     }
-    o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue)
+    o.roundedValue = value.times(decimalsRoundedValue).integerValue(roundingMode).dividedBy(decimalsRoundedValue)
     o.rounded = (bigUnitPostfix)
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
       : addCommas(o.roundedValue.toFixed(decimalsRounded))
