@@ -22,7 +22,7 @@ function shorterPositionPL(PL, shares, price) {
   if (PL.position.abs().lte(PRECISION.zero)) {
     updatedPL.meanOpenPrice = price;
   } else if (PL.position.lt(PRECISION.zero)) {
-    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.neg(), price);
+    updatedPL.meanOpenPrice = updateMeanOpenPrice(PL.position, PL.meanOpenPrice, shares.negated(), price);
 
   // If position > 0, user is decreasing a long position
   } else {

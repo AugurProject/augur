@@ -16,7 +16,7 @@ function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCrea
   var sharePriceLong = price.minus(minPrice);
   var sharePriceShort = maxPrice.minus(price);
   var tokensEscrowed = ZERO;
-  var sharesEscrowed = new BigNumber(2, 10).toPower(254);
+  var sharesEscrowed = new BigNumber(2, 10).exponentiatedBy(254);
   for (var i = 0; i < numOutcomes; ++i) {
     if (i !== outcome) {
       sharesEscrowed = BigNumber.min(shareBalances[i], sharesEscrowed);
