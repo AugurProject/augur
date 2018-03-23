@@ -43,8 +43,8 @@ export default function (numShares, limitPrice, side, minPrice, maxPrice, type, 
     new BigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
     new BigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
 
-  const potentialProfitPercent = potentialEthProfit.div(totalCost).times(100)
-  const potentialLossPercent = potentialEthLoss.div(totalCost).times(100)
+  const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
+  const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)
 
   return {
     potentialEthProfit,
