@@ -1,0 +1,5 @@
+{ "id": 913,
+  "jsonrpc": "2.0",
+  "method": "getReportingFees",
+  "params": 
+   { "universe": "0x000000000000000000000000000000000000000b" } }

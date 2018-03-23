@@ -23,6 +23,7 @@ import { getContractAddresses } from "./getters/get-contract-addresses";
 import { getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
+import { getReportingFees } from "./getters/get-reporting-fees";
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
@@ -57,6 +58,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getDisputeInfo(db, request.params.marketIds, request.params.account, callback);
     case "getInitialReporters":
       return getInitialReporters(db, augur, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
+    case "getReportingFees":
+      return getReportingFees(db, request.params.reporter, request.params.universe, request.params.feeWindow, callback);
     case "getForkMigrationTotals":
       return getForkMigrationTotals(db, augur, request.params.parentUniverse, callback);
     case "getMarketsClosingInDateRange":
