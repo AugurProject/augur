@@ -22,7 +22,6 @@ const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(closeModal()),
   connectAugur: (history, env, isInitialConnection, cb) => dispatch(connectAugur(history, env, isInitialConnection, (err, res) => {
     if (cb) cb(err, res)
-    // TODO: error handling will go in here, going to need to handle both connect and disconnect currently.
     // TODO: consider wether we show reconnection if this isn't initialConnection.
   })),
 })

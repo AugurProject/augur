@@ -118,7 +118,7 @@ export function initAugur(history, callback = logError) {
           const env = JSON.parse(xhttp.responseText)
           dispatch(updateEnv(env))
           connectAugur(history, env, true, (err, res) => {
-            if (err || !res.ethereumNode || !res.augurNode) {
+            if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
               dispatch(updateModal({
                 type: MODAL_NETWORK_CONNECT,
                 isInitialConnection: true,
@@ -127,6 +127,10 @@ export function initAugur(history, callback = logError) {
             callback(err, res)
           })(dispatch, getState)
         } else {
+          dispatch(updateModal({
+            type: MODAL_NETWORK_CONNECT,
+            isInitialConnection: true,
+          }))
           callback(xhttp.statusText)
         }
       }
