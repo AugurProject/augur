@@ -23,7 +23,7 @@ function faucetInAndMigrate(augur, universe, amount, auth, callback) {
         augur.api.LegacyReputationToken.approve({
           meta: auth,
           _spender: reputationToken,
-          _value: speedomatic.prefixHex(new BigNumber(2, 10).toPower(255).minus(1).toString(16)),
+          _value: speedomatic.prefixHex(new BigNumber(2, 10).exponentiatedBy(255).minus(1).toString(16)),
           onSent: function (res) {
             if (debugOptions.cannedMarkets) console.log("approve sent:", res.hash);
           },
