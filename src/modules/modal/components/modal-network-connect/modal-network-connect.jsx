@@ -20,7 +20,7 @@ function calculateConnectionErrors(err, res) {
 export default class ModalNetworkConnect extends Component {
   static propTypes = {
     modal: PropTypes.shape({
-      isInitialConnection: PropTypes.bool.isRequired,
+      isInitialConnection: PropTypes.bool,
     }),
     env: PropTypes.object,
     connection: PropTypes.object,
@@ -113,7 +113,7 @@ export default class ModalNetworkConnect extends Component {
     // reset local error state and initial attemptConnection loading icon
     this.setState({ isAttemptingConnection: true, connectErrors: [] })
 
-    p.connectAugur(p.history, updatedEnv, p.modal.isInitialConnection, (err, res) => {
+    p.connectAugur(p.history, updatedEnv, !!p.modal.isInitialConnection, (err, res) => {
       const connectErrors = calculateConnectionErrors(err, res)
       // no errors and we didn't get an err or res object? we are connected.
       if (!connectErrors.length && !err && !res) return p.closeModal()

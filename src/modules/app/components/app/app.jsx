@@ -43,6 +43,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_LEGACY_REP, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
@@ -82,6 +83,7 @@ export default class AppView extends Component {
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
     initAugur: PropTypes.func.isRequired,
+    updateModal: PropTypes.func.isRequired,
     modal: PropTypes.object.isRequired,
     connection: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
@@ -151,7 +153,14 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const { connection } = this.props
-    if (!connection.isConnected || !connection.isConnectedToAugurNode) this.props.initAugur(this.props.history)
+    if (!connection.isConnected || !connection.isConnectedToAugurNode) this.props.initAugur(this.props.history, (err, res) => {
+      if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
+        this.props.updateModal({
+          type: MODAL_NETWORK_CONNECT,
+          isInitialConnection: true,
+        })
+      }
+    })
 
     const currentPath = parsePath(this.props.location.pathname)[0]
     this.setState({ currentBasePath: currentPath })

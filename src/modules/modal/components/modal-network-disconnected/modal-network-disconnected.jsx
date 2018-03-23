@@ -14,7 +14,6 @@ export default class ModalNetworkDisconnected extends Component {
       env: PropTypes.object.isRequired,
       connection: PropTypes.object.isRequired,
     }),
-    updateEnv: PropTypes.func.isRequired,
     updateIsReconnectionPaused: PropTypes.func.isRequired,
   }
 
@@ -39,7 +38,6 @@ export default class ModalNetworkDisconnected extends Component {
 
   submitForm(e, env) {
     e.preventDefault()
-    this.props.updateEnv(env)
     // unpause reconnection
     this.props.updateIsReconnectionPaused(false)
     this.setState({ showEnvForm: false })
