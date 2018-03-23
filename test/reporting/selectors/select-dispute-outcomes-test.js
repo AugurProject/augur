@@ -242,13 +242,14 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           payout: [1000, 9000],
           isInvalid: false,
           tentativeWinning: false,
+          stakeRemaining: 50,
         },
       ]
       const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
       const expected = [
         { ...stakes[0], id: '80', name: '80' },
-        { id: '0.5', name: 'Indeterminate', ...getDefaultStake(100) },
         { ...stakes[1], id: '90', name: '90' },
+        { id: '0.5', name: 'Indeterminate', ...getDefaultStake(100) },
       ]
 
       assert.deepEqual(actual, expected, `Didn't call the expected method`)

@@ -132,7 +132,7 @@ class MarketTradingWrapper extends Component {
             { p.initialMessage &&
               <p className={Styles['TradingWrapper__initial-message']}>{ p.initialMessage }</p>
             }
-            { p.initialMessage && p.isLogged && p.availableFunds.lte(0) &&
+            { p.initialMessage && p.isLogged && p.availableFunds && p.availableFunds.lte(0) &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
             }
             { !p.initialMessage &&

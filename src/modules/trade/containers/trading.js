@@ -8,7 +8,7 @@ import MarketTrading from 'modules/trade/components/trading/trading'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
 
 const mapStateToProps = state => ({
-  availableFunds: new BigNumber(state.loginAccount.eth),
+  availableFunds: new BigNumber(state.loginAccount.eth || 0),
   isLogged: state.isLogged,
   isMobile: state.isMobile,
 })

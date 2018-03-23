@@ -69,13 +69,15 @@ export default class CreateMarketReview extends Component {
     const p = this.props
     const s = this.state
 
-    const validityBond = getValue(s, 'validityBond.formattedValue')
-    const gasCost = getValue(s, 'gasCost.formattedValue')
-    const creationFee = getValue(s, 'creationFee.formattedValue')
-    const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
+    let insufficientFundsString = ''
+    if (s.validityBond) {
+      const validityBond = getValue(s, 'validityBond.formattedValue')
+      const gasCost = getValue(s, 'gasCost.formattedValue')
+      const creationFee = getValue(s, 'creationFee.formattedValue')
+      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
 
-    const insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, p.availableEth, p.availableRep)
-
+      insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, p.availableEth, p.availableRep)
+    }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
