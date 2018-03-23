@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (activeView) {
   assert.isDefined(activeView, `activeView isn't defined`)

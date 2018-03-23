@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import fillDisputeOutcomeProgess, { __RewireAPI__ as RewireAPI } from 'modules/reporting/selectors/fill-dispute-outcome-progress'
 
 describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {

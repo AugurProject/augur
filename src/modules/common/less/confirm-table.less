@@ -2,6 +2,8 @@
 
 .Confirm {
   color: @color-white;
+  margin-bottom: 3.7rem;
+  padding: 0 2rem;
   width: 36rem;
 }
 
@@ -10,8 +12,7 @@
 
   font-size: @font-size-large;
   font-weight: 400;
-  margin-bottom: 1.375rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .Confirm__list {
@@ -35,10 +36,6 @@
         color: @color-lightergray;
         font-size: @font-size-normal;
       }
-    }
-
-    &:last-child {
-      padding-bottom: 2rem;
     }
   }
 }
@@ -74,7 +71,7 @@
   > div {
     border-bottom: 1px solid @color-input-background;
     border-top: 1px solid @color-input-background;
-    padding-top: 2rem;
+    padding: 2rem 0;
     width: 50rem;
   }
 }
@@ -88,6 +85,8 @@
 
 @media @breakpoint-mobile-medium {
   .Confirm {
+    padding-left: 1rem;
+    padding-right: 1rem;
     width: 100%;
   }
 

@@ -9,6 +9,7 @@ import {
   clearNewMarket,
 } from 'modules/create-market/actions/update-new-market'
 import CreateMarketView from 'modules/create-market/components/create-market-view/create-market-view'
+import { selectCurrentTimestamp } from 'src/select-state'
 
 import getValue from 'utils/get-value'
 
@@ -21,6 +22,7 @@ const mapStateToProps = state => ({
   categories: selectCategories(state),
   isMobileSmall: state.isMobileSmall,
   isBugBounty: state.env['bug-bounty'],
+  currentTimestamp: selectCurrentTimestamp(state),
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,8 +1,8 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import sinon from 'sinon'
 
-import { dateHasPassed, getDaysRemaining } from 'utils/format-date'
+import { dateHasPassed, formatDate, getDaysRemaining } from 'utils/format-date'
 
 describe('utils/format-date', () => {
   const test = t => it(t.description, () => t.assertions())
@@ -10,6 +10,16 @@ describe('utils/format-date', () => {
 
   afterEach(() => {
     if (clock !== undefined) clock.restore()
+  })
+
+  test({
+    description: `should return false`,
+    assertions: () => {
+      const currenUtcOffset = (new Date(1521489481).getTimezoneOffset() / 60) * -1
+      const actual = formatDate(new Date(1521489481)).utcLocalOffset
+
+      assert.strictEqual(actual, currenUtcOffset, `didn't return ` + currenUtcOffset + ` as expected`)
+    },
   })
 
   test({

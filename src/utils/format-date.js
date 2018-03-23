@@ -39,6 +39,7 @@ export function formatDate(d) {
     formattedLocalShort: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
     full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
+    utcLocalOffset: localOffset,
   }
 }
 
@@ -76,11 +77,6 @@ export function getBeginDate(periodString) {
 export function dateHasPassed(unixTimestamp) {
   const date = moment().utc()
   return (date.unix() >= unixTimestamp)
-}
-
-/** timestamps are always in seconds */
-export function getCurrentDateTimestamp() {
-  return Date.now() / 1000
 }
 
 export function getDaysRemaining(endTimestamp, startTimestamp) {

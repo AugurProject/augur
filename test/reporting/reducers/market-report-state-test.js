@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha'
+
 import * as ActionTypes from 'redux'
-import { assert } from 'chai'
+
 
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS } from 'src/modules/reporting/actions/update-upcoming-designated-reporting'

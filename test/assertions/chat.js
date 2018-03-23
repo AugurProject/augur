@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (chat) {
   assert.isDefined(chat, `chat isn't defined`)

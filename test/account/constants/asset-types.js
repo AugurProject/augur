@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { ETH, REP } from 'modules/account/constants/asset-types'
 

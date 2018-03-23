@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items'
 

@@ -10,7 +10,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import { formatDate } from 'utils/format-date'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
@@ -21,7 +21,7 @@ import moment from 'moment'
 
 const MarketBasics = (p) => {
   let ReportEndingIndicator = () => null
-  if (p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING) {
+  if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING || p.reportingState === constants.REPORTING_STATE.OPEN_REPORTING) && !p.hideReportEndingIndicator) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
     const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
     const displayDate = formatDate(endDate)
@@ -29,7 +29,7 @@ const MarketBasics = (p) => {
     ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
         <div>Reporting Ends {displayDate.formattedShort}</div>
-        <WrappedGraph startDate={p.endDate.value} endDate={endDate} />
+        <WrappedGraph startDate={p.endDate.value} endDate={endDate} currentTimestamp={p.currentTimestamp} />
       </div>
     )
   }
@@ -72,11 +72,11 @@ const MarketBasics = (p) => {
         </h1>
 
         {(p.marketType === BINARY || p.marketType === SCALAR) &&
-        <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minPrice} max={p.maxPrice} type={p.marketType} />
+          <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minPrice} max={p.maxPrice} type={p.marketType} scalarDenomination={p.scalarDenomination} />
         }
 
-        {p.marketType === 'categorical' &&
-        <MarketOutcomesCategorical outcomes={p.outcomes} />
+        {p.marketType === CATEGORICAL &&
+          <MarketOutcomesCategorical outcomes={p.outcomes} />
         }
       </div>
     </article>
@@ -88,6 +88,8 @@ MarketBasics.propTypes = {
   location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func,
+  currentTimestamp: PropTypes.number.isRequired,
+  hideReportEndingIndicator: PropTypes.bool,
 }
 
 export default MarketBasics
