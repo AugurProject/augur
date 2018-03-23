@@ -48,7 +48,7 @@ export const calculateTentativeRemainingRep = (size, numTotalStake, numTentative
   const tentativeStake = new BigNumber(numTentativeStake, 10)
   // NB: Remove whence paramaters are converted outside
 
-  const result = calculateRemainingValue(size, totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber()
+  const result = calculateRemainingValue(new BigNumber(size), totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber()
   if (result < 0) return '0'
 
   return formatAttoRep(result, { decimals: 4, denomination: ' REP' }).formatted
