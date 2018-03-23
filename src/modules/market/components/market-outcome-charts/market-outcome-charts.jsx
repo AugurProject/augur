@@ -7,6 +7,8 @@ import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts-
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
 import MarketOutcomeMidpoint from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
+import { isEmpty } from 'lodash'
+
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
 export default class MarketOutcomeCharts extends Component {
@@ -20,6 +22,8 @@ export default class MarketOutcomeCharts extends Component {
     selectedOutcome: PropTypes.string.isRequired,
     currentBlock: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
+    hasPriceHistory: PropTypes.bool.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -36,6 +40,10 @@ export default class MarketOutcomeCharts extends Component {
         bottom: 30,
         gap: 12.5, // Respective gap between charts horizontally when on desktop
       },
+      chartWidths: {
+        candle: 0,
+        orders: 0,
+      },
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -43,6 +51,13 @@ export default class MarketOutcomeCharts extends Component {
     this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
+    this.updateChartWidths = this.updateChartWidths.bind(this)
+  }
+
+  componentDidMount() {
+    this.updateChartWidths()
+
+    window.addEventListener('resize', this.updateChartWidths)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -57,6 +72,10 @@ export default class MarketOutcomeCharts extends Component {
     //     this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
     //   }
     // }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateChartWidths)
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -95,6 +114,15 @@ export default class MarketOutcomeCharts extends Component {
     return this.setState({ fixedPrecision })
   }
 
+  updateChartWidths() {
+    this.setState({
+      chartWidths: {
+        candle: this.candlestickContainer ? this.candlestickContainer.clientWidth : 0,
+        orders: this.ordersContainer ? this.ordersContainer.clientWidth : 0,
+      },
+    })
+  }
+
   render() {
     const s = this.state
     const p = this.props
@@ -111,7 +139,10 @@ export default class MarketOutcomeCharts extends Component {
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
-          <div className={Styles.MarketOutcomeCharts__Candlestick}>
+          <div
+            ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
+            className={Styles.MarketOutcomeCharts__candlestick}
+          >
             <MarketOutcomeCandlestick
               sharedChartMargins={s.sharedChartMargins}
               priceTimeSeries={p.priceTimeSeries}
@@ -127,9 +158,13 @@ export default class MarketOutcomeCharts extends Component {
               updateSeletedOrderProperties={p.updateSeletedOrderProperties}
             />
           </div>
-          <div className={Styles.MarketOutcomeCharts__Orders}>
-            <div className={Styles.MarketOutcomeCharts__Depth}>
+          <div
+            ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
+            className={Styles.MarketOutcomeCharts__orders}
+          >
+            <div className={Styles.MarketOutcomeCharts__depth}>
               <MarketOutcomeDepth
+                priceTimeSeries={p.priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
                 orderBookKeys={p.orderBookKeys}
@@ -142,7 +177,7 @@ export default class MarketOutcomeCharts extends Component {
                 updateSeletedOrderProperties={p.updateSeletedOrderProperties}
               />
             </div>
-            <div className={Styles.MarketOutcomeCharts__Orderbook}>
+            <div className={Styles.MarketOutcomeCharts__orderbook}>
               <MarketOutcomeOrderBook
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
@@ -155,6 +190,9 @@ export default class MarketOutcomeCharts extends Component {
             </div>
           </div>
           <MarketOutcomeMidpoint
+            hasPriceHistory={p.hasPriceHistory}
+            hasOrders={p.hasOrders}
+            chartWidths={s.chartWidths}
             orderBookKeys={p.orderBookKeys}
             sharedChartMargins={s.sharedChartMargins}
           />

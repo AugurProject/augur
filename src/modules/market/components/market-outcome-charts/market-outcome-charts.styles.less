@@ -35,19 +35,30 @@
   }
 }
 
-.MarketOutcomeCharts__Candlestick {
+.MarketOutcomeCharts__candlestick {
   flex: 2.5;
+  position: relative;
 }
 
-.MarketOutcomeCharts__Orders {
+.MarketOutcomeCharts__candlestick-null {
+  &:extend(.caps--small);
+
+  color: @color-gray;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, calc(-100% - 30px));
+}
+
+.MarketOutcomeCharts__orders {
   display: flex;
   flex: 2;
 }
 
-.MarketOutcomeCharts__Depth {
+.MarketOutcomeCharts__depth {
   flex: 1;
 }
 
-.MarketOutcomeCharts__Orderbook {
+.MarketOutcomeCharts__orderbook {
   flex: 1;
 }

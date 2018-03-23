@@ -1,11 +1,12 @@
 import { connect } from 'react-redux'
 import memoize from 'memoizee'
+import { isEmpty } from 'lodash'
 
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
-
 import { selectMarket } from 'modules/market/selectors/market'
+
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 const orderAndAssignCumulativeShares = memoize((orderBook) => {
   const rawBids = ((orderBook || {})[BIDS] || []).slice()
@@ -106,10 +107,13 @@ const mapStateToProps = (state, ownProps) => {
     currentBlock: state.blockchain.currentBlockNumber || 0,
     minPrice: market.minPrice || 0,
     maxPrice: market.maxPrice || 0,
-    orderBook: cumulativeOrderBook,
-    priceTimeSeries,
+    // orderBook: cumulativeOrderBook,
+    orderBook: {},
+    priceTimeSeries: [],
     marketDepth,
     orderBookKeys,
+    hasPriceHistory: priceTimeSeries.length !== 0,
+    hasOrders: !isEmpty(cumulativeOrderBook[BIDS]) && !isEmpty(cumulativeOrderBook[ASKS]),
   }
 }
 

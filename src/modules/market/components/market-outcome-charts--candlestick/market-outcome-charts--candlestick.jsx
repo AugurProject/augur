@@ -269,8 +269,6 @@ function determineDrawParams(options) {
     drawableWidth = domainScaleWidth
   }
 
-  console.log('diff calc -- ', orderBookKeys, outcomeBounds)
-
   //  Y
   // Determine bounding diff
   // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
