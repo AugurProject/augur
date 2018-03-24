@@ -116,7 +116,7 @@ describe('create-market-form-outcome', () => {
         })
 
         it('should set validation message to true', () => {
-          assert.isTrue(newMarketObj.validations[newMarketObj.currentStep].tickSize)
+          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size is required.')
         })
       })
 
