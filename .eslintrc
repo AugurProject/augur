@@ -1,7 +1,7 @@
 {
   "env": {
     "browser": true,
-    "mocha": true
+    "mocha": true,
   },
   "parser": "babel-eslint",
   "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
@@ -17,6 +17,9 @@
         "extensions": [".js", ".jsx", ".less"]
       }
     }
+  },
+  "globals": {
+    "assert": true,
   },
   "rules": { # 0 = disabled, 1 = warn, 2 = error
     # Disabled

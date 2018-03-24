@@ -1,4 +1,4 @@
-// import { assert } from 'chai';
+// ;
 // import reducer from '../../../src/modules/markets/reducers/outcomes-data';
 // import { UPDATE_OUTCOME_PRICE } from '../../../src/modules/markets/actions/update-outcome-price';
 

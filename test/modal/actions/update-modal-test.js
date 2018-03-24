@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { UPDATE_MODAL, updateModal } from 'modules/modal/actions/update-modal'
 

@@ -71,7 +71,7 @@ export function constructTransferTransaction(log, address) {
     transaction.type = 'Send Tokens'
     transaction.description = `Send tokens to ${strip0xPrefix(log._to)}`
     transaction.data.balances = [{
-      change: formatRep(new BigNumber(log._value, 10).neg(), { positiveSign: true }),
+      change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
     }]
     action = log.inProgress ? 'sending' : 'sent'
   } else if (log._to === address) {

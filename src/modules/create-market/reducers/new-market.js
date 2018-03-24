@@ -6,6 +6,7 @@ import {
 } from 'modules/create-market/actions/update-new-market'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { SETTLEMENT_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints'
+import { DEFAULT_SCALAR_TICK_SIZE } from 'augur.js/src/constants'
 
 import BigNumber from 'bignumber.js'
 
@@ -46,6 +47,7 @@ const DEFAULT_STATE = {
   designatedReporterType: '',
   designatedReporterAddress: '',
   endDate: {},
+  tickSize: DEFAULT_SCALAR_TICK_SIZE,
   hour: '',
   minute: '',
   meridiem: '',

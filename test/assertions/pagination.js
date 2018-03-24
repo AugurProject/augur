@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (pagination) {
   assert.isDefined(pagination, `pagination isn't defined`)

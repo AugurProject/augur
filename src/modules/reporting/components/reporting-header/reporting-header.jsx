@@ -69,14 +69,12 @@ export default class ReportingHeader extends Component {
                       canClose: true,
                     })}
                   >
-                    {Participate}
-                    <span
-                      className={Styles['ReportingHeader__participationTokens--text']}
-                    >
+                    { Participate }
+                    <span className={Styles['ReportingHeader__participationTokens--text']}>
                       participate
                     </span>
                   </button>
-                  {!p.isMobile &&
+                  { !p.isMobile &&
                     <ReactTooltip
                       id="tooltip--participation-tokens"
                       className={TooltipStyles.Tooltip}
