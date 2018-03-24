@@ -443,6 +443,8 @@ export default class AppView extends Component {
             {p.universe.forkEndTime && p.universe.forkEndTime !== '0' && p.blockchain && p.blockchain.currentAugurTimestamp &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
+                  location={p.location}
+                  forkingMarket={p.universe.forkingMarket}
                   forkEndTime={p.universe.forkEndTime}
                   currentTime={p.blockchain.currentAugurTimestamp}
                 />
