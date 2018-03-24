@@ -220,7 +220,7 @@ export function listenToUpdates(history) {
             if (universe.id === log.universe) {
               dispatch(loadMarketsInfo([log.marketId], () => {
                 const { volume, author, description } = getState().marketsData[log.marketId]
-                dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).neg().toNumber()))
+                dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).negated().toNumber()))
                 if (loginAccount.address === author) {
                   dispatch(addNotification({
                     id: log.hash,

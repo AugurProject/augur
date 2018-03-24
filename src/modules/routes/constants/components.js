@@ -91,3 +91,10 @@ export const Dispute = asyncComponent({
   loader: () => import(/* webpackChunkName: 'report' */ 'modules/reporting/containers/reporting-dispute')
     .then(module => module.default),
 })
+
+export const MigrateRep = asyncComponent({
+  moduleName: 'MigrateRep',
+  loader: () => import(/* webpackChunkName: 'report' */ 'modules/forking/containers/migrate-rep')
+    .then(module => module.default),
+})
+

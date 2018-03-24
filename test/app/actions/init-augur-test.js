@@ -97,7 +97,7 @@ describe('init-augur', () => {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(null, ['0xa11ce']) },
             },
-            api: { Controller: { isStopped: () => {} } },
+            api: { Controller: { stopped: () => {} } },
           },
         })
 
@@ -152,7 +152,7 @@ describe('init-augur', () => {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(null, []) },
             },
-            api: { Controller: { isStopped: () => {} } },
+            api: { Controller: { stopped: () => {} } },
           },
         })
 
@@ -212,7 +212,7 @@ describe('init-augur', () => {
               getNetworkID: () => 3,
               eth: { accounts: cb => cb(null, []) },
             },
-            api: { Controller: { isStopped: () => {} } },
+            api: { Controller: { stopped: () => {} } },
           },
         })
 
@@ -314,7 +314,7 @@ describe('init-augur', () => {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(null, ['0xa11ce']) },
             },
-            api: { Controller: { isStopped: () => {} } },
+            api: { Controller: { stopped: () => {} } },
           },
         })
 
@@ -362,7 +362,7 @@ describe('init-augur', () => {
               getNetworkID: () => 4,
               eth: { accounts: cb => cb(null, []) },
             },
-            api: { Controller: { isStopped: () => {} } },
+            api: { Controller: { stopped: () => {} } },
           },
         })
 

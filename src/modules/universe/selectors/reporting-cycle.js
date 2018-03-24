@@ -14,8 +14,8 @@ export const selectReportingCycle = createSelector(
   selectUniverseReportingPeriodDurationInSeconds,
   selectBlockchainCurrentBlockTimestamp,
   (reportingPeriodDurationInSeconds, timestamp) => {
-    const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp)
-    const bnReportingPeriodDurationInSeconds = new BigNumber(reportingPeriodDurationInSeconds, 10)
+    const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds || 0, timestamp)
+    const bnReportingPeriodDurationInSeconds = new BigNumber(reportingPeriodDurationInSeconds || 0, 10)
     const secondsRemaining = ONE.minus(new BigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds)
     return {
       currentReportingPeriodPercentComplete,
