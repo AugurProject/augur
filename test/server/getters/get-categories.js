@@ -26,11 +26,11 @@ describe("server/getters/get-categories", () => {
     assertions: (err, categoriesInfo) => {
       assert.isNull(err);
       assert.deepEqual(categoriesInfo, [
-        { category: "finance", popularity: 12345 },
-        { category: "politics", popularity: 5000 },
-        { category: "ethereum", popularity: 1000 },
-        { category: "augur", popularity: 500 },
-        { category: "test category", popularity: 0 },
+        { category: "finance", popularity: "12345" },
+        { category: "politics", popularity: "5000" },
+        { category: "ethereum", popularity: "1000" },
+        { category: "augur", popularity: "500" },
+        { category: "test category", popularity: "0" },
       ]);
     },
   });
