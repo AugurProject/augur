@@ -68,6 +68,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
           formatted: '0',
           formattedValue: 0,
           full: '0 ETH',
+          fullPrecision: '0',
           minimized: '0',
           rounded: '0.0000',
           roundedValue: 0,
