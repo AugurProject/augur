@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
+import { formatAttoRep, formatEther } from 'utils/format-number'
+
 import Styles from './portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
@@ -26,6 +28,8 @@ export default class PortfolioReports extends Component {
 
   render() {
     const s = this.state
+    const unclaimedRep = formatAttoRep(s.claimableFees.unclaimedRepStaked, { decimals: 4, zeroStyled: true })
+    const unclaimedEth = formatEther(s.claimableFees.unclaimedEth, { decimals: 4, zeroStyled: true })
 
     return (
       <section>
@@ -40,16 +44,19 @@ export default class PortfolioReports extends Component {
                 <ul className={Styles['ClaimableFees__fees--list']}>
                   <li>
                     <div className={Styles['ClaimableFees__fees--denomination']}>REP</div>
-                    <div className={Styles['ClaimableFees__fees--amount']}>{s.claimableFees.unclaimedRepStaked || 0}</div>
+                    <div className={Styles['ClaimableFees__fees--amount']}>{unclaimedRep.formatted}</div>
                   </li>
                   <li>
                     <div className={Styles['ClaimableFees__fees--denomination']}>ETH</div>
-                    <div className={Styles['ClaimableFees__fees--amount']}>{s.claimableFees.unclaimedEth || 0}</div>
+                    <div className={Styles['ClaimableFees__fees--amount']}>{unclaimedEth.formatted}</div>
                   </li>
                 </ul>
-                <div className={Styles['CreateMarketForm__button--wrapper']}>
+                <div className={Styles['CreateMarketForm__cta--wrapper']}>
                   <button
-                    className={Styles.ClaimableFees__button}
+                    className={Styles.ClaimableFees__cta}
+                    disabled={unclaimedEth.formatted === '-' && unclaimedRep.formatted === '-' &&
+                    'disabled'
+                    }
                   >Claim
                   </button>
                 </div>
