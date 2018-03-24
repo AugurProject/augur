@@ -13,7 +13,10 @@ const ModalParticipateReview = (p) => {
       className={Styles.ModalParticipateReview__form}
       onSubmit={p.onSubmit}
     >
-      <h1 className={Styles.ModalParticipateReview__heading}>{SigningPen} Review Buy Order</h1>
+      <div className={Styles.ModalParticipateReview__heading}>
+        {SigningPen}
+        <h1>Review Buy Order</h1>
+      </div>
       <div className={Styles.ModalParticipateReview__details}>
         <ul className={Styles.ModalParticipateReview__labels}>
           <li>purchase</li>
