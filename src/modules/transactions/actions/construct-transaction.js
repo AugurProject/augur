@@ -139,10 +139,7 @@ export function constructTransferTransaction(log, address) {
 }
 
 export const constructCancelOrderTransaction = (trade, marketId, marketType, description, outcomeId, outcomeName, minPrice, maxPrice, status) => (dispatch, getState) => {
-  const { orderBooks } = getState()
-  const type = trade.orderType === '0' ? TYPES.BUY : TYPES.SELL
-  const price = !trade.price ? orderBooks[marketId][outcomeId][type][trade.orderId].price : trade.price
-  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: price, minPrice, maxPrice })
+  const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
   const action = trade.inProgress ? 'canceling' : 'canceled'
