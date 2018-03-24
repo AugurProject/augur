@@ -11,6 +11,7 @@ export const CATEGORIES = 'categories'
 export const REPORTING = 'reporting'
 export const REPORT = 'report'
 export const DISPUTE = 'dispute'
+export const MIGRATE_REP = 'migrate-rep'
 
 export const DEFAULT_VIEW = CATEGORIES
 

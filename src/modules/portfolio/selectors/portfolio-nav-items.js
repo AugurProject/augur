@@ -3,7 +3,7 @@ import selectAllMarkets from 'modules/markets/selectors/markets-all'
 import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary'
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
 export default function () {
@@ -38,7 +38,7 @@ export const selectPortfolioNavItems = () => {
     },
     {
       label: 'Reports',
-      view: MY_REPORTS,
+      view: PORTFOLIO_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',
