@@ -22,6 +22,7 @@ const CreateMarketView = p => (
         categories={p.categories}
         meta={p.meta}
         availableEth={p.availableEth}
+        availableRep={p.availableRep}
         addOrderToNewMarket={p.addOrderToNewMarket}
         removeOrderFromNewMarket={p.removeOrderFromNewMarket}
         submitNewMarket={p.submitNewMarket}

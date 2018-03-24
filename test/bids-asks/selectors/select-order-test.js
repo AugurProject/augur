@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import { BUY } from 'modules/transactions/constants/types'
 
 describe('modules/bids-asks/selectors/select-order.js', () => {

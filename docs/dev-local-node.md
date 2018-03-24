@@ -15,6 +15,30 @@ You'll need to clone the following repositories prior to starting:
 
 ## Running Ethereum Local Node
 
+There are two docker images available to host ethereum node locally:
+* populated chain node (dev-pop-geth)
+* blank chain node (dev-node-geth)
+
+
+
+### populated with canned data
+We have a pre-populated geth node, it has the canned market data, the `deploy` has already been done for you, save lots of dev time.
+
+    docker pull augurproject/dev-pop-geth:latest
+    docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-pop-geth:latest
+
+There is a history of these populate nodes based on the augur-core version, look in [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/)
+
+Since the contracts have already the contract address are already know, the :latest docker image should be the same as in the latest augur.js repo, src/contracts/addresses.json
+
+If you are using a past version of the dev-pop-geth docker image you can get the contract addresses with this commmand:
+
+    docker run --rm --entrypoint cat augurproject/dev-pop-geth:core-####### /augur.js/src/contracts/addresses.json > ./src/contracts/addresses.json
+
+where `core-######` is the version of the docker image ie. `core-0.12.2`. The above command puts the correct addresses so that augur-node and augur ui can use them when `yarn link augur.js` is used. See furthur down.
+
+
+### blank chain geth node
 After pulling down all the code we'll spin up a docker container that runs a local geth node:
 
     docker pull augurproject/dev-node-geth:latest
@@ -50,8 +74,12 @@ We are going to use environment variables for convenience. ENDPOINT_HTTP and END
     # default user wallet to use for scripts (0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb)
     export ETHEREUM_PRIVATE_KEY="fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
 
+
+    # (ONLY NEEDED FOR BLANK NODE dev-node-geth docker image) 
     # Use dp to deploy to the configuration specified in your local environment (above)
     npx dp deploy
+
+    # quick commmand to clean augur-node env and build and start
     npm run clean-start
 
 ### augur (ui)

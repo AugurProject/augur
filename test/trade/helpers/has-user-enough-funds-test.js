@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import { formatEther } from 'utils/format-number'
 
 describe('modules/trade/helpers/has-user-enough-funds.js', () => {

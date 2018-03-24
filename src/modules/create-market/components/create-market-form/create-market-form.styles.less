@@ -26,8 +26,17 @@
   white-space: nowrap;
 }
 
+.CreateMarketForm__error--bottom {
+  &:extend(.CreateMarketForm__error);
+
+  margin-top: 0.675rem;
+  position: absolute;
+}
+
 .CreateMarketForm__error > svg,
-.CreateMarketForm__error--field-50 > svg {
+.CreateMarketForm__error--bottom > svg,
+.CreateMarketForm__error--field-50 > svg,
+.CreateMarketForm__error--insufficient-funds > svg {
   margin: 0 0.2rem;
   max-height: 1rem;
   max-width: 1rem;
@@ -46,6 +55,12 @@
   line-height: 0.8rem;
   position: absolute;
   top: -3px;
+}
+
+.CreateMarketForm__error--insufficient-funds {
+  &:extend(.CreateMarketForm__error);
+
+  margin-bottom: 3rem;
 }
 
 .CreateMarketForm__fields {
@@ -211,6 +226,7 @@
 
   .CreateMarketForm__error,
   .CreateMarketForm__error--field-50 {
+    margin-top: 0.675rem;
     white-space: normal;
     width: 100%;
   }

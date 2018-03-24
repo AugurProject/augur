@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import reducer from 'modules/trade/reducers/trades-in-progress'
 import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from 'modules/trade/actions/update-trades-in-progress'
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'

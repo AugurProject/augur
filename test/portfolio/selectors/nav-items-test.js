@@ -1,10 +1,10 @@
 import { describe, it, before } from 'mocha'
-import { assert } from 'chai'
+
 
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
+import { MY_POSITIONS, MY_MARKETS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
 
 import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
@@ -103,7 +103,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
     },
     {
       label: 'Reports',
-      view: MY_REPORTS,
+      view: PORTFOLIO_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber(10, { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',

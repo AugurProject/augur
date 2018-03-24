@@ -1,5 +1,5 @@
 import { describe, it, afterEach } from 'mocha'
-import { assert } from 'chai'
+
 import testState from 'test/testState'
 import reducer from 'modules/reports/reducers/reports'
 

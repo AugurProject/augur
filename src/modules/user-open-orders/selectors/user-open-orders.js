@@ -65,7 +65,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
         outcomeId,
         pending: orderCancellation[order.orderId],
         originalShares: formatNone(),
-        avgPrice: formatEther(order.price),
+        avgPrice: formatEther(order.fullPrecisionPrice),
         matchedShares: formatNone(),
         unmatchedShares: formatShares(order.amount),
         cancelOrder: (orderId, marketId, outcome, type) => {

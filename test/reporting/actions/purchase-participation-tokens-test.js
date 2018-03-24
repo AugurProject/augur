@@ -1,5 +1,5 @@
 import { describe, it, afterEach } from 'mocha'
-import { assert } from 'chai'
+
 import mockStore from 'test/mockStore'
 import speedomatic from 'speedomatic'
 import { formatGasCostToEther } from 'utils/format-number'

@@ -83,7 +83,7 @@ export default class CreateMarketResolution extends Component {
     const updatedMarket = { ...p.newMarket }
 
     if (!isAddress(value)) {
-      updatedMarket.validations[currentStep].designatedReporterAddress = 'The Designated Reporter Address must be a valid Ethereum Address.'
+      updatedMarket.validations[currentStep].designatedReporterAddress = 'Invalid Ethereum address.'
     } else {
       updatedMarket.validations[currentStep].designatedReporterAddress = true
     }
@@ -167,27 +167,29 @@ export default class CreateMarketResolution extends Component {
               </button>
             </li>
             <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
-              { designatedReporterError &&
-                <span className={StylesForm.CreateMarketForm__error}>
-                  {InputErrorIcon}{
-                    p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
-                  }
-                </span>
-              }
               <button
                 className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SPECIFIC)}
               >Someone Else
               </button>
-              { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
-                <input
-                  className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError })}
-                  type="text"
-                  value={p.newMarket.designatedReporterAddress}
-                  placeholder="Designated Reporter Address"
-                  onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
-                />
-              }
+              <div>
+                { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
+                  <input
+                    className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError })}
+                    type="text"
+                    value={p.newMarket.designatedReporterAddress}
+                    placeholder="Designated Reporter Address"
+                    onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
+                  />
+                }
+                { designatedReporterError &&
+                  <span className={StylesForm['CreateMarketForm__error--bottom']}>
+                    {InputErrorIcon}{
+                      p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
+                    }
+                  </span>
+                }
+              </div>
             </li>
           </ul>
         </li>

@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import sinon from 'sinon'
 
 import { dateHasPassed, formatDate, getDaysRemaining } from 'utils/format-date'
