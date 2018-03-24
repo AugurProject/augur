@@ -9,6 +9,6 @@ export const updateCategoryPopularity = (category, amount) => ({ type: UPDATE_CA
 export const updateMarketCategoryPopularity = (marketId, amount) => (dispatch, getState) => {
   const market = getState().marketsData[marketId]
   if (market != null && market.category != null) {
-    dispatch(updateCategoryPopularity(market.category, Number(amount)))
+    dispatch(updateCategoryPopularity(market.category, amount.toString()))
   }
 }
