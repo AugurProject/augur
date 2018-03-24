@@ -100,12 +100,12 @@ export function listenToUpdates(history) {
           } else {
             console.log('OrderCanceled:', log)
             // if this is the user's order, then add it to the transaction display
-            if (log.orderCreator === getState().loginAccount.address) {
+            if (log.sender === getState().loginAccount.address) {
+              dispatch(removeCanceledOrder(log.orderId))
+              dispatch(updateAssets())
               dispatch(updateAccountCancelsData({
                 [log.marketId]: { [log.outcome]: [log] },
               }, log.marketId))
-              dispatch(removeCanceledOrder(log.orderId))
-              dispatch(updateAssets())
             }
           }
         }
