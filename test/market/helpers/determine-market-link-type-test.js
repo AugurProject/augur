@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { constants } from 'services/augurjs'
 import { TYPE_VIEW, TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE } from 'modules/market/constants/link-types'

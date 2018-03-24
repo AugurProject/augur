@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (searchSort) {
   assert.isDefined(searchSort, `searchSort isn't defined`)

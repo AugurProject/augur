@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import proxyquire from 'proxyquire'

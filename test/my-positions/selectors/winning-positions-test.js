@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha'
+
 import BigNumber from 'bignumber.js'
-import { assert } from 'chai'
+
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import { SCALAR } from '../../../src/modules/markets/constants/market-types'

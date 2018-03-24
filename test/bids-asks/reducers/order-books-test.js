@@ -1,5 +1,5 @@
 import { describe, it, beforeEach } from 'mocha'
-import { assert } from 'chai'
+
 import testState from 'test/testState'
 import { UPDATE_ORDER_BOOK } from 'modules/bids-asks/actions/update-order-book'
 import reducer from 'modules/bids-asks/reducers/order-books'

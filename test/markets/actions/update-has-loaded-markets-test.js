@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { updateHasLoadedMarkets, UPDATE_HAS_LOADED_MARKETS } from 'modules/markets/actions/update-has-loaded-markets'
 

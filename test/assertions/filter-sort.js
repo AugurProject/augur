@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+
 
 export default function (fS) {
   assert.isDefined(fS, `'filterSort' is not defined`)

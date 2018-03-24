@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { CLEAR_CLOSE_POSITION_OUTCOME, clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome'
 

@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
+
 import assertFormattedNumber from 'assertions/common/formatted-number'
 
 export default function (positionsMarkets) {

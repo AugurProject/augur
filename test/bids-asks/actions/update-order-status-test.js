@@ -1,5 +1,5 @@
 import { describe, it, afterEach } from 'mocha'
-import { assert } from 'chai'
+
 import proxyquire from 'proxyquire'
 import mocks from 'test/mockStore'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'

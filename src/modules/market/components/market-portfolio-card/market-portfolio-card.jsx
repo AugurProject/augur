@@ -8,7 +8,7 @@ import MarketPositionsListPosition from 'modules/market/components/market-positi
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -57,6 +57,9 @@ export default class MarketPortfolioCard extends Component {
         break
       case TYPE_CLAIM_PROCEEDS:
         buttonText = 'Claim Proceeds'
+        break
+      case TYPE_MIGRATE_REP:
+        buttonText = 'Migrate REP'
         break
       default:
         buttonText = 'View'

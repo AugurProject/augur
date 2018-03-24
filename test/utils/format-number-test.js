@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import * as formatNumber from 'utils/format-number'
 
@@ -18,6 +17,7 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' ETH',
         full: '1,000.1000 ETH',
+        fullPrecision: '1000.1',
       },
     },
     {
@@ -32,6 +32,7 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' ETH (estimated)',
         full: '1,000.1000 ETH (estimated)',
+        fullPrecision: '1000.1',
       },
     },
     {
@@ -46,6 +47,7 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: '%',
         full: '1,000.10%',
+        fullPrecision: '1000.1',
       },
     },
     {
@@ -60,6 +62,7 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' shares',
         full: '1,000.1 shares',
+        fullPrecision: '1000.1',
       },
     },
     {
@@ -75,6 +78,7 @@ describe('utils/format-number.js', () => {
         minimized: '1',
         denomination: ' share',
         full: '1 share',
+        fullPrecision: '1',
       },
     },
     {
@@ -89,6 +93,7 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' REP',
         full: '1,000.10 REP',
+        fullPrecision: '1000.1',
       },
     },
   ]
@@ -136,14 +141,14 @@ describe('utils/format-number.js', () => {
 
   describe('format attoREP', () => {
     it('should return a properly formatted attoREP number', () => {
-      const result = formatNumber.formatAttoRep(349680582682291650, { decimals: 4 })
+      const result = formatNumber.formatAttoRep('349680582682291650', { decimals: 4 })
       assert.deepEqual(result.formatted, '0.3497', 'returned attoREP formated to 4 decimals')
     })
   })
 
   describe('format largish attoREP', () => {
     it('should return a properly formatted attoREP number', () => {
-      const result = formatNumber.formatAttoRep(3496805826822916500000, { decimals: 4 })
+      const result = formatNumber.formatAttoRep('3496805826822916500000', { decimals: 4 })
       assert.deepEqual(result.formatted, '3,496.8058', 'returned larger formatted attoREP to 4 decimals')
     })
   })

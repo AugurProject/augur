@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import accountPositions from 'modules/my-positions/reducers/account-positions'
 

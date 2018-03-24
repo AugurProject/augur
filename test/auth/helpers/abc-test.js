@@ -1,5 +1,4 @@
-// import { describe, it } from 'mocha'
-// import { assert } from 'chai'
+//
 // import sinon from 'sinon'
 
 // import selectABC, { __RewireAPI__ as selectABCRewireAPI } from 'modules/auth/helpers/abc'

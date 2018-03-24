@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+
 
 import { updateHasLoadedCategory, UPDATE_HAS_LOADED_CATEGORY } from 'modules/categories/actions/update-has-loaded-category'
 

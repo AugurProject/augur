@@ -1,5 +1,5 @@
 import { describe, it, before } from 'mocha'
-import { assert } from 'chai'
+
 import myMarketsSummaryAssertions from 'assertions/my-markets-summary'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'

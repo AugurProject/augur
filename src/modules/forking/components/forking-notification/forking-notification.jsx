@@ -16,6 +16,14 @@ class ForkingNotification extends Component {
     this.expand = this.expand.bind(this)
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location !== this.props.location) {
+      this.setState({
+        isExpanded: false,
+      })
+    }
+  }
+
   expand() {
     this.setState({
       isExpanded: !this.state.isExpanded,
@@ -57,6 +65,7 @@ class ForkingNotification extends Component {
         </header>
         {this.state.isExpanded &&
           <ForkingContent
+            forkingMarket={this.props.forkingMarket}
             forkEndTime={this.props.forkEndTime}
             currentTime={this.props.currentTime}
             expanded
@@ -68,6 +77,8 @@ class ForkingNotification extends Component {
 }
 
 ForkingNotification.propTypes = {
+  location: PropTypes.object.isRequired,
+  forkingMarket: PropTypes.string.isRequired,
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
 }

@@ -68,7 +68,7 @@ export default class Order extends Component {
           }
         </li>
         <li>
-          { p.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
+          { p.order.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
         </li>
         <li>
           { getValue(p, 'order.avgPrice.formatted') }
