@@ -18,8 +18,6 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
-const { DEFAULT_SCALAR_TICK_SIZE } = require('augur.js/src/constants')
-
 export default class CreateMarketOutcome extends Component {
 
   static propTypes = {
@@ -43,8 +41,8 @@ export default class CreateMarketOutcome extends Component {
       // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: speedomatic.unfix(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMax: speedomatic.unfix(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMin: new BigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMax: new BigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -94,7 +92,8 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
-        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
+        // tickSize is pre-populated
+        // updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
@@ -130,13 +129,13 @@ export default class CreateMarketOutcome extends Component {
         case scalarSmallNum === '':
           updatedMarket.validations[currentStep].scalarSmallNum = 'This field is required.'
           break
-        case scalarSmallNum.lessThan(this.state.scalarMin):
-          updatedMarket.validations[currentStep].scalarSmallNum = `Must be greater than: ${this.state.scalarMin.toNumber()}`
+        case scalarSmallNum.lt(this.state.scalarMin):
+          updatedMarket.validations[currentStep].scalarSmallNum = `Must be greater than: ${this.state.scalarMin}`
           break
-        case scalarSmallNum.greaterThan(this.state.scalarMax):
-          updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax.toNumber()}`
+        case scalarSmallNum.gt(this.state.scalarMax):
+          updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax}`
           break
-        case scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum):
+        case scalarBigNum !== '' && scalarSmallNum.gte(scalarBigNum):
           updatedMarket.validations[currentStep].scalarSmallNum = 'Min must be less than max.'
           break
         default:
@@ -151,13 +150,13 @@ export default class CreateMarketOutcome extends Component {
         case scalarBigNum === '':
           updatedMarket.validations[currentStep].scalarBigNum = 'This field is required.'
           break
-        case scalarBigNum.lessThan(this.state.scalarMin):
-          updatedMarket.validations[currentStep].scalarBigNum = `Must be greater than: ${this.state.scalarMin.toNumber()}`
+        case scalarBigNum.lt(this.state.scalarMin):
+          updatedMarket.validations[currentStep].scalarBigNum = `Must be greater than: ${this.state.scalarMin}`
           break
-        case scalarBigNum.greaterThan(this.state.scalarMax):
-          updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax.toNumber()}`
+        case scalarBigNum.gt(this.state.scalarMax):
+          updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax}`
           break
-        case scalarSmallNum !== '' && scalarBigNum.lessThanOrEqualTo(scalarSmallNum):
+        case scalarSmallNum !== '' && scalarBigNum.lte(scalarSmallNum):
           updatedMarket.validations[currentStep].scalarBigNum = 'Max must be larger than min.'
           break
         default:
@@ -170,6 +169,8 @@ export default class CreateMarketOutcome extends Component {
     if (type === 'tickSize') {
       if (value < 0) {
         updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
+      } else if (!value) {
+        updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
       } else {
         updatedMarket.validations[currentStep].tickSize = true
       }
@@ -357,7 +358,7 @@ export default class CreateMarketOutcome extends Component {
                 id="cm__input--ticksize"
                 type="number"
                 step="0.0001"
-                value={p.newMarket.tickSize || DEFAULT_SCALAR_TICK_SIZE}
+                value={p.newMarket.tickSize}
                 placeholder="Tick Size"
                 onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
               />
