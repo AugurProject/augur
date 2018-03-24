@@ -65,6 +65,25 @@
   cursor: default;
 }
 
+.button--lightpurple {
+  .button;
+
+  background-color: @color-lightpurple;
+  color: @color-white;
+
+  &:hover {
+    background-color: @color-white;
+  }
+}
+
+.button--lightpurple--disabled,
+.button--lightpurple:disabled,
+.button--lightpurple:disabled:hover {
+  background-color: @color-lightgray;
+  color: @color-lightergray;
+  cursor: default;
+}
+
 .button--offWhite {
   .button;
 

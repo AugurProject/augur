@@ -7,6 +7,7 @@ import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-pro
 import logError from 'utils/log-error'
 
 // Synchronize front-end universe state with blockchain universe state.
+// TODO XXX get isForkingMarketFinalized by getting isFinalized from forking market
 const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   const universePayload = { tx: { to: universe.id } }
