@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { TYPE_REPORT, TYPE_DISPUTE } from 'modules/market/constants/link-types'
-import { MARKET, REPORT, DISPUTE } from 'modules/routes/constants/views'
+import { TYPE_REPORT, TYPE_DISPUTE, TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
+import { MARKET, REPORT, DISPUTE, MIGRATE_REP } from 'modules/routes/constants/views'
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 const MarketLink = (p) => {
@@ -18,6 +18,9 @@ const MarketLink = (p) => {
       break
     case TYPE_DISPUTE:
       path = makePath(DISPUTE)
+      break
+    case TYPE_MIGRATE_REP:
+      path = makePath(MIGRATE_REP)
       break
     default:
       path = makePath(MARKET)

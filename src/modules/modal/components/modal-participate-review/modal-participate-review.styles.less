@@ -6,10 +6,20 @@
 }
 
 .ModalParticipateReview__heading {
-  .caps--extra-large();
+  align-items: flex-start;
+  display: flex;
+  margin: 0 2rem 1.5rem;
 
-  color: @color-white;
-  margin-bottom: @font-size-massive;
+  > svg {
+    width: 1.875rem;
+  }
+
+  > h1 {
+    .caps--extra-large();
+
+    color: @color-white;
+    margin: -0.25rem 0 0 1rem;
+  }
 }
 
 .ModalParticipateReview__details {
@@ -19,7 +29,7 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  margin: 1rem 0;
+  margin: 1rem 2rem;
   padding: 1rem 0;
 }
 
@@ -49,6 +59,7 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  margin: 0 2rem;
 }
 
 .ModalParticipateReview__button {
@@ -57,23 +68,30 @@
   margin-top: 2rem;
 }
 
-@media @breakpoint-mobile {
-  .ModalParticipateReview__form {
-    margin-top: -3.625rem;
-  }
-
+@media @breakpoint-mobile-small {
   .ModalParticipateReview__heading {
-    padding: 0 1rem;
+    margin: 0 1rem 1rem;
+
+    > h1 {
+      font-size: @font-size-somewhat-large;
+      line-height: @font-size-somewhat-large;
+      margin-top: 0;
+    }
   }
 
   .ModalParticipateReview__details {
     // borders need to come in as well, so use margin for details
-    margin: 0 1rem;
+    margin: 0 1rem 1rem;
+  }
+
+  .ModalParticipateReview__values {
+    margin-left: 3rem;
   }
 
   .ModalParticipateReview__actions {
     bottom: 0;
-    flex-flow: column nowrap;
+    flex-wrap: wrap;
+    margin: 0;
     position: fixed;
     width: 100%;
 

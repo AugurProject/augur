@@ -9,10 +9,11 @@
   button,
   .input-value-comparison {
     background-color: @color-input-background;
+    font-weight: 500;
   }
 
   input {
-    .border(false);
+    .border(true, @border-all, @color-transparent, @border-width-2);
 
     display: flex;
     flex: 1;
