@@ -90,51 +90,51 @@ describe.only('loadReporting action', () => {
     ])
 
     const expected = [
-    {
-      data: [
-        '1111',
-      ],
-      type: 'UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS'
-    },
-    {
-      data: {
-        marketIds: [
+      {
+        data: [
           '1111',
-        ]
+        ],
+        type: 'UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS',
       },
-      type: 'LOAD_MARKETS_INFO'
-    },
-    {
-      data: [
-        '2222',
-        '3333',
-      ],
-      type: 'UPDATE_DESIGNATED_REPORTING_MARKETS'
-    },
-    {
-      data: {
-        marketIds: [
+      {
+        data: {
+          marketIds: [
+            '1111',
+          ],
+        },
+        type: 'LOAD_MARKETS_INFO',
+      },
+      {
+        data: [
           '2222',
           '3333',
         ],
+        type: 'UPDATE_DESIGNATED_REPORTING_MARKETS',
       },
-      type: 'LOAD_MARKETS_INFO'
-    },
-    {
-      data: [
-        '4444',
-      ],
-      type: 'UPDATE_OPEN_REPORTING_MARKETS',
-    },
-    {
-      data: {
-        marketIds: [
+      {
+        data: {
+          marketIds: [
+            '2222',
+            '3333',
+          ],
+        },
+        type: 'LOAD_MARKETS_INFO',
+      },
+      {
+        data: [
           '4444',
-        ]
+        ],
+        type: 'UPDATE_OPEN_REPORTING_MARKETS',
       },
-      type: 'LOAD_MARKETS_INFO',
-    },
-  ]
+      {
+        data: {
+          marketIds: [
+            '4444',
+          ],
+        },
+        type: 'LOAD_MARKETS_INFO',
+      },
+    ]
     const actual = store.getActions()
     // actions include load market info actions
     assert.lengthOf(actual, 6)
