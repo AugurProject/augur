@@ -47,8 +47,7 @@ export default class CreateMarketLiquidity extends Component {
       maxPrice: new BigNumber(1),
       selectedNav: BID,
     }
-    this.state.selectedOutcome = this.props.newMarket.type === SCALAR ? 0 : ''
-    this.state.selectedOutcome = this.props.newMarket.type === BINARY ? 1 : ''
+    this.state.selectedOutcome = this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : ''
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this)
