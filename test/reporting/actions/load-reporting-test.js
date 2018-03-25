@@ -9,7 +9,7 @@ import { constants } from 'src/services/augurjs'
 
 import { loadReporting, __RewireAPI__ as loadReportingRewire } from 'modules/reporting/actions/load-reporting'
 
-describe('loadReporting action', () => {
+describe.only('loadReporting action', () => {
   const loginAccountAddress = '22222222'
   const universeAddress = '1010101'
 
@@ -47,7 +47,15 @@ describe('loadReporting action', () => {
     submitRequestStub = stub(mockAugur.augurNode, 'submitRequest')
 
     loadReportingRewire.__Rewire__('augur', mockAugur)
-    loadReportingRewire.__Rewire__('loadMarketsInfo', () => () => {})
+    loadReportingRewire.__Rewire__('loadMarketsInfo', (marketIds, callback) => {
+      callback(null)
+      return {
+        type: 'LOAD_MARKETS_INFO',
+        data: {
+          marketIds,
+        },
+      }
+    })
 
     store = mockStore(initialStoreState)
   })
@@ -81,8 +89,56 @@ describe('loadReporting action', () => {
       '4444',
     ])
 
+    const expected = [
+    {
+      data: [
+        '1111',
+      ],
+      type: 'UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS'
+    },
+    {
+      data: {
+        marketIds: [
+          '1111',
+        ]
+      },
+      type: 'LOAD_MARKETS_INFO'
+    },
+    {
+      data: [
+        '2222',
+        '3333',
+      ],
+      type: 'UPDATE_DESIGNATED_REPORTING_MARKETS'
+    },
+    {
+      data: {
+        marketIds: [
+          '2222',
+          '3333',
+        ],
+      },
+      type: 'LOAD_MARKETS_INFO'
+    },
+    {
+      data: [
+        '4444',
+      ],
+      type: 'UPDATE_OPEN_REPORTING_MARKETS',
+    },
+    {
+      data: {
+        marketIds: [
+          '4444',
+        ]
+      },
+      type: 'LOAD_MARKETS_INFO',
+    },
+  ]
     const actual = store.getActions()
-    assert.lengthOf(actual, 3)
+    // actions include load market info actions
+    assert.lengthOf(actual, 6)
+    assert.deepEqual(actual, expected, 'Did not get correct actions')
   })
 
   describe('upon error', () => {
