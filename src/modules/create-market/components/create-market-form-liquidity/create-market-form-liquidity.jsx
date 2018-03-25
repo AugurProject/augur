@@ -239,7 +239,7 @@ export default class CreateMarketLiquidity extends Component {
 
     switch (this.props.newMarket.type) {
       case BINARY:
-        outcome = this.state.selectedOutcome === 'Yes' ? 1 : 0
+        outcome = this.state.selectedOutcome = 1
         break
       case SCALAR:
         outcome = this.state.selectedOutcome
@@ -400,11 +400,7 @@ export default class CreateMarketLiquidity extends Component {
                   <label>Outcome</label>
                   <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'], StylesForm['CreateMarketForm__radio-buttons'])}>
                     <li>
-                      <button
-                        className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'Yes' })}
-                        onClick={() => this.setState({ selectedOutcome: 'Yes' })}
-                      >Yes
-                      </button>
+                      {s.selectedOutcome === 'Yes' }
                     </li>
                   </ul>
                 </li>
