@@ -99,7 +99,7 @@ describe('create-market-form-outcome', () => {
           const newMarketObj = updateNewMarketSpy.args[0][0]
 
           assert.equal(newMarketObj.tickSize, '-7')
-          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size cannot be below zero.')
+          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size cannot be negative.')
         })
       })
 
@@ -116,7 +116,7 @@ describe('create-market-form-outcome', () => {
         })
 
         it('should set validation message to true', () => {
-          assert.isTrue(newMarketObj.validations[newMarketObj.currentStep].tickSize)
+          assert.equal(newMarketObj.validations[newMarketObj.currentStep].tickSize, 'Tick size is required.')
         })
       })
 

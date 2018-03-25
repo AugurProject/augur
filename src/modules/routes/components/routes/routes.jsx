@@ -22,6 +22,7 @@ const Routes = p => (
     <Route path={makePath(VIEWS.CREATE)} component={COMPONENTS.Create} />
     <AuthenticatedRoute path={makePath(VIEWS.DISPUTE)} component={COMPONENTS.Dispute} />
     <AuthenticatedRoute path={makePath(VIEWS.REPORT)} component={COMPONENTS.Report} />
+    <AuthenticatedRoute path={makePath(VIEWS.MIGRATE_REP)} component={COMPONENTS.MigrateRep} />
     <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={COMPONENTS.Portfolio} />
     <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={COMPONENTS.Portfolio} />

@@ -262,7 +262,7 @@ export default class CreateMarketLiquidity extends Component {
       marketCreatorFeeRate: this.props.newMarket.settlementFee,
       reportingFeeRate: 0,
       shareBalances,
-      singleOutcomeOrderBook: this.props.newMarket.orderBook[outcome],
+      singleOutcomeOrderBook: this.props.newMarket.orderBook[outcome] || {},
     }
     const action = augur.trading.simulateTrade(orderInfo)
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
@@ -363,18 +363,20 @@ export default class CreateMarketLiquidity extends Component {
         <li className={Styles.CreateMarketLiquidity__settlement}>
           <label htmlFor="cm__input--settlement" className={Styles.CreateMarketLiquidity__settlementLabel}>
             <span>Settlement Fee</span>
-            { p.newMarket.validations[p.newMarket.currentStep].settlementFee.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon} { p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
-            }
           </label>
-          <input
-            id="cm__input--settlement"
-            type="number"
-            value={p.newMarket.settlementFee}
-            placeholder="0%"
-            onChange={e => p.validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
-          />
-          <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
+          <div>
+            <input
+              id="cm__input--settlement"
+              type="number"
+              value={p.newMarket.settlementFee}
+              placeholder="0%"
+              onChange={e => p.validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
+            />
+            <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
+          </div>
+          { p.newMarket.validations[p.newMarket.currentStep].settlementFee.length &&
+            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon} { p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
+          }
         </li>
         <li>
           <label>

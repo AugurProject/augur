@@ -20,6 +20,7 @@ export default class CreateMarketForm extends Component {
     categories: PropTypes.array.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
+    availableRep: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
     submitNewMarket: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
@@ -99,7 +100,8 @@ export default class CreateMarketForm extends Component {
         updatedMarket.validations[currentStep][fieldName] = `The ${humanName} field is required.`
         break
       case (value > max || value < min):
-        updatedMarket.validations[currentStep][fieldName] = `Please enter a ${humanName} between ${min} and ${max}.`
+        updatedMarket.validations[currentStep][fieldName] = `${humanName}`.charAt(0).toUpperCase()
+        updatedMarket.validations[currentStep][fieldName] += `${humanName} must be between ${min} and ${max}.`.slice(1)
         break
       default:
         updatedMarket.validations[currentStep][fieldName] = true
@@ -175,6 +177,8 @@ export default class CreateMarketForm extends Component {
               <CreateMarketReview
                 meta={p.meta}
                 newMarket={p.newMarket}
+                availableEth={p.availableEth}
+                availableRep={p.availableRep}
                 universe={p.universe}
               />
             }
