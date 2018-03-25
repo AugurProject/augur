@@ -1,13 +1,16 @@
 @import (reference) '~assets/styles/shared';
 
 .TopBar {
+  align-items: center;
   background: @color-gray;
+  display: flex;
   font-size: @font-size-medium;
   height: 100%;
   padding-left: 18.4rem;
 
-  section {
+  > div {
     display: flex;
+    width: 100%;
   }
 }
 
@@ -21,31 +24,26 @@
 }
 
 .TopBar__stat {
+  align-items: center;
   display: flex;
   letter-spacing: 0.05em;
-  line-height: 2.6rem;
   margin: 0 1.5rem;
 }
 
 .TopBar__notifications {
   color: @color-white;
-  display: inline-block;
-  font-size: @font-size-rather-large;
-  letter-spacing: 0.05em;
-  line-height: 2.6rem;
-  text-align: center;
 }
 
 .TopBar__notification-icon {
   margin-right: 2rem;
-  vertical-align: middle;
-  width: @font-size-rather-large;
+  width: 1.2rem;
 }
 
 .TopBar__stat-label {
-  color: fadeout(@color-white, 75);
+  color: @color-white;
   display: inline;
-  margin-right: 0.25rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
 }
 
 .TopBar__stat-value {
@@ -53,7 +51,13 @@
 }
 
 .TopBar__logo-text {
+  color: @color-white;
   display: none;
+  font-size: @font-size-medium;
+  letter-spacing: 0.0625em;
+  line-height: @font-size-medium;
+  margin: -2px 0.625rem 0 0;
+  text-transform: uppercase;
 }
 
 @media @breakpoint-mobile {
@@ -64,14 +68,7 @@
   .TopBar__stat { display: none; }
 
   .TopBar__logo-text {
-    color: @color-white;
     display: block;
-    float: right;
-    font-size: @font-size-medium;
-    letter-spacing: 0.0625em;
-    line-height: 1.4rem;
-    margin-right: 0.625rem;
-    text-transform: uppercase;
   }
 
   .TopBar__notification-icon {

@@ -1,5 +1,90 @@
 @import (reference) '~assets/styles/shared';
 
+.ClaimAllSection {
+  margin-bottom: 3.75rem;
+
+  &__heading {
+    &:extend(.caps--large);
+
+    color: @color-white;
+    margin-bottom: 2rem;
+    padding: 0 2rem;
+  }
+}
+
+.ClaimableFees {
+  border-bottom: 1px rgba(151, 151, 151, 0.31) solid;
+  margin-left: 2em;
+  margin-right: 2em;
+
+  &__button--wrapper {
+    margin: auto;
+    max-width: 81.25rem;
+    padding: 0 2rem;
+  }
+
+  &__cta {
+    &:extend(.button--white--short all);
+
+    margin-top: 2rem;
+    white-space: nowrap;
+  }
+
+  &__fees {
+    color: @color-white;
+    display: flex;
+    font-size: @font-size-large;
+    justify-content: space-between;
+    letter-spacing: 0;
+    margin-bottom: 2.125rem;
+  }
+
+  &__fees--amount {
+    float: right;
+    font-size: 18px;
+    text-align: left;
+  }
+
+  &__fees--denomination {
+    float: left;
+    font-size: 12px;
+    margin-top: 0.416rem;
+    width: 138px;
+  }
+
+  &__fees--list {
+    > li {
+      margin-bottom: 1.125rem;
+      padding-bottom: 1.125rem;
+    }
+  }
+
+  &__message {
+    color: @color-lightgray;
+    font-size: @font-size-large;
+    padding: 0.625rem 1em 0.625rem 0;
+  }
+
+  @media @breakpoint-mobile {
+    flex-flow: wrap;
+    justify-content: flex-end;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 0;
+
+    &__message {
+      padding: 1rem 1em 1.2rem;
+      text-align: center;
+      width: 100%;
+    }
+
+    &__cta {
+      border-radius: 0;
+      width: 100%;
+    }
+  }
+}
+
 .NoMarkets__container {
   color: @color-lightgray;
   font-size: @font-size-large;
