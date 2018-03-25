@@ -45,9 +45,10 @@ export default class CreateMarketLiquidity extends Component {
       orderEstimate: '',
       minPrice: new BigNumber(0),
       maxPrice: new BigNumber(1),
-      selectedOutcome: this.props.newMarket.type === SCALAR ? 0 : '',
       selectedNav: BID,
     }
+    this.state.selectedOutcome = this.props.newMarket.type === SCALAR ? 0 : ''
+    this.state.selectedOutcome = this.props.newMarket.type === BINARY ? 1 : ''
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this)
@@ -110,14 +111,6 @@ export default class CreateMarketLiquidity extends Component {
       }, this.validateForm)
     }
   }
-
-  // handleRemoveOrder(type, orderToRemove, i) {
-  //   const orderToRemoveIndex = this.props.newMarket.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity)
-
-  //   this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex })
-
-  //   this.updateInitialLiquidityCosts(this.props.newMarket.orderBook[this.state.selectedOutcome][orderToRemoveIndex], true)
-  // }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
     const oppositeSide = selectedSide === BID ? ASK : BID
@@ -238,17 +231,16 @@ export default class CreateMarketLiquidity extends Component {
     let initialLiquidityFees
 
     switch (this.props.newMarket.type) {
-      case BINARY:
-        outcome = this.state.selectedOutcome = 1
+      case CATEGORICAL:
+        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
+          if (this.state.selectedOutcome === outcomeName) outcome = index
+        })
         break
       case SCALAR:
         outcome = this.state.selectedOutcome
         break
       default:
-        // categorical
-        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
-          if (this.state.selectedOutcome === outcomeName) outcome = index
-        })
+        outcome = 1
     }
 
     const orderInfo = {
@@ -303,33 +295,33 @@ export default class CreateMarketLiquidity extends Component {
     let isOrderValid
 
     // Validate Quantity
-    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
+    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(new BigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
       errors.quantity.push('Insufficient funds')
       errors.price.push('Insufficient funds')
-    } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
+    } else if (orderQuantity !== '' && orderQuantity.lte(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
       const bids = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
       const asks = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
 
       if (this.props.newMarket.type !== SCALAR) {
-        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-        } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+        } else if (orderPrice.gt(this.state.maxPrice)) {
           errors.price.push('Price cannot exceed 1')
-        } else if (orderPrice.lessThan(this.state.minPrice)) {
+        } else if (orderPrice.lt(this.state.minPrice)) {
           errors.price.push('Price cannot be below 0')
         }
-      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
         errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
         errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-      } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+      } else if (orderPrice.gt(this.state.maxPrice)) {
         errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`)
-      } else if (orderPrice.lessThan(this.state.minPrice)) {
+      } else if (orderPrice.lt(this.state.minPrice)) {
         errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`)
       }
     }
@@ -395,16 +387,6 @@ export default class CreateMarketLiquidity extends Component {
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
-              { p.newMarket.type === BINARY &&
-                <li>
-                  <label>Outcome</label>
-                  <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'], StylesForm['CreateMarketForm__radio-buttons'])}>
-                    <li>
-                      {s.selectedOutcome === 'Yes' }
-                    </li>
-                  </ul>
-                </li>
-              }
               { p.newMarket.type === CATEGORICAL &&
                 <li>
                   <label>Outcome</label>
