@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import PortfolioReports from 'modules/portfolio/components/portfolio-reports/portfolio-reports'
+
+import loadClaimableFees from 'modules/portfolio/actions/load-claimable-fees'
 
 const mapStateToProps = (state) => {
   const name = ''
@@ -11,9 +12,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-
+  claimableFees: () => dispatch(loadClaimableFees()),
 })
 
-const ReportListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(PortfolioReports))
-
-export default ReportListContainer
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioReports)
