@@ -21,17 +21,17 @@ Also make sure git is installed and in your execution path.
 
     git clone https://github.com/AugurProject/augur.git
     cd <augur repository>
-    docker build .
+    docker build . -t augurclient
 
 The above steps pull down the augur client code and build the docker file. Take note of the message `Successfully built <image hash>` you will need the image hash next.
 
 Run the following command to bring up the newly built docker image and map port 80 to internal docker container port 80. The "RUN_LOCAL_ONLY=true" tells the docker container to bypass starting up ipfs. More on ipfs later.
 
-    docker run -e "RUN_LOCAL_ONLY=true" -p 80:80 <docker image hash>
+    docker run -e "RUN_LOCAL_ONLY=true" -p 80:80 augurclient 
 
-Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost/index.html.
+Once the docker continer is up and listening, you will see message `Now listening ...`, point your web browser to http://localhost
 
-To stop your docker container, run these commands in a different command prompt:
+To stop your docker container, run these commands in a different command prompt and look for the container id that is running augurclient image:
 
     docker ps
     docker stop <docker container id>
@@ -60,13 +60,13 @@ The same dockerfile describe above is used to host a ipfs node. Side note, if yo
 
     git clone https://github.com/AugurProject/augur.git
     cd <augur repository>
-    docker build .
+    docker build . -t augurclient
 
 After docker image has been built successfully, check for message `Successfully built <image hash>`, run it with -p to map port to the internal docker container port, ipfs swarm will serve up files via port 4001. Optionally port 8001 uses nginx to pass requests to ipfs gateway hosted in the docker container. 
 
-    docker run -p 4001:4001 -p 8001:8001 <image hash>
+    docker run -p 4001:4001 -p 8001:8001 -t augurclient
 
-Example using an ipfs gateway: Make sure the container is fully up and you see `Now listening ...`, then point your web browser to:
+Example using an ipfs gateway: Make sure the container is fully up and you see `Now listening ...`, the build dir hash will be in the output `Using build dir hash <build dir has>`, then point your web browser to:
 
     http://localhost:8001/ipfs/<build dir hash>
 
@@ -74,7 +74,7 @@ If you are running an ipfs node behind a firewall make sure port 4001 traffic fl
 
 You can run as ipfs node and have augur client build directory in one docker container. Here is the command to let docker map all ports for you:
 
-    docker run -P <image hash>
+    docker run -P -t augurclient
 
 This command will tell you which local ports are mapped to ports on the docker container.
 
