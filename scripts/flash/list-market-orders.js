@@ -48,9 +48,10 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
                 var order = orders[orderId];
                 console.log(chalk.green(orderId), chalk.yellow(order.owner), chalk.yellow(order.amount), chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
               });
-              nextOrderType();
+              nextOrderType(null);
             });
-          }, function () {
+          }, function (err) {
+            if (err) console.log(chalk.red(err));
             nextOutcome();
           });
         }, function () {
