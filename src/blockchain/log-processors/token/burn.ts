@@ -21,7 +21,7 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
     blockNumber:     log.blockNumber,
     token,
   };
-  augurEmitter.emit("TokenBurn", tokenBurnDataToInsert);
+  augurEmitter.emit(log.eventName, Object.assign({}, log, tokenBurnDataToInsert));
   db.insert(tokenBurnDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     parallel([
@@ -34,7 +34,7 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
 export function processBurnLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
-  augurEmitter.emit("TokenBurn", log);
+  augurEmitter.emit(log.eventName, log);
   db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     parallel([

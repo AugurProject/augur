@@ -71,7 +71,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         }
         upsertOrder.asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          augurEmitter.emit("OrderCreated", Object.assign(orderData, orderId));
+          augurEmitter.emit("OrderCreated", Object.assign({}, log, orderData));
           callback(null);
         });
       });

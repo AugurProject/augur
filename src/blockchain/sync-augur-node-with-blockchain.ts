@@ -49,7 +49,7 @@ function monitorEthereumNodeHealth(augur: Augur) {
     augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
       if (err) throw err;
       if (universeController !== controller) {
-        throw new Error("Controller mismatch");
+        throw new Error(`Controller mismatch. Configured: ${controller} Found: ${universeController}`);
       }
     });
   }, 5000);

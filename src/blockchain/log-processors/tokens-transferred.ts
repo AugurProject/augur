@@ -23,7 +23,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
   };
   db.insert(tokenTransferDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("TokensTransferred", tokenTransferDataToInsert);
+    augurEmitter.emit("TokensTransferred", Object.assign({}, log, tokenTransferDataToInsert));
     parallel([
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, next),
       (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, next),
