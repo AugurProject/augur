@@ -9,7 +9,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       reporter: "0x0000000000000000000000000000000000000b0b",
       payoutId: 1,
       isDesignatedReporter: false,
-      amountStaked: 102,
+      amountStaked: "102",
       initialReporter: "0x0000000000000000000000000000000000abe123",
       redeemed: false,
     }, {
@@ -17,7 +17,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       reporter: "0x0000000000000000000000000000000000000b0b",
       payoutId: 5,
       isDesignatedReporter: true,
-      amountStaked: 102,
+      amountStaked: "102",
       initialReporter: "0x0000000000000000000000000000000000abe321",
       redeemed: false,
     },

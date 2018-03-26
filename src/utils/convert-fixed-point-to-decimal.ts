@@ -1,14 +1,26 @@
 import BigNumber from "bignumber.js";
 import { fix } from "speedomatic";
 
+export function fixedPointToDecimal(fixedPointValue: BigNumber, conversionFactor: BigNumber): BigNumber {
+  return fixedPointValue.dividedBy(conversionFactor);
+}
+
 export function convertFixedPointToDecimal(fixedPointValue: string|number, conversionFactor: string|number): string {
-  return new BigNumber(fixedPointValue, 10).dividedBy(new BigNumber(conversionFactor, 10)).toFixed();
+  return fixedPointToDecimal(new BigNumber(fixedPointValue, 10), new BigNumber(conversionFactor, 10)).toFixed();
+}
+
+export function decimalToFixedPoint(decimalValue: BigNumber, conversionFactor: BigNumber): BigNumber {
+  return decimalValue.times(conversionFactor);
 }
 
 export function convertDecimalToFixedPoint(decimalValue: string|number, conversionFactor: string|number): string {
-  return new BigNumber(decimalValue, 10).times(new BigNumber(conversionFactor, 10)).toFixed();
+  return decimalToFixedPoint(new BigNumber(decimalValue, 10), new BigNumber(conversionFactor, 10)).toFixed();
+}
+
+export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
+  return maxPrice.minus(minPrice).dividedBy(numTicks);
 }
 
 export function convertNumTicksToTickSize(numTicks: string|number, minPrice: string|number, maxPrice: string|number): string {
-  return (new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))).dividedBy(new BigNumber(numTicks, 10)).toFixed();
+  return numTicksToTickSize(new BigNumber(maxPrice, 10), new BigNumber(minPrice, 10), new BigNumber(numTicks, 10)).toFixed();
 }

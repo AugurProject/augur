@@ -22,7 +22,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x00000000000000000000000000000fffffffff11",
       outcome: 1,
       orderType: "buy",
-      price: 2,
+      price: "2",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -38,7 +38,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: 0.4,
+      price: "0.4",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -54,7 +54,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: 0.99,
+      price: "0.99",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);
@@ -70,7 +70,7 @@ describe("server/getters/get-better-worse-orders", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: "buy",
-      price: 0.65,
+      price: "0.65",
     },
     assertions: (err, betterWorseOrders) => {
       assert.isNull(err);

@@ -13,6 +13,6 @@ export function getCategories(db: Knex, universe: Address, sortBy: string|null|u
   query.asCallback((err: Error|null, categoriesInfo?: Array<CategoriesRow>): void => {
     if (err) return callback(err);
     if (!categoriesInfo) return callback(null);
-    callback(null, categoriesInfo);
+    callback(null, categoriesInfo.map((categoryInfo: CategoriesRow): CategoriesRow => Object.assign(categoryInfo, { popularity: categoryInfo.popularity.toString() })));
   });
 }

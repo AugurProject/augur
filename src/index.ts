@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import * as sqlite3 from "sqlite3";
+import { postProcessDatabaseResults } from "./server/post-process-database-results";
 import { checkAugurDbSetup } from "./setup/check-augur-db-setup";
 import { syncAugurNodeWithBlockchain } from "./blockchain/sync-augur-node-with-blockchain";
 import { runServer } from "./server/run-server";
@@ -26,6 +27,7 @@ if (process.env.DATABASE_URL) {
     },
     acquireConnectionTimeout: 5 * 60 * 1000,
     useNullAsDefault: true,
+    postProcessResponse: postProcessDatabaseResults,
   });
 }
 

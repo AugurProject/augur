@@ -2,6 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { processOrderCanceledLog, processOrderCanceledLogRemoval } = require("../../../build/blockchain/log-processors/order-canceled");
 
 describe("blockchain/log-processors/order-canceled", () => {
@@ -57,12 +58,12 @@ describe("blockchain/log-processors/order-canceled", () => {
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "CANCELED",
-          fullPrecisionPrice: 0.7,
-          fullPrecisionAmount: 1,
-          price: 0.7,
-          amount: 1,
-          tokensEscrowed: 0.7,
-          sharesEscrowed: 0,
+          fullPrecisionPrice: new BigNumber("0.7", 10),
+          fullPrecisionAmount: new BigNumber("1", 10),
+          price: new BigNumber("0.7", 10),
+          amount: new BigNumber("1", 10),
+          tokensEscrowed: new BigNumber("0.7", 10),
+          sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
           isRemoved: null,
         }]);
@@ -80,12 +81,12 @@ describe("blockchain/log-processors/order-canceled", () => {
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "OPEN",
-          fullPrecisionPrice: 0.7,
-          fullPrecisionAmount: 1,
-          price: 0.7,
-          amount: 1,
-          tokensEscrowed: 0.7,
-          sharesEscrowed: 0,
+          fullPrecisionPrice: new BigNumber("0.7", 10),
+          fullPrecisionAmount: new BigNumber("1", 10),
+          price: new BigNumber("0.7", 10),
+          amount: new BigNumber("1", 10),
+          tokensEscrowed: new BigNumber("0.7", 10),
+          sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
           isRemoved: null,
         }]);

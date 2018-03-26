@@ -28,31 +28,36 @@ function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCal
   callback(null);
 }
 
-const ignoreLog: EventLogProcessor = {
+const passThroughLog: EventLogProcessor = {
   add: noop,
   remove: noop,
-  noAutoEmit: true,
+  noAutoEmit: false,
 };
 
 export const logProcessors: LogProcessors = {
   Augur: {
     FeeWindowCreated: {
+      noAutoEmit: true,
       add: processFeeWindowCreatedLog,
       remove: processFeeWindowCreatedLogRemoval,
     },
     InitialReportSubmitted: {
+      noAutoEmit: true,
       add: processInitialReportSubmittedLog,
       remove: processInitialReportSubmittedLogRemoval,
     },
     InitialReporterRedeemed: {
+      noAutoEmit: true,
       add: processInitialReporterRedeemedLog,
       remove: processInitialReporterRedeemedLogRemoval,
     },
     InitialReporterTransferred: {
+      noAutoEmit: true,
       add: processInitialReporterTransferredLog,
       remove: processInitialReporterTransferredLogRemoval,
     },
     MarketCreated: {
+      noAutoEmit: true,
       add: processMarketCreatedLog,
       remove: processMarketCreatedLogRemoval,
     },
@@ -61,6 +66,7 @@ export const logProcessors: LogProcessors = {
       remove: processMarketFinalizedLogRemoval,
     },
     OrderCanceled: {
+      noAutoEmit: true,
       add: processOrderCanceledLog,
       remove: processOrderCanceledLogRemoval,
     },
@@ -75,18 +81,22 @@ export const logProcessors: LogProcessors = {
       remove: processOrderFilledLogRemoval,
     },
     DisputeCrowdsourcerCreated: {
+      noAutoEmit: true,
       add: processDisputeCrowdsourcerCreatedLog,
       remove: processDisputeCrowdsourcerCreatedLogRemoval,
     },
     DisputeCrowdsourcerContribution: {
+      noAutoEmit: true,
       add: processDisputeCrowdsourcerContributionLog,
       remove: processDisputeCrowdsourcerContributionLogRemoval,
     },
     DisputeCrowdsourcerCompleted: {
+      noAutoEmit: true,
       add: processDisputeCrowdsourcerCompletedLog,
       remove: processDisputeCrowdsourcerCompletedLogRemoval,
     },
     TokensBurned: {
+      noAutoEmit: true,
       add: processBurnLog,
       remove: processBurnLogRemoval,
     },
@@ -95,14 +105,17 @@ export const logProcessors: LogProcessors = {
       remove: processMintLogRemoval,
     },
     TokensTransferred: {
+      noAutoEmit: true,
       add: processTokensTransferredLog,
       remove: processTokensTransferredLogRemoval,
     },
     TradingProceedsClaimed: {
+      noAutoEmit: true,
       add: processTradingProceedsClaimedLog,
       remove: processTradingProceedsClaimedLogRemoval,
     },
     UniverseCreated: {
+      noAutoEmit: true,
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
@@ -119,14 +132,16 @@ export const logProcessors: LogProcessors = {
       remove: processTimestampSetLogRemoval,
     },
     CompleteSetsPurchased: {
+      noAutoEmit: true,
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
     CompleteSetsSold: {
+      noAutoEmit: true,
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
-    UniverseForked: ignoreLog,
+    UniverseForked: passThroughLog,
   },
   LegacyReputationToken: {
     Transfer: {
@@ -134,6 +149,7 @@ export const logProcessors: LogProcessors = {
       remove: processTokensTransferredLogRemoval,
     },
     Approval: {
+      noAutoEmit: true,
       add: processApprovalLog,
       remove: processApprovalLogRemoval,
     },
@@ -141,7 +157,7 @@ export const logProcessors: LogProcessors = {
       add: processMintLog,
       remove: processMintLogRemoval,
     },
-    FundedAccount: ignoreLog,
+    FundedAccount: passThroughLog,
   },
   Cash: {
     Transfer: {
@@ -149,6 +165,7 @@ export const logProcessors: LogProcessors = {
       remove: processTokensTransferredLogRemoval,
     },
     Approval: {
+      noAutoEmit: true,
       add: processApprovalLog,
       remove: processApprovalLogRemoval,
     },
@@ -157,6 +174,7 @@ export const logProcessors: LogProcessors = {
       remove: processMintLogRemoval,
     },
     Burn: {
+      noAutoEmit: true,
       add: processBurnLog,
       remove: processBurnLogRemoval,
     },

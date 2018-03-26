@@ -82,8 +82,8 @@ describe("server/getters/get-dispute-info", () => {
         },
         {
           marketId: "0x0000000000000000000000000000000000000011",
-          stakeCompletedTotal: "30000",
-          bondSizeOfNewStake: "60000",
+          stakeCompletedTotal: "30102",
+          bondSizeOfNewStake: "60204",
           stakes: [
             {
               payout: [
@@ -96,9 +96,9 @@ describe("server/getters/get-dispute-info", () => {
               accountStakeCurrent: "0",
               accountStakeTotal: "17",
               stakeRemaining: "0",
-              bondSizeTotal: "40000",
+              bondSizeTotal: "40102",
               accountStakeCompleted: "17",
-              stakeCompleted: "10000",
+              stakeCompleted: "10102",
               tentativeWinning: false,
             },
             {
@@ -199,8 +199,8 @@ describe("server/getters/get-dispute-info", () => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000011",
-          stakeCompletedTotal: "30000",
-          bondSizeOfNewStake: "60000",
+          stakeCompletedTotal: "30102",
+          bondSizeOfNewStake: "60204",
           stakes: [
             {
               payout: [
@@ -213,9 +213,9 @@ describe("server/getters/get-dispute-info", () => {
               accountStakeCurrent: "0",
               accountStakeTotal: "0",
               stakeRemaining: "0",
-              bondSizeTotal: "40000",
+              bondSizeTotal: "40102",
               accountStakeCompleted: "0",
-              stakeCompleted: "10000",
+              stakeCompleted: "10102",
               tentativeWinning: false,
             },
             {

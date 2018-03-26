@@ -1,7 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback } from "../../types";
-import { augurEmitter } from "../../events";
 import { rollbackMarketState, updateMarketState } from "./database";
 import { parallel } from "async";
 
@@ -11,7 +10,6 @@ export function processMarketFinalizedLog(db: Knex, augur: Augur, log: Formatted
     (next) => db("payouts").where({ marketId: log.market, tentativeWinning: 1 }).update("winning", 1).asCallback(next),
   ], (err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("MarketFinalized", log);
     callback(null);
   });
 }
@@ -22,7 +20,6 @@ export function processMarketFinalizedLogRemoval(db: Knex, augur: Augur, log: Fo
     (next) => db("payouts").where({ marketId: log.market }).update({winning: null}).asCallback(next),
   ], (err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("MarketFinalized", log);
     callback(null);
   });
 }

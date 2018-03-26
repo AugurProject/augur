@@ -2,6 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { processMintLog, processMintLogRemoval } = require("../../../build/blockchain/log-processors/token/mint");
 
 describe("blockchain/log-processors/tokens-minted", () => {
@@ -37,7 +38,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
         blockNumber: 1400101,
         target: "FROM_ADDRESS",
         token: "TOKEN_ADDRESS",
-        amount: 10,
+        amount: new BigNumber("10", 10),
       },
       augur: {},
     },
@@ -47,8 +48,8 @@ describe("blockchain/log-processors/tokens-minted", () => {
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
-          balance: 9011,
-          supply: 9011,
+          balance: new BigNumber("9011", 10),
+          supply: new BigNumber("9011", 10),
         }]);
       },
       onRemoved: (err, records) => {
@@ -56,8 +57,8 @@ describe("blockchain/log-processors/tokens-minted", () => {
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
-          balance: 9001,
-          supply: 9001,
+          balance: new BigNumber("9001", 10),
+          supply: new BigNumber("9001", 10),
         }]);
       },
     },

@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("chai").assert;
+const { BigNumber } = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const { processTradingProceedsClaimedLog, processTradingProceedsClaimedLogRemoval } = require("../../../build/blockchain/log-processors/trading-proceeds-claimed");
 
@@ -38,8 +39,8 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
         market: "MARKET_ADDRESS",
         shareToken: "SHARE_TOKEN_ADDRESS",
         sender: "FROM_ADDRESS",
-        numShares: 140,
-        numPayoutTokens: 9000,
+        numShares: new BigNumber("140", 10),
+        numPayoutTokens: new BigNumber("9000", 10),
       },
     },
     assertions: {
@@ -48,8 +49,8 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
         assert.deepEqual(records, [{
           account: "FROM_ADDRESS",
           marketId: "MARKET_ADDRESS",
-          numPayoutTokens: 9000,
-          numShares: 140,
+          numShares: new BigNumber("140", 10),
+          numPayoutTokens: new BigNumber("9000", 10),
           shareToken: "SHARE_TOKEN_ADDRESS",
         }]);
       },
