@@ -9,7 +9,7 @@ import { constants } from 'src/services/augurjs'
 
 import { loadReporting, __RewireAPI__ as loadReportingRewire } from 'modules/reporting/actions/load-reporting'
 
-describe.only('loadReporting action', () => {
+describe('loadReporting action', () => {
   const loginAccountAddress = '22222222'
   const universeAddress = '1010101'
 
