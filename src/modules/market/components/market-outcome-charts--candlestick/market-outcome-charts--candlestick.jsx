@@ -129,16 +129,6 @@ export default class MarketOutcomeCandlestick extends Component {
     // * Handle dynamic width adjustment of y axis labels
 
     if (this.drawContainer) {
-      // Faux DOM
-      //  Tick Element (Fixed)
-      const candleTicksContainer = new ReactFauxDOM.Element('div')
-      candleTicksContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__ticks-container']}`)
-      candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
-      //  Chart Element (Scrollable)
-      const candleChartContainer = new ReactFauxDOM.Element('div')
-      candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
-      candleChartContainer.setAttribute('key', 'candlestick_chart_container')
-
       const drawParams = determineDrawParams({
         drawContainer: this.drawContainer,
         sharedChartMargins,
@@ -148,9 +138,23 @@ export default class MarketOutcomeCandlestick extends Component {
         fixedPrecision,
       })
 
+      // Faux DOM
+      //  Tick Element (Fixed)
+      const candleTicksContainer = new ReactFauxDOM.Element('div')
+      candleTicksContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__ticks-container']}`)
+      candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
+      //  Chart Element (Scrollable)
+      const candleChartContainer = new ReactFauxDOM.Element('div')
+      candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
+      candleChartContainer.setAttribute('key', 'candlestick_chart_container')
+      candleChartContainer.setAttribute('style', {
+        width: `${drawParams.containerWidth - drawParams.chartDim.left - drawParams.chartDim.gap}px`,
+        left: drawParams.chartDim.left,
+      })
+
       const candleTicks = d3.select(candleTicksContainer)
         .append('svg')
-        .attr('width', drawParams.containerWidth)
+        .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
         .attr('height', drawParams.containerHeight)
       const candleChart = d3.select(candleChartContainer)
         .append('svg')
