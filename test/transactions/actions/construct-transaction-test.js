@@ -22,30 +22,6 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
   describe('constructBasicTransaction', () => {
     const test = t => it(t.description, () => t.assertions())
     test({
-      description: 'should return the expected object with no arguments passed',
-      assertions: () => {
-        const actual = constructBasicTransaction()
-        const expected = {
-          hash: undefined,
-          status: 'success',
-        }
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-    test({
-      description: 'should return the expected object with just hash and status passed',
-      assertions: () => {
-        const hash = '0xHASH'
-        const status = 'status'
-        const actual = constructBasicTransaction(hash, null, null, null, status)
-        const expected = {
-          hash,
-          status,
-        }
-        assert.deepEqual(actual, expected, `Didn't return the expected object`)
-      },
-    })
-    test({
       description: 'should return the expected object with all arguments passed',
       assertions: () => {
         const hash = '0xHASH'
@@ -247,7 +223,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           validityBond: '10',
           category: 'Testing',
         }
-        const description = 'test description~|>one|two|three'
+        const description = 'test description'
         const actual = action.constructCreateMarketTransaction(log, description)
         const expected = {
           data: {
@@ -276,7 +252,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           validityBond: '10',
           category: 'Testing',
         }
-        const description = 'test description~|>one|two|three'
+        const description = 'test description'
         const actual = action.constructCreateMarketTransaction(log, description)
         const expected = {
           data: {

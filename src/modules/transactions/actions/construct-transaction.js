@@ -10,11 +10,12 @@ import { formatEther, formatPercent, formatRep, formatShares } from 'utils/forma
 import { formatDate } from 'utils/format-date'
 import logError from 'utils/log-error'
 
-export const constructBasicTransaction = (hash, blockNumber, timestamp, gasFees, status = SUCCESS) => {
+export const constructBasicTransaction = (hash, blockNumber, timestamp, gasFees = 0, status = SUCCESS) => {
   const transaction = { hash, status }
   if (blockNumber) transaction.blockNumber = blockNumber
-  if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000))
   if (gasFees) transaction.gasFees = formatEther(gasFees)
+  const timestampMilliseconds = timestamp != null ? new BigNumber(timestamp, 10).times(1000).toNumber() : Date.now()
+  transaction.timestamp = formatDate(new Date(timestampMilliseconds))
   return transaction
 }
 
@@ -36,8 +37,8 @@ export function constructApprovalTransaction(log) {
 
 export function constructCreateMarketTransaction(log, description) {
   const transaction = { data: {} }
-  transaction.type = TYPES.CREATE_MARKET
-  transaction.description = description.split('~|>')[0] // eslint-disable-line prefer-destructuring
+  transaction.type = log.eventName
+  transaction.description = description
   transaction.category = log.category
   transaction.marketCreationFee = formatEther(log.marketCreationFee)
   transaction.data.marketId = log.marketId ? log.marketId : null
@@ -49,7 +50,7 @@ export function constructCreateMarketTransaction(log, description) {
 
 export function constructTradingProceedsClaimedTransaction(log, market) {
   const transaction = { data: {} }
-  transaction.type = TYPES.CLAIM_TRADING_PROCEEDS
+  transaction.type = log.eventName
   transaction.description = market.description
   if (log.payoutTokens) {
     transaction.data.balances = [{
@@ -92,28 +93,26 @@ export const constructCancelOrderTransaction = (log, marketId, marketType, descr
   const formattedShares = formatShares(log.amount)
   const action = log.inProgress ? 'canceling' : 'canceled'
   const transaction = {
-    [log.transactionHash]: {
-      type: TYPES.CANCEL_ORDER,
-      status,
-      description,
-      data: {
-        order: { type: log.orderType, shares: formattedShares },
-        marketType,
-        outcome: { name: outcomeName || outcomeId },
-        outcomeId,
-        marketId,
-      },
-      message: `${action} order to ${log.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
-      numShares: formattedShares,
-      noFeePrice: formattedPrice,
-      avgPrice: formattedPrice,
-      timestamp: formatDate(new Date(log.timestamp * 1000)),
-      hash: log.transactionHash,
-      totalReturn: log.inProgress ? null : formatEther(log.cashRefund),
-      gasFees: log.gasFees && new BigNumber(log.gasFees, 10).gt(ZERO) ? formatEther(log.gasFees) : null,
-      blockNumber: log.blockNumber,
-      orderId: log.orderId,
+    type: log.eventName,
+    status,
+    description,
+    data: {
+      order: { type: log.orderType, shares: formattedShares },
+      marketType,
+      outcome: { name: outcomeName || outcomeId },
+      outcomeId,
+      marketId,
     },
+    message: `${action} order to ${log.orderType} ${formattedShares.full} for ${formattedPrice.full} each`,
+    numShares: formattedShares,
+    noFeePrice: formattedPrice,
+    avgPrice: formattedPrice,
+    timestamp: formatDate(new Date(log.timestamp * 1000)),
+    hash: log.transactionHash,
+    totalReturn: log.inProgress ? null : formatEther(log.cashRefund),
+    gasFees: log.gasFees && new BigNumber(log.gasFees, 10).gt(ZERO) ? formatEther(log.gasFees) : null,
+    blockNumber: log.blockNumber,
+    orderId: log.orderId,
   }
   return transaction
 }
@@ -229,43 +228,38 @@ export const constructFillOrderTransaction = (log, marketId, marketType, descrip
 }
 
 export const constructTradingTransaction = (eventName, log, marketData, outcomeName, status = SUCCESS) => {
-  const {
-    marketType,
-    description,
-    minPrice,
-    maxPrice,
-    settlementFee,
-  } = marketData
+  const { marketType, description, minPrice, maxPrice, settlementFee } = marketData
   switch (eventName) {
-    case TYPES.CANCEL_ORDER:
+    case 'OrderCanceled':
       return constructCancelOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, status)
-    case TYPES.CREATE_ORDER:
+    case 'OrderCreated':
       return constructCreateOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, settlementFee, status)
-    case TYPES.FILL_ORDER:
+    case 'OrderFilled':
       return constructFillOrderTransaction(log, log.marketId, marketType, description, log.outcome, outcomeName, minPrice, maxPrice, settlementFee, status)
     default:
       return null
   }
 }
 
-export const constructTransaction = (eventName, log, callback = logError) => (dispatch, getState) => {
+export const constructTransaction = (log, callback = logError) => (dispatch, getState) => {
+  const { eventName } = log
   console.info('constructTransaction', eventName, log)
   switch (eventName) {
-    case TYPES.APPROVAL:
+    case 'Approval':
       return callback(null, constructApprovalTransaction(log))
-    case TYPES.TRANSFER:
+    case 'Transfer':
       return callback(null, constructTransferTransaction(log, getState().loginAccount.address))
-    case TYPES.CREATE_MARKET:
-    case TYPES.CLAIM_TRADING_PROCEEDS:
-    case TYPES.CANCEL_ORDER:
-    case TYPES.CREATE_ORDER:
-    case TYPES.FILL_ORDER:
+    case 'MarketCreated':
+    case 'TradingProceedsClaimed':
+    case 'OrderCanceled':
+    case 'OrderCreated':
+    case 'OrderFilled':
       return dispatch(loadDataForMarketTransaction(eventName, log, (err, market) => {
         if (err) return callback(err)
         switch (eventName) {
-          case TYPES.CREATE_MARKET:
+          case 'MarketCreated':
             return callback(null, constructCreateMarketTransaction(log, market.description, dispatch))
-          case TYPES.CLAIM_TRADING_PROCEEDS:
+          case 'TradingProceedsClaimed':
             return callback(null, constructTradingProceedsClaimedTransaction(log, market, dispatch))
           default:
             callback(null, constructTradingTransaction(eventName, log, market, getOutcomeName(market.marketType, market.id, log.outcome, getState().outcomesData[market.id])))

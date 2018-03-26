@@ -2,7 +2,7 @@ import { describe, it, afterEach } from 'mocha'
 
 import mockStore from 'test/mockStore'
 
-import { listenToUpdates, __RewireAPI__ as ReWireModule } from 'modules/app/actions/listen-to-updates'
+import { listenToUpdates, __RewireAPI__ as ReWireModule } from 'modules/events/actions/listen-to-updates'
 
 describe('listen-to-updates', () => {
   const test = t => it(t.description, done => t.assertions(done))

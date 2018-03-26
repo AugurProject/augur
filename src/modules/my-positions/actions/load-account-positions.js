@@ -3,7 +3,7 @@ import { updateAccountPositionsData } from 'modules/my-positions/actions/update-
 import logError from 'utils/log-error'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
-export const loadAccountPositions = (options, callback = logError) => (dispatch, getState) => {
+export const loadAccountPositions = (options = {}, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   augur.trading.getUserTradingPositions({ ...options, account: loginAccount.address, universe: universe.id }, (err, positions) => {

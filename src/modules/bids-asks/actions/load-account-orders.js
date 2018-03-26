@@ -4,7 +4,7 @@ import { addOpenOrderTransactions } from 'modules/transactions/actions/add-trans
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { updateOrderBook } from 'modules/bids-asks/actions/update-order-book'
 
-export const loadAccountOrders = (options, callback = logError) => (dispatch, getState) => {
+export const loadAccountOrders = (options = {}, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   augur.trading.getOrders({ ...options, creator: loginAccount.address, universe: universe.id }, (err, orders) => {
     if (err) return callback(err)
