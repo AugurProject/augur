@@ -28,7 +28,7 @@ function approveAccount(augur, params, auth, callback) {
     help(callback);
   } else {
     var account = params;
-    if (account === undefined) {
+    if (account == null) {
       account = auth.address;
     }
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
