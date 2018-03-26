@@ -7,7 +7,7 @@ import MarketsList from 'modules/markets/components/markets-list'
 
 // import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
-// import isEqual from 'lodash/isEqual'
+import isEqual from 'lodash/isEqual'
 
 // import parsePath from 'modules/routes/helpers/parse-path'
 // import makePath from 'modules/routes/helpers/make-path'
@@ -51,7 +51,7 @@ export default class MarketsView extends Component {
     if (
       (this.props.canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
       this.props.location !== nextProps.location ||
-      this.props.hasLoadedCategory !== nextProps.hasLoadedCategory ||
+      !isEqual(this.props.hasLoadedCategory, nextProps.hasLoadedCategory) ||
       (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
       loadMarkets({
@@ -112,7 +112,7 @@ function loadMarkets(options) {
     // Expected behavior is to load a specific category if one is present
     // else, if we aren't searching (which is a local market data search)
     // then load markets (loads all markets)
-    if (category && !options.hasLoadedCategory[category]) {
+    if (category) {
       options.loadMarketsByCategory(category)
     } else if (!category && !search) {
       options.loadMarkets()
