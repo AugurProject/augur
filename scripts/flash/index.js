@@ -20,10 +20,11 @@ var showInitialReporter = require("./show-initial-reporter");
 var fork = require("./fork");
 var approval = require("./approve-account");
 var listMarketOrders = require("./list-market-orders");
+var fillMarketOrders = require("./fill-market-orders");
 
-var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute-contribute", "finalize-market", "push-time", "market-info", "show-initial-reporter", "fork", "approval", "list-market-orders"];
+var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute-contribute", "finalize-market", "push-time", "market-info", "show-initial-reporter", "fork", "approval", "list-market-orders", "fill-market-orders"];
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime, marketInfo, showInitialReporter, fork, approval, listMarketOrders];
+var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime, marketInfo, showInitialReporter, fork, approval, listMarketOrders, fillMarketOrders];
 
 function runCommand(command, params, networks, callback) {
   console.log("networks", networks);
