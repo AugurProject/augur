@@ -19,7 +19,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
     recipient: log.to,
     value: value.toFixed(),
     blockNumber: log.blockNumber,
-    token
+    token,
   };
   db.insert(tokenTransferDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);

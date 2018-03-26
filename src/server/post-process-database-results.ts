@@ -67,7 +67,7 @@ const whitelist: Whitelist = {
     numSharesAdjustedForUserIntention: true,
     realizedProfitLoss: true,
     unrealizedProfitLoss: true,
-    averagePrice: true
+    averagePrice: true,
   },
   initial_reports: {
     amountStaked: true,

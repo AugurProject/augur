@@ -29,7 +29,7 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
         startTime: cur.startTime,
         endTime: cur.endTime,
         balance: cur.balance,
-        expectedFees: cur.balance.times(cur.totalFees).dividedBy(totalStake)
+        expectedFees: cur.balance.times(cur.totalFees).dividedBy(totalStake),
       });
       return acc;
     }, {}));

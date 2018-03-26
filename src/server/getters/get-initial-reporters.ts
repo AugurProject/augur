@@ -10,7 +10,7 @@ export function getInitialReporters(db: Knex, augur: Augur, reporter: Address, r
     .join("balances", "balances.owner", "=", "initial_reports.initialReporter")
     .where({
       reporter,
-      "balances.token": augur.contracts.addresses[augur.rpc.getNetworkID()].ReputationToken
+      "balances.token": augur.contracts.addresses[augur.rpc.getNetworkID()].ReputationToken,
     });
 
   if (withRepBalance) query = query.where("repBalance", ">", "0");

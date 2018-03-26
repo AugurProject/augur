@@ -45,6 +45,6 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
     if (outcome != null) {
       positionsRowsWithNumSharesAdjusted = positionsRowsWithNumSharesAdjusted.filter((positionsRowWithNumSharesAdjusted: PositionsRowWithNumSharesAdjusted<BigNumber>): boolean => positionsRowWithNumSharesAdjusted.outcome === outcome);
     }
-    callback(null, positionsRowsWithNumSharesAdjusted.map(position => formatBigNumberAsFixed<PositionsRowWithNumSharesAdjusted<BigNumber>, PositionsRowWithNumSharesAdjusted<string>>(position)));
+    callback(null, positionsRowsWithNumSharesAdjusted.map((position) => formatBigNumberAsFixed<PositionsRowWithNumSharesAdjusted<BigNumber>, PositionsRowWithNumSharesAdjusted<string>>(position)));
   });
 }

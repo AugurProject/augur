@@ -50,13 +50,13 @@ interface Dictionary {
 function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
   return _
     .chain(rows)
-    .groupBy(row => _.values(_.pick(row, groupFields)))
+    .groupBy((row) => _.values(_.pick(row, groupFields)))
     .values()
     .map((groupedRows: Array<T>): T => {
       return _.reduce(groupedRows, (result: T | undefined, row: T): T => {
         if (typeof result === "undefined") return row;
 
-        const mapped = _.map(row, (value: BigNumber|number|null, key: string): any[] => {
+        const mapped = _.map(row, (value: BigNumber|number|null, key: string): Array<any> => {
           const previousValue = result[key];
           if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
             return [key, value];
@@ -102,7 +102,7 @@ function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: Async
           return builder
             .from("initial_reports")
             .select("marketId", "payoutId", "amountStaked")
-            .whereIn("marketId", marketIds)
+            .whereIn("marketId", marketIds);
         });
     })
     .asCallback((err: Error|null, results: Array<StakeRow>) => {
@@ -114,7 +114,7 @@ function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: Async
 
 function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean, callback: AsyncCallback) {
   // select crowdsourcers.marketId, crowdsourcers.payoutId, crowdsourcers.completed, sum(balances.balance) from crowdsourcers JOIN balances ON balances.token = crowdsourcers.crowdsourcerId;
- 
+
   let query = db("crowdsourcers")
     .select(["crowdsourcers.marketId", "crowdsourcers.payoutId", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
@@ -141,7 +141,6 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo<string>|null>) => void): void {
   console.log("----------------------------\nGet Dispute Info\n------------------------");
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
-
 
   parallel({
     markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketId", marketIds).asCallback(next),
@@ -170,7 +169,7 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
           accountStakesCurrent: _.filter(stakeResults.accountStakesCurrent, { marketId }),
           accountStakesCompleted: _.filter(stakeResults.accountStakesCompleted, { marketId }),
           disputeRound: _.filter(stakeResults.disputeRound, { marketId }),
-        }
+        };
       });
 
     callback(null, disputeDetailsByMarket.map(reshapeStakeRowToUIStakeInfo));
@@ -184,7 +183,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
   const totalCompletedStakeOnAllPayouts = _.reduce(
     stakeRows.stakesCompleted,
     (result: BigNumber, completedStake: StakeRow): BigNumber => result.plus(completedStake.amountStaked),
-    ZERO
+    ZERO,
   );
 
   console.log("TOTAL COMPLETED STAKE: ", totalCompletedStakeOnAllPayouts.toFixed());
@@ -226,9 +225,9 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
           accountStakeCurrent = accountStakeCurrentRow ? accountStakeCurrentRow.amountStaked : ZERO;
       }
       currentAmounts = {
-        bondSizeCurrent: bondSizeCurrent,
-        stakeCurrent: stakeCurrent,
-        accountStakeCurrent: accountStakeCurrent,
+        bondSizeCurrent,
+        stakeCurrent,
+        accountStakeCurrent,
         accountStakeTotal: accountStakeCurrent.plus(accountStakeCompleted),
         stakeRemaining: bondSizeCurrent.minus(stakeCurrent),
         bondSizeTotal: bondSizeCurrent.plus(stakeCompleted),
@@ -243,7 +242,7 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
       currentAmounts,
       {
         stakeCurrent: stakeCurrentOnPayout,
-        stakeCompleted: stakeCompleted,
+        stakeCompleted,
         tentativeWinning: !!payout.tentativeWinning,
       },
     );
@@ -262,8 +261,8 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts,
     bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2),
-    disputeRound
+    disputeRound,
   }), {
-    stakes: stakeResults.map(result => formatBigNumberAsFixed<StakeDetails<BigNumber>, StakeDetails<String>>(result))
+    stakes: stakeResults.map((result) => formatBigNumberAsFixed<StakeDetails<BigNumber>, StakeDetails<string>>(result)),
   }) as UIStakeInfo<string>;
 }
