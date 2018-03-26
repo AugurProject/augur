@@ -512,16 +512,16 @@ export interface UIInitialReporters<BigNumberType> {
   [initialReporter: string]: InitialReportersRow<BigNumberType>;
 }
 
-export interface ForkMigrationTotalsRow extends Payout {
+export interface ForkMigrationTotalsRow<BigNumberType> extends Payout<BigNumberType> {
   universe: Address;
-  repTotal: number;
+  repTotal: BigNumberType;
 }
 
-export interface UIForkMigrationTotalsRow extends NormalizedPayout {
+export interface UIForkMigrationTotalsRow<BigNumberType> extends NormalizedPayout<BigNumberType> {
   universe: Address;
-  repTotal: number;
+  repTotal: BigNumberType;
 }
 
-export interface UIForkMigrationTotals {
-  [universe: string]: UIForkMigrationTotalsRow;
+export interface UIForkMigrationTotals<BigNumberType> {
+  [universe: string]: UIForkMigrationTotalsRow<BigNumberType>;
 }
