@@ -9,13 +9,17 @@ import logError from 'utils/log-error'
 // Synchronize front-end universe state with blockchain universe state.
 const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
-  augur.api.Universe.isForking(universePayload, (err, isForking) => {
+  const universePayload = { tx: { to: universe.id } }
+  augur.api.Universe.getForkingMarket(universePayload, (err, forkingMarket) => {
     if (err) return callback(err)
-    dispatch(updateUniverse({ isForking }))
-    augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
-      if (err) return callback(err)
-      dispatch(updateUniverse({ forkEndTime }))
-    })
+    const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
+    dispatch(updateUniverse({ isForking, forkingMarket }))
+    if (isForking) {
+      augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
+        if (err) return callback(err)
+        dispatch(updateUniverse({ forkEndTime }))
+      })
+    }
   })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)
   dispatch(updateUniverse(getReportingCycle()))
@@ -23,7 +27,6 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
     return callback(null)
   }
   console.log('syncing universe...')
-  const universePayload = { tx: { to: universe.id } }
   async.parallel({
     currentFeeWindowAddress: (next) => {
       augur.api.Universe.getCurrentFeeWindow(universePayload, (err, currentFeeWindowAddress) => {
