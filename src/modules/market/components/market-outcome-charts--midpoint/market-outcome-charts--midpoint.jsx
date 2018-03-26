@@ -15,6 +15,7 @@ export default class MarketOutcomeMidpoint extends Component {
     sharedChartMargins: PropTypes.object.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
     hasOrders: PropTypes.bool.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -39,6 +40,7 @@ export default class MarketOutcomeMidpoint extends Component {
       candleNullMessageWidth: this.state.candleNullMessageWidth,
       hasPriceHistory: this.props.hasPriceHistory,
       hasOrders: this.props.hasOrders,
+      fixedPrecision: this.props.fixedPrecision,
     })
   }
 
@@ -47,6 +49,7 @@ export default class MarketOutcomeMidpoint extends Component {
       !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
       !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       !isEqual(this.props.chartWidths, nextProps.chartWidths) ||
+      this.props.fixedPrecision !== nextProps.fixedPrecision ||
       this.props.hasPriceHistory !== nextProps.hasPriceHistory ||
       this.props.hasOrders !== nextProps.hasOrders ||
       this.state.midpointLabelWidth !== nextState.midpointLabelWidth ||
@@ -60,6 +63,7 @@ export default class MarketOutcomeMidpoint extends Component {
         candleNullMessageWidth: nextState.candleNullMessageWidth,
         hasPriceHistory: nextProps.hasPriceHistory,
         hasOrders: nextProps.hasOrders,
+        fixedPrecision: nextProps.fixedPrecision,
       })
     }
   }
@@ -93,6 +97,7 @@ export default class MarketOutcomeMidpoint extends Component {
       hasPriceHistory,
       hasOrders,
       chartWidths,
+      fixedPrecision,
     } = options
 
     if (this.drawContainer) {
@@ -125,6 +130,7 @@ export default class MarketOutcomeMidpoint extends Component {
           drawParams,
           orderBookKeys,
           midpointChart,
+          fixedPrecision,
         })
       }
 
@@ -241,6 +247,7 @@ function drawMidpointLabel(options) {
     drawParams,
     orderBookKeys,
     midpointChart,
+    fixedPrecision,
   } = options
 
   //  Midpoint Label
@@ -251,7 +258,7 @@ function drawMidpointLabel(options) {
     .attr('y', drawParams.yScale(0.5))
     .attr('text-anchor', 'end')
     .attr('dominant-baseline', 'central')
-    .text(`${orderBookKeys.mid} ETH`)
+    .text(`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`)
 }
 
 function drawCandlestickNullMessage(options) {

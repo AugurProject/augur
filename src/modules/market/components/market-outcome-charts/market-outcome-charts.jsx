@@ -195,6 +195,7 @@ export default class MarketOutcomeCharts extends Component {
             chartWidths={s.chartWidths}
             orderBookKeys={p.orderBookKeys}
             sharedChartMargins={s.sharedChartMargins}
+            fixedPrecision={s.fixedPrecision}
           />
         </div>
       </section>
