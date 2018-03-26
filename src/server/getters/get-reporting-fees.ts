@@ -45,21 +45,30 @@ function getTotalFeeWindowTokens(db: Knex, feeWindow: Address, callback: (err: E
   });
 }
 
+function getTotalTokens(db: Knex, augur: Augur, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void) {
+  const networkId: string = augur.rpc.getNetworkID();
+  const cashTokenAddress: Address = augur.contracts.addresses[networkId].Cash;
+
+  const query = db.select(["fee_windows.feeWindow", "participationToken.total_supply", "feeToken.total_supply", "cash.balance"]).from("fee_windows");
+  query.leftJoin("token_supply as participationToken", "fee_windows.feeWindow", "participationToken.token");
+  query.leftJoin("token_supply as feeToken", "fee_window.feeToken", "feeToken.token");
+  query.leftJoin("balances as cashBalance", "cashBalance.owner", "fee_windows.feeWindow").where("cashBalance.token", cashTokenAddress);
+
+  if (universe != null) query.where("markets.universe", universe);
+  if (feeWindow != null) query.where("markets.feeWindow", feeWindow);
+
+  query.asCallback(callback);
+
+}
+
 
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (/*universe == null || */ feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
-  // const query = db.select(["balances.balance AS repBalance"]).from("initial_reports");
 
-  // if (universe != null) query.where("markets.universe", universe);
-  // if (feeWindow != null) query.where("markets.universe", universe);
-
-  const networkId: string = augur.rpc.getNetworkID();
-  const cashTokenAddress: Address = augur.contracts.addresses[networkId].Cash;
-  // query.where("balances.token", cashTokenAddress);
-  getTotalFeeWindowTokens(db, feeWindow, (err, totalFeeTokens) => {
+  getTotalTokens(db, augur, universe, feeWindow, (err, totalFeeTokens) => {
     if (err) return callback(err);
-
+    console.log(totalFeeTokens);
   });
   const response = {
     unclaimedEth: "1",
