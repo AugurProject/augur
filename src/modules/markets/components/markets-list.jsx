@@ -24,6 +24,10 @@ export default class MarketsList extends Component {
     outstandingReturns: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
+    isForking: PropTypes.bool,
+    isForkingMarketFinalized: PropTypes.bool,
+    forkingMarket: PropTypes.string,
+    updateModal: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -109,6 +113,10 @@ export default class MarketsList extends Component {
                   outstandingReturns={p.outstandingReturns}
                   collectMarketCreatorFees={p.collectMarketCreatorFees}
                   isMobile={p.isMobile}
+                  isForking={p.isForking}
+                  isForkingMarketFinalized={p.isForkingMarketFinalized}
+                  forkingMarket={p.isForkingMarket}
+                  updateModal={p.updateModal}
                 />
               )
             }

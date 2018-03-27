@@ -29,6 +29,7 @@ export default class MigrateRep extends Component {
     submitMigrateREP: PropTypes.func.isRequired,
     estimateSubmitMigrateREP: PropTypes.func.isRequired,
     getForkMigrationTotals: PropTypes.func.isRequired,
+    accountREP: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -124,6 +125,9 @@ export default class MigrateRep extends Component {
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
           disputeRound={0}
+          isForking={p.universe.isForking}
+          isForkingMarketFinalized={p.universe.isForkingMarketFinalized}
+          forkingMarket={p.universe.isForkingMarket}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&
@@ -154,6 +158,7 @@ export default class MigrateRep extends Component {
                 repAmount={s.repAmount}
                 validations={s.validations}
                 repAmounts={s.repAmounts}
+                accountREP={p.accountREP}
               />
             }
             { s.currentStep === 1 &&

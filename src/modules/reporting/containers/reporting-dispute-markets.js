@@ -11,6 +11,7 @@ import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import marketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
+import { updateModal } from 'modules/modal/actions/update-modal'
 import logError from 'utils/log-error'
 
 const mapStateToProps = (state, { history }) => {
@@ -33,9 +34,11 @@ const mapStateToProps = (state, { history }) => {
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
     account: loginAccount.address,
-    isForking: state.universe.forkEndTime && state.universe.forkEndTime !== '0',
+    isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
     currentTime: state.blockchain.currentAugurTimestamp,
+    isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
+    forkingMarket: state.universe.forkingMarket,
   })
 }
 
@@ -45,6 +48,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(loadMarketsInfo(marketIds))
     dispatch(loadMarketsDisputeInfo(marketIds))
   })),
+  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const ReportingDisputeContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(ReportingDisputeMarkets))

@@ -6,12 +6,12 @@ import { migrateMarketThroughFork } from 'modules/forking/actions/migrate-market
 import { closeModal } from 'modules/modal/actions/close-modal'
 
 const mapStateToProps = state => ({
-  modal: state.modal,
+  ...state.modal,
 })
 
 const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(closeModal()),
-  onSubmit: (marketId, estimateGas) => dispatch(migrateMarketThroughFork(marketId, estimateGas, callback)),
+  migrateMarketThroughFork: (marketId, estimateGas, callback) => dispatch(migrateMarketThroughFork(marketId, estimateGas, callback)),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ModalMigrateMarket))

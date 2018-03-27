@@ -90,7 +90,7 @@ const MarketProperties = (p) => {
               onClick={() => p.updateModal({
                 type: MODAL_MIGRATE_MARKET,
                 marketId: p.id,
-                marketDescription: p.marketDescription,
+                marketDescription: p.description,
                 canClose: true,
               })}
             >
@@ -120,6 +120,7 @@ MarketProperties.propTypes = {
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,
   toggleDetails: PropTypes.func,
+  updateModal: PropTypes.func.isRequired,
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
   forkingMarket: PropTypes.string,

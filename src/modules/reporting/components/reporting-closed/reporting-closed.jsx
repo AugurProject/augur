@@ -17,6 +17,10 @@ export default class ReportingClosed extends Component {
     loadMarketsInfo: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool,
+    isForking: PropTypes.bool,
+    isForkingMarketFinalized: PropTypes.bool,
+    forkingMarket: PropTypes.string,
+    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -50,6 +54,9 @@ export default class ReportingClosed extends Component {
           linkType={TYPE_CLOSED}
           paginationPageParam="reporting-closed-page"
           isMobile={p.isMobile}
+          isForking={p.isForking}
+          isForkingMarketFinalized={p.isForkingMarketFinalized}
+          forkingMarket={p.forkingMarket}
         />
       </section>
     )

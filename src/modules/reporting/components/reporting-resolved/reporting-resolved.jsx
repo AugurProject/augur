@@ -65,6 +65,9 @@ export default class ReportingResolved extends Component {
           toggleFavorite={p.toggleFavorite}
           loadMarketsInfo={p.loadMarketsInfo}
           paginationPageParam="reporting-resolved-page"
+          isForking={p.isForking}
+          isForkingMarketFinalized={p.isForkingMarketFinalized}
+          forkingMarket={p.forkingMarket}
         />
       </section>
     )

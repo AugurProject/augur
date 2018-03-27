@@ -100,8 +100,11 @@ export default class ModalView extends Component {
           {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...p} />
           }
-          {p.modal.type === TYPE.MODAL_MIGRATE_MARKET &&
-            <ModalMigrateMarket {...p} />
+          {p.modal.type === TYPES.MODAL_MIGRATE_MARKET &&
+            <ModalMigrateMarket
+              {...p.modal}
+              closeModal={p.closeModal}
+            />
           }
           {showBigCancel &&
             <button

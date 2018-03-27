@@ -29,6 +29,7 @@ export default class ReportingDispute extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     estimateSubmitMarketContribute: PropTypes.func.isRequired,
+    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -115,6 +116,9 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
+          isForking={p.universe.isForking}
+          isForkingMarketFinalized={p.universe.isForkingMarketFinalized}
+          forkingMarket={p.universe.isForkingMarket}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&

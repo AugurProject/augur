@@ -1,53 +1,78 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { SigningPen } from 'modules/common/components/icons'
-import { formatRep, formatEther } from 'utils/format-number'
+import { formatEther } from 'utils/format-number'
 import Styles from 'modules/modal/components/modal-migrate-market/modal-migrate-market.styles'
 
-const ModalMigrateMarket = (p) => {
-  const cleanQuantity = formatRep(p.quantity)
+export default class ModalMigrateMarket extends Component {
 
-  return (
-    <form
-      className={Styles.ModalMigrateMarket__form}
-      onSubmit={p.onSubmit}
-    >
-      <h1 className={Styles.ModalMigrateMarket__heading}>{SigningPen} Migrate Market</h1>
-      <div className={Styles.ModalMigrateMarket__details}>
-        <ul className={Styles.ModalMigrateMarket__labels}>
-          <li>market</li>
-          <li>gas</li>
-        </ul>
-        <ul className={Styles.ModalMigrateMarket__values}>
-          <li>{p.marketDescription}</li>
-          <li>{formatEther(p.gasEstimate).full}</li>
-        </ul>
-      </div>
-      <div className={Styles.ModalMigrateMarket__actions}>
-        <button
-          className={Styles.ModalMigrateMarket__button}
-          type="button"
-          onClick={p.switchPages}
-        >
-          Back
-        </button>
-        <button
-          className={Styles.ModalMigrateMarket__button}
-          type="submit"
-        >
-          submit
-        </button>
-      </div>
-    </form>
-  )
+  static propTypes = {
+    marketId: PropTypes.string.isRequired,
+    marketDescription: PropTypes.string.isRequired,
+    migrateMarketThroughFork: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      gasEstimate: '0.0023',
+    }
+
+    this.submitForm = this.submitForm.bind(this)
+  }
+
+  componentWillMount() {
+    this.props.migrateMarketThroughFork(this.props.marketId, true, (err, gasEstimate) => {
+      if (!err && !!gasEstimate) this.setState({ gasEstimate })
+    })
+  }
+
+  submitForm(e, ...args) {
+    e.preventDefault()
+    this.props.migrateMarketThroughFork(this.props.marketId, false, (err, res) => {
+      console.log('onSuccess for migrateMarketThroughFork', err, res)
+    })
+  }
+
+  render() {
+    const p = this.props
+    const s = this.state
+
+    return (
+      <form
+        className={Styles.ModalMigrateMarket__form}
+        onSubmit={this.submitForm}
+      >
+        <h1 className={Styles.ModalMigrateMarket__heading}>{SigningPen} Migrate Market</h1>
+        <div className={Styles.ModalMigrateMarket__details}>
+          <ul className={Styles.ModalMigrateMarket__labels}>
+            <li>market</li>
+            <li>gas</li>
+          </ul>
+          <ul className={Styles.ModalMigrateMarket__values}>
+            <li>{p.marketDescription}</li>
+            <li>{formatEther(s.gasEstimate).full}</li>
+          </ul>
+        </div>
+        <div className={Styles.ModalMigrateMarket__actions}>
+          <button
+            className={Styles.ModalMigrateMarket__button}
+            type="button"
+            onClick={p.closeModal}
+          >
+            Back {p.modal}
+          </button>
+          <button
+            className={Styles.ModalMigrateMarket__button}
+            type="submit"
+          >
+            submit
+          </button>
+        </div>
+      </form>
+    )
+  }
 }
-
-ModalMigrateMarket.propTypes = {
-  quantity: PropTypes.string.isRequired,
-  gasEstimate: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  switchPages: PropTypes.func.isRequired,
-}
-
-export default ModalMigrateMarket

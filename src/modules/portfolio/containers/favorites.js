@@ -5,6 +5,7 @@ import Favorites from 'modules/portfolio/components/favorites/favorites'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
+import { updateModal } from 'modules/modal/actions/update-modal'
 
 const mapStateToProps = (state) => {
   // basically just create the filtered markets based on what IDs we find in the favorites object
@@ -25,12 +26,16 @@ const mapStateToProps = (state) => {
     filteredMarkets,
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber, // FIXME
+    isForking: state.universe.isForking,
+    isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
+    forkingMarket: state.universe.forkingMarket,
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const FavoritesContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(Favorites))

@@ -1,11 +1,10 @@
 import { augur } from 'services/augurjs'
-import speedomatic from 'speedomatic'
 import logError from 'utils/log-error'
 import { formatGasCostToEther } from 'utils/format-number'
 import { closeModal } from 'modules/modal/actions/close-modal'
 
 export const migrateMarketThroughFork = (marketId, estimateGas = false, callback = logError) => (dispatch, getState) => {
-  const { universe, loginAccount } = getState()
+  const { loginAccount } = getState()
   augur.api.Market.migrateThroughOneFork({
     tx: {
       meta: loginAccount.meta,
