@@ -5,7 +5,10 @@ import { augurEmitter } from "../../events";
 
 // event FeeWindowRedeemed(address indexed universe, address indexed reporter, address indexed feeWindow, uint256 amountRedeemed, uint256 reportingFeesReceived);
 export function processFeeWindowRedeemedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: feeWindowRedeemedLog");
+  const redeemedToInsert = {
+    reporter: log.reporter,
+
+  }
   console.log(log);
   callback(null);
 }
