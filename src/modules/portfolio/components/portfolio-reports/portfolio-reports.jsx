@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet'
 
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
+import { MODAL_CLAIM_ALL } from 'modules/modal/constants/modal-types'
+
 import Styles from './portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
@@ -23,13 +25,21 @@ export default class PortfolioReports extends Component {
   }
 
   componentWillMount() {
-    this.setState({ claimableFees: this.props.claimableFees() })
+    this.setState({
+      claimableFees: this.props.claimableFees(),
+    })
   }
 
   render() {
+    const p = this.props
     const s = this.state
     const unclaimedRep = formatAttoRep(s.claimableFees.unclaimedRepStaked, { decimals: 4, zeroStyled: true })
     const unclaimedEth = formatEther(s.claimableFees.unclaimedEth, { decimals: 4, zeroStyled: true })
+
+    let disableClaimAllButton = ''
+    if (unclaimedEth.formatted === '-' && unclaimedRep.formatted === '-') {
+      disableClaimAllButton = 'disabled'
+    }
 
     return (
       <section>
@@ -51,12 +61,17 @@ export default class PortfolioReports extends Component {
                     <div className={Styles['ClaimableFees__fees--amount']}>{unclaimedEth.formatted}</div>
                   </li>
                 </ul>
-                <div className={Styles['CreateMarketForm__cta--wrapper']}>
+                <div>
                   <button
                     className={Styles.ClaimableFees__cta}
-                    disabled={unclaimedEth.formatted === '-' && unclaimedRep.formatted === '-' &&
-                    'disabled'
-                    }
+                    disabled={disableClaimAllButton}
+                    onClick={() => p.updateModal({
+                      type: MODAL_CLAIM_ALL,
+                      recipient: p.recipient,
+                      unclaimedEth,
+                      unclaimedRep,
+                      canClose: true,
+                    })}
                   >Claim
                   </button>
                 </div>

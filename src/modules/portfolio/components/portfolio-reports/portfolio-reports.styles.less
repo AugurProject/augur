@@ -17,12 +17,6 @@
   margin-left: 2em;
   margin-right: 2em;
 
-  &__button--wrapper {
-    margin: auto;
-    max-width: 81.25rem;
-    padding: 0 2rem;
-  }
-
   &__cta {
     &:extend(.button--white--short all);
 
@@ -59,24 +53,10 @@
     }
   }
 
-  &__message {
-    color: @color-lightgray;
-    font-size: @font-size-large;
-    padding: 0.625rem 1em 0.625rem 0;
-  }
-
   @media @breakpoint-mobile {
-    flex-flow: wrap;
-    justify-content: flex-end;
     margin-left: 1rem;
     margin-right: 1rem;
     padding: 0;
-
-    &__message {
-      padding: 1rem 1em 1.2rem;
-      text-align: center;
-      width: 100%;
-    }
 
     &__cta {
       border-radius: 0;
