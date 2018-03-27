@@ -23,66 +23,47 @@ var listMarketOrders = require("./list-market-orders");
 var fillMarketOrders = require("./fill-market-orders");
 
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-var methods = [
-  {
-    command: "get-balance",
+var methods = {
+  "get-balance": {
     method: getBalance,
   },
-  {
-    command: "list-markets",
+  "list-markets": {
     method: listMarkets,
   },
-  {
-    command: "designate-report",
+  "designate-report": {
     method: designatedReport,
   },
-  {
-    command: "initial-report",
+  "initial-report": {
     method: initialReport,
   },
-  {
-    command: "dispute-contribute",
+  "dispute-contribute": {
     method: disputeContribute,
   },
-  {
-    command: "finalize-market",
+  "finalize-market": {
     method: finalizeMarket,
   },
-  {
-    command: "push-time",
+  "push-time": {
     method: pushTime,
   },
-  {
-    command: "market-info",
+  "market-info": {
     method: marketInfo,
   },
-  {
-    command: "show-initial-reporter",
+  "show-initial-reporter": {
     method: showInitialReporter,
   },
-  {
-    command: "fork",
+  "fork": {
     method: fork,
   },
-  {
-    command: "approval",
+  "approval": {
     method: approval,
   },
-  {
-    command: "list-market-orders",
+  "list-market-orders": {
     method: listMarketOrders,
   },
-  {
-    command: "fill-market-orders",
+  "fill-market-orders": {
     method: fillMarketOrders,
   },
-];
-
-function findCommand(command) {
-  return methods.find(function (method) {
-    return method.command === command;
-  });
-}
+};
 
 function runCommand(method, params, network, callback) {
   console.log(chalk.yellow.dim("command"), method.command);
@@ -121,7 +102,7 @@ function help() {
   console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
 
   console.log(chalk.underline("\nCommands"));
-  console.log(methods.reduce(function (p, m) { return [p, m]; }, []).join(", "), "or help for this message");
+  console.log(Object.keys(methods).join(", "), "or help for this message");
   console.log("Run command help to get parameters needed, ie. initial-report help");
 
   console.log(chalk.underline("\nNetworks"));
@@ -154,9 +135,9 @@ function help() {
 
   console.log("               ");
   console.log(chalk.underline("\Method descriptions"));
-  methods.sort(function (a, b) { return a.command - b.command;}).map(function (method) {
-    console.log(chalk.underline(method.command));
-    method.method(null, "help", null, function () { });
+  Object.keys(methods).sort(function (a, b) { return a - b;}).map(function (name) {
+    console.log(chalk.underline(name));
+    methods[name].method(null, "help", null, function () { });
     console.log("               ");
   });
 }
@@ -176,7 +157,7 @@ if (require.main === module) {
     help();
     process.exit();
   }
-  var method = findCommand(args.opt.command);
+  var method = methods[args.opt.command];
   if (method == null && args.opt.help) {
     help();
     process.exit();

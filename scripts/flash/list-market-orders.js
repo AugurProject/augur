@@ -8,7 +8,13 @@ var displayTime = require("./display-time");
 
 function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
+    if (err) {
+      return callback(err);
+    }
     augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
+      if (err) {
+        return callback(err);
+      }
       if (!marketIds || marketIds.length === 0) {
         console.log(chalk.red("No markets available"));
         callback("No Markets");
