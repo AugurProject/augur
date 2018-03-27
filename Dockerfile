@@ -1,3 +1,17 @@
+##
+# Use Builder pattern to compile the code
+# using the node8 image which has python and such
+
+FROM node:8 AS builder
+# Copy augur.js repo into it and get it set up
+WORKDIR /augur.js
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY hooks hooks
+RUN git init && npm install && rm -rf .git
+
+##
+# Now with our geth node
 FROM augurproject/dev-node-geth:latest
 
 # Install Node
@@ -5,13 +19,13 @@ RUN apk update \
   && apk upgrade \
   && apk add nodejs nodejs-npm
 
-# Copy augur.js repo into it and get it set up
-COPY . /augur.js
+COPY --from=builder /augur.js augur.js
 WORKDIR /augur.js
-RUN  npm install \
-  && chmod +x scripts/run-geth-and-deploy.sh \
-  && ./scripts/run-geth-and-deploy.sh \
-  && rm -rf node_modules
+COPY src src
+COPY scripts scripts
+COPY data data
+
+RUN bash scripts/run-geth-and-deploy.sh && rm -rf node_modules
 
 EXPOSE 8545 8546 30303 30303/udp 30304/udp
 
