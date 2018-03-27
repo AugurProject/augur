@@ -64,6 +64,7 @@ class InputDropdown extends Component {
         className={classNames(Styles.InputDropdown, (p.className || ''))}
       >
         <button
+          key={p.label}
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
           onClick={this.toggleList}
         >
@@ -73,7 +74,7 @@ class InputDropdown extends Component {
           {p.options.map(option => (
             <button
               className={classNames({ [`${Styles.active}`]: option === this.state.value })}
-              key={option}
+              key={option + p.label}
               value={option}
               onClick={() => this.dropdownSelect(option)}
             >

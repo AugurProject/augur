@@ -28,7 +28,7 @@ export function closePosition(marketId, outcomeId) {
       const orderBook = orderBooks[marketId]
       const userAddress = loginAccount && loginAccount.address
       const bestFill = getBestFill(orderBook, positionShares.toNumber() > 0 ? BUY : SELL, positionShares.absoluteValue(), marketId, outcomeId, userAddress)
-      if (bestFill.amountOfShares.equals(ZERO)) {
+      if (bestFill.amountOfShares.isEqualTo(ZERO)) {
         dispatch(clearClosePositionOutcome(marketId, outcomeId))
         dispatch(addClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_NO_ORDERS))
       } else {

@@ -21,13 +21,14 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       sortBy: 'endDate',
       ...args,
     },
-    (err, result) => {
+    (err, marketIds) => {
       if (err) return callback(err)
+      if (!marketIds || marketIds.length === 0) return callback(null)
 
-      // Load the associated market data
-      loadMarketsInfo(result)(dispatch, getState)
-
-      dispatch(updateUpcomingDesignatedReportingMarkets(result))
+      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+        if (err) return console.error(err)
+        dispatch(updateUpcomingDesignatedReportingMarkets(marketIds))
+      }))
     },
   )
 
@@ -38,13 +39,14 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       sortBy: 'endDate',
       ...args,
     },
-    (err, result) => {
+    (err, marketIds) => {
       if (err) return callback(err)
+      if (!marketIds || marketIds.length === 0) return callback(null)
 
-      // Load the associated market data
-      loadMarketsInfo(result)(dispatch, getState)
-
-      dispatch(updateDesignatedReportingMarkets(result))
+      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+        if (err) return console.error(err)
+        dispatch(updateDesignatedReportingMarkets(marketIds))
+      }))
     },
   )
 
@@ -55,13 +57,14 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       sortBy: 'endDate',
       ...args,
     },
-    (err, result) => {
+    (err, marketIds) => {
       if (err) return callback(err)
+      if (!marketIds || marketIds.length === 0) return callback(null)
 
-      // Load the associated market data
-      loadMarketsInfo(result)(dispatch, getState)
-
-      dispatch(updateOpenMarkets(result))
+      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+        if (err) return console.error(err)
+        dispatch(updateOpenMarkets(marketIds))
+      }))
     },
   )
 
@@ -72,13 +75,14 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       sortBy: 'endDate',
       ...args,
     },
-    (err, result) => {
+    (err, marketIds) => {
       if (err) return callback(err)
+      if (!marketIds || marketIds.length === 0) return callback(null)
 
-      // Load the associated market data
-      loadMarketsInfo(result)(dispatch, getState)
-
-      dispatch(updateResolvedMarkets(result))
+      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+        if (err) return console.error(err)
+        dispatch(updateResolvedMarkets(marketIds))
+      }))
     },
   )
 }
