@@ -27,6 +27,7 @@ export default class ModalNetworkConnect extends Component {
     submitForm: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
+    connectAugur: PropTypes.func.isRequired,
   }
 
   constructor(props) {
