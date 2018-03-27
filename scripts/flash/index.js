@@ -19,35 +19,73 @@ var marketInfo = require("./market-info");
 var showInitialReporter = require("./show-initial-reporter");
 var fork = require("./fork");
 var approval = require("./approve-account");
+var listMarketOrders = require("./list-market-orders");
+var fillMarketOrders = require("./fill-market-orders");
 
-var commands = ["get-balance", "list-markets", "designate-report", "initial-report", "dispute-contribute", "finalize-market", "push-time", "market-info", "show-initial-reporter", "fork", "approval"];
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
-var methods = [getBalance, listMarkets, designatedReport, initialReport, disputeContribute, finalizeMarket, pushTime, marketInfo, showInitialReporter, fork, approval];
+var methods = {
+  "get-balance": {
+    method: getBalance,
+  },
+  "list-markets": {
+    method: listMarkets,
+  },
+  "designate-report": {
+    method: designatedReport,
+  },
+  "initial-report": {
+    method: initialReport,
+  },
+  "dispute-contribute": {
+    method: disputeContribute,
+  },
+  "finalize-market": {
+    method: finalizeMarket,
+  },
+  "push-time": {
+    method: pushTime,
+  },
+  "market-info": {
+    method: marketInfo,
+  },
+  "show-initial-reporter": {
+    method: showInitialReporter,
+  },
+  "fork": {
+    method: fork,
+  },
+  "approval": {
+    method: approval,
+  },
+  "list-market-orders": {
+    method: listMarketOrders,
+  },
+  "fill-market-orders": {
+    method: fillMarketOrders,
+  },
+};
 
-function runCommand(command, params, networks, callback) {
-  console.log("networks", networks);
-  console.log(chalk.yellow.dim("command"), command);
+function runCommand(method, params, network, callback) {
+  console.log(chalk.yellow.dim("command"), method.command);
   console.log(chalk.yellow.dim("parameters"), params);
-  console.log(chalk.yellow.dim("networks"), networks);
-  networks.forEach(function (network) {
-    console.log(NetworkConfiguration.create);
-    var config = NetworkConfiguration.create(network);
-    console.log(chalk.yellow("network http:"), config.http);
-    var augur = new Augur();
-    augur.rpc.setDebugOptions(debugOptions);
-    var auth = getPrivateKeyFromString(config.privateKey);
-    var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
+  console.log(chalk.yellow.dim("network"), network);
+  console.log(NetworkConfiguration.create);
+  var config = NetworkConfiguration.create(network);
+  console.log(chalk.yellow("network http:"), config.http);
+  var augur = new Augur();
+  augur.rpc.setDebugOptions(debugOptions);
+  var auth = getPrivateKeyFromString(config.privateKey);
+  var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
 
-    augur.connect({ ethereumNode: { http: config.http }, augurNode: augurWs }, function (err) {
-      if (err) {
-        console.log(chalk.red("Error "), chalk.red(err));
-        return callback(err);
-      }
-      methods[commands.indexOf(command)](augur, params, auth, function (err) {
-        if (err) console.log(chalk.red("Error "), chalk.red(err));
-        console.log(chalk.green("Finished Execution"));
-        process.exit(0);
-      });
+  augur.connect({ ethereumNode: { http: config.http }, augurNode: augurWs }, function (err) {
+    if (err) {
+      console.log(chalk.red("Error "), chalk.red(err));
+      return callback(err);
+    }
+    method.method(augur, params, auth, function (err) {
+      if (err) console.log(chalk.red("Error "), chalk.red(err));
+      console.log(chalk.green("Finished Execution"));
+      process.exit(0);
     });
   });
 }
@@ -64,7 +102,7 @@ function help() {
   console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
 
   console.log(chalk.underline("\nCommands"));
-  console.log(commands.join(", "), "or help for this message");
+  console.log(Object.keys(methods).join(", "), "or help for this message");
   console.log("Run command help to get parameters needed, ie. initial-report help");
 
   console.log(chalk.underline("\nNetworks"));
@@ -97,9 +135,9 @@ function help() {
 
   console.log("               ");
   console.log(chalk.underline("\Method descriptions"));
-  commands.forEach(function (command) {
-    console.log(chalk.underline(command));
-    methods[commands.indexOf(command)](null, "help", null, function () { });
+  Object.keys(methods).sort(function (a, b) { return a - b;}).map(function (name) {
+    console.log(chalk.underline(name));
+    methods[name].method(null, "help", null, function () { });
     console.log("               ");
   });
 }
@@ -107,33 +145,32 @@ function help() {
 if (require.main === module) {
   var opts = {
     help: {flag: true, short: "h", help: "This help" },
-    networks: { multi: true, short: "n", default: ["environment"], help: "Networks to run command against"},
+    network: { short: "n", default: ["environment"], help: "Network to run command against"},
   };
   var args;
   try {
     args = options.parse(opts, process.argv);
-    console.log(JSON.stringify(args));
     args.opt.command = args.args[2];
     args.opt.params = args.args[3];
-    console.log(JSON.stringify(args));
   } catch (error) {
     console.log(error);
     help();
     process.exit();
   }
-  if (commands.indexOf(args.opt.command) === -1 && args.opt.help) {
+  var method = methods[args.opt.command];
+  if (method == null && args.opt.help) {
     help();
     process.exit();
-  } else if (commands.indexOf(args.opt.command) > 0 && args.opt.help) {
+  } else if (method && args.opt.help) {
     console.log(chalk.yellow("Help for"), chalk.yellow.underline(args.opt.command));
-    methods[commands.indexOf(args.opt.command)](null, "help", null, function () { });
+    method.method(null, "help", null, function () { });
     process.exit(0);
-  } else if (args.opt.networks.length === 0) {
+  } else if (args.opt.network == null) {
     console.log(chalk.red("Network is required"));
     help();
     process.exit();
   }
-  runCommand(args.opt.command, args.opt.params, args.opt.networks, function () {
+  runCommand(method, args.opt.params, args.opt.network, function () {
     process.exit();
   });
 }
