@@ -114,7 +114,7 @@ function loadMarkets(options) {
     // then load markets (loads all markets)
     if (category) {
       options.loadMarketsByCategory(category)
-    } else if (!category && !search) {
+    } else if (!search) {
       options.loadMarkets()
     }
   }
