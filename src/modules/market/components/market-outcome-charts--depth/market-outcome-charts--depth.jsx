@@ -85,6 +85,7 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(this.state.xScale, nextState.xScale) ||
       !isEqual(this.state.containerHeight, nextState.containerHeight) ||
       !isEqual(this.state.containerWidth, nextState.containerWidth) ||
+      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       this.props.marketMin !== nextProps.marketMin ||
       this.props.marketMax !== nextProps.marketMax
     ) {
@@ -97,6 +98,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax: nextProps.marketMax,
         containerHeight: nextState.containerHeight,
         containerWidth: nextState.containerWidth,
+        sharedChartMargins: nextProps.sharedChartMargins,
       })
     }
   }
@@ -132,7 +134,7 @@ export default class MarketOutcomeDepth extends Component {
       const depthChart = d3.select(depthContainer)
         .append('svg')
         .attr('id', 'depth_chart')
-        .attr('width', drawParams.containerWidth)
+        .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
         .attr('height', drawParams.containerHeight)
 
       drawTicks({
@@ -200,6 +202,7 @@ export default class MarketOutcomeDepth extends Component {
         containerWidth,
         marketMin,
         marketMax,
+        sharedChartMargins,
       } = options
 
       if (hoveredPrice == null) {
@@ -233,7 +236,7 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#crosshairY')
           .attr('x1', 0)
           .attr('y1', yScale(hoveredPrice))
-          .attr('x2', containerWidth)
+          .attr('x2', containerWidth - sharedChartMargins.gap)
           .attr('y2', yScale(hoveredPrice))
 
         d3.select('#hovered_price_label')
@@ -313,7 +316,7 @@ function determineDrawParams(options) {
 
   const xScale = d3.scaleLinear()
     .domain(d3.extent(xDomain))
-    .range([chartDim.left, containerWidth - chartDim.right - 1])
+    .range([chartDim.left, containerWidth - chartDim.right - chartDim.gap - 1])
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
@@ -352,7 +355,7 @@ function drawTicks(options) {
     .append('line')
     .attr('class', 'bounding-line')
     .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth)
+    .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
     .attr('y1', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
     .attr('y2', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
 
@@ -380,7 +383,7 @@ function drawTicks(options) {
     .append('line')
     .attr('class', 'tick-line')
     .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth)
+    .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
     .attr('y1', d => drawParams.yScale(d))
     .attr('y2', d => drawParams.yScale(d))
   yTicks.selectAll('text')
@@ -402,7 +405,7 @@ function drawTicks(options) {
     rangeBounds.append('line')
       .attr('class', 'tick-line')
       .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth)
+      .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
       .attr('y1', () => drawParams.yScale(orderBookKeys.min))
       .attr('y2', () => drawParams.yScale(orderBookKeys.min))
 
@@ -419,13 +422,13 @@ function drawTicks(options) {
       .attr('x', 0)
       .attr('y', () => drawParams.yScale(orderBookKeys.min))
       .attr('height', drawParams.drawHeight - drawParams.yScale(orderBookKeys.min))
-      .attr('width', drawParams.containerWidth)
+      .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
 
   } else if (drawParams.yDomain[drawParams.yDomain.length - 1] > marketMax) {
     rangeBounds.append('line')
       .attr('class', 'tick-line')
       .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth)
+      .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
       .attr('y1', () => drawParams.yScale(orderBookKeys.max))
       .attr('y2', () => drawParams.yScale(orderBookKeys.max))
 
@@ -442,7 +445,7 @@ function drawTicks(options) {
       .attr('x', 0)
       .attr('y', 0)
       .attr('height', drawParams.yScale(orderBookKeys.max))
-      .attr('width', drawParams.containerWidth)
+      .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
   }
 
   // X Axis
