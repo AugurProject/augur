@@ -9,6 +9,7 @@
     "dp": "./scripts/dp/index.js"
   },
   "scripts": {
+    "nuke": "rimraf package-lock.json; rimraf yarn.lock; rimraf node_modules; rimraf build && npm run clean",
     "clean": "rimraf build; rimraf node_modules",
     "test": "mocha test/unit",
     "lint": "eslint src test/unit scripts",
