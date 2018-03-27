@@ -31,19 +31,30 @@ const NETWORK_NAMES = {
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
   let account
-  setInterval(() => {
-    AugurJS.augur.rpc.eth.accounts((err, accounts) => {
-      if (err) return console.error(err)
-      if (account !== accounts[0]) {
-        account = accounts[0]
-        if (account && env['auto-login']) {
-          dispatch(useUnlockedAccount(account))
-        } else {
-          dispatch(logout())
-        }
+  loadAccount(dispatch, getState, account, env, (err, account) => {
+    if (err) console.error(err)
+    setInterval(() => {
+      loadAccount(dispatch, getState, account, env, (err, account) => {
+        if (err) console.error(err)
+      })
+    }, ACCOUNTS_POLL_INTERVAL_DURATION)
+  })
+}
+
+function loadAccount(dispatch, getState, existing, env, callback) {
+  AugurJS.augur.rpc.eth.accounts((err, accounts) => {
+    if (err) return callback(err)
+    let account = existing
+    if (existing !== accounts[0]) {
+      account = accounts[0]
+      if (account && env['auto-login']) {
+        dispatch(useUnlockedAccount(account))
+      } else {
+        dispatch(logout())
       }
-    })
-  }, ACCOUNTS_POLL_INTERVAL_DURATION)
+    }
+    callback(null, account)
+  })
 }
 
 function pollForNetwork(dispatch, getState) {
