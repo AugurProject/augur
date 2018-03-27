@@ -79,9 +79,20 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
 
-  const crowdsourcerQuery = db.select(["fee_windows.feeWindow"]);
+  const crowdsourcerQuery = db.select(["fee_windows.feeWindow", "disputes.amountStaked"]);
+  crowdsourcerQuery.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
+  crowdsourcerQuery.join("disputes", "crowdsourcers.crowdsourcerId", "disputes.crowdsourcerId");
+
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
+  parallel({
+    participationTokens: (next) => participationTokenQuery.asCallback(next),
+    crowdsourcers: (next) => crowdsourcerQuery.asCallback(next),
+  }, (err, result) => {
+    console.log(err);
+    console.log(result);
+  });
+)
   participationTokenQuery.asCallback(callback);
 }
 
