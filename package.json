@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-core": "0.12.2",
+    "augur-core": "0.12.3",
     "bignumber.js": "6.0.0",
     "clone": "2.1.1",
     "columnify": "1.5.4",
