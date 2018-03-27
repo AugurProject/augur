@@ -1,6 +1,5 @@
 /// <reference types="node" />
 
-import { BigNumber } from "bignumber.js";
 import { Block, Transaction } from "ethereumjs-blockstream";
 import { EventEmitter } from "events";
 
@@ -271,7 +270,7 @@ export class Augur {
     filterByPriceAndUserSortByPrice(p: {
       singleOutcomeOrderBookSide: SingleOutcomeOrderBookSide;
       orderType: number;
-      price: BigNumber;
+      price: any;
       userAddress: Address;
     }): Array<Order>;
     simulateTrade(p: ApiParams): SimulatedTrade;
