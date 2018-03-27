@@ -55,7 +55,7 @@ export default class ModalNetworkConnect extends Component {
       },
     }
 
-    this.types = { IPC: 'ipc', HTTP: 'http', WS: 'wss' }
+    this.types = { IPC: 'ipc', HTTP: 'http', WS: 'ws' }
 
     this.submitForm = this.submitForm.bind(this)
     this.validateField = this.validateField.bind(this)
@@ -100,10 +100,15 @@ export default class ModalNetworkConnect extends Component {
         [`${protocol}`]: this.state.ethereumNode,
       }
     }
+    // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...this.props.env,
       'augur-node': this.state.augurNode,
       'ethereum-node': {
+        ...this.props.env['ethereum-node'],
+        ipc: '',
+        http: '',
+        ws: '',
         ...ethNode,
       },
     }
@@ -116,7 +121,7 @@ export default class ModalNetworkConnect extends Component {
     p.connectAugur(p.history, updatedEnv, !!p.modal.isInitialConnection, (err, res) => {
       const connectErrors = calculateConnectionErrors(err, res)
       // no errors and we didn't get an err or res object? we are connected.
-      if (!connectErrors.length && !err && !res) return p.closeModal()
+      if (!connectErrors.length && !err && !res) p.closeModal()
 
       this.setState({ isAttemptingConnection: false, connectErrors })
     })
@@ -165,7 +170,7 @@ export default class ModalNetworkConnect extends Component {
           <div
             className={Styles.ModalNetworkConnect__web3}
           >
-            You are already connected to an Ethereum Node through Metamask.
+            You are already connected to an Ethereum Node through Metamask. If you would like to specify a node, please disable Metamask.
           </div>
         }
         {!s.isWeb3Available &&

@@ -152,8 +152,7 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
-    const { connection } = this.props
-    if (!connection.isConnected || !connection.isConnectedToAugurNode) this.props.initAugur(this.props.history, (err, res) => {
+    this.props.initAugur(this.props.history, (err, res) => {
       if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
         this.props.updateModal({
           type: MODAL_NETWORK_CONNECT,

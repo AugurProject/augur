@@ -37,7 +37,7 @@ const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
   initAugur: (history, cb) => dispatch(initAugur(history, cb)),
-  updateModal: (modal) => dispatch(updateModal(modal)),
+  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
