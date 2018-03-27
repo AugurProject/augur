@@ -5,20 +5,21 @@
 var async = require("async");
 var chalk = require("chalk");
 var fillOrder = require("../dp/lib/fill-order");
+var approveAugurEternalApprovalValue = require("../dp/lib/approve-augur-eternal-approval-value");
 
-function fillMarketOrderInternal(augur, marketIds, orderType, outcomeId, universe, auth, callback) {
-  augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
-    if (!marketIds || marketIds.length === 0) {
-      console.log(chalk.red("No markets available"));
-      callback("No Markets");
+function fillMarketOrderInternal(augur, marketId, orderType, outcomeId, universe, auth, callback) {
+  augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketInfos) {
+    if (err) {
+      console.log(chalk.red("Error "), chalk.red(err));
+      return callback(err);
     }
-    augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketInfos) {
+    if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
+      return callback("No Market Info");
+    }
+    approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
-      }
-      if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
-        return callback("No Market Info");
       }
       var market = marketInfos[0];
       var marketId = market.id;
@@ -27,10 +28,10 @@ function fillMarketOrderInternal(augur, marketIds, orderType, outcomeId, univers
       augur.trading.getOrders({ marketId: marketId, outcome: outcomeId, orderType: orderType }, function (err, orderBook) {
         if (err) {
           console.error(err);
-          callback(err);
+          return callback(err);
         }
         if (!orderBook[marketId]) {
-          callback("No Market Orders Found");
+          return callback("No Market Orders Found");
         }
         var orders = orderBook[marketId][outcomeId][orderType];
         async.eachSeries(Object.keys(orders), function (orderId, nextOrder) {
@@ -38,7 +39,7 @@ function fillMarketOrderInternal(augur, marketIds, orderType, outcomeId, univers
           console.log(chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
           fillOrder(augur, universe, auth.address, outcomeId, order.fullPrecisionAmount, orderType, auth, function (err) {
             if (err) {
-              nextOrder(err);
+              return nextOrder(err);
             }
             console.log(chalk.green("Success"));
             nextOrder(null);
@@ -49,7 +50,6 @@ function fillMarketOrderInternal(augur, marketIds, orderType, outcomeId, univers
       });
     });
   });
-
 }
 
 function help(callback) {
@@ -74,7 +74,7 @@ function fillMarketOrder(augur, params, auth, callback) {
     console.log(chalk.yellow.dim("marketId"), chalk.yellow(marketId));
     var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
     console.log(chalk.yellow.dim("Universe"), chalk.yellow(universe));
-    fillMarketOrderInternal(augur, [marketId], orderType, outcomeId, universe, auth, callback);
+    fillMarketOrderInternal(augur, marketId, orderType, outcomeId, universe, auth, callback);
   }
 }
 

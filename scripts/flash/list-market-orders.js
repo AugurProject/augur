@@ -23,10 +23,8 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
         }
         var market = marketInfos[0];
         var marketId = market.id;
-        var outcomes = [0, 1];
-        if (market.marketType === "category") {
-          outcomes = new Array(market.numOutcomes);
-        }
+        var outcomes = new Array(market.numOutcomes);
+
         var orderTypes = ["buy", "sell"];
         async.eachSeries(outcomes, function (marketOutcome, nextOutcome) {
           var outcome = marketOutcome.toString();
