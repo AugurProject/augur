@@ -8,6 +8,7 @@ import { BUY, SELL } from 'modules/transactions/constants/types'
 import { isEqual, isEmpty } from 'lodash'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
+import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
@@ -54,7 +55,7 @@ export default class MarketOutcomeOrderbook extends Component {
       >
         <div
           ref={(asks) => { this.asks = asks }}
-          className={Styles.MarketOutcomeOrderBook__Side}
+          className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
         >
           {(p.orderBook.asks || []).map((order, i) => (
             <div
@@ -117,7 +118,7 @@ export default class MarketOutcomeOrderbook extends Component {
           ))}
         </div>
         <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
-        <div className={Styles.MarketOutcomeOrderBook__Side} >
+        <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
           {(p.orderBook.bids || []).map((order, i) => (
             <div
               key={order.cumulativeShares}
@@ -177,6 +178,23 @@ export default class MarketOutcomeOrderbook extends Component {
               </button>
             </div>
           ))}
+        </div>
+        <div className={classNames(StylesHeader.MarketOutcomeChartsHeader__stats, Styles.MarketOutcomeOrderBook__stats)}>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              bid qty
+            </span>
+          </div>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              price
+            </span>
+          </div>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              depth
+            </span>
+          </div>
         </div>
       </section>
     )

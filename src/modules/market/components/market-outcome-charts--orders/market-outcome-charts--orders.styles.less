@@ -6,19 +6,26 @@
   height: 100%;
 }
 
+.MarketOutcomeOrderBook__stats {
+  flex: 0;
+}
+
 .MarketOutcomeOrderBook__Side {
   &:extend(.caps--small);
 
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
   overflow-y: auto;
+}
 
-  &:first-of-type {
-    border-top: 1px solid @color-gray;
-  }
+.MarketOutcomeOrderBook__side--asks {
+  border-top: 1px solid @color-gray;
+  justify-content: flex-end;
+}
 
-  &:last-of-type {
-    border-bottom: 1px solid @color-gray;
-  }
+.MarketOutcomeOrderBook__side--bids {
+  border-bottom: 1px solid @color-gray;
 }
 
 .MarketOutcomeOrderBook__row {

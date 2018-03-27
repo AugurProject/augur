@@ -34,6 +34,7 @@
   button {
     color: @color-gray;
     font-size: @font-size-rather-large;
+    margin: 0 0 -0.5rem; // NOTE -- this is so that it doesn't exceed the desired height in relation to the adjacent header
     padding: 0 0.15em;
     position: relative;
     top: -8px;
@@ -74,6 +75,7 @@
 
 .MarketOutcomeChartsHeader__stat-title {
   color: @color-white;
+  white-space: nowrap;
 }
 
 .MarketOutcomeChartsHeader__stat-value {
