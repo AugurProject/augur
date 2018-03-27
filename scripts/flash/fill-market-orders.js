@@ -16,6 +16,7 @@ function fillMarketOrderInternal(augur, marketId, orderType, outcomeId, universe
     if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
       return callback("No Market Info");
     }
+    console.log(chalk.yellow("Approving account"), chalk.yellow(auth.address));
     approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
@@ -53,6 +54,7 @@ function fillMarketOrderInternal(augur, marketId, orderType, outcomeId, universe
 }
 
 function help(callback) {
+  console.log(chalk.red("params syntax --> marketId,0,buy"));
   console.log(chalk.red("params syntax --> marketId"));
   console.log(chalk.red("params syntax --> outcome ( 0, 1, ... )"));
   console.log(chalk.red("params syntax --> order type (buy | sell)"));

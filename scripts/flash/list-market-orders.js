@@ -23,15 +23,14 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
         }
         var market = marketInfos[0];
         var marketId = market.id;
-        var outcomes = new Array(market.numOutcomes);
+        var outcomes = Array.from(Array(market.numOutcomes).keys());
 
         var orderTypes = ["buy", "sell"];
-        async.eachSeries(outcomes, function (marketOutcome, nextOutcome) {
-          var outcome = marketOutcome.toString();
+        async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
           async.eachSeries(orderTypes, function (orderType, nextOrderType) {
-            console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcome), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
+            console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcomeId), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
             console.log(chalk.green.dim("OrderId:"), chalk.green.dim("Account:"), chalk.green.dim("Amount:"), chalk.green.dim("FullPrecisionPrice:"), chalk.green.dim("FullPrecisionAmount"));
-            augur.trading.getOrders({ marketId: marketId, outcome: outcome, orderType: orderType }, function (err, orderBook) {
+            augur.trading.getOrders({ marketId: marketId, outcome: outcomeId, orderType: orderType }, function (err, orderBook) {
               if (err) {
                 console.error(err);
                 return nextOrderType(err);
@@ -41,7 +40,11 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
                 console.log("No Market Orders Found");
                 return nextOrderType(null);
               }
-              var orders = orderBook[marketId][outcome][orderType];
+              if (!orderBook[marketId][outcomeId]) {
+                console.log("No Market Orders for outcome", outcomeId);
+                return nextOrderType(null);
+              }
+              var orders = orderBook[marketId][outcomeId][orderType];
               Object.keys(orders).forEach(function (orderId) {
                 var order = orders[orderId];
                 console.log(chalk.green(orderId), chalk.yellow(order.owner), chalk.yellow(order.amount), chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
