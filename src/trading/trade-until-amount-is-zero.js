@@ -59,10 +59,11 @@ function tradeUntilAmountIsZero(p) {
     if (err) return p.onFailed(err);
     var estimatedGasCost = new BigNumber(constants.TRADE_GAS, 16).times(new BigNumber(gasPrice, 16));
     console.log("estimated gas cost:", estimatedGasCost.toFixed(), "wei", speedomatic.unfix(estimatedGasCost, "string"), "eth");
-    if (estimatedGasCost.gt(cost)) {
-      console.info("tradeUntilAmountIsZero complete: only dust remaining");
-      return p.onSuccess(null);
-    }
+    // Note: disabled temporarily for testing, do not remove!
+    // if (estimatedGasCost.gt(cost)) {
+    //   console.info("tradeUntilAmountIsZero complete: only dust remaining");
+    //   return p.onSuccess(null);
+    // }
     var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
       tx: assign({ value: convertBigNumberToHexString(cost), gas: constants.TRADE_GAS }, p.tx),
       _fxpAmount: convertBigNumberToHexString(onChainAmount),
