@@ -67,7 +67,6 @@ describe('modules/create-market/helpers/build-create-market', () => {
         _denominationToken: 'domnination',
         _description: 'test description',
         _extraInfo: {
-          marketType: 'categorical',
           longDescription: '',
           resolutionSource: '',
           tags: [],
@@ -127,7 +126,6 @@ describe('modules/create-market/helpers/build-create-market', () => {
         _denominationToken: 'domnination',
         _description: 'test description',
         _extraInfo: {
-          marketType: 'binary',
           longDescription: '',
           resolutionSource: '',
           tags: [],
@@ -188,7 +186,6 @@ describe('modules/create-market/helpers/build-create-market', () => {
         _description: 'test description',
         _extraInfo: {
           _scalarDenomination: '%',
-          marketType: 'scalar',
           longDescription: '',
           resolutionSource: '',
           tags: [],
