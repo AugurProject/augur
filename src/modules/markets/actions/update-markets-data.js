@@ -16,4 +16,4 @@ export const updateMarketFrozenSharesValue = (marketId, frozenSharesValue) => ({
 export const updateMarketEscapeHatchGasCost = (marketId, escapeHatchGasCost) => ({ type: UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, marketId, escapeHatchGasCost })
 export const updateMarketTradingEscapeHatchGasCost = (marketId, tradingEscapeHatchGasCost) => ({ type: UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST, marketId, tradingEscapeHatchGasCost })
 export const updateMarketsDisputeInfo = marketsDisputeInfo => ({ type: UPDATE_MARKETS_DISPUTE_INFO, marketsDisputeInfo })
-export const removeMarket = (marketId) => ({type: REMOVE_MARKET, marketId})
+export const removeMarket = marketId => ({ type: REMOVE_MARKET, marketId })

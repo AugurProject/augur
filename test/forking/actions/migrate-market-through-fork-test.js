@@ -33,7 +33,7 @@ describe('modules/forking/actions/migrate-market-through-fork.js', () => {
           },
         })
 
-        migrateMarketThroughFork('0xMARKET', false, () => {})(null, getState)
+        migrateMarketThroughFork('0xMARKET', false, () => {})(() => {}, getState)
       },
     })
   })
