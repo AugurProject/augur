@@ -167,7 +167,7 @@ function determineDrawParams(options) {
     ...sharedChartMargins,
     tickOffset: 10,
     right: 10,
-    left: 10,
+    left: 0,
   }
 
   const yScale = d3.scaleLinear()
@@ -199,7 +199,7 @@ function drawMidpointLine(options) {
   // Left Segment
   midpointChart.append('line')
     .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
-    .attr('x1', drawParams.chartDim.tickOffset)
+    .attr('x1', drawParams.chartDim.left)
     .attr('x2', () => {
       if (hasPriceHistory && hasOrders) { // All the way
         return drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right

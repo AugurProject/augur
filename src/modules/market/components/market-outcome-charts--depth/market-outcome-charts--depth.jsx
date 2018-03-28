@@ -134,7 +134,7 @@ export default class MarketOutcomeDepth extends Component {
       const depthChart = d3.select(depthContainer)
         .append('svg')
         .attr('id', 'depth_chart')
-        .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
+        .attr('width', drawParams.containerWidth)
         .attr('height', drawParams.containerHeight)
 
       drawTicks({
@@ -236,7 +236,7 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#crosshairY')
           .attr('x1', 0)
           .attr('y1', yScale(hoveredPrice))
-          .attr('x2', containerWidth - sharedChartMargins.gap)
+          .attr('x2', containerWidth)
           .attr('y2', yScale(hoveredPrice))
 
         d3.select('#hovered_price_label')
@@ -316,7 +316,7 @@ function determineDrawParams(options) {
 
   const xScale = d3.scaleLinear()
     .domain(d3.extent(xDomain))
-    .range([chartDim.left, containerWidth - chartDim.right - chartDim.gap - 1])
+    .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
@@ -355,7 +355,7 @@ function drawTicks(options) {
     .append('line')
     .attr('class', 'bounding-line')
     .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
+    .attr('x2', drawParams.containerWidth)
     .attr('y1', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
     .attr('y2', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
 
@@ -383,7 +383,7 @@ function drawTicks(options) {
     .append('line')
     .attr('class', 'tick-line')
     .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
+    .attr('x2', drawParams.containerWidth)
     .attr('y1', d => drawParams.yScale(d))
     .attr('y2', d => drawParams.yScale(d))
   yTicks.selectAll('text')
@@ -405,7 +405,7 @@ function drawTicks(options) {
     rangeBounds.append('line')
       .attr('class', 'tick-line')
       .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
+      .attr('x2', drawParams.containerWidth)
       .attr('y1', () => drawParams.yScale(orderBookKeys.min))
       .attr('y2', () => drawParams.yScale(orderBookKeys.min))
 
@@ -422,13 +422,13 @@ function drawTicks(options) {
       .attr('x', 0)
       .attr('y', () => drawParams.yScale(orderBookKeys.min))
       .attr('height', drawParams.drawHeight - drawParams.yScale(orderBookKeys.min))
-      .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
+      .attr('width', drawParams.containerWidth)
 
   } else if (drawParams.yDomain[drawParams.yDomain.length - 1] > marketMax) {
     rangeBounds.append('line')
       .attr('class', 'tick-line')
       .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth - drawParams.chartDim.gap)
+      .attr('x2', drawParams.containerWidth)
       .attr('y1', () => drawParams.yScale(orderBookKeys.max))
       .attr('y2', () => drawParams.yScale(orderBookKeys.max))
 
@@ -445,7 +445,7 @@ function drawTicks(options) {
       .attr('x', 0)
       .attr('y', 0)
       .attr('height', drawParams.yScale(orderBookKeys.max))
-      .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
+      .attr('width', drawParams.containerWidth)
   }
 
   // X Axis

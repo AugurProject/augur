@@ -18,7 +18,6 @@ import { augur } from 'services/augurjs'
 
 // NOTE --  These are attached for convenience when built for development or debug
 if (process.env.NODE_ENV === 'development') {
-  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
   window.augur = augur
 
   console.log(`

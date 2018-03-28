@@ -148,13 +148,13 @@ export default class MarketOutcomeCandlestick extends Component {
       candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
       candleChartContainer.setAttribute('key', 'candlestick_chart_container')
       candleChartContainer.setAttribute('style', {
-        width: `${drawParams.containerWidth - drawParams.chartDim.left - drawParams.chartDim.gap}px`,
+        width: `${drawParams.containerWidth - drawParams.chartDim.left}px`,
         left: drawParams.chartDim.left,
       })
 
       const candleTicks = d3.select(candleTicksContainer)
         .append('svg')
-        .attr('width', drawParams.containerWidth - drawParams.chartDim.gap)
+        .attr('width', drawParams.containerWidth)
         .attr('height', drawParams.containerHeight)
       const candleChart = d3.select(candleChartContainer)
         .append('svg')
@@ -213,7 +213,14 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawCandlestickOnResize() {
-    this.drawCandlestick(this.state.periodTimeSeries, this.props.orderBookKeys, this.props.fixedPrecision)
+    // this.drawCandlestick(this.state.periodTimeSeries, this.props.orderBookKeys, this.props.fixedPrecision)
+    this.drawCandlestick({
+      periodTimeSeries: this.state.periodTimeSeries,
+      orderBookKeys: this.props.orderBookKeys,
+      outcomeBounds: this.state.outcomeBounds,
+      fixedPrecision: this.props.fixedPrecision,
+      sharedChartMargins: this.props.sharedChartMargins,
+    })
   }
 
   render() {
@@ -244,7 +251,7 @@ function determineDrawParams(options) {
   // Dimensions/Positioning
   const chartDim = {
     ...sharedChartMargins,
-    right: sharedChartMargins.gap,
+    right: 0,
     left: 50,
     stick: 5,
     tickOffset: 10,

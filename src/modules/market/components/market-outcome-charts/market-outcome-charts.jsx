@@ -7,8 +7,6 @@ import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts-
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
 import MarketOutcomeMidpoint from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
-import { isEmpty } from 'lodash'
-
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 
 export default class MarketOutcomeCharts extends Component {
@@ -38,7 +36,6 @@ export default class MarketOutcomeCharts extends Component {
       sharedChartMargins: {
         top: 0,
         bottom: 30,
-        gap: 30,
       },
       chartWidths: {
         candle: 0,
@@ -58,20 +55,6 @@ export default class MarketOutcomeCharts extends Component {
     this.updateChartWidths()
 
     window.addEventListener('resize', this.updateChartWidths)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    // if (
-    //   !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
-    //   !isEqual(this.state.fullPrice, nextState.fullPrice)
-    // ) {
-    //   console.log('fullPrice -- ', nextState.fullPrice)
-    //   if (nextState.fullPrice === null) {
-    //     this.updateHoveredPrice(null)
-    //   } else {
-    //     this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
-    //   }
-    // }
   }
 
   componentWillUnmount() {
@@ -114,7 +97,7 @@ export default class MarketOutcomeCharts extends Component {
     return this.setState({ fixedPrecision })
   }
 
-  updateChartWidths() {
+  updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
     this.setState({
       chartWidths: {
         candle: this.candlestickContainer ? this.candlestickContainer.clientWidth : 0,
