@@ -41,6 +41,7 @@ export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_WITHDRAW = 'withdraw-funds'
 export const ACCOUNT_REP_FAUCET = 'rep-faucet'
+export const ACCOUNT_UNIVERSES = 'universes'
 
 // Reporting
 export const REPORTING_DISPUTE_MARKETS = 'reporting-dispute-markets'
