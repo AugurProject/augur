@@ -7,14 +7,24 @@ import { augurEmitter } from "../../events";
 export function processFeeWindowRedeemedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const redeemedToInsert = {
     reporter: log.reporter,
-
-  }
-  console.log(log);
-  callback(null);
+    feeWindow: log.feeWindow,
+    blockNumber: log.blockNumber,
+    transactionHash: log.transactionHash,
+    logIndex: log.logIndex,
+    ethFees: log.amountRedeemed,
+    repFees: log.reportingFeesReceived,
+  };
+  db.insert(redeemedToInsert).into("redeemed").asCallback((err: Error|null): void => {
+    if (err) return callback(err);
+    augurEmitter.emit("FeeWindowRedeemed", log);
+    callback(null);
+  });
 }
 
 export function processFeeWindowRedeemedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: feeWindowRedeemedLog removal");
-  console.log(log);
-  callback(null);
+  db.from("redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
+    if (err) return callback(err);
+    augurEmitter.emit("FeeWindowRedeemed", log);
+    callback(null);
+  });
 }
