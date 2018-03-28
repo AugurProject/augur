@@ -29,7 +29,6 @@ export default class ReportingDispute extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     estimateSubmitMarketContribute: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {

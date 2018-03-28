@@ -9,6 +9,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
+import { formatAttoRep } from 'utils/format-number'
 
 export default class MigrateRepForm extends Component {
 
@@ -156,6 +157,12 @@ export default class MigrateRepForm extends Component {
     const p = this.props
     const s = this.state
 
+    const formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
+      const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
+      totals[curOutcomeId] = formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted
+      return totals
+    }, {})
+
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -174,7 +181,7 @@ export default class MigrateRepForm extends Component {
                   className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
                   onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
                 >{outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (p.forkMigrationTotals[outcome.id] && p.forkMigrationTotals[outcome.id].repTotal) || '0'} REP Migrated</span>
+                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (formattedMigrationTotals[outcome.id] && formattedMigrationTotals[outcome.id]) || '0'} REP Migrated</span>
                   { p.forkMigrationTotals[outcome.id] && p.forkMigrationTotals[outcome.id].winner &&
                     <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
                   }
