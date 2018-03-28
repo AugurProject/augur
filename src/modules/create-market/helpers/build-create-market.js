@@ -7,7 +7,7 @@ export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount,
   const tags = []
   if (newMarket.tag1) tags.push(newMarket.tag1)
   if (newMarket.tag2) tags.push(newMarket.tag2)
-  // General Properties
+
   const formattedNewMarket = {
     universe: universe.id,
     _endTime: parseInt(newMarket.endDate.timestamp, 10),
@@ -17,7 +17,6 @@ export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount,
     _designatedReporterAddress: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF ? loginAccount.address : newMarket.designatedReporterAddress,
     _topic: newMarket.category,
     _extraInfo: {
-      marketType: newMarket.type,
       longDescription: newMarket.detailsText,
       resolutionSource: newMarket.expirySource,
       tags,
@@ -27,7 +26,6 @@ export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount,
   if (isEstimate) {
     formattedNewMarket.tx = { estimateGas: true, gas: augur.constants.DEFAULT_MAX_GAS }
   }
-  // Type Specific Properties
   let createMarket
   switch (newMarket.type) {
     case CATEGORICAL:
