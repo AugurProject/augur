@@ -39,8 +39,8 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
 }
 
 const sortOutcomes = (a, b) => {
-  const stakeSort = new BigNumber(a.stakeRemaining).gt(new BigNumber(b.stakeRemaining))
-  const currentSort = new BigNumber(a.stakeCurrent).lt(new BigNumber(b.stakeCurrent))
+  const stakeSort = new BigNumber(a.stakeRemaining || 0).gt(new BigNumber(b.stakeRemaining || 0))
+  const currentSort = new BigNumber(a.stakeCurrent || 0).lt(new BigNumber(b.stakeCurrent || 0))
   if (stakeSort) return 1
   if (!stakeSort && currentSort) return 1
   if (!stakeSort) return -1

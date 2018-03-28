@@ -1,3 +1,5 @@
+/* eslint jsx-a11y/label-has-for: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -112,24 +114,25 @@ export default class ModalParticipate extends Component {
             className={Styles.ModalParticipate__form}
             onSubmit={this.triggerReview}
           >
-            <h1 className={Styles.ModalParticipate__heading}>{Participate} Buy Participation Tokens</h1>
+            <div className={Styles.ModalParticipate__heading}>
+              {Participate}
+              <h1>Buy Participation Tokens</h1>
+            </div>
             <span className={Styles.ModalParticipate__helperText}>Purchase participation tokens to earn a share of the reporting fees collected during this dispute window.</span>
-            <label htmlFor="modal__participate-quantity">
-              Quantity (1 token @ 1 REP)
-              <Input
-                id="modal__participate-quantity"
-                type="number"
-                className={classNames({ [`${Styles['ModalParticipate__error--field']}`]: invalidWithErrors })}
-                value={s.quantity}
-                placeholder="0.0"
-                onChange={value => this.updateQuantity(value)}
-                onKeyDown={e => this.handleKeyDown(e)}
-                autoComplete="off"
-                maxButton
-                onMaxButtonClick={() => this.handleMaxClick()}
-              />
-            </label>
-            {s.errors.length && s.errors.map((error, index) =>
+            <label htmlFor="modal__participate-quantity">Quantity (1 token @ 1 REP)</label>
+            <Input
+              id="modal__participate-quantity"
+              type="number"
+              className={classNames({ [`${Styles['ModalParticipate__error--field']}`]: invalidWithErrors })}
+              value={s.quantity}
+              placeholder="0.0"
+              onChange={value => this.updateQuantity(value)}
+              onKeyDown={e => this.handleKeyDown(e)}
+              autoComplete="off"
+              maxButton
+              onMaxButtonClick={() => this.handleMaxClick()}
+            />
+            { !!s.errors.length && s.errors.map((error, index) =>
               (
                 <p
                   key={error}

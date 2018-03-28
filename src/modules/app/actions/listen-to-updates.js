@@ -100,12 +100,12 @@ export function listenToUpdates(history) {
           } else {
             console.log('OrderCanceled:', log)
             // if this is the user's order, then add it to the transaction display
-            if (log.orderCreator === getState().loginAccount.address) {
+            if (log.sender === getState().loginAccount.address) {
+              dispatch(removeCanceledOrder(log.orderId))
+              dispatch(updateAssets())
               dispatch(updateAccountCancelsData({
                 [log.marketId]: { [log.outcome]: [log] },
               }, log.marketId))
-              dispatch(removeCanceledOrder(log.orderId))
-              dispatch(updateAssets())
             }
           }
         }
@@ -220,7 +220,7 @@ export function listenToUpdates(history) {
             if (universe.id === log.universe) {
               dispatch(loadMarketsInfo([log.marketId], () => {
                 const { volume, author, description } = getState().marketsData[log.marketId]
-                dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).neg().toNumber()))
+                dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).negated().toNumber()))
                 if (loginAccount.address === author) {
                   dispatch(addNotification({
                     id: log.hash,

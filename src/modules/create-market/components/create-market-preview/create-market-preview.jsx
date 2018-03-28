@@ -11,7 +11,7 @@ import { CreateMarketEdit } from 'modules/common/components/icons'
 
 import CreateMarketPreviewRange from 'modules/create-market/components/create-market-preview-range/create-market-preview-range'
 import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'
-import { dateHasPassed } from 'utils/format-date'
+import { dateHasPassed, formatDate } from 'utils/format-date'
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
 
 export default class CreateMarketPreview extends Component {
@@ -36,7 +36,7 @@ export default class CreateMarketPreview extends Component {
     } else if (p.newMarket.meridiem === 'PM' && endDate.hours() < 12) {
       endDate.hours(endDate.hours() + 12)
     }
-
+    p.newMarket.endDate = formatDate(endDate.toDate())
     return endDate.format('MMM D, YYYY h:mm a')
   }
 

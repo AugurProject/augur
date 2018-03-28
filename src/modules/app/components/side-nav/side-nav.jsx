@@ -19,6 +19,7 @@ export default class SideNav extends Component {
     toggleNotifications: PropTypes.func.isRequired,
     unseenCount: PropTypes.number.isRequired,
     stats: PropTypes.array.isRequired,
+    currentBasePath: PropTypes.string,
   };
 
   constructor() {
@@ -38,6 +39,7 @@ export default class SideNav extends Component {
   isCurrentItem(item) {
     const selected = (this.state.selectedKey &&
                       this.state.selectedKey === item.title)
+                      || item.route === this.props.currentBasePath
     return selected
   }
 
@@ -88,6 +90,8 @@ export default class SideNav extends Component {
                 } else {
                   this.props.defaultMobileClick()
                 }
+              } else {
+                this.itemClick(item)
               }
             }
 

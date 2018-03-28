@@ -23,7 +23,7 @@ const CategoryList = (p) => {
           >
             <Category
               category={(category && !!category.category) ? category.category : 'null-category'}
-              popularity={(category && !!category.popularity) ? category.popularity : 0}
+              popularity={(category && !!category.popularity) ? category.popularity.toString() : '0'}
             />
           </div>
         )

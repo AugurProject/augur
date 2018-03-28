@@ -6,6 +6,9 @@ import logError from 'utils/log-error'
 import { MARKET_INFO_LOADING, MARKET_INFO_LOADED } from 'modules/market/constants/market-loading-states'
 
 export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, getState) => {
+  if (!marketIds || marketIds.length === 0) {
+    return callback(null, [])
+  }
   (marketIds || []).map(marketId => dispatch(updateMarketLoading({ [marketId]: MARKET_INFO_LOADING })))
 
 
