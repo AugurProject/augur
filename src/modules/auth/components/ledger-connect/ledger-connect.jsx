@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { LedgerEthereum, BrowserLedgerConnectionFactory } from 'ethereumjs-ledger'
 
+import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
+
 import { Alert } from 'modules/common/components/icons'
 
 import Spinner from 'modules/common/components/spinner/spinner'
@@ -13,6 +15,7 @@ export default class Ledger extends Component {
     history: PropTypes.object.isRequired,
     loginWithLedger: PropTypes.func.isRequired,
     networkId: PropTypes.number.isRequired,
+    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -73,8 +76,9 @@ export default class Ledger extends Component {
   }
 
   async onEnableContractSupportRequest() {
-    this.setState({
-      ledgerState: this.LEDGER_STATES.ENABLE_CONTRACT_SUPPORT,
+    this.props.updateModal({
+      type: MODAL_LEDGER,
+      error: 'Please enable Contract Data on your Ledger to use Augur.',
     })
   }
 
