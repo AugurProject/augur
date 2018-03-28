@@ -6,7 +6,7 @@ const {processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval} = requir
 
 describe("blockchain/log-processors/fee-window-redeemed", () => {
   const test = (t) => {
-    const getRedeemed = (db, params, callback) => db.select(["reporter", "feeWindow", "ethFees", "repFees"]).from("redeemed").asCallback(callback);
+    const getRedeemed = (db, params, callback) => db.select(["reporter", "feeWindow", "amountRedeemed", "reportingFeesReceived"]).from("participation_token_redeemed").asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
@@ -45,10 +45,10 @@ describe("blockchain/log-processors/fee-window-redeemed", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, [{
-          ethFees: "200",
+          amountRedeemed: "200",
           feeWindow: "FEE_WINDOW",
-          repFees: "900",
           reporter: "REPORTER",
+          reportingFeesReceived: "900",
         }]);
       },
       onRemoved: (err, records) => {

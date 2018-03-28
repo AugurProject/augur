@@ -11,10 +11,10 @@ export function processFeeWindowRedeemedLog(db: Knex, augur: Augur, log: Formatt
     blockNumber: log.blockNumber,
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
-    ethFees: log.amountRedeemed,
-    repFees: log.reportingFeesReceived,
+    amountRedeemed: log.amountRedeemed, // attoRep
+    reportingFeesReceived: log.reportingFeesReceived, // attoEth
   };
-  db.insert(redeemedToInsert).into("redeemed").asCallback((err: Error|null): void => {
+  db.insert(redeemedToInsert).into("participation_token_redeemed").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("FeeWindowRedeemed", log);
     callback(null);
@@ -22,7 +22,7 @@ export function processFeeWindowRedeemedLog(db: Knex, augur: Augur, log: Formatt
 }
 
 export function processFeeWindowRedeemedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.from("redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
+  db.from("participation_token_redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("FeeWindowRedeemed", log);
     callback(null);
