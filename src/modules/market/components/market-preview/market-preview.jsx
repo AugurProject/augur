@@ -46,10 +46,6 @@ MarketPreview.propTypes = {
   linkType: PropTypes.string,
   outstandingReturns: PropTypes.bool,
   collectMarketCreatorFees: PropTypes.func,
-  isForking: PropTypes.bool,
-  isForkingMarketFinalized: PropTypes.bool,
-  forkingMarket: PropTypes.string,
-  updateModal: PropTypes.func.isRequired,
 }
 
 export default MarketPreview

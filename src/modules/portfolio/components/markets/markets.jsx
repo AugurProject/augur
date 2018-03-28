@@ -24,10 +24,6 @@ class MyMarkets extends Component {
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsInfo: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
-    isForking: PropTypes.bool,
-    isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.string,
-    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -135,10 +131,6 @@ class MyMarkets extends Component {
             paginationPageParam="open"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
             isMobile={p.isMobile}
-            isForking={p.isForking}
-            isForkingMarketFinalized={p.isForkingMarketFinalized}
-            forkingMarket={p.forkingMarket}
-            updateModal={p.updateModal}
           />
         }
         {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
@@ -167,10 +159,6 @@ class MyMarkets extends Component {
             paginationPageParam="reporting"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
             isMobile={p.isMobile}
-            isForking={p.isForking}
-            isForkingMarketFinalized={p.isForkingMarketFinalized}
-            forkingMarket={p.forkingMarket}
-            updateModal={p.updateModal}
           />
         }
         {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
@@ -199,10 +187,6 @@ class MyMarkets extends Component {
             paginationPageParam="final"
             collectMarketCreatorFees={p.collectMarketCreatorFees}
             isMobile={p.isMobile}
-            isForking={p.isForking}
-            isForkingMarketFinalized={p.isForkingMarketFinalized}
-            forkingMarket={p.forkingMarket}
-            updateModal={p.updateModal}
           />
         }
         {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}

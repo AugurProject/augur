@@ -116,9 +116,6 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
-          isForking={p.universe.isForking}
-          isForkingMarketFinalized={p.universe.isForkingMarketFinalized}
-          forkingMarket={p.universe.isForkingMarket}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&

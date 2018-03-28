@@ -125,9 +125,6 @@ export default class MigrateRep extends Component {
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
           disputeRound={0}
-          isForking={p.universe.isForking}
-          isForkingMarketFinalized={p.universe.isForkingMarketFinalized}
-          forkingMarket={p.universe.isForkingMarket}
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&

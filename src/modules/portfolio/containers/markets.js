@@ -11,7 +11,6 @@ import { loadUserMarkets } from 'modules/markets/actions/load-user-markets'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { collectMarketCreatorFees } from 'modules/portfolio/actions/collect-market-creator-fees'
-import { updateModal } from 'modules/modal/actions/update-modal'
 import logError from 'utils/log-error'
 
 const mapStateToProps = state =>
@@ -22,9 +21,6 @@ const mapStateToProps = state =>
     transactionsLoading: state.transactionsLoading,
     isMobile: state.isMobile,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber, // FIXME
-    isForking: state.universe.isForking,
-    isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
-    forkingMarket: state.universe.forkingMarket,
   })
 
 const mapDispatchToProps = dispatch => ({
@@ -37,7 +33,6 @@ const mapDispatchToProps = dispatch => ({
   collectMarketCreatorFees: (marketId, callback) => dispatch(collectMarketCreatorFees(marketId, callback)),
   loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const MyMarketsContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MyMarkets))

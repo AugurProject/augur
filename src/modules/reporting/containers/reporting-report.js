@@ -10,7 +10,6 @@ import getValue from 'utils/get-value'
 import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
 import { estimateSubmitInitialReport } from 'modules/reporting/actions/estimate-submit-initial-report'
 import { constants } from 'services/augurjs'
-import { updateModal } from 'modules/modal/actions/update-modal'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -19,16 +18,12 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.isMobile,
-  isForking: state.universe.isForking,
-  isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
-  forkingMarket: state.universe.forkingMarket,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   submitInitialReport: (marketId, outcomeValue, invalid, history) => dispatch(submitInitialReport(marketId, outcomeValue, invalid, history)),
   estimateSubmitInitialReport: (marketId, callback) => dispatch(estimateSubmitInitialReport(marketId, callback)),
-  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 

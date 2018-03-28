@@ -115,12 +115,12 @@ const MarketProperties = (p) => {
 }
 
 MarketProperties.propTypes = {
+  updateModal: PropTypes.func.isRequired,
   linkType: PropTypes.string,
   buttonText: PropTypes.string,
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,
   toggleDetails: PropTypes.func,
-  updateModal: PropTypes.func.isRequired,
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
   forkingMarket: PropTypes.string,

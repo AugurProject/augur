@@ -28,10 +28,6 @@ export default class ReportingReport extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     submitInitialReport: PropTypes.func.isRequired,
     estimateSubmitInitialReport: PropTypes.func.isRequired,
-    isForking: PropTypes.bool,
-    isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.string,
-    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {

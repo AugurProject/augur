@@ -29,9 +29,6 @@ export default class ReportingDisputeMarkets extends Component {
     isForking: PropTypes.bool.isRequired,
     forkEndTime: PropTypes.string,
     currentTime: PropTypes.number.isRequired,
-    isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.string,
-    updateModal: PropTypes.func.isRequired,
   }
 
   componentWillMount() {

@@ -18,10 +18,6 @@ export default class ReportingOpen extends Component {
     loadMarketsInfo: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    isForking: PropTypes.bool,
-    isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.string,
-    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -59,9 +55,6 @@ export default class ReportingOpen extends Component {
             loadMarketsInfo={p.loadMarketsInfo}
             linkType={TYPE_REPORT}
             showPagination={false}
-            isForking={p.isForking}
-            isForkingMarketFinalized={p.isForkingMarketFinalized}
-            forkingMarket={p.forkingMarket}
           />
         }
         <h2 className={Styles.ReportingOpen__heading}>In Reporting</h2>
@@ -75,9 +68,6 @@ export default class ReportingOpen extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_REPORT}
           paginationPageParam="reporting-closed-page"
-          isForking={p.isForking}
-          isForkingMarketFinalized={p.isForkingMarketFinalized}
-          forkingMarket={p.forkingMarket}
         />
       </section>
     )

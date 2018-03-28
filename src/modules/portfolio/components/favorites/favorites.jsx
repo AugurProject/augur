@@ -31,10 +31,6 @@ const Favorites = p => (
       loadMarketsInfo={p.loadMarketsInfo}
       linkType={TYPE_TRADE}
       isMobile={p.isMobile}
-      isForking={p.isForking}
-      isForkingMarketFinalized={p.isForkingMarketFinalized}
-      forkingMarket={p.forkingMarket}
-      updateModal={p.updateModal}
     />
   </section>
 )
@@ -50,10 +46,6 @@ Favorites.propTypes = {
   toggleFavorite: PropTypes.func.isRequired,
   loadMarketsInfo: PropTypes.func.isRequired,
   isMobile: PropTypes.bool,
-  isForking: PropTypes.bool,
-  isForkingMarketFinalized: PropTypes.bool,
-  forkingMarket: PropTypes.string,
-  updateModal: PropTypes.func.isRequired,
 }
 
 export default Favorites

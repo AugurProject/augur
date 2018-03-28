@@ -8,8 +8,6 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
-import { updateModal } from 'modules/modal/actions/update-modal'
-
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
@@ -19,15 +17,11 @@ const mapStateToProps = state => ({
   canLoadMarkets: !!getValue(state, 'universe.id'),
   hasLoadedMarkets: state.hasLoadedMarkets,
   isMobile: state.isMobile,
-  isForking: state.universe.isForking,
-  isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
-  forkingMarket: state.universe.forkingMarket,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const Reporting = withRouter(connect(mapStateToProps, mapDispatchToProps)(ReportingOpen))
