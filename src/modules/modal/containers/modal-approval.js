@@ -1,8 +1,9 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import ModalView from 'modules/modal/components/modal-view/modal-view'
+import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 
 import { closeModal } from 'modules/modal/actions/close-modal'
+import { approveAccount } from 'modules/auth/actions/approve-account'
 
 const mapStateToProps = state => ({
   modal: state.modal,
@@ -10,6 +11,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(closeModal()),
+  approveAccount: cb => dispatch(approveAccount(cb)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ModalView))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ModalApproval))
