@@ -61,7 +61,6 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
             outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
             category: (next) => incrementCategoryPopularity(db, category, amount, next),
           }, callback);
-
         });
       });
     });

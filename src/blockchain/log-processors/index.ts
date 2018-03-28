@@ -120,6 +120,7 @@ export const logProcessors: LogProcessors = {
       remove: processUniverseCreatedLogRemoval,
     },
     FeeWindowRedeemed: {
+      noAutoEmit: true,
       add: processFeeWindowRedeemedLog,
       remove: processFeeWindowRedeemedLogRemoval,
     },
