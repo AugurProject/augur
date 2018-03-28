@@ -55,10 +55,6 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@types/bignumber.js@4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@types/bignumber.js/-/bignumber.js-4.0.3.tgz#e8ce5f28c3025a01c6af7fc6d944494903a9e348"
-
 "@types/chai-as-promised@7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@types/chai-as-promised/-/chai-as-promised-7.1.0.tgz#010b04cde78eacfb6e72bfddb3e58fe23c2e78b9"
@@ -484,9 +480,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-core@0.12.2:
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.2.tgz#b39d9bf42485ac84eb82311e7d9b80711e17b6dd"
+augur-core@0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.3.tgz#02164e09e6ff80887ffae29adf03f18d3b503c5b"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -514,13 +510,12 @@ augur-core@0.12.2:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.9.1-2:
-  version "4.9.1-2"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.9.1-2.tgz#a89f1069e566f873e03435ab1ae22e0bdb5cea27"
+augur.js@4.9.2-0:
+  version "4.9.2-0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.9.2-0.tgz#217b55c8a0ecfafde52a812be0457017b3d74aa9"
   dependencies:
-    "@types/bignumber.js" "4.0.3"
     async "1.5.2"
-    augur-core "0.12.2"
+    augur-core "0.12.3"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
