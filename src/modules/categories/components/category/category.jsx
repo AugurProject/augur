@@ -15,7 +15,7 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 export default class Category extends Component {
   static propTypes = {
-    popularity: PropTypes.number,
+    popularity: PropTypes.string,
   }
 
   constructor(props) {

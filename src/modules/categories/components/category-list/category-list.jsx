@@ -19,11 +19,11 @@ const CategoryList = (p) => {
         return (
           <div
             className={categoryStyling}
-            key={category !== null ? JSON.stringify(category) : `${JSON.stringify(category)}${categoryIndex}`}
+            key={category ? JSON.stringify(category) : `${JSON.stringify(category)}${categoryIndex}`}
           >
             <Category
-              category={category !== null ? category.category : 'null-category'}
-              popularity={category !== null ? category.popularity : 0}
+              category={(category && !!category.category) ? category.category : 'null-category'}
+              popularity={(category && !!category.popularity) ? category.popularity.toString() : '0'}
             />
           </div>
         )
