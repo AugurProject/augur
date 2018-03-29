@@ -147,7 +147,7 @@ export default class ReportingDisputeForm extends Component {
 
     let stake = rawStake
 
-    if (stake !== '' && !(stake instanceof BigNumber)) {
+    if (stake !== '' && !(BigNumber.isBigNumber(stake))) {
       stake = new BigNumber(rawStake).decimalPlaces(4)
     }
 

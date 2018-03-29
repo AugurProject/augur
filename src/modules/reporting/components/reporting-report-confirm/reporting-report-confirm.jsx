@@ -17,7 +17,7 @@ const ReportingReportConfirm = p => (
           { !p.isOpenReporting &&
           <li>
             <span>Stake</span>
-            <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
+            <span>{ BigNumber.isBigNumber(p.stake) ? p.stake.toNumber() : p.stake } REP</span>
           </li>
           }
           <li>

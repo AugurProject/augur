@@ -16,14 +16,14 @@ const MarketPreviewRange = (p) => {
   } = p.newMarket
 
   if (p.newMarket.type === SCALAR) {
-    minValue = scalarSmallNum && !(scalarSmallNum instanceof BigNumber) ? scalarSmallNum : 'min'
-    maxValue = scalarBigNum && !(scalarSmallNum instanceof BigNumber) ? scalarBigNum : 'max'
+    minValue = scalarSmallNum && !(BigNumber.isBigNumber(scalarSmallNum)) ? scalarSmallNum : 'min'
+    maxValue = scalarBigNum && !(BigNumber.isBigNumber(scalarSmallNum)) ? scalarBigNum : 'max'
 
-    if (scalarSmallNum instanceof BigNumber) {
+    if (BigNumber.isBigNumber(scalarSmallNum)) {
       minValue = scalarSmallNum.toNumber()
     }
 
-    if (scalarBigNum instanceof BigNumber) {
+    if (BigNumber.isBigNumber(scalarBigNum)) {
       maxValue = scalarBigNum.toNumber()
     }
   }

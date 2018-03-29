@@ -81,7 +81,7 @@ export default class CreateMarketLiquidity extends Component {
 
     if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
       let orderEstimate = ''
-      if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
+      if (BigNumber.isBigNumber(nextState.orderQuantity) && BigNumber.isBigNumber(nextState.orderPrice)) {
         orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
       }
 
@@ -277,7 +277,7 @@ export default class CreateMarketLiquidity extends Component {
           return this.state.orderQuantity
         }
         return this.state.orderPrice
-      } else if (!(value instanceof BigNumber) && value !== '') {
+      } else if (!(BigNumber.isBigNumber(value)) && value !== '') {
         return new BigNumber(value)
       }
 
@@ -407,7 +407,7 @@ export default class CreateMarketLiquidity extends Component {
                   type="number"
                   step={10**-PRECISION}
                   placeholder="0.0000 Shares"
-                  value={s.orderQuantity instanceof BigNumber ? s.orderQuantity.toNumber() : s.orderQuantity}
+                  value={BigNumber.isBigNumber(s.orderQuantity) ? s.orderQuantity.toNumber() : s.orderQuantity}
                   onChange={e => this.validateForm(e.target.value, undefined)}
                 />
               </li>
@@ -419,7 +419,7 @@ export default class CreateMarketLiquidity extends Component {
                   type="number"
                   step={10**-PRECISION}
                   placeholder="0.0000 ETH"
-                  value={s.orderPrice instanceof BigNumber ? s.orderPrice.toNumber() : s.orderPrice}
+                  value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
                 />
               </li>

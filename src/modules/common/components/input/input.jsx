@@ -238,7 +238,7 @@ export default class Input extends Component {
 function sanitizeBound(value) {
   if (value == null) {
     return null
-  } else if (!(value instanceof BigNumber)) {
+  } else if (!(BigNumber.isBigNumber(value))) {
     return new BigNumber(value)
   }
 

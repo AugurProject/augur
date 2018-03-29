@@ -162,7 +162,7 @@ class MarketTradingForm extends Component {
 
   validateForm(property, rawValue) {
     let value = rawValue
-    if (!(value instanceof BigNumber) && value !== '') value = new BigNumber(value)
+    if (!(BigNumber.isBigNumber(value)) && value !== '') value = new BigNumber(value)
     const updatedState = {
       ...this.state,
       [property]: value,
@@ -209,7 +209,7 @@ class MarketTradingForm extends Component {
               type="number"
               step={tickSize}
               placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} ETH`}
-              value={s[this.INPUT_TYPES.MARKET_ORDER_SIZE] instanceof BigNumber ? s[this.INPUT_TYPES.MARKET_ORDER_SIZE].toNumber() : s[this.INPUT_TYPES.MARKET_ORDER_SIZE]}
+              value={BigNumber.isBigNumber(s[this.INPUT_TYPES.MARKET_ORDER_SIZE]) ? s[this.INPUT_TYPES.MARKET_ORDER_SIZE].toNumber() : s[this.INPUT_TYPES.MARKET_ORDER_SIZE]}
               onChange={e => this.validateForm(this.INPUT_TYPES.MARKET_ORDER_SIZE, e.target.value)}
             />
           </li>
@@ -223,7 +223,7 @@ class MarketTradingForm extends Component {
               type="number"
               step={tickSize}
               placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} Shares`}
-              value={s[this.INPUT_TYPES.QUANTITY] instanceof BigNumber ? s[this.INPUT_TYPES.QUANTITY].toNumber() : s[this.INPUT_TYPES.QUANTITY]}
+              value={BigNumber.isBigNumber(s[this.INPUT_TYPES.QUANTITY]) ? s[this.INPUT_TYPES.QUANTITY].toNumber() : s[this.INPUT_TYPES.QUANTITY]}
               onChange={e => this.validateForm(this.INPUT_TYPES.QUANTITY, e.target.value)}
             />
           </li>
@@ -237,7 +237,7 @@ class MarketTradingForm extends Component {
               type="number"
               step={tickSize}
               placeholder={`${p.marketType === SCALAR ? tickSize : '0.0001'} ETH`}
-              value={s[this.INPUT_TYPES.PRICE] instanceof BigNumber ? s[this.INPUT_TYPES.PRICE].toNumber() : s[this.INPUT_TYPES.PRICE]}
+              value={BigNumber.isBigNumber(s[this.INPUT_TYPES.PRICE]) ? s[this.INPUT_TYPES.PRICE].toNumber() : s[this.INPUT_TYPES.PRICE]}
               onChange={e => this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)}
             />
           </li>

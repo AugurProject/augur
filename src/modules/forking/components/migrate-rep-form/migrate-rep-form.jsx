@@ -70,7 +70,7 @@ export default class MigrateRepForm extends Component {
 
     let repAmount = rawRepAmount
 
-    if (repAmount !== '' && !(repAmount instanceof BigNumber)) {
+    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
       repAmount = new BigNumber(rawRepAmount)
       repAmount = repAmount.toNumber()
     }

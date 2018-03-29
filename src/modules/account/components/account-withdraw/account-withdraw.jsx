@@ -106,7 +106,7 @@ export default class AccountWithdraw extends Component {
     const p = this.props
 
     if (s.isValid) {
-      const stringedAmount = s.amount instanceof BigNumber ? s.amount.toString() : s.amount
+      const stringedAmount = BigNumber.isBigNumber(s.amount) ? s.amount.toString() : s.amount
       p.transferFunds(stringedAmount, s.selectedAsset, s.address)
       this.setState(this.DEFAULT_STATE)
     }

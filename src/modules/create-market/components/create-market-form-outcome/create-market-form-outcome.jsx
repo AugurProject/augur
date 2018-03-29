@@ -116,11 +116,11 @@ export default class CreateMarketOutcome extends Component {
     let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
     let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
 
-    if (!(scalarSmallNum instanceof BigNumber) && scalarSmallNum !== '') {
+    if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
       scalarSmallNum = new BigNumber(scalarSmallNum)
     }
 
-    if (!(scalarBigNum instanceof BigNumber) && scalarBigNum !== '') {
+    if (!(BigNumber.isBigNumber(scalarBigNum)) && scalarBigNum !== '') {
       scalarBigNum = new BigNumber(scalarBigNum)
     }
 
@@ -304,7 +304,7 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarSmallNum instanceof BigNumber ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
+                value={BigNumber.isBigNumber(p.newMarket.scalarSmallNum) ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
                 placeholder="Min Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'small')
@@ -325,7 +325,7 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarBigNum instanceof BigNumber ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
+                value={BigNumber.isBigNumber(p.newMarket.scalarBigNum) ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
                 placeholder="Max Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'big')
