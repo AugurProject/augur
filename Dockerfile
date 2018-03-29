@@ -14,6 +14,12 @@ RUN git init && npm install && rm -rf .git
 # Now with our geth node
 FROM augurproject/dev-node-geth:latest
 
+ARG normal_time=false
+ENV USE_NORMAL_TIME=$normal_time
+
+ARG network_id=12346
+ENV NETWORK_ID=$network_id
+
 # Install Node
 RUN apk update \
   && apk upgrade \
