@@ -18,6 +18,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @property {BigNumber} disputeCrowdsourcers Total gas estimate for redeeming all DisputeCrowdsourcer reporting fees.
  * @property {BigNumber} initialReporters Total gas estimate for redeeming all InitialReporter reporting fees.
  * @property {BigNumber} feeWindows Total gas estimate for redeeming all FeeWindow reporting fees.
+ * @property {BigNumber} all Sum of all gas estimates.
  */
 
  /**
@@ -34,7 +35,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @property {Array.<string>|null} redeemedDisputeCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {Array.<string>|null} redeemedInitialReporters Addresses of all successfully redeemed Initial Reporters, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {gasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
- * @property {Array.<RPCError|Error>} errors Array of errors returned when attempting to make transactions or get gas estimates.
+ * @property {Array.<RPCError|Error>} errors Array of errors returned when attempting to make transactions or get gas estimates, indexed by contract address.
  */
 
 /**
@@ -59,6 +60,7 @@ function claimReportingFees(p, callback) {
       disputeCrowdsourcers: new BigNumber(0),
       initialReporters: new BigNumber(0),
       feeWindows: new BigNumber(0),
+      all: new BigNumber(0),
     },
   };
   var errors = [];
@@ -150,6 +152,7 @@ function claimReportingFees(p, callback) {
       errors: errors,
     };
     if (p.estimateGas) {
+      gasEstimates.totals.all = gasEstimates.totals.disputeCrowdsourcers.plus(gasEstimates.totals.initialReporters).plus(gasEstimates.totals.feeWindows);
       result = {
         gasEstimates: gasEstimates,
         errors: errors,
