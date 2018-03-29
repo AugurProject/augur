@@ -9,7 +9,7 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
-import ModalClaimAll from 'modules/modal/components/modal-claim-all/modal-claim-all'
+import ModalClaimReportingFees from 'modules/modal/components/modal-claim-reporting-fees/modal-claim-reporting-fees'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 
 import { Close } from 'modules/common/components/icons'
@@ -99,8 +99,8 @@ export default class ModalView extends Component {
           {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...p} />
           }
-          {p.modal.type === TYPES.MODAL_CLAIM_ALL &&
-            <ModalClaimAll {...p.modal} />
+          {p.modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES &&
+            <ModalClaimReportingFees {...p.modal} />
           }
           {showBigCancel &&
             <button

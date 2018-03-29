@@ -1,18 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { augur } from 'services/augurjs'
 
-import { formatAttoRep, formatEther } from 'utils/format-number'
+import { formatAttoRep, formatEther, formatGasCostToEther } from 'utils/format-number'
 
-import { MODAL_CLAIM_ALL } from 'modules/modal/constants/modal-types'
+import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
 
 import Styles from './portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    claimableFees: PropTypes.func.isRequired,
+    loadClaimableFees: PropTypes.func.isRequired,
+    claimReportingFees: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    recipient: PropTypes.string.isRequired,
     markets: PropTypes.array.isRequired,
   }
 
@@ -21,12 +24,31 @@ export default class PortfolioReports extends Component {
 
     this.state = {
       claimableFees: {},
+      claimReportingFeesGasEstimate: '0',
     }
   }
 
   componentWillMount() {
+    // TODO: Remove hard-coded parameters below once endpoint exists for getting contracts that are redeemable.
+    const claimReportingFeesOptions = {
+      redeemer: '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb',
+      redeemableContracts: [
+        {
+          address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
+          type: 2,
+        },
+      ],
+      estimateGas: true,
+    }
+    this.props.claimReportingFees(claimReportingFeesOptions, (error, claimReportingFeesGasEstimate) => {
+      const gasPrice = augur.rpc.getGasPrice()
+      this.setState({
+        claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
+      })
+    })
+
     this.setState({
-      claimableFees: this.props.claimableFees(),
+      claimableFees: this.props.loadClaimableFees(),
     })
   }
 
@@ -36,9 +58,9 @@ export default class PortfolioReports extends Component {
     const unclaimedRep = formatAttoRep(s.claimableFees.unclaimedRepStaked, { decimals: 4, zeroStyled: true })
     const unclaimedEth = formatEther(s.claimableFees.unclaimedEth, { decimals: 4, zeroStyled: true })
 
-    let disableClaimAllButton = ''
+    let disableClaimReportingFeesButton = ''
     if (unclaimedEth.formatted === '-' && unclaimedRep.formatted === '-') {
-      disableClaimAllButton = 'disabled'
+      disableClaimReportingFeesButton = 'disabled'
     }
 
     return (
@@ -46,8 +68,8 @@ export default class PortfolioReports extends Component {
         <Helmet>
           <title>Reporting</title>
         </Helmet>
-        <article className={Styles.ClaimAllSection}>
-          <h4 className={Styles.ClaimAllSection__heading}>Claim all available stake and fees</h4>
+        <article className={Styles.ClaimReportingFeesSection}>
+          <h4 className={Styles.ClaimReportingFeesSection__heading}>Claim all available stake and fees</h4>
           <section>
             <article className={Styles.ClaimableFees}>
               <section className={Styles.ClaimableFees__fees}>
@@ -64,12 +86,13 @@ export default class PortfolioReports extends Component {
                 <div>
                   <button
                     className={Styles.ClaimableFees__cta}
-                    disabled={disableClaimAllButton}
+                    disabled={disableClaimReportingFeesButton}
                     onClick={() => p.updateModal({
-                      type: MODAL_CLAIM_ALL,
+                      type: MODAL_CLAIM_REPORTING_FEES,
                       recipient: p.recipient,
                       unclaimedEth,
                       unclaimedRep,
+                      gasEstimate: s.claimReportingFeesGasEstimate,
                       canClose: true,
                     })}
                   >Claim
