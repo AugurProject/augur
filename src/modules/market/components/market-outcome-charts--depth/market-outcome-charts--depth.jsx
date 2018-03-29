@@ -85,7 +85,6 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(this.state.xScale, nextState.xScale) ||
       !isEqual(this.state.containerHeight, nextState.containerHeight) ||
       !isEqual(this.state.containerWidth, nextState.containerWidth) ||
-      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       this.props.marketMin !== nextProps.marketMin ||
       this.props.marketMax !== nextProps.marketMax
     ) {
@@ -98,7 +97,6 @@ export default class MarketOutcomeDepth extends Component {
         marketMax: nextProps.marketMax,
         containerHeight: nextState.containerHeight,
         containerWidth: nextState.containerWidth,
-        sharedChartMargins: nextProps.sharedChartMargins,
       })
     }
   }
@@ -129,7 +127,6 @@ export default class MarketOutcomeDepth extends Component {
       })
 
       const depthContainer = new ReactFauxDOM.Element('div')
-      depthContainer.setAttribute('class', `Styles[MarketOutcomeDepth__chart-container]`)
 
       const depthChart = d3.select(depthContainer)
         .append('svg')
@@ -202,7 +199,6 @@ export default class MarketOutcomeDepth extends Component {
         containerWidth,
         marketMin,
         marketMax,
-        sharedChartMargins,
       } = options
 
       if (hoveredPrice == null) {

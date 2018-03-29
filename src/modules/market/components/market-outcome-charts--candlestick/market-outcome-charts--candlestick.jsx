@@ -123,11 +123,6 @@ export default class MarketOutcomeCandlestick extends Component {
       sharedChartMargins,
     } = options
 
-    // TODO --
-    // * Prevent collisions of x axis labels
-    // * out of bounds shading (same color as depth)
-    // * Handle dynamic width adjustment of y axis labels
-
     if (this.drawContainer) {
       const drawParams = determineDrawParams({
         drawContainer: this.drawContainer,
@@ -449,7 +444,7 @@ function drawXAxisLabels(options) {
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
-    .call(d3.axisBottom(drawParams.xScale).ticks(periodTimeSeries.length))
+    .call(d3.axisBottom(drawParams.xScale).ticks(periodTimeSeries.length / 4)) // TODO -- improve tick count
     .select('path').remove()
 }
 
