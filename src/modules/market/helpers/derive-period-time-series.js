@@ -1,4 +1,4 @@
-import { dateToBlock } from 'utils/date-to-block-to-date'
+// import { dateToBlock } from 'utils/date-to-block-to-date'
 import { MILLIS_PER_BLOCK } from 'modules/app/constants/network'
 
 import { isEmpty } from 'lodash'
@@ -47,63 +47,65 @@ export default function derivePeriodTimeSeries(event) {
     firstPeriodStartTime = Math.floor(constrainedPriceTimeSeries[0].timestamp / options.selectedPeriod.selectedPeriod) * options.selectedPeriod.selectedPeriod
   }
 
-  // Process priceTimeSeries by period next, update state
-  let accumulationPeriod = {
-    period: null, // Start time of the period
-    high: null, // Highest price during that period
-    low: null, // Lowest price during that period
-    open: null, // First price in that period
-    close: null, // Last price in that period
-    volume: null, // Total number of shares in that period
-  }
+  // Establish the set of periods for the selected range + period
+  const periods = [...new Array((Date.now() - firstPeriodStartTime) / options.selectedPeriod.selectedPeriod)].map((value, i) => ({
+    period: firstPeriodStartTime + (i * options.selectedPeriod.selectedPeriod),
+  }))
 
-  return constrainedPriceTimeSeries.reduce((p, priceTime, i) => {
-    if (accumulationPeriod.period === null) {
-      accumulationPeriod = {
-        period: firstPeriodStartTime,
-        high: priceTime.price,
-        low: priceTime.price,
-        open: priceTime.price,
-        close: priceTime.price,
-        volume: priceTime.amount,
+  let currentSeriesItem = 0
+
+  return periods.reduce((p, period, periodI) => {
+    const periodSeriesItems = constrainedPriceTimeSeries.filter((item, filterI) => {
+      if (
+        (
+          periods.length - 1 === periodI &&
+          (item.timestamp >= period.period)
+        ) ||
+        (item.timestamp >= period.period && item.timestamp < periods[periodI + 1].period)
+      ) {
+        currentSeriesItem = filterI
+        return true
       }
-      return p
-    }
-
-    // If new period exceeds the permissible period, return the accumulationPeriod + reset to default to prepare for the next period
-    if (
-      (
-        options.selectedPeriod.selectedPeriod === null && // per block
-        dateToBlock(new Date(accumulationPeriod.period), options.currentBlock) - dateToBlock(new Date(priceTime.timestamp), options.currentBlock) >= 1
-      ) ||
-      priceTime.timestamp - accumulationPeriod.period > options.selectedPeriod.selectedPeriod
-    ) {
-      const updatedPeriodTimeSeries = [...p, accumulationPeriod]
-      accumulationPeriod = {
-        period: priceTime.timestamp,
-        high: priceTime.price,
-        low: priceTime.price,
-        open: priceTime.price,
-        close: priceTime.price,
-        volume: priceTime.amount,
-      }
-      return updatedPeriodTimeSeries
-    }
-
-    // Otherwise, process as normal
-    // NOTE -- had to use object.assign as the parser was having issue w/ spread
-    accumulationPeriod = Object.assign(accumulationPeriod, {
-      high: priceTime.price > accumulationPeriod.high ? priceTime.price : accumulationPeriod.high,
-      low: priceTime.price < accumulationPeriod.low ? priceTime.price : accumulationPeriod.low,
-      close: priceTime.price,
-      volume: accumulationPeriod.volume + priceTime.amount,
+      return false
     })
 
-    // If we've reached the end of the series, just return what has accumulated w/in the current period
-    if (priceTime.length - 1 === i) {
-      return [...p, accumulationPeriod]
+    let accumulationPeriod = {
+      ...period,
     }
 
-    return p
+    if (periodSeriesItems.length === 0) {
+      accumulationPeriod = {
+        ...accumulationPeriod,
+        high: constrainedPriceTimeSeries[currentSeriesItem].price,
+        low: constrainedPriceTimeSeries[currentSeriesItem].price,
+        open: constrainedPriceTimeSeries[currentSeriesItem].price,
+        close: constrainedPriceTimeSeries[currentSeriesItem].price,
+        volume: 0,
+      }
+    } else {
+      accumulationPeriod = {
+        ...accumulationPeriod,
+        ...periodSeriesItems.reduce((p, item, i) => {
+          if (i === 0) {
+            return {
+              ...period,
+              high: item.price,
+              low: item.price,
+              close: item.price,
+              volume: item.amount,
+            }
+          }
+
+          return {
+            high: item.price > p.high ? item.price : p.high,
+            low: item.price < p.low ? item.price : p.low,
+            close: item.price,
+            volume: (p.volume || 0) + item.amount,
+          }
+        }, {}),
+      }
+    }
+
+    return [...p, accumulationPeriod]
   }, [])
 }
