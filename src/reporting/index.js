@@ -11,4 +11,5 @@ module.exports = {
   getReportingHistory: require("./get-reporting-history"),
   getReportingSummary: require("./get-reporting-summary"),
   getStakeRequiredForDesignatedReporter: require("./get-stake-required-for-designated-reporter"),
+  claimReportingFees: require("./claim-reporting-fees"),
 };

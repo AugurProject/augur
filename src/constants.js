@@ -42,6 +42,12 @@ module.exports = {
     FORK_DURATION_SECONDS: 60 * SECONDS_PER_DAY,
   },
 
+  CONTRACT_TYPE: {
+    DISPUTE_CROWDSOURCER: 0,
+    INITIAL_REPORTER: 1,
+    FEE_WINDOW: 2,
+  },
+
   ZERO: new BigNumber(0),
 
   PRECISION: {
