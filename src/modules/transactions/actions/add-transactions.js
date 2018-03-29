@@ -4,15 +4,6 @@ import { updateTransactionsData } from 'modules/transactions/actions/update-tran
 import { eachOf, each, groupBy } from 'async'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 
-export function addTransactions(transactionsArray) {
-  return (dispatch, getState) => {
-    dispatch(updateTransactionsData(transactionsArray.reduce((p, transaction) => {
-      p[transaction.timestamp] = transaction
-      return p
-    }, {})))
-  }
-}
-
 function groupByMethod(values, prop) {
   let grouped = {}
   groupBy(values, (t, cb) => {
@@ -72,8 +63,7 @@ function buildTradeTransaction(trade, marketsData) {
   const thisMarketDataId = getMarketById(marketsData, trade.marketId)
   const transaction = { ...trade, market: thisMarketDataId }
   transaction.status = SUCCESS
-  // todo: should have a unique id for each trade
-  transaction.id = transaction.marketId + transaction.timestamp
+  transaction.id = `${transaction.transactionHash}-${transaction.orderId}`
   const header = buildHeader(transaction, TRADE)
   const meta = {}
   meta.type = TRADE
@@ -98,7 +88,7 @@ export function addTransferTransactions(transfers) {
     const transactions = {}
     each(transfers, (transfer) => {
       const transaction = { ...transfer }
-      transaction.id = transaction.transactionHash + transaction.logIndex
+      transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       const meta = {}
@@ -200,9 +190,7 @@ export function addOpenOrderTransactions(openOrders) {
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, outcomeId) => {
-            const transaction = {
-              marketId, type, outcomeId, ...value4,
-            }
+            const transaction = { marketId, type, outcomeId, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
             const meta = {}

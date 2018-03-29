@@ -1,7 +1,5 @@
-import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { deleteTransactionsWithTransactionHash } from 'modules/transactions/actions/delete-transaction'
-import { constructTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
-import logError from 'utils/log-error'
+import { constructTransaction } from 'modules/transactions/actions/construct-transaction'
 
 export const updateLoggedTransactions = log => (dispatch, getState) => {
   if (log.removed) {
@@ -12,23 +10,13 @@ export const updateLoggedTransactions = log => (dispatch, getState) => {
 }
 
 export const removeLogFromTransactions = log => (dispatch, getState) => {
+  console.log('removeLogFromTransactions', log)
   if (!log.transactionHash) return console.error(`transaction hash not found for log ${JSON.stringify(log)}`)
   dispatch(deleteTransactionsWithTransactionHash(log.transactionHash))
 }
 
-export const addLogToTransactions = (log, callback = logError) => (dispatch, getState) => {
-  const hash = log.transactionHash
-  if (!hash) return callback(`transaction hash not found for log ${JSON.stringify(log)}`)
-  dispatch(constructTransaction(log, (err, transaction) => {
-    if (err) return callback(err)
-    if (transaction) {
-      dispatch(updateTransactionsData({
-        [transaction.id || hash]: {
-          ...constructBasicTransaction(hash, log.blockNumber, log.timestamp),
-          ...transaction,
-        },
-      }))
-      callback(null)
-    }
-  }))
+export const addLogToTransactions = log => (dispatch, getState) => {
+  console.log('addLogToTransactions', log)
+  if (!log.transactionHash) return console.error(`transaction hash not found for log ${JSON.stringify(log)}`)
+  dispatch(constructTransaction(log))
 }

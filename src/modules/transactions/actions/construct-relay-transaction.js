@@ -37,6 +37,6 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
     }))
   }
   return {
-    [hash]: constructBasicTransaction(hash, status, blockNumber, timestamp, tx.response.gasFees),
+    [hash]: constructBasicTransaction(unpackedParams.type, hash, blockNumber, timestamp, '', unpackedParams._description || '', tx.response.gasFees, status),
   }
 }

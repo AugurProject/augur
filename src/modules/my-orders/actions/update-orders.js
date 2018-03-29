@@ -1,6 +1,6 @@
 import { eachOf } from 'async'
 import { updateOrderBook } from 'modules/bids-asks/actions/update-order-book'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import logError from 'utils/log-error'
 
 export const updateSingleMarketOrderBook = (updatedOrdersInMarket, isOrderCreation) => (dispatch, getState) => (
@@ -10,17 +10,11 @@ export const updateSingleMarketOrderBook = (updatedOrdersInMarket, isOrderCreati
 )
 
 export const updateOrdersInMarket = (marketId, updatedOrdersInMarket, isOrderCreation, callback = logError) => (dispatch, getState) => {
-  const isMarketDataLoaded = getState().marketsData[marketId] != null
-  if (isMarketDataLoaded) {
+  dispatch(loadMarketsInfoIfNotLoaded([marketId], (err) => {
+    if (err) return callback(err)
     dispatch(updateSingleMarketOrderBook(updatedOrdersInMarket, isOrderCreation))
     callback(null)
-  } else {
-    dispatch(loadMarketsInfo([marketId], (err) => {
-      if (err) return callback(err)
-      dispatch(updateSingleMarketOrderBook(updatedOrdersInMarket, isOrderCreation))
-      callback(null)
-    }))
-  }
+  }))
 }
 
 export const updateOrder = (order, isOrderCreation, callback = logError) => (dispatch, getState) => (
