@@ -22,7 +22,6 @@ import logError from 'utils/log-error'
 export const listenToUpdates = history => (dispatch, getState) => {
   augur.events.stopBlockListeners()
   augur.events.stopAugurNodeEventListeners()
-  augur.events.stopBlockchainEventListeners()
   augur.events.startBlockListeners({
     onAdded: block => dispatch(handleNewBlock(block)),
     onRemoved: block => dispatch(handleNewBlock(block)),
