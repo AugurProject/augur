@@ -84,7 +84,7 @@ function claimReportingFees(p, callback) {
             nextContract();
           },
           onFailed: function (error) {
-            errors.push(error);
+            errors[contract.address] = error;
             nextContract();
           },
         }));
@@ -108,7 +108,7 @@ function claimReportingFees(p, callback) {
             nextContract();
           },
           onFailed: function (error) {
-            errors.push(error);
+            errors[contract.address] = error;
             nextContract();
           },
         }));
@@ -132,13 +132,13 @@ function claimReportingFees(p, callback) {
             nextContract();
           },
           onFailed: function (error) {
-            errors.push(error);
+            errors[contract.address] = error;
             nextContract();
           },
         }));
         break;
       default:
-        errors.push(new Error("Unknown contract type for contract " + contract.address + ": " + contract.type));
+        errors[contract.address] = new Error("Unknown contract type: " + contract.type);
         nextContract();
         break;
     }
