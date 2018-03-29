@@ -13,12 +13,38 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
   augur.api.Universe.getForkingMarket(universePayload, (err, forkingMarket) => {
     if (err) return callback(err)
     const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
-    dispatch(updateUniverse({ isForking, forkingMarket }))
     if (isForking) {
-      augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
+      async.parallel({
+        forkEndTime: (next) => {
+          augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
+            if (err) return next(err)
+            next(null, forkEndTime)
+          })
+        },
+        isForkingMarketFinalized: (next) => {
+          augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
+            if (err) return next(err)
+            next(null, isForkingMarketFinalized)
+          })
+        },
+      }, (err, universeData) => {
         if (err) return callback(err)
-        dispatch(updateUniverse({ forkEndTime }))
+        if (universeData.isForkingMarketFinalized) {
+          augur.api.Universe.getWinningChildUniverse(universePayload, (err, winningChildUniverse) => {
+            if (err) return callback(err)
+            dispatch(updateUniverse({
+              ...universeData,
+              forkingMarket,
+              winningChildUniverse,
+              isForking,
+            }))
+          })
+        } else {
+          dispatch(updateUniverse({ ...universeData, forkingMarket, isForking }))
+        }
       })
+    } else {
+      dispatch(updateUniverse({ isForking, forkingMarket }))
     }
   })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)

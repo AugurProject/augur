@@ -5,7 +5,7 @@ import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
-import { deleteMarket } from 'modules/markets/actions/update-markets-data'
+import { removeMarket } from 'modules/markets/actions/update-markets-data'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
 import { updateOrder } from 'modules/my-orders/actions/update-orders'
 import { removeCanceledOrder } from 'modules/bids-asks/actions/update-order-status'
@@ -20,7 +20,7 @@ export const handleMarketStateLog = log => dispatch => dispatch(loadMarketsInfo(
 export const handleMarketCreatedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.marketCreator === getState().loginAccount.address
   if (log.removed) {
-    dispatch(deleteMarket(log.market))
+    dispatch(removeMarket(log.market))
   } else {
     dispatch(loadMarketsInfo([log.market]))
   }

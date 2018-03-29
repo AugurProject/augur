@@ -49,7 +49,6 @@ export default class ReportingClosed extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
           linkType={TYPE_CLOSED}
           paginationPageParam="reporting-closed-page"
-          isMobile={p.isMobile}
         />
       </section>
     )

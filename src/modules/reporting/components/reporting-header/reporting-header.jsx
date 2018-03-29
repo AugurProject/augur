@@ -20,6 +20,7 @@ export default class ReportingHeader extends Component {
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
     isForking: PropTypes.bool,
+    forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
     currentTime: PropTypes.number,
   }
@@ -47,6 +48,7 @@ export default class ReportingHeader extends Component {
             <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
             { p.heading === 'Dispute' && p.isForking &&
               <ForkingContent
+                forkingMarket={this.props.forkingMarket}
                 forkEndTime={this.props.forkEndTime}
                 currentTime={this.props.currentTime}
                 expanded={false}
