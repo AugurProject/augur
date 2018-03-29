@@ -1,4 +1,4 @@
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import { fix, strip0xPrefix, unfix } from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
@@ -60,15 +60,15 @@ export function constructApprovalTransaction(log) {
 
 export function constructCollectedFeesTransaction(log) {
   const transaction = { data: {} }
-  const repGain = new BigNumber(log.repGain, 10)
-  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : new BigNumber(log.newRepBalance).minus(repGain).toFixed()
+  const repGain = WrappedBigNumber(log.repGain, 10)
+  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : WrappedBigNumber(log.newRepBalance).minus(repGain).toFixed()
   const action = log.inProgress ? 'reporting' : 'reported'
   transaction.message = `${action} with ${formatRep(initialRepBalance).full}`
   transaction.type = `Reporting Payment`
   if (log.totalReportingRep) {
-    const totalReportingRep = new BigNumber(log.totalReportingRep, 10)
+    const totalReportingRep = WrappedBigNumber(log.totalReportingRep, 10)
     if (!totalReportingRep.eq(ZERO)) {
-      const percentRep = formatPercent(new BigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 })
+      const percentRep = formatPercent(WrappedBigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 })
       transaction.message = `${transaction.message} (${percentRep.full})`
     }
   }
@@ -123,7 +123,7 @@ export function constructTransferTransaction(log, address) {
     transaction.type = 'Send Tokens'
     transaction.description = `Send tokens to ${strip0xPrefix(log._to)}`
     transaction.data.balances = [{
-      change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
+      change: formatRep(WrappedBigNumber(log._value, 10).negated(), { positiveSign: true }),
     }]
     action = log.inProgress ? 'sending' : 'sent'
   } else if (log._to === address) {
@@ -162,7 +162,7 @@ export const constructCancelOrderTransaction = (trade, marketId, marketType, des
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
     },
@@ -217,7 +217,7 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
       feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
       totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
       totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
     },
@@ -232,9 +232,9 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
-  const bnShares = new BigNumber(trade.amount, 10)
-  const bnPrice = new BigNumber(trade.price, 10)
-  const bnSettlementFee = new BigNumber(settlementFee, 10)
+  const bnShares = WrappedBigNumber(trade.amount, 10)
+  const bnPrice = WrappedBigNumber(trade.price, 10)
+  const bnSettlementFee = WrappedBigNumber(settlementFee, 10)
   const bnTotalCost = bnPrice.times(bnShares).plus(bnSettlementFee)
   const bnTotalReturn = bnPrice.times(bnShares).minus(bnSettlementFee)
   const bnTotalCostPerShare = bnTotalCost.dividedBy(bnShares)
@@ -277,7 +277,7 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
       feePercent: formatPercent(bnSettlementFee.dividedBy(bnTotalCost).times(100)),
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
-      gasFees: trade.gasFees && new BigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
     },
   }

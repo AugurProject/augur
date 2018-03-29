@@ -1,5 +1,5 @@
 import logError from 'utils/log-error'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber } from 'bignumber.js'
 
 export const WrappedBigNumber = (...args) => {
   let newBigNumber

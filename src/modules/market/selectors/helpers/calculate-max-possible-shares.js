@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
 import { augur } from 'services/augurjs'
 import speedomatic from 'speedomatic'
@@ -18,12 +18,12 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
   if (loginAccount.address == null) {
     return null
   }
-  const userEther = loginAccount.ether != null ? new BigNumber(loginAccount.ether, 10) : ZERO
+  const userEther = loginAccount.ether != null ? WrappedBigNumber(loginAccount.ether, 10) : ZERO
   if (userEther.eq(ZERO)) {
     return '0'
   }
   const ordersLength = orders.length
-  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(settlementFee, 10))
+  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(WrappedBigNumber(makerFee, 10), WrappedBigNumber(settlementFee, 10))
   let runningCost = ZERO
   let updatedRunningCost
   let maxPossibleShares = ZERO
@@ -33,13 +33,13 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
   let order
   for (let i = 0; i < ordersLength; i++) {
     order = orders[i]
-    orderAmount = new BigNumber(order.amount, 10)
+    orderAmount = WrappedBigNumber(order.amount, 10)
     fullPrecisionPrice = scalarMinValue !== null ?
       augur.trading.shrinkScalarPrice(scalarMinValue, order.fullPrecisionPrice) :
       order.fullPrecisionPrice
     orderCost = augur.trading.fees.calculateFxpTradingCost(
       orderAmount,
-      new BigNumber(fullPrecisionPrice, 10),
+      WrappedBigNumber(fullPrecisionPrice, 10),
       tradingFee,
       makerProportionOfFee,
       range,

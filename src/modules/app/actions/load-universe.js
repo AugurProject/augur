@@ -1,5 +1,5 @@
 import async from 'async'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import syncUniverse from 'modules/universe/actions/sync-universe'
@@ -24,7 +24,7 @@ export const loadUniverse = (universeId, history, callback = logError) => (dispa
     disputeRoundDurationInSeconds: (next) => {
       augur.api.Universe.getDisputeRoundDurationInSeconds(universePayload, (err, disputeRoundDurationInSeconds) => {
         if (err) return next(err)
-        next(null, new BigNumber(disputeRoundDurationInSeconds, 16).toFixed())
+        next(null, WrappedBigNumber(disputeRoundDurationInSeconds, 16).toFixed())
       })
     },
   }, (err, staticUniverseData) => {

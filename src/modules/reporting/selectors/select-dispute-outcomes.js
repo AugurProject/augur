@@ -1,7 +1,7 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
@@ -39,8 +39,8 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
 }
 
 const sortOutcomes = (a, b) => {
-  const stakeSort = new BigNumber(a.stakeRemaining || 0).gt(new BigNumber(b.stakeRemaining || 0))
-  const currentSort = new BigNumber(a.stakeCurrent || 0).lt(new BigNumber(b.stakeCurrent || 0))
+  const stakeSort = WrappedBigNumber(a.stakeRemaining || 0).gt(WrappedBigNumber(b.stakeRemaining || 0))
+  const currentSort = WrappedBigNumber(a.stakeCurrent || 0).lt(WrappedBigNumber(b.stakeCurrent || 0))
   if (stakeSort) return 1
   if (!stakeSort && currentSort) return 1
   if (!stakeSort) return -1

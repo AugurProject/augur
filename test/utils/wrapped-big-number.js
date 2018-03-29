@@ -1,5 +1,4 @@
-import { WrappedBigNumber, __RewireAPI__ as ReWireModule } from 'src/utils/wrapped-big-number'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, WrappedBigNumber, __RewireAPI__ as ReWireModule } from 'src/utils/wrapped-big-number'
 import * as sinon from 'sinon'
 
 describe('src/utils/wrapped-big-number.js', () => {

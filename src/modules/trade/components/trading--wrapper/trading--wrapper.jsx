@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
 import MarketTradingConfirm from 'modules/trade/components/trading--confirm/trading--confirm'
@@ -56,7 +56,7 @@ class MarketTradingWrapper extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
-    const nextTotalCost = new BigNumber(nextProps.selectedOutcome.trade.totalCost.value)
+    const nextTotalCost = WrappedBigNumber(nextProps.selectedOutcome.trade.totalCost.value)
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
       const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({

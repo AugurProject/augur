@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import { strip0xPrefix } from 'speedomatic'
 
 import * as TYPES from 'modules/transactions/constants/types'
@@ -434,8 +434,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log)
 
-        const repGain = new BigNumber(log.repGain)
-        const initialRepBalance = new BigNumber(log.newRepBalance).minus(repGain).toFixed()
+        const repGain = WrappedBigNumber(log.repGain)
+        const initialRepBalance = WrappedBigNumber(log.newRepBalance).minus(repGain).toFixed()
 
         const expected = {
           data: {},
@@ -526,8 +526,8 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log)
 
-        const totalReportingRep = new BigNumber(log.totalReportingRep)
-        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
+        const totalReportingRep = WrappedBigNumber(log.totalReportingRep)
+        const percentRep = formatPercent(WrappedBigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
 
         const expected = {
           data: {},
@@ -561,10 +561,10 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log)
 
-        const repGain = new BigNumber(log.repGain)
+        const repGain = WrappedBigNumber(log.repGain)
 
-        const totalReportingRep = new BigNumber(log.totalReportingRep)
-        const percentRep = formatPercent(new BigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
+        const totalReportingRep = WrappedBigNumber(log.totalReportingRep)
+        const percentRep = formatPercent(WrappedBigNumber(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 })
 
         const expected = {
           data: {
@@ -613,7 +613,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
+                change: formatRep(WrappedBigNumber(log._value, 10).negated(), { positiveSign: true }),
               },
             ],
           },
@@ -643,7 +643,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10).negated(), { positiveSign: true }),
+                change: formatRep(WrappedBigNumber(log._value, 10).negated(), { positiveSign: true }),
               },
             ],
           },
@@ -673,7 +673,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10), { positiveSign: true }),
+                change: formatRep(WrappedBigNumber(log._value, 10), { positiveSign: true }),
               },
             ],
           },
@@ -703,7 +703,7 @@ describe('modules/transactions/actions/construct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(new BigNumber(log._value, 10), { positiveSign: true }),
+                change: formatRep(WrappedBigNumber(log._value, 10), { positiveSign: true }),
               },
             ],
           },

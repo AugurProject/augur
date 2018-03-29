@@ -1,7 +1,7 @@
 
 
 import sinon from 'sinon'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
 import { formatEther, formatRep } from 'utils/format-number'
@@ -201,7 +201,7 @@ describe('modules/account/selectors/core-stats', () => {
 
         const actual = selector.resultFunc(accountTrades, blockchain, outcomesData)
 
-        const expected = new BigNumber('2')
+        const expected = WrappedBigNumber('2')
 
         CoreStatsRewireAPI.__ResetDependency__('selectOutcomeLastPrice')
         CoreStatsRewireAPI.__ResetDependency__('augur')
@@ -225,7 +225,7 @@ describe('modules/account/selectors/core-stats', () => {
             totalNet: formatEther(10),
           },
         }
-        const periodPL = new BigNumber('10')
+        const periodPL = WrappedBigNumber('10')
 
         const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL)
 

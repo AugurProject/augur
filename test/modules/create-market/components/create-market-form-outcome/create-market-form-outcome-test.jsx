@@ -1,13 +1,11 @@
-import React, { Component } from 'react'
-
-
+import React from 'react'
 
 import { spy } from 'sinon'
 import { shallow } from 'enzyme'
 
 import CreateMarketOutcome from 'src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import { SCALAR } from 'src/modules/markets/constants/market-types'
-import BigNumber from 'bignumber.js/bignumber'
+import { WrappedBigNumber } from 'src/utils/wrapped-big-number'
 
 describe('create-market-form-outcome', () => {
   let cmp,
@@ -64,9 +62,9 @@ describe('create-market-form-outcome', () => {
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: new BigNumber(0),
-      initialLiquidityGas: new BigNumber(0),
-      initialLiquidityFees: new BigNumber(0),
+      initialLiquidityEth: WrappedBigNumber(0),
+      initialLiquidityGas: WrappedBigNumber(0),
+      initialLiquidityFees: WrappedBigNumber(0),
       creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
     }
 

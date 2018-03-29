@@ -1,4 +1,4 @@
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import memoize from 'memoizee'
 
 export default function (orderBook) {
@@ -9,12 +9,12 @@ const getOrderBookSeries = memoize((orderBook) => {
   const orderBookSeries = Object.keys(orderBook).reduce((p, type) => {
     if (p[type] == null) p[type] = []
 
-    let totalQuantity = new BigNumber(0)
+    let totalQuantity = WrappedBigNumber(0)
 
     orderBook[type].forEach((order) => {
       const matchedPriceIndex = p[type].findIndex(existing => existing[0] === order.price.value)
 
-      totalQuantity = totalQuantity.plus(new BigNumber(order.shares.value.toString()))
+      totalQuantity = totalQuantity.plus(WrappedBigNumber(order.shares.value.toString()))
 
       if (matchedPriceIndex > -1) {
         p[type][matchedPriceIndex][1] = totalQuantity.toNumber()

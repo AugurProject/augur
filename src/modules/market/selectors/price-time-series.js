@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-// import { BigNumber } from 'utils/wrapped-big-number'
+// import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
 /**
  * Prepares price history data for charting
@@ -16,7 +16,7 @@ export const selectPriceTimeSeries = memoize((outcome, marketPriceHistory) => {
   // NOTE -- historical ref, augur-node now directly returns what we require
   // return (marketPriceHistory[outcome.id] || []).map(priceTimePoint => [
   //   priceTimePoint.timestamp * 1000,
-  //   new BigNumber(priceTimePoint.price).toNumber(),
-  //   new BigNumber(priceTimePoint.amount).toNumber()
+  //   WrappedBigNumber(priceTimePoint.price).toNumber(),
+  //   WrappedBigNumber(priceTimePoint.amount).toNumber()
   // ]).sort((a, b) => a[0] - b[0])
 })

@@ -1,18 +1,18 @@
-import { BigNumber } from 'utils/wrapped-big-number'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import { formatEther, formatRep } from 'utils/format-number'
 
 export default function insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, availableEth, availableRep) {
   let insufficientFundsString = ''
 
-  const BNvalidityBond = new BigNumber(formatEther(validityBond).fullPrecision)
-  const BNgasCost = new BigNumber(formatEther(gasCost).fullPrecision)
-  const BNcreationFee = new BigNumber(formatEther(creationFee).fullPrecision)
+  const BNvalidityBond = WrappedBigNumber(formatEther(validityBond).fullPrecision)
+  const BNgasCost = WrappedBigNumber(formatEther(gasCost).fullPrecision)
+  const BNcreationFee = WrappedBigNumber(formatEther(creationFee).fullPrecision)
   const BNtotalEthCost = BNvalidityBond.plus(BNgasCost.plus(BNcreationFee))
-  const insufficientEth = new BigNumber(availableEth).lt(BNtotalEthCost)
+  const insufficientEth = WrappedBigNumber(availableEth).lt(BNtotalEthCost)
 
-  const BNdesignatedReportNoShowReputationBond = new BigNumber(formatRep(designatedReportNoShowReputationBond).fullPrecision)
-  const insufficientRep = new BigNumber(availableRep).lt(BNdesignatedReportNoShowReputationBond)
+  const BNdesignatedReportNoShowReputationBond = WrappedBigNumber(formatRep(designatedReportNoShowReputationBond).fullPrecision)
+  const insufficientRep = WrappedBigNumber(availableRep).lt(BNdesignatedReportNoShowReputationBond)
 
   if (insufficientEth && insufficientRep) {
     insufficientFundsString = 'ETH and REP'
