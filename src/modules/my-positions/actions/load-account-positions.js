@@ -10,6 +10,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
     if (err) return callback(err)
     if (positions == null) return callback(null)
     const marketIds = Array.from(new Set([...positions.reduce((p, position) => [...p, position.marketId], [])]))
+    if (marketIds.length === 0) return callback(null)
     dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err) => {
       if (err) return callback(err)
       marketIds.forEach((marketId) => {
