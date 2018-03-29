@@ -60,7 +60,7 @@ function help(callback) {
 }
 
 function fork(augur, params, auth, callback) {
-  if (!params || params === "help" || params.split(",").length < 2) {
+  if (!params || params === "help" || params.split(",").length < 1) {
     help(callback);
   } else {
     var paramArray = params.split(",");
@@ -70,8 +70,7 @@ function fork(augur, params, auth, callback) {
       userAuth = getPrivateKeyFromString(process.env.REPORTER_PRIVATE_KEY);
     } else if (paramArray[2] !== undefined) {
       userAuth = getPrivateKeyFromString(paramArray[2]);
-    }
-    if (userAuth === null) {
+    } else {
       userAuth = auth;
     }
 
