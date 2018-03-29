@@ -1,6 +1,5 @@
 "use strict";
 
-const { BigNumber } = require("bignumber.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getUniversesInfo } = require("../../../build/server/getters/get-universes-info");
