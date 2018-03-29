@@ -10,6 +10,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import { formatDate } from 'utils/format-date'
+import getValue from 'utils/get-value'
 import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
@@ -51,12 +52,11 @@ const MarketBasics = (p) => {
                 </button>
               </li>)}
           </ul>
-          {p.disputeRound != null &&
+          { p.showDisputeRound &&
             <div className={Styles['MarketBasics__round-number']}>
               <span className={Styles['MarketBasics__round-label']}>Dispute Round</span>
-              <span className={Styles['MarketBasics__round-text']}>{ p.market && p.market.disputeInfo &&
-                p.market.disputeInfo.disputeRound
-              }
+              <span className={Styles['MarketBasics__round-text']}>
+                { getValue(p, 'disputeInfo.disputeRound') }
               </span>
             </div>
           }
@@ -90,6 +90,7 @@ MarketBasics.propTypes = {
   toggleFavorite: PropTypes.func,
   currentTimestamp: PropTypes.number.isRequired,
   hideReportEndingIndicator: PropTypes.bool,
+  showDisputeRound: PropTypes.bool,
 }
 
 export default MarketBasics

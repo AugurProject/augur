@@ -115,6 +115,7 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
+          showDisputeRound
         />
         }
         { !isEmpty(p.market) && s.showingDetails &&
