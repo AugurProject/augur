@@ -278,14 +278,11 @@ export default class ReportingDisputeForm extends Component {
               <label>{p.market.scalarDenomination}</label>
             }
           </p>
-
         </li>
         <li>
           <label>
             <span>Proposed Outcome</span>
           </label>
-        </li>
-        <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
             { s.outcomes.map(outcome => (
               <li key={outcome.id}>
