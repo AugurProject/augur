@@ -40,7 +40,8 @@ export default class PortfolioReports extends Component {
       ],
       estimateGas: true,
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, (error, claimReportingFeesGasEstimate) => {
+    this.props.claimReportingFees(claimReportingFeesOptions, (error, result) => {
+      const claimReportingFeesGasEstimate = result.gasEstimates.totals.all.toString()
       const gasPrice = augur.rpc.getGasPrice()
       this.setState({
         claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),

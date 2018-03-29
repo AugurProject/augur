@@ -9,7 +9,7 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
 import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
-import ModalClaimReportingFees from 'modules/modal/components/modal-claim-reporting-fees/modal-claim-reporting-fees'
+import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-reporting-fees'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 
 import { Close } from 'modules/common/components/icons'

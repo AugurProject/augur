@@ -6,7 +6,6 @@ import Styles from 'modules/modal/components/modal-claim-reporting-fees/modal-cl
 export default class ModalClaimReportingFees extends Component {
   static propTypes = {
     modal: PropTypes.object.isRequired,
-    rep: PropTypes.string.isRequired,
     closeModal: PropTypes.func.isRequired,
     claimReportingFees: PropTypes.func.isRequired,
   }
@@ -20,6 +19,21 @@ export default class ModalClaimReportingFees extends Component {
 
   render() {
     const p = this.props
+
+    const claimReportingFeesOptions = {
+      redeemer: '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb',
+      redeemableContracts: [
+        {
+          address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
+          type: 2,
+        },
+      ],
+      estimateGas: false,
+    }
+
+    const claimReportingFeesCallback = (error, result) => {
+      p.closeModal()
+    }
 
     return (
       <section className={Styles.ModalClaimReportingFees}>
@@ -50,7 +64,10 @@ export default class ModalClaimReportingFees extends Component {
         <div className={Styles['ModalClaimReportingFees__cta-wrapper']}>
           <button
             className={Styles.ModalClaimReportingFees__cta}
-            onClick={() => p.closeModal()}
+            onClick={() => p.claimReportingFees(
+              claimReportingFeesOptions,
+              claimReportingFeesCallback,
+            )}
           >
             Submit
           </button>
