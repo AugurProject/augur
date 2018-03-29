@@ -152,7 +152,6 @@ export default class MigrateRep extends Component {
                 selectedOutcome={s.selectedOutcome}
                 selectedOutcomeName={s.selectedOutcomeName}
                 forkMigrationTotals={s.forkMigrationTotals}
-                repAmount={s.repAmount}
                 validations={s.validations}
                 accountREP={p.accountREP}
               />

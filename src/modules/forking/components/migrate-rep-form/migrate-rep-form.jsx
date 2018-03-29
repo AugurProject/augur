@@ -20,8 +20,8 @@ export default class MigrateRepForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     selectedOutcomeName: PropTypes.string.isRequired,
     forkMigrationTotals: PropTypes.object.isRequired,
-    isMarketInValid: PropTypes.bool,
     accountREP: PropTypes.string.isRequired,
+    isMarketInValid: PropTypes.bool,
   }
 
   static checkRepAmount(repAmount, updatedValidations) {
@@ -37,31 +37,12 @@ export default class MigrateRepForm extends Component {
     super(props)
 
     this.state = {
-      outcomes: [],
       inputRepAmount: '',
       inputSelectedOutcome: '',
       scalarInputChoosen: false,
     }
 
-    // TODO Reportable outcomes?
-    this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
-    if (this.props.market && this.props.market.marketType === BINARY && this.props.market.outcomes.length === 1) {
-      this.state.outcomes.push({ id: 0, name: 'No' })
-    }
-
-    this.state.outcomes.sort((a, b) => a.name - b.name)
-    this.componentWillReceiveProps(this.props)
     this.focusTextInput = this.focusTextInput.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
-      if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
-        this.setState({
-          inputSelectedOutcome: nextProps.selectedOutcome,
-        })
-      }
-    }
   }
 
   validateRepAmount(rawRepAmount) {
@@ -147,7 +128,7 @@ export default class MigrateRepForm extends Component {
       }
     }
 
-    MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: value,
@@ -164,12 +145,19 @@ export default class MigrateRepForm extends Component {
   render() {
     const p = this.props
     const s = this.state
-
+    const { market } = this.props
+    const reportableOutcomes = market.reportableOutcomes
     const formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
       const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
-      totals[curOutcomeId] = formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted
-      return totals
-    }, {})
+      const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
+      const value = {
+        id: curOutcomeId,
+        rep: formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted,
+        name : outcome ? outcome.name : curOutcomeId,
+        winner: forkMigrationOutcomeData.winner,
+      }
+      return [...totals, value]
+    }, [])
 
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
@@ -183,14 +171,14 @@ export default class MigrateRepForm extends Component {
         </li>
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
-            { s.outcomes.map(outcome => (
+            { formattedMigrationTotals &&  formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
               <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
-                  onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
+                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
+                  onClick={(e) => { this.validateOutcome(p.validations, outcome.name, outcome.name, false) }}
                 >{outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (formattedMigrationTotals[outcome.id] && formattedMigrationTotals[outcome.id]) || '0'} REP Migrated</span>
-                  { p.forkMigrationTotals[outcome.id] && p.forkMigrationTotals[outcome.id].winner &&
+                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep) || '0'} REP Migrated</span>
+                  { outcome && outcome.winner &&
                     <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
                   }
                 </button>
