@@ -11,6 +11,7 @@ import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
+import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
 
 import { Close } from 'modules/common/components/icons'
 
@@ -101,6 +102,12 @@ export default class ModalView extends Component {
           }
           {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...p} />
+          }
+          {p.modal.type === TYPES.MODAL_MIGRATE_MARKET &&
+            <ModalMigrateMarket
+              {...p.modal}
+              closeModal={p.closeModal}
+            />
           }
           {showBigCancel &&
             <button

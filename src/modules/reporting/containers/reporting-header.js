@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.isMobile,
   repBalance: state.loginAccount.rep,
+  forkingMarket: state.universe.forkingMarket,
 })
 
 const mapDispatchToProps = dispatch => ({

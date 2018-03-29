@@ -18,6 +18,7 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.isMobile,
+  accountREP: state.loginAccount.rep,
 })
 
 const mapDispatchToProps = dispatch => ({
