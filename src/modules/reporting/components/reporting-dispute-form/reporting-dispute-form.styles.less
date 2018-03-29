@@ -4,3 +4,28 @@ ul.ReportingDisputeForm__fields {
   flex-flow: column nowrap;
   justify-content: flex-start;
 }
+
+.ReportingDisputeForm__table {
+  display: table;
+
+  > li {
+    display: table-row;
+
+    > button,
+    > article {
+      display: table-cell;
+      padding-bottom: 1rem;
+      vertical-align: middle;
+    }
+
+    > button {
+      line-height: 1.75rem;
+      padding-right: 2rem;
+    }
+
+    &:last-child > button,
+    &:last-child > article {
+      padding-bottom: 0;
+    }
+  }
+}

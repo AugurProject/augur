@@ -1,14 +1,10 @@
 @import (reference) '~assets/styles/shared';
 
 .ReportingDisputeProgress__dispute-wrapper {
+  align-items: center;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
-}
-
-.ReportingDisputeProgress__dispute-graph {
-  margin-top: 0.25rem;
-  padding-left: 5rem;
 }
 
 .ReportingDisputeProgress__graph {
@@ -17,16 +13,16 @@
   height: 0.5rem;
   justify-content: space-between;
   overflow: hidden;
-  right: 80%;
   white-space: nowrap;
 }
 
 .ReportingDisputeProgress__dispute-label {
   color: @color-lightgray;
-  font-size: @font-size-small;
-  line-height: 0.625rem;
-  margin-left: 0.5rem;
-  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 0.6875rem;
+  margin-left: 1.5rem;
   white-space: nowrap;
 }
 

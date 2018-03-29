@@ -41,7 +41,6 @@ export default class ReportingDisputeForm extends Component {
       outcomes: [],
       inputStake: this.props.stake > 0 ? this.props.stake : '',
       inputSelectedOutcome: '',
-      paddingBuffer: 0,
       selectedOutcome: '',
       selectedOutcomeName: '',
       isMarketInValid: false,
@@ -91,11 +90,6 @@ export default class ReportingDisputeForm extends Component {
 
       this.state.outcomes = disputeOutcomes.filter(item => !item.tentativeWinning) || []
       this.state.currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
-
-      this.state.paddingBuffer = this.state.outcomes.reduce((p, i) => {
-        const result = i.name.length > p ? i.name.length : p
-        return result
-      }, 0)
 
       this.state.disputeBondValue = parseInt(bondSizeOfNewStake, 10)
       this.state.disputeBondFormatted = formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted
@@ -283,19 +277,19 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Proposed Outcome</span>
           </label>
-          <ul className={FormStyles['Form__radio-buttons--per-line']}>
+          <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
             { s.outcomes.map(outcome => (
               <li key={outcome.id}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
                   onClick={(e) => { this.validateOutcome(s.validations, outcome.id, outcome.name, false) }}
-                >{outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name}
+                >
+                  { outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name }
                 </button>
                 <ReportingDisputeProgress
                   key={outcome.id}
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
-                  paddingAmount={s.paddingBuffer - outcome.name.length}
                   stakeRemaining={outcome.stakeRemaining}
                   percentageComplete={outcome.percentageComplete}
                   percentageAccount={outcome.percentageAccount}

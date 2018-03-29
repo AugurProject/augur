@@ -24,15 +24,10 @@ const ReportingDisputeProgress = (p) => {
     width: `${currentPercentageComplete}%`,
   }
 
-  // using magic number to align dispute bars
-  const paddingValue = {
-    paddingLeft: `${(p.paddingAmount * 7.5) + 80}px`,
-  }
-
   return (
     <article>
       <section className={Styles['ReportingDisputeProgress__dispute-wrapper']}>
-        <div className={Styles['ReportingDisputeProgress__dispute-graph']} style={paddingValue}>
+        <div className={Styles['ReportingDisputeProgress__dispute-graph']}>
           <div className={Styles.ReportingDisputeProgress__graph}>
             <div className={Styles['ReportingDisputeProgress__graph-current']}>
               <div style={percentageAccount} />
