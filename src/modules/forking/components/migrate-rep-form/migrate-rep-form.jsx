@@ -20,7 +20,6 @@ export default class MigrateRepForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     selectedOutcomeName: PropTypes.string.isRequired,
     forkMigrationTotals: PropTypes.object.isRequired,
-    repAmount: PropTypes.number,
     isMarketInValid: PropTypes.bool,
     accountREP: PropTypes.string.isRequired,
   }
@@ -41,6 +40,7 @@ export default class MigrateRepForm extends Component {
       outcomes: [],
       inputRepAmount: '',
       inputSelectedOutcome: '',
+      scalarInputChoosen: false,
     }
 
     // TODO Reportable outcomes?
@@ -50,9 +50,8 @@ export default class MigrateRepForm extends Component {
     }
 
     this.state.outcomes.sort((a, b) => a.name - b.name)
-    if (this.props.repAmount) this.state.inputRepAmount = this.props.repAmount.toString()
-
     this.componentWillReceiveProps(this.props)
+    this.focusTextInput = this.focusTextInput.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,7 +82,7 @@ export default class MigrateRepForm extends Component {
 
     this.props.updateState({
       validations: updatedValidations,
-      repAmount,
+      repAmount: repAmount.toString(),
     })
   }
 
@@ -95,8 +94,9 @@ export default class MigrateRepForm extends Component {
 
     // outcome with id of .5 means invalid
     if (selectedOutcome === '0.5') isInvalid = true
+    this.state.scalarInputChoosen = false
 
-    MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: '',
@@ -110,8 +110,16 @@ export default class MigrateRepForm extends Component {
     })
   }
 
+  focusTextInput() {
+    this.textInput.focus()
+  }
+
   validateScalar(value, humanName, min, max, isInvalid) {
     const updatedValidations = { ...this.props.validations }
+    this.state.scalarInputChoosen = true
+    if (value === '') {
+      this.focusTextInput()
+    }
 
     if (isInvalid) {
       delete updatedValidations.err
@@ -194,12 +202,13 @@ export default class MigrateRepForm extends Component {
                 <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                   <li>
                     <button
-                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
-                      onClick={(e) => { this.validateScalar(0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                      className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
+                      onClick={(e) => { this.validateScalar('', 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
                     />
                     <input
                       id="sr__input--outcome-scalar"
                       type="number"
+                      ref={(input) => { this.textInput = input }}
                       min={p.market.minPrice}
                       max={p.market.maxPrice}
                       step={p.market.tickSize}

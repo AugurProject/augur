@@ -41,7 +41,7 @@ export default class MigrateRep extends Component {
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
-      repAmount: 0,
+      repAmount: '',
       validations: {
         repAmount: false,
         selectedOutcome: null,
@@ -90,7 +90,7 @@ export default class MigrateRep extends Component {
   }
 
   calculateGasEstimates() {
-    if (this.state.repAmount > 0) {
+    if (this.state.repAmount !== '') {
       const amount = speedomatic.fix(this.state.repAmount, 'hex')
       this.props.estimateSubmitMigrateREP(this.props.market.id, this.state.selectedOutcome, this.state.isMarketInValid, amount, (err, gasEstimateValue) => {
         if (err) return console.error(err)
@@ -154,7 +154,6 @@ export default class MigrateRep extends Component {
                 forkMigrationTotals={s.forkMigrationTotals}
                 repAmount={s.repAmount}
                 validations={s.validations}
-                repAmounts={s.repAmounts}
                 accountREP={p.accountREP}
               />
             }
