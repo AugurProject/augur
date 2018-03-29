@@ -5,6 +5,7 @@ var BigNumber = require("bignumber.js");
 var immutableDelete = require("immutable-delete");
 var assign = require("lodash.assign");
 var api = require("../api");
+var contractTypes = require("../constants").CONTRACT_TYPE;
 var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
 /**
@@ -67,7 +68,7 @@ function claimReportingFees(p, callback) {
 
   async.eachLimit(p.redeemableContracts, PARALLEL_LIMIT, function (contract, nextContract) {
     switch (contract.type) {
-      case 0:
+      case contractTypes.DISPUTE_CROWDSOURCER:
         api().DisputeCrowdsourcer.redeem(assign({}, redeemPayload, {
           _redeemer: p.redeemer,
           tx: {
@@ -91,7 +92,7 @@ function claimReportingFees(p, callback) {
           },
         }));
         break;
-      case 1:
+      case contractTypes.INITIAL_REPORTER:
         api().InitialReporter.redeem(assign({}, redeemPayload, {
           "": p.redeemer,
           tx: {
@@ -115,7 +116,7 @@ function claimReportingFees(p, callback) {
           },
         }));
         break;
-      case 2:
+      case contractTypes.FEE_WINDOW:
         api().FeeWindow.redeem(assign({}, redeemPayload, {
           _sender: p.redeemer,
           tx: {
