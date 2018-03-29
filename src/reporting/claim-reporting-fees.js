@@ -34,7 +34,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @property {Array.<string>|null} redeemedDisputeCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {Array.<string>|null} redeemedInitialReporters Addresses of all successfully redeemed Initial Reporters, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {gasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
- * @property {Array.<RPCError|string>} errors Array of errors returned when attempting to make transactions or get gas estimates.
+ * @property {Array.<RPCError|Error>} errors Array of errors returned when attempting to make transactions or get gas estimates.
  */
 
 /**
@@ -138,7 +138,7 @@ function claimReportingFees(p, callback) {
         }));
         break;
       default:
-        errors.push("Unknown contract type for contract " + contract.address + ": " + contract.type);
+        errors.push(new Error("Unknown contract type for contract " + contract.address + ": " + contract.type));
         nextContract();
         break;
     }
