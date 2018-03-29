@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import { fix, strip0xPrefix, unfix } from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
@@ -185,13 +185,13 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
   const fxpShares = fix(trade.amount)
   const fxpPrice = fix(trade.price)
   const fxpSettlementFee = fix(settlementFee)
-  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   const fxpTotalCost = fxpNoFeeCost.plus(fxpSettlementFee)
-  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   const fxpTotalReturn = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
-    .floor()
+    .integerValue(BigNumber.ROUND_FLOOR)
     .minus(fxpSettlementFee)
-  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   return {
     [trade.transactionHash]: {
       type: orderType,
@@ -214,7 +214,7 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
-      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
+      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)).times(100)),
       totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
       totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
       gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
