@@ -176,6 +176,7 @@ class Paginator extends Component {
     }
     //    Forward
     let forwardQuery
+    const totalItems = options.itemsLength
     if (currentPage * options.itemsPerPage >= totalItems) {
       const queryParams = parseQuery(options.location.search)
       queryParams[options.pageParam] = currentPage
@@ -186,7 +187,6 @@ class Paginator extends Component {
       forwardQuery = makeQuery(queryParams)
     }
 
-    const totalItems = options.itemsLength
     const boundedLength = (upperBound - lowerBound) + 1
 
     this.setState({
