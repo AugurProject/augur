@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { getMarketsWithReportingState, normalizePayouts } from "./database";
+import { getMarketsWithReportingState, normalizePayouts, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
@@ -41,36 +41,6 @@ interface StakeSizes<BigNumberType> {
   accountStakeCompleted?: BigNumberType;
   accountStakeCurrent?: BigNumberType;
   accountStakeTotal?: BigNumberType;
-}
-
-interface Dictionary {
-  [key: string]: any;
-}
-
-function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
-  return _
-    .chain(rows)
-    .groupBy((row) => _.values(_.pick(row, groupFields)))
-    .values()
-    .map((groupedRows: Array<T>): T => {
-      return _.reduce(groupedRows, (result: T | undefined, row: T): T => {
-        if (typeof result === "undefined") return row;
-
-        const mapped = _.map(row, (value: BigNumber|number|null, key: string): Array<any> => {
-          const previousValue = result[key];
-          if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
-            return [key, value];
-          } else if (value instanceof BigNumber) {
-            return [key, value.plus(result[key] as BigNumber)];
-          } else {
-            return [key, (value + previousValue)];
-          }
-        }) as Array<any>;
-
-        return _.fromPairs(mapped) as T;
-      }) as T;
-    })
-    .value();
 }
 
 const activeMarketStates = ["CROWDSOURCING_DISPUTE", "AWAITING_NEXT_WINDOW", "FORKING", "AWAITING_FORK_MIGRATION"];
@@ -165,7 +135,6 @@ export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Add
           disputeRound: _.filter(stakeResults.disputeRound, { marketId }),
         };
       });
-
     callback(null, disputeDetailsByMarket.map(reshapeStakeRowToUIStakeInfo));
   });
 }

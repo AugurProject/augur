@@ -16,6 +16,10 @@ import {
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
+export interface Dictionary {
+  [key: string]: any;
+}
+
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
   if (limit != null) query = query.limit(limit);
@@ -106,4 +110,30 @@ export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPay
     { payout } as NormalizedPayoutNumerators<BigNumber>,
     { isInvalid: !!payoutRow.isInvalid },
   );
+}
+
+export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
+  return _
+    .chain(rows)
+    .groupBy((row) => _.values(_.pick(row, groupFields)))
+    .values()
+    .map((groupedRows: Array<T>): T => {
+      return _.reduce(groupedRows, (result: T | undefined, row: T): T => {
+        if (typeof result === "undefined") return row;
+
+        const mapped = _.map(row, (value: BigNumber|number|null, key: string): Array<any> => {
+          const previousValue = result[key];
+          if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
+            return [key, value];
+          } else if (value instanceof BigNumber) {
+            return [key, value.plus(result[key] as BigNumber)];
+          } else {
+            return [key, (value + previousValue)];
+          }
+        }) as Array<any>;
+
+        return _.fromPairs(mapped) as T;
+      }) as T;
+    })
+    .value();
 }
