@@ -29,4 +29,8 @@ describe('src/utils/wrapped-big-number.js', () => {
     assert.instanceOf(result, BigNumber)
     assert.isNotOk(spy.called)
   })
+
+  it('should act like a big number', () => {
+    assert.equal(WrappedBigNumber(2).plus(WrappedBigNumber(4)).toString(), '6')
+  })
 })
