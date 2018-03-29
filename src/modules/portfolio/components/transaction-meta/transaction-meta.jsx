@@ -14,30 +14,33 @@ export default class TransactionMeta extends Component {
   }
 
   render() {
-    const p = this.props
-    const baseLink = p.networkId ? TransactionMeta.networkLink[p.networkId] : null
+    const {
+      meta,
+      networkId,
+    } = this.props
+    const baseLink = networkId ? TransactionMeta.networkLink[networkId] : null
 
     return (
       <ul className={Styles.TransactionMeta}>
-        { Object.keys(p.meta).filter(metaTitle => metaTitle === 'txhash').map(metaTitle => (
+        { Object.keys(meta).filter(metaTitle => metaTitle === 'txhash').map(metaTitle => (
           <li key={metaTitle}><span>{ metaTitle }</span>
             <span>
               { baseLink &&
               <a
-                href={baseLink + p.meta[metaTitle]}
+                href={baseLink + meta[metaTitle]}
                 target="blank"
               >
-                {p.meta[metaTitle]}
+                {meta[metaTitle]}
               </a>
               }
               { !baseLink &&
-                <span>{ p.meta[metaTitle] }</span>
+                <span>{ meta[metaTitle] }</span>
               }
             </span>
           </li>
         )) }
-        { Object.keys(p.meta).filter(metaTitle => metaTitle !== 'txhash').map(metaTitle => (
-          <li key={metaTitle}><span>{ metaTitle }</span><span><span>{ p.meta[metaTitle] }</span></span></li>
+        { Object.keys(meta).filter(metaTitle => metaTitle !== 'txhash').map(metaTitle => (
+          <li key={metaTitle}><span>{ metaTitle }</span><span><span>{ meta[metaTitle] }</span></span></li>
         )) }
       </ul>
     )

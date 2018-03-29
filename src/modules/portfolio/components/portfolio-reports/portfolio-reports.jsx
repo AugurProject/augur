@@ -23,7 +23,8 @@ export default class PortfolioReports extends Component {
   }
 
   componentWillMount() {
-    this.setState({ claimableFees: this.props.claimableFees() })
+    const { claimableFees } = this.props
+    this.setState({ claimableFees: claimableFees() })
   }
 
   render() {

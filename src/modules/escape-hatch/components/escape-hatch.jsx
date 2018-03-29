@@ -28,20 +28,34 @@ export default class EscapeHatchView extends Component {
   }
 
   componentWillMount() {
-    if (this.props.loginAccount.address) {
-      this.props.loadMarkets()
-      this.props.loadParticipationTokens()
-      this.props.loadInitialReporters()
-      this.props.loadDisputeCrowdsourcers()
+    const {
+      loadDisputeCrowdsourcers,
+      loadInitialReporters,
+      loadMarkets,
+      loadParticipationTokens,
+      loginAccount,
+    } = this.props
+    if (loginAccount.address) {
+      loadMarkets()
+      loadParticipationTokens()
+      loadInitialReporters()
+      loadDisputeCrowdsourcers()
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.loginAccount.address && nextProps.loginAccount.address) {
-      this.props.loadMarkets()
-      this.props.loadParticipationTokens()
-      this.props.loadInitialReporters()
-      this.props.loadDisputeCrowdsourcers()
+    const {
+      loadDisputeCrowdsourcers,
+      loadInitialReporters,
+      loadMarkets,
+      loadParticipationTokens,
+      loginAccount,
+    } = this.props
+    if (!loginAccount.address && nextProps.loginAccount.address) {
+      loadMarkets()
+      loadParticipationTokens()
+      loadInitialReporters()
+      loadDisputeCrowdsourcers()
     }
     this.setState({ fundsAvailableForWithdrawl: nextProps.escapeHatchData.fundsAvailableForWithdrawl > 0 })
   }
@@ -52,12 +66,19 @@ export default class EscapeHatchView extends Component {
   }
 
   confirm(e, ...args) {
-    this.props.withdrawFundsInEmergency(this.props.escapeHatchData.ownedMarketsWithFunds, this.props.escapeHatchData.marketsWithShares)
+    const {
+      escapeHatchData,
+      withdrawFundsInEmergency,
+    } = this.props
+    withdrawFundsInEmergency(escapeHatchData.ownedMarketsWithFunds, escapeHatchData.marketsWithShares)
   }
 
   render() {
+    const {
+      escapeHatchData,
+      loginAccount,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section className={Styles.EscapeHatch}>
@@ -90,19 +111,19 @@ export default class EscapeHatchView extends Component {
           <article className={Styles.EscapeHatch_ReviewSummary}>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>Recipient</span>
-              <span>{p.loginAccount.address}</span>
+              <span>{loginAccount.address}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>REP</span>
-              <span>{formatEtherEstimate(p.escapeHatchData.rep).rounded}</span>
+              <span>{formatEtherEstimate(escapeHatchData.rep).rounded}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>ETH</span>
-              <span>{formatEtherEstimate(p.escapeHatchData.eth).rounded}</span>
+              <span>{formatEtherEstimate(escapeHatchData.eth).rounded}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>
-              <span>{formatGasCost(p.escapeHatchData.gas).rounded}</span>
+              <span>{formatGasCost(escapeHatchData.gas).rounded}</span>
             </div>
           </article>
           <hr />

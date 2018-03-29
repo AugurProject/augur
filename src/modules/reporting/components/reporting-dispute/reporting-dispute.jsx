@@ -20,15 +20,17 @@ import Styles from 'modules/reporting/components/reporting-report/reporting-repo
 export default class ReportingDispute extends Component {
 
   static propTypes = {
+    estimateSubmitMarketContribute: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    market: PropTypes.object.isRequired,
-    universe: PropTypes.string.isRequired,
-    marketId: PropTypes.string.isRequired,
     isConnected: PropTypes.bool.isRequired,
+    isLogged: PropTypes.bool,
     isMarketLoaded: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
+    location: PropTypes.object,
+    market: PropTypes.object.isRequired,
+    marketId: PropTypes.string.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
-    estimateSubmitMarketContribute: PropTypes.func.isRequired,
+    universe: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -57,8 +59,13 @@ export default class ReportingDispute extends Component {
   }
 
   componentWillMount() {
-    if (this.props.isConnected && !this.props.isMarketLoaded) {
-      this.props.loadFullMarket()
+    const {
+      isConnected,
+      isMarketLoaded,
+      loadFullMarket,
+    } = this.props
+    if (isConnected && !isMarketLoaded) {
+      loadFullMarket()
     }
   }
 
@@ -81,9 +88,13 @@ export default class ReportingDispute extends Component {
   }
 
   calculateGasEstimates() {
+    const {
+      estimateSubmitMarketContribute,
+      market,
+    } = this.props
     if (this.state.stake > 0) {
       const amount = speedomatic.fix(this.state.stake, 'hex')
-      this.props.estimateSubmitMarketContribute(this.props.market.id, amount, (err, gasEstimateValue) => {
+      estimateSubmitMarketContribute(market.id, amount, (err, gasEstimateValue) => {
         if (err) return console.error(err)
 
         const gasPrice = augur.rpc.getGasPrice()
@@ -95,20 +106,26 @@ export default class ReportingDispute extends Component {
   }
 
   render() {
+    const {
+      history,
+      isLogged,
+      location,
+      market,
+      submitMarketContribute,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section>
         <Helmet>
           <title>Submit Dispute</title>
         </Helmet>
-        { !isEmpty(p.market) &&
+        { !isEmpty(market) &&
         <MarketPreview
-          {...p.market}
-          isLogged={p.isLogged}
-          location={p.location}
-          history={p.history}
+          {...market}
+          isLogged={isLogged}
+          location={location}
+          history={history}
           cardStyle="single-card"
           linkType={TYPE_VIEW}
           buttonText="View"
@@ -117,33 +134,33 @@ export default class ReportingDispute extends Component {
           toggleDetails={this.toggleDetails}
         />
         }
-        { !isEmpty(p.market) && s.showingDetails &&
+        { !isEmpty(market) && s.showingDetails &&
           <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
               <div className={Styles.ReportingReportMarket__details}>
                 <span>
-                  {p.market.extraInfo}
+                  {market.extraInfo}
                 </span>
               </div>
               <div className={Styles[`ReportingReportMarket__resolution-source`]}>
                 <h4>Resolution Source:</h4>
-                <span>{p.market.resolutionSource || 'Outcome will be determined by news media'}</span>
+                <span>{market.resolutionSource || 'Outcome will be determined by news media'}</span>
               </div>
             </div>
           </div>
         }
-        { !isEmpty(p.market) &&
+        { !isEmpty(market) &&
           <article className={FormStyles.Form}>
             { s.currentStep === 0 &&
               <ReportingDisputeForm
-                market={p.market}
+                market={market}
                 updateState={this.updateState}
                 stake={s.stake}
               />
             }
             { s.currentStep === 1 &&
               <ReportingDisputeConfirm
-                market={p.market}
+                market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
@@ -167,14 +184,14 @@ export default class ReportingDispute extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitMarketContribute(p.market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), p.history)}
+                onClick={() => submitMarketContribute(market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), history)}
               >Submit
               </button>
               }
             </div>
           </article>
         }
-        { isEmpty(p.market) &&
+        { isEmpty(market) &&
           <div className={Styles.NullState}>
             <NullStateMessage
               message="Market not found"

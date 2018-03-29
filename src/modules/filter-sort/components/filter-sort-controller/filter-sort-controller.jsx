@@ -39,40 +39,50 @@ export default class FilterSortController extends Component {
   }
 
   componentWillMount() {
-    this.props.updateFilteredItems(this.props.items.map((_, i) => i)) // Initialize indices
+    const {
+      children,
+      items,
+      location,
+      updateFilteredItems,
+    } = this.props
+    updateFilteredItems(items.map((_, i) => i)) // Initialize indices
 
-    this.injectChildren(this.props.children, this.state.combinedFiltered)
+    this.injectChildren(children, this.state.combinedFiltered)
 
-    const search = parseQuery(this.props.location.search)
-    this.callFilterByCategory(search, this.props.items)
-    this.callFilterByTags(search, this.props.items)
+    const search = parseQuery(location.search)
+    this.callFilterByCategory(search, items)
+    this.callFilterByTags(search, items)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      items,
+      location,
+    } = this.props
     const oldResults = Object.keys(this.state).filter(key => key.indexOf('filter-sort-results--') !== -1).reduce((p, key) => ({ ...p, [key]: this.state[key] }), {})
     const newResults = Object.keys(nextState).filter(key => key.indexOf('filter-sort-results--') !== -1).reduce((p, key) => ({ ...p, [key]: nextState[key] }), {})
 
     if (
-      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(items, nextProps.items) ||
       !isEqual(oldResults, newResults)
     ) {
       this.updateCombinedFilters(nextProps.items, newResults)
     }
 
     if (
-      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(items, nextProps.items) ||
       !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
     ) {
       this.injectChildren(nextProps.children, nextState.combinedFiltered)
     }
 
     // Helper Function Filters ONLY via query string params (no components directly associated with filter/sort)
-    const oldSearch = parseQuery(this.props.location.search)
+    const oldSearch = parseQuery(location.search)
     const newSearch = parseQuery(nextProps.location.search)
 
     // Catgories
     if (
-      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(items, nextProps.items) ||
       !isEqual(oldSearch[CATEGORY_PARAM_NAME], newSearch[CATEGORY_PARAM_NAME])
     ) {
       this.callFilterByCategory(newSearch, nextProps.items)
@@ -80,7 +90,7 @@ export default class FilterSortController extends Component {
 
     // Tags
     if (
-      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(items, nextProps.items) ||
       !isEqual(oldSearch[TAGS_PARAM_NAME], newSearch[TAGS_PARAM_NAME])
     ) {
       this.callFilterByTags(newSearch, nextProps.items)
@@ -124,8 +134,9 @@ export default class FilterSortController extends Component {
     })
   }
 
-  updateSortedFiltered(rawSorted, combined) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(rawSorted !== null ?
+  updateSortedFiltered(rawSorted, combined) {
+    const { updateFilteredItems } = this.props// If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
+    updateFilteredItems(rawSorted !== null ?
       (rawSorted || []).filter(itemIndex => combined.indexOf(itemIndex) !== -1) :
       combined)
   }
@@ -138,6 +149,7 @@ export default class FilterSortController extends Component {
   }
 
   injectChildren(children, combinedFiltered) {
+    const { items } = this.props
     // NOTE --  keep an eye on this...might be a performance bottleneck if goes too deep
     //          Ideally the children of the controller are fairly shallow
     //          This method name also sounds terrible
@@ -157,7 +169,7 @@ export default class FilterSortController extends Component {
         ) {
           subChildProps = {
             updateIndices: this.updateIndices,
-            items: this.props.items,
+            items,
           }
         }
 

@@ -39,11 +39,12 @@ export default class UportConnect extends Component {
   }
 
   componentWillMount() {
+    const { login } = this.props
     this.uPort.requestCredentials({
       notifcations: true,
     }, this.uPortURIHandler).then((account) => {
       const signingMethod = this.uPort.getWeb3().eth.sendTransaction
-      this.props.login(decode(account.address), signingMethod)
+      login(decode(account.address), signingMethod)
     })
   }
 
@@ -58,6 +59,10 @@ export default class UportConnect extends Component {
   }
 
   setQRSize() {
+    const {
+      isMobile,
+      isMobileSmall,
+    } = this.props
     const width = getValue(this, 'uPortCreate.clientWidth')
     const height = getValue(this, 'uPortCreate.clientHeight')
 
@@ -71,10 +76,10 @@ export default class UportConnect extends Component {
       let qrSize
 
       switch (true) {
-        case this.props.isMobileSmall:
+        case isMobileSmall:
           qrSize = width / 2.5
           break
-        case this.props.isMobile:
+        case isMobile:
           qrSize = width / 2.8
           break
         default:
