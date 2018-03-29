@@ -76,8 +76,7 @@ function runCommand(method, params, network, callback) {
   augur.rpc.setDebugOptions(debugOptions);
   var auth = getPrivateKeyFromString(config.privateKey);
   var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
-
-  augur.connect({ ethereumNode: { http: config.http }, augurNode: augurWs }, function (err) {
+  augur.connect({ ethereumNode: { http: config.http, pollingIntervalMilliseconds: 500 }, augurNode: augurWs }, function (err) {
     if (err) {
       console.log(chalk.red("Error "), chalk.red(err));
       return callback(err);
