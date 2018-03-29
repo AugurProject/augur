@@ -218,7 +218,7 @@ export default class ReportingDisputeForm extends Component {
           updatedValidations.err = `The ${humanName} field is required.`
           break
         case isNaN(valueValue):
-          updatedValidations.err = `The ${humanName} field is a number.`
+          updatedValidations.err = `The ${humanName} field must be a number.`
           break
         case (valueValue > maxValue || valueValue < minValue):
           updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
