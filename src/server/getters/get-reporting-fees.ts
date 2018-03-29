@@ -2,9 +2,10 @@ import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
-import { Address } from "../../types";
+import { Address, AsyncCallback } from "../../types";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
+import { groupByAndSum } from "./database";
 
 export interface FeeDetails {
   unclaimedEth: string;
@@ -20,44 +21,25 @@ interface FeeWindowTokens {
   participationTokens: number|null;
   feeTokens: number|null;
   balance: number|null;
-
 }
 
-interface Balance {
-  balance: string;
+interface ReporterStakes {
+  participationTokens: Array<ParticipationTokensRow>;
+  crowdsourcers: Array<CrowdsourcersRow>;
 }
 
-function getTokenBalance(db: Knex, token: Address, owner: Address, callback: (err: Error|null, result?: Balance) => void) {
-  db.select("balance").from("balances").first().where({ token, owner }).asCallback(callback);
+interface ParticipationTokensRow {
+  feeWindow: string;
+  balance: BigNumber;
 }
 
-function getFeeTokenSupply(db: Knex, feeWindow: Address, callback: (err: Error|null, result?: Balance) => void) {
-  db.select("feeToken").from("feeWindows").first().where({ feeWindow }).asCallback((err: Error|null, feeTokenAddress?: any) => {
-    if (err) return callback(err);
-    if (feeTokenAddress.feeToken == null) return callback(new Error(`Could not find feeToken for ${feeWindow}`));
-    getTokenSupply(db, feeTokenAddress.feeToken, callback);
-  });
+interface CrowdsourcersRow {
+  feeWindow: string;
+  amountStaked: BigNumber;
 }
-
-function getTokenSupply(db: Knex, token: Address, callback: (err: Error|null, result?: Balance) => void) {
-  db.select("supply").from("token_supply").first().where({ token }).asCallback(callback);
-}
-
-// function getTotalFeeWindowTokens(db: Knex, feeWindow: Address, callback: (err: Error|null, result?: any) => void) {
-//   getTokenSupply(db, feeWindow, (err: Error|null, participationTokensRow?: any) => {
-//     if (err) return callback(err);
-//     if (participationTokensRow == null) return callback(new Error(`No participationTokens found for ${feeWindow}`));
-//     getFeeTokenSupply(db, feeWindow, (err: Error|null, feeTokensRow?: any) => {
-//       if (err) return callback(err);
-//       if (feeTokensRow == null) return callback(new Error(`No feeTokens found for ${feeWindow}`));
-//       callback(null, feeTokensRow.supply.plus(participationTokensRow.supply));
-//     });
-//   });
-// }
 
 function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Array<any>) => void) {
   const query = db.select(["fee_windows.feeWindow", "participationToken.supply AS participationTokenStake", "feeToken.supply", "cash.balance"]).from("fee_windows");
-  // query.join("markets", "markets.feeWindow", "fee_windows.feeWindow");
   query.leftJoin("token_supply AS participationToken", "fee_windows.feeWindow", "participationToken.token");
   query.leftJoin("token_supply AS feeToken", "fee_windows.feeToken", "feeToken.token");
   query.leftJoin("balances AS cash", function () {
@@ -79,7 +61,7 @@ function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null,
   });
 }
 
-function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Array<FeeWindowTokens>) => void) {
+function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
   const participationTokenQuery = db.select(["fee_windows.feeWindow", "participationToken.balance AS participationTokens"]).from("fee_windows");
   participationTokenQuery.leftJoin("balances AS participationToken", function () {
     this
@@ -96,26 +78,19 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
   parallel({
-    participationTokens: (next) => participationTokenQuery.asCallback(next),
-    crowdsourcers: (next) => crowdsourcerQuery.asCallback(next),
-  }, (err?: Error|null, result?) => {
+    participationTokens: (next: AsyncCallback) => participationTokenQuery.asCallback(next),
+    crowdsourcers: (next: AsyncCallback) => crowdsourcerQuery.asCallback(next),
+  }, (err: Error|null, result?: any) => { // change to ReporterStakes
     if (err) return callback(err);
-    groupByAndSum()
-    console.log(result);
+    const groupedCrowdsourcers = groupByAndSum(result.crowdsourcers, ["feeWindow"], ["amountStaked"]);
+    const crowdsourcersByFeeWindow = _.keyBy(groupedCrowdsourcers, "feeWindow");
+    const participationTokensByFeeWindow = _.keyBy(result.participationTokens, "feeWindow");
+    callback(null, {
+      participationTokensByFeeWindow,
+      crowdsourcersByFeeWindow,
+    });
   });
-  participationTokenQuery.asCallback(callback);
 }
-
-// function calculateEthFees(feeWindowsTokens: Array<FeeWindowTokens>, reporterTokens: any) {
-//   const reporterTokensByFeeWindow = _.keyBy(reporterTokens, "feeWindow");
-//   let fees = ZERO;
-//   _.forEach(reporterTokens, (reporterBalance) => {
-//     const totalFeeWindowTokens = new BigNumber(reporterBalance.participationTokens || 0).plus(new BigNumber(reporterBalance.feeTokens || 0));
-//
-//     const feeWindowReporterTokens = reporterTokensByFeeWindow[feeWindowsTokens.feeWindow];
-//     const totalReporterTokens = new BigNumber(0)
-//   });
-// }
 
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
@@ -123,14 +98,10 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
 
   getTotalFeeWindowTokens(db, augur, universe, feeWindow, (err, totalFeeWindowTokens) => {
     if (err) return callback(err);
-    console.log("EEA");
-
     console.log(totalFeeWindowTokens);
     getReporterFeeTokens(db, reporter, universe, feeWindow, (err, result) => {
       if (err) return callback(err);
-      console.log("EE");
       console.log(result);
-      console.log(totalFeeWindowTokens);
       const response = {
         unclaimedEth: "1",
         unclaimedRepStaked: "2",
