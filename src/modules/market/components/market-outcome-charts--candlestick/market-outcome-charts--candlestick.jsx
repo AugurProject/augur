@@ -444,7 +444,7 @@ function drawXAxisLabels(options) {
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
-    .call(d3.axisBottom(drawParams.xScale).ticks(periodTimeSeries.length / 4)) // TODO -- improve tick count
+    .call(d3.axisBottom(drawParams.xScale).ticks(periodTimeSeries.length / 3)) // TODO -- improve tick count
     .select('path').remove()
 }
 
