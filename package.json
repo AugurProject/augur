@@ -49,7 +49,7 @@
     "docker:geth:pop": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 augurproject/dev-pop-geth:latest",
     "docker:geth:pop-normal-time": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 augurproject/dev-pop-normtime-geth:latest",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
-    "docker:geth:files": "scripts/copy-docker-files.sh"
+    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:latest"
   },
   "dependencies": {
     "async": "1.5.2",
