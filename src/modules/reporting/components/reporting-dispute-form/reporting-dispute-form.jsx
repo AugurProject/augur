@@ -297,6 +297,7 @@ export default class ReportingDisputeForm extends Component {
                   bondSizeCurrent={outcome.bondSizeCurrent}
                   stakeCurrent={outcome.stakeCurrent}
                   accountStakeCurrent={outcome.accountStakeCurrent}
+                  disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>
             ))
