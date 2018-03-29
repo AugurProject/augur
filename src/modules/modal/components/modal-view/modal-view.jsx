@@ -11,6 +11,8 @@ import ModalApproval from 'modules/modal/components/modal-approval/modal-approva
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-reporting-fees'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
+import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
+
 
 import { Close } from 'modules/common/components/icons'
 
@@ -101,6 +103,12 @@ export default class ModalView extends Component {
           }
           {p.modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES &&
             <ModalClaimReportingFees {...p.modal} />
+          }
+          {p.modal.type === TYPES.MODAL_MIGRATE_MARKET &&
+            <ModalMigrateMarket
+              {...p.modal}
+              closeModal={p.closeModal}
+            />
           }
           {showBigCancel &&
             <button

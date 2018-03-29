@@ -29,6 +29,7 @@ export default class MigrateRep extends Component {
     submitMigrateREP: PropTypes.func.isRequired,
     estimateSubmitMigrateREP: PropTypes.func.isRequired,
     getForkMigrationTotals: PropTypes.func.isRequired,
+    accountREP: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -154,6 +155,7 @@ export default class MigrateRep extends Component {
                 repAmount={s.repAmount}
                 validations={s.validations}
                 repAmounts={s.repAmounts}
+                accountREP={p.accountREP}
               />
             }
             { s.currentStep === 1 &&

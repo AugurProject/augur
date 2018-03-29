@@ -50,6 +50,9 @@ export default class CreateMarketResolution extends Component {
       // expirySourceType: false,
       date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp * 1000) : null,
       focused: false,
+      hours: Array.from(new Array(12), (val, index) => index + 1),
+      minutes: [...Array.from(Array(9).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
+      ampm: ['AM', 'PM'],
     }
 
     this.validateExpiryType = this.validateExpiryType.bind(this)
@@ -118,6 +121,7 @@ export default class CreateMarketResolution extends Component {
 
   render() {
     const p = this.props
+    const s = this.state
     const validations = p.newMarket.validations[p.newMarket.currentStep]
     const { utcLocalOffset } = formatDate(new Date(p.currentTimestamp))
 
@@ -219,31 +223,25 @@ export default class CreateMarketResolution extends Component {
               <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].minute }</span>
             }
           </label>
-          <div className={Styles.CreateMarketResolution__time}>
-            <input
-              id="cm__input--time"
-              type="number"
-              min="1"
-              max="12"
-              step="1"
-              value={p.newMarket.hour}
-              placeholder="Hour"
-              onChange={e => p.validateNumber('hour', e.target.value, 'hour', 1, 12, 0)}
+          <div id="cm__input--time" className={Styles.CreateMarketResolution__time}>
+            <InputDropdown
+              label="Hour"
+              options={s.hours}
+              default={p.newMarket.hour}
+              onChange={value => p.validateNumber('hour', value, 'hour', 1, 12, 0)}
+              isMobileSmall={this.props.isMobileSmall}
             />
-            <input
-              type="number"
-              min="0"
-              max="59"
-              step="1"
-              value={p.newMarket.minute}
-              placeholder="Minute"
-              onBlur={e => this.props.validateNumber('minute', e.target.value, 'minute', 0, 59, 0, true)}
-              onChange={e => p.validateNumber('minute', e.target.value, 'minute', 0, 59, 0)}
+            <InputDropdown
+              label="Minute"
+              options={s.minutes}
+              default={p.newMarket.minute}
+              onChange={value => p.validateNumber('minute', value, 'minute', 0, 59, 0)}
+              isMobileSmall={this.props.isMobileSmall}
             />
             <InputDropdown
               label="AM/PM"
               default={p.newMarket.meridiem || ''}
-              options={['AM', 'PM']}
+              options={s.ampm}
               onChange={value => p.validateField('meridiem', value)}
               isMobileSmall={this.props.isMobileSmall}
             />

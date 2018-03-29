@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import BigNumber from 'bignumber.js'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import store from 'src/store'
 
@@ -20,7 +20,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI
   const averagePrice = accumulate(adjustedPosition, 'averagePrice')
-  const isClosable = !!new BigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
+  const isClosable = !!WrappedBigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
 
   const marketId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].marketId : null
   const outcomeId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].outcome : null
@@ -50,9 +50,9 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
       if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
         return
       }
-      qtyShares = qtyShares.plus(new BigNumber(outcome.position.qtyShares.value, 10))
-      totalRealizedNet = totalRealizedNet.plus(new BigNumber(outcome.position.realizedNet.value, 10))
-      totalUnrealizedNet = totalUnrealizedNet.plus(new BigNumber(outcome.position.unrealizedNet.value, 10))
+      qtyShares = qtyShares.plus(WrappedBigNumber(outcome.position.qtyShares.value, 10))
+      totalRealizedNet = totalRealizedNet.plus(WrappedBigNumber(outcome.position.realizedNet.value, 10))
+      totalUnrealizedNet = totalUnrealizedNet.plus(WrappedBigNumber(outcome.position.unrealizedNet.value, 10))
       positionOutcomes.push(outcome)
     })
   })
@@ -64,7 +64,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
 }, { max: 50 })
 
 export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
-  const totalNet = new BigNumber(realizedNet, 10).plus(new BigNumber(unrealizedNet, 10))
+  const totalNet = WrappedBigNumber(realizedNet, 10).plus(WrappedBigNumber(unrealizedNet, 10))
   return {
     numPositions: formatNumber(numPositions, {
       decimals: 0,

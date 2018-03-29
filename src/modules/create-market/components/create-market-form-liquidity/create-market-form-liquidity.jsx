@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
@@ -43,11 +43,11 @@ export default class CreateMarketLiquidity extends Component {
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
-      minPrice: new BigNumber(0),
-      maxPrice: new BigNumber(1),
-      selectedOutcome: this.props.newMarket.type === SCALAR ? 0 : '',
+      minPrice: WrappedBigNumber(0),
+      maxPrice: WrappedBigNumber(1),
       selectedNav: BID,
     }
+    this.state.selectedOutcome = this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : ''
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this)
@@ -81,7 +81,7 @@ export default class CreateMarketLiquidity extends Component {
 
     if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
       let orderEstimate = ''
-      if (nextState.orderQuantity instanceof BigNumber && nextState.orderPrice instanceof BigNumber) {
+      if (BigNumber.isBigNumber(nextState.orderQuantity) && BigNumber.isBigNumber(nextState.orderPrice)) {
         orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
       }
 
@@ -111,19 +111,11 @@ export default class CreateMarketLiquidity extends Component {
     }
   }
 
-  // handleRemoveOrder(type, orderToRemove, i) {
-  //   const orderToRemoveIndex = this.props.newMarket.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity)
-
-  //   this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex })
-
-  //   this.updateInitialLiquidityCosts(this.props.newMarket.orderBook[this.state.selectedOutcome][orderToRemoveIndex], true)
-  // }
-
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
     const oppositeSide = selectedSide === BID ? ASK : BID
-    const ZERO = new BigNumber(0)
-    const ONE = new BigNumber(1)
-    const precision = new BigNumber(10**-PRECISION)
+    const ZERO = WrappedBigNumber(0)
+    const ONE = WrappedBigNumber(1)
+    const precision = WrappedBigNumber(10**-PRECISION)
     let minPrice
     let maxPrice
 
@@ -205,7 +197,7 @@ export default class CreateMarketLiquidity extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = []
 
-        let totalQuantity = new BigNumber(0)
+        let totalQuantity = WrappedBigNumber(0)
 
         orderBook[outcome][type].forEach((order) => {
           const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber())
@@ -238,17 +230,16 @@ export default class CreateMarketLiquidity extends Component {
     let initialLiquidityFees
 
     switch (this.props.newMarket.type) {
-      case BINARY:
-        outcome = this.state.selectedOutcome === 'Yes' ? 1 : 0
+      case CATEGORICAL:
+        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
+          if (this.state.selectedOutcome === outcomeName) outcome = index
+        })
         break
       case SCALAR:
         outcome = this.state.selectedOutcome
         break
       default:
-        // categorical
-        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
-          if (this.state.selectedOutcome === outcomeName) outcome = index
-        })
+        outcome = 1
     }
 
     const orderInfo = {
@@ -268,12 +259,12 @@ export default class CreateMarketLiquidity extends Component {
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(new BigNumber(action.gasFees))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(new BigNumber(action.feeEth))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(WrappedBigNumber(action.gasFees))
+      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
     } else {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(new BigNumber(action.gasFees))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(new BigNumber(action.feeEth))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(WrappedBigNumber(action.gasFees))
+      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
     }
 
     this.props.updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
@@ -286,8 +277,8 @@ export default class CreateMarketLiquidity extends Component {
           return this.state.orderQuantity
         }
         return this.state.orderPrice
-      } else if (!(value instanceof BigNumber) && value !== '') {
-        return new BigNumber(value)
+      } else if (!(BigNumber.isBigNumber(value)) && value !== '') {
+        return WrappedBigNumber(value)
       }
 
       return value
@@ -303,33 +294,33 @@ export default class CreateMarketLiquidity extends Component {
     let isOrderValid
 
     // Validate Quantity
-    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
+    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(WrappedBigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
       errors.quantity.push('Insufficient funds')
       errors.price.push('Insufficient funds')
-    } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
+    } else if (orderQuantity !== '' && orderQuantity.lte(WrappedBigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
       const bids = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
       const asks = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
 
       if (this.props.newMarket.type !== SCALAR) {
-        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-        } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+        } else if (orderPrice.gt(this.state.maxPrice)) {
           errors.price.push('Price cannot exceed 1')
-        } else if (orderPrice.lessThan(this.state.minPrice)) {
+        } else if (orderPrice.lt(this.state.minPrice)) {
           errors.price.push('Price cannot be below 0')
         }
-      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
+      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
         errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
-      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
+      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
         errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-      } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+      } else if (orderPrice.gt(this.state.maxPrice)) {
         errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`)
-      } else if (orderPrice.lessThan(this.state.minPrice)) {
+      } else if (orderPrice.lt(this.state.minPrice)) {
         errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`)
       }
     }
@@ -395,27 +386,6 @@ export default class CreateMarketLiquidity extends Component {
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
-              { p.newMarket.type === BINARY &&
-                <li>
-                  <label>Outcome</label>
-                  <ul className={classNames(Styles['CreateMarketLiquidity__radio-buttons'], StylesForm['CreateMarketForm__radio-buttons'])}>
-                    <li>
-                      <button
-                        className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'Yes' })}
-                        onClick={() => this.setState({ selectedOutcome: 'Yes' })}
-                      >Yes
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        className={classNames({ [`${StylesForm.active}`]: s.selectedOutcome === 'No' })}
-                        onClick={() => this.setState({ selectedOutcome: 'No' })}
-                      >No
-                      </button>
-                    </li>
-                  </ul>
-                </li>
-              }
               { p.newMarket.type === CATEGORICAL &&
                 <li>
                   <label>Outcome</label>
@@ -437,7 +407,7 @@ export default class CreateMarketLiquidity extends Component {
                   type="number"
                   step={10**-PRECISION}
                   placeholder="0.0000 Shares"
-                  value={s.orderQuantity instanceof BigNumber ? s.orderQuantity.toNumber() : s.orderQuantity}
+                  value={BigNumber.isBigNumber(s.orderQuantity) ? s.orderQuantity.toNumber() : s.orderQuantity}
                   onChange={e => this.validateForm(e.target.value, undefined)}
                 />
               </li>
@@ -449,7 +419,7 @@ export default class CreateMarketLiquidity extends Component {
                   type="number"
                   step={10**-PRECISION}
                   placeholder="0.0000 ETH"
-                  value={s.orderPrice instanceof BigNumber ? s.orderPrice.toNumber() : s.orderPrice}
+                  value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
                 />
               </li>

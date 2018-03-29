@@ -1,8 +1,6 @@
 import React from 'react'
 
 
-
-
 import { shallow } from 'enzyme'
 import { NoMarketsFound, ReportSection } from 'src/modules/reporting/components/reporting-report-markets/reporting-report-markets'
 import ConnectedMarketPreview from 'src/modules/reporting/containers/market-preview'

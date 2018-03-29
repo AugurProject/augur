@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { encodeNumberAsBase10String, encodeNumberAsJSNumber } from 'speedomatic'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { encodeNumberAsBase10String, encodeNumberAsJSNumber, unfix } from 'speedomatic'
 import { augur, constants } from 'services/augurjs'
 import { ZERO, TEN } from 'modules/trade/constants/numbers'
 import addCommas from 'utils/add-commas-to-number'
@@ -195,16 +195,15 @@ export function formatBlank() {
 }
 
 export function formatGasCostToEther(num, opts, gasPrice) {
-  const { ETHER } = augur.rpc.constants
-  const estimatedGasCost = new BigNumber(num).times(new BigNumber(gasPrice, 16))
-  const ethGasCost = estimatedGasCost.dividedBy(ETHER) // convert to ether
-  return formatGasCost(ethGasCost, opts).rounded
+  const gas = unfix(num, 'number')
+  const estimatedGasCost = WrappedBigNumber(gas).times(WrappedBigNumber(gasPrice))
+  return formatGasCost(estimatedGasCost, opts).rounded
 }
 
 export function formatAttoRep(num, opts) {
   if (!num || num === 0 || isNaN(num)) return 0
   const { ETHER } = augur.rpc.constants
-  return formatNumber(new BigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
+  return formatNumber(WrappedBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
 }
 
 export function formatGasCost(num, opts) {
@@ -240,7 +239,7 @@ export function formatNumber(num, opts = {
   roundDown = !!roundDown
   zeroStyled = zeroStyled !== false
   blankZero = blankZero !== false
-  value = num != null ? new BigNumber(num, 10) : ZERO
+  value = num != null ? WrappedBigNumber(num, 10) : ZERO
 
   if (value.eq(ZERO)) {
     if (zeroStyled) return formatNone()
@@ -315,14 +314,14 @@ export function formatNumber(num, opts = {
 
 function addBigUnitPostfix(value, formattedValue) {
   let postfixed
-  if (value.gt(new BigNumber('1000000000000', 10))) {
+  if (value.gt(WrappedBigNumber('1000000000000', 10))) {
     postfixed = '> 1T'
-  } else if (value.gt(new BigNumber('10000000000', 10))) {
-    postfixed = value.dividedBy(new BigNumber('1000000000', 10)).toFixed(0) + 'B'
-  } else if (value.gt(new BigNumber('10000000', 10))) {
-    postfixed = value.dividedBy(new BigNumber('1000000', 10)).toFixed(0) + 'M'
-  } else if (value.gt(new BigNumber('10000', 10))) {
-    postfixed = value.dividedBy(new BigNumber('1000', 10)).toFixed(0) + 'K'
+  } else if (value.gt(WrappedBigNumber('10000000000', 10))) {
+    postfixed = value.dividedBy(WrappedBigNumber('1000000000', 10)).toFixed(0) + 'B'
+  } else if (value.gt(WrappedBigNumber('10000000', 10))) {
+    postfixed = value.dividedBy(WrappedBigNumber('1000000', 10)).toFixed(0) + 'M'
+  } else if (value.gt(WrappedBigNumber('10000', 10))) {
+    postfixed = value.dividedBy(WrappedBigNumber('1000', 10)).toFixed(0) + 'K'
   } else {
     postfixed = addCommas(formattedValue)
   }

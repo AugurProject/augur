@@ -16,7 +16,7 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '1 category',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
@@ -30,11 +30,11 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '2 categories of unequal popularity',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
-      backflips: {
+      1: {
         category: 'backflips',
         popularity: 2,
       },
@@ -49,11 +49,11 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '2 categories of equal popularity',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
-      backflips: {
+      1: {
         category: 'frontflips',
         popularity: 10,
       },
@@ -68,15 +68,15 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '3 categories of unequal popularity',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
-      backflips: {
+      1: {
         category: 'backflips',
         popularity: 2,
       },
-      sideflips: {
+      2: {
         category: 'sideflips',
         popularity: 5,
       },
@@ -92,15 +92,15 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '3 categories, 2 of equal popularity',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
-      backflips: {
+      1: {
         category: 'backflips',
         popularity: 2,
       },
-      frontflips: {
+      2: {
         category: 'frontflips',
         popularity: 10,
       },
@@ -116,16 +116,44 @@ describe(`modules/categories/selectors/categories.js`, () => {
   test({
     description: '3 categories of equal popularity',
     categories: {
-      testing: {
+      0: {
         category: 'testing',
         popularity: 10,
       },
-      twirling: {
+      1: {
         category: 'twirling',
         popularity: 10,
       },
-      frontflips: {
+      2: {
         category: 'frontflips',
+        popularity: 10,
+      },
+    },
+    assertions: (output) => {
+      assert.deepEqual(output, [
+        { category: 'testing', popularity: 10 },
+        { category: 'twirling', popularity: 10 },
+        { category: 'frontflips', popularity: 10 },
+      ])
+    },
+  })
+  test({
+    description: '4 categories of equal popularity, one is empty name and shouldnt get passed out of selector.',
+    categories: {
+      0: {
+        category: 'testing',
+        popularity: 10,
+      },
+      1: {
+        category: 'twirling',
+        popularity: 10,
+      },
+      2: {
+        category: 'frontflips',
+        popularity: 10,
+      },
+      3: {
+        category: '',
         popularity: 10,
       },
     },

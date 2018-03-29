@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 import memoize from 'memoizee'
 
 import store from 'src/store'
@@ -110,7 +110,7 @@ const selectAggregatePricePoints = memoize((outcomeId, side, orders, orderCancel
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
   if (order && !isNaN(order.fullPrecisionPrice) && !isNaN(order.fullPrecisionAmount)) {
-    const key = new BigNumber(order.fullPrecisionPrice, 10).toFixed()
+    const key = WrappedBigNumber(order.fullPrecisionPrice, 10).toFixed()
     if (aggregateOrdersPerPrice[key] == null) {
       aggregateOrdersPerPrice[key] = {
         shares: ZERO,
@@ -119,9 +119,9 @@ function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
         isOfCurrentUser: false,
       }
     }
-    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(new BigNumber(order.fullPrecisionAmount, 10))
-    aggregateOrdersPerPrice[key].sharesEscrowed = aggregateOrdersPerPrice[key].sharesEscrowed.plus(new BigNumber(order.sharesEscrowed || 0, 10))
-    aggregateOrdersPerPrice[key].tokensEscrowed = aggregateOrdersPerPrice[key].tokensEscrowed.plus(new BigNumber(order.tokensEscrowed || 0, 10))
+    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(WrappedBigNumber(order.fullPrecisionAmount, 10))
+    aggregateOrdersPerPrice[key].sharesEscrowed = aggregateOrdersPerPrice[key].sharesEscrowed.plus(WrappedBigNumber(order.sharesEscrowed || 0, 10))
+    aggregateOrdersPerPrice[key].tokensEscrowed = aggregateOrdersPerPrice[key].tokensEscrowed.plus(WrappedBigNumber(order.tokensEscrowed || 0, 10))
     aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser // TODO -- we need to segregate orders @ the same price that are of user
   } else {
     console.debug('reduceSharesCountByPrice:', order)
