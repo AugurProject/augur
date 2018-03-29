@@ -1,7 +1,7 @@
 
 
 import sinon from 'sinon'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
 import { formatEther, formatRep } from 'utils/format-number'

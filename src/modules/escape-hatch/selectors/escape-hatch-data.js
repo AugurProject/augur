@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { createSelector } from 'reselect'
 import speedomatic from 'speedomatic'
 import { each } from 'async'

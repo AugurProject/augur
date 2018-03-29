@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 

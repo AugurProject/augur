@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectAccountTradesState, selectCurrentTimestamp, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'

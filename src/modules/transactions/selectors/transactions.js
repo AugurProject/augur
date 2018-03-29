@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import store from 'src/store'
 import { selectTransactionsDataState } from 'src/select-state'
 

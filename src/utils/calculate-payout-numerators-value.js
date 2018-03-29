@@ -1,5 +1,5 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 export default function calculatePayoutNumeratorsValue(market, payout, isInvalid) {
   const {

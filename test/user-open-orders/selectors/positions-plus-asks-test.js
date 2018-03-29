@@ -2,7 +2,7 @@
 
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 

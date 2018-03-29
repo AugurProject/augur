@@ -1,5 +1,5 @@
 import { formatAttoRep } from 'utils/format-number'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 
 

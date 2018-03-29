@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { createBigCacheSelector } from 'utils/big-cache-selector'
 import store from 'src/store'
 import { selectLoginAccountAddress, selectAccountPositionsState, selectOrderBooksState } from 'src/select-state'

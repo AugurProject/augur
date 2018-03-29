@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import selectMyReports from 'modules/my-reports/selectors/my-reports'
 import { ZERO } from 'modules/trade/constants/numbers'
 

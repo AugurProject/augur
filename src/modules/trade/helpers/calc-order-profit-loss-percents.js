@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { BUY } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 

@@ -1,7 +1,7 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
   if (isEmpty(disputeStakes)) return market.reportableOutcomes

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import memoize from 'memoizee'
 import { formatPercent, formatShares, formatEther } from 'utils/format-number'
 import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit-loss-percents'

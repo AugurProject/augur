@@ -1,6 +1,6 @@
 
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import calcProfits from 'modules/trade/helpers/calc-order-profit-loss-percents'
 

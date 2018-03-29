@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { strip0xPrefix } from 'speedomatic'
 
 import * as TYPES from 'modules/transactions/constants/types'

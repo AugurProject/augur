@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import { placeTrade } from 'modules/trade/actions/place-trade'
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group'

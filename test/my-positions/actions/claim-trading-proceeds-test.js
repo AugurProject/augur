@@ -1,5 +1,5 @@
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'

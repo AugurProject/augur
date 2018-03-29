@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 import { debounce } from 'lodash'
 import { updateAssets } from 'modules/auth/actions/update-assets'

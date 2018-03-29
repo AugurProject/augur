@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { formatEther, formatPercent, formatRep } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import { TWO } from 'modules/trade/constants/numbers'

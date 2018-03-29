@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
 import { augur } from 'services/augurjs'
 import speedomatic from 'speedomatic'

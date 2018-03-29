@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
 import MarketTradingConfirm from 'modules/trade/components/trading--confirm/trading--confirm'

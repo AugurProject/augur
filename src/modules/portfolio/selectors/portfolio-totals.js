@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { formatEther } from 'utils/format-number'
 import { generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary'
 import selectAllMarkets from 'modules/markets/selectors/markets-all'

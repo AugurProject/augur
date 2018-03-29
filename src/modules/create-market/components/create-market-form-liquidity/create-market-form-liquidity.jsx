@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'

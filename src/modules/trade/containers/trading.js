@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import { selectMarket } from 'modules/market/selectors/market'
 import MarketTrading from 'modules/trade/components/trading/trading'

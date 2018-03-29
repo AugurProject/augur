@@ -10,7 +10,7 @@ import {
   CLEAR_NEW_MARKET,
 } from 'modules/create-market/actions/update-new-market'
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 describe('modules/create-market/reducers/new-market.js', () => {
   const test = (t) => {

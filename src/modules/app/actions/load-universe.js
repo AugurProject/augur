@@ -1,5 +1,5 @@
 import async from 'async'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import { augur } from 'services/augurjs'
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import syncUniverse from 'modules/universe/actions/sync-universe'

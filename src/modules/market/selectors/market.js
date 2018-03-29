@@ -20,7 +20,7 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'

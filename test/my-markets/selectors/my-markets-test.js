@@ -2,7 +2,7 @@
 
 import proxyquire from 'proxyquire'
 
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import * as mockStore from 'test/mockStore'
 
