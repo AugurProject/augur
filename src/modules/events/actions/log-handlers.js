@@ -123,17 +123,17 @@ export const handleDisputeCrowdsourcerCreatedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
 }
 
-export const handleDisputeCrowdsourcerContribution = log => (dispatch) => {
+export const handleDisputeCrowdsourcerContributionLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
 }
 
-export const handleDisputeCrowdsourcerCompleted = log => (dispatch) => {
+export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
 }
 
-export const handleDisputeCrowdsourcerRedeemed = log => (dispatch) => {
+export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
 }
