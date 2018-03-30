@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import speedomatic from 'speedomatic'
 import { each } from 'async'
@@ -50,7 +50,7 @@ export const getEscapeHatchData = createSelector(
     Object.keys(disputeCrowdsourcers).forEach((disputeCrowdsourcerID) => {
       const disputeCrowdsourcer = disputeCrowdsourcers[disputeCrowdsourcerID]
       if (disputeCrowdsourcer.balance > 0) {
-        data.rep = speedomatic.unfix(disputeCrowdsourcer.balance).add(WrappedBigNumber(data.rep))
+        data.rep = speedomatic.unfix(disputeCrowdsourcer.balance).add(createBigNumber(data.rep))
         data.gas += disputeCrowdsourcer.escapeHatchGasCost
       }
     })
@@ -58,7 +58,7 @@ export const getEscapeHatchData = createSelector(
     Object.keys(initialReporters).forEach((initialReporterID) => {
       const initialReporter = initialReporters[initialReporterID]
       if (initialReporter.repBalance > 0) {
-        data.rep = speedomatic.unfix(initialReporter.repBalance).add(WrappedBigNumber(data.rep))
+        data.rep = speedomatic.unfix(initialReporter.repBalance).add(createBigNumber(data.rep))
         data.gas += initialReporter.escapeHatchGasCost
       }
     })

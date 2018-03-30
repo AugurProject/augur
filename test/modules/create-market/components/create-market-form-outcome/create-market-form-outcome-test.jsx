@@ -6,7 +6,7 @@ import { shallow } from 'enzyme'
 import CreateMarketOutcome
   from 'src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import { SCALAR } from 'src/modules/markets/constants/market-types'
-import { WrappedBigNumber } from 'src/utils/wrapped-big-number'
+import { createBigNumber } from 'src/utils/create-big-number'
 
 describe('create-market-form-outcome', () => {
   let cmp
@@ -63,9 +63,9 @@ describe('create-market-form-outcome', () => {
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: WrappedBigNumber(0),
-      initialLiquidityGas: WrappedBigNumber(0),
-      initialLiquidityFees: WrappedBigNumber(0),
+      initialLiquidityEth: createBigNumber(0),
+      initialLiquidityGas: createBigNumber(0),
+      initialLiquidityFees: createBigNumber(0),
       creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
     }
 

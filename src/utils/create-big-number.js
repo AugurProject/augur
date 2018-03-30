@@ -1,7 +1,7 @@
 import logError from 'utils/log-error'
 import { BigNumber } from 'bignumber.js'
 
-export const WrappedBigNumber = (...args) => {
+export const createBigNumber = (...args) => {
   let newBigNumber
   try {
     newBigNumber = new BigNumber(...args)

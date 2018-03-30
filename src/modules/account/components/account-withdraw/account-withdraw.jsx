@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber } from 'utils/create-big-number'
 
 import Input from 'modules/common/components/input/input'
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'

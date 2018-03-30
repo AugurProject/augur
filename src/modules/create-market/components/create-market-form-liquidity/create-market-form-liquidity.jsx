@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
@@ -43,8 +43,8 @@ export default class CreateMarketLiquidity extends Component {
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
-      minPrice: WrappedBigNumber(0),
-      maxPrice: WrappedBigNumber(1),
+      minPrice: createBigNumber(0),
+      maxPrice: createBigNumber(1),
       selectedNav: BID,
     }
     this.state.selectedOutcome = this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : ''
@@ -113,9 +113,9 @@ export default class CreateMarketLiquidity extends Component {
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
     const oppositeSide = selectedSide === BID ? ASK : BID
-    const ZERO = WrappedBigNumber(0)
-    const ONE = WrappedBigNumber(1)
-    const precision = WrappedBigNumber(10**-PRECISION)
+    const ZERO = createBigNumber(0)
+    const ONE = createBigNumber(1)
+    const precision = createBigNumber(10**-PRECISION)
     let minPrice
     let maxPrice
 
@@ -197,7 +197,7 @@ export default class CreateMarketLiquidity extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = []
 
-        let totalQuantity = WrappedBigNumber(0)
+        let totalQuantity = createBigNumber(0)
 
         orderBook[outcome][type].forEach((order) => {
           const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber())
@@ -259,11 +259,11 @@ export default class CreateMarketLiquidity extends Component {
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(WrappedBigNumber(action.gasFees))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(createBigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
     } else {
       initialLiquidityEth = this.props.newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(WrappedBigNumber(action.gasFees))
+      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(createBigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
     }
 
@@ -278,7 +278,7 @@ export default class CreateMarketLiquidity extends Component {
         }
         return this.state.orderPrice
       } else if (!(BigNumber.isBigNumber(value)) && value !== '') {
-        return WrappedBigNumber(value)
+        return createBigNumber(value)
       }
 
       return value
@@ -294,11 +294,11 @@ export default class CreateMarketLiquidity extends Component {
     let isOrderValid
 
     // Validate Quantity
-    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(WrappedBigNumber(this.props.availableEth))) {
+    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(createBigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
       errors.quantity.push('Insufficient funds')
       errors.price.push('Insufficient funds')
-    } else if (orderQuantity !== '' && orderQuantity.lte(WrappedBigNumber(0))) {
+    } else if (orderQuantity !== '' && orderQuantity.lte(createBigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
       const bids = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)

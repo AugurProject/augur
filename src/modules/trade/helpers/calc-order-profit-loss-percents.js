@@ -1,4 +1,4 @@
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import { BUY } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -26,22 +26,22 @@ export default function (numShares, limitPrice, side, minPrice, maxPrice, type, 
   let calculatedPrice = limitPrice
   if (!limitPrice && tradeTotalCost) {
     // market order
-    calculatedPrice = WrappedBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
+    calculatedPrice = createBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
     calculatedShares = sharesFilled
   }
   if (type === SCALAR && (isNaN(minPrice) || isNaN(maxPrice))) return null
-  const max = WrappedBigNumber(type === SCALAR ? maxPrice : 1)
-  const min = WrappedBigNumber(type === SCALAR ? minPrice : 0)
-  const limit = WrappedBigNumber(calculatedPrice, 10)
+  const max = createBigNumber(type === SCALAR ? maxPrice : 1)
+  const min = createBigNumber(type === SCALAR ? minPrice : 0)
+  const limit = createBigNumber(calculatedPrice, 10)
   const totalCost = type === SCALAR ? min.minus(limit).abs().times(calculatedShares) : limit.times(calculatedShares)
 
   const potentialEthProfit = side === BUY ?
-    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
-    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
+    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
+    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
 
   const potentialEthLoss = side === BUY ?
-    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
-    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
+    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
+    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
 
   const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
   const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)

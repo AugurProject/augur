@@ -7,7 +7,7 @@ import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
 
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber } from 'utils/create-big-number'
 
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 

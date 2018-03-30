@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -41,7 +41,7 @@ export default class CreateMarketPreview extends Component {
   }
 
   static calculateShares(orderBook) {
-    let totalShares = WrappedBigNumber(0)
+    let totalShares = createBigNumber(0)
     if (Object.keys(orderBook).length) {
       Object.keys(orderBook).forEach((option) => {
         orderBook[option].forEach((order) => {

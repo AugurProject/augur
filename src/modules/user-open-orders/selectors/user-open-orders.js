@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import store from 'src/store'
 
@@ -56,7 +56,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
     .filter(order => isOrderOfUser(order, userId) && order.orderState === 'OPEN')
-    .sort((order1, order2) => WrappedBigNumber(order2.price, 10).comparedTo(WrappedBigNumber(order1.price, 10)))
+    .sort((order1, order2) => createBigNumber(order2.price, 10).comparedTo(createBigNumber(order1.price, 10)))
     .map(order => (
       {
         id: order.orderId,

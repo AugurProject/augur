@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -71,7 +71,7 @@ export default class MigrateRepForm extends Component {
     let repAmount = rawRepAmount
 
     if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
-      repAmount = WrappedBigNumber(rawRepAmount)
+      repAmount = createBigNumber(rawRepAmount)
       repAmount = repAmount.toNumber()
     }
 

@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep } from 'utils/format-number'
@@ -148,7 +148,7 @@ export default class ReportingDisputeForm extends Component {
     let stake = rawStake
 
     if (stake !== '' && !(BigNumber.isBigNumber(stake))) {
-      stake = WrappedBigNumber(rawStake).decimalPlaces(4)
+      stake = createBigNumber(rawStake).decimalPlaces(4)
     }
 
     ReportingDisputeForm.checkStake(stake, updatedValidations)
@@ -258,7 +258,7 @@ export default class ReportingDisputeForm extends Component {
     })
 
     const value = outcome ? outcome.stakeRemaining : this.state.disputeBondValue
-    const BNValue = WrappedBigNumber(value)
+    const BNValue = createBigNumber(value)
     return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).formattedValue
   }
 

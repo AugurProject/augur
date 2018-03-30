@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import speedomatic from 'speedomatic'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
@@ -41,8 +41,8 @@ export default class CreateMarketOutcome extends Component {
       // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: WrappedBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMax: WrappedBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMin: createBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMax: createBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -117,11 +117,11 @@ export default class CreateMarketOutcome extends Component {
     let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
 
     if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
-      scalarSmallNum = WrappedBigNumber(scalarSmallNum)
+      scalarSmallNum = createBigNumber(scalarSmallNum)
     }
 
     if (!(BigNumber.isBigNumber(scalarBigNum)) && scalarBigNum !== '') {
-      scalarBigNum = WrappedBigNumber(scalarBigNum)
+      scalarBigNum = createBigNumber(scalarBigNum)
     }
 
     if (type === 'small') {
