@@ -108,7 +108,7 @@ describe('modules/market/helpers/derive-period-time-series.js', () => {
       this.clock = sinon.useFakeTimers(600000) // 10 minutes
     })
 
-    after(() => this.clock.restore())
+    afterEach(() => this.clock.restore())
 
     test({
       description: 'should return the expected array for unbounded range + selected period',
