@@ -42,6 +42,7 @@
         ],
         "rewire",
         ["module-resolver", {
+          "root": ["./src", "./test"],
           "alias": {
             "src": "./src",
             "test": "./test",
