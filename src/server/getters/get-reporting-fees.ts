@@ -49,7 +49,7 @@ function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null,
   query.leftJoin("balances AS cash", function () {
     this
       .on("cash.owner", db.raw("fee_windows.feeWindow"))
-      .andOn("cash.token", db.raw(`'${augur.contracts.addresses[augur.rpc.getNetworkID()].Cash}'`));
+      .andOn("cash.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
   });
   if (universe != null) query.where("fee_windows.universe", universe);
   if (feeWindow != null) query.where("fee_windows.feeWindow", feeWindow);
@@ -71,7 +71,7 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   participationTokenQuery.leftJoin("balances AS participationToken", function () {
     this
       .on("participationToken.token", db.raw("fee_windows.feeWindow"))
-      .andOn("participationToken.owner", db.raw(`'${reporter}'`));
+      .andOn("participationToken.owner", db.raw("?", [reporter]));
   });
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
@@ -101,6 +101,11 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
     );
     callback(null, totalTokensByFeeWindow);
   });
+}
+
+function getClaimedEth(db: Knex, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: any) => void): void {
+  const claimedEthQuery = db.select(["fee_windows.feeWindow", "participationToken.balance AS participationTokens"]).from("fee_windows");
+
 }
 
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
