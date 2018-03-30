@@ -2,6 +2,9 @@
 
 TAG=$(npm view augur-core version)
 
+# Make sure you're up to date
+docker pull augurproject/dev-geth-node:latest
+
 # Build and copy to merge with current address.json/block_numbers.json
 IMAGE_NAME=augurproject/dev-pop-geth
 docker build --no-cache . --build-arg normal_time=false --build-arg network_id=22346 -t $IMAGE_NAME:core-$TAG -t $IMAGE_NAME:latest
