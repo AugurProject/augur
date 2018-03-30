@@ -74,7 +74,7 @@
     "secure-random": "1.1.1",
     "shelljs": "0.7.8",
     "shifty": "2.1.0",
-    "speedomatic": "2.1.2",
+    "speedomatic": "2.1.4",
     "uport-connect": "0.7.0",
     "zxcvbn": "4.4.2"
   },
