@@ -1,8 +1,6 @@
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { BUY } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
-
-BigNumber.config({ ERRORS: false })
 
 /**
  *
