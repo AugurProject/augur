@@ -33,4 +33,19 @@ describe('src/utils/wrapped-big-number.js', () => {
   it('should act like a big number', () => {
     assert.equal(WrappedBigNumber(2).plus(WrappedBigNumber(4)).toString(), '6')
   })
+
+  it('should sort like a big number', () => {
+    const expected = [
+      { value: '77' },
+      { value: '12' },
+      { value: '4' },
+    ]
+    const myObjectArray = [
+      { value: '12' },
+      { value: '4' },
+      { value: '77' },
+    ]
+    const result = myObjectArray.sort((a, b) => WrappedBigNumber(a.value).isLessThan(WrappedBigNumber(b.value)))
+    assert.deepEqual(result, expected, 'was not sorted correctly')
+  })
 })
