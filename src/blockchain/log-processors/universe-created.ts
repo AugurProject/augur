@@ -6,6 +6,7 @@ import { augurEmitter } from "../../events";
 
 export function processUniverseCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout( db, log.childUniverse, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
+    if (err) return callback(err);
     augur.api.Universe.getReputationToken({ tx: { to: log.childUniverse }}, (err: Error|null, reputationToken?: Address): void => {
       if (err) return callback(err);
       const universeToInsert = {
