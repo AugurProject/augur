@@ -28,7 +28,9 @@
     "deploy": "node scripts/deploy.js",
     "deploy-dev": "node scripts/deploy-dev.js",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
-    "docker:push": "docker push augurproject/augur:latest"
+    "docker:push": "docker push augurproject/augur:latest",
+    "docker:build:stable": "docker build . --tag augurproject/augur:stable",
+    "docker:push:stable": "docker push augurproject/augur:stable"
   },
   "dependencies": {
     "async": "2.6.0",
