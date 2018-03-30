@@ -31,7 +31,6 @@ export default class PortfolioReports extends Component {
   componentWillMount() {
     // TODO: Remove hard-coded parameters below once endpoint exists for getting contracts that are redeemable.
     const claimReportingFeesOptions = {
-      redeemer: '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb',
       redeemableContracts: [
         {
           address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
