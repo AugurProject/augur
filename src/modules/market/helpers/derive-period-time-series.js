@@ -1,4 +1,3 @@
-// import { dateToBlock } from 'utils/date-to-block-to-date'
 import { MILLIS_PER_BLOCK } from 'modules/app/constants/network'
 
 import { isEmpty } from 'lodash'
@@ -39,17 +38,20 @@ export default function derivePeriodTimeSeries(event) {
     constrainedPriceTimeSeries = constrainedPriceTimeSeries.reverse()
   }
 
-  // Determine the first period start time (derived from epoch)
+  // Determine the first period start time (derived from epoch) + period count
   let firstPeriodStartTime
+  let periodCount
   if (options.selectedPeriod.selectedPeriod === null) {
     firstPeriodStartTime = Math.floor(constrainedPriceTimeSeries[0].timestamp / MILLIS_PER_BLOCK) * MILLIS_PER_BLOCK
+    periodCount = (Date.now() - firstPeriodStartTime) / MILLIS_PER_BLOCK
   } else {
     firstPeriodStartTime = Math.floor(constrainedPriceTimeSeries[0].timestamp / options.selectedPeriod.selectedPeriod) * options.selectedPeriod.selectedPeriod
+    periodCount = (Date.now() - firstPeriodStartTime) / options.selectedPeriod.selectedPeriod
   }
 
   // Establish the set of periods for the selected range + period
-  const periods = [...new Array((Date.now() - firstPeriodStartTime) / options.selectedPeriod.selectedPeriod)].map((value, i) => ({
-    period: firstPeriodStartTime + (i * options.selectedPeriod.selectedPeriod),
+  const periods = [...new Array(Math.floor(periodCount))].map((value, i) => ({
+    period: firstPeriodStartTime + (i * (options.selectedPeriod.selectedPeriod == null ? MILLIS_PER_BLOCK : options.selectedPeriod.selectedPeriod)),
   }))
 
   let currentSeriesItem = 0
@@ -89,6 +91,7 @@ export default function derivePeriodTimeSeries(event) {
           if (i === 0) {
             return {
               ...period,
+              open: item.price,
               high: item.price,
               low: item.price,
               close: item.price,
@@ -97,6 +100,7 @@ export default function derivePeriodTimeSeries(event) {
           }
 
           return {
+            ...p,
             high: item.price > p.high ? item.price : p.high,
             low: item.price < p.low ? item.price : p.low,
             close: item.price,

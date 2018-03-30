@@ -98,8 +98,6 @@ export default class MarketOutcomeCandlestick extends Component {
   updatePeriodTimeSeries(priceTimeSeries, selectedPeriod, currentBlock) {
     const derivePeriodTimeSeriesWorker = new DerivePeriodTimeSeries()
 
-    console.log('periodTimeSeries -- ', priceTimeSeries)
-
     derivePeriodTimeSeriesWorker.postMessage({
       priceTimeSeries,
       selectedPeriod,
