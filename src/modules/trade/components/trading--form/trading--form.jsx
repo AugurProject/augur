@@ -6,8 +6,11 @@ import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
+import { Hint } from 'modules/common/components/icons'
 
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 
@@ -188,7 +191,7 @@ class MarketTradingForm extends Component {
   render() {
     const p = this.props
     const s = this.state
-
+    const { marketType } = this.props
     const tickSize = parseFloat(p.market.tickSize)
     const errors = Array.from(new Set([...s.errors[this.INPUT_TYPES.QUANTITY], ...s.errors[this.INPUT_TYPES.PRICE], ...s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE]]))
 
@@ -259,7 +262,20 @@ class MarketTradingForm extends Component {
             { errors.map(error => <p key={error}>{error}</p>) }
           </li>
         }
-        <li className={Styles['TradingForm__button--review']}>
+        <li className={marketType === BINARY ? Styles['TradingForm__button__binary--review'] : Styles['TradingForm__button--review']}>
+          { marketType === BINARY &&
+            <label className={TooltipStyles.TooltipHint} data-tip data-for="tooltip--participation-tokens">{ Hint }</label>
+          }
+          <ReactTooltip
+            id="tooltip--participation-tokens"
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="left"
+            type="light"
+          >
+            <h4>Don&apos;t think this event is going to happen?</h4>
+            <p>Bet against this event occuring by selling shares of Yes (even though you don&apos;t own them). Read more here.&quot; (More information at http://docs.augur.net/#short-position)</p>
+          </ReactTooltip>
           <button
             disabled={(!s.isOrderValid)}
             onClick={s.isOrderValid ? p.nextPage : undefined}
