@@ -14,6 +14,7 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
 
   query.asCallback((err: Error|null, parentUniverseRow: ParentUniverseRow) => {
     if (err) return callback(err);
+    if (parentUniverseRow === undefined) return callback(null, []);
 
     const query = db.select(["universes.universe", "universes.parentUniverse", "balances.balance", "token_supply.supply", db.raw("count(markets.marketId) as numMarkets")]).from("universes")
       .where("universes.parentUniverse", universe) // Children
@@ -23,7 +24,7 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
       .leftJoin("token_supply", "token_supply.token", "universes.reputationToken")
       .leftJoin("balances", function () {
         this
-          .on("balances.owner", db.raw('"' + account + '"'))
+          .on("balances.owner", db.raw("?", [account]))
           .on("balances.token", "universes.reputationToken");
         })
       .leftJoin("markets", "markets.universe", "universes.universe")

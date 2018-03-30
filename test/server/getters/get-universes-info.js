@@ -148,4 +148,15 @@ describe("server/getters/get-universes-info", () => {
       ]);
     },
   });
+  test({
+    description: "get universes will handle the case where the universe does not exist",
+    params: {
+      universe: "BAD_INPUT",
+      account: "0x0000000000000000000000000000000000000abe",
+    },
+    assertions: (err, universes) => {
+      assert.isNull(err);
+      assert.deepEqual(universes, []);
+    },
+  });
 });
