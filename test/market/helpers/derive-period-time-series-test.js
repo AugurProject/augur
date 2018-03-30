@@ -117,6 +117,7 @@ describe('modules/market/helpers/derive-period-time-series.js', () => {
         const expected = [
           {
             period: 0,
+            open: 0.1,
             high: 0.1,
             low: 0.1,
             close: 0.1,
@@ -124,6 +125,7 @@ describe('modules/market/helpers/derive-period-time-series.js', () => {
           },
           {
             period: 60000,
+            open: 0.2,
             high: 0.3,
             low: 0.2,
             close: 0.3,
@@ -131,6 +133,7 @@ describe('modules/market/helpers/derive-period-time-series.js', () => {
           },
           {
             period: 120000,
+            open: 0.4,
             high: 0.8,
             low: 0.4,
             close: 0.8,
@@ -217,6 +220,7 @@ describe('modules/market/helpers/derive-period-time-series.js', () => {
         const expected = [
           {
             period: 120000,
+            open: 0.8,
             high: 0.8,
             low: 0.8,
             close: 0.8,
