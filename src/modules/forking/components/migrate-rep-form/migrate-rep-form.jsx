@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
@@ -19,8 +19,8 @@ export default class MigrateRepForm extends Component {
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     selectedOutcomeName: PropTypes.string.isRequired,
-    forkMigrationTotals: PropTypes.object.isRequired,
     accountREP: PropTypes.string.isRequired,
+    forkMigrationTotals: PropTypes.object,
     isMarketInValid: PropTypes.bool,
   }
 
@@ -146,19 +146,37 @@ export default class MigrateRepForm extends Component {
     const p = this.props
     const s = this.state
     const { market } = this.props
-    const reportableOutcomes = market.reportableOutcomes
-    const formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
-      const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
-      const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
-      const value = {
-        id: curOutcomeId,
-        rep: formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted,
-        name : outcome ? outcome.name : curOutcomeId,
-        winner: forkMigrationOutcomeData.winner,
-      }
-      return [...totals, value]
-    }, [])
+    const { reportableOutcomes } = market
+    let formattedMigrationTotals = []
+    if (p.forkMigrationTotals !== null) {
+      formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
+        const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
+        const { isInvalid } = forkMigrationOutcomeData
+        const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
+        const value = {
+          id: curOutcomeId,
+          rep: formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }),
+          name: outcome ? outcome.name : curOutcomeId,
+          winner: forkMigrationOutcomeData.winner,
+          isInvalid,
+        }
+        return [...totals, value]
+      }, [])
 
+      formattedMigrationTotals = reportableOutcomes.reduce((p, outcome) => {
+        const found = p.find(total => total.id === outcome.id)
+        if (found) return p
+        return [...p,
+          {
+            id: outcome.id,
+            rep: { formatted: '0', fullPrecision: 0 },
+            name: outcome.name,
+            winner: false,
+          },
+        ]
+      }, formattedMigrationTotals)
+        .sort((a, b) => WrappedBigNumber(a.rep.fullPrecision).isLessThan(WrappedBigNumber(b.rep.fullPrecision)))
+    }
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -171,13 +189,13 @@ export default class MigrateRepForm extends Component {
         </li>
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
-            { formattedMigrationTotals &&  formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
+            { formattedMigrationTotals && formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
               <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.name })}
-                  onClick={(e) => { this.validateOutcome(p.validations, outcome.name, outcome.name, false) }}
-                >{outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep) || '0'} REP Migrated</span>
+                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
+                  onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
+                >{outcome.name === 'Indeterminate' ? 'Market is Invalid': outcome.name}
+                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep.formatted) || '0'} REP Migrated</span>
                   { outcome && outcome.winner &&
                     <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
                   }

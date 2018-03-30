@@ -67,10 +67,12 @@ describe('modules/forking/actions/get-fork-migration-totals.js', () => {
           0: {
             repTotal: 400,
             winner: false,
+            isInvalid: false,
           },
           1: {
             repTotal: 200,
             winner: true,
+            isInvalid: false,
           },
         }
 

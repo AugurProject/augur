@@ -47,7 +47,7 @@ export default class MigrateRep extends Component {
         selectedOutcome: null,
       },
       gasEstimate: '0',
-      forkMigrationTotals: {},
+      forkMigrationTotals: null,
     }
 
     this.prevPage = this.prevPage.bind(this)
