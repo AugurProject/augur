@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
 
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
@@ -194,7 +194,7 @@ class MarketTradingForm extends Component {
 
     return (
       <ul className={Styles['TradingForm__form-body']}>
-        { !p.isMobile && p.market.marketType !== SCALAR &&
+        { !p.isMobile && p.market.marketType === CATEGORICAL &&
           <li>
             <label>Outcome</label>
             <div className={Styles['TradingForm__static-field']}>{ p.selectedOutcome.name }</div>
