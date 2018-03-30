@@ -39,6 +39,7 @@ export default class ReportingDisputeMarkets extends Component {
 
   render() {
     const p = this.props
+
     return (
       <section>
         <Helmet>
@@ -51,7 +52,7 @@ export default class ReportingDisputeMarkets extends Component {
             forkEndTime={p.forkEndTime}
             currentTime={p.currentTime}
           />
-          { !p.doesUserHaveRep && !p.forkEndTime &&
+          { !p.doesUserHaveRep && !p.isForking &&
           <ReportDisputeNoRepState
             btnText="Add Funds"
             message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
