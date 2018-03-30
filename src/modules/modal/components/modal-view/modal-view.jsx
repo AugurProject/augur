@@ -6,12 +6,12 @@ import PropTypes from 'prop-types'
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
-import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
-import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
+import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
+import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
+import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
-
 
 import { Close } from 'modules/common/components/icons'
 
@@ -90,6 +90,9 @@ export default class ModalView extends Component {
           }
           {p.modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...p.modal} />
+          }
+          {p.modal.type === TYPES.MODAL_NETWORK_CONNECT &&
+            <ModalNetworkConnect />
           }
           {p.modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
             <ModalNetworkDisconnected {...p} />
