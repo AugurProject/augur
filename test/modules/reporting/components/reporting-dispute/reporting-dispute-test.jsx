@@ -1,8 +1,6 @@
 import React from 'react'
 
 
-
-
 import { spy } from 'sinon'
 import { shallow } from 'enzyme'
 import ReportingDispute from 'src/modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets'

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import Styles from 'modules/categories/components/category/category.styles'
 
@@ -40,11 +40,12 @@ export default class Category extends Component {
     const p = this.props
     const s = this.state
 
-    const isNullCategory = p.category === 'null-category' && p.popularity === '0'
-    const roundedPop = new BigNumber(p.popularity.toString()).integerValue(BigNumber.ROUND_HALF_EVEN)
-    let popString = roundedPop.eq(new BigNumber(1)) ? ' SHARE' : ' SHARES'
-    if (roundedPop.gt(new BigNumber(1000))) {
-      const thousands = roundedPop.dividedBy(new BigNumber(1000))
+
+    const isNullCategory = p.category === 'null-category' && p.popularity === 0
+    const roundedPop = WrappedBigNumber(p.popularity.toString()).integerValue(BigNumber.ROUND_HALF_EVEN)
+    let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
+    if (roundedPop > 1000) {
+      const thousands = roundedPop / 1000
       const truncatedThousands = thousands.toString().split('').slice(0, 3).join('')
       popString = truncatedThousands + 'K ' + popString
     } else {

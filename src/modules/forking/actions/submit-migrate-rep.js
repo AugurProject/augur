@@ -2,6 +2,7 @@ import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
+import { updateAssets } from 'modules/auth/actions/update-assets'
 
 export const submitMigrateREP = (marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData, universe } = getState()
@@ -24,7 +25,10 @@ export const submitMigrateREP = (marketId, selectedOutcome, invalid, amount, his
       _payoutNumerators: payoutNumerators,
       _attotokens: amount,
       onSent: () => callback(null),
-      onSuccess: () => callback(null),
+      onSuccess: () => {
+        dispatch(updateAssets())
+        callback(null)
+      },
       onFailed: (err) => {
         callback(err)
       },

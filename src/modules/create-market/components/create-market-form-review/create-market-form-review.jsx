@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
-// import BigNumber from 'bignumber.js'
+// import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 

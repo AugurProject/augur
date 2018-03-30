@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import BigNumber from 'bignumber.js'
+import { WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import { selectMarket } from 'modules/market/selectors/market'
 import MarketTrading from 'modules/trade/components/trading/trading'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
 
 const mapStateToProps = state => ({
-  availableFunds: new BigNumber(state.loginAccount.eth || 0),
+  availableFunds: WrappedBigNumber(state.loginAccount.eth || 0),
   isLogged: state.isLogged,
   isMobile: state.isMobile,
 })

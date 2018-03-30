@@ -13,6 +13,8 @@ import shareDenominationLabel from 'utils/share-denomination-label'
 import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
+import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
+
 
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
@@ -82,6 +84,19 @@ const MarketProperties = (p) => {
               Finalize
             </button>
           }
+          { p.isForking && p.isForkingMarketFinalized && p.forkingMarket !== p.id &&
+            <button
+              className={Styles.MarketProperties__migrate}
+              onClick={() => p.updateModal({
+                type: MODAL_MIGRATE_MARKET,
+                marketId: p.id,
+                marketDescription: p.description,
+                canClose: true,
+              })}
+            >
+              Migrate
+            </button>
+          }
         </div>
       </section>
       { p.showAdditionalDetailsToggle &&
@@ -100,11 +115,15 @@ const MarketProperties = (p) => {
 }
 
 MarketProperties.propTypes = {
+  updateModal: PropTypes.func.isRequired,
   linkType: PropTypes.string,
   buttonText: PropTypes.string,
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,
   toggleDetails: PropTypes.func,
+  isForking: PropTypes.bool,
+  isForkingMarketFinalized: PropTypes.bool,
+  forkingMarket: PropTypes.string,
 }
 
 export default MarketProperties
