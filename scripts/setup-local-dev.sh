@@ -13,21 +13,17 @@ export ETHEREUM_WS=${ETHEREUM_WS:-http://127.0.0.1:8546}
 
 export ETHEREUM_PRIVATE_KEY=${ETHEREUM_PRIVATE_KEY:-fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a}
 
-CONTAINER_NAME="geth-node";
-if $USE_POPULATED_CONTRACTS; then
-  DOCKER_IMAGE="augurproject/dev-pop-geth:latest";
-else
-  DOCKER_IMAGE="augurproject/dev-node-geth:latest";
-fi
-
-if [ "$(docker ps -a | grep $CONTAINER_NAME)" ]; then
+if [ "$(docker ps -a | grep geth-node)" ]; then
   echo "Kill running container...";
   docker kill $CONTAINER_NAME;
 fi
 
 echo "$CONTAINER_NAME: $DOCKER_IMAGE";
-docker pull $DOCKER_IMAGE;
-docker run -it -d --rm --name $CONTAINER_NAME -p 8545:8545 -p 8546:8546 $DOCKER_IMAGE;
+if $USE_POPULATED_CONTRACTS; then
+  npm explore augur.js -- npm run docker:geth:pop
+else
+  npm explore augur.js -- npm run docker:geth
+fi
 
 cd ../;
 
