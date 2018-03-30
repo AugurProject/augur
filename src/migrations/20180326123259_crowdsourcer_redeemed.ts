@@ -15,8 +15,6 @@ exports.up = async (knex: Knex): Promise<any> => {
   });
 };
 
-// // event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256 reportingFeesReceived, uint256[] payoutNumerators);
-
 exports.down = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("crowdsourcer_redeemed");
 };

@@ -125,6 +125,7 @@ export const logProcessors: LogProcessors = {
       remove: processFeeWindowRedeemedLogRemoval,
     },
     DisputeCrowdsourcerRedeemed: {
+      noAutoEmit: true,
       add: processDisputeCrowdsourcerRedeemedLog,
       remove: processDisputeCrowdsourcerRedeemedLogRemoval,
     },
