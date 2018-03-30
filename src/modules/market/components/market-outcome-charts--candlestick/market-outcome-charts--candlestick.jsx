@@ -91,6 +91,16 @@ export default class MarketOutcomeCandlestick extends Component {
     if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!isEqual(prevState.candleChartContainer, this.state.candleChartContainer)) {
+      const elem = document.getElementById('candlestick_chart_container')
+
+      elem.scrollTo(elem.scrollWidth, 0)
+      // .scrollTo(0, (this.asks.scrollHeight || 0))
+      // console.log(document.getElementById('candlestick_chart_container').scrollWidth)
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawCandlestickOnResize)
   }
@@ -140,8 +150,9 @@ export default class MarketOutcomeCandlestick extends Component {
       candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
       //  Chart Element (Scrollable)
       const candleChartContainer = new ReactFauxDOM.Element('div')
-      candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
       candleChartContainer.setAttribute('key', 'candlestick_chart_container')
+      candleChartContainer.setAttribute('id', 'candlestick_chart_container')
+      candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
       candleChartContainer.setAttribute('style', {
         width: `${drawParams.containerWidth - drawParams.chartDim.left}px`,
         left: drawParams.chartDim.left,
@@ -208,7 +219,6 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawCandlestickOnResize() {
-    // this.drawCandlestick(this.state.periodTimeSeries, this.props.orderBookKeys, this.props.fixedPrecision)
     this.drawCandlestick({
       periodTimeSeries: this.state.periodTimeSeries,
       orderBookKeys: this.props.orderBookKeys,
