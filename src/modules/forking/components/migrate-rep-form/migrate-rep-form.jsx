@@ -3,12 +3,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
+import { formatAttoRep } from 'utils/format-number'
 
 export default class MigrateRepForm extends Component {
 
@@ -21,6 +22,7 @@ export default class MigrateRepForm extends Component {
     forkMigrationTotals: PropTypes.object.isRequired,
     repAmount: PropTypes.number,
     isMarketInValid: PropTypes.bool,
+    accountREP: PropTypes.string.isRequired,
   }
 
   static checkRepAmount(repAmount, updatedValidations) {
@@ -39,7 +41,6 @@ export default class MigrateRepForm extends Component {
       outcomes: [],
       inputRepAmount: '',
       inputSelectedOutcome: '',
-      maxRep: 0,
     }
 
     // TODO Reportable outcomes?
@@ -69,20 +70,20 @@ export default class MigrateRepForm extends Component {
 
     let repAmount = rawRepAmount
 
-    if (repAmount !== '' && !(repAmount instanceof BigNumber)) {
-      repAmount = new BigNumber(rawRepAmount)
-      repAmount = repAmount.round(4)
+    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
+      repAmount = WrappedBigNumber(rawRepAmount)
+      repAmount = repAmount.toNumber()
     }
 
     MigrateRepForm.checkRepAmount(repAmount, updatedValidations)
 
     this.setState({
-      inputRepAmount: repAmount ? repAmount.toNumber() : repAmount,
+      inputRepAmount: repAmount,
     })
 
     this.props.updateState({
       validations: updatedValidations,
-      repAmount: repAmount ? repAmount.toNumber() : 0,
+      repAmount,
     })
   }
 
@@ -99,7 +100,6 @@ export default class MigrateRepForm extends Component {
 
     this.setState({
       inputSelectedOutcome: '',
-      maxRep: this.calculateMaxRep(selectedOutcome),
     })
 
     this.props.updateState({
@@ -143,7 +143,6 @@ export default class MigrateRepForm extends Component {
 
     this.setState({
       inputSelectedOutcome: value,
-      maxRep: this.calculateMaxRep(value),
     })
 
     this.props.updateState({
@@ -154,20 +153,15 @@ export default class MigrateRepForm extends Component {
     })
   }
 
-  calculateMaxRep(selectedOutcome) {
-    const outcome = this.state.outcomes.find((o) => {
-      const result = o.id === selectedOutcome
-      return result
-    })
-
-    const value = outcome ? outcome.remainingRep : 0
-    return new BigNumber(value).toNumber()
-  }
-
-
   render() {
     const p = this.props
     const s = this.state
+
+    const formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
+      const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
+      totals[curOutcomeId] = formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted
+      return totals
+    }, {})
 
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
@@ -187,7 +181,10 @@ export default class MigrateRepForm extends Component {
                   className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
                   onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
                 >{outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{p.forkMigrationTotals[outcome.id] || '0'} REP Migrated</span>
+                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (formattedMigrationTotals[outcome.id] && formattedMigrationTotals[outcome.id]) || '0'} REP Migrated</span>
+                  { p.forkMigrationTotals[outcome.id] && p.forkMigrationTotals[outcome.id].winner &&
+                    <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
+                  }
                 </button>
               </li>
             ))
@@ -242,7 +239,7 @@ export default class MigrateRepForm extends Component {
               { p.selectedOutcomeName && p.selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
-                  onClick={() => { this.validateRepAmount(s.maxRep) }}
+                  onClick={() => { this.validateRepAmount(p.accountREP) }}
                 >MAX
                 </button>
               }

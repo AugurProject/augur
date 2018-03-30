@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import ConfirmStyles from 'modules/common/less/confirm-table'
 
@@ -17,7 +17,7 @@ const ReportingReportConfirm = p => (
           { !p.isOpenReporting &&
           <li>
             <span>Stake</span>
-            <span>{ p.stake instanceof BigNumber ? p.stake.toNumber() : p.stake } REP</span>
+            <span>{ BigNumber.isBigNumber(p.stake) ? p.stake.toNumber() : p.stake } REP</span>
           </li>
           }
           <li>

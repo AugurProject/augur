@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 

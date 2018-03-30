@@ -87,7 +87,7 @@ function buildTradeTransaction(trade, marketsData) {
   if (transaction.market) {
     header.description = transaction.market.description
   }
-  transaction.message = `${transaction.type} ${transaction.amount} Shares @ ${transaction.price} ETH`
+  transaction.message = `${transaction.type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
   header.transactions = [transaction]
   return header
 }
@@ -204,7 +204,7 @@ export function addOpenOrderTransactions(openOrders) {
               marketId, type, outcomeId, ...value4,
             }
             transaction.id = transaction.transactionHash + transaction.logIndex
-            transaction.message = `${transaction.orderState} - ${type} ${transaction.amount} Shares @ ${transaction.price} ETH`
+            transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             const meta = {}
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash

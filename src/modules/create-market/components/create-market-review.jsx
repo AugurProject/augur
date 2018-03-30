@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'utils/wrapped-big-number'
 
 import { formatEtherEstimate } from 'utils/format-number'
 import getValue from 'utils/get-value'

@@ -34,9 +34,9 @@ class ForkingNotification extends Component {
     const forkWindowActive = Number(this.props.forkEndTime) > this.props.currentTime
 
     return (
-      <section>
+      <section className={Styles.ForkingNotification__Container}>
         <header className={Styles.ForkingNotification}>
-          <section>
+          <section className={Styles.ForkingNotification__SubContainer}>
             <img
               className={Styles.ForkingNotification__AlertIcon}
               alt="Alert"

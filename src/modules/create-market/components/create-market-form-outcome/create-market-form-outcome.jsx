@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import speedomatic from 'speedomatic'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
@@ -41,8 +41,8 @@ export default class CreateMarketOutcome extends Component {
       // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: new BigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMax: new BigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMin: WrappedBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMax: WrappedBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -116,12 +116,12 @@ export default class CreateMarketOutcome extends Component {
     let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
     let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
 
-    if (!(scalarSmallNum instanceof BigNumber) && scalarSmallNum !== '') {
-      scalarSmallNum = new BigNumber(scalarSmallNum)
+    if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
+      scalarSmallNum = WrappedBigNumber(scalarSmallNum)
     }
 
-    if (!(scalarBigNum instanceof BigNumber) && scalarBigNum !== '') {
-      scalarBigNum = new BigNumber(scalarBigNum)
+    if (!(BigNumber.isBigNumber(scalarBigNum)) && scalarBigNum !== '') {
+      scalarBigNum = WrappedBigNumber(scalarBigNum)
     }
 
     if (type === 'small') {
@@ -304,7 +304,7 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarSmallNum instanceof BigNumber ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
+                value={BigNumber.isBigNumber(p.newMarket.scalarSmallNum) ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
                 placeholder="Min Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'small')
@@ -325,7 +325,7 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarBigNum instanceof BigNumber ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
+                value={BigNumber.isBigNumber(p.newMarket.scalarBigNum) ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
                 placeholder="Max Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'big')

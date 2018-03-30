@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import { BUY } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
@@ -26,22 +26,22 @@ export default function (numShares, limitPrice, side, minPrice, maxPrice, type, 
   let calculatedPrice = limitPrice
   if (!limitPrice && tradeTotalCost) {
     // market order
-    calculatedPrice = new BigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
+    calculatedPrice = WrappedBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
     calculatedShares = sharesFilled
   }
   if (type === SCALAR && (isNaN(minPrice) || isNaN(maxPrice))) return null
-  const max = new BigNumber(type === SCALAR ? maxPrice : 1)
-  const min = new BigNumber(type === SCALAR ? minPrice : 0)
-  const limit = new BigNumber(calculatedPrice, 10)
+  const max = WrappedBigNumber(type === SCALAR ? maxPrice : 1)
+  const min = WrappedBigNumber(type === SCALAR ? minPrice : 0)
+  const limit = WrappedBigNumber(calculatedPrice, 10)
   const totalCost = type === SCALAR ? min.minus(limit).abs().times(calculatedShares) : limit.times(calculatedShares)
 
   const potentialEthProfit = side === BUY ?
-    new BigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
-    new BigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
+    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
+    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
 
   const potentialEthLoss = side === BUY ?
-    new BigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
-    new BigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
+    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
+    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
 
   const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
   const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)
