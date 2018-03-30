@@ -525,3 +525,11 @@ export interface UIForkMigrationTotalsRow<BigNumberType> extends NormalizedPayou
 export interface UIForkMigrationTotals<BigNumberType> {
   [universe: string]: UIForkMigrationTotalsRow<BigNumberType>;
 }
+
+export interface UniverseInfoRow<BigNumberType> {
+  universe: Address;
+  parentUniverse: Address;
+  balance: BigNumberType;
+  supply: BigNumberType;
+  numMarkets: BigNumberType;
+}
