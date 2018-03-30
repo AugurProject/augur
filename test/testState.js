@@ -42,7 +42,7 @@ const testState = {
   favorites: {
     testMarketId: true,
   },
-  env: network[`${process.env.ETHEREUM_NETWORK}`],
+  env: network[`${process.env.ETHEREUM_NETWORK || 'dev'}`],
   loginAccount: {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
