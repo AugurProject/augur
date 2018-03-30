@@ -5,7 +5,10 @@ import Styles from 'modules/portfolio/components/transaction-meta/transaction-me
 export default class TransactionMeta extends Component {
   static propTypes = {
     meta: PropTypes.object.isRequired,
-    networkId: PropTypes.number.isRequired,
+    networkId: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]).isRequired,
   }
 
   static networkLink = {

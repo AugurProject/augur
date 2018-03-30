@@ -34,7 +34,7 @@ export default class LinkedTransaction extends Component {
             }
             <span className={Styles['LinkedTransaction__message-text']}>{ p.transaction.message }</span>
           </div>
-          <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`]: s.isOpen })}>{ <ChevronDown /> }</span>
         </button>
         <div
           ref={(metaWrapper) => { this.metaWrapper = metaWrapper }}
