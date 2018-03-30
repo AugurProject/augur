@@ -6,7 +6,7 @@ import ReactFauxDOM from 'react-faux-dom'
 import { isEqual } from 'lodash'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
-import { ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 
 import Styles from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.styles'
 
@@ -263,10 +263,10 @@ function nearestCompletelyFillingOrder(price, marketDepth) {
     const fillingSideOrder = marketDepth[side].reduce((p, order) => {
       if (p === null) return order
       if (side === ASKS) {
-        return (price > p[1] && price < order[1]) ? order: p
+        return (price > p[1] && price < order[1]) ? [...order, ASKS] : p
       }
 
-      return (price < p[1] && price > order[1]) ? order : p
+      return (price < p[1] && price > order[1]) ? [...order, BIDS] : p
     }, null)
 
     if (p === null) return fillingSideOrder
