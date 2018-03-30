@@ -46,7 +46,6 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
 )
 
 /**
- * @param {String} marketId
  * @param {String} account
  * @param {Object} position
  * @param {Object} asks

@@ -10,6 +10,8 @@ import { SCALAR } from 'modules/markets/constants/market-types'
  * @param minPrice only relevant for scalar markets; all other markets min is created and set to 0
  * @param maxPrice only relevant for scalar markets; all other markets max is created and set to 1
  * @param type the market type
+ * @param sharesFilled
+ * @param tradeTotalCost
  * @returns object with the following properties
  *    potentialEthProfit:     number, maximum number of ether that can be made according to the current numShares and limit price
  *    potentialEthLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
