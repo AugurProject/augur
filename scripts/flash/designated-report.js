@@ -3,6 +3,7 @@
 "use strict";
 
 var chalk = require("chalk");
+var BigNumber = require("bignumber.js");
 var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
 var getRepTokens = require("./get-rep-tokens");
@@ -22,6 +23,10 @@ function designateReportInternal(augur, marketId, outcome, userAuth, invalid, au
     }
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
       var market = marketsInfo[0];
+      if (market.marketType === "scalar" && (new BigNumber(market.minPrice).gt(new BigNumber(outcome)))) {
+        console.log(chalk.red("Scalar price is below min price"));
+        callback("Error");
+      }
       var marketPayload = { tx: { to: marketId } };
       // make sure we have the correct account to report with
       if (userAuth.address !== market.designatedReporter && auth.address === market.designatedReporter) {
@@ -41,7 +46,6 @@ function designateReportInternal(augur, marketId, outcome, userAuth, invalid, au
               return callback(err);
             }
             var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
-
             doInitialReport(augur, marketId, payoutNumerators, invalid, userAuth, function (err) {
               if (err) {
                 return callback("Initial Report Failed");
