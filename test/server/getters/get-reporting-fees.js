@@ -18,12 +18,11 @@ describe("server/getters/get-reporting-fees", () => {
     });
   };
   test({
-    description: "get markets in universe b",
+    description: "Get reporting fees that exist",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
-        version: "the-version-string",
         contracts: {
           addresses: {
             974: {
@@ -39,7 +38,97 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
-        "unclaimedEth": "1",
+        "unclaimedEth": "107.87878787878787879",
+        "unclaimedRepStaked": "2",
+        "unclaimedRepEarned": "3",
+        "claimedEth": "4",
+        "claimedRepStaked": "5",
+        "claimedRepEarned": "6",
+      });
+    },
+  });
+  test({
+    description: "get reporting fees for user that does not exist",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      reporter: "0x00000000000000000000000000000000000n0b0b",
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: (err, marketsMatched) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsMatched, {
+        "unclaimedEth": "0",
+        "unclaimedRepStaked": "2",
+        "unclaimedRepEarned": "3",
+        "claimedEth": "4",
+        "claimedRepStaked": "5",
+        "claimedRepEarned": "6",
+      });
+    },
+  });
+  test({
+    description: "get reporting fees for universe that does not exist",
+    params: {
+      universe: "0x000000000000000000000000000000000000n0n0",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: (err, marketsMatched) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsMatched, {
+        "unclaimedEth": "0",
+        "unclaimedRepStaked": "2",
+        "unclaimedRepEarned": "3",
+        "claimedEth": "4",
+        "claimedRepStaked": "5",
+        "claimedRepEarned": "6",
+      });
+    },
+  });
+  test({
+    description: "get reporting fees by feeWindow",
+    params: {
+      feeWindow: "0x1000000000000000000000000000000000000000",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: (err, marketsMatched) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsMatched, {
+        "unclaimedEth": "53.33333333333333333",
         "unclaimedRepStaked": "2",
         "unclaimedRepEarned": "3",
         "claimedEth": "4",
