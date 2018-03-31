@@ -15,7 +15,8 @@ export ETHEREUM_PRIVATE_KEY=${ETHEREUM_PRIVATE_KEY:-fae42052f82bed612a724fec3632
 
 if [ "$(docker ps -a | grep geth-node)" ]; then
   echo "Kill running container...";
-  docker kill geth-node;
+  docker kill geth-node
+  docker rm geth-node
 fi
 
 echo "$CONTAINER_NAME: $DOCKER_IMAGE";
@@ -35,8 +36,7 @@ yarn run build;
 yarn link;
 
 if $USE_POPULATED_CONTRACTS; then
-  docker cp $CONTAINER_NAME:/augur.js/src/contracts/addresses.json src/contracts/addresses.json
-  docker cp $CONTAINER_NAME:/augur.js/src/contracts/upload-block-numbers.json src/contracts/upload-block-numbers.json
+  echo "Using deployed contracts"
 else
   yarn run deploy:environment
 fi
