@@ -15,7 +15,7 @@ export ETHEREUM_PRIVATE_KEY=${ETHEREUM_PRIVATE_KEY:-fae42052f82bed612a724fec3632
 
 if [ "$(docker ps -a | grep geth-node)" ]; then
   echo "Kill running container...";
-  docker kill $CONTAINER_NAME;
+  docker kill geth-node;
 fi
 
 echo "$CONTAINER_NAME: $DOCKER_IMAGE";
