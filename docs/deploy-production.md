@@ -64,7 +64,7 @@ The same dockerfile describe above is used to host a ipfs node. Side note, if yo
 
 After docker image has been built successfully, check for message `Successfully built <image hash>`, run it with -p to map port to the internal docker container port, ipfs swarm will serve up files via port 4001. Optionally port 8001 uses nginx to pass requests to ipfs gateway hosted in the docker container. 
 
-    docker run -p 4001:4001 -p 8001:8001 -t augurclient
+    docker run -p 4001:4001 -p 8001:8001 augurclient
 
 Example using an ipfs gateway: Make sure the container is fully up and you see `Now listening ...`, the build dir hash will be in the output `Using build dir hash <build dir has>`, then point your web browser to:
 
@@ -74,7 +74,7 @@ If you are running an ipfs node behind a firewall make sure port 4001 traffic fl
 
 You can run as ipfs node and have augur client build directory in one docker container. Here is the command to let docker map all ports for you:
 
-    docker run -P -t augurclient
+    docker run -P augurclient
 
 This command will tell you which local ports are mapped to ports on the docker container.
 
