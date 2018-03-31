@@ -44,7 +44,7 @@ describe('reporting-report-markets', () => {
     })
 
     describe('when items array is sorted', () => {
-      it('should render markets component', () => {
+      it('should render markets in ascending order (timestamp)', () => {
         const items = [{
           id: 1,
           endDate: { timestamp: 5 },
