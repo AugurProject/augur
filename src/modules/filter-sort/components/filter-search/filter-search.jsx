@@ -33,11 +33,13 @@ export default class FilterSearch extends Component {
   }
 
   componentWillMount() {
-    const search = parseQuery(this.props.location.search)[FILTER_SEARCH_PARAM]
+    const { location } = this.props
+    const search = parseQuery(location.search)[FILTER_SEARCH_PARAM]
     if (search) this.setState({ search })
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const { items } = this.props
     if (this.state.search !== nextState.search) {
       this.updateQuery(nextState.search, nextProps.location)
 
@@ -47,7 +49,7 @@ export default class FilterSearch extends Component {
       })
     }
 
-    if (!isEqual(this.props.items, nextProps.items)) {
+    if (!isEqual(items, nextProps.items)) {
       nextProps.updateIndices({
         indices: filterBySearch(nextState.search, nextProps.searchKeys, nextProps.items),
         type: FILTER_SEARCH_PARAM,
@@ -56,6 +58,7 @@ export default class FilterSearch extends Component {
   }
 
   updateQuery(search, location) {
+    const { history } = this.props
     let updatedSearch = parseQuery(location.search)
 
     if (search === '') {
@@ -66,14 +69,14 @@ export default class FilterSearch extends Component {
 
     updatedSearch = makeQuery(updatedSearch)
 
-    this.props.history.push({
+    history.push({
       ...location,
       search: updatedSearch,
     })
   }
 
   render() {
-    const p = this.props
+    const { searchPlaceholder } = this.props
     const s = this.state
 
     return (
@@ -83,7 +86,7 @@ export default class FilterSearch extends Component {
           isSearch
           isClearable
           noFocus
-          placeholder={p.searchPlaceholder || 'Search'}
+          placeholder={searchPlaceholder || 'Search'}
           value={s.search}
           onChange={search => this.setState({ search })}
         />

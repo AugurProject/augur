@@ -56,7 +56,13 @@ export default class SortMarketParam extends Component {
   }
 
   componentWillMount() {
-    const queryParams = parseQuery(this.props.location.search)
+    const {
+      combinedFiltered,
+      items,
+      location,
+      updateIndices,
+    } = this.props
+    const queryParams = parseQuery(location.search)
 
     const selectedMarketParam = queryParams[SORT_MARKET_PARAM]
     if (selectedMarketParam) this.setState({ selectedMarketParam })
@@ -65,14 +71,19 @@ export default class SortMarketParam extends Component {
     if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' })
 
     if (!selectedMarketParam || !selectedSort) {
-      this.props.updateIndices({
-        indices: sortByMarketParam(this.state.selectedMarketParam, this.state.selectedSort, this.props.items, this.props.combinedFiltered),
+      updateIndices({
+        indices: sortByMarketParam(this.state.selectedMarketParam, this.state.selectedSort, items, combinedFiltered),
         type: SORT_MARKET_PARAM,
       })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      combinedFiltered,
+      items,
+      updateIndices,
+    } = this.props
     if (
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
@@ -81,12 +92,12 @@ export default class SortMarketParam extends Component {
     }
 
     if (
-      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered) ||
-      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(combinedFiltered, nextProps.combinedFiltered) ||
+      !isEqual(items, nextProps.items) ||
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
-      this.props.updateIndices({
+      updateIndices({
         indices: sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered),
         type: SORT_MARKET_PARAM,
       })
@@ -94,6 +105,7 @@ export default class SortMarketParam extends Component {
   }
 
   updateQuery(selectedMarketParam, selectedSort, location) {
+    const { history } = this.props
     let updatedSearch = parseQuery(location.search)
 
     if (selectedMarketParam === this.defaultMarketParam) {
@@ -110,7 +122,7 @@ export default class SortMarketParam extends Component {
 
     updatedSearch = makeQuery(updatedSearch)
 
-    this.props.history.push({
+    history.push({
       ...location,
       search: updatedSearch,
     })

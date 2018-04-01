@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs'
 import { BUY } from 'modules/transactions/constants/types'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import logError from 'utils/log-error'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
@@ -15,7 +15,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
     return dispatch(clearTradeInProgress(marketId))
   }
-  const bnAllowance = WrappedBigNumber(loginAccount.allowance)
+  const bnAllowance = createBigNumber(loginAccount.allowance)
   // try and make sure that we actually have an updated allowance.
   if (bnAllowance.lte(0)) dispatch(checkAccountAllowance())
   const placeTradeParams = {
@@ -38,7 +38,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     },
   }
   // use getState to get the latest version of allowance.
-  if (WrappedBigNumber(getState().loginAccount.allowance).lte(WrappedBigNumber(tradeInProgress.totalCost))) {
+  if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
       type: MODAL_ACCOUNT_APPROVAL,
       approveCallback: (err, res) => {

@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import memoize from 'memoizee'
 import store from 'src/store'
@@ -59,7 +59,7 @@ export const selectOpenVolume = (market) => {
   market.outcomes.forEach((outcome) => {
     Object.keys(outcome.orderBook).forEach((orderType) => {
       outcome.orderBook[orderType].forEach((type) => {
-        openVolume = openVolume.plus(WrappedBigNumber(type.shares.value, 10))
+        openVolume = openVolume.plus(createBigNumber(type.shares.value, 10))
       })
     })
   })
@@ -74,7 +74,7 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
   }
   const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
     const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-      shares: WrappedBigNumber(outcomeTotals.shares, 10).plus(WrappedBigNumber(trade.amount, 10)),
+      shares: createBigNumber(outcomeTotals.shares, 10).plus(createBigNumber(trade.amount, 10)),
       trades: outcomeTotals.trades + 1,
     }), initialState)
     return {
@@ -82,5 +82,5 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
       trades: historyTotals.trades + outcomeTotals.trades,
     }
   }, initialState)
-  return priceHistoryTotals.shares.dividedBy(WrappedBigNumber(priceHistoryTotals.trades, 10))
+  return priceHistoryTotals.shares.dividedBy(createBigNumber(priceHistoryTotals.trades, 10))
 }, { max: 1 })

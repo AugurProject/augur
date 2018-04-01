@@ -50,28 +50,38 @@ export default class FilterMarketState extends Component {
   }
 
   componentWillMount() {
-    const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM]
+    const {
+      currentReportingPeriod,
+      items,
+      location,
+      updateIndices,
+    } = this.props
+    const selectedMarketState = parseQuery(location.search)[FILTER_MARKET_STATE_PARAM]
     if (selectedMarketState) {
       this.setState({ selectedMarketState })
     } else {
-      this.props.updateIndices({
-        indices: filterByMarketState(this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items),
+      updateIndices({
+        indices: filterByMarketState(this.state.selectedMarketState, currentReportingPeriod, items),
         type: FILTER_MARKET_STATE_PARAM,
       })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      items,
+      updateIndices,
+    } = this.props
     if (this.state.selectedMarketState !== nextState.selectedMarketState) {
       this.updateQuery(nextState.selectedMarketState, nextProps.location)
-      this.props.updateIndices({
+      updateIndices({
         indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
         type: FILTER_MARKET_STATE_PARAM,
       })
     }
 
-    if (!isEqual(this.props.items, nextProps.items)) {
-      this.props.updateIndices({
+    if (!isEqual(items, nextProps.items)) {
+      updateIndices({
         indices: filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items),
         type: FILTER_MARKET_STATE_PARAM,
       })
@@ -79,6 +89,7 @@ export default class FilterMarketState extends Component {
   }
 
   updateQuery(selectedMarketState, location) {
+    const { history } = this.props
     let updatedSearch = parseQuery(location.search)
 
     if (selectedMarketState === this.defaultMarketState) {
@@ -89,7 +100,7 @@ export default class FilterMarketState extends Component {
 
     updatedSearch = makeQuery(updatedSearch)
 
-    this.props.history.push({
+    history.push({
       ...location,
       search: updatedSearch,
     })

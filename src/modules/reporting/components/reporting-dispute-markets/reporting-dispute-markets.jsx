@@ -32,13 +32,32 @@ export default class ReportingDisputeMarkets extends Component {
   }
 
   componentWillMount() {
-    if (this.props.isConnected && !this.props.isMarketsLoaded) {
-      this.props.loadMarkets()
+    const {
+      isConnected,
+      isMarketsLoaded,
+      loadMarkets,
+    } = this.props
+    if (isConnected && !isMarketsLoaded) {
+      loadMarkets()
     }
   }
 
   render() {
-    const p = this.props
+    const {
+      currentTime,
+      doesUserHaveRep,
+      forkEndTime,
+      history,
+      isForking,
+      isMobile,
+      location,
+      markets,
+      marketsCount,
+      navigateToAccountDepositHandler,
+      outcomes,
+      upcomingMarkets,
+      upcomingMarketsCount,
+    } = this.props
 
     return (
       <section>
@@ -48,29 +67,29 @@ export default class ReportingDisputeMarkets extends Component {
         <section className={Styles.ReportDispute}>
           <ReportingHeader
             heading="Dispute"
-            isForking={p.isForking}
-            forkEndTime={p.forkEndTime}
-            currentTime={p.currentTime}
+            isForking={isForking}
+            forkEndTime={forkEndTime}
+            currentTime={currentTime}
           />
-          { !p.doesUserHaveRep && !p.isForking &&
+          { !doesUserHaveRep && !forkEndTime &&
           <ReportDisputeNoRepState
             btnText="Add Funds"
             message="You have 0 REP available. Add funds to dispute markets or purchase participation tokens."
-            onClickHandler={p.navigateToAccountDepositHandler}
+            onClickHandler={navigateToAccountDepositHandler}
           />}
         </section>
-        { p.marketsCount > 0 &&
-            p.markets.map(market =>
+        { marketsCount > 0 &&
+            markets.map(market =>
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                isMobile={p.isMobile}
-                location={p.location}
-                history={p.history}
-                outcomes={p.outcomes}
+                isMobile={isMobile}
+                location={location}
+                history={history}
+                outcomes={outcomes}
               />))
         }
-        { p.marketsCount === 0 &&
+        { marketsCount === 0 &&
           <NullStateMessage
             message="There are currently no markets available for dispute."
           />
@@ -78,18 +97,18 @@ export default class ReportingDisputeMarkets extends Component {
         <article className={MarketsHeaderStyles.MarketsHeader}>
           <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>Upcoming Dispute Window</h4>
         </article>
-        {p.upcomingMarketsCount > 0 &&
-            p.upcomingMarkets.map(market =>
+        {upcomingMarketsCount > 0 &&
+            upcomingMarkets.map(market =>
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
-                isMobile={p.isMobile}
-                location={p.location}
-                history={p.history}
-                outcomes={p.outcomes}
+                isMobile={isMobile}
+                location={location}
+                history={history}
+                outcomes={outcomes}
               />))
         }
-        { p.upcomingMarketsCount === 0 &&
+        { upcomingMarketsCount === 0 &&
           <NullStateMessage
             message="There are currently no markets slated for the upcoming dispute window."
           />

@@ -37,30 +37,44 @@ export default class MarketsView extends Component {
   }
 
   componentWillMount() {
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      loadMarkets,
+      loadMarketsByCategory,
+      location,
+    } = this.props
     loadMarkets({
-      canLoadMarkets: this.props.canLoadMarkets,
-      location: this.props.location,
-      loadMarkets: this.props.loadMarkets,
-      loadMarketsByCategory: this.props.loadMarketsByCategory,
-      hasLoadedMarkets: this.props.hasLoadedMarkets,
-      hasLoadedCategory: this.props.hasLoadedCategory,
+      canLoadMarkets,
+      location,
+      loadMarkets,
+      loadMarketsByCategory,
+      hasLoadedMarkets,
+      hasLoadedCategory,
     })
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      location,
+    } = this.props
     if (
-      (this.props.canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
-      this.props.location !== nextProps.location ||
-      !isEqual(this.props.hasLoadedCategory, nextProps.hasLoadedCategory) ||
-      (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
+      (canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
+      location !== nextProps.location ||
+      !isEqual(hasLoadedCategory, nextProps.hasLoadedCategory) ||
+      (hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
       loadMarkets({
         canLoadMarkets: nextProps.canLoadMarkets,
         location: nextProps.location,
         loadMarkets: nextProps.loadMarkets,
         loadMarketsByCategory: nextProps.loadMarketsByCategory,
-        hasLoadedMarkets: this.props.hasLoadedMarkets,
-        hasLoadedCategory: this.props.hasLoadedCategory,
+        hasLoadedMarkets,
+        hasLoadedCategory,
       })
     }
   }
@@ -73,32 +87,41 @@ export default class MarketsView extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearMarketsFilteredSorted()
+    const { clearMarketsFilteredSorted } = this.props
+    clearMarketsFilteredSorted()
   }
 
   render() {
-    const p = this.props
-
+    const {
+      filteredMarkets,
+      history,
+      isLogged,
+      isMobile,
+      loadMarketsInfo,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     return (
       <section id="markets_view">
         <Helmet>
           <title>Markets</title>
         </Helmet>
         <MarketsHeader
-          isLogged={p.isLogged}
-          location={p.location}
-          markets={p.markets}
+          isLogged={isLogged}
+          location={location}
+          markets={markets}
         />
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
-          filteredMarkets={p.filteredMarkets}
-          location={p.location}
-          history={p.history}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          isLogged={isLogged}
+          markets={markets}
+          filteredMarkets={filteredMarkets}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfo={loadMarketsInfo}
           linkType={TYPE_TRADE}
-          isMobile={p.isMobile}
+          isMobile={isMobile}
         />
       </section>
     )

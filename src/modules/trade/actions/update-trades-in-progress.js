@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { TWO } from 'modules/trade/constants/numbers'
@@ -57,18 +57,18 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
     // find top order to default limit price to
     const marketOrderBook = selectAggregateOrderBook(outcomeId, orderBooks[marketId], orderCancellation)
     const defaultPrice = market.marketType === SCALAR ?
-      WrappedBigNumber(market.maxPrice, 10)
-        .plus(WrappedBigNumber(market.minPrice, 10))
+      createBigNumber(market.maxPrice, 10)
+        .plus(createBigNumber(market.minPrice, 10))
         .dividedBy(TWO)
         .toFixed() :
       '0.5'
     // get topOrderPrice and make sure it's a string value
-    const topOrderPrice = WrappedBigNumber(cleanSide === BUY ?
+    const topOrderPrice = createBigNumber(cleanSide === BUY ?
       ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
       ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice).toFixed()
 
-    const bignumShares = WrappedBigNumber(numShares || '0', 10)
-    const bignumLimit = WrappedBigNumber(limitPrice || '0', 10)
+    const bignumShares = createBigNumber(numShares || '0', 10)
+    const bignumLimit = createBigNumber(limitPrice || '0', 10)
     // clean num shares
     const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : (numShares && bignumShares.abs().toFixed()) || outcomeTradeInProgress.numShares || '0'
 
@@ -138,10 +138,10 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           shouldCollectReportingFees: !market.isDisowned,
           reportingFeeRate: market.reportingFeeRate,
         })
-        const totalFee = WrappedBigNumber(simulatedTrade.settlementFees, 10).plus(WrappedBigNumber(simulatedTrade.gasFees, 10))
+        const totalFee = createBigNumber(simulatedTrade.settlementFees, 10).plus(createBigNumber(simulatedTrade.gasFees, 10))
         newTradeDetails.totalFee = totalFee.toFixed()
         newTradeDetails.totalCost = simulatedTrade.tokensDepleted
-        newTradeDetails.feePercent = totalFee.dividedBy(WrappedBigNumber(simulatedTrade.tokensDepleted, 10)).toFixed()
+        newTradeDetails.feePercent = totalFee.dividedBy(createBigNumber(simulatedTrade.tokensDepleted, 10)).toFixed()
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,

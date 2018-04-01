@@ -43,19 +43,22 @@ export default class MobilePositions extends Component {
   }
 
   render() {
+    const {
+      pendingOrders,
+      position,
+    } = this.props
     const s = this.state
-    const p = this.props
 
-    const orderText = p.pendingOrders.length > 1 ? 'Orders' : 'Order'
+    const orderText = pendingOrders.length > 1 ? 'Orders' : 'Order'
 
     return (
       <div className={CommonStyles.MarketPositionsListMobile__wrapper}>
         <div className={Styles.MobilePositions__header}>
           <h2 className={CommonStyles.MarketPositionsListMobile__heading}>
               My Position
-            { p.pendingOrders.length > 0 &&
+            { pendingOrders.length > 0 &&
             <span className={Styles.MobilePositions__pending}>
-              { p.pendingOrders.length } Pending { orderText }
+              { pendingOrders.length } Pending { orderText }
             </span>
             }
           </h2>
@@ -70,37 +73,37 @@ export default class MobilePositions extends Component {
             <li>
               <span>
                 QTY
-                { p.pendingOrders.length > 0 &&
+                { pendingOrders.length > 0 &&
                   <span className={Styles.MobilePositions__pending}>
-                    +{ p.pendingOrders.reduce((sum, order) => sum + +order.order.qtyShares.formatted, 0) }
+                    +{ pendingOrders.reduce((sum, order) => sum + +order.order.qtyShares.formatted, 0) }
                   </span>
                 }
               </span>
-              { getValue(p, 'position.position.qtyShares.formatted') }
+              { getValue(this.props, 'position.position.qtyShares.formatted') }
             </li>
             <li>
               <span>
                 AVG Price
-                { p.pendingOrders.length > 0 &&
+                { pendingOrders.length > 0 &&
                   <span className={Styles.MobilePositions__pending}>
-                    { MobilePositions.calcAvgDiff(p.position, p.pendingOrders) }
+                    { MobilePositions.calcAvgDiff(position, pendingOrders) }
                   </span>
                 }
               </span>
-              { getValue(p, 'position.position.avgPrice.formatted') } ETH
+              { getValue(this.props, 'position.position.avgPrice.formatted') } ETH
             </li>
             <li>
               <span>Unrealized P/L</span>
-              { getValue(p, 'position.position.unrealizedNet.formatted') } ETH
+              { getValue(this.props, 'position.position.unrealizedNet.formatted') } ETH
             </li>
             <li>
               <span>Realized P/L</span>
-              { getValue(p, 'position.position.realizedNet.formatted') } ETH
+              { getValue(this.props, 'position.position.realizedNet.formatted') } ETH
             </li>
           </ul>
         </div>
         <div className={classNames(Styles.MobilePositions__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}>
-          { p.pendingOrders.length > 0 ?
+          { pendingOrders.length > 0 ?
             <div className={classNames(Styles['MobilePositions__confirm-details'], Styles.pending)}>
               <p>Positions cannot be closed while orders are pending.</p>
               <div className={Styles['MobilePositions__confirm-options']}>
@@ -110,10 +113,10 @@ export default class MobilePositions extends Component {
             :
             <div className={Styles['MobilePositions__confirm-details']}>
               <h3>Close Position?</h3>
-              <p>This will sell your { getValue(p, 'position.position.qtyShares.formatted') } shares of &ldquo;{ getValue(p, 'position.name') }&rdquo; at market rate.</p>
+              <p>This will sell your { getValue(this.props, 'position.position.qtyShares.formatted') } shares of &ldquo;{ getValue(this.props, 'position.name') }&rdquo; at market rate.</p>
               <div className={Styles['MobilePositions__confirm-options']}>
                 <button onClick={e => this.setState({ showConfirm: !s.showConfirm })}>No</button>
-                <button onClick={(e) => { p.position.position.closePosition(); this.setState({ showConfirm: !s.showConfirm }) }}>Yes</button>
+                <button onClick={(e) => { position.position.closePosition(); this.setState({ showConfirm: !s.showConfirm }) }}>Yes</button>
               </div>
             </div>
           }

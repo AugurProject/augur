@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 import { debounce } from 'lodash'
 import { updateAssets } from 'modules/auth/actions/update-assets'
@@ -136,7 +136,7 @@ export function listenToUpdates(history) {
             console.log('OrderFilled removed:', log)
           } else {
             console.log('OrderFilled:', log)
-            dispatch(updateOutcomePrice(log.marketId, log.outcome, WrappedBigNumber(log.price, 10)))
+            dispatch(updateOutcomePrice(log.marketId, log.outcome, createBigNumber(log.price, 10)))
             dispatch(updateMarketCategoryPopularity(log.market, log.amount))
             dispatch(loadFullMarket(log.marketId))
             const { address } = getState().loginAccount
@@ -220,7 +220,7 @@ export function listenToUpdates(history) {
             if (universe.id === log.universe) {
               dispatch(loadMarketsInfo([log.marketId], () => {
                 const { volume, author, description } = getState().marketsData[log.marketId]
-                dispatch(updateMarketCategoryPopularity(log.marketId, WrappedBigNumber(volume, 10).negated().toNumber()))
+                dispatch(updateMarketCategoryPopularity(log.marketId, createBigNumber(volume, 10).negated().toNumber()))
                 if (loginAccount.address === author) {
                   dispatch(addNotification({
                     id: log.hash,

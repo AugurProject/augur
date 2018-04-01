@@ -227,7 +227,8 @@ class PerformanceGraph extends Component {
   }
 
   updateChart() {
-    (getValue(this.props.performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
+    const { performanceData } = this.props;
+    (getValue(performanceData, `${this.state.graphType}.${this.state.graphPeriod}`) || []).forEach((series, i) => {
       if (this.performanceGraph.series[i] == null) {
         this.performanceGraph.addSeries({
           type: 'area',

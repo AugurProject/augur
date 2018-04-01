@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import { fix, strip0xPrefix, unfix } from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { ZERO, TEN_TO_THE_EIGHTEENTH_POWER } from 'modules/trade/constants/numbers'
@@ -60,15 +60,15 @@ export function constructApprovalTransaction(log) {
 
 export function constructCollectedFeesTransaction(log) {
   const transaction = { data: {} }
-  const repGain = WrappedBigNumber(log.repGain, 10)
-  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : WrappedBigNumber(log.newRepBalance).minus(repGain).toFixed()
+  const repGain = createBigNumber(log.repGain, 10)
+  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : createBigNumber(log.newRepBalance).minus(repGain).toFixed()
   const action = log.inProgress ? 'reporting' : 'reported'
   transaction.message = `${action} with ${formatRep(initialRepBalance).full}`
   transaction.type = `Reporting Payment`
   if (log.totalReportingRep) {
-    const totalReportingRep = WrappedBigNumber(log.totalReportingRep, 10)
+    const totalReportingRep = createBigNumber(log.totalReportingRep, 10)
     if (!totalReportingRep.eq(ZERO)) {
-      const percentRep = formatPercent(WrappedBigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 })
+      const percentRep = formatPercent(createBigNumber(initialRepBalance, 10).dividedBy(totalReportingRep).times(100), { decimals: 0 })
       transaction.message = `${transaction.message} (${percentRep.full})`
     }
   }
@@ -123,7 +123,7 @@ export function constructTransferTransaction(log, address) {
     transaction.type = 'Send Tokens'
     transaction.description = `Send tokens to ${strip0xPrefix(log._to)}`
     transaction.data.balances = [{
-      change: formatRep(WrappedBigNumber(log._value, 10).negated(), { positiveSign: true }),
+      change: formatRep(createBigNumber(log._value, 10).negated(), { positiveSign: true }),
     }]
     action = log.inProgress ? 'sending' : 'sent'
   } else if (log._to === address) {
@@ -162,7 +162,7 @@ export const constructCancelOrderTransaction = (trade, marketId, marketType, des
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
-      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && createBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
     },
@@ -185,13 +185,13 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
   const fxpShares = fix(trade.amount)
   const fxpPrice = fix(trade.price)
   const fxpSettlementFee = fix(settlementFee)
-  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpNoFeeCost = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   const fxpTotalCost = fxpNoFeeCost.plus(fxpSettlementFee)
-  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpTotalCostPerShare = fxpTotalCost.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   const fxpTotalReturn = fxpPrice.times(fxpShares).dividedBy(TEN_TO_THE_EIGHTEENTH_POWER)
-    .floor()
+    .integerValue(BigNumber.ROUND_FLOOR)
     .minus(fxpSettlementFee)
-  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()
+  const fxpTotalReturnPerShare = fxpTotalReturn.dividedBy(fxpShares).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)
   return {
     [trade.transactionHash]: {
       type: orderType,
@@ -214,10 +214,10 @@ export const constructCreateOrderTransaction = (trade, marketId, marketType, des
       avgPrice: formattedPrice,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
-      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).floor()).times(100)),
+      feePercent: formatPercent(unfix(fxpSettlementFee.dividedBy(fxpTotalCost).times(TEN_TO_THE_EIGHTEENTH_POWER).integerValue(BigNumber.ROUND_FLOOR)).times(100)),
       totalCost: orderType === TYPES.BUY ? formatEther(unfix(fxpTotalCost)) : undefined,
       totalReturn: orderType === TYPES.SELL ? formatEther(unfix(fxpTotalReturn)) : undefined,
-      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && createBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       orderId: trade.orderId,
     },
@@ -232,9 +232,9 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
   const displayPrice = augur.trading.denormalizePrice({ normalizedPrice: trade.price, minPrice, maxPrice })
   const formattedPrice = formatEther(displayPrice)
   const formattedShares = formatShares(trade.amount)
-  const bnShares = WrappedBigNumber(trade.amount, 10)
-  const bnPrice = WrappedBigNumber(trade.price, 10)
-  const bnSettlementFee = WrappedBigNumber(settlementFee, 10)
+  const bnShares = createBigNumber(trade.amount, 10)
+  const bnPrice = createBigNumber(trade.price, 10)
+  const bnSettlementFee = createBigNumber(settlementFee, 10)
   const bnTotalCost = bnPrice.times(bnShares).plus(bnSettlementFee)
   const bnTotalReturn = bnPrice.times(bnShares).minus(bnSettlementFee)
   const bnTotalCostPerShare = bnTotalCost.dividedBy(bnShares)
@@ -277,7 +277,7 @@ export const constructFillOrderTransaction = (trade, marketId, marketType, descr
       feePercent: formatPercent(bnSettlementFee.dividedBy(bnTotalCost).times(100)),
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
-      gasFees: trade.gasFees && WrappedBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && createBigNumber(trade.gasFees, 10).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
     },
   }
