@@ -46,14 +46,16 @@ export default class MarketsList extends Component {
   }
 
   componentWillMount() {
-    this.loadMarketsInfo(this.props.filteredMarkets)
+    const { filteredMarkets } = this.props
+    this.loadMarketsInfo(filteredMarkets)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const { filteredMarkets } = this.props
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||
-      !isEqual(this.props.filteredMarkets, nextProps.filteredMarkets)
+      !isEqual(filteredMarkets, nextProps.filteredMarkets)
     ) {
       this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
     }
@@ -80,35 +82,48 @@ export default class MarketsList extends Component {
 
   // debounced call
   loadMarketsInfo() {
-    this.props.loadMarketsInfo(this.state.marketIdsMissingInfo)
+    const { loadMarketsInfo } = this.props
+    loadMarketsInfo(this.state.marketIdsMissingInfo)
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
-    const p = this.props
+    const {
+      collectMarketCreatorFees,
+      filteredMarkets,
+      history,
+      isLogged,
+      isMobile,
+      location,
+      markets,
+      outstandingReturns,
+      paginationPageParam,
+      showPagination,
+      toggleFavorite,
+    } = this.props
     const s = this.state
 
-    const marketsLength = p.filteredMarkets.length
+    const marketsLength = filteredMarkets.length
 
     return (
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
-            const id = p.filteredMarkets[(s.lowerBound - 1) + i]
-            const market = p.markets.find(market => market.id === id)
+            const id = filteredMarkets[(s.lowerBound - 1) + i]
+            const market = markets.find(market => market.id === id)
 
             if (market && market.id) {
               return (
                 <MarketPreview
                   {...market}
                   key={`${market.id} - ${market.outcomes}`}
-                  isLogged={p.isLogged}
-                  toggleFavorite={p.toggleFavorite}
-                  location={p.location}
-                  history={p.history}
-                  outstandingReturns={p.outstandingReturns}
-                  collectMarketCreatorFees={p.collectMarketCreatorFees}
-                  isMobile={p.isMobile}
+                  isLogged={isLogged}
+                  toggleFavorite={toggleFavorite}
+                  location={location}
+                  history={history}
+                  outstandingReturns={outstandingReturns}
+                  collectMarketCreatorFees={collectMarketCreatorFees}
+                  isMobile={isMobile}
                   linkType={TYPE_TRADE}
                 />
               )
@@ -117,14 +132,14 @@ export default class MarketsList extends Component {
             return null
           }) :
           <NullStateMessage message="No Markets Available" /> }
-        {!!marketsLength && p.showPagination &&
+        {!!marketsLength && showPagination &&
           <Paginator
             itemsLength={marketsLength}
             itemsPerPage={10}
-            location={p.location}
-            history={p.history}
+            location={location}
+            history={history}
             setSegment={this.setSegment}
-            pageParam={p.paginationPageParam || null}
+            pageParam={paginationPageParam || null}
           />
         }
       </article>

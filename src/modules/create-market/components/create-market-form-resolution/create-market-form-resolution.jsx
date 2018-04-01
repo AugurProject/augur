@@ -35,12 +35,13 @@ export const ChevronRight = () => (
 export default class CreateMarketResolution extends Component {
 
   static propTypes = {
+    currentTimestamp: PropTypes.number.isRequired,
+    isMobileSmall: PropTypes.bool.isRequired,
+    isValid: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
     validateNumber: PropTypes.func.isRequired,
-    isValid: PropTypes.func.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -59,9 +60,13 @@ export default class CreateMarketResolution extends Component {
   }
 
   validateDesignatedReporterType(value) {
-    const p = this.props
-    const updatedMarket = { ...p.newMarket }
-    const { currentStep } = p.newMarket
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const updatedMarket = { ...newMarket }
+    const { currentStep } = newMarket
 
     if (value === DESIGNATED_REPORTER_SPECIFIC) {
       updatedMarket.validations[currentStep].designatedReporterAddress =
@@ -74,16 +79,19 @@ export default class CreateMarketResolution extends Component {
 
     updatedMarket.validations[currentStep].designatedReporterType = true
     updatedMarket.designatedReporterType = value
-    updatedMarket.isValid = p.isValid(currentStep)
+    updatedMarket.isValid = isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   validateDesignatedReporterAddress(value) {
-    const p = this.props
-
-    const { currentStep } = p.newMarket
-    const updatedMarket = { ...p.newMarket }
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
+    const updatedMarket = { ...newMarket }
 
     if (!isAddress(value)) {
       updatedMarket.validations[currentStep].designatedReporterAddress = 'Invalid Ethereum address.'
@@ -92,16 +100,19 @@ export default class CreateMarketResolution extends Component {
     }
 
     updatedMarket.designatedReporterAddress = value
-    updatedMarket.isValid = p.isValid(currentStep)
+    updatedMarket.isValid = isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   validateExpiryType(value) {
-    const p = this.props
-
-    const { currentStep } = p.newMarket
-    const updatedMarket = { ...p.newMarket }
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
+    const updatedMarket = { ...newMarket }
 
     if (value === EXPIRY_SOURCE_SPECIFIC) {
       updatedMarket.validations[currentStep].expirySource =
@@ -112,20 +123,26 @@ export default class CreateMarketResolution extends Component {
       delete updatedMarket.validations[currentStep].expirySource
     }
 
-    updatedMarket.validations[p.newMarket.currentStep].expirySourceType = true
+    updatedMarket.validations[newMarket.currentStep].expirySourceType = true
     updatedMarket.expirySourceType = value
-    updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
+    updatedMarket.isValid = isValid(newMarket.currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   render() {
-    const p = this.props
+    const {
+      currentTimestamp,
+      isMobileSmall,
+      newMarket,
+      validateField,
+      validateNumber,
+    } = this.props
     const s = this.state
-    const validations = p.newMarket.validations[p.newMarket.currentStep]
-    const { utcLocalOffset } = formatDate(new Date(p.currentTimestamp))
+    const validations = newMarket.validations[newMarket.currentStep]
+    const { utcLocalOffset } = formatDate(new Date(currentTimestamp))
 
-    const designatedReporterError = p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
+    const designatedReporterError = newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -136,23 +153,23 @@ export default class CreateMarketResolution extends Component {
           <ul className={StylesForm['CreateMarketForm__radio-buttons--per-line']}>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
                 onClick={() => this.validateExpiryType(EXPIRY_SOURCE_GENERIC)}
               >Outcome will be determined by news media
               </button>
             </li>
             <li className={Styles['CreateMarketResolution__expiry-source-specific']}>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC })}
                 onClick={() => this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC)}
               >Outcome will be detailed on a public website
               </button>
-              { p.newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
+              { newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
                 <input
                   type="text"
-                  value={p.newMarket.expirySource}
+                  value={newMarket.expirySource}
                   placeholder="Define URL"
-                  onChange={e => p.validateField('expirySource', e.target.value)}
+                  onChange={e => validateField('expirySource', e.target.value)}
                 />
               }
             </li>
@@ -165,23 +182,23 @@ export default class CreateMarketResolution extends Component {
           <ul className={StylesForm['CreateMarketForm__radio-buttons--per-line']}>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SELF)}
               >Myself
               </button>
             </li>
             <li className={Styles['CreateMarketResolution__designated-reporter-specific']}>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SPECIFIC)}
               >Someone Else
               </button>
               <div>
-                { p.newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
+                { newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC &&
                   <input
                     className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: designatedReporterError })}
                     type="text"
-                    value={p.newMarket.designatedReporterAddress}
+                    value={newMarket.designatedReporterAddress}
                     placeholder="Designated Reporter Address"
                     onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
                   />
@@ -189,7 +206,7 @@ export default class CreateMarketResolution extends Component {
                 { designatedReporterError &&
                   <span className={StylesForm['CreateMarketForm__error--bottom']}>
                     {InputErrorIcon}{
-                      p.newMarket.validations[p.newMarket.currentStep].designatedReporterAddress
+                      newMarket.validations[newMarket.currentStep].designatedReporterAddress
                     }
                   </span>
                 }
@@ -204,7 +221,7 @@ export default class CreateMarketResolution extends Component {
           <SingleDatePicker
             id="cm__input--date"
             date={this.state.date}
-            onDateChange={(date) => { this.setState({ date }); p.validateField('endDate', formatDate(date.toDate())) }}
+            onDateChange={(date) => { this.setState({ date }); validateField('endDate', formatDate(date.toDate())) }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"
@@ -216,34 +233,34 @@ export default class CreateMarketResolution extends Component {
         <li>
           <label htmlFor="cm__input--time">
             <span>Expiration Time (UTC { utcLocalOffset })</span>
-            { p.newMarket.validations[p.newMarket.currentStep].hour.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].hour }</span>
+            { newMarket.validations[newMarket.currentStep].hour.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].hour }</span>
             }
-            { p.newMarket.validations[p.newMarket.currentStep].minute.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].minute }</span>
+            { newMarket.validations[newMarket.currentStep].minute.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].minute }</span>
             }
           </label>
           <div id="cm__input--time" className={Styles.CreateMarketResolution__time}>
             <InputDropdown
               label="Hour"
               options={s.hours}
-              default={p.newMarket.hour}
-              onChange={value => p.validateNumber('hour', value, 'hour', 1, 12, 0)}
-              isMobileSmall={this.props.isMobileSmall}
+              default={newMarket.hour}
+              onChange={value => validateNumber('hour', value, 'hour', 1, 12, 0)}
+              isMobileSmall={isMobileSmall}
             />
             <InputDropdown
               label="Minute"
               options={s.minutes}
-              default={p.newMarket.minute}
-              onChange={value => p.validateNumber('minute', value, 'minute', 0, 59, 0)}
-              isMobileSmall={this.props.isMobileSmall}
+              default={newMarket.minute}
+              onChange={value => validateNumber('minute', value, 'minute', 0, 59, 0)}
+              isMobileSmall={isMobileSmall}
             />
             <InputDropdown
               label="AM/PM"
-              default={p.newMarket.meridiem || ''}
+              default={newMarket.meridiem || ''}
               options={s.ampm}
-              onChange={value => p.validateField('meridiem', value)}
-              isMobileSmall={this.props.isMobileSmall}
+              onChange={value => validateField('meridiem', value)}
+              isMobileSmall={isMobileSmall}
             />
           </div>
         </li>

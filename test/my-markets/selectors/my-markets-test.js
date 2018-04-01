@@ -2,7 +2,7 @@
 
 import proxyquire from 'proxyquire'
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import * as mockStore from 'test/mockStore'
 
@@ -14,8 +14,8 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
   const { store, state } = mockStore.default
   state.marketCreatorFees = {
-    '0xMARKET1': new BigNumber('10', 10),
-    '0xMARKET2': new BigNumber('11', 10),
+    '0xMARKET1': createBigNumber('10', 10),
+    '0xMARKET2': createBigNumber('11', 10),
   }
 
   const { allMarkets } = store.getState()
@@ -37,7 +37,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       endDate: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEther(new BigNumber('10', 10)),
+      fees: formatEther(createBigNumber('10', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),
@@ -91,7 +91,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       endDate: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEther(new BigNumber('11', 10)),
+      fees: formatEther(createBigNumber('11', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),

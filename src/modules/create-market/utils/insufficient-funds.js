@@ -1,18 +1,18 @@
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { formatEther, formatRep } from 'utils/format-number'
 
 export default function insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, availableEth, availableRep) {
   let insufficientFundsString = ''
 
-  const BNvalidityBond = new BigNumber(formatEther(validityBond).fullPrecision)
-  const BNgasCost = new BigNumber(formatEther(gasCost).fullPrecision)
-  const BNcreationFee = new BigNumber(formatEther(creationFee).fullPrecision)
+  const BNvalidityBond = createBigNumber(formatEther(validityBond).fullPrecision)
+  const BNgasCost = createBigNumber(formatEther(gasCost).fullPrecision)
+  const BNcreationFee = createBigNumber(formatEther(creationFee).fullPrecision)
   const BNtotalEthCost = BNvalidityBond.plus(BNgasCost.plus(BNcreationFee))
-  const insufficientEth = new BigNumber(availableEth).lt(BNtotalEthCost)
+  const insufficientEth = createBigNumber(availableEth).lt(BNtotalEthCost)
 
-  const BNdesignatedReportNoShowReputationBond = new BigNumber(formatRep(designatedReportNoShowReputationBond).fullPrecision)
-  const insufficientRep = new BigNumber(availableRep).lt(BNdesignatedReportNoShowReputationBond)
+  const BNdesignatedReportNoShowReputationBond = createBigNumber(formatRep(designatedReportNoShowReputationBond).fullPrecision)
+  const insufficientRep = createBigNumber(availableRep).lt(BNdesignatedReportNoShowReputationBond)
 
   if (insufficientEth && insufficientRep) {
     insufficientFundsString = 'ETH and REP'

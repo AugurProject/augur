@@ -32,10 +32,15 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      location,
+      markets,
+      marketsFilteredSorted,
+    } = this.props
     if (
-      !isEqual(this.props.markets, nextProps.markets) ||
-      !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
-      !isEqual(this.props.location.search, nextProps.location.search)
+      !isEqual(markets, nextProps.markets) ||
+      !isEqual(marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
+      !isEqual(location.search, nextProps.location.search)
     ) {
       this.updateFilteredTags(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
@@ -101,14 +106,18 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   toggleTag(tag) {
-    let searchParams = parseQuery(this.props.location.search)
+    const {
+      history,
+      location,
+    } = this.props
+    let searchParams = parseQuery(location.search)
 
     if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
       searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(tag)]
       searchParams = makeQuery(searchParams)
 
-      return this.props.history.push({
-        ...this.props.location,
+      return history.push({
+        ...location,
         search: searchParams,
       })
     }
@@ -129,21 +138,27 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
     searchParams = makeQuery(searchParams)
 
-    this.props.history.push({
-      ...this.props.location,
+    history.push({
+      ...location,
       search: searchParams,
     })
   }
 
   getMainMenuData() {
-    const searchParams = parseQuery(this.props.location.search)
+    const {
+      categories,
+      isMobile,
+      location,
+      openSubMenu,
+    } = this.props
+    const searchParams = parseQuery(location.search)
     const selectedCategory = searchParams[CATEGORY_PARAM_NAME]
-    return this.props.categories.map(item => ({
+    return categories.map(item => ({
       label: item.category,
       isSelected: item.category === selectedCategory,
       visible: true,
       onClick: () => {
-        if (this.props.isMobile) this.props.openSubMenu()
+        if (isMobile) openSubMenu()
       },
       link: {
         pathname: makePath(MARKETS),

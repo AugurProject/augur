@@ -34,7 +34,8 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.outcomes, this.props.outcomes)) this.drawChart()
+    const { outcomes } = this.props
+    if (!isEqual(prevProps.outcomes, outcomes)) this.drawChart()
   }
 
   componentWillUnmount() {

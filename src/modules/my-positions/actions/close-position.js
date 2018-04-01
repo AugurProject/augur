@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import { placeTrade } from 'modules/trade/actions/place-trade'
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group'
@@ -24,7 +24,7 @@ export function closePosition(marketId, outcomeId) {
       const markets = selectAllMarkets()
       const market = markets.length ? markets.find(market => market.id === marketId) : null
       const positionOutcome = market ? (market.outcomes || []).find(outcome => parseInt(outcome.id, 10) === parseInt(outcomeId, 10)) : null
-      const positionShares = new BigNumber(getValue(positionOutcome, 'position.qtyShares.value') || '0')
+      const positionShares = createBigNumber(getValue(positionOutcome, 'position.qtyShares.value') || '0')
       const orderBook = orderBooks[marketId]
       const userAddress = loginAccount && loginAccount.address
       const bestFill = getBestFill(orderBook, positionShares.toNumber() > 0 ? BUY : SELL, positionShares.absoluteValue(), marketId, outcomeId, userAddress)
@@ -61,16 +61,16 @@ export function getBestFill(orderBook, side, shares, marketId, outcomeId, userAd
 
     return p
   }, []).sort((a, b) => {
-    const aBN = new BigNumber(a.fullPrecisionPrice)
-    const bBN = new BigNumber(b.fullPrecisionPrice)
+    const aBN = createBigNumber(a.fullPrecisionPrice)
+    const bBN = createBigNumber(b.fullPrecisionPrice)
     if (side === BUY) {
       return bBN-aBN
     }
 
     return aBN-bBN
   }).find((order) => {
-    amountOfShares = amountOfShares.plus(new BigNumber(order.fullPrecisionAmount))
-    price = new BigNumber(order.fullPrecisionPrice)
+    amountOfShares = amountOfShares.plus(createBigNumber(order.fullPrecisionAmount))
+    price = createBigNumber(order.fullPrecisionPrice)
 
     if (amountOfShares.toNumber() >= shares.toNumber()) {
       amountOfShares = shares

@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
-
-
+import React from 'react'
 
 import { spy } from 'sinon'
 import { shallow } from 'enzyme'
 
-import CreateMarketOutcome from 'src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
+import CreateMarketOutcome
+  from 'src/modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import { SCALAR } from 'src/modules/markets/constants/market-types'
-import BigNumber from 'bignumber.js/bignumber'
+import { createBigNumber } from 'src/utils/create-big-number'
 
 describe('create-market-form-outcome', () => {
-  let cmp,
-    isValidSpy,
-    newMarket,
-    updateNewMarketSpy,
-    validateFieldSpy
+  let cmp
+  let isValidSpy
+  let newMarket
+  let updateNewMarketSpy
+  let validateFieldSpy
 
   beforeEach(() => {
     newMarket = {
@@ -64,10 +63,10 @@ describe('create-market-form-outcome', () => {
       orderBook: {},
       orderBookSorted: {},
       orderBookSeries: {},
-      initialLiquidityEth: new BigNumber(0),
-      initialLiquidityGas: new BigNumber(0),
-      initialLiquidityFees: new BigNumber(0),
-      creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
+      initialLiquidityEth: createBigNumber(0),
+      initialLiquidityGas: createBigNumber(0),
+      initialLiquidityFees: createBigNumber(0),
+      creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
     }
 
     isValidSpy = spy()
@@ -143,7 +142,7 @@ describe('create-market-form-outcome', () => {
           newMarket.validations[newMarket.currentStep].tickSize = validationMessage
 
           cmp.setProps({
-            newMarket
+            newMarket,
           })
 
           assert.include(cmp.text(), validationMessage)

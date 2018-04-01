@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
@@ -274,15 +274,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: SELL,
-        shares: new BigNumber(-1).absoluteValue(),
+        shares: createBigNumber(-1).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(0),
-          price: new BigNumber(0),
+          amountOfShares: createBigNumber(0),
+          price: createBigNumber(0),
         })
       },
     })
@@ -294,15 +294,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: BUY,
-        shares: new BigNumber(1).absoluteValue(),
+        shares: createBigNumber(1).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(0),
-          price: new BigNumber(0),
+          amountOfShares: createBigNumber(0),
+          price: createBigNumber(0),
         })
       },
     })
@@ -333,15 +333,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: BUY,
-        shares: new BigNumber(10).absoluteValue(),
+        shares: createBigNumber(10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(10),
-          price: new BigNumber(0.11),
+          amountOfShares: createBigNumber(10),
+          price: createBigNumber(0.11),
         })
       },
     })
@@ -372,15 +372,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: BUY,
-        shares: new BigNumber(10).absoluteValue(),
+        shares: createBigNumber(10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(3),
-          price: new BigNumber(0.10),
+          amountOfShares: createBigNumber(3),
+          price: createBigNumber(0.10),
         })
       },
     })
@@ -411,15 +411,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: SELL,
-        shares: new BigNumber(-10).absoluteValue(),
+        shares: createBigNumber(-10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(10),
-          price: new BigNumber(0.2),
+          amountOfShares: createBigNumber(10),
+          price: createBigNumber(0.2),
         })
       },
     })
@@ -450,15 +450,15 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       arguments: {
         side: SELL,
-        shares: new BigNumber(-10).absoluteValue(),
+        shares: createBigNumber(-10).absoluteValue(),
         marketId: '0xMarketID1',
         outcomeId: '1',
         userAddress: '0xUSERADDRESS',
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
-          amountOfShares: new BigNumber(3),
-          price: new BigNumber(0.11),
+          amountOfShares: createBigNumber(3),
+          price: createBigNumber(0.11),
         })
       },
     })

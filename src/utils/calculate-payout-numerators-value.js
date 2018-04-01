@@ -1,5 +1,5 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 export default function calculatePayoutNumeratorsValue(market, payout, isInvalid) {
   const {
@@ -15,10 +15,10 @@ export default function calculatePayoutNumeratorsValue(market, payout, isInvalid
   if (isInvalid) return null
 
   if (isScalar) {
-    const longPayout = new BigNumber(payout[1], 10)
-    const priceRange = new BigNumber(maxPrice, 10).minus(new BigNumber(minPrice, 10))
+    const longPayout = createBigNumber(payout[1], 10)
+    const priceRange = createBigNumber(maxPrice, 10).minus(createBigNumber(minPrice, 10))
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
-    return ((longPayout.times(priceRange)).dividedBy(new BigNumber(numTicks, 10))).plus(new BigNumber(minPrice, 10)).toString()
+    return ((longPayout.times(priceRange)).dividedBy(createBigNumber(numTicks, 10))).plus(createBigNumber(minPrice, 10)).toString()
   }
 
   return payout.findIndex(item => item > 0).toString()

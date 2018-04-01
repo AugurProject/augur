@@ -44,6 +44,13 @@
       "components": [ "Link" ],
       "aspects": [ "noHref" ]
     }],
+    "jsx-a11y/label-has-for": [ 2, {
+      "components": [ "Label" ],
+      "required": {
+        "every": [ "nesting", "id" ]
+      },
+      "allowChildren": true
+    }],
     # Errors
     "comma-dangle": 2,
     "import/extensions": [

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectOutcomesDataState } from 'src/select-state'
@@ -44,7 +44,7 @@ export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
   const numOutcomes = outcomeIds.length
   let totalShares = ZERO
   for (let j = 0; j < numOutcomes; ++j) {
-    const bnSharesPurchased = new BigNumber(marketOutcomesData[outcomeIds[j]].sharesPurchased, 10)
+    const bnSharesPurchased = createBigNumber(marketOutcomesData[outcomeIds[j]].sharesPurchased, 10)
     if (bnSharesPurchased.gt(ZERO)) {
       totalShares = totalShares.plus(bnSharesPurchased)
     }
@@ -56,7 +56,7 @@ export const selectWinningSharesInMarket = (market, marketOutcomesData) => {
   if (market.consensus && market.consensus.outcomeId) {
     const outcomeData = marketOutcomesData[market.consensus.outcomeId]
     if (outcomeData && outcomeData.sharesPurchased) {
-      const sharesPurchased = new BigNumber(outcomeData.sharesPurchased, 10)
+      const sharesPurchased = createBigNumber(outcomeData.sharesPurchased, 10)
       return sharesPurchased.gt(ZERO) ? sharesPurchased : null
     }
   }
