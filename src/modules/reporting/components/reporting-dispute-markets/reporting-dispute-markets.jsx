@@ -58,6 +58,7 @@ export default class ReportingDisputeMarkets extends Component {
       upcomingMarkets,
       upcomingMarketsCount,
     } = this.props
+
     return (
       <section>
         <Helmet>
