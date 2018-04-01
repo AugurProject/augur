@@ -49,7 +49,7 @@
     "docker:geth:pop": "scripts/docker/run-background.sh augurproject/dev-pop-geth",
     "docker:geth:pop-normal-time": "scripts/docker/run-background.sh augurproject/dev-pop-normtime-geth",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
-    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:latest"
+    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(npm view augur-core version)"
   },
   "dependencies": {
     "async": "1.5.2",
