@@ -9,7 +9,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
-import { formatAttoRep } from 'utils/format-number'
+import { formatAttoRep, formatRep } from 'utils/format-number'
 
 export default class MigrateRepForm extends Component {
 
@@ -65,7 +65,7 @@ export default class MigrateRepForm extends Component {
     }
   }
 
-  validateRepAmount(rawRepAmount) {
+  validateRepAmount(rawRepAmount, isMax) {
     const {
       updateState,
       validations,
@@ -74,7 +74,7 @@ export default class MigrateRepForm extends Component {
 
     let repAmount = rawRepAmount
 
-    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
+    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount)) && !isMax) {
       repAmount = createBigNumber(rawRepAmount)
       repAmount = repAmount.toNumber()
     }
@@ -259,7 +259,7 @@ export default class MigrateRepForm extends Component {
               { selectedOutcomeName && selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
-                  onClick={() => { this.validateRepAmount(accountREP) }}
+                  onClick={() => { this.validateRepAmount(accountREP, true) }}
                 >MAX
                 </button>
               }
