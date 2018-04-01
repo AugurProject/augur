@@ -180,7 +180,6 @@ export default class MigrateRepForm extends Component {
     const formattedMigrationTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
       const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
       totals[curOutcomeId] = formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted
-
       return totals
     }, {})
 
