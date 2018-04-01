@@ -9,7 +9,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
-import { formatAttoRep, formatRep } from 'utils/format-number'
+import { formatAttoRep } from 'utils/format-number'
 
 export default class MigrateRepForm extends Component {
 
