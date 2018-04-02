@@ -62,14 +62,16 @@ class InputDropdown extends Component {
       <div
         ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
         className={classNames(Styles.InputDropdown, (p.className || ''))}
+        onClick={this.toggleList}
+        role="listbox"
+        tabIndex="-1"
       >
-        <button
+        <span
           key={p.label}
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
-          onClick={this.toggleList}
         >
           {this.state.label}
-        </button>
+        </span>
         <div className={classNames(Styles.InputDropdown__list, { [`${Styles.active}`]: this.state.showList })}>
           {p.options.map(option => (
             <button
