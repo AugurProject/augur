@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { formatEther, formatPercent, formatRep } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import { TWO } from 'modules/trade/constants/numbers'
@@ -18,7 +18,7 @@ export default function () {
       const description = marketsWithAccountReport[marketId].description || null
       const formattedDescription = marketsWithAccountReport[marketId].formattedDescription || null
       const outcome = marketsWithAccountReport[marketId].marketOutcome || null
-      const outcomePercentage = (marketsWithAccountReport[marketId].proportionCorrect && formatPercent(WrappedBigNumber(marketsWithAccountReport[marketId].proportionCorrect, 10).times(100))) || null
+      const outcomePercentage = (marketsWithAccountReport[marketId].proportionCorrect && formatPercent(createBigNumber(marketsWithAccountReport[marketId].proportionCorrect, 10).times(100))) || null
       const reported = marketsWithAccountReport[marketId].accountReport || null
       const isReportEqual = (outcome != null && reported != null && outcome === reported) || null // Can be done here
       const feesEarned = calculateFeesEarned(marketsWithAccountReport[marketId])
@@ -59,8 +59,8 @@ export default function () {
 
 export const calculateFeesEarned = (market) => {
   if (!market.marketFees || !market.repBalance || !market.marketWeight) return null
-  return formatEther(WrappedBigNumber(market.marketFees, 10)
-    .times(WrappedBigNumber(market.repBalance, 10))
+  return formatEther(createBigNumber(market.marketFees, 10)
+    .times(createBigNumber(market.repBalance, 10))
     .dividedBy(TWO)
-    .dividedBy(WrappedBigNumber(market.marketWeight, 10)))
+    .dividedBy(createBigNumber(market.marketWeight, 10)))
 }

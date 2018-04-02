@@ -35,46 +35,56 @@ export default class Checkbox extends Component {
   }
 
   isLabelTruncated() {
+    const {
+      text,
+      title,
+    } = this.props
     if (this.labelText) {
       if (this.labelText.offsetWidth < this.labelText.scrollWidth) {
         this.setState({
           // isLabelTruncated: true,
-          dataTip: this.props.title || this.props.text,
+          dataTip: title || text,
         })
       } else {
         this.setState({
           // isLabelTruncated: false,
-          dataTip: this.props.title || '',
+          dataTip: title || '',
         })
       }
     }
   }
 
   render() {
-    const p = this.props
-
+    const {
+      className,
+      isChecked,
+      onClick,
+      tabIndex,
+      text,
+      text2,
+    } = this.props
     // console.log('p -- ', p);
 
     return (
       <article className="checkbox-container">
         <button
-          className={classnames('checkbox unstyled', p.className, { checked: p.isChecked })}
+          className={classnames('checkbox unstyled', className, { checked: isChecked })}
           type="button"
-          onClick={p.onClick}
+          onClick={onClick}
           data-tip={this.state.dataTip}
           data-place="right"
         >
           <span className="checkbox-box">
-            {p.isChecked &&
+            {isChecked &&
               <i className="fa fa-check" />
             }
           </span>
-          <span className="checkbox-label" tabIndex={p.tabIndex} ref={(label) => { this.labelText = label }}>
-            {p.text}
+          <span className="checkbox-label" tabIndex={tabIndex} ref={(label) => { this.labelText = label }}>
+            {text}
           </span>
-          {p.text2 != null &&
+          {text2 != null &&
           <span className="checkbox-label2">
-            {p.text2}
+            {text2}
           </span>
           }
         </button>

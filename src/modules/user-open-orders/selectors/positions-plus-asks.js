@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { createBigCacheSelector } from 'utils/big-cache-selector'
 import store from 'src/store'
 import { selectLoginAccountAddress, selectAccountPositionsState, selectOrderBooksState } from 'src/select-state'
@@ -46,7 +46,6 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
 )
 
 /**
- * @param {String} marketId
  * @param {String} account
  * @param {Object} position
  * @param {Object} asks
@@ -58,7 +57,7 @@ export const selectMarketPositionPlusAsks = (account, position, asks) => {
     const adjustedOutcomes = Object.keys(position)
     const numAdjustedOutcomes = adjustedOutcomes.length
     for (let j = 0; j < numAdjustedOutcomes; ++j) {
-      positionPlusAsks[adjustedOutcomes[j]] = WrappedBigNumber(position[adjustedOutcomes[j]], 10).plus(getOpenAskShares(account, adjustedOutcomes[j], asks)).toFixed()
+      positionPlusAsks[adjustedOutcomes[j]] = createBigNumber(position[adjustedOutcomes[j]], 10).plus(getOpenAskShares(account, adjustedOutcomes[j], asks)).toFixed()
     }
   }
   return positionPlusAsks
@@ -79,7 +78,7 @@ export function getOpenAskShares(account, outcomeId, askOrders) {
   for (let i = 0; i < numOrders; ++i) {
     order = askOrders[orderIds[i]]
     if (isOrderOfUser(order, account) && order.outcome === outcomeId) {
-      askShares = askShares.plus(WrappedBigNumber(order.amount, 10))
+      askShares = askShares.plus(createBigNumber(order.amount, 10))
     }
   }
   return askShares

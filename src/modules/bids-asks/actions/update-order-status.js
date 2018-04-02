@@ -7,6 +7,7 @@ export const UPDATE_ORDER_REMOVE = 'UPDATE_ORDER_REMOVE'
  * @param {String} orderId
  * @param {String} status
  * @param {String} marketId
+ * @param outcome
  * @param {String} orderTypeLabel
  */
 export const updateOrderStatus = (orderId, status, marketId, outcome, orderTypeLabel) => (dispatch, getState) => {

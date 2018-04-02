@@ -1,5 +1,5 @@
 
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
@@ -15,7 +15,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         speedomatic: Speedomatic,
         './login-account-positions': SelectLoginAccountPositions,
       })
-      sinon.stub(Speedomatic, 'bignum').callsFake(n => WrappedBigNumber(n, 10))
+      sinon.stub(Speedomatic, 'bignum').callsFake(n => createBigNumber(n, 10))
       t.assertions(selector.selectClosedMarketsWithWinningShares(t.state))
     })
   }

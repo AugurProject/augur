@@ -93,14 +93,25 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   render() {
+    const {
+      currentBlock,
+      marketDepth,
+      maxPrice,
+      minPrice,
+      orderBook,
+      orderBookKeys,
+      outcomeBounds,
+      priceTimeSeries,
+      selectedOutcome,
+      updateSeletedOrderProperties,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
-          priceTimeSeries={p.priceTimeSeries}
-          selectedOutcome={p.selectedOutcome}
+          priceTimeSeries={priceTimeSeries}
+          selectedOutcome={selectedOutcome}
           hoveredPeriod={s.hoveredPeriod}
           hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
@@ -110,41 +121,41 @@ export default class MarketOutcomeCharts extends Component {
         <div className={Styles.MarketOutcomeCharts__Charts}>
           <div className={Styles.MarketOutcomeCharts__Candlestick}>
             <MarketOutcomeCandlestick
-              priceTimeSeries={p.priceTimeSeries}
-              currentBlock={p.currentBlock}
+              priceTimeSeries={priceTimeSeries}
+              currentBlock={currentBlock}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
-              outcomeBounds={p.outcomeBounds}
-              orderBookKeys={p.orderBookKeys}
-              marketMax={p.maxPrice}
-              marketMin={p.minPrice}
+              outcomeBounds={outcomeBounds}
+              orderBookKeys={orderBookKeys}
+              marketMax={maxPrice}
+              marketMin={minPrice}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
               updateHoveredPeriod={this.updateHoveredPeriod}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              updateSeletedOrderProperties={updateSeletedOrderProperties}
             />
           </div>
           <div className={Styles.MarketOutcomeCharts__Depth}>
             <MarketOutcomeDepth
               fixedPrecision={s.fixedPrecision}
-              orderBookKeys={p.orderBookKeys}
-              marketDepth={p.marketDepth}
-              marketMax={p.maxPrice}
-              marketMin={p.minPrice}
+              orderBookKeys={orderBookKeys}
+              marketDepth={marketDepth}
+              marketMax={maxPrice}
+              marketMin={minPrice}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
               updateHoveredDepth={this.updateHoveredDepth}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              updateSeletedOrderProperties={updateSeletedOrderProperties}
             />
           </div>
           <div className={Styles.MarketOutcomeCharts__Orders}>
             <MarketOutcomeOrderBook
               fixedPrecision={s.fixedPrecision}
-              orderBook={p.orderBook}
-              marketMidpoint={p.orderBookKeys.mid}
+              orderBook={orderBook}
+              marketMidpoint={orderBookKeys.mid}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              updateSeletedOrderProperties={updateSeletedOrderProperties}
             />
           </div>
         </div>

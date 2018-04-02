@@ -40,24 +40,38 @@ class Paginator extends Component {
   }
 
   componentWillMount() {
+    const {
+      history,
+      itemsLength,
+      itemsPerPage,
+      location,
+      pageParam,
+      setSegment,
+    } = this.props
     this.setCurrentSegment({
       lastPage: this.state.currentPage,
       lastLowerBound: this.state.lowerBound,
       lastUpperBound: this.state.upperBound,
-      itemsLength: this.props.itemsLength,
-      itemsPerPage: this.props.itemsPerPage,
-      location: this.props.location,
-      history: this.props.history,
-      setSegment: this.props.setSegment,
-      pageParam: this.props.pageParam,
+      itemsLength,
+      itemsPerPage,
+      location,
+      history,
+      setSegment,
+      pageParam,
     })
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      itemsLength,
+      itemsPerPage,
+      location,
+      pageParam,
+    } = this.props
     if (
-      this.props.itemsLength !== nextProps.itemsLength ||
-      this.props.itemsPerPage !== nextProps.itemsPerPage ||
-      this.props.location !== nextProps.location
+      itemsLength !== nextProps.itemsLength ||
+      itemsPerPage !== nextProps.itemsPerPage ||
+      location !== nextProps.location
     ) {
       this.setCurrentSegment({
         lastPage: this.state.currentPage,
@@ -68,7 +82,7 @@ class Paginator extends Component {
         location: nextProps.location,
         history: nextProps.history,
         setSegment: nextProps.setSegment,
-        pageParam: this.props.pageParam,
+        pageParam,
       })
     }
   }
@@ -176,6 +190,7 @@ class Paginator extends Component {
     }
     //    Forward
     let forwardQuery
+    const totalItems = options.itemsLength
     if (currentPage * options.itemsPerPage >= totalItems) {
       const queryParams = parseQuery(options.location.search)
       queryParams[options.pageParam] = currentPage
@@ -186,7 +201,6 @@ class Paginator extends Component {
       forwardQuery = makeQuery(queryParams)
     }
 
-    const totalItems = options.itemsLength
     const boundedLength = (upperBound - lowerBound) + 1
 
     this.setState({
@@ -203,7 +217,7 @@ class Paginator extends Component {
   }
 
   render() {
-    const p = this.props
+    const { location } = this.props
     const s = this.state
 
     return (
@@ -214,7 +228,7 @@ class Paginator extends Component {
               <Link
                 className={Styles.Paginator__button}
                 to={{
-                  ...p.location,
+                  ...location,
                   search: s.backQuery,
                 }}
               >
@@ -234,7 +248,7 @@ class Paginator extends Component {
               <Link
                 className={Styles.Paginator__button}
                 to={{
-                  ...p.location,
+                  ...location,
                   search: s.forwardQuery,
                 }}
               >

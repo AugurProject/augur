@@ -15,7 +15,7 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (disp
       augur.rpc.eth.getBalance([marketMailboxAddress, 'latest'], (err, attoEthBalance) => {
         if (err) return callback(err)
         const bnAttoEthBalance = speedomatic.bignum(attoEthBalance)
-        const combined = speedomatic.unfix(bnAttoEthBalance.add(bnCashBalance), 'string')
+        const combined = speedomatic.unfix(bnAttoEthBalance.plus(bnCashBalance), 'string')
         if (combined > 0) {
           // something to collect? sendTransaction to withdrawEther
           augur.api.Mailbox.withdrawEther({
