@@ -5,7 +5,7 @@ var speedomatic = require("speedomatic");
 var printTransactionStatus = require("./print-transaction-status");
 var debugOptions = require("../../debug-options");
 
-var USE_PUBLIC_CREATE_ORDER = false; // set to false to test trading.placeTrade endpoint
+var USE_PUBLIC_CREATE_ORDER = true; // set to false to test trading.placeTrade endpoint
 
 function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, numTicks, orderType, order, tradeGroupId, auth, callback) {
   var displayPrice = order.price;
