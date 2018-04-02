@@ -95,18 +95,40 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
     const maxPrice = tokensRow.maxPrice!;
     const category = tokensRow.category!;
     const orderId = log.orderId;
-    db.first("orderCreator").from("orders").where({ orderId }).asCallback((err: Error|null, ordersRow?: Partial<OrdersRow>): void => {
+    db.first("orderCreator", "fullPrecisionPrice", "orderType").from("orders").where({ orderId }).asCallback((err: Error|null, ordersRow?: Partial<OrdersRow>): void => {
       if (err) return callback(err);
       if (!ordersRow) return callback(new Error("order not found"));
       const orderCreator = ordersRow.orderCreator!;
+      const price = ordersRow.fullPrecisionPrice!;
+      const orderType = ordersRow.orderType!;
       const tickSize = convertNumTicksToTickSize(numTicks, minPrice, maxPrice);
+      const numCreatorTokens = convertFixedPointToDecimal(log.numCreatorTokens, WEI_PER_ETHER);
+      const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), new BigNumber(tickSize, 10)).toFixed();
+      const numFillerTokens = convertFixedPointToDecimal(log.numFillerTokens, WEI_PER_ETHER);
+      const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), new BigNumber(tickSize, 10)).toFixed();
+      const marketCreatorFees = convertFixedPointToDecimal(log.marketCreatorFees, WEI_PER_ETHER);
+      const reporterFees = convertFixedPointToDecimal(log.reporterFees, WEI_PER_ETHER);
+      const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));
       updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, false, (err: Error|null): void => {
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
           updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, log.filler, numTicks, tickSize, (err?: Error|null) => {
             if (err) return callback(err);
-            augurEmitter.emit("OrderFilled", Object.assign({}, log, { creator: orderCreator }));
+            augurEmitter.emit("OrderFilled", Object.assign({}, log, {
+              marketId,
+              outcome,
+              creator: orderCreator,
+              orderType,
+              numCreatorTokens,
+              numCreatorShares,
+              numFillerTokens,
+              numFillerShares,
+              price,
+              amount,
+              marketCreatorFees,
+              reporterFees,
+            }));
             return callback(err);
           });
         });

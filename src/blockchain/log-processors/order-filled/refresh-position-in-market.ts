@@ -18,6 +18,7 @@ export function refreshPositionInMarket(db: Knex, augur: Augur, marketId: Addres
       tickSize,
     }, (err: Error|null, positions: Array<string>): void => {
       if (err) return callback(err);
+      console.log("refreshPositionInMarket:", { marketId, account, positions });
       upsertPositionInMarket(db, augur, account, marketId, numTicks, positions, (err: Error|null) => {
         if (err) return callback(err);
         callback(err, positions);
