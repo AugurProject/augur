@@ -4,10 +4,10 @@ var clone = require("clone");
 var encodeTag = require("./encode-tag");
 
 var encodeTagArray = function (tags) {
-  var i, formattedTags = clone(tags);
-  if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+  var formattedTags = clone(tags);
+  if (formattedTags == null || !Array.isArray(formattedTags)) formattedTags = [];
   if (formattedTags.length) {
-    for (i = 0; i < formattedTags.length; ++i) {
+    for (var i = 0; i < formattedTags.length; ++i) {
       formattedTags[i] = encodeTag(formattedTags[i]);
     }
   }

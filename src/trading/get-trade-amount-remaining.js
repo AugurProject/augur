@@ -30,6 +30,7 @@ function getTradeAmountRemaining(p, callback) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
         console.log("OrderFilled log:", JSON.stringify(logs[i], null, 2));
         console.log("parsed OrderFilled log:", JSON.stringify(orderFilledLog, null, 2));
+        console.log("onChainFillPrice:", p.onChainFillPrice.toFixed());
         var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.onChainFillPrice);
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
         console.log("single-log amount filled:", totalFill.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(totalFill, p.tickSize).toFixed(), "shares");

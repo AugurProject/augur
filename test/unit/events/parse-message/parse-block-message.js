@@ -9,7 +9,7 @@ describe("events/parse-message/parse-block-message", function () {
   var test = function (msg) {
     it(JSON.stringify(msg), function (done) {
       parseBlockMessage(msg, function (parsed) {
-        if (msg.constructor === Array) {
+        if (Array.isArray(msg)) {
           if (msg[0].number) {
             assert.deepEqual(parsed, msg[0]);
           }
