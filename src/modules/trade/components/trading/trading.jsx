@@ -21,7 +21,7 @@ class MarketTrading extends Component {
     isMobile: PropTypes.bool.isRequired,
     market: PropTypes.object.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.func,
+    selectedOutcome: PropTypes.string.isRequired,
   }
 
   constructor(props) {
