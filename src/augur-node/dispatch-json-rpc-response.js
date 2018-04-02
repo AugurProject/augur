@@ -28,7 +28,7 @@ function dispatchJsonRpcResponse(err, jsonRpcResponse) {
 
   if (jsonRpcResponse.error) {
     callback(jsonRpcResponse.error);
-  } else if (result) {
+  } else if (result !== undefined) {
     callback(null, result);
   } else {
     callback("Bad JSON RPC response received:" + JSON.stringify(jsonRpcResponse));
