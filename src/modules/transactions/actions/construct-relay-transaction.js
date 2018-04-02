@@ -9,8 +9,7 @@ import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export const constructRelayTransaction = tx => (dispatch, getState) => {
   const { notifications } = getState()
-  const { hash } = tx
-  const { status } = tx
+  const { hash, status } = tx
   const unpackedParams = unpackTransactionParameters(tx)
   console.log(unpackedParams)
   const timestamp = tx.response.timestamp || selectCurrentTimestampInSeconds(getState())
@@ -38,6 +37,6 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
     }))
   }
   return {
-    [hash]: dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, tx.response.gasFees)),
+    [hash]: constructBasicTransaction(unpackedParams.type, hash, blockNumber, timestamp, '', unpackedParams._description || '', tx.response.gasFees, status),
   }
 }

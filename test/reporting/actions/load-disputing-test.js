@@ -42,14 +42,14 @@ describe('loadDisputing action', () => {
     submitRequestStub = stub(mockAugur.augurNode, 'submitRequest')
 
     loadDisputingRewire.__Rewire__('augur', mockAugur)
-    loadDisputingRewire.__Rewire__('loadMarketsInfo', () => () => {})
+    loadDisputingRewire.__Rewire__('loadMarketsInfoIfNotLoaded', () => () => {})
 
     store = mockStore(initialStoreState)
   })
 
   afterEach(() => {
     loadDisputingRewire.__ResetDependency__('augur')
-    loadDisputingRewire.__ResetDependency__('loadMarketsInfo')
+    loadDisputingRewire.__ResetDependency__('loadMarketsInfoIfNotLoaded')
   })
 
   it('should load upcoming dispute markets for a given user in side the given universe', () => {

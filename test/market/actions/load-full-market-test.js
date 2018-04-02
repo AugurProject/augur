@@ -242,14 +242,14 @@ describe('modules/market/actions/load-full-market.js', () => {
             type: MOCK_ACTION_TYPES.LOAD_PRICE_HISTORY,
             data: {
               marketId: {
-                market: '0xMARKETID',
+                marketId: '0xMARKETID',
               },
             },
           },
           {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
-              market: '0xMARKETID',
+              marketId: '0xMARKETID',
             },
           },
           {
@@ -334,7 +334,7 @@ describe('modules/market/actions/load-full-market.js', () => {
           {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
-              market: '0xMARKETID',
+              marketId: '0xMARKETID',
             },
           },
           {
@@ -395,14 +395,14 @@ describe('modules/market/actions/load-full-market.js', () => {
             type: MOCK_ACTION_TYPES.LOAD_PRICE_HISTORY,
             data: {
               marketId: {
-                market: '0xMARKETID',
+                marketId: '0xMARKETID',
               },
             },
           },
           {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
-              market: '0xMARKETID',
+              marketId: '0xMARKETID',
             },
           },
           {
