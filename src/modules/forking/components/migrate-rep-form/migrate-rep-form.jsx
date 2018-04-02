@@ -65,7 +65,7 @@ export default class MigrateRepForm extends Component {
     }
   }
 
-  validateRepAmount(rawRepAmount) {
+  validateRepAmount(rawRepAmount, isMax) {
     const {
       updateState,
       validations,
@@ -74,7 +74,7 @@ export default class MigrateRepForm extends Component {
 
     let repAmount = rawRepAmount
 
-    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
+    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount)) && !isMax) {
       repAmount = createBigNumber(rawRepAmount)
       repAmount = repAmount.toNumber()
     }
@@ -259,7 +259,7 @@ export default class MigrateRepForm extends Component {
               { selectedOutcomeName && selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
-                  onClick={() => { this.validateRepAmount(accountREP) }}
+                  onClick={() => { this.validateRepAmount(accountREP, true) }}
                 >MAX
                 </button>
               }
