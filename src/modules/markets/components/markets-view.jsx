@@ -13,7 +13,9 @@ import isEqual from 'lodash/isEqual'
 // import makePath from 'modules/routes/helpers/make-path'
 
 // import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -80,6 +82,14 @@ export default class MarketsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const newTags = decodeURIComponent(parseQuery(nextProps.location.search)[TAGS_PARAM_NAME] || '')
+    if (newTags.length) {
+      const marketsFilteredByTags = filterByTags(newTags.split(QUERY_VALUE_DELIMITER), nextProps.markets)
+      if (!isEqual(marketsFilteredByTags, nextProps.filteredMarkets)) {
+        this.props.updateMarketsFilteredSorted(marketsFilteredByTags)
+      }
+    }
+    // }
     // if (!isEqual(this.state.markets, nextState.markets)) {
     //   this.props.updateMarketsFilteredSorted(nextState.markets)
     //   checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
@@ -132,12 +142,13 @@ function loadMarkets(options) {
   if (options.canLoadMarkets) {
     const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
     const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
+    const tag = parseQuery(options.location.search)[TAGS_PARAM_NAME]
     // Expected behavior is to load a specific category if one is present
     // else, if we aren't searching (which is a local market data search)
     // then load markets (loads all markets)
-    if (category) {
+    if (category && (!tag || !options.hasLoadedCategory[category])) {
       options.loadMarketsByCategory(category)
-    } else if (!search) {
+    } else if (!search && !tag) {
       options.loadMarkets()
     }
   }
