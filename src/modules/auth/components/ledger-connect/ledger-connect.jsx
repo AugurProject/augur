@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { LedgerEthereum, BrowserLedgerConnectionFactory } from 'ethereumjs-ledger'
 
-import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
+import * as LEDGER_STATES from 'modules/auth/constants/ledger-status'
 
 import { Alert } from 'modules/common/components/icons'
 
@@ -15,83 +15,46 @@ export default class Ledger extends Component {
     history: PropTypes.object.isRequired,
     loginWithLedger: PropTypes.func.isRequired,
     networkId: PropTypes.number.isRequired,
-    updateModal: PropTypes.func.isRequired,
+    updateLedgerStatus: PropTypes.func.isRequired,
+    ledgerStatus: PropTypes.string.isRequired,
+    onConnectLedgerRequest: PropTypes.func.isRequired,
+    onOpenEthereumAppRequest: PropTypes.func.isRequired,
+    onSwitchLedgerModeRequest: PropTypes.func.isRequired,
+    onEnableContractSupportRequest: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
-    this.LEDGER_STATES = {
-      ATTEMPTING_CONNECTION: 'ATTEMPTING_CONNECTION',
-      CONNECT_LEDGER: 'CONNECT_LEDGER',
-      OPEN_APP: 'OPEN_APP',
-      SWITCH_MODE: 'SWITCH_MODE',
-      ENABLE_CONTRACT_SUPPORT: 'ENABLE_CONTRACT_SUPPORT',
-      OTHER_ISSUE: 'OTHER_ISSUE',
-    }
-
     this.LedgerEthereum = null
 
     this.state = {
-      ledgerState: null,
       displayInstructions: false,
     }
 
     this.connectLedger = this.connectLedger.bind(this)
-    this.onConnectLedgerRequest = this.onConnectLedgerRequest.bind(this)
-    this.onOpenEthereumAppRequest = this.onOpenEthereumAppRequest.bind(this)
-    this.onSwitchLedgerModeRequest = this.onSwitchLedgerModeRequest.bind(this)
-    this.onEnableContractSupportRequest = this.onEnableContractSupportRequest.bind(this)
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      nextState.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION &&
-      this.state.ledgerState !== nextState.ledgerState
+      nextProps.ledgerStatus !== LEDGER_STATES.ATTEMPTING_CONNECTION &&
+      this.props.ledgerStatus !== nextProps.ledgerStatus
     ) {
       this.updateDisplayInstructions(true)
     }
   }
 
-
-  // NOTE --  basically the only state that gets called is 'connect' until success,
-  //          but potentially the other will at a later point
-  async onConnectLedgerRequest() {
-    this.setState({
-      ledgerState: this.LEDGER_STATES.CONNECT_LEDGER,
-    })
-  }
-
-  async onOpenEthereumAppRequest() {
-    this.setState({
-      ledgerState: this.LEDGER_STATES.OPEN_APP,
-    })
-  }
-
-  async onSwitchLedgerModeRequest() {
-    this.setState({
-      ledgerState: this.LEDGER_STATES.SWITCH_MODE,
-    })
-  }
-
-  async onEnableContractSupportRequest() {
-    this.props.updateModal({
-      type: MODAL_LEDGER,
-      error: 'Please enable Contract Data on your Ledger to use Augur.',
-    })
-  }
-
   async connectLedger() {
-    this.setState({ ledgerState: this.LEDGER_STATES.ATTEMPTING_CONNECTION })
+    this.props.updateLedgerStatus(LEDGER_STATES.ATTEMPTING_CONNECTION)
 
     const ledgerEthereum = new LedgerEthereum(
       this.props.networkId,
       BrowserLedgerConnectionFactory,
-      this.onConnectLedgerRequest,
-      this.onOpenEthereumAppRequest,
-      this.onSwitchLedgerModeRequest,
-      this.onEnableContractSupportRequest,
+      this.props.onConnectLedgerRequest,
+      this.props.onOpenEthereumAppRequest,
+      this.props.onSwitchLedgerModeRequest,
+      this.props.onEnableContractSupportRequest,
     )
 
     const address = await ledgerEthereum.getAddressByBip44Index()
@@ -100,7 +63,7 @@ export default class Ledger extends Component {
       return this.props.loginWithLedger(address, ledgerEthereum)
     }
 
-    this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE })
+    this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE)
   }
 
   updateDisplayInstructions(displayInstructions) {
@@ -108,6 +71,7 @@ export default class Ledger extends Component {
   }
 
   render() {
+    const { ledgerStatus } = this.props
     const s = this.state
 
     return (
@@ -119,10 +83,10 @@ export default class Ledger extends Component {
             className={Styles.LedgerConnect__button}
             onClick={() => {
               this.connectLedger()
-                .catch(() => this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE }))
+                .catch(() => this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE))
             }}
           >
-            {s.ledgerState !== this.LEDGER_STATES.ATTEMPTING_CONNECTION ?
+            {ledgerStatus !== LEDGER_STATES.ATTEMPTING_CONNECTION ?
               'Connect Ledger' :
               <Spinner light />
             }
