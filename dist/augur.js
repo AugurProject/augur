@@ -716,8 +716,8 @@ module.exports = setupFunctionsAbi;
 var BigNumber = require("bignumber.js");
 
 var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(4, 10);
-var multiple = ten.exponentiatedBy(4);
+var decimals = new BigNumber(18, 10);
+var multiple = ten.exponentiatedBy(18);
 
 var SECONDS_PER_DAY = 3600 * 24;
 
@@ -2166,7 +2166,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  */
 
 /**
-* @typedef {Object} gasEstimateTotals
+* @typedef {Object} GasEstimateTotals
 * @property {BigNumber} disputeCrowdsourcers Total gas estimate for redeeming all DisputeCrowdsourcer reporting fees.
 * @property {BigNumber} initialReporters Total gas estimate for redeeming all InitialReporter reporting fees.
 * @property {BigNumber} feeWindows Total gas estimate for redeeming all FeeWindow reporting fees.
@@ -2174,20 +2174,26 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 */
 
 /**
-* @typedef {Object} gasEstimateInfo
+* @typedef {Object} GasEstimateInfo
 * @property {Array.<Object>} disputeCrowdsourcers Array of objects containing contract address/gas estimate pairs for all DisputeCrowdsourcers.
 * @property {Array.<Object>} initialReporters Array of objects containing contract address/gas estimate pairs for all InitialReporters.
 * @property {Array.<Object>} feeWindows Array of objects containing contract address/gas estimate pairs for all FeeWindows.
-* @property {gasEstimateTotals} totals Object containing total gas estimates for each type of contract.
+* @property {GasEstimateTotals} totals Object containing total gas estimates for each type of contract.
 */
+
+/**
+ * @typedef {Object} FailedTransaction
+ * @property {string} address Ethereum address of contract that returned a transaction error.
+ * @property {RPCError|Error} error Error that occurred when attempting to make a transaction to the contract.
+ */
 
 /**
 * @typedef {Object} ClaimReportingFeesInfo
 * @property {Array.<string>|null} redeemedFeeWindows Addresses of all successfully redeemed Fee Windows, as hexadecimal strings. Not set if `p.estimateGas` is true.
 * @property {Array.<string>|null} redeemedDisputeCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
 * @property {Array.<string>|null} redeemedInitialReporters Addresses of all successfully redeemed Initial Reporters, as hexadecimal strings.  Not set if `p.estimateGas` is true.
-* @property {gasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
-* @property {Array.<RPCError|Error>} errors Array of errors returned when attempting to make transactions or get gas estimates, indexed by contract address.
+* @property {GasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
+* @property {Array.<FailedTransaction>} failedTransactions Array of FailedTransaction objects containing error information about each failed transaction.
 */
 
 /**
@@ -2215,7 +2221,7 @@ function claimReportingFees(p, callback) {
       all: new BigNumber(0)
     }
   };
-  var errors = [];
+  var failedTransactions = [];
 
   async.eachLimit(p.redeemableContracts, PARALLEL_LIMIT, function (contract, nextContract) {
     switch (contract.type) {
@@ -2237,8 +2243,8 @@ function claimReportingFees(p, callback) {
             }
             nextContract();
           },
-          onFailed: function onFailed(error) {
-            errors[contract.address] = error;
+          onFailed: function onFailed(err) {
+            failedTransactions.push({ address: contract.address, error: err });
             nextContract();
           }
         }));
@@ -2261,8 +2267,8 @@ function claimReportingFees(p, callback) {
             }
             nextContract();
           },
-          onFailed: function onFailed(error) {
-            errors[contract.address] = error;
+          onFailed: function onFailed(err) {
+            failedTransactions.push({ address: contract.address, error: err });
             nextContract();
           }
         }));
@@ -2285,14 +2291,14 @@ function claimReportingFees(p, callback) {
             }
             nextContract();
           },
-          onFailed: function onFailed(error) {
-            errors[contract.address] = error;
+          onFailed: function onFailed(err) {
+            failedTransactions.push({ address: contract.address, error: err });
             nextContract();
           }
         }));
         break;
       default:
-        errors[contract.address] = new Error("Unknown contract type: " + contract.type);
+        failedTransactions.push({ address: contract.address, error: "Unknown contract type: " + contract.type });
         nextContract();
         break;
     }
@@ -2301,16 +2307,20 @@ function claimReportingFees(p, callback) {
       redeemedFeeWindows: redeemedFeeWindows,
       redeemedDisputeCrowdsourcers: redeemedDisputeCrowdsourcers,
       redeemedInitialReporters: redeemedInitialReporters,
-      errors: errors
+      failedTransactions: failedTransactions
     };
     if (p.estimateGas) {
       gasEstimates.totals.all = gasEstimates.totals.disputeCrowdsourcers.plus(gasEstimates.totals.initialReporters).plus(gasEstimates.totals.feeWindows);
       result = {
         gasEstimates: gasEstimates,
-        errors: errors
+        failedTransactions: failedTransactions
       };
     }
-    callback(result);
+    var err = null;
+    if (failedTransactions.length > 0) {
+      err = new Error("Not all transactions were successful. See returned failedTransactions parameter for details.");
+    }
+    callback(err, result);
   });
 }
 
@@ -2674,9 +2684,9 @@ module.exports = calculateBidCost;
 var BigNumber = require("bignumber.js");
 
 function calculateOnChainFillPrice(orderType, onChainPrice, numTicks) {
-  if (onChainPrice.constructor !== BigNumber) onChainPrice = new BigNumber(onChainPrice, 10);
-  if (orderType === 0) return onChainPrice;
-  if (numTicks.constructor !== BigNumber) numTicks = new BigNumber(numTicks, 10);
+  if (!BigNumber.isBigNumber(onChainPrice)) onChainPrice = new BigNumber(onChainPrice, 10);
+  if (orderType === 1) return onChainPrice;
+  if (!BigNumber.isBigNumber(numTicks)) numTicks = new BigNumber(numTicks, 10);
   return numTicks.minus(onChainPrice);
 }
 
@@ -2687,9 +2697,9 @@ module.exports = calculateOnChainFillPrice;
 var BigNumber = require("bignumber.js");
 
 function calculateTickSize(numTicks, minPrice, maxPrice) {
-  if (numTicks.constructor !== BigNumber) numTicks = new BigNumber(numTicks, 10);
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
+  if (!BigNumber.isBigNumber(numTicks)) numTicks = new BigNumber(numTicks, 10);
+  if (!BigNumber.isBigNumber(minPrice)) minPrice = new BigNumber(minPrice, 10);
+  if (!BigNumber.isBigNumber(maxPrice)) maxPrice = new BigNumber(maxPrice, 10);
   return maxPrice.minus(minPrice).dividedBy(numTicks);
 }
 
@@ -2700,10 +2710,10 @@ module.exports = calculateTickSize;
 var BigNumber = require("bignumber.js");
 
 function calculateTotalFill(onChainShares, attoTokens, onChainFillPrice) {
-  if (onChainShares.constructor !== BigNumber) onChainShares = new BigNumber(onChainShares, 10);
-  if (attoTokens.constructor !== BigNumber) attoTokens = new BigNumber(attoTokens, 10);
-  if (onChainFillPrice.constructor !== BigNumber) onChainFillPrice = new BigNumber(onChainFillPrice, 10);
-  return onChainShares.plus(attoTokens.dividedBy(onChainFillPrice));
+  if (!BigNumber.isBigNumber(onChainShares)) onChainShares = new BigNumber(onChainShares, 10);
+  if (!BigNumber.isBigNumber(attoTokens)) attoTokens = new BigNumber(attoTokens, 10);
+  if (!BigNumber.isBigNumber(onChainFillPrice)) onChainFillPrice = new BigNumber(onChainFillPrice, 10);
+  return onChainShares.plus(attoTokens.dividedBy(onChainFillPrice).integerValue(BigNumber.ROUND_DOWN));
 }
 
 module.exports = calculateTotalFill;
@@ -2832,9 +2842,9 @@ function denormalizePrice(p) {
   var minPrice = p.minPrice;
   var maxPrice = p.maxPrice;
   var normalizedPrice = p.normalizedPrice;
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
-  if (normalizedPrice.constructor !== BigNumber) normalizedPrice = new BigNumber(normalizedPrice, 10);
+  if (!BigNumber.isBigNumber(minPrice)) minPrice = new BigNumber(minPrice, 10);
+  if (!BigNumber.isBigNumber(maxPrice)) maxPrice = new BigNumber(maxPrice, 10);
+  if (!BigNumber.isBigNumber(normalizedPrice)) normalizedPrice = new BigNumber(normalizedPrice, 10);
   if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
   if (normalizedPrice.lt(0)) throw new Error("Normalized price is below 0");
   if (normalizedPrice.gt(1)) throw new Error("Normalized price is above 1");
@@ -3054,6 +3064,7 @@ function getTradeAmountRemaining(p, callback) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
         console.log("OrderFilled log:", JSON.stringify(logs[i], null, 2));
         console.log("parsed OrderFilled log:", JSON.stringify(orderFilledLog, null, 2));
+        console.log("onChainFillPrice:", p.onChainFillPrice.toFixed());
         var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.onChainFillPrice);
         tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
         console.log("single-log amount filled:", totalFill.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(totalFill, p.tickSize).toFixed(), "shares");
@@ -3187,9 +3198,9 @@ function normalizePrice(p) {
   var minPrice = p.minPrice;
   var maxPrice = p.maxPrice;
   var price = p.price;
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
-  if (price.constructor !== BigNumber) price = new BigNumber(price, 10);
+  if (!BigNumber.isBigNumber(minPrice)) minPrice = new BigNumber(minPrice, 10);
+  if (!BigNumber.isBigNumber(maxPrice)) maxPrice = new BigNumber(maxPrice, 10);
+  if (!BigNumber.isBigNumber(price)) price = new BigNumber(price, 10);
   if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum value");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum value");
@@ -4335,7 +4346,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.9.2-2';
+module.exports = '4.9.2-3';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -5666,6 +5677,33 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_childUniverse",
+					"type": "address"
+				},
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_invalid",
+					"type": "bool"
+				}
+			],
+			"name": "logUniverseCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_topic",
 					"type": "bytes32"
 				},
@@ -6433,33 +6471,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_parentPayoutDistributionHash",
-					"type": "bytes32"
-				},
-				{
-					"name": "_parentPayoutNumerators",
-					"type": "uint256[]"
-				},
-				{
-					"name": "_parentInvalid",
-					"type": "bool"
-				}
-			],
-			"name": "createChildUniverse",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -6776,6 +6787,25 @@ module.exports={
 				{
 					"name": "",
 					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_parentPayoutDistributionHash",
+					"type": "bytes32"
+				}
+			],
+			"name": "createChildUniverse",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
 				}
 			],
 			"payable": false,
@@ -32075,27 +32105,21 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":154,"minimalistic-assert":419,"minimalistic-crypto-utils":420}],188:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "elliptic@6.4.0",
-      "/home/pg/Development/augur/augur.js"
-    ]
-  ],
-  "_from": "elliptic@6.4.0",
+  "_from": "elliptic@^6.0.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "elliptic@6.4.0",
+    "raw": "elliptic@^6.0.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.4.0",
+    "rawSpec": "^6.0.0",
     "saveSpec": null,
-    "fetchSpec": "6.4.0"
+    "fetchSpec": "^6.0.0"
   },
   "_requiredBy": [
     "/browserify-sign",
@@ -32104,8 +32128,9 @@ module.exports={
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_spec": "6.4.0",
-  "_where": "/home/pg/Development/augur/augur.js",
+  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
+  "_spec": "elliptic@^6.0.0",
+  "_where": "/home/jack/src/augur.js/node_modules/browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -32113,6 +32138,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -32122,6 +32148,7 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
+  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
