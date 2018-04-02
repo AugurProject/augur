@@ -19,13 +19,6 @@ if [ "$(docker ps -a | grep geth-node)" ]; then
   docker rm geth-node
 fi
 
-echo "$CONTAINER_NAME: $DOCKER_IMAGE";
-if $USE_POPULATED_CONTRACTS; then
-  npm explore augur.js -- npm run docker:geth:pop
-else
-  npm explore augur.js -- npm run docker:geth
-fi
-
 cd ../;
 
 echo "Building augur.js";
@@ -37,7 +30,9 @@ yarn link;
 
 if $USE_POPULATED_CONTRACTS; then
   echo "Using deployed contracts"
+  npm run docker:geth:pop
 else
+  npm run docker:geth
   yarn run deploy:environment
 fi
 
