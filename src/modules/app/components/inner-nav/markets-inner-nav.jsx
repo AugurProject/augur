@@ -72,22 +72,24 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
   addTags(tags) {
     const newTags = {}
+    // NOTE: changed this to just display true since we aren't going to show in 50 milliseconds anymore.
     tags.forEach((tag) => {
-      newTags[tag] = { visible: false }
+      newTags[tag] = { visible: true }
     })
 
     const visibleTags = { ...this.state.visibleTags, ...newTags }
     this.setState({ visibleTags })
-
+    // NOTE: Removed this for now, we shoudl find a better way to animate as this will re-show things tags that should be hidden.
     // animate tags after mounting
-    window.setTimeout(() => {
-      const animTags = {}
-      tags.forEach((tag) => {
-        animTags[tag] = { visible: true }
-      })
-      const visibleTags = { ...this.state.visibleTags, ...animTags }
-      this.setState({ visibleTags })
-    }, 50)
+    // window.setTimeout(() => {
+    //   const animTags = {}
+    //   tags.forEach((tag) => {
+    //     animTags[tag] = { visible: true }
+    //   })
+    //   const visibleTags = { ...this.state.visibleTags, ...animTags }
+    //   console.log('new tags 3', visibleTags);
+    //   this.setState({ visibleTags })
+    // }, 50)
   }
 
   removeTags(tags) {

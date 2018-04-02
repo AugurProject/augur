@@ -1,7 +1,7 @@
 FROM node:8.10-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
-ARG ethereum_network=rinkeby
+ARG ethereum_network=stable
 ENV ETHEREUM_NETWORK=$ethereum_network
 ARG ipfs_key
 ENV PUBLISH_ONLY=false
