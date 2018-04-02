@@ -14,9 +14,9 @@ function normalizePrice(p) {
   var minPrice = p.minPrice;
   var maxPrice = p.maxPrice;
   var price = p.price;
-  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
-  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
-  if (price.constructor !== BigNumber) price = new BigNumber(price, 10);
+  if (!BigNumber.isBigNumber(minPrice)) minPrice = new BigNumber(minPrice, 10);
+  if (!BigNumber.isBigNumber(maxPrice)) maxPrice = new BigNumber(maxPrice, 10);
+  if (!BigNumber.isBigNumber(price)) price = new BigNumber(price, 10);
   if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum value");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum value");

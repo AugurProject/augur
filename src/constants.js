@@ -3,8 +3,8 @@
 var BigNumber = require("bignumber.js");
 
 var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(4, 10);
-var multiple = ten.exponentiatedBy(4);
+var decimals = new BigNumber(18, 10);
+var multiple = ten.exponentiatedBy(18);
 
 var SECONDS_PER_DAY = 3600 * 24;
 
