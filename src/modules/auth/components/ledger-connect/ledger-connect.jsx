@@ -79,10 +79,14 @@ export default class Ledger extends Component {
   }
 
   async connectLedger() {
+    const {
+      loginWithLedger,
+      networkId,
+    } = this.props
     this.setState({ ledgerState: this.LEDGER_STATES.ATTEMPTING_CONNECTION })
 
     const ledgerEthereum = new LedgerEthereum(
-      this.props.networkId,
+      networkId,
       BrowserLedgerConnectionFactory,
       this.onConnectLedgerRequest,
       this.onOpenEthereumAppRequest,
@@ -93,7 +97,7 @@ export default class Ledger extends Component {
     const address = await ledgerEthereum.getAddressByBip44Index()
 
     if (address) {
-      return this.props.loginWithLedger(address, ledgerEthereum)
+      return loginWithLedger(address, ledgerEthereum)
     }
 
     this.setState({ ledgerState: this.LEDGER_STATES.OTHER_ISSUE })

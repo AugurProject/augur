@@ -7,7 +7,7 @@ import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
 
-import { BigNumber } from 'utils/wrapped-big-number'
+import { BigNumber } from 'utils/create-big-number'
 
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
@@ -15,12 +15,13 @@ import Styles from 'modules/trade/components/trading/trading.styles'
 
 class MarketTrading extends Component {
   static propTypes = {
-    market: PropTypes.object.isRequired,
     availableFunds: PropTypes.instanceOf(BigNumber).isRequired,
+    clearTradeInProgress: PropTypes.func,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    market: PropTypes.object.isRequired,
     selectedOrderProperties: PropTypes.object.isRequired,
-    selectedOutcome: PropTypes.any,
+    selectedOutcome: PropTypes.string,
   }
 
   constructor(props) {
@@ -38,10 +39,14 @@ class MarketTrading extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      market,
+      selectedOutcome,
+    } = this.props
     if (
       (
-        !isEqual(this.props.selectedOutcome, nextProps.selectedOutcome) ||
-        !isEqual(this.props.market.outcomes, nextProps.market.outcomes)
+        !isEqual(selectedOutcome, nextProps.selectedOutcome) ||
+        !isEqual(market.outcomes, nextProps.market.outcomes)
       ) &&
       (nextProps.market && nextProps.market.outcomes)
     ) {
@@ -68,22 +73,29 @@ class MarketTrading extends Component {
   }
 
   render() {
+    const {
+      availableFunds,
+      clearTradeInProgress,
+      isLogged,
+      isMobile,
+      market,
+      selectedOrderProperties,
+    } = this.props
     const s = this.state
-    const p = this.props
 
-    const hasFunds = p.availableFunds && p.availableFunds.gt(0)
+    const hasFunds = availableFunds && availableFunds.gt(0)
     const hasSelectedOutcome = s.selectedOutcome !== null
 
     let initialMessage = ''
 
     switch (true) {
-      case !p.isLogged:
+      case !isLogged:
         initialMessage = 'Log in to trade.'
         break
-      case p.isLogged && !hasFunds:
+      case isLogged && !hasFunds:
         initialMessage = 'Add funds to begin trading.'
         break
-      case p.isLogged && hasFunds && !hasSelectedOutcome:
+      case isLogged && hasFunds && !hasSelectedOutcome:
         initialMessage = 'Select an outcome to begin placing an order.'
         break
       default:
@@ -92,21 +104,21 @@ class MarketTrading extends Component {
 
     return (
       <section className={Styles.Trading}>
-        { (!p.isMobile || (p.isMobile && s.showForm)) &&
+        { (!isMobile || (isMobile && s.showForm)) &&
           <MarketTradingWrapper
-            market={p.market}
-            isLogged={p.isLogged}
+            market={market}
+            isLogged={isLogged}
             selectedOutcome={s.selectedOutcome}
-            selectedOrderProperties={p.selectedOrderProperties}
+            selectedOrderProperties={selectedOrderProperties}
             initialMessage={initialMessage}
-            isMobile={p.isMobile}
+            isMobile={isMobile}
             toggleForm={this.toggleForm}
             showOrderPlaced={this.showOrderPlaced}
-            availableFunds={p.availableFunds}
-            clearTradeInProgress={p.clearTradeInProgress}
+            availableFunds={availableFunds}
+            clearTradeInProgress={clearTradeInProgress}
           />
         }
-        { p.isMobile && hasSelectedOutcome && initialMessage &&
+        { isMobile && hasSelectedOutcome && initialMessage &&
           <div className={Styles['Trading__initial-message']}>
             <p>{ initialMessage }</p>
             {!hasFunds &&
@@ -118,7 +130,7 @@ class MarketTrading extends Component {
             }
           </div>
         }
-        { p.isMobile && hasSelectedOutcome && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
+        { isMobile && hasSelectedOutcome && !initialMessage && !s.showForm && // this needs to be changed to use p.selectedOutcome (should only show on mobile when an outcome has been selected)
           <div className={Styles['Trading__button--trade']}>
             <button onClick={this.toggleForm}>Trade</button>
           </div>

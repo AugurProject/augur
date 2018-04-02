@@ -1,6 +1,6 @@
 
 
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
@@ -481,65 +481,65 @@ describe('modules/create-market/actions/submit-new-market', () => {
           one: [
             {
               type: BUY,
-              price: WrappedBigNumber('0.1'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.1'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.6'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.6'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: WrappedBigNumber('0.2'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.2'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.7'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.7'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: WrappedBigNumber('0.3'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.3'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.8'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.8'),
+              quantity: createBigNumber('1'),
             },
           ],
           two: [
             {
               type: BUY,
-              price: WrappedBigNumber('0.1'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.1'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.6'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.6'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: WrappedBigNumber('0.2'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.2'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.7'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.7'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: WrappedBigNumber('0.3'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.3'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: WrappedBigNumber('0.8'),
-              quantity: WrappedBigNumber('1'),
+              price: createBigNumber('0.8'),
+              quantity: createBigNumber('1'),
             },
           ],
         },

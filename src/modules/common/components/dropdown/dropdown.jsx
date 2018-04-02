@@ -30,12 +30,13 @@ class Dropdown extends Component {
   }
 
   dropdownSelect(label, value) {
+    const { onChange } = this.props
     if (value !== this.state.value) {
       this.setState({
         label,
         value,
       })
-      this.props.onChange(value)
+      onChange(value)
       this.toggleList()
     }
   }
@@ -51,8 +52,7 @@ class Dropdown extends Component {
   }
 
   render() {
-    const p = this.props
-
+    const { options } = this.props
     return (
       <div className={Styles.Dropdown} ref={(dropdown) => { this.refDropdown = dropdown }}>
         <button
@@ -62,7 +62,7 @@ class Dropdown extends Component {
           {this.state.label}
         </button>
         <div className={classNames(Styles.Dropdown__list, { [`${Styles.active}`]: this.state.showList })}>
-          {p.options.map(option => (
+          {options.map(option => (
             <button
               className={classNames({ [`${Styles.active}`]: option.value === this.state.value })}
               key={option.value}
@@ -78,7 +78,7 @@ class Dropdown extends Component {
           onChange={(e) => { this.dropdownSelect(e.target.options[e.target.selectedIndex].text, e.target.value) }}
           value={this.state.value}
         >
-          {p.options.map(option => (
+          {options.map(option => (
             <option
               key={option.value}
               value={option.value}

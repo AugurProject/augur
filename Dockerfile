@@ -1,7 +1,7 @@
-FROM node:8-stretch
+FROM node:8.10-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
-ARG ethereum_network=rinkeby
+ARG ethereum_network=stable
 ENV ETHEREUM_NETWORK=$ethereum_network
 ARG ipfs_key
 ENV PUBLISH_ONLY=false
@@ -10,6 +10,7 @@ ENV RUN_LOCAL_ONLY=false
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apt-get -y update \
+  && apt-get -y upgrade \
   && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
   && /bin/bash \
   && touch ~/.bashrc \

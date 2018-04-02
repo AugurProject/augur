@@ -26,9 +26,9 @@ export const loadFullMarket = (marketId, callback = logError) => (dispatch, getS
 export const loadMarketDetails = (marketId, callback = logError) => dispatch => (
   dispatch(loadBidsAsks(marketId, (err) => {
     if (err) return loadingError(dispatch, callback, err, marketId)
-    dispatch(loadAccountTrades({ market: marketId }, (err) => {
+    dispatch(loadAccountTrades({ marketId }, (err) => {
       if (err) return loadingError(dispatch, callback, err, marketId)
-      dispatch(loadPriceHistory({ market: marketId }, (err) => {
+      dispatch(loadPriceHistory({ marketId }, (err) => {
         if (err) return loadingError(dispatch, callback, err, marketId)
         dispatch(updateMarketLoading({ [marketId]: MARKET_FULLY_LOADED }))
         callback(null)

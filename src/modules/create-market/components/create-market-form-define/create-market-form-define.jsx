@@ -15,11 +15,12 @@ import StylesForm from 'modules/create-market/components/create-market-form/crea
 export default class CreateMarketDefine extends Component {
 
   static propTypes = {
+    categories: PropTypes.array.isRequired,
+    isBugBounty: PropTypes.bool.isRequired,
+    isValid: PropTypes.bool.isRequired,
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
-    categories: PropTypes.array.isRequired,
     validateField: PropTypes.func.isRequired,
-    isBugBounty: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -37,8 +38,9 @@ export default class CreateMarketDefine extends Component {
   }
 
   filterCategories(category) {
+    const { categories } = this.props
     const userString = category.toLowerCase()
-    return this.props.categories.filter(cat => cat.category.toLowerCase().indexOf(userString) === 0)
+    return categories.filter(cat => cat.category.toLowerCase().indexOf(userString) === 0)
   }
 
   updateFilteredCategories(userString, clearSuggestions = false) {
@@ -55,10 +57,14 @@ export default class CreateMarketDefine extends Component {
   }
 
   validateTag(fieldName, value, maxLength, isRequired = true) {
-    const p = this.props
-    const { currentStep } = p.newMarket
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
 
-    const updatedMarket = { ...p.newMarket }
+    const updatedMarket = { ...newMarket }
 
     const compareFields = ['tag1', 'tag2', 'category']
     const compareValues = []
@@ -66,7 +72,7 @@ export default class CreateMarketDefine extends Component {
     compareFields.indexOf(fieldName) !== -1 && compareFields.splice(compareFields.indexOf(fieldName), 1)
 
     compareFields.forEach((value) => {
-      if (p.newMarket[value] !== '') compareValues.push(p.newMarket[value])
+      if (newMarket[value] !== '') compareValues.push(newMarket[value])
     })
 
     switch (true) {
@@ -84,18 +90,22 @@ export default class CreateMarketDefine extends Component {
     }
 
     updatedMarket[fieldName] = value
-    updatedMarket.isValid = p.isValid(currentStep)
+    updatedMarket.isValid = isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   render() {
-    const p = this.props
+    const {
+      isBugBounty,
+      newMarket,
+      validateField,
+    } = this.props
     const s = this.state
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
-        {p.isBugBounty &&
+        {isBugBounty &&
         <div className={Styles.CreateMarketDefine_bugBountyDisclaimer}>
           Augur is currently in the bug bounty phase. Market creation is disabled, but this page is available for users to test out up until the final step.
         </div>
@@ -103,18 +113,18 @@ export default class CreateMarketDefine extends Component {
         <li className={Styles.CreateMarketDefine__question}>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>
-            { p.newMarket.validations[p.newMarket.currentStep].description.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].description }</span>
+            { newMarket.validations[newMarket.currentStep].description.length &&
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].description }</span>
             }
           </label>
           <input
             id="cm__input--desc"
             type="text"
-            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: p.newMarket.validations[p.newMarket.currentStep].description.length })}
-            value={p.newMarket.description}
+            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].description.length })}
+            value={newMarket.description}
             maxLength={DESCRIPTION_MAX_LENGTH}
             placeholder="What question do you want the world to predict?"
-            onChange={e => p.validateField('description', e.target.value, DESCRIPTION_MAX_LENGTH)}
+            onChange={e => validateField('description', e.target.value, DESCRIPTION_MAX_LENGTH)}
           />
           <div className={Styles['CreateMarketDefine__question-disclaimer']}>
           The Augur platform does not work well for markets that are subjective or ambiguous. If you&#39;re not sure that the market&#39;s outcome will be known beyond a reasonable doubt by the expiration date, you should not create this market.
@@ -127,15 +137,15 @@ export default class CreateMarketDefine extends Component {
           <input
             ref={(catInput) => { this.catInput = catInput }}
             id="cm__input--cat"
-            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: p.newMarket.validations[p.newMarket.currentStep].category.length })}
+            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].category.length })}
             type="text"
-            value={p.newMarket.category}
+            value={newMarket.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
             onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
           />
-          { p.newMarket.validations[p.newMarket.currentStep].category.length &&
-            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].category }</span>
+          { newMarket.validations[newMarket.currentStep].category.length &&
+            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].category }</span>
           }
         </li>
         <li className={StylesForm['field--50']}>
@@ -143,7 +153,7 @@ export default class CreateMarketDefine extends Component {
             <span>Suggested Categories</span>
           </label>
           <ul className={Styles['CreateMarketDefine__suggested-categories']}>
-            {p.newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
+            {newMarket.category && s.suggestedCategories.slice(0, s.shownSuggestions).map((cat, i) => (
               <li key={i}>
                 <button
                   onClick={() => {
@@ -155,7 +165,7 @@ export default class CreateMarketDefine extends Component {
                 </button>
               </li>
             ))}
-            {p.newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
+            {newMarket.category && s.suggestedCategories.length > s.shownSuggestions &&
               <li>
                 <button onClick={() => this.setState({ shownSuggestions: s.suggestedCategories.length })}>+ {s.suggestedCategories.length - 2} more</button>
               </li>
@@ -165,15 +175,15 @@ export default class CreateMarketDefine extends Component {
         <li className={Styles.CreateMarketDefine__tags}>
           <label htmlFor="cm__input--tag1">
             <span>Tags</span>
-            { (p.newMarket.validations[p.newMarket.currentStep].tag1.length || p.newMarket.validations[p.newMarket.currentStep].tag2.length) &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ p.newMarket.validations[p.newMarket.currentStep].tag1 }</span>
+            { (newMarket.validations[newMarket.currentStep].tag1.length || newMarket.validations[newMarket.currentStep].tag2.length) &&
+              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].tag1 }</span>
             }
           </label>
           <input
             id="cm__input--tag1"
             type="text"
-            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: p.newMarket.validations[p.newMarket.currentStep].tag1.length })}
-            value={p.newMarket.tag1}
+            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag1.length })}
+            value={newMarket.tag1}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
             onChange={e => this.validateTag('tag1', e.target.value, TAGS_MAX_LENGTH, false)}
@@ -181,8 +191,8 @@ export default class CreateMarketDefine extends Component {
           <input
             id="cm__input--tag2"
             type="text"
-            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: p.newMarket.validations[p.newMarket.currentStep].tag2.length })}
-            value={p.newMarket.tag2}
+            className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag2.length })}
+            value={newMarket.tag2}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
             onChange={e => this.validateTag('tag2', e.target.value, TAGS_MAX_LENGTH, false)}

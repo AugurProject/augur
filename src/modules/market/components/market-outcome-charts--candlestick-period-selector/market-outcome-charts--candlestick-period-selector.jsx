@@ -32,12 +32,14 @@ export default class PeriodSelector extends Component {
   }
 
   componentWillMount() {
-    this.updatePermissibleValues(this.props.priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
+    const { priceTimeSeries } = this.props
+    this.updatePermissibleValues(priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const { priceTimeSeries } = this.props
     if (
-      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
       this.state.selectedRange !== nextState.selectedRange ||
       this.state.selectedPeriod !== nextState.selectedPeriod
     ) {
@@ -95,6 +97,7 @@ export default class PeriodSelector extends Component {
   }
 
   validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod) {
+    const { updateSelectedPeriod } = this.props
     // All we're doing here is validating selections relative to each other + setting defaults
     // Establishment of permissible bounds happens elsewhere
     let updatedSelectedRange
@@ -133,7 +136,7 @@ export default class PeriodSelector extends Component {
       selectedPeriod: updatedSelectedPeriod,
     })
 
-    this.props.updateSelectedPeriod({
+    updateSelectedPeriod({
       selectedRange: updatedSelectedRange,
       selectedPeriod: updatedSelectedPeriod,
     })

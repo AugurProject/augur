@@ -26,17 +26,27 @@ export default class ReportingHeader extends Component {
   }
 
   componentWillMount() {
-    this.props.loadReportingWindowBounds()
+    const { loadReportingWindowBounds } = this.props
+    loadReportingWindowBounds()
   }
 
   render() {
-    const p = this.props
-
-    const totalDays = getDaysRemaining(p.reportingWindowStats.endTime, p.reportingWindowStats.startTime)
-    const daysLeft = getDaysRemaining(p.reportingWindowStats.endTime)
-    const formattedDate = convertUnixToFormattedDate(p.reportingWindowStats.endTime)
+    const {
+      currentTime,
+      forkEndTime,
+      forkingMarket,
+      heading,
+      isForking,
+      isMobile,
+      repBalance,
+      reportingWindowStats,
+      updateModal,
+    } = this.props
+    const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
+    const daysLeft = getDaysRemaining(reportingWindowStats.endTime)
+    const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
-    const disableParticipate = (p.repBalance === '0')
+    const disableParticipate = (repBalance === '0')
     const currentPeriodStyle = {
       width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
     }
@@ -45,28 +55,28 @@ export default class ReportingHeader extends Component {
       <article className={Styles.ReportingHeader}>
         <div className={Styles.ReportingHeader__header}>
           <div>
-            <h1 className={Styles.ReportingHeader__heading}>Reporting: {p.heading}</h1>
-            { p.heading === 'Dispute' && p.isForking &&
+            <h1 className={Styles.ReportingHeader__heading}>Reporting: {heading}</h1>
+            { heading === 'Dispute' && isForking &&
               <ForkingContent
-                forkingMarket={this.props.forkingMarket}
-                forkEndTime={this.props.forkEndTime}
-                currentTime={this.props.currentTime}
+                forkingMarket={forkingMarket}
+                forkEndTime={forkEndTime}
+                currentTime={currentTime}
                 expanded={false}
               />
             }
-            { p.heading === 'Dispute' && !p.isForking &&
+            { heading === 'Dispute' && !isForking &&
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
                     <span className={Styles.ReportingHeader__endDate}>Dispute Window ends { formattedDate.formattedLocal }</span>
-                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ p.reportingWindowStats.stake } REP Staked</span>
+                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ reportingWindowStats.stake } REP Staked</span>
                   </div>
                   <button
                     className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
                     data-tip
                     data-for="tooltip--participation-tokens"
                     disabled={disableParticipate}
-                    onClick={() => p.updateModal({
+                    onClick={() => updateModal({
                       type: MODAL_PARTICIPATE,
                       canClose: true,
                     })}
@@ -76,7 +86,7 @@ export default class ReportingHeader extends Component {
                       participate
                     </span>
                   </button>
-                  { !p.isMobile &&
+                  { !isMobile &&
                     <ReactTooltip
                       id="tooltip--participation-tokens"
                       className={TooltipStyles.Tooltip}

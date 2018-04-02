@@ -4,7 +4,7 @@ import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-t
 import { addTradeTransactions } from 'modules/transactions/actions/add-transactions'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import { updateAccountTradeData } from 'modules/my-positions/actions/update-account-trades-data'
 import logError from 'utils/log-error'
 
@@ -20,22 +20,21 @@ export function loadAccountTrades(options, callback = logError) {
   }
 }
 
-export function loadUserTradingHistory(options, callback = logError) {
+export function loadUserTradingHistory(options = {}, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount } = getState()
-    if (!loginAccount.address) return callback(null)
-    const marketId = typeof options === 'object' ? options.market : null
-    if (!marketId) dispatch(clearAccountTrades())
-    augur.trading.getUserTradingHistory({
-      ...options, account: loginAccount.address, universe: universe.id, marketId,
-    }, (err, userTradingHistory) => {
+    if (loginAccount.address == null) return callback(null)
+    if (options.marketId == null) dispatch(clearAccountTrades())
+    augur.trading.getUserTradingHistory({ ...options, account: loginAccount.address, universe: universe.id }, (err, userTradingHistory) => {
       if (err) return callback(err)
       if (userTradingHistory == null || Object.keys(userTradingHistory).length === 0) return callback(null)
-      const marketIds = Object.keys(userTradingHistory).reduce((p, index, i) => {
-        p.push(userTradingHistory[index].marketId)
+      const marketIds = Object.keys(userTradingHistory).reduce((p, index) => {
+        const { marketId } = userTradingHistory[index]
+        if (p.indexOf(marketId) === -1) p.push(marketId)
         return p
       }, [])
-      dispatch(loadMarketsInfo(marketIds, () => {
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err) => {
+        if (err) return callback(err)
         marketIds.forEach((marketId) => {
           const trades = {}
           userTradingHistory.filter(trade => trade.marketId === marketId).forEach((trade) => {
@@ -52,4 +51,3 @@ export function loadUserTradingHistory(options, callback = logError) {
     })
   }
 }
-

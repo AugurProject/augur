@@ -47,10 +47,10 @@ describe('loadReporting action', () => {
     submitRequestStub = stub(mockAugur.augurNode, 'submitRequest')
 
     loadReportingRewire.__Rewire__('augur', mockAugur)
-    loadReportingRewire.__Rewire__('loadMarketsInfo', (marketIds, callback) => {
+    loadReportingRewire.__Rewire__('loadMarketsInfoIfNotLoaded', (marketIds, callback) => {
       callback(null)
       return {
-        type: 'LOAD_MARKETS_INFO',
+        type: 'LOAD_MARKETS_INFO_IF_NOT_LOADED',
         data: {
           marketIds,
         },
@@ -62,7 +62,7 @@ describe('loadReporting action', () => {
 
   afterEach(() => {
     loadReportingRewire.__ResetDependency__('augur')
-    loadReportingRewire.__ResetDependency__('loadMarketsInfo')
+    loadReportingRewire.__ResetDependency__('loadMarketsInfoIfNotLoaded')
   })
 
   it('should load upcoming designated markets for a given user in side the given universe', () => {
@@ -102,7 +102,7 @@ describe('loadReporting action', () => {
             '1111',
           ],
         },
-        type: 'LOAD_MARKETS_INFO',
+        type: 'LOAD_MARKETS_INFO_IF_NOT_LOADED',
       },
       {
         data: [
@@ -118,7 +118,7 @@ describe('loadReporting action', () => {
             '3333',
           ],
         },
-        type: 'LOAD_MARKETS_INFO',
+        type: 'LOAD_MARKETS_INFO_IF_NOT_LOADED',
       },
       {
         data: [
@@ -132,7 +132,7 @@ describe('loadReporting action', () => {
             '4444',
           ],
         },
-        type: 'LOAD_MARKETS_INFO',
+        type: 'LOAD_MARKETS_INFO_IF_NOT_LOADED',
       },
     ]
     const actual = store.getActions()

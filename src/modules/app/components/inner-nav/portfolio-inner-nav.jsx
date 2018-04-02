@@ -3,11 +3,12 @@ import { MY_POSITIONS, MY_MARKETS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_
 
 export default class PorfolioInnerNav extends BaseInnerNav {
   getMainMenuData() {
+    const { currentBasePath } = this.props
     return [
       {
         label: 'Positions',
         visible: true,
-        isSelected: (this.props.currentBasePath === MY_POSITIONS),
+        isSelected: (currentBasePath === MY_POSITIONS),
         link: {
           pathname: MY_POSITIONS,
         },
@@ -15,7 +16,7 @@ export default class PorfolioInnerNav extends BaseInnerNav {
       {
         label: 'My Markets',
         visible: true,
-        isSelected: (this.props.currentBasePath === MY_MARKETS),
+        isSelected: (currentBasePath === MY_MARKETS),
         link: {
           pathname: MY_MARKETS,
         },
@@ -23,7 +24,7 @@ export default class PorfolioInnerNav extends BaseInnerNav {
       {
         label: 'Favorites',
         visible: true,
-        isSelected: (this.props.currentBasePath === FAVORITES),
+        isSelected: (currentBasePath === FAVORITES),
         link: {
           pathname: FAVORITES,
         },
@@ -31,7 +32,7 @@ export default class PorfolioInnerNav extends BaseInnerNav {
       {
         label: 'Transactions',
         visible: true,
-        isSelected: (this.props.currentBasePath === PORTFOLIO_TRANSACTIONS),
+        isSelected: (currentBasePath === PORTFOLIO_TRANSACTIONS),
         link: {
           pathname: PORTFOLIO_TRANSACTIONS,
         },
@@ -39,7 +40,7 @@ export default class PorfolioInnerNav extends BaseInnerNav {
       {
         label: 'Reporting',
         visible: true,
-        isSelected: (this.props.currentBasePath === PORTFOLIO_REPORTS),
+        isSelected: (currentBasePath === PORTFOLIO_REPORTS),
         link: {
           pathname: PORTFOLIO_REPORTS,
         },
