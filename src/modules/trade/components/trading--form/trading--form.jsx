@@ -274,7 +274,7 @@ class MarketTradingForm extends Component {
             type="light"
           >
             <h4>Don&apos;t think this event is going to happen?</h4>
-            <p>Bet against this event occuring by selling shares of Yes (even though you don&apos;t own them). Learn more at http://docs.augur.net/#short-position</p>
+            <p>Bet against this event occuring by selling shares of Yes (even though you don&apos;t own them). Learn more at docs.augur.net/#short-position</p>
           </ReactTooltip>
           <button
             disabled={(!s.isOrderValid)}
