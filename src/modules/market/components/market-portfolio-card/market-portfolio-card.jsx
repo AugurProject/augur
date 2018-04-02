@@ -16,12 +16,13 @@ import PositionStyles from 'modules/market/components/market-positions-list/mark
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
-    market: PropTypes.object.isRequired,
-    closePositionStatus: PropTypes.object.isRequired,
-    linkType: PropTypes.string,
-    positionsDefault: PropTypes.bool,
+    buttonText: PropTypes.string,
     claimTradingProceeds: PropTypes.func,
+    closePositionStatus: PropTypes.object.isRequired,
     isMobile: PropTypes.bool,
+    linkType: PropTypes.string,
+    market: PropTypes.object.isRequired,
+    positionsDefault: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -43,26 +44,31 @@ export default class MarketPortfolioCard extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      buttonText,
+      isMobile,
+      linkType,
+      market,
+    } = this.props
     const myPositionsSummary = getValue(this.props, 'market.myPositionsSummary')
     const myPositionOutcomes = getValue(this.props, 'market.outcomes')
-    let buttonText
+    let localButtonText
 
-    switch (p.linkType) {
+    switch (linkType) {
       case TYPE_REPORT:
-        buttonText = 'Report'
+        localButtonText = 'Report'
         break
       case TYPE_DISPUTE:
-        buttonText = 'Dispute'
+        localButtonText = 'Dispute'
         break
       case TYPE_CLAIM_PROCEEDS:
-        buttonText = 'Claim Proceeds'
+        localButtonText = 'Claim Proceeds'
         break
       case TYPE_MIGRATE_REP:
-        buttonText = 'Migrate REP'
+        localButtonText = 'Migrate REP'
         break
       default:
-        buttonText = 'View'
+        localButtonText = 'View'
     }
 
     return (
@@ -81,15 +87,15 @@ export default class MarketPortfolioCard extends Component {
           >
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles['MarketCard__expiration--mobile']}>
-                {dateHasPassed(p.market.endDate.timestamp) ? 'Expired ' : 'Expires '}
-                { p.isMobile ? p.market.endDate.formattedShort : p.market.endDate.formatted }
+                {dateHasPassed(market.endDate.timestamp) ? 'Expired ' : 'Expires '}
+                { isMobile ? market.endDate.formattedShort : market.endDate.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
                 <MarketLink
-                  id={this.props.market.id}
-                  formattedDescription={this.props.market.description}
+                  id={market.id}
+                  formattedDescription={market.description}
                 >
-                  {this.props.market.description}
+                  {market.description}
                 </MarketLink>
               </h1>
             </div>
@@ -132,10 +138,10 @@ export default class MarketPortfolioCard extends Component {
             </div>
             <span className={Styles.MarketCard__expiration}>
               <span className={Styles.MarketCard__expirationlabel}>
-                {this.props.market.endDateLabel}
+                {market.endDateLabel}
               </span>
               <span className={Styles.MarketCard__expirationvalue}>
-                {getValue(this.props.market, 'endDate.formatted')}
+                {getValue(market, 'endDate.formatted')}
               </span>
             </span>
           </div>
@@ -160,11 +166,11 @@ export default class MarketPortfolioCard extends Component {
             { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
               <ul className={PositionStyles['MarketPositionsList__table-header']}>
                 <li>Outcome</li>
-                { p.isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
-                { p.isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
-                { !p.isMobile && <li><span>Last Price</span></li> }
-                { !p.isMobile && <li><span>Realized <span />P/L</span></li>}
-                { !p.isMobile && <li><span>Unrealized <span />P/L</span></li>}
+                { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
+                { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
+                { !isMobile && <li><span>Last Price</span></li> }
+                { !isMobile && <li><span>Realized <span />P/L</span></li>}
+                { !isMobile && <li><span>Unrealized <span />P/L</span></li>}
                 <li><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
@@ -177,7 +183,7 @@ export default class MarketPortfolioCard extends Component {
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending === true) : []}
                   isExtendedDisplay
-                  isMobile={p.isMobile}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
@@ -185,7 +191,7 @@ export default class MarketPortfolioCard extends Component {
         </section>
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
-            {this.props.market.outcomes[0] && this.props.market.outcomes[0].userOpenOrders && this.props.market.outcomes[0].userOpenOrders.length !== 0 &&
+            {market.outcomes[0] && market.outcomes[0].userOpenOrders && market.outcomes[0].userOpenOrders.length !== 0 &&
               <button
                 className={Styles.MarketCard__headingcontainer}
                 onClick={() => this.toggleTable('openOrders')}
@@ -204,11 +210,11 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.openOrders &&
               <ul className={PositionStyles['MarketPositionsList__table-header']}>
                 <li>Outcome</li>
-                { p.isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
-                { p.isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
-                { !p.isMobile && <li><span>Last Price</span></li> }
-                { !p.isMobile && <li><span>Realized <span />P/L</span></li>}
-                { !p.isMobile && <li><span>Unrealized <span />P/L</span></li>}
+                { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
+                { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
+                { !isMobile && <li><span>Last Price</span></li> }
+                { !isMobile && <li><span>Realized <span />P/L</span></li>}
+                { !isMobile && <li><span>Unrealized <span />P/L</span></li>}
                 <li><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
@@ -222,7 +228,7 @@ export default class MarketPortfolioCard extends Component {
                       order={order}
                       pending={order.pending}
                       isExtendedDisplay
-                      isMobile={p.isMobile}
+                      isMobile={isMobile}
                     />
                   ))
                 ))
@@ -231,16 +237,16 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {p.linkType &&
+        {linkType &&
           <section className={Styles['MarketCard__tablesection-mobile']}>
             <div className={Styles['MarketCard__headingcontainer-mobile']}>
               <MarketLink
                 className={Styles['MarketCard__action-mobile']}
-                id={p.market.id}
-                formattedDescription={p.market.description}
-                linkType={p.linkType}
+                id={market.id}
+                formattedDescription={market.description}
+                linkType={linkType}
               >
-                { p.buttonText || buttonText }
+                { buttonText || localButtonText }
               </MarketLink>
             </div>
           </section>

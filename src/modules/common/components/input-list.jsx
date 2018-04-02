@@ -8,17 +8,16 @@ import Input from 'modules/common/components/input/input'
 import debounce from 'utils/debounce'
 
 export default class InputList extends Component {
-  // TODO -- Prop Validations
   static propTypes = {
-    // className: PropTypes.string,
+    className: PropTypes.string,
+    errors: PropTypes.object,
+    itemMaxLength: PropTypes.number,
     list: PropTypes.array,
-    // errors: PropTypes.array,
+    listMaxElements: PropTypes.number,
     listMinElements: PropTypes.number,
-    // listMaxElements: PropTypes.number,
-    // itemMaxLength: PropTypes.number,
     onChange: PropTypes.func,
     warnings: PropTypes.array,
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -34,7 +33,8 @@ export default class InputList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.warnings && this.props.warnings !== nextProps.warnings) {
+    const { warnings } = this.props
+    if (nextProps.warnings && warnings !== nextProps.warnings) {
       this.setState({ warnings: nextProps.warnings })
       this.clearWarnings()
     }
@@ -76,17 +76,23 @@ export default class InputList extends Component {
   };
 
   render() {
-    const p = this.props
+    const {
+      className,
+      errors,
+      itemMaxLength,
+      listMaxElements,
+      warnings,
+    } = this.props
     const s = this.state
     let { list } = s
 
-    if (!p.listMaxElements || list.length < p.listMaxElements) {
+    if (!listMaxElements || list.length < listMaxElements) {
       list = list.slice()
       list.push('')
     }
 
     return (
-      <div className={classNames('input-list', p.className)}>
+      <div className={classNames('input-list', className)}>
         {list.map((item, i) => (
           <div
             key={i}
@@ -96,18 +102,18 @@ export default class InputList extends Component {
           >
             <Input
               type="text"
-              maxLength={p.itemMaxLength}
+              maxLength={itemMaxLength}
               value={item}
               onChange={newValue => this.handleChange(i, newValue)}
             />
             <span
               className={classNames({
-                'has-errors': p.errors && p.errors[i] && p.errors[i].length,
+                'has-errors': errors && errors[i] && errors[i].length,
                 'has-warnings': s.warnings && s.warnings[i] && s.warnings[i].length,
               })}
             >
-              {p.errors && p.errors[i]}
-              {p.warnings && p.warnings[i]}
+              {errors && errors[i]}
+              {warnings && warnings[i]}
             </span>
           </div>
         ))}
