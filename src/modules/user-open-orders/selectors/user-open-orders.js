@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import store from 'src/store'
 
@@ -14,6 +14,10 @@ import { cancelOrder } from 'modules/bids-asks/actions/cancel-order'
  * @param {String} outcomeId
  * @param {String} marketId
  *
+ * @param marketOrderBook
+ * @param orderCancellation
+ * @param marketOrderBook
+ * @param orderCancellation
  * @return {Array}
  */
 export function selectUserOpenOrders(marketId, outcomeId, marketOrderBook, orderCancellation) {
@@ -44,11 +48,15 @@ const userOpenOrders = memoize((marketId, outcomeId, loginAccount, marketOrderBo
 /**
  * Returns user's order for specified outcome sorted by price
  *
+ * @param marketId
+ * @param marketId
  * @param {Object} orders
  * @param {String} orderType
  * @param {String} outcomeId
+ * @param orderCancellation
  * @param {String} userId
  *
+ * @param orderCancellation
  * @return {Array}
  */
 function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, orderCancellation={}) {
@@ -56,7 +64,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
   return Object.keys(typeOrders)
     .map(orderId => typeOrders[orderId])
     .filter(order => isOrderOfUser(order, userId) && order.orderState === 'OPEN')
-    .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
+    .sort((order1, order2) => createBigNumber(order2.price, 10).comparedTo(createBigNumber(order1.price, 10)))
     .map(order => (
       {
         id: order.orderId,

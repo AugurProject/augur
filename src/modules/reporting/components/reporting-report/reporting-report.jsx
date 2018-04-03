@@ -18,16 +18,18 @@ import Styles from 'modules/reporting/components/reporting-report/reporting-repo
 export default class ReportingReport extends Component {
 
   static propTypes = {
-    history: PropTypes.object.isRequired,
-    market: PropTypes.object.isRequired,
-    isOpenReporting: PropTypes.bool.isRequired,
-    universe: PropTypes.string.isRequired,
-    marketId: PropTypes.string.isRequired,
-    isConnected: PropTypes.bool.isRequired,
-    isMarketLoaded: PropTypes.bool.isRequired,
-    loadFullMarket: PropTypes.func.isRequired,
-    submitInitialReport: PropTypes.func.isRequired,
     estimateSubmitInitialReport: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    isConnected: PropTypes.bool.isRequired,
+    isLogged: PropTypes.bool,
+    isMarketLoaded: PropTypes.bool.isRequired,
+    isOpenReporting: PropTypes.bool.isRequired,
+    loadFullMarket: PropTypes.func.isRequired,
+    location: PropTypes.object,
+    market: PropTypes.object.isRequired,
+    marketId: PropTypes.string.isRequired,
+    submitInitialReport: PropTypes.func.isRequired,
+    universe: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -57,11 +59,16 @@ export default class ReportingReport extends Component {
   }
 
   componentWillMount() {
+    const {
+      isConnected,
+      isMarketLoaded,
+      loadFullMarket,
+    } = this.props
     // needed for both DR and open reporting
     this.calculateMarketCreationCosts()
     this.calculateGasEstimates()
-    if (this.props.isConnected && !this.props.isMarketLoaded) {
-      this.props.loadFullMarket()
+    if (isConnected && !isMarketLoaded) {
+      loadFullMarket()
     }
   }
 
@@ -82,8 +89,12 @@ export default class ReportingReport extends Component {
   }
 
   calculateMarketCreationCosts() {
+    const {
+      isOpenReporting,
+      universe,
+    } = this.props
     // TODO: might have short-cut, reporter gas cost (creationFee) and designatedReportStake is on market from augur-node
-    augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe }, (err, marketCreationCostBreakdown) => {
+    augur.createMarket.getMarketCreationCostBreakdown({ universe }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
 
       const repAmount = formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond)
@@ -91,13 +102,17 @@ export default class ReportingReport extends Component {
       this.setState({
         designatedReportNoShowReputationBond: repAmount,
         reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        stake: this.props.isOpenReporting ? '0' : repAmount.formatted,
+        stake: isOpenReporting ? '0' : repAmount.formatted,
       })
     })
   }
 
   calculateGasEstimates() {
-    this.props.estimateSubmitInitialReport(this.props.market.id, (err, gasEstimateValue) => {
+    const {
+      estimateSubmitInitialReport,
+      market,
+    } = this.props
+    estimateSubmitInitialReport(market.id, (err, gasEstimateValue) => {
       if (err) return console.error(err)
 
       const gasPrice = augur.rpc.getGasPrice()
@@ -108,20 +123,27 @@ export default class ReportingReport extends Component {
   }
 
   render() {
+    const {
+      history,
+      isLogged,
+      isOpenReporting,
+      location,
+      market,
+      submitInitialReport,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section>
         <Helmet>
           <title>Submit Report</title>
         </Helmet>
-        { !isEmpty(p.market) &&
+        { !isEmpty(market) &&
           <MarketPreview
-            {...p.market}
-            isLogged={p.isLogged}
-            location={p.location}
-            history={p.history}
+            {...market}
+            isLogged={isLogged}
+            location={location}
+            history={history}
             cardStyle="single-card"
             hideReportEndingIndicator
             linkType={TYPE_VIEW}
@@ -131,39 +153,39 @@ export default class ReportingReport extends Component {
             toggleDetails={this.toggleDetails}
           />
         }
-        { !isEmpty(p.market) && s.showingDetails &&
+        { !isEmpty(market) && s.showingDetails &&
           <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
-              { p.market.extraInfo &&
-                <p>{p.market.extraInfo}</p>
+              { market.extraInfo &&
+                <p>{market.extraInfo}</p>
               }
               <h4>Resolution Source:</h4>
-              <span>{p.market.resolutionSource ? <a href={p.market.resolutionSource} target="_blank">{p.market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
+              <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
             </div>
           </div>
         }
-        { !isEmpty(p.market) &&
+        { !isEmpty(market) &&
           <article className={FormStyles.Form}>
             { s.currentStep === 0 &&
               <ReportingReportForm
-                market={p.market}
+                market={market}
                 updateState={this.updateState}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcome}
                 stake={s.stake}
                 validations={s.validations}
-                isOpenReporting={p.isOpenReporting}
+                isOpenReporting={isOpenReporting}
               />
             }
             { s.currentStep === 1 &&
               <ReportingReportConfirm
-                market={p.market}
+                market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
                 designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
                 reporterGasCost={s.reporterGasCost}
-                isOpenReporting={p.isOpenReporting}
+                isOpenReporting={isOpenReporting}
                 gasEstimate={s.gasEstimate}
               />
             }
@@ -182,14 +204,14 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => p.submitInitialReport(p.market.id, s.selectedOutcome, s.isMarketInValid, p.history)}
+                onClick={() => submitInitialReport(market.id, s.selectedOutcome, s.isMarketInValid, history)}
               >Submit
               </button>
               }
             </div>
           </article>
         }
-        { isEmpty(p.market) &&
+        { isEmpty(market) &&
           <div className={Styles.NullState}>
             <NullStateMessage
               message="Market not found"

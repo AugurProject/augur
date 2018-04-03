@@ -39,6 +39,7 @@ export default class UportCreate extends Component {
   }
 
   componentWillMount() {
+    const { login } = this.props
     this.uPort.requestCredentials(
       {
         notifcations: true,
@@ -46,7 +47,7 @@ export default class UportCreate extends Component {
       this.uPortURIHandler,
     )
       .then((account) => {
-        this.props.login(decode(account.address), this.uPort.sendTransaction)
+        login(decode(account.address), this.uPort.sendTransaction)
       })
   }
 
@@ -61,13 +62,14 @@ export default class UportCreate extends Component {
   }
 
   setQRSize() {
+    const { isMobile } = this.props
     const width = getValue(this, 'uPortCreateQR.clientWidth')
     const height = getValue(this, 'uPortCreateQR.clientHeight')
 
     if (width > height) { // Height is the constraining value
-      this.setState({ qrSize: this.props.isMobile ? height / 1.2 : height / 1.2 })
+      this.setState({ qrSize: isMobile ? height / 1.2 : height / 1.2 })
     } else { // Width is the constraining value
-      this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 })
+      this.setState({ qrSize: isMobile ? width / 1.2 : width / 3 })
     }
   }
 

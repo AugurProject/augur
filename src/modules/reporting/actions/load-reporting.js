@@ -1,6 +1,6 @@
 import { augur, constants } from 'services/augurjs'
 import logError from 'utils/log-error'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import updateDesignatedReportingMarkets from 'modules/reporting/actions/update-designated-reporting'
 import updateUpcomingDesignatedReportingMarkets from 'modules/reporting/actions/update-upcoming-designated-reporting'
@@ -25,7 +25,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       if (err) return callback(err)
       if (!marketIds || marketIds.length === 0) return callback(null)
 
-      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
         if (err) return console.error(err)
         dispatch(updateUpcomingDesignatedReportingMarkets(marketIds))
       }))
@@ -43,7 +43,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       if (err) return callback(err)
       if (!marketIds || marketIds.length === 0) return callback(null)
 
-      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
         if (err) return console.error(err)
         dispatch(updateDesignatedReportingMarkets(marketIds))
       }))
@@ -61,7 +61,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       if (err) return callback(err)
       if (!marketIds || marketIds.length === 0) return callback(null)
 
-      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
         if (err) return console.error(err)
         dispatch(updateOpenMarkets(marketIds))
       }))
@@ -79,7 +79,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       if (err) return callback(err)
       if (!marketIds || marketIds.length === 0) return callback(null)
 
-      dispatch(loadMarketsInfo(marketIds, (err, marketData) => {
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
         if (err) return console.error(err)
         dispatch(updateResolvedMarkets(marketIds))
       }))

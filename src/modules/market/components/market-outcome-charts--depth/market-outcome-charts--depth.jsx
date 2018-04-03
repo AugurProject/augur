@@ -39,22 +39,31 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   componentDidMount() {
-    this.drawChart(this.props.marketDepth, this.props.orderBookKeys)
+    const {
+      marketDepth,
+      orderBookKeys,
+    } = this.props
+    this.drawChart(marketDepth, orderBookKeys)
 
-    window.addEventListener('resize', () => this.drawChart(this.props.marketDepth, this.props.orderBookKeys))
+    window.addEventListener('resize', () => this.drawChart(marketDepth, orderBookKeys))
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      hoveredPrice,
+      marketDepth,
+      orderBookKeys,
+    } = this.props
     if (
-      !isEqual(this.props.marketDepth, nextProps.marketDepth) ||
-      !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys)
+      !isEqual(marketDepth, nextProps.marketDepth) ||
+      !isEqual(orderBookKeys, nextProps.orderBookKeys)
     ) {
       this.drawChart(nextProps.marketDepth, nextProps.orderBookKeys)
     }
 
     if (
-      !isEqual(this.props.hoveredPrice, nextProps.hoveredPrice) ||
-      !isEqual(this.props.marketDepth, nextProps.marketDepth)
+      !isEqual(hoveredPrice, nextProps.hoveredPrice) ||
+      !isEqual(marketDepth, nextProps.marketDepth)
     ) {
       this.drawCrosshairs(nextProps.hoveredPrice, nextProps.marketDepth)
     }
@@ -65,6 +74,13 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   drawChart(marketDepth, orderBookKeys) {
+    const {
+      fixedPrecision,
+      marketMax,
+      marketMin,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     if (this.depthChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv)
@@ -184,7 +200,7 @@ export default class MarketOutcomeDepth extends Component {
         .attr('width', width)
         .attr('height', height)
         .on('mouseover', () => d3.select('#crosshairs').style('display', null))
-        .on('mouseout', () => this.props.updateHoveredPrice(null))
+        .on('mouseout', () => updateHoveredPrice(null))
         .on('mousemove', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
 
@@ -192,20 +208,20 @@ export default class MarketOutcomeDepth extends Component {
           // const y = mouse[1]
 
           // Determine closest order
-          const hoveredPrice = this.state.yScale.invert(mouse[1]).toFixed(this.props.fixedPrecision)
+          const hoveredPrice = this.state.yScale.invert(mouse[1]).toFixed(fixedPrecision)
 
-          this.props.updateHoveredPrice(hoveredPrice)
+          updateHoveredPrice(hoveredPrice)
         })
         .on('click', () => {
           const mouse = d3.mouse(d3.select('#outcome_depth').node())
-          const orderPrice = this.state.yScale.invert(mouse[1]).toFixed(this.props.fixedPrecision)
+          const orderPrice = this.state.yScale.invert(mouse[1]).toFixed(fixedPrecision)
           const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
           if (
-            orderPrice > this.props.marketMin &&
-            orderPrice < this.props.marketMax
+            orderPrice > marketMin &&
+            orderPrice < marketMax
           ) {
-            this.props.updateSeletedOrderProperties({
+            updateSeletedOrderProperties({
               selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
               orderPrice: nearestFillingOrder[1],
               orderQuantity: nearestFillingOrder[0],
@@ -224,16 +240,17 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   drawCrosshairs(price, marketDepth) {
+    const { updateHoveredDepth } = this.props
     if (price == null) {
       d3.select('#crosshairs').style('display', 'none')
       d3.select('#hovered_price_label').text('')
-      this.props.updateHoveredDepth([])
+      updateHoveredDepth([])
     } else {
       const nearestFillingOrder = nearestCompletelyFillingOrder(price, marketDepth)
 
       if (nearestFillingOrder === null) return
 
-      this.props.updateHoveredDepth(nearestFillingOrder)
+      updateHoveredDepth(nearestFillingOrder)
 
       d3.select('#crosshairs').style('display', null)
 

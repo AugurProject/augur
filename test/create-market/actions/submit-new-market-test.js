@@ -1,6 +1,6 @@
 
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
@@ -481,65 +481,65 @@ describe('modules/create-market/actions/submit-new-market', () => {
           one: [
             {
               type: BUY,
-              price: new BigNumber('0.1'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.1'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.6'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.6'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: new BigNumber('0.2'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.2'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.7'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.7'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: new BigNumber('0.3'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.3'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.8'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.8'),
+              quantity: createBigNumber('1'),
             },
           ],
           two: [
             {
               type: BUY,
-              price: new BigNumber('0.1'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.1'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.6'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.6'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: new BigNumber('0.2'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.2'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.7'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.7'),
+              quantity: createBigNumber('1'),
             },
             {
               type: BUY,
-              price: new BigNumber('0.3'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.3'),
+              quantity: createBigNumber('1'),
             },
             {
               type: SELL,
-              price: new BigNumber('0.8'),
-              quantity: new BigNumber('1'),
+              price: createBigNumber('0.8'),
+              quantity: createBigNumber('1'),
             },
           ],
         },

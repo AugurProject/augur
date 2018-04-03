@@ -1,9 +1,10 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
+  const TopOutcomeCount = 8
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
   const { marketType, reportableOutcomes } = market
   const outcomes = reportableOutcomes.slice()
@@ -34,16 +35,26 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
   }, [])
     .reduce(fillInOutcomes, addDefaultStakeOutcomes)
     .filter(o => !o.tentativeWinning)
-    .sort((a, b) => sortOutcomes(a, b)).slice(0, 8)
-  return [tentativeWinner, ...filteredOutcomes]
+
+  const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes)
+  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
+  const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
+  // check that market invalid is in list
+  if (allDisputedOutcomes.find(o => o.id === '0.5')) return allDisputedOutcomes
+
+  return [...allDisputedOutcomes, invalidOutcome]
+}
+
+const getInvalidOutcome = (filteredOutcomes, addDefaultStakeOutcomes) => {
+  const invalidOutcome = filteredOutcomes.find(o => o.id === '0.5')
+  if (invalidOutcome) return invalidOutcome
+  return addDefaultStakeOutcomes.find(o => o.id === '0.5')
 }
 
 const sortOutcomes = (a, b) => {
-  const stakeSort = new BigNumber(a.stakeRemaining || 0).gt(new BigNumber(b.stakeRemaining || 0))
-  const currentSort = new BigNumber(a.stakeCurrent || 0).lt(new BigNumber(b.stakeCurrent || 0))
-  if (stakeSort) return 1
-  if (!stakeSort && currentSort) return 1
-  if (!stakeSort) return -1
+  const first = createBigNumber(a.stakeRemaining)
+  const second = createBigNumber(b.stakeRemaining)
+  return first.minus(second)
 }
 const fillInOutcomes = (collection, outcome) => {
   const index = collection.map(e => e.id).indexOf(outcome.id.toString())

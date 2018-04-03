@@ -31,20 +31,23 @@ export default class SideNav extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.isMobile !== newProps.isMobile) {
+    const { isMobile } = this.props
+    if (isMobile !== newProps.isMobile) {
       this.setState({ selectedItem: null, selectedKey: null })
     }
   }
 
   isCurrentItem(item) {
+    const { currentBasePath } = this.props
     const selected = (this.state.selectedKey &&
                       this.state.selectedKey === item.title)
-                      || item.route === this.props.currentBasePath
+                      || item.route === currentBasePath
     return selected
   }
 
   itemClick(item) {
-    const mobile = this.props.isMobile
+    const { isMobile } = this.props
+    const mobile = isMobile
     if (!mobile && this.isCurrentItem(item)) return
     const clickCallback = item.onClick
     if (clickCallback && typeof clickCallback === 'function') {
@@ -72,12 +75,16 @@ export default class SideNav extends Component {
       isLogged,
       toggleNotifications,
       unseenCount,
+      defaultMobileClick,
+      menuData,
+      mobileShow,
+      stats,
     } = this.props
 
-    const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !isLogged))
+    const accessFilteredMenu = menuData.filter(item => !(item.requireLogin && !isLogged))
 
     return (
-      <aside className={classNames(Styles.SideNav, { [`${Styles.mobileShow}`]: this.props.mobileShow })}>
+      <aside className={classNames(Styles.SideNav, { [`${Styles.mobileShow}`]: mobileShow })}>
         <ul className={Styles.SideNav__nav}>
           {accessFilteredMenu.map((item, index) => {
             const Icon = item.icon
@@ -88,7 +95,7 @@ export default class SideNav extends Component {
                 if (item.mobileClick) {
                   item.mobileClick()
                 } else {
-                  this.props.defaultMobileClick()
+                  defaultMobileClick()
                 }
               } else {
                 this.itemClick(item)
@@ -134,12 +141,12 @@ export default class SideNav extends Component {
             <div className={Styles.SideName__placement}>
               <div className={Styles['SideNav__stat-label']}>ETH
                 <span className={Styles['SideNav__stat-value']}>
-                  {this.props.stats[0].totalRealEth.value.formatted}
+                  {stats[0].totalRealEth.value.formatted}
                 </span>
               </div>
               <div className={Styles['SideNav__stat-label']}>REP
                 <span className={Styles['SideNav__stat-value']}>
-                  {this.props.stats[0].totalRep.value.formatted}
+                  {stats[0].totalRep.value.formatted}
                 </span>
               </div>
             </div>

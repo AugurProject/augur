@@ -11,11 +11,12 @@ export default class AccountInnerNav extends BaseInnerNav {
   }
 
   getMainMenuData() {
+    const { currentBasePath } = this.props
     return [
       {
         label: 'Deposit',
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_DEPOSIT),
+        isSelected: (currentBasePath === ACCOUNT_DEPOSIT),
         link: {
           pathname: ACCOUNT_DEPOSIT,
         },
@@ -23,7 +24,7 @@ export default class AccountInnerNav extends BaseInnerNav {
       {
         label: 'Withdraw',
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_WITHDRAW),
+        isSelected: (currentBasePath === ACCOUNT_WITHDRAW),
         link: {
           pathname: ACCOUNT_WITHDRAW,
         },
@@ -31,7 +32,7 @@ export default class AccountInnerNav extends BaseInnerNav {
       {
         label: 'Legacy REP',
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_LEGACY_REP),
+        isSelected: (currentBasePath === ACCOUNT_LEGACY_REP),
         link: {
           pathname: ACCOUNT_LEGACY_REP,
         },

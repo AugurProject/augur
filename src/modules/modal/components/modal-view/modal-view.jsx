@@ -6,12 +6,12 @@ import PropTypes from 'prop-types'
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
-import ModalNetworkDisconnected from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected'
-import ModalApproval from 'modules/modal/components/modal-approval/modal-approval'
+import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
+import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
+import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-reporting-fees'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
-
 
 import { Close } from 'modules/common/components/icons'
 
@@ -54,10 +54,13 @@ export default class ModalView extends Component {
   }
 
   render() {
+    const {
+      closeModal,
+      modal,
+    } = this.props
     const s = this.state
-    const p = this.props
     // in place to keep big Cancel button func for ledger/uport
-    const showBigCancel = p.modal.canClose && (p.modal.type === TYPES.MODAL_LEDGER || p.modal.type === TYPES.MODAL_UPORT)
+    const showBigCancel = modal.canClose && (modal.type === TYPES.MODAL_LEDGER || modal.type === TYPES.MODAL_UPORT)
 
     return (
       <section
@@ -67,49 +70,52 @@ export default class ModalView extends Component {
         <div
           className={Styles.ModalView__content}
         >
-          {p.modal.canClose && !showBigCancel &&
+          {modal.canClose && !showBigCancel &&
             <button
               className={Styles.ModalView__close}
-              onClick={p.closeModal}
+              onClick={closeModal}
             >
               {Close}
             </button>
           }
-          {p.modal.type === TYPES.MODAL_LEDGER &&
-            <ModalLedger {...p.modal} />
+          {modal.type === TYPES.MODAL_LEDGER &&
+            <ModalLedger {...modal} />
           }
-          {p.modal.type === TYPES.MODAL_UPORT &&
+          {modal.type === TYPES.MODAL_UPORT &&
             <ModalUport
-              {...p.modal}
+              {...modal}
               modalWidth={s.modalWidth}
               modalHeight={s.modalHeight}
             />
           }
-          {p.modal.type === TYPES.MODAL_PARTICIPATE &&
-            <ModalParticipate {...p} />
+          {modal.type === TYPES.MODAL_PARTICIPATE &&
+            <ModalParticipate {...this.props} />
           }
-          {p.modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
-            <ModalNetworkMismatch {...p.modal} />
+          {modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
+            <ModalNetworkMismatch {...modal} />
           }
-          {p.modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
-            <ModalNetworkDisconnected {...p} />
+          {modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
+            <ModalNetworkDisconnected {...this.props} />
           }
-          {p.modal.type === TYPES.MODAL_ACCOUNT_APPROVAL &&
-            <ModalApproval {...p} />
+          {modal.type === TYPES.MODAL_ACCOUNT_APPROVAL &&
+            <ModalApproval {...this.props} />
           }
-          {p.modal.type === TYPES.MODAL_ESCAPE_HATCH &&
-            <ModalEscapeHatch {...p} />
+          {modal.type === TYPES.MODAL_ESCAPE_HATCH &&
+            <ModalEscapeHatch {...this.props} />
           }
-          {p.modal.type === TYPES.MODAL_MIGRATE_MARKET &&
+          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES &&
+            <ModalClaimReportingFees {...modal} />
+          }
+          {modal.type === TYPES.MODAL_MIGRATE_MARKET &&
             <ModalMigrateMarket
-              {...p.modal}
-              closeModal={p.closeModal}
+              {...modal}
+              closeModal={closeModal}
             />
           }
           {showBigCancel &&
             <button
               className={Styles.ModalView__button}
-              onClick={p.closeModal}
+              onClick={closeModal}
             >
               Close
             </button>

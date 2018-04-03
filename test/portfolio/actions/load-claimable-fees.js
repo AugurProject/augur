@@ -20,7 +20,7 @@ describe('modules/portfolio/actions/load-claimable-fees.js', () => {
         const actual = loadClaimableFees()()
         const expected = {
           unclaimedEth: '1',
-          unclaimedRepStaked: '2',
+          unclaimedRepStaked: '2000000000000000000',
           unclaimedRepEarned: '3',
           claimedEth: '4',
           claimedRepStaked: '5',
