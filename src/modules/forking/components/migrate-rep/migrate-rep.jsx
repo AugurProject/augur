@@ -42,13 +42,13 @@ export default class MigrateRep extends Component {
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
-      repAmount: 0,
+      repAmount: '',
       validations: {
         repAmount: false,
         selectedOutcome: null,
       },
       gasEstimate: '0',
-      forkMigrationTotals: {},
+      forkMigrationTotals: null,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -104,7 +104,7 @@ export default class MigrateRep extends Component {
       estimateSubmitMigrateREP,
       market,
     } = this.props
-    if (this.state.repAmount > 0) {
+    if (this.state.repAmount !== '') {
       const amount = speedomatic.fix(this.state.repAmount, 'hex')
       estimateSubmitMigrateREP(market.id, this.state.selectedOutcome, this.state.isMarketInValid, amount, (err, gasEstimateValue) => {
         if (err) return console.error(err)
@@ -173,7 +173,6 @@ export default class MigrateRep extends Component {
                 selectedOutcome={s.selectedOutcome}
                 selectedOutcomeName={s.selectedOutcomeName}
                 forkMigrationTotals={s.forkMigrationTotals}
-                repAmount={s.repAmount}
                 validations={s.validations}
                 repAmounts={s.repAmounts}
                 accountREP={accountREP}
