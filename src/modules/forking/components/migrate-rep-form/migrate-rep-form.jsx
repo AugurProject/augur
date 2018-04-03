@@ -167,7 +167,7 @@ export default class MigrateRepForm extends Component {
     const { reportableOutcomes } = market
     let formattedMigrationTotals = []
     if (forkMigrationTotals !== null) {
-      formattedMigrationTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
+      const processTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
         const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
         const { isInvalid } = forkMigrationOutcomeData
         const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
@@ -192,7 +192,7 @@ export default class MigrateRepForm extends Component {
             winner: false,
           },
         ]
-      }, formattedMigrationTotals)
+      }, processTotals)
         .sort((a, b) => createBigNumber(a.rep.fullPrecision).isLessThan(createBigNumber(b.rep.fullPrecision)))
     }
 
