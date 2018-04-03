@@ -112,7 +112,6 @@ export default class ReportingReport extends Component {
     const p = this.props
 
     return (
-
       <section>
         <Helmet>
           <title>Submit Report</title>
