@@ -9,9 +9,9 @@ const AccountUniverses = p => (
     <div className={Styles.AccountUniverses__heading}>
       <h1>Universes</h1>
     </div>
-    <h4>You are currently in:</h4>
     <div className={Styles.AccountUniverses__main}>
       <div className={Styles.AccountUniverses__description}>
+        <h4>Parent Universe</h4>
         <AccountUniverseDescription
           switchUniverse={p.switchUniverse}
           hideSwitchButton
@@ -23,6 +23,26 @@ const AccountUniverses = p => (
         />
       </div>
       <div className={Styles.AccountUniverses__description}>
+        <h4>Current and Sibling Universes</h4>
+        <AccountUniverseDescription
+          switchUniverse={p.switchUniverse}
+          universeDescription="Universe B"
+          accountRep="60"
+          universeRep="50,000"
+          numMarkets="525"
+          isWinningUniverse={false}
+        />
+        <AccountUniverseDescription
+          switchUniverse={p.switchUniverse}
+          universeDescription="Universe C"
+          accountRep="0"
+          universeRep="0"
+          numMarkets="0"
+          isWinningUniverse={false}
+        />
+      </div>
+      <div className={Styles.AccountUniverses__description}>
+        <h4>Child Universes</h4>
         <AccountUniverseDescription
           switchUniverse={p.switchUniverse}
           universeDescription="Universe B"
