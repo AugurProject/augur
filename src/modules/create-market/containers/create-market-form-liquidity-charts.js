@@ -19,11 +19,11 @@ const mapStateToProps = (state, ownProps) => {
   const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth)
-  const hasOrders = cumulativeOrderBook[BIDS].length || cumulativeOrderBook[ASKS].length
+  const hasOrders = !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length
 
   return {
-    minPrice: newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0,
-    maxPrice: newMarket.type === SCALAR ? newMarket.scalarBigNum : 1,
+    minPrice: newMarket.type === SCALAR ? newMarket.scalarSmallNum.toNumber() : 0,
+    maxPrice: newMarket.type === SCALAR ? newMarket.scalarBigNum.toNumber() : 1,
     orderBook: cumulativeOrderBook,
     orderBookKeys,
     marketDepth,

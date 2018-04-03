@@ -212,7 +212,7 @@ function drawMidpointLine(options) {
         return drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right
       } else if (hasPriceHistory && !hasOrders) { // To orders
         return chartWidths.candle
-      } else if (!hasPriceHistory && !excludeCandlestick) { // To candle null label
+      } else if (!hasPriceHistory && hasOrders && !excludeCandlestick) { // To candle null label
         return (chartWidths.candle / 2) - (candleNullMessageWidth / 2) - drawParams.chartDim.right
       }
     })
@@ -220,7 +220,7 @@ function drawMidpointLine(options) {
     .attr('y2', () => drawParams.yScale(0.5))
 
   // Right Segment
-  if (!hasPriceHistory && !excludeCandlestick) {
+  if (!hasPriceHistory && hasOrders && !excludeCandlestick) {
     midpointChart.append('line')
       .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
       .attr('x1', (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + drawParams.chartDim.left)
