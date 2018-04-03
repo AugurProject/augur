@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
@@ -218,7 +218,7 @@ class MarketTradingForm extends Component {
 
     return (
       <ul className={Styles['TradingForm__form-body']}>
-        { !isMobile && market.marketType !== SCALAR &&
+        { !isMobile && market.marketType === CATEGORICAL &&
           <li>
             <label>Outcome</label>
             <div className={Styles['TradingForm__static-field']}>{ selectedOutcome.name }</div>
