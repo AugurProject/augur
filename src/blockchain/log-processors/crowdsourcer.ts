@@ -60,7 +60,9 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
         };
         db.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerId").asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          augurEmitter.emit("DisputeCrowdsourcerCreated", log);
+          augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
+            log,
+            crowdsourcerToInsert));
           callback(null);
         });
       });
@@ -70,7 +72,9 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
 export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db.from("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("DisputeCrowdsourcerCreated", log);
+    augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
+      log,
+      {marketId: log.market}));
     callback(null);
   });
 }
@@ -88,7 +92,10 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
     if (err) return callback(err);
     db.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerContribution", log);
+      augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
+        log,
+        disputeToInsert,
+        {marketId: log.market}));
       callback(null);
     });
   });
@@ -102,7 +109,9 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
     if (err) return callback(err);
     db.update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerContribution", log);
+      augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
+        log,
+        {marketId: log.market}));
       callback(null);
     });
   });
@@ -117,7 +126,9 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
+      augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
+        log,
+        {marketId: log.market}));
       callback(null);
     });
   });
@@ -132,7 +143,9 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerCompleted", log);
+      augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
+        log,
+        {marketId: log.market}));
       callback(null);
     });
   });
