@@ -22,7 +22,6 @@ export default class ReportingDisputeMarkets extends Component {
     isMobile: PropTypes.bool,
     navigateToAccountDepositHandler: PropTypes.func.isRequired,
     isConnected: PropTypes.bool.isRequired,
-    isMarketsLoaded: PropTypes.bool.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     outcomes: PropTypes.object.isRequired,
     account: PropTypes.string.isRequired,
@@ -34,10 +33,9 @@ export default class ReportingDisputeMarkets extends Component {
   componentWillMount() {
     const {
       isConnected,
-      isMarketsLoaded,
       loadMarkets,
     } = this.props
-    if (isConnected && !isMarketsLoaded) {
+    if (isConnected) {
       loadMarkets()
     }
   }
