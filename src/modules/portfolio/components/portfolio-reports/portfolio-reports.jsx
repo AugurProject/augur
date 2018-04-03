@@ -6,11 +6,10 @@ import { formatAttoRep, formatEther } from 'utils/format-number'
 
 import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
 
-import Styles from './portfolio-reports.styles'
+import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    claimReportingFees: PropTypes.func.isRequired,
     loadClaimableFees: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
   }
@@ -37,12 +36,16 @@ export default class PortfolioReports extends Component {
   }
 
   handleClaimReportingFees() {
-    const s = this.state
+    const {
+      unclaimedEth,
+      unclaimedRep,
+      redeemableContracts,
+    } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES,
-      unclaimedEth: s.unclaimedEth,
-      unclaimedRep: s.unclaimedRep,
-      redeemableContracts: s.redeemableContracts,
+      unclaimedEth,
+      unclaimedRep,
+      redeemableContracts,
       canClose: true,
     })
   }
@@ -56,37 +59,28 @@ export default class PortfolioReports extends Component {
     }
 
     return (
-      <section>
+      <section className={Styles.PortfolioReports}>
         <Helmet>
           <title>Reporting</title>
         </Helmet>
-        <article className={Styles.ClaimReportingFeesSection}>
-          <h4 className={Styles.ClaimReportingFeesSection__heading}>Claim all available stake and fees</h4>
-          <section>
-            <article className={Styles.ClaimableFees}>
-              <section className={Styles.ClaimableFees__fees}>
-                <ul className={Styles['ClaimableFees__fees--list']}>
-                  <li>
-                    <div className={Styles['ClaimableFees__fees--denomination']}>REP</div>
-                    <div className={Styles['ClaimableFees__fees--amount']}>{s.unclaimedRep.formatted}</div>
-                  </li>
-                  <li>
-                    <div className={Styles['ClaimableFees__fees--denomination']}>ETH</div>
-                    <div className={Styles['ClaimableFees__fees--amount']}>{s.unclaimedEth.formatted}</div>
-                  </li>
-                </ul>
-                <div>
-                  <button
-                    className={Styles.ClaimableFees__cta}
-                    disabled={disableClaimReportingFeesButton}
-                    onClick={this.handleClaimReportingFees}
-                  >Claim
-                  </button>
-                </div>
-              </section>
-            </article>
-          </section>
-        </article>
+        <h4>
+          Claim all available stake and fees
+        </h4>
+        <div className={Styles.PortfolioReports__details}>
+          <ul className={Styles.PortfolioReports__info}>
+            <li><span>REP</span><span>{s.unclaimedRep.formatted}</span></li>
+            <li><span>ETH</span><span>{s.unclaimedEth.formatted}</span></li>
+          </ul>
+          <div className={Styles.PortfolioReports__actions}>
+            <button
+              className={Styles.PortfolioReports__claim}
+              disabled={disableClaimReportingFeesButton}
+              onClick={this.handleClaimReportingFees}
+            >
+              Claim
+            </button>
+          </div>
+        </div>
       </section>
     )
   }

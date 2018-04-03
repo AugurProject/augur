@@ -6,7 +6,7 @@ import logError from 'utils/log-error'
 export default function loadClaimableFees(options, callback = logError) {
   return (dispatch, getState) => ({
     unclaimedEth: '1',
-    unclaimedRepStaked: '2',
+    unclaimedRepStaked: '2000000000000000000',
     unclaimedRepEarned: '3',
     claimedEth: '4',
     claimedRepStaked: '5',

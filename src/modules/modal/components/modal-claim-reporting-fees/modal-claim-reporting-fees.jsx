@@ -32,8 +32,9 @@ export default class ModalClaimReportingFees extends Component {
       redeemableContracts: this.props.redeemableContracts,
       estimateGas: true,
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, (error, result) => {
-      const claimReportingFeesGasEstimate = result.gasEstimates.totals.all.toString()
+    this.props.claimReportingFees(claimReportingFeesOptions, (err, result) => {
+      // default to 0 for now if we recieve an error.
+      const claimReportingFeesGasEstimate = err ? '0' : result.gasEstimates.totals.all.toString()
       const gasPrice = augur.rpc.getGasPrice()
       this.setState({
         claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
@@ -41,54 +42,55 @@ export default class ModalClaimReportingFees extends Component {
     })
   }
 
-  handleClaimReportingFees() {
+  handleClaimReportingFees(e) {
+    e.preventDefault()
     // TODO: Remove hard-coded parameters below once endpoint exists for getting contracts that are redeemable.
     const claimReportingFeesOptions = {
       redeemableContracts: this.props.redeemableContracts,
       estimateGas: false,
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, this.props.closeModal)
+    this.props.claimReportingFees(claimReportingFeesOptions, (err, res) => {
+      console.log(err, res)
+      this.props.closeModal()
+    })
   }
 
   render() {
-    const p = this.props
+    const {
+      recipient,
+      unclaimedRep,
+      unclaimedEth,
+    } = this.props
     const s = this.state
 
     return (
-      <section className={Styles.ModalClaimReportingFees}>
-        <div className={Styles.ModalClaimReportingFees__header}>
+      <form
+        className={Styles.ModalClaimReportingFees__form}
+        onSubmit={this.handleClaimReportingFees}
+      >
+        <div className={Styles.ModalClaimReportingFees__heading}>
           <h1>Review Withdrawl</h1>
         </div>
-        <ul className={Styles.ModalClaimReportingFees__summary}>
-          <li>
-            <span className={Styles['ModalClaimReportingFees__summary--denomination']}>Recipient</span>
-            <span className={Styles['ModalClaimReportingFees__summary--amount']}>{p.recipient}</span>
-          </li>
-          <li>
-            <span className={Styles['ModalClaimReportingFees__summary--denomination']}>Rep</span>
-            <span className={Styles['ModalClaimReportingFees__summary--amount']}>{p.unclaimedRep.formatted} Rep</span>
-          </li>
-          <li>
-            <span className={Styles['ModalClaimReportingFees__summary--denomination']}>Eth</span>
-            <span className={Styles['ModalClaimReportingFees__summary--amount']}>{p.unclaimedEth.formatted} Eth</span>
-          </li>
-          <li>
-            <span className={Styles['ModalClaimReportingFees__summary--denomination']}>Gas</span>
-            <span className={Styles['ModalClaimReportingFees__summary--amount']}>{s.claimReportingFeesGasEstimate} Eth</span>
-          </li>
-        </ul>
+        <div className={Styles.ModalClaimReportingFees__details}>
+          <ul className={Styles.ModalClaimReportingFees__info}>
+            <li><span>Recipient</span><span>{recipient}</span></li>
+            <li><span>Rep</span><span>{unclaimedRep.formatted}</span></li>
+            <li><span>Eth</span><span>{unclaimedEth.formatted}</span></li>
+            <li><span>Gas</span><span>{s.claimReportingFeesGasEstimate}</span></li>
+          </ul>
+        </div>
         <div className={Styles.ModalClaimReportingFees__message}>
           Transferring all funds may require multiple signed transactions.
         </div>
-        <div className={Styles['ModalClaimReportingFees__cta-wrapper']}>
+        <div className={Styles.ModalClaimReportingFees__actions}>
           <button
-            className={Styles.ModalClaimReportingFees__cta}
-            onClick={this.handleClaimReportingFees}
+            className={Styles.ModalClaimReportingFees__button}
+            type="submit"
           >
-            Submit
+            submit
           </button>
         </div>
-      </section>
+      </form>
     )
   }
 }

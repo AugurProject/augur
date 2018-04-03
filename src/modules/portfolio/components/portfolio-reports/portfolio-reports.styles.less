@@ -1,81 +1,75 @@
 @import (reference) '~assets/styles/shared';
 
-.ClaimReportingFeesSection {
-  margin-bottom: 3.75rem;
+.PortfolioReports {
+  color: @color-white;
+  padding: 0 2rem 2rem;
 
-  &__heading {
-    &:extend(.caps--large);
+  > h4 {
+    .caps--large();
 
     color: @color-white;
-    margin-bottom: 2rem;
-    padding: 0 2rem;
   }
 }
 
-.ClaimableFees {
-  border-bottom: 1px rgba(151, 151, 151, 0.31) solid;
-  margin-left: 2em;
-  margin-right: 2em;
+.PortfolioReports__details {
+  .border(true, @border-bottom, @color-white);
 
-  &__cta {
-    &:extend(.button--white--short all);
+  align-content: space-between;
+  display: flex;
+  padding: 2rem 0;
+}
 
-    margin-top: 2rem;
-    white-space: nowrap;
+.PortfolioReports__info {
+  flex: 1;
+  line-height: 2rem;
+
+  > li:nth-child(even) {
+    margin-top: 1rem;
   }
 
-  &__fees {
-    color: @color-white;
+  > li {
     display: flex;
-    font-size: @font-size-large;
-    justify-content: space-between;
-    letter-spacing: 0;
-    margin-bottom: 2.125rem;
+    flex-flow: row nowrap;
+
+    > span {
+      flex: 0 0 10rem;
+    }
+  }
+}
+
+.PortfolioReports__actions {
+  align-self: flex-end;
+}
+
+.PortfolioReports__claim {
+  &:extend(.button--offWhite all);
+}
+
+@media @breakpoint-mobile {
+  .PortfolioReports {
+    padding: 0 1rem 1rem;
   }
 
-  &__fees--amount {
-    float: right;
-    font-size: 18px;
-    text-align: left;
+  .PortfolioReports__details {
+    flex-flow: column nowrap;
   }
 
-  &__fees--denomination {
-    float: left;
-    font-size: 12px;
-    margin-top: 0.416rem;
-    width: 138px;
-  }
-
-  &__fees--list {
+  .PortfolioReports__info {
     > li {
-      margin-bottom: 1.125rem;
-      padding-bottom: 1.125rem;
+      justify-content: space-between;
+
+      > span {
+        flex: 0;
+      }
     }
   }
 
-  @media @breakpoint-mobile {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    padding: 0;
-
-    &__cta {
-      border-radius: 0;
-      width: 100%;
-    }
+  .PortfolioReports__actions {
+    margin-top: 3rem;
+    width: 100%;
   }
-}
 
-.NoMarkets__container {
-  color: @color-lightgray;
-  font-size: @font-size-large;
-  font-weight: 500;
-  line-height: @font-size-rather-large;
-  padding: 2rem;
-  text-align: center;
-}
-
-.NoMarkets__link {
-  color: @color-lightgray;
-  margin-left: 0.5rem;
-  text-decoration-line: underline;
+  .PortfolioReports__claim {
+    width: 100%;
+  }
 }
