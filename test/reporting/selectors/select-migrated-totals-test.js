@@ -1,10 +1,9 @@
-import sinon from 'sinon'
 import immutableDelete from 'immutable-delete'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import selectMigratedTotals, { __RewireAPI__ as RewireAPI } from 'modules/reporting/selectors/select-migrated-totals'
 
 
-describe.only(`modules/reporting/selectors/select-migrated-totals.js`, () => {
+describe(`modules/reporting/selectors/select-migrated-totals.js`, () => {
 
   const test = (t) => {
     it(t.description, () => {
@@ -53,7 +52,6 @@ describe.only(`modules/reporting/selectors/select-migrated-totals.js`, () => {
     reportableOutcomes: [{ id: '0.5', name: 'Indeterminate' }],
   }
 
-  const formattedREP = { formatted: '12345', fullPrecision: 12345 }
   const echoStub = (value) => {
     const result = { formatted: value.toString(), fullPrecision: value }
     return result
