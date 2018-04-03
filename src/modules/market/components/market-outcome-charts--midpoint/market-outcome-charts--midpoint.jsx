@@ -13,9 +13,10 @@ export default class MarketOutcomeMidpoint extends Component {
     chartWidths: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
-    hasPriceHistory: PropTypes.bool.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    hasPriceHistory: PropTypes.bool,
+    excludeCandlestick: PropTypes.bool,
   }
 
   constructor(props) {
@@ -41,6 +42,7 @@ export default class MarketOutcomeMidpoint extends Component {
       hasPriceHistory: this.props.hasPriceHistory,
       hasOrders: this.props.hasOrders,
       fixedPrecision: this.props.fixedPrecision,
+      excludeCandlestick: this.props.excludeCandlestick,
     })
   }
 
@@ -52,6 +54,7 @@ export default class MarketOutcomeMidpoint extends Component {
       this.props.fixedPrecision !== nextProps.fixedPrecision ||
       this.props.hasPriceHistory !== nextProps.hasPriceHistory ||
       this.props.hasOrders !== nextProps.hasOrders ||
+      this.props.excludeCandlestick !== nextProps.excludeCandlestick ||
       this.state.midpointLabelWidth !== nextState.midpointLabelWidth ||
       this.state.candleNullMessageWidth !== nextState.candleNullMessageWidth
     ) {
@@ -64,6 +67,7 @@ export default class MarketOutcomeMidpoint extends Component {
         hasPriceHistory: nextProps.hasPriceHistory,
         hasOrders: nextProps.hasOrders,
         fixedPrecision: nextProps.fixedPrecision,
+        excludeCandlestick: nextProps.excludeCandlestick,
       })
     }
   }
@@ -98,6 +102,7 @@ export default class MarketOutcomeMidpoint extends Component {
       hasOrders,
       chartWidths,
       fixedPrecision,
+      excludeCandlestick,
     } = options
 
     if (this.drawContainer) {
@@ -123,6 +128,7 @@ export default class MarketOutcomeMidpoint extends Component {
         hasPriceHistory,
         hasOrders,
         chartWidths,
+        excludeCandlestick,
       })
 
       if (hasOrders) {
@@ -194,6 +200,7 @@ function drawMidpointLine(options) {
     hasPriceHistory,
     hasOrders,
     chartWidths,
+    excludeCandlestick,
   } = options
 
   // Left Segment
@@ -205,7 +212,7 @@ function drawMidpointLine(options) {
         return drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right
       } else if (hasPriceHistory && !hasOrders) { // To orders
         return chartWidths.candle
-      } else if (!hasPriceHistory) { // To candle null label
+      } else if (!hasPriceHistory && !excludeCandlestick) { // To candle null label
         return (chartWidths.candle / 2) - (candleNullMessageWidth / 2) - drawParams.chartDim.right
       }
     })
@@ -213,7 +220,7 @@ function drawMidpointLine(options) {
     .attr('y2', () => drawParams.yScale(0.5))
 
   // Right Segment
-  if (!hasPriceHistory) {
+  if (!hasPriceHistory && !excludeCandlestick) {
     midpointChart.append('line')
       .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
       .attr('x1', (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + drawParams.chartDim.left)
@@ -222,7 +229,7 @@ function drawMidpointLine(options) {
       .attr('y2', () => drawParams.yScale(0.5))
   }
 
-  if (!hasPriceHistory) {
+  if (!hasPriceHistory && !excludeCandlestick) {
     drawCandlestickNullMessage({
       midpointChart,
       chartWidths,
