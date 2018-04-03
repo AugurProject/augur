@@ -12,7 +12,6 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import CreateMarketFormLiquidityCharts from 'modules/create-market/containers/create-market-form-liquidity-charts'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
@@ -48,10 +47,7 @@ export default class CreateMarketLiquidity extends Component {
       minPrice: WrappedBigNumber(0),
       maxPrice: WrappedBigNumber(1),
       selectedNav: BID,
-      // selectedOutcome: this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : '',
-      selectedOutcome: 1,
-      hoveredDepth: [],
-      hoveredPrice: null,
+      selectedOutcome: this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : '',
     }
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
@@ -298,8 +294,6 @@ export default class CreateMarketLiquidity extends Component {
     }
     let isOrderValid
 
-    console.log('selectedOutcome -- ', this.state.selectedOutcome)
-
     // Validate Quantity
     if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(WrappedBigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
@@ -348,18 +342,6 @@ export default class CreateMarketLiquidity extends Component {
 
   updateOrderEstimate(orderEstimate) {
     this.setState({ orderEstimate })
-  }
-
-  updateHoveredDepth(hoveredDepth) {
-    this.setState({
-      hoveredDepth,
-    })
-  }
-
-  updateHoveredPrice(hoveredPrice) {
-    this.setState({
-      hoveredPrice,
-    })
   }
 
   render() {
