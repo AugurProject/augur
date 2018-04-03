@@ -1,0 +1,56 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalClaimReportingFees {
+  &__header {
+    h1 {
+      .caps--extra-large();
+
+      color: @color-white;
+      float: left;
+      font-size: 30px;
+      margin-bottom: 1em;
+      text-align: left;
+      width: 36rem;
+    }
+  }
+
+  &__summary {
+    border-bottom: 1px rgba(151, 151, 151, 0.31) solid;
+    border-top: 1px rgba(151, 151, 151, 0.31) solid;
+    color: @color-white;
+    margin-bottom: 2em;
+    padding: 2em 0 1.875em;
+    width: 36rem;
+  }
+
+  &__summary--amount {
+    font-size: 16px;
+    text-transform: uppercase;
+
+    &:last-child {
+      clear: both;
+    }
+  }
+
+  &__summary--denomination {
+    clear: left;
+    float: left;
+    font-size: 16px;
+    text-transform: uppercase;
+    width: 121px;
+  }
+
+  &__message {
+    color: @color-lightgray;
+    margin-bottom: 2em;
+    width: 36rem;
+  }
+
+  &__cta-wrapper {
+    width: 36rem;
+  }
+
+  &__cta {
+    &:extend(.button--white--short all);
+  }
+}
