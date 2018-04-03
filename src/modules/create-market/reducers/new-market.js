@@ -35,7 +35,7 @@ const DEFAULT_STATE = {
       settlementFee: true,
     },
   ],
-  currentStep: 3,
+  currentStep: 0,
   type: '',
   outcomes: Array(8).fill(''),
   scalarSmallNum: '',
