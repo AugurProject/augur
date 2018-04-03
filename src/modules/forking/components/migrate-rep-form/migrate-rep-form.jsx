@@ -9,7 +9,7 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
-import { formatAttoRep } from 'utils/format-number'
+import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 
 export default class MigrateRepForm extends Component {
 
@@ -165,44 +165,7 @@ export default class MigrateRepForm extends Component {
     const s = this.state
 
     const { reportableOutcomes } = market
-    let formattedMigrationTotals = []
-    if (forkMigrationTotals !== null) {
-      const invalidMarketId = '0.5'
-      const topOutcomes = 7
-      const processTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
-        const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
-        const { isInvalid } = forkMigrationOutcomeData
-        const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
-        const value = {
-          id: curOutcomeId,
-          rep: formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }),
-          name: outcome ? outcome.name : curOutcomeId,
-          winner: forkMigrationOutcomeData.winner,
-          isInvalid,
-        }
-        return [...totals, value]
-      }, [])
-
-      const migrationTotals = reportableOutcomes.reduce((p, outcome) => {
-        const found = p.find(total => total.id === outcome.id)
-        if (found) return p
-        return [...p,
-          {
-            id: outcome.id,
-            rep: { formatted: '0', fullPrecision: 0 },
-            name: outcome.name,
-            winner: false,
-          },
-        ]
-      }, processTotals)
-        .sort((a, b) => createBigNumber(b.rep.fullPrecision).minus(createBigNumber(a.rep.fullPrecision)))
-
-      const invalidOutcome = migrationTotals.find(o => o.id === invalidMarketId)
-      formattedMigrationTotals = migrationTotals.slice(0, topOutcomes)
-      if (!formattedMigrationTotals.find(o => o.id === invalidMarketId)) {
-        formattedMigrationTotals = [...formattedMigrationTotals, invalidOutcome]
-      }
-    }
+    const formattedMigrationTotals = selectMigrateTotals(reportableOutcomes, forkMigrationTotals)
 
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
