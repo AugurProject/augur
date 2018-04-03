@@ -53,8 +53,7 @@ export default class ModalClaimReportingFees extends Component {
   render() {
     const p = this.props
     const s = this.state
-console.log('props:', p)
-console.log('state:', s)
+
     return (
       <section className={Styles.ModalClaimReportingFees}>
         <div className={Styles.ModalClaimReportingFees__header}>
