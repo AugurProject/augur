@@ -168,6 +168,7 @@ export default class MigrateRepForm extends Component {
     let formattedMigrationTotals = []
     if (forkMigrationTotals !== null) {
       const invalidMarketId = '0.5'
+      const topOutcomes = 7
       const processTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
         const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
         const { isInvalid } = forkMigrationOutcomeData
@@ -197,7 +198,7 @@ export default class MigrateRepForm extends Component {
         .sort((a, b) => createBigNumber(b.rep.fullPrecision).minus(createBigNumber(a.rep.fullPrecision)))
 
       const invalidOutcome = migrationTotals.find(o => o.id === invalidMarketId)
-      formattedMigrationTotals = migrationTotals.slice(0, 7)
+      formattedMigrationTotals = migrationTotals.slice(0, topOutcomes)
       if (!formattedMigrationTotals.find(o => o.id === invalidMarketId)) {
         formattedMigrationTotals = [...formattedMigrationTotals, invalidOutcome]
       }
