@@ -137,7 +137,7 @@ export default class Position extends Component {
             </div>
             :
             <div className={Styles['Position__confirm-details']}>
-              <p>Close position by selling { getValue(this.props, 'position.qtyShares.formatted') } shares of “{ getValue(this.props, 'name') }” at { getValue(this.props, 'position.avgPrice.formatted') } ETH?</p>
+              <p>Close position by selling { getValue(this.props, 'position.qtyShares.formatted') } shares of “{ getValue(this.props, 'name') }” at market price?</p>
               <div className={Styles['Position__confirm-options']}>
                 <button onClick={(e) => { position.closePosition(position.marketId, position.outcomeId); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
