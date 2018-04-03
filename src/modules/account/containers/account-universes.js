@@ -2,14 +2,17 @@ import { connect } from 'react-redux'
 
 import AccountUniverses from 'modules/account/components/account-universes/account-universes'
 
+import getUniverses from 'modules/account/actions/get-universe-info'
+import switchUniverse from 'modules/account/actions/switch-universe'
+
 const mapStateToProps = state => ({
   address: state.loginAccount.address,
   universe: state.universe.id,
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUniverses: (universeId) => {},
-  switchUniverse: (universeId) => {},
+  getUniverses: (callback) => dispatch(getUniverses(callback)),
+  switchUniverse: (universeId, callback) => dispatch(switchUniverse(universeId, callback)),
 })
 
 const AccountUniversesContainer = connect(mapStateToProps, mapDispatchToProps)(AccountUniverses)
