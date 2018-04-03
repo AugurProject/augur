@@ -49,25 +49,43 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentWillMount() {
-    this.updatePeriodTimeSeries(this.props.priceTimeSeries, this.props.selectedPeriod, this.props.currentBlock)
+    const {
+      currentBlock,
+      priceTimeSeries,
+      selectedPeriod,
+    } = this.props
+    this.updatePeriodTimeSeries(priceTimeSeries, selectedPeriod, currentBlock)
   }
 
   componentDidMount() {
+    const {
+      fixedPrecision,
+      orderBookKeys,
+      sharedChartMargins,
+    } = this.props
     this.drawCandlestick({
       periodTimeSeries: this.state.periodTimeSeries,
-      orderBookKeys: this.props.orderBookKeys,
+      orderBookKeys,
       outcomeBounds: this.state.outcomeBounds,
-      fixedPrecision: this.props.fixedPrecision,
-      sharedChartMargins: this.props.sharedChartMargins,
+      fixedPrecision,
+      sharedChartMargins,
     })
 
     window.addEventListener('resize', this.drawCandlestickOnResize)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      fixedPrecision,
+      hoveredPrice,
+      orderBookKeys,
+      priceTimeSeries,
+      selectedPeriod,
+      sharedChartMargins,
+    } = this.props
     if (
-      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
-      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
+      priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      !isEqual(selectedPeriod, nextProps.selectedPeriod)
     ) {
       this.updatePeriodTimeSeries(nextProps.priceTimeSeries, nextProps.selectedPeriod, nextProps.currentBlock)
     }
@@ -75,9 +93,9 @@ export default class MarketOutcomeCandlestick extends Component {
     if (
       !isEqual(this.state.periodTimeSeries, nextState.periodTimeSeries) ||
       !isEqual(this.state.outcomeBounds, nextState.outcomeBounds) ||
-      !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
-      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
-      this.props.fixedPrecision !== nextProps.fixedPrecision
+      !isEqual(orderBookKeys, nextProps.orderBookKeys) ||
+      !isEqual(sharedChartMargins, nextProps.sharedChartMargins) ||
+      fixedPrecision !== nextProps.fixedPrecision
     ) {
       this.drawCandlestick({
         periodTimeSeries: nextState.periodTimeSeries,
@@ -88,7 +106,7 @@ export default class MarketOutcomeCandlestick extends Component {
       })
     }
 
-    if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
+    if (!isEqual(hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -125,6 +143,10 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawCandlestick(options) {
+    const {
+      updateHoveredPeriod,
+      updateHoveredPrice,
+    } = this.props
     const {
       periodTimeSeries,
       orderBookKeys,
@@ -200,8 +222,8 @@ export default class MarketOutcomeCandlestick extends Component {
       })
 
       attachHoverClickHandlers({
-        updateHoveredPeriod: this.props.updateHoveredPeriod,
-        updateHoveredPrice: this.props.updateHoveredPrice,
+        updateHoveredPeriod,
+        updateHoveredPrice,
         periodTimeSeries,
         fixedPrecision,
         candleChart,
@@ -219,12 +241,17 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawCandlestickOnResize() {
+    const {
+      fixedPrecision,
+      orderBookKeys,
+      sharedChartMargins,
+    } = this.props
     this.drawCandlestick({
       periodTimeSeries: this.state.periodTimeSeries,
-      orderBookKeys: this.props.orderBookKeys,
+      orderBookKeys,
       outcomeBounds: this.state.outcomeBounds,
-      fixedPrecision: this.props.fixedPrecision,
-      sharedChartMargins: this.props.sharedChartMargins,
+      fixedPrecision,
+      sharedChartMargins,
     })
   }
 
