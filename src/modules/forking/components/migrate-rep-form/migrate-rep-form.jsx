@@ -80,7 +80,7 @@ export default class MigrateRepForm extends Component {
     delete updatedValidations.err
     let isInvalid = isMarketInValid
 
-    // outcome with id of .5 means invalid
+    // outcome with id of 0.5 means invalid
     if (selectedOutcome === '0.5') isInvalid = true
     this.state.scalarInputChoosen = false
 
@@ -167,6 +167,7 @@ export default class MigrateRepForm extends Component {
     const { reportableOutcomes } = market
     let formattedMigrationTotals = []
     if (forkMigrationTotals !== null) {
+      const invalidMarketId = '0.5'
       const processTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
         const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
         const { isInvalid } = forkMigrationOutcomeData
@@ -181,7 +182,7 @@ export default class MigrateRepForm extends Component {
         return [...totals, value]
       }, [])
 
-      formattedMigrationTotals = reportableOutcomes.reduce((p, outcome) => {
+      const migrationTotals = reportableOutcomes.reduce((p, outcome) => {
         const found = p.find(total => total.id === outcome.id)
         if (found) return p
         return [...p,
@@ -193,7 +194,13 @@ export default class MigrateRepForm extends Component {
           },
         ]
       }, processTotals)
-        .sort((a, b) => createBigNumber(a.rep.fullPrecision).isLessThan(createBigNumber(b.rep.fullPrecision)))
+        .sort((a, b) => createBigNumber(b.rep.fullPrecision).minus(createBigNumber(a.rep.fullPrecision)))
+
+      const invalidOutcome = migrationTotals.find(o => o.id === invalidMarketId)
+      formattedMigrationTotals = migrationTotals.slice(0, 7)
+      if (!formattedMigrationTotals.find(o => o.id === invalidMarketId)) {
+        formattedMigrationTotals = [...formattedMigrationTotals, invalidOutcome]
+      }
     }
 
     return (
