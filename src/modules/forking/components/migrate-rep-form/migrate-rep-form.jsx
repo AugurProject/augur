@@ -73,7 +73,6 @@ export default class MigrateRepForm extends Component {
 
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const {
-      repAmount,
       updateState,
     } = this.props
     const updatedValidations = { ...validations }
@@ -85,7 +84,7 @@ export default class MigrateRepForm extends Component {
     if (selectedOutcome === '0.5') isInvalid = true
     this.state.scalarInputChoosen = false
 
-    MigrateRepForm.checkRepAmount(repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: '',
@@ -105,7 +104,6 @@ export default class MigrateRepForm extends Component {
 
   validateScalar(value, humanName, min, max, isInvalid) {
     const {
-      repAmount,
       updateState,
       validations,
     } = this.props
@@ -141,7 +139,7 @@ export default class MigrateRepForm extends Component {
       }
     }
 
-    MigrateRepForm.checkRepAmount(repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: value,
@@ -166,12 +164,11 @@ export default class MigrateRepForm extends Component {
     } = this.props
     const s = this.state
 
-    const { market } = this.props
     const { reportableOutcomes } = market
     let formattedMigrationTotals = []
-    if (p.forkMigrationTotals !== null) {
-      formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
-        const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
+    if (forkMigrationTotals !== null) {
+      formattedMigrationTotals = Object.keys(forkMigrationTotals).reduce((totals, curOutcomeId) => {
+        const forkMigrationOutcomeData = forkMigrationTotals[curOutcomeId]
         const { isInvalid } = forkMigrationOutcomeData
         const outcome = reportableOutcomes.find(outcome => outcome.id === curOutcomeId)
         const value = {
@@ -196,7 +193,7 @@ export default class MigrateRepForm extends Component {
           },
         ]
       }, formattedMigrationTotals)
-        .sort((a, b) => WrappedBigNumber(a.rep.fullPrecision).isLessThan(WrappedBigNumber(b.rep.fullPrecision)))
+        .sort((a, b) => createBigNumber(a.rep.fullPrecision).isLessThan(createBigNumber(b.rep.fullPrecision)))
     }
 
     return (
