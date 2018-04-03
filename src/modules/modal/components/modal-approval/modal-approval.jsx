@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import Styles from 'modules/modal/components/modal-approval/modal-approval.styles'
 
@@ -25,5 +26,13 @@ const ModalApproval = p => (
     </div>
   </section>
 )
+
+ModalApproval.propTypes = {
+  approveAccount: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  modal: PropTypes.shape({
+    approveCallback: PropTypes.func.isRequired,
+  }),
+}
 
 export default ModalApproval

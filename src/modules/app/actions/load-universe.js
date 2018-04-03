@@ -1,11 +1,11 @@
 import async from 'async'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import syncUniverse from 'modules/universe/actions/sync-universe'
 import getReportingCycle from 'modules/universe/selectors/reporting-cycle'
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain'
-import { listenToUpdates } from 'modules/app/actions/listen-to-updates'
+import { listenToUpdates } from 'modules/events/actions/listen-to-updates'
 import loadCategories from 'modules/categories/actions/load-categories'
 import { loadMarketsToReportOn } from 'modules/reports/actions/load-markets-to-report-on'
 import logError from 'utils/log-error'
@@ -24,7 +24,7 @@ export const loadUniverse = (universeId, history, callback = logError) => (dispa
     disputeRoundDurationInSeconds: (next) => {
       augur.api.Universe.getDisputeRoundDurationInSeconds(universePayload, (err, disputeRoundDurationInSeconds) => {
         if (err) return next(err)
-        next(null, new BigNumber(disputeRoundDurationInSeconds, 16).toFixed())
+        next(null, createBigNumber(disputeRoundDurationInSeconds, 16).toFixed())
       })
     },
   }, (err, staticUniverseData) => {

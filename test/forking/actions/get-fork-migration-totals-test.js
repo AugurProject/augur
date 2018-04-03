@@ -16,15 +16,20 @@ describe('modules/forking/actions/get-fork-migration-totals.js', () => {
             payout: [0, 10000],
             isInvalid: false,
             repTotal: 200,
+            universe: '0xCHILD_1',
           },
           '0xCHILD_2': {
             payout: [10000, 0],
             isInvalid: false,
             repTotal: 400,
+            universe: '0xCHILD_2',
           },
         }
 
         const stateData = {
+          universe: {
+            winningChildUniverse: '0xCHILD_1',
+          },
           marketsData: {
             '0xMARKET': {
               maxPrice: 1,
@@ -59,8 +64,16 @@ describe('modules/forking/actions/get-fork-migration-totals.js', () => {
           },
         })
         const expected = {
-          0: 400,
-          1: 200,
+          0: {
+            repTotal: 400,
+            winner: false,
+            isInvalid: false,
+          },
+          1: {
+            repTotal: 200,
+            winner: true,
+            isInvalid: false,
+          },
         }
 
         getForkMigrationTotals('0xUNIVERSE', (actual) => {

@@ -47,13 +47,15 @@ export default class CategoriesView extends Component {
   }
 
   componentDidMount() {
-    if (this.props.categories.length > 0) {
+    const { categories } = this.props
+    if (categories.length > 0) {
       this.startCategoryCarousel()
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.categories.length === 0 && nextProps.categories.length > 0) {
+    const { categories } = this.props
+    if (categories.length === 0 && nextProps.categories.length > 0) {
       this.startCategoryCarousel()
     }
   }
@@ -70,6 +72,7 @@ export default class CategoriesView extends Component {
   }
 
   startCategoryCarousel() {
+    const { categories } = this.props
     this.setState({ heroCategoryIndex: 0 })
 
     const doCarouselTween = (from, to, cb) => tween({
@@ -86,8 +89,7 @@ export default class CategoriesView extends Component {
       this.carouselTimeout = setTimeout(() => {
         doCarouselTween(1, 0, () => {
           const s = this.state
-          const p = this.props
-          const nextIndex = (s.heroCategoryIndex + 1) % p.categories.length
+          const nextIndex = (s.heroCategoryIndex + 1) % categories.length
           this.setState({ heroCategoryIndex: nextIndex })
           doCarouselTween(0, 1, waitThenChange)
         })
@@ -105,9 +107,14 @@ export default class CategoriesView extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      categories,
+      history,
+      isMobile,
+      location,
+    } = this.props
     const s = this.state
-    const heroCategory = p.categories[s.heroCategoryIndex]
+    const heroCategory = categories[s.heroCategoryIndex]
 
     return (
       <section className={Styles.Categories}>
@@ -137,21 +144,21 @@ export default class CategoriesView extends Component {
             }
             <div className={Styles.CategoriesHeading__separator} />
           </div>
-          {!!(p.categories && p.categories.length && s.boundedLength) &&
+          {!!(categories && categories.length && s.boundedLength) &&
             <CategoryList
-              categories={p.categories}
+              categories={categories}
               lowerBound={s.lowerBound}
-              boundedLength={p.isMobile ? s.boundedLength : s.itemsPerPage}
+              boundedLength={isMobile ? s.boundedLength : s.itemsPerPage}
             />
           }
         </div>
-        {!!(p.categories && p.categories.length) &&
+        {!!(categories && categories.length) &&
           <div className={Styles.Categories__paginator}>
             <Paginator
-              itemsLength={p.categories.length}
+              itemsLength={categories.length}
               itemsPerPage={s.itemsPerPage}
-              location={p.location}
-              history={p.history}
+              location={location}
+              history={history}
               setSegment={this.setSegment}
             />
           </div>

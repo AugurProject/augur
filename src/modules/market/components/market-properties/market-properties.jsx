@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_CLOSED } from 'modules/market/constants/link-types'
+import { TYPE_CLOSED, TYPE_DISPUTE, TYPE_VIEW } from 'modules/market/constants/link-types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
@@ -13,12 +13,15 @@ import shareDenominationLabel from 'utils/share-denomination-label'
 import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
+import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
+
 
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.rounded')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
   const isScalar = p.marketType === SCALAR
   const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
+  const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
 
   return (
     <article>
@@ -64,22 +67,35 @@ const MarketProperties = (p) => {
               }
             </button>
           }
-          { (p.linkType === undefined || (p.linkType && p.linkType !== TYPE_CLOSED)) &&
+          { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED)) &&
             <MarketLink
               className={Styles.MarketProperties__trade}
               id={p.id}
               formattedDescription={p.formattedDescription}
-              linkType={p.linkType}
+              linkType={linkType}
             >
-              { p.linkType || 'view'}
+              { linkType || 'view'}
             </MarketLink>
           }
-          { p.linkType && p.linkType === TYPE_CLOSED &&
+          { linkType && linkType === TYPE_CLOSED &&
             <button
               className={Styles.MarketProperties__trade}
               onClick={e => console.log('call to finalize market')}
             >
               Finalize
+            </button>
+          }
+          { p.isForking && p.isForkingMarketFinalized && p.forkingMarket !== p.id &&
+            <button
+              className={Styles.MarketProperties__migrate}
+              onClick={() => p.updateModal({
+                type: MODAL_MIGRATE_MARKET,
+                marketId: p.id,
+                marketDescription: p.description,
+                canClose: true,
+              })}
+            >
+              Migrate
             </button>
           }
         </div>
@@ -100,11 +116,15 @@ const MarketProperties = (p) => {
 }
 
 MarketProperties.propTypes = {
+  updateModal: PropTypes.func.isRequired,
   linkType: PropTypes.string,
   buttonText: PropTypes.string,
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,
   toggleDetails: PropTypes.func,
+  isForking: PropTypes.bool,
+  isForkingMarketFinalized: PropTypes.bool,
+  forkingMarket: PropTypes.string,
 }
 
 export default MarketProperties

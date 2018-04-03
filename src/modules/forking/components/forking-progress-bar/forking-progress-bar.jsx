@@ -14,33 +14,21 @@ const ForkingProgressBar = (p) => {
 
   const percentagePassed = (100 * (forkingPeriodInDays - daysRemaining)) / forkingPeriodInDays
 
-  // Move the label to the left if the bar is pushing the label too far right
-  const daysLeftOnRightSide = percentagePassed < 85
-
   const percentageCompleteWidth = {
     width: `${percentagePassed}%`,
   }
 
-  const percentageCompleteMarginLeft = {
-    marginLeft: `${percentagePassed}%`,
-  }
-
   return (
     <article>
-      <section className={Styles.ForkingProgressBar}>
-        <div className={Styles.ForkingProgressBar__background}>
-          <div
-            className={Styles.ForkingProgressBar__progress}
-            style={percentageCompleteWidth}
-          />
-          <div
-            className={Styles.ForkingProgressBar__days_left_label}
-            style={daysLeftOnRightSide ? percentageCompleteMarginLeft : { position: 'absolute' }}
-          >
-            {daysRemaining} days left
+      <div className={Styles.ForkingProgressBar}>
+        <div className={Styles.ForkingProgressBar__graph}>
+          <div className={percentagePassed <= 90 ? Styles.ForkingProgressBar__current : Styles.ForkingProgressBar__current_overflow}>
+            <div style={percentageCompleteWidth}>
+              <span>{ daysRemaining } days left</span>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </article>
   )
 }

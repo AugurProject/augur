@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Link } from 'react-router-dom'
-import BigNumber from 'bignumber.js'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
 import MarketTradingConfirm from 'modules/trade/components/trading--confirm/trading--confirm'
@@ -55,8 +55,9 @@ class MarketTradingWrapper extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
-    const nextTotalCost = new BigNumber(nextProps.selectedOutcome.trade.totalCost.value)
+    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.value)
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
       const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({
@@ -65,7 +66,7 @@ class MarketTradingWrapper extends Component {
     }
 
     // Updates from chart clicks
-    if (!isEqual(this.props.selectedOrderProperties, nextProps.selectedOrderProperties)) this.setState({ ...nextProps.selectedOrderProperties })
+    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) this.setState({ ...nextProps.selectedOrderProperties })
   }
 
   prevPage() {
@@ -83,7 +84,11 @@ class MarketTradingWrapper extends Component {
   }
 
   clearOrderForm() {
-    this.props.clearTradeInProgress(this.props.market.id)
+    const {
+      clearTradeInProgress,
+      market,
+    } = this.props
+    clearTradeInProgress(market.id)
     this.setState({
       orderPrice: '',
       orderQuantity: '',
@@ -101,21 +106,30 @@ class MarketTradingWrapper extends Component {
   }
 
   render() {
+    const {
+      availableFunds,
+      initialMessage,
+      isLogged,
+      isMobile,
+      market,
+      selectedOutcome,
+      showOrderPlaced,
+      toggleForm,
+    } = this.props
     const s = this.state
-    const p = this.props
 
-    const lastPrice = getValue(p, 'selectedOutcome.lastPrice.formatted')
+    const lastPrice = getValue(this.props, 'selectedOutcome.lastPrice.formatted')
 
     return (
       <section className={Styles.TradingWrapper}>
-        { p.isMobile &&
+        { isMobile &&
           <div className={Styles['TradingWrapper__mobile-header']}>
             <button
               className={Styles['TradingWrapper__mobile-header-close']}
-              onClick={p.toggleForm}
+              onClick={toggleForm}
             >{ Close }
             </button>
-            <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ p.selectedOutcome.name }</span>
+            <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ selectedOutcome.name }</span>
             <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} /></span>
           </div>
         }
@@ -129,19 +143,19 @@ class MarketTradingWrapper extends Component {
                 <button onClick={() => this.setState({ selectedNav: SELL })}>Sell</button>
               </li>
             </ul>
-            { p.initialMessage &&
-              <p className={Styles['TradingWrapper__initial-message']}>{ p.initialMessage }</p>
+            { initialMessage &&
+              <p className={Styles['TradingWrapper__initial-message']}>{ initialMessage }</p>
             }
-            { p.initialMessage && p.isLogged && p.availableFunds && p.availableFunds.lte(0) &&
+            { initialMessage && isLogged && availableFunds && availableFunds.lte(0) &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
             }
-            { !p.initialMessage &&
+            { !initialMessage &&
               <MarketTradingForm
-                market={p.market}
-                marketType={getValue(p, 'market.marketType')}
-                maxPrice={getValue(p, 'market.maxPrice')}
-                minPrice={getValue(p, 'market.minPrice')}
-                availableFunds={p.availableFunds}
+                market={market}
+                marketType={getValue(this.props, 'market.marketType')}
+                maxPrice={getValue(this.props, 'market.maxPrice')}
+                minPrice={getValue(this.props, 'market.minPrice')}
+                availableFunds={availableFunds}
                 selectedNav={s.selectedNav}
                 orderType={s.orderType}
                 orderPrice={s.orderPrice}
@@ -149,17 +163,17 @@ class MarketTradingWrapper extends Component {
                 orderEstimate={s.orderEstimate}
                 marketOrderTotal={s.marketOrderTotal}
                 marketQuantity={s.marketQuantity}
-                selectedOutcome={p.selectedOutcome}
+                selectedOutcome={selectedOutcome}
                 nextPage={this.nextPage}
                 updateState={this.updateState}
-                isMobile={p.isMobile}
+                isMobile={isMobile}
               />
             }
           </div>
         }
         { s.currentPage === 1 &&
           <MarketTradingConfirm
-            market={p.market}
+            market={market}
             selectedNav={s.selectedNav}
             orderType={s.orderType}
             orderPrice={s.orderPrice}
@@ -167,12 +181,12 @@ class MarketTradingWrapper extends Component {
             orderEstimate={s.orderEstimate}
             marketOrderTotal={s.marketOrderTotal}
             marketQuantity={s.marketQuantity}
-            selectedOutcome={p.selectedOutcome}
+            selectedOutcome={selectedOutcome}
             prevPage={this.prevPage}
-            trade={p.selectedOutcome.trade}
-            isMobile={p.isMobile}
+            trade={selectedOutcome.trade}
+            isMobile={isMobile}
             clearOrderForm={this.clearOrderForm}
-            showOrderPlaced={p.showOrderPlaced}
+            showOrderPlaced={showOrderPlaced}
           />
         }
       </section>

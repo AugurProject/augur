@@ -17,7 +17,8 @@ class ForkingNotification extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location !== this.props.location) {
+    const { location } = this.props
+    if (nextProps.location !== location) {
       this.setState({
         isExpanded: false,
       })
@@ -31,12 +32,17 @@ class ForkingNotification extends Component {
   }
 
   render() {
-    const forkWindowActive = Number(this.props.forkEndTime) > this.props.currentTime
+    const {
+      currentTime,
+      forkEndTime,
+      forkingMarket,
+    } = this.props
+    const forkWindowActive = Number(forkEndTime) > currentTime
 
     return (
-      <section>
+      <section className={Styles.ForkingNotification__Container}>
         <header className={Styles.ForkingNotification}>
-          <section>
+          <section className={Styles.ForkingNotification__SubContainer}>
             <img
               className={Styles.ForkingNotification__AlertIcon}
               alt="Alert"
@@ -65,9 +71,9 @@ class ForkingNotification extends Component {
         </header>
         {this.state.isExpanded &&
           <ForkingContent
-            forkingMarket={this.props.forkingMarket}
-            forkEndTime={this.props.forkEndTime}
-            currentTime={this.props.currentTime}
+            forkingMarket={forkingMarket}
+            forkEndTime={forkEndTime}
+            currentTime={currentTime}
             expanded
           />
         }

@@ -28,8 +28,15 @@ export default class ReportingClosed extends Component {
   }
 
   render() {
+    const {
+      history,
+      isLogged,
+      loadMarketsInfo,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section>
@@ -40,16 +47,15 @@ export default class ReportingClosed extends Component {
           Reporting: Closed
         </h1>
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
+          isLogged={isLogged}
+          markets={markets}
           filteredMarkets={s.filteredMarketsClosed}
-          location={p.location}
-          history={p.history}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfo={loadMarketsInfo}
           linkType={TYPE_CLOSED}
           paginationPageParam="reporting-closed-page"
-          isMobile={p.isMobile}
         />
       </section>
     )

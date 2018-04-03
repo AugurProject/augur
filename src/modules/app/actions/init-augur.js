@@ -29,18 +29,19 @@ const NETWORK_NAMES = {
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
-  let account
-  loadAccount(dispatch, getState, account, env, (err, account) => {
+  loadAccount(dispatch, null, env, (err, loadedAccount) => {
     if (err) console.error(err)
+    let account = loadedAccount
     setInterval(() => {
-      loadAccount(dispatch, getState, account, env, (err, account) => {
+      loadAccount(dispatch, account, env, (err, loadedAccount) => {
         if (err) console.error(err)
+        account = loadedAccount
       })
     }, ACCOUNTS_POLL_INTERVAL_DURATION)
   })
 }
 
-function loadAccount(dispatch, getState, existing, env, callback) {
+function loadAccount(dispatch, existing, env, callback) {
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
     if (err) return callback(err)
     let account = existing

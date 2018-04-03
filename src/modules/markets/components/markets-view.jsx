@@ -7,13 +7,15 @@ import MarketsList from 'modules/markets/components/markets-list'
 
 // import getValue from 'utils/get-value'
 import parseQuery from 'modules/routes/helpers/parse-query'
-// import isEqual from 'lodash/isEqual'
+import isEqual from 'lodash/isEqual'
 
 // import parsePath from 'modules/routes/helpers/parse-path'
 // import makePath from 'modules/routes/helpers/make-path'
 
 // import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
+import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -37,35 +39,57 @@ export default class MarketsView extends Component {
   }
 
   componentWillMount() {
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      loadMarkets,
+      loadMarketsByCategory,
+      location,
+    } = this.props
     loadMarkets({
-      canLoadMarkets: this.props.canLoadMarkets,
-      location: this.props.location,
-      loadMarkets: this.props.loadMarkets,
-      loadMarketsByCategory: this.props.loadMarketsByCategory,
-      hasLoadedMarkets: this.props.hasLoadedMarkets,
-      hasLoadedCategory: this.props.hasLoadedCategory,
+      canLoadMarkets,
+      location,
+      loadMarkets,
+      loadMarketsByCategory,
+      hasLoadedMarkets,
+      hasLoadedCategory,
     })
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      location,
+    } = this.props
     if (
-      (this.props.canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
-      this.props.location !== nextProps.location ||
-      this.props.hasLoadedCategory !== nextProps.hasLoadedCategory ||
-      (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
+      (canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
+      location !== nextProps.location ||
+      !isEqual(hasLoadedCategory, nextProps.hasLoadedCategory) ||
+      (hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
       loadMarkets({
         canLoadMarkets: nextProps.canLoadMarkets,
         location: nextProps.location,
         loadMarkets: nextProps.loadMarkets,
         loadMarketsByCategory: nextProps.loadMarketsByCategory,
-        hasLoadedMarkets: this.props.hasLoadedMarkets,
-        hasLoadedCategory: this.props.hasLoadedCategory,
+        hasLoadedMarkets,
+        hasLoadedCategory,
       })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const newTags = decodeURIComponent(parseQuery(nextProps.location.search)[TAGS_PARAM_NAME] || '')
+    if (newTags.length) {
+      const marketsFilteredByTags = filterByTags(newTags.split(QUERY_VALUE_DELIMITER), nextProps.markets)
+      if (!isEqual(marketsFilteredByTags, nextProps.filteredMarkets)) {
+        this.props.updateMarketsFilteredSorted(marketsFilteredByTags)
+      }
+    }
+    // }
     // if (!isEqual(this.state.markets, nextState.markets)) {
     //   this.props.updateMarketsFilteredSorted(nextState.markets)
     //   checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
@@ -73,32 +97,41 @@ export default class MarketsView extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearMarketsFilteredSorted()
+    const { clearMarketsFilteredSorted } = this.props
+    clearMarketsFilteredSorted()
   }
 
   render() {
-    const p = this.props
-
+    const {
+      filteredMarkets,
+      history,
+      isLogged,
+      isMobile,
+      loadMarketsInfo,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     return (
       <section id="markets_view">
         <Helmet>
           <title>Markets</title>
         </Helmet>
         <MarketsHeader
-          isLogged={p.isLogged}
-          location={p.location}
-          markets={p.markets}
+          isLogged={isLogged}
+          location={location}
+          markets={markets}
         />
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
-          filteredMarkets={p.filteredMarkets}
-          location={p.location}
-          history={p.history}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          isLogged={isLogged}
+          markets={markets}
+          filteredMarkets={filteredMarkets}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfo={loadMarketsInfo}
           linkType={TYPE_TRADE}
-          isMobile={p.isMobile}
+          isMobile={isMobile}
         />
       </section>
     )
@@ -109,12 +142,13 @@ function loadMarkets(options) {
   if (options.canLoadMarkets) {
     const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
     const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
+    const tag = parseQuery(options.location.search)[TAGS_PARAM_NAME]
     // Expected behavior is to load a specific category if one is present
     // else, if we aren't searching (which is a local market data search)
     // then load markets (loads all markets)
-    if (category && !options.hasLoadedCategory[category]) {
+    if (category && (!tag || !options.hasLoadedCategory[category])) {
       options.loadMarketsByCategory(category)
-    } else if (!category && !search) {
+    } else if (!search && !tag) {
       options.loadMarkets()
     }
   }

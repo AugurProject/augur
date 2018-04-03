@@ -20,7 +20,7 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
@@ -249,7 +249,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           } else {
-            const midPoint = (new BigNumber(market.minPrice, 10).plus(new BigNumber(market.maxPrice, 10))).dividedBy(2)
+            const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -326,7 +326,7 @@ export function assembleMarket(
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
-          market.consensus.percentCorrect = formatPercent(new BigNumber(market.consensus.proportionCorrect, 10).times(100))
+          market.consensus.percentCorrect = formatPercent(createBigNumber(market.consensus.proportionCorrect, 10).times(100))
         }
       } else {
         market.consensus = null

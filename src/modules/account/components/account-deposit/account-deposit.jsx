@@ -25,7 +25,7 @@ export default class AccountDeposit extends Component {
   }
 
   render() {
-    const p = this.props
+    const { address } = this.props
     const styleQR = {
       height: 'auto',
       width: '100%',
@@ -36,13 +36,13 @@ export default class AccountDeposit extends Component {
         <div className={Styles.AccountDeposit__shapeShiftButton}>
           <button
             onClick={e => shapeShiftOnClick(e)}
-            value={'https://shapeshift.io/shifty.html?destination=' + p.address + '&output=ETH'}
+            value={'https://shapeshift.io/shifty.html?destination=' + address + '&output=ETH'}
           >
             ShapeShift to ETH
           </button>
           <button
             onClick={e => shapeShiftOnClick(e)}
-            value={'https://shapeshift.io/shifty.html?destination=' + p.address + '&output=REP'}
+            value={'https://shapeshift.io/shifty.html?destination=' + address + '&output=REP'}
           >
             ShapeShift to REP
           </button>
@@ -71,10 +71,10 @@ export default class AccountDeposit extends Component {
               <button
                 id="copy_address"
                 className={Styles.AccountDeposit__copyButtonElement}
-                data-clipboard-text={p.address}
+                data-clipboard-text={address}
               >
                 <span className={Styles.AccountDeposit__addressString}>
-                  {p.address}
+                  {address}
                 </span>
                 {CopyIcon}
               </button>
@@ -82,7 +82,7 @@ export default class AccountDeposit extends Component {
           </div>
           <div>
             <QRCode
-              value={p.address}
+              value={address}
               style={styleQR}
             />
           </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { IconSearch, Close } from 'modules/common/components/icons'
 
@@ -50,7 +50,8 @@ export default class Input extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
+    const { value } = this.props
+    if (value !== nextProps.value) {
       this.setState({ value: nextProps.value })
     }
   }
@@ -179,14 +180,14 @@ export default class Input extends Component {
                   const bnMax = sanitizeBound(max)
                   const bnMin = sanitizeBound(min)
 
-                  let newValue = new BigNumber(s.value || 0)
+                  let newValue = createBigNumber(s.value || 0)
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
                     newValue = bnMax
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
-                    newValue = bnMin.plus(new BigNumber(incrementAmount))
+                    newValue = bnMin.plus(createBigNumber(incrementAmount))
                   } else {
-                    newValue = newValue.plus(new BigNumber(incrementAmount))
+                    newValue = newValue.plus(createBigNumber(incrementAmount))
                     if (bnMax !== null && newValue.greaterThan(bnMax)) {
                       newValue = bnMax
                     }
@@ -209,14 +210,14 @@ export default class Input extends Component {
                   const bnMax = sanitizeBound(max)
                   const bnMin = sanitizeBound(min)
 
-                  let newValue = new BigNumber(s.value || 0)
+                  let newValue = createBigNumber(s.value || 0)
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                    newValue = bnMax.minus(new BigNumber(incrementAmount))
+                    newValue = bnMax.minus(createBigNumber(incrementAmount))
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
                     newValue = bnMin
                   } else {
-                    newValue = newValue.minus(new BigNumber(incrementAmount))
+                    newValue = newValue.minus(createBigNumber(incrementAmount))
                     if (bnMin !== null && newValue.lessThan(bnMin)) {
                       newValue = bnMin
                     }
@@ -238,8 +239,8 @@ export default class Input extends Component {
 function sanitizeBound(value) {
   if (value == null) {
     return null
-  } else if (!(value instanceof BigNumber)) {
-    return new BigNumber(value)
+  } else if (!(BigNumber.isBigNumber(value))) {
+    return createBigNumber(value)
   }
 
   return value
