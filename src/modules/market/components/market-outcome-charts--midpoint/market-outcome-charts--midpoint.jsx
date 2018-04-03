@@ -208,7 +208,7 @@ function drawMidpointLine(options) {
     .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
     .attr('x1', drawParams.chartDim.left)
     .attr('x2', () => {
-      if (hasPriceHistory && hasOrders) { // All the way
+      if ((hasPriceHistory && hasOrders) || (hasOrders && excludeCandlestick)) { // All the way
         return drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right
       } else if (hasPriceHistory && !hasOrders) { // To orders
         return chartWidths.candle

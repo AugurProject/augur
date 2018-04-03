@@ -11,6 +11,7 @@ import InputDropdown from 'modules/common/components/input-dropdown/input-dropdo
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import CreateMarketFormLiquidityCharts from 'modules/create-market/containers/create-market-form-liquidity-charts'
 
+import { BID, ASK } from 'modules/transactions/constants/types'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
