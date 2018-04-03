@@ -17,7 +17,7 @@ export default class CreateMarketDefine extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
     isBugBounty: PropTypes.bool.isRequired,
-    isValid: PropTypes.bool.isRequired,
+    isValid: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
