@@ -1,10 +1,10 @@
 import { formatAttoRep } from 'utils/format-number'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 
 
-const ONE = WrappedBigNumber(1)
-const ONE_HUNDRED = WrappedBigNumber(100)
+const ONE = createBigNumber(1)
+const ONE_HUNDRED = createBigNumber(100)
 
 // Percentages are ALWAYS in number range so results are returned as number
 export const calculatePercentage = (numSize, numTotalStake) => {
@@ -12,8 +12,8 @@ export const calculatePercentage = (numSize, numTotalStake) => {
   if (typeof numSize === 'undefined' || typeof numTotalStake === 'undefined') return 0
 
   // NB: Remove whence paramaters are converted outside
-  const size = WrappedBigNumber(numSize, 10)
-  const totalStake = WrappedBigNumber(numTotalStake, 10)
+  const size = createBigNumber(numSize, 10)
+  const totalStake = createBigNumber(numTotalStake, 10)
   // NB: Remove whence paramaters are converted outside
 
   if (size.isEqualTo(0)) return 0
@@ -26,8 +26,8 @@ export const calculatePercentage = (numSize, numTotalStake) => {
 
 export const calculateNonAccountPercentage = (size, numStakeCurrent, numAccountStakeCurrent) => {
   // NB: Remove whence paramaters are converted outside
-  const stakeCurrent = WrappedBigNumber(numStakeCurrent, 10)
-  const accountStakeCurrent = WrappedBigNumber(numAccountStakeCurrent, 10)
+  const stakeCurrent = createBigNumber(numStakeCurrent, 10)
+  const accountStakeCurrent = createBigNumber(numAccountStakeCurrent, 10)
   // NB: Remove whence paramaters are converted outside
 
   return calculatePercentage(size, stakeCurrent.minus(accountStakeCurrent))
@@ -35,8 +35,8 @@ export const calculateNonAccountPercentage = (size, numStakeCurrent, numAccountS
 
 export const calculateAddedStakePercentage = (size, numAccountStake, numAddedStake) => {
   // NB: Remove whence paramaters are converted outside
-  const accountStake = WrappedBigNumber(numAccountStake, 10)
-  const addedStake = WrappedBigNumber(numAddedStake, 10)
+  const accountStake = createBigNumber(numAccountStake, 10)
+  const addedStake = createBigNumber(numAddedStake, 10)
   // NB: Remove whence paramaters are converted outside
 
   return calculatePercentage(size, accountStake.plus(convertRepToAttoRep(addedStake)))
@@ -44,11 +44,11 @@ export const calculateAddedStakePercentage = (size, numAccountStake, numAddedSta
 
 export const calculateTentativeRemainingRep = (size, numTotalStake, numTentativeStake) => {
   // NB: Remove whence paramaters are converted outside
-  const totalStake = WrappedBigNumber(numTotalStake, 10)
-  const tentativeStake = WrappedBigNumber(numTentativeStake, 10)
+  const totalStake = createBigNumber(numTotalStake, 10)
+  const tentativeStake = createBigNumber(numTentativeStake, 10)
   // NB: Remove whence paramaters are converted outside
 
-  const result = calculateRemainingValue(WrappedBigNumber(size), totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber()
+  const result = calculateRemainingValue(createBigNumber(size), totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber()
   if (result < 0) return '0'
 
   return formatAttoRep(result, { decimals: 4, denomination: ' REP' }).formatted

@@ -30,8 +30,15 @@ export default class ReportingOpen extends Component {
   }
 
   render() {
+    const {
+      history,
+      isLogged,
+      loadMarketsInfo,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section>
@@ -46,26 +53,26 @@ export default class ReportingOpen extends Component {
         }
         { s.filteredMarketsDispute.length &&
           <MarketsList
-            isLogged={p.isLogged}
-            markets={p.markets}
+            isLogged={isLogged}
+            markets={markets}
             filteredMarkets={s.filteredMarketsDispute}
-            location={p.location}
-            history={p.history}
-            toggleFavorite={p.toggleFavorite}
-            loadMarketsInfo={p.loadMarketsInfo}
+            location={location}
+            history={history}
+            toggleFavorite={toggleFavorite}
+            loadMarketsInfo={loadMarketsInfo}
             linkType={TYPE_REPORT}
             showPagination={false}
           />
         }
         <h2 className={Styles.ReportingOpen__heading}>In Reporting</h2>
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
+          isLogged={isLogged}
+          markets={markets}
           filteredMarkets={s.filteredMarketsReporting}
-          location={p.location}
-          history={p.history}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfo={loadMarketsInfo}
           linkType={TYPE_REPORT}
           paginationPageParam="reporting-closed-page"
         />

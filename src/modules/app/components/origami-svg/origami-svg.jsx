@@ -43,8 +43,9 @@ export default class Origami extends Component {
 
 
   getDesktopShapes() {
-    const mainXOffset = this.props.menuScalar * this.xOffsetMax
-    const secondaryXOffset = this.props.menuScalar * -27
+    const { menuScalar } = this.props
+    const mainXOffset = menuScalar * this.xOffsetMax
+    const secondaryXOffset = menuScalar * -27
     const applyMainOffset = point => offsetPoint(point, [mainXOffset, 0])
     const applySecondaryOffset = point => offsetPoint(point, [secondaryXOffset, 0])
 
@@ -88,7 +89,7 @@ export default class Origami extends Component {
       },
     ]
 
-    if (this.props.menuScalar > 0) {
+    if (menuScalar > 0) {
       shapes.push({
         color: '#5A4774',
         points: [
@@ -146,9 +147,10 @@ export default class Origami extends Component {
 
 
   render() {
+    const { isMobile } = this.props
     let shapes
 
-    if (this.props.isMobile) shapes = this.getMobileShapes()
+    if (isMobile) shapes = this.getMobileShapes()
     else shapes = this.getDesktopShapes()
 
     const polygons = shapes.map((shape, index) => {

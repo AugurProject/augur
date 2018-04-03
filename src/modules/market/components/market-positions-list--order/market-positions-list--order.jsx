@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */ // needed because <button> cannot take the place <ul> in the table structure
 
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
@@ -10,6 +11,13 @@ import { SELL } from 'modules/trade/constants/types'
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
 export default class Order extends Component {
+  static propTypes = {
+    isExtendedDisplay: PropTypes.bool,
+    isMobile: PropTypes.bool,
+    order: PropTypes.object,
+    pending: PropTypes.bool,
+  }
+
   constructor(props) {
     super(props)
 
@@ -44,8 +52,13 @@ export default class Order extends Component {
   }
 
   render() {
+    const {
+      isExtendedDisplay,
+      isMobile,
+      order,
+      pending,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     const confirmStyle = {
       height: s.confirmHeight,
@@ -55,34 +68,34 @@ export default class Order extends Component {
     return (
       <ul
         ref={(order) => { this.order = order }}
-        className={!p.isMobile ? Styles.Order : Styles.PortMobile}
+        className={!isMobile ? Styles.Order : Styles.PortMobile}
       >
         <li>
-          { getValue(p, 'name') }
-          { p.pending &&
+          { getValue(this.props, 'name') }
+          { pending &&
             <span className={Styles.Order__pending}>
-              { p.pending === CLOSE_DIALOG_CLOSING &&
+              { pending === CLOSE_DIALOG_CLOSING &&
                 <span>Cancellation Pending</span>
               }
             </span>
           }
         </li>
         <li>
-          { p.order.type === SELL ? <span>-</span> : <span>+</span> } { getValue(p, 'order.unmatchedShares.formatted') }
+          { order.type === SELL ? <span>-</span> : <span>+</span> } { getValue(this.props, 'order.unmatchedShares.formatted') }
         </li>
         <li>
-          { getValue(p, 'order.avgPrice.formatted') }
+          { getValue(this.props, 'order.avgPrice.formatted') }
         </li>
-        { p.isExtendedDisplay && !p.isMobile &&
+        { isExtendedDisplay && !isMobile &&
           <li />
         }
-        { !p.isMobile && <li /> }
-        { !p.isMobile && <li /> }
-        { p.isExtendedDisplay &&
+        { !isMobile && <li /> }
+        { !isMobile && <li /> }
+        { isExtendedDisplay &&
           <li />
         }
         <li>
-          { p.pending === CLOSE_DIALOG_CLOSING ?
+          { pending === CLOSE_DIALOG_CLOSING ?
             <span className={Styles.NotActive}>Cancel</span> :
             <button onClick={this.toggleConfirm}>Cancel</button>
           }
@@ -92,7 +105,7 @@ export default class Order extends Component {
           className={classNames(Styles.Order__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          { p.pending ?
+          { pending ?
             <div className={Styles['Order__confirm-details']}>
               <p>Orders cannot be closed while they are pending.</p>
               <div className={Styles['Order__confirm-options']}>
@@ -100,9 +113,9 @@ export default class Order extends Component {
               </div>
             </div> :
             <div className={Styles['Order__confirm-details']}>
-              <p>Cancel order for { getValue(p, 'order.unmatchedShares.formatted') } shares of &ldquo;{ getValue(p, 'name') }&rdquo; at { getValue(p, 'order.purchasePrice.formatted') } ETH?</p>
+              <p>Cancel order for { getValue(this.props, 'order.unmatchedShares.formatted') } shares of &ldquo;{ getValue(this.props, 'name') }&rdquo; at { getValue(this.props, 'order.purchasePrice.formatted') } ETH?</p>
               <div className={Styles['Order__confirm-options']}>
-                <button onClick={(e) => { p.order.cancelOrder(p.order.id, p.order.marketId, p.order.outcomeId, p.order.type); this.toggleConfirm() }}>Yes</button>
+                <button onClick={(e) => { order.cancelOrder(order.id, order.marketId, order.outcomeId, order.type); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
             </div>

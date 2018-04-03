@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { ZERO } from 'modules/trade/constants/numbers'
 
 /**
@@ -9,6 +9,6 @@ import { ZERO } from 'modules/trade/constants/numbers'
 export default function (marketOutcomesData) {
   return Object.keys(marketOutcomesData)
     .map(outcomeId => marketOutcomesData[outcomeId])
-    .reduce((outstandingShares, outcome) => outstandingShares.plus(WrappedBigNumber(outcome.outstandingShares || 0, 10)), ZERO)
+    .reduce((outstandingShares, outcome) => outstandingShares.plus(createBigNumber(outcome.outstandingShares || 0, 10)), ZERO)
     .toNumber()
 }

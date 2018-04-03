@@ -1,5 +1,5 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 export default function calculatePayoutNumeratorsValue(market, payout, isInvalid) {
   const {
@@ -15,10 +15,10 @@ export default function calculatePayoutNumeratorsValue(market, payout, isInvalid
   if (isInvalid) return null
 
   if (isScalar) {
-    const longPayout = WrappedBigNumber(payout[1], 10)
-    const priceRange = WrappedBigNumber(maxPrice, 10).minus(WrappedBigNumber(minPrice, 10))
+    const longPayout = createBigNumber(payout[1], 10)
+    const priceRange = createBigNumber(maxPrice, 10).minus(createBigNumber(minPrice, 10))
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
-    return ((longPayout.times(priceRange)).dividedBy(WrappedBigNumber(numTicks, 10))).plus(WrappedBigNumber(minPrice, 10)).toString()
+    return ((longPayout.times(priceRange)).dividedBy(createBigNumber(numTicks, 10))).plus(createBigNumber(minPrice, 10)).toString()
   }
 
   return payout.findIndex(item => item > 0).toString()

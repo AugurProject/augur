@@ -19,8 +19,13 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
-    markets: PropTypes.array.isRequired,
+    history: PropTypes.object,
+    isLogged: PropTypes.bool,
+    loadMarketsInfo: PropTypes.func,
     loadReporting: PropTypes.func.isRequired,
+    location: PropTypes.object,
+    markets: PropTypes.array.isRequired,
+    toggleFavorite: PropTypes.func,
   }
 
   constructor(props) {
@@ -32,18 +37,27 @@ export default class ReportingResolved extends Component {
   }
 
   componentWillMount() {
-    this.props.loadReporting()
+    const { loadReporting } = this.props
+    loadReporting()
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.markets.length > 0 && nextProps.markets !== this.props.markets) {
+    const { markets } = this.props
+    if (nextProps.markets.length > 0 && nextProps.markets !== markets) {
       const filteredMarkets = getMarketIds(nextProps.markets)
       this.setState({ filteredMarkets })
     }
   }
 
   render() {
-    const p = this.props
+    const {
+      history,
+      isLogged,
+      loadMarketsInfo,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     const s = this.state
 
     return (
@@ -56,14 +70,14 @@ export default class ReportingResolved extends Component {
         />
         <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
+          isLogged={isLogged}
+          markets={markets}
           filteredMarkets={s.filteredMarkets}
-          location={p.location}
-          history={p.history}
+          location={location}
+          history={history}
           linkType={TYPE_VIEW}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfo={loadMarketsInfo}
           paginationPageParam="reporting-resolved-page"
         />
       </section>

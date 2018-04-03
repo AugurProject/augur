@@ -1,4 +1,4 @@
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import { encodeNumberAsBase10String, encodeNumberAsJSNumber, unfix } from 'speedomatic'
 import { augur, constants } from 'services/augurjs'
 import { ZERO, TEN } from 'modules/trade/constants/numbers'
@@ -49,12 +49,14 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 */
 
+export const ETHER_NUMBER_OF_DECIMALS = 4
+
 export function formatEther(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
       denomination: ' ETH',
       positiveSign: false,
       zeroStyled: false,
@@ -69,8 +71,8 @@ export function formatEtherEstimate(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
       denomination: ' ETH (estimated)',
       positiveSign: false,
       zeroStyled: false,
@@ -196,14 +198,14 @@ export function formatBlank() {
 
 export function formatGasCostToEther(num, opts, gasPrice) {
   const gas = unfix(num, 'number')
-  const estimatedGasCost = WrappedBigNumber(gas).times(WrappedBigNumber(gasPrice))
+  const estimatedGasCost = createBigNumber(gas).times(createBigNumber(gasPrice))
   return formatGasCost(estimatedGasCost, opts).rounded
 }
 
 export function formatAttoRep(num, opts) {
   if (!num || num === 0 || isNaN(num)) return 0
   const { ETHER } = augur.rpc.constants
-  return formatNumber(WrappedBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
+  return formatNumber(createBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
 }
 
 export function formatGasCost(num, opts) {
@@ -239,7 +241,7 @@ export function formatNumber(num, opts = {
   roundDown = !!roundDown
   zeroStyled = zeroStyled !== false
   blankZero = blankZero !== false
-  value = num != null ? WrappedBigNumber(num, 10) : ZERO
+  value = num != null ? createBigNumber(num, 10) : ZERO
 
   if (value.eq(ZERO)) {
     if (zeroStyled) return formatNone()
@@ -265,10 +267,12 @@ export function formatNumber(num, opts = {
     o.rounded = '0'
     o.minimized = '0'
   } else {
+    const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
+    const roundToZeroThreshold = constants.PRECISION.zero
     o.value = value.toNumber()
-    if (value.abs().lt(constants.PRECISION.zero)) {
+    if (value.abs().lt(roundToZeroThreshold)) {
       o.formattedValue = '0'
-    } else if (value.abs().lt(constants.PRECISION.limit)) {
+    } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
         o.formattedValue = '0'
       } else {
@@ -314,14 +318,14 @@ export function formatNumber(num, opts = {
 
 function addBigUnitPostfix(value, formattedValue) {
   let postfixed
-  if (value.gt(WrappedBigNumber('1000000000000', 10))) {
+  if (value.gt(createBigNumber('1000000000000', 10))) {
     postfixed = '> 1T'
-  } else if (value.gt(WrappedBigNumber('10000000000', 10))) {
-    postfixed = value.dividedBy(WrappedBigNumber('1000000000', 10)).toFixed(0) + 'B'
-  } else if (value.gt(WrappedBigNumber('10000000', 10))) {
-    postfixed = value.dividedBy(WrappedBigNumber('1000000', 10)).toFixed(0) + 'M'
-  } else if (value.gt(WrappedBigNumber('10000', 10))) {
-    postfixed = value.dividedBy(WrappedBigNumber('1000', 10)).toFixed(0) + 'K'
+  } else if (value.gt(createBigNumber('10000000000', 10))) {
+    postfixed = value.dividedBy(createBigNumber('1000000000', 10)).toFixed(0) + 'B'
+  } else if (value.gt(createBigNumber('10000000', 10))) {
+    postfixed = value.dividedBy(createBigNumber('1000000', 10)).toFixed(0) + 'M'
+  } else if (value.gt(createBigNumber('10000', 10))) {
+    postfixed = value.dividedBy(createBigNumber('1000', 10)).toFixed(0) + 'K'
   } else {
     postfixed = addCommas(formattedValue)
   }

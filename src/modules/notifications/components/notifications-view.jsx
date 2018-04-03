@@ -54,10 +54,14 @@ export default class NotificationsView extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      removeNotification,
+      toggleNotifications,
+      updateNotification,
+    } = this.props
     const s = this.state
 
-    const notifications = getValue(p, 'notifications.notifications')
+    const notifications = getValue(this.props, 'notifications.notifications')
 
     return (
       <section id="notifications_view" className={Styles.NotificationsView}>
@@ -65,7 +69,7 @@ export default class NotificationsView extends Component {
           className={Styles.Notification__close}
           onClick={(e) => {
             e.stopPropagation()
-            p.toggleNotifications()
+            toggleNotifications()
           }}
         >
           {CloseBlack}
@@ -80,9 +84,9 @@ export default class NotificationsView extends Component {
             {notifications.map((notification, i) => (
               <Notification
                 key={`${notification.id}-${notification.title}`}
-                removeNotification={() => p.removeNotification(notification.id)}
-                toggleNotifications={p.toggleNotifications}
-                updateNotification={p.updateNotification}
+                removeNotification={() => removeNotification(notification.id)}
+                toggleNotifications={toggleNotifications}
+                updateNotification={updateNotification}
                 notificationsBounds={s.notificationsBounds}
                 checkSeen={s.checkSeen}
                 updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}

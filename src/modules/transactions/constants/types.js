@@ -1,17 +1,5 @@
-// Event names
-export const APPROVAL = 'Approval'
-export const BUY_COMPLETE_SETS = 'BuyCompleteSets'
-export const CANCEL_ORDER = 'CancelOrder'
-export const CREATE_MARKET = 'CreateMarket'
-export const DEPOSIT_ETHER = 'DepositEther'
-export const CREATE_ORDER = 'CreateOrder'
-export const PAYOUT = 'Payout'
-export const REDEEM_WINNING_TOKENS = 'RedeemWinningTokens'
-export const SELL_COMPLETE_SETS = 'SellCompleteSets'
-export const SUBMIT_REPORT = 'SubmitReport'
-export const FILL_ORDER = 'FillOrder'
+// for add-transactions.js
 export const TRANSFER = 'Transfer'
-export const WITHDRAW_ETHER = 'WithdrawEther'
 export const OPEN_ORDER = 'OpenOrder'
 export const MARKET_CREATION = 'MarketCreation'
 export const TRADE = 'Trade'
