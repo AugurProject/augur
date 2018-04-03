@@ -515,7 +515,7 @@ function drawCrosshairs(options) {
   const crosshair = candleTicks.append('g')
     .attr('id', 'candlestick_crosshairs')
     .attr('class', 'line')
-    .attr('style', { display: 'none' })
+    .style('display', 'none')
 
   crosshair.append('line')
     .attr('id', 'candlestick_crosshairY')

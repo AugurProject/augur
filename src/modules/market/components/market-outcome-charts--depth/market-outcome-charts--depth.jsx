@@ -546,13 +546,13 @@ function setupCrosshairs(options) {
   const crosshair = depthChart.append('g')
     .attr('id', 'crosshairs')
     .attr('class', 'line')
-    .attr('style', { display: 'none' })
+    .style('display', 'none')
 
   // X Crosshair
   crosshair.append('line')
     .attr('id', 'crosshairX')
     .attr('class', 'crosshair')
-    .attr('style', { display: 'none' })
+    .style('display', 'none')
 
   // Y Crosshair
   crosshair.append('line')
