@@ -37,12 +37,11 @@
   }
 }
 
-.PortfolioReports__actions {
-  align-self: flex-end;
-}
+button.PortfolioReports__claim {
+  &:extend(.button--white all);
 
-.PortfolioReports__claim {
-  &:extend(.button--offWhite all);
+  align-self: flex-end;
+  padding: 0 2rem;
 }
 
 @media @breakpoint-mobile {
@@ -64,12 +63,8 @@
     }
   }
 
-  .PortfolioReports__actions {
-    margin-top: 3rem;
-    width: 100%;
-  }
-
   .PortfolioReports__claim {
+    margin-top: 3rem;
     width: 100%;
   }
 }

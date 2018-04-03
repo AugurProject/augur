@@ -49,10 +49,7 @@ export default class ModalClaimReportingFees extends Component {
       redeemableContracts: this.props.redeemableContracts,
       estimateGas: false,
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, (err, res) => {
-      console.log(err, res)
-      this.props.closeModal()
-    })
+    this.props.claimReportingFees(claimReportingFeesOptions, this.props.closeModal)
   }
 
   render() {

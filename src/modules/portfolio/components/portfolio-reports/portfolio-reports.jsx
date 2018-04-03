@@ -71,15 +71,13 @@ export default class PortfolioReports extends Component {
             <li><span>REP</span><span>{s.unclaimedRep.formatted}</span></li>
             <li><span>ETH</span><span>{s.unclaimedEth.formatted}</span></li>
           </ul>
-          <div className={Styles.PortfolioReports__actions}>
-            <button
-              className={Styles.PortfolioReports__claim}
-              disabled={disableClaimReportingFeesButton}
-              onClick={this.handleClaimReportingFees}
-            >
-              Claim
-            </button>
-          </div>
+          <button
+            className={Styles.PortfolioReports__claim}
+            disabled={disableClaimReportingFeesButton}
+            onClick={this.handleClaimReportingFees}
+          >
+            Claim
+          </button>
         </div>
       </section>
     )
