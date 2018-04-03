@@ -6,9 +6,9 @@ export default function filterByTags(tags, items) {
   return items.reduce((p, item, i) => {
     if (tags.every(filterTag =>
       item.tags.some((tag, tagIndex) =>
-        tagIndex !== 0 && tag === filterTag))
+        tag === filterTag))
     ) {
-      return [...p, i]
+      return [...p, items[i].id]
     }
 
     return p

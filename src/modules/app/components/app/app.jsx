@@ -75,21 +75,26 @@ const navTypes = {
 
 export default class AppView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
+    blockchain: PropTypes.object.isRequired,
+    categories: PropTypes.any,
+    connection: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired,
+    initAugur: PropTypes.func.isRequired,
+    isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    location: PropTypes.object.isRequired,
+    loginAccount: PropTypes.object.isRequired,
+    markets: PropTypes.array.isRequired,
+    marketsFilteredSorted: PropTypes.array,
+    modal: PropTypes.object.isRequired,
+    selectedCategory: PropTypes.string,
+    universe: PropTypes.object.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
-    initAugur: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
-    modal: PropTypes.object.isRequired,
-    connection: PropTypes.object.isRequired,
-    selectedCategory: PropTypes.string,
     url: PropTypes.string,
-    universe: PropTypes.object.isRequired,
-    blockchain: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -152,21 +157,27 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
-    this.props.initAugur(this.props.history, (err, res) => {
+    const {
+      history,
+      initAugur,
+      location,
+      updateModal,
+    } = this.props
+    initAugur(history, (err, res) => {
       if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
-        this.props.updateModal({
+        updateModal({
           type: MODAL_NETWORK_CONNECT,
           isInitialConnection: true,
         })
       }
     })
 
-    const currentPath = parsePath(this.props.location.pathname)[0]
+    const currentPath = parsePath(location.pathname)[0]
     this.setState({ currentBasePath: currentPath })
 
     this.changeMenu(currentPath)
     if (currentPath === MARKETS) {
-      const selectedCategory = parseQuery(this.props.location.search)[CATEGORY_PARAM_NAME]
+      const selectedCategory = parseQuery(location.search)[CATEGORY_PARAM_NAME]
       if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
     }
   }
@@ -178,18 +189,23 @@ export default class AppView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isMobile !== nextProps.isMobile) {
+    const {
+      isMobile,
+      location,
+      universe,
+    } = this.props
+    if (isMobile !== nextProps.isMobile) {
       this.setState({
         mobileMenuState: mobileMenuStates.CLOSED,
       })
     }
 
-    if (!isEqual(this.props.universe.isForking, nextProps.universe.isForking)) {
+    if (!isEqual(universe.isForking, nextProps.universe.isForking)) {
       this.sideNavMenuData[1].disabled = nextProps.universe.isForking
     }
 
-    if (!isEqual(this.props.location, nextProps.location)) {
-      const lastBasePath = parsePath(this.props.location.pathname)[0]
+    if (!isEqual(location, nextProps.location)) {
+      const lastBasePath = parsePath(location.pathname)[0]
       const nextBasePath = parsePath(nextProps.location.pathname)[0]
 
       const selectedCategory = parseQuery(nextProps.location.search)[CATEGORY_PARAM_NAME]
@@ -206,12 +222,12 @@ export default class AppView extends Component {
   }
 
   changeMenu(nextBasePath) {
-    const p = this.props
+    const { isLogged } = this.props
     const oldType = this.state.currentInnerNavType
     const newType = navTypes[nextBasePath]
 
     if (
-      (newType === AccountInnerNav && !p.isLogged) ||
+      (newType === AccountInnerNav && !isLogged) ||
       oldType === newType
     ) {
       return
@@ -260,13 +276,17 @@ export default class AppView extends Component {
   }
 
   checkIsMobile() {
+    const {
+      updateIsMobile,
+      updateIsMobileSmall,
+    } = this.props
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1
     const isMobileSmall = window.getComputedStyle(document.body).getPropertyValue('--is-mobile-small').indexOf('true') !== -1
 
-    this.props.updateIsMobile(isMobile)
-    this.props.updateIsMobileSmall(isMobileSmall)
+    updateIsMobile(isMobile)
+    updateIsMobileSmall(isMobileSmall)
   }
 
   toggleNotifications() {
@@ -345,11 +365,24 @@ export default class AppView extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      blockchain,
+      categories,
+      coreStats,
+      history,
+      isLogged,
+      isMobile,
+      location,
+      loginAccount,
+      markets,
+      marketsFilteredSorted,
+      modal,
+      universe,
+    } = this.props
     const s = this.state
 
     const { mainMenu, subMenu } = this.state
-    const unseenCount = getValue(p, 'notifications.unseenCount')
+    const unseenCount = getValue(this.props, 'notifications.unseenCount')
 
     const InnerNav = this.state.currentInnerNavType
     let innerNavMenuMobileClick
@@ -367,7 +400,7 @@ export default class AppView extends Component {
       const stateUpdate = {}
       let updateState = false
 
-      if (this.props.isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
+      if (isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
         stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
         updateState = true
       }
@@ -382,8 +415,8 @@ export default class AppView extends Component {
       }
     }
 
-    if (!p.isMobile) {
-      if (parsePath(p.location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
+    if (!isMobile) {
+      if (parsePath(location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110
       } else {
         categoriesMargin = -110 + (110 * mainMenu.scalar)
@@ -401,20 +434,20 @@ export default class AppView extends Component {
           defaultTitle="Decentralized Prediction Markets | Augur"
           titleTemplate="%s | Augur"
         />
-        {Object.keys(p.modal).length !== 0 &&
+        {Object.keys(modal).length !== 0 &&
           <Modal />
         }
         <div
           className={classNames(
             Styles.App,
             {
-              [Styles[`App--blur`]]: Object.keys(p.modal).length !== 0,
+              [Styles[`App--blur`]]: Object.keys(modal).length !== 0,
             },
           )}
         >
           <section className={Styles.SideBar}>
             <Origami
-              isMobile={p.isMobile}
+              isMobile={isMobile}
               menuScalar={origamiScalar}
             />
             <Link to={makePath(CATEGORIES)}>
@@ -423,39 +456,39 @@ export default class AppView extends Component {
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
               defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
-              isMobile={p.isMobile}
-              isLogged={p.isLogged}
+              isMobile={isMobile}
+              isLogged={isLogged}
               mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
               menuScalar={subMenu.scalar}
               menuData={this.sideNavMenuData}
               unseenCount={unseenCount}
               toggleNotifications={this.toggleNotifications}
-              stats={p.coreStats}
+              stats={coreStats}
               currentBasePath={this.state.currentBasePath}
             />
           </section>
           <section className={Styles.Main}>
             <section className={Styles.TopBar}>
               <TopBar
-                isMobile={p.isMobile}
-                isLogged={p.isLogged}
-                stats={p.coreStats}
+                isMobile={isMobile}
+                isLogged={isLogged}
+                stats={coreStats}
                 unseenCount={unseenCount}
                 toggleNotifications={this.toggleNotifications}
               />
             </section>
-            {p.isLogged && s.isNotificationsVisible &&
+            {isLogged && s.isNotificationsVisible &&
               <NotificationsContainer
                 toggleNotifications={() => this.toggleNotifications()}
               />
             }
-            {p.universe.forkEndTime && p.universe.forkEndTime !== '0' && p.blockchain && p.blockchain.currentAugurTimestamp &&
+            {universe.forkEndTime && universe.forkEndTime !== '0' && blockchain && blockchain.currentAugurTimestamp &&
               <section className={Styles.TopBar}>
                 <ForkingNotification
-                  location={p.location}
-                  forkingMarket={p.universe.forkingMarket}
-                  forkEndTime={p.universe.forkEndTime}
-                  currentTime={p.blockchain.currentAugurTimestamp}
+                  location={location}
+                  forkingMarket={universe.forkingMarket}
+                  forkEndTime={universe.forkEndTime}
+                  currentTime={blockchain.currentAugurTimestamp}
                 />
               </section>
             }
@@ -466,17 +499,17 @@ export default class AppView extends Component {
               {InnerNav &&
                 <InnerNav
                   currentBasePath={this.state.currentBasePath}
-                  isMobile={p.isMobile}
+                  isMobile={isMobile}
                   mobileMenuState={s.mobileMenuState}
                   mobileMenuClick={innerNavMenuMobileClick}
                   subMenuScalar={subMenu.scalar}
-                  categories={p.categories}
-                  markets={p.markets}
-                  marketsFilteredSorted={p.marketsFilteredSorted}
+                  categories={categories}
+                  markets={markets}
+                  marketsFilteredSorted={marketsFilteredSorted}
                   openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
-                  privateKey={p.loginAccount.privateKey}
-                  location={p.location}
-                  history={p.history}
+                  privateKey={loginAccount.privateKey}
+                  location={location}
+                  history={history}
                 />
               }
               {!InnerNav &&

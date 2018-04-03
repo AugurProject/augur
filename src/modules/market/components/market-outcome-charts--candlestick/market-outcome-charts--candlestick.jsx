@@ -48,7 +48,11 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentWillMount() {
-    this.updatePeriodTimeSeries(this.props.priceTimeSeries, this.props.selectedPeriod)
+    const {
+      priceTimeSeries,
+      selectedPeriod,
+    } = this.props
+    this.updatePeriodTimeSeries(priceTimeSeries, selectedPeriod)
   }
 
   componentDidMount() {
@@ -58,18 +62,23 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      hoveredPrice,
+      priceTimeSeries,
+      selectedPeriod,
+    } = this.props
     // NOTE --  need to determine how we'll display time changes w/out series changes
     //          this will inform the conditions here
     if (
-      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
-      !isEqual(this.props.selectedPeriod, nextProps.selectedPeriod)
+      priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      !isEqual(selectedPeriod, nextProps.selectedPeriod)
     ) {
       this.updatePeriodTimeSeries(nextProps.priceTimeSeries, nextProps.selectedPeriod, nextProps.currentBlock)
     }
 
     if (!isEqual(this.state.periodTimeSeries, nextState.periodTimeSeries)) this.drawChart(nextState.periodTimeSeries)
 
-    if (!isEqual(this.props.hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(this.props.hoveredPrice, this.state.yScale, this.state.chartWidth)
+    if (!isEqual(hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
   componentWillUnmount() {
@@ -187,6 +196,16 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   drawChart(periodTimeSeries) {
+    const {
+      fixedPrecision,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      outcomeBounds,
+      updateHoveredPeriod,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     if (this.candlestickChart) {
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
@@ -219,16 +238,16 @@ export default class MarketOutcomeCandlestick extends Component {
       const allowedFloat = 2 // TODO -- set this to the precision
 
       // Determine bounding diff
-      const maxDiff = Math.abs(this.props.orderBookKeys.mid - this.props.outcomeBounds.max)
-      const minDiff = Math.abs(this.props.orderBookKeys.mid - this.props.outcomeBounds.min)
+      const maxDiff = Math.abs(orderBookKeys.mid - outcomeBounds.max)
+      const minDiff = Math.abs(orderBookKeys.mid - outcomeBounds.min)
       const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
       // Set interval step
       const step = boundDiff / ((intervals - 1) / 2)
 
       const yDomain = new Array(intervals).fill(null).reduce((p, _unused, i) => {
-        if (i === 0) return [Number((this.props.orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
-        if (i + 1 === Math.round(intervals / 2)) return [...p, this.props.orderBookKeys.mid]
+        if (i === 0) return [Number((orderBookKeys.mid - boundDiff).toFixed(allowedFloat))]
+        if (i + 1 === Math.round(intervals / 2)) return [...p, orderBookKeys.mid]
         return [...p, Number((p[i - 1] + step).toFixed(allowedFloat))]
       }, [])
 
@@ -304,18 +323,18 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('class', 'overlay')
         .attr('width', width)
         .attr('height', height)
-        .on('mousemove', () => this.props.updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(this.props.fixedPrecision)))
-        .on('mouseout', () => this.props.updateHoveredPrice(null))
+        .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(fixedPrecision)))
+        .on('mouseout', () => updateHoveredPrice(null))
         .on('click', () => {
           const mouse = d3.mouse(d3.select('#outcome_candlestick').node())
-          const orderPrice = yScale.invert(mouse[1]).toFixed(this.props.fixedPrecision)
+          const orderPrice = yScale.invert(mouse[1]).toFixed(fixedPrecision)
 
           if (
-            orderPrice > this.props.marketMin &&
-            orderPrice < this.props.marketMax
+            orderPrice > marketMin &&
+            orderPrice < marketMax
           ) {
-            this.props.updateSeletedOrderProperties({
-              selectedNav: orderPrice > this.props.orderBookKeys.mid ? BUY : SELL,
+            updateSeletedOrderProperties({
+              selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
               orderPrice,
             })
           }
@@ -329,11 +348,11 @@ export default class MarketOutcomeCandlestick extends Component {
         .attr('height', height - margin.bottom)
         .attr('width', d => (0.5 * (width - (2 * margin.stick))) / priceHistory.length)
         .attr('class', 'period-hover')
-        .on('mouseover', d => this.props.updateHoveredPeriod(d))
-        .on('mousemove', () => this.props.updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(this.props.fixedPrecision)))
+        .on('mouseover', d => updateHoveredPeriod(d))
+        .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#outcome_candlestick').node())[1]).toFixed(fixedPrecision)))
         .on('mouseout', () => {
-          this.props.updateHoveredPeriod({})
-          this.props.updateHoveredPrice(null)
+          updateHoveredPeriod({})
+          updateHoveredPrice(null)
         })
 
       chart.append('text')

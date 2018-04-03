@@ -24,6 +24,10 @@ export default class ProfitLossChart extends Component {
   }
 
   componentDidMount() {
+    const {
+      id,
+      isMobile,
+    } = this.props
     noData(Highcharts)
 
     Highcharts.setOptions({
@@ -32,12 +36,12 @@ export default class ProfitLossChart extends Component {
       },
     })
 
-    const containerId = 'profit_loss_chart_container' + this.props.id
-    const chartId = 'profit_loss_chart' + this.props.id
+    const containerId = 'profit_loss_chart_container' + id
+    const chartId = 'profit_loss_chart' + id
     // calculate horizontal margins, if mobile 0, else default
-    const horizontalMargins = this.props.isMobile ? 0 : null
+    const horizontalMargins = isMobile ? 0 : null
     // determine height based on mobile or not
-    let height = this.props.isMobile ? 260 : 170
+    let height = isMobile ? 260 : 170
     // if the width of container is going to be <= height use 9/16 aspect ratio
     if (this.refs[containerId].clientWidth <= height) {
       height = ((9 / 16) * 100) + '%'
@@ -95,7 +99,8 @@ export default class ProfitLossChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.series !== this.props.series) this.updateChart()
+    const { series } = this.props
+    if (prevProps.series !== series) this.updateChart()
   }
 
   componentWillUnmount() {
@@ -103,7 +108,12 @@ export default class ProfitLossChart extends Component {
   }
 
   updateChart() {
-    (this.props.series || []).forEach((series, i) => {
+    const {
+      id,
+      isMobile,
+      series,
+    } = this.props;
+    (series || []).forEach((series, i) => {
       if (this.profitLossChart.series[i] == null) {
         this.profitLossChart.addSeries({
           type: 'area',
@@ -120,10 +130,10 @@ export default class ProfitLossChart extends Component {
         this.profitLossChart.series[i].setData(series.data, false)
       }
     })
-    const containerId = 'profit_loss_chart_container' + this.props.id
-    const horizontalMargins = this.props.isMobile ? 0 : null
+    const containerId = 'profit_loss_chart_container' + id
+    const horizontalMargins = isMobile ? 0 : null
     // determine height based on mobile
-    const height = this.props.isMobile ? 260 : 170
+    const height = isMobile ? 260 : 170
     // set height
     this.profitLossChart.options.chart.height = height
     // check if width is less than height, default to a 9/16 aspect ratio
@@ -138,8 +148,13 @@ export default class ProfitLossChart extends Component {
   }
 
   render() {
-    const containerId = 'profit_loss_chart_container' + this.props.id
-    const chartId = 'profit_loss_chart' + this.props.id
+    const {
+      id,
+      title,
+      totalValue,
+    } = this.props
+    const containerId = 'profit_loss_chart_container' + id
+    const chartId = 'profit_loss_chart' + id
 
     return (
       <article
@@ -155,12 +170,12 @@ export default class ProfitLossChart extends Component {
           <span
             className={Styles['ProfitLossChart__Title-label']}
           >
-            {this.props.title + ' '}
+            {title + ' '}
           </span>
           <span
             className={Styles['ProfitLossChart__Title-value']}
           >
-            {this.props.totalValue}
+            {totalValue}
           </span>
         </div>
       </article>

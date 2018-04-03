@@ -3,11 +3,12 @@ import { REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED
 
 export default class ReportingInnerNav extends BaseInnerNav {
   getMainMenuData() {
+    const { currentBasePath } = this.props
     return [
       {
         label: 'Reporting',
         visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING_REPORT_MARKETS),
+        isSelected: (currentBasePath === REPORTING_REPORT_MARKETS),
         link: {
           pathname: REPORTING_REPORT_MARKETS,
         },
@@ -15,7 +16,7 @@ export default class ReportingInnerNav extends BaseInnerNav {
       {
         label: 'Dispute',
         visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING_DISPUTE_MARKETS),
+        isSelected: (currentBasePath === REPORTING_DISPUTE_MARKETS),
         link: {
           pathname: REPORTING_DISPUTE_MARKETS,
         },
@@ -23,7 +24,7 @@ export default class ReportingInnerNav extends BaseInnerNav {
       {
         label: 'Resolved',
         visible: true,
-        isSelected: (this.props.currentBasePath === REPORTING_RESOLVED_MARKETS),
+        isSelected: (currentBasePath === REPORTING_RESOLVED_MARKETS),
         link: {
           pathname: REPORTING_RESOLVED_MARKETS,
         },

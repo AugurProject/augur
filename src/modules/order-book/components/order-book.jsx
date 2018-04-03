@@ -13,11 +13,12 @@ import getValue from 'utils/get-value'
 
 export default class OrderBook extends Component {
   static propTypes = {
+    marketType: PropTypes.string,
+    outcome: PropTypes.object,
     selectedShareDenomination: PropTypes.string,
     selectedTradeSide: PropTypes.object.isRequired,
     updateTradeFromSelectedOrder: PropTypes.func.isRequired,
-    outcome: PropTypes.object,
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -37,17 +38,23 @@ export default class OrderBook extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      marketType,
+      outcome,
+      selectedShareDenomination,
+      selectedTradeSide,
+      updateTradeFromSelectedOrder,
+    } = this.props
     const s = this.state
 
-    const name = getValue(p, 'outcome.name')
-    const orderBookSeries = getValue(p, 'outcome.orderBookSeries')
+    const name = getValue(this.props, 'outcome.name')
+    const orderBookSeries = getValue(this.props, 'outcome.orderBookSeries')
 
     return (
       <article className="order-book">
-        {p.outcome &&
+        {outcome &&
           <div>
-            {p.marketType !== SCALAR ?
+            {marketType !== SCALAR ?
               <h3>Order Book {name &&
                 <span>&mdash; {name}</span>
               }
@@ -62,10 +69,10 @@ export default class OrderBook extends Component {
             />
             {s.selectedNav === ORDER_BOOK_TABLE &&
               <OrderBookTable
-                outcome={p.outcome}
-                selectedTradeSide={p.selectedTradeSide}
-                updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-                selectedShareDenomination={p.selectedShareDenomination}
+                outcome={outcome}
+                selectedTradeSide={selectedTradeSide}
+                updateTradeFromSelectedOrder={updateTradeFromSelectedOrder}
+                selectedShareDenomination={selectedShareDenomination}
               />
             }
             {s.selectedNav === ORDER_BOOK_CHART &&

@@ -26,19 +26,43 @@ describe('reporting-report-markets', () => {
     })
 
     describe('when items array is not empty', () => {
-      it('should render no markets found component', () => {
+      it('should render markets component', () => {
         const items = [{
           id: 1,
+          endDate: { timestamp: 1 },
         }, {
           id: 2,
+          endDate: { timestamp: 1 },
         }, {
           id: 3,
+          endDate: { timestamp: 1 },
         }]
 
         cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
         assert.lengthOf(cmp.find(ConnectedMarketPreview), 3)
       })
     })
+
+    describe('when items array is sorted', () => {
+      it('should render markets in ascending order (timestamp)', () => {
+        const items = [{
+          id: 1,
+          endDate: { timestamp: 5 },
+        }, {
+          id: 2,
+          endDate: { timestamp: 1 },
+        }, {
+          id: 3,
+          endDate: { timestamp: 4 },
+        }]
+
+        cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
+        const sections = cmp.find(ConnectedMarketPreview)
+        const result = sections.map(x => x.props().id)
+        assert.deepEqual([2, 3, 1], result)
+      })
+    })
+
   })
 
   describe('NoMarketFound', () => {

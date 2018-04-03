@@ -8,6 +8,7 @@ It runs locally in your browser and communicates directly with the ethereum netw
 There are several configurations to run it on testnet:
 
 * Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
+* Easy but super slow: [ipfs hosted augur client](https://ipfs.io/ipns/QmQBVeHLXPB7ifmCWZUw9PDktUoTEJfQLpR3bSVUgZgLR8/)
 * Partial Local: [run ethereum client locally](#eth_local)
 * Full Local: [run everything locally](#totally_local)
 * Production: [current status](https://github.com/AugurProject/augur/blob/seadragon/docs/production.md)

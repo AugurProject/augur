@@ -25,49 +25,60 @@ export default class Positions extends Component {
   }
 
   componentWillMount() {
-    this.props.loadAccountTrades()
+    const { loadAccountTrades } = this.props
+    loadAccountTrades()
   }
 
   render() {
-    const p = this.props
+    const {
+      claimTradingProceeds,
+      closePositionStatus,
+      closedMarkets,
+      history,
+      isMobile,
+      location,
+      marketsCount,
+      openPositionMarkets,
+      reportingMarkets,
+    } = this.props
     return (
       <section>
         <Helmet>
           <title>Positions</title>
         </Helmet>
-        { p.marketsCount !== 0 &&
+        { marketsCount !== 0 &&
         <div>
           <PositionsMarketsList
             title="Open"
-            markets={p.openPositionMarkets}
-            closePositionStatus={p.closePositionStatus}
-            location={p.location}
-            history={p.history}
-            isMobile={p.isMobile}
+            markets={openPositionMarkets}
+            closePositionStatus={closePositionStatus}
+            location={location}
+            history={history}
+            isMobile={isMobile}
           />
           <PositionsMarketsList
             title="In Reporting"
-            markets={p.reportingMarkets}
-            closePositionStatus={p.closePositionStatus}
-            location={p.location}
-            history={p.history}
+            markets={reportingMarkets}
+            closePositionStatus={closePositionStatus}
+            location={location}
+            history={history}
             linkType={TYPE_DISPUTE}
             positionsDefault={false}
-            isMobile={p.isMobile}
+            isMobile={isMobile}
           />
           <PositionsMarketsList
             title="Finalized"
-            markets={p.closedMarkets}
-            closePositionStatus={p.closePositionStatus}
-            location={p.location}
-            history={p.history}
+            markets={closedMarkets}
+            closePositionStatus={closePositionStatus}
+            location={location}
+            history={history}
             positionsDefault={false}
             linkType={TYPE_CLAIM_PROCEEDS}
-            claimTradingProceeds={p.claimTradingProceeds}
-            isMobile={p.isMobile}
+            claimTradingProceeds={claimTradingProceeds}
+            isMobile={isMobile}
           />
         </div>}
-        { p.marketsCount === 0 &&
+        { marketsCount === 0 &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You don&apos;t have any positions.</span>
             <Link

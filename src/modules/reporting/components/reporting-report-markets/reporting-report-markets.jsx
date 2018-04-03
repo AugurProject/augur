@@ -25,7 +25,8 @@ export const ReportSection = ({
   if (items.length === 0) {
     theChildren = <NoMarketsFound message={emptyMessage} key={title} />
   } else {
-    theChildren = items.map(item => (<MarketPreview key={item.id} buttonText={buttonText} {...item} />))
+    theChildren = items.sort((a, b) => a.endDate.timestamp - b.endDate.timestamp)
+      .map(item => (<MarketPreview key={item.id} buttonText={buttonText} {...item} />))
   }
 
   return (
@@ -47,15 +48,17 @@ ReportSection.propTypes = {
 
 class ReportingReporting extends React.Component {
   componentDidMount() {
-    this.props.loadReporting()
+    const { loadReporting } = this.props
+    loadReporting()
   }
 
   render() {
+    const { markets } = this.props
     const {
       designated,
       open,
       upcoming,
-    } = this.props.markets
+    } = markets
 
     return (
       <section>

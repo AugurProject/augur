@@ -36,7 +36,8 @@ class MarketPreviewCategorical extends Component {
   }
 
   render() {
-    const { outcomes } = this.props.newMarket
+    const { newMarket } = this.props
+    const { outcomes } = newMarket
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
     const totalOutcomes = cleanedOutcomes.length
 

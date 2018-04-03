@@ -33,9 +33,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     doNotCreateOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupId),
     onFailed: callback,
-    onSuccess: (tradeOnChainAmountRemaining) => {
-      onComplete(tradeOnChainAmountRemaining)
-    },
+    onSuccess: onComplete,
   }
   // use getState to get the latest version of allowance.
   if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {

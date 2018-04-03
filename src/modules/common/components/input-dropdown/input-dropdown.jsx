@@ -21,10 +21,14 @@ class InputDropdown extends Component {
   }
 
   componentDidMount() {
+    const {
+      isMobileSmall,
+      options,
+    } = this.props
     window.addEventListener('click', this.handleWindowOnClick)
 
-    if (this.props.isMobileSmall && this.state.value === '') {
-      this.dropdownSelect(this.props.options[0])
+    if (isMobileSmall && this.state.value === '') {
+      this.dropdownSelect(options[0])
     }
   }
 
@@ -33,13 +37,14 @@ class InputDropdown extends Component {
   }
 
   dropdownSelect(value) {
+    const { onChange } = this.props
     if (value !== this.state.value) {
       this.setState({
         label: value,
         value,
         selected: true,
       })
-      this.props.onChange(value)
+      onChange(value)
       this.toggleList()
     }
   }
@@ -55,26 +60,30 @@ class InputDropdown extends Component {
   }
 
   render() {
+    const {
+      className,
+      label,
+      options,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <div
         ref={(InputDropdown) => { this.refInputDropdown = InputDropdown }}
-        className={classNames(Styles.InputDropdown, (p.className || ''))}
+        className={classNames(Styles.InputDropdown, (className || ''))}
       >
         <button
-          key={p.label}
+          key={label}
           className={classNames(Styles.InputDropdown__label, { [`${Styles.selected}`]: s.selected })}
           onClick={this.toggleList}
         >
           {this.state.label}
         </button>
         <div className={classNames(Styles.InputDropdown__list, { [`${Styles.active}`]: this.state.showList })}>
-          {p.options.map(option => (
+          {options.map(option => (
             <button
               className={classNames({ [`${Styles.active}`]: option === this.state.value })}
-              key={option + p.label}
+              key={option + label}
               value={option}
               onClick={() => this.dropdownSelect(option)}
             >
@@ -87,7 +96,7 @@ class InputDropdown extends Component {
           onChange={(e) => { this.dropdownSelect(e.target.value) }}
           value={this.state.value}
         >
-          {p.options.map(option => (
+          {options.map(option => (
             <option
               key={option}
               value={option}

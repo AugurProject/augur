@@ -28,11 +28,12 @@
     "deploy": "node scripts/deploy.js",
     "deploy-dev": "node scripts/deploy-dev.js",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
-    "docker:push": "docker push augurproject/augur:latest"
+    "docker:push": "docker push augurproject/augur:latest",
+    "docker:release:stable": "scripts/release-stable.sh"
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "4.9.2-1",
+    "augur.js": "4.9.2-4",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -45,6 +46,7 @@
     "hammerjs": "2.0.8",
     "helmet": "3.9.0",
     "highcharts": "6.0.3",
+    "immutable-delete": "1.1.0",
     "keythereum": "1.0.2",
     "lodash": "4.17.4",
     "memoizee": "0.4.11",

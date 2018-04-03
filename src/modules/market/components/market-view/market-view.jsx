@@ -45,20 +45,31 @@ export default class MarketView extends Component {
   }
 
   componentWillMount() {
+    const {
+      isConnected,
+      loadFullMarket,
+      loadingState,
+      marketId,
+    } = this.props
     if (
-      this.props.isConnected &&
-      this.props.loadingState === null &&
-      !!this.props.marketId
+      isConnected &&
+      loadingState === null &&
+      !!marketId
     ) {
-      this.props.loadFullMarket(this.props.marketId)
+      loadFullMarket(marketId)
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      isConnected,
+      loadingState,
+      marketId,
+    } = this.props
     if (
       (
-        this.props.isConnected !== nextProps.isConnected ||
-        this.props.loadingState !== nextProps.loadingState
+        isConnected !== nextProps.isConnected ||
+        loadingState !== nextProps.loadingState
       ) &&
       (
         nextProps.isConnected &&
@@ -66,13 +77,14 @@ export default class MarketView extends Component {
         !!nextProps.marketId
       )
     ) {
-      nextProps.loadFullMarket(this.props.marketId)
+      nextProps.loadFullMarket(marketId)
     }
   }
 
   updateSelectedOutcome(selectedOutcome) {
+    const { marketType } = this.props
     this.setState({
-      selectedOutcome: selectedOutcome === this.state.selectedOutcome && this.props.marketType === CATEGORICAL ?
+      selectedOutcome: selectedOutcome === this.state.selectedOutcome && marketType === CATEGORICAL ?
         null :
         selectedOutcome,
     })
@@ -92,31 +104,34 @@ export default class MarketView extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      description,
+      marketId,
+    } = this.props
     const s = this.state
 
     return (
       <section>
         <Helmet>
-          <title>{parseMarketTitle(p.description)}</title>
+          <title>{parseMarketTitle(description)}</title>
         </Helmet>
         <div className={Styles.Market__upper}>
           <MarketHeader
-            marketId={p.marketId}
+            marketId={marketId}
             selectedOutcome={s.selectedOutcome}
             updateSelectedOutcome={this.updateSelectedOutcome}
             clearSelectedOutcome={this.clearSelectedOutcome}
           />
           {s.selectedOutcome === null &&
             <MarketOutcomesChart
-              marketId={p.marketId}
+              marketId={marketId}
               selectedOutcome={s.selectedOutcome}
               updateSelectedOutcome={this.updateSelectedOutcome}
             />
           }
           {s.selectedOutcome !== null &&
             <MarketOutcomeCharts
-              marketId={p.marketId}
+              marketId={marketId}
               selectedOutcome={s.selectedOutcome}
               updateSeletedOrderProperties={this.updateSeletedOrderProperties}
             />
@@ -125,14 +140,14 @@ export default class MarketView extends Component {
         <section className={Styles.Market__details}>
           <div className={Styles['Market__details-outcomes']}>
             <MarketOutcomesAndPositions
-              marketId={p.marketId}
+              marketId={marketId}
               selectedOutcome={s.selectedOutcome}
               updateSelectedOutcome={this.updateSelectedOutcome}
             />
           </div>
           <div className={Styles['Market__details-trading']}>
             <MarketTrading
-              marketId={p.marketId}
+              marketId={marketId}
               selectedOutcome={s.selectedOutcome}
               selectedOrderProperties={s.selectedOrderProperties}
             />
