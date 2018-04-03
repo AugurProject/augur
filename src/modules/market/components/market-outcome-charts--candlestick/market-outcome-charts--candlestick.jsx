@@ -62,6 +62,8 @@ export default class MarketOutcomeCandlestick extends Component {
       fixedPrecision,
       orderBookKeys,
       sharedChartMargins,
+      marketMin,
+      marketMax,
     } = this.props
     this.drawCandlestick({
       periodTimeSeries: this.state.periodTimeSeries,
@@ -69,6 +71,8 @@ export default class MarketOutcomeCandlestick extends Component {
       outcomeBounds: this.state.outcomeBounds,
       fixedPrecision,
       sharedChartMargins,
+      marketMin,
+      marketMax,
     })
 
     window.addEventListener('resize', this.drawCandlestickOnResize)
@@ -95,6 +99,8 @@ export default class MarketOutcomeCandlestick extends Component {
       !isEqual(this.state.outcomeBounds, nextState.outcomeBounds) ||
       !isEqual(orderBookKeys, nextProps.orderBookKeys) ||
       !isEqual(sharedChartMargins, nextProps.sharedChartMargins) ||
+      this.props.marketMin !== nextProps.marketMin ||
+      this.props.marketMax !== nextProps.marketMax ||
       fixedPrecision !== nextProps.fixedPrecision
     ) {
       this.drawCandlestick({
@@ -103,6 +109,8 @@ export default class MarketOutcomeCandlestick extends Component {
         outcomeBounds: nextState.outcomeBounds,
         fixedPrecision: nextProps.fixedPrecision,
         sharedChartMargins: nextProps.sharedChartMargins,
+        marketMin: nextProps.marketMin,
+        marketMax: nextProps.marketMax,
       })
     }
 
@@ -114,8 +122,6 @@ export default class MarketOutcomeCandlestick extends Component {
       const elem = document.getElementById('candlestick_chart_container')
 
       elem.scrollTo(elem.scrollWidth, 0)
-      // .scrollTo(0, (this.asks.scrollHeight || 0))
-      // console.log(document.getElementById('candlestick_chart_container').scrollWidth)
     }
   }
 
@@ -146,6 +152,7 @@ export default class MarketOutcomeCandlestick extends Component {
     const {
       updateHoveredPeriod,
       updateHoveredPrice,
+      updateSeletedOrderProperties,
     } = this.props
     const {
       periodTimeSeries,
@@ -153,6 +160,8 @@ export default class MarketOutcomeCandlestick extends Component {
       outcomeBounds,
       fixedPrecision,
       sharedChartMargins,
+      marketMin,
+      marketMax,
     } = options
 
     if (this.drawContainer) {
@@ -163,6 +172,8 @@ export default class MarketOutcomeCandlestick extends Component {
         periodTimeSeries,
         orderBookKeys,
         fixedPrecision,
+        marketMin,
+        marketMax,
       })
 
       // Faux DOM
@@ -228,6 +239,7 @@ export default class MarketOutcomeCandlestick extends Component {
         fixedPrecision,
         candleChart,
         drawParams,
+        updateSeletedOrderProperties,
       })
 
       // Set react components to state for render
@@ -278,7 +290,11 @@ function determineDrawParams(options) {
     periodTimeSeries,
     orderBookKeys,
     fixedPrecision,
+    marketMin,
+    marketMax,
   } = options
+
+  console.log('marketBounds -- ', marketMin, marketMax)
 
   // Dimensions/Positioning
   const chartDim = {
@@ -315,13 +331,16 @@ function determineDrawParams(options) {
   //  Y
   // Determine bounding diff
   // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  const maxDiff = Math.abs(orderBookKeys.mid - outcomeBounds.max)
-  const minDiff = Math.abs(orderBookKeys.mid - outcomeBounds.min)
-  const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+  let boundDiff
+  if (orderBookKeys.mid !== null) {
+    const maxDiff = Math.abs(orderBookKeys.mid - outcomeBounds.max)
+    const minDiff = Math.abs(orderBookKeys.mid - outcomeBounds.min)
+    boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+  }
 
   const yDomain = [
-    Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
-    Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
+    orderBookKeys.mid === null ? marketMin : Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
+    orderBookKeys.mid === null ? marketMax : Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
   ]
 
   // Scale
@@ -344,6 +363,8 @@ function determineDrawParams(options) {
     yDomain,
     xScale,
     yScale,
+    marketMin,
+    marketMax,
   }
 }
 
@@ -509,6 +530,7 @@ function attachHoverClickHandlers(options) {
     fixedPrecision,
     candleChart,
     drawParams,
+    updateSeletedOrderProperties,
   } = options
 
   candleChart.append('rect')
@@ -522,11 +544,11 @@ function attachHoverClickHandlers(options) {
       const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
 
       if (
-        orderPrice > this.props.marketMin &&
-        orderPrice < this.props.marketMax
+        orderPrice > drawParams.marketMin &&
+        orderPrice < drawParams.marketMax
       ) {
-        this.props.updateSeletedOrderProperties({
-          selectedNav: orderPrice > this.props.orderBookKeys.mid ? BUY : SELL,
+        updateSeletedOrderProperties({
+          selectedNav: orderPrice > drawParams.orderBookKeys.mid ? BUY : SELL,
           orderPrice,
         })
       }
