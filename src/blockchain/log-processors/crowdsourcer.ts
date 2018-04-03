@@ -93,7 +93,8 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
         log,
-        disputeToInsert));
+        disputeToInsert,
+        {marketId: log.market}));
       callback(null);
     });
   });
