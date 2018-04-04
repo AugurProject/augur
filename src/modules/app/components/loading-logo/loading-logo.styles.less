@@ -36,19 +36,46 @@
   }
 }
 
-.LoadingLogo--container {
-  align-content: center;
-  align-items: center;
-  color: @color-white;
-  height: 4rem;
-  justify-content: center;
-  position: absolute;
-  width: 4rem;
+@keyframes non-drawout-inner {
+  0% {
+    stroke-dashoffset: 455;
+  }
+
+  49% {
+    stroke-dashoffset: 455;
+  }
+
+  51% {
+    stroke-dashoffset: 455;
+  }
+
+  100% {
+    stroke-dashoffset: 455;
+  }
+}
+
+@keyframes non-drawout-inner-inverse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  49% {
+    stroke-dashoffset: 0;
+  }
+
+  51% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 .LoadingLogo__AugurLogo {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
-  width: 2.75rem;
+  margin: 5px;
+  width: 4.25rem;
 
   svg {
     :global {
@@ -95,7 +122,7 @@
       }
 
       .mask {
-        fill: @color-gray;
+        fill: @color-purple-dark;
       }
     }
   }
@@ -103,7 +130,8 @@
 
 .LoadingLogo__Not__AugurLogo {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
-  width: 2.75rem;
+  margin: 5px;
+  width: 4.25rem;
 
   svg {
     :global {
@@ -118,6 +146,10 @@
       }
 
       .inner-lines {
+        :local {
+          animation: non-drawout-inner 2.5s both infinite;
+        }
+
         fill: none;
         stroke: @color-white;
         stroke-dasharray: 230;
@@ -129,6 +161,10 @@
       }
 
       .inner-bottom-line {
+        :local {
+          animation: non-drawout-inner-inverse 2.5s both infinite;
+        }
+
         fill: none;
         stroke: @color-white;
         stroke-dasharray: 82;
@@ -140,7 +176,7 @@
       }
 
       .mask {
-        fill: @color-gray;
+        fill: @color-purple-dark;
       }
     }
   }

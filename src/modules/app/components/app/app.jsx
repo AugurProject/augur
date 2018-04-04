@@ -453,7 +453,9 @@ export default class AppView extends Component {
               menuScalar={origamiScalar}
             />
             <Link to={makePath(CATEGORIES)}>
-              <Logo />
+              <Logo
+                isLoading={isLoading}
+              />
             </Link>
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav

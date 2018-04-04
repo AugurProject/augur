@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
-import LoadingLogo from 'modules/app/components/loading-logo/loading-logo'
 import { Notifications } from 'modules/common/components/icons'
 import makePath from 'modules/routes/helpers/make-path'
 import { CATEGORIES } from 'modules/routes/constants/views'
@@ -28,9 +27,6 @@ const TopBar = props => (
           </div>
         </div>
         <div className={classNames(Styles.TopBar__stats, Styles.TopBar__performance)}>
-          <LoadingLogo
-            isLoading={props.isLoading}
-          />
           <div className={Styles.TopBar__stat}>
             <div
               className={Styles['TopBar__stat-label']}
