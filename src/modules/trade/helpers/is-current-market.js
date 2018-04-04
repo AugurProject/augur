@@ -3,6 +3,6 @@ import { getTradePageMarketId } from 'modules/trade/helpers/get-trade-page-marke
 
 export const isCurrentMarket = (marketId) => {
   if (!isOnTradePage()) return false
-  if (marketId !== getTradePageMarketId(marketId)) return false
-  return true
+  if (marketId === getTradePageMarketId()) return true
+  return false
 }
