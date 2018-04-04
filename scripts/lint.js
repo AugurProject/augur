@@ -32,7 +32,7 @@ const lintSource = new Promise((resolve, reject) => {
 });
 
 const lintTests = new Promise((resolve, reject) => {
-  shell.exec(`NODE_ENV=test eslint${shouldFix ? ' --fix' : ''} --ext .js ${testPath}`, (code) => {
+  shell.exec(`eslint${shouldFix ? ' --fix' : ''} --ext .js ${testPath}`, (code) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
