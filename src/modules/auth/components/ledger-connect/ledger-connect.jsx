@@ -95,7 +95,10 @@ export default class Ledger extends Component {
   }
 
   render() {
-    const { ledgerStatus } = this.props
+    const {
+      ledgerStatus,
+      updateLedgerStatus,
+    } = this.props
     const s = this.state
 
     return (
@@ -107,7 +110,7 @@ export default class Ledger extends Component {
             className={Styles.LedgerConnect__button}
             onClick={() => {
               this.connectLedger()
-                .catch(() => this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE))
+                .catch(() => updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE))
             }}
           >
             {ledgerStatus !== LEDGER_STATES.ATTEMPTING_CONNECTION ?
