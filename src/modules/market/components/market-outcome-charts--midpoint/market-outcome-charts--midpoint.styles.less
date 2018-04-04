@@ -1,0 +1,31 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeMidpoint {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: @default-behind;
+}
+
+.MarketOutcomeMidpoint__line {
+  stroke: @color-gray;
+  stroke-width: 2px;
+}
+
+.MarketOutcomeMidpoint__label {
+  &:extend(.caps--heavy);
+
+  fill: @color-white;
+  letter-spacing: 1.6px;
+  stroke: @color-white;
+}
+
+.MarketOutcomeMidpoint__null-message {
+  &:extend(.caps--small);
+  &:extend(.caps--heavy);
+
+  fill: @color-gray;
+  stroke: @color-gray;
+}

@@ -4,14 +4,29 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-bottom: 30px;
+}
+
+.MarketOutcomeOrderBook__stats {
+  flex: 0;
+  margin: 2px 0 -3px;
 }
 
 .MarketOutcomeOrderBook__Side {
   &:extend(.caps--small);
 
+  display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
   overflow-y: auto;
+}
+
+.MarketOutcomeOrderBook__side--asks {
+  border-top: 1px solid @color-gray;
+  justify-content: flex-end;
+}
+
+.MarketOutcomeOrderBook__side--bids {
+  border-bottom: 1px solid @color-gray;
 }
 
 .MarketOutcomeOrderBook__row {
@@ -43,7 +58,5 @@
 }
 
 .MarketOutcomeOrderBook__Midmarket {
-  align-self: flex-end;
-  color: @color-white;
-  margin: 0.5em 0;
+  min-height: 3em;
 }
