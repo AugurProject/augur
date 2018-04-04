@@ -480,9 +480,9 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-core@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-0.12.3.tgz#02164e09e6ff80887ffae29adf03f18d3b503c5b"
+augur-core@1.0.0-0:
+  version "1.0.0-0"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-0.tgz#65145889aeb27d5d16781ddda4ed59b0511d2ca1"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -510,12 +510,12 @@ augur-core@0.12.3:
     path "0.12.7"
     recursive-readdir "2.2.1"
 
-augur.js@4.9.2-1:
-  version "4.9.2-1"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.9.2-1.tgz#2e33313231883d0f80eda536f9ebcb5f901007c6"
+augur.js@4.11.0-3:
+  version "4.11.0-3"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-3.tgz#83321a53c87778cd50bfdc80dd86164b9bee8941"
   dependencies:
     async "1.5.2"
-    augur-core "0.12.3"
+    augur-core "1.0.0-0"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"

@@ -11,7 +11,7 @@ export default function (callback = logError) {
 
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
-      augur.api.ReputationToken.faucet({
+      augur.api.TestNetReputationToken.faucet({
         tx: { to: reputationTokenAddress },
         _amount: 0,
         meta: loginAccount.meta,
