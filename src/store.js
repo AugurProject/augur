@@ -2,12 +2,9 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 import thunk from 'redux-thunk'
-// import history from 'src/history';
-// import { routerReducer, routerMiddleware } from 'react-router-redux';
 
 import { createReducer } from 'src/reducers'
 
-const windowRef = typeof window === 'undefined' ? {} : window
 // console log middleware
 const consoleLog = store => next => (action) => {
   const isIgnoreFlag = action.meta != null && action.meta.ignore === true
@@ -16,6 +13,8 @@ const consoleLog = store => next => (action) => {
   }
   return next(action)
 }
+
+const windowRef = typeof window === 'undefined' ? {} : window
 
 // local storage middleware
 const localStorageMiddleware = store => next => (action) => {
@@ -34,24 +33,22 @@ const localStorageMiddleware = store => next => (action) => {
   }
 }
 
-// const history = createHistory();
-// const routingMiddleware = routerMiddleware(history);
-
 let middleware
-// if (process.env.NODE_ENV !== 'production') {
-//   middleware = applyMiddleware(routingMiddleware, consoleLog, thunk, localStorageMiddleware);
-// } else {
-//   middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
-// }
-if (process.env.NODE_ENV !== 'production') {
-  middleware = composeWithDevTools({})(applyMiddleware(consoleLog, thunk, localStorageMiddleware))
-} else {
+
+if (process.env.NODE_ENV === 'production') {
   middleware = applyMiddleware(thunk, localStorageMiddleware)
+} else {
+  middleware = composeWithDevTools({})(applyMiddleware(consoleLog, thunk, localStorageMiddleware))
 }
+
 // middleware
 const store = createStore(combineReducers({
   ...createReducer(),
 }), middleware)
+
+if (process.env.NODE_ENV === 'development') {
+  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
+}
 
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
@@ -60,6 +57,8 @@ if (module.hot) {
       ...nextReducers.createReducer(),
     }))
   })
+
+  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
 }
 
 export default store

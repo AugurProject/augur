@@ -30,6 +30,8 @@ yarn link;
 
 if $USE_POPULATED_CONTRACTS; then
   echo "Using deployed contracts"
+  
+  npm run docker:pull
   npm run docker:geth:pop
 else
   npm run docker:geth

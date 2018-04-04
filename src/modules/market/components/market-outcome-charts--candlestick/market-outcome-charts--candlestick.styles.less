@@ -2,6 +2,7 @@
 
 .MarketOutcomeCandlestick {
   height: 100%;
+  margin-right: 30px;
 }
 
 .MarketOutcomeCandlestick__period-stats {
@@ -24,15 +25,28 @@
   width: 5em;
 }
 
-.MarketOutcomeCandlestick__chart {
+.MarketOutcomeCandlestick__container {
   cursor: cell;
   height: 100%;
+  position: relative;
 
   :global {
+    #testing {
+      background-color: red;
+    }
+
     #hovered_candlestick_price_label {
       .caps--small();
 
       stroke: @color-white;
+    }
+
+    .bounding-line,
+    .midpoint-line,
+    .tick-line,
+    .tick-line--midpoint {
+      stroke: @color-gray;
+      stroke-width: 1px;
     }
 
     .overlay {
@@ -51,7 +65,7 @@
     .tick-value {
       &:extend(.caps--extra-small all);
 
-      stroke: @color-lightgray;
+      fill: @color-lightgray;
     }
 
     rect {
@@ -93,5 +107,28 @@
     #candlestick_crosshairs {
       pointer-events: none;
     }
+
+    #candlestick-x-axis {
+      line {
+        stroke: @color-lightgray;
+      }
+
+      text {
+        fill: @color-lightgray;
+      }
+    }
   }
+}
+
+.MarketOutcomeCandlestick__ticks-container {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.MarketOutcomeCandlestick__chart-container {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: absolute;
 }
