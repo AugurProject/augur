@@ -1,38 +1,12 @@
 import { connect } from 'react-redux'
 import memoize from 'memoizee'
+import { isEmpty } from 'lodash'
 
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
-
 import { selectMarket } from 'modules/market/selectors/market'
-import { isEmpty } from 'lodash'
 
-// outcome specific trading price range
-const findBounds = memoize((outcome = {}) => {
-  const DEFAULT_BOUNDS = {
-    min: null,
-    max: null,
-  }
-
-  if (isEmpty(outcome)) return DEFAULT_BOUNDS
-
-  return (outcome.priceTimeSeries || []).reduce((p, item, i) => {
-    const currentItem = item[1]
-
-    if (i === 0) {
-      return {
-        min: currentItem,
-        max: currentItem,
-      }
-    }
-
-    return {
-      min: currentItem < p.min ? currentItem : p.min,
-      max: currentItem > p.max ? currentItem : p.max,
-    }
-  }, DEFAULT_BOUNDS)
-})
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 
 const orderAndAssignCumulativeShares = memoize((orderBook) => {
   const rawBids = ((orderBook || {})[BIDS] || []).slice()
@@ -133,11 +107,12 @@ const mapStateToProps = (state, ownProps) => {
     currentBlock: state.blockchain.currentBlockNumber || 0,
     minPrice: market.minPrice || 0,
     maxPrice: market.maxPrice || 0,
-    outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,
     marketDepth,
     orderBookKeys,
+    hasPriceHistory: priceTimeSeries.length !== 0,
+    hasOrders: !isEmpty(cumulativeOrderBook[BIDS]) && !isEmpty(cumulativeOrderBook[ASKS]),
   }
 }
 

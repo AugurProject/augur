@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "4.9.2-4",
+    "augur.js": "4.11.0-1",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -114,6 +114,7 @@
     "eslint-plugin-react": "7.5.1",
     "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "1.1.5",
+    "git-revision-webpack-plugin": "2.5.1",
     "html-loader": "0.5.1",
     "html-webpack-plugin": "2.30.1",
     "http": "0.0.0",
@@ -149,6 +150,7 @@
     "webpack": "3.10.0",
     "webpack-dev-middleware": "2.0.3",
     "webpack-hot-middleware": "2.21.0",
-    "webpack-merge": "4.1.1"
+    "webpack-merge": "4.1.1",
+    "worker-loader": "1.1.1"
   }
 }
