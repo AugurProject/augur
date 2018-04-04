@@ -156,6 +156,13 @@ if (require.main === module) {
     help();
     process.exit();
   }
+  var index = methods[args.opt.command];
+  if (index == null) {
+    console.log(chalk.red("Method Not Found"), chalk.red(args.opt.command));
+    console.log(chalk.red(Object.keys(methods).join(", ")));
+    console.log(chalk.red("try flash -h, to get help"));
+    process.exit();
+  }
   var method = methods[args.opt.command];
   if (method == null && args.opt.help) {
     help();
