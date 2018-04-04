@@ -31,6 +31,7 @@ const mapStateToProps = state => ({
   connection: state.connection,
   universe: state.universe,
   blockchain: state.blockchain,
+  isLoading: Object.keys(state.marketLoading) > 0,
 })
 
 const mapDispatchToProps = dispatch => ({

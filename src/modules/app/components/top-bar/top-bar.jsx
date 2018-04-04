@@ -3,12 +3,10 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
+import LoadingLogo from 'modules/app/components/loading-logo/loading-logo'
 import { Notifications } from 'modules/common/components/icons'
-
 import makePath from 'modules/routes/helpers/make-path'
-
 import { CATEGORIES } from 'modules/routes/constants/views'
-
 import Styles from 'modules/app/components/top-bar/top-bar.styles'
 
 const TopBar = props => (
@@ -30,6 +28,9 @@ const TopBar = props => (
           </div>
         </div>
         <div className={classNames(Styles.TopBar__stats, Styles.TopBar__performance)}>
+          <div>
+            <LoadingLogo />
+          </div>
           <div className={Styles.TopBar__stat}>
             <div
               className={Styles['TopBar__stat-label']}
@@ -76,6 +77,7 @@ TopBar.propTypes = {
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
 }
 
 export default TopBar
