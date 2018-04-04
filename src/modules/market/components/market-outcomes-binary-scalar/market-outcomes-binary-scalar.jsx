@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { BINARY } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
+import CustomPropTypes from 'utils/custom-prop-types'
 
 import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
@@ -53,8 +54,8 @@ const MarketOutcomes = (p) => {
 
 MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  max: PropTypes.number,
-  min: PropTypes.number,
+  max: CustomPropTypes.bigNumber,
+  min: CustomPropTypes.bigNumber,
   type: PropTypes.string,
   scalarDenomination: PropTypes.string,
 }
