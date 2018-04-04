@@ -11,7 +11,7 @@ function faucetIn(augur, universe, amount, auth, callback) {
   augur.api.Universe.getReputationToken({ tx: { to: universe } }, function (err, reputationToken) {
     if (err) return callback(err);
     if (debugOptions.cannedMarkets) console.log("reputationToken:", reputationToken);
-    augur.api.ReputationToken.faucet({
+    augur.api.TestNetReputationToken.faucet({
       tx: { to: reputationToken },
       meta: auth,
       _amount: speedomatic.fix(amount, "hex"),
