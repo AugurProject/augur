@@ -8,7 +8,7 @@ var displayTime = require("./display-time");
 function listMarketsInternal(augur, universe, callback) {
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     var currentTime = new Date(timestamp * 1000);
-    augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "endTime", isSortDescending: true }, function (err, marketIds) {
       if (!marketIds || marketIds.length === 0) {
         console.log(chalk.red("No markets available"));
         callback("No Markets");
@@ -21,12 +21,12 @@ function listMarketsInternal(augur, universe, callback) {
         if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
           return callback("No Market Info");
         }
-        var infos = marketInfos.sort(function (a, b) { return b.endDate - a.endDate; });
+        var infos = marketInfos.sort(function (a, b) { return b.endTime - a.endTime; });
         infos.forEach(function (marketInfo) {
-          var endDate = marketInfo.endDate;
-          var date = new Date(endDate * 1000);
+          var endTime = marketInfo.endTime;
+          var date = new Date(endTime * 1000);
           var ended = date - currentTime > 0 ? "NO" : "YES";
-          console.log(chalk.cyan("endDate:"), chalk.cyan(endDate), chalk.red(date), ended ? chalk.yellow(ended) : chalk.red(ended), chalk.white(marketInfo.marketType), chalk.blue(marketInfo.reportingState), chalk.red(marketInfo.designatedReporter));
+          console.log(chalk.cyan("endTime:"), chalk.cyan(endTime), chalk.red(date), ended ? chalk.yellow(ended) : chalk.red(ended), chalk.white(marketInfo.marketType), chalk.blue(marketInfo.reportingState), chalk.red(marketInfo.designatedReporter));
           console.log(chalk.green.dim(marketInfo.id), chalk.green(marketInfo.description));
         });
         displayTime("Current Time", timestamp);

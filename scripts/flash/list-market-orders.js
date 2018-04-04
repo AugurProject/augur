@@ -11,7 +11,7 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
     if (err) {
       return callback(err);
     }
-    augur.markets.getMarkets({ universe: universe, sortBy: "endDate", isSortDescending: true }, function (err, marketIds) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "endTime", isSortDescending: true }, function (err, marketIds) {
       if (err) {
         return callback(err);
       }

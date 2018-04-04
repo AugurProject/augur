@@ -33,7 +33,7 @@
  * @property {number} outstandingShares Total shares in the market. (Method for calculating this is pending.)
  * @property {REPORTING_STATE|null} reportingState Reporting state name.
  * @property {string} reportingWindow Contract address of the reporting window the market is in, as a hexadecimal string.
- * @property {number} endDate Timestamp when the market event ends, in seconds.
+ * @property {number} endTime Timestamp when the market event ends, in seconds.
  * @property {number|null} finalizationTime Timestamp when the market was finalized (if any), in seconds.
  * @property {string} description Description of the market.
  * @property {string|null} extraInfo Stringified JSON object containing resolutionSource, tags, longDescription, and outcomeNames (for categorical markets).
