@@ -73,7 +73,6 @@ TopBar.propTypes = {
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
   toggleNotifications: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
 }
 
 export default TopBar
