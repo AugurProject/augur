@@ -322,7 +322,7 @@ export interface UIMarketInfo<BigNumberType> {
   volume: BigNumberType;
   outstandingShares: BigNumberType;
   feeWindow: Address;
-  endDate: number;
+  endTime: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
   description: string;
