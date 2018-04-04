@@ -36,7 +36,7 @@ export default class TransactionSingle extends Component {
           onClick={() => { toggleHeight(this.singleTransactionMeta, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <TransactionHeader transaction={transaction} />
-          <span className={classNames({ [`${CommonStyles['is-open']}`]: s.isOpen })}>{ ChevronDown }</span>
+          <span className={classNames({ [`${CommonStyles['is-open']}`]: s.isOpen })}>{ <ChevronDown /> }</span>
         </button>
         <div
           ref={(singleTransactionMeta) => { this.singleTransactionMeta = singleTransactionMeta }}

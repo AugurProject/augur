@@ -50,7 +50,8 @@ export default class Input extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
+    const { value } = this.props
+    if (value !== nextProps.value) {
       this.setState({ value: nextProps.value })
     }
   }

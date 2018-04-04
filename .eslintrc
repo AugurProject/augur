@@ -23,6 +23,7 @@
   },
   "rules": { # 0 = disabled, 1 = warn, 2 = error
     # Disabled
+    "object-curly-newline": 0,
     "no-eq-null": 0,
     "no-console": 0,
     "no-tabs": 0,

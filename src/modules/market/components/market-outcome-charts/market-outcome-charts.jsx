@@ -5,23 +5,23 @@ import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
+import MarketOutcomeMidpoint from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
-
-// import { isEqual } from 'lodash'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     priceTimeSeries: PropTypes.array.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
-    outcomeBounds: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
     currentBlock: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
+    hasPriceHistory: PropTypes.bool.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -33,6 +33,14 @@ export default class MarketOutcomeCharts extends Component {
       hoveredDepth: [],
       hoveredPrice: null,
       fixedPrecision: 4,
+      sharedChartMargins: {
+        top: 0,
+        bottom: 30,
+      },
+      chartWidths: {
+        candle: 0,
+        orders: 0,
+      },
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -40,20 +48,17 @@ export default class MarketOutcomeCharts extends Component {
     this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
+    this.updateChartWidths = this.updateChartWidths.bind(this)
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // if (
-    //   !isEqual(this.state.fixedPrecision, nextState.fixedPrecision) ||
-    //   !isEqual(this.state.fullPrice, nextState.fullPrice)
-    // ) {
-    //   console.log('fullPrice -- ', nextState.fullPrice)
-    //   if (nextState.fullPrice === null) {
-    //     this.updateHoveredPrice(null)
-    //   } else {
-    //     this.updateHoveredPrice(nextState.fullPrice.toFixed(nextState.fixedPrecision).toString())
-    //   }
-    // }
+  componentDidMount() {
+    this.updateChartWidths()
+
+    window.addEventListener('resize', this.updateChartWidths)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateChartWidths)
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -92,15 +97,36 @@ export default class MarketOutcomeCharts extends Component {
     return this.setState({ fixedPrecision })
   }
 
+  updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
+    this.setState({
+      chartWidths: {
+        candle: this.candlestickContainer ? this.candlestickContainer.clientWidth : 0,
+        orders: this.ordersContainer ? this.ordersContainer.clientWidth : 0,
+      },
+    })
+  }
+
   render() {
+    const {
+      currentBlock,
+      hasOrders,
+      hasPriceHistory,
+      marketDepth,
+      maxPrice,
+      minPrice,
+      orderBook,
+      orderBookKeys,
+      priceTimeSeries,
+      selectedOutcome,
+      updateSeletedOrderProperties,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
-          priceTimeSeries={p.priceTimeSeries}
-          selectedOutcome={p.selectedOutcome}
+          priceTimeSeries={priceTimeSeries}
+          selectedOutcome={selectedOutcome}
           hoveredPeriod={s.hoveredPeriod}
           hoveredDepth={s.hoveredDepth}
           fixedPrecision={s.fixedPrecision}
@@ -108,45 +134,64 @@ export default class MarketOutcomeCharts extends Component {
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
-          <div className={Styles.MarketOutcomeCharts__Candlestick}>
+          <div
+            ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
+            className={Styles.MarketOutcomeCharts__candlestick}
+          >
             <MarketOutcomeCandlestick
-              priceTimeSeries={p.priceTimeSeries}
-              currentBlock={p.currentBlock}
+              sharedChartMargins={s.sharedChartMargins}
+              priceTimeSeries={priceTimeSeries}
+              currentBlock={currentBlock}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
-              outcomeBounds={p.outcomeBounds}
-              orderBookKeys={p.orderBookKeys}
-              marketMax={p.maxPrice}
-              marketMin={p.minPrice}
+              orderBookKeys={orderBookKeys}
+              marketMax={maxPrice}
+              marketMin={minPrice}
               hoveredPrice={s.hoveredPrice}
               updateHoveredPrice={this.updateHoveredPrice}
               updateHoveredPeriod={this.updateHoveredPeriod}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
+              updateSeletedOrderProperties={updateSeletedOrderProperties}
             />
           </div>
-          <div className={Styles.MarketOutcomeCharts__Depth}>
-            <MarketOutcomeDepth
-              fixedPrecision={s.fixedPrecision}
-              orderBookKeys={p.orderBookKeys}
-              marketDepth={p.marketDepth}
-              marketMax={p.maxPrice}
-              marketMin={p.minPrice}
-              hoveredPrice={s.hoveredPrice}
-              updateHoveredPrice={this.updateHoveredPrice}
-              updateHoveredDepth={this.updateHoveredDepth}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
-            />
+          <div
+            ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
+            className={Styles.MarketOutcomeCharts__orders}
+          >
+            <div className={Styles.MarketOutcomeCharts__depth}>
+              <MarketOutcomeDepth
+                priceTimeSeries={priceTimeSeries}
+                sharedChartMargins={s.sharedChartMargins}
+                fixedPrecision={s.fixedPrecision}
+                orderBookKeys={orderBookKeys}
+                marketDepth={marketDepth}
+                marketMax={maxPrice}
+                marketMin={minPrice}
+                hoveredPrice={s.hoveredPrice}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateHoveredDepth={this.updateHoveredDepth}
+                updateSeletedOrderProperties={updateSeletedOrderProperties}
+              />
+            </div>
+            <div className={Styles.MarketOutcomeCharts__orderbook}>
+              <MarketOutcomeOrderBook
+                sharedChartMargins={s.sharedChartMargins}
+                fixedPrecision={s.fixedPrecision}
+                orderBook={orderBook}
+                marketMidpoint={orderBookKeys.mid}
+                hoveredPrice={s.hoveredPrice}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateSeletedOrderProperties={updateSeletedOrderProperties}
+              />
+            </div>
           </div>
-          <div className={Styles.MarketOutcomeCharts__Orders}>
-            <MarketOutcomeOrderBook
-              fixedPrecision={s.fixedPrecision}
-              orderBook={p.orderBook}
-              marketMidpoint={p.orderBookKeys.mid}
-              hoveredPrice={s.hoveredPrice}
-              updateHoveredPrice={this.updateHoveredPrice}
-              updateSeletedOrderProperties={p.updateSeletedOrderProperties}
-            />
-          </div>
+          <MarketOutcomeMidpoint
+            hasPriceHistory={hasPriceHistory}
+            hasOrders={hasOrders}
+            chartWidths={s.chartWidths}
+            orderBookKeys={orderBookKeys}
+            sharedChartMargins={s.sharedChartMargins}
+            fixedPrecision={s.fixedPrecision}
+          />
         </div>
       </section>
     )

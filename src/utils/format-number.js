@@ -49,12 +49,14 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 */
 
+export const ETHER_NUMBER_OF_DECIMALS = 4
+
 export function formatEther(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
       denomination: ' ETH',
       positiveSign: false,
       zeroStyled: false,
@@ -69,8 +71,8 @@ export function formatEtherEstimate(num, opts) {
   return formatNumber(
     encodeNumberAsJSNumber(num),
     {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
+      decimals: ETHER_NUMBER_OF_DECIMALS,
+      decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
       denomination: ' ETH (estimated)',
       positiveSign: false,
       zeroStyled: false,
@@ -265,10 +267,12 @@ export function formatNumber(num, opts = {
     o.rounded = '0'
     o.minimized = '0'
   } else {
+    const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
+    const roundToZeroThreshold = constants.PRECISION.zero
     o.value = value.toNumber()
-    if (value.abs().lt(constants.PRECISION.zero)) {
+    if (value.abs().lt(roundToZeroThreshold)) {
       o.formattedValue = '0'
-    } else if (value.abs().lt(constants.PRECISION.limit)) {
+    } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
         o.formattedValue = '0'
       } else {

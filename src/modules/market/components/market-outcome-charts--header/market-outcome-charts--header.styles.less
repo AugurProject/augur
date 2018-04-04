@@ -3,6 +3,7 @@
 .MarketOutcomeChartsHeader {
   display: flex;
   width: 100%;
+  z-index: @above-all-content;
 }
 
 .MarketOutcomeChartsHeader__Header {
@@ -33,6 +34,7 @@
   button {
     color: @color-gray;
     font-size: @font-size-rather-large;
+    margin: 0 0 -0.5rem; // NOTE -- this is so that it doesn't exceed the desired height in relation to the adjacent header
     padding: 0 0.15em;
     position: relative;
     top: -8px;
@@ -41,10 +43,12 @@
 
 .MarketOutcomeChartsHeader__Candlestick {
   flex: 2.5;
+  margin-right: 30px;
 }
 
 .MarketOutcomeChartsHeader__Depth {
   flex: 1;
+  margin-right: 30px;
 }
 
 .MarketOutcomeChartsHeader__Orders {
@@ -54,7 +58,7 @@
 .MarketOutcomeChartsHeader__stats {
   display: flex;
   height: 100%;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -62,7 +66,6 @@
   &:extend(.caps--small);
 
   display: flex;
-  flex: 1;
 }
 
 .MarketOutcomeChartsHeader__stat--right {
@@ -73,6 +76,7 @@
 
 .MarketOutcomeChartsHeader__stat-title {
   color: @color-white;
+  white-space: nowrap;
 }
 
 .MarketOutcomeChartsHeader__stat-value {

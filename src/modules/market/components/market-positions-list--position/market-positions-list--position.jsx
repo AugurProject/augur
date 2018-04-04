@@ -65,8 +65,13 @@ export default class Position extends Component {
   }
 
   render() {
+    const {
+      isExtendedDisplay,
+      isMobile,
+      openOrders,
+      position,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     const confirmStyle = {
       height: s.confirmHeight,
@@ -76,11 +81,11 @@ export default class Position extends Component {
     return (
       <ul
         ref={(position) => { this.position = position }}
-        className={!p.isMobile ? Styles.Position : Styles.PortMobile}
+        className={!isMobile ? Styles.Position : Styles.PortMobile}
       >
         <li>
-          { getValue(p, 'name') }
-          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+          { getValue(this.props, 'name') }
+          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span className={Styles['Position__pending-title']}>Pending</span>
               <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'order.qtyShares.formatted') } at { getValue(order, 'order.purchasePrice.formatted') } ETH</span>
@@ -88,42 +93,42 @@ export default class Position extends Component {
           ))}
         </li>
         <li>
-          { getValue(p, 'position.qtyShares.formatted') }
-          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+          { getValue(this.props, 'position.qtyShares.formatted') }
+          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>+{ getValue(order, 'order.qtyShares.formatted') }</span>
             </div>
           ))}
         </li>
         <li>
-          { getValue(p, 'position.purchasePrice.formatted') }
-          { p.openOrders && p.openOrders.length > 0 && p.openOrders.map((order, i) => (
+          { getValue(this.props, 'position.purchasePrice.formatted') }
+          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
-              <span>{ Position.calcAvgDiff(p.position, order) }</span>
+              <span>{ Position.calcAvgDiff(position, order) }</span>
             </div>
           ))}
         </li>
-        { p.isExtendedDisplay && !p.isMobile &&
+        { isExtendedDisplay && !isMobile &&
           <li>
-            {getValue(p, 'position.lastPrice.formatted') }
+            {getValue(this.props, 'position.lastPrice.formatted') }
           </li>
         }
-        { !p.isMobile && <li>{ getValue(p, 'position.unrealizedNet.formatted') }</li>}
-        { !p.isMobile && <li>{ getValue(p, 'position.realizedNet.formatted')} </li> }
-        { p.isExtendedDisplay &&
+        { !isMobile && <li>{ getValue(this.props, 'position.unrealizedNet.formatted') }</li>}
+        { !isMobile && <li>{ getValue(this.props, 'position.realizedNet.formatted')} </li> }
+        { isExtendedDisplay &&
           <li>
-            {getValue(p, 'position.totalNet.formatted') }
+            {getValue(this.props, 'position.totalNet.formatted') }
           </li>
         }
         <li>
-          { getValue(p, 'position.qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
+          { getValue(this.props, 'position.qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
           className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          { p.openOrders.length > 0 ?
+          { openOrders.length > 0 ?
             <div className={Styles['Position__confirm-details']}>
               <p>Positions cannot be closed while orders are pending.</p>
               <div className={Styles['Position__confirm-options']}>
@@ -132,9 +137,9 @@ export default class Position extends Component {
             </div>
             :
             <div className={Styles['Position__confirm-details']}>
-              <p>Close position by selling { getValue(p, 'position.qtyShares.formatted') } shares of “{ getValue(p, 'name') }” at { getValue(p, 'position.avgPrice.formatted') } ETH?</p>
+              <p>Close position by selling { getValue(this.props, 'position.qtyShares.formatted') } shares of “{ getValue(this.props, 'name') }” at { getValue(this.props, 'position.avgPrice.formatted') } ETH?</p>
               <div className={Styles['Position__confirm-options']}>
-                <button onClick={(e) => { p.position.closePosition(p.position.marketId, p.position.outcomeId); this.toggleConfirm() }}>Yes</button>
+                <button onClick={(e) => { position.closePosition(position.marketId, position.outcomeId); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
             </div>

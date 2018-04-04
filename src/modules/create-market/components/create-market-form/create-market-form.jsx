@@ -15,19 +15,20 @@ import Styles from 'modules/create-market/components/create-market-form/create-m
 export default class CreateMarketForm extends Component {
 
   static propTypes = {
-    newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    categories: PropTypes.array.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
-    isMobileSmall: PropTypes.bool.isRequired,
-    submitNewMarket: PropTypes.func.isRequired,
+    categories: PropTypes.array.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     history: PropTypes.object.isRequired,
-    universe: PropTypes.object.isRequired,
-    meta: PropTypes.object,
     isBugBounty: PropTypes.bool.isRequired,
-    currentTimestamp: PropTypes.number,
+    isMobileSmall: PropTypes.bool.isRequired,
+    meta: PropTypes.object,
+    newMarket: PropTypes.object.isRequired,
+    removeOrderFromNewMarket: PropTypes.func.isRequired,
+    submitNewMarket: PropTypes.func.isRequired,
+    universe: PropTypes.object.isRequired,
+    updateNewMarket: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -45,26 +46,41 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 4) {
-      this.props.updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
+    const {
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    if (newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 4) {
+      updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
     }
   }
 
   prevPage() {
-    const newStep = this.props.newMarket.currentStep <= 0 ? 0 : this.props.newMarket.currentStep - 1
-    this.props.updateNewMarket({ currentStep: newStep })
+    const {
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1
+    updateNewMarket({ currentStep: newStep })
   }
 
   nextPage() {
-    const newStep = this.props.newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : this.props.newMarket.currentStep + 1
-    this.props.updateNewMarket({ currentStep: newStep })
+    const {
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const newStep = newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : newMarket.currentStep + 1
+    updateNewMarket({ currentStep: newStep })
   }
 
   validateField(fieldName, value, maxLength) {
-    const p = this.props
-    const { currentStep } = p.newMarket
+    const {
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
 
-    const updatedMarket = { ...p.newMarket }
+    const updatedMarket = { ...newMarket }
 
     switch (true) {
       case typeof value === 'string' && !value.length:
@@ -80,13 +96,24 @@ export default class CreateMarketForm extends Component {
     updatedMarket[fieldName] = value
     updatedMarket.isValid = this.isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
-  validateNumber(fieldName, rawValue, humanName, min, max, decimals = 0, leadingZero = false) {
-    const p = this.props
-    const updatedMarket = { ...p.newMarket }
-    const { currentStep } = p.newMarket
+  validateNumber(
+    fieldName,
+    rawValue,
+    humanName,
+    min,
+    max,
+    decimals = 0,
+    leadingZero = false,
+  ) {
+    const {
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const updatedMarket = { ...newMarket }
+    const { currentStep } = newMarket
 
     let value = rawValue
 
@@ -115,71 +142,87 @@ export default class CreateMarketForm extends Component {
     updatedMarket[fieldName] = typeof value === 'number' ? value.toString() : value
     updatedMarket.isValid = this.isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   isValid(currentStep) {
-    const validations = this.props.newMarket.validations[currentStep]
+    const { newMarket } = this.props
+    const validations = newMarket.validations[currentStep]
     const validationsArray = Object.keys(validations)
     return validationsArray.every(key => validations[key] === true)
   }
 
   render() {
-    const p = this.props
+    const {
+      addOrderToNewMarket,
+      availableEth,
+      availableRep,
+      categories,
+      currentTimestamp,
+      history,
+      isBugBounty,
+      isMobileSmall,
+      meta,
+      newMarket,
+      removeOrderFromNewMarket,
+      submitNewMarket,
+      universe,
+      updateNewMarket,
+    } = this.props
     const s = this.state
 
     return (
       <article className={Styles.CreateMarketForm}>
         <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
           <div className={Styles['CreateMarketForm__form-inner-wrapper']}>
-            { p.newMarket.currentStep === 0 &&
+            { newMarket.currentStep === 0 &&
               <CreateMarketDefine
-                newMarket={p.newMarket}
-                updateNewMarket={p.updateNewMarket}
+                newMarket={newMarket}
+                updateNewMarket={updateNewMarket}
                 validateField={this.validateField}
-                categories={p.categories}
+                categories={categories}
                 isValid={this.isValid}
-                isBugBounty={p.isBugBounty}
+                isBugBounty={isBugBounty}
               />
             }
-            { p.newMarket.currentStep === 1 &&
+            { newMarket.currentStep === 1 &&
               <CreateMarketOutcome
-                newMarket={p.newMarket}
-                updateNewMarket={p.updateNewMarket}
+                newMarket={newMarket}
+                updateNewMarket={updateNewMarket}
                 validateField={this.validateField}
                 isValid={this.isValid}
-                isMobileSmall={p.isMobileSmall}
+                isMobileSmall={isMobileSmall}
               />
             }
-            { p.newMarket.currentStep === 2 &&
+            { newMarket.currentStep === 2 &&
               <CreateMarketResolution
-                newMarket={p.newMarket}
-                updateNewMarket={p.updateNewMarket}
+                newMarket={newMarket}
+                updateNewMarket={updateNewMarket}
                 validateField={this.validateField}
                 validateNumber={this.validateNumber}
                 isValid={this.isValid}
-                isMobileSmall={p.isMobileSmall}
-                currentTimestamp={p.currentTimestamp}
+                isMobileSmall={isMobileSmall}
+                currentTimestamp={currentTimestamp}
               />
             }
-            { p.newMarket.currentStep === 3 &&
+            { newMarket.currentStep === 3 &&
               <CreateMarketLiquidity
-                newMarket={p.newMarket}
-                updateNewMarket={p.updateNewMarket}
+                newMarket={newMarket}
+                updateNewMarket={updateNewMarket}
                 validateNumber={this.validateNumber}
-                addOrderToNewMarket={p.addOrderToNewMarket}
-                removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-                availableEth={p.availableEth}
-                isMobileSmall={p.isMobileSmall}
+                addOrderToNewMarket={addOrderToNewMarket}
+                removeOrderFromNewMarket={removeOrderFromNewMarket}
+                availableEth={availableEth}
+                isMobileSmall={isMobileSmall}
               />
             }
-            { p.newMarket.currentStep === 4 &&
+            { newMarket.currentStep === 4 &&
               <CreateMarketReview
-                meta={p.meta}
-                newMarket={p.newMarket}
-                availableEth={p.availableEth}
-                availableRep={p.availableRep}
-                universe={p.universe}
+                meta={meta}
+                newMarket={newMarket}
+                availableEth={availableEth}
+                availableRep={availableRep}
+                universe={universe}
               />
             }
           </div>
@@ -187,23 +230,23 @@ export default class CreateMarketForm extends Component {
             <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
               <div className={Styles.CreateMarketForm__navigation}>
                 <button
-                  className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === 0 })}
+                  className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: newMarket.currentStep === 0 })}
                   onClick={this.prevPage}
-                >Previous: {s.pages[p.newMarket.currentStep - 1]}
+                >Previous: {s.pages[newMarket.currentStep - 1]}
                 </button>
-                { p.newMarket.currentStep < 4 &&
+                { newMarket.currentStep < 4 &&
                   <button
-                    className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: p.newMarket.currentStep === s.pages.length - 1 })}
-                    disabled={!p.newMarket.isValid}
-                    onClick={p.newMarket.isValid ? this.nextPage : null}
-                  >Next: {s.pages[p.newMarket.currentStep + 1]}
+                    className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: newMarket.currentStep === s.pages.length - 1 })}
+                    disabled={!newMarket.isValid}
+                    onClick={newMarket.isValid ? this.nextPage : null}
+                  >Next: {s.pages[newMarket.currentStep + 1]}
                   </button>
                 }
-                { p.newMarket.currentStep === 4 &&
+                { newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
-                    disabled={p.isBugBounty}
-                    onClick={e => p.submitNewMarket(p.newMarket, p.history)}
+                    disabled={isBugBounty}
+                    onClick={e => submitNewMarket(newMarket, history)}
                   >Submit
                   </button>
                 }
