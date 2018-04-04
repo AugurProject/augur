@@ -12,12 +12,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
   APP: path.resolve(__dirname, 'src'),
   TEST: path.resolve(__dirname, 'test'),
 };
+
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 // COMMON CONFIG
 let config = {
@@ -48,13 +51,16 @@ let config = {
       '.jsx'
     ],
     alias: {
+      // NOTE --  these aliases are utilized during build + linting,
+      //          only testing utilizes the aliases w/in .babelrc
       src: PATHS.APP,
-      test: PATHS.TEST,
+      config: path.resolve(PATHS.APP, 'config'),
       assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
       utils: path.resolve(PATHS.APP, 'utils'),
       services: path.resolve(PATHS.APP, 'services'),
-      assertions: path.resolve(PATHS.TEST, 'assertions'),
+      test: PATHS.TEST,
+      assertions: path.resolve(PATHS.TEST, 'assertions')
     },
     symlinks: false
   },
@@ -85,6 +91,15 @@ let config = {
         loader: 'babel'
       },
       {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {
+            inline: true
+          }
+        }
+      },
+      {
         test: /\.json/,
         loader: 'json'
       },
@@ -103,7 +118,7 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/styles')
       },
       {
-        from: path.resolve(PATHS.APP, 'manifest.json'),
+        from: path.resolve(PATHS.APP, 'config/manifest.json'),
         to: path.resolve(PATHS.BUILD, 'config')
       },
       {
@@ -143,7 +158,9 @@ let config = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD)
+        GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
+        ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || 'dev'),
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
       }
     })
   ],
@@ -196,19 +213,12 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
-      new CopyWebpackPlugin([
-        {
-          from: path.resolve(PATHS.APP, 'env-dev.json'),
-          to: path.resolve(PATHS.BUILD, 'config/env.json')
-        },
-      ])
     ]
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   // get network name like 'rinkeby' or 'clique' to set environment for UI
-  const target = process.env.ETHEREUM_NETWORK ? `env-${process.env.ETHEREUM_NETWORK}.json` : 'env-dev.json'
-  console.log(`Using development config file ${target}`)
+  console.log(`Using development config file ${process.env.ETHEREUM_NETWORK}`)
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`
@@ -240,14 +250,6 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       ]
     },
     devtool: 'eval-source-map',
-    plugins: [
-      new CopyWebpackPlugin([
-        {
-          from: path.resolve(PATHS.APP, target),
-          to: path.resolve(PATHS.BUILD, 'config/env.json')
-        },
-      ])
-    ]
   });
 // PRODUCTION CONFIG
 } else {
@@ -286,12 +288,6 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       new ExtractTextPlugin({
         filename: '[name].css'
       }),
-      new CopyWebpackPlugin([
-        {
-          from: path.resolve(PATHS.APP, 'env-production.json'),
-          to: path.resolve(PATHS.BUILD, 'config/env.json')
-        },
-      ]),
       new UglifyJSPlugin({
         parallel: true,
         sourceMap: true,

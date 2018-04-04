@@ -26,21 +26,39 @@
 .MarketOutcomeCharts__Charts {
   display: flex;
   height: 100%;
+  position: relative;
   width: 100%;
+  z-index: @default-z-index;
 
   & > * {
     overflow: hidden;
   }
 }
 
-.MarketOutcomeCharts__Candlestick {
+.MarketOutcomeCharts__candlestick {
   flex: 2.5;
+  position: relative;
 }
 
-.MarketOutcomeCharts__Depth {
+.MarketOutcomeCharts__candlestick-null {
+  &:extend(.caps--small);
+
+  color: @color-gray;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, calc(-100% - 30px));
+}
+
+.MarketOutcomeCharts__orders {
+  display: flex;
+  flex: 2;
+}
+
+.MarketOutcomeCharts__depth {
   flex: 1;
 }
 
-.MarketOutcomeCharts__Orders {
-  flex: 1;
+.MarketOutcomeCharts__orderbook {
+  flex: 0.8;
 }
