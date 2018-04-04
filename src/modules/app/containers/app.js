@@ -12,6 +12,7 @@ import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-
 import getAllMarkets from 'modules/markets/selectors/markets-all'
 import { initAugur } from 'modules/app/actions/init-augur'
 import { updateModal } from 'modules/modal/actions/update-modal'
+import { isLoading } from 'modules/app/selectors/is-loading'
 
 const mapStateToProps = state => ({
   url: state.url,
@@ -31,7 +32,7 @@ const mapStateToProps = state => ({
   connection: state.connection,
   universe: state.universe,
   blockchain: state.blockchain,
-  isLoading: Object.keys(state.marketLoading).length > 0,
+  isLoading: isLoading(state.marketLoading),
 })
 
 const mapDispatchToProps = dispatch => ({
