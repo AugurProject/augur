@@ -1,5 +1,3 @@
-
-
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import configureMockStore from 'redux-mock-store'
