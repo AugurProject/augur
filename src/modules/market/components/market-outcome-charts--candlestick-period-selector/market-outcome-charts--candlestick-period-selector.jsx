@@ -29,11 +29,16 @@ export default class PeriodSelector extends Component {
 
     this.updatePermissibleValues = this.updatePermissibleValues.bind(this)
     this.validateAndUpdateSelection = this.validateAndUpdateSelection.bind(this)
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
   }
 
   componentWillMount() {
     const { priceTimeSeries } = this.props
     this.updatePermissibleValues(priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
+  }
+
+  componentDidMount() {
+    window.addEventListener('click', this.handleWindowOnClick)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -45,6 +50,10 @@ export default class PeriodSelector extends Component {
     ) {
       this.updatePermissibleValues(nextProps.priceTimeSeries, nextState.selectedRange, nextState.selectedPeriod)
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleWindowOnClick)
   }
 
   updatePermissibleValues(priceTimeSeries, selectedRange, selectedPeriod) {
@@ -142,6 +151,12 @@ export default class PeriodSelector extends Component {
     })
   }
 
+  handleWindowOnClick(event) {
+    if (this.periodSelector && !this.periodSelector.contains(event.target)) {
+      this.setState({ isModalActive: false })
+    }
+  }
+
   render() {
     const s = this.state
 
@@ -152,7 +167,10 @@ export default class PeriodSelector extends Component {
       <section className={Styles.PeriodSelector}>
         <button
           className={Styles.PeriodSelector__button}
-          onClick={() => this.setState({ isModalActive: !s.isModalActive })}
+          onClick={(e) => {
+            e.stopPropagation()
+            this.setState({ isModalActive: !s.isModalActive })
+          }}
         >
           <span>
             {
@@ -167,13 +185,14 @@ export default class PeriodSelector extends Component {
           }
         </button>
         <div
+          ref={(periodSelector) => { this.periodSelector = periodSelector }}
           className={classNames(
             Styles.PeriodSelector__modal,
             {
               [Styles['PeriodSelector__modal--active']]: s.isModalActive,
             },
-          )
-          }
+          )}
+          role="button"
         >
           <div className={Styles.PeriodSelector__column}>
             <h1>Range</h1>
