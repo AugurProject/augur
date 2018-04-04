@@ -12,6 +12,7 @@ import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import getAllMarkets from 'modules/markets/selectors/markets-all'
 import logError from 'utils/log-error'
+import networkConfig from 'config/network'
 
 import { isEmpty } from 'lodash'
 
@@ -110,7 +111,6 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       dispatch(registerTransactionRelay())
       dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
       dispatch(closeModal())
-      console.log('isInitialConnection -- ', isInitialConnection)
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)
         pollForNetwork(dispatch, getState)
@@ -123,19 +123,9 @@ export function connectAugur(history, env, isInitialConnection = false, callback
 
 export function initAugur(history, callback = logError) {
   return (dispatch, getState) => {
-    const xhttp = new XMLHttpRequest()
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4) {
-        if (xhttp.status === 200) {
-          const env = JSON.parse(xhttp.responseText)
-          dispatch(updateEnv(env))
-          connectAugur(history, env, true, callback)(dispatch, getState)
-        } else {
-          callback(xhttp.statusText)
-        }
-      }
-    }
-    xhttp.open('GET', 'config/env.json', true)
-    xhttp.send()
+    const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`]
+
+    dispatch(updateEnv(env))
+    connectAugur(history, env, true, callback)(dispatch, getState)
   }
 }
