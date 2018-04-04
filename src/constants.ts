@@ -8,7 +8,7 @@ export interface Precision {
 }
 
 const ten = new BigNumber(10, 10);
-const decimals = new BigNumber(4, 10);
+const decimals = new BigNumber(18, 10);
 const multiple: BigNumber = ten.exponentiatedBy(decimals.toNumber());
 
 export const PRECISION: Precision = {
@@ -18,7 +18,7 @@ export const PRECISION: Precision = {
   multiple: multiple.toFixed(),
 };
 
-export const MINIMUM_TRADE_SIZE = "0.01";
+export const MINIMUM_TRADE_SIZE = "0.000001";
 
 export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).exponentiatedBy(18);
 export const WEI_PER_ETHER: string = BN_WEI_PER_ETHER.toFixed();

@@ -23,6 +23,7 @@ import { processTimestampSetLog, processTimestampSetLogRemoval } from "./timesta
 import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } from "./completesets";
 import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
 import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
+import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
 
 function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
   callback(null);
@@ -60,6 +61,10 @@ export const logProcessors: LogProcessors = {
       noAutoEmit: true,
       add: processMarketCreatedLog,
       remove: processMarketCreatedLogRemoval,
+    },
+    MarketMigrated: {
+      add: processMarketMigratedLog,
+      remove: processMarketMigratedLogRemoval,
     },
     MarketFinalized: {
       add: processMarketFinalizedLog,
