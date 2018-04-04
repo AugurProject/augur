@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import { augur } from 'services/augurjs'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
@@ -44,8 +44,8 @@ export default class CreateMarketLiquidity extends Component {
       orderPrice: '',
       orderQuantity: '',
       orderEstimate: '',
-      minPrice: WrappedBigNumber(0),
-      maxPrice: WrappedBigNumber(1),
+      minPrice: createBigNumber(0),
+      maxPrice: createBigNumber(1),
       selectedNav: BID,
       selectedOutcome: this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : '',
     }
@@ -61,19 +61,22 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   componentWillMount() {
-    this.updatePriceBounds(this.props.newMarket.type, this.state.selectedOutcome, this.state.selectedNav, this.props.newMarket.orderBookSorted, this.props.newMarket.scalarSmallNum, this.props.newMarket.scalarBigNum)
+    const { newMarket } = this.props
+    this.updatePriceBounds(newMarket.type, this.state.selectedOutcome, this.state.selectedNav, newMarket.orderBookSorted, newMarket.scalarSmallNum, newMarket.scalarBigNum)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.sortOrderBook(nextProps.newMarket.orderBook)
-    if (this.props.newMarket.orderBookSorted !== nextProps.newMarket.orderBookSorted) this.updateSeries(nextProps.newMarket.orderBookSorted)
+    const { newMarket } = this.props
+    if (newMarket.orderBook !== nextProps.newMarket.orderBook) this.sortOrderBook(nextProps.newMarket.orderBook)
+    if (newMarket.orderBookSorted !== nextProps.newMarket.orderBookSorted) this.updateSeries(nextProps.newMarket.orderBookSorted)
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.newMarket.type !== nextProps.newMarket.type ||
-      this.props.newMarket.scalarSmallNum !== nextProps.newMarket.scalarSmallNum ||
-      this.props.newMarket.scalarBigNum !== nextProps.newMarket.scalarBigNum ||
-      this.props.newMarket.orderBookSorted !== nextProps.newMarket.orderBookSorted ||
+    const { newMarket } = this.props
+    if (newMarket.type !== nextProps.newMarket.type ||
+      newMarket.scalarSmallNum !== nextProps.newMarket.scalarSmallNum ||
+      newMarket.scalarBigNum !== nextProps.newMarket.scalarBigNum ||
+      newMarket.orderBookSorted !== nextProps.newMarket.orderBookSorted ||
       this.state.selectedNav !== nextState.selectedNav ||
       this.state.selectedOutcome !== nextState.selectedOutcome
     ) {
@@ -91,8 +94,9 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   handleAddOrder() {
+    const { addOrderToNewMarket } = this.props
     if (this.state.isOrderValid) {
-      this.props.addOrderToNewMarket({
+      addOrderToNewMarket({
         outcome: this.state.selectedOutcome,
         type: this.state.selectedNav,
         price: this.state.orderPrice,
@@ -114,9 +118,9 @@ export default class CreateMarketLiquidity extends Component {
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
     const oppositeSide = selectedSide === BID ? ASK : BID
-    const ZERO = WrappedBigNumber(0)
-    const ONE = WrappedBigNumber(1)
-    const precision = WrappedBigNumber(10**-PRECISION)
+    const ZERO = createBigNumber(0)
+    const ONE = createBigNumber(1)
+    const precision = createBigNumber(10**-PRECISION)
     let minPrice
     let maxPrice
 
@@ -170,6 +174,7 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   sortOrderBook(orderBook) {
+    const { updateNewMarket } = this.props
     const orderBookSorted = Object.keys(orderBook).reduce((p, outcome) => {
       if (p[outcome] == null) p[outcome] = {}
 
@@ -188,17 +193,18 @@ export default class CreateMarketLiquidity extends Component {
       return p
     }, {})
 
-    this.props.updateNewMarket({ orderBookSorted })
+    updateNewMarket({ orderBookSorted })
   }
 
   updateSeries(orderBook) {
+    const { updateNewMarket } = this.props
     const orderBookSeries = Object.keys(orderBook).reduce((p, outcome) => {
       if (p[outcome] == null) p[outcome] = {}
 
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = []
 
-        let totalQuantity = WrappedBigNumber(0)
+        let totalQuantity = createBigNumber(0)
 
         orderBook[outcome][type].forEach((order) => {
           const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber())
@@ -218,21 +224,26 @@ export default class CreateMarketLiquidity extends Component {
       return p
     }, {})
 
-    this.props.updateNewMarket({ orderBookSeries })
+    updateNewMarket({ orderBookSeries })
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const minPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarSmallNum : 0
-    const maxPrice = this.props.newMarket.type === SCALAR ? this.props.newMarket.scalarBigNum : 1
-    const shareBalances = this.props.newMarket.outcomes.map(outcome => 0)
+    const {
+      availableEth,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
+    const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
+    const shareBalances = newMarket.outcomes.map(outcome => 0)
     let outcome
     let initialLiquidityEth
     let initialLiquidityGas
     let initialLiquidityFees
 
-    switch (this.props.newMarket.type) {
+    switch (newMarket.type) {
       case CATEGORICAL:
-        this.props.newMarket.outcomes.forEach((outcomeName, index) => {
+        newMarket.outcomes.forEach((outcomeName, index) => {
           if (this.state.selectedOutcome === outcomeName) outcome = index
         })
         break
@@ -248,30 +259,34 @@ export default class CreateMarketLiquidity extends Component {
       outcome,
       shares: order.quantity,
       price: order.price,
-      tokenBalance: this.props.availableEth,
+      tokenBalance: availableEth,
       minPrice,
       maxPrice,
-      marketCreatorFeeRate: this.props.newMarket.settlementFee,
+      marketCreatorFeeRate: newMarket.settlementFee,
       reportingFeeRate: 0,
       shareBalances,
-      singleOutcomeOrderBook: this.props.newMarket.orderBook[outcome] || {},
+      singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
     }
     const action = augur.trading.simulateTrade(orderInfo)
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityEth = this.props.newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.minus(WrappedBigNumber(action.gasFees))
+      initialLiquidityEth = newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
+      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
     } else {
-      initialLiquidityEth = this.props.newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      initialLiquidityGas = this.props.newMarket.initialLiquidityGas.plus(WrappedBigNumber(action.gasFees))
+      initialLiquidityEth = newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
+      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasFees))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
     }
 
-    this.props.updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
+    updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {
+    const {
+      availableEth,
+      newMarket,
+    } = this.props
     const sanitizeValue = (value, type) => {
       if (value == null) {
         if (type === 'quantity') {
@@ -279,7 +294,7 @@ export default class CreateMarketLiquidity extends Component {
         }
         return this.state.orderPrice
       } else if (!(BigNumber.isBigNumber(value)) && value !== '') {
-        return WrappedBigNumber(value)
+        return createBigNumber(value)
       }
 
       return value
@@ -295,17 +310,17 @@ export default class CreateMarketLiquidity extends Component {
     let isOrderValid
 
     // Validate Quantity
-    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.newMarket.initialLiquidityEth).gt(WrappedBigNumber(this.props.availableEth))) {
+    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(newMarket.initialLiquidityEth).gt(createBigNumber(availableEth))) {
       // Done this way so both inputs are in err
       errors.quantity.push('Insufficient funds')
       errors.price.push('Insufficient funds')
-    } else if (orderQuantity !== '' && orderQuantity.lte(WrappedBigNumber(0))) {
+    } else if (orderQuantity !== '' && orderQuantity.lte(createBigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
-      const bids = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
-      const asks = getValue(this.props.newMarket.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
+      const bids = getValue(newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
+      const asks = getValue(newMarket.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
 
-      if (this.props.newMarket.type !== SCALAR) {
+      if (newMarket.type !== SCALAR) {
         if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
         } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
@@ -345,7 +360,11 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      isMobileSmall,
+      newMarket,
+      validateNumber,
+    } = this.props
     const s = this.state
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
@@ -360,14 +379,14 @@ export default class CreateMarketLiquidity extends Component {
             <input
               id="cm__input--settlement"
               type="number"
-              value={p.newMarket.settlementFee}
+              value={newMarket.settlementFee}
               placeholder="0%"
-              onChange={e => p.validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
+              onChange={e => validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
             />
             <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
           </div>
-          { p.newMarket.validations[p.newMarket.currentStep].settlementFee.length &&
-            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon} { p.newMarket.validations[p.newMarket.currentStep].settlementFee }</span>
+          { newMarket.validations[newMarket.currentStep].settlementFee.length &&
+            <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon} { newMarket.validations[newMarket.currentStep].settlementFee }</span>
           }
         </li>
         <li>
@@ -387,16 +406,16 @@ export default class CreateMarketLiquidity extends Component {
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
-              { p.newMarket.type === CATEGORICAL &&
+              { newMarket.type === CATEGORICAL &&
                 <li>
                   <label>Outcome</label>
                   <InputDropdown
                     className={Styles['CreateMarketLiquidity__outcomes-categorical']}
                     label="Choose an Outcome"
                     default=""
-                    options={p.newMarket.outcomes.filter(outcome => outcome !== '')}
+                    options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={value => this.setState({ selectedOutcome: value })}
-                    isMobileSmall={this.props.isMobileSmall}
+                    isMobileSmall={isMobileSmall}
                   />
                 </li>
               }

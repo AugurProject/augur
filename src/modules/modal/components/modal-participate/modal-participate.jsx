@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { Participate, ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-participate/modal-participate.styles'
@@ -37,9 +37,10 @@ export default class ModalParticipate extends Component {
   }
 
   triggerReview(e, ...args) {
+    const { purchaseParticipationTokens } = this.props
     e.preventDefault()
     if (this.state.isValid) {
-      this.props.purchaseParticipationTokens(this.state.quantity, true, (err, gasEstimate) => {
+      purchaseParticipationTokens(this.state.quantity, true, (err, gasEstimate) => {
         console.log('trigger review', err, gasEstimate)
         if (!err && !!gasEstimate) this.setState({ gasEstimate, page: 2 })
       })
@@ -47,8 +48,9 @@ export default class ModalParticipate extends Component {
   }
 
   submitForm(e, ...args) {
+    const { purchaseParticipationTokens } = this.props
     e.preventDefault()
-    this.props.purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
+    purchaseParticipationTokens(this.state.quantity, false, (err, res) => {
       console.log('onSuccess for purchaseParticipationTokens', err, res)
     })
   }
@@ -59,7 +61,8 @@ export default class ModalParticipate extends Component {
   }
 
   validateForm(quantity) {
-    const bnRep = WrappedBigNumber(this.props.rep, 10)
+    const { rep } = this.props
+    const bnRep = createBigNumber(rep, 10)
     const errors = []
     let isValid = true
 
@@ -68,7 +71,7 @@ export default class ModalParticipate extends Component {
       // exit early, as the other check doesn't matter.
       return ({ errors, isValid })
     }
-    const bnQuantity = WrappedBigNumber(quantity, 10)
+    const bnQuantity = createBigNumber(quantity, 10)
 
     if (bnQuantity.lte(0)) {
       errors.push('Quantity must greater than 0.')
@@ -91,7 +94,8 @@ export default class ModalParticipate extends Component {
   }
 
   handleMaxClick() {
-    this.setState({ quantity: this.props.rep, isValid: true, errors: [] })
+    const { rep } = this.props
+    this.setState({ quantity: rep, isValid: true, errors: [] })
   }
 
   handleKeyDown(e) {
@@ -103,7 +107,7 @@ export default class ModalParticipate extends Component {
   }
 
   render() {
-    const p = this.props
+    const { closeModal } = this.props
     const s = this.state
     const invalidWithErrors = (!s.isValid && s.errors.length > 0)
 
@@ -145,7 +149,7 @@ export default class ModalParticipate extends Component {
             <div className={Styles['ModalParticipate__form-actions']}>
               <button
                 className={Styles.ModalParticipate__button}
-                onClick={() => p.closeModal()}
+                onClick={() => closeModal()}
               >
                 Cancel
               </button>

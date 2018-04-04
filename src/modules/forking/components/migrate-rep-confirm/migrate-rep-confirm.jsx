@@ -34,7 +34,7 @@ const MigrateRepConfirm = p => (
 MigrateRepConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   selectedOutcomeName: PropTypes.string.isRequired,
-  repAmount: PropTypes.number.isRequired,
+  repAmount: PropTypes.string.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }

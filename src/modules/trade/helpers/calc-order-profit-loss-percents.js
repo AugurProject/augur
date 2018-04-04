@@ -1,8 +1,6 @@
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { BUY } from 'modules/transactions/constants/types'
 import { SCALAR } from 'modules/markets/constants/market-types'
-
-BigNumber.config({ ERRORS: false })
 
 /**
  *
@@ -12,6 +10,8 @@ BigNumber.config({ ERRORS: false })
  * @param minPrice only relevant for scalar markets; all other markets min is created and set to 0
  * @param maxPrice only relevant for scalar markets; all other markets max is created and set to 1
  * @param type the market type
+ * @param sharesFilled
+ * @param tradeTotalCost
  * @returns object with the following properties
  *    potentialEthProfit:     number, maximum number of ether that can be made according to the current numShares and limit price
  *    potentialEthLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
@@ -26,22 +26,22 @@ export default function (numShares, limitPrice, side, minPrice, maxPrice, type, 
   let calculatedPrice = limitPrice
   if (!limitPrice && tradeTotalCost) {
     // market order
-    calculatedPrice = WrappedBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
+    calculatedPrice = createBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
     calculatedShares = sharesFilled
   }
   if (type === SCALAR && (isNaN(minPrice) || isNaN(maxPrice))) return null
-  const max = WrappedBigNumber(type === SCALAR ? maxPrice : 1)
-  const min = WrappedBigNumber(type === SCALAR ? minPrice : 0)
-  const limit = WrappedBigNumber(calculatedPrice, 10)
+  const max = createBigNumber(type === SCALAR ? maxPrice : 1)
+  const min = createBigNumber(type === SCALAR ? minPrice : 0)
+  const limit = createBigNumber(calculatedPrice, 10)
   const totalCost = type === SCALAR ? min.minus(limit).abs().times(calculatedShares) : limit.times(calculatedShares)
 
   const potentialEthProfit = side === BUY ?
-    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
-    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
+    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
+    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
 
   const potentialEthLoss = side === BUY ?
-    WrappedBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
-    WrappedBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
+    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
+    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
 
   const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
   const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)

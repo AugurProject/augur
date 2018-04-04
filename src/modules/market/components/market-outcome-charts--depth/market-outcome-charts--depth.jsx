@@ -41,30 +41,51 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   componentDidMount() {
+    const {
+      fixedPrecision,
+      marketDepth,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      sharedChartMargins,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     this.drawDepth({
-      marketDepth: this.props.marketDepth,
-      orderBookKeys: this.props.orderBookKeys,
-      sharedChartMargins: this.props.sharedChartMargins,
-      fixedPrecision: this.props.fixedPrecision,
-      marketMin: this.props.marketMin,
-      marketMax: this.props.marketMax,
-      updateHoveredPrice: this.props.updateHoveredPrice,
-      updateSeletedOrderProperties: this.props.updateSeletedOrderProperties,
+      marketDepth,
+      orderBookKeys,
+      sharedChartMargins,
+      fixedPrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
     })
 
     window.addEventListener('resize', this.drawDepthOnResize)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const {
+      fixedPrecision,
+      hoveredPrice,
+      marketDepth,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      sharedChartMargins,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     if (
-      !isEqual(this.props.marketDepth, nextProps.marketDepth) ||
-      !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
-      !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
-      !isEqual(this.props.updateHoveredPrice, nextProps.updateHoveredPrice) ||
-      !isEqual(this.props.updateSeletedOrderProperties, nextProps.updateSeletedOrderProperties) ||
-      this.props.fixedPrecision !== nextProps.fixedPrecision ||
-      this.props.marketMin !== nextProps.marketMin ||
-      this.props.marketMax !== nextProps.marketMax
+      !isEqual(marketDepth, nextProps.marketDepth) ||
+      !isEqual(orderBookKeys, nextProps.orderBookKeys) ||
+      !isEqual(sharedChartMargins, nextProps.sharedChartMargins) ||
+      !isEqual(updateHoveredPrice, nextProps.updateHoveredPrice) ||
+      !isEqual(updateSeletedOrderProperties, nextProps.updateSeletedOrderProperties) ||
+      fixedPrecision !== nextProps.fixedPrecision ||
+      marketMin !== nextProps.marketMin ||
+      marketMax !== nextProps.marketMax
     ) {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
@@ -79,14 +100,14 @@ export default class MarketOutcomeDepth extends Component {
     }
 
     if (
-      !isEqual(this.props.hoveredPrice, nextProps.hoveredPrice) ||
-      !isEqual(this.props.marketDepth, nextProps.marketDepth) ||
+      !isEqual(hoveredPrice, nextProps.hoveredPrice) ||
+      !isEqual(marketDepth, nextProps.marketDepth) ||
       !isEqual(this.state.yScale, nextState.yScale) ||
       !isEqual(this.state.xScale, nextState.xScale) ||
       !isEqual(this.state.containerHeight, nextState.containerHeight) ||
       !isEqual(this.state.containerWidth, nextState.containerWidth) ||
-      this.props.marketMin !== nextProps.marketMin ||
-      this.props.marketMax !== nextProps.marketMax
+      marketMin !== nextProps.marketMin ||
+      marketMax !== nextProps.marketMax
     ) {
       this.drawCrosshairs({
         hoveredPrice: nextProps.hoveredPrice,
@@ -176,19 +197,30 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   drawDepthOnResize() {
+    const {
+      fixedPrecision,
+      marketDepth,
+      marketMax,
+      marketMin,
+      orderBookKeys,
+      sharedChartMargins,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     this.drawDepth({
-      marketDepth: this.props.marketDepth,
-      orderBookKeys: this.props.orderBookKeys,
-      sharedChartMargins: this.props.sharedChartMargins,
-      fixedPrecision: this.props.fixedPrecision,
-      marketMin: this.props.marketMin,
-      marketMax: this.props.marketMax,
-      updateHoveredPrice: this.props.updateHoveredPrice,
-      updateSeletedOrderProperties: this.props.updateSeletedOrderProperties,
+      marketDepth,
+      orderBookKeys,
+      sharedChartMargins,
+      fixedPrecision,
+      marketMin,
+      marketMax,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
     })
   }
 
   drawCrosshairs(options) {
+    const { updateHoveredDepth } = this.props
     if (this.depthChart) {
       const {
         hoveredPrice,
@@ -204,13 +236,13 @@ export default class MarketOutcomeDepth extends Component {
       if (hoveredPrice == null) {
         d3.select('#crosshairs').style('display', 'none')
         d3.select('#hovered_price_label').text('')
-        this.props.updateHoveredDepth([])
+        updateHoveredDepth([])
       } else {
         const nearestFillingOrder = nearestCompletelyFillingOrder(hoveredPrice, marketDepth)
 
         if (nearestFillingOrder === null) return
 
-        this.props.updateHoveredDepth(nearestFillingOrder)
+        updateHoveredDepth(nearestFillingOrder)
 
         d3.select('#crosshairs').style('display', null)
 
@@ -514,13 +546,13 @@ function setupCrosshairs(options) {
   const crosshair = depthChart.append('g')
     .attr('id', 'crosshairs')
     .attr('class', 'line')
-    .attr('style', { display: 'none' })
+    .style('display', 'none')
 
   // X Crosshair
   crosshair.append('line')
     .attr('id', 'crosshairX')
     .attr('class', 'crosshair')
-    .attr('style', { display: 'none' })
+    .style('display', 'none')
 
   // Y Crosshair
   crosshair.append('line')
@@ -556,11 +588,12 @@ function attachHoverClickHandlers(options) {
       updateHoveredPrice(hoveredPrice)
     })
     .on('click', () => {
-      const mouse = d3.mouse(d3.select('#outcome_depth').node())
+      const mouse = d3.mouse(d3.select('#depth_chart').node())
       const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
       const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
       if (
+        nearestFillingOrder != null &&
         orderPrice > marketMin &&
         orderPrice < marketMax
       ) {

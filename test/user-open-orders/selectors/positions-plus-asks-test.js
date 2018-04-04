@@ -2,7 +2,7 @@
 
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 
@@ -181,7 +181,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
           },
         })
 
-        const expected = WrappedBigNumber('2')
+        const expected = createBigNumber('2')
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`)
       },

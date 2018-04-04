@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
+
 import { AugurLoadingLogo } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-network-disconnected/modal-network-disconnected.styles'
 
@@ -12,7 +14,6 @@ export default class ModalNetworkDisconnected extends Component {
       env: PropTypes.object.isRequired,
       connection: PropTypes.object.isRequired,
     }),
-    updateEnv: PropTypes.func.isRequired,
     updateIsReconnectionPaused: PropTypes.func.isRequired,
   }
 
@@ -21,9 +22,6 @@ export default class ModalNetworkDisconnected extends Component {
 
     this.state = {
       showEnvForm: false,
-      augurNode: props.modal.env['augur-node'],
-      ethereumNodeHttp: props.modal.env['ethereum-node'].http,
-      ethereumNodeWs: props.modal.env['ethereum-node'].ws,
     }
 
     this.showForm = this.showForm.bind(this)
@@ -32,35 +30,33 @@ export default class ModalNetworkDisconnected extends Component {
   }
 
   showForm(e) {
+    const { updateIsReconnectionPaused } = this.props
     e.preventDefault()
     this.setState({ showEnvForm: !this.state.showEnvForm })
     // if the form is going to be shown, we pass true to pause reconnection
-    this.props.updateIsReconnectionPaused(!this.state.showEnvForm)
+    updateIsReconnectionPaused(!this.state.showEnvForm)
   }
 
-  submitForm(e, ...args) {
+  submitForm(e, env) {
+    const {
+      updateIsReconnectionPaused,
+    } = this.props
     e.preventDefault()
-    this.props.updateEnv({
-      ...this.props.modal.env,
-      'augur-node': this.state.augurNode,
-      'ethereum-node': {
-        http: this.state.ethereumNodeHttp,
-        ws: this.state.ethereumNodeWs,
-      },
-    })
     // unpause reconnection
-    this.props.updateIsReconnectionPaused(false)
+    updateIsReconnectionPaused(false)
     this.setState({ showEnvForm: false })
   }
 
-  updateField(field, value, ...args) {
+  updateField(field, value) {
     this.setState({ [field]: value })
   }
 
   render() {
-    const p = this.props
+    const {
+      modal,
+    } = this.props
     const s = this.state
-    const connectionStatus = getValue(p, 'modal.connection')
+    const connectionStatus = getValue(this.props, 'modal.connection')
     let nodeTitleText = ''
     let nodeDescriptionText = ''
     if ((connectionStatus.isConnected && !connectionStatus.isConnectedToAugurNode)) {
@@ -91,46 +87,7 @@ export default class ModalNetworkDisconnected extends Component {
           </div>
         }
         {s.showEnvForm &&
-          <form
-            className={Styles.ModalNetworkDisconnected__form}
-            onSubmit={this.submitForm}
-          >
-            <h1 className={Styles.ModalNetworkDisconnected__formTitle}>Connect to Augur Via</h1>
-            <label htmlFor="modal__dc-augurNode">
-              Augur Node Address:
-              <input
-                id="modal__dc-augurNode"
-                type="text"
-                className={Styles.ModalNetworkDisconnected__input}
-                value={s.augurNode}
-                placeholder="Enter the augurNode address you would like to connect to."
-                onChange={e => this.updateField('augurNode', e.target.value)}
-              />
-            </label>
-            <label htmlFor="modal__dc-ethNodeHttp">
-              Ethereum Node HTTP address:
-              <input
-                id="modal__dc-ethNodeHttp"
-                type="text"
-                className={Styles.ModalNetworkDisconnected__input}
-                value={s.ethereumNodeHttp}
-                placeholder="Enter the Ethereum Node http address you would like to connect to."
-                onChange={e => this.updateField('ethereumNodeHttp', e.target.value)}
-              />
-            </label>
-            <label htmlFor="modal__dc-ethereumNodeWs">
-              Ethereum Node Websocket Address:
-              <input
-                id="modal__dc-ethereumNodeWs"
-                type="text"
-                className={Styles.ModalNetworkDisconnected__input}
-                value={s.ethereumNodeWs}
-                placeholder="Enter the Ethereum Node Websocket address you would like to connect to."
-                onChange={e => this.updateField('ethereumNodeWs', e.target.value)}
-              />
-            </label>
-            <button type="submit">Connect</button>
-          </form>
+          <ModalNetworkConnect submitForm={this.submitForm} env={modal.env} />
         }
       </section>
     )

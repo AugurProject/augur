@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { BigNumber } from 'utils/create-big-number'
 
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
@@ -16,7 +17,7 @@ const MarketOutcomeDepthHeader = p => (
           {p.hoveredDepth[3] === ASKS ? 'ask' : 'bid'} price
         </span>
         <span className={Styles['MarketOutcomeChartsHeader__stat-value']}>
-          {p.hoveredDepth[1] ? p.hoveredDepth[1].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+          {BigNumber.isBigNumber(p.hoveredDepth[1]) ? p.hoveredDepth[1].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
       <span className={Styles.MarketOutcomeChartsHeader__stat}>
@@ -24,7 +25,7 @@ const MarketOutcomeDepthHeader = p => (
           qty
         </span>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-          {p.hoveredDepth[2] ? p.hoveredDepth[2].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+          {BigNumber.isBigNumber(p.hoveredDepth[2]) ? p.hoveredDepth[2].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
       <span className={Styles.MarketOutcomeChartsHeader__stat}>
@@ -32,7 +33,7 @@ const MarketOutcomeDepthHeader = p => (
           depth
         </span>
         <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-          {p.hoveredDepth[0] ? p.hoveredDepth[0].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+          {BigNumber.isBigNumber(p.hoveredDepth[0]) ? p.hoveredDepth[0].toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
         </span>
       </span>
     </div>

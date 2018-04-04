@@ -223,7 +223,7 @@ function drawMidpointLine(options) {
   if (!hasPriceHistory && hasOrders && !excludeCandlestick) {
     midpointChart.append('line')
       .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
-      .attr('x1', (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + drawParams.chartDim.left)
+      .attr('x1', (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + drawParams.chartDim.right)
       .attr('x2', hasOrders ? drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right : chartWidths.candle)
       .attr('y1', () => drawParams.yScale(0.5))
       .attr('y2', () => drawParams.yScale(0.5))

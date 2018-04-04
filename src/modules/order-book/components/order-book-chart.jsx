@@ -79,7 +79,8 @@ export default class OrderBookChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.orderBookSeries !== this.props.orderBookSeries) this.updateChart()
+    const { orderBookSeries } = this.props
+    if (prevProps.orderBookSeries !== orderBookSeries) this.updateChart()
   }
 
   componentWillUnmount() {

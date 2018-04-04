@@ -1,0 +1,18 @@
+{
+  "augur-node": "wss://test.augur.net/augur-node",
+  "ethereum-node": {
+    "http": "https://test.augur.net/ethereum-http",
+    "ws": "wss://test.augur.net/ethereum-ws",
+    "pollingIntervalMilliseconds": 10000,
+    "blockRetention": 100,
+    "connectionTimeout": 60000
+  },
+  "auto-login": true,
+  "universe": null,
+  "bug-bounty": false,
+  "bug-bounty-address": null,
+  "debug": {
+    "connect": true,
+    "broadcast": false
+  }
+}

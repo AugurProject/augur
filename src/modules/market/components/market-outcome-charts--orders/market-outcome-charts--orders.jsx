@@ -36,49 +36,56 @@ export default class MarketOutcomeOrderbook extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { orderBook } = this.props
     if (
       isEmpty(prevProps.orderBook.asks) &&
-      !isEqual(prevProps.orderBook.asks, this.props.orderBook.asks)
+      !isEqual(prevProps.orderBook.asks, orderBook.asks)
     ) {
       this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
     }
   }
 
   render() {
-    const p = this.props
+    const {
+      fixedPrecision,
+      orderBook,
+      sharedChartMargins,
+      updateHoveredPrice,
+      updateSeletedOrderProperties,
+    } = this.props
     const s = this.state
 
     return (
       <section
         className={Styles.MarketOutcomeOrderBook}
-        style={{ paddingBottom: p.sharedChartMargins.bottom }}
+        style={{ paddingBottom: sharedChartMargins.bottom }}
       >
         <div
           ref={(asks) => { this.asks = asks }}
           className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
         >
-          {(p.orderBook.asks || []).map((order, i) => (
+          {(orderBook.asks || []).map((order, i) => (
             <div
               key={order.cumulativeShares}
               className={
                 classNames(
                   Styles.MarketOutcomeOrderBook__row,
                   {
-                    [Styles['MarketOutcomeOrderBook__row--head']]: i === p.orderBook.asks.length - 1,
+                    [Styles['MarketOutcomeOrderBook__row--head']]: i === orderBook.asks.length - 1,
                     [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
                     [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === ASKS && i > s.hoveredOrderIndex,
                   },
                 )
               }
               onMouseEnter={() => {
-                p.updateHoveredPrice(order.price.value)
+                updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
                   hoveredSide: ASKS,
                 })
               }}
               onMouseLeave={() => {
-                p.updateHoveredPrice(null)
+                updateHoveredPrice(null)
                 this.setState({
                   hoveredOrderIndex: null,
                   hoveredSide: null,
@@ -87,39 +94,39 @@ export default class MarketOutcomeOrderbook extends Component {
             >
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: BUY,
                 })}
               >
-                <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
               </button>
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   selectedNav: BUY,
                 })}
               >
-                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
               </button>
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: BUY,
                 })}
               >
-                <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
               </button>
             </div>
           ))}
         </div>
         <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
         <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
-          {(p.orderBook.bids || []).map((order, i) => (
+          {(orderBook.bids || []).map((order, i) => (
             <div
               key={order.cumulativeShares}
               className={
@@ -133,14 +140,14 @@ export default class MarketOutcomeOrderbook extends Component {
                 )
               }
               onMouseEnter={() => {
-                p.updateHoveredPrice(order.price.value)
+                updateHoveredPrice(order.price.value)
                 this.setState({
                   hoveredOrderIndex: i,
                   hoveredSide: BIDS,
                 })
               }}
               onMouseLeave={() => {
-                p.updateHoveredPrice(null)
+                updateHoveredPrice(null)
                 this.setState({
                   hoveredOrderIndex: null,
                   hoveredSide: null,
@@ -149,32 +156,32 @@ export default class MarketOutcomeOrderbook extends Component {
             >
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: SELL,
                 })}
               >
-                <span>{order.shares.value.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
               </button>
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   selectedNav: SELL,
                 })}
               >
-                <span>{order.price.value.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
               </button>
               <button
                 className={Styles.MarketOutcomeOrderBook__RowItem}
-                onClick={() => p.updateSeletedOrderProperties({
+                onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
                   orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: SELL,
                 })}
               >
-                <span>{order.cumulativeShares.toFixed(p.fixedPrecision).toString()}</span>
+                <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
               </button>
             </div>
           ))}

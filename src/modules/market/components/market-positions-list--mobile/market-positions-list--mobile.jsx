@@ -26,29 +26,33 @@ export default class MarketPositionsListMobile extends Component {
   }
 
   render() {
+    const {
+      openOrders,
+      outcome,
+      positions,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section className={Styles.MarketPositionsListMobile}>
-        { p.positions.length > 0 &&
+        { positions.length > 0 &&
           <MobilePositions
-            position={p.positions[0]}
-            pendingOrders={p.openOrders.filter(order => order.pending === true)}
+            position={positions[0]}
+            pendingOrders={openOrders.filter(order => order.pending === true)}
           />
         }
-        { p.openOrders.length > 0 &&
+        { openOrders.length > 0 &&
           <div className={Styles['MarketPositionsListMobile__wrapper--orders']}>
             <h2 className={Styles['MarketPositionsListMobile__heading--orders']}>Open Orders</h2>
             <div className={Styles.MarketPositionsListMobile__orders}>
               { [...Array(s.visibleOrders)].map((unused, i) => (
-                <MobileOrder key={i} order={p.openOrders[i]} />
+                <MobileOrder key={i} order={openOrders[i]} />
               )) }
             </div>
             { s.showViewMore &&
               <button
                 className={Styles['MarketPositionsListMobile__orders-view-more']}
-                onClick={e => this.setState({ showViewMore: false, visibleOrders: p.openOrders.length })}
+                onClick={e => this.setState({ showViewMore: false, visibleOrders: openOrders.length })}
               >
                 +View More
               </button>
@@ -56,7 +60,7 @@ export default class MarketPositionsListMobile extends Component {
           </div>
         }
         <MobileStats
-          outcome={p.outcome}
+          outcome={outcome}
         />
       </section>
     )
