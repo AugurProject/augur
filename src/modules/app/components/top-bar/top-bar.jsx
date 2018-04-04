@@ -28,9 +28,9 @@ const TopBar = props => (
           </div>
         </div>
         <div className={classNames(Styles.TopBar__stats, Styles.TopBar__performance)}>
-          <div>
-            <LoadingLogo />
-          </div>
+          <LoadingLogo
+            isLoading={props.isLoading}
+          />
           <div className={Styles.TopBar__stat}>
             <div
               className={Styles['TopBar__stat-label']}

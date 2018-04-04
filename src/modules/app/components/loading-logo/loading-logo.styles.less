@@ -1,82 +1,155 @@
-.LoadingLogo--container {
-  width: 4rem;
-  height: 4rem;
+@import (reference) "~assets/styles/shared";
 
-  span {
-    > svg {
-      max-height: 4rem;
-      max-width: 4rem;
+@keyframes drawout-inner {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  49% {
+    stroke-dashoffset: 455;
+  }
+
+  51% {
+    stroke-dashoffset: 455;
+  }
+
+  100% {
+    stroke-dashoffset: 335;
+  }
+}
+
+@keyframes drawout-inner-inverse {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  49% {
+    stroke-dashoffset: 0;
+  }
+
+  51% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 82;
+  }
+}
+
+.LoadingLogo--container {
+  align-content:center;
+  align-items:center;
+  color: @color-white;
+  height: 4rem;
+  justify-content:center;
+  position: absolute;
+  width: 4rem;
+}
+
+.LoadingLogo__AugurLogo {
+  backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
+  width: 2.75rem;
+
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-white;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-lines {
+        :local {
+          animation: drawout-inner 2.5s both infinite;
+          animation-direction: alternate;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse 2.5s both infinite;
+          animation-direction: alternate;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .mask {
+        fill: @color-gray;
+      }
     }
   }
 }
 
-.outer-lines{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dashoffset:0;}
 
-.inner-lines{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
 
-.inner-bottom-line{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+.LoadingLogo__Not__AugurLogo {
+  backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
+  width: 2.75rem;
 
-.mask{fill:#444;} /* <-- MASK MUST MATCH BACKGROUND COLOR */
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-white;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
 
-.loading-anim {
-  width:3rem;
-  height: 3rem;
+      .inner-lines {
+        :local {
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-bottom-line {
+        :local {
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .mask {
+        fill: @color-gray;
+      }
+    }
+  }
 }
-
-.loading-anim {
-  -webkit-backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
-}
-
-@keyframes drawout-inner {
-    0% {
-        stroke-dashoffset:335;
-    }
-    49% {
-        stroke-dashoffset:455;
-    }
-    51% {
-        stroke-dashoffset:455;
-    }
-    100% {
-        stroke-dashoffset:335;
-    }
-}
-
-.inner-lines {
-    stroke-dashoffset: 230;
-    stroke-dasharray: 230;
-    animation: drawout-inner 2.5s both infinite;
-    -webkit-animation-direction: alternate;
-    animation-direction: alternate;
-/*     -webkit-animation-delay:1s; */
-}
-
-@keyframes drawout-inner-inverse {
-    0% {
-        stroke-dashoffset:82;
-    }
-
-    49% {
-        stroke-dashoffset:0;
-    }
-
-    51% {
-        stroke-dashoffset:0;
-    }
-
-    100% {
-        stroke-dashoffset:82;
-    }
-
-}
-
-.inner-bottom-line {
-    stroke-dashoffset: 82;
-    stroke-dasharray: 82;
-    animation: drawout-inner-inverse 2.5s both infinite;
-    -webkit-animation-direction: alternate;
-    animation-direction: alternate;
-/*     -webkit-animation-delay:1s; */
-}
-
-
