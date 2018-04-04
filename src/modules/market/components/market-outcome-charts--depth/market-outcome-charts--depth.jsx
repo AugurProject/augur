@@ -588,11 +588,12 @@ function attachHoverClickHandlers(options) {
       updateHoveredPrice(hoveredPrice)
     })
     .on('click', () => {
-      const mouse = d3.mouse(d3.select('#outcome_depth').node())
+      const mouse = d3.mouse(d3.select('#depth_chart').node())
       const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
       const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
       if (
+        nearestFillingOrder != null &&
         orderPrice > marketMin &&
         orderPrice < marketMax
       ) {

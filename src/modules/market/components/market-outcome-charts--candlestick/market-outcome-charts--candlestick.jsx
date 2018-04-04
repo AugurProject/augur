@@ -294,8 +294,6 @@ function determineDrawParams(options) {
     marketMax,
   } = options
 
-  console.log('marketBounds -- ', marketMin, marketMax)
-
   // Dimensions/Positioning
   const chartDim = {
     ...sharedChartMargins,
@@ -365,6 +363,7 @@ function determineDrawParams(options) {
     yScale,
     marketMin,
     marketMax,
+    orderBookKeys,
   }
 }
 
