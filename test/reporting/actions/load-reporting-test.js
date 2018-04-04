@@ -23,7 +23,7 @@ describe('loadReporting action', () => {
   }
 
   const expectedParams = {
-    sortBy: 'endDate',
+    sortBy: 'endTime',
     universe: universeAddress,
     designatedReporter: loginAccountAddress,
   }

@@ -29,13 +29,13 @@ describe('reporting-report-markets', () => {
       it('should render markets component', () => {
         const items = [{
           id: 1,
-          endDate: { timestamp: 1 },
+          endTime: { timestamp: 1 },
         }, {
           id: 2,
-          endDate: { timestamp: 1 },
+          endTime: { timestamp: 1 },
         }, {
           id: 3,
-          endDate: { timestamp: 1 },
+          endTime: { timestamp: 1 },
         }]
 
         cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
@@ -47,13 +47,13 @@ describe('reporting-report-markets', () => {
       it('should render markets in ascending order (timestamp)', () => {
         const items = [{
           id: 1,
-          endDate: { timestamp: 5 },
+          endTime: { timestamp: 5 },
         }, {
           id: 2,
-          endDate: { timestamp: 1 },
+          endTime: { timestamp: 1 },
         }, {
           id: 3,
-          endDate: { timestamp: 4 },
+          endTime: { timestamp: 4 },
         }]
 
         cmp = shallow(<ReportSection title={exampleTitle} items={items} />)

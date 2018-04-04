@@ -36,7 +36,7 @@ export const selectLoginAccountMarkets = createSelector(
         ...market, // TODO -- cleanup this object
         id: market.id,
         description: market.description,
-        endDate: market.endDate,
+        endTime: market.endTime,
         volume: market.volume,
         repBalance: market.repBalance,
         fees,

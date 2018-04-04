@@ -17,7 +17,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
   const state = Object.assign({}, testState, {
     marketsData: {
       test: {
-        endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
+        endTime: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
           test: {},
         },
@@ -26,7 +26,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
         },
       },
       test2: {
-        endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
+        endTime: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
           test2: {},
         },
@@ -35,7 +35,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
         },
       },
       test3: {
-        endDate: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
+        endTime: parseInt(new Date('01/01/3000').getTime() / 1000, 10),
         outcomes: {
           test3: {},
         },
@@ -86,7 +86,7 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
     selectMarket: () => {},
     selectMarketReport: () => {},
   }
-  sinon.stub(mockMarket, 'selectMarket').callsFake((marketId, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
+  sinon.stub(mockMarket, 'selectMarket').callsFake((marketId, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endTime, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
   sinon.stub(mockMarket, 'selectMarketReport').callsFake((marketId, universeReports) => ({}))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {

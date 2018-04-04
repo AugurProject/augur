@@ -25,7 +25,7 @@ export const ReportSection = ({
   if (items.length === 0) {
     theChildren = <NoMarketsFound message={emptyMessage} key={title} />
   } else {
-    theChildren = items.sort((a, b) => a.endDate.timestamp - b.endDate.timestamp)
+    theChildren = items.sort((a, b) => a.endTime.timestamp - b.endTime.timestamp)
       .map(item => (<MarketPreview key={item.id} buttonText={buttonText} {...item} />))
   }
 
