@@ -819,22 +819,22 @@ module.exports={
   "LegacyReputationToken": "0x7a305d9b681fb164dc5ad628b5992177dc66aec8"
  },
  "4": {
-  "Controller": "0x659f1fa61a17d146c3df9893642a6b48c0999d90",
-  "Universe": "0x2fd1515c04683a0f9644cc72e3d4dbadcfb2d964",
-  "Augur": "0x63533a35279259a5e79a5e0e6a0f4d603c070fba",
-  "LegacyReputationToken": "0x9a3b90e55b251d042cfe0dd7f50fdceaf39ff3d1",
-  "CancelOrder": "0x7535311ef7a1e18d604c2009a33879d260042ff8",
-  "Cash": "0x203e9a0079c9717a6498383f6ffef9326429a19a",
-  "ClaimTradingProceeds": "0xc98e83c7d841e672aec9e83e406c44cf5081361d",
-  "CompleteSets": "0x1fc7ca39a14c6035b3124da6832495226998406a",
-  "CreateOrder": "0xbe8d190311418386fff90883db5400adbdb09676",
-  "FillOrder": "0x742cbc03b146615d41e4e322976ac5b9c7ac7179",
-  "Order": "0x86e2391ec68dbc1a1c23f78b4c685d3db20e37f5",
-  "Orders": "0xf09cfe23cc3900cb925f43e37f2ec0f66bee6fe0",
-  "OrdersFetcher": "0x784d724506220a1a1cf5b5c0b7c70c6c019ac13b",
-  "ShareToken": "0xe7b54f23cac8df87a1276e18ca9eb585eee897d1",
-  "Trade": "0x0436727a523f69247dcadab5856069a91b7c9622",
-  "TradingEscapeHatch": "0x381fd281e379f3f211c749c02867f01ae9a3030f"
+  "Controller": "0x0b60e671a609860fe1d05df3b1c82cf6b586bdcf",
+  "Universe": "0xaa433aed92121e5e3575bcaf296d986b44bceaac",
+  "Augur": "0xf025af974c8207625f85c3eba5aedc931229b317",
+  "LegacyReputationToken": "0x71e69667d24d348f603bf14ab4debcee13c46c73",
+  "CancelOrder": "0x66a4519af94d1f4486c29a37c5dc4229eda8cc05",
+  "Cash": "0xed10a69acfe0a221a1b0ba397b8999f6c138b428",
+  "ClaimTradingProceeds": "0x0198a8711b40fd6c3032b8729ff0762d536bd32b",
+  "CompleteSets": "0x4e2178c4874163e6c1d93001f99739a0f29a867d",
+  "CreateOrder": "0x84ec8c8f6f307373c3ebeb1ff8c86693f9cb5e07",
+  "FillOrder": "0x4445d69ba649d51f057b05987253c744aa0b58b3",
+  "Order": "0xc0b65e1e8b8738767dd2758d03f687fa82b3827f",
+  "Orders": "0x0e7bc765f1c332b0ef1df0a42f4868f32e520341",
+  "OrdersFetcher": "0xfbd76ccdc5263537e10d9c84cc5f5348f2de63d3",
+  "ShareToken": "0x5d8901fe11f64291f260647ecfd1fe2d102cf06c",
+  "Trade": "0x922c1c965299d766d40a59296c7fe2fced04335e",
+  "TradingEscapeHatch": "0xa8c092c3cdf6ae59bebff52e1ba897920196e94d"
  },
  "8995": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
@@ -874,39 +874,39 @@ module.exports={
  },
  "22346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xd11e5db44465e868b8493ac1b5712d2a1b139433",
+  "Universe": "0xcd8569bb29493f01cffc394e050d2533aa5ea824",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "CancelOrder": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
-  "Cash": "0xd1102fbe361acf2c54f572caca4b928350555f40",
-  "ClaimTradingProceeds": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
-  "CompleteSets": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
-  "CreateOrder": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "FillOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "Order": "0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d",
+  "LegacyReputationToken": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
+  "CancelOrder": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "Cash": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
+  "ClaimTradingProceeds": "0x7a8f8e48d4cc990bbd8e088fb027e850486e8e0c",
+  "CompleteSets": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
+  "CreateOrder": "0x0d676967088088546837accf52a72bbd5066ffee",
+  "FillOrder": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
+  "Order": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
   "Orders": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
-  "OrdersFetcher": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "ShareToken": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "Trade": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
-  "TradingEscapeHatch": "0x56d32d583ee21e748103b029fd97621fde92248d"
+  "OrdersFetcher": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "ShareToken": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
+  "Trade": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
+  "TradingEscapeHatch": "0x3a043108953aacf3505503867f8db7c1585577c7"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x6a424c1bd008c82191db24ba1528e60ca92314ca",
+  "Universe": "0x555ceb70339b2635c988527e80fddbf282f20ff7",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
-  "CancelOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
-  "Cash": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "ClaimTradingProceeds": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "CompleteSets": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "CreateOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
-  "FillOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "Order": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "Orders": "0x56d32d583ee21e748103b029fd97621fde92248d",
-  "OrdersFetcher": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "ShareToken": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
-  "Trade": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
-  "TradingEscapeHatch": "0x20c803564770987b8585d585d1c9c857184e1b98"
+  "LegacyReputationToken": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
+  "CancelOrder": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "Cash": "0xb4d7f6747cefbdca11bddd92a16134dc95b0dd9b",
+  "ClaimTradingProceeds": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "CompleteSets": "0x45a2897792afa20b95f7dcaf5c0fb45b84daf439",
+  "CreateOrder": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
+  "FillOrder": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "Order": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
+  "Orders": "0x226630773315af4d01f0492d5cdfc3be0ba98ff5",
+  "OrdersFetcher": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "ShareToken": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "Trade": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
+  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -986,11 +986,11 @@ module.exports.reloadAddresses = function (callback) {
 };
 },{"../utils/read-json-file":146,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":150}],34:[function(require,module,exports){
 module.exports={
- "4": 2024346,
+ "4": 2053344,
  "8995": 0,
  "12346": 113,
- "22346": 10,
- "32346": 10
+ "22346": 9,
+ "32346": 9
 }
 },{}],35:[function(require,module,exports){
 "use strict";
@@ -2066,7 +2066,7 @@ module.exports = getMarketsInCategory;
  * @property {number} outstandingShares Total shares in the market. (Method for calculating this is pending.)
  * @property {REPORTING_STATE|null} reportingState Reporting state name.
  * @property {string} reportingWindow Contract address of the reporting window the market is in, as a hexadecimal string.
- * @property {number} endDate Timestamp when the market event ends, in seconds.
+ * @property {number} endTime Timestamp when the market event ends, in seconds.
  * @property {number|null} finalizationTime Timestamp when the market was finalized (if any), in seconds.
  * @property {string} description Description of the market.
  * @property {string|null} extraInfo Stringified JSON object containing resolutionSource, tags, longDescription, and outcomeNames (for categorical markets).
@@ -4345,7 +4345,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.11.0-1';
+module.exports = '4.11.0-3';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -8506,6 +8506,837 @@ module.exports={
 			],
 			"name": "FundedAccount",
 			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "Mint",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "target",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "Burn",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "owner",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "spender",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "Approval",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": true,
+					"name": "to",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "value",
+					"type": "uint256"
+				}
+			],
+			"name": "Transfer",
+			"type": "event"
+		}
+	],
+	"TestNetReputationToken": [
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "name",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "totalSupply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTotalTheoreticalSupply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "transferFrom",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "decimals",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint8"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_payoutNumerators",
+					"type": "uint256[]"
+				},
+				{
+					"name": "_invalid",
+					"type": "bool"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "migrateOutByPayout",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "faucet",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "ETERNAL_APPROVAL_VALUE",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_subtractedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "decreaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "migrateOut",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "balanceOf",
+			"outputs": [
+				{
+					"name": "balance",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getLegacyRepToken",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getIsMigratingFromLegacy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_holders",
+					"type": "address[]"
+				}
+			],
+			"name": "migrateBalancesFromLegacyRep",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getUniverse",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_source",
+					"type": "address"
+				},
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedFeeWindowTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTotalMigrated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "symbol",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_reporter",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "migrateIn",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "updateParentTotalTheoreticalSupply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "transfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_source",
+					"type": "address"
+				},
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedReportingParticipantTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "controllerLookupName",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_universe",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_spender",
+					"type": "address"
+				},
+				{
+					"name": "_addedValue",
+					"type": "uint256"
+				}
+			],
+			"name": "increaseApproval",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_token",
+					"type": "address"
+				}
+			],
+			"name": "updateSiblingMigrationTotal",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_amountMigrated",
+					"type": "uint256"
+				}
+			],
+			"name": "mintForReportingParticipant",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTypeName",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				},
+				{
+					"name": "_spender",
+					"type": "address"
+				}
+			],
+			"name": "allowance",
+			"outputs": [
+				{
+					"name": "remaining",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_owners",
+					"type": "address[]"
+				},
+				{
+					"name": "_spenders",
+					"type": "address[]"
+				}
+			],
+			"name": "migrateAllowancesFromLegacyRep",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTargetSupply",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getInitialized",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_source",
+					"type": "address"
+				},
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedMarketTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_address",
+					"type": "address"
+				}
+			],
+			"name": "getBalance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_source",
+					"type": "address"
+				},
+				{
+					"name": "_destination",
+					"type": "address"
+				},
+				{
+					"name": "_attotokens",
+					"type": "uint256"
+				}
+			],
+			"name": "trustedUniverseTransfer",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
 		},
 		{
 			"anonymous": false,
@@ -13273,9 +14104,42 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
+			"constant": true,
 			"inputs": [],
-			"name": "migrateFromLegacyReputationToken",
+			"name": "getLegacyRepToken",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getIsMigratingFromLegacy",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_holders",
+					"type": "address[]"
+				}
+			],
+			"name": "migrateBalancesFromLegacyRep",
 			"outputs": [
 				{
 					"name": "",
@@ -13585,6 +14449,43 @@ module.exports={
 			"outputs": [
 				{
 					"name": "remaining",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_owners",
+					"type": "address[]"
+				},
+				{
+					"name": "_spenders",
+					"type": "address[]"
+				}
+			],
+			"name": "migrateAllowancesFromLegacyRep",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getTargetSupply",
+			"outputs": [
+				{
+					"name": "",
 					"type": "uint256"
 				}
 			],
@@ -32088,7 +32989,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/pg/Development/augur/augur.js"
+      "/home/alex/Work/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -32115,7 +33016,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/pg/Development/augur/augur.js",
+  "_where": "/home/alex/Work/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
