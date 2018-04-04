@@ -3,26 +3,26 @@ import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { updateLedgerStatus } from 'modules/auth/actions/update-ledger-status'
 
-export async function onConnectLedgerRequest() {
+export function onConnectLedgerRequest() {
   return (dispatch, getState) => {
     dispatch(updateLedgerStatus(LEDGER_STATES.CONNECT_LEDGER))
   }
 }
 
 
-export async function onOpenEthereumAppRequest() {
+export function onOpenEthereumAppRequest() {
   return (dispatch, getState) => {
     dispatch(updateLedgerStatus(LEDGER_STATES.OPEN_APP))
   }
 }
 
-export async function onSwitchLedgerModeRequest() {
+export function onSwitchLedgerModeRequest() {
   return (dispatch, getState) => {
     dispatch(updateLedgerStatus(LEDGER_STATES.SWITCH_MODE))
   }
 }
 
-export async function onEnableContractSupportRequest() {
+export function onEnableContractSupportRequest() {
   return (dispatch, getState) => {
     dispatch(updateLedgerStatus(LEDGER_STATES.ENABLE_CONTRACT_SUPPORT))
     dispatch(updateModal({

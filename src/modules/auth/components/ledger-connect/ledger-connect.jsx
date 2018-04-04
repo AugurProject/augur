@@ -34,6 +34,10 @@ export default class Ledger extends Component {
 
     this.connectLedger = this.connectLedger.bind(this)
     this.updateDisplayInstructions = this.updateDisplayInstructions.bind(this)
+    this.onConnectLedgerRequestHook = this.onConnectLedgerRequestHook.bind(this)
+    this.onOpenEthereumAppRequestHook = this.onOpenEthereumAppRequestHook.bind(this)
+    this.onSwitchLedgerModeRequestHook = this.onSwitchLedgerModeRequestHook.bind(this)
+    this.onEnableContractSupportRequestHook = this.onEnableContractSupportRequestHook.bind(this)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -43,6 +47,22 @@ export default class Ledger extends Component {
     ) {
       this.updateDisplayInstructions(true)
     }
+  }
+
+  async onConnectLedgerRequestHook() {
+    this.props.onConnectLedgerRequest()
+  }
+
+  async onOpenEthereumAppRequestHook() {
+    this.props.onOpenEthereumAppRequest()
+  }
+
+  async onSwitchLedgerModeRequestHook() {
+    this.props.onSwitchLedgerModeRequest()
+  }
+
+  async onEnableContractSupportRequestHook() {
+    this.props.onEnableContractSupportRequest()
   }
 
   async connectLedger() {
@@ -55,10 +75,10 @@ export default class Ledger extends Component {
     const ledgerEthereum = new LedgerEthereum(
       networkId,
       BrowserLedgerConnectionFactory,
-      this.props.onConnectLedgerRequest,
-      this.props.onOpenEthereumAppRequest,
-      this.props.onSwitchLedgerModeRequest,
-      this.props.onEnableContractSupportRequest,
+      this.onConnectLedgerRequestHook,
+      this.onOpenEthereumAppRequestHook,
+      this.onSwitchLedgerModeRequestHook,
+      this.onEnableContractSupportRequestHook,
     )
 
     const address = await ledgerEthereum.getAddressByBip44Index()

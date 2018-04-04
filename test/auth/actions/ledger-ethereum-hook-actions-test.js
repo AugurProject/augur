@@ -15,13 +15,8 @@ describe('modules/auth/actions/ledger-ethereum-hook-actions.js', () => {
 
   test({
     description: 'should handle a onConnectLedgerRequest action',
-    assertions: async () => {
-      await onConnectLedgerRequest()
-        .then((res) => {
-          store.dispatch(res)
-        })
-        .catch(err => assert.isNull(err))
-
+    assertions: () => {
+      store.dispatch(onConnectLedgerRequest())
       const expected = [{
         type: UPDATE_LEDGER_STATUS,
         data: LEDGER_STATES.CONNECT_LEDGER,
@@ -31,13 +26,8 @@ describe('modules/auth/actions/ledger-ethereum-hook-actions.js', () => {
   })
   test({
     description: 'should handle a onOpenEthereumAppRequest action',
-    assertions: async () => {
-      await onOpenEthereumAppRequest()
-        .then((res) => {
-          store.dispatch(res)
-        })
-        .catch(err => assert.isNull(err))
-
+    assertions: () => {
+      store.dispatch(onOpenEthereumAppRequest())
       const expected = [{
         type: UPDATE_LEDGER_STATUS,
         data: LEDGER_STATES.OPEN_APP,
@@ -47,13 +37,8 @@ describe('modules/auth/actions/ledger-ethereum-hook-actions.js', () => {
   })
   test({
     description: 'should handle a onSwitchLedgerModeRequest action',
-    assertions: async () => {
-      await onSwitchLedgerModeRequest()
-        .then((res) => {
-          store.dispatch(res)
-        })
-        .catch(err => assert.isNull(err))
-
+    assertions: () => {
+      store.dispatch(onSwitchLedgerModeRequest())
       const expected = [{
         type: UPDATE_LEDGER_STATUS,
         data: LEDGER_STATES.SWITCH_MODE,
@@ -63,13 +48,8 @@ describe('modules/auth/actions/ledger-ethereum-hook-actions.js', () => {
   })
   test({
     description: 'should handle a onEnableContractSupportRequest action',
-    assertions: async () => {
-      await onEnableContractSupportRequest()
-        .then((res) => {
-          store.dispatch(res)
-        })
-        .catch(err => assert.isNull(err))
-
+    assertions: () => {
+      store.dispatch(onEnableContractSupportRequest())
       const expected = [
         {
           type: UPDATE_LEDGER_STATUS,
