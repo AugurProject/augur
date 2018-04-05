@@ -78,7 +78,7 @@ describe('portfolio-reports', () => {
     describe('claim-reporting-fees button', () => {
       it('should not be disabled', () => {
         const button = Cmp.find('button')
-        assert.isOk(button.html().includes('disabled') === false)
+        assert.isNotOk(button.html().includes('disabled'))
       })
     })
   })
@@ -112,7 +112,7 @@ describe('portfolio-reports', () => {
     describe('claim-reporting-fees-button', () => {
       it('should not be disabled', () => {
         const button = Cmp.find('button')
-        assert.isOk(button.html().includes('disabled') === false)
+        assert.isNotOk(button.html().includes('disabled'))
       })
     })
   })
@@ -146,7 +146,7 @@ describe('portfolio-reports', () => {
     describe('claim-reporting-fees-button', () => {
       it('should not be disabled', () => {
         const button = Cmp.find('button')
-        assert.isOk(button.html().includes('disabled') === false)
+        assert.isNotOk(button.html().includes('disabled'))
       })
     })
   })
