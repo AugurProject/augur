@@ -8,12 +8,17 @@ import { ZERO } from "../../constants";
 import { groupByAndSum } from "./database";
 
 export interface FeeDetails {
-  unclaimedEth: string;
-  unclaimedRepStaked: string;
-  unclaimedRepEarned: string;
-  claimedEth: string;
-  claimedRepStaked: string;
-  claimedRepEarned: string;
+  total: {
+    unclaimedEth: string;
+    unclaimedRepStaked: string;
+    unclaimedRepEarned: string;
+    claimedEth: string;
+    claimedRepStaked: string;
+    claimedRepEarned: string;
+  };
+  feeWindows: Array<Address>;
+  crowdsourcers: Array<Address>;
+  initialReporters: Array<Address>;
 }
 
 interface FeeWindowTokenRow {
@@ -33,10 +38,12 @@ interface ReporterStakes {
   participationTokens: Array<ParticipationTokensRow>;
   crowdsourcers: Array<CrowdsourcersRow>;
 }
+
 interface ParticipationTokensRow {
   feeWindow: string;
   participationTokens: BigNumber;
 }
+
 interface CrowdsourcersRow {
   feeWindow: string;
   amountStaked: BigNumber;
@@ -55,7 +62,7 @@ function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null,
   if (feeWindow != null) query.where("fee_windows.feeWindow", feeWindow);
   query.asCallback((err, feeWindowTokenRows: Array<FeeWindowTokenRow>) => {
     if (err) return callback(err);
-    callback(null, _.reduce(feeWindowTokenRows, (acc: {[feeWindow: string]: FeeWindowTotalTokens }, feeWindowTokens: FeeWindowTokenRow) => {
+    callback(null, _.reduce(feeWindowTokenRows, (acc: { [feeWindow: string]: FeeWindowTotalTokens }, feeWindowTokens: FeeWindowTokenRow) => {
       acc[feeWindowTokens.feeWindow] = {
         feeWindow: feeWindowTokens.feeWindow,
         totalTokens: (feeWindowTokens.participationTokenStake || ZERO).plus(feeWindowTokens.supply || ZERO),
@@ -92,7 +99,7 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
     const crowdsourcersByFeeWindow = _.keyBy(groupedCrowdsourcers, "feeWindow");
     const participationTokensByFeeWindow = _.keyBy(result.participationTokens, "feeWindow");
     const allFeeWindows = _.union(_.keys(crowdsourcersByFeeWindow), _.keys(participationTokensByFeeWindow));
-    const totalTokensByFeeWindow = _.reduce(allFeeWindows, (acc: {[feeWindow: string]: BigNumber}, feeWindow) => {
+    const totalTokensByFeeWindow = _.reduce(allFeeWindows, (acc: { [feeWindow: string]: BigNumber }, feeWindow) => {
         const crowdsourcerTokens = (crowdsourcersByFeeWindow[feeWindow] && crowdsourcersByFeeWindow[feeWindow].amountStaked) || ZERO;
         const participationTokens = (participationTokensByFeeWindow[feeWindow] && participationTokensByFeeWindow[feeWindow].participationTokens) || ZERO;
         acc[feeWindow] = crowdsourcerTokens.plus(participationTokens);
@@ -122,13 +129,19 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
         acc = acc.plus(feesForThisWindow);
         return acc;
       }, ZERO);
+      const redeemableFeeWindows = _.keys(totalReporterTokensByFeeWindow);
       const response = {
-        unclaimedEth: unclaimedEth.toFixed(),
-        unclaimedRepStaked: "2",
-        unclaimedRepEarned: "3",
-        claimedEth: "4",
-        claimedRepStaked: "5",
-        claimedRepEarned: "6",
+        total: {
+          unclaimedEth: unclaimedEth.toFixed(),
+          unclaimedRepStaked: "2",
+          unclaimedRepEarned: "3",
+          claimedEth: "4",
+          claimedRepStaked: "5",
+          claimedRepEarned: "6",
+        },
+        feeWindows: redeemableFeeWindows,
+        crowdsourcers: [],
+        initialReporters: [],
       };
       callback(null, response);
     });

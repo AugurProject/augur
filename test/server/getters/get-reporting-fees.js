@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getReportingFees } = require("../../../build/server/getters/get-reporting-fees");
+const {getReportingFees} = require("../../../build/server/getters/get-reporting-fees");
 
 
 describe("server/getters/get-reporting-fees", () => {
@@ -37,14 +37,25 @@ describe("server/getters/get-reporting-fees", () => {
     },
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
-      assert.deepEqual(marketsMatched, {
-        "unclaimedEth": "107.87878787878787879",
-        "unclaimedRepStaked": "2",
-        "unclaimedRepEarned": "3",
-        "claimedEth": "4",
-        "claimedRepStaked": "5",
-        "claimedRepEarned": "6",
-      });
+      assert.deepEqual(marketsMatched,
+        {
+          total: {
+            "unclaimedEth": "107.87878787878787879",
+            "unclaimedRepStaked": "2",
+            "unclaimedRepEarned": "3",
+            "claimedEth": "4",
+            "claimedRepStaked": "5",
+            "claimedRepEarned": "6",
+          },
+          crowdsourcers: [],
+          feeWindows: [
+            "0x1000000000000000000000000000000000000000",
+            "0x3000000000000000000000000000000000000000",
+            "0x2000000000000000000000000000000000000000",
+          ],
+          initialReporters: [],
+        },
+      );
     },
   });
   test({
@@ -68,12 +79,21 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
-        "unclaimedEth": "0",
-        "unclaimedRepStaked": "2",
-        "unclaimedRepEarned": "3",
-        "claimedEth": "4",
-        "claimedRepStaked": "5",
-        "claimedRepEarned": "6",
+        total: {
+          "unclaimedEth": "0",
+          "unclaimedRepStaked": "2",
+          "unclaimedRepEarned": "3",
+          "claimedEth": "4",
+          "claimedRepStaked": "5",
+          "claimedRepEarned": "6",
+        },
+        crowdsourcers: [],
+        feeWindows: [
+          "0x1000000000000000000000000000000000000000",
+          "0x3000000000000000000000000000000000000000",
+          "0x2000000000000000000000000000000000000000",
+        ],
+        initialReporters: [],
       });
     },
   });
@@ -98,12 +118,17 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
-        "unclaimedEth": "0",
-        "unclaimedRepStaked": "2",
-        "unclaimedRepEarned": "3",
-        "claimedEth": "4",
-        "claimedRepStaked": "5",
-        "claimedRepEarned": "6",
+        total: {
+          "unclaimedEth": "0",
+          "unclaimedRepStaked": "2",
+          "unclaimedRepEarned": "3",
+          "claimedEth": "4",
+          "claimedRepStaked": "5",
+          "claimedRepEarned": "6",
+        },
+        crowdsourcers: [],
+        feeWindows: [],
+        initialReporters: [],
       });
     },
   });
@@ -128,12 +153,19 @@ describe("server/getters/get-reporting-fees", () => {
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
-        "unclaimedEth": "53.33333333333333333",
-        "unclaimedRepStaked": "2",
-        "unclaimedRepEarned": "3",
-        "claimedEth": "4",
-        "claimedRepStaked": "5",
-        "claimedRepEarned": "6",
+        total: {
+          "unclaimedEth": "53.33333333333333333",
+          "unclaimedRepStaked": "2",
+          "unclaimedRepEarned": "3",
+          "claimedEth": "4",
+          "claimedRepStaked": "5",
+          "claimedRepEarned": "6",
+        },
+        crowdsourcers: [],
+        feeWindows: [
+          "0x1000000000000000000000000000000000000000",
+        ],
+        initialReporters: [],
       });
     },
   });
