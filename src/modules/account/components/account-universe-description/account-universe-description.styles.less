@@ -7,6 +7,7 @@
     color: @color-purple;
     font-weight: bold;
     text-transform: uppercase;
+    text-overflow: ellipsis;
   }
 }
 
@@ -43,4 +44,16 @@
 
 .AccountUniversesDescription__button {
   &:extend(.button--purple all);
+}
+
+.AccountUniversesDescription__current_universe_button {
+  &:extend(.button--white--short all);
+
+  border: 1px solid @color-darkpurple;
+
+  color: @color-darkpurple;
+  
+  &:disabled {
+    color: @color-darkpurple;
+  }
 }

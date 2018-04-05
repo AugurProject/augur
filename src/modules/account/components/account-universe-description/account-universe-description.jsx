@@ -14,8 +14,11 @@ const AccountUniverseDescription = p => (
           <div className={Styles.AccountUniverseDescription__winning_universe}>Winning Universe</div>
         }
       </div>
-      {!p.hideSwitchButton &&
+      {!p.isCurrentUniverse &&
         <button className={Styles.AccountUniversesDescription__button}>Switch Universe</button>
+      }
+      {p.isCurrentUniverse &&
+        <button disabled className={Styles.AccountUniversesDescription__current_universe_button}>Current Universe</button>
       }
     </div>
     <div className={Styles.AccountUniverseDescription__description}>
@@ -30,10 +33,10 @@ AccountUniverseDescription.propTypes = {
   switchUniverse: PropTypes.func.isRequired,
   accountRep: PropTypes.string.isRequired,
   universeRep: PropTypes.string.isRequired,
-  numMarkets: PropTypes.string.isRequired,
+  numMarkets: PropTypes.number.isRequired,
   isWinningUniverse: PropTypes.bool.isRequired,
+  isCurrentUniverse: PropTypes.bool.isRequired,
   universeDescription: PropTypes.string.isRequired,
-  hideSwitchButton: PropTypes.bool,
 }
 
 export default AccountUniverseDescription

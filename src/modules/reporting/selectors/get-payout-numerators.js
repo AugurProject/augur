@@ -27,5 +27,6 @@ export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
     payoutNumerators[selectedOutcome] = numTicks
   }
 
+  console.log("PAYOUT NUMERATORS: ", payoutNumerators);
   return payoutNumerators
 }

@@ -11,6 +11,7 @@ export default class AccountUniverses extends Component {
     universe: PropTypes.string.isRequired,
     getUniverses: PropTypes.func.isRequired,
     switchUniverse: PropTypes.func.isRequired,
+    winningChild: PropTypes.string,
   }
 
   constructor(props) {
@@ -38,6 +39,13 @@ export default class AccountUniverses extends Component {
 
   render() {
     const p = this.props;
+    const s = this.state;
+
+    const parentUniverse = s.universesInfo.parentUniverse
+    const currentLevel = s.universesInfo.currentLevel
+    const children = s.universesInfo.children
+
+    console.log("UNIVERSES INFO: ", s.universesInfo)
 
     return (
       <section className={Styles.AccountUniverses}>
@@ -45,56 +53,54 @@ export default class AccountUniverses extends Component {
           <h1>Universes</h1>
         </div>
         <div className={Styles.AccountUniverses__main}>
+        {parentUniverse && 
           <div className={Styles.AccountUniverses__description}>
             <h4>Parent Universe</h4>
             <AccountUniverseDescription
               switchUniverse={p.switchUniverse}
-              hideSwitchButton
-              universeDescription="Universe A"
-              accountRep="500"
-              universeRep="250,000"
-              numMarkets="425"
-              isWinningUniverse
+              isCurrentUniverse={false}
+              universeDescription={parentUniverse.description || "NO DESC"}
+              accountRep={parentUniverse.balance}
+              universeRep={parentUniverse.supply}
+              numMarkets={parentUniverse.numMarkets}
+              isWinningUniverse={false}
             />
           </div>
+        }
+        {currentLevel && currentLevel.length > 0 &&
           <div className={Styles.AccountUniverses__description}>
             <h4>Current and Sibling Universes</h4>
-            <AccountUniverseDescription
-              switchUniverse={p.switchUniverse}
-              universeDescription="Universe B"
-              accountRep="60"
-              universeRep="50,000"
-              numMarkets="525"
-              isWinningUniverse={false}
-            />
-            <AccountUniverseDescription
-              switchUniverse={p.switchUniverse}
-              universeDescription="Universe C"
-              accountRep="0"
-              universeRep="0"
-              numMarkets="0"
-              isWinningUniverse={false}
-            />
+            {currentLevel.map((universeInfo) => (
+              <AccountUniverseDescription
+                switchUniverse={p.switchUniverse}
+                isCurrentUniverse={universeInfo.universe === p.universe}
+                universeDescription={universeInfo.description || "NO DESC"}
+                accountRep={universeInfo.balance}
+                universeRep={universeInfo.supply}
+                numMarkets={universeInfo.numMarkets}
+                isWinningUniverse={universeInfo.isWinningUniverse}
+                key={universeInfo.universe}
+              />
+            ))}
           </div>
+        }
+        {children && children.length > 0 &&
           <div className={Styles.AccountUniverses__description}>
             <h4>Child Universes</h4>
-            <AccountUniverseDescription
-              switchUniverse={p.switchUniverse}
-              universeDescription="Universe B"
-              accountRep="60"
-              universeRep="50,000"
-              numMarkets="525"
-              isWinningUniverse={false}
-            />
-            <AccountUniverseDescription
-              switchUniverse={p.switchUniverse}
-              universeDescription="Universe C"
-              accountRep="0"
-              universeRep="0"
-              numMarkets="0"
-              isWinningUniverse={false}
-            />
+            {children.map((universeInfo) => (
+              <AccountUniverseDescription
+                switchUniverse={p.switchUniverse}
+                isCurrentUniverse={false}
+                universeDescription={universeInfo.description || "NO DESC"}
+                accountRep={universeInfo.balance}
+                universeRep={universeInfo.supply}
+                numMarkets={universeInfo.numMarkets}
+                isWinningUniverse={universeInfo.universe === p.winningChild}
+                key={universeInfo.universe}
+              />
+            ))}
           </div>
+        }
         </div>
       </section>
     )
