@@ -32,13 +32,13 @@ describe('portfolio-reports', () => {
 
     describe('ETH total', () => {
       it('should display as \'-\'', () => {
-        assert.isOk(Cmp.html().includes('<span>ETH</span><span>-</span>'))
+        assert.include(Cmp.html(), '<span>ETH</span><span>-</span>')
       })
     })
 
     describe('REP total', () => {
       it('should display as \'-\'', () => {
-        assert.isOk(Cmp.html().includes('<span>REP</span><span>-</span>'))
+        assert.include(Cmp.html(), '<span>REP</span><span>-</span>')
       })
     })
 
@@ -65,13 +65,13 @@ describe('portfolio-reports', () => {
 
     describe('ETH total', () => {
       it('should display as a value greater than 0', () => {
-        assert.isOk(Cmp.html().includes('<span>ETH</span><span>0.1230</span>'))
+        assert.include(Cmp.html(), '<span>ETH</span><span>0.1230</span>')
       })
     })
 
     describe('REP total', () => {
       it('should display as \'-\'', () => {
-        assert.isOk(Cmp.html().includes('<span>REP</span><span>-</span>'))
+        assert.include(Cmp.html(), '<span>REP</span><span>-</span>')
       })
     })
 
@@ -98,14 +98,14 @@ describe('portfolio-reports', () => {
 
     describe('ETH total', () => {
       it('should display as \'-\'', () => {
-        assert.isOk(Cmp.html().includes('<span>ETH</span><span>-</span>'))
+        assert.include(Cmp.html(), '<span>ETH</span><span>-</span>')
       })
     })
 
     describe('REP total', () => {
       it('should display value greater than 0', () => {
         console.log(Cmp.html())
-        assert.isOk(Cmp.html().includes('<span>REP</span><span>2.0000</span>'))
+        assert.include(Cmp.html(), '<span>REP</span><span>2.0000</span>')
       })
     })
 
@@ -132,14 +132,14 @@ describe('portfolio-reports', () => {
 
     describe('ETH total', () => {
       it('should display value greater than 0', () => {
-        assert.isOk(Cmp.html().includes('<span>ETH</span><span>0.1230</span>'))
+        assert.include(Cmp.html(), '<span>ETH</span><span>0.1230</span>')
       })
     })
 
     describe('REP total', () => {
       it('should display value greater than 0', () => {
         console.log(Cmp.html())
-        assert.isOk(Cmp.html().includes('<span>REP</span><span>2.0000</span>'))
+        assert.include(Cmp.html(), '<span>REP</span><span>2.0000</span>')
       })
     })
 
