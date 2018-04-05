@@ -49,7 +49,7 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       // expirySourceType: false,
-      date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp * 1000) : null,
+      date: Object.keys(this.props.newMarket.endTime).length ? moment(this.props.newMarket.endTime.timestamp * 1000) : null,
       focused: false,
       hours: Array.from(new Array(12), (val, index) => index + 1),
       minutes: [...Array.from(Array(9).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
@@ -221,7 +221,7 @@ export default class CreateMarketResolution extends Component {
           <SingleDatePicker
             id="cm__input--date"
             date={this.state.date}
-            onDateChange={(date) => { this.setState({ date }); validateField('endDate', formatDate(date.toDate())) }}
+            onDateChange={(date) => { this.setState({ date }); validateField('endTime', formatDate(date.toDate())) }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"

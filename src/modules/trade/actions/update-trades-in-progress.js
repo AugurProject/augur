@@ -14,9 +14,7 @@ export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
 export function updateTradesInProgress(marketId, outcomeId, side, numShares, limitPrice, maxCost, callback = logError) {
   return (dispatch, getState) => {
-    const {
-      tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation,
-    } = getState()
+    const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState()
     const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketId] && tradesInProgress[marketId][outcomeId]) || {}
     const market = marketsData[marketId]
     // if nothing changed, exit

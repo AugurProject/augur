@@ -87,8 +87,8 @@ export default class MarketPortfolioCard extends Component {
           >
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles['MarketCard__expiration--mobile']}>
-                {dateHasPassed(market.endDate.timestamp) ? 'Expired ' : 'Expires '}
-                { isMobile ? market.endDate.formattedShort : market.endDate.formatted }
+                {dateHasPassed(market.endTime.timestamp) ? 'Expired ' : 'Expires '}
+                { isMobile ? market.endTime.formattedShort : market.endTime.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
                 <MarketLink
@@ -138,10 +138,10 @@ export default class MarketPortfolioCard extends Component {
             </div>
             <span className={Styles.MarketCard__expiration}>
               <span className={Styles.MarketCard__expirationlabel}>
-                {market.endDateLabel}
+                {market.endTimeLabel}
               </span>
               <span className={Styles.MarketCard__expirationvalue}>
-                {getValue(market, 'endDate.formatted')}
+                {getValue(market, 'endTime.formatted')}
               </span>
             </span>
           </div>

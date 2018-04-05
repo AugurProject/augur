@@ -6,6 +6,7 @@ import isMobile from 'modules/app/reducers/is-mobile'
 import isMobileSmall from 'modules/app/reducers/is-mobile-small'
 import loginAccount from 'modules/auth/reducers/login-account'
 import isLogged from 'modules/auth/reducers/is-logged'
+import ledgerStatus from 'modules/auth/reducers/ledger-status'
 import newMarket from 'modules/create-market/reducers/new-market'
 import marketsData from 'modules/markets/reducers/markets-data'
 import marketLoading from 'modules/market/reducers/market-loading'
@@ -54,6 +55,7 @@ export function createReducer() {
     isMobileSmall,
     loginAccount,
     isLogged,
+    ledgerStatus,
     newMarket,
     marketsData,
     marketLoading,

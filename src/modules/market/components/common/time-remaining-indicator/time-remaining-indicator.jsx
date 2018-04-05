@@ -9,12 +9,12 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   const TimeRemainingIndicator = (props) => {
     const {
       startDate,
-      endDate,
+      endTime,
       currentTimestamp,
       ...otherProps
     } = props
 
-    const duration = endDate.getTime() - startDate.getTime()
+    const duration = endTime.getTime() - startDate.getTime()
     // Render null if given invalid input
     if (duration < 0) {
       return null
@@ -32,7 +32,7 @@ export default function TimeRemainingIndicatorWrapper(BaseCmp) {
   }
 
   TimeRemainingIndicator.propTypes = {
-    endDate: PropTypes.instanceOf(Date).isRequired,
+    endTime: PropTypes.instanceOf(Date).isRequired,
     startDate: PropTypes.instanceOf(Date).isRequired,
     currentTimestamp: PropTypes.number.isRequired,
   }

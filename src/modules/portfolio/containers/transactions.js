@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadAccountHistoryTransactions: (beginDate, endDate) => dispatch(loadAccountHistory(beginDate, endDate)),
+  loadAccountHistoryTransactions: (beginTime, endTime) => dispatch(loadAccountHistory(beginTime, endTime)),
 })
 
 const Transactions = withRouter(connect(mapStateToProps, mapDispatchToProps)(TransactionsList))

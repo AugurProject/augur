@@ -23,7 +23,7 @@ export function submitNewMarket(newMarket, history) {
     // General Properties
     const formattedNewMarket = {
       universe: universe.id,
-      _endTime: parseInt(newMarket.endDate.timestamp, 10),
+      _endTime: parseInt(newMarket.endTime.timestamp, 10),
       _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
       _denominationToken: contractAddresses.Cash,
       _description: newMarket.description,

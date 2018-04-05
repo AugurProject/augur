@@ -34,7 +34,7 @@ export const SELECT_SORT_OPTIONS = [
   },
   {
     label: 'Expiration',
-    value: 'endDate',
+    value: 'endTime',
   },
   {
     label: 'Settlement Fee',

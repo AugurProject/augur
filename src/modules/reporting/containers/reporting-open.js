@@ -60,7 +60,7 @@ const markets = [
       'Bitcoin',
       'Ethereum',
     ],
-    endDate: {
+    endTime: {
       value: '2018-12-30T08:00:00.000Z',
       formatted: 'Dec 30, 2018 8:00 AM',
       formattedLocal: 'Dec 30, 2018 12:00 AM (UTC -8)',
@@ -214,7 +214,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -321,7 +321,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -474,7 +474,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -581,7 +581,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -734,7 +734,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -841,7 +841,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -994,7 +994,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -1101,7 +1101,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -1254,7 +1254,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -1361,7 +1361,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -1514,7 +1514,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -1621,7 +1621,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -1774,7 +1774,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -1881,7 +1881,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -2034,7 +2034,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -2141,7 +2141,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -2294,7 +2294,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -2401,7 +2401,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -2554,7 +2554,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {
@@ -2661,7 +2661,7 @@ const markets = [
       'MLB Baseball',
       'Baseball',
     ],
-    endDate: {
+    endTime: {
       value: '2017-11-05T07:00:00.000Z',
       formatted: 'Nov 5, 2017 7:00 AM',
       formattedLocal: 'Nov 5, 2017 12:00 AM (UTC -7)',
@@ -2814,7 +2814,7 @@ const markets = [
     isCategorical: false,
     isScalar: false,
     isMarketLoading: false,
-    endDateLabel: 'ends',
+    endTimeLabel: 'ends',
     isOpen: true,
     isFavorite: false,
     takerFeePercent: {

@@ -5,10 +5,14 @@ import classNames from 'classnames'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
+import { isEqual, isEmpty } from 'lodash'
+
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
+import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
+    sharedChartMargins: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
@@ -31,21 +35,34 @@ export default class MarketOutcomeOrderbook extends Component {
     this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
   }
 
+  componentDidUpdate(prevProps) {
+    const { orderBook } = this.props
+    if (
+      isEmpty(prevProps.orderBook.asks) &&
+      !isEqual(prevProps.orderBook.asks, orderBook.asks)
+    ) {
+      this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
+    }
+  }
+
   render() {
     const {
       fixedPrecision,
-      marketMidpoint,
       orderBook,
+      sharedChartMargins,
       updateHoveredPrice,
       updateSeletedOrderProperties,
     } = this.props
     const s = this.state
 
     return (
-      <section className={Styles.MarketOutcomeOrderBook}>
+      <section
+        className={Styles.MarketOutcomeOrderBook}
+        style={{ paddingBottom: sharedChartMargins.bottom }}
+      >
         <div
           ref={(asks) => { this.asks = asks }}
-          className={Styles.MarketOutcomeOrderBook__Side}
+          className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
         >
           {(orderBook.asks || []).map((order, i) => (
             <div
@@ -107,13 +124,8 @@ export default class MarketOutcomeOrderbook extends Component {
             </div>
           ))}
         </div>
-        <span className={Styles.MarketOutcomeOrderBook__Midmarket}>
-          {marketMidpoint === null ?
-            'No Orders' :
-            `${marketMidpoint.toFixed(fixedPrecision).toString()} ETH`
-          }
-        </span>
-        <div className={Styles.MarketOutcomeOrderBook__Side} >
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
+        <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
           {(orderBook.bids || []).map((order, i) => (
             <div
               key={order.cumulativeShares}
@@ -173,6 +185,23 @@ export default class MarketOutcomeOrderbook extends Component {
               </button>
             </div>
           ))}
+        </div>
+        <div className={classNames(StylesHeader.MarketOutcomeChartsHeader__stats, Styles.MarketOutcomeOrderBook__stats)}>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              bid qty
+            </span>
+          </div>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              price
+            </span>
+          </div>
+          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
+            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+              depth
+            </span>
+          </div>
         </div>
       </section>
     )
