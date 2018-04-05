@@ -43,8 +43,8 @@ describe('reporting-report-markets', () => {
       })
     })
 
-    describe('when items array is sorted', () => {
-      it('should render markets in ascending order (timestamp)', () => {
+    describe('when items array is already sorted', () => {
+      it('should render markets in given order (timestamp)', () => {
         const items = [{
           id: 1,
           endTime: { timestamp: 5 },
@@ -59,7 +59,7 @@ describe('reporting-report-markets', () => {
         cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
         const sections = cmp.find(ConnectedMarketPreview)
         const result = sections.map(x => x.props().id)
-        assert.deepEqual([2, 3, 1], result)
+        assert.deepEqual([1, 2, 3], result)
       })
     })
 

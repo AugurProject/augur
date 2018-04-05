@@ -4,20 +4,12 @@ import logError from 'utils/log-error'
 
 const loadBidsAsks = (marketId, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
-  if (marketId == null) {
-    return callback(`must specify market ID: ${marketId}`)
-  }
+  if (marketId == null) return callback(`must specify market ID: ${marketId}`)
   const market = marketsData[marketId]
-  if (!market) {
-    return callback(`market ${marketId} data not found`)
-  }
-  if (market.numOutcomes == null) {
-    return callback(`market ${marketId} numOutcomes not found`)
-  }
-  const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i + 1)
-  async.eachSeries(outcomes, (outcome, nextOutcome) => {
-    dispatch(loadOneOutcomeBidsAsks(marketId, outcome, nextOutcome))
-  }, callback)
+  if (!market) return callback(`market ${marketId} data not found`)
+  if (market.numOutcomes == null) return callback(`market ${marketId} numOutcomes not found`)
+  const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i)
+  async.eachSeries(outcomes, (outcome, nextOutcome) => dispatch(loadOneOutcomeBidsAsks(marketId, outcome, nextOutcome)), callback)
 }
 
 export default loadBidsAsks
