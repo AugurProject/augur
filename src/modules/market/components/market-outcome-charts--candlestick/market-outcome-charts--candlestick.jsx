@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import CustomPropTypes from 'utils/custom-prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
@@ -21,8 +22,8 @@ export default class MarketOutcomeCandlestick extends Component {
     currentTimestamp: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
+    marketMin: CustomPropTypes.bigNumber,
+    marketMax: CustomPropTypes.bigNumber,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredPeriod: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,

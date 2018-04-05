@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import CustomPropTypes from 'utils/custom-prop-types'
+
 import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header'
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
@@ -11,8 +13,8 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    minPrice: PropTypes.number.isRequired,
-    maxPrice: PropTypes.number.isRequired,
+    minPrice: CustomPropTypes.bigNumber, /* required */
+    maxPrice: CustomPropTypes.bigNumber, /* required */
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
