@@ -69,7 +69,7 @@ const testState = {
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket',
       description: 'some test description',
-      endDate: 123,
+      endTime: 123,
       minPrice: 1,
       maxPrice: 2,
       volume: 500,
@@ -92,7 +92,7 @@ const testState = {
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket2',
       description: 'some test description',
-      endDate: 123,
+      endTime: 123,
       minPrice: 1,
       maxPrice: 2,
       marketType: 'binary',
@@ -308,7 +308,7 @@ const testState = {
       id: '0xMARKET1',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-1',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {
@@ -357,7 +357,7 @@ const testState = {
       id: '0xMARKET2',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-2',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {

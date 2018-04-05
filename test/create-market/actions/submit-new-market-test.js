@@ -38,7 +38,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -119,7 +119,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -192,7 +192,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -273,7 +273,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -344,7 +344,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -405,7 +405,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -461,7 +461,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',
@@ -699,7 +699,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       },
       newMarket: {
         description: 'test description',
-        endDate: {
+        endTime: {
           timestamp: 1234567890000,
         },
         expirySource: '',

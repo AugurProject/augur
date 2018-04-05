@@ -18,7 +18,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.PRE_REPORTING,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, marketIds) => {
@@ -36,7 +36,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, marketIds) => {
@@ -54,7 +54,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, marketIds) => {
@@ -72,7 +72,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.FINALIZED,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, marketIds) => {

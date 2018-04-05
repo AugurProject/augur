@@ -23,13 +23,13 @@ const MarketBasics = (p) => {
   let ReportEndingIndicator = () => null
   if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING || p.reportingState === constants.REPORTING_STATE.OPEN_REPORTING) && !p.hideReportEndingIndicator) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
-    const endDate = moment(p.endDate.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
-    const displayDate = formatDate(endDate)
+    const endTime = moment(p.endTime.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
+    const displayDate = formatDate(endTime)
 
     ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
         <div>Reporting Ends {displayDate.formattedShort}</div>
-        <WrappedGraph startDate={p.endDate.value} endDate={endDate} currentTimestamp={p.currentTimestamp} />
+        <WrappedGraph startDate={p.endTime.value} endTime={endTime} currentTimestamp={p.currentTimestamp} />
       </div>
     )
   }
