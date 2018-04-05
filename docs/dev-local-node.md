@@ -15,7 +15,9 @@ You'll need to clone the following repositories prior to starting:
 * node and npm installed
 * yarn installed
 
-Already know all this, go to the non-linking version [quick start](./dev-local-non-linking.md)
+If you know the versions of augur-node and augur ui use the same version of augur.js, then you can use the non-linking version [quick start](./dev-local-non-linking.md)
+
+If you are making changes to augur.js and want to link in augur-node and augur-ui then use the following method below.
 
 ## Running Ethereum Local Node
 

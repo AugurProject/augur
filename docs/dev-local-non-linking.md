@@ -15,9 +15,9 @@ You'll need to clone the following repositories prior to starting:
 
 The populated docker image, already has contracts deployed with canned data. It's version is determined by the augur-core version being referenced by augur.js. Since this is the non-linking version we are relying on augur-node and augur ui referencing the same version of augur.js. To confirm this look in package.json for each project. 
 
-This command will give you the version of augur.js 
+Make sure this command's result is the same version in augur-node and augur UI. 
 
-    //TODO: add command/script 
+    npm explore augur.js -- npm run core:version
 
 ### augur-node
 
@@ -29,6 +29,9 @@ Here are the commands to get docker running and augur-node connected.
     # start populated docker image in the background
     npm explore augur.js -- npm run docker:geth:pop
 
+    # sanity check
+    npm explorer augur.js -- npm run core:version
+
     # quick commmand to clean augur-node env and build and start
     npm run clean-start
 
@@ -38,6 +41,9 @@ Link augur.js:
 
     cd augur
     npm install
+
+    # sanity check
+    npm explore augur.js -- npm run core:version
 
     #Start the augur development server:
     yarn dev
