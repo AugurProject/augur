@@ -116,4 +116,38 @@ describe('portfolio-reports', () => {
       })
     })
   })
+
+  describe('When there claimable ETH fees and REP fees', () => {
+    beforeEach(() => {
+      loadClaimableFeesStub.returns({
+        unclaimedEth: '0.123',
+        unclaimedRepStaked: '2000000000000000000',
+        unclaimedRepEarned: '1000000000000000000',
+        claimedEth: '0.0156',
+        claimedRepStaked: '0.111',
+        claimedRepEarned: '0.123',
+      })
+      Cmp = shallow(<PortfolioReports loadClaimableFees={loadClaimableFeesStub} updateModal={updateModal} />)
+    })
+
+    describe('ETH total', () => {
+      it('should display value greater than 0', () => {
+        assert.isOk(Cmp.html().includes('<span>ETH</span><span>0.1230</span>'))
+      })
+    })
+
+    describe('REP total', () => {
+      it('should display value greater than 0', () => {
+        console.log(Cmp.html())
+        assert.isOk(Cmp.html().includes('<span>REP</span><span>2.0000</span>'))
+      })
+    })
+
+    describe('claim-reporting-fees-button', () => {
+      it('should not be disabled', () => {
+        const button = Cmp.find('button')
+        assert.isOk(button.html().includes('disabled') === false)
+      })
+    })
+  })
 })
