@@ -110,6 +110,7 @@ export default class CreateMarketOutcome extends Component {
     updatedMarket.validations[newMarket.currentStep] = updatedValidations
     updatedMarket.type = value
     updatedMarket.isValid = isValid(newMarket.currentStep)
+    updatedMarket.orderBook = {}
 
     updateNewMarket(updatedMarket)
   }
@@ -285,9 +286,10 @@ export default class CreateMarketOutcome extends Component {
                 const tooMany = cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM
                 const highlightInput = isDuplicate || needMinimum || tooMany
                 return (
-                  <div>
+                  <div
+                    key={i}
+                  >
                     <input
-                      key={i}
                       type="text"
                       className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: highlightInput })}
                       value={newMarket.outcomes[i]}

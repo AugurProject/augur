@@ -11,6 +11,7 @@ import { MARKETS } from 'modules/routes/constants/views'
 
 export default class Positions extends Component {
   static propTypes = {
+    currentTimestamp: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     openPositionMarkets: PropTypes.array.isRequired,
@@ -34,6 +35,7 @@ export default class Positions extends Component {
       claimTradingProceeds,
       closePositionStatus,
       closedMarkets,
+      currentTimestamp,
       history,
       isMobile,
       location,
@@ -54,6 +56,7 @@ export default class Positions extends Component {
             closePositionStatus={closePositionStatus}
             location={location}
             history={history}
+            currentTimestamp={currentTimestamp}
             isMobile={isMobile}
           />
           <PositionsMarketsList
@@ -64,6 +67,7 @@ export default class Positions extends Component {
             history={history}
             linkType={TYPE_DISPUTE}
             positionsDefault={false}
+            currentTimestamp={currentTimestamp}
             isMobile={isMobile}
           />
           <PositionsMarketsList
@@ -74,6 +78,7 @@ export default class Positions extends Component {
             history={history}
             positionsDefault={false}
             linkType={TYPE_CLAIM_PROCEEDS}
+            currentTimestamp={currentTimestamp}
             claimTradingProceeds={claimTradingProceeds}
             isMobile={isMobile}
           />

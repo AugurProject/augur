@@ -75,10 +75,6 @@ describe('modules/account/selectors/core-stats', () => {
   })
 
   describe('createPeriodPLSelector', function () { // eslint-disable-line func-names, prefer-arrow-callback
-    after(() => {
-      this.clock.restore()
-    })
-
     test({
       description: `should return null when 'accountTrades' is undefined`,
       assertions: () => {
@@ -112,8 +108,6 @@ describe('modules/account/selectors/core-stats', () => {
     test({
       description: `should return 0 for a set period with no trades`,
       assertions: () => {
-        this.clock = sinon.useFakeTimers(1485907200000)
-
         const accountTrades = {
           '0xMarketID1': {
             1: [
@@ -156,8 +150,6 @@ describe('modules/account/selectors/core-stats', () => {
     test({
       description: `should return the expected value for a set period with trades`,
       assertions: () => {
-        this.clock = sinon.useFakeTimers(1485907200000)
-
         const accountTrades = {
           '0xMarketID1': {
             1: [

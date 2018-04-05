@@ -5,7 +5,6 @@ import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { formatEther } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
 import logError from 'utils/log-error'
-import { createBigNumber } from 'utils/create-big-number'
 
 export const constructBasicTransaction = (eventName, hash, blockNumber, timestamp, message, description, gasFees = 0, status = SUCCESS) => {
   const transaction = { hash, status, data: {} }
@@ -14,8 +13,7 @@ export const constructBasicTransaction = (eventName, hash, blockNumber, timestam
   if (message) transaction.message = message
   transaction.description = description || ''
   if (gasFees) transaction.gasFees = formatEther(gasFees)
-  const timestampMilliseconds = timestamp != null ? createBigNumber(timestamp, 10).times(1000).toNumber() : Date.now()
-  transaction.timestamp = formatDate(new Date(timestampMilliseconds))
+  transaction.timestamp = formatDate(timestamp)
   return transaction
 }
 

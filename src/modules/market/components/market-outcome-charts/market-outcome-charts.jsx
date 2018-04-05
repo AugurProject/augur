@@ -13,17 +13,19 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    priceTimeSeries: PropTypes.array.isRequired,
     minPrice: CustomPropTypes.bigNumber, /* required */
     maxPrice: CustomPropTypes.bigNumber, /* required */
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
-    currentBlock: PropTypes.number.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
-    hasPriceHistory: PropTypes.bool.isRequired,
+    hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
+    priceTimeSeries: PropTypes.array,
+    excludeCandlestick: PropTypes.bool,
+    currentBlock: PropTypes.number,
   }
 
   constructor(props) {
@@ -111,6 +113,7 @@ export default class MarketOutcomeCharts extends Component {
   render() {
     const {
       currentBlock,
+      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,
@@ -121,12 +124,14 @@ export default class MarketOutcomeCharts extends Component {
       priceTimeSeries,
       selectedOutcome,
       updateSeletedOrderProperties,
+      excludeCandlestick,
     } = this.props
     const s = this.state
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
+          excludeCandlestick={excludeCandlestick}
           priceTimeSeries={priceTimeSeries}
           selectedOutcome={selectedOutcome}
           hoveredPeriod={s.hoveredPeriod}
@@ -144,6 +149,7 @@ export default class MarketOutcomeCharts extends Component {
               sharedChartMargins={s.sharedChartMargins}
               priceTimeSeries={priceTimeSeries}
               currentBlock={currentBlock}
+              currentTimestamp={currentTimestamp}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
               orderBookKeys={orderBookKeys}
@@ -187,6 +193,7 @@ export default class MarketOutcomeCharts extends Component {
             </div>
           </div>
           <MarketOutcomeMidpoint
+            excludeCandlestick={excludeCandlestick}
             hasPriceHistory={hasPriceHistory}
             hasOrders={hasOrders}
             chartWidths={s.chartWidths}

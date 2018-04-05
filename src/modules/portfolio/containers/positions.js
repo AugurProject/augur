@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import memoize from 'memoizee'
 
+import { selectCurrentTimestamp } from 'src/select-state'
 import Positions from 'modules/portfolio/components/positions/positions'
-
 import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
 import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
@@ -33,6 +33,7 @@ const mapStateToProps = (state) => {
   })
 
   return {
+    currentTimestamp: selectCurrentTimestamp(state),
     marketsCount,
     openPositionMarkets,
     reportingMarkets,

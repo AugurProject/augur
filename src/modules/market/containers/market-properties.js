@@ -1,12 +1,14 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import { selectCurrentTimestamp } from 'src/select-state'
 import { determineMarketLinkType } from 'modules/market/helpers/determine-market-link-type'
 import MarketProperties from 'modules/market/components/market-properties/market-properties'
 import { selectMarket } from 'modules/market/selectors/market'
 import { updateModal } from 'modules/modal/actions/update-modal'
 
 const mapStateToProps = (state, ownProps) => ({
+  currentTimestamp: selectCurrentTimestamp(state),
   isLogged: state.isLogged,
   isMobile: state.isMobile,
   loginAccount: state.loginAccount,
