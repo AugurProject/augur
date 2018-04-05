@@ -9,8 +9,10 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
 import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
+import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-reporting-fees'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
+import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
 
 import { Close } from 'modules/common/components/icons'
 
@@ -93,6 +95,9 @@ export default class ModalView extends Component {
           {modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...modal} />
           }
+          {modal.type === TYPES.MODAL_NETWORK_CONNECT &&
+            <ModalNetworkConnect />
+          }
           {modal.type === TYPES.MODAL_NETWORK_DISCONNECTED &&
             <ModalNetworkDisconnected {...this.props} />
           }
@@ -101,6 +106,9 @@ export default class ModalView extends Component {
           }
           {modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...this.props} />
+          }
+          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES &&
+            <ModalClaimReportingFees {...modal} />
           }
           {modal.type === TYPES.MODAL_MIGRATE_MARKET &&
             <ModalMigrateMarket
