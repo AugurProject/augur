@@ -19,6 +19,7 @@
     "build": "genversion src/version.js && babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse -d ./node_modules/uuid-parse && babel ./src --source-root ./src -d ./build --copy-files && browserify ./exports.js > ./dist/augur.js && uglifyjs ./dist/augur.js > ./dist/augur.min.js",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist src/version.js package.json package-lock.json",
+    "core:version": "node scripts/core-version.js",
     "dp": "node scripts/dp",
     "upload:aura": "node scripts/dp upload aura",
     "upload:clique": "node scripts/dp upload clique",
@@ -44,12 +45,12 @@
     "release:major": "npm version major && git push && git push --tags && npm publish",
     "docker:build": "scripts/docker/build.sh",
     "docker:build-and-push": "npm run docker:build && scripts/docker/push.sh",
-    "docker:pull": "docker pull augurproject/dev-node-parity:latest && docker pull augurproject/dev-node-geth:latest && docker pull augurproject/dev-pop-geth:core-$(npm view augur-core version) && docker pull augurproject/dev-pop-normtime-geth:latest",
+    "docker:pull": "docker pull augurproject/dev-node-parity:latest && docker pull augurproject/dev-node-geth:latest && docker pull augurproject/dev-pop-geth:core-$(node scripts/core-version.js) && docker pull augurproject/dev-pop-normtime-geth:latest",
     "docker:geth": "docker run -e GETH_VERBOSITY=4 -it -p 8545:8545 -p 8546:8546 -v $HOME/docker:/geth/chain augurproject/dev-node-geth:latest",
     "docker:geth:pop": "scripts/docker/run-background.sh augurproject/dev-pop-geth",
     "docker:geth:pop-normal-time": "scripts/docker/run-background.sh augurproject/dev-pop-normtime-geth",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
-    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(npm view augur-core version)"
+    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)"
   },
   "dependencies": {
     "async": "1.5.2",
