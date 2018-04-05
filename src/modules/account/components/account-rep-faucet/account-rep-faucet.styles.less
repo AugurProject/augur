@@ -1,11 +1,11 @@
 @import (reference) '~assets/styles/shared';
 
-.AccountLegacyRep {
+.AccountRepFaucet {
   background: white;
   padding: 5.5rem 4.625rem 7rem;
 }
 
-.AccountLegacyRep__heading {
+.AccountRepFaucet__heading {
   margin-bottom: 2.5rem;
 
   > h1 {
@@ -20,7 +20,7 @@
   }
 }
 
-.AccountLegacyRep__main {
+.AccountRepFaucet__main {
   display: flex;
   max-width: @max-width;
 
@@ -44,7 +44,7 @@
   }
 }
 
-.AccountLegacyRep__description {
+.AccountRepFaucet__description {
   > a {
     &:extend(.caps--large);
 
@@ -53,20 +53,20 @@
   }
 }
 
-.AccountLegacyRep__button {
+.AccountRepFaucet__button {
   &:extend(.button--purple all);
 }
 
-.AccountLegacyRep__legacyRep {
+.AccountRepFaucet__legacyRep {
   font-weight: bold;
 }
 
 @media @breakpoint-mobile {
-  .AccountLegacyRep {
+  .AccountRepFaucet {
     padding: 3.125rem 2rem;
   }
 
-  .AccountLegacyRep__main {
+  .AccountRepFaucet__main {
     flex-wrap: wrap;
 
     > div:first-child {
@@ -83,7 +83,7 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .AccountLegacyRep__heading {
+  .AccountRepFaucet__heading {
     margin-bottom: 1rem;
 
     > h1 {
@@ -91,7 +91,7 @@
     }
   }
 
-  .AccountLegacyRep__main {
+  .AccountRepFaucet__main {
     display: block;
 
     > div:first-child,
@@ -107,7 +107,7 @@
     }
   }
 
-  .AccountLegacyRep__description {
+  .AccountRepFaucet__description {
     > p {
       font-size: @font-size-normal;
       line-height: @font-size-somewhat-large;
