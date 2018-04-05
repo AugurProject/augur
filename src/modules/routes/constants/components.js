@@ -70,7 +70,7 @@ export const Portfolio = asyncComponent({
 
 export const CreateMarket = asyncComponent({
   moduleName: 'CreateMarket',
-  loader: () => import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
+  loader: () => import(/* webpackChunkName: 'create-market' */ 'modules/create-market/containers/create-market')
     .then(module => module.default),
 })
 
@@ -97,4 +97,3 @@ export const MigrateRep = asyncComponent({
   loader: () => import(/* webpackChunkName: 'report' */ 'modules/forking/containers/migrate-rep')
     .then(module => module.default),
 })
-
