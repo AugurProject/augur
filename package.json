@@ -14,6 +14,7 @@
     "test": "test"
   },
   "scripts": {
+    "go": "scripts/go.sh",
     "start": "node ./build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test",
