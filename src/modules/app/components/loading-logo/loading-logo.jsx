@@ -26,10 +26,12 @@ export default class LoadingLogo extends Component {
     // put in lag so animation can finish
     this.timeouts = setTimeout(() => {
       s.loading = isLoading
-    }, 5000)
+    }, 2500)
 
     return (
-      <div className={s.loading ? Styles.LoadingLogo__AugurLogo : Styles.LoadingLogo__Not__AugurLogo}>
+      <div
+        className={s.loading ? Styles.LoadingLogo__running : Styles.LoadingLogo__paused}
+      >
         <span>{ AugurLoadingLogo }</span>
       </div>
     )

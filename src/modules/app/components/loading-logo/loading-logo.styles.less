@@ -2,80 +2,44 @@
 
 @keyframes drawout-inner {
   0% {
-    stroke-dashoffset: 335;
+    stroke-dashoffset: 455;
   }
 
   49% {
-    stroke-dashoffset: 455;
+    stroke-dashoffset: 335;
   }
 
   51% {
-    stroke-dashoffset: 455;
+    stroke-dashoffset: 335;
   }
 
   100% {
-    stroke-dashoffset: 335;
+    stroke-dashoffset: 455;
   }
 }
 
 @keyframes drawout-inner-inverse {
   0% {
+    stroke-dashoffset: 0;
+  }
+
+  49% {
     stroke-dashoffset: 82;
   }
 
-  49% {
-    stroke-dashoffset: 0;
-  }
-
   51% {
-    stroke-dashoffset: 0;
-  }
-
-  100% {
     stroke-dashoffset: 82;
   }
-}
-
-@keyframes non-drawout-inner {
-  0% {
-    stroke-dashoffset: 455;
-  }
-
-  49% {
-    stroke-dashoffset: 455;
-  }
-
-  51% {
-    stroke-dashoffset: 455;
-  }
-
-  100% {
-    stroke-dashoffset: 455;
-  }
-}
-
-@keyframes non-drawout-inner-inverse {
-  0% {
-    stroke-dashoffset: 0;
-  }
-
-  49% {
-    stroke-dashoffset: 0;
-  }
-
-  51% {
-    stroke-dashoffset: 0;
-  }
 
   100% {
     stroke-dashoffset: 0;
   }
 }
 
-.LoadingLogo__AugurLogo {
+.LoadingLogo__running {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
   margin: 5px;
-  width: 4.25rem;
+  width: 3.75rem;
 
   svg {
     :global {
@@ -128,10 +92,10 @@
   }
 }
 
-.LoadingLogo__Not__AugurLogo {
+.LoadingLogo__paused {
   backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
   margin: 5px;
-  width: 4.25rem;
+  width: 3.75rem;
 
   svg {
     :global {
@@ -147,7 +111,8 @@
 
       .inner-lines {
         :local {
-          animation: non-drawout-inner 2.5s both infinite;
+          animation: drawout-inner 2.5s both paused;
+          animation-direction: alternate;
         }
 
         fill: none;
@@ -162,7 +127,8 @@
 
       .inner-bottom-line {
         :local {
-          animation: non-drawout-inner-inverse 2.5s both infinite;
+          animation: drawout-inner-inverse 2.5s both paused;
+          animation-direction: alternate;
         }
 
         fill: none;
