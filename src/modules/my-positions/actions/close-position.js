@@ -55,8 +55,8 @@ export function getBestFill(orderBook, side, shares, marketId, outcomeId, userAd
   }, []).sort((a, b) => {
     const aBN = createBigNumber(a.fullPrecisionPrice)
     const bBN = createBigNumber(b.fullPrecisionPrice)
-    if (side === BUY) return bBN - aBN
-    return aBN - bBN
+    if (side === BUY) return bBN.minus(aBN)
+    return aBN.minus(bBN)
   }).find((order) => {
     amountOfShares = amountOfShares.plus(createBigNumber(order.fullPrecisionAmount))
     price = createBigNumber(order.fullPrecisionPrice)
