@@ -11,20 +11,22 @@ const MarketOutcomeChartsHeader = p => (
   <section
     className={Styles.MarketOutcomeChartsHeader}
   >
-    <div
-      className={Styles.MarketOutcomeChartsHeader__Candlestick}
-    >
-      <MarketOutcomeChartsHeaderCandlestick
-        volume={p.hoveredPeriod.volume}
-        open={p.hoveredPeriod.open}
-        high={p.hoveredPeriod.high}
-        low={p.hoveredPeriod.low}
-        close={p.hoveredPeriod.close}
-        priceTimeSeries={p.priceTimeSeries}
-        fixedPrecision={p.fixedPrecision}
-        updateSelectedPeriod={p.updateSelectedPeriod}
-      />
-    </div>
+    {p.excludeCandlestick ||
+      <div
+        className={Styles.MarketOutcomeChartsHeader__Candlestick}
+      >
+        <MarketOutcomeChartsHeaderCandlestick
+          volume={p.hoveredPeriod.volume}
+          open={p.hoveredPeriod.open}
+          high={p.hoveredPeriod.high}
+          low={p.hoveredPeriod.low}
+          close={p.hoveredPeriod.close}
+          priceTimeSeries={p.priceTimeSeries}
+          fixedPrecision={p.fixedPrecision}
+          updateSelectedPeriod={p.updateSelectedPeriod}
+        />
+      </div>
+    }
     <div
       className={Styles.MarketOutcomeChartsHeader__Depth}
     >
@@ -47,10 +49,11 @@ const MarketOutcomeChartsHeader = p => (
 export default MarketOutcomeChartsHeader
 
 MarketOutcomeChartsHeader.propTypes = {
-  priceTimeSeries: PropTypes.array.isRequired,
   hoveredPeriod: PropTypes.object.isRequired,
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
   updatePrecision: PropTypes.func.isRequired,
   updateSelectedPeriod: PropTypes.func.isRequired,
+  priceTimeSeries: PropTypes.array,
+  excludeCandlestick: PropTypes.bool,
 }

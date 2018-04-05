@@ -171,6 +171,9 @@ export default class CreateMarketForm extends Component {
     } = this.props
     const s = this.state
 
+    // TODO -- refactor this to derive route based on url path rather than state value
+    //  (react-router-dom declarative routing)
+
     return (
       <article className={Styles.CreateMarketForm}>
         <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
