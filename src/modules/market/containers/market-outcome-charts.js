@@ -2,6 +2,8 @@ import { connect } from 'react-redux'
 import memoize from 'memoizee'
 import { isEmpty } from 'lodash'
 
+import { selectCurrentTimestamp } from 'src/select-state'
+
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
 import { selectMarket } from 'modules/market/selectors/market'
@@ -105,6 +107,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     currentBlock: state.blockchain.currentBlockNumber || 0,
+    currentTimestamp: selectCurrentTimestamp(state),
     minPrice: market.minPrice || 0,
     maxPrice: market.maxPrice || 0,
     orderBook: cumulativeOrderBook,

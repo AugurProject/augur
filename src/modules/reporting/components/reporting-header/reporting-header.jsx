@@ -19,10 +19,10 @@ export default class ReportingHeader extends Component {
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
+    currentTime: PropTypes.number.isRequired,
     isForking: PropTypes.bool,
     forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
-    currentTime: PropTypes.number,
   }
 
   componentWillMount() {
@@ -43,7 +43,7 @@ export default class ReportingHeader extends Component {
       updateModal,
     } = this.props
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
-    const daysLeft = getDaysRemaining(reportingWindowStats.endTime)
+    const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
     const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
     const disableParticipate = (repBalance === '0')

@@ -19,6 +19,7 @@ export default class MarketOutcomeCharts extends Component {
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
     currentBlock: PropTypes.number.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
     hasOrders: PropTypes.bool.isRequired,
@@ -109,6 +110,7 @@ export default class MarketOutcomeCharts extends Component {
   render() {
     const {
       currentBlock,
+      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,
@@ -142,6 +144,7 @@ export default class MarketOutcomeCharts extends Component {
               sharedChartMargins={s.sharedChartMargins}
               priceTimeSeries={priceTimeSeries}
               currentBlock={currentBlock}
+              currentTimestamp={currentTimestamp}
               selectedPeriod={s.selectedPeriod}
               fixedPrecision={s.fixedPrecision}
               orderBookKeys={orderBookKeys}

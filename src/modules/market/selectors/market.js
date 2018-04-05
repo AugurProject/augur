@@ -24,7 +24,7 @@ import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
-import { selectCurrentTimestampInSeconds } from 'src/select-state'
+import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -175,7 +175,7 @@ export function assembleMarket(
         id: marketId,
       }
 
-      const now = new Date()
+      const now = new Date(selectCurrentTimestamp(store.getState()))
 
       switch (market.marketType) {
         case BINARY:

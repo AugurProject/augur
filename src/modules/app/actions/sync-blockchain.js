@@ -8,7 +8,6 @@ export const syncBlockchain = () => (dispatch) => {
       currentBlockNumber: parseInt(augur.rpc.getCurrentBlock().number, 16),
       currentBlockTimestamp: parseInt(augur.rpc.getCurrentBlock().timestamp, 16),
       currentAugurTimestamp: parseInt(augurTimestamp, 10),
-      currentBlockMillisSinceEpoch: Date.now(),
     }))
   })
 }

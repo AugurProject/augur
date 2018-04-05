@@ -29,7 +29,7 @@ export const createPeriodPLSelector = period => createSelector(
     if (!accountTrades || !blockchain) return null
 
     const periodDate = new Date(currentTimestamp - (period*24*60*60*1000))
-    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber)
+    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber, currentTimestamp)
 
     return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
       if (!outcomesData[marketId]) return p

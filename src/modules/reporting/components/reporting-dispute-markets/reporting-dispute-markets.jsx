@@ -27,7 +27,6 @@ export default class ReportingDisputeMarkets extends Component {
     account: PropTypes.string.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkEndTime: PropTypes.string,
-    currentTime: PropTypes.number.isRequired,
   }
 
   componentWillMount() {
@@ -42,7 +41,6 @@ export default class ReportingDisputeMarkets extends Component {
 
   render() {
     const {
-      currentTime,
       doesUserHaveRep,
       forkEndTime,
       history,
@@ -67,7 +65,6 @@ export default class ReportingDisputeMarkets extends Component {
             heading="Dispute"
             isForking={isForking}
             forkEndTime={forkEndTime}
-            currentTime={currentTime}
           />
           { !doesUserHaveRep && !forkEndTime &&
           <ReportDisputeNoRepState
