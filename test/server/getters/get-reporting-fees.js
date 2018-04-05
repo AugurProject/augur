@@ -37,25 +37,23 @@ describe("server/getters/get-reporting-fees", () => {
     },
     assertions: (err, marketsMatched) => {
       assert.isNull(err);
-      assert.deepEqual(marketsMatched,
-        {
-          total: {
-            "unclaimedEth": "107.87878787878787879",
-            "unclaimedRepStaked": "2",
-            "unclaimedRepEarned": "3",
-            "claimedEth": "4",
-            "claimedRepStaked": "5",
-            "claimedRepEarned": "6",
-          },
-          crowdsourcers: [],
-          feeWindows: [
-            "0x1000000000000000000000000000000000000000",
-            "0x3000000000000000000000000000000000000000",
-            "0x2000000000000000000000000000000000000000",
-          ],
-          initialReporters: [],
+      assert.deepEqual(marketsMatched, {
+        total: {
+          "unclaimedEth": "107.87878787878787879",
+          "unclaimedRepStaked": "2",
+          "unclaimedRepEarned": "3",
+          "claimedEth": "4",
+          "claimedRepStaked": "5",
+          "claimedRepEarned": "6",
         },
-      );
+        crowdsourcers: [],
+        feeWindows: [
+          "0x1000000000000000000000000000000000000000",
+          "0x3000000000000000000000000000000000000000",
+          "0x2000000000000000000000000000000000000000",
+        ],
+        initialReporters: [],
+      });
     },
   });
   test({
