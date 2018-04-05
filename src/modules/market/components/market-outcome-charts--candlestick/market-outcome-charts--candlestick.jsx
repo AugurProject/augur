@@ -18,6 +18,7 @@ export default class MarketOutcomeCandlestick extends Component {
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.object.isRequired,
     currentBlock: PropTypes.number.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketMin: PropTypes.number.isRequired,

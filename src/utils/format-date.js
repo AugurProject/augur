@@ -59,8 +59,8 @@ export function convertUnixToFormattedDate(integer = 0) {
   return formatDate(moment.unix(integer).toDate())
 }
 
-export function getBeginDate(periodString) {
-  const date = moment()
+export function getBeginDate(currentAugurTimestampInMilliseconds, periodString) {
+  const date = moment(currentAugurTimestampInMilliseconds)
   let beginDate = date.subtract(1, 'day')
   if (periodString === 'week') {
     beginDate = date.subtract(7, 'day')
@@ -74,18 +74,14 @@ export function getBeginDate(periodString) {
   return beginDate.unix()
 }
 
-export function dateHasPassed(unixTimestamp) {
-  const date = moment().utc()
+export function dateHasPassed(currentAugurTimestampInMilliseconds, unixTimestamp) {
+  const date = moment(currentAugurTimestampInMilliseconds).utc()
   return (date.unix() >= unixTimestamp)
 }
 
-export function getDaysRemaining(endTimestamp, startTimestamp) {
-  if (!endTimestamp) return 0
-  let start = startTimestamp
-  if (!startTimestamp) {
-    start = formatDate(new Date()).timestamp
-  }
-  if (start > endTimestamp) return 0
-  const remainingTicks = endTimestamp - start
+export function getDaysRemaining(endUnixTimestamp, startUnixTimestamp) {
+  if (!endUnixTimestamp || !startUnixTimestamp) return 0
+  if (startUnixTimestamp > endUnixTimestamp) return 0
+  const remainingTicks = endUnixTimestamp - startUnixTimestamp
   return Math.floor(remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY)
 }

@@ -58,10 +58,10 @@ export function assertAccountReport(report) {
       assertFormattedNumber(report.repEarned, 'report.repEarned')
     })
 
-    it('endDate', () => {
-      assert.isDefined(report.endDate)
+    it('endTime', () => {
+      assert.isDefined(report.endTime)
 
-      assertFormattedDate(report.endDate, 'report.endDate')
+      assertFormattedDate(report.endTime, 'report.endTime')
     })
 
     it('isChallenged', () => {

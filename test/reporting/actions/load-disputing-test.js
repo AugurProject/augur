@@ -19,7 +19,7 @@ describe('loadDisputing action', () => {
   }
 
   const expectedParams = {
-    sortBy: 'endDate',
+    sortBy: 'endTime',
     universe: universeAddress,
   }
 

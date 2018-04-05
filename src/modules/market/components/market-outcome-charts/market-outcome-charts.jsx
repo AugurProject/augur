@@ -17,6 +17,7 @@ export default class MarketOutcomeCharts extends Component {
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
@@ -110,6 +111,7 @@ export default class MarketOutcomeCharts extends Component {
   render() {
     const {
       currentBlock,
+      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,
@@ -137,27 +139,26 @@ export default class MarketOutcomeCharts extends Component {
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
         <div className={Styles.MarketOutcomeCharts__Charts}>
-          {excludeCandlestick ||
-            <div
-              ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
-              className={Styles.MarketOutcomeCharts__candlestick}
-            >
-              <MarketOutcomeCandlestick
-                sharedChartMargins={s.sharedChartMargins}
-                priceTimeSeries={priceTimeSeries}
-                currentBlock={currentBlock}
-                selectedPeriod={s.selectedPeriod}
-                fixedPrecision={s.fixedPrecision}
-                orderBookKeys={orderBookKeys}
-                marketMax={maxPrice}
-                marketMin={minPrice}
-                hoveredPrice={s.hoveredPrice}
-                updateHoveredPrice={this.updateHoveredPrice}
-                updateHoveredPeriod={this.updateHoveredPeriod}
-                updateSeletedOrderProperties={updateSeletedOrderProperties}
-              />
-            </div>
-          }
+          <div
+            ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
+            className={Styles.MarketOutcomeCharts__candlestick}
+          >
+            <MarketOutcomeCandlestick
+              sharedChartMargins={s.sharedChartMargins}
+              priceTimeSeries={priceTimeSeries}
+              currentBlock={currentBlock}
+              currentTimestamp={currentTimestamp}
+              selectedPeriod={s.selectedPeriod}
+              fixedPrecision={s.fixedPrecision}
+              orderBookKeys={orderBookKeys}
+              marketMax={maxPrice}
+              marketMin={minPrice}
+              hoveredPrice={s.hoveredPrice}
+              updateHoveredPrice={this.updateHoveredPrice}
+              updateHoveredPeriod={this.updateHoveredPeriod}
+              updateSeletedOrderProperties={updateSeletedOrderProperties}
+            />
+          </div>
           <div
             ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
             className={Styles.MarketOutcomeCharts__orders}

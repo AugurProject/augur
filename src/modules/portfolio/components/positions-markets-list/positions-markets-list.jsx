@@ -25,6 +25,7 @@ const PositionsMarketsList = p => (
           positionsDefault={p.positionsDefault}
           claimTradingProceeds={p.claimTradingProceeds}
           isMobile={p.isMobile}
+          currentTimestamp={p.currentTimestamp}
         />)):
       <NullStateMessage message="No Markets Available" />}
   </div>
@@ -40,6 +41,7 @@ PositionsMarketsList.propTypes = {
   positionsDefault: PropTypes.bool,
   claimTradingProceeds: PropTypes.func,
   isMobile: PropTypes.bool,
+  currentTimestamp: PropTypes.number.isRequired,
 }
 
 

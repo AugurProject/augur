@@ -34,7 +34,6 @@ const mapStateToProps = (state, { history }) => {
     account: loginAccount.address,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
-    currentTime: state.blockchain.currentAugurTimestamp,
   })
 }
 

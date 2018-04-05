@@ -18,7 +18,7 @@ export default class CreateMarketReview extends Component {
     className: PropTypes.string,
     creationError: PropTypes.string.isRequired,
     universe: PropTypes.object.isRequired,
-    endDate: PropTypes.object.isRequired,
+    endTime: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
@@ -69,13 +69,13 @@ export default class CreateMarketReview extends Component {
 
   calculateMarketCreationCosts() {
     const {
-      endDate,
+      endTime,
       universe,
     } = this.props
     const self = this
     augur.createMarket.getMarketCreationCostBreakdown({
       universe: universe.id,
-      _endTime: endDate.timestamp,
+      _endTime: endTime.timestamp,
     }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
       self.setState({

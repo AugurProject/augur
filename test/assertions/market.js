@@ -42,9 +42,9 @@ export default function (market) {
       assert.isString(market.extraInfo)
     })
 
-    it('market.endDate', () => {
-      assert.isDefined(market.endDate)
-      assertFormattedDate(market.endDate, 'market.endDate')
+    it('market.endTime', () => {
+      assert.isDefined(market.endTime)
+      assertFormattedDate(market.endTime, 'market.endTime')
     })
 
     it('market.creationTime', () => {
@@ -52,9 +52,9 @@ export default function (market) {
       assertFormattedDate(market.creationTime, 'market.creationTime')
     })
 
-    it('market.endDateLabel', () => {
-      assert.isDefined(market.endDateLabel)
-      assert.isString(market.endDateLabel)
+    it('market.endTimeLabel', () => {
+      assert.isDefined(market.endTimeLabel)
+      assert.isString(market.endTimeLabel)
     })
 
     it('market.outstandingShares', () => {
