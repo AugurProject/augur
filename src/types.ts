@@ -319,6 +319,7 @@ export interface UIMarketInfo {
   volume: string|number;
   outstandingShares: string|number;
   feeWindow: Address;
+  endTime: number;
   endDate: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
