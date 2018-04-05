@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import CustomPropTypes from 'utils/custom-prop-types'
 // import { ChevronDown, ChevronUp } from 'modules/common/components/icons'
 
 import { dateToBlock } from 'utils/date-to-block-to-date'
@@ -22,8 +23,8 @@ export default class MarketOutcomeCandlestick extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     outcomeBounds: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
+    marketMin: CustomPropTypes.bigNumber,
+    marketMax: CustomPropTypes.bigNumber,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredPeriod: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,

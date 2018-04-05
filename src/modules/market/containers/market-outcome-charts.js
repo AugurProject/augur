@@ -1,6 +1,8 @@
 import { connect } from 'react-redux'
 import memoize from 'memoizee'
 
+import { createBigNumber } from 'utils/create-big-number'
+
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
@@ -28,8 +30,8 @@ const findBounds = memoize((outcome = {}) => {
     }
 
     return {
-      min: currentItem < p.min ? currentItem : p.min,
-      max: currentItem > p.max ? currentItem : p.max,
+      min: currentItem.lt(p.min) ? currentItem : p.min,
+      max: currentItem.lt(p.max) ? currentItem : p.max,
     }
   }, DEFAULT_BOUNDS)
 })
@@ -131,8 +133,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     currentBlock: state.blockchain.currentBlockNumber || 0,
-    minPrice: market.minPrice || 0,
-    maxPrice: market.maxPrice || 0,
+    minPrice: market.minPrice || createBigNumber(0),
+    maxPrice: market.maxPrice || createBigNumber(0),
     outcomeBounds: findBounds(outcome),
     orderBook: cumulativeOrderBook,
     priceTimeSeries,

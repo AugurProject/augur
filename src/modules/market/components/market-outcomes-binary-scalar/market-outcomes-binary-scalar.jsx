@@ -5,6 +5,7 @@ import { BINARY } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
 import CustomPropTypes from 'utils/custom-prop-types'
+import { createBigNumber } from 'utils/create-big-number'
 
 import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
@@ -16,7 +17,7 @@ const MarketOutcomes = (p) => {
     if (p.type === BINARY) {
       return lastPrice
     }
-    return `${(lastPrice / (p.max - p.min)) * 100}`
+    return `${(createBigNumber(lastPrice).div(p.max.minus(p.min))) * 100}`
   }
 
   const currentValuePosition = {
