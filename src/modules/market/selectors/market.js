@@ -175,8 +175,8 @@ export function assembleMarket(
         id: marketId,
       }
 
-      if (typeof market.minPrice !== "undefined") market.minPrice = createBigNumber(market.minPrice)
-      if (typeof market.maxPrice !== "undefined") market.maxPrice = createBigNumber(market.maxPrice)
+      if (typeof market.minPrice !== 'undefined') market.minPrice = createBigNumber(market.minPrice)
+      if (typeof market.maxPrice !== 'undefined') market.maxPrice = createBigNumber(market.maxPrice)
 
       const now = new Date(selectCurrentTimestamp(store.getState()))
 
