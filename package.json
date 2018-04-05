@@ -32,7 +32,8 @@
     "clean-start": "npm run rebuild && npm start",
     "clean-start-local": "npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:8545 ENDPOINT_WS=ws://127.0.0.1:8546 npm start",
     "reinstall": "./scripts/reinstall.sh",
-    "sqlite": "./scripts/sqlite.sh"
+    "sqlite": "./scripts/sqlite.sh",
+    "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop"
   },
   "repository": {
     "type": "git",
