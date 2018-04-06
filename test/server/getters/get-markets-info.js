@@ -483,8 +483,8 @@ describe("server/getters/get-markets-info", () => {
           consensus: {
             isInvalid: false,
             payout: [
-              1,
-              1,
+              "1",
+              "1",
             ],
           },
           outcomes: [

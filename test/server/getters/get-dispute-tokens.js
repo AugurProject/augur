@@ -29,8 +29,8 @@ describe("server/getters/get-dispute-tokens", () => {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
-          payout0: 0,
-          payout1: 2,
+          payout0: "0",
+          payout1: "2",
           payout2: null,
           payout3: null,
           payout4: null,
@@ -60,8 +60,8 @@ describe("server/getters/get-dispute-tokens", () => {
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
           marketId: "0x0000000000000000000000000000000000000019",
-          payout0: 1,
-          payout1: 1,
+          payout0: "1",
+          payout1: "1",
           payout2: null,
           payout3: null,
           payout4: null,
@@ -114,8 +114,8 @@ describe("server/getters/get-dispute-tokens", () => {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000011",
-          payout0: 0,
-          payout1: 2,
+          payout0: "0",
+          payout1: "2",
           payout2: null,
           payout3: null,
           payout4: null,
@@ -132,8 +132,8 @@ describe("server/getters/get-dispute-tokens", () => {
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
           marketId: "0x0000000000000000000000000000000000000019",
-          payout0: 1,
-          payout1: 1,
+          payout0: "1",
+          payout1: "1",
           payout2: null,
           payout3: null,
           payout4: null,

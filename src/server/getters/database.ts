@@ -8,11 +8,13 @@ import {
   OutcomesRow,
   UIMarketInfo,
   UIOutcomeInfo,
+  UIStakeInfo,
   DisputeTokensRowWithTokenState,
   UIDisputeTokenInfo,
   PayoutRow,
   NormalizedPayout,
   NormalizedPayoutNumerators,
+  StakeDetails,
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
@@ -37,13 +39,11 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNu
 }
 
 export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
-  let consensus: NormalizedPayout<BigNumber>|null;
-  if (winningPayoutRow == null) {
-    consensus = null;
-  } else {
-    consensus = normalizePayouts(winningPayoutRow);
+  let consensus: NormalizedPayout<string>|null = null;
+  if (winningPayoutRow != null) {
+    consensus = normalizedPayoutsToFixed(normalizePayouts(winningPayoutRow));
   }
-  return formatBigNumberAsFixed<UIMarketInfo<BigNumber>, UIMarketInfo<string>>({
+  return Object.assign(formatBigNumberAsFixed<UIMarketInfo<BigNumber>, UIMarketInfo<string>>({
     id: row.marketId,
     universe: row.universe,
     marketType: row.marketType,
@@ -52,6 +52,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     maxPrice: row.maxPrice,
     cumulativeScale: row.maxPrice.minus(row.minPrice),
     author: row.marketCreator,
+    consensus: null,
     creationTime: row.creationTime,
     creationBlock: row.creationBlockNumber,
     creationFee: row.creationFee,
@@ -76,9 +77,10 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     designatedReportStake: row.designatedReportStake!,
     resolutionSource: row.resolutionSource,
     numTicks: row.numTicks,
-    tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
-    consensus,
     outcomes: _.map(outcomesInfo, (outcomeInfo) => formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>(outcomeInfo)),
+    tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
+  }), {
+    consensus,
   });
 }
 
@@ -102,7 +104,7 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
 export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPayout<BigNumber> {
   const payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow<BigNumber>];
+    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow<BigNumber>] as BigNumber | null;
     if (payoutNumerator == null) break;
     payout.push(payoutNumerator);
   }
@@ -111,6 +113,24 @@ export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPay
     { payout } as NormalizedPayoutNumerators<BigNumber>,
     { isInvalid: !!payoutRow.isInvalid },
   );
+}
+
+export function normalizedPayoutsToFixed(payout: NormalizedPayout<BigNumber>): NormalizedPayout<string> {
+  return {
+    isInvalid: payout.isInvalid,
+    payout: payout.payout.map((payout: BigNumber) => payout.toFixed()),
+  };
+}
+
+export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeInfo<string> {
+  const info = formatBigNumberAsFixed<UIStakeInfo<BigNumber>, UIStakeInfo<string>>(stakeInfo);
+  info.stakes = stakeInfo.stakes.map((stake) => {
+    const details = formatBigNumberAsFixed<StakeDetails<BigNumber>, StakeDetails<string>>(stake);
+    const payouts = normalizedPayoutsToFixed(stake);
+    return Object.assign({}, details, payouts);
+  });
+
+  return info;
 }
 
 export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {

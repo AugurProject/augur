@@ -62,6 +62,17 @@ const whitelist: Whitelist = {
     price: true,
     volume: true,
   },
+  payouts: {
+    payout0: true,
+    payout1: true,
+    payout2: true,
+    payout3: true,
+    payout4: true,
+    payout5: true,
+    payout6: true,
+    payout7: true,
+    payout8: true,
+  },
   positions: {
     numShares: true,
     numSharesAdjustedForUserIntention: true,

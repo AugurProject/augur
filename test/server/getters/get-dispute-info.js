@@ -36,8 +36,8 @@ describe("server/getters/get-dispute-info", () => {
           stakes: [
             {
               payout: [
-                10000,
-                0,
+                "10000",
+                "0",
               ],
               isInvalid: false,
               bondSizeCurrent: "204",
@@ -52,8 +52,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                0,
-                10000,
+                "0",
+                "10000",
               ],
               isInvalid: false,
               accountStakeCompleted: "0",
@@ -63,8 +63,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                5000,
-                5000,
+                "5000",
+                "5000",
               ],
               isInvalid: true,
               bondSizeCurrent: "204",
@@ -87,8 +87,8 @@ describe("server/getters/get-dispute-info", () => {
           stakes: [
             {
               payout: [
-                0,
-                2,
+                "0",
+                "2",
               ],
               isInvalid: false,
               bondSizeCurrent: "30000",
@@ -103,8 +103,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                1,
-                1,
+                "1",
+                "1",
               ],
               isInvalid: true,
               accountStakeCompleted: "500",
@@ -138,8 +138,8 @@ describe("server/getters/get-dispute-info", () => {
           stakes: [
             {
               payout: [
-                10000,
-                0,
+                "10000",
+                "0",
               ],
               isInvalid: false,
               bondSizeCurrent: "204",
@@ -154,8 +154,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                0,
-                10000,
+                "0",
+                "10000",
               ],
               isInvalid: false,
               accountStakeCompleted: "0",
@@ -165,8 +165,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                5000,
-                5000,
+                "5000",
+                "5000",
               ],
               isInvalid: true,
               bondSizeCurrent: "204",
@@ -204,8 +204,8 @@ describe("server/getters/get-dispute-info", () => {
           stakes: [
             {
               payout: [
-                0,
-                2,
+                "0",
+                "2",
               ],
               isInvalid: false,
               bondSizeCurrent: "30000",
@@ -220,8 +220,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                1,
-                1,
+                "1",
+                "1",
               ],
               isInvalid: true,
               accountStakeCompleted: "0",
@@ -239,8 +239,8 @@ describe("server/getters/get-dispute-info", () => {
           stakes: [
             {
               payout: [
-                10000,
-                0,
+                "10000",
+                "0",
               ],
               isInvalid: false,
               bondSizeCurrent: "204",
@@ -255,8 +255,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                0,
-                10000,
+                "0",
+                "10000",
               ],
               isInvalid: false,
               accountStakeCompleted: "0",
@@ -266,8 +266,8 @@ describe("server/getters/get-dispute-info", () => {
             },
             {
               payout: [
-                5000,
-                5000,
+                "5000",
+                "5000",
               ],
               isInvalid: true,
               bondSizeCurrent: "204",

@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { getMarketsWithReportingState, normalizePayouts, groupByAndSum } from "./database";
+import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
@@ -207,13 +207,12 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
       disputeRound = 0;
     }
   }
-  // It'd be nice if UIStakeInfo was a class and we could just recursively serialize its props
-  return Object.assign(formatBigNumberAsFixed<Partial<UIStakeInfo<BigNumber>>, Partial<UIStakeInfo<string>>>({
+
+  return uiStakeInfoToFixed({
     marketId: marketRow.marketId,
     stakeCompletedTotal: totalCompletedStakeOnAllPayouts,
     bondSizeOfNewStake: totalCompletedStakeOnAllPayouts.times(2),
+    stakes: stakeResults,
     disputeRound,
-  }), {
-    stakes: stakeResults.map((result) => formatBigNumberAsFixed<StakeDetails<BigNumber>, StakeDetails<string>>(result)),
-  }) as UIStakeInfo<string>;
+  });
 }
