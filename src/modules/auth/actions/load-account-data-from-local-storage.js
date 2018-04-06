@@ -20,9 +20,6 @@ export const loadAccountDataFromLocalStorage = address => (dispatch, getState) =
       if (storedAccountData.reports && Object.keys(storedAccountData.reports).length) {
         dispatch(updateReports(storedAccountData.reports))
       }
-      if (storedAccountData.universe && storedAccountData.universe !== universe.id) {
-        dispatch(loadUniverse(storedAccountData.universe))
-      }
     }
   }
 }
