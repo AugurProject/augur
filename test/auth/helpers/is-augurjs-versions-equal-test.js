@@ -19,7 +19,7 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
         },
       })
 
-      isAugurJSVersionsEqual().then((res) => {
+      return isAugurJSVersionsEqual().then((res) => {
         assert.isObject(res)
         assert.isFalse(res.isEqual)
         assert.isUndefined(res.augurNode)
@@ -40,7 +40,7 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
         },
       })
 
-      isAugurJSVersionsEqual().then((res) => {
+      return isAugurJSVersionsEqual().then((res) => {
         assert.isObject(res)
         assert.isFalse(res.isEqual)
         assert.deepEqual(res.augurNode, 'goodbyeWorld')
@@ -60,14 +60,12 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
           },
         },
       })
-      isAugurJSVersionsEqual().then((res) => {
+      return isAugurJSVersionsEqual().then((res) => {
         assert.isObject(res)
         assert.isTrue(res.isEqual)
         assert.deepEqual(res.augurNode, 'helloWorld')
         assert.deepEqual(res.augurjs, 'helloWorld')
       })
-
-
     },
   })
 })
