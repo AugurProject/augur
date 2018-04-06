@@ -16,7 +16,7 @@ import networkConfig from 'config/network'
 
 import { isEmpty } from 'lodash'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
@@ -98,6 +98,7 @@ function pollForEscapeHatch(dispatch, getState) {
 
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
+    const { modal } = getState()
     AugurJS.connect(env, (err, ConnectionInfo) => {
       if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
         return callback(err, ConnectionInfo)
@@ -110,7 +111,7 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       dispatch(updateAugurNodeConnectionStatus(true))
       dispatch(registerTransactionRelay())
       dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
-      dispatch(closeModal())
+      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)
         pollForNetwork(dispatch, getState)
