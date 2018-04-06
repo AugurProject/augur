@@ -114,8 +114,8 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       dispatch(registerTransactionRelay())
       let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
       if (windowRef.localStorage && windowRef.localStorage.getItem) {
-        const storedUniverseId = windowRef.localStorage.getItem("selectedUniverse")
-        universeId = storedUniverseId ? storedUniverseId : universeId
+        const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
+        universeId = storedUniverseId === null ? universeId : storedUniverseId
       }
       dispatch(loadUniverse(universeId, history))
       if (isInitialConnection) {

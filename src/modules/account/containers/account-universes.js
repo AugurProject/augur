@@ -13,11 +13,11 @@ const mapStateToProps = state => ({
 const windowRef = typeof window === 'undefined' ? {} : window
 
 const mapDispatchToProps = dispatch => ({
-  getUniverses: (callback) => dispatch(getUniverses(callback)),
+  getUniverses: callback => dispatch(getUniverses(callback)),
   switchUniverse: (universeId) => {
     if (windowRef.localStorage && windowRef.localStorage.setItem) {
-      windowRef.localStorage.setItem("selectedUniverse", universeId)
-      location.reload();
+      windowRef.localStorage.setItem('selectedUniverse', universeId)
+      location.reload()
     }
   },
 })
