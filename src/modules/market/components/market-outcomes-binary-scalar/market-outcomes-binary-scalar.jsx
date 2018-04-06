@@ -12,12 +12,13 @@ import Styles from 'modules/market/components/market-outcomes-binary-scalar/mark
 const MarketOutcomes = (p) => {
   const scalarDenomination = !p.scalarDenomination ? '' : p.scalarDenomination
   const calculatePosition = () => {
-    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.formatted')
+    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.fullPrecision') || 0
 
     if (p.type === BINARY) {
       return lastPrice
     }
-    return `${(createBigNumber(lastPrice).div(p.max.minus(p.min))) * 100}`
+
+    return `${(createBigNumber(lastPrice).dividedBy(p.max.minus(p.min))) * 100}`
   }
 
   const currentValuePosition = {
