@@ -23,7 +23,7 @@ export default function (callback = logError) {
           if (!isForkingMarketFinalized) {
             return getUniversesInfoWithParentContext(loginAccount.address, universeId, parentUniverseId, null, callback)
           } else {
-            augur.api.Universe.getWinningChildUniverse(universePayload, (err, winningChildUniverse) => {
+            augur.api.Universe.getWinningChildUniverse({ tx: { to: parentUniverseId }}, (err, winningChildUniverse) => {
               if (err) return callback(err)
               return getUniversesInfoWithParentContext(loginAccount.address, universeId, parentUniverseId, winningChildUniverse, callback)
             })
@@ -52,7 +52,11 @@ function getUniversesInfoWithParentContext(account, universeId, parentUniverseId
           acc.children.push(universeData);
         } else if (universeData.parentUniverse === parentUniverseId) {
           universeData.isWinningUniverse = winningChildOfParent === universeData.universe
-          acc.currentLevel.push(universeData);
+          if (universeData.universe === universeId) {
+            acc.currentLevel = [universeData].concat(acc.currentLevel);
+          } else {
+            acc.currentLevel.push(universeData);
+          }
         }
         else {
           acc.parent = universeData;

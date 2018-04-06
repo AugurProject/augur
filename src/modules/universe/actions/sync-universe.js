@@ -43,11 +43,11 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
             }))
           })
         } else {
-          dispatch(updateUniverse({ ...universeData, forkingMarket, isForking }))
+          dispatch(updateUniverse({ ...universeData, forkingMarket, isForking, winningChildUniverse: undefined }))
         }
       })
     } else {
-      dispatch(updateUniverse({ isForking, forkingMarket }))
+      dispatch(updateUniverse({ isForking, forkingMarket, forkEndTime: undefined, isForkingMarketFinalized: undefined, winningChildUniverse: undefined }))
     }
   })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)

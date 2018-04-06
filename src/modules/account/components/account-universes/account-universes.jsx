@@ -11,6 +11,7 @@ export default class AccountUniverses extends Component {
     universe: PropTypes.string.isRequired,
     getUniverses: PropTypes.func.isRequired,
     switchUniverse: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
     winningChild: PropTypes.string,
   }
 
@@ -24,6 +25,12 @@ export default class AccountUniverses extends Component {
 
   componentWillMount() {
     this.getUniverses();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.universe !== this.props.universe) {
+      this.getUniverses();
+    }
   }
 
   getUniverses() {
@@ -41,11 +48,9 @@ export default class AccountUniverses extends Component {
     const p = this.props;
     const s = this.state;
 
-    const parentUniverse = s.universesInfo.parentUniverse
+    const parentUniverse = s.universesInfo.parent
     const currentLevel = s.universesInfo.currentLevel
     const children = s.universesInfo.children
-
-    console.log("UNIVERSES INFO: ", s.universesInfo)
 
     return (
       <section className={Styles.AccountUniverses}>
@@ -64,6 +69,9 @@ export default class AccountUniverses extends Component {
               universeRep={parentUniverse.supply}
               numMarkets={parentUniverse.numMarkets}
               isWinningUniverse={false}
+              key={parentUniverse.universe}
+              universe={parentUniverse.universe}
+              history={p.history}
             />
           </div>
         }
@@ -80,6 +88,8 @@ export default class AccountUniverses extends Component {
                 numMarkets={universeInfo.numMarkets}
                 isWinningUniverse={universeInfo.isWinningUniverse}
                 key={universeInfo.universe}
+                universe={universeInfo.universe}
+                history={p.history}
               />
             ))}
           </div>
@@ -97,6 +107,8 @@ export default class AccountUniverses extends Component {
                 numMarkets={universeInfo.numMarkets}
                 isWinningUniverse={universeInfo.universe === p.winningChild}
                 key={universeInfo.universe}
+                universe={universeInfo.universe}
+                history={p.history}
               />
             ))}
           </div>

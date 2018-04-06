@@ -29,6 +29,7 @@ const localStorageMiddleware = store => next => (action) => {
       favorites: state.favorites,
       reports: state.reports,
       accountName: state.accountName,
+      universe: state.universe.id,
     }))
   }
 }
