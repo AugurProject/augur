@@ -527,7 +527,7 @@ export interface UIForkMigrationTotals<BigNumberType> {
   [universe: string]: UIForkMigrationTotalsRow<BigNumberType>;
 }
 
-export interface UniverseInfoRow<BigNumberType> {
+export interface UniverseInfoRow<BigNumberType> extends Payout<BigNumberType> {
   universe: Address;
   parentUniverse: Address;
   balance: BigNumberType;

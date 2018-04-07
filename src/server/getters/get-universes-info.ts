@@ -16,7 +16,21 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
     if (err) return callback(err);
     if (parentUniverseRow === undefined) return callback(null, []);
 
-    const query = db.select(["universes.universe", "universes.parentUniverse", "balances.balance", "token_supply.supply", db.raw("count(markets.marketId) as numMarkets")]).from("universes")
+    const query = db.select([
+        "universes.universe",
+        "universes.parentUniverse",
+        "payouts.isInvalid",
+        "payouts.payout0",
+        "payouts.payout1",
+        "payouts.payout2",
+        "payouts.payout3",
+        "payouts.payout4",
+        "payouts.payout5",
+        "payouts.payout6",
+        "payouts.payout7",
+        "balances.balance",
+        "token_supply.supply",
+        db.raw("count(markets.marketId) as numMarkets")]).from("universes")
       .where("universes.parentUniverse", universe) // Children
       .orWhere("universes.parentUniverse", parentUniverseRow.parentUniverse) // Siblings
       .orWhere("universes.universe", universe) // Universe
@@ -28,12 +42,24 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
           .on("balances.token", "universes.reputationToken");
         })
       .leftJoin("markets", "markets.universe", "universes.universe")
+      .leftJoin("payouts", "payouts.payoutId", "universes.payoutId")
       .groupBy("universes.universe");
 
     query.asCallback((err: Error|null, universeInfoRows: Array<UniverseInfoRow<BigNumber>>): void => {
       if (err) return callback(err);
       callback(null, universeInfoRows.map((row: UniverseInfoRow<BigNumber>) => {
-        return formatBigNumberAsFixed(row);
+        const payout: Array<string> = [
+          row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7,
+        ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toFixed());
+        const uiRow = formatBigNumberAsFixed<Partial<UniverseInfoRow<BigNumber>>, Partial<UniverseInfoRow<string>>>({
+          universe: row.universe,
+          parentUniverse: row.parentUniverse,
+          balance: row.balance,
+          supply: row.supply,
+          numMarkets: row.numMarkets,
+          isInvalid: row.isInvalid,
+        });
+        return Object.assign({ payout }, uiRow);
       }));
     });
   });

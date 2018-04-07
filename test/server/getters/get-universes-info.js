@@ -31,6 +31,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "20",
           supply: "10000",
           numMarkets: 14,
+          payout: [],
+          isInvalid: null,
         },
         {
           universe: "CHILD_UNIVERSE",
@@ -38,6 +40,11 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
+          isInvalid: 0,
+          payout: [
+            "0",
+            "10000",
+          ],
         },
       ]);
     },
@@ -57,6 +64,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "20",
           supply: "10000",
           numMarkets: 14,
+          payout: [],
+          isInvalid: null,
         },
         {
           universe: "CHILD_UNIVERSE",
@@ -64,6 +73,11 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
+          isInvalid: 0,
+          payout: [
+            "0",
+            "10000",
+          ],
         },
         {
           universe: "FIRST_GRAND_CHILD_UNIVERSE",
@@ -71,6 +85,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "8",
           supply: "200",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -78,6 +94,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "4",
           supply: "300",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
       ]);
     },
@@ -97,6 +115,11 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
+          isInvalid: 0,
+          payout: [
+            "0",
+            "10000",
+          ],
         },
         {
           universe: "FIRST_GRAND_CHILD_UNIVERSE",
@@ -104,6 +127,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "8",
           supply: "200",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -111,6 +136,8 @@ describe("server/getters/get-universes-info", () => {
           balance: "4",
           supply: "300",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
       ]);
     },
@@ -130,6 +157,11 @@ describe("server/getters/get-universes-info", () => {
           balance: null,
           supply: "2000",
           numMarkets: 1,
+          isInvalid: 0,
+          payout: [
+            "0",
+            "10000",
+          ],
         },
         {
           universe: "FIRST_GRAND_CHILD_UNIVERSE",
@@ -137,6 +169,8 @@ describe("server/getters/get-universes-info", () => {
           balance: null,
           supply: "200",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -144,6 +178,8 @@ describe("server/getters/get-universes-info", () => {
           balance: null,
           supply: "300",
           numMarkets: 0,
+          payout: [],
+          isInvalid: null,
         },
       ]);
     },
