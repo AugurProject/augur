@@ -58,7 +58,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
           payoutId,
           completed: null,
         };
-        db.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerId").asCallback((err: Error|null): void => {
+        db.insert(crowdsourcerToInsert).into("crowdsourcers").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
             log,

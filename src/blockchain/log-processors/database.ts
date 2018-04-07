@@ -14,7 +14,7 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState , callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
-  db.insert(marketStateDataToInsert).returning("marketStateId").into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
+  db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
     if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
 
@@ -51,7 +51,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
         payoutRow,
         {tentativeWinning},
         );
-      db.insert(payoutRowWithTentativeWinning).returning("payoutId").into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
+      db.insert(payoutRowWithTentativeWinning).into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) callback(err);
         if (!payoutIdRow || !payoutIdRow.length) return callback(new Error("No payoutId returned"));
         callback(err, payoutIdRow[0]);

@@ -33,7 +33,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
         blockNumber: log.blockNumber,
       };
-      db.insert(marketStateDataToInsert).returning("marketStateId").into("market_state").asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
+      db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
         if (err) return callback(err);
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateId = marketStateRow[0];

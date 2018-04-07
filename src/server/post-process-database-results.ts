@@ -106,8 +106,6 @@ const FIELD_NAMES: Mapping = (() => {
   return namesonly;
 })();
 
-console.error(chalk.green("FIELD NAMES: "), FIELD_NAMES);
-
 // We're converting these values in place isntead of cloning the whole object
 function convertToBigNumber(row: any) {
   if (row === null || typeof row !== "object") return row;
