@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "src/index.js",
   "bin": {
-    "dp": "./scripts/dp/index.js"
+    "dp": "./scripts/dp/index.js",
+    "flash": "./scripts/flash/index.js"
   },
   "scripts": {
     "nuke": "rimraf package-lock.json; rimraf yarn.lock; rimraf node_modules; rimraf build && npm run clean",
@@ -21,6 +22,7 @@
     "version": "npm run build && git add -A dist src/version.js package.json package-lock.json",
     "core:version": "node scripts/core-version.js",
     "dp": "node scripts/dp",
+    "flash": "node scripts/flash",
     "upload:aura": "node scripts/dp upload aura",
     "upload:clique": "node scripts/dp upload clique",
     "upload:environment": "node scripts/dp upload environment",
