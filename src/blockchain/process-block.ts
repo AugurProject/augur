@@ -134,11 +134,13 @@ function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: num
   parallel([
     (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
     (next: AsyncCallback) => advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp, next),
-    (next: AsyncCallback) => advanceFeeWindowActive(db, blockNumber, timestamp, next),
+    (next: AsyncCallback) => advanceFeeWindowActive(db, augur, blockNumber, timestamp, next),
   ], callback);
 }
 
 function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  const networkId: string = augur.rpc.getNetworkID();
+  const universe: string = augur.contracts.addresses[networkId].Universe;
   const designatedDisputeQuery = db("markets").select("markets.marketId").join("market_state", "market_state.marketStateId", "markets.marketStateId");
   designatedDisputeQuery.where("reportingState", augur.constants.REPORTING_STATE.PRE_REPORTING).where("endTime", "<", timestamp);
   designatedDisputeQuery.asCallback((err: Error|null, designatedDisputeMarketIds: Array<MarketsContractAddressRow>) => {
@@ -147,6 +149,8 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
       updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, (err: Error|null) => {
         if (err) return nextMarketId(err);
         augurEmitter.emit("MarketState", {
+          eventName: "MarketState",
+          universe,
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
         });
@@ -157,6 +161,8 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
 }
 
 function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  const networkId: string = augur.rpc.getNetworkID();
+  const universe: string = augur.contracts.addresses[networkId].Universe;
   const marketsMissingDesignatedReport = getMarketsWithReportingState(db, ["markets.marketId"])
     .where("endTime", "<", timestamp - augur.constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS)
     .where("reportingState", augur.constants.REPORTING_STATE.DESIGNATED_REPORTING);
@@ -166,6 +172,8 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
       updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING, (err: Error|null) => {
         if (err) return callback(err);
         augurEmitter.emit("MarketState", {
+          eventName: "MarketState",
+          universe,
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.OPEN_REPORTING,
         });
@@ -175,7 +183,7 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
   });
 }
 
-function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   db("fee_windows").first().select("feeWindowId").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow?: FeeWindowIdRow) => {
     if (err || feeWindowRow == null) return callback(err);
     db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowId", feeWindowRow.feeWindowId).asCallback((err: Error|null) => {
@@ -183,7 +191,7 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
       advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
         if (err) return callback(err);
         augurEmitter.emit("FeeWindowClosed", { feeWindowId: feeWindowRow.feeWindowId, blockNumber, timestamp });
-        advanceAwaitingNextFeeWindow(db, blockNumber, timestamp, (err: Error|null) => {
+        advanceAwaitingNextFeeWindow(db, augur, blockNumber, timestamp, (err: Error|null) => {
           if (err) return callback(err);
           callback(null);
         });
@@ -192,7 +200,9 @@ function advanceFeeWindowActive(db: Knex, blockNumber: number, timestamp: number
   });
 }
 
-function advanceAwaitingNextFeeWindow(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+function advanceAwaitingNextFeeWindow(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  const networkId: string = augur.rpc.getNetworkID();
+  const universe: string = augur.contracts.addresses[networkId].Universe;
   getMarketsWithReportingState(db, ["markets.marketId"])
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
     .asCallback((err: Error|null, marketIds: Array<MarketsContractAddressRow>) => {
@@ -200,6 +210,8 @@ function advanceAwaitingNextFeeWindow(db: Knex, blockNumber: number, timestamp: 
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
         updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE, nextMarketIdRow);
         augurEmitter.emit("MarketState", {
+          eventName: "MarketState",
+          universe,
           marketId: marketIdRow.marketId,
           reportingState: ReportingState.CROWDSOURCING_DISPUTE,
         });
