@@ -9,7 +9,7 @@ const AccountUniverseDescription = p => (
     <div className={Styles.AccountUniverseDescription__container}>
       <div className={Styles.AccountUniverseDescription__label}>
         <h3>
-          {p.universeDescription}
+          Universe {p.universeDescription}
         </h3>
         {p.isWinningUniverse &&
           <div className={Styles.AccountUniverseDescription__winning_universe}>Winning Universe</div>
