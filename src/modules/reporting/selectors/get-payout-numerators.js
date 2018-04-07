@@ -6,12 +6,12 @@ export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
 
   const { maxPrice, minPrice } = market
   const numTicks = createBigNumber(market.numTicks)
-  const payoutNumerators = Array(market.numOutcomes).fill('0')
+  const payoutNumerators = Array(market.numOutcomes).fill(createBigNumber(0))
   const isScalar = market.marketType === SCALAR
 
   if (invalid) {
     const equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes)
-    return Array(market.numOutcomes).fill(equalValue.toFixed())
+    return Array(market.numOutcomes).fill(equalValue)
 
   } else if (isScalar) {
     // selectedOutcome must be a BN as string
@@ -19,12 +19,12 @@ export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
     const reportNormalizedToZero = createBigNumber(selectedOutcome).minus(minPrice)
     const longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange)
     const shortPayout = numTicks.minus(longPayout)
-    payoutNumerators[0] = shortPayout.toFixed()
-    payoutNumerators[1] = longPayout.toFixed()
+    payoutNumerators[0] = shortPayout
+    payoutNumerators[1] = longPayout
   } else {
     // for binary and categorical the selected outcome is outcome.id
     // and must be a number
-    payoutNumerators[selectedOutcome] = numTicks.toFixed()
+    payoutNumerators[selectedOutcome] = numTicks
   }
 
   return payoutNumerators
