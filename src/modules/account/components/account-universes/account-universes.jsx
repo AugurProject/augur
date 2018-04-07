@@ -11,7 +11,6 @@ export default class AccountUniverses extends Component {
     universe: PropTypes.string.isRequired,
     getUniverses: PropTypes.func.isRequired,
     switchUniverse: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
     winningChild: PropTypes.string,
   }
 
@@ -48,7 +47,7 @@ export default class AccountUniverses extends Component {
     const p = this.props
     const s = this.state
 
-    const { parentUniverse, currentLevel, children } = s.universesInfo
+    const { parent, currentLevel, children } = s.universesInfo
 
     return (
       <section className={Styles.AccountUniverses}>
@@ -56,20 +55,19 @@ export default class AccountUniverses extends Component {
           <h1>Universes</h1>
         </div>
         <div className={Styles.AccountUniverses__main}>
-          {parentUniverse &&
+          {parent &&
             <div className={Styles.AccountUniverses__description}>
               <h4>Parent Universe</h4>
               <AccountUniverseDescription
                 switchUniverse={p.switchUniverse}
                 isCurrentUniverse={false}
-                universeDescription={parentUniverse.description || 'NO DESC'}
-                accountRep={parentUniverse.balance}
-                universeRep={parentUniverse.supply}
-                numMarkets={parentUniverse.numMarkets}
-                isWinningUniverse={false}
-                key={parentUniverse.universe}
-                universe={parentUniverse.universe}
-                history={p.history}
+                universeDescription={parent.description}
+                accountRep={parent.balance}
+                universeRep={parent.supply}
+                numMarkets={parent.numMarkets}
+                isWinningUniverse={parent.isWinningUniverse}
+                key={parent.universe}
+                universe={parent.universe}
               />
             </div>
           }
@@ -80,14 +78,13 @@ export default class AccountUniverses extends Component {
                 <AccountUniverseDescription
                   switchUniverse={p.switchUniverse}
                   isCurrentUniverse={universeInfo.universe === p.universe}
-                  universeDescription={universeInfo.description || 'NO DESC'}
+                  universeDescription={universeInfo.description}
                   accountRep={universeInfo.balance}
                   universeRep={universeInfo.supply}
                   numMarkets={universeInfo.numMarkets}
                   isWinningUniverse={universeInfo.isWinningUniverse}
                   key={universeInfo.universe}
                   universe={universeInfo.universe}
-                  history={p.history}
                 />
               ))}
             </div>
@@ -99,14 +96,13 @@ export default class AccountUniverses extends Component {
                 <AccountUniverseDescription
                   switchUniverse={p.switchUniverse}
                   isCurrentUniverse={false}
-                  universeDescription={universeInfo.description || 'NO DESC'}
+                  universeDescription={universeInfo.description}
                   accountRep={universeInfo.balance}
                   universeRep={universeInfo.supply}
                   numMarkets={universeInfo.numMarkets}
-                  isWinningUniverse={universeInfo.universe === p.winningChild}
+                  isWinningUniverse={universeInfo.isWinningUniverse}
                   key={universeInfo.universe}
                   universe={universeInfo.universe}
-                  history={p.history}
                 />
               ))}
             </div>

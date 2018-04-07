@@ -16,7 +16,7 @@ const AccountUniverseDescription = p => (
         }
       </div>
       {!p.isCurrentUniverse &&
-        <button onClick={() => { p.switchUniverse(p.universe, p.history) }} className={Styles.AccountUniversesDescription__button}>Switch Universe</button>
+        <button onClick={() => { p.switchUniverse(p.universe) }} className={Styles.AccountUniversesDescription__button}>Switch Universe</button>
       }
       {p.isCurrentUniverse &&
         <button disabled className={Styles.AccountUniversesDescription__current_universe_button}>Current Universe</button>
@@ -39,7 +39,6 @@ AccountUniverseDescription.propTypes = {
   isCurrentUniverse: PropTypes.bool.isRequired,
   universeDescription: PropTypes.string.isRequired,
   universe: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
 }
 
 export default AccountUniverseDescription
