@@ -412,7 +412,6 @@ export default class CreateMarketOutcome extends Component {
             onChange={(e) => {
               updateNewMarket({ detailsText: e.target.value })
             }}
-            onKeyPress={e => keyPressed(e)}
           />
         </li>
         }
