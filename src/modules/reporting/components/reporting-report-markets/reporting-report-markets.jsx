@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import MarketPreview from 'src/modules/reporting/containers/market-preview'
-
+import { TYPE_REPORT } from 'modules/market/constants/link-types'
 import Styles from './reporting-report-markets.styles'
 
 export const NoMarketsFound = ({ message }) => (
@@ -19,13 +19,13 @@ NoMarketsFound.propTypes = {
 }
 
 export const ReportSection = ({
-  title, items, buttonText='Report', emptyMessage,
+  title, items, linkType = TYPE_REPORT, emptyMessage,
 }) => {
   let theChildren
   if (items.length === 0) {
     theChildren = <NoMarketsFound message={emptyMessage} key={title} />
   } else {
-    theChildren = items.map(item => (<MarketPreview key={item.id} buttonText={buttonText} {...item} />))
+    theChildren = items.map(item => (<MarketPreview key={item.id} linkType={linkType} {...item} />))
   }
 
   return (
@@ -39,7 +39,7 @@ export const ReportSection = ({
 }
 
 ReportSection.propTypes = {
-  buttonText: PropTypes.string,
+  linkType: PropTypes.string,
   emptyMessage: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(PropTypes.object),

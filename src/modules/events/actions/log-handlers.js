@@ -16,6 +16,7 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 import { isCurrentMarket } from 'modules/trade/helpers/is-current-market'
 import makePath from 'modules/routes/helpers/make-path'
 import { MY_MARKETS } from 'modules/routes/constants/views'
+import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 
 export const handleMarketStateLog = log => dispatch => dispatch(loadMarketsInfo([log.marketId]))
 
@@ -97,6 +98,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]))
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
+    dispatch(loadReporting())
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
   }
