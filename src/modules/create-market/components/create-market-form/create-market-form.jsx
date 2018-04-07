@@ -43,6 +43,7 @@ export default class CreateMarketForm extends Component {
     this.validateField = this.validateField.bind(this)
     this.validateNumber = this.validateNumber.bind(this)
     this.isValid = this.isValid.bind(this)
+    this.keyPressed = this.keyPressed.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -69,8 +70,16 @@ export default class CreateMarketForm extends Component {
       newMarket,
       updateNewMarket,
     } = this.props
-    const newStep = newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : newMarket.currentStep + 1
-    updateNewMarket({ currentStep: newStep })
+    if (newMarket.isValid) {
+      const newStep = newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : newMarket.currentStep + 1
+      updateNewMarket({ currentStep: newStep })
+    }
+  }
+
+  keyPressed(event) {
+    if (event.key === 'Enter') {
+      this.nextPage()
+    }
   }
 
   validateField(fieldName, value, maxLength) {
@@ -186,6 +195,7 @@ export default class CreateMarketForm extends Component {
                 categories={categories}
                 isValid={this.isValid}
                 isBugBounty={isBugBounty}
+                keyPressed={this.keyPressed}
               />
             }
             { newMarket.currentStep === 1 &&
@@ -195,6 +205,7 @@ export default class CreateMarketForm extends Component {
                 validateField={this.validateField}
                 isValid={this.isValid}
                 isMobileSmall={isMobileSmall}
+                keyPressed={this.keyPressed}
               />
             }
             { newMarket.currentStep === 2 &&
@@ -206,6 +217,7 @@ export default class CreateMarketForm extends Component {
                 isValid={this.isValid}
                 isMobileSmall={isMobileSmall}
                 currentTimestamp={currentTimestamp}
+                keyPressed={this.keyPressed}
               />
             }
             { newMarket.currentStep === 3 &&
@@ -217,6 +229,7 @@ export default class CreateMarketForm extends Component {
                 removeOrderFromNewMarket={removeOrderFromNewMarket}
                 availableEth={availableEth}
                 isMobileSmall={isMobileSmall}
+                keyPressed={this.keyPressed}
               />
             }
             { newMarket.currentStep === 4 &&
@@ -226,6 +239,7 @@ export default class CreateMarketForm extends Component {
                 availableEth={availableEth}
                 availableRep={availableRep}
                 universe={universe}
+                keyPressed={this.keyPressed}
               />
             }
           </div>
@@ -241,7 +255,7 @@ export default class CreateMarketForm extends Component {
                   <button
                     className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: newMarket.currentStep === s.pages.length - 1 })}
                     disabled={!newMarket.isValid}
-                    onClick={newMarket.isValid ? this.nextPage : null}
+                    onClick={this.nextPage}
                   >Next: {s.pages[newMarket.currentStep + 1]}
                   </button>
                 }

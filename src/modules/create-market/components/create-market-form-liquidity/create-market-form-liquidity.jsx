@@ -30,6 +30,7 @@ export default class CreateMarketLiquidity extends Component {
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    keyPressed: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -364,6 +365,7 @@ export default class CreateMarketLiquidity extends Component {
       isMobileSmall,
       newMarket,
       validateNumber,
+      keyPressed,
     } = this.props
     const s = this.state
 
@@ -382,6 +384,7 @@ export default class CreateMarketLiquidity extends Component {
               value={newMarket.settlementFee}
               placeholder="0%"
               onChange={e => validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 1)}
+              onKeyPress={e => keyPressed(e)}
             />
             <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
           </div>
@@ -429,6 +432,7 @@ export default class CreateMarketLiquidity extends Component {
                   placeholder="0.0000 Shares"
                   value={BigNumber.isBigNumber(s.orderQuantity) ? s.orderQuantity.toNumber() : s.orderQuantity}
                   onChange={e => this.validateForm(e.target.value, undefined)}
+                  onKeyPress={e => keyPressed(e)}
                 />
               </li>
               <li>
@@ -441,6 +445,7 @@ export default class CreateMarketLiquidity extends Component {
                   placeholder="0.0000 ETH"
                   value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
+                  onKeyPress={e => keyPressed(e)}
                 />
               </li>
               <li>

@@ -21,6 +21,7 @@ export default class CreateMarketDefine extends Component {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -100,6 +101,7 @@ export default class CreateMarketDefine extends Component {
       isBugBounty,
       newMarket,
       validateField,
+      keyPressed,
     } = this.props
     const s = this.state
 
@@ -125,6 +127,7 @@ export default class CreateMarketDefine extends Component {
             maxLength={DESCRIPTION_MAX_LENGTH}
             placeholder="What question do you want the world to predict?"
             onChange={e => validateField('description', e.target.value, DESCRIPTION_MAX_LENGTH)}
+            onKeyPress={e => keyPressed(e)}
           />
           <div className={Styles['CreateMarketDefine__question-disclaimer']}>
           The Augur platform does not work well for markets that are subjective or ambiguous. If you&#39;re not sure that the market&#39;s outcome will be known beyond a reasonable doubt by the expiration date, you should not create this market.
@@ -143,6 +146,7 @@ export default class CreateMarketDefine extends Component {
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
             onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
+            onKeyPress={e => keyPressed(e)}
           />
           { newMarket.validations[newMarket.currentStep].category.length &&
             <span className={[`${StylesForm['CreateMarketForm__error--bottom']}`]}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].category }</span>
@@ -187,6 +191,7 @@ export default class CreateMarketDefine extends Component {
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
             onChange={e => this.validateTag('tag1', e.target.value, TAGS_MAX_LENGTH, false)}
+            onKeyPress={e => keyPressed(e)}
           />
           <input
             id="cm__input--tag2"
@@ -196,6 +201,7 @@ export default class CreateMarketDefine extends Component {
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
             onChange={e => this.validateTag('tag2', e.target.value, TAGS_MAX_LENGTH, false)}
+            onKeyPress={e => keyPressed(e)}
           />
         </li>
       </ul>
