@@ -1,27 +1,39 @@
+var BigNumber = require("bignumber.js");
 
+function createBigNumber(n) {
+  var result;
+  try {
+    result = new BigNumber(n, 10);
+  } catch (e) {
+    console.log("Error converting BigNumber", e);
+  }
+  return result;
+}
 
 function getPayoutNumerators(market, selectedOutcome, invalid) {
-  var maxPrice = market.maxPrice;
-  var minPrice = market.minPrice;
-  var numTicks = market.numTicks;
+  var maxPrice = createBigNumber(market.maxPrice);
+  var minPrice = createBigNumber(market.minPrice);
+  var numTicks = createBigNumber(market.numTicks);
   var numOutcomes = market.numOutcomes;
 
-  var payoutNumerators = Array(numOutcomes).fill(0);
+  var payoutNumerators = Array(numOutcomes).fill(new BigNumber(0));
   var isScalar = market.marketType === "scalar";
 
   if (invalid) {
-    var equalValue = numTicks / numOutcomes;
-    return Array(numOutcomes).fill(equalValue);
+    var equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes);
+    return Array(market.numOutcomes).fill(equalValue);
 
   } else if (isScalar) {
-    var priceRange = maxPrice - minPrice;
-    var reportNormalizedToZero = selectedOutcome - minPrice;
-    var longPayout = (reportNormalizedToZero * numTicks) / priceRange;
-    var shortPayout = numTicks - longPayout;
+		// selectedOutcome must be a BN as string
+    var priceRange = maxPrice.minus(minPrice);
+    var reportNormalizedToZero = createBigNumber(selectedOutcome).minus(minPrice);
+    var longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange);
+    var shortPayout = numTicks.minus(longPayout);
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {
-    // for binary and categorical the selected outcome is outcome.id
+		// for binary and categorical the selected outcome is outcome.id
+		// and must be a number
     payoutNumerators[selectedOutcome] = numTicks;
   }
 
