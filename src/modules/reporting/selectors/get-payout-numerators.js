@@ -15,8 +15,8 @@ export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
 
   } else if (isScalar) {
     // selectedOutcome must be a BN as string
-    const priceRange = maxPrice.minus(minPrice)
-    const reportNormalizedToZero = createBigNumber(selectedOutcome).minus(minPrice)
+    const priceRange = createBigNumber(maxPrice).minus(createBigNumber(minPrice))
+    const reportNormalizedToZero = createBigNumber(selectedOutcome).minus(createBigNumber(minPrice))
     const longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange)
     const shortPayout = numTicks.minus(longPayout)
     payoutNumerators[0] = shortPayout
