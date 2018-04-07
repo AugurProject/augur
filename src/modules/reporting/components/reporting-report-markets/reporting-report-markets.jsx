@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import MarketPreview from 'src/modules/reporting/containers/market-preview'
-import { TYPE_REPORT } from 'modules/market/constants/link-types'
 import Styles from './reporting-report-markets.styles'
 
 export const NoMarketsFound = ({ message }) => (
