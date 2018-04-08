@@ -56,6 +56,8 @@ class InputDropdown extends Component {
   handleWindowOnClick(event) {
     if (this.refInputDropdown && !this.refInputDropdown.contains(event.target)) {
       this.setState({ showList: false })
+    } else {
+      this.refInputDropdown.focus()
     }
   }
 
