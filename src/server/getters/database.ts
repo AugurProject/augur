@@ -146,8 +146,8 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
           const previousValue = result[key];
           if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
             return [key, value];
-          } else if (value instanceof BigNumber) {
-            return [key, value.plus(result[key] as BigNumber)];
+          } else if (BigNumber.isBigNumber(value)) {
+            return [key, (value as BigNumber).plus(result[key] as BigNumber)];
           } else {
             return [key, (value + previousValue)];
           }
@@ -157,4 +157,29 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
       }) as T;
     })
     .value();
+}
+
+export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, ...sumFields: Array<K>): Pick<T, K> {
+  return _
+    .chain(rows)
+    .map((row) => _.pick(row, sumFields))
+    .reduce((result: Pick<T, K>, row: Pick<T, K>): Pick<T, K> => {
+      if (typeof result === "undefined") return row;
+
+      const mapped = _.map(row, (value: T[K], key: K): Array<any> => {
+        const previousValue = result[key];
+        if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
+          return [key, value];
+        } else if (BigNumber.isBigNumber(value)) {
+          return [key, (value as BigNumber).plus(result[key] as BigNumber)];
+        } else if (typeof value === "number") {
+          return [key, (value + previousValue)];
+        }
+
+        return [key, value];
+      }) as Array<any>;
+
+      return _.fromPairs(mapped) as Pick<T, K>;
+    })
+    .value()!;
 }
