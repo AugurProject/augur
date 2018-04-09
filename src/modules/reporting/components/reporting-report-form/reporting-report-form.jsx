@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -86,13 +87,15 @@ export default class ReportingReportForm extends Component {
     })
   }
 
-  validateScalar(validations, value, humanName, min, max, isInvalid) {
+  validateScalar(validations, value, humanName, min, max, tickSize, isInvalid) {
     const { updateState } = this.props
     const updatedValidations = { ...validations }
     this.setState({ activeButton: ReportingReportForm.BUTTONS.SCALAR_VALUE })
     const minValue = parseFloat(min)
     const maxValue = parseFloat(max)
     const valueValue = parseFloat(value)
+    const bnValue = createBigNumber(value)
+    const bnTickSize = createBigNumber(tickSize)
 
     if (value === '') {
       this.focusTextInput()
@@ -107,6 +110,9 @@ export default class ReportingReportForm extends Component {
         break
       case (valueValue > maxValue || valueValue < minValue):
         updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
+        break
+      case bnValue.mod(bnTickSize).gt('0'):
+        updatedValidations.err = `The ${humanName} field must be a multiple of ${tickSize}.`
         break
       default:
         delete updatedValidations.err
@@ -167,7 +173,7 @@ export default class ReportingReportForm extends Component {
               <li className={FormStyles['field--short']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.SCALAR_VALUE })}
-                  onClick={(e) => { this.validateScalar(validations, '', 'selectedOutcome', market.minPrice, market.maxPrice, false) }}
+                  onClick={(e) => { this.validateScalar(validations, '', 'selectedOutcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                 />
                 <input
                   id="sr__input--outcome-scalar"
@@ -179,7 +185,7 @@ export default class ReportingReportForm extends Component {
                   placeholder={market.scalarDenomination}
                   value={s.inputSelectedOutcome}
                   className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('err') && validations.selectedOutcome })}
-                  onChange={(e) => { this.validateScalar(validations, e.target.value, 'outcome', market.minPrice, market.maxPrice, false) }}
+                  onChange={(e) => { this.validateScalar(validations, e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                 />
               </li>
               { validations.hasOwnProperty('err') &&
