@@ -14,13 +14,15 @@ export default class LoadingLogo extends Component {
     super(props)
 
     this.state = {
-      loading: this.props.isLoading,
+      loading: true,
     }
   }
 
-  componentDidUpdate() {
-    if (this.props.isLoading) {
-      this.state.loading = this.props.isLoading
+  componentWillReceiveProps(newProps) {
+    if (newProps.isLoading) {
+      this.setState({
+        loading: newProps.isLoading,
+      })
     }
   }
 
