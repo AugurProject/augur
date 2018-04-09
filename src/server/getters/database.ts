@@ -159,6 +159,7 @@ export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields:
     .value();
 }
 
+// TODO: This return type is not correct, an empty rows array returns undefined, but the '!' implies it does not
 export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, ...sumFields: Array<K>): Pick<T, K> {
   return _
     .chain(rows)
