@@ -56,6 +56,26 @@ describe("server/getters/get-fee-window-current", () => {
     },
   });
   test({
+    description: "get feeWindow with non-existent account on fee window 0x2",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      reporter: "0x0000000000000000000000000000000000n0n0n0",
+    },
+    assertions: (err, feeWindow) => {
+      assert.isNull(err);
+      assert.deepEqual(feeWindow, {
+        endBlockNumber: null,
+        endTime: 1511657473,
+        feeWindow: "0x2000000000000000000000000000000000000000",
+        feeWindowId: 457,
+        startBlockNumber: 1500001,
+        startTime: 1509065473,
+        totalStake: "0",
+        universe: "0x000000000000000000000000000000000000000b",
+      });
+    },
+  });
+  test({
     description: "nonexistent universe",
     params: {
       universe: "0x1010101010101010101010101010101010101010",
