@@ -534,3 +534,11 @@ export interface UniverseInfoRow<BigNumberType> extends Payout<BigNumberType> {
   supply: BigNumberType;
   numMarkets: BigNumberType;
 }
+
+export interface UIUniverseInfoRow<BigNumberType> extends NormalizedPayout<string> {
+  universe: Address;
+  parentUniverse: Address;
+  balance: BigNumberType;
+  supply: BigNumberType;
+  numMarkets: BigNumberType;
+}

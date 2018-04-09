@@ -1,7 +1,8 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { Address, UniverseInfoRow } from "../../types";
+import { Address, UniverseInfoRow, UIUniverseInfoRow } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { normalizePayouts, normalizedPayoutsToFixed } from "./database";
 
 interface ParentUniverseRow {
   parentUniverse: Address;
@@ -48,18 +49,15 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
     query.asCallback((err: Error|null, universeInfoRows: Array<UniverseInfoRow<BigNumber>>): void => {
       if (err) return callback(err);
       callback(null, universeInfoRows.map((row: UniverseInfoRow<BigNumber>) => {
-        const payout: Array<string> = [
-          row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7,
-        ].filter((payout: BigNumber|null): boolean => payout != null).map( (payout: BigNumber) => payout.toFixed());
-        const uiRow = formatBigNumberAsFixed<Partial<UniverseInfoRow<BigNumber>>, Partial<UniverseInfoRow<string>>>({
+        return formatBigNumberAsFixed<UIUniverseInfoRow<BigNumber>, UIUniverseInfoRow<string>>({
           universe: row.universe,
           parentUniverse: row.parentUniverse,
           balance: row.balance,
           supply: row.supply,
           numMarkets: row.numMarkets,
+          payout: normalizedPayoutsToFixed(normalizePayouts(row)).payout,
           isInvalid: row.isInvalid,
         });
-        return Object.assign({ payout }, uiRow);
       }));
     });
   });
