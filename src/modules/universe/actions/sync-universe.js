@@ -3,7 +3,7 @@ import { augur } from 'services/augurjs'
 import getReportingCycle from 'modules/universe/selectors/reporting-cycle'
 import { updateUniverse } from 'modules/universe/actions/update-universe'
 import { updateAssets } from 'modules/auth/actions/update-assets'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import logError from 'utils/log-error'
 
@@ -16,7 +16,7 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
     const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
     if (isForking) {
       // todo: use new load market data if not loaded when it's available
-      dispatch(loadMarketsInfo([forkingMarket]))
+      dispatch(loadMarketsInfoIfNotLoaded([forkingMarket]))
       async.parallel({
         forkEndTime: (next) => {
           augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {

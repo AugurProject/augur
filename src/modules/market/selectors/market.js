@@ -23,7 +23,7 @@ This is true for all selectors, but especially important for this one.
 import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
-import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
+import { convertUnixToFormattedDate } from 'utils/format-date'
 import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
@@ -202,9 +202,9 @@ export function assembleMarket(
 
       market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
-      market.endTime = (endTimeYear >= 0 && endTimeMonth >= 0 && endTimeDay >= 0 && formatDate(new Date(endTimeYear, endTimeMonth, endTimeDay))) || null
+      market.endTime = convertUnixToFormattedDate(marketData.endTime)
       market.endTimeLabel = (market.endTime < now) ? 'ended' : 'ends'
-      market.creationTime = formatDate(new Date(marketData.creationTime * 1000))
+      market.creationTime = convertUnixToFormattedDate(marketData.creationTime)
 
       market.isOpen = isOpen
       // market.isExpired = isExpired;
