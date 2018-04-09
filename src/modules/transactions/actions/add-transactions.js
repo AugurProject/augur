@@ -60,7 +60,7 @@ function buildTradeTransactionGroup(group, marketsData) {
 }
 
 function buildTradeTransaction(trade, marketsData) {
-  const thisMarketDataId = getMarketById(marketsData, trade.marketId)
+  const thisMarketDataId = marketsData[trade.marketId]
   const transaction = { ...trade, market: thisMarketDataId }
   transaction.status = SUCCESS
   transaction.id = `${transaction.transactionHash}-${transaction.orderId}`
@@ -141,12 +141,12 @@ export function addMarketCreationTransactions(marketsCreated) {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
     each(marketsCreated, (marketId) => {
-      const market = getMarketById(marketsData, marketId)
+      const market = marketsData[marketId]
       const transaction = { marketId, market }
       transaction.timestamp = transaction.creationTime
       transaction.createdBy = loginAccount.address
       transaction.id = marketId
-      transaction.timestamp = market.creationTime
+      transaction.timestamp = (market || {}).creationTime
       const meta = {}
       meta.market = transaction.marketId
       meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
@@ -172,7 +172,7 @@ export function addOpenOrderTransactions(openOrders) {
     const transactions = {}
     let index = 100
     eachOf(openOrders, (value, marketId) => {
-      const market = getMarketById(marketsData, marketId)
+      const market = marketsData[marketId]
       // TODO: remove index when I figure a comprehensive uique id strategy
       index += 1
       let sumBuy = 0
@@ -230,7 +230,7 @@ export function addReportingTransactions(reports) {
     eachOf(reports, (value, universe) => {
       eachOf(value, (value1, marketId) => {
         eachOf(value1, (report, index) => {
-          const market = getMarketById(marketsData, marketId)
+          const market = marketsData[marketId]
           const transaction = {
             universe, marketId, ...report, market,
           }
@@ -264,14 +264,6 @@ function buildHeader(item, type, status) {
   header.timestamp = convertUnixToFormattedDate(item.timestamp ? item.timestamp : item.creationTime)
   header.sortOrder = getSortOrder(type)
   return header
-}
-
-function getMarketById(marketsData, marketId) {
-  const id = Object.keys(marketsData).find((myMarketId) => {
-    const market = marketsData[myMarketId]
-    return market.id === marketId
-  })
-  return marketsData[id]
 }
 
 // TODO: this should be dynamic by user control
