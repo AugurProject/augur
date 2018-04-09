@@ -440,7 +440,7 @@ function drawTicks(options) {
     .attr('y', d => drawParams.yScale(d))
     .attr('dx', 0)
     .attr('dy', drawParams.chartDim.tickOffset)
-    .text(d => d.toFixed(fixedPrecision))
+    .text(d => (isNaN(d) ? '' : d.toFixed(fixedPrecision)))
 }
 
 function drawCandles(options) {
