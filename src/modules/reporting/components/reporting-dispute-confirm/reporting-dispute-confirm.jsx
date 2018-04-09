@@ -5,7 +5,7 @@ import FormStyles from 'modules/common/less/form'
 import ConfirmStyles from 'modules/common/less/confirm-table'
 
 const ReportingDisputeConfirm = p => (
-  <article className={FormStyles.Form__fields}>
+  <article>
     <div className={ConfirmStyles.Confirm}>
       <h2 className={ConfirmStyles.Confirm__heading}>Confirm Dispute</h2>
       <div className={ConfirmStyles['Confirm__wrapper--wide']}>
