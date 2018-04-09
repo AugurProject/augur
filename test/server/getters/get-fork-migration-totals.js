@@ -28,10 +28,10 @@ describe("server/getters/get-fork-migration-totals", () => {
         "CHILD_UNIVERSE": {
           "isInvalid": 0,
           "payout": [
-            0,
-            10000,
+            "0",
+            "10000",
           ],
-          "repTotal": 2000,
+          "repTotal": "2000",
           "universe": "CHILD_UNIVERSE",
         },
       });

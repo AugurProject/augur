@@ -13,14 +13,14 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("orderType", "varchar(4) NOT NULL CONSTRAINT \"enumTradeOrderTypes\" CHECK (\"orderType\" = 'buy' OR \"orderType\" = 'sell')");
       table.string("creator", 42).notNullable();
       table.string("filler", 42).notNullable();
-      table.specificType("numCreatorTokens", "numeric NOT NULL CONSTRAINT \"nonnegativeNumCreatorTokens\" CHECK (\"numCreatorTokens\" >= 0)");
-      table.specificType("numCreatorShares", "numeric NOT NULL CONSTRAINT \"nonnegativeNumCreatorShares\" CHECK (\"numCreatorShares\" >= 0)");
-      table.specificType("numFillerTokens", "numeric NOT NULL CONSTRAINT \"nonnegativeNumFillerTokens\" CHECK (\"numFillerTokens\" >= 0)");
-      table.specificType("numFillerShares", "numeric NOT NULL CONSTRAINT \"nonnegativeNumFillerShares\" CHECK (\"numFillerShares\" >= 0)");
-      table.specificType("reporterFees", "numeric NOT NULL CONSTRAINT \"nonnegativeReporterFees\" CHECK (\"reporterFees\" >= 0)");
-      table.specificType("marketCreatorFees", "numeric NOT NULL CONSTRAINT \"nonnegativeMarketCreatorFees\" CHECK (\"marketCreatorFees\" >= 0)");
-      table.specificType("price", "numeric").notNullable();
-      table.specificType("amount", "numeric").notNullable();
+      table.string("numCreatorTokens", 255);
+      table.string("numCreatorShares", 255);
+      table.string("numFillerTokens", 255);
+      table.string("numFillerShares", 255);
+      table.string("reporterFees", 255);
+      table.string("marketCreatorFees", 255);
+      table.string("price", 255).notNullable();
+      table.string("amount", 255).notNullable();
       table.integer("tradeGroupId");
 
       table.unique(["transactionHash", "logIndex"]);

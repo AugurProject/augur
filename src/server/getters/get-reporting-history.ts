@@ -1,10 +1,11 @@
 import * as Knex from "knex";
 import { Address, JoinedReportsMarketsRow, UIReport } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { queryModifier } from "./database";
 
-interface UIReports {
+interface UIReports<BigNumberType> {
   [universe: string]: {
-    [marketId: string]: Array<UIReport>,
+    [marketId: string]: Array<UIReport<BigNumberType>>,
   };
 }
 
@@ -42,31 +43,32 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
   if (feeWindow != null) query.where("feeWindow", feeWindow);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  queryModifier(query, "reportId", "asc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow>): void => {
+  queryModifier(query, "disputes.disputeId", "asc", sortBy, isSortDescending, limit, offset);
+  query.asCallback((err: Error|null, joinedReportsMarketsRows?: Array<JoinedReportsMarketsRow<BigNumber>>): void => {
     if (err) return callback(err);
     if (!joinedReportsMarketsRows) return callback(new Error("Internal error retrieving reporting history"));
-    const reports: UIReports = {};
-    joinedReportsMarketsRows.forEach((row: JoinedReportsMarketsRow): void => {
+    const reports: UIReports<string> = {};
+    joinedReportsMarketsRows.forEach((row: JoinedReportsMarketsRow<BigNumber>): void => {
       if (!reports[row.universe]) reports[row.universe] = {};
       if (!reports[row.universe][row.marketId]) reports[row.universe][row.marketId] = [];
-      const payoutNumerators: Array<string|number|null> = [row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7].filter((payout: string|number|null): boolean => payout != null);
-      const report: UIReport = {
-        transactionHash: row.transactionHash,
-        logIndex: row.logIndex,
-        creationBlockNumber: row.creationBlockNumber,
-        creationTime: row.creationTime,
-        blockHash: row.blockHash,
-        marketId: row.marketId,
-        feeWindow: row.feeWindow,
-        payoutNumerators,
-        amountStaked: row.amountStaked,
-        crowdsourcerId: row.crowdsourcerId,
-        isCategorical: row.marketType === "categorical",
-        isScalar: row.marketType === "scalar",
-        isInvalid: Boolean(row.isInvalid),
-        isSubmitted: true,
-      };
+      const payoutNumerators: Array<string> = ([row.payout0, row.payout1, row.payout2, row.payout3, row.payout4, row.payout5, row.payout6, row.payout7].filter((payout: BigNumber|null): boolean => payout != null) as Array<BigNumber>).map((n) => n.toFixed());
+      const report: UIReport<string> = Object.assign(
+        formatBigNumberAsFixed<Partial<UIReport<BigNumber>>, Partial<UIReport<string>>>({
+          transactionHash: row.transactionHash,
+          logIndex: row.logIndex,
+          creationBlockNumber: row.creationBlockNumber,
+          creationTime: row.creationTime,
+          blockHash: row.blockHash,
+          marketId: row.marketId,
+          feeWindow: row.feeWindow,
+          amountStaked: row.amountStaked,
+          crowdsourcerId: row.crowdsourcerId,
+          isCategorical: row.marketType === "categorical",
+          isScalar: row.marketType === "scalar",
+          isInvalid: Boolean(row.isInvalid),
+          isSubmitted: true,
+        }), { payoutNumerators }) as UIReport<string>;
+
       reports[row.universe][row.marketId].push(report);
     });
     callback(null, reports);

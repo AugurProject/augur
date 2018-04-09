@@ -3,6 +3,7 @@
 const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../build/blockchain/log-processors/order-created");
 const Augur = require("augur.js");
 const augur = new Augur();
@@ -89,12 +90,12 @@ describe("blockchain/log-processors/order-created", () => {
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
-          fullPrecisionPrice: 0.75,
-          fullPrecisionAmount: 3,
-          price: 0.75,
-          amount: 3,
-          tokensEscrowed: 2.25,
-          sharesEscrowed: 0,
+          fullPrecisionPrice: new BigNumber("0.75", 10),
+          fullPrecisionAmount: new BigNumber("3", 10),
+          price: new BigNumber("0.75", 10),
+          amount: new BigNumber("3", 10),
+          tokensEscrowed: new BigNumber("2.25", 10),
+          sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: "TRADE_GROUP_ID",
           isRemoved: null,
         }]);
@@ -112,12 +113,12 @@ describe("blockchain/log-processors/order-created", () => {
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
           blockNumber: 1400100,
-          fullPrecisionPrice: 0.75,
-          fullPrecisionAmount: 3,
-          price: 0.75,
-          amount: 3,
-          tokensEscrowed: 2.25,
-          sharesEscrowed: 0,
+          fullPrecisionPrice: new BigNumber("0.75", 10),
+          fullPrecisionAmount: new BigNumber("3", 10),
+          price: new BigNumber("0.75", 10),
+          amount: new BigNumber("3", 10),
+          tokensEscrowed: new BigNumber("2.25", 10),
+          sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: "TRADE_GROUP_ID",
           isRemoved: 1,
         }]);

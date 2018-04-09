@@ -2,6 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../../test.database");
+const { BigNumber } = require("bignumber.js");
 const { processTransferLog, processTransferLogRemoval } = require("../../../../build/blockchain/log-processors/token/transfer");
 
 describe("blockchain/log-processors/token/transfer", () => {
@@ -50,7 +51,7 @@ describe("blockchain/log-processors/token/transfer", () => {
           sender: "FROM_ADDRESS",
           recipient: "TO_ADDRESS",
           token: "LEGACY_REP_CONTRACT_ADDRESS",
-          value: 9000,
+          value: new BigNumber("9000", 10),
           blockNumber: 1400101,
         }]);
       },

@@ -1,14 +1,16 @@
 import * as _ from "lodash";
 import * as Knex from "knex";
-import { Address, OrdersRow, OrderState, UIOrders } from "../../types";
+import { BigNumber } from "bignumber.js";
+import { Address, OrdersRow, OrderState, UIOrder, UIOrders, GenericCallback } from "../../types";
 import { queryModifier } from "./database";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
-interface OrdersRowWithCreationTime extends OrdersRow {
+interface OrdersRowWithCreationTime extends OrdersRow<BigNumber> {
   creationTime: number;
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: GenericCallback<UIOrders<string>>): void {
   if (universe == null && marketId == null) return callback(new Error("Must provide universe, either via universe or marketId"));
   const queryData: {} = _.omitBy({
     universe,
@@ -29,12 +31,12 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
   query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
-    const orders: UIOrders = {};
+    const orders: UIOrders<string> = {};
     ordersRows.forEach((row: OrdersRowWithCreationTime): void => {
       if (!orders[row.marketId]) orders[row.marketId] = {};
       if (!orders[row.marketId][row.outcome]) orders[row.marketId][row.outcome] = {};
       if (!orders[row.marketId][row.outcome][row.orderType]) orders[row.marketId][row.outcome][row.orderType] = {};
-      orders[row.marketId][row.outcome][row.orderType][row.orderId!] = {
+      orders[row.marketId][row.outcome][row.orderType][row.orderId!] = formatBigNumberAsFixed<UIOrder<BigNumber>, UIOrder<string>>({
         orderId: row.orderId!,
         creationBlockNumber: row.blockNumber,
         transactionHash: row.transactionHash,
@@ -49,7 +51,7 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
         fullPrecisionAmount: row.fullPrecisionAmount,
         tokensEscrowed: row.tokensEscrowed,
         sharesEscrowed: row.sharesEscrowed,
-      };
+      });
     });
     callback(null, orders);
   });

@@ -1,8 +1,9 @@
 import * as Knex from "knex";
 import { Address, Bytes32 } from "../../types";
 import { queryModifier } from "./database";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
-export interface TransferRow {
+export interface TransferRow<BigNumberType> {
   transactionHash: Bytes32;
   logIndex: number;
   blockNumber: number;
@@ -11,13 +12,13 @@ export interface TransferRow {
   sender: Address;
   recipient: Address;
   token: Address;
-  value: number;
+  value: BigNumberType;
   symbol: string|null;
   outcome: number|null;
   marketId: Address|null;
 }
 
-export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null|undefined, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, transferHistory?: Array<TransferRow>) => void): void {
+export function getAccountTransferHistory(db: Knex, account: Address, token: Address|null|undefined, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, transferHistory?: Array<TransferRow<string>>) => void): void {
   const query = db("transfers").select([
     "transfers.transactionHash",
     "transfers.logIndex",
@@ -38,5 +39,9 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
   queryModifier(query, "creationBlockNumber", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback(callback);
+  query.asCallback((error: Error|null, results: Array<TransferRow<BigNumber>>) => {
+    if (error) return callback(error);
+
+    callback(null, results.map((result) => formatBigNumberAsFixed<TransferRow<BigNumber>, TransferRow<string>>(result)));
+  });
 }

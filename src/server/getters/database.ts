@@ -2,18 +2,25 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import {
   MarketsRowWithCreationTime,
   OutcomesRow,
   UIMarketInfo,
   UIOutcomeInfo,
+  UIStakeInfo,
   DisputeTokensRowWithTokenState,
   UIDisputeTokenInfo,
   PayoutRow,
   NormalizedPayout,
   NormalizedPayoutNumerators,
+  StakeDetails,
 } from "../../types";
-import { convertNumTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+
+export interface Dictionary {
+  [key: string]: any;
+}
 
 export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
@@ -22,7 +29,7 @@ export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, d
   return query;
 }
 
-export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIOutcomeInfo {
+export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {
   return {
     id: outcomesRow.outcome,
     volume: outcomesRow.volume,
@@ -31,29 +38,28 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow): UIO
   };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo>, winningPayoutRow: PayoutRow|null): UIMarketInfo {
-  let consensus: NormalizedPayout|null;
-  if (winningPayoutRow == null) {
-    consensus = null;
-  } else {
-    consensus = normalizePayouts(winningPayoutRow);
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
+  let consensus: NormalizedPayout<string>|null = null;
+  if (winningPayoutRow != null) {
+    consensus = normalizedPayoutsToFixed(normalizePayouts(winningPayoutRow));
   }
-  return {
+  return Object.assign(formatBigNumberAsFixed<UIMarketInfo<BigNumber>, UIMarketInfo<string>>({
     id: row.marketId,
     universe: row.universe,
     marketType: row.marketType,
     numOutcomes: row.numOutcomes,
     minPrice: row.minPrice,
     maxPrice: row.maxPrice,
-    cumulativeScale: new BigNumber(row.maxPrice, 10).minus(new BigNumber(row.minPrice, 10)).toFixed(),
+    cumulativeScale: row.maxPrice.minus(row.minPrice),
     author: row.marketCreator,
+    consensus: null,
     creationTime: row.creationTime,
     creationBlock: row.creationBlockNumber,
     creationFee: row.creationFee,
-    settlementFee: new BigNumber(row.reportingFeeRate, 10).plus(new BigNumber(row.marketCreatorFeeRate, 10)).toFixed(),
+    settlementFee: row.reportingFeeRate.plus(row.marketCreatorFeeRate),
     reportingFeeRate: row.reportingFeeRate,
     marketCreatorFeeRate: row.marketCreatorFeeRate,
-    marketCreatorFeesCollected: row.marketCreatorFeesCollected,
+    marketCreatorFeesCollected: row.marketCreatorFeesCollected!,
     initialReportSize: row.initialReportSize,
     category: row.category,
     tags: [row.tag1, row.tag2],
@@ -68,17 +74,18 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     details: row.longDescription,
     scalarDenomination: row.scalarDenomination,
     designatedReporter: row.designatedReporter,
-    designatedReportStake: row.designatedReportStake,
+    designatedReportStake: row.designatedReportStake!,
     resolutionSource: row.resolutionSource,
     numTicks: row.numTicks,
-    tickSize: convertNumTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
+    outcomes: _.map(outcomesInfo, (outcomeInfo) => formatBigNumberAsFixed<UIOutcomeInfo<BigNumber>, UIOutcomeInfo<string>>(outcomeInfo)),
+    tickSize: numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice),
+  }), {
     consensus,
-    outcomes: outcomesInfo,
-  };
+  });
 }
 
-export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState): UIDisputeTokenInfo {
-  return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState, {
+export function reshapeDisputeTokensRowToUIDisputeTokenInfo(disputeTokenRow: DisputeTokensRowWithTokenState<BigNumber>): UIDisputeTokenInfo<BigNumber> {
+  return Object.assign(_.omit(disputeTokenRow, ["payoutId", "winning"]) as DisputeTokensRowWithTokenState<BigNumber>, {
     isInvalid: !!disputeTokenRow.isInvalid,
     claimed: !!disputeTokenRow.claimed,
     winningToken: (disputeTokenRow.winning == null) ? null : !!disputeTokenRow.winning,
@@ -94,16 +101,85 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
-export function normalizePayouts(payoutRow: PayoutRow): NormalizedPayout {
+export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPayout<BigNumber> {
   const payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow];
+    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow<BigNumber>] as BigNumber | null;
     if (payoutNumerator == null) break;
     payout.push(payoutNumerator);
   }
   return Object.assign(
     {},
-    { payout } as NormalizedPayoutNumerators,
+    { payout } as NormalizedPayoutNumerators<BigNumber>,
     { isInvalid: !!payoutRow.isInvalid },
   );
+}
+
+export function normalizedPayoutsToFixed(payout: NormalizedPayout<BigNumber>): NormalizedPayout<string> {
+  return {
+    isInvalid: payout.isInvalid,
+    payout: payout.payout.map((payout: BigNumber) => payout.toFixed()),
+  };
+}
+
+export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeInfo<string> {
+  const info = formatBigNumberAsFixed<UIStakeInfo<BigNumber>, UIStakeInfo<string>>(stakeInfo);
+  info.stakes = stakeInfo.stakes.map((stake) => {
+    const details = formatBigNumberAsFixed<StakeDetails<BigNumber>, StakeDetails<string>>(stake);
+    const payouts = normalizedPayoutsToFixed(stake);
+    return Object.assign({}, details, payouts);
+  });
+
+  return info;
+}
+
+export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
+  return _
+    .chain(rows)
+    .groupBy((row) => _.values(_.pick(row, groupFields)))
+    .values()
+    .map((groupedRows: Array<T>): T => {
+      return _.reduce(groupedRows, (result: T | undefined, row: T): T => {
+        if (typeof result === "undefined") return row;
+
+        const mapped = _.map(row, (value: BigNumber|number|null, key: string): Array<any> => {
+          const previousValue = result[key];
+          if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
+            return [key, value];
+          } else if (BigNumber.isBigNumber(value)) {
+            return [key, (value as BigNumber).plus(result[key] as BigNumber)];
+          } else {
+            return [key, (value + previousValue)];
+          }
+        }) as Array<any>;
+
+        return _.fromPairs(mapped) as T;
+      }) as T;
+    })
+    .value();
+}
+
+export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, ...sumFields: Array<K>): Pick<T, K> {
+  return _
+    .chain(rows)
+    .map((row) => _.pick(row, sumFields))
+    .reduce((result: Pick<T, K>, row: Pick<T, K>): Pick<T, K> => {
+      if (typeof result === "undefined") return row;
+
+      const mapped = _.map(row, (value: T[K], key: K): Array<any> => {
+        const previousValue = result[key];
+        if (sumFields.indexOf(key) === -1 || typeof previousValue === "undefined" || value === null || typeof value === "undefined") {
+          return [key, value];
+        } else if (BigNumber.isBigNumber(value)) {
+          return [key, (value as BigNumber).plus(result[key] as BigNumber)];
+        } else if (typeof value === "number") {
+          return [key, (value + previousValue)];
+        }
+
+        return [key, value];
+      }) as Array<any>;
+
+      return _.fromPairs(mapped) as Pick<T, K>;
+    })
+    .value()!;
 }

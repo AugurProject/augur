@@ -1,5 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
+import { BigNumber } from "bignumber.js";
 import { parallel } from "async";
 import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../../types";
 import { augurEmitter } from "../../../events";
@@ -9,16 +10,16 @@ import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
 
 export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  const value = Number(log.amount || log.value);
+  const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
   const tokenBurnDataToInsert = {
     transactionHash: log.transactionHash,
     logIndex:        log.logIndex,
     sender:          log.target,
     recipient:       null,
-    token,
-    value,
+    value:           value.toFixed(),
     blockNumber:     log.blockNumber,
+    token,
   };
   augurEmitter.emit(log.eventName, Object.assign({}, log, tokenBurnDataToInsert));
   db.insert(tokenBurnDataToInsert).into("transfers").asCallback((err: Error|null): void => {
@@ -31,7 +32,7 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
 }
 
 export function processBurnLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  const value = Number(log.amount || log.value);
+  const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
   augurEmitter.emit(log.eventName, log);
   db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {

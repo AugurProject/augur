@@ -6,8 +6,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("marketId", 42).notNullable();
       table.string("account", 42).notNullable();
       table.string("shareToken", 42).primary().notNullable();
-      table.integer("numShares").defaultTo(0);
-      table.integer("numPayoutTokens").defaultTo(0);
+      table.string("numShares", 255).defaultTo("0");
+      table.string("numPayoutTokens", 255).defaultTo("0");
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
       table.string("transactionHash", 66).notNullable();
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)");

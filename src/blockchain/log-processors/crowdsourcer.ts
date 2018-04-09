@@ -1,6 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { updateMarketState, rollbackMarketState, insertPayout } from "./database";
 import { QueryBuilder } from "knex";
@@ -57,7 +58,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
           payoutId,
           completed: null,
         };
-        db.insert(crowdsourcerToInsert).into("crowdsourcers").returning("crowdsourcerId").asCallback((err: Error|null): void => {
+        db.insert(crowdsourcerToInsert).into("crowdsourcers").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
             log,
@@ -79,14 +80,14 @@ export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Aug
 }
 
 export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  const disputeToInsert = {
+  const disputeToInsert = formatBigNumberAsFixed({
     blockNumber: log.blockNumber,
     transactionHash: log.transactionHash,
     logIndex: log.logIndex,
     reporter: log.reporter,
     crowdsourcerId: log.disputeCrowdsourcer,
     amountStaked: log.amountStaked,
-  };
+  });
   db.insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     db.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {

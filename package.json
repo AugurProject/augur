@@ -14,6 +14,7 @@
     "test": "test"
   },
   "scripts": {
+    "go": "scripts/go.sh",
     "start": "node ./build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test",
@@ -46,8 +47,7 @@
   "dependencies": {
     "@types/async": "2.0.43",
     "@types/express": "4.11.0",
-    "@types/knex": "0.0.61",
-    "@types/lodash": "4.14.77",
+    "@types/lodash": "4.14.105",
     "@types/node": "8.0.31",
     "@types/sqlite3": "3.1.1",
     "@types/uuid": "3.4.3",
@@ -55,8 +55,10 @@
     "async": "1.5.2",
     "augur.js": "4.11.0-3",
     "bignumber.js": "6.0.0",
+    "chalk": "2.3.2",
     "express": "4.16.2",
-    "knex": "0.13.0",
+    "knex": "0.14.4",
+    "lodash": "4.17.5",
     "lodash.isnull": "3.0.0",
     "lodash.merge": "4.6.0",
     "lodash.omit": "4.5.0",
@@ -68,14 +70,15 @@
     "ws": "3.2.0"
   },
   "devDependencies": {
+    "@types/knex": "0.14.8",
     "chai": "3.5.0",
     "coveralls": "2.11.3",
     "eslint": "3.17.1",
     "istanbul": "0.4.5",
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
-    "node-gyp": "^3.6.2",
-    "node-pre-gyp": "^0.6.39",
+    "node-gyp": "3.6.2",
+    "node-pre-gyp": "0.6.39",
     "proxyquire": "1.7.11",
     "replace-in-file": "3.0.0",
     "shared-git-hooks": "1.2.1",

@@ -33,7 +33,7 @@ describe("server/address-format-reviver", () => {
 
     it("parse and format mock getCategories request (single Address)", () => {
       const mockRpcRequest = {
-        id: 5,
+        id: "5",
         jsonrpc: "2.0",
         method: "getCategories",
         params: { universe: "0x0" },
@@ -47,7 +47,7 @@ describe("server/address-format-reviver", () => {
 
     it("parse and format mock getUnclaimedMarketCreatorFees (Array<Address>)", () => {
       const mockRpcRequest = {
-        "id": 4,
+        "id": "4",
         "jsonrpc": "2.0",
         "method": "getUnclaimedMarketCreatorFees",
         "params": {

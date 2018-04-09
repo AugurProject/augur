@@ -1,5 +1,6 @@
 "use strict";
 
+const { BigNumber } = require("bignumber.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getFeeWindows } = require("../../../build/server/getters/get-fee-windows");
@@ -47,14 +48,14 @@ describe("server/getters/get-fee-windows", () => {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
-          balance: 100,
-          expectedFees: 100 * 1000 / 300,
+          balance: "100",
+          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toFixed(),
         },
         "0x2000000000000000000000000000000000000000": {
           startTime: 1509065473,
           endTime: 1511657473,
-          balance: 500,
-          expectedFees: 500 * 2000 / 1100,
+          balance: "500",
+          expectedFees: new BigNumber("500").times(2000).dividedBy(1100).toFixed(),
         },
       });
     },
@@ -86,8 +87,8 @@ describe("server/getters/get-fee-windows", () => {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
           endTime: 1506473515,
-          balance: 100,
-          expectedFees: 100 * 1000 / 300,
+          balance: "100",
+          expectedFees: new BigNumber("100").times(1000).dividedBy(300).toFixed(),
         },
       });
     },
