@@ -153,13 +153,27 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
 
 // event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256 reportingFeesReceived, uint256[] payoutNumerators);
 export function processDisputeCrowdsourcerRedeemedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: DisputeCrowdsourcerRedeemed");
-  console.log(log);
-  callback(null);
+  const redeemedToInsert = {
+    reporter: log.reporter,
+    crowdsourcer: log.disputeCrowdsourcer,
+    blockNumber: log.blockNumber,
+    transactionHash: log.transactionHash,
+    logIndex: log.logIndex,
+    amountRedeemed: log.amountRedeemed, // attoRep
+    repReceived: log.repReceived,
+    reportingFeesReceived: log.reportingFeesReceived, // attoEth
+  };
+  db.insert(redeemedToInsert).into("crowdsourcer_redeemed").asCallback((err: Error|null): void => {
+    if (err) return callback(err);
+    augurEmitter.emit("DisputeCrowdsourcerRedeemedLog", log);
+    callback(null);
+  });
 }
 
 export function processDisputeCrowdsourcerRedeemedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("TODO: DisputeCrowdsourcerRedeemed removal");
-  console.log(log);
-  callback(null);
+  db.from("crowdsourcer_redeemed").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
+    if (err) return callback(err);
+    augurEmitter.emit("FeeWindowRedeemed", log);
+    callback(null);
+  });
 }
