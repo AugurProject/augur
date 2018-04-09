@@ -25,7 +25,9 @@ export default class LoadingLogo extends Component {
   }
 
   animateEnd() {
-    this.state.loading = this.props.isLoading
+    this.setState({
+      loading: this.props.isLoading,
+    })
   }
 
   render() {
