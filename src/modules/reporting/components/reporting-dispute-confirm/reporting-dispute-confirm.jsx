@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import FormStyles from 'modules/common/less/form'
 import ConfirmStyles from 'modules/common/less/confirm-table'
 
 const ReportingDisputeConfirm = p => (
