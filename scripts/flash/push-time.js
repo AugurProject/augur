@@ -25,6 +25,9 @@ function help(callback) {
   console.log(chalk.red("                           "));
   console.log(chalk.red("PUSH ===> PUSH,-2w"));
   console.log(chalk.red("Here we are pushing current timestamp by substracting 2 weeks"));
+  console.log(chalk.red("                           "));
+  console.log(chalk.red("PUSH ===> PUSH,+5s"));
+  console.log(chalk.red("Here we are increasing the current timestamp by 5 seconds"));
   callback(null);
 }
 
@@ -60,10 +63,12 @@ function pushTime(augur, params, auth, callback) {
           var digit = parseInt(params.match(regex), 10);
           var subtraction = params.indexOf("-") === -1 ? false : true;
           var secondsPerDay = 86400;
-          if (params.indexOf("d") === -1) {
-            modTimeBy = secondsPerDay * 7; // week
-          } else {
+          if (params.indexOf("d") !== -1) {
             modTimeBy = secondsPerDay; // day
+          } else if (params.indexOf("w") !== -1) {
+            modTimeBy = secondsPerDay * 7; // week
+          } else if (params.indexOf("s") !== -1) {
+            modTimeBy = 1; // seconds
           }
           var totalMovement = modTimeBy * digit;
           var newTimestamp = subtraction ? timestamp - totalMovement : timestamp + totalMovement;
