@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import ScrollSnap from 'scroll-snap'
 
 import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header'
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
@@ -11,6 +13,7 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired,
     orderBook: PropTypes.object.isRequired,
@@ -27,6 +30,13 @@ export default class MarketOutcomeCharts extends Component {
 
   constructor(props) {
     super(props)
+
+    this.snapConfig = {
+      scrollSnapDestination: '100% 0%',
+      scrollTime: 300,
+    }
+
+    this.snapScroller = null
 
     this.state = {
       selectedPeriod: {},
@@ -50,12 +60,24 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateChartWidths = this.updateChartWidths.bind(this)
+    this.snapScrollHandler = this.snapScrollHandler.bind(this)
   }
 
   componentDidMount() {
     this.updateChartWidths()
 
+    this.snapScrollHandler()
+
     window.addEventListener('resize', this.updateChartWidths)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.isMobile &&
+      prevProps.isMobile !== this.props.isMobile
+    ) {
+      this.snapScrollHandler()
+    }
   }
 
   componentWillUnmount() {
@@ -107,6 +129,27 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
+  snapScrollHandler() {
+    if (
+      this.snapScroller === null &&
+      this.charts != null &&
+      this.snapConfig != null
+    ) {
+      console.log('he')
+      this.snapScroller = new ScrollSnap(this.charts, this.snapConfig)
+    }
+
+    console.log(this.snapScroller)
+
+    if (this.snapScroller != null) {
+      if (this.props.isMobile) {
+        this.snapScroller.bind((o, t) => { console.log('o, t -- ', o, t) })
+      } else {
+        this.snapScroller.unbind()
+      }
+    }
+  }
+
   render() {
     const {
       currentBlock,
@@ -124,6 +167,10 @@ export default class MarketOutcomeCharts extends Component {
     } = this.props
     const s = this.state
 
+    const isMobile = true
+
+    // console.log('isMobile -- ', isMobile)
+
     return (
       <section className={Styles.MarketOutcomeCharts}>
         <MarketOutcomeChartsHeader
@@ -136,11 +183,18 @@ export default class MarketOutcomeCharts extends Component {
           updatePrecision={this.updatePrecision}
           updateSelectedPeriod={this.updateSelectedPeriod}
         />
-        <div className={Styles.MarketOutcomeCharts__Charts}>
+        <div
+          ref={(charts) => { this.charts = charts }}
+          className={classNames(Styles.MarketOutcomeCharts__charts, {
+            [Styles['MarketOutcomeCharts__charts--mobile']]: isMobile,
+          })}
+        >
           {excludeCandlestick ||
             <div
               ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
-              className={Styles.MarketOutcomeCharts__candlestick}
+              className={classNames(Styles.MarketOutcomeCharts__candlestick, {
+                [Styles['MarketOutcomeCharts__candlestick--mobile']]: isMobile,
+              })}
             >
               <MarketOutcomeCandlestick
                 sharedChartMargins={s.sharedChartMargins}
@@ -160,7 +214,9 @@ export default class MarketOutcomeCharts extends Component {
           }
           <div
             ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
-            className={Styles.MarketOutcomeCharts__orders}
+            className={classNames(Styles.MarketOutcomeCharts__orders, {
+              [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
+            })}
           >
             <div className={Styles.MarketOutcomeCharts__depth}>
               <MarketOutcomeDepth

@@ -22,6 +22,7 @@ const mapStateToProps = (state, ownProps) => {
   const hasOrders = !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length
 
   return {
+    isMobile: state.isMobile,
     minPrice: newMarket.type === SCALAR ? newMarket.scalarSmallNum.toNumber() : 0,
     maxPrice: newMarket.type === SCALAR ? newMarket.scalarBigNum.toNumber() : 1,
     orderBook: cumulativeOrderBook,

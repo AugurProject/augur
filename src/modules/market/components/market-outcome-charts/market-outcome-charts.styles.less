@@ -23,9 +23,10 @@
   }
 }
 
-.MarketOutcomeCharts__Charts {
+.MarketOutcomeCharts__charts {
   display: flex;
   height: 100%;
+  overflow: hidden;
   position: relative;
   width: 100%;
   z-index: @default-z-index;
@@ -35,9 +36,18 @@
   }
 }
 
+.MarketOutcomeCharts__charts--mobile {
+  overflow-x: auto;
+}
+
 .MarketOutcomeCharts__candlestick {
   flex: 2.5;
   position: relative;
+}
+
+.MarketOutcomeCharts__candlestick--mobile {
+  flex: none;
+  width: 100vw;
 }
 
 .MarketOutcomeCharts__candlestick-null {
@@ -53,6 +63,11 @@
 .MarketOutcomeCharts__orders {
   display: flex;
   flex: 2;
+}
+
+.MarketOutcomeCharts__orders--mobile {
+  flex: none;
+  width: 100vw;
 }
 
 .MarketOutcomeCharts__depth {
