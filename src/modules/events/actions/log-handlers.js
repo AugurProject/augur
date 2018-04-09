@@ -19,7 +19,11 @@ import makePath from 'modules/routes/helpers/make-path'
 import { MY_MARKETS } from 'modules/routes/constants/views'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 
-export const handleMarketStateLog = log => dispatch => dispatch(loadMarketsInfo([log.marketId]))
+export const handleMarketStateLog = log => (dispatch) => {
+  dispatch(loadMarketsInfo([log.marketId], () => {
+    dispatch(loadReporting())
+  }))
+}
 
 export const handleMarketCreatedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.marketCreator === getState().loginAccount.address
