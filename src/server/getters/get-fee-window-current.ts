@@ -3,10 +3,11 @@ import { Address, AsyncCallback, FeeWindowRow, UIFeeWindowCurrent } from "../../
 import { parallel } from "async";
 import { BigNumber } from "bignumber.js";
 import { sumBy } from "./database";
+import { ZERO } from "../../constants";
 
 interface StakeRows {
-  totalDisputeStake: BigNumber|null;
-  totalInitialReportSize: BigNumber|null;
+  totalDisputeStake: BigNumber|null|undefined;
+  totalInitialReportSize: BigNumber|null|undefined;
 }
 
 export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address|null, callback: (err?: Error|null, result?: UIFeeWindowCurrent|null) => void): void {
@@ -46,22 +47,22 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
       parallel({
         totalInitialReportSize: (next: AsyncCallback) => {
           initialReportQuery.asCallback((err: Error|null, results: Array<{initialReportSize: BigNumber}>) => {
-            if (err) return next(err);
+            if (err || results.length === 0) return next(err);
 
-            next(null, sumBy(results, "initialReportSize").initialReportSize);
+            const pick = sumBy(results, "initialReportSize");
+            next(null, pick.initialReportSize);
           });
         },
         totalDisputeStake: (next: AsyncCallback) => {
           disputesQuery.asCallback((err: Error|null, results: Array<{amountStaked: BigNumber}>) => {
-            if (err) return next(err);
+            if (err || results.length === 0) return next(err);
 
             next(null, sumBy(results, "amountStaked").amountStaked);
           });
         },
       }, (err: Error|null, stakes: StakeRows): void => {
         if (err) return callback(err);
-        if (stakes == null || stakes.totalInitialReportSize == null || stakes.totalDisputeStake == null) return callback(new Error("Bad results from stake query"));
-        const totalStake = stakes.totalInitialReportSize.plus(stakes.totalDisputeStake);
+        const totalStake = ( stakes.totalInitialReportSize || ZERO ).plus((stakes.totalDisputeStake || ZERO));
         callback(null, Object.assign(
           {},
           feeWindowRow,
