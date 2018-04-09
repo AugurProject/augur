@@ -12,16 +12,8 @@ const ReportingDisputeConfirm = p => (
         <div className={ConfirmStyles.Confirm__creation}>
           <ul className={ConfirmStyles['Confirm__list--left-align']}>
             <li>
-              <span>Current Outcome</span>
-              <span>{ p.currentOutcome.name }</span>
-            </li>
-            <li>
               <span>Proposed Outcome</span>
               <span>{ !p.isMarketInValid ? p.selectedOutcome : 'Invalid' }</span>
-            </li>
-            <li>
-              <span>Dispute Bond</span>
-              <span>{ p.disputeBondFormatted } REP</span>
             </li>
             { p.stake &&
               <li>
@@ -42,11 +34,9 @@ const ReportingDisputeConfirm = p => (
 
 ReportingDisputeConfirm.propTypes = {
   market: PropTypes.object.isRequired,
-  currentOutcome: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   stake: PropTypes.number.isRequired,
   gasEstimate: PropTypes.string.isRequired,
-  disputeBondFormatted: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }
 

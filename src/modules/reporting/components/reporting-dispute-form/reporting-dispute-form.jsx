@@ -89,7 +89,6 @@ export default class ReportingDisputeForm extends Component {
       accountDisputeData,
       getDisputeInfo,
       market,
-      updateState,
     } = this.props
     getDisputeInfo([market.id], (err, disputeInfos) => {
       if (err) return console.error(err)
@@ -104,10 +103,6 @@ export default class ReportingDisputeForm extends Component {
       this.state.disputeBondValue = parseInt(bondSizeOfNewStake, 10)
       this.state.disputeBondFormatted = formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted
 
-      updateState({
-        disputeBondFormatted: this.state.disputeBondFormatted,
-        currentOutcome: this.state.currentOutcome,
-      })
       // outcomes need to be populated before validating saved data
       if (accountDisputeData) {
         this.validateSavedValues()
