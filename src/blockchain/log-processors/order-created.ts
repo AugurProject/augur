@@ -4,21 +4,9 @@ import { BigNumber } from "bignumber.js";
 import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { denormalizePrice } from "../../utils/denormalize-price";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
 import { BN_WEI_PER_ETHER} from "../../constants";
 import { QueryBuilder } from "knex";
-
-interface OrderCreatedOnContractData {
-  orderType: string;
-  price: string;
-  amount: string;
-  sharesEscrowed: string;
-  moneyEscrowed: string;
-  creator: Address;
-  betterOrderId: Bytes32;
-  worseOrderId: Bytes32;
-}
 
 export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const amount: BigNumber = new BigNumber(log.amount, 10);

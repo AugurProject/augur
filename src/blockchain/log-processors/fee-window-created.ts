@@ -42,6 +42,7 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
       feeToken,
     };
     augurEmitter.emit("FeeWindowCreated", Object.assign({}, log, feeWindowToInsert));
+    console.log(Object.assign({}, log, feeWindowToInsert));
     db.from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
   });
 }

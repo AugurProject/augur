@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import BigNumber from "bignumber.js";
 
 interface Mapping {

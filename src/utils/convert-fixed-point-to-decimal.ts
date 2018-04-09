@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { fix } from "speedomatic";
 
 export function fixedPointToDecimal(fixedPointValue: BigNumber, conversionFactor: BigNumber): BigNumber {
   return fixedPointValue.dividedBy(conversionFactor);

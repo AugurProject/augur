@@ -1,5 +1,4 @@
 import { BigNumber } from "bignumber.js";
-import * as speedomatic from "speedomatic";
 
 export function formatBigNumberAsFixed<InputType, OutputType> (row: InputType): OutputType {
   if (row === null || typeof row !== "object") return row;

@@ -1,5 +1,4 @@
 import Augur from "augur.js";
-import { eachSeries } from "async";
 import * as Knex from "knex";
 import { FormattedEventLog, EventLogProcessor, ErrorCallback } from "../types";
 
