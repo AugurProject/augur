@@ -4,6 +4,7 @@ import { loadAccountPositions } from 'modules/my-positions/actions/load-account-
 import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
+import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { removeMarket } from 'modules/markets/actions/update-markets-data'
@@ -143,5 +144,10 @@ export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
 
 export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
+  dispatch(defaultLogHandler(log))
+}
+
+export const handleFeeWindowCreatedLog = log => (dispatch) => {
+  dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
