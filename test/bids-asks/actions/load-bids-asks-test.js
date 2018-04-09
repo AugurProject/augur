@@ -104,11 +104,11 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketId: 'MARKET_0',
-        outcome: 1,
+        outcome: 0,
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketId: 'MARKET_0',
-        outcome: 2,
+        outcome: 1,
       }])
     },
   })
@@ -137,15 +137,15 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketId: 'MARKET_0',
+        outcome: 0,
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketId: 'MARKET_0',
         outcome: 1,
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketId: 'MARKET_0',
         outcome: 2,
-      }, {
-        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
-        marketId: 'MARKET_0',
-        outcome: 3,
       }])
     },
   })
@@ -174,7 +174,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
       assert.deepEqual(actions, [{
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketId: 'MARKET_0',
-        outcome: 1,
+        outcome: 0,
       }])
     },
   })

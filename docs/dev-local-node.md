@@ -12,6 +12,12 @@ You'll need to clone the following repositories prior to starting:
 * [augur.js](https://github.com/AugurProject/augur.js)
 * [augur-node](https://github.com/AugurProject/augur-node)
 * [augur](https://github.com/AugurProject/augur)
+* node and npm installed
+* yarn installed
+
+If you know the versions of augur-node and augur ui use the same version of augur.js, then you can use the non-linking version [quick start](./dev-local-non-linking.md)
+
+If you are making changes to augur.js and want to link in augur-node and augur-ui then use the following method below.
 
 ## Running Ethereum Local Node
 
@@ -20,22 +26,20 @@ There are two docker images available to host ethereum node locally:
 * blank chain node (dev-node-geth)
 
 
-
 ### populated with canned data
-We have a pre-populated geth node, it has the canned market data, the `deploy` has already been done for you, save lots of dev time.
+We have a pre-populated geth node docker image, it has the canned market data, the `deploy` has already been done for you, save lots of dev time.
 
-    docker pull augurproject/dev-pop-geth:latest
-    docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-pop-geth:latest
+There is a history of versions of populate node docker images based on the augur-core version, look in [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/)
 
-There is a history of these populate nodes based on the augur-core version, look in [docker hub](https://hub.docker.com/r/augurproject/dev-pop-geth/tags/)
+Since the contracts have already been deploy the contract address are know, the :core-####### docker image will match the version of augur-core that augur.js has a package dependency.
 
-Since the contracts have already the contract address are already know, the :latest docker image should be the same as in the latest augur.js repo, src/contracts/addresses.json
-
-If you are using a past version of the dev-pop-geth docker image you can get the contract addresses with this commmand:
-
+If you are using a past version of the dev-pop-geth docker image you can get the contract addresses and upload block number with these commmands:
+    
+    #run in augur.js root 
     docker run --rm --entrypoint cat augurproject/dev-pop-geth:core-####### /augur.js/src/contracts/addresses.json > ./src/contracts/addresses.json
+    docker run --rm --entrypoint cat augurproject/dev-pop-geth:core-####### /augur.js/src/contracts/upload-block-numbers.json > ./src/contracts/upload-block-numbers.json
 
-where `core-######` is the version of the docker image ie. `core-0.12.2`. The above command puts the correct addresses so that augur-node and augur ui can use them when `yarn link augur.js` is used. See furthur down.
+where `core-######` is the version of the docker image ie. `core-0.13.0`. The above command puts the correct addresses so that augur-node and augur ui can use them when `yarn link augur.js` is used. See furthur down.
 
 
 ### blank chain geth node
@@ -55,6 +59,8 @@ NOTE -- intentionally mixing the use of `npm` and `yarn` because `npm link` has 
     npm install
     npm run build
     yarn link
+    npm run docker:geth:pop # (most popular way) start populated docker in the background
+    npm run docker:geth:pop-normal-time # start a normal time docker image
 
 ### augur-node
 

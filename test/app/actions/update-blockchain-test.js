@@ -16,14 +16,12 @@ describe(`modules/app/actions/update-blockchain.js`, () => {
     store.dispatch(action.updateBlockchain({
       currentBlockNumber: 10000,
       currentBlockTimestamp: 4886718345,
-      currentBlockMillisSinceEpoch: 12345,
     }))
     assert.deepEqual(store.getActions(), [{
       type: 'UPDATE_BLOCKCHAIN',
       data: {
         currentBlockNumber: 10000,
         currentBlockTimestamp: 4886718345,
-        currentBlockMillisSinceEpoch: 12345,
       },
     }])
     store.clearActions()

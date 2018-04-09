@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatPercent, formatShares, formatEther } from 'utils/format-number'
 import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit-loss-percents'
@@ -25,10 +25,10 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null
   const sharesFilled = (outcomeTradeInProgress && outcomeTradeInProgress.sharesFilled) || null
   const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null
-  const totalFee = new BigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || '0', 10)
+  const totalFee = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || '0', 10)
   const feePercent = (outcomeTradeInProgress && outcomeTradeInProgress.feePercent) || '0'
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || '0'
-  const totalCost = new BigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || '0', 10)
+  const totalCost = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || '0', 10)
   const marketType = (market && market.marketType) || null
   const minPrice = (market && (typeof market.minPrice === 'number' || typeof market.minPrice === 'string')) ? market.minPrice : null
   const maxPrice = (market && (typeof market.maxPrice === 'number' || typeof market.maxPrice === 'string')) ? market.maxPrice : null
@@ -100,7 +100,7 @@ export const generateTradeSummary = memoize((tradeOrders) => {
 
       // total gas
       if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
-        p.totalGas = p.totalGas.plus(new BigNumber(tradeOrder.data.gasFees.value, 10))
+        p.totalGas = p.totalGas.plus(createBigNumber(tradeOrder.data.gasFees.value, 10))
       }
 
       // trade order
@@ -124,9 +124,9 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   const { description, marketType, id: marketId } = market
   const { id: outcomeId, name: outcomeName } = outcome
   return tradeActions.map((tradeAction) => {
-    const numShares = new BigNumber(tradeAction.shares, 10)
-    const costEth = new BigNumber(tradeAction.costEth, 10).abs()
-    const avgPrice = new BigNumber(costEth, 10).dividedBy(new BigNumber(numShares, 10))
+    const numShares = createBigNumber(tradeAction.shares, 10)
+    const costEth = createBigNumber(tradeAction.costEth, 10).abs()
+    const avgPrice = createBigNumber(costEth, 10).dividedBy(createBigNumber(numShares, 10))
     const noFeePrice = marketType === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],

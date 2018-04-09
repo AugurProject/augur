@@ -1,5 +1,5 @@
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import proxyquire from 'proxyquire'
 import sinon from 'sinon'
@@ -28,7 +28,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions,
       }).default
-      sinon.stub(Speedomatic, 'bignum').callsFake(n => new BigNumber(n, 10))
+      sinon.stub(Speedomatic, 'bignum').callsFake(n => createBigNumber(n, 10))
       sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds').callsFake((p) => {
         store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', markets: p.markets })
         p.onSuccess(p.markets)

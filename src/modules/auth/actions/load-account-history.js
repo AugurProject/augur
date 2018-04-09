@@ -6,10 +6,10 @@ import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
 import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
 
-export const loadAccountHistory = (beginDate, endDate) => (dispatch, getState) => {
+export const loadAccountHistory = (beginTime, endTime) => (dispatch, getState) => {
   const options = {
-    earliestCreationTime: beginDate,
-    latestCreationTime: endDate,
+    earliestCreationTime: beginTime,
+    latestCreationTime: endTime,
   }
 
   loadTransactions(dispatch, getState, options, () => {

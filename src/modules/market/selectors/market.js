@@ -20,11 +20,11 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
 import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
-import { selectCurrentTimestampInSeconds } from 'src/select-state'
+import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -84,8 +84,7 @@ export const selectMarket = (marketId) => {
   if (!marketId || !marketsData || !marketsData[marketId]) {
     return {}
   }
-
-  const endDate = convertUnixToFormattedDate(marketsData[marketId].endDate)
+  const endTime = convertUnixToFormattedDate(marketsData[marketId].endTime)
 
   return assembleMarket(
     marketId,
@@ -104,9 +103,9 @@ export const selectMarket = (marketId) => {
     tradesInProgress[marketId],
 
     // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
-    endDate.value.getFullYear(),
-    endDate.value.getMonth(),
-    endDate.value.getDate(),
+    endTime.value.getFullYear(),
+    endTime.value.getMonth(),
+    endTime.value.getDate(),
 
     universe && universe.currentReportingWindowAddress,
 
@@ -133,9 +132,9 @@ export function assembleMarket(
   marketAccountPositions,
   marketAccountTrades,
   marketTradeInProgress,
-  endDateYear,
-  endDateMonth,
-  endDateDay,
+  endTimeYear,
+  endTimeMonth,
+  endTimeDay,
   currentReportingWindowAddress,
   orderBooks,
   orderCancellation,
@@ -158,9 +157,9 @@ export function assembleMarket(
       marketAccountPositions,
       marketAccountTrades,
       marketTradeInProgress,
-      endDateYear,
-      endDateMonth,
-      endDateDay,
+      endTimeYear,
+      endTimeMonth,
+      endTimeDay,
       currentReportingWindowAddress,
       orderBooks,
       orderCancellation,
@@ -176,7 +175,10 @@ export function assembleMarket(
         id: marketId,
       }
 
-      const now = new Date()
+      if (typeof market.minPrice !== 'undefined') market.minPrice = createBigNumber(market.minPrice)
+      if (typeof market.maxPrice !== 'undefined') market.maxPrice = createBigNumber(market.maxPrice)
+
+      const now = new Date(selectCurrentTimestamp(store.getState()))
 
       switch (market.marketType) {
         case BINARY:
@@ -200,8 +202,8 @@ export function assembleMarket(
 
       market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
-      market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null
-      market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends'
+      market.endTime = (endTimeYear >= 0 && endTimeMonth >= 0 && endTimeDay >= 0 && formatDate(new Date(endTimeYear, endTimeMonth, endTimeDay))) || null
+      market.endTimeLabel = (market.endTime < now) ? 'ended' : 'ends'
       market.creationTime = formatDate(new Date(marketData.creationTime * 1000))
 
       market.isOpen = isOpen
@@ -249,7 +251,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           } else {
-            const midPoint = (new BigNumber(market.minPrice, 10).plus(new BigNumber(market.maxPrice, 10))).dividedBy(2)
+            const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -326,7 +328,7 @@ export function assembleMarket(
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name
         }
         if (market.consensus.proportionCorrect) {
-          market.consensus.percentCorrect = formatPercent(new BigNumber(market.consensus.proportionCorrect, 10).times(100))
+          market.consensus.percentCorrect = formatPercent(createBigNumber(market.consensus.proportionCorrect, 10).times(100))
         }
       } else {
         market.consensus = null

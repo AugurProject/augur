@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -17,31 +17,32 @@ import Styles from 'modules/create-market/components/create-market-preview/creat
 export default class CreateMarketPreview extends Component {
 
   static propTypes = {
+    currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
   }
 
   static getExpirationDate(p) {
-    if (!Object.keys(p.newMarket.endDate).length) {
+    if (!Object.keys(p.newMarket.endTime).length) {
       return '-'
     }
 
-    const endDate = moment(p.newMarket.endDate.timestamp * 1000)
-    endDate.set({
+    const endTime = moment(p.newMarket.endTime.timestamp * 1000)
+    endTime.set({
       hour: p.newMarket.hour,
       minute: p.newMarket.minute,
     })
 
-    if (p.newMarket.meridiem === 'AM' && endDate.hours() >= 12) {
-      endDate.hours(endDate.hours() - 12)
-    } else if (p.newMarket.meridiem === 'PM' && endDate.hours() < 12) {
-      endDate.hours(endDate.hours() + 12)
+    if (p.newMarket.meridiem === 'AM' && endTime.hours() >= 12) {
+      endTime.hours(endTime.hours() - 12)
+    } else if (p.newMarket.meridiem === 'PM' && endTime.hours() < 12) {
+      endTime.hours(endTime.hours() + 12)
     }
-    p.newMarket.endDate = formatDate(endDate.toDate())
-    return endDate.format('MMM D, YYYY h:mm a')
+    p.newMarket.endTime = formatDate(endTime.toDate())
+    return endTime.format('MMM D, YYYY h:mm a')
   }
 
   static calculateShares(orderBook) {
-    let totalShares = new BigNumber(0)
+    let totalShares = createBigNumber(0)
     if (Object.keys(orderBook).length) {
       Object.keys(orderBook).forEach((option) => {
         orderBook[option].forEach((order) => {
@@ -66,19 +67,23 @@ export default class CreateMarketPreview extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.endDate !== nextProps.newMarket.endDate ||
-        this.props.newMarket.hour !== nextProps.newMarket.hour ||
-        this.props.newMarket.minute !== nextProps.newMarket.minute ||
-        this.props.newMarket.meridiem !== nextProps.newMarket.meridiem) {
+    const { newMarket } = this.props
+    if (newMarket.endTime !== nextProps.newMarket.endTime ||
+        newMarket.hour !== nextProps.newMarket.hour ||
+        newMarket.minute !== nextProps.newMarket.minute ||
+        newMarket.meridiem !== nextProps.newMarket.meridiem) {
       this.setState({ expirationDate: CreateMarketPreview.getExpirationDate(nextProps) })
     }
-    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) {
+    if (newMarket.orderBook !== nextProps.newMarket.orderBook) {
       this.setState({ shares: CreateMarketPreview.calculateShares(nextProps.newMarket.orderBook) })
     }
   }
 
   render() {
-    const p = this.props
+    const {
+      currentTimestamp,
+      newMarket,
+    } = this.props
     const s = this.state
 
     return (
@@ -88,27 +93,27 @@ export default class CreateMarketPreview extends Component {
             <div className={Styles.CreateMarketPreview__tags}>
               <ul>
                 <li>Categories</li>
-                <li>{p.newMarket.category}</li>
+                <li>{newMarket.category}</li>
               </ul>
               <ul>
                 <li>Tags</li>
-                <li>{p.newMarket.tag1}</li>
-                <li>{p.newMarket.tag2}</li>
+                <li>{newMarket.tag1}</li>
+                <li>{newMarket.tag2}</li>
               </ul>
             </div>
-            <h1 className={Styles.CreateMarketPreview__description}>{p.newMarket.description || 'New Market Question'}</h1>
+            <h1 className={Styles.CreateMarketPreview__description}>{newMarket.description || 'New Market Question'}</h1>
             <div className={Styles.CreateMarketPreview__outcome}>
-              { (p.newMarket.type === BINARY || p.newMarket.type === SCALAR) &&
+              { (newMarket.type === BINARY || newMarket.type === SCALAR) &&
                 <CreateMarketPreviewRange
-                  newMarket={p.newMarket}
+                  newMarket={newMarket}
                 />
               }
-              { p.newMarket.type === CATEGORICAL && p.newMarket.outcomes.length > 0 &&
+              { newMarket.type === CATEGORICAL && newMarket.outcomes.length > 0 &&
                 <CreateMarketPreviewCategorical
-                  newMarket={p.newMarket}
+                  newMarket={newMarket}
                 />
               }
-              { (p.newMarket.type === '' || (p.newMarket.type === CATEGORICAL && p.newMarket.outcomes.length === 0)) && 'Outcome' }
+              { (newMarket.type === '' || (newMarket.type === CATEGORICAL && newMarket.outcomes.length === 0)) && 'Outcome' }
             </div>
             <span className={Styles.CreateMarketPreview__icon}>
               {CreateMarketEdit}
@@ -124,10 +129,10 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>{ p.newMarket.settlementFee ? p.newMarket.settlementFee : '0.0'}%</span>
+                <span>{ newMarket.settlementFee ? newMarket.settlementFee : '0.0'}%</span>
               </li>
               <li>
-                <span>{dateHasPassed(p.newMarket.endDate.timestamp) ? 'Expired' : 'Expires'}</span>
+                <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
                 <span>{ s.expirationDate }</span>
               </li>
             </ul>

@@ -47,15 +47,17 @@ ReportSection.propTypes = {
 
 class ReportingReporting extends React.Component {
   componentDidMount() {
-    this.props.loadReporting()
+    const { loadReporting } = this.props
+    loadReporting()
   }
 
   render() {
+    const { markets } = this.props
     const {
       designated,
       open,
       upcoming,
-    } = this.props.markets
+    } = markets
 
     return (
       <section>

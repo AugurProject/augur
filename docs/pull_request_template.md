@@ -8,4 +8,3 @@
 
 ## Reviewer Checklist
 - [ ] Test/lint pass 
-- [ ] Post merge, story marked complete 

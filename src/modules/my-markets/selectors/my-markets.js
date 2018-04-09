@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import memoize from 'memoizee'
 import store from 'src/store'
@@ -36,7 +36,7 @@ export const selectLoginAccountMarkets = createSelector(
         ...market, // TODO -- cleanup this object
         id: market.id,
         description: market.description,
-        endDate: market.endDate,
+        endTime: market.endTime,
         volume: market.volume,
         repBalance: market.repBalance,
         fees,
@@ -59,7 +59,7 @@ export const selectOpenVolume = (market) => {
   market.outcomes.forEach((outcome) => {
     Object.keys(outcome.orderBook).forEach((orderType) => {
       outcome.orderBook[orderType].forEach((type) => {
-        openVolume = openVolume.plus(new BigNumber(type.shares.value, 10))
+        openVolume = openVolume.plus(createBigNumber(type.shares.value, 10))
       })
     })
   })
@@ -74,7 +74,7 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
   }
   const priceHistoryTotals = Object.keys(marketPriceHistory).reduce((historyTotals, currentOutcome) => {
     const outcomeTotals = marketPriceHistory[currentOutcome].reduce((outcomeTotals, trade) => ({
-      shares: new BigNumber(outcomeTotals.shares, 10).plus(new BigNumber(trade.amount, 10)),
+      shares: createBigNumber(outcomeTotals.shares, 10).plus(createBigNumber(trade.amount, 10)),
       trades: outcomeTotals.trades + 1,
     }), initialState)
     return {
@@ -82,5 +82,5 @@ export const selectAverageTradeSize = memoize((marketPriceHistory) => {
       trades: historyTotals.trades + outcomeTotals.trades,
     }
   }, initialState)
-  return priceHistoryTotals.shares.dividedBy(new BigNumber(priceHistoryTotals.trades, 10))
+  return priceHistoryTotals.shares.dividedBy(createBigNumber(priceHistoryTotals.trades, 10))
 }, { max: 1 })

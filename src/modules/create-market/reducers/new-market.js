@@ -8,7 +8,7 @@ import { RESET_STATE } from 'modules/app/actions/reset-state'
 import { SETTLEMENT_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints'
 import { DEFAULT_SCALAR_TICK_SIZE } from 'augur.js/src/constants'
 
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 
 const DEFAULT_STATE = {
   isValid: false,
@@ -26,7 +26,7 @@ const DEFAULT_STATE = {
       designatedReporterType: false,
       designatedReporterAddress: false,
       expirySourceType: false,
-      endDate: false,
+      endTime: false,
       hour: false,
       minute: false,
       meridiem: false,
@@ -46,7 +46,7 @@ const DEFAULT_STATE = {
   expirySource: '',
   designatedReporterType: '',
   designatedReporterAddress: '',
-  endDate: {},
+  endTime: {},
   tickSize: DEFAULT_SCALAR_TICK_SIZE,
   hour: '',
   minute: '',
@@ -59,9 +59,9 @@ const DEFAULT_STATE = {
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
   orderBookSeries: {}, // for order book chart
-  initialLiquidityEth: new BigNumber(0),
-  initialLiquidityGas: new BigNumber(0),
-  initialLiquidityFees: new BigNumber(0),
+  initialLiquidityEth: createBigNumber(0),
+  initialLiquidityGas: createBigNumber(0),
+  initialLiquidityFees: createBigNumber(0),
   creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
 }
 

@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     coreProperties: {
       volume: getValue(market, 'volume.full'),
       fee: getValue(market, 'settlementFeePercent.full'),
-      expires: getValue(market, 'endDate.formattedLocal'),
+      expires: getValue(market, 'endTime.formattedLocal'),
     },
   }
 }

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import BigNumber from 'bignumber.js'
+import { createBigNumber } from 'utils/create-big-number'
 import store from 'src/store'
 import { selectTransactionsDataState } from 'src/select-state'
 
@@ -69,7 +69,7 @@ export function formatGroupedTransactions(transactions) {
     return p
   }, null)
 
-  const totalShares = formattedTransactions.reduce((p, transaction) => p.plus(new BigNumber(transaction.numShares.value)), new BigNumber(0))
+  const totalShares = formattedTransactions.reduce((p, transaction) => p.plus(createBigNumber(transaction.numShares.value)), createBigNumber(0))
 
   return {
     status,

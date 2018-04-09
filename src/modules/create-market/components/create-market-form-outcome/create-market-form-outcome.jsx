@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import BigNumber from 'bignumber.js'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import speedomatic from 'speedomatic'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
@@ -26,6 +26,7 @@ export default class CreateMarketOutcome extends Component {
     validateField: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    keyPressed: PropTypes.func.isRequired,
   }
 
   static calculateOutcomeFieldCount(p) {
@@ -36,13 +37,12 @@ export default class CreateMarketOutcome extends Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
-      scalarMin: new BigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
-      scalarMax: new BigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMin: createBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarMax: createBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -52,7 +52,8 @@ export default class CreateMarketOutcome extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isMobileSmall !== nextProps.isMobileSmall) {
+    const { isMobileSmall } = this.props
+    if (isMobileSmall !== nextProps.isMobileSmall) {
       const outcomeFieldCount = CreateMarketOutcome.calculateOutcomeFieldCount(nextProps)
       const showAddOutcome = nextProps.isMobileSmall ? !(outcomeFieldCount >= nextProps.newMarket.outcomes.length) : false
       this.setState({
@@ -63,7 +64,8 @@ export default class CreateMarketOutcome extends Component {
   }
 
   handleAddOutcomeClick() {
-    const totalOutcomes = this.props.newMarket.outcomes.length
+    const { newMarket } = this.props
+    const totalOutcomes = newMarket.outcomes.length
     const outcomeFieldCount = Math.min(this.state.outcomeFieldCount + 1, totalOutcomes)
     const showAddOutcome = !(outcomeFieldCount >= totalOutcomes)
     this.setState({
@@ -73,9 +75,13 @@ export default class CreateMarketOutcome extends Component {
   }
 
   validateType(value) {
-    const p = this.props
-    const updatedMarket = { ...p.newMarket }
-    const validations = updatedMarket.validations[p.newMarket.currentStep]
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const updatedMarket = { ...newMarket }
+    const validations = updatedMarket.validations[newMarket.currentStep]
 
     const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
       ...p,
@@ -101,27 +107,32 @@ export default class CreateMarketOutcome extends Component {
 
     updatedValidations.type = true
 
-    updatedMarket.validations[p.newMarket.currentStep] = updatedValidations
+    updatedMarket.validations[newMarket.currentStep] = updatedValidations
     updatedMarket.type = value
-    updatedMarket.isValid = p.isValid(p.newMarket.currentStep)
+    updatedMarket.isValid = isValid(newMarket.currentStep)
+    updatedMarket.orderBook = {}
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   validateScalarNum(value, type) {
-    const p = this.props
-    const { currentStep } = p.newMarket
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
 
-    const updatedMarket = { ...p.newMarket }
+    const updatedMarket = { ...newMarket }
     let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
     let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
 
-    if (!(scalarSmallNum instanceof BigNumber) && scalarSmallNum !== '') {
-      scalarSmallNum = new BigNumber(scalarSmallNum)
+    if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
+      scalarSmallNum = createBigNumber(scalarSmallNum)
     }
 
-    if (!(scalarBigNum instanceof BigNumber) && scalarBigNum !== '') {
-      scalarBigNum = new BigNumber(scalarBigNum)
+    if (!(BigNumber.isBigNumber(scalarBigNum)) && scalarBigNum !== '') {
+      scalarBigNum = createBigNumber(scalarBigNum)
     }
 
     if (type === 'small') {
@@ -177,16 +188,20 @@ export default class CreateMarketOutcome extends Component {
       updatedMarket.tickSize = value
     }
 
-    updatedMarket.isValid = p.isValid(currentStep)
+    updatedMarket.isValid = isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   validateOutcomes(value, index) {
-    const p = this.props
-    const { currentStep } = p.newMarket
+    const {
+      isValid,
+      newMarket,
+      updateNewMarket,
+    } = this.props
+    const { currentStep } = newMarket
 
-    const updatedMarket = { ...p.newMarket }
+    const updatedMarket = { ...newMarket }
     const { outcomes } = updatedMarket
     outcomes[index] = value
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
@@ -206,17 +221,22 @@ export default class CreateMarketOutcome extends Component {
     }
 
     updatedMarket.outcomes = outcomes
-    updatedMarket.isValid = p.isValid(currentStep)
+    updatedMarket.isValid = isValid(currentStep)
 
-    p.updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket)
   }
 
   render() {
-    const p = this.props
+    const {
+      newMarket,
+      updateNewMarket,
+      validateField,
+      keyPressed,
+    } = this.props
     const s = this.state
-    const cleanedOutcomes = p.newMarket.outcomes.filter(outcome => outcome !== '')
+    const cleanedOutcomes = newMarket.outcomes.filter(outcome => outcome !== '')
 
-    const validation = p.newMarket.validations[p.newMarket.currentStep]
+    const validation = newMarket.validations[newMarket.currentStep]
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
@@ -226,28 +246,31 @@ export default class CreateMarketOutcome extends Component {
           <ul className={StylesForm['CreateMarketForm__radio-buttons']}>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === BINARY })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.type === BINARY })}
                 onClick={() => this.validateType(BINARY)}
+                onKeyPress={e => keyPressed(e)}
               >Yes/No
               </button>
             </li>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === CATEGORICAL })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.type === CATEGORICAL })}
                 onClick={() => this.validateType(CATEGORICAL)}
+                onKeyPress={e => keyPressed(e)}
               >Multiple Choice
               </button>
             </li>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: p.newMarket.type === SCALAR })}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.type === SCALAR })}
                 onClick={() => this.validateType(SCALAR)}
+                onKeyPress={e => keyPressed(e)}
               >Numerical Range
               </button>
             </li>
           </ul>
         </li>
-        {p.newMarket.type === CATEGORICAL &&
+        {newMarket.type === CATEGORICAL &&
         <li>
           <label htmlFor="cm__input--outcome1">
             <span>Potential Outcomes</span>
@@ -261,21 +284,23 @@ export default class CreateMarketOutcome extends Component {
             {
               [...Array(s.outcomeFieldCount).keys()].map((i) => {
                 const placeholderText = i < 2 ? 'Outcome' : 'Optional Outcome'
-                const isError = typeof p.newMarket.validations[1].outcomes === 'string'
-                const isDuplicate = cleanedOutcomes.filter(outcome => outcome === p.newMarket.outcomes[i]).length >= 2
-                const needMinimum = isError && i < 2 && (p.newMarket.outcomes[0] === '' || p.newMarket.outcomes[1] === '')
+                const isError = typeof newMarket.validations[1].outcomes === 'string'
+                const isDuplicate = cleanedOutcomes.filter(outcome => outcome === newMarket.outcomes[i]).length >= 2
+                const needMinimum = isError && i < 2 && (newMarket.outcomes[0] === '' || newMarket.outcomes[1] === '')
                 const tooMany = cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM
                 const highlightInput = isDuplicate || needMinimum || tooMany
                 return (
-                  <div>
+                  <div
+                    key={i}
+                  >
                     <input
-                      key={i}
                       type="text"
                       className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: highlightInput })}
-                      value={p.newMarket.outcomes[i]}
+                      value={newMarket.outcomes[i]}
                       placeholder={placeholderText}
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                       onChange={e => this.validateOutcomes(e.target.value, i)}
+                      onKeyPress={e => keyPressed(e)}
                     />
                   </div>
                 )
@@ -292,7 +317,7 @@ export default class CreateMarketOutcome extends Component {
           </div>
         </li>
         }
-        {p.newMarket.type === SCALAR &&
+        {newMarket.type === SCALAR &&
         <li>
           <div className={Styles.CreateMarketOutcome__scalar}>
             <div>
@@ -304,11 +329,12 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarSmallNum instanceof BigNumber ? p.newMarket.scalarSmallNum.toNumber() : p.newMarket.scalarSmallNum}
+                value={BigNumber.isBigNumber(newMarket.scalarSmallNum) ? newMarket.scalarSmallNum.toNumber() : newMarket.scalarSmallNum}
                 placeholder="Min Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'small')
                 }}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.scalarSmallNum && validation.scalarSmallNum.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>
@@ -325,11 +351,12 @@ export default class CreateMarketOutcome extends Component {
                 type="number"
                 min={s.scalarMin}
                 max={s.scalarMax}
-                value={p.newMarket.scalarBigNum instanceof BigNumber ? p.newMarket.scalarBigNum.toNumber() : p.newMarket.scalarBigNum}
+                value={BigNumber.isBigNumber(newMarket.scalarBigNum) ? newMarket.scalarBigNum.toNumber() : newMarket.scalarBigNum}
                 placeholder="Max Value"
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'big')
                 }}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.scalarBigNum && validation.scalarBigNum.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>
@@ -344,10 +371,11 @@ export default class CreateMarketOutcome extends Component {
               <input
                 id="cm__input--denomination"
                 type="text"
-                value={p.newMarket.scalarDenomination}
+                value={newMarket.scalarDenomination}
                 maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                 placeholder="Denomination"
-                onChange={e => p.validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+                onChange={e => validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+                onKeyPress={e => keyPressed(e)}
               />
             </div>
             <div>
@@ -358,9 +386,10 @@ export default class CreateMarketOutcome extends Component {
                 id="cm__input--ticksize"
                 type="number"
                 step="0.0001"
-                value={p.newMarket.tickSize}
+                value={newMarket.tickSize}
                 placeholder="Tick Size"
                 onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>
@@ -371,17 +400,17 @@ export default class CreateMarketOutcome extends Component {
           </div>
         </li>
         }
-        {p.newMarket.type &&
+        {newMarket.type &&
         <li>
           <label htmlFor="cm__input--details">
             <span>Additional Details</span>
           </label>
           <textarea
             id="cm__input--details"
-            value={p.newMarket.detailsText}
+            value={newMarket.detailsText}
             placeholder="Optional - Include any additional information that traders should know about this market."
             onChange={(e) => {
-              p.updateNewMarket({ detailsText: e.target.value })
+              updateNewMarket({ detailsText: e.target.value })
             }}
           />
         </li>

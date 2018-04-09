@@ -24,10 +24,10 @@ export function assertMyMarkets(market) {
       assert.isString(market.description)
     })
 
-    it('endDate', () => {
-      assert.isDefined(market.endDate)
+    it('endTime', () => {
+      assert.isDefined(market.endTime)
 
-      assertFormattedDate(market.endDate, 'loginAccountMarkets.endDate')
+      assertFormattedDate(market.endTime, 'loginAccountMarkets.endTime')
     })
 
     it('fees', () => {
