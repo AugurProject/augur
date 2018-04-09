@@ -7,6 +7,7 @@ import { isEqual } from 'lodash'
 
 import findPeriodSeriesBounds from 'modules/market/helpers/find-period-series-bounds'
 import DerivePeriodTimeSeries from 'modules/market/workers/derive-period-time-series.worker'
+import MarketOutcomeChartsHeaderCandlestick from 'modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
@@ -25,6 +26,9 @@ export default class MarketOutcomeCandlestick extends Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredPeriod: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
+    updateSelectedPeriod: PropTypes.func.isRequired,
+    updateChartHeaderHeight: PropTypes.func.isRequired,
+    hoveredPeriod: PropTypes.object.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -268,8 +272,27 @@ export default class MarketOutcomeCandlestick extends Component {
   }
 
   render() {
+    const {
+      hoveredPeriod,
+      priceTimeSeries,
+      fixedPrecision,
+      updateSelectedPeriod,
+      updateChartHeaderHeight,
+    } = this.props
+
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
+        <MarketOutcomeChartsHeaderCandlestick
+          volume={hoveredPeriod.volume}
+          open={hoveredPeriod.open}
+          high={hoveredPeriod.high}
+          low={hoveredPeriod.low}
+          close={hoveredPeriod.close}
+          priceTimeSeries={priceTimeSeries}
+          fixedPrecision={fixedPrecision}
+          updateSelectedPeriod={updateSelectedPeriod}
+          updateChartHeaderHeight={updateChartHeaderHeight}
+        />
         <div
           ref={(drawContainer) => { this.drawContainer = drawContainer }}
           className={Styles.MarketOutcomeCandlestick__container}
@@ -348,7 +371,7 @@ function determineDrawParams(options) {
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
-    .range([containerHeight - chartDim.bottom, chartDim.top])
+    .range([chartDim.top, containerHeight - chartDim.bottom])
 
   return {
     containerWidth,

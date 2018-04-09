@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import ScrollSnap from 'scroll-snap'
 
-import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header'
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
@@ -52,6 +51,7 @@ export default class MarketOutcomeCharts extends Component {
         candle: 0,
         orders: 0,
       },
+      chartHeight: 0,
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -61,6 +61,7 @@ export default class MarketOutcomeCharts extends Component {
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateChartWidths = this.updateChartWidths.bind(this)
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
+    this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
   }
 
   componentDidMount() {
@@ -129,17 +130,20 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
+  updateChartHeaderHeight(headerHeight) {
+    this.setState({
+      headerHeight,
+    })
+  }
+
   snapScrollHandler() {
     if (
       this.snapScroller === null &&
       this.charts != null &&
       this.snapConfig != null
     ) {
-      console.log('he')
       this.snapScroller = new ScrollSnap(this.charts, this.snapConfig)
     }
-
-    console.log(this.snapScroller)
 
     if (this.snapScroller != null) {
       if (this.props.isMobile) {
@@ -161,28 +165,29 @@ export default class MarketOutcomeCharts extends Component {
       orderBook,
       orderBookKeys,
       priceTimeSeries,
-      selectedOutcome,
       updateSeletedOrderProperties,
       excludeCandlestick,
+      isMobile,
     } = this.props
     const s = this.state
 
-    const isMobile = true
+    // const isMobile = true
 
     // console.log('isMobile -- ', isMobile)
 
+    // <MarketOutcomeChartsHeader
+    //   excludeCandlestick={excludeCandlestick}
+    //   priceTimeSeries={priceTimeSeries}
+    //   selectedOutcome={selectedOutcome}
+    //   hoveredPeriod={s.hoveredPeriod}
+    //   hoveredDepth={s.hoveredDepth}
+    //   fixedPrecision={s.fixedPrecision}
+    //   updatePrecision={this.updatePrecision}
+    //   updateSelectedPeriod={this.updateSelectedPeriod}
+    // />
+
     return (
       <section className={Styles.MarketOutcomeCharts}>
-        <MarketOutcomeChartsHeader
-          excludeCandlestick={excludeCandlestick}
-          priceTimeSeries={priceTimeSeries}
-          selectedOutcome={selectedOutcome}
-          hoveredPeriod={s.hoveredPeriod}
-          hoveredDepth={s.hoveredDepth}
-          fixedPrecision={s.fixedPrecision}
-          updatePrecision={this.updatePrecision}
-          updateSelectedPeriod={this.updateSelectedPeriod}
-        />
         <div
           ref={(charts) => { this.charts = charts }}
           className={classNames(Styles.MarketOutcomeCharts__charts, {
@@ -206,9 +211,12 @@ export default class MarketOutcomeCharts extends Component {
                 marketMax={maxPrice}
                 marketMin={minPrice}
                 hoveredPrice={s.hoveredPrice}
+                hoveredPeriod={s.hoveredPeriod}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredPeriod={this.updateHoveredPeriod}
+                updateSelectedPeriod={this.updateSelectedPeriod}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateChartHeaderHeight={this.updateChartHeaderHeight}
               />
             </div>
           }
@@ -228,6 +236,7 @@ export default class MarketOutcomeCharts extends Component {
                 marketMax={maxPrice}
                 marketMin={minPrice}
                 hoveredPrice={s.hoveredPrice}
+                hoveredDepth={s.hoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
@@ -241,6 +250,7 @@ export default class MarketOutcomeCharts extends Component {
                 marketMidpoint={orderBookKeys.mid}
                 hoveredPrice={s.hoveredPrice}
                 updateHoveredPrice={this.updateHoveredPrice}
+                updatePrecision={this.updatePrecision}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
               />
             </div>
@@ -250,6 +260,7 @@ export default class MarketOutcomeCharts extends Component {
             hasPriceHistory={hasPriceHistory}
             hasOrders={hasOrders}
             chartWidths={s.chartWidths}
+            headerHeight={s.headerHeight}
             orderBookKeys={orderBookKeys}
             sharedChartMargins={s.sharedChartMargins}
             fixedPrecision={s.fixedPrecision}

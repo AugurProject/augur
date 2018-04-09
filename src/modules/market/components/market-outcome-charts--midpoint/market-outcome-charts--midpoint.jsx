@@ -11,6 +11,7 @@ import { isEqual } from 'lodash'
 export default class MarketOutcomeMidpoint extends Component {
   static propTypes = {
     chartWidths: PropTypes.object.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
     hasOrders: PropTypes.bool.isRequired,
@@ -35,6 +36,7 @@ export default class MarketOutcomeMidpoint extends Component {
   componentDidMount() {
     this.drawMidpoint({
       chartWidths: this.props.chartWidths,
+      headerHeight: this.props.headerHeight,
       orderBookKeys: this.props.orderBookKeys,
       sharedChartMargins: this.props.sharedChartMargins,
       midpointLabelWidth: this.state.midpointLabelWidth,
@@ -51,6 +53,7 @@ export default class MarketOutcomeMidpoint extends Component {
       !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
       !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       !isEqual(this.props.chartWidths, nextProps.chartWidths) ||
+      this.props.headerHeight !== nextProps.headerHeight ||
       this.props.fixedPrecision !== nextProps.fixedPrecision ||
       this.props.hasPriceHistory !== nextProps.hasPriceHistory ||
       this.props.hasOrders !== nextProps.hasOrders ||
@@ -60,6 +63,7 @@ export default class MarketOutcomeMidpoint extends Component {
     ) {
       this.drawMidpoint({
         chartWidths: nextProps.chartWidths,
+        headerHeight: nextProps.headerHeight,
         orderBookKeys: nextProps.orderBookKeys,
         sharedChartMargins: nextProps.sharedChartMargins,
         midpointLabelWidth: nextState.midpointLabelWidth,
@@ -101,6 +105,7 @@ export default class MarketOutcomeMidpoint extends Component {
       hasPriceHistory,
       hasOrders,
       chartWidths,
+      headerHeight,
       fixedPrecision,
       excludeCandlestick,
     } = options
@@ -111,6 +116,7 @@ export default class MarketOutcomeMidpoint extends Component {
 
       const drawParams = determineDrawParams({
         drawContainer: this.drawContainer,
+        headerHeight,
         sharedChartMargins,
       })
 
@@ -163,11 +169,12 @@ export default class MarketOutcomeMidpoint extends Component {
 function determineDrawParams(options) {
   const {
     drawContainer,
+    headerHeight,
     sharedChartMargins,
   } = options
 
   const containerWidth = drawContainer.clientWidth
-  const containerHeight = drawContainer.clientHeight
+  const containerHeight = drawContainer.clientHeight + headerHeight
 
   const chartDim = {
     ...sharedChartMargins,

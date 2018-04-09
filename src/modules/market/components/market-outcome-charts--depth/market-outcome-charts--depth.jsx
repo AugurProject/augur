@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
+import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth'
+
 import { isEqual } from 'lodash'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
@@ -21,6 +23,7 @@ export default class MarketOutcomeDepth extends Component {
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     marketMin: PropTypes.number.isRequired,
     marketMax: PropTypes.number.isRequired,
+    hoveredDepth: PropTypes.object.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -276,8 +279,17 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   render() {
+    const {
+      fixedPrecision,
+      hoveredDepth,
+    } = this.props
+
     return (
       <section className={Styles.MarketOutcomeDepth}>
+        <MarketOutcomeChartHeaderDepth
+          fixedPrecision={fixedPrecision}
+          hoveredDepth={hoveredDepth}
+        />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}
           className={Styles.MarketOutcomeDepth__container}
@@ -348,7 +360,7 @@ function determineDrawParams(options) {
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
-    .range([containerHeight - chartDim.bottom, chartDim.top])
+    .range([chartDim.top, containerHeight - chartDim.bottom])
 
   return {
     containerWidth,
