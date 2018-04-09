@@ -60,6 +60,12 @@ export default class ModalClaimReportingFees extends Component {
     } = this.props
     const s = this.state
 
+    // In theory, this modal should never be shown if there is no unclaimed ETH/REP, but check whether button should be disabled anyway.
+    let disableClaimReportingFeesButton = ''
+    if (unclaimedRep.formatted === '-' && unclaimedEth.formatted === '-') {
+      disableClaimReportingFeesButton = 'disabled'
+    }
+
     return (
       <form
         className={Styles.ModalClaimReportingFees__form}
@@ -82,9 +88,10 @@ export default class ModalClaimReportingFees extends Component {
         <div className={Styles.ModalClaimReportingFees__actions}>
           <button
             className={Styles.ModalClaimReportingFees__button}
+            disabled={disableClaimReportingFeesButton}
             type="submit"
           >
-            submit
+            Submit
           </button>
         </div>
       </form>

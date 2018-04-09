@@ -6,9 +6,10 @@ import sinon from 'sinon'
 import { shallow } from 'enzyme'
 
 import PortfolioReports from 'src/modules/portfolio/components/portfolio-reports/portfolio-reports'
+import { formatAttoRep, formatEther } from 'utils/format-number'
 import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
 
-describe.only('portfolio-reports', () => {
+describe('portfolio-reports', () => {
   let Cmp
   let loadClaimableFeesStub
   let updateModal
@@ -51,7 +52,7 @@ describe.only('portfolio-reports', () => {
     })
   })
 
-  describe('When there claimable ETH fees, but no claimable REP fees', () => {
+  describe('When there are claimable ETH fees, but no claimable REP fees', () => {
     beforeEach(() => {
       loadClaimableFeesStub.returns({
         unclaimedEth: '0.123',
@@ -82,9 +83,40 @@ describe.only('portfolio-reports', () => {
         assert.isNotOk(button.html().includes('disabled'))
       })
     })
+
+    describe('claim-reporting-fees-button onClick event', () => {
+      beforeEach(() => {
+        const button = Cmp.find('button')
+        button.simulate('click')
+      })
+
+      it('should fire updateModal callback with args ', () => {
+        assert.isOk(updateModal.calledOnce)
+      })
+
+      it('should only pass in one argument to updateModal', () => {
+        assert.deepEqual(updateModal.args[0].length, 1)
+      })
+
+      it('should pass first argument to updateModal that matches expected value', () => {
+        const expected = {
+          type: MODAL_CLAIM_REPORTING_FEES,
+          unclaimedEth: formatEther('0.123', { decimals: 4, zeroStyled: true }),
+          unclaimedRep: formatAttoRep('0', { decimals: 4, zeroStyled: true }),
+          redeemableContracts: [
+            {
+              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
+              type: 2,
+            },
+          ],
+          canClose: true,
+        }
+        assert.deepEqual(updateModal.args[0][0], expected)
+      })
+    })
   })
 
-  describe('When there claimable REP fees, but no claimable ETH fees', () => {
+  describe('When there are claimable REP fees, but no claimable ETH fees', () => {
     beforeEach(() => {
       loadClaimableFeesStub.returns({
         unclaimedEth: '0',
@@ -105,7 +137,6 @@ describe.only('portfolio-reports', () => {
 
     describe('REP total', () => {
       it('should display value greater than 0', () => {
-        console.log(Cmp.html())
         assert.include(Cmp.html(), '<span>REP</span><span>2.0000</span>')
       })
     })
@@ -116,9 +147,40 @@ describe.only('portfolio-reports', () => {
         assert.isNotOk(button.html().includes('disabled'))
       })
     })
+
+    describe('claim-reporting-fees-button onClick event', () => {
+      beforeEach(() => {
+        const button = Cmp.find('button')
+        button.simulate('click')
+      })
+
+      it('should fire updateModal callback with args ', () => {
+        assert.isOk(updateModal.calledOnce)
+      })
+
+      it('should only pass in one argument to updateModal', () => {
+        assert.deepEqual(updateModal.args[0].length, 1)
+      })
+
+      it('should pass first argument to updateModal that matches expected value', () => {
+        const expected = {
+          type: MODAL_CLAIM_REPORTING_FEES,
+          unclaimedEth: formatEther('0', { decimals: 4, zeroStyled: true }),
+          unclaimedRep: formatAttoRep('2000000000000000000', { decimals: 4, zeroStyled: true }),
+          redeemableContracts: [
+            {
+              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
+              type: 2,
+            },
+          ],
+          canClose: true,
+        }
+        assert.deepEqual(updateModal.args[0][0], expected)
+      })
+    })
   })
 
-  describe('When there claimable ETH fees and REP fees', () => {
+  describe('When there are claimable ETH fees and REP fees', () => {
     beforeEach(() => {
       loadClaimableFeesStub.returns({
         unclaimedEth: '0.123',
@@ -139,7 +201,6 @@ describe.only('portfolio-reports', () => {
 
     describe('REP total', () => {
       it('should display value greater than 0', () => {
-        console.log(Cmp.html())
         assert.include(Cmp.html(), '<span>REP</span><span>2.0000</span>')
       })
     })
@@ -150,37 +211,36 @@ describe.only('portfolio-reports', () => {
         assert.isNotOk(button.html().includes('disabled'))
       })
     })
-  })
 
-  describe('When button is enabled', () => {
-    beforeEach(() => {
-      loadClaimableFeesStub.returns({
-        unclaimedEth: '0.123',
-        unclaimedRepStaked: '2000000000000000000',
-        unclaimedRepEarned: '1000000000000000000',
-        claimedEth: '0.0156',
-        claimedRepStaked: '0.111',
-        claimedRepEarned: '0.123',
+    describe('claim-reporting-fees-button onClick event', () => {
+      beforeEach(() => {
+        const button = Cmp.find('button')
+        button.simulate('click')
       })
-      Cmp = shallow(<PortfolioReports loadClaimableFees={loadClaimableFeesStub} updateModal={updateModal} />)
-      const button = Cmp.find('button')
-      button.simulate('click')
-    })
-    it('should fire updateModal callback with args ', () => {
-      assert.isOk(updateModal.calledOnce)
-    })
-    it('should only pass in one argument', () => {
-      assert.deepEqual(updateModal.args[0].length, 1)
-    })
-    it('first argument should match fixture', () => {
-      // const expected = {
-      //   type: MODAL_CLAIM_REPORTING_FEES,
-      //   unclaimedEth: '0.123',
-      //   unclaimedRep: '2000000000000000000',
-      //   redeemableContracts: [],
-      //   canClose: true,
-      // }
-      // assert.deepEqual(updateModal.args[0][0], expected)
+
+      it('should fire updateModal callback with args ', () => {
+        assert.isOk(updateModal.calledOnce)
+      })
+
+      it('should only pass in one argument to updateModal', () => {
+        assert.deepEqual(updateModal.args[0].length, 1)
+      })
+
+      it('should pass first argument to updateModal that matches expected value', () => {
+        const expected = {
+          type: MODAL_CLAIM_REPORTING_FEES,
+          unclaimedEth: formatEther('0.123', { decimals: 4, zeroStyled: true }),
+          unclaimedRep: formatAttoRep('2000000000000000000', { decimals: 4, zeroStyled: true }),
+          redeemableContracts: [
+            {
+              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
+              type: 2,
+            },
+          ],
+          canClose: true,
+        }
+        assert.deepEqual(updateModal.args[0][0], expected)
+      })
     })
   })
 })
