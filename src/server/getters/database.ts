@@ -11,6 +11,7 @@ import {
   UIStakeInfo,
   DisputeTokensRowWithTokenState,
   UIDisputeTokenInfo,
+  Payout,
   PayoutRow,
   NormalizedPayout,
   NormalizedPayoutNumerators,
@@ -101,10 +102,10 @@ export function getMarketsWithReportingState(db: Knex, selectColumns?: Array<str
     .leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
 }
 
-export function normalizePayouts(payoutRow: PayoutRow<BigNumber>): NormalizedPayout<BigNumber> {
+export function normalizePayouts(payoutRow: Payout<BigNumber>): NormalizedPayout<BigNumber> {
   const payout = [];
   for (let i = 0; i < 8; i++) {
-    const payoutNumerator = payoutRow["payout" + i as keyof PayoutRow<BigNumber>] as BigNumber | null;
+    const payoutNumerator = payoutRow["payout" + i as keyof Payout<BigNumber>] as BigNumber | null;
     if (payoutNumerator == null) break;
     payout.push(payoutNumerator);
   }
