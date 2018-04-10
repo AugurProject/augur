@@ -1,5 +1,6 @@
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
+import { augur } from 'services/augurjs'
 import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
 
 export const estimateSubmitNewMarket = (newMarket, callback = logError) => (dispatch, getState) => {

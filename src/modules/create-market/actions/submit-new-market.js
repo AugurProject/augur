@@ -1,5 +1,5 @@
 import { eachOfSeries, eachLimit } from 'async'
-import { constants } from 'services/augurjs'
+import { augur, constants } from 'services/augurjs'
 
 import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market'
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
