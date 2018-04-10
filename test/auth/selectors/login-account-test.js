@@ -42,16 +42,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
       })
     })
 
-    beforeEach(() => {
-      this.clock = sinon.useFakeTimers(1485907200000)
-    })
-
     afterEach(() => {
       stubbedGenerateDownloadAccountLink.reset()
     })
 
     after(() => {
-      this.clock.restore()
       loginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink')
       loginAccountRewireAPI.__ResetDependency__('augur')
     })

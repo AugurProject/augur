@@ -5,6 +5,7 @@ import { createBigNumber } from 'utils/create-big-number'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
   const TopOutcomeCount = 8
+  const invalidMarketId = '0.5'
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
   const { marketType, reportableOutcomes } = market
   const outcomes = reportableOutcomes.slice()
@@ -36,19 +37,19 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     .reduce(fillInOutcomes, addDefaultStakeOutcomes)
     .filter(o => !o.tentativeWinning)
 
-  const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes)
+  const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
-  if (allDisputedOutcomes.find(o => o.id === '0.5')) return allDisputedOutcomes
+  if (allDisputedOutcomes.find(o => o.id === invalidMarketId)) return allDisputedOutcomes
 
   return [...allDisputedOutcomes, invalidOutcome]
 }
 
-const getInvalidOutcome = (filteredOutcomes, addDefaultStakeOutcomes) => {
-  const invalidOutcome = filteredOutcomes.find(o => o.id === '0.5')
+const getInvalidOutcome = (filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId) => {
+  const invalidOutcome = filteredOutcomes.find(o => o.id === invalidMarketId)
   if (invalidOutcome) return invalidOutcome
-  return addDefaultStakeOutcomes.find(o => o.id === '0.5')
+  return addDefaultStakeOutcomes.find(o => o.id === invalidMarketId)
 }
 
 const sortOutcomes = (a, b) => {

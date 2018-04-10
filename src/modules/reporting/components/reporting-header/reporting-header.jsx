@@ -19,10 +19,10 @@ export default class ReportingHeader extends Component {
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
+    currentTime: PropTypes.number.isRequired,
     isForking: PropTypes.bool,
     forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
-    currentTime: PropTypes.number,
   }
 
   componentWillMount() {
@@ -43,7 +43,7 @@ export default class ReportingHeader extends Component {
       updateModal,
     } = this.props
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
-    const daysLeft = getDaysRemaining(reportingWindowStats.endTime)
+    const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
     const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
     const disableParticipate = (repBalance === '0')
@@ -68,7 +68,7 @@ export default class ReportingHeader extends Component {
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
-                    <span className={Styles.ReportingHeader__endDate}>Dispute Window ends { formattedDate.formattedLocal }</span>
+                    <span className={Styles.ReportingHeader__endTime}>Dispute Window ends { formattedDate.formattedLocal }</span>
                     <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ reportingWindowStats.stake } REP Staked</span>
                   </div>
                   <button

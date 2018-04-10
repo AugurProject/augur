@@ -17,27 +17,28 @@ import Styles from 'modules/create-market/components/create-market-preview/creat
 export default class CreateMarketPreview extends Component {
 
   static propTypes = {
+    currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
   }
 
   static getExpirationDate(p) {
-    if (!Object.keys(p.newMarket.endDate).length) {
+    if (!Object.keys(p.newMarket.endTime).length) {
       return '-'
     }
 
-    const endDate = moment(p.newMarket.endDate.timestamp * 1000)
-    endDate.set({
+    const endTime = moment(p.newMarket.endTime.timestamp * 1000)
+    endTime.set({
       hour: p.newMarket.hour,
       minute: p.newMarket.minute,
     })
 
-    if (p.newMarket.meridiem === 'AM' && endDate.hours() >= 12) {
-      endDate.hours(endDate.hours() - 12)
-    } else if (p.newMarket.meridiem === 'PM' && endDate.hours() < 12) {
-      endDate.hours(endDate.hours() + 12)
+    if (p.newMarket.meridiem === 'AM' && endTime.hours() >= 12) {
+      endTime.hours(endTime.hours() - 12)
+    } else if (p.newMarket.meridiem === 'PM' && endTime.hours() < 12) {
+      endTime.hours(endTime.hours() + 12)
     }
-    p.newMarket.endDate = formatDate(endDate.toDate())
-    return endDate.format('MMM D, YYYY h:mm a')
+    p.newMarket.endTime = formatDate(endTime.toDate())
+    return endTime.format('MMM D, YYYY h:mm a')
   }
 
   static calculateShares(orderBook) {
@@ -67,7 +68,7 @@ export default class CreateMarketPreview extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { newMarket } = this.props
-    if (newMarket.endDate !== nextProps.newMarket.endDate ||
+    if (newMarket.endTime !== nextProps.newMarket.endTime ||
         newMarket.hour !== nextProps.newMarket.hour ||
         newMarket.minute !== nextProps.newMarket.minute ||
         newMarket.meridiem !== nextProps.newMarket.meridiem) {
@@ -79,7 +80,10 @@ export default class CreateMarketPreview extends Component {
   }
 
   render() {
-    const { newMarket } = this.props
+    const {
+      currentTimestamp,
+      newMarket,
+    } = this.props
     const s = this.state
 
     return (
@@ -128,7 +132,7 @@ export default class CreateMarketPreview extends Component {
                 <span>{ newMarket.settlementFee ? newMarket.settlementFee : '0.0'}%</span>
               </li>
               <li>
-                <span>{dateHasPassed(newMarket.endDate.timestamp) ? 'Expired' : 'Expires'}</span>
+                <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
                 <span>{ s.expirationDate }</span>
               </li>
             </ul>

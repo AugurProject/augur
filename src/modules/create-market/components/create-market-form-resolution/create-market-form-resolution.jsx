@@ -42,6 +42,7 @@ export default class CreateMarketResolution extends Component {
     updateNewMarket: PropTypes.func.isRequired,
     validateField: PropTypes.func.isRequired,
     validateNumber: PropTypes.func.isRequired,
+    keyPressed: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -49,7 +50,7 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       // expirySourceType: false,
-      date: Object.keys(this.props.newMarket.endDate).length ? moment(this.props.newMarket.endDate.timestamp * 1000) : null,
+      date: Object.keys(this.props.newMarket.endTime).length ? moment(this.props.newMarket.endTime.timestamp * 1000) : null,
       focused: false,
       hours: Array.from(new Array(12), (val, index) => index + 1),
       minutes: [...Array.from(Array(9).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
@@ -137,6 +138,7 @@ export default class CreateMarketResolution extends Component {
       newMarket,
       validateField,
       validateNumber,
+      keyPressed,
     } = this.props
     const s = this.state
     const validations = newMarket.validations[newMarket.currentStep]
@@ -155,6 +157,7 @@ export default class CreateMarketResolution extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
                 onClick={() => this.validateExpiryType(EXPIRY_SOURCE_GENERIC)}
+                onKeyPress={e => keyPressed(e)}
               >Outcome will be determined by news media
               </button>
             </li>
@@ -162,6 +165,7 @@ export default class CreateMarketResolution extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC })}
                 onClick={() => this.validateExpiryType(EXPIRY_SOURCE_SPECIFIC)}
+                onKeyPress={e => keyPressed(e)}
               >Outcome will be detailed on a public website
               </button>
               { newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
@@ -170,6 +174,7 @@ export default class CreateMarketResolution extends Component {
                   value={newMarket.expirySource}
                   placeholder="Define URL"
                   onChange={e => validateField('expirySource', e.target.value)}
+                  onKeyPress={e => keyPressed(e)}
                 />
               }
             </li>
@@ -184,6 +189,7 @@ export default class CreateMarketResolution extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SELF)}
+                onKeyPress={e => keyPressed(e)}
               >Myself
               </button>
             </li>
@@ -191,6 +197,7 @@ export default class CreateMarketResolution extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC })}
                 onClick={() => this.validateDesignatedReporterType(DESIGNATED_REPORTER_SPECIFIC)}
+                onKeyPress={e => keyPressed(e)}
               >Someone Else
               </button>
               <div>
@@ -201,6 +208,7 @@ export default class CreateMarketResolution extends Component {
                     value={newMarket.designatedReporterAddress}
                     placeholder="Designated Reporter Address"
                     onChange={e => this.validateDesignatedReporterAddress(e.target.value)}
+                    onKeyPress={e => keyPressed(e)}
                   />
                 }
                 { designatedReporterError &&
@@ -214,30 +222,39 @@ export default class CreateMarketResolution extends Component {
             </li>
           </ul>
         </li>
-        <li className={Styles.CreateMarketResolution__datepicker}>
+        <li
+          className={Styles.CreateMarketResolution__datepicker}
+        >
           <label htmlFor="cm__input--date">
             <span>Expiration Date</span>
           </label>
           <SingleDatePicker
             id="cm__input--date"
             date={this.state.date}
-            onDateChange={(date) => { this.setState({ date }); validateField('endDate', formatDate(date.toDate())) }}
+            onDateChange={(date) => { this.setState({ date }); validateField('endTime', formatDate(date.toDate())) }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"
             numberOfMonths={1}
             navPrev={<ChevronLeft />}
             navNext={<ChevronRight />}
+            onKeyPress={e => keyPressed(e)}
           />
         </li>
         <li>
           <label htmlFor="cm__input--time">
             <span>Expiration Time (UTC { utcLocalOffset })</span>
             { newMarket.validations[newMarket.currentStep].hour.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].hour }</span>
+              <span
+                className={StylesForm.CreateMarketForm__error}
+              >{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].hour }
+              </span>
             }
             { newMarket.validations[newMarket.currentStep].minute.length &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].minute }</span>
+              <span
+                className={StylesForm.CreateMarketForm__error}
+              >{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].minute }
+              </span>
             }
           </label>
           <div id="cm__input--time" className={Styles.CreateMarketResolution__time}>
@@ -247,6 +264,7 @@ export default class CreateMarketResolution extends Component {
               default={newMarket.hour}
               onChange={value => validateNumber('hour', value, 'hour', 1, 12, 0)}
               isMobileSmall={isMobileSmall}
+              onKeyPress={e => keyPressed(e)}
             />
             <InputDropdown
               label="Minute"
@@ -254,6 +272,7 @@ export default class CreateMarketResolution extends Component {
               default={newMarket.minute}
               onChange={value => validateNumber('minute', value, 'minute', 0, 59, 0)}
               isMobileSmall={isMobileSmall}
+              onKeyPress={e => keyPressed(e)}
             />
             <InputDropdown
               label="AM/PM"
@@ -261,6 +280,7 @@ export default class CreateMarketResolution extends Component {
               options={s.ampm}
               onChange={value => validateField('meridiem', value)}
               isMobileSmall={isMobileSmall}
+              onKeyPress={e => keyPressed(e)}
             />
           </div>
         </li>

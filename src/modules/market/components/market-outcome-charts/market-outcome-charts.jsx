@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import ScrollSnap from 'scroll-snap'
 
+import CustomPropTypes from 'utils/custom-prop-types'
+
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
@@ -13,12 +15,13 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    minPrice: PropTypes.number.isRequired,
-    maxPrice: PropTypes.number.isRequired,
+    minPrice: CustomPropTypes.bigNumber, /* required */
+    maxPrice: CustomPropTypes.bigNumber, /* required */
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
@@ -157,6 +160,7 @@ export default class MarketOutcomeCharts extends Component {
   render() {
     const {
       currentBlock,
+      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,

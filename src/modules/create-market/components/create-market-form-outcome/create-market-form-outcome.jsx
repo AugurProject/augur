@@ -26,6 +26,7 @@ export default class CreateMarketOutcome extends Component {
     validateField: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
+    keyPressed: PropTypes.func.isRequired,
   }
 
   static calculateOutcomeFieldCount(p) {
@@ -36,7 +37,6 @@ export default class CreateMarketOutcome extends Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       // marketType: false,
       outcomeFieldCount: CreateMarketOutcome.calculateOutcomeFieldCount(this.props),
@@ -231,6 +231,7 @@ export default class CreateMarketOutcome extends Component {
       newMarket,
       updateNewMarket,
       validateField,
+      keyPressed,
     } = this.props
     const s = this.state
     const cleanedOutcomes = newMarket.outcomes.filter(outcome => outcome !== '')
@@ -247,6 +248,7 @@ export default class CreateMarketOutcome extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.type === BINARY })}
                 onClick={() => this.validateType(BINARY)}
+                onKeyPress={e => keyPressed(e)}
               >Yes/No
               </button>
             </li>
@@ -254,6 +256,7 @@ export default class CreateMarketOutcome extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.type === CATEGORICAL })}
                 onClick={() => this.validateType(CATEGORICAL)}
+                onKeyPress={e => keyPressed(e)}
               >Multiple Choice
               </button>
             </li>
@@ -261,6 +264,7 @@ export default class CreateMarketOutcome extends Component {
               <button
                 className={classNames({ [`${StylesForm.active}`]: newMarket.type === SCALAR })}
                 onClick={() => this.validateType(SCALAR)}
+                onKeyPress={e => keyPressed(e)}
               >Numerical Range
               </button>
             </li>
@@ -296,6 +300,7 @@ export default class CreateMarketOutcome extends Component {
                       placeholder={placeholderText}
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                       onChange={e => this.validateOutcomes(e.target.value, i)}
+                      onKeyPress={e => keyPressed(e)}
                     />
                   </div>
                 )
@@ -329,6 +334,7 @@ export default class CreateMarketOutcome extends Component {
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'small')
                 }}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.scalarSmallNum && validation.scalarSmallNum.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>
@@ -350,6 +356,7 @@ export default class CreateMarketOutcome extends Component {
                 onChange={(e) => {
                   this.validateScalarNum(e.target.value, 'big')
                 }}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.scalarBigNum && validation.scalarBigNum.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>
@@ -368,6 +375,7 @@ export default class CreateMarketOutcome extends Component {
                 maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                 placeholder="Denomination"
                 onChange={e => validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+                onKeyPress={e => keyPressed(e)}
               />
             </div>
             <div>
@@ -381,6 +389,7 @@ export default class CreateMarketOutcome extends Component {
                 value={newMarket.tickSize}
                 placeholder="Tick Size"
                 onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
+                onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&
               <span className={StylesForm['CreateMarketForm__error--bottom']}>

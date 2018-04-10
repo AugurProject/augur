@@ -28,7 +28,7 @@ describe('time-remaining-indicator', () => {
 
   describe('current time is in interval', () => {
     it('should calculate percentage elapsed using "currentTimestamp"', () => {
-      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endDate={endTimeAsDate} currentTimestamp={startTimeInUTC + thirtySecondsInMiliseconds} />)
+      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endTime={endTimeAsDate} currentTimestamp={startTimeInUTC + thirtySecondsInMiliseconds} />)
       const emptyCmpArr = wrapper.find(EmptyComponent)
 
       assert.lengthOf(emptyCmpArr, 1)
@@ -38,7 +38,7 @@ describe('time-remaining-indicator', () => {
 
   describe('current time is before interval', () => {
     it('should clamp percentages 0', () => {
-      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endDate={endTimeAsDate} currentTimestamp={startTimeInUTC - thirtySecondsInMiliseconds} />)
+      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endTime={endTimeAsDate} currentTimestamp={startTimeInUTC - thirtySecondsInMiliseconds} />)
       const emptyCmpArr = wrapper.find(EmptyComponent)
 
       assert.lengthOf(emptyCmpArr, 1)
@@ -48,7 +48,7 @@ describe('time-remaining-indicator', () => {
 
   describe('current time is after interval', () => {
     it('should clamp percentage to 100', () => {
-      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endDate={endTimeAsDate} currentTimestamp={startTimeInUTC + (thirtySecondsInMiliseconds * 4)} />)
+      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endTime={endTimeAsDate} currentTimestamp={startTimeInUTC + (thirtySecondsInMiliseconds * 4)} />)
       const emptyCmpArr = wrapper.find(EmptyComponent)
 
       assert.lengthOf(emptyCmpArr, 1)
@@ -59,7 +59,7 @@ describe('time-remaining-indicator', () => {
   describe('wrapped component props', () => {
     let emptyCmpArr
     beforeEach(() => {
-      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endDate={endTimeAsDate} someprop="hello!" />)
+      const wrapper = shallow(<Cmp startDate={startTimeAsDate} endTime={endTimeAsDate} someprop="hello!" />)
       emptyCmpArr = wrapper.find(EmptyComponent)
     })
 
@@ -67,8 +67,8 @@ describe('time-remaining-indicator', () => {
       assert.propertyVal(emptyCmpArr.props(), 'someprop', 'hello!')
     })
 
-    it('should not contain endDate', () => {
-      assert.notProperty(emptyCmpArr.props(), 'endDate')
+    it('should not contain endTime', () => {
+      assert.notProperty(emptyCmpArr.props(), 'endTime')
     })
 
     it('should not contain startDate', () => {
@@ -80,11 +80,10 @@ describe('time-remaining-indicator', () => {
     })
   })
 
-  describe('when endDate is before startDate', () => {
+  describe('when endTime is before startDate', () => {
     it('should not render the wrapped component', () => {
-      const cmp = shallow(<Cmp startDate={endTimeAsDate} endDate={startTimeAsDate} />)
+      const cmp = shallow(<Cmp startDate={endTimeAsDate} endTime={startTimeAsDate} />)
       assert.lengthOf(cmp.find(EmptyComponent), 0)
     })
   })
 })
-

@@ -13,6 +13,7 @@ export default class Transactions extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
     transactionPeriod: PropTypes.string,
@@ -52,8 +53,11 @@ export default class Transactions extends Component {
   }
 
   loadTransactions(value) {
-    const { loadAccountHistoryTransactions } = this.props
-    const beginDate = getBeginDate(value)
+    const {
+      currentTimestamp,
+      loadAccountHistoryTransactions,
+    } = this.props
+    const beginDate = getBeginDate(currentTimestamp, value)
     loadAccountHistoryTransactions(beginDate, null)
   }
 

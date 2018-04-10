@@ -6,6 +6,7 @@ import ReactFauxDOM from 'react-faux-dom'
 import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth'
 
 import { isEqual } from 'lodash'
+import CustomPropTypes from 'utils/custom-prop-types'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
@@ -21,8 +22,8 @@ export default class MarketOutcomeDepth extends Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredDepth: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
+    marketMin: CustomPropTypes.bigNumber, /* required */
+    marketMax: CustomPropTypes.bigNumber, /* required */
     hoveredDepth: PropTypes.object.isRequired,
     hoveredPrice: PropTypes.any,
   }

@@ -42,7 +42,7 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 
 import getValue from 'utils/get-value'
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_LEGACY_REP, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
 import { MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
@@ -67,7 +67,7 @@ const navTypes = {
   [PORTFOLIO_REPORTS]: PortfolioInnerNav,
   [ACCOUNT_DEPOSIT]: AccountInnerNav,
   [ACCOUNT_WITHDRAW]: AccountInnerNav,
-  [ACCOUNT_LEGACY_REP]: AccountInnerNav,
+  [ACCOUNT_REP_FAUCET]: AccountInnerNav,
   [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
   [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
   [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
@@ -95,6 +95,7 @@ export default class AppView extends Component {
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     url: PropTypes.string,
+    isLoading: PropTypes.bool,
   }
 
   constructor(props) {
@@ -258,7 +259,7 @@ export default class AppView extends Component {
         case FAVORITES:
         case ACCOUNT_DEPOSIT:
         case ACCOUNT_WITHDRAW:
-        case ACCOUNT_LEGACY_REP:
+        case ACCOUNT_REP_FAUCET:
         case REPORTING_DISPUTE_MARKETS:
         case REPORTING_REPORT_MARKETS:
         case REPORTING_RESOLVED_MARKETS:
@@ -378,6 +379,7 @@ export default class AppView extends Component {
       marketsFilteredSorted,
       modal,
       universe,
+      isLoading,
     } = this.props
     const s = this.state
 
@@ -451,7 +453,9 @@ export default class AppView extends Component {
               menuScalar={origamiScalar}
             />
             <Link to={makePath(CATEGORIES)}>
-              <Logo />
+              <Logo
+                isLoading={isLoading}
+              />
             </Link>
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
@@ -475,6 +479,7 @@ export default class AppView extends Component {
                 stats={coreStats}
                 unseenCount={unseenCount}
                 toggleNotifications={this.toggleNotifications}
+                isLoading={isLoading}
               />
             </section>
             {isLogged && s.isNotificationsVisible &&

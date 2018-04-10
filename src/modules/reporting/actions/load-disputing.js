@@ -15,7 +15,7 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, result) => {
@@ -32,7 +32,7 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.AWAITING_NEXT_WINDOW,
-      sortBy: 'endDate',
+      sortBy: 'endTime',
       ...args,
     },
     (err, result) => {

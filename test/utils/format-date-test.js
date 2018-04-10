@@ -1,16 +1,9 @@
 
 
-import sinon from 'sinon'
-
-import { dateHasPassed, formatDate, getDaysRemaining } from 'utils/format-date'
+import { dateHasPassed, formatDate, getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 
 describe('utils/format-date', () => {
   const test = t => it(t.description, () => t.assertions())
-  let clock
-
-  afterEach(() => {
-    if (clock !== undefined) clock.restore()
-  })
 
   test({
     description: `should return false`,
@@ -25,7 +18,7 @@ describe('utils/format-date', () => {
   test({
     description: `should return false`,
     assertions: () => {
-      const actual = dateHasPassed(11111111)
+      const actual = dateHasPassed(1522798696889, 11111111)
 
       assert.strictEqual(actual, true, `didn't return true as expected`)
     },
@@ -34,7 +27,7 @@ describe('utils/format-date', () => {
   test({
     description: `should return a trimmed string`,
     assertions: () => {
-      const actual = dateHasPassed(999999999999999)
+      const actual = dateHasPassed(1522798696889, 999999999999999)
 
       assert.strictEqual(actual, false, `didn't return false as expected`)
     },
@@ -59,9 +52,18 @@ describe('utils/format-date', () => {
   })
 
   test({
-    description: `end time null should return 0`,
+    description: `start time null should return 0`,
     assertions: () => {
       const actual = getDaysRemaining(null, 99999)
+
+      assert.strictEqual(actual, 0, `didn't return 0 as expected`)
+    },
+  })
+
+  test({
+    description: `end time null should return 0`,
+    assertions: () => {
+      const actual = getDaysRemaining(99999, null)
 
       assert.strictEqual(actual, 0, `didn't return 0 as expected`)
     },
@@ -79,8 +81,7 @@ describe('utils/format-date', () => {
   test({
     description: `days should be floored to fake today`,
     assertions: () => {
-      clock = sinon.useFakeTimers(new Date(1519849696000))
-      const actual = getDaysRemaining(1520300344)
+      const actual = getDaysRemaining(1520300344, formatDate(new Date(1519849696000)).timestamp)
 
       assert.strictEqual(actual, 5, `didn't return 5 as expected`)
     },
@@ -89,10 +90,22 @@ describe('utils/format-date', () => {
   test({
     description: `current time after end time return 0`,
     assertions: () => {
-      clock = sinon.useFakeTimers(new Date(1539849696000))
-      const actual = getDaysRemaining(1520300344)
+      const actual = getDaysRemaining(1520300344, 1520300300)
 
       assert.strictEqual(actual, 0, `didn't return 0 as expected`)
     },
   })
+
+  test({
+    description: `given timestamp does format correct`,
+    assertions: () => {
+      const timestamp = 1520300344
+      const dateTime = 'March 6, 2018 1:39 AM'
+      const actual = convertUnixToFormattedDate(1520300344)
+
+      assert.strictEqual(actual.formatted, dateTime, `didn't get correct format`)
+      assert.strictEqual(actual.timestamp, timestamp, `didn't get correct timestamp`)
+    },
+  })
+
 })

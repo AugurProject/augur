@@ -23,7 +23,7 @@ export default function () {
       const isReportEqual = (outcome != null && reported != null && outcome === reported) || null // Can be done here
       const feesEarned = calculateFeesEarned(marketsWithAccountReport[marketId])
       const repEarned = (marketsWithAccountReport[marketId].repEarned && formatRep(marketsWithAccountReport[marketId].repEarned)) || null
-      const endDate = (expirationDate && formatDate(expirationDate)) || null
+      const endTime = (expirationDate && formatDate(expirationDate)) || null
       const isChallenged = marketsWithAccountReport[marketId].isChallenged || null
       const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged
       const period = marketsWithAccountReport[marketId].period || null
@@ -40,7 +40,7 @@ export default function () {
         isReportEqual,
         feesEarned,
         repEarned,
-        endDate,
+        endTime,
         isChallenged,
         isChallengeable,
         period,

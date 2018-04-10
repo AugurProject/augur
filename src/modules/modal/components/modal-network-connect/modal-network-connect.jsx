@@ -28,6 +28,7 @@ export default class ModalNetworkConnect extends Component {
     closeModal: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
     connectAugur: PropTypes.func.isRequired,
+    isAugurJSVersionsEqual: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -121,10 +122,21 @@ export default class ModalNetworkConnect extends Component {
 
     p.connectAugur(p.history, updatedEnv, !!p.modal.isInitialConnection, (err, res) => {
       const connectErrors = calculateConnectionErrors(err, res)
+      if (connectErrors.length || err || res) {
+        return this.setState({ isAttemptingConnection: false, connectErrors })
+      }
       // no errors and we didn't get an err or res object? we are connected.
-      if (!connectErrors.length && !err && !res) p.closeModal()
-
-      this.setState({ isAttemptingConnection: false, connectErrors })
+      if (!connectErrors.length && !err && !res) {
+        let isAugurJSEqual
+        p.isAugurJSVersionsEqual().then((res) => {
+          isAugurJSEqual = res.isEqual
+          if (isAugurJSEqual) return p.closeModal()
+          const { formErrors } = this.state
+          formErrors.augurNode = []
+          formErrors.augurNode.push(`AugurJS version (${res.augurjs}) doesn't match AugurNode (${res.augurNode}).`)
+          this.setState({ isAttemptingConnection: false, connectErrors, formErrors })
+        })
+      }
     })
   }
 

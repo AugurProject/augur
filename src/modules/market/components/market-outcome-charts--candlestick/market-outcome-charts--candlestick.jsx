@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import CustomPropTypes from 'utils/custom-prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
@@ -19,10 +20,11 @@ export default class MarketOutcomeCandlestick extends Component {
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.object.isRequired,
     currentBlock: PropTypes.number.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
-    marketMin: PropTypes.number.isRequired,
-    marketMax: PropTypes.number.isRequired,
+    marketMin: CustomPropTypes.bigNumber,
+    marketMax: CustomPropTypes.bigNumber,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredPeriod: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
@@ -461,7 +463,7 @@ function drawTicks(options) {
     .attr('y', d => drawParams.yScale(d))
     .attr('dx', 0)
     .attr('dy', drawParams.chartDim.tickOffset)
-    .text(d => d.toFixed(fixedPrecision))
+    .text(d => (isNaN(d) ? '' : d.toFixed(fixedPrecision)))
 }
 
 function drawCandles(options) {

@@ -23,8 +23,8 @@ This is true for all selectors, but especially important for this one.
 import { createBigNumber } from 'utils/create-big-number'
 import memoize from 'memoizee'
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number'
-import { formatDate, convertUnixToFormattedDate } from 'utils/format-date'
-import { selectCurrentTimestampInSeconds } from 'src/select-state'
+import { convertUnixToFormattedDate } from 'utils/format-date'
+import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 import { UNIVERSE_ID } from 'modules/app/constants/network'
@@ -84,8 +84,7 @@ export const selectMarket = (marketId) => {
   if (!marketId || !marketsData || !marketsData[marketId]) {
     return {}
   }
-
-  const endDate = convertUnixToFormattedDate(marketsData[marketId].endDate)
+  const endTime = convertUnixToFormattedDate(marketsData[marketId].endTime)
 
   return assembleMarket(
     marketId,
@@ -104,9 +103,9 @@ export const selectMarket = (marketId) => {
     tradesInProgress[marketId],
 
     // the reason we pass in the date parts broken up like this, is because date objects are never equal, thereby always triggering re-assembly, and never hitting the memoization cache
-    endDate.value.getFullYear(),
-    endDate.value.getMonth(),
-    endDate.value.getDate(),
+    endTime.value.getFullYear(),
+    endTime.value.getMonth(),
+    endTime.value.getDate(),
 
     universe && universe.currentReportingWindowAddress,
 
@@ -133,9 +132,9 @@ export function assembleMarket(
   marketAccountPositions,
   marketAccountTrades,
   marketTradeInProgress,
-  endDateYear,
-  endDateMonth,
-  endDateDay,
+  endTimeYear,
+  endTimeMonth,
+  endTimeDay,
   currentReportingWindowAddress,
   orderBooks,
   orderCancellation,
@@ -158,9 +157,9 @@ export function assembleMarket(
       marketAccountPositions,
       marketAccountTrades,
       marketTradeInProgress,
-      endDateYear,
-      endDateMonth,
-      endDateDay,
+      endTimeYear,
+      endTimeMonth,
+      endTimeDay,
       currentReportingWindowAddress,
       orderBooks,
       orderCancellation,
@@ -176,7 +175,10 @@ export function assembleMarket(
         id: marketId,
       }
 
-      const now = new Date()
+      if (typeof market.minPrice !== 'undefined') market.minPrice = createBigNumber(market.minPrice)
+      if (typeof market.maxPrice !== 'undefined') market.maxPrice = createBigNumber(market.maxPrice)
+
+      const now = new Date(selectCurrentTimestamp(store.getState()))
 
       switch (market.marketType) {
         case BINARY:
@@ -200,9 +202,9 @@ export function assembleMarket(
 
       market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
-      market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null
-      market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends'
-      market.creationTime = formatDate(new Date(marketData.creationTime * 1000))
+      market.endTime = convertUnixToFormattedDate(marketData.endTime)
+      market.endTimeLabel = (market.endTime < now) ? 'ended' : 'ends'
+      market.creationTime = convertUnixToFormattedDate(marketData.creationTime)
 
       market.isOpen = isOpen
       // market.isExpired = isExpired;
