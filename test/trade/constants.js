@@ -45,7 +45,7 @@ export const tradeTestState = {
       tickSize: '0.0001',
       description: 'test categorical market?',
       endTime: 2066554498,
-      extraInfo: 'extra info',
+      details: 'extra info',
       consensus: null,
       isLoadedMarketInfo: true,
       maxPrice: '1',

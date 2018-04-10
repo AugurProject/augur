@@ -37,9 +37,9 @@ export default function (market) {
       assert.isString(market.description)
     })
 
-    it('market.extraInfo', () => {
-      assert.isDefined(market.extraInfo)
-      assert.isString(market.extraInfo)
+    it('market.details', () => {
+      assert.isDefined(market.details)
+      assert.isString(market.details)
     })
 
     it('market.endTime', () => {

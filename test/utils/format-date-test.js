@@ -1,6 +1,6 @@
 
 
-import { dateHasPassed, formatDate, getDaysRemaining } from 'utils/format-date'
+import { dateHasPassed, formatDate, getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 
 describe('utils/format-date', () => {
   const test = t => it(t.description, () => t.assertions())
@@ -90,9 +90,22 @@ describe('utils/format-date', () => {
   test({
     description: `current time after end time return 0`,
     assertions: () => {
-      const actual = getDaysRemaining(1520300344)
+      const actual = getDaysRemaining(1520300344, 1520300300)
 
       assert.strictEqual(actual, 0, `didn't return 0 as expected`)
     },
   })
+
+  test({
+    description: `given timestamp does format correct`,
+    assertions: () => {
+      const timestamp = 1520300344
+      const dateTime = 'March 6, 2018 1:39 AM'
+      const actual = convertUnixToFormattedDate(1520300344)
+
+      assert.strictEqual(actual.formatted, dateTime, `didn't get correct format`)
+      assert.strictEqual(actual.timestamp, timestamp, `didn't get correct timestamp`)
+    },
+  })
+
 })

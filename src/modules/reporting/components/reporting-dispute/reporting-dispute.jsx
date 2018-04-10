@@ -136,11 +136,15 @@ export default class ReportingDispute extends Component {
         { !isEmpty(market) && s.showingDetails &&
           <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
-              { market.extraInfo &&
-                <p>{market.extraInfo}</p>
-              }
-              <h4>Resolution Source:</h4>
-              <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
+              <div className={Styles.ReportingReportMarket__details}>
+                <span>
+                  {market.details}
+                </span>
+              </div>
+              <div className={Styles[`ReportingReportMarket__resolution-source`]}>
+                <h4>Resolution Source:</h4>
+                <span>{market.resolutionSource || 'Outcome will be determined by news media'}</span>
+              </div>
             </div>
           </div>
         }
