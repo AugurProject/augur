@@ -53,12 +53,12 @@ export default class ReportingReportForm extends Component {
       updateState,
       validations,
     } = this.props
-    this.state.activeButton = buttonName
+    this.setState({ activeButton: buttonName })
     if (buttonName === ReportingReportForm.BUTTONS.MARKET_IS_INVALID) {
       const updatedValidations = { ...validations }
       delete updatedValidations.err
       updatedValidations.selectedOutcome = true
-      this.state.inputSelectedOutcome = ''
+      this.setState({ inputSelectedOutcome: '' })
       updateState({
         isMarketInValid: true,
         validations: updatedValidations,
@@ -77,7 +77,7 @@ export default class ReportingReportForm extends Component {
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
 
-    this.state.inputSelectedOutcome = ''
+    this.setState({ inputSelectedOutcome: '' })
     updateState({
       validations: updatedValidations,
       selectedOutcome,
@@ -89,7 +89,7 @@ export default class ReportingReportForm extends Component {
   validateScalar(validations, value, humanName, min, max, isInvalid) {
     const { updateState } = this.props
     const updatedValidations = { ...validations }
-    this.state.activeButton = ReportingReportForm.BUTTONS.SCALAR_VALUE
+    this.setState({ activeButton: ReportingReportForm.BUTTONS.SCALAR_VALUE })
     const minValue = parseFloat(min)
     const maxValue = parseFloat(max)
     const valueValue = parseFloat(value)
@@ -114,7 +114,7 @@ export default class ReportingReportForm extends Component {
         break
     }
 
-    this.state.inputSelectedOutcome = value
+    this.setState({ inputSelectedOutcome: value })
 
     updateState({
       validations: updatedValidations,
