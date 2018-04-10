@@ -66,7 +66,6 @@ export default class ReportingReport extends Component {
     } = this.props
     // needed for both DR and open reporting
     this.calculateMarketCreationCosts()
-    this.calculateGasEstimates()
     if (isConnected && !isMarketLoaded) {
       loadFullMarket()
     }
@@ -77,6 +76,7 @@ export default class ReportingReport extends Component {
   }
 
   nextPage() {
+    if (this.state.currentStep === 0) this.calculateGasEstimates()
     this.setState({ currentStep: this.state.currentStep >= 1 ? 1 : this.state.currentStep + 1 })
   }
 
@@ -108,17 +108,12 @@ export default class ReportingReport extends Component {
   }
 
   calculateGasEstimates() {
-    const {
-      estimateSubmitInitialReport,
-      market,
-    } = this.props
-    estimateSubmitInitialReport(market.id, (err, gasEstimateValue) => {
+    const { estimateSubmitInitialReport, market } = this.props
+    const { selectedOutcome, isMarketInValid } = this.state
+    estimateSubmitInitialReport(market.id, selectedOutcome, isMarketInValid, (err, gasEstimateValue) => {
       if (err) return console.error(err)
-
       const gasPrice = augur.rpc.getGasPrice()
-      this.setState({
-        gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice),
-      })
+      this.setState({ gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice) })
     })
   }
 

@@ -24,8 +24,6 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
       history.push(makePath(REPORTING_REPORT_MARKETS))
     },
     onSuccess: () => callback(null),
-    onFailed: (err) => {
-      callback(err)
-    },
+    onFailed: err => callback(err),
   })
 }
