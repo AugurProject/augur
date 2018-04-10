@@ -208,7 +208,7 @@ const markets = [
         ],
       },
     ],
-    extraInfo: 'Will Ethereum value overpass Bitcoin by the end of 2018?',
+    details: 'Will Ethereum value overpass Bitcoin by the end of 2018?',
     formattedDescription: 'will_bitcoin_be_surpassed_by_ethereum_by_the_end_of_2018',
     isBinary: true,
     isCategorical: false,

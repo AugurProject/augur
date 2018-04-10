@@ -156,8 +156,8 @@ export default class ReportingReport extends Component {
         { !isEmpty(market) && s.showingDetails &&
           <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
-              { market.extraInfo &&
-                <p>{market.extraInfo}</p>
+              { market.details &&
+                <p>{market.details}</p>
               }
               <h4>Resolution Source:</h4>
               <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
