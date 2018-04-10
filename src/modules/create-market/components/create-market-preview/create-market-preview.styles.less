@@ -17,8 +17,13 @@
   max-width: 81.25rem;
 }
 
+.CreateMarketPreview__header-wrapper {
+  flex-direction: column;
+}
+
 .CreateMarketPreview__header-wrapper,
 .CreateMarketPreview__meta {
+  display: flex;
   margin: auto;
   max-width: 62.75rem;
   padding: 0 2rem;
@@ -73,42 +78,8 @@
 }
 
 .CreateMarketPreview__tags {
-  display: flex;
   margin-bottom: 1.625rem;
   padding-right: 2.125rem;
-
-  > ul {
-    &:extend(.caps--medium);
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    &:not(:first-child) {
-      margin-left: 2rem;
-    }
-
-    > li {
-      display: inline;
-      text-transform: uppercase;
-
-      &:not(:first-child):not(:nth-child(2)):not(:empty)::before {
-        content: "/";
-        margin: 0 4px;
-      }
-
-      &:first-child {
-        color: @color-lightgray;
-        margin-right: 1rem;
-
-        &::after {
-          content: "/";
-          display: inline-block;
-          margin: 0 4px;
-        }
-      }
-    }
-  }
 }
 
 @media @breakpoint-mobile-medium {
@@ -119,11 +90,7 @@
   }
 
   .CreateMarketPreview__tags {
-    display: block;
-
-    > ul:not(:first-child) {
-      margin-left: 0;
-      margin-top: 0.5rem;
-    }
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
 }

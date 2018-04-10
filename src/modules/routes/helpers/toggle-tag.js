@@ -5,7 +5,7 @@ import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import { TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
 
-export default function (tag, location, history) {
+const toggleTag = (tag, location, history) => () => {
   let searchParams = parseQuery(location.search)
 
   if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
@@ -39,3 +39,5 @@ export default function (tag, location, history) {
     search: searchParams,
   })
 }
+
+export default toggleTag
