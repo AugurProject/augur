@@ -2,6 +2,8 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { augurEmitter } from "../../events";
+import { setActiveFeeWindow } from "./database";
+import { getCurrentTime } from "../process-block";
 
 /*          "name": "universe",
           "type": "address"
@@ -34,15 +36,17 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
       feeWindow: log.feeWindow,
       feeWindowId: log.id,
       universe: log.universe,
-      startBlockNumber: log.blockNumber,
       startTime: log.startTime,
-      endBlockNumber: null,
       endTime: log.endTime,
+      isActive: 0,
       fees: 0,
       feeToken,
     };
     augurEmitter.emit("FeeWindowCreated", Object.assign({}, log, feeWindowToInsert));
-    db.from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
+    db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
+      if (err) return callback(err);
+      setActiveFeeWindow(db, log.blockNumber, getCurrentTime(), callback);
+    });
   });
 }
 

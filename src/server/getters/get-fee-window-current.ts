@@ -14,17 +14,14 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
-      "endBlockNumber",
       "endTime",
       "feeWindow",
       "feeWindowId",
-      "startBlockNumber",
       "startTime",
       "universe",
     ]).first().from("fee_windows")
-    .whereNull("endBlockNumber")
-    .where({ universe })
-    .orderBy("startTime", "ASC");
+    .where("isActive", 1)
+    .where({ universe });
 
   query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {
     if (err) return callback(err);

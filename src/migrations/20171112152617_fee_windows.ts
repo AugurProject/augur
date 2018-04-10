@@ -6,12 +6,13 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("feeWindow", 42).primary().notNullable();
       table.integer("feeWindowId").notNullable();
       table.string("universe", 42).notNullable();
-      table.integer("startBlockNumber").notNullable();
       table.specificType("startTime", "integer NOT NULL CONSTRAINT nonnegativeStartTime CHECK (startTime >= 0)");
-      table.integer("endBlockNumber").nullable();
       table.specificType("endTime", "integer NOT NULL CONSTRAINT nonnegativeEndTime CHECK (endTime >= 0)");
+      table.integer("isActive");
       table.string("fees", 255).defaultTo("0");
       table.string("feeToken").notNullable();
+
+      table.index(["universe", "isActive"]);
     });
   });
 };

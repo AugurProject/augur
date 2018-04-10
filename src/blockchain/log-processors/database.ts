@@ -1,6 +1,9 @@
 import * as Knex from "knex";
 import { Address, ReportingState, AsyncCallback } from "../../types";
 import { BigNumber } from "bignumber.js";
+import { getCurrentTime } from "../process-block";
+import { augurEmitter } from "../../events";
+import * as _ from "lodash";
 
 function queryCurrentMarketStateId(db: Knex, marketId: Address) {
   return db("market_state").max("marketStateId as latestMarketStateId").first().where({ marketId });
@@ -11,8 +14,12 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
     marketStateId: queryCurrentMarketStateId(db, marketId),
   }).where({ marketId }).asCallback(callback);
 }
+//
+// export function getFeeWindowAtTimestamp(db: Knex, timestamp: number, callback: AsyncCallback) {
+//   db.
+// }
 
-export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState , callback: AsyncCallback) {
+export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
   db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
@@ -20,6 +27,38 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
 
     setMarketStateToLatest(db, marketId, callback);
   });
+}
+
+export function setActiveFeeWindow(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").select("feeWindow")
+    .where("isActive", 1)
+    .andWhere((queryBuilder) => queryBuilder.where("endTime", "<", timestamp).orWhere("startTime", ">", timestamp))
+    .asCallback((err, results?: any) => {
+      if (err) return callback(err);
+      const expiredFeeWindows = _.map(results, (result) => result.feeWindow);
+      db("fee_windows").update("isActive", 0).whereIn("feeWindow", expiredFeeWindows).asCallback((err) => {
+        if (err) return callback(err);
+        db("fee_windows").select("feeWindow")
+          .where("isActive", 0)
+          .where("endTime", ">", timestamp)
+          .where("startTime", "<", timestamp)
+          .asCallback((err, results?: any) => {
+            if (err) return callback(err);
+            const newActiveFeeWindows = _.map(results, (result) => result.feeWindow);
+            db("fee_windows").update("isActive", 1).whereIn("feeWindow", newActiveFeeWindows).asCallback((err) => {
+              if (err) return callback(err);
+              expiredFeeWindows.forEach( (expiredFeeWindow) => {
+                augurEmitter.emit("FeeWindowClosed", { feeWindowId: expiredFeeWindow, blockNumber, timestamp });
+              });
+              newActiveFeeWindows.forEach( (newActiveFeeWindow) => {
+                augurEmitter.emit("FeeWindowOpened", { feeWindowId: newActiveFeeWindow, blockNumber, timestamp });
+              });
+              console.log( newActiveFeeWindows, expiredFeeWindows );
+              return callback(null, { newActiveFeeWindows, expiredFeeWindows });
+            });
+          });
+      });
+    });
 }
 
 export function rollbackMarketState(db: Knex, marketId: Address, expectedState: ReportingState, callback: AsyncCallback): void {
@@ -42,15 +81,15 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     if (value == null) return;
     payoutRow["payout" + i] = new BigNumber(value, 10).toFixed();
   });
-  db.select("payoutId").from("payouts").where(payoutRow).first().asCallback( (err: Error|null, payoutIdRow?: {payoutId: number}|null): void => {
+  db.select("payoutId").from("payouts").where(payoutRow).first().asCallback((err: Error|null, payoutIdRow?: { payoutId: number }|null): void => {
     if (err) return callback(err);
     if (payoutIdRow != null) {
       return callback(null, payoutIdRow.payoutId);
     } else {
-      const payoutRowWithTentativeWinning = Object.assign( {},
+      const payoutRowWithTentativeWinning = Object.assign({},
         payoutRow,
-        {tentativeWinning},
-        );
+        { tentativeWinning },
+      );
       db.insert(payoutRowWithTentativeWinning).into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) callback(err);
         if (!payoutIdRow || !payoutIdRow.length) return callback(new Error("No payoutId returned"));

@@ -41,9 +41,8 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
   insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
     db("fee_windows").select(["feeWindow"]).first()
-      .whereNull("endBlockNumber")
+      .where("isActive", 1)
       .where({ universe: log.universe })
-      .orderBy("startTime", "ASC")
       .asCallback((err: Error|null, feeWindowRow?: { feeWindow: string }|null): void => {
         if (err) return callback(err);
         if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));

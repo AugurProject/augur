@@ -4,14 +4,19 @@ import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
-import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState } from "../types";
-import { updateMarketState } from "./log-processors/database";
+import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address } from "../types";
+import { setActiveFeeWindow, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
 
 interface FeeWindowIdRow {
   feeWindowId: number;
+}
+
+interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
+  universe: Address;
+  feeWindow: Address;
 }
 
 const overrideTimestamps = Array<number>();
@@ -184,36 +189,37 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
 }
 
 function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  db("fee_windows").first().select("feeWindowId").where("endTime", "<", timestamp).whereNull("endBlockNumber").asCallback((err: Error|null, feeWindowRow?: FeeWindowIdRow) => {
-    if (err || feeWindowRow == null) return callback(err);
-    db("fee_windows").update("endBlockNumber", blockNumber).where("feeWindowId", feeWindowRow.feeWindowId).asCallback((err: Error|null) => {
+  console.log("ADVANCE ", blockNumber);
+  setActiveFeeWindow(db, blockNumber, timestamp, (err, results?: any) => {
+    if (err) return callback(err);
+    advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
       if (err) return callback(err);
-      advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
+      advanceAwaitingNextFeeWindow(db, augur, blockNumber, timestamp, (err: Error|null) => {
         if (err) return callback(err);
-        augurEmitter.emit("FeeWindowClosed", { feeWindowId: feeWindowRow.feeWindowId, blockNumber, timestamp });
-        advanceAwaitingNextFeeWindow(db, augur, blockNumber, timestamp, (err: Error|null) => {
-          if (err) return callback(err);
-          callback(null);
-        });
+        callback(null);
       });
     });
   });
 }
 
 function advanceAwaitingNextFeeWindow(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  const networkId: string = augur.rpc.getNetworkID();
-  const universe: string = augur.contracts.addresses[networkId].Universe;
-  getMarketsWithReportingState(db, ["markets.marketId"])
+  getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "fee_windows.feeWindow"])
+    .join("fee_windows", "fee_windows.universe", "markets.universe")
+    .where("fee_windows.isActive", 1)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
-    .asCallback((err: Error|null, marketIds: Array<MarketsContractAddressRow>) => {
+    .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
-        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE, nextMarketIdRow);
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
-          universe,
-          marketId: marketIdRow.marketId,
-          reportingState: ReportingState.CROWDSOURCING_DISPUTE,
+        db("markets").update("feeWindow", marketIdRow.feeWindow).where({ marketId: marketIdRow.marketId, universe: marketIdRow.universe }).asCallback((err: Error|null) => {
+          if (err) return callback(err);
+          augurEmitter.emit("MarketState", {
+            eventName: "MarketState",
+            universe: marketIdRow.universe,
+            feeWindow: marketIdRow.feeWindow,
+            marketId: marketIdRow.marketId,
+            reportingState: ReportingState.CROWDSOURCING_DISPUTE,
+          });
+          updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.CROWDSOURCING_DISPUTE, nextMarketIdRow);
         });
       }, callback);
     });
@@ -225,7 +231,7 @@ function advanceIncompleteCrowdsourcers(db: Knex, blockNumber: number, timestamp
   db("crowdsourcers").update("completed", 0)
     .whereNull("completed")
     .whereIn("feeWindow", (subQuery: QueryBuilder) => {
-      subQuery.select("feeWindow").from("fee_windows").whereNotNull("endBlockNumber");
+      subQuery.select("feeWindow").from("fee_windows").where("isActive", 0);
     })
     .asCallback(callback);
 }
