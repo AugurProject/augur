@@ -17,7 +17,7 @@ const ModalApproval = p => (
       <button
         onClick={(e) => {
           e.preventDefault()
-          p.approveAccount(p.modal.approveCallback)
+          p.approveAccount(p.modal.approveOnSent, p.modal.approveCallback)
           p.closeModal()
         }}
       >
