@@ -41,7 +41,6 @@ export default class ReportingDisputeForm extends Component {
       outcomes: [],
       inputStake: this.props.stake > 0 ? this.props.stake : '',
       inputSelectedOutcome: '',
-      paddingBuffer: 0,
       selectedOutcome: '',
       selectedOutcomeName: '',
       isMarketInValid: false,
@@ -90,7 +89,6 @@ export default class ReportingDisputeForm extends Component {
       accountDisputeData,
       getDisputeInfo,
       market,
-      updateState,
     } = this.props
     getDisputeInfo([market.id], (err, disputeInfos) => {
       if (err) return console.error(err)
@@ -102,18 +100,9 @@ export default class ReportingDisputeForm extends Component {
       this.state.outcomes = disputeOutcomes.filter(item => !item.tentativeWinning) || []
       this.state.currentOutcome = disputeOutcomes.find(item => item.tentativeWinning) || {}
 
-      this.state.paddingBuffer = this.state.outcomes.reduce((p, i) => {
-        const result = i.name.length > p ? i.name.length : p
-        return result
-      }, 0)
-
       this.state.disputeBondValue = parseInt(bondSizeOfNewStake, 10)
       this.state.disputeBondFormatted = formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted
 
-      updateState({
-        disputeBondFormatted: this.state.disputeBondFormatted,
-        currentOutcome: this.state.currentOutcome,
-      })
       // outcomes need to be populated before validating saved data
       if (accountDisputeData) {
         this.validateSavedValues()
@@ -242,7 +231,7 @@ export default class ReportingDisputeForm extends Component {
           updatedValidations.err = `The ${humanName} field is required.`
           break
         case isNaN(valueValue):
-          updatedValidations.err = `The ${humanName} field is a number.`
+          updatedValidations.err = `The ${humanName} field must be a number.`
           break
         case (valueValue > maxValue || valueValue < minValue):
           updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
@@ -305,27 +294,24 @@ export default class ReportingDisputeForm extends Component {
               <label>{market.scalarDenomination}</label>
             }
           </p>
-
         </li>
         <li>
           <label>
             <span>Proposed Outcome</span>
           </label>
-        </li>
-        <li>
-          <ul className={FormStyles['Form__radio-buttons--per-line']}>
+          <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
             { s.outcomes.map(outcome => (
               <li key={outcome.id}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
                   onClick={(e) => { this.validateOutcome(s.validations, outcome.id, outcome.name, false) }}
-                >{outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name}
+                >
+                  { outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name }
                 </button>
                 <ReportingDisputeProgress
                   key={outcome.id}
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
-                  paddingAmount={s.paddingBuffer - outcome.name.length}
                   stakeRemaining={outcome.stakeRemaining}
                   percentageComplete={outcome.percentageComplete}
                   percentageAccount={outcome.percentageAccount}
@@ -333,6 +319,7 @@ export default class ReportingDisputeForm extends Component {
                   bondSizeCurrent={outcome.bondSizeCurrent}
                   stakeCurrent={outcome.stakeCurrent}
                   accountStakeCurrent={outcome.accountStakeCurrent}
+                  disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>
             ))

@@ -40,9 +40,7 @@ export default class ReportingDispute extends Component {
       currentStep: 0,
       showingDetails: true,
       gasEstimate: '0',
-      disputeBondFormatted: '0',
       isMarketInValid: null,
-      currentOutcome: {},
       selectedOutcome: '',
       selectedOutcomeName: '',
       stake: 0,
@@ -132,10 +130,11 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
+          showDisputeRound
         />
         }
         { !isEmpty(market) && s.showingDetails &&
-          <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
+          <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
               <div className={Styles.ReportingReportMarket__details}>
                 <span>
@@ -164,9 +163,7 @@ export default class ReportingDispute extends Component {
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
-                currentOutcome={s.currentOutcome}
                 gasEstimate={s.gasEstimate}
-                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             <div className={FormStyles.Form__navigation}>

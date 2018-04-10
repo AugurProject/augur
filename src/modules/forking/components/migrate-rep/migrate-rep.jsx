@@ -145,7 +145,6 @@ export default class MigrateRep extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
-          disputeRound={0}
         />
         }
         { !isEmpty(market) && s.showingDetails &&
