@@ -238,7 +238,6 @@ export default class CreateMarketResolution extends Component {
             numberOfMonths={1}
             navPrev={<ChevronLeft />}
             navNext={<ChevronRight />}
-            onKeyPress={e => keyPressed(e)}
           />
         </li>
         <li>
