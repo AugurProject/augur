@@ -22,12 +22,6 @@ describe('loadReporting action', () => {
     },
   }
 
-  const expectedParams = {
-    sortBy: 'endTime',
-    universe: universeAddress,
-    designatedReporter: loginAccountAddress,
-  }
-
   let mockAugur
   let mockStore
   let store
@@ -68,7 +62,7 @@ describe('loadReporting action', () => {
   it('should load upcoming designated markets for a given user in side the given universe', () => {
     store.dispatch(loadReporting())
 
-    const checkCall = (callIndex, method, reportingState, callbackArgs) => {
+    const checkCall = (callIndex, method, reportingState, expectedParams, callbackArgs) => {
       const c = submitRequestStub.getCall(callIndex)
       assert.ok(c.calledWith(method, {
         reportingState,
@@ -77,15 +71,26 @@ describe('loadReporting action', () => {
       c.args[2](null, callbackArgs)
     }
 
-    checkCall(0, 'getMarkets', constants.REPORTING_STATE.PRE_REPORTING, [
+    checkCall(0, 'getMarkets', constants.REPORTING_STATE.PRE_REPORTING, {
+      sortBy: 'endTime',
+      universe: universeAddress,
+      designatedReporter: loginAccountAddress,
+    }, [
       '1111',
     ])
-    checkCall(1, 'getMarkets', constants.REPORTING_STATE.DESIGNATED_REPORTING, [
+    checkCall(1, 'getMarkets', constants.REPORTING_STATE.DESIGNATED_REPORTING, {
+      sortBy: 'endTime',
+      universe: universeAddress,
+      designatedReporter: loginAccountAddress,
+    }, [
       '2222',
       '3333',
     ])
 
-    checkCall(2, 'getMarkets', constants.REPORTING_STATE.OPEN_REPORTING, [
+    checkCall(2, 'getMarkets', constants.REPORTING_STATE.OPEN_REPORTING, {
+      sortBy: 'endTime',
+      universe: universeAddress,
+    }, [
       '4444',
     ])
 
