@@ -95,6 +95,7 @@ export default class AppView extends Component {
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     url: PropTypes.string,
+    isLoading: PropTypes.bool,
   }
 
   constructor(props) {
@@ -378,6 +379,7 @@ export default class AppView extends Component {
       marketsFilteredSorted,
       modal,
       universe,
+      isLoading,
     } = this.props
     const s = this.state
 
@@ -451,7 +453,9 @@ export default class AppView extends Component {
               menuScalar={origamiScalar}
             />
             <Link to={makePath(CATEGORIES)}>
-              <Logo />
+              <Logo
+                isLoading={isLoading}
+              />
             </Link>
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
@@ -475,6 +479,7 @@ export default class AppView extends Component {
                 stats={coreStats}
                 unseenCount={unseenCount}
                 toggleNotifications={this.toggleNotifications}
+                isLoading={isLoading}
               />
             </section>
             {isLogged && s.isNotificationsVisible &&

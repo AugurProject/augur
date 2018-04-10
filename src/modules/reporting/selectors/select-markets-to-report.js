@@ -5,9 +5,9 @@ import { selectMarket } from 'src/modules/market/selectors/market'
 export const selectMarketsToReport = createSelector(
   selectMarketReportState,
   reportData => ({
-    designated: reportData.designated.map(selectMarket).sort((a, b) => a.endDate.timestamp - b.endDate.timestamp),
-    open: reportData.open.map(selectMarket).sort((a, b) => a.endDate.timestamp - b.endDate.timestamp),
-    upcoming: reportData.upcoming.map(selectMarket).sort((a, b) => a.endDate.timestamp - b.endDate.timestamp),
-    resolved: reportData.resolved.map(selectMarket).sort((a, b) => a.endDate.timestamp - b.endDate.timestamp),
+    designated: reportData.designated.map(selectMarket).sort((a, b) => a.endTime.timestamp - b.endTime.timestamp),
+    open: reportData.open.map(selectMarket).sort((a, b) => a.endTime.timestamp - b.endTime.timestamp),
+    upcoming: reportData.upcoming.map(selectMarket).sort((a, b) => a.endTime.timestamp - b.endTime.timestamp),
+    resolved: reportData.resolved.map(selectMarket).sort((a, b) => a.endTime.timestamp - b.endTime.timestamp),
   }),
 )

@@ -35,6 +35,7 @@ describe('events/actions/listen-to-updates', () => {
             assert.isFunction(listeners.TradingProceedsClaimed, `Didn't pass a function to startAugurNodeListeners.TradingProceedsClaimed as expected.`)
             assert.isFunction(listeners.MarketFinalized, `Didn't pass a function to startAugurNodeListeners.MarketFinalized as expected.`)
             assert.isFunction(listeners.UniverseForked, `Didn't pass a function to startAugurNodeListeners.UniverseForked as expected.`)
+            assert.isFunction(listeners.FeeWindowCreated, `Didn't pass a function to startAugurNodeListeners.FeeWindowCreated as expected.`)
             store.dispatch(ACTIONS.START_AUGUR_NODE_EVENT_LISTENERS)
           },
           nodes: {

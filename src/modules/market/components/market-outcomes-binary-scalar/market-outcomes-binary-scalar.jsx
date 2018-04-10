@@ -17,8 +17,7 @@ const MarketOutcomes = (p) => {
     if (p.type === BINARY) {
       return lastPrice
     }
-
-    return `${(createBigNumber(lastPrice).dividedBy(p.max.minus(p.min))) * 100}`
+    return `${(createBigNumber(lastPrice).dividedBy(p.max.minus(p.min))).times(createBigNumber(100))}`
   }
 
   const currentValuePosition = {
