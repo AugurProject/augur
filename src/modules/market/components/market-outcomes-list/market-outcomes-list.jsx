@@ -27,17 +27,23 @@ export default class MarketOutcomesList extends Component {
   }
 
   render() {
+    const {
+      isMobile,
+      marketId,
+      outcomes,
+      selectedOutcome,
+      updateSelectedOutcome,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section className={Styles.MarketOutcomesList}>
         <button
           className={Styles.MarketOutcomesList__heading}
-          onClick={() => { !p.isMobile && toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
+          onClick={() => { !isMobile && toggleHeight(this.outcomeList, s.isOpen, () => { this.setState({ isOpen: !s.isOpen }) }) }}
         >
           <h2>Outcomes</h2>
-          { !p.isMobile &&
+          { !isMobile &&
             <span className={classNames({ [`${Styles['is-open']}`]: s.isOpen })}><ChevronDown /></span>
           }
         </button>
@@ -55,13 +61,13 @@ export default class MarketOutcomesList extends Component {
               <li><span>Last</span></li>
             </ul>
             <div className={Styles['MarketOutcomesList__table-body']}>
-              { p.outcomes && p.outcomes.map(outcome => (
+              { outcomes && outcomes.map(outcome => (
                 <MarketOutcomesListOutcome
                   key={outcome.id}
                   outcome={outcome}
-                  marketId={p.marketId}
-                  selectedOutcome={p.selectedOutcome}
-                  updateSelectedOutcome={p.updateSelectedOutcome}
+                  marketId={marketId}
+                  selectedOutcome={selectedOutcome}
+                  updateSelectedOutcome={updateSelectedOutcome}
                 />
               ))}
             </div>

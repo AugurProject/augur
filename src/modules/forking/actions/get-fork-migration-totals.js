@@ -17,9 +17,12 @@ export const getForkMigrationTotals = (universeId, callback = logError) => (disp
         if (err) return callback(err)
         callback(Object.keys(result).reduce((acc, key) => {
           const cur = result[key]
-          acc[calculatePayoutNumeratorsValue(forkingMarket, cur.payout, cur.isInvalid)] = {
+          const isInvalidKey = '0.5' // used as indetermine id in market reportable outcomes
+          const payoutKey = calculatePayoutNumeratorsValue(forkingMarket, cur.payout, cur.isInvalid)
+          acc[payoutKey == null ? isInvalidKey : payoutKey] = {
             repTotal: cur.repTotal,
             winner: cur.universe === universe.winningChildUniverse,
+            isInvalid: !!cur.isInvalid,
           }
           return acc
         }, {}))

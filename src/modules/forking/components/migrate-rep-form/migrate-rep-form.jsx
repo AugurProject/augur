@@ -3,13 +3,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
-import { formatAttoRep } from 'utils/format-number'
+import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 
 export default class MigrateRepForm extends Component {
 
@@ -19,10 +19,9 @@ export default class MigrateRepForm extends Component {
     validations: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     selectedOutcomeName: PropTypes.string.isRequired,
-    forkMigrationTotals: PropTypes.object.isRequired,
-    repAmount: PropTypes.number,
-    isMarketInValid: PropTypes.bool,
     accountREP: PropTypes.string.isRequired,
+    forkMigrationTotals: PropTypes.object,
+    isMarketInValid: PropTypes.bool,
   }
 
   static checkRepAmount(repAmount, updatedValidations) {
@@ -38,40 +37,25 @@ export default class MigrateRepForm extends Component {
     super(props)
 
     this.state = {
-      outcomes: [],
       inputRepAmount: '',
       inputSelectedOutcome: '',
+      scalarInputChoosen: false,
     }
 
-    // TODO Reportable outcomes?
-    this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
-    if (this.props.market && this.props.market.marketType === BINARY && this.props.market.outcomes.length === 1) {
-      this.state.outcomes.push({ id: 0, name: 'No' })
-    }
-
-    this.state.outcomes.sort((a, b) => a.name - b.name)
-    if (this.props.repAmount) this.state.inputRepAmount = this.props.repAmount.toString()
-
-    this.componentWillReceiveProps(this.props)
+    this.focusTextInput = this.focusTextInput.bind(this)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedOutcome || typeof nextProps.selectedOutcome === 'number') {
-      if (!this.state.outcomes.find(o => o.id === nextProps.selectedOutcome)) {
-        this.setState({
-          inputSelectedOutcome: nextProps.selectedOutcome,
-        })
-      }
-    }
-  }
-
-  validateRepAmount(rawRepAmount) {
-    const updatedValidations = { ...this.props.validations }
+  validateRepAmount(rawRepAmount, isMax) {
+    const {
+      updateState,
+      validations,
+    } = this.props
+    const updatedValidations = { ...validations }
 
     let repAmount = rawRepAmount
 
-    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount))) {
-      repAmount = WrappedBigNumber(rawRepAmount)
+    if (repAmount !== '' && !(BigNumber.isBigNumber(repAmount)) && !isMax) {
+      repAmount = createBigNumber(rawRepAmount)
       repAmount = repAmount.toNumber()
     }
 
@@ -81,28 +65,32 @@ export default class MigrateRepForm extends Component {
       inputRepAmount: repAmount,
     })
 
-    this.props.updateState({
+    updateState({
       validations: updatedValidations,
-      repAmount,
+      repAmount: repAmount.toString(),
     })
   }
 
   validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
+    const {
+      updateState,
+    } = this.props
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
     delete updatedValidations.err
     let isInvalid = isMarketInValid
 
-    // outcome with id of .5 means invalid
+    // outcome with id of 0.5 means invalid
     if (selectedOutcome === '0.5') isInvalid = true
+    this.state.scalarInputChoosen = false
 
-    MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: '',
     })
 
-    this.props.updateState({
+    updateState({
       validations: updatedValidations,
       selectedOutcome,
       selectedOutcomeName: selectedOutcomeName.toString(),
@@ -110,9 +98,21 @@ export default class MigrateRepForm extends Component {
     })
   }
 
-  validateScalar(value, humanName, min, max, isInvalid) {
-    const updatedValidations = { ...this.props.validations }
+  focusTextInput() {
+    this.textInput.focus()
+  }
 
+  validateScalar(value, humanName, min, max, isInvalid) {
+    const {
+      updateState,
+      validations,
+    } = this.props
+    const updatedValidations = { ...validations }
+    this.state.scalarInputChoosen = true
+
+    if (value === '') {
+      this.focusTextInput()
+    }
     if (isInvalid) {
       delete updatedValidations.err
       updatedValidations.selectedOutcome = true
@@ -139,13 +139,13 @@ export default class MigrateRepForm extends Component {
       }
     }
 
-    MigrateRepForm.checkRepAmount(this.props.repAmount, updatedValidations)
+    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: value,
     })
 
-    this.props.updateState({
+    updateState({
       validations: updatedValidations,
       selectedOutcome: value,
       selectedOutcomeName: value.toString(),
@@ -154,14 +154,18 @@ export default class MigrateRepForm extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      accountREP,
+      forkMigrationTotals,
+      market,
+      selectedOutcome,
+      selectedOutcomeName,
+      validations,
+    } = this.props
     const s = this.state
 
-    const formattedMigrationTotals = Object.keys(p.forkMigrationTotals).reduce((totals, curOutcomeId) => {
-      const forkMigrationOutcomeData = p.forkMigrationTotals[curOutcomeId]
-      totals[curOutcomeId] = formatAttoRep(forkMigrationOutcomeData.repTotal, { decimals: 4, roundUp: true }).formatted
-      return totals
-    }, {})
+    const { reportableOutcomes } = market
+    const formattedMigrationTotals = selectMigrateTotals(reportableOutcomes, forkMigrationTotals)
 
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
@@ -175,44 +179,45 @@ export default class MigrateRepForm extends Component {
         </li>
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
-            { s.outcomes.map(outcome => (
+            { formattedMigrationTotals && formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
               <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: p.selectedOutcome === outcome.id })}
-                  onClick={(e) => { this.validateOutcome(p.validations, outcome.id, outcome.name, false) }}
-                >{outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (formattedMigrationTotals[outcome.id] && formattedMigrationTotals[outcome.id]) || '0'} REP Migrated</span>
-                  { p.forkMigrationTotals[outcome.id] && p.forkMigrationTotals[outcome.id].winner &&
+                  className={classNames({ [`${FormStyles.active}`]: selectedOutcome === outcome.id })}
+                  onClick={(e) => { this.validateOutcome(validations, outcome.id, outcome.name, false) }}
+                >{outcome.name === 'Indeterminate' ? 'Market is Invalid': outcome.name}
+                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep.formatted) || '0'} REP Migrated</span>
+                  { outcome && outcome.winner &&
                     <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
                   }
                 </button>
               </li>
             ))
             }
-            { p.market.marketType === SCALAR &&
+            { market.marketType === SCALAR &&
               <li className={FormStyles['field--inline']}>
                 <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
-                      onClick={(e) => { this.validateScalar(0, 'selectedOutcome', p.market.minPrice, p.market.maxPrice, false) }}
+                      onClick={(e) => { this.validateScalar('', 'selectedOutcome', market.minPrice, market.maxPrice, false) }}
                     />
                     <input
                       id="sr__input--outcome-scalar"
                       type="number"
-                      min={p.market.minPrice}
-                      max={p.market.maxPrice}
-                      step={p.market.tickSize}
-                      placeholder={p.market.scalarDenomination}
+                      ref={(input) => { this.textInput = input }}
+                      min={market.minPrice}
+                      max={market.maxPrice}
+                      step={market.tickSize}
+                      placeholder={market.scalarDenomination}
                       value={s.inputSelectedOutcome}
-                      className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('err') && p.validations.selectedOutcome })}
-                      onChange={(e) => { this.validateScalar(e.target.value, 'outcome', p.market.minPrice, p.market.maxPrice, false) }}
+                      className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('err') && validations.selectedOutcome })}
+                      onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, false) }}
                     />
                   </li>
                   <li>
-                    { p.validations.hasOwnProperty('err') &&
+                    { validations.hasOwnProperty('err') &&
                       <span className={FormStyles.Form__error}>
-                        {InputErrorIcon}{ p.validations.err }
+                        {InputErrorIcon}{ validations.err }
                       </span>
                     }
                   </li>
@@ -233,21 +238,21 @@ export default class MigrateRepForm extends Component {
                 min="0"
                 placeholder="0.0000 REP"
                 value={s.inputRepAmount}
-                className={classNames({ [`${FormStyles['Form__error--field']}`]: p.validations.hasOwnProperty('repAmount') && p.validations.selectedOutcome })}
+                className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('repAmount') && validations.selectedOutcome })}
                 onChange={(e) => { this.validateRepAmount(e.target.value) }}
               />
-              { p.selectedOutcomeName && p.selectedOutcomeName.length > 0 &&
+              { selectedOutcomeName && selectedOutcomeName.length > 0 &&
                 <button
                   className={FormStyles['button--inline']}
-                  onClick={() => { this.validateRepAmount(p.accountREP) }}
+                  onClick={() => { this.validateRepAmount(accountREP, true) }}
                 >MAX
                 </button>
               }
             </li>
             <li>
-              { p.validations.hasOwnProperty('repAmount') && p.validations.repAmount.length &&
+              { validations.hasOwnProperty('repAmount') && validations.repAmount.length &&
                 <span className={FormStyles['Form__error--even']}>
-                  {InputErrorIcon}{ p.validations.repAmount }
+                  {InputErrorIcon}{ validations.repAmount }
                 </span>
               }
             </li>

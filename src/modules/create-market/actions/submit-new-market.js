@@ -18,10 +18,13 @@ export function submitNewMarket(newMarket, history) {
     const { universe, loginAccount, contractAddresses } = getState()
     const { createMarket, formattedNewMarket } = buildCreateMarket(newMarket, false, universe, loginAccount, contractAddresses)
 
+    augur.rpc.setDebugOptions({ broadcast: true, tx: true })
+
     createMarket({
       ...formattedNewMarket,
       meta: loginAccount.meta,
       onSent: (res) => {
+        augur.rpc.setDebugOptions({ broadcast: false, tx: false })
         dispatch(addNewMarketCreationTransactions({ ...formattedNewMarket, ...res }))
         history.push(makePath(TRANSACTIONS))
         dispatch(clearNewMarket())
@@ -58,6 +61,7 @@ export function submitNewMarket(newMarket, history) {
         }
       },
       onFailed: (err) => {
+        augur.rpc.setDebugOptions({ broadcast: false, tx: false })
         console.error('ERROR create market failed:', err)
 
         dispatch(invalidateMarketCreation(err.message))

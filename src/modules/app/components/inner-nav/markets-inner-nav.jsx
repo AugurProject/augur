@@ -32,10 +32,15 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      location,
+      markets,
+      marketsFilteredSorted,
+    } = this.props
     if (
-      !isEqual(this.props.markets, nextProps.markets) ||
-      !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
-      !isEqual(this.props.location.search, nextProps.location.search)
+      !isEqual(markets, nextProps.markets) ||
+      !isEqual(marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
+      !isEqual(location.search, nextProps.location.search)
     ) {
       this.updateFilteredTags(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
@@ -67,22 +72,24 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
   addTags(tags) {
     const newTags = {}
+    // NOTE: changed this to just display true since we aren't going to show in 50 milliseconds anymore.
     tags.forEach((tag) => {
-      newTags[tag] = { visible: false }
+      newTags[tag] = { visible: true }
     })
 
     const visibleTags = { ...this.state.visibleTags, ...newTags }
     this.setState({ visibleTags })
-
+    // NOTE: Removed this for now, we shoudl find a better way to animate as this will re-show things tags that should be hidden.
     // animate tags after mounting
-    window.setTimeout(() => {
-      const animTags = {}
-      tags.forEach((tag) => {
-        animTags[tag] = { visible: true }
-      })
-      const visibleTags = { ...this.state.visibleTags, ...animTags }
-      this.setState({ visibleTags })
-    }, 50)
+    // window.setTimeout(() => {
+    //   const animTags = {}
+    //   tags.forEach((tag) => {
+    //     animTags[tag] = { visible: true }
+    //   })
+    //   const visibleTags = { ...this.state.visibleTags, ...animTags }
+    //   console.log('new tags 3', visibleTags);
+    //   this.setState({ visibleTags })
+    // }, 50)
   }
 
   removeTags(tags) {
@@ -101,14 +108,18 @@ export default class MarketsInnerNav extends BaseInnerNav {
   }
 
   toggleTag(tag) {
-    let searchParams = parseQuery(this.props.location.search)
+    const {
+      history,
+      location,
+    } = this.props
+    let searchParams = parseQuery(location.search)
 
     if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
       searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(tag)]
       searchParams = makeQuery(searchParams)
 
-      return this.props.history.push({
-        ...this.props.location,
+      return history.push({
+        ...location,
         search: searchParams,
       })
     }
@@ -129,21 +140,27 @@ export default class MarketsInnerNav extends BaseInnerNav {
 
     searchParams = makeQuery(searchParams)
 
-    this.props.history.push({
-      ...this.props.location,
+    history.push({
+      ...location,
       search: searchParams,
     })
   }
 
   getMainMenuData() {
-    const searchParams = parseQuery(this.props.location.search)
+    const {
+      categories,
+      isMobile,
+      location,
+      openSubMenu,
+    } = this.props
+    const searchParams = parseQuery(location.search)
     const selectedCategory = searchParams[CATEGORY_PARAM_NAME]
-    return this.props.categories.map(item => ({
+    return categories.map(item => ({
       label: item.category,
       isSelected: item.category === selectedCategory,
       visible: true,
       onClick: () => {
-        if (this.props.isMobile) this.props.openSubMenu()
+        if (isMobile) openSubMenu()
       },
       link: {
         pathname: makePath(MARKETS),

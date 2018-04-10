@@ -13,6 +13,7 @@ export default class Transactions extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
     transactionPeriod: PropTypes.string,
@@ -52,8 +53,12 @@ export default class Transactions extends Component {
   }
 
   loadTransactions(value) {
-    const beginDate = getBeginDate(value)
-    this.props.loadAccountHistoryTransactions(beginDate, null)
+    const {
+      currentTimestamp,
+      loadAccountHistoryTransactions,
+    } = this.props
+    const beginDate = getBeginDate(currentTimestamp, value)
+    loadAccountHistoryTransactions(beginDate, null)
   }
 
   changeTransactionDropdown(value) {
@@ -69,8 +74,12 @@ export default class Transactions extends Component {
   }
 
   render() {
+    const {
+      history,
+      location,
+      transactions,
+    } = this.props
     const s = this.state
-    const p = this.props
 
     return (
       <section>
@@ -90,9 +99,9 @@ export default class Transactions extends Component {
           </div>
         </div>
         <div className={Styles.Transactions__list}>
-          {p.transactions.length > 0 && s.boundedLength &&
+          {transactions.length > 0 && s.boundedLength &&
           [...Array(s.boundedLength)].map((unused, i) => {
-            const transaction = p.transactions[(s.lowerBound - 1) + i]
+            const transaction = transactions[(s.lowerBound - 1) + i]
             if (transaction) {
               if (transaction.transactions && transaction.transactions.length <= 1) {
                 return <TransactionSingle key={transaction.hash} transaction={transaction} />
@@ -103,12 +112,12 @@ export default class Transactions extends Component {
           })
           }
         </div>
-        { p.transactions.length &&
+        { transactions.length &&
           <Paginator
-            itemsLength={p.transactions.length}
+            itemsLength={transactions.length}
             itemsPerPage={10}
-            location={p.location}
-            history={p.history}
+            location={location}
+            history={history}
             setSegment={this.setSegment}
           />
         }

@@ -11,6 +11,8 @@ import portfolio from 'modules/portfolio/selectors/portfolio'
 import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-is-mobile'
 import getAllMarkets from 'modules/markets/selectors/markets-all'
 import { initAugur } from 'modules/app/actions/init-augur'
+import { updateModal } from 'modules/modal/actions/update-modal'
+import { isLoading } from 'modules/app/selectors/is-loading'
 
 const mapStateToProps = state => ({
   url: state.url,
@@ -30,12 +32,14 @@ const mapStateToProps = state => ({
   connection: state.connection,
   universe: state.universe,
   blockchain: state.blockchain,
+  isLoading: isLoading(state.marketLoading),
 })
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
-  initAugur: history => dispatch(initAugur(history)),
+  initAugur: (history, cb) => dispatch(initAugur(history, cb)),
+  updateModal: modal => dispatch(updateModal(modal)),
 })
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

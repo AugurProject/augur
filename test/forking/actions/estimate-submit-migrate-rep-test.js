@@ -48,7 +48,7 @@ describe('modules/forking/actions/estimate-submit-migrate-rep.js', () => {
                 assert.deepEqual(args.tx, { to: '0xREP_TOKEN', estimateGas: true, gas: 600000 })
                 assert.equal(args.meta, 'META')
                 assert.equal(args._invalid, false)
-                assert.deepEqual(args._payoutNumerators, [0, 10000])
+                assert.deepEqual(args._payoutNumerators.map(n => n.toString()), ['0', '10000'])
                 assert.equal(args._attotokens, 42)
               },
             },

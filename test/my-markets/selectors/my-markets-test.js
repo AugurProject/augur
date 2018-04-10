@@ -2,7 +2,7 @@
 
 import proxyquire from 'proxyquire'
 
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import * as mockStore from 'test/mockStore'
 
@@ -14,8 +14,8 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
   const { store, state } = mockStore.default
   state.marketCreatorFees = {
-    '0xMARKET1': WrappedBigNumber('10', 10),
-    '0xMARKET2': WrappedBigNumber('11', 10),
+    '0xMARKET1': createBigNumber('10', 10),
+    '0xMARKET2': createBigNumber('11', 10),
   }
 
   const { allMarkets } = store.getState()
@@ -34,10 +34,10 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       author: '0x0000000000000000000000000000000000000001',
       id: '0xMARKET1',
       description: 'test-market-1',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEther(WrappedBigNumber('10', 10)),
+      fees: formatEther(createBigNumber('10', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),
@@ -88,10 +88,10 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       author: '0x0000000000000000000000000000000000000001',
       id: '0xMARKET2',
       description: 'test-market-2',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       repBalance: undefined,
       volume: formatNumber(100),
-      fees: formatEther(WrappedBigNumber('11', 10)),
+      fees: formatEther(createBigNumber('11', 10)),
       numberOfTrades: formatNumber(4),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),

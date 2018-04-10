@@ -1,6 +1,6 @@
 
 
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import calcProfits from 'modules/trade/helpers/calc-order-profit-loss-percents'
 
@@ -72,10 +72,10 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       )
 
       const expected = {
-        potentialEthProfit: WrappedBigNumber('6'),
-        potentialEthLoss: WrappedBigNumber('4'),
-        potentialProfitPercent: WrappedBigNumber('150'),
-        potentialLossPercent: WrappedBigNumber('100'),
+        potentialEthProfit: createBigNumber('6'),
+        potentialEthLoss: createBigNumber('4'),
+        potentialProfitPercent: createBigNumber('150'),
+        potentialLossPercent: createBigNumber('100'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)
@@ -97,10 +97,10 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       )
 
       const expected = {
-        potentialEthProfit: WrappedBigNumber('4'),
-        potentialEthLoss: WrappedBigNumber('6'),
-        potentialProfitPercent: WrappedBigNumber('100'),
-        potentialLossPercent: WrappedBigNumber('150'),
+        potentialEthProfit: createBigNumber('4'),
+        potentialEthLoss: createBigNumber('6'),
+        potentialProfitPercent: createBigNumber('100'),
+        potentialLossPercent: createBigNumber('150'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)
@@ -122,10 +122,10 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       )
 
       const expected = {
-        potentialEthProfit: WrappedBigNumber('90'),
-        potentialEthLoss: WrappedBigNumber('60'),
-        potentialProfitPercent: WrappedBigNumber('150'),
-        potentialLossPercent: WrappedBigNumber('100'),
+        potentialEthProfit: createBigNumber('90'),
+        potentialEthLoss: createBigNumber('60'),
+        potentialProfitPercent: createBigNumber('150'),
+        potentialLossPercent: createBigNumber('100'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)
@@ -147,10 +147,10 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       )
 
       const expected = {
-        potentialEthProfit: WrappedBigNumber('60'),
-        potentialEthLoss: WrappedBigNumber('90'),
-        potentialProfitPercent: WrappedBigNumber('100'),
-        potentialLossPercent: WrappedBigNumber('150'),
+        potentialEthProfit: createBigNumber('60'),
+        potentialEthLoss: createBigNumber('90'),
+        potentialProfitPercent: createBigNumber('100'),
+        potentialLossPercent: createBigNumber('150'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)

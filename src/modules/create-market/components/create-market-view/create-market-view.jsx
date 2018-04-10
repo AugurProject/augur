@@ -15,6 +15,7 @@ const CreateMarketView = p => (
     <div>
       <CreateMarketPreview
         newMarket={p.newMarket}
+        currentTimestamp={p.currentTimestamp}
       />
       <CreateMarketForm
         newMarket={p.newMarket}
@@ -38,6 +39,7 @@ const CreateMarketView = p => (
 )
 
 CreateMarketView.propTypes = {
+  currentTimestamp: PropTypes.number.isRequired,
   newMarket: PropTypes.object.isRequired,
   updateNewMarket: PropTypes.func.isRequired,
   meta: PropTypes.object,
@@ -45,7 +47,6 @@ CreateMarketView.propTypes = {
   universe: PropTypes.object.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
   estimateSubmitNewMarket: PropTypes.func.isRequired,
-  currentTimestamp: PropTypes.number,
 }
 
 export default CreateMarketView

@@ -1,6 +1,6 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env-dev'
+import network from 'config/network'
 
 import { formatNumber, formatShares } from 'utils/format-number'
 import { formatDate } from 'utils/format-date'
@@ -21,7 +21,6 @@ const testState = {
     selectedAuthType: 'register',
   },
   blockchain: {
-    currentBlockMillisSinceEpoch: 1461774253983,
     currentBlockTimestamp: 1461774253,
     currentBlockNumber: 833339,
   },
@@ -42,7 +41,7 @@ const testState = {
   favorites: {
     testMarketId: true,
   },
-  env,
+  env: network[`${process.env.ETHEREUM_NETWORK || 'dev'}`],
   loginAccount: {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
@@ -69,7 +68,7 @@ const testState = {
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket',
       description: 'some test description',
-      endDate: 123,
+      endTime: 123,
       minPrice: 1,
       maxPrice: 2,
       volume: 500,
@@ -92,7 +91,7 @@ const testState = {
       author: '0x0000000000000000000000000000000000000001',
       name: 'testMarket2',
       description: 'some test description',
-      endDate: 123,
+      endTime: 123,
       minPrice: 1,
       maxPrice: 2,
       marketType: 'binary',
@@ -308,7 +307,7 @@ const testState = {
       id: '0xMARKET1',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-1',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {
@@ -357,7 +356,7 @@ const testState = {
       id: '0xMARKET2',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-2',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {

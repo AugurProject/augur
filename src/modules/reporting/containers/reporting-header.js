@@ -11,6 +11,7 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile,
   repBalance: state.loginAccount.rep,
   forkingMarket: state.universe.forkingMarket,
+  currentTime: state.blockchain.currentAugurTimestamp,
 })
 
 const mapDispatchToProps = dispatch => ({

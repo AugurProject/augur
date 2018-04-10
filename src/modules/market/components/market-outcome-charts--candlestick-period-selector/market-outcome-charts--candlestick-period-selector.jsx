@@ -29,20 +29,31 @@ export default class PeriodSelector extends Component {
 
     this.updatePermissibleValues = this.updatePermissibleValues.bind(this)
     this.validateAndUpdateSelection = this.validateAndUpdateSelection.bind(this)
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
   }
 
   componentWillMount() {
-    this.updatePermissibleValues(this.props.priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
+    const { priceTimeSeries } = this.props
+    this.updatePermissibleValues(priceTimeSeries, this.state.selectedRange, this.state.selectedPeriod)
+  }
+
+  componentDidMount() {
+    window.addEventListener('click', this.handleWindowOnClick)
   }
 
   componentWillUpdate(nextProps, nextState) {
+    const { priceTimeSeries } = this.props
     if (
-      this.props.priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
+      priceTimeSeries.length !== nextProps.priceTimeSeries.length ||
       this.state.selectedRange !== nextState.selectedRange ||
       this.state.selectedPeriod !== nextState.selectedPeriod
     ) {
       this.updatePermissibleValues(nextProps.priceTimeSeries, nextState.selectedRange, nextState.selectedPeriod)
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('click', this.handleWindowOnClick)
   }
 
   updatePermissibleValues(priceTimeSeries, selectedRange, selectedPeriod) {
@@ -95,6 +106,7 @@ export default class PeriodSelector extends Component {
   }
 
   validateAndUpdateSelection(permissibleRanges, permissiblePeriods, selectedRange, selectedPeriod) {
+    const { updateSelectedPeriod } = this.props
     // All we're doing here is validating selections relative to each other + setting defaults
     // Establishment of permissible bounds happens elsewhere
     let updatedSelectedRange
@@ -133,10 +145,16 @@ export default class PeriodSelector extends Component {
       selectedPeriod: updatedSelectedPeriod,
     })
 
-    this.props.updateSelectedPeriod({
+    updateSelectedPeriod({
       selectedRange: updatedSelectedRange,
       selectedPeriod: updatedSelectedPeriod,
     })
+  }
+
+  handleWindowOnClick(event) {
+    if (this.periodSelector && !this.periodSelector.contains(event.target)) {
+      this.setState({ isModalActive: false })
+    }
   }
 
   render() {
@@ -149,7 +167,10 @@ export default class PeriodSelector extends Component {
       <section className={Styles.PeriodSelector}>
         <button
           className={Styles.PeriodSelector__button}
-          onClick={() => this.setState({ isModalActive: !s.isModalActive })}
+          onClick={(e) => {
+            e.stopPropagation()
+            this.setState({ isModalActive: !s.isModalActive })
+          }}
         >
           <span>
             {
@@ -164,13 +185,14 @@ export default class PeriodSelector extends Component {
           }
         </button>
         <div
+          ref={(periodSelector) => { this.periodSelector = periodSelector }}
           className={classNames(
             Styles.PeriodSelector__modal,
             {
               [Styles['PeriodSelector__modal--active']]: s.isModalActive,
             },
-          )
-          }
+          )}
+          role="button"
         >
           <div className={Styles.PeriodSelector__column}>
             <h1>Range</h1>

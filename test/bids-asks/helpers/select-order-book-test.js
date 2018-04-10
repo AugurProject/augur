@@ -3,7 +3,7 @@
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book'
 
@@ -349,9 +349,9 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const expected = {
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
-            sharesEscrowed: WrappedBigNumber('1'),
-            tokensEscrowed: WrappedBigNumber('0'),
+            shares: createBigNumber('1'),
+            sharesEscrowed: createBigNumber('1'),
+            tokensEscrowed: createBigNumber('0'),
           },
         }
 
@@ -368,9 +368,9 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
-            sharesEscrowed: WrappedBigNumber('0'),
-            tokensEscrowed: WrappedBigNumber('0.1'),
+            shares: createBigNumber('1'),
+            sharesEscrowed: createBigNumber('0'),
+            tokensEscrowed: createBigNumber('0.1'),
           },
         }, {
           isOfCurrentUser: true,
@@ -384,9 +384,9 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const expected = {
           0.1: {
             isOfCurrentUser: true,
-            shares: WrappedBigNumber('2'),
-            sharesEscrowed: WrappedBigNumber('1'),
-            tokensEscrowed: WrappedBigNumber('0.1'),
+            shares: createBigNumber('2'),
+            sharesEscrowed: createBigNumber('1'),
+            tokensEscrowed: createBigNumber('0.1'),
           },
         }
 
@@ -403,9 +403,9 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
-            sharesEscrowed: WrappedBigNumber('1'),
-            tokensEscrowed: WrappedBigNumber('0'),
+            shares: createBigNumber('1'),
+            sharesEscrowed: createBigNumber('1'),
+            tokensEscrowed: createBigNumber('0'),
           },
         }, {
           isOfCurrentUser: false,
@@ -419,15 +419,15 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const expected = {
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
-            sharesEscrowed: WrappedBigNumber('1'),
-            tokensEscrowed: WrappedBigNumber('0'),
+            shares: createBigNumber('1'),
+            sharesEscrowed: createBigNumber('1'),
+            tokensEscrowed: createBigNumber('0'),
           },
           0.2: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
-            sharesEscrowed: WrappedBigNumber('0'),
-            tokensEscrowed: WrappedBigNumber('0.2'),
+            shares: createBigNumber('1'),
+            sharesEscrowed: createBigNumber('0'),
+            tokensEscrowed: createBigNumber('0.2'),
           },
         }
 
@@ -446,7 +446,7 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const actual = reduceSharesCountByPrice({
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
+            shares: createBigNumber('1'),
           },
         }, {
           isOfCurrentUser: false,
@@ -457,7 +457,7 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         const expected = {
           0.1: {
             isOfCurrentUser: false,
-            shares: WrappedBigNumber('1'),
+            shares: createBigNumber('1'),
           },
         }
 

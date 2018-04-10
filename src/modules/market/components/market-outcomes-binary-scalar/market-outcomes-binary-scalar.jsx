@@ -4,18 +4,20 @@ import PropTypes from 'prop-types'
 import { BINARY } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
+import CustomPropTypes from 'utils/custom-prop-types'
+import { createBigNumber } from 'utils/create-big-number'
 
 import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
 const MarketOutcomes = (p) => {
   const scalarDenomination = !p.scalarDenomination ? '' : p.scalarDenomination
   const calculatePosition = () => {
-    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.formatted')
+    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.fullPrecision') || 0
 
     if (p.type === BINARY) {
       return lastPrice
     }
-    return `${(lastPrice / (p.max - p.min)) * 100}`
+    return `${(createBigNumber(lastPrice).dividedBy(p.max.minus(p.min))).times(createBigNumber(100))}`
   }
 
   const currentValuePosition = {
@@ -53,8 +55,8 @@ const MarketOutcomes = (p) => {
 
 MarketOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
-  max: PropTypes.number,
-  min: PropTypes.number,
+  max: CustomPropTypes.bigNumber,
+  min: CustomPropTypes.bigNumber,
   type: PropTypes.string,
   scalarDenomination: PropTypes.string,
 }

@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectAccountTradesState, selectCurrentTimestamp, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
@@ -29,7 +29,7 @@ export const createPeriodPLSelector = period => createSelector(
     if (!accountTrades || !blockchain) return null
 
     const periodDate = new Date(currentTimestamp - (period*24*60*60*1000))
-    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber)
+    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber, currentTimestamp)
 
     return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
       if (!outcomesData[marketId]) return p
@@ -38,7 +38,7 @@ export const createPeriodPLSelector = period => createSelector(
         const periodTrades = accountTrades[marketId][outcomeId].filter(trade => trade.blockNumber > periodBlock) // Filter out trades older than 30 days
         const lastPrice = selectOutcomeLastPrice(outcomesData[marketId], outcomeId)
         const { realized, unrealized } = augur.trading.calculateProfitLoss({ trades: periodTrades, lastPrice })
-        return p.plus(WrappedBigNumber(realized, 10).plus(WrappedBigNumber(unrealized, 10)))
+        return p.plus(createBigNumber(realized, 10).plus(createBigNumber(unrealized, 10)))
       }, ZERO)
 
       return p.plus(accumulatedPL)

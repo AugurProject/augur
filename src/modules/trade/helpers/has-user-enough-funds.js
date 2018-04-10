@@ -1,5 +1,5 @@
 import memoize from 'memoizee'
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { ZERO } from 'modules/trade/constants/numbers'
 
 /**
@@ -16,8 +16,8 @@ export default memoize((trades, loginAccount) => {
 
   const totalCost = trades.reduce((totalCost, trade) => (
     trade.side === 'buy' ?
-      totalCost.plus(WrappedBigNumber(trade.totalCost.value, 10)) :
-      totalCost.plus(WrappedBigNumber(trade.totalFee.value, 10))
+      totalCost.plus(createBigNumber(trade.totalCost.value, 10)) :
+      totalCost.plus(createBigNumber(trade.totalFee.value, 10))
   ), ZERO)
-  return totalCost.lte(WrappedBigNumber(loginAccount.ether, 10))
+  return totalCost.lte(createBigNumber(loginAccount.ether, 10))
 }, { max: 10 })

@@ -2,7 +2,9 @@ import PropTypes from 'prop-types'
 
 import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
 
-import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_LEGACY_REP } from 'modules/routes/constants/views'
+import { augur } from 'services/augurjs'
+
+import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET } from 'modules/routes/constants/views'
 
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
@@ -11,11 +13,13 @@ export default class AccountInnerNav extends BaseInnerNav {
   }
 
   getMainMenuData() {
+    const showRepFaucet = parseInt(augur.rpc.getNetworkID(), 10) !== 1
+    const { currentBasePath } = this.props
     return [
       {
         label: 'Deposit',
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_DEPOSIT),
+        isSelected: (currentBasePath === ACCOUNT_DEPOSIT),
         link: {
           pathname: ACCOUNT_DEPOSIT,
         },
@@ -23,17 +27,17 @@ export default class AccountInnerNav extends BaseInnerNav {
       {
         label: 'Withdraw',
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_WITHDRAW),
+        isSelected: (currentBasePath === ACCOUNT_WITHDRAW),
         link: {
           pathname: ACCOUNT_WITHDRAW,
         },
       },
       {
-        label: 'Legacy REP',
-        visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_LEGACY_REP),
+        label: 'REP Faucet',
+        visible: showRepFaucet,
+        isSelected: (currentBasePath === ACCOUNT_REP_FAUCET),
         link: {
-          pathname: ACCOUNT_LEGACY_REP,
+          pathname: ACCOUNT_REP_FAUCET,
         },
       },
     ]

@@ -1,4 +1,4 @@
-import { WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
 import moment from 'moment'
 import store from 'src/store'
@@ -15,8 +15,8 @@ export const selectReportingCycle = createSelector(
   selectBlockchainCurrentBlockTimestamp,
   (reportingPeriodDurationInSeconds, timestamp) => {
     const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds || 0, timestamp)
-    const bnReportingPeriodDurationInSeconds = WrappedBigNumber(reportingPeriodDurationInSeconds || 0, 10)
-    const secondsRemaining = ONE.minus(WrappedBigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds)
+    const bnReportingPeriodDurationInSeconds = createBigNumber(reportingPeriodDurationInSeconds || 0, 10)
+    const secondsRemaining = ONE.minus(createBigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds)
     return {
       currentReportingPeriodPercentComplete,
       reportingCycleTimeRemaining: moment.duration(secondsRemaining.toNumber(), 'seconds').humanize(true),

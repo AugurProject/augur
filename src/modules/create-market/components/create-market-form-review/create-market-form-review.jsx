@@ -47,15 +47,21 @@ export default class CreateMarketReview extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
-    if (this.props.newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
-    if (this.props.newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
+    const { newMarket } = this.props
+    if (newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
+    if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
+    if (newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {
-    this.props.estimateSubmitNewMarket(this.props.newMarket, (err, gasCost) => {
+    const {
+      meta,
+      universe,
+      newMarket,
+    } = this.props
+    this.props.estimateSubmitNewMarket(newMarket, (err, gasCost) => {
       if (err) console.error(err)
-      augur.createMarket.getMarketCreationCostBreakdown({ universe: this.props.universe.id, meta: this.props.meta }, (err, marketCreationCostBreakdown) => {
+      augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id, meta }, (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err)
         // TODO add designatedReportNoShowReputationBond to state / display
         this.setState({
@@ -69,7 +75,11 @@ export default class CreateMarketReview extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      availableEth,
+      availableRep,
+      newMarket,
+    } = this.props
     const s = this.state
 
     let insufficientFundsString = ''
@@ -79,7 +89,7 @@ export default class CreateMarketReview extends Component {
       const creationFee = getValue(s, 'creationFee.formattedValue')
       const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
 
-      insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, p.availableEth, p.availableRep)
+      insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, availableEth, availableRep)
     }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
@@ -134,15 +144,15 @@ export default class CreateMarketReview extends Component {
             <h4 className={Styles.CreateMarketReview__smallheading}>Resolution Source</h4>
             <p className={Styles.CreateMarketReview__smallparagraph}>
               {
-                p.newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
+                newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
                   'Outcome will be determined by news media' :
-                  `Outcome will be detailed on public website: ${p.newMarket.expirySource}`
+                  `Outcome will be detailed on public website: ${newMarket.expirySource}`
               }
             </p>
           </div>
           <div className={Styles.CreateMarketReview__addedDetails}>
             <h4 className={Styles.CreateMarketReview__smallheading}>Additional Details</h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>{p.newMarket.detailsText || 'None'}</p>
+            <p className={Styles.CreateMarketReview__smallparagraph}>{newMarket.detailsText || 'None'}</p>
           </div>
         </div>
       </article>
