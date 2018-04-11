@@ -13,9 +13,9 @@ export const loadReportingWindowBounds = (callback = logError) => (dispatch, get
       if (err) return callback(err)
 
       dispatch(updateReportingWindowStats({
-        startTime: result.startTime,
-        endTime: result.endTime,
-        stake: result.totalStake || 0,
+        startTime: (result || {}).startTime,
+        endTime: (result || {}).endTime,
+        stake: (result || {}).totalStake || 0,
       }))
     },
   )

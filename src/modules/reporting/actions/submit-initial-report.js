@@ -17,15 +17,13 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
 
   augur.api.Market.doInitialReport({
     meta: loginAccount.meta,
-    tx: { to: marketId },
+    tx: { to: marketId, gas: augur.constants.DEFAULT_MAX_GAS },
     _invalid: invalid,
     _payoutNumerators: payoutNumerators,
     onSent: () => {
       history.push(makePath(REPORTING_REPORT_MARKETS))
     },
     onSuccess: () => callback(null),
-    onFailed: (err) => {
-      callback(err)
-    },
+    onFailed: err => callback(err),
   })
 }
