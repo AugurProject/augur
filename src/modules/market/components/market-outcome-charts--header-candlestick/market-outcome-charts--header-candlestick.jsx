@@ -10,11 +10,14 @@ export default class MarketOutcomeCandlestickHeader extends Component {
   static propTypes = {
     updateChartHeaderHeight: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    updateSelectedPeriod: PropTypes.func.isRequired,
     volume: PropTypes.number,
     open: PropTypes.number,
     high: PropTypes.number,
     low: PropTypes.number,
     close: PropTypes.number,
+    priceTimeSeries: PropTypes.object,
   }
 
   componentDidMount() {
@@ -22,58 +25,70 @@ export default class MarketOutcomeCandlestickHeader extends Component {
   }
 
   render() {
-    const p = this.props
+    const {
+      isMobile,
+      volume,
+      fixedPrecision,
+      open,
+      high,
+      low,
+      close,
+      priceTimeSeries,
+      updateSelectedPeriod,
+    } = this.props
 
     return (
       <section
         ref={(candleHeader) => { this.candleHeader = candleHeader }}
       >
-        <div className={StylesHeader.MarketOutcomeChartsHeader__Header} >
-          <h2>Placeholder Outcome</h2>
-          <span>price (eth)</span>
-        </div>
+        {isMobile ||
+          <div className={StylesHeader.MarketOutcomeChartsHeader__Header} >
+            <h2>Placeholder Outcome</h2>
+            <span>price (eth)</span>
+          </div>
+        }
         <div
           className={Styles['MarketOutcomeChartsHeader__chart-interaction']}
         >
           <div className={StylesHeader.MarketOutcomeChartsHeader__stats}>
             <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-                volume
+                {isMobile ? 'v': 'volume'}
               </span>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
-                {p.volume ? p.volume.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+                {volume ? volume.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
               </span>
             </span>
             <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-                open
+                {isMobile ? 'o' : 'open`'}
               </span>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
-                {p.open ? p.open.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+                {open ? open.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
               </span>
             </span>
             <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-                high
+                {isMobile ? 'h' : 'high'}
               </span>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
-                {p.high ? p.high.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+                {high ? high.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
               </span>
             </span>
             <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-                low
+                {isMobile ? 'l' : 'low'}
               </span>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
-                {p.low ? p.low.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+                {low ? low.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
               </span>
             </span>
             <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-                close
+                {isMobile ? 'c' : 'close'}
               </span>
               <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
-                {p.close ? p.close.toFixed(p.fixedPrecision).toString() : <span>&mdash;</span>}
+                {close ? close.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
               </span>
             </span>
           </div>
@@ -81,8 +96,8 @@ export default class MarketOutcomeCandlestickHeader extends Component {
             className={Styles.MarketOutcomeChartsHeader__selector}
           >
             <PeriodSelector
-              priceTimeSeries={p.priceTimeSeries}
-              updateSelectedPeriod={p.updateSelectedPeriod}
+              priceTimeSeries={priceTimeSeries}
+              updateSelectedPeriod={updateSelectedPeriod}
             />
           </div>
         </div>

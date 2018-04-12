@@ -190,6 +190,7 @@ export default class MarketOutcomeCharts extends Component {
               })}
             >
               <MarketOutcomeCandlestick
+                isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 priceTimeSeries={priceTimeSeries}
                 currentBlock={currentBlock}
@@ -216,6 +217,7 @@ export default class MarketOutcomeCharts extends Component {
           >
             <div className={Styles.MarketOutcomeCharts__depth}>
               <MarketOutcomeDepth
+                isMobile={isMobile}
                 priceTimeSeries={priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
@@ -232,6 +234,7 @@ export default class MarketOutcomeCharts extends Component {
             </div>
             <div className={Styles.MarketOutcomeCharts__orderbook}>
               <MarketOutcomeOrderBook
+                isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
                 orderBook={orderBook}

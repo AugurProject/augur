@@ -31,6 +31,7 @@ export default class MarketOutcomeCandlestick extends Component {
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateChartHeaderHeight: PropTypes.func.isRequired,
     hoveredPeriod: PropTypes.object.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -280,11 +281,13 @@ export default class MarketOutcomeCandlestick extends Component {
       fixedPrecision,
       updateSelectedPeriod,
       updateChartHeaderHeight,
+      isMobile,
     } = this.props
 
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <MarketOutcomeChartsHeaderCandlestick
+          isMobile={isMobile}
           volume={hoveredPeriod.volume}
           open={hoveredPeriod.open}
           high={hoveredPeriod.high}

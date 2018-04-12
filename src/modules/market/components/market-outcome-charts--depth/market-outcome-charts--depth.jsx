@@ -283,6 +283,7 @@ export default class MarketOutcomeDepth extends Component {
     const {
       fixedPrecision,
       hoveredDepth,
+      isMobile,
     } = this.props
 
     return (
@@ -290,6 +291,7 @@ export default class MarketOutcomeDepth extends Component {
         <MarketOutcomeChartHeaderDepth
           fixedPrecision={fixedPrecision}
           hoveredDepth={hoveredDepth}
+          isMobile={isMobile}
         />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}

@@ -20,6 +20,7 @@ export default class MarketOutcomeOrderbook extends Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     updatePrecision: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
@@ -56,6 +57,7 @@ export default class MarketOutcomeOrderbook extends Component {
       updateHoveredPrice,
       updatePrecision,
       updateSeletedOrderProperties,
+      isMobile,
     } = this.props
     const s = this.state
 
@@ -67,6 +69,7 @@ export default class MarketOutcomeOrderbook extends Component {
         <MarketOutcomeChartHeaderOrders
           fixedPrecision={fixedPrecision}
           updatePrecision={updatePrecision}
+          isMobile={isMobile}
         />
         <div
           ref={(asks) => { this.asks = asks }}
