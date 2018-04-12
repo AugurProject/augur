@@ -13,6 +13,7 @@ import Styles from 'modules/reporting/components/reporting-dispute-form/reportin
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
 import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
+import { isEqual } from 'lodash'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -62,6 +63,10 @@ export default class ReportingDisputeForm extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(nextState, this.state)
+  }
+
   componentDidUpdate() {
     this.getMarketDisputeInfo()
   }
@@ -88,6 +93,7 @@ export default class ReportingDisputeForm extends Component {
       getDisputeInfo,
       market,
     } = this.props
+
     getDisputeInfo([market.id], (err, disputeInfos) => {
       if (err) return console.error(err)
       const disputeInfo = disputeInfos[0]

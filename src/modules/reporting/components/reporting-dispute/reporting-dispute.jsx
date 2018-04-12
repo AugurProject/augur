@@ -12,7 +12,7 @@ import ReportingDisputeForm from 'modules/reporting/containers/reporting-dispute
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
 
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 
@@ -65,6 +65,10 @@ export default class ReportingDispute extends Component {
     if (isConnected && !isMarketLoaded) {
       loadFullMarket()
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(nextState, this.state)
   }
 
   prevPage() {
