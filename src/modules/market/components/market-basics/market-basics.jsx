@@ -29,7 +29,7 @@ const MarketBasics = (p) => {
 
     ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
-        <div>Reporting Ends {displayDate.formattedShort}</div>
+        <div>{p.isMobile ? `In Reporting` : `Reporting Ends ${displayDate.formattedLocalShortTime}`}</div>
         <WrappedGraph startDate={p.endTime.value} endTime={endTime} currentTimestamp={p.currentTimestamp} />
       </div>
     )

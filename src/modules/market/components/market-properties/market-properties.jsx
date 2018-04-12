@@ -36,7 +36,7 @@ const MarketProperties = (p) => {
           </li>
           <li>
             <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
-            <span>{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocal }</span>
+            <span>{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
           </li>
           {p.outstandingReturns &&
           <li>
