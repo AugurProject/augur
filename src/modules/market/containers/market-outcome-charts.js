@@ -33,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
   const orderBookKeys = getOrderBookKeys(marketDepth)
 
   return {
-    isMobile: state.isMobile,
+    // isMobile: state.isMobile,
+    isMobile: true,
     currentBlock: state.blockchain.currentBlockNumber || 0,
     currentTimestamp: selectCurrentTimestamp(state),
     minPrice: market.minPrice || createBigNumber(0),

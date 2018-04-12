@@ -54,7 +54,6 @@ export default class MarketOutcomeCharts extends Component {
         candle: 0,
         orders: 0,
       },
-      chartHeight: 0,
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -65,6 +64,7 @@ export default class MarketOutcomeCharts extends Component {
     this.updateChartWidths = this.updateChartWidths.bind(this)
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
+    this.updateChartsWidth = this.updateChartWidths.bind(this)
   }
 
   componentDidMount() {
@@ -150,7 +150,7 @@ export default class MarketOutcomeCharts extends Component {
 
     if (this.snapScroller != null) {
       if (this.props.isMobile) {
-        this.snapScroller.bind((o, t) => { console.log('o, t -- ', o, t) })
+        this.snapScroller.bind()
       } else {
         this.snapScroller.unbind()
       }
@@ -160,7 +160,6 @@ export default class MarketOutcomeCharts extends Component {
   render() {
     const {
       currentBlock,
-      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,
@@ -174,21 +173,6 @@ export default class MarketOutcomeCharts extends Component {
       isMobile,
     } = this.props
     const s = this.state
-
-    // const isMobile = true
-
-    // console.log('isMobile -- ', isMobile)
-
-    // <MarketOutcomeChartsHeader
-    //   excludeCandlestick={excludeCandlestick}
-    //   priceTimeSeries={priceTimeSeries}
-    //   selectedOutcome={selectedOutcome}
-    //   hoveredPeriod={s.hoveredPeriod}
-    //   hoveredDepth={s.hoveredDepth}
-    //   fixedPrecision={s.fixedPrecision}
-    //   updatePrecision={this.updatePrecision}
-    //   updateSelectedPeriod={this.updateSelectedPeriod}
-    // />
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
