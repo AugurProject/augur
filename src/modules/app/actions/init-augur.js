@@ -118,6 +118,7 @@ export function connectAugur(history, env, isInitialConnection = false, callback
         universeId = storedUniverseId === null ? universeId : storedUniverseId
       }
       dispatch(loadUniverse(universeId, history))
+      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)
         pollForNetwork(dispatch, getState)

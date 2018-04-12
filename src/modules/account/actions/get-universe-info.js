@@ -22,14 +22,14 @@ export default function (callback = logError) {
       const forkingMarket = marketsData[universe.forkingMarket]
       universeData.market = forkingMarket
       universeData.reportableOutcomes = selectReportableOutcomes(forkingMarket.marketType, forkingMarket.outcomes)
-      universeData.winningChildUniverseId = universe.winningChild
+      universeData.winningChildUniverseId = universe.winningChildUniverse
     }
 
     augur.api.Universe.getParentUniverse({ tx: { to: universeId } }, (err, parentUniverseId) => {
       if (err) return callback(err)
 
       if (parentUniverseId === '0x0000000000000000000000000000000000000000') {
-        return getUniversesInfoWithParentContext(loginAccount.address, universeData, {id: parentUniverseId}, {id: parentUniverseId}, callback)
+        return getUniversesInfoWithParentContext(loginAccount.address, universeData, { id: parentUniverseId }, { id: parentUniverseId }, callback)
       }
 
       getUniverseInfo(parentUniverseId, (err, parentUniverseData) => {
@@ -37,9 +37,9 @@ export default function (callback = logError) {
 
         augur.api.Universe.getParentUniverse({ tx: { to: parentUniverseData.id } }, (err, grandParentUniverseId) => {
           if (err) return callback(err)
-    
+
           if (grandParentUniverseId === '0x0000000000000000000000000000000000000000') {
-            return getUniversesInfoWithParentContext(loginAccount.address, universeData, parentUniverseData, {id: grandParentUniverseId}, callback)
+            return getUniversesInfoWithParentContext(loginAccount.address, universeData, parentUniverseData, { id: grandParentUniverseId }, callback)
           }
 
           getUniverseInfo(grandParentUniverseId, (err, grandParentUniverseData) => {
@@ -97,7 +97,7 @@ function getUniversesInfoWithParentContext(account, currentUniverseData, parentU
       callback(result.reduce((acc, universeData) => {
         if (universeData.parentUniverse === currentUniverseData.id) {
           universeData.description = getUniverseName(currentUniverseData, universeData)
-          universeData.isWinningUniverse = currentUniverseData.winningChild === universeData.universe
+          universeData.isWinningUniverse = currentUniverseData.winningChildUniverseId === universeData.universe
           acc.children.push(universeData)
         } else if (universeData.parentUniverse === parentUniverseData.id) {
           universeData.description = getUniverseName(parentUniverseData, universeData)
@@ -119,13 +119,15 @@ function getUniversesInfoWithParentContext(account, currentUniverseData, parentU
 }
 
 function getUniverseName(parentUniverseData, universeData) {
-  if (!parentUniverseData.market) return "GENESIS"
-  
-  const outcomeId = calculatePayoutNumeratorsValue(parentUniverseData.market, [0,10000], false).toString()//;universeData.payout, universeData.isInvalid).toString()
+  if (!parentUniverseData.market) return 'GENESIS'
+
+  if (universeData.isInvalid) return 'Invalid'
+
+  const outcomeId = calculatePayoutNumeratorsValue(parentUniverseData.market, universeData.payout, universeData.isInvalid).toString()
   if (parentUniverseData.market.marketType === SCALAR) {
     return outcomeId
   }
 
   const outcome = parentUniverseData.reportableOutcomes.find(outcome => outcome.id === outcomeId)
-  return outcome ? outcome.name : "???"
+  return outcome ? outcome.name : 'Unidentified'
 }
