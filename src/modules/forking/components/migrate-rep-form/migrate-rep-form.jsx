@@ -238,7 +238,7 @@ export default class MigrateRepForm extends Component {
                 min="0"
                 placeholder="0.0000 REP"
                 value={s.inputRepAmount}
-                className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('repAmount') && validations.selectedOutcome })}
+                className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('repAmount') && validations.selectedOutcome })}
                 onChange={(e) => { this.validateRepAmount(e.target.value) }}
               />
               { selectedOutcomeName && selectedOutcomeName.length > 0 &&
