@@ -10,6 +10,7 @@ import {
 } from 'modules/create-market/actions/update-new-market'
 import CreateMarketView from 'modules/create-market/components/create-market-view/create-market-view'
 import { selectCurrentTimestamp } from 'src/select-state'
+import { estimateSubmitNewMarket } from 'modules/create-market/actions/estimate-submit-new-market'
 
 import getValue from 'utils/get-value'
 
@@ -32,6 +33,7 @@ const mapDispatchToProps = dispatch => ({
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
   submitNewMarket: (data, history) => dispatch(submitNewMarket(data, history)),
+  estimateSubmitNewMarket: (data, callback) => dispatch(estimateSubmitNewMarket(data, callback)),
 })
 
 const CreateMarket = withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateMarketView))
