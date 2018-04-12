@@ -18,6 +18,7 @@ class InputDropdown extends Component {
     this.dropdownSelect = this.dropdownSelect.bind(this)
     this.toggleList = this.toggleList.bind(this)
     this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
+    this.onKeyPress = this.onKeyPress.bind(this)
   }
 
   componentDidMount() {
@@ -34,6 +35,15 @@ class InputDropdown extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('click', this.handleWindowOnClick)
+  }
+
+  onKeyPress(value) {
+    const {
+      onKeyPress,
+    } = this.props
+    if (onKeyPress) {
+      onKeyPress(value)
+    }
   }
 
   dropdownSelect(value) {
@@ -76,6 +86,7 @@ class InputDropdown extends Component {
         onClick={this.toggleList}
         role="listbox"
         tabIndex="-1"
+        onKeyPress={value => this.onKeyPress(value)}
       >
         <span
           key={label}
@@ -122,6 +133,7 @@ InputDropdown.propTypes = {
   isMobileSmall: PropTypes.bool.isRequired,
   label: PropTypes.string,
   className: PropTypes.string,
+  onKeyPress: PropTypes.func,
 }
 
 export default InputDropdown

@@ -288,6 +288,7 @@ export default class CreateMarketLiquidity extends Component {
       availableEth,
       newMarket,
     } = this.props
+    const tickSize = createBigNumber(newMarket.tickSize)
     const sanitizeValue = (value, type) => {
       if (value == null) {
         if (type === 'quantity') {
@@ -321,6 +322,9 @@ export default class CreateMarketLiquidity extends Component {
       const bids = getValue(newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
       const asks = getValue(newMarket.orderBookSorted[this.state.selectedOutcome], `${ASK}`)
 
+      if (orderPrice.mod(tickSize).gt('0')) {
+        errors.price.push(`Price must be a multiple of ${tickSize}`)
+      }
       if (newMarket.type !== SCALAR) {
         if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
@@ -441,7 +445,7 @@ export default class CreateMarketLiquidity extends Component {
                   className={classNames({ [`${StylesForm.error}`]: s.errors.price.length })}
                   id="cm__input--limit-price"
                   type="number"
-                  step={10**-PRECISION}
+                  step={newMarket.tickSize}
                   placeholder="0.0000 ETH"
                   value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}

@@ -1,6 +1,5 @@
-import speedomatic from 'speedomatic'
 import { eachOfSeries, eachLimit } from 'async'
-import { augur, constants } from 'services/augurjs'
+import { constants } from 'services/augurjs'
 
 import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market'
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
@@ -10,51 +9,15 @@ import { addNewMarketCreationTransactions } from 'modules/transactions/actions/a
 import makePath from 'modules/routes/helpers/make-path'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { DESIGNATED_REPORTER_SELF } from 'modules/create-market/constants/new-market-constraints'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
+import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
     const { universe, loginAccount, contractAddresses } = getState()
-    const tags = []
-    if (newMarket.tag1) tags.push(newMarket.tag1)
-    if (newMarket.tag2) tags.push(newMarket.tag2)
-    // General Properties
-    const formattedNewMarket = {
-      universe: universe.id,
-      _endTime: parseInt(newMarket.endTime.timestamp, 10),
-      _feePerEthInWei: speedomatic.fix(newMarket.settlementFee / 100, 'hex'),
-      _denominationToken: contractAddresses.Cash,
-      _description: newMarket.description,
-      _designatedReporterAddress: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF ? loginAccount.address : newMarket.designatedReporterAddress,
-      _topic: newMarket.category,
-      _extraInfo: {
-        marketType: newMarket.type,
-        longDescription: newMarket.detailsText,
-        resolutionSource: newMarket.expirySource,
-        tags,
-      },
-    }
+    const { createMarket, formattedNewMarket } = buildCreateMarket(newMarket, false, universe, loginAccount, contractAddresses)
 
-    // Type Specific Properties
-    let createMarket
-    switch (newMarket.type) {
-      case CATEGORICAL:
-        formattedNewMarket._outcomes = newMarket.outcomes.filter(outcome => outcome !== '')
-        createMarket = augur.createMarket.createCategoricalMarket
-        break
-      case SCALAR:
-        formattedNewMarket.tickSize = newMarket.tickSize
-        formattedNewMarket._minPrice = newMarket.scalarSmallNum.toString()
-        formattedNewMarket._maxPrice = newMarket.scalarBigNum.toString()
-        formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
-        createMarket = augur.createMarket.createScalarMarket
-        break
-      case BINARY:
-      default:
-        createMarket = augur.createMarket.createBinaryMarket
-    }
     createMarket({
       ...formattedNewMarket,
       meta: loginAccount.meta,

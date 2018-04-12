@@ -28,6 +28,7 @@ export default class CreateMarketForm extends Component {
     removeOrderFromNewMarket: PropTypes.func.isRequired,
     submitNewMarket: PropTypes.func.isRequired,
     universe: PropTypes.object.isRequired,
+    estimateSubmitNewMarket: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
   }
 
@@ -177,6 +178,7 @@ export default class CreateMarketForm extends Component {
       submitNewMarket,
       universe,
       updateNewMarket,
+      estimateSubmitNewMarket,
     } = this.props
     const s = this.state
 
@@ -234,6 +236,7 @@ export default class CreateMarketForm extends Component {
             }
             { newMarket.currentStep === 4 &&
               <CreateMarketReview
+                estimateSubmitNewMarket={estimateSubmitNewMarket}
                 meta={meta}
                 newMarket={newMarket}
                 availableEth={availableEth}

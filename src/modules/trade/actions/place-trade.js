@@ -39,6 +39,10 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
   if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
       type: MODAL_ACCOUNT_APPROVAL,
+      approveOnSent: () => {
+        augur.trading.placeTrade(placeTradeParams)
+        dispatch(clearTradeInProgress(marketId))
+      },
       approveCallback: (err, res) => {
         if (err) return callback(err)
         augur.trading.placeTrade(placeTradeParams)

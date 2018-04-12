@@ -1,6 +1,5 @@
 
 
-import proxyquire from 'proxyquire'
 import sinon from 'sinon'
 import testState from 'test/testState'
 import configureMockStore from 'redux-mock-store'
@@ -8,7 +7,6 @@ import thunk from 'redux-thunk'
 import { estimateSubmitInitialReport, __RewireAPI__ as estimateSubmitInitialReportReqireAPI } from 'modules/reporting/actions/estimate-submit-initial-report'
 
 describe(`modules/reporting/actions/estimate-submit-initial-report.js`, () => {
-  proxyquire.noPreserveCache().noCallThru()
   const state = Object.assign({}, testState)
   const mockSelectMarket = {}
   mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testMarketId)

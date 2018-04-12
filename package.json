@@ -35,10 +35,9 @@
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down"
   },
   "dependencies": {
-    "airbitz-core-js-ui": "0.1.3",
-    "async": "2.4.1",
-    "augur.js": "4.6.15",
-    "bignumber.js": "4.0.2",
+    "async": "2.6.0",
+    "augur.js": "4.11.0-4",
+    "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
     "clipboard": "1.7.1",

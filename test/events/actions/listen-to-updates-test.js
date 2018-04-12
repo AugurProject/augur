@@ -104,6 +104,7 @@ describe('events/actions/listen-to-updates', () => {
       RewireLogHandlers.__Rewire__('loadMarketsInfo', marketIds => ({ type: 'LOAD_MARKETS_INFO', marketIds }))
       RewireLogHandlers.__Rewire__('updateLoggedTransactions', log => ({ type: 'UPDATE_LOGGED_TRANSACTIONS', log }))
       RewireLogHandlers.__Rewire__('updateAssets', () => ({ type: 'UPDATE_ASSETS' }))
+      RewireLogHandlers.__Rewire__('loadReporting', () => ({ type: 'LOAD_REPORTING' }))
       RewireListenToUpdates.__Rewire__('augur', t.stub.augur)
       store.dispatch(listenToUpdates({}))
       t.assertions(store.getActions())
@@ -146,6 +147,7 @@ describe('events/actions/listen-to-updates', () => {
       },
       assertions: actions => assert.deepEqual(actions, [
         { type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] },
+        { type: 'LOAD_REPORTING' },
         { type: 'UPDATE_LOGGED_TRANSACTIONS', log: { eventName: 'InitialReportSubmitted', market: 'MARKET_ADDRESS', reporter: 'MY_ADDRESS', universe: 'UNIVERSE_ADDRESS' } },
         { type: 'UPDATE_ASSETS' },
       ]),

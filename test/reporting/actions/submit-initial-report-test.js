@@ -1,5 +1,3 @@
-
-
 import sinon from 'sinon'
 import testState from 'test/testState'
 import configureMockStore from 'redux-mock-store'
@@ -26,6 +24,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
   })
 
   const augurSuccess = {
+    constants: '0x5e3918',
     api: {
       Market: {
         doInitialReport: (options) => {
@@ -37,6 +36,7 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
   }
 
   const augurFailed = {
+    constants: '0x5e3918',
     api: {
       Market: {
         doInitialReport: (options) => {
