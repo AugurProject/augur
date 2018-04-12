@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 import PeriodSelector from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector'
 
@@ -93,7 +94,9 @@ export default class MarketOutcomeCandlestickHeader extends Component {
             </span>
           </div>
           <div
-            className={Styles.MarketOutcomeChartsHeader__selector}
+            className={classNames(Styles.MarketOutcomeChartsHeader__selector, {
+              [Styles['MarketOutcomeChartsHeader__selector--mobile']]: isMobile,
+            })}
           >
             <PeriodSelector
               priceTimeSeries={priceTimeSeries}
