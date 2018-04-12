@@ -8,6 +8,7 @@ ENV PUBLISH_ONLY=false
 ENV RUN_LOCAL_ONLY=false
 
 # begin install yarn
+<<<<<<< HEAD
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
 RUN apt-get -y update \
   && apt-get -y upgrade \
@@ -16,6 +17,16 @@ RUN apt-get -y update \
   && touch ~/.bashrc \
   && curl -o- -L https://yarnpkg.com/install.sh | bash \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
+=======
+# Using --nightly yarn due to this bug: https://github.com/yarnpkg/yarn/issues/4363
+RUN apk update \
+  && apk add git python make g++ bash curl binutils tar \
+  && rm -rf /var/cache/apk/* \
+  && /bin/bash \
+  && touch ~/.bashrc \
+  && curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --nightly \
+  && apk del curl tar binutils
+>>>>>>> dbe56a28ad0f080074849d0698ba91551db33deb
 # end install yarn
 
 # Vhost to serve files
