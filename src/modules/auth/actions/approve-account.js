@@ -1,5 +1,4 @@
 import { augur } from 'services/augurjs'
-import noop from 'utils/noop'
 import logError from 'utils/log-error'
 import { updateLoginAccount } from 'modules/auth/actions/update-login-account'
 
@@ -23,7 +22,7 @@ export function approveAccount(onSent = logError, onSuccess = logError) {
     augur.accounts.approveAugur({
       meta,
       address,
-      onSent: onSent,
+      onSent,
       onSuccess: (res) => {
         dispatch(checkAccountAllowance())
         onSuccess(null, res)
