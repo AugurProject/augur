@@ -25,6 +25,7 @@ export default class MarketOutcomeDepth extends Component {
     marketMin: CustomPropTypes.bigNumber, /* required */
     marketMax: CustomPropTypes.bigNumber, /* required */
     hoveredDepth: PropTypes.object.isRequired,
+    isMobile: PropTypes.bool.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -54,6 +55,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     } = this.props
     this.drawDepth({
       marketDepth,
@@ -64,6 +66,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMax,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     })
 
     window.addEventListener('resize', this.drawDepthOnResize)
@@ -80,6 +83,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     } = this.props
     if (
       !isEqual(marketDepth, nextProps.marketDepth) ||
@@ -89,7 +93,8 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(updateSeletedOrderProperties, nextProps.updateSeletedOrderProperties) ||
       fixedPrecision !== nextProps.fixedPrecision ||
       marketMin !== nextProps.marketMin ||
-      marketMax !== nextProps.marketMax
+      marketMax !== nextProps.marketMax ||
+      isMobile !== nextProps.isMobile
     ) {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
@@ -100,6 +105,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSeletedOrderProperties: nextProps.updateSeletedOrderProperties,
+        isMobile: nextProps.isMobile,
       })
     }
 
@@ -141,6 +147,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax,
         updateHoveredPrice,
         updateSeletedOrderProperties,
+        isMobile,
       } = options
 
       const drawParams = determineDrawParams({
@@ -149,6 +156,7 @@ export default class MarketOutcomeDepth extends Component {
         marketDepth,
         orderBookKeys,
         fixedPrecision,
+        isMobile,
       })
 
       const depthContainer = new ReactFauxDOM.Element('div')
@@ -165,6 +173,7 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         marketMax,
+        isMobile,
       })
 
       drawLines({
@@ -331,6 +340,7 @@ function determineDrawParams(options) {
     marketDepth,
     orderBookKeys,
     fixedPrecision,
+    isMobile,
   } = options
 
   const chartDim = {
@@ -358,7 +368,7 @@ function determineDrawParams(options) {
   ]
 
   const xScale = d3.scaleLinear()
-    .domain(d3.extent(xDomain))
+    .domain(isMobile ? d3.extent(xDomain).sort((a, b) => b - a) : d3.extent(xDomain))
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
@@ -386,6 +396,7 @@ function drawTicks(options) {
     fixedPrecision,
     marketMin,
     marketMax,
+    isMobile,
   } = options
 
   // Y Axis
@@ -403,13 +414,15 @@ function drawTicks(options) {
     .attr('y2', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
 
   //  Midpoint Label
-  depthChart.append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', drawParams.yScale(orderBookKeys.mid))
-    .attr('dx', 0)
-    .attr('dy', drawParams.chartDim.tickOffset)
-    .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+  if (!isMobile) {
+    depthChart.append('text')
+      .attr('class', 'tick-value')
+      .attr('x', 0)
+      .attr('y', drawParams.yScale(orderBookKeys.mid))
+      .attr('dx', 0)
+      .attr('dy', drawParams.chartDim.tickOffset)
+      .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+  }
 
   //  Offset Ticks
   const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
