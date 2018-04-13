@@ -11,7 +11,6 @@ export default class ModalMigrateMarket extends Component {
     marketId: PropTypes.string.isRequired,
     marketDescription: PropTypes.string.isRequired,
     migrateMarketThroughFork: PropTypes.func.isRequired,
-    modal: PropTypes.string,
     closeModal: PropTypes.func.isRequired,
   }
 
@@ -50,7 +49,6 @@ export default class ModalMigrateMarket extends Component {
     const {
       closeModal,
       marketDescription,
-      modal,
     } = this.props
     const s = this.state
 
@@ -59,7 +57,9 @@ export default class ModalMigrateMarket extends Component {
         className={Styles.ModalMigrateMarket__form}
         onSubmit={this.submitForm}
       >
-        <h1 className={Styles.ModalMigrateMarket__heading}>{SigningPen} Migrate Market</h1>
+        <h1 className={Styles.ModalMigrateMarket__heading}>
+          {SigningPen} Migrate Market
+        </h1>
         <div className={Styles.ModalMigrateMarket__details}>
           <ul className={Styles.ModalMigrateMarket__labels}>
             <li>market</li>
@@ -76,7 +76,7 @@ export default class ModalMigrateMarket extends Component {
             type="button"
             onClick={closeModal}
           >
-            Back {modal}
+            Back
           </button>
           <button
             className={Styles.ModalMigrateMarket__button}
