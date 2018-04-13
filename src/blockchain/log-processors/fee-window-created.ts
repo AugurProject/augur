@@ -30,7 +30,6 @@ import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
           */
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log(`Fee Window Create ${log.feeWindow} ${log.startTime} ${log.blockNumber}`);
   augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow }}, (err: Error|null, feeToken?: Address): void => {
     if (err) return callback(err);
     const feeWindowToInsert = {
