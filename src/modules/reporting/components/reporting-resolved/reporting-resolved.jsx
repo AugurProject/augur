@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet'
 import ReportingHeader from 'modules/reporting/containers/reporting-header'
 import MarketsList from 'modules/markets/components/markets-list'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
+import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
 
 import Styles from 'modules/reporting/components/reporting-resolved/reporting-resolved.styles'
 
@@ -26,6 +27,8 @@ export default class ReportingResolved extends Component {
     location: PropTypes.object,
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
+    isForking: PropTypes.bool.isRequired,
+    forkingMarket: PropTypes.object,
   }
 
   constructor(props) {
@@ -57,6 +60,8 @@ export default class ReportingResolved extends Component {
       location,
       markets,
       toggleFavorite,
+      isForking,
+      forkingMarket,
     } = this.props
     const s = this.state
 
@@ -68,6 +73,18 @@ export default class ReportingResolved extends Component {
         <ReportingHeader
           heading="Resolved"
         />
+        { isForking &&
+          <div>
+            <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
+            <DisputeMarketCard
+                market={forkingMarket}
+                location={location}
+                history={history}
+                linkType={TYPE_VIEW}
+                outcomes={[]}
+            />
+          </div>
+        }
         <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
         <MarketsList
           isLogged={isLogged}

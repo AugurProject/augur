@@ -7,12 +7,15 @@ import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { selectMarketsToReport } from 'src/modules/reporting/selectors/select-markets-to-report'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { selectMarket } from 'src/modules/market/selectors/market'
 
 import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
   markets: getValue(selectMarketsToReport(state), 'resolved'),
+  isForking: state.universe.isForking,
+  forkingMarket: state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null,
 })
 
 const mapDispatchToProps = dispatch => ({
