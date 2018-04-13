@@ -5,6 +5,7 @@ import logError from 'utils/log-error'
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { SCALAR } from 'modules/markets/constants/market-types'
+import { NULL_ADDRESS } from 'utils/constants'
 
 export default function (callback = logError) {
   return (dispatch, getState) => {
@@ -28,7 +29,7 @@ export default function (callback = logError) {
     augur.api.Universe.getParentUniverse({ tx: { to: universeId } }, (err, parentUniverseId) => {
       if (err) return callback(err)
 
-      if (parentUniverseId === '0x0000000000000000000000000000000000000000') {
+      if (parentUniverseId === NULL_ADDRESS) {
         return getUniversesInfoWithParentContext(loginAccount.address, universeData, { id: parentUniverseId }, { id: parentUniverseId }, callback)
       }
 
@@ -38,7 +39,7 @@ export default function (callback = logError) {
         augur.api.Universe.getParentUniverse({ tx: { to: parentUniverseData.id } }, (err, grandParentUniverseId) => {
           if (err) return callback(err)
 
-          if (grandParentUniverseId === '0x0000000000000000000000000000000000000000') {
+          if (grandParentUniverseId === NULL_ADDRESS) {
             return getUniversesInfoWithParentContext(loginAccount.address, universeData, parentUniverseData, { id: grandParentUniverseId }, callback)
           }
 
