@@ -69,13 +69,13 @@ export default class PortfolioReports extends Component {
       }
       for (let i = 0; i < result.feeWindows.length; i++) {
         redeemableContracts.push({
-          address: result.crowdsourcers[i],
+          address: result.feeWindows[i],
           type: augur.constants.CONTRACT_TYPE.FEE_WINDOW,
         })
       }
       for (let i = 0; i < result.initialReporters.length; i++) {
         redeemableContracts.push({
-          address: result.crowdsourcers[i],
+          address: result.initialReporters[i],
           type: augur.constants.CONTRACT_TYPE.INITIAL_REPORTER,
         })
       }
