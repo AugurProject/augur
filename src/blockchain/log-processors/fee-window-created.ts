@@ -5,30 +5,6 @@ import { augurEmitter } from "../../events";
 import { updateActiveFeeWindows } from "./database";
 import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 
-/*          "name": "universe",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "feeWindow",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "startTime",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "endTime",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "id",
-          "type": "uint256"
-          */
-
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow }}, (err: Error|null, feeToken?: Address): void => {
     if (err) return callback(err);
