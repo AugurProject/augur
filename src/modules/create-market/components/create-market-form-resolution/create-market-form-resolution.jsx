@@ -231,7 +231,13 @@ export default class CreateMarketResolution extends Component {
           <SingleDatePicker
             id="cm__input--date"
             date={this.state.date}
-            onDateChange={(date) => { this.setState({ date }); validateField('endTime', formatDate(date.toDate())) }}
+            placeholder="Date (MMM D, YYYY)"
+            onDateChange={(date) => {
+              this.setState({ date })
+              // if date is null, invalidate form.
+              if (!date) return validateField('endTime', '')
+              validateField('endTime', formatDate(date.toDate()))
+            }}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"
