@@ -33,7 +33,7 @@
 
   > div {
     margin-right: 2%;
-    width: 31%;
+    min-width: 31%;
   }
 }
 
@@ -54,21 +54,6 @@
   .AccountUniverses {
     padding: 3.125rem 2rem;
   }
-
-  .AccountUniverses__main {
-    flex-wrap: wrap;
-
-    > div:first-child {
-      width: 40%;
-    }
-
-    > div:last-child {
-      border-left: none;
-      margin: 2rem 0 0;
-      padding: 0;
-      width: 60%;
-    }
-  }
 }
 
 @media @breakpoint-mobile-medium {
@@ -77,22 +62,6 @@
 
     > h1 {
       font-size: @font-size-rather-large;
-    }
-  }
-
-  .AccountUniverses__main {
-    display: block;
-
-    > div:first-child,
-    > div:last-child {
-      border-left: none;
-      margin: 0 0 2rem;
-      padding: 0;
-      width: 100%;
-    }
-
-    > div:last-child {
-      margin-bottom: 0;
     }
   }
 
