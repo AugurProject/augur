@@ -53,7 +53,7 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
       },
       currentFeeWindow: (next: AsyncCallback) => {
         updateMarketFeeWindowCurrent(db, log.universe, log.market, next);
-      }
+      },
     }, (err: Error|null): void => {
       if (err) return callback(err);
       augurEmitter.emit("InitialReportSubmitted", log);

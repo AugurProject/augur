@@ -16,7 +16,6 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   }).where({ marketId }).asCallback(callback);
 }
 
-
 export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Address, timestamp: number, callback: AsyncCallback) {
   db("fee_windows").first().select("feeWindow").where({ universe }).where("endTime", ">", timestamp).where("startTime", "<=", timestamp).asCallback((err, feeWindowRow?: any) => {
     if (err) return callback(err);
@@ -27,11 +26,11 @@ export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Add
 }
 
 export function updateMarketFeeWindowNext(db: Knex, augur: Augur, universe: Address, marketId: Address, callback: AsyncCallback) {
-  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime() + augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS, callback)
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime() + augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS, callback);
 }
 
 export function updateMarketFeeWindowCurrent(db: Knex, universe: Address, marketId: Address, callback: AsyncCallback) {
-  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime(), callback)
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime(), callback);
 }
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
