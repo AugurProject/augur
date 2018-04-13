@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { augur } from 'services/augurjs'
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
 import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
