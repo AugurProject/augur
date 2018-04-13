@@ -6,7 +6,10 @@ import Styles from 'modules/market/components/market-outcome-charts--header-orde
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 const MarketOutcomeChartsHeaderOrders = p => (
-  <section>
+  <section
+    className={Styles.MarketOutcomeChartsHeader__orders}
+    style={{ minHeight: p.isMobile && p.headerHeight }}
+  >
     {p.isMobile ||
       <div className={StylesHeader.MarketOutcomeChartsHeader__Header} >
         <span>Order Book</span>
@@ -50,4 +53,5 @@ MarketOutcomeChartsHeaderOrders.propTypes = {
   fixedPrecision: PropTypes.number.isRequired,
   updatePrecision: PropTypes.func.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  headerHeight: PropTypes.number.isRequired,
 }

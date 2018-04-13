@@ -9,13 +9,7 @@ import { ASKS } from 'modules/order-book/constants/order-book-order-types'
 const MarketOutcomeDepthHeader = (p) => {
   if (p.isMobile) {
     return (
-      <section>
-        <div className={Styles.MarketOutcomeChartsHeader__stats}>
-          <span className={Styles.MarketOutcomeChartsHeader__stat}>
-            <span className={Styles['MarketOutcomeChartsHeader__stat-title']} >&nbsp;</span>
-          </span>
-        </div>
-      </section>
+      <section style={{ minHeight: p.headerHeight }} />
     )
   }
 
@@ -60,4 +54,5 @@ MarketOutcomeDepthHeader.propTypes = {
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
   isMobile: PropTypes.bool.isRequired,
+  headerHeight: PropTypes.number.isRequired,
 }

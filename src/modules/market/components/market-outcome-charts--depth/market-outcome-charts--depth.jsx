@@ -24,8 +24,9 @@ export default class MarketOutcomeDepth extends Component {
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     marketMin: CustomPropTypes.bigNumber, /* required */
     marketMax: CustomPropTypes.bigNumber, /* required */
-    hoveredDepth: PropTypes.object.isRequired,
+    hoveredDepth: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -180,6 +181,7 @@ export default class MarketOutcomeDepth extends Component {
         drawParams,
         depthChart,
         marketDepth,
+        isMobile,
       })
 
       setupCrosshairs({
@@ -293,6 +295,7 @@ export default class MarketOutcomeDepth extends Component {
       fixedPrecision,
       hoveredDepth,
       isMobile,
+      headerHeight,
     } = this.props
 
     return (
@@ -301,6 +304,7 @@ export default class MarketOutcomeDepth extends Component {
           fixedPrecision={fixedPrecision}
           hoveredDepth={hoveredDepth}
           isMobile={isMobile}
+          headerHeight={headerHeight}
         />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}
@@ -518,6 +522,7 @@ function drawLines(options) {
     drawParams,
     depthChart,
     marketDepth,
+    isMobile,
   } = options
 
   // Defs
@@ -550,8 +555,8 @@ function drawLines(options) {
 
   const area = d3.area()
     .curve(d3.curveStepAfter)
-    .x0(0)
-    .x1(d => drawParams.xScale(d[0]))
+    .x0(d => (isMobile ? drawParams.xScale(d[0]) : 0))
+    .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[0])))
     .y(d => drawParams.yScale(d[1]))
 
   Object.keys(marketDepth).forEach((side) => {

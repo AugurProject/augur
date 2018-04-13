@@ -21,7 +21,6 @@ export default class MarketOutcomeCharts extends Component {
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
-    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
@@ -45,6 +44,7 @@ export default class MarketOutcomeCharts extends Component {
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
+      headerHeight: 0,
       fixedPrecision: 4,
       sharedChartMargins: {
         top: 0,
@@ -217,6 +217,7 @@ export default class MarketOutcomeCharts extends Component {
           >
             <div className={Styles.MarketOutcomeCharts__depth}>
               <MarketOutcomeDepth
+                headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 priceTimeSeries={priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
@@ -234,6 +235,7 @@ export default class MarketOutcomeCharts extends Component {
             </div>
             <div className={Styles.MarketOutcomeCharts__orderbook}>
               <MarketOutcomeOrderBook
+                headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}

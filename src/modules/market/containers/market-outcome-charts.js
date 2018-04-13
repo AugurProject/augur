@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 
 import { createBigNumber } from 'utils/create-big-number'
-import { selectCurrentTimestamp } from 'src/select-state'
 
 import MarketOutcomeCharts from 'modules/market/components/market-outcome-charts/market-outcome-charts'
 
@@ -36,7 +35,6 @@ const mapStateToProps = (state, ownProps) => {
     // isMobile: state.isMobile,
     isMobile: true,
     currentBlock: state.blockchain.currentBlockNumber || 0,
-    currentTimestamp: selectCurrentTimestamp(state),
     minPrice: market.minPrice || createBigNumber(0),
     maxPrice: market.maxPrice || createBigNumber(0),
     orderBook: cumulativeOrderBook,
