@@ -9,9 +9,16 @@ import memoize from 'memoizee'
  * @return {Array}
  */
 export const selectPriceTimeSeries = memoize((outcome, marketPriceHistory) => {
-  if (outcome == null || marketPriceHistory == null || marketPriceHistory.outcome == null) return []
+  if (
+    outcome == null ||
+    outcome.id == null ||
+    marketPriceHistory == null ||
+    marketPriceHistory[outcome.id] == null
+  ) {
+    return []
+  }
 
-  return marketPriceHistory.map(priceTimePoint => ({ ...priceTimePoint, timestamp: priceTimePoint.timestamp * 1000 }))
+  return marketPriceHistory[outcome.id].map(priceTimePoint => ({ ...priceTimePoint, timestamp: priceTimePoint.timestamp * 1000 }))
 
   // NOTE -- historical ref, augur-node now directly returns what we require
   // return (marketPriceHistory[outcome.id] || []).map(priceTimePoint => [
