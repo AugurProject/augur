@@ -11,7 +11,9 @@ export default class ModalClaimReportingFees extends Component {
     claimReportingFees: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     recipient: PropTypes.string.isRequired,
-    redeemableContracts: PropTypes.array.isRequired,
+    feeWindows: PropTypes.array.isRequired,
+    crowdsourcers: PropTypes.array.isRequired,
+    initialReporters: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
   }
@@ -27,29 +29,48 @@ export default class ModalClaimReportingFees extends Component {
   }
 
   componentWillMount() {
-    // TODO: Remove hard-coded parameters below once endpoint exists for getting contracts that are redeemable.
     const claimReportingFeesOptions = {
-      redeemableContracts: this.props.redeemableContracts,
+      feeWindows: this.props.feeWindows,
+      crowdsourcers: this.props.crowdsourcers,
+      initialReporters: this.props.initialReporters,
       estimateGas: true,
+      onSent: () => {},
+      onFailed: (err) => {
+        // Default to 0 for now if we recieve an error.
+        const claimReportingFeesGasEstimate = '0'
+        const gasPrice = augur.rpc.getGasPrice()
+        this.setState({
+          claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
+        })
+      },
+      onSuccess: (result) => {
+        // Default to 0 for now if we recieve an error.
+        const claimReportingFeesGasEstimate = result.gasEstimates.totals.all.toString()
+        const gasPrice = augur.rpc.getGasPrice()
+        this.setState({
+          claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
+        })
+      },
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, (err, result) => {
-      // default to 0 for now if we recieve an error.
-      const claimReportingFeesGasEstimate = err ? '0' : result.gasEstimates.totals.all.toString()
-      const gasPrice = augur.rpc.getGasPrice()
-      this.setState({
-        claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
-      })
-    })
+    this.props.claimReportingFees(claimReportingFeesOptions)
   }
 
   handleClaimReportingFees(e) {
     e.preventDefault()
-    // TODO: Remove hard-coded parameters below once endpoint exists for getting contracts that are redeemable.
     const claimReportingFeesOptions = {
-      redeemableContracts: this.props.redeemableContracts,
+      feeWindows: this.props.feeWindows,
+      crowdsourcers: this.props.crowdsourcers,
+      initialReporters: this.props.initialReporters,
       estimateGas: false,
+      onSent: () => {},
+      onFailed: (err) => {
+        this.props.closeModal()
+      },
+      onSuccess: (result) => {
+        this.props.closeModal()
+      },
     }
-    this.props.claimReportingFees(claimReportingFeesOptions, this.props.closeModal)
+    this.props.claimReportingFees(claimReportingFeesOptions)
   }
 
   render() {

@@ -22,12 +22,9 @@ describe('modal-claim-reporting-fees', () => {
           recipient="0X913DA4198E6BE1D5F5E4A40D0667F70C0B5430EB"
           unclaimedEth={formatEther('0', { decimals: 4, zeroStyled: true })}
           unclaimedRep={formatAttoRep('0', { decimals: 4, zeroStyled: true })}
-          redeemableContracts={[
-            {
-              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-              type: 2,
-            },
-          ]}
+          feeWindows={['0x161c723cac007e4283cee4ba11b15277e46eec53']}
+          crowdsourcers={[]}
+          initialReporters={[]}
         />)
       })
 
@@ -54,19 +51,19 @@ describe('modal-claim-reporting-fees', () => {
           assert.isOk(claimReportingFees)
         })
 
-        it('should receive two arguments', () => {
-          assert.deepEqual(claimReportingFees.args[0].length, 2)
+        it('should receive one argument', () => {
+          assert.deepEqual(claimReportingFees.args[0].length, 1)
         })
 
         it('should receive first argument that matches expected value', () => {
           const expected = {
-            redeemableContracts: [
-              {
-                address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-                type: 2,
-              },
-            ],
+            feeWindows: ['0x161c723cac007e4283cee4ba11b15277e46eec53'],
+            crowdsourcers: [],
+            initialReporters: [],
             estimateGas: true,
+            onSent: claimReportingFees.args[0][0].onSent,
+            onFailed: claimReportingFees.args[0][0].onFailed,
+            onSuccess: claimReportingFees.args[0][0].onSuccess,
           }
           assert.deepEqual(claimReportingFees.args[0][0], expected)
         })
@@ -96,12 +93,9 @@ describe('modal-claim-reporting-fees', () => {
           recipient="0X913DA4198E6BE1D5F5E4A40D0667F70C0B5430EB"
           unclaimedEth={formatEther('0.123', { decimals: 4, zeroStyled: true })}
           unclaimedRep={formatAttoRep('0', { decimals: 4, zeroStyled: true })}
-          redeemableContracts={[
-            {
-              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-              type: 2,
-            },
-          ]}
+          feeWindows={['0x161c723cac007e4283cee4ba11b15277e46eec53']}
+          crowdsourcers={[]}
+          initialReporters={[]}
         />)
       })
 
@@ -128,19 +122,19 @@ describe('modal-claim-reporting-fees', () => {
           assert.isOk(claimReportingFees)
         })
 
-        it('should receive two arguments', () => {
-          assert.deepEqual(claimReportingFees.args[0].length, 2)
+        it('should receive one argument', () => {
+          assert.deepEqual(claimReportingFees.args[0].length, 1)
         })
 
         it('should receive first argument that matches expected value', () => {
           const expected = {
-            redeemableContracts: [
-              {
-                address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-                type: 2,
-              },
-            ],
+            feeWindows: ['0x161c723cac007e4283cee4ba11b15277e46eec53'],
+            crowdsourcers: [],
+            initialReporters: [],
             estimateGas: true,
+            onSent: claimReportingFees.args[0][0].onSent,
+            onFailed: claimReportingFees.args[0][0].onFailed,
+            onSuccess: claimReportingFees.args[0][0].onSuccess,
           }
           assert.deepEqual(claimReportingFees.args[0][0], expected)
         })
@@ -170,12 +164,9 @@ describe('modal-claim-reporting-fees', () => {
           recipient="0X913DA4198E6BE1D5F5E4A40D0667F70C0B5430EB"
           unclaimedEth={formatEther('0', { decimals: 4, zeroStyled: true })}
           unclaimedRep={formatAttoRep('2000000000000000000', { decimals: 4, zeroStyled: true })}
-          redeemableContracts={[
-            {
-              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-              type: 2,
-            },
-          ]}
+          feeWindows={['0x161c723cac007e4283cee4ba11b15277e46eec53']}
+          crowdsourcers={[]}
+          initialReporters={[]}
         />)
       })
 
@@ -202,19 +193,19 @@ describe('modal-claim-reporting-fees', () => {
           assert.isOk(claimReportingFees)
         })
 
-        it('should receive two arguments', () => {
-          assert.deepEqual(claimReportingFees.args[0].length, 2)
+        it('should receive one argument', () => {
+          assert.deepEqual(claimReportingFees.args[0].length, 1)
         })
 
         it('should receive first argument that matches expected value', () => {
           const expected = {
-            redeemableContracts: [
-              {
-                address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-                type: 2,
-              },
-            ],
+            feeWindows: ['0x161c723cac007e4283cee4ba11b15277e46eec53'],
+            crowdsourcers: [],
+            initialReporters: [],
             estimateGas: true,
+            onSent: claimReportingFees.args[0][0].onSent,
+            onFailed: claimReportingFees.args[0][0].onFailed,
+            onSuccess: claimReportingFees.args[0][0].onSuccess,
           }
           assert.deepEqual(claimReportingFees.args[0][0], expected)
         })
@@ -244,12 +235,9 @@ describe('modal-claim-reporting-fees', () => {
           recipient="0X913DA4198E6BE1D5F5E4A40D0667F70C0B5430EB"
           unclaimedEth={formatEther('0.123', { decimals: 4, zeroStyled: true })}
           unclaimedRep={formatAttoRep('2000000000000000000', { decimals: 4, zeroStyled: true })}
-          redeemableContracts={[
-            {
-              address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-              type: 2,
-            },
-          ]}
+          feeWindows={['0x161c723cac007e4283cee4ba11b15277e46eec53']}
+          crowdsourcers={[]}
+          initialReporters={[]}
         />)
       })
 
@@ -276,19 +264,19 @@ describe('modal-claim-reporting-fees', () => {
           assert.isOk(claimReportingFees)
         })
 
-        it('should receive two arguments', () => {
-          assert.deepEqual(claimReportingFees.args[0].length, 2)
+        it('should receive one argument', () => {
+          assert.deepEqual(claimReportingFees.args[0].length, 1)
         })
 
         it('should receive first argument that matches expected value', () => {
           const expected = {
-            redeemableContracts: [
-              {
-                address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-                type: 2,
-              },
-            ],
+            feeWindows: ['0x161c723cac007e4283cee4ba11b15277e46eec53'],
+            crowdsourcers: [],
+            initialReporters: [],
             estimateGas: true,
+            onSent: claimReportingFees.args[0][0].onSent,
+            onFailed: claimReportingFees.args[0][0].onFailed,
+            onSuccess: claimReportingFees.args[0][0].onSuccess,
           }
           assert.deepEqual(claimReportingFees.args[0][0], expected)
         })
