@@ -55,34 +55,19 @@ export default class PortfolioReports extends Component {
         this.setState({
           unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
           unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
-          redeemableContracts: [],
+          feeWindows: [],
+          crowdsourcers: [],
+          initialReporters: [],
         })
         return
       }
 
-      const redeemableContracts = []
-      for (let i = 0; i < result.crowdsourcers.length; i++) {
-        redeemableContracts.push({
-          address: result.crowdsourcers[i],
-          type: augur.constants.CONTRACT_TYPE.DISPUTE_CROWDSOURCER,
-        })
-      }
-      for (let i = 0; i < result.feeWindows.length; i++) {
-        redeemableContracts.push({
-          address: result.crowdsourcers[i],
-          type: augur.constants.CONTRACT_TYPE.FEE_WINDOW,
-        })
-      }
-      for (let i = 0; i < result.initialReporters.length; i++) {
-        redeemableContracts.push({
-          address: result.crowdsourcers[i],
-          type: augur.constants.CONTRACT_TYPE.INITIAL_REPORTER,
-        })
-      }
       this.setState({
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
-        redeemableContracts,
+        feeWindows: result.feeWindows,
+        crowdsourcers: result.crowdsourcers,
+        initialReporters: result.initialReporters,
       })
     })
   }
@@ -91,13 +76,17 @@ export default class PortfolioReports extends Component {
     const {
       unclaimedEth,
       unclaimedRep,
-      redeemableContracts,
+      feeWindows,
+      crowdsourcers,
+      initialReporters,
     } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES,
       unclaimedEth,
       unclaimedRep,
-      redeemableContracts,
+      feeWindows,
+      crowdsourcers,
+      initialReporters,
       canClose: true,
     })
   }
