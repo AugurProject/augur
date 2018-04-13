@@ -124,6 +124,7 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
     getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
       if (err) return callback(err);
       const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
+        if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
         const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
         const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
         acc = acc.plus(feesForThisWindow);
