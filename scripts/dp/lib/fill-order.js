@@ -9,7 +9,7 @@ var debugOptions = require("../../debug-options");
 var noop = require("../../../src/utils/noop");
 
 function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade, orderType, auth, callback) {
-  augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
+  augur.markets.getMarkets({ universe: universe, sortBy: "creationBlockNumber" }, function (err, marketIds) {
     if (err) return callback(err);
     if (!marketIds || !Array.isArray(marketIds) || !marketIds.length) return callback(marketIds);
     augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketsInfo) {
