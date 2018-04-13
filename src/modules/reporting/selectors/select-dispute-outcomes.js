@@ -38,6 +38,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     .filter(o => !o.tentativeWinning)
 
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
+  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10) > 100 // XX TODO use real fork threshold amount from universe
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
@@ -70,11 +71,13 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   if (!stake || !stake.payout) return {}
   if (stake.payout.length === 0) return {}
 
+  const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10) > 100 // XX TODO use real fork threshold amount from universe
+  
   let outcome
   if (stake.isInvalid) {
     // '0.5' is the indetermine/invalid id from reportable outcomes
     outcome = outcomes.find(outcome => outcome.id === '0.5')
-    return { ...outcome, ...stake }
+    return { ...outcome, ...stake, potentialFork }
   }
 
   stake.id = calculatePayoutNumeratorsValue(market, stake.payout, stake.isInvalid).toString()
@@ -83,5 +86,5 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   if (marketType === SCALAR) stake.name = stake.id
 
   // TODO: verify that switching is the best way
-  return { ...outcome, ...stake }
+  return { ...outcome, ...stake, potentialFork }
 }
