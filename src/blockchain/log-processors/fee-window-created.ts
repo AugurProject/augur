@@ -2,8 +2,8 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { augurEmitter } from "../../events";
-import { setActiveFeeWindow } from "./database";
-import { getCurrentTime } from "../process-block";
+import { updateActiveFeeWindows } from "./database";
+import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 
 /*          "name": "universe",
           "type": "address"
@@ -30,6 +30,7 @@ import { getCurrentTime } from "../process-block";
           */
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
+  console.log(`Fee Window Create ${log.feeWindow} ${log.startTime} ${log.blockNumber}`);
   augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow }}, (err: Error|null, feeToken?: Address): void => {
     if (err) return callback(err);
     const feeWindowToInsert = {
@@ -45,7 +46,8 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
     augurEmitter.emit("FeeWindowCreated", Object.assign({}, log, feeWindowToInsert));
     db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
       if (err) return callback(err);
-      setActiveFeeWindow(db, log.blockNumber, getCurrentTime(), callback);
+      // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
+      advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime(), callback);
     });
   });
 }

@@ -5,7 +5,7 @@ import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
 import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address } from "../types";
-import { setActiveFeeWindow, updateMarketState } from "./log-processors/database";
+import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
@@ -188,9 +188,9 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
   });
 }
 
-function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   console.log("ADVANCE ", blockNumber);
-  setActiveFeeWindow(db, blockNumber, timestamp, (err, results?: any) => {
+  updateActiveFeeWindows(db, blockNumber, timestamp, (err) => {
     if (err) return callback(err);
     advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
       if (err) return callback(err);
@@ -203,9 +203,11 @@ function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, tim
 }
 
 function advanceAwaitingNextFeeWindow(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "fee_windows.feeWindow"])
-    .join("fee_windows", "fee_windows.universe", "markets.universe")
-    .where("fee_windows.isActive", 1)
+  getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeFeeWindow.feeWindow"])
+    .join("fee_windows as activeFeeWindow", "activeFeeWindow.universe", "markets.universe")
+    .join("fee_windows as marketCurrentFeeWindow", "marketCurrentFeeWindow.feeWindow", "markets.feeWindow")
+    .where("marketCurrentFeeWindow.isActive", 0)
+    .where("activeFeeWindow.isActive", 1)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
     .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);

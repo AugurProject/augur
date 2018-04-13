@@ -19,7 +19,10 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
 export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Address, timestamp: number, callback: AsyncCallback) {
   db("fee_windows").first().select("feeWindow").where({ universe }).where("endTime", ">", timestamp).where("startTime", "<=", timestamp).asCallback((err, feeWindowRow?: any) => {
     if (err) return callback(err);
-    if (feeWindowRow == null) return callback(new Error(`Could not find feeWindow for ${universe} @ ${timestamp}`));
+    if (feeWindowRow == null) {
+      console.log(`Could not find feeWindow for ${universe} @ ${timestamp}`);
+      return callback(null);
+    }
     const feeWindow = feeWindowRow.feeWindow;
     db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
   });
@@ -43,7 +46,7 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   });
 }
 
-export function setActiveFeeWindow(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
+export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   db("fee_windows").select("feeWindow")
     .where("isActive", 1)
     .andWhere((queryBuilder) => queryBuilder.where("endTime", "<", timestamp).orWhere("startTime", ">", timestamp))
