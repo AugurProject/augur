@@ -21,6 +21,7 @@ describe("blockchain/log-processors/order-created", () => {
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

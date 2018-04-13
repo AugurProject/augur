@@ -2,7 +2,6 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { augurEmitter } from "../../events";
-import { updateActiveFeeWindows } from "./database";
 import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {

@@ -21,6 +21,7 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
             getInitialReport(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processInitialReporterTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

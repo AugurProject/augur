@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { Address, Bytes32, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
+import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderState, ErrorCallback} from "../../types";
 import { augurEmitter } from "../../events";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";

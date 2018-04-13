@@ -21,6 +21,7 @@ describe("blockchain/log-processors/initial-report-redeemed", () => {
             getInitialReport(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processInitialReporterRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

@@ -11,10 +11,6 @@ import { processQueue, logQueueProcess } from "./process-queue";
 import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
 
-interface FeeWindowIdRow {
-  feeWindowId: number;
-}
-
 interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
   universe: Address;
   feeWindow: Address;
