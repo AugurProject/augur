@@ -11,7 +11,7 @@ const {
 }
   = require("../../../build/blockchain/log-processors/crowdsourcer");
 const {getMarketsWithReportingState} = require("../../../build/server/getters/database");
-const {setOverrideTimestamp} = require("../../../build/blockchain/process-block.js");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../build/blockchain/process-block.js");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -69,7 +69,10 @@ describe("blockchain/log-processors/crowdsourcers", () => {
                   verify(processDisputeCrowdsourcerCompletedLogRemoval, getCrowdsourcerAndMarket, t.assertions.onCompletedRemoved, () => {
                     verify(processDisputeCrowdsourcerContributionLogRemoval, getDisputesFromCrowdsourcer, t.assertions.onContributedRemoved, () => {
                       verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
-                        done();
+                        removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
+                          assert.isNotNull(err);
+                          done();
+                        });
                       });
                     });
                   });
