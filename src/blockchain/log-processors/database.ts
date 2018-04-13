@@ -4,6 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
 import * as _ from "lodash";
+import Augur from "augur.js";
 
 function queryCurrentMarketStateId(db: Knex, marketId: Address) {
   return db("market_state").max("marketStateId as latestMarketStateId").first().where({ marketId });
@@ -14,10 +15,24 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
     marketStateId: queryCurrentMarketStateId(db, marketId),
   }).where({ marketId }).asCallback(callback);
 }
-//
-// export function getFeeWindowAtTimestamp(db: Knex, timestamp: number, callback: AsyncCallback) {
-//   db.
-// }
+
+
+export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Address, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").first().select("feeWindow").where({ universe }).where("endTime", ">", timestamp).where("startTime", "<=", timestamp).asCallback((err, feeWindowRow?: any) => {
+    if (err) return callback(err);
+    if (feeWindowRow == null) return callback(new Error(`Could not find feeWindow for ${universe} @ ${timestamp}`));
+    const feeWindow = feeWindowRow.feeWindow;
+    db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
+  });
+}
+
+export function updateMarketFeeWindowNext(db: Knex, augur: Augur, universe: Address, marketId: Address, callback: AsyncCallback) {
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime() + augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS, callback)
+}
+
+export function updateMarketFeeWindowCurrent(db: Knex, universe: Address, marketId: Address, callback: AsyncCallback) {
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime(), callback)
+}
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
@@ -47,13 +62,13 @@ export function setActiveFeeWindow(db: Knex, blockNumber: number, timestamp: num
             const newActiveFeeWindows = _.map(results, (result) => result.feeWindow);
             db("fee_windows").update("isActive", 1).whereIn("feeWindow", newActiveFeeWindows).asCallback((err) => {
               if (err) return callback(err);
-              expiredFeeWindows.forEach( (expiredFeeWindow) => {
+              expiredFeeWindows.forEach((expiredFeeWindow) => {
                 augurEmitter.emit("FeeWindowClosed", { feeWindowId: expiredFeeWindow, blockNumber, timestamp });
               });
-              newActiveFeeWindows.forEach( (newActiveFeeWindow) => {
+              newActiveFeeWindows.forEach((newActiveFeeWindow) => {
                 augurEmitter.emit("FeeWindowOpened", { feeWindowId: newActiveFeeWindow, blockNumber, timestamp });
               });
-              console.log( newActiveFeeWindows, expiredFeeWindows );
+              console.log(newActiveFeeWindows, expiredFeeWindows);
               return callback(null, { newActiveFeeWindows, expiredFeeWindows });
             });
           });

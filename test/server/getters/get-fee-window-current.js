@@ -25,7 +25,7 @@ describe("server/getters/get-fee-window-current", () => {
     assertions: (err, feeWindow) => {
       assert.isNull(err);
       assert.deepEqual(feeWindow, {
-        endTime: 1511657473,
+        endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeWindowId: 457,
         startTime: 1509065473,
@@ -42,7 +42,7 @@ describe("server/getters/get-fee-window-current", () => {
     assertions: (err, feeWindow) => {
       assert.isNull(err);
       assert.deepEqual(feeWindow, {
-        endTime: 1511657473,
+        endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeWindowId: 457,
         startTime: 1509065473,
@@ -60,7 +60,7 @@ describe("server/getters/get-fee-window-current", () => {
     assertions: (err, feeWindow) => {
       assert.isNull(err);
       assert.deepEqual(feeWindow, {
-        endTime: 1511657473,
+        endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
         feeWindowId: 457,
         startTime: 1509065473,
