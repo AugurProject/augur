@@ -12,7 +12,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getReportingFees: (options, callback) => dispatch(getReportingFees(options, callback)),
+  getReportingFees: (universe, reporter, callback) => dispatch(getReportingFees(universe, reporter, callback)),
   updateModal: modal => dispatch(updateModal(modal)),
 })
 

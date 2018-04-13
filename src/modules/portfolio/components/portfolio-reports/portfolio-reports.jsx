@@ -50,7 +50,7 @@ export default class PortfolioReports extends Component {
       reporter,
       universe,
     } = this.props
-    this.props.getReportingFees({ universe: universe.id, reporter }, (err, result) => {
+    this.props.getReportingFees(universe.id, reporter, (err, result) => {
       if (err) {
         this.setState({
           unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
