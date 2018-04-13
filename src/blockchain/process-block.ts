@@ -1,5 +1,6 @@
 import Augur from "augur.js";
-import { eachSeries, parallel } from "async";
+import { parallel } from "async";
+import * as _ from "lodash";
 import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
@@ -189,9 +190,8 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
 }
 
 export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  console.log("ADVANCE ", blockNumber);
-  updateActiveFeeWindows(db, blockNumber, timestamp, (err) => {
-    if (err) return callback(err);
+  updateActiveFeeWindows(db, blockNumber, timestamp, (err, feeWindowModifications) => {
+    if (err || _.isEmpty(feeWindowModifications)) return callback(err);
     advanceIncompleteCrowdsourcers(db, blockNumber, timestamp, (err: Error|null) => {
       if (err) return callback(err);
       advanceAwaitingNextFeeWindow(db, augur, blockNumber, timestamp, (err: Error|null) => {
