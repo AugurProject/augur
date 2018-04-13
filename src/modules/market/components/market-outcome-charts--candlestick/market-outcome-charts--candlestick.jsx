@@ -347,8 +347,10 @@ function determineDrawParams(options) {
 
   // Determine the smaller scale
   if (domainScaleWidth < containerWidth - chartDim.left - chartDim.right) { // expand domain
-    // Is determining what the synthetic domain min needs to be in order to properly scale the view for fixed spaced candles
-    xDomain.push(xDomain[0] - (((xDomain[xDomain.length - 1] - xDomain[0]) * containerWidth) / domainScaleWidth))
+    // Is determining what the synthetic domain mxin needs to be in order to properly scale the view for fixed spaced candles
+    if (xDomain.length !== 0) {
+      xDomain.push(xDomain[0] - (((xDomain[xDomain.length - 1] - xDomain[0]) * containerWidth) / domainScaleWidth))
+    }
   } else {
     drawableWidth = domainScaleWidth
   }
@@ -356,16 +358,16 @@ function determineDrawParams(options) {
   //  Y
   // Determine bounding diff
   // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  let boundDiff
-  if (orderBookKeys.mid !== null) {
-    const maxDiff = Math.abs(orderBookKeys.mid - outcomeBounds.max)
-    const minDiff = Math.abs(orderBookKeys.mid - outcomeBounds.min)
+  let boundDiff = 0
+  if (orderBookKeys.min != null) {
+    const maxDiff = Math.abs(orderBookKeys.mid - (outcomeBounds.max || 0))
+    const minDiff = Math.abs(orderBookKeys.mid - (outcomeBounds.min || 0))
     boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
   }
 
   const yDomain = [
-    orderBookKeys.mid === null ? marketMin : Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
-    orderBookKeys.mid === null ? marketMax : Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
+    orderBookKeys.mid == null ? Number(marketMin.toNumber().toFixed(fixedPrecision)) : Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
+    orderBookKeys.mid == null ? Number(marketMax.toNumber().toFixed(fixedPrecision)) : Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
   ]
 
   // Scale
