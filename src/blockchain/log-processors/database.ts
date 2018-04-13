@@ -77,9 +77,6 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
               newActiveFeeWindows.forEach((newActiveFeeWindow) => {
                 augurEmitter.emit("FeeWindowOpened", { feeWindowId: newActiveFeeWindow, blockNumber, timestamp });
               });
-              // TODO: Remove once we feel comfortable with FeeWindow behavior
-              if (expiredFeeWindows.length > 0) console.log("Closed New FeeWindow: ", expiredFeeWindows);
-              if (newActiveFeeWindows.length > 0) console.log("Entered New FeeWindow:", newActiveFeeWindows);
               return callback(null, { newActiveFeeWindows, expiredFeeWindows });
             });
           });
