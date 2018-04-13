@@ -2,36 +2,88 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
+import { augur } from 'services/augurjs'
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
 import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
-
 import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    loadClaimableFees: PropTypes.func.isRequired,
+    universe: PropTypes.object.isRequired,
+    reporter: PropTypes.string.isRequired,
+    getReportingFees: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
+    this.state = {
+      unclaimedEth: {
+        value: 0,
+        formattedValue: 0,
+        formatted: '-',
+        roundedValue: 0,
+        rounded: '-',
+        minimized: '-',
+        denomination: '',
+        full: '-',
+      },
+      unclaimedRep: {
+        value: 0,
+        formattedValue: 0,
+        formatted: '-',
+        roundedValue: 0,
+        rounded: '-',
+        minimized: '-',
+        denomination: '',
+        full: '-',
+      },
+    }
+
     this.handleClaimReportingFees = this.handleClaimReportingFees.bind(this)
   }
 
   componentWillMount() {
-    const claimableFees = this.props.loadClaimableFees()
-    const redeemableContracts = [
-      {
-        address: '0x161c723cac007e4283cee4ba11b15277e46eec53',
-        type: 2,
-      },
-    ]
-    this.setState({
-      unclaimedEth: formatEther(claimableFees.unclaimedEth, { decimals: 4, zeroStyled: true }),
-      unclaimedRep: formatAttoRep(claimableFees.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
-      redeemableContracts,
+    const {
+      reporter,
+      universe,
+    } = this.props
+    this.props.getReportingFees(universe.id, reporter, (err, result) => {
+      if (err) {
+        this.setState({
+          unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
+          unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
+          redeemableContracts: [],
+        })
+        return
+      }
+
+      const redeemableContracts = []
+      for (let i = 0; i < result.crowdsourcers.length; i++) {
+        redeemableContracts.push({
+          address: result.crowdsourcers[i],
+          type: augur.constants.CONTRACT_TYPE.DISPUTE_CROWDSOURCER,
+        })
+      }
+      for (let i = 0; i < result.feeWindows.length; i++) {
+        redeemableContracts.push({
+          address: result.feeWindows[i],
+          type: augur.constants.CONTRACT_TYPE.FEE_WINDOW,
+        })
+      }
+      for (let i = 0; i < result.initialReporters.length; i++) {
+        redeemableContracts.push({
+          address: result.initialReporters[i],
+          type: augur.constants.CONTRACT_TYPE.INITIAL_REPORTER,
+        })
+      }
+      this.setState({
+        unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
+        unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
+        redeemableContracts,
+      })
     })
   }
 
