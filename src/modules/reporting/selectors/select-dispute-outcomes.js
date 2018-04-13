@@ -3,6 +3,8 @@ import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-va
 import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 
+const FORK_THRESHOLD = 1000000000000000000 // XXX TODO use real fork threshold amount from universe
+
 export default function (market, disputeStakes, newOutcomeDisputeBond) {
   const TopOutcomeCount = 8
   const invalidMarketId = '0.5'
@@ -38,7 +40,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     .filter(o => !o.tentativeWinning)
 
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
-  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10) > 100 // XX TODO use real fork threshold amount from universe
+  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10) > FORK_THRESHOLD 
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
@@ -71,7 +73,7 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   if (!stake || !stake.payout) return {}
   if (stake.payout.length === 0) return {}
 
-  const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10) > 100 // XX TODO use real fork threshold amount from universe
+  const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10) > FORK_THRESHOLD
   
   let outcome
   if (stake.isInvalid) {
