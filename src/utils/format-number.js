@@ -203,7 +203,7 @@ export function formatGasCostToEther(num, opts, gasPrice) {
 }
 
 export function formatAttoRep(num, opts) {
-  if (!num || num === 0 || isNaN(num)) return 0
+  if (!num || num === 0) return 0
   const { ETHER } = augur.rpc.constants
   return formatNumber(createBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
 }

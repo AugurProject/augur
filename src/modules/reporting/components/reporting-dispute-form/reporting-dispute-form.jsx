@@ -104,7 +104,7 @@ export default class ReportingDisputeForm extends Component {
       this.setState({
         outcomes: disputeOutcomes.filter(item => !item.tentativeWinning) || [],
         currentOutcome: disputeOutcomes.find(item => item.tentativeWinning) || {},
-        disputeBondValue: parseInt(bondSizeOfNewStake, 10),
+        disputeBondValue: bondSizeOfNewStake,
         disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
       })
 
@@ -232,7 +232,7 @@ export default class ReportingDisputeForm extends Component {
       const minValue = parseFloat(min)
       const maxValue = parseFloat(max)
       const valueValue = parseFloat(value)
-      const bnValue = createBigNumber(value)
+      const bnValue = createBigNumber(value || 0)
       const bnTickSize = createBigNumber(tickSize)
 
       switch (true) {
@@ -357,6 +357,20 @@ export default class ReportingDisputeForm extends Component {
                       className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
+                    { s.scalarInputChoosen &&
+                      <ReportingDisputeProgress
+                        key={s.inputSelectedOutcome}
+                        isSelected={s.scalarInputChoosen}
+                        stakeRemaining={s.disputeBondValue}
+                        percentageComplete={0}
+                        percentageAccount={0}
+                        tentativeStake={stake}
+                        bondSizeCurrent={s.disputeBondValue}
+                        stakeCurrent="0"
+                        accountStakeCurrent="0"
+                        disputeBondFormatted={s.disputeBondFormatted}
+                      />
+                    }
                   </li>
                   <li>
                     { s.validations.hasOwnProperty('err') &&
