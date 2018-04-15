@@ -16,7 +16,7 @@ function _createOrders(augur, auth, callback) {
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   approveAugurEternalApprovalValue(augur, auth.address, auth, function (err) {
     if (err) return console.error(err);
-    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlock" }, function (err, marketIds) {
+    augur.markets.getMarkets({ universe: universe, sortBy: "creationBlockNumber" }, function (err, marketIds) {
       console.log("marketIds:", marketIds);
       if (err) return console.error(err);
       createOrders(augur, marketIds, auth, function (err) {

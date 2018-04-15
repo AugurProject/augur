@@ -10,4 +10,4 @@ sleep 10s
 
 node scripts/dp deploy
 
-$(kill -9 $(pidof geth))
+$(kill -TERM $(pidof geth))

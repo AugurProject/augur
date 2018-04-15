@@ -16,7 +16,7 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
  /**
  * @typedef {Object} GasEstimateTotals
- * @property {BigNumber} disputeCrowdsourcers Total gas estimate for redeeming all DisputeCrowdsourcer reporting fees.
+ * @property {BigNumber} crowdsourcers Total gas estimate for redeeming all DisputeCrowdsourcer reporting fees.
  * @property {BigNumber} initialReporters Total gas estimate for redeeming all InitialReporter reporting fees.
  * @property {BigNumber} feeWindows Total gas estimate for redeeming all FeeWindow reporting fees.
  * @property {BigNumber} all Sum of all gas estimates.
@@ -24,55 +24,83 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
  /**
  * @typedef {Object} GasEstimateInfo
- * @property {Array.<Object>} disputeCrowdsourcers Array of objects containing contract address/gas estimate pairs for all DisputeCrowdsourcers.
+ * @property {Array.<Object>} crowdsourcers Array of objects containing contract address/gas estimate pairs for all DisputeCrowdsourcers.
  * @property {Array.<Object>} initialReporters Array of objects containing contract address/gas estimate pairs for all InitialReporters.
  * @property {Array.<Object>} feeWindows Array of objects containing contract address/gas estimate pairs for all FeeWindows.
  * @property {GasEstimateTotals} totals Object containing total gas estimates for each type of contract.
  */
 
-/**
- * @typedef {Object} FailedTransaction
- * @property {string} address Ethereum address of contract that returned a transaction error.
- * @property {RPCError|Error} error Error that occurred when attempting to make a transaction to the contract.
- */
-
  /**
  * @typedef {Object} ClaimReportingFeesInfo
  * @property {Array.<string>|null} redeemedFeeWindows Addresses of all successfully redeemed Fee Windows, as hexadecimal strings. Not set if `p.estimateGas` is true.
- * @property {Array.<string>|null} redeemedDisputeCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
+ * @property {Array.<string>|null} redeemedCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {Array.<string>|null} redeemedInitialReporters Addresses of all successfully redeemed Initial Reporters, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {GasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
- * @property {Array.<FailedTransaction>} failedTransactions Array of FailedTransaction objects containing error information about each failed transaction.
+ * @property {Array.<string>} failedFeeWindows Array of FeeWindow contract addresses from which reporting fees could not be claimed.
+ * @property {Array.<string>} failedCrowdsourcers Array of DisputeCrowdsourcer contract addresses from which reporting fees could not be claimed.
+ * @property {Array.<string>} failedInitialReporters Array of InitialReporter contract addresses from which reporting fees could not be claimed.
  */
 
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.redeemer Ethereum address attempting to redeem reporting fees, as a hexadecimal string.
- * @param {Array.<RedeemableContract>} p.redeemableContracts Array of objects containing contract address and contract type pairs.
+ * @param {Array.<string>} p.crowdsourcers Array of dispute crowdsourcer contract addresses which to claim reporting fees.
+ * @param {Array.<string>} p.feeWindows Array of fee window contract addresses from which to claim reporting fees.
+ * @param {Array.<string>} p.initialReporters Array of initial reporter contract addresses from which to claim reporting fees.
  * @param {boolean=} p.estimateGas Whether to return gas estimates for the transactions instead of actually making the transactions.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} callback Called after all transactions have been attempted.
+ * @param {function} p.onSent Called if/when each transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
+ * @param {function} p.onFailed Called if/when any of the transactions fail.
  * @return {ClaimReportingFeesInfo} Object containing information about which fees were successfully claimed or a breakdown of gas estimates.
  */
-function claimReportingFees(p, callback) {
-  var redeemPayload = immutableDelete(p, ["redeemer", "redeemableContracts", "estimateGas"]);
+function claimReportingFees(p) {
+  var redeemableContracts = [];
+  var i;
+  if (p.crowdsourcers) {
+    for (i = 0; i < p.crowdsourcers.length; i++) {
+      redeemableContracts.push({
+        address: p.crowdsourcers[i],
+        type: contractTypes.DISPUTE_CROWDSOURCER,
+      });
+    }
+  }
+  if (p.feeWindows) {
+    for (i = 0; i < p.feeWindows.length; i++) {
+      redeemableContracts.push({
+        address: p.feeWindows[i],
+        type: contractTypes.FEE_WINDOW,
+      });
+    }
+  }
+  if (p.initialReporters) {
+    for (i = 0; i < p.initialReporters.length; i++) {
+      redeemableContracts.push({
+        address: p.initialReporters[i],
+        type: contractTypes.INITIAL_REPORTER,
+      });
+    }
+  }
+  var redeemPayload = immutableDelete(p, ["redeemer", "crowdsourcers", "feeWindows", "initialReporters", "estimateGas"]);
   var redeemedFeeWindows = [];
-  var redeemedDisputeCrowdsourcers = [];
+  var redeemedCrowdsourcers = [];
   var redeemedInitialReporters = [];
   var gasEstimates = {
-    disputeCrowdsourcers: [],
+    crowdsourcers: [],
     initialReporters: [],
     feeWindows: [],
     totals: {
-      disputeCrowdsourcers: new BigNumber(0),
+      crowdsourcers: new BigNumber(0),
       initialReporters: new BigNumber(0),
       feeWindows: new BigNumber(0),
       all: new BigNumber(0),
     },
   };
-  var failedTransactions = [];
+  var failedFeeWindows = [];
+  var failedCrowdsourcers = [];
+  var failedInitialReporters = [];
 
-  async.eachLimit(p.redeemableContracts, PARALLEL_LIMIT, function (contract, nextContract) {
+  async.eachLimit(redeemableContracts, PARALLEL_LIMIT, function (contract, nextContract) {
     switch (contract.type) {
       case contractTypes.DISPUTE_CROWDSOURCER:
         api().DisputeCrowdsourcer.redeem(assign({}, redeemPayload, {
@@ -85,15 +113,15 @@ function claimReportingFees(p, callback) {
           onSuccess: function (result) {
             if (p.estimateGas) {
               result = new BigNumber(result, 16);
-              gasEstimates.disputeCrowdsourcers.push({address: contract.address, estimate: result });
-              gasEstimates.totals.disputeCrowdsourcers = gasEstimates.totals.disputeCrowdsourcers.plus(result);
+              gasEstimates.crowdsourcers.push({address: contract.address, estimate: result });
+              gasEstimates.totals.crowdsourcers = gasEstimates.totals.crowdsourcers.plus(result);
             } else {
-              redeemedDisputeCrowdsourcers.push(contract.address);
+              redeemedCrowdsourcers.push(contract.address);
             }
             nextContract();
           },
-          onFailed: function (err) {
-            failedTransactions.push({address: contract.address, error: err});
+          onFailed: function () {
+            failedCrowdsourcers.push(contract.address);
             nextContract();
           },
         }));
@@ -116,8 +144,8 @@ function claimReportingFees(p, callback) {
             }
             nextContract();
           },
-          onFailed: function (err) {
-            failedTransactions.push({address: contract.address, error: err});
+          onFailed: function () {
+            failedInitialReporters.push(contract.address);
             nextContract();
           },
         }));
@@ -140,36 +168,38 @@ function claimReportingFees(p, callback) {
             }
             nextContract();
           },
-          onFailed: function (err) {
-            failedTransactions.push({address: contract.address, error: err});
+          onFailed: function () {
+            failedFeeWindows.push(contract.address);
             nextContract();
           },
         }));
         break;
       default:
-        failedTransactions.push({address: contract.address, error: "Unknown contract type: " + contract.type});
-        nextContract();
         break;
     }
   }, function () {
     var result = {
       redeemedFeeWindows: redeemedFeeWindows,
-      redeemedDisputeCrowdsourcers: redeemedDisputeCrowdsourcers,
+      redeemedCrowdsourcers: redeemedCrowdsourcers,
       redeemedInitialReporters: redeemedInitialReporters,
-      failedTransactions: failedTransactions,
+      failedFeeWindows: failedFeeWindows,
+      failedCrowdsourcers: failedCrowdsourcers,
+      failedInitialReporters: failedInitialReporters,
     };
     if (p.estimateGas) {
-      gasEstimates.totals.all = gasEstimates.totals.disputeCrowdsourcers.plus(gasEstimates.totals.initialReporters).plus(gasEstimates.totals.feeWindows);
+      gasEstimates.totals.all = gasEstimates.totals.crowdsourcers.plus(gasEstimates.totals.initialReporters).plus(gasEstimates.totals.feeWindows);
       result = {
         gasEstimates: gasEstimates,
-        failedTransactions: failedTransactions,
+        failedFeeWindows: failedFeeWindows,
+        failedCrowdsourcers: failedCrowdsourcers,
+        failedInitialReporters: failedInitialReporters,
       };
     }
-    var err = null;
-    if (failedTransactions.length > 0) {
-      err = new Error("Not all transactions were successful. See returned failedTransactions parameter for details.");
+
+    if (failedFeeWindows.length > 0 || failedCrowdsourcers > 0 || failedInitialReporters > 0) {
+      return p.onFailed(new Error("Not all transactions were successful.\n" + JSON.stringify(result)));
     }
-    callback(err, result);
+    p.onSuccess(result);
   });
 }
 
