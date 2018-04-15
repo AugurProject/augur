@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress.styles'
 import { calculateAddedStakePercentage } from 'modules/reporting/helpers/progress-calculations'
 
@@ -9,7 +8,6 @@ const ReportingDisputeProgress = (p) => {
   let userPercentage = p.percentageAccount || 0
   const currentPercentageComplete = p.percentageComplete || 0
   const userStaked = p.tentativeStake > 0 && p.isSelected
-  const remainingRepFormatted = formatAttoRep(p.stakeRemaining, { decimals: 4, roundUp: true }).formatted
 
   if (userStaked) {
     userPercentage = calculateAddedStakePercentage(p.bondSizeCurrent, p.accountStakeCurrent, p.tentativeStake)
@@ -34,7 +32,7 @@ const ReportingDisputeProgress = (p) => {
             </div>
           </div>
         </div>
-        <div className={Styles['ReportingDisputeProgress__dispute-label']}>{ remainingRepFormatted } REP</div>
+        <div className={Styles['ReportingDisputeProgress__dispute-label']}>{ p.disputeBondFormatted } REP</div>
         { userStaked && totalPercentageComplete >= 100 &&
           <div className={Styles['ReportingDisputeProgress__dispute-tentative']}>New tentative outcome</div>
         }
