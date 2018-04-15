@@ -10,7 +10,7 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsByCategory } from 'modules/markets/actions/load-markets-by-category'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import getValue from 'utils/get-value'
 
@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
-  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
+  loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
 })
 
 const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView))

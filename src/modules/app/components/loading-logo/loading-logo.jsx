@@ -14,7 +14,7 @@ export default class LoadingLogo extends Component {
     super(props)
 
     this.state = {
-      loading: true,
+      loading: false,
     }
   }
 
@@ -28,7 +28,7 @@ export default class LoadingLogo extends Component {
 
   animateEnd() {
     this.setState({
-      loading: this.props.isLoading,
+      loading: false,
     })
   }
 
