@@ -21,31 +21,6 @@
   }
 }
 
-.MarketBasics__tags {
-  &:extend(.caps--medium);
-
-  > li {
-    display: inline-block;
-
-    &::before {
-      content: "/";
-      margin: 0 4px;
-    }
-
-    &:first-child {
-      color: @color-lightgray;
-
-      &::before {
-        display: none;
-      }
-    }
-
-    > button {
-      text-transform: uppercase;
-    }
-  }
-}
-
 .MarketBasics__round-number {
   margin-top: -0.5rem;
 }
@@ -68,4 +43,12 @@
   letter-spacing: 0;
   line-height: 2rem;
   padding: 0 0.75em;
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketBasics {
+    &__header {
+      flex-direction: column;
+    }
+  }
 }

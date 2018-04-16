@@ -13,6 +13,9 @@ import CreateMarketPreviewRange from 'modules/create-market/components/create-ma
 import CreateMarketPreviewCategorical from 'modules/create-market/components/create-market-preview-categorical/create-market-preview-categorical'
 import { dateHasPassed, formatDate } from 'utils/format-date'
 import Styles from 'modules/create-market/components/create-market-preview/create-market-preview.styles'
+import noop from 'src/utils/noop'
+import { compact } from 'lodash'
+import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
 export default class CreateMarketPreview extends Component {
 
@@ -86,20 +89,21 @@ export default class CreateMarketPreview extends Component {
     } = this.props
     const s = this.state
 
+
+    const process = (...arr) => compact(arr).map(label => ({
+      label,
+      onClick: noop,
+    }))
+
+    const categoriesWithClick = process(newMarket.category)
+    const tagsWithClick = process(newMarket.tag1, newMarket.tag2)
+
     return (
       <article className={Styles.CreateMarketPreview}>
         <div className={Styles.CreateMarketPreview__header}>
           <div className={Styles['CreateMarketPreview__header-wrapper']}>
             <div className={Styles.CreateMarketPreview__tags}>
-              <ul>
-                <li>Categories</li>
-                <li>{newMarket.category}</li>
-              </ul>
-              <ul>
-                <li>Tags</li>
-                <li>{newMarket.tag1}</li>
-                <li>{newMarket.tag2}</li>
-              </ul>
+              <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
             </div>
             <h1 className={Styles.CreateMarketPreview__description}>{newMarket.description || 'New Market Question'}</h1>
             <div className={Styles.CreateMarketPreview__outcome}>
