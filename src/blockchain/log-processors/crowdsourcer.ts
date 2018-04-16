@@ -1,22 +1,31 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
+import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent } from "./database";
+import { groupByAndSum } from "../../server/getters/database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
 
+interface StakesByPayoutId {
+  payoutId: number,
+  amountStaked: BigNumber
+};
+
 function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: ErrorCallback) {
-  const query = db.first(["payoutId", "amountStaked"]).from((builder: QueryBuilder) =>
-    builder.from("crowdsourcers").select(["payoutId", "amountStaked"]).where({
-      completed: 1,
-      marketId,
-    }).union((builder: QueryBuilder) =>
-      builder.select(["payoutId", "amountStaked"]).from("initial_reports").where("marketId", marketId),
-    )).orderByRaw("sum(amountStaked) desc").groupBy("payoutId");
-  query.asCallback((err: Error|null, mostStakedPayoutId) => {
+  db.from("crowdsourcers").select(["payoutId", "amountStaked"]).where({
+    completed: 1,
+    marketId,
+  }).union((builder: QueryBuilder) =>
+    builder.select(["payoutId", "amountStaked"]).from("initial_reports").where("marketId", marketId)
+  ).asCallback((err: Error|null, results: Array<StakesByPayoutId>) => {
     if (err) return callback(err);
+    const summed = groupByAndSum(results, ["payoutId"], ["amountStaked"])
+      .sort((a: StakesByPayoutId, b: StakesByPayoutId) => b.amountStaked.comparedTo(a.amountStaked));
+
+    const mostStakedPayoutId = summed[0];
     parallel([
       (next: AsyncCallback) => {
         const query = db("payouts").update("tentativeWinning", 0).where("marketId", marketId);
@@ -89,13 +98,17 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
   });
   db.insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.update("amountStaked", db.raw(`amountStaked + ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: {amountStaked: BigNumber}): void => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
-        log,
-        disputeToInsert,
-        {marketId: log.market}));
-      callback(null);
+      let amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked, 10)).toFixed();
+      db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+        if (err) return callback(err);
+        augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
+          log,
+          disputeToInsert,
+          {marketId: log.market}));
+        callback(null);
+      });
     });
   });
 }
@@ -106,12 +119,16 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
     logIndex: log.logIndex,
   }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.update("amountStaked", db.raw(`amountStaked - ${log.amountStaked}`)).into("crowdsourcers").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: {amountStaked: BigNumber}): void => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
-        log,
-        {marketId: log.market}));
-      callback(null);
+      let amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked, 10)).toFixed();
+      db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
+        if (err) return callback(err);
+        augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
+          log,
+          {marketId: log.market}));
+        callback(null);
+      });
     });
   });
 }
