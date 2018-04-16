@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-// import classNames from 'classnames'
 import { augur } from 'services/augurjs'
 // import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 import getValue from 'src/utils/get-value'
@@ -17,6 +16,7 @@ export default class CreateMarketReview extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
     universe: PropTypes.object.isRequired,
+    estimateSubmitNewMarket: PropTypes.func.isRequired,
     meta: PropTypes.object,
     availableEth: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
@@ -57,15 +57,19 @@ export default class CreateMarketReview extends Component {
     const {
       meta,
       universe,
+      newMarket,
     } = this.props
-    augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id, meta }, (err, marketCreationCostBreakdown) => {
-      if (err) return console.error(err)
-      // TODO add designatedReportNoShowReputationBond to state / display
-      this.setState({
-        gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
-        designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
-        creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
-        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
+    this.props.estimateSubmitNewMarket(newMarket, (err, gasCost) => {
+      if (err) console.error(err)
+      augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id, meta }, (err, marketCreationCostBreakdown) => {
+        if (err) return console.error(err)
+        // TODO add designatedReportNoShowReputationBond to state / display
+        this.setState({
+          gasCost: formatEtherEstimate(gasCost || 0),
+          designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
+          creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+          validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
+        })
       })
     })
   }

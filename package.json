@@ -30,11 +30,13 @@
     "docker:build": "docker build --tag augurproject/augur:latest  .",
     "docker:push": "docker push augurproject/augur:latest",
     "docker:release:stable": "scripts/release-stable.sh",
-    "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop"
+    "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
+    "docker:spin-up": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
+    "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down"
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "4.11.0-3",
+    "augur.js": "4.11.0-4",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",

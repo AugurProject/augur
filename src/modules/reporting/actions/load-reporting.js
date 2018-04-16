@@ -9,7 +9,7 @@ import updateResolvedMarkets from 'modules/reporting/actions/update-resolved-rep
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
-  const args = {
+  const designatedReportingParams = {
     universe: universe.id,
     designatedReporter: loginAccount.address,
   }
@@ -19,7 +19,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     {
       reportingState: constants.REPORTING_STATE.PRE_REPORTING,
       sortBy: 'endTime',
-      ...args,
+      ...designatedReportingParams,
     },
     (err, marketIds) => {
       if (err) return callback(err)
@@ -37,7 +37,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     {
       reportingState: constants.REPORTING_STATE.DESIGNATED_REPORTING,
       sortBy: 'endTime',
-      ...args,
+      ...designatedReportingParams,
     },
     (err, marketIds) => {
       if (err) return callback(err)
@@ -55,7 +55,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     {
       reportingState: constants.REPORTING_STATE.OPEN_REPORTING,
       sortBy: 'endTime',
-      ...args,
+      universe: universe.id,
     },
     (err, marketIds) => {
       if (err) return callback(err)
@@ -73,7 +73,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     {
       reportingState: constants.REPORTING_STATE.FINALIZED,
       sortBy: 'endTime',
-      ...args,
+      universe: universe.id,
     },
     (err, marketIds) => {
       if (err) return callback(err)

@@ -252,6 +252,16 @@ li.field--short {
     display: flex;
     flex-wrap: nowrap;
 
+    input[type='number'] {
+      appearance: textfield;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
     &:not(:first-child) {
       margin-left: 0;
       margin-top: 1rem;

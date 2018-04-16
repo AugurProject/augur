@@ -126,7 +126,9 @@ class MarketTradingForm extends Component {
     const {
       maxPrice,
       minPrice,
+      market,
     } = this.props
+    const tickSize = createBigNumber(market.tickSize)
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
@@ -134,6 +136,11 @@ class MarketTradingForm extends Component {
       errorCount += 1
       passedTest = false
       errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${minPrice} - ${maxPrice}`)
+    }
+    if (value && value.mod(tickSize).gt('0')) {
+      errorCount += 1
+      passedTest = false
+      errors[this.INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`)
     }
     return { isOrderValid: passedTest, errors, errorCount }
   }
@@ -210,10 +217,14 @@ class MarketTradingForm extends Component {
       orderEstimate,
       orderType,
       selectedOutcome,
+      maxPrice,
+      minPrice,
     } = this.props
     const s = this.state
 
     const tickSize = parseFloat(market.tickSize)
+    const max = maxPrice.toString()
+    const min = minPrice.toString()
     const errors = Array.from(new Set([...s.errors[this.INPUT_TYPES.QUANTITY], ...s.errors[this.INPUT_TYPES.PRICE], ...s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE]]))
 
     return (
@@ -260,6 +271,8 @@ class MarketTradingForm extends Component {
               id="tr__input--limit-price"
               type="number"
               step={tickSize}
+              max={max}
+              min={min}
               placeholder={`${marketType === SCALAR ? tickSize : '0.0001'} ETH`}
               value={BigNumber.isBigNumber(s[this.INPUT_TYPES.PRICE]) ? s[this.INPUT_TYPES.PRICE].toNumber() : s[this.INPUT_TYPES.PRICE]}
               onChange={e => this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)}

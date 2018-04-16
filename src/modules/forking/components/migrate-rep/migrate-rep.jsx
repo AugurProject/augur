@@ -145,7 +145,6 @@ export default class MigrateRep extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
-          disputeRound={0}
         />
         }
         { !isEmpty(market) && s.showingDetails &&
@@ -153,7 +152,7 @@ export default class MigrateRep extends Component {
             <div className={Styles[`ReportingReportMarket__details-container`]}>
               <div className={Styles.ReportingReportMarket__details}>
                 <span>
-                  {market.extraInfo}
+                  {market.details}
                 </span>
               </div>
               <div className={Styles[`ReportingReportMarket__resolution-source`]}>

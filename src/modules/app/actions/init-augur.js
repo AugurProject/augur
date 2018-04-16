@@ -28,6 +28,8 @@ const NETWORK_NAMES = {
   12346: 'Private',
 }
 
+const windowRef = typeof window === 'undefined' ? {} : window
+
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
   loadAccount(dispatch, null, env, (err, loadedAccount) => {
@@ -110,7 +112,12 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
       dispatch(updateAugurNodeConnectionStatus(true))
       dispatch(registerTransactionRelay())
-      dispatch(loadUniverse(env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe, history))
+      let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
+      if (windowRef.localStorage && windowRef.localStorage.getItem) {
+        const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
+        universeId = storedUniverseId === null ? universeId : storedUniverseId
+      }
+      dispatch(loadUniverse(universeId, history))
       if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
       if (isInitialConnection) {
         pollForAccount(dispatch, getState)

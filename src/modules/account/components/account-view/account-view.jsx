@@ -7,13 +7,14 @@ import AccountHeader from 'modules/account/containers/account-header'
 import AccountDeposit from 'modules/account/containers/account-deposit'
 import AccountWithdraw from 'modules/account/containers/account-withdraw'
 import AccountRepFaucet from 'modules/account/containers/account-rep-faucet'
+import AccountUniverses from 'modules/account/containers/account-universes'
 import TermsAndConditions from 'modules/app/components/terms-and-conditions/terms-and-conditions'
 
 import { augur } from 'services/augurjs'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET } from 'modules/routes/constants/views'
+import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET, ACCOUNT_UNIVERSES } from 'modules/routes/constants/views'
 
 import Styles from 'modules/account/components/account-view/account-view.styles'
 
@@ -31,6 +32,7 @@ const AccountView = (p) => {
           {showRepFaucet &&
             <AuthenticatedRoute path={makePath(ACCOUNT_REP_FAUCET)} component={AccountRepFaucet} />
           }
+          <AuthenticatedRoute path={makePath(ACCOUNT_UNIVERSES)} component={AccountUniverses} />
         </Switch>
       </div>
       <TermsAndConditions />

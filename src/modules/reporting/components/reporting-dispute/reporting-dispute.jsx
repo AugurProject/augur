@@ -12,7 +12,7 @@ import ReportingDisputeForm from 'modules/reporting/containers/reporting-dispute
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
 
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 
@@ -40,9 +40,7 @@ export default class ReportingDispute extends Component {
       currentStep: 0,
       showingDetails: true,
       gasEstimate: '0',
-      disputeBondFormatted: '0',
       isMarketInValid: null,
-      currentOutcome: {},
       selectedOutcome: '',
       selectedOutcomeName: '',
       stake: 0,
@@ -67,6 +65,10 @@ export default class ReportingDispute extends Component {
     if (isConnected && !isMarketLoaded) {
       loadFullMarket()
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(nextState, this.state)
   }
 
   prevPage() {
@@ -132,14 +134,15 @@ export default class ReportingDispute extends Component {
           showAdditionalDetailsToggle
           showingDetails={s.showingDetails}
           toggleDetails={this.toggleDetails}
+          showDisputeRound
         />
         }
         { !isEmpty(market) && s.showingDetails &&
-          <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
+          <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
             <div className={Styles[`ReportingReportMarket__details-container`]}>
               <div className={Styles.ReportingReportMarket__details}>
                 <span>
-                  {market.extraInfo}
+                  {market.details}
                 </span>
               </div>
               <div className={Styles[`ReportingReportMarket__resolution-source`]}>
@@ -164,9 +167,7 @@ export default class ReportingDispute extends Component {
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
-                currentOutcome={s.currentOutcome}
                 gasEstimate={s.gasEstimate}
-                disputeBondFormatted={s.disputeBondFormatted}
               />
             }
             <div className={FormStyles.Form__navigation}>

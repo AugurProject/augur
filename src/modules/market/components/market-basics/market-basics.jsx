@@ -10,6 +10,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import { formatDate } from 'utils/format-date'
+import getValue from 'utils/get-value'
 import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
@@ -21,14 +22,14 @@ import moment from 'moment'
 
 const MarketBasics = (p) => {
   let ReportEndingIndicator = () => null
-  if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING || p.reportingState === constants.REPORTING_STATE.OPEN_REPORTING) && !p.hideReportEndingIndicator) {
+  if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING) && !p.hideReportEndingIndicator) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
     const endTime = moment(p.endTime.value).add(constants.CONTRACT_INTERVAL.DESIGNATED_REPORTING_DURATION_SECONDS, 'seconds').toDate()
     const displayDate = formatDate(endTime)
 
     ReportEndingIndicator = () => (
       <div className={Styles.MarketBasics__reportingends}>
-        <div>Reporting Ends {displayDate.formattedShort}</div>
+        <div>{p.isMobile ? `In Reporting` : `Reporting Ends ${displayDate.formattedLocalShortTime}`}</div>
         <WrappedGraph startDate={p.endTime.value} endTime={endTime} currentTimestamp={p.currentTimestamp} />
       </div>
     )
@@ -51,12 +52,11 @@ const MarketBasics = (p) => {
                 </button>
               </li>)}
           </ul>
-          {p.disputeRound != null &&
+          { p.showDisputeRound &&
             <div className={Styles['MarketBasics__round-number']}>
               <span className={Styles['MarketBasics__round-label']}>Dispute Round</span>
-              <span className={Styles['MarketBasics__round-text']}>{ p.market && p.market.disputeInfo &&
-                p.market.disputeInfo.disputeRound
-              }
+              <span className={Styles['MarketBasics__round-text']}>
+                { getValue(p, 'disputeInfo.disputeRound') }
               </span>
             </div>
           }
@@ -90,6 +90,7 @@ MarketBasics.propTypes = {
   toggleFavorite: PropTypes.func,
   currentTimestamp: PropTypes.number.isRequired,
   hideReportEndingIndicator: PropTypes.bool,
+  showDisputeRound: PropTypes.bool,
 }
 
 export default MarketBasics

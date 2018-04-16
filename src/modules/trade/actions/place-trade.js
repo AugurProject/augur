@@ -1,13 +1,14 @@
 import { augur } from 'services/augurjs'
 import { BUY } from 'modules/transactions/constants/types'
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
-import logError from 'utils/log-error'
 import { createBigNumber } from 'utils/create-big-number'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
+import logError from 'utils/log-error'
+import noop from 'utils/noop'
 
-export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
+export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = noop) => (dispatch, getState) => {
   if (!marketId) return null
   const { loginAccount, marketsData } = getState()
   const market = marketsData[marketId]
@@ -39,6 +40,10 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
   if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {
     dispatch(updateModal({
       type: MODAL_ACCOUNT_APPROVAL,
+      approveOnSent: () => {
+        augur.trading.placeTrade(placeTradeParams)
+        dispatch(clearTradeInProgress(marketId))
+      },
       approveCallback: (err, res) => {
         if (err) return callback(err)
         augur.trading.placeTrade(placeTradeParams)

@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     description: market.description || '',
-    details: market.extraInfo || '',
+    details: market.details || '',
     marketType: market.marketType,
     resolutionSource: market.resolutionSource,
     coreProperties: {

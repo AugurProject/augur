@@ -15,7 +15,6 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
     if (err) return callback(err)
     const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
     if (isForking) {
-      // todo: use new load market data if not loaded when it's available
       dispatch(loadMarketsInfoIfNotLoaded([forkingMarket]))
       async.parallel({
         forkEndTime: (next) => {
@@ -35,19 +34,19 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
         if (universeData.isForkingMarketFinalized) {
           augur.api.Universe.getWinningChildUniverse(universePayload, (err, winningChildUniverse) => {
             if (err) return callback(err)
-            dispatch(updateUniverse({
+            updateUniverseIfForkingDataChanged(dispatch, universe, {
               ...universeData,
               forkingMarket,
               winningChildUniverse,
               isForking,
-            }))
+            })
           })
         } else {
-          dispatch(updateUniverse({ ...universeData, forkingMarket, isForking }))
+          updateUniverseIfForkingDataChanged(dispatch, universe, { ...universeData, forkingMarket, isForking, winningChildUniverse: undefined })
         }
       })
     } else {
-      dispatch(updateUniverse({ isForking, forkingMarket }))
+      updateUniverseIfForkingDataChanged(dispatch, universe, { isForking, forkingMarket, forkEndTime: undefined, isForkingMarketFinalized: undefined, winningChildUniverse: undefined })
     }
   })
   if (!universe.reportingPeriodDurationInSeconds) return callback(null)
@@ -81,6 +80,19 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
       callback(null)
     }))
   })
+}
+
+function updateUniverseIfForkingDataChanged(dispatch, oldUniverseData, universeData) {
+  if (
+    oldUniverseData.id !== universeData.id ||
+    oldUniverseData.isForking !== universeData.isForking ||
+    oldUniverseData.forkingMarket !== universeData.forkingMarket ||
+    oldUniverseData.forkEndTime !== universeData.forkEndTime ||
+    oldUniverseData.isForkingMarketFinalized !== universeData.isForkingMarketFinalized ||
+    oldUniverseData.winningChildUniverse !== universeData.winningChildUniverse
+  ) {
+    dispatch(updateUniverse(universeData))
+  }
 }
 
 export default syncUniverse

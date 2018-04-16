@@ -2,12 +2,17 @@ import { connect } from 'react-redux'
 import PortfolioReports from 'modules/portfolio/components/portfolio-reports/portfolio-reports'
 
 import { updateModal } from 'modules/modal/actions/update-modal'
-import loadClaimableFees from 'modules/portfolio/actions/load-claimable-fees'
+import getReportingFees from 'modules/portfolio/actions/get-reporting-fees'
 
-const mapStateToProps = state => ({})
+import getValue from 'utils/get-value'
+
+const mapStateToProps = state => ({
+  universe: state.universe,
+  reporter: getValue(state, 'loginAccount.address'),
+})
 
 const mapDispatchToProps = dispatch => ({
-  loadClaimableFees: () => dispatch(loadClaimableFees()),
+  getReportingFees: (universe, reporter, callback) => dispatch(getReportingFees(universe, reporter, callback)),
   updateModal: modal => dispatch(updateModal(modal)),
 })
 

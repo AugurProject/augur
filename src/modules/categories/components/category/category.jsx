@@ -9,7 +9,7 @@ import Styles from 'modules/categories/components/category/category.styles'
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
-import { CATEGORY_VOLUME_INCREASED, CATEGORY_VOLUME_DECREASED } from 'modules/categories/constants/category-popularity-change'
+import { CATEGORY_VOLUME_INCREASED, CATEGORY_VOLUME_DECREASED, NULL_CATEGORY } from 'modules/categories/constants/category-popularity-change'
 import { MARKETS } from 'modules/routes/constants/views'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
@@ -45,7 +45,7 @@ export default class Category extends Component {
     } = this.props
     const s = this.state
 
-    const isNullCategory = category === 'null-category' && popularity === 0
+    const isNullCategory = category === NULL_CATEGORY
     const roundedPop = createBigNumber(popularity.toString()).integerValue(BigNumber.ROUND_HALF_EVEN)
     let popString = roundedPop.toNumber() === 1 ? ' SHARE' : ' SHARES'
     if (roundedPop > 1000) {
