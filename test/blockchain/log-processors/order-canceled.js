@@ -17,6 +17,7 @@ describe("blockchain/log-processors/order-canceled", () => {
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderCanceledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

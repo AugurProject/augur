@@ -272,11 +272,10 @@ export interface UIStakeInfo<BigNumberType> {
 }
 
 export interface UIFeeWindowCurrent {
-  endBlockNumber: number|null;
   endTime: number;
   feeWindow: Address;
   feeWindowId: number;
-  startBlockNumber: number;
+  isActive: number;
   startTime: number;
   universe: Address;
   totalStake?: number;
@@ -469,10 +468,9 @@ export interface UIReport<BigNumberType> {
 export interface FeeWindowRow {
   feeWindow: Address;
   feeWindowId: number;
-  startBlockNumber: number;
   universe: Address;
   startTime: number;
-  endBlockNumber: null|number;
+  isActive: number;
   endTime: number;
   fees: number|string;
 }

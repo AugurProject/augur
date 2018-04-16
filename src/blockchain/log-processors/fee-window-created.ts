@@ -2,30 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { augurEmitter } from "../../events";
-
-/*          "name": "universe",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "feeWindow",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "startTime",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "endTime",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "id",
-          "type": "uint256"
-          */
+import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow }}, (err: Error|null, feeToken?: Address): void => {
@@ -34,15 +11,18 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
       feeWindow: log.feeWindow,
       feeWindowId: log.id,
       universe: log.universe,
-      startBlockNumber: log.blockNumber,
       startTime: log.startTime,
-      endBlockNumber: null,
       endTime: log.endTime,
+      isActive: 0,
       fees: 0,
       feeToken,
     };
     augurEmitter.emit("FeeWindowCreated", Object.assign({}, log, feeWindowToInsert));
-    db.from("fee_windows").insert(feeWindowToInsert).asCallback(callback);
+    db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
+      if (err) return callback(err);
+      // Re-running this is important for if the FeeWindow was created on the same block it started (not pre-created as part of getOrCreateNext)
+      advanceFeeWindowActive(db, augur, log.blockNumber, getCurrentTime(), callback);
+    });
   });
 }
 

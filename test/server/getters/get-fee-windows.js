@@ -53,7 +53,7 @@ describe("server/getters/get-fee-windows", () => {
         },
         "0x2000000000000000000000000000000000000000": {
           startTime: 1509065473,
-          endTime: 1511657473,
+          endTime: 1509670273,
           balance: "500",
           expectedFees: new BigNumber("500").times(2000).dividedBy(1100).toFixed(),
         },

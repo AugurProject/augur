@@ -17,6 +17,7 @@ describe("blockchain/log-processors/token/transfer", () => {
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processTransferLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

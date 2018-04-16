@@ -25,6 +25,7 @@ describe("blockchain/log-processors/market-created", () => {
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   done();

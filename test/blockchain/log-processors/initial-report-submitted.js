@@ -3,9 +3,10 @@
 const Augur = require("augur.js");
 
 const assert = require("chai").assert;
-const { BigNumber } = require("bignumber.js");
+const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } = require("../../../build/blockchain/log-processors/initial-report-submitted");
+const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval} = require("../../../build/blockchain/log-processors/initial-report-submitted");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../build/blockchain/process-block.js");
 
 const getReportingState = (db, params, callback) => {
   db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
@@ -21,19 +22,25 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
+          setOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
             assert.isNull(err);
-            getReportingState(trx, t.params, (err, records) => {
+            processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
               assert.isNull(err);
-              t.assertions.onAdded(err, records);
-              getInitialReport(trx, t.params, (err, records) => {
+              getReportingState(trx, t.params, (err, records) => {
                 assert.isNull(err);
-                t.assertions.onAddedInitialReport(err, records);
-                processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                t.assertions.onAdded(err, records);
+                getInitialReport(trx, t.params, (err, records) => {
                   assert.isNull(err);
-                  getReportingState(trx, t.params, (err, records) => {
-                    t.assertions.onRemoved(err, records);
-                    done();
+                  t.assertions.onAddedInitialReport(err, records);
+                  processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                    assert.isNull(err);
+                    getReportingState(trx, t.params, (err, records) => {
+                      t.assertions.onRemoved(err, records);
+                      removeOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
+                        assert.isNotNull(err);
+                        done();
+                      });
+                    });
                   });
                 });
               });
@@ -69,6 +76,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
           },
         },
       },
+      overrideTimestamp: 1509085473,
     },
     assertions: {
       onAdded: (err, records) => {

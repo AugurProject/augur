@@ -23,6 +23,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
                 getTokenBalances(trx, t.params, (err, balances) => {
                   t.assertions.onInitialBalances(err, balances);
                   processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                    assert.isNull(err);
                     getState(trx, t.params, (err, records) => {
                       t.assertions.onRemoved(err, records);
                       getTokenBalances(trx, t.params, (err, balances) => {

@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { updateMarketState, rollbackMarketState, insertPayout } from "./database";
+import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent } from "./database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
 
@@ -41,9 +41,8 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
   insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
     db("fee_windows").select(["feeWindow"]).first()
-      .whereNull("endBlockNumber")
+      .where("isActive", 1)
       .where({ universe: log.universe })
-      .orderBy("startTime", "ASC")
       .asCallback((err: Error|null, feeWindowRow?: { feeWindow: string }|null): void => {
         if (err) return callback(err);
         if (feeWindowRow == null) return callback(new Error(`could not retrieve feeWindow for crowdsourcer: ${log.disputeCrowdsourcer}`));
@@ -124,7 +123,8 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
       (next: AsyncCallback) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
-    ], (err: Error|null) => {
+      (next: AsyncCallback) => updateMarketFeeWindowNext(db, augur, log.universe, log.market, next),
+  ], (err: Error|null) => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
         log,
@@ -141,6 +141,7 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
       (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
+      (next: AsyncCallback) => updateMarketFeeWindowCurrent(db, log.universe, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
