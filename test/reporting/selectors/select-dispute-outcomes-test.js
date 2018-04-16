@@ -226,7 +226,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         { ...stakes[4] },
         { ...stakes[5] },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 10000000000)
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
   })
@@ -245,7 +245,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -311,7 +311,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           name: '85',
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         { ...stakes[0] },
         { ...stakes[1], stakeRemaining: '10' },
@@ -339,7 +339,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           stakeRemaining: 50,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         { ...stakes[0], id: '80', name: '80' },
         { ...stakes[1], id: '90', name: '90' },
@@ -360,7 +360,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         {
           ...stakes[0],
@@ -383,7 +383,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -418,7 +418,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: false,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -453,7 +453,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -495,7 +495,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: false,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -530,7 +530,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -559,7 +559,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),

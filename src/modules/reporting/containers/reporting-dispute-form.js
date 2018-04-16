@@ -8,6 +8,7 @@ import { addUpdateAccountDispute } from 'modules/reporting/actions/update-accoun
 const mapStateToProps = (state, ownProps) => ({
   isLogged: state.isLogged,
   universe: state.universe.id,
+  disputeThresholdForFork: state.universe.disputeThresholdForFork,
   market: ownProps.market,
   isMobile: state.isMobile,
   accountDisputeState: state.accountDisputes,

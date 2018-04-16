@@ -7,6 +7,13 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import logError from 'utils/log-error'
 
+/*
+augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, disputeThresholdForFork) => {
+  if (err) return next(err)
+  next(null, disputeThresholdForFork)
+})
+*/
+
 // Synchronize front-end universe state with blockchain universe state.
 const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()

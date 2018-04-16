@@ -5,6 +5,7 @@ import store from 'src/store'
 import { isEmpty } from 'lodash'
 
 import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
+import { selectUniverseState } from 'src/select-state'
 import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
 
 export default function () {
@@ -13,7 +14,8 @@ export default function () {
 
 export const selectMarketDisputeOutcomes = createSelector(
   selectMarkets,
-  (markets) => {
+  selectUniverseState,
+  (markets, universe) => {
     if (isEmpty(markets)) {
       return {}
     }
@@ -21,7 +23,7 @@ export const selectMarketDisputeOutcomes = createSelector(
     const disputeOutcomes = {}
     const outcomes = disputeMarkets.reduce((p, m) => {
       if (m.disputeInfo) {
-        p[m.id] = selectDisputeOutcomes(m, m.disputeInfo.stakes, m.disputeInfo.bondSizeOfNewStake)
+        p[m.id] = selectDisputeOutcomes(m, m.disputeInfo.stakes, m.disputeInfo.bondSizeOfNewStake, universe.disputeThresholdForFork)
           .map(o => fillDisputeOutcomeProgress(m.disputeInfo.bondSizeOfNewStake, o))
       }
       return p

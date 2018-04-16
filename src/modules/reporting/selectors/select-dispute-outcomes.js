@@ -3,11 +3,10 @@ import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-va
 import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 
-const FORK_THRESHOLD = 1000000000000000000 // XXX TODO use real fork threshold amount from universe
-
-export default function (market, disputeStakes, newOutcomeDisputeBond) {
+export default function (market, disputeStakes, newOutcomeDisputeBond, disputeThresholdForFork) {
   const TopOutcomeCount = 8
   const invalidMarketId = '0.5'
+  const forkThreshold = createBigNumber(disputeThresholdForFork, 10)
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
   const { marketType, reportableOutcomes } = market
   const outcomes = reportableOutcomes.slice()
@@ -25,7 +24,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     return result
   }, [])
 
-  const disputeOutcomes = disputeStakes.map(stake => populateFromOutcome(marketType, addDefaultStakeOutcomes, market, stake, newOutcomeDisputeBond))
+  const disputeOutcomes = disputeStakes.map(stake => populateFromOutcome(marketType, addDefaultStakeOutcomes, market, stake, newOutcomeDisputeBond, forkThreshold))
   const tentativeWinner = disputeOutcomes.find(stake => stake.tentativeWinning)
   const filteredOutcomes = disputeOutcomes.reduce((p, stake) => {
     if (!p.find(o => o.id === stake.id)) {
@@ -40,7 +39,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond) {
     .filter(o => !o.tentativeWinning)
 
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
-  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10) > FORK_THRESHOLD 
+  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10) > forkThreshold 
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
@@ -69,11 +68,11 @@ const fillInOutcomes = (collection, outcome) => {
   return collection
 }
 
-const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisputeBond) => {
+const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisputeBond, forkThreshold) => {
   if (!stake || !stake.payout) return {}
   if (stake.payout.length === 0) return {}
 
-  const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10) > FORK_THRESHOLD
+  const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10) > forkThreshold
   
   let outcome
   if (stake.isInvalid) {
