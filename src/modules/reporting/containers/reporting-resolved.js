@@ -16,6 +16,7 @@ const mapStateToProps = state => ({
   markets: getValue(selectMarketsToReport(state), 'resolved'),
   isForking: state.universe.isForking,
   forkingMarket: state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null,
+  forkThreshold: state.universe.forkThreshold,
 })
 
 const mapDispatchToProps = dispatch => ({

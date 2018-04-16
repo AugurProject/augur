@@ -23,7 +23,7 @@ export const selectMarketDisputeOutcomes = createSelector(
     const disputeOutcomes = {}
     const outcomes = disputeMarkets.reduce((p, m) => {
       if (m.disputeInfo) {
-        p[m.id] = selectDisputeOutcomes(m, m.disputeInfo.stakes, m.disputeInfo.bondSizeOfNewStake, universe.disputeThresholdForFork)
+        p[m.id] = selectDisputeOutcomes(m, m.disputeInfo.stakes, m.disputeInfo.bondSizeOfNewStake, universe.forkThreshold)
           .map(o => fillDisputeOutcomeProgress(m.disputeInfo.bondSizeOfNewStake, o))
       }
       return p

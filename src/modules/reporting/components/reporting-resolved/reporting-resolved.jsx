@@ -28,8 +28,8 @@ export default class ReportingResolved extends Component {
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
     isForking: PropTypes.bool.isRequired,
+    forkThreshold: PropTypes.object.isRequired,
     forkingMarket: PropTypes.object,
-    forkThreshold: PropTypes.number.isRequired,
   }
 
   constructor(props) {

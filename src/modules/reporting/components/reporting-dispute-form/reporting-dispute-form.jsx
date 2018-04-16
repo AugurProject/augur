@@ -23,7 +23,7 @@ export default class ReportingDisputeForm extends Component {
     stake: PropTypes.number.isRequired,
     addUpdateAccountDispute: PropTypes.func.isRequired,
     getDisputeInfo: PropTypes.func.isRequired,
-    disputeThresholdForFork: PropTypes.string.isRequired,
+    forkThreshold: PropTypes.object.isRequired,
     accountDisputeData: PropTypes.object,
   }
 
@@ -93,13 +93,14 @@ export default class ReportingDisputeForm extends Component {
       accountDisputeData,
       getDisputeInfo,
       market,
+      forkThreshold,
     } = this.props
 
     getDisputeInfo([market.id], (err, disputeInfos) => {
       if (err) return console.error(err)
       const disputeInfo = disputeInfos[0]
       const { bondSizeOfNewStake } = disputeInfo
-      const disputeOutcomes = selectDisputeOutcomes(market, disputeInfo.stakes, bondSizeOfNewStake, disputeThresholdForFork)
+      const disputeOutcomes = selectDisputeOutcomes(market, disputeInfo.stakes, bondSizeOfNewStake, forkThreshold)
         .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
 
       this.setState({

@@ -6,18 +6,21 @@ import { updateAssets } from 'modules/auth/actions/update-assets'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import logError from 'utils/log-error'
-
-/*
-augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, disputeThresholdForFork) => {
-  if (err) return next(err)
-  next(null, disputeThresholdForFork)
-})
-*/
+import { createBigNumber } from 'utils/create-big-number'
 
 // Synchronize front-end universe state with blockchain universe state.
 const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
   const universePayload = { tx: { to: universe.id } }
+  // Getting current dispute fork threshold
+  augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, disputeThresholdForFork) => {
+    if (err) return next(err)
+    const forkThreshold = createBigNumber(disputeThresholdForFork, 10)
+    if (forkThreshold !== universe.forkThreshold) {
+      dispatch(updateUniverse({ forkThreshold }))
+    }
+  })
+  // Getting current fork data
   augur.api.Universe.getForkingMarket(universePayload, (err, forkingMarket) => {
     if (err) return callback(err)
     const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
