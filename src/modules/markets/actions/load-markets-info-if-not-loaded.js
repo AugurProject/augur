@@ -5,7 +5,7 @@ import logError from 'utils/log-error'
 export const loadMarketsInfoIfNotLoaded = (marketIds, callback = logError) => (dispatch, getState) => {
   const { marketsData } = getState()
   const marketIdsToLoad = marketIds.filter(marketId => !isMarketLoaded(marketId, marketsData))
-  console.log('marketIdsToLoad:', marketIdsToLoad)
+
   if (marketIdsToLoad.length === 0) return callback(null)
   dispatch(loadMarketsInfo(marketIdsToLoad, callback))
 }
