@@ -31,8 +31,9 @@
     "docker:push": "docker push augurproject/augur:latest",
     "docker:release:stable": "scripts/release-stable.sh",
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
-    "docker:spin-up": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
-    "docker:spin-pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
+    "docker:spin-up": "npm run docker:pull && npm run docker:start",
+    "docker:start": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
+    "docker:pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down"
   },
   "dependencies": {
