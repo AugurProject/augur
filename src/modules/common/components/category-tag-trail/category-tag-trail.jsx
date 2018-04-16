@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { isEmpty } from 'lodash'
+
 import Styles from 'modules/common/components/category-tag-trail/category-tag-trail.styles'
 import WordTrail from 'src/modules/common/components/word-trail/word-trail'
 
 export const CategoryTagTrail = ({ categories, tags }) => (
   <div className={Styles.CategoryTagTrail}>
     <WordTrail items={categories} label="Categories" />
-    <WordTrail items={tags} label="Tags" />
+    { !isEmpty(tags) && <WordTrail items={tags} label="Tags" /> }
   </div>
 )
 
