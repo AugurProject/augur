@@ -1,6 +1,6 @@
 # Augur | UI dev super easy Configuration
 
-This is for UI developers already familiar with the different components but only want to work with the UI. This guide relys on two docker images, one for populated ethereum node and the other is augur-node dev. Augur-node dev docker image is built manually so it might get out of date, ping dev channel in Augur #dev channel.
+This is for UI developers already familiar with the different components but only want to work with the UI. This guide relys on two docker images, populated ethereum node and augur-node dev. Augur-node dev docker image is built every time master branch is updated, for questions ping us in Augur #dev channel.
 
 ## Requirements
 
@@ -19,6 +19,22 @@ Open up a command shell in augur directory (where you cloned the repo), This mig
     npm run docker:spin-up
 
 This command will download the needed docker files and start them up.
+
+When the command shell output looks like this your good to move on:
+
+```
+...
+node_1  | Starting websocket secure server on port 9002
+node_1  | Starting websocket server on port 9001
+node_1  | connecting to augur-node: undefined
+node_1  | connecting to ethereum-node: {"http":"http://geth:8545","ws":"ws://geth:8546"}
+node_1  | websocket ws://geth:8546 opened
+node_1  | connected to ethereum
+...
+```
+
+
+
 
 In a separate command shell start the UI
 
