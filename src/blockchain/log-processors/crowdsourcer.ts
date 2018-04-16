@@ -40,6 +40,17 @@ function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: Err
   });
 }
 
+function updateIncompleteCrowdsourcers(db: Knex, marketId: Address, callback: ErrorCallback) {
+  db("crowdsourcers").update({ completed: 0 }).where({ marketId, completed: null }).asCallback(callback);
+}
+
+function rollbackCrowdsourcerCompletion(db: Knex, crowdsourcerId: Address, marketId: Address, callback: ErrorCallback) {
+  // Set all crowdsourcers to completed: null, so long as they match the rollback's dispute crowdsourcer's fee window and market
+  db("crowdsourcers").update({ completed: null }).where({marketId}).whereIn("feeWindow",
+    (queryBuilder: QueryBuilder) => { queryBuilder.select("feeWindow").from("crowdsourcers").where({crowdsourcerId});
+  }).asCallback(callback);
+}
+
 function updateMarketReportingRoundsCompleted(db: Knex, marketId: Address, callback: ErrorCallback) {
   db("markets").update({
     reportingRoundsCompleted: db.count("* as completedRounds").from("crowdsourcers").where({ completed: 1, marketId }),
@@ -82,7 +93,7 @@ export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Aug
     if (err) return callback(err);
     augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
       log,
-      {marketId: log.market}));
+      { marketId: log.market }));
     callback(null);
   });
 }
@@ -98,7 +109,7 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
   });
   db.insert(disputeToInsert).into("disputes").asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: {amountStaked: BigNumber}): void => {
+    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: { amountStaked: BigNumber }): void => {
       if (err) return callback(err);
       const amountStaked = result.amountStaked.plus(new BigNumber(log.amountStaked, 10)).toFixed();
       db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
@@ -106,7 +117,7 @@ export function processDisputeCrowdsourcerContributionLog(db: Knex, augur: Augur
         augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
           log,
           disputeToInsert,
-          {marketId: log.market}));
+          { marketId: log.market }));
         callback(null);
       });
     });
@@ -119,14 +130,14 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
     logIndex: log.logIndex,
   }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: {amountStaked: BigNumber}): void => {
+    db("crowdsourcers").first("amountStaked").where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null, result: { amountStaked: BigNumber }): void => {
       if (err) return callback(err);
       const amountStaked = result.amountStaked.minus(new BigNumber(log.amountStaked, 10)).toFixed();
       db("crowdsourcers").update({ amountStaked }).where("crowdsourcerId", log.disputeCrowdsourcer).asCallback((err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit("DisputeCrowdsourcerContribution", Object.assign({},
           log,
-          {marketId: log.market}));
+          { marketId: log.market }));
         callback(null);
       });
     });
@@ -138,38 +149,40 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
     if (err) return callback(err);
     parallel([
       (next: AsyncCallback) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
-      (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
       (next: AsyncCallback) => updateMarketFeeWindowNext(db, augur, log.universe, log.market, next),
-  ], (err: Error|null) => {
+      (next: AsyncCallback) => updateIncompleteCrowdsourcers(db, log.market, next),
+    ], (err: Error|null) => {
       if (err) return callback(err);
-      augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
-        log,
-        {marketId: log.market}));
-      callback(null);
+      updateTentativeWinningPayout(db, log.market, (err: Error|null) => {
+        if (err) return callback(err);
+        augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
+          log,
+          { marketId: log.market }));
+        callback(null);
+      });
     });
   });
 }
 
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("crowdsourcers").update({ completed: null }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
+  rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market, (err: Error|null) => {
     if (err) return callback(err);
     parallel([
       (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
-      (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
       (next: AsyncCallback) => updateMarketReportingRoundsCompleted(db, log.market, next),
       (next: AsyncCallback) => updateMarketFeeWindowCurrent(db, log.universe, log.market, next),
+      (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
       augurEmitter.emit("DisputeCrowdsourcerCompleted", Object.assign({},
         log,
-        {marketId: log.market}));
+        { marketId: log.market }));
       callback(null);
     });
   });
 }
 
-// event DisputeCrowdsourcerRedeemed(address indexed universe, address indexed reporter, address indexed market, address disputeCrowdsourcer, uint256 amountRedeemed, uint256 repReceived, uint256 reportingFeesReceived, uint256[] payoutNumerators);
 export function processDisputeCrowdsourcerRedeemedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const redeemedToInsert = {
     reporter: log.reporter,
