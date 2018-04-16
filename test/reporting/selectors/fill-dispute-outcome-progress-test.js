@@ -20,16 +20,16 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `get remaining rep`,
     assertions: () => {
       const outcome = {
-        bondSizeCurrent: 12588500976562500000,
+        bondSizeTotal: 699361165364583300,
         completedStake: '0',
         stakeCurrent: '1699361165364583300',
-        accountStakeCurrent: '0',
+        accountStakeTotal: '0',
       }
       const disputeBond = 12588500976562500000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 13,
+        percentageComplete: 6,
         percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
@@ -40,16 +40,16 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers completed % both non and account`,
     assertions: () => {
       const outcome = {
-        bondSizeCurrent: 2098083496093750000,
+        bondSizeTotal: 4196166992187500004,
         stakeCurrent: '2098083496093750000',
-        accountStakeCurrent: '1098083496093750000',
+        accountStakeTotal: '500000000000000000',
       }
       const disputeBond = 6294250488281250000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 48,
-        percentageAccount: 52,
+        percentageComplete: 59,
+        percentageAccount: 8,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -60,16 +60,16 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers non account complete%`,
     assertions: () => {
       const outcome = {
-        bondSizeCurrent: 2098083496093750000,
-        stakeCurrent: '1098083496093750000',
+        bondSizeTotal: 2098083496093750000,
+        accountStakeTotal: '1098083496093750000',
         accountStakeCurrent: '0',
       }
       const disputeBond = 6294250488281250000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 52,
-        percentageAccount: 0,
+        percentageComplete: 16,
+        percentageAccount: 17,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -80,9 +80,9 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     assertions: () => {
       const outcome = {
         bondSizeCurrent: 6294250488281250000,
-        stakeCurrent: '349680582682291650',
+        bondSizeTotal: '349680582682291650',
         completedStake: '0',
-        accountStakeCurrent: '133333582682291650',
+        accountStakeTotal: '133333582682291650',
       }
       const disputeBond = 6294250488281250000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
@@ -100,9 +100,9 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     assertions: () => {
       const outcome = {
         bondSizeCurrent: 20000000000000000000,
-        stakeCurrent: '12000000000000000000',
+        bondSizeTotal: '12000000000000000000',
         completedStake: '0',
-        accountStakeCurrent: '2000000000000000000',
+        accountStakeTotal: '2000000000000000000',
       }
       const disputeBond = 20000000000000000000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
@@ -119,10 +119,10 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers account % complete, 50 `,
     assertions: () => {
       const outcome = {
-        bondSizeCurrent: 4000000000000000000,
-        stakeCurrent: '2000000000000000000',
+        bondSizeTotal: 0,
+        accountStakeTotal: '1000000000000000000',
         completedStake: '0',
-        accountStakeCurrent: '2000000000000000000',
+        accountStakeCurrent: '1000000000000000000',
       }
       const disputeBond = 2000000000000000000
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
@@ -139,9 +139,8 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     description: `big numbers % complete, 50 `,
     assertions: () => {
       const outcome = {
-        bondSizeCurrent: 2000000000000000000,
         completedStake: '0',
-        stakeCurrent: '1000000000000000000',
+        bondSizeTotal: '1000000000000000000',
         accountStakeCurrent: 0,
       }
       const disputeBond = 2000000000000000000
@@ -160,7 +159,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     assertions: () => {
       const outcome = {
         bondSizeCurrent: 10,
-        stakeCurrent: '7.5',
+        bondSizeTotal: '7.5',
         completedStake: '0',
         accountStakeCurrent: '0',
       }
@@ -180,7 +179,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
     assertions: () => {
       const outcome = {
         bondSizeCurrent: 10,
-        stakeCurrent: '5',
+        bondSizeTotal: '5',
         completedStake: '0',
         accountStakeCurrent: '0',
       }
@@ -222,6 +221,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const disputeBond = 10
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
+        bondSizeOfNewStake: 10,
         percentageComplete: 0,
         percentageAccount: 0,
       }
@@ -236,6 +236,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const disputeBond = 0
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
+        bondSizeOfNewStake: 0,
         percentageComplete: 0,
         percentageAccount: 0,
       }
