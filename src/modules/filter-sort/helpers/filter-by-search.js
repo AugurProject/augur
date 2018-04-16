@@ -3,7 +3,7 @@ import getValue from 'utils/get-value'
 
 // NOTE --  Currently `keys` can accomodate target's of type string and array
 // If ANY match is found, the item is included in the returned array
-export default function (search, keys, items) {
+export const filterBySearch = (search, keys) => (items) => {
   if (search == null || search === '') return null
 
   const searchArray = parseStringToArray(decodeURIComponent(search))

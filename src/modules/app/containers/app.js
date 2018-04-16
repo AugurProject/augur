@@ -13,32 +13,41 @@ import getAllMarkets from 'modules/markets/selectors/markets-all'
 import { initAugur } from 'modules/app/actions/init-augur'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { isLoading } from 'modules/app/selectors/is-loading'
+import {
+  selectBlockchainState,
+  selectConnectionState,
+  selectIsLogged,
+  selectIsMobile,
+  selectIsMobileSmall,
+  selectLoginAccountState,
+  selectModal,
+  selectUniverseState,
+  selectUrlState,
+} from 'src/select-state'
 
 const mapStateToProps = state => ({
-  url: state.url,
-  loginAccount: state.loginAccount,
-  marketsHeader: selectMarketsHeader(state),
-  portfolio: portfolio(),
-  notifications: selectNotificationsAndSeenCount(state),
-  coreStats: selectCoreStats(state),
-  isLogged: state.isLogged,
-  isMobile: state.isMobile,
-  isMobileSmall: state.isMobileSmall,
-  markets: getAllMarkets(),
-  marketsFilteredSorted: state.marketsFilteredSorted,
+  blockchain: selectBlockchainState(state),
   categories: selectCategories(state),
-  selectedCategory: state.selectedCategory,
-  modal: state.modal,
-  connection: state.connection,
-  universe: state.universe,
-  blockchain: state.blockchain,
+  connection: selectConnectionState(state),
+  coreStats: selectCoreStats(state),
   isLoading: isLoading(state.marketLoading),
+  isLogged: selectIsLogged(state),
+  isMobile: selectIsMobile(state),
+  isMobileSmall: selectIsMobileSmall(state),
+  loginAccount: selectLoginAccountState(state),
+  markets: getAllMarkets(),
+  marketsHeader: selectMarketsHeader(state),
+  modal: selectModal(state),
+  notifications: selectNotificationsAndSeenCount(state),
+  portfolio: portfolio(),
+  universe: selectUniverseState(state),
+  url: selectUrlState(state),
 })
 
 const mapDispatchToProps = dispatch => ({
+  initAugur: (history, cb) => dispatch(initAugur(history, cb)),
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
-  initAugur: (history, cb) => dispatch(initAugur(history, cb)),
   updateModal: modal => dispatch(updateModal(modal)),
 })
 
