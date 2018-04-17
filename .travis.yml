@@ -1,18 +1,43 @@
 dist: trusty
+
+# Sudo is required for docker daemon
 sudo: required
+
 language: node_js
+
+# Enable Docker
 services:
   - docker
+
+git:
+  depth: 5
+
 notifications:
   email: false
 
+# Allow building on the following branches only
+# the regular expression on the end is for TAGS because
+# when a tag is deployed, it is treated also as a branch
+# in these scripts (i.e, $TRAVIS_TAG = $TRAVIS_BRANC)
+branches:
+  only:
+  - master
+  - stable
+  - petong/travis-ci
+  - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
+
+# NodeJS Versions
+# This will automatically detect yarn support and run yarn for us
 node_js:
-  - "8"
+- '8'
 
+# Scripts that will be run during the test phase. If this phase doesn't
+# complete the deploy phase will not run
 script:
-  - npm run lint
-  - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+- npm run lint
+- istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
+# Build docker image and push
 deploy:
   provider: script
   skip_cleanup: true
@@ -21,16 +46,6 @@ deploy:
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH=stable || $TRAVIS_BRANCH=petong/travis-ci
-
-git:
-  depth: 5
-
-branches:
-  only:
-    - master
-    - stable
-    - petong/travis-ci
-    - /^v\d+\.\d+\.\d+(-\d+)?$/
 
 env:
   global:
