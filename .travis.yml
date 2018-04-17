@@ -20,22 +20,11 @@ before_script:
   - npm install
 
 script:
-  - docker pull $IMAGE_BUILD
-  - docker tag $IMAGE_BUILD $IMAGE_LATEST
   - npm run lint
   - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 jobs:
   include:
-    - stage: build
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-              docker pull $IMAGE_LATEST;
-              npm run docker:build;
-              docker tag $IMAGE_LATEST $IMAGE_BUILD;
-              docker push $IMAGE_BUILD
-      env:
-        - DOCKER_USERNAME=augurintegration
-        - secure: "gtWPYRgm/WP9UurlzyBDODGdyFMSN4nncxC2aNtCNHzucs1PKh0dY6Uj4fUMAZObCpZ4foTpUJHG8BXTWgEgxuT/m3dlTILOSXbtMdFbKuxHE5sbgxuCWhwWuECkeoAcDmG+yZLaX+xuB+sde3aduIouwSlerJvrLw4yDveTC2FVeHbudNt641EeTGFmtJds645rMzeZfyCGKZqlzF5Rz1jWUVQ9GjTU1tx8PLcQcIPxku5z5aXx8l/ZZLN/yodN/LumZYLQrI973bz1xnFJ5NMyFHRkaOIhZAQ0Nwyr1sXUwVdqKbqg2yxDifQunV0Rn//jGRNouBdcWowmsBZw29LeA0fLRt7RTKFaLgPTJ7BeP0d3ySVo+RmW0X2iJ8fB9G7G8cjNujCrEseMaIuYRPeA4dHW8ggC0ax0Knl50dsCOxrjzh46yyc1FT8gZq/TJWdTM1v3PjmS497Y76gyQNe6xAmX8xtYd4DeeV3YaC2Vm1j2HRZCODuOdWCCX5aZ9+vUgs6/5IsDelIeyOnMeeDjCwvWzd9CTeC0u3TMgSRkKzd87BEtjI5gL5mhImnDSZgXh5XvLQQAsWzLpZTns0K/L3v/h8iZYAei8VXmKq+QAJ7Nqs7mNoU6N6j4r1CT0W315wid/thd/fawUWnFlE/vuz3GKRzff723XN63e/E="
     - stage: deploy
       script: skip
       env:
@@ -46,12 +35,8 @@ jobs:
         provider: script
         skip_cleanup: true
         script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-                docker pull $IMAGE_BUILD;
-                docker tag $IMAGE_BUILD $IMAGE_LATEST;
-                docker push $IMAGE_LATEST
-      if: type = push
+                npm run docker:release:stable
 stages:
-  - build
   - test
   - name: deploy
     if: branch = stable
