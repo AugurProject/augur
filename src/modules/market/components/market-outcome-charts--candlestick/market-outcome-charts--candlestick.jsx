@@ -5,6 +5,7 @@ import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
 import { isEqual } from 'lodash'
+import { createBigNumber } from 'utils/create-big-number'
 
 import findPeriodSeriesBounds from 'modules/market/helpers/find-period-series-bounds'
 import DerivePeriodTimeSeries from 'modules/market/workers/derive-period-time-series.worker'
@@ -145,9 +146,22 @@ export default class MarketOutcomeCandlestick extends Component {
     })
 
     derivePeriodTimeSeriesWorker.onmessage = (event) => {
+      let periodTimeSeries = event.data
+      if (event.data.length !== 0) {
+        periodTimeSeries = periodTimeSeries.reduce((p, period) => {
+          const currentPeriod = period
+
+          Object.entries(period).forEach(([key, value]) => {
+            if (key !== 'period') currentPeriod[key] = createBigNumber(value)
+          })
+
+          return [...p, currentPeriod]
+        }, [])
+      }
+
       this.setState({
-        periodTimeSeries: event.data,
-        outcomeBounds: findPeriodSeriesBounds(event.data || []),
+        outcomeBounds: findPeriodSeriesBounds(periodTimeSeries),
+        periodTimeSeries,
       })
 
       derivePeriodTimeSeriesWorker.terminate()
@@ -171,90 +185,90 @@ export default class MarketOutcomeCandlestick extends Component {
     } = options
 
     if (this.drawContainer) {
-      const drawParams = determineDrawParams({
-        drawContainer: this.drawContainer,
-        sharedChartMargins,
-        outcomeBounds,
-        periodTimeSeries,
-        orderBookKeys,
-        fixedPrecision,
-        marketMin,
-        marketMax,
-      })
+      // const drawParams = determineDrawParams({
+      //   drawContainer: this.drawContainer,
+      //   sharedChartMargins,
+      //   outcomeBounds,
+      //   periodTimeSeries,
+      //   orderBookKeys,
+      //   fixedPrecision,
+      //   marketMin,
+      //   marketMax,
+      // })
+      //
+      // // Faux DOM
+      // //  Tick Element (Fixed)
+      // const candleTicksContainer = new ReactFauxDOM.Element('div')
+      // candleTicksContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__ticks-container']}`)
+      // candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
+      // //  Chart Element (Scrollable)
+      // const candleChartContainer = new ReactFauxDOM.Element('div')
+      // candleChartContainer.setAttribute('key', 'candlestick_chart_container')
+      // candleChartContainer.setAttribute('id', 'candlestick_chart_container')
+      // candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
+      // candleChartContainer.setAttribute('style', {
+      //   width: `${drawParams.containerWidth - drawParams.chartDim.left}px`,
+      //   left: drawParams.chartDim.left,
+      // })
+      //
+      // const candleTicks = d3.select(candleTicksContainer)
+      //   .append('svg')
+      //   .attr('width', drawParams.containerWidth)
+      //   .attr('height', drawParams.containerHeight)
+      // const candleChart = d3.select(candleChartContainer)
+      //   .append('svg')
+      //   .attr('id', 'candlestick_chart')
+      //   .attr('height', drawParams.containerHeight)
+      //   .attr('width', drawParams.drawableWidth)
 
-      // Faux DOM
-      //  Tick Element (Fixed)
-      const candleTicksContainer = new ReactFauxDOM.Element('div')
-      candleTicksContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__ticks-container']}`)
-      candleTicksContainer.setAttribute('key', 'candlestick_ticks_container')
-      //  Chart Element (Scrollable)
-      const candleChartContainer = new ReactFauxDOM.Element('div')
-      candleChartContainer.setAttribute('key', 'candlestick_chart_container')
-      candleChartContainer.setAttribute('id', 'candlestick_chart_container')
-      candleChartContainer.setAttribute('class', `${Styles['MarketOutcomeCandlestick__chart-container']}`)
-      candleChartContainer.setAttribute('style', {
-        width: `${drawParams.containerWidth - drawParams.chartDim.left}px`,
-        left: drawParams.chartDim.left,
-      })
-
-      const candleTicks = d3.select(candleTicksContainer)
-        .append('svg')
-        .attr('width', drawParams.containerWidth)
-        .attr('height', drawParams.containerHeight)
-      const candleChart = d3.select(candleChartContainer)
-        .append('svg')
-        .attr('id', 'candlestick_chart')
-        .attr('height', drawParams.containerHeight)
-        .attr('width', drawParams.drawableWidth)
-
-      drawTicks({
-        orderBookKeys,
-        periodTimeSeries,
-        candleTicks,
-        drawParams,
-        fixedPrecision,
-      })
-
-      drawCandles({
-        periodTimeSeries,
-        candleChart,
-        drawParams,
-      })
-
-      drawVolume({
-        fixedPrecision,
-        periodTimeSeries,
-        candleChart,
-        drawParams,
-      })
-
-      drawXAxisLabels({
-        periodTimeSeries,
-        candleChart,
-        drawParams,
-      })
-
-      drawCrosshairs({
-        candleTicks,
-      })
-
-      attachHoverClickHandlers({
-        updateHoveredPeriod,
-        updateHoveredPrice,
-        periodTimeSeries,
-        fixedPrecision,
-        candleChart,
-        drawParams,
-        updateSeletedOrderProperties,
-      })
-
-      // Set react components to state for render
-      this.setState({
-        yScale: drawParams.yScale,
-        chartWidth: drawParams.containerWidth,
-        candleTicksContainer: candleTicksContainer.toReact(),
-        candleChartContainer: candleChartContainer.toReact(),
-      })
+      // drawTicks({
+      //   orderBookKeys,
+      //   periodTimeSeries,
+      //   candleTicks,
+      //   drawParams,
+      //   fixedPrecision,
+      // })
+      //
+      // drawCandles({
+      //   periodTimeSeries,
+      //   candleChart,
+      //   drawParams,
+      // })
+      //
+      // drawVolume({
+      //   fixedPrecision,
+      //   periodTimeSeries,
+      //   candleChart,
+      //   drawParams,
+      // })
+      //
+      // drawXAxisLabels({
+      //   periodTimeSeries,
+      //   candleChart,
+      //   drawParams,
+      // })
+      //
+      // drawCrosshairs({
+      //   candleTicks,
+      // })
+      //
+      // attachHoverClickHandlers({
+      //   updateHoveredPeriod,
+      //   updateHoveredPrice,
+      //   periodTimeSeries,
+      //   fixedPrecision,
+      //   candleChart,
+      //   drawParams,
+      //   updateSeletedOrderProperties,
+      // })
+      //
+      // // Set react components to state for render
+      // this.setState({
+      //   yScale: drawParams.yScale,
+      //   chartWidth: drawParams.containerWidth,
+      //   candleTicksContainer: candleTicksContainer.toReact(),
+      //   candleChartContainer: candleChartContainer.toReact(),
+      // })
     }
   }
 
@@ -358,16 +372,14 @@ function determineDrawParams(options) {
   //  Y
   // Determine bounding diff
   // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  let boundDiff = 0
-  if (orderBookKeys.min != null) {
-    const maxDiff = Math.abs(orderBookKeys.mid - (outcomeBounds.max || 0))
-    const minDiff = Math.abs(orderBookKeys.mid - (outcomeBounds.min || 0))
-    boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
-  }
+  let boundDiff = '0'
+  const maxDiff = createBigNumber(orderBookKeys.mid).minus(createBigNumber(outcomeBounds.max)).abs()
+  const minDiff = createBigNumber(orderBookKeys.mid).minus(createBigNumber(outcomeBounds.min)).abs()
+  boundDiff = (maxDiff.gt(minDiff) ? maxDiff : minDiff).toString()
 
   const yDomain = [
-    orderBookKeys.mid == null ? Number(marketMin.toNumber().toFixed(fixedPrecision)) : Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
-    orderBookKeys.mid == null ? Number(marketMax.toNumber().toFixed(fixedPrecision)) : Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
+    Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
+    Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
   ]
 
   // Scale
@@ -421,53 +433,53 @@ function drawTicks(options) {
     .attr('y1', drawParams.containerHeight - drawParams.chartDim.bottom)
     .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom)
 
-  //  Midpoint
-  //    Conditional Tick Line
-  if (orderBookKeys.mid == null) {
-    candleTicks.append('line')
-      .attr('class', 'tick-line tick-line--midpoint')
-      .attr('x1', drawParams.chartDim.tickOffset)
-      .attr('x2', drawParams.containerWidth)
-      .attr('y1', () => drawParams.yScale(orderBookKeys.mid))
-      .attr('y2', () => drawParams.yScale(orderBookKeys.mid))
-  }
+  // //  Midpoint
+  // //    Conditional Tick Line
+  // candleTicks.append('line')
+  //   .attr('class', 'tick-line tick-line--midpoint')
+  //   .attr('x1', drawParams.chartDim.tickOffset)
+  //   .attr('x2', drawParams.containerWidth)
+  //   .attr('y1', () => drawParams.yScale(orderBookKeys.mid))
+  //   .attr('y2', () => drawParams.yScale(orderBookKeys.mid))
+
+  // console.log('orderBookKeys candle -- ', orderBookKeys)
   //    Label
-  candleTicks.append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', drawParams.yScale(orderBookKeys.mid))
-    .attr('dx', 0)
-    .attr('dy', drawParams.chartDim.tickOffset)
-    .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+  // candleTicks.append('text')
+  //   .attr('class', 'tick-value')
+  //   .attr('x', 0)
+  //   .attr('y', drawParams.yScale(orderBookKeys.mid))
+  //   .attr('dx', 0)
+  //   .attr('dy', drawParams.chartDim.tickOffset)
+  //   .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
 
   //  Ticks
-  const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
-    if (i === 0) return d + (drawParams.boundDiff / 2)
-    return d - (drawParams.boundDiff / 2)
-  })
+  // const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
+  //   if (i === 0) return d + (drawParams.boundDiff / 2)
+  //   return d - (drawParams.boundDiff / 2)
+  // })
+  //
+  // const yTicks = candleTicks.append('g')
+  //   .attr('id', 'depth_y_ticks')
 
-  const yTicks = candleTicks.append('g')
-    .attr('id', 'depth_y_ticks')
-
-  yTicks.selectAll('line')
-    .data(offsetTicks)
-    .enter()
-    .append('line')
-    .attr('class', 'tick-line')
-    .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth)
-    .attr('y1', d => drawParams.yScale(d))
-    .attr('y2', d => drawParams.yScale(d))
-  yTicks.selectAll('text')
-    .data(offsetTicks)
-    .enter()
-    .append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', d => drawParams.yScale(d))
-    .attr('dx', 0)
-    .attr('dy', drawParams.chartDim.tickOffset)
-    .text(d => (isNaN(d) ? '' : d.toFixed(fixedPrecision)))
+  // yTicks.selectAll('line')
+  //   .data(offsetTicks)
+  //   .enter()
+  //   .append('line')
+  //   .attr('class', 'tick-line')
+  //   .attr('x1', 0)
+  //   .attr('x2', drawParams.containerWidth)
+  //   .attr('y1', d => drawParams.yScale(d))
+  //   .attr('y2', d => drawParams.yScale(d))
+  // yTicks.selectAll('text')
+  //   .data(offsetTicks)
+  //   .enter()
+  //   .append('text')
+  //   .attr('class', 'tick-value')
+  //   .attr('x', 0)
+  //   .attr('y', d => drawParams.yScale(d))
+  //   .attr('dx', 0)
+  //   .attr('dy', drawParams.chartDim.tickOffset)
+  //   .text(d => (isNaN(d) ? '' : d.toFixed(fixedPrecision)))
 }
 
 function drawCandles(options) {
@@ -477,24 +489,24 @@ function drawCandles(options) {
     drawParams,
   } = options
 
-  candleChart.selectAll('rect.candle')
-    .data(periodTimeSeries)
-    .enter().append('rect')
-    .attr('x', d => drawParams.xScale(d.period))
-    .attr('y', d => drawParams.yScale(d3.max([d.open, d.close])))
-    .attr('height', d => drawParams.yScale(d3.min([d.open, d.close])) - drawParams.yScale(d3.max([d.open, d.close])))
-    .attr('width', drawParams.candleDim.width)
-    .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
-
-  candleChart.selectAll('line.stem')
-    .data(periodTimeSeries)
-    .enter().append('line')
-    .attr('class', 'stem')
-    .attr('x1', d => drawParams.xScale(d.period) + (drawParams.candleDim.width / 2))
-    .attr('x2', d => drawParams.xScale(d.period) + (drawParams.candleDim.width / 2))
-    .attr('y1', d => drawParams.yScale(d.high))
-    .attr('y2', d => drawParams.yScale(d.low))
-    .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  // candleChart.selectAll('rect.candle')
+  //   .data(periodTimeSeries)
+  //   .enter().append('rect')
+  //   .attr('x', d => drawParams.xScale(d.period))
+  //   .attr('y', d => drawParams.yScale(d3.max([d.open, d.close])))
+  //   .attr('height', d => drawParams.yScale(d3.min([d.open, d.close])) - drawParams.yScale(d3.max([d.open, d.close])))
+  //   .attr('width', drawParams.candleDim.width)
+  //   .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  //
+  // candleChart.selectAll('line.stem')
+  //   .data(periodTimeSeries)
+  //   .enter().append('line')
+  //   .attr('class', 'stem')
+  //   .attr('x1', d => drawParams.xScale(d.period) + (drawParams.candleDim.width / 2))
+  //   .attr('x2', d => drawParams.xScale(d.period) + (drawParams.candleDim.width / 2))
+  //   .attr('y1', d => drawParams.yScale(d.high))
+  //   .attr('y2', d => drawParams.yScale(d.low))
+  //   .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 }
 
 function drawVolume(options) {
@@ -510,14 +522,14 @@ function drawVolume(options) {
     .domain(d3.extent(yVolumeDomain))
     .range([drawParams.containerHeight - drawParams.chartDim.bottom, drawParams.chartDim.top + ((drawParams.containerHeight - drawParams.chartDim.bottom) * 0.66)])
 
-  candleChart.selectAll('rect.volume')
-    .data(periodTimeSeries)
-    .enter().append('rect')
-    .attr('x', d => drawParams.xScale(d.period))
-    .attr('y', d => yVolumeScale(d.volume))
-    .attr('height', d => drawParams.containerHeight - drawParams.chartDim.bottom - yVolumeScale(d.volume))
-    .attr('width', d => drawParams.candleDim.width)
-    .attr('class', 'period-volume')
+  // candleChart.selectAll('rect.volume')
+  //   .data(periodTimeSeries)
+  //   .enter().append('rect')
+  //   .attr('x', d => drawParams.xScale(d.period))
+  //   .attr('y', d => yVolumeScale(d.volume))
+  //   .attr('height', d => drawParams.containerHeight - drawParams.chartDim.bottom - yVolumeScale(d.volume))
+  //   .attr('width', d => drawParams.candleDim.width)
+  //   .attr('class', 'period-volume')
 }
 
 function drawXAxisLabels(options) {
