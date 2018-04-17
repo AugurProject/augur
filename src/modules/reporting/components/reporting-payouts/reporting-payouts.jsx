@@ -7,10 +7,10 @@ import Styles from 'modules/reporting/components/reporting-payouts/reporting-pay
 import TooltipStyles from 'modules/common/less/tooltip'
 
 const Outcome = ({ className, outcome }) => {
-  const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeOfNewStake, { decimals: 4, roundUp: true }).formatted
-  const totalOutcomeStake = formatAttoRep(outcome.bondSizeTotal, { decimals: 4, roundUp: true }).formatted
-  const currentStakeRep = formatAttoRep(outcome.accountStakeTotal, { decimals: 4, roundUp: true })
-  const currentStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
+  const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
+  const currentOutcomeStake = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true }).formatted
+  const currentStakeRep = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
+  const currentAccountStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
   const outcomeName = outcome.name === 'Indeterminate' ? 'Invalid' : outcome.name
 
   return (
@@ -34,7 +34,7 @@ const Outcome = ({ className, outcome }) => {
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage']} style={{ width: String(outcome.percentageComplete) + '%' }} />
             </div>
-            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentStake}</span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentAccountStake}</span>
             <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
@@ -45,7 +45,7 @@ const Outcome = ({ className, outcome }) => {
             offset={{ left: 70, top: 6 }}
             type="light"
           >
-            <p>{totalOutcomeStake} REP Staked
+            <p>{currentOutcomeStake} REP Staked
             </p>
           </ReactTooltip>
         </div>

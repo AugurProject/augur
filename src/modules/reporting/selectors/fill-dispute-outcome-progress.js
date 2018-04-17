@@ -6,15 +6,15 @@ export default function (disputeBond, outcome) {
   outcome.percentageAccount = 0
 
   const {
-    bondSizeTotal,
-    accountStakeTotal,
+    bondSizeCurrent,
+    stakeCurrent,
+    accountStakeCurrent,
     tentativeWinning,
   } = outcome
 
   if (tentativeWinning) return outcome
 
-  outcome.percentageComplete = calculateNonAccountPercentage(disputeBond, bondSizeTotal || 0, accountStakeTotal || 0)
-  outcome.percentageAccount = calculatePercentage(disputeBond, accountStakeTotal || 0)
-  outcome.bondSizeOfNewStake = disputeBond
+  outcome.percentageComplete = calculateNonAccountPercentage(bondSizeCurrent, stakeCurrent || 0, accountStakeCurrent || 0)
+  outcome.percentageAccount = calculatePercentage(bondSizeCurrent, accountStakeCurrent || 0)
   return outcome
 }
