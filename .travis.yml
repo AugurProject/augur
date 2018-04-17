@@ -9,9 +9,6 @@ notifications:
 node_js:
   - "8"
 
-before_script:
-  - npm install
-
 script:
   - npm run lint
   - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
@@ -32,7 +29,7 @@ jobs:
 stages:
   - test
   - name: deploy
-    if: branch = stable or branch = petong/travis-ci
+    if: branch = stable or branch = 'petong/travis-ci'
 git:
   depth: 5
 branches:
