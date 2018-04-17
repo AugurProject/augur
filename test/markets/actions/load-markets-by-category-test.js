@@ -21,7 +21,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
 
       const mockLoadMarketsInfo = {}
 
-      mockLoadMarketsInfo.loadMarketsInfo = sinon.stub().returns(() => {})
+      mockLoadMarketsInfo.loadMarketsInfoIfNotLoaded = sinon.stub().returns(() => {})
 
       AugurJS.augur.markets.getMarkets = sinon.stub()
       if (t.toTest === 'err') AugurJS.augur.markets.getMarkets.yields('failed with err', null)
@@ -31,12 +31,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-category', {
         '../../../services/augurjs': AugurJS,
-        './load-markets-info': mockLoadMarketsInfo,
+        './load-markets-info-if-not-loaded': mockLoadMarketsInfo,
       })
 
       store.dispatch(action.loadMarketsByCategory())
 
-      t.assertions(store.getActions(), mockLoadMarketsInfo.loadMarketsInfo)
+      t.assertions(store.getActions(), mockLoadMarketsInfo.loadMarketsInfoIfNotLoaded)
     })
   }
 
@@ -81,7 +81,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
   test({
     description: 'should dispatch the expected actions with no error + array of returned marketIds',
     toTest: 'array',
-    assertions: (actions, loadMarketsInfo) => {
+    assertions: (actions, loadMarketsInfoIfNotLoaded) => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
@@ -90,14 +90,14 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       ]
 
       assert(actions, expected, 'returned array was not handled as expected')
-      assert.isTrue(loadMarketsInfo.calledOnce)
+      assert.isTrue(loadMarketsInfoIfNotLoaded.calledOnce)
     },
   })
 
   test({
     description: 'should dispatch the expected actions with no error + an empty array of marketIds',
     toTest: 'empty-array',
-    assertions: (actions, loadMarketsInfo) => {
+    assertions: (actions, loadMarketsInfoIfNotLoaded) => {
       const expected = [
         {
           type: 'UPDATE_HAS_LOADED_CATEGORY',
@@ -106,7 +106,7 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
       ]
 
       assert(actions, expected, 'empty array was not handled as expected')
-      assert.isFalse(loadMarketsInfo.called)
+      assert.isFalse(loadMarketsInfoIfNotLoaded.called)
     },
   })
 })
