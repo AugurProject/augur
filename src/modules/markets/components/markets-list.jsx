@@ -17,7 +17,7 @@ export default class MarketsList extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
@@ -42,12 +42,12 @@ export default class MarketsList extends Component {
 
     this.setSegment = this.setSegment.bind(this)
     this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this)
-    this.loadMarketsInfo = debounce(this.loadMarketsInfo.bind(this))
+    this.loadMarketsInfoIfNotLoaded = debounce(this.loadMarketsInfoIfNotLoaded.bind(this))
   }
 
   componentWillMount() {
     const { filteredMarkets } = this.props
-    this.loadMarketsInfo(filteredMarkets)
+    this.loadMarketsInfoIfNotLoaded(filteredMarkets)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -60,7 +60,7 @@ export default class MarketsList extends Component {
       this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
     }
 
-    if (!isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)) this.loadMarketsInfo(nextState.marketIdsMissingInfo)
+    if (!isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)) this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo)
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -81,9 +81,9 @@ export default class MarketsList extends Component {
   }
 
   // debounced call
-  loadMarketsInfo() {
-    const { loadMarketsInfo } = this.props
-    loadMarketsInfo(this.state.marketIdsMissingInfo)
+  loadMarketsInfoIfNotLoaded() {
+    const { loadMarketsInfoIfNotLoaded } = this.props
+    loadMarketsInfoIfNotLoaded(this.state.marketIdsMissingInfo)
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons

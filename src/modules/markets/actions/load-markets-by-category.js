@@ -1,6 +1,6 @@
 import { augur } from 'services/augurjs'
 import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 
 export const loadMarketsByCategory = category => (dispatch, getState) => {
@@ -23,7 +23,7 @@ export const loadMarketsByCategory = category => (dispatch, getState) => {
       dispatch(updateHasLoadedCategory({ [category]: true }))
       dispatch(clearMarketsFilteredSorted())
       dispatch(updateMarketsFilteredSorted(marketIds))
-      dispatch(loadMarketsInfo(marketIds))
+      dispatch(loadMarketsInfoIfNotLoaded(marketIds))
     }
   })
 }
