@@ -14,11 +14,17 @@ You'll need to clone augur UI only:
 
 ## Running docker compose
 
-Open up a command shell in augur directory (where you cloned the repo), This might take awhile because it's downloading images. After the docker images are downloaded it's a quick start.
+Open up a command shell in augur directory (where you cloned the repo). Then type:
+
+    npm install
+    
+followed by: 
 
     npm run docker:spin-up
 
-This command will download the needed docker files and start them up.
+This command will download the needed docker files and start them up. (This might take awhile.) After the docker images are downloaded it's a quick start.
+
+
 
 When the command shell output looks like this your good to move on:
 
