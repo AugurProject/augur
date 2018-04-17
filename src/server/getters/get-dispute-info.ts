@@ -89,7 +89,13 @@ function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|
     .select(["crowdsourcers.marketId", "crowdsourcers.payoutId", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .whereIn("marketId", marketIds)
-    .where("balances.owner", account || "");
+    .where("balances.owner", account || "")
+    .union((builder: QueryBuilder) => {
+      return builder
+        .from("initial_reports")
+        .select("marketId", "payoutId", "amountStaked")
+        .whereIn("marketId", marketIds);
+    });
 
   if (completed) {
     query = query.where("crowdsourcers.completed", 1);
