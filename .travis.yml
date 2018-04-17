@@ -28,7 +28,7 @@ jobs:
 stages:
   - test
   - name: deploy
-    if: branch = stable or branch = petong/travis-ci
+    if: branch = stable or branch = 'petong/travis-ci'
 git:
   depth: 5
 branches:
