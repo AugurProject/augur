@@ -14,11 +14,12 @@ script:
   - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 deploy:
-  provider: script
-  script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+  - provider: script
+    script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
           npm run docker:release:stable
-  on:
-    branch: 'petong/travis-ci'
+    on:
+      branch: 'petong/travis-ci'
+      condition: branch = 'stable' or branch = 'petong/travis-ci'
 
 git:
   depth: 5
