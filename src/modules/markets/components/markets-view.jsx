@@ -1,154 +1,163 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import MarketsHeader from 'modules/markets/components/markets-header';
-import MarketsList from 'modules/markets/components/markets-list';
-import Branch from 'modules/branch/components/branch';
+import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
+import MarketsList from 'modules/markets/components/markets-list'
 
-import getValue from 'utils/get-value';
-import parseQuery from 'modules/app/helpers/parse-query';
-import isEqual from 'lodash/isEqual';
+// import getValue from 'utils/get-value'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import isEqual from 'lodash/isEqual'
 
-import parsePath from 'modules/app/helpers/parse-path';
-import makePath from 'modules/app/helpers/make-path';
+// import parsePath from 'modules/routes/helpers/parse-path'
+// import makePath from 'modules/routes/helpers/make-path'
 
-import { FAVORITES, MARKETS } from 'modules/app/constants/views';
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
+// import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
+import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
+import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
+    filteredMarkets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
-    hasLoadedTopic: PropTypes.object.isRequired,
+    hasLoadedCategory: PropTypes.object.isRequired,
     loadMarkets: PropTypes.func.isRequired,
-    loadMarketsByTopic: PropTypes.func.isRequired,
+    loadMarketsByCategory: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired
-    // filterSort: PropTypes.object,
-    // marketsHeader: PropTypes.object,
-    // pagination: PropTypes.object,
-    // keywords: PropTypes.string,
-    // onChangeKeywords: PropTypes.func,
-    // branch: PropTypes.object,
-    // scalarShareDenomination: PropTypes.object,
-    // location: PropTypes.object.isRequired,
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
-      filteredMarkets: []
-    };
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool,
   }
 
   componentWillMount() {
-    this.loadMarkets({
-      canLoadMarkets: this.props.canLoadMarkets,
-      location: this.props.location,
-      hasLoadedTopic: this.props.hasLoadedTopic,
-      hasLoadedMarkets: this.props.hasLoadedMarkets,
-      loadMarkets: this.props.loadMarkets,
-      loadMarketsByTopic: this.props.loadMarketsByTopic
-    });
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      loadMarkets,
+      loadMarketsByCategory,
+      location,
+    } = this.props
+    loadMarkets({
+      canLoadMarkets,
+      location,
+      loadMarkets,
+      loadMarketsByCategory,
+      hasLoadedMarkets,
+      hasLoadedCategory,
+    })
   }
 
   componentWillReceiveProps(nextProps) {
+    const {
+      canLoadMarkets,
+      hasLoadedCategory,
+      hasLoadedMarkets,
+      location,
+    } = this.props
     if (
-      (this.props.canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
-      this.props.location !== nextProps.location ||
-      this.props.hasLoadedTopic !== nextProps.hasLoadedTopic ||
-      (this.props.hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
+      (canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
+      location !== nextProps.location ||
+      !isEqual(hasLoadedCategory, nextProps.hasLoadedCategory) ||
+      (hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
     ) {
-      this.loadMarkets({
+      loadMarkets({
         canLoadMarkets: nextProps.canLoadMarkets,
         location: nextProps.location,
-        hasLoadedTopic: nextProps.hasLoadedTopic,
-        hasLoadedMarkets: nextProps.hasLoadedMarkets,
         loadMarkets: nextProps.loadMarkets,
-        loadMarketsByTopic: nextProps.loadMarketsByTopic
-      });
-    }
-
-    if (
-      getValue(this.props, 'loginAccount.rep.value') !== getValue(nextProps, 'loginAccount.rep.value') ||
-      getValue(this.props, 'branch.id') !== getValue(nextProps, 'branch.id')
-    ) {
-      this.setState({
-        canDisplayBranchInfo: !!(getValue(nextProps, 'loginAccount.rep.value') && getValue(nextProps, 'branch.id'))
-      });
+        loadMarketsByCategory: nextProps.loadMarketsByCategory,
+        hasLoadedMarkets,
+        hasLoadedCategory,
+      })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
-      checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history);
+    const newTags = decodeURIComponent(parseQuery(nextProps.location.search)[TAGS_PARAM_NAME] || '')
+    if (newTags.length) {
+      const marketsFilteredByTags = filterByTags(newTags.split(QUERY_VALUE_DELIMITER), nextProps.markets)
+      if (!isEqual(marketsFilteredByTags, nextProps.filteredMarkets)) {
+        this.props.updateMarketsFilteredSorted(marketsFilteredByTags)
+      }
     }
+    // }
+    // if (!isEqual(this.state.markets, nextState.markets)) {
+    //   this.props.updateMarketsFilteredSorted(nextState.markets)
+    //   checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
+    // }
   }
 
   componentWillUnmount() {
-    this.props.clearMarketsFilteredSorted();
-  }
-
-  loadMarkets(options) {
-    if (options.canLoadMarkets) {
-      const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME];
-
-      if (topic && !this.props.hasLoadedTopic[topic]) {
-        options.loadMarketsByTopic(topic);
-      } else if (!topic && !this.props.hasLoadedMarkets) {
-        options.loadMarkets();
-      }
-    }
+    const { clearMarketsFilteredSorted } = this.props
+    clearMarketsFilteredSorted()
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
-
+    const {
+      filteredMarkets,
+      history,
+      isLogged,
+      isMobile,
+      loadMarketsInfoIfNotLoaded,
+      location,
+      markets,
+      toggleFavorite,
+    } = this.props
     return (
       <section id="markets_view">
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {this.state.shouldDisplayBranchInfo &&
-          <Branch {...p.branch} />
-        }
         <MarketsHeader
-          isLogged={p.isLogged}
-          location={p.location}
-          markets={p.markets}
-          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
+          isLogged={isLogged}
+          location={location}
+          markets={markets}
         />
         <MarketsList
-          isLogged={p.isLogged}
-          markets={p.markets}
-          filteredMarkets={s.filteredMarkets}
-          location={p.location}
-          history={p.history}
-          scalarShareDenomination={p.scalarShareDenomination}
-          toggleFavorite={p.toggleFavorite}
-          loadMarketsInfo={p.loadMarketsInfo}
+          isLogged={isLogged}
+          markets={markets}
+          filteredMarkets={filteredMarkets}
+          location={location}
+          history={history}
+          toggleFavorite={toggleFavorite}
+          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
+          linkType={TYPE_TRADE}
+          isMobile={isMobile}
         />
       </section>
-    );
+    )
   }
 }
 
-function checkFavoriteMarketsCount(filteredMarkets, location, history) {
-  const path = parsePath(location.pathname)[0];
-
-  if (path === FAVORITES && !filteredMarkets.length) {
-    history.push(makePath(MARKETS));
+function loadMarkets(options) {
+  if (options.canLoadMarkets) {
+    const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
+    const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
+    const tag = parseQuery(options.location.search)[TAGS_PARAM_NAME]
+    // Expected behavior is to load a specific category if one is present
+    // else, if we aren't searching (which is a local market data search)
+    // then load markets (loads all markets)
+    if (category && (!tag || !options.hasLoadedCategory[category])) {
+      options.loadMarketsByCategory(category)
+    } else if (!search && !tag) {
+      options.loadMarkets()
+    }
   }
 }
+
+// function checkFavoriteMarketsCount(filteredMarkets, location, history) {
+//   const path = parsePath(location.pathname)[0]
+//
+//   if (path === FAVORITES && !filteredMarkets.length) {
+//     history.push(makePath(MARKETS))
+//   }
+// }

@@ -5,12 +5,12 @@ import {
   NEW_MARKET_EXPIRY_SOURCE,
   NEW_MARKET_END_DATE,
   NEW_MARKET_DETAILS,
-  NEW_MARKET_TOPIC,
-  NEW_MARKET_KEYWORDS,
+  NEW_MARKET_CATEGORY,
+  NEW_MARKET_TAGS,
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
-} from 'modules/create-market/constants/new-market-creation-steps';
+  NEW_MARKET_REVIEW,
+} from 'modules/create-market/constants/new-market-creation-steps'
 
 // Rearrange the array to change market creation progression
 export default [
@@ -20,9 +20,9 @@ export default [
   NEW_MARKET_EXPIRY_SOURCE,
   NEW_MARKET_END_DATE,
   NEW_MARKET_DETAILS,
-  NEW_MARKET_TOPIC,
-  NEW_MARKET_KEYWORDS,
+  NEW_MARKET_CATEGORY,
+  NEW_MARKET_TAGS,
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
-];
+  NEW_MARKET_REVIEW,
+]

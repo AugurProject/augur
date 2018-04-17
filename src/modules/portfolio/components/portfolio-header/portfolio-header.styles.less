@@ -1,0 +1,58 @@
+@import (reference) '~assets/styles/shared';
+
+.PortfolioHeader {
+  color: white;
+  padding: 4.5rem 2rem 2rem;
+}
+
+.PortfolioHeader__export {
+  &:extend(.caps--small);
+
+  align-items: flex-end;
+  color: @color-lightgray;
+  display: flex;
+  font-weight: 500;
+  padding-bottom: 0.3rem;
+  white-space: nowrap;
+
+  > svg {
+    margin-right: 0.3rem;
+    width: 1rem;
+  }
+}
+
+.PortfolioHeader__graph {
+  position: relative;
+  top: -0.75rem;
+}
+
+.PortfolioHeader__header {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.PortfolioHeader__title {
+  font-weight: 500;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+@media @breakpoint-mobile {
+  .PortfolioHeader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 3.25rem;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .PortfolioHeader__export {
+    margin-top: 0.5rem;
+  }
+
+  .PortfolioHeader__header {
+    display: block;
+  }
+}

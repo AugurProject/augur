@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Input from 'modules/common/components/input';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Input from 'modules/common/components/input/input'
 
 const MarketsSearch = p => (
   <article className={`search-input ${p.className}`} >
@@ -8,16 +8,16 @@ const MarketsSearch = p => (
       isSearch
       isClearable
       placeholder="Search Markets"
-      value={p.keywords}
-      onChange={p.onChangeKeywords}
+      value={p.tags}
+      onChange={p.onChangeTags}
     />
   </article>
-);
+)
 
 MarketsSearch.propTypes = {
   className: PropTypes.string,
-  keywords: PropTypes.string,
-  onChangeKeywords: PropTypes.func
-};
+  tags: PropTypes.string,
+  onChangeTags: PropTypes.func,
+}
 
-export default MarketsSearch;
+export default MarketsSearch

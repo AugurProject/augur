@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketsHeader {
+  font-size: 1rem;
+  padding: 2.5rem 2rem 1.5rem;
+}
+
+.MarketsHeader__heading {
+  &:extend(.h1--heavy);
+
+  color: @color-white;
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.MarketsHeader__subheading {
+  &:extend(.caps--large);
+
+  color: @color-white;
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.MarketsHeader__search {
+  margin-bottom: 3.875em;
+}
+
+.MarketsHeader__filters {
+  align-self: flex-end;
+  display: flex;
+}
+
+.MarketsHeader__wrapper {
+  align-items: center;
+  display: flex;
+  width: 100%;
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketsHeader {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .MarketsHeader__wrapper {
+    display: block;
+  }
+}

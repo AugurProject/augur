@@ -1,6 +1,7 @@
-import BigNumber from 'bignumber.js';
+import { createBigNumber } from 'utils/create-big-number'
 
-export const ZERO = new BigNumber(0);
-export const ONE = new BigNumber(1, 10);
-export const TWO = new BigNumber(2, 10);
-export const TEN = new BigNumber(10, 10);
+export const ZERO = createBigNumber(0)
+export const ONE = createBigNumber(1, 10)
+export const TWO = createBigNumber(2, 10)
+export const TEN = createBigNumber(10, 10)
+export const TEN_TO_THE_EIGHTEENTH_POWER = TEN.exponentiatedBy(18)

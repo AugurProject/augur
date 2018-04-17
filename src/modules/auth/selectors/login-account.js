@@ -1,13 +1,13 @@
-import { createSelector } from 'reselect';
-import { selectLoginAccountState, selectAccountNameState } from 'src/select-state';
-import { formatRep, formatEtherTokens, formatEther } from 'utils/format-number';
-import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
-import store from 'src/store';
+import { createSelector } from 'reselect'
+import { selectLoginAccountState, selectAccountNameState } from 'src/select-state'
+import { formatRep, formatEther } from 'utils/format-number'
+import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link'
+import store from 'src/store'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default function () {
-  return selectLoginAccount(store.getState());
+  return selectLoginAccount(store.getState())
 }
 
 export const selectLoginAccount = createSelector(
@@ -19,6 +19,5 @@ export const selectLoginAccount = createSelector(
     accountName,
     rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
     eth: formatEther(loginAccount.eth, { zeroStyled: false, decimalsRounded: 2 }),
-    ethTokens: formatEtherTokens(loginAccount.ethTokens, { zeroStyled: false, decimalsRounded: 2 })
-  })
-);
+  }),
+)

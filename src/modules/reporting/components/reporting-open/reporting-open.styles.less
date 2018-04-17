@@ -1,0 +1,16 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportingOpen__heading {
+  &:extend(.caps--large);
+
+  color: @color-white;
+  margin-top: 3rem;
+  padding: 0 2rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .ReportingOpen__heading {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

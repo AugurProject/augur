@@ -1,0 +1,56 @@
+@import (reference) '~assets/styles/shared';
+
+.PositionsMarketsList {
+  align-items: center;
+  padding-bottom: 2rem;
+  text-align: left;
+  width: 100%;
+
+  @media @breakpoint-mobile {
+    padding: 0;
+  }
+}
+
+.PositionMarketsListNullState {
+  padding-bottom: 3rem;
+  padding-top: 3rem;
+
+  @media @breakpoint-mobile {
+    padding: 1.5rem 0;
+  }
+}
+
+.PositionsMarketsList__SortBar {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.PositionsMarketsList__SortBar-title {
+  &:extend(.caps--large);
+
+  color: @color-white;
+}
+
+.PositionsMarketsList__SortBar-sort {
+  align-items: baseline;
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.PositionsMarketsList__SortBar-filter {
+  display: flex;
+}
+
+@media @breakpoint-mobile {
+  .PositionsMarketsList__SortBar {
+    padding: 0 1rem;
+  }
+
+  .PositionsMarketsList__SortBar-title {
+    font-size: @font-size-large;
+  }
+}

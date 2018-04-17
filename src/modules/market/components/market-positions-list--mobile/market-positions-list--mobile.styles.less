@@ -1,0 +1,56 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketPositionsListMobile__wrapper {
+  border-top: 1px solid @color-darkpurple-2;
+  padding: 2rem 1rem;
+  position: relative;
+
+  &:first-child {
+    margin-top: 2rem;
+  }
+}
+
+.MarketPositionsListMobile__wrapper--orders {
+  &:extend(.MarketPositionsListMobile__wrapper all);
+
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.MarketPositionsListMobile__heading {
+  color: @color-white;
+  font-size: @font-size-rather-large;
+  line-height: @font-size-rather-large;
+  margin-bottom: 1.5rem;
+}
+
+.MarketPositionsListMobile__heading--orders {
+  &:extend(.MarketPositionsListMobile__heading all);
+
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.MarketPositionsListMobile__orders {
+  display: table;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.MarketPositionsListMobile__orders-view-more {
+  &:extend(.caps--small);
+
+  color: @color-white;
+  font-weight: 500;
+  margin: 1rem 1rem 0;
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketPositionsListMobile__heading {
+    font-size: @font-size-normal;
+    line-height: @font-size-normal;
+  }
+}

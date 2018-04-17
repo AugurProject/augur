@@ -15,8 +15,6 @@
   }
 
   .auth-signup-password-suggestions {
-    .font-size-small();
-
     color: @color-orange-light;
     display: flex;
     height: 0;
@@ -62,7 +60,6 @@
     z-index: 10;
 
     .login-id {
-      height: @font-size-normal * 5;
       resize: none;
     }
 
@@ -80,9 +77,8 @@
         }
 
         &.important {
-          .font-weight-normal();
-
           color: @color-orange-light;
+          font-weight: 400;
         }
       }
     }

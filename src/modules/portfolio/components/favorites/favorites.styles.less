@@ -1,0 +1,41 @@
+@import (reference) '~assets/styles/shared';
+
+.Favorites {
+  align-items: center;
+  text-align: left;
+  width: 100%;
+}
+
+.Favorites__SortBar {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.Favorites__SortBar-title {
+  &:extend(.caps--large);
+
+  color: @color-white;
+}
+
+.Favorites__SortBar-sort {
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.Favorites__SortBar-filter {
+  display: flex;
+}
+
+@media @breakpoint-mobile {
+  .Favorites__SortBar {
+    padding: 0 1rem;
+  }
+
+  .Favorites__SortBar-title {
+    font-size: @font-size-large;
+  }
+}

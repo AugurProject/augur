@@ -1,0 +1,123 @@
+:global {
+  @import (less) '_typ_font-awesome.css';
+  @import (less) '_typ_icofont.css';
+}
+
+@import '_type_font-face';
+
+//  VARS
+@din-pro: 'DINPro', sans-serif;
+
+// TODO -- full review of applicable font sizes
+//    Font Sizes (based on 16px base)
+@font-size-extra-small: 0.625rem; // 10px
+@font-size-small: 0.75rem; // 12px
+@font-size-medium: 0.875rem; // 14px
+@font-size-normal: 1rem; // 16px
+@font-size-large: 1.125rem; // 18px
+@font-size-somewhat-large: 1.375rem; // 22px
+@font-size-rather-large: 1.5rem; // 24px
+@font-size-extra-large: 1.875rem; // 30px
+@font-size-massive: 2.43rem; // 39px
+@font-size-super-massive: 4rem; // 64px
+
+//  MIXINS
+.align-to-icon {
+  position: relative;
+  top: -2px;
+}
+
+.caps {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.caps--heavy {
+  .caps;
+
+  font-weight: 600;
+}
+
+.caps--extra-small {
+  .caps;
+
+  font-size: @font-size-extra-small;
+  font-weight: 400;
+  line-height: @font-size-extra-small;
+}
+
+.caps--small {
+  .caps;
+
+  font-size: @font-size-small;
+  font-weight: 400;
+  line-height: @font-size-small;
+}
+
+.caps--medium {
+  .caps;
+
+  font-size: @font-size-medium;
+  font-weight: 400;
+  line-height: @font-size-medium;
+}
+
+.caps--large {
+  .caps;
+
+  font-size: @font-size-large;
+  line-height: @font-size-large;
+}
+
+.caps--extra-large {
+  .caps;
+
+  font-size: @font-size-extra-large;
+  line-height: @font-size-extra-large;
+}
+
+.caps--massive {
+  .caps;
+
+  font-size: @font-size-massive;
+  line-height: @font-size-massive;
+}
+
+.caps--super-massive {
+  .caps;
+
+  font-size: @font-size-super-massive;
+  line-height: @font-size-super-massive;
+}
+
+.label-12--dark {
+  .caps;
+
+  font-size: @font-size-small;
+  font-weight: 500;
+}
+
+.number--large {
+  font-size: @font-size-rather-large;
+  line-height: @font-size-rather-large;
+}
+
+// TYPOGRAPHY
+// site-wide typographic rules + values
+
+h1 {
+  font-size: @font-size-extra-large;
+  font-weight: 400;
+  line-height: 2.1875rem;
+  margin-bottom: 1.25rem;
+
+  @media @breakpoint-mobile-small {
+    font-size: @font-size-rather-large;
+    line-height: @font-size-extra-large;
+  }
+}
+
+.h1--heavy {
+  .caps;
+}

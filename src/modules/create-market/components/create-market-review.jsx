@@ -1,99 +1,109 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { augur, abi, rpc, constants } from 'services/augurjs';
-import BigNumber from 'bignumber.js';
+/* eslint-disable react/no-unused-state */
 
-import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number';
-import getValue from 'utils/get-value';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { augur } from 'services/augurjs'
+import { BigNumber } from 'utils/create-big-number'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
-import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps';
+import { formatEtherEstimate } from 'utils/format-number'
+import getValue from 'utils/get-value'
+
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
+import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
 
 export default class CreateMarketReview extends Component {
   static propTypes = {
     isValid: PropTypes.bool.isRequired,
+    className: PropTypes.string,
     creationError: PropTypes.string.isRequired,
-    branch: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
+    endTime: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
-    takerFee: PropTypes.oneOfType([
+    settlementFee: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
-    makerFee: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
+      PropTypes.number,
     ]).isRequired,
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      creationFee: null,
-      marketEventBond: null,
-      gasCost: null,
-      initialLiquidity: {
-        gas: null,
-        fees: null
-      },
-      formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
+      // creationFee: null,
+      // gasCost: null,
+      // initialLiquidity: {
+      // gas: null,
+      // fees: null
+      // },
+      formattedInitialLiquidityEth: formatEtherEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees)
-    };
+      formattedInitialLiquidityFees: formatEtherEstimate(this.props.initialLiquidityFees),
+    }
   }
 
   componentWillMount() {
-    this.calculateMarketCreationCosts();
+    this.calculateMarketCreationCosts()
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep &&
+    const {
+      currentStep,
+      initialLiquidityEth,
+      initialLiquidityFees,
+      initialLiquidityGas,
+    } = this.props
+    if (currentStep !== nextProps.currentStep &&
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_REVIEW
     ) {
-      this.calculateMarketCreationCosts();
+      this.calculateMarketCreationCosts()
     }
 
-    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.initialLiquidityEth) });
-    if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) });
-    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.initialLiquidityFees) });
+    if (initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.initialLiquidityEth) })
+    if (initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) })
+    if (initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
-
-    // TODO augur.api.functions -> getState().functionsAPI
-    const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
-
-    // Event Bond
-    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
-    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
-    const eventBond = formatEtherEstimate(validityBond);
-
-    this.setState({
-      gasCost,
-      creationFee,
-      eventBond
-    });
+    const {
+      endTime,
+      universe,
+    } = this.props
+    const self = this
+    augur.createMarket.getMarketCreationCostBreakdown({
+      universe: universe.id,
+      _endTime: endTime.timestamp,
+    }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err)
+      self.setState({
+        gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
+        creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+        validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
+      })
+    })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const {
+      className,
+      initialLiquidityEth,
+      initialLiquidityFees,
+      initialLiquidityGas,
+    } = this.props
+    const s = this.state
 
-    const creationFee = getValue(s, 'creationFee.formatted');
-    const eventBond = getValue(s, 'eventBond.formatted');
-    const gasCost = getValue(s, 'gasCost.formatted');
-    const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted');
-    const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted');
-    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted');
+    const creationFee = getValue(s, 'creationFee.formatted')
+    const validityBond = getValue(s, 'validityBond.formatted')
+    const gasCost = getValue(s, 'gasCost.formatted')
+    const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted')
+    const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted')
+    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted')
 
     return (
-      <article className={`create-market-form-part create-market-form-review ${p.className || ''}`}>
+      <article className={`create-market-form-part create-market-form-review ${className || ''}`}>
         <div className="create-market-form-part-content">
           <div className="create-market-form-part-input">
             <aside>
@@ -118,8 +128,8 @@ export default class CreateMarketReview extends Component {
                     Bond (refundable):
                   </span>
                   <span>
-                    {eventBond}
-                    <span className="cost-denomination">{eventBond && 'ETH Tokens'}</span>
+                    {validityBond}
+                    <span className="cost-denomination">{validityBond && 'ETH'}</span>
                   </span>
                 </li>
                 <li>
@@ -132,7 +142,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                 </li>
               </ul>
-              {(!!p.initialLiquidityEth.toNumber() || !!p.initialLiquidityGas.toNumber() || !!p.initialLiquidityFees.toNumber()) &&
+              {(!!initialLiquidityEth.toNumber() || !!initialLiquidityGas.toNumber() || !!initialLiquidityFees.toNumber()) &&
                 <div>
                   <h3>Initial Liquidity:</h3>
                   <ul>
@@ -168,13 +178,15 @@ export default class CreateMarketReview extends Component {
               }
             </form>
           </div>
-          { !p.isValid &&
-            <CreateMarketFormInputNotifications
-              errors={[p.creationError]}
-            />
-          }
+
         </div>
       </article>
-    );
+    )
   }
 }
+
+// { !p.isValid &&
+//   <CreateMarketFormInputNotifications
+//     errors={[p.creationError]}
+//   />
+// }

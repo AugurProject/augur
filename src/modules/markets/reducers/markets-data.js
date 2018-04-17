@@ -1,70 +1,98 @@
-import { abi } from 'services/augurjs';
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_TOPIC } from 'modules/markets/actions/update-markets-data';
-import { CATEGORICAL, BINARY } from 'modules/markets/constants/market-types';
-import { CATEGORICAL_OUTCOMES_SEPARATOR } from 'modules/markets/constants/market-outcomes';
+import immutableDelete from 'immutable-delete'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST, UPDATE_MARKETS_DISPUTE_INFO, REMOVE_MARKET } from 'modules/markets/actions/update-markets-data'
+import { RESET_STATE } from 'modules/app/actions/reset-state'
 
-export default function (marketsData = {}, action) {
+const DEFAULT_STATE = {}
+
+export default function (marketsData = DEFAULT_STATE, action) {
   switch (action.type) {
-    case UPDATE_MARKETS_DATA:
+    case UPDATE_MARKETS_DATA: // TODO -- allow for the consumption of partial market objects
       return {
         ...marketsData,
-        ...processMarketsData(action.marketsData, marketsData)
-      };
-    case UPDATE_MARKETS_LOADING_STATUS:
+        ...processMarketsData(action.marketsData, marketsData),
+      }
+    case UPDATE_MARKETS_DISPUTE_INFO:
       return {
         ...marketsData,
-        ...action.marketIDs.reduce((p, marketID) => {
-          p[marketID] = {
-            ...marketsData[marketID],
-            isLoading: action.isLoading
-          };
-          return p;
-        }, {})
-      };
-    case UPDATE_MARKET_TOPIC:
-      if (!action.marketID) return marketsData;
+        ...processMarketsDisputeInfo(action.marketsDisputeInfo, marketsData),
+      }
+    case UPDATE_MARKET_CATEGORY:
+      if (!action.marketId) return marketsData
       return {
         ...marketsData,
-        [action.marketID]: {
-          ...marketsData[action.marketID],
-          topic: action.topic
-        }
-      };
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          category: action.category,
+        },
+      }
+    case UPDATE_MARKET_REP_BALANCE:
+      if (!action.marketId) return marketsData
+      return {
+        ...marketsData,
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          repBalance: action.repBalance,
+        },
+      }
+    case UPDATE_MARKET_FROZEN_SHARES_VALUE:
+      if (!action.marketId) return marketsData
+      return {
+        ...marketsData,
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          frozenSharesValue: action.frozenSharesValue,
+        },
+      }
+    case UPDATE_MARKET_ESCAPE_HATCH_GAS_COST:
+      if (!action.marketId) return marketsData
+      return {
+        ...marketsData,
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          escapeHatchGasCost: action.escapeHatchGasCost,
+        },
+      }
+    case UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST:
+      if (!action.marketId) return marketsData
+      return {
+        ...marketsData,
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          tradingEscapeHatchGasCost: action.tradingEscapeHatchGasCost,
+        },
+      }
+    case REMOVE_MARKET:
+      return immutableDelete(marketsData, action.marketId)
+    case RESET_STATE:
     case CLEAR_MARKETS_DATA:
-      return {};
+      return DEFAULT_STATE
     default:
-      return marketsData;
+      return marketsData
   }
 }
 
 function processMarketsData(newMarketsData, existingMarketsData) {
-
-  // it's important to loop through the original marketIDs so that unloaded markets can still be marked as isLoadedMarketInfo and avoid infinite recursion later on
-  return Object.keys(newMarketsData).reduce((p, marketID) => {
-    const normalizedMarketID = abi.format_int256(marketID);
-
+  return Object.keys(newMarketsData).reduce((p, marketId) => {
     const marketData = {
-      ...existingMarketsData[normalizedMarketID],
-      ...newMarketsData[marketID]
-    };
-
-    // clean description
-    if (marketData.type === CATEGORICAL) {
-      marketData.description = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR).slice(0, -1).join();
-    }
-    if (marketData.type === BINARY) {
-      const splitDescription = marketData.description.split(CATEGORICAL_OUTCOMES_SEPARATOR);
-      if (splitDescription.length === 2) {
-        marketData.description = splitDescription.slice(0, -1).join();
-      }
+      ...existingMarketsData[marketId],
+      ...newMarketsData[marketId],
     }
 
-    // mark whether details have been loaded
-    marketData.isLoadedMarketInfo = !!marketData.cumulativeScale;
+    p[marketId] = marketData
 
-    // save market (without outcomes)
-    p[normalizedMarketID] = marketData;
+    return p
+  }, {})
+}
 
-    return p;
-  }, {});
+function processMarketsDisputeInfo(newMarketsDisputeInfo, existingMarketsData) {
+  return Object.keys(newMarketsDisputeInfo).reduce((p, marketId) => {
+    const marketData = {
+      ...existingMarketsData[marketId],
+      disputeInfo: { ...newMarketsDisputeInfo[marketId] },
+    }
+
+    p[marketId] = marketData
+
+    return p
+  }, {})
 }

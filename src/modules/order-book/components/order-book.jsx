@@ -1,57 +1,64 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import OrderBookTable from 'modules/order-book/components/order-book-table';
-import OrderBookChart from 'modules/order-book/components/order-book-chart';
+import OrderBookTable from 'modules/order-book/components/order-book-table'
+import OrderBookChart from 'modules/order-book/components/order-book-chart'
 
-import EmDash from 'modules/common/components/em-dash';
-import ComponentNav from 'modules/common/components/component-nav';
+import ComponentNav from 'modules/common/components/component-nav'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
-import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from 'modules/order-book/constants/order-book-internal-views';
+import { SCALAR } from 'modules/markets/constants/market-types'
+import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from 'modules/order-book/constants/order-book-internal-views'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class OrderBook extends Component {
   static propTypes = {
+    marketType: PropTypes.string,
+    outcome: PropTypes.object,
     selectedShareDenomination: PropTypes.string,
     selectedTradeSide: PropTypes.object.isRequired,
     updateTradeFromSelectedOrder: PropTypes.func.isRequired,
-    outcome: PropTypes.object
-  };
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.navItems = {
       [ORDER_BOOK_TABLE]: {
-        label: 'Table'
+        label: 'Table',
       },
       [ORDER_BOOK_CHART]: {
-        label: 'Chart'
-      }
-    };
+        label: 'Chart',
+      },
+    }
 
     this.state = {
-      selectedNav: ORDER_BOOK_TABLE
-    };
+      selectedNav: ORDER_BOOK_TABLE,
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const {
+      marketType,
+      outcome,
+      selectedShareDenomination,
+      selectedTradeSide,
+      updateTradeFromSelectedOrder,
+    } = this.props
+    const s = this.state
 
-    const name = getValue(p, 'outcome.name');
-    const orderBookSeries = getValue(p, 'outcome.orderBookSeries');
+    const name = getValue(this.props, 'outcome.name')
+    const orderBookSeries = getValue(this.props, 'outcome.orderBookSeries')
 
     return (
       <article className="order-book">
-        {p.outcome &&
+        {outcome &&
           <div>
-            {p.marketType !== SCALAR ?
+            {marketType !== SCALAR ?
               <h3>Order Book {name &&
-                <span><EmDash /> {name}</span>
-              }</h3> :
+                <span>&mdash; {name}</span>
+              }
+              </h3> :
               <h3>Order Book</h3>
             }
             <ComponentNav
@@ -62,10 +69,10 @@ export default class OrderBook extends Component {
             />
             {s.selectedNav === ORDER_BOOK_TABLE &&
               <OrderBookTable
-                outcome={p.outcome}
-                selectedTradeSide={p.selectedTradeSide}
-                updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-                selectedShareDenomination={p.selectedShareDenomination}
+                outcome={outcome}
+                selectedTradeSide={selectedTradeSide}
+                updateTradeFromSelectedOrder={updateTradeFromSelectedOrder}
+                selectedShareDenomination={selectedShareDenomination}
               />
             }
             {s.selectedNav === ORDER_BOOK_CHART &&
@@ -76,6 +83,6 @@ export default class OrderBook extends Component {
           </div>
         }
       </article>
-    );
+    )
   }
 }

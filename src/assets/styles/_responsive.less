@@ -1,0 +1,46 @@
+// RESPONSIVE
+// These are determined largely by the content being displayed NOT the device displaying the content.
+// This allows for the most optimal presentation regardless of the device.
+
+// 	Raw Break Points
+// 	The breakpoints encompass:
+// 	Steps (1, 2, etc.) -- Account for large structural view reflows that may need to occur (Ascending in px)
+// 	Sub-Steps (1-1, 2-1, etc.) -- Account for fine styling adjustments between steps (Descending in px)
+
+// 	STEP 1
+// 	Smallest layout @ < 600px
+//		Step
+@step-1: 600px;
+//		Rules
+@breakpoint-1: ~"all and (max-width: @{step-1})";
+
+//	STEP 2
+// 	Medium layout @ > 600px && <= 1200px
+//		Steps
+@step-2: 1200px;
+//		Sub-Steps
+@step-2-1: 1050px;
+@step-2-2: 900px; // Mobile tipping point
+@step-2-3: 450px;
+//		Rules
+@breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
+@breakpoint-2-1: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-1})";
+@breakpoint-2-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-2})"; // Mobile tipping point
+@breakpoint-2-3: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-3})";
+
+//	STEP 3
+// 	Full layout @ > 1200px
+//		Step
+//			Explicit declaration of step not necessary here
+//		Rules
+@breakpoint-3: ~"all and (min-width: @{step-2})";
+
+// Helper Breakpoints
+// Small desktop (up to step 2-1)
+@breakpoint-small-desktop: ~"all and (max-width: @{step-2-1})";
+//	Mobile (up to step-2-2)
+@breakpoint-mobile: ~"all and (max-width: @{step-2-2})"; // 900
+// Mobile (up to step-1)
+@breakpoint-mobile-medium: ~"all and (max-width: @{step-1})"; // 600
+//	Mobile (up to step-2-2)
+@breakpoint-mobile-small: ~"all and (max-width: @{step-2-3})"; // 450

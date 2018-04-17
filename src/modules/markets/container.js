@@ -1,53 +1,44 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import MarketsView from 'modules/markets/components/markets-view';
+import MarketsView from 'modules/markets/components/markets-view'
 
-import getAllMarkets from 'modules/markets/selectors/markets-all';
-import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
-import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted';
+import getAllMarkets from 'modules/markets/selectors/markets-all'
+import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
 
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
+import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
-import { loadMarkets } from 'modules/markets/actions/load-markets';
-import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import loadMarkets from 'modules/markets/actions/load-markets'
+import { loadMarketsByCategory } from 'modules/markets/actions/load-markets-by-category'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
-  isLogged: state.isLoggedIn,
+  isLogged: state.isLogged,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
-  branch: state.branch,
-  canLoadMarkets: !!getValue(state, 'branch.id'),
-  scalarShareDenomination: getScalarShareDenomination(),
+  filteredMarkets: state.marketsFilteredSorted,
+  universe: state.universe,
+  canLoadMarkets: !!getValue(state, 'universe.id'),
   hasLoadedMarkets: state.hasLoadedMarkets,
-  hasLoadedTopic: state.hasLoadedTopic
-});
+  hasLoadedCategory: state.hasLoadedCategory,
+  isMobile: state.isMobile,
+})
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: branchID => dispatch(loadMarkets(branchID)),
-  loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID)),
+  loadMarkets: () => dispatch(loadMarkets()),
+  loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
-  toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
-  loadMarketsInfo: marketIDs => dispatch(loadMarketsInfo(marketIDs))
-});
+  toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
+  loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
+})
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { branch } = stateProps;
-  const { loadMarkets, loadMarketsByTopic } = dispatchProps;
+const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView))
 
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    loadMarkets: () => loadMarkets(branch.id),
-    loadMarketsByTopic: topic => loadMarketsByTopic(topic, branch.id)
-  };
-};
+export default Markets
 
-const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView));
-
-export default Markets;
+// TODO --
+// conditionally load the markets missing info
+// Populate the categories list

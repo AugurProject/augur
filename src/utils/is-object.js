@@ -1,3 +1,1 @@
-export default function (item) {
-  return (typeof item === 'object' && !Array.isArray(item) && item !== null);
-}
+export default item => item != null && item.constructor === Object

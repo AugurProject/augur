@@ -1,14 +1,14 @@
 export function isMarketDataOpen(marketData) {
-  return marketData.consensus === null;
+  return marketData.consensus === null
 }
 
 export function isMarketDataExpired(marketData, currentTime) {
-  if (!marketData || !marketData.endDate || !currentTime) {
-    return false;
+  if (!marketData || !marketData.endTime || !currentTime) {
+    return false
   }
-  return marketData.endDate < parseInt(currentTime / 1000, 10);
+  return marketData.endTime < parseInt(currentTime, 10)
 }
 
-export function isMarketDataPreviousReportPeriod(marketData, currentPeriod, periodLength) {
-  return parseInt(marketData.endDate, 10) <= (currentPeriod - 2) * periodLength;
+export function isMarketDataPreviousReportPeriod(marketData, currentPeriod, reportingPeriodDurationInSeconds) {
+  return parseInt(marketData.endTime, 10) <= (currentPeriod - 2) * reportingPeriodDurationInSeconds
 }

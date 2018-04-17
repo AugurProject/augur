@@ -1,0 +1,196 @@
+@import (reference) '~assets/styles/shared';
+
+li.CreateMarketResolution__expiry-source-specific,
+li.CreateMarketResolution__designated-reporter-specific {
+  flex-wrap: wrap;
+  min-height: 3.25rem;
+
+  > button {
+    align-self: flex-start;
+  }
+
+  > div {
+    margin-left: 3.75rem;
+    position: relative;
+    top: -0.75rem;
+    width: 50%;
+  }
+
+  > input {
+    margin-left: 3.75rem;
+    max-width: 50%;
+    position: relative;
+    top: -0.75rem;
+  }
+
+  > span {
+    bottom: 40%;
+    margin-bottom: 0.5rem;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.CreateMarketResolution__time {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  max-width: 28rem;
+
+  > * {
+    width: 31%;
+  }
+}
+
+.CreateMarketResolution__datepicker {
+  :global {
+    .SingleDatePicker_1 {
+      display: block;
+      max-width: 19.875rem;
+      z-index: 2;
+    }
+
+    .SingleDatePickerInput {
+      border: none;
+    }
+
+    .DateInput_input_1,
+    .DateInput_input__focused {
+      border: 0;
+    }
+
+    .DateInput__openDown_3::before,
+    .DateInput__openDown_3::after {
+      display: none;
+    }
+
+    .SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3.SingleDatePicker_picker__openDown_3 {
+      top: auto;
+    }
+
+    .DayPicker__horizontal_2 {
+      background-color: @color-input-background;
+      border-radius: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .SingleDatePickerInput_1 {
+      background-color: #dbdae1;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+    }
+
+    .DateInput_1 {
+      background: none;
+      color: inherit;
+      display: block;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      width: auto;
+    }
+
+    .DateInput_displayText.DateInput_displayText_1 {
+      background: none;
+      color: @color-lightgray;
+
+      &.DateInput_displayText__hasInput {
+        color: inherit;
+      }
+    }
+
+    .CalendarMonth_1,
+    .CalendarMonthGrid_1,
+    .CalendarMonthGrid_1 {
+      background: none;
+    }
+
+    .CalendarMonth_caption_1 {
+      color: @color-lightgray;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding-bottom: 2.8rem;
+      padding-top: 1.75rem;
+    }
+
+    .DayPickerNavigation_button__default_2.DayPickerNavigation_button__default_2 {
+      background: none;
+      border: none;
+    }
+
+    .DayPickerNavigation_leftButton__horizontal_3,
+    .DayPickerNavigation_rightButton__horizontal_3 {
+      > svg {
+        height: 1rem;
+        width: 1rem;
+      }
+    }
+
+    .DayPicker_weekHeader_li_1 {
+      color: @color-lightgray;
+      font-size: 0;
+
+      &::first-letter {
+        font-size: 0.6875rem;
+      }
+    }
+
+    .CalendarDay_container_1 {
+      background: none;
+      border: none;
+      color: @color-darkpurple;
+
+      &.CalendarDay__selected,
+      &:hover {
+        background: @color-lightergray;
+        border: none;
+        border-radius: 100%;
+      }
+
+      &.CalendarDay__blocked_out_of_range_2.CalendarDay__blocked_out_of_range_2 {
+        border: none;
+        color: #cacccd;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
+
+    .DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3.DayPickerKeyboardShortcuts_show__bottomRight_3 {
+      display: none;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  li.CreateMarketResolution__expiry-source-specific,
+  li.CreateMarketResolution__designated-reporter-specific {
+    flex-wrap: wrap;
+
+    > button {
+      order: 1;
+    }
+
+    > div,
+    > input {
+      margin-left: 0;
+      margin-top: 2rem;
+      max-width: none;
+      order: 3;
+      width: 100%;
+    }
+
+    > span {
+      bottom: 0;
+      margin: 0.5rem 0;
+      order: 2;
+      position: initial;
+      white-space: normal;
+    }
+  }
+}

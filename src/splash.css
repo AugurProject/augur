@@ -3,8 +3,8 @@ body,
 #app,
 #splash {
   height: 100%;
-  width: 100%;
   margin: 0;
+  width: 100%;
 }
 
 #splash {
@@ -25,7 +25,7 @@ body,
   animation-iteration-count: infinite;
   animation-name: splash-anim;
   animation-timing-function: cubic-bezier(0.11, 0.63, 0.25, 0.89);
-  background-image: url('/assets/images/augur_logo_200_white.png');
+  background-image: url('../../assets/images/augur-logo.svg');
   background-position: center center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -49,10 +49,10 @@ body,
 
 @keyframes splash-anim {
   0% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
   }
 
   100% {
-    transform: scale(4) rotate(3deg);
+    transform: scale(4);
   }
 }

@@ -1,0 +1,69 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutcomes {
+  padding-bottom: 1.7rem;
+  position: relative;
+}
+
+.MarketOutcomes__current {
+  &:extend(.number--large);
+
+  left: 50%;
+  padding-top: 1.1em;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.MarketOutcomes__current-denomination {
+  position: absolute;
+}
+
+.MarketOutcomes__current-value::before {
+  background-color: @color-purple;
+  content: "";
+  height: 0.9375rem;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1px;
+}
+
+.MarketOutcomes__max,
+.MarketOutcomes__min {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  left: 0;
+  padding-top: 1px;
+  position: absolute;
+}
+
+.MarketOutcomes__max {
+  left: auto;
+  right: 0;
+}
+
+.MarketOutcomes__range {
+  border-bottom: 1px solid @color-purple;
+  padding-top: 0.875rem;
+  position: relative;
+
+  &::before,
+  &::after {
+    background-color: @color-purple;
+    bottom: 0;
+    content: "";
+    height: 0.5rem;
+    left: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  &::after {
+    left: auto;
+    right: 0;
+  }
+}

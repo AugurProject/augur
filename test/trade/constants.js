@@ -1,567 +1,416 @@
-import { assert } from 'chai';
-import { abi } from 'services/augurjs';
-
-export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
-export { BUY, SELL } from 'modules/transactions/constants/types';
+export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+export { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const tradeTestState = {
   loginAccount: {
     address: 'testUser1',
-    name: 'test',
-    loginID: 'longLoginID',
+    loginId: 'longLoginId',
     localNode: false,
-    prettyAddress: '0000...ser1',
-    prettyLoginID: 'long...inID',
-    ether: '10000.00',
-    realEther: '5.0',
-    rep: '50.0'
+    eth: '5',
+    ethTokens: '10000',
+    rep: '50.0',
   },
-  selectedMarketID: 'testBinaryMarketID',
+  selectedMarketId: 'testBinaryMarketId',
   marketsData: {
-    testBinaryMarketID: {
+    testBinaryMarketId: {
       author: 'testAuthor1',
-      branchID: '0x010101',
+      universeId: '0x010101',
       creationFee: '22.5',
       creationTime: 1475951522,
-      cumulativeScale: '1',
+      numTicks: '10000',
+      tickSize: '0.0001',
       description: 'test binary market?',
-      endDate: 1495317600,
-      eventID: 'testEventID1',
+      endTime: 1495317600,
       consensus: null,
       isLoadedMarketInfo: true,
-      makerFee: '0.002',
-      maxValue: '2',
-      minValue: '1',
+      maxPrice: '1',
+      minPrice: '0',
       network: '2',
       numOutcomes: 2,
-      topic: 'binary',
+      category: 'binary',
       tags: ['binary', 'markets', null],
-      takerFee: '0.01',
-      tradingFee: '0.008',
+      settlementFee: '0.01',
+      reportingFeeRate: '0.02',
       tradingPeriod: 8653,
-      type: 'binary',
-      volume: '3030'
+      marketType: 'binary',
+      volume: '3030',
+      isDisowned: false,
     },
-    testCategoricalMarketID: {
+    testCategoricalMarketId: {
       author: 'testAuthor2',
-      branchID: '0x010101',
+      universeId: '0x010101',
       creationFee: '12.857142857142857142',
       creationTime: 1476694751,
-      cumulativeScale: '1',
+      numTicks: '10000',
+      tickSize: '0.0001',
       description: 'test categorical market?',
-      endDate: 2066554498,
-      eventID: 'testEventID2',
-      extraInfo: 'extra info',
+      endTime: 2066554498,
+      details: 'extra info',
       consensus: null,
       isLoadedMarketInfo: true,
-      makerFee: '0.001000000000000000006',
-      maxValue: '2',
-      minValue: '1',
+      maxPrice: '1',
+      minPrice: '0',
       network: '2',
       numOutcomes: 4,
       resolution: 'http://lmgtfy.com',
-      topic: 'categorical',
+      category: 'categorical',
       tags: ['categorical', 'markets', 'test'],
-      takerFee: '0.019999999999999999994',
-      tradingFee: '0.014',
+      settlementFee: '0.019999999999999999994',
+      reportingFeeRate: '0.02',
       tradingPeriod: 11959,
-      type: 'categorical',
-      volume: '0'
+      marketType: 'categorical',
+      volume: '0',
+      isDisowned: false,
     },
-    testScalarMarketID: {
+    testScalarMarketId: {
       author: 'testAuthor3',
-      branchID: '0x010101',
+      universeId: '0x010101',
       creationFee: '9',
       creationTime: 1476486515,
-      cumulativeScale: '130',
+      tickSize: '0.1',
+      numTicks: '1200',
       description: 'test scalar market?',
-      endDate: 1496514800,
-      eventID: 'testEventID3',
+      endTime: 1496514800,
       consensus: null,
       isLoadedMarketInfo: true,
-      makerFee: '0.01',
-      maxValue: '120',
-      minValue: '-10',
+      maxPrice: '110',
+      minPrice: '-10',
       network: '2',
       numOutcomes: 2,
       resolution: 'https://www.resolution-of-market.com',
-      topic: 'scalar',
+      category: 'scalar',
       tags: ['scalar', 'markets', 'test'],
-      takerFee: '0.02',
-      tradingFee: '0.02',
+      settlementFee: '0.02',
+      reportingFeeRate: '0.02',
       tradingPeriod: 8544,
-      type: 'scalar',
-      volume: '0'
+      marketType: 'scalar',
+      volume: '0',
+      isDisowned: false,
     },
   },
   outcomesData: {
-    testBinaryMarketID: {
-      2: {
-        id: 2,
+    testBinaryMarketId: {
+      1: {
+        id: 1,
         name: 'Yes',
         outstandingShares: '1005',
         price: '0.5',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
-      1: {
-        id: 1,
+      0: {
+        id: 0,
         name: 'No',
         outstandingShares: '2025',
         price: '0.5',
-        sharesPurchased: '0'
-      }
+        sharesPurchased: '0',
+      },
     },
-    testCategoricalMarketID: {
-      1: {
+    testCategoricalMarketId: {
+      0: {
         name: 'Democratic',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
-      2: {
+      1: {
         name: 'Republican',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
-      3: {
+      2: {
         name: 'Libertarian',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
+        sharesPurchased: '0',
       },
-      4: {
+      3: {
         name: 'Other',
         outstandingShares: '0',
         price: '0',
-        sharesPurchased: '0'
-      }
+        sharesPurchased: '0',
+      },
     },
-    testScalarMarketID: {
+    testScalarMarketId: {
+      0: {
+        id: 0,
+        name: '',
+        outstandingShares: '0',
+        price: '50',
+        sharesPurchased: '0',
+      },
       1: {
         id: 1,
         name: '',
         outstandingShares: '0',
-        price: '65',
-        sharesPurchased: '0'
+        price: '50',
+        sharesPurchased: '0',
       },
-      2: {
-        id: 2,
-        name: '',
-        outstandingShares: '0',
-        price: '65',
-        sharesPurchased: '0'
-      }
+    },
+  },
+  orderBooks: {
+    testBinaryMarketId: {
+      1: {
+        buy: {
+          orderId1: {
+            orderId: 'orderId1',
+            amount: '10',
+            price: '0.5',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.5',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '5',
+          },
+          orderId2: {
+            orderId: 'orderId2',
+            amount: '10',
+            price: '0.45',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.45',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '10',
+            tokensEscrowed: '0',
+          },
+          orderId3: {
+            orderId: 'orderId3',
+            amount: '1',
+            price: '0.42',
+            fullPrecisionAmount: '1',
+            fullPrecisionPrice: '0.42',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '0.42',
+          },
+        },
+        sell: {
+          orderId4: {
+            orderId: 'orderId4',
+            amount: '.5',
+            price: '0.65',
+            fullPrecisionAmount: '0.5',
+            fullPrecisionPrice: '0.65',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '0.175',
+          },
+          orderId5: {
+            orderId: 'orderId5',
+            amount: '.005',
+            price: '0.7',
+            fullPrecisionAmount: '0.005',
+            fullPrecisionPrice: '0.7',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0.005',
+            tokensEscrowed: '0',
+          },
+          orderId6: {
+            orderId: 'orderId6',
+            amount: '12',
+            price: '0.73',
+            fullPrecisionAmount: '12',
+            fullPrecisionPrice: '0.73',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '12',
+            tokensEscrowed: '0',
+          },
+        },
+      },
+    },
+    testCategoricalMarketId: {
+      1: {
+        buy: {
+          orderId1: {
+            orderId: 'orderId1',
+            amount: '10',
+            price: '0.5',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.5',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '5',
+          },
+          orderId2: {
+            orderId: 'orderId2',
+            amount: '1',
+            price: '0.42',
+            fullPrecisionAmount: '1',
+            fullPrecisionPrice: '0.42',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '0.42',
+          },
+        },
+        sell: {
+          orderId3: {
+            orderId: 'orderId3',
+            amount: '.005',
+            price: '0.7',
+            fullPrecisionAmount: '0.005',
+            fullPrecisionPrice: '0.7',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0.005',
+            tokensEscrowed: '0',
+          },
+          orderId4: {
+            orderId: 'orderId4',
+            amount: '12',
+            price: '0.73',
+            fullPrecisionAmount: '12',
+            fullPrecisionPrice: '0.73',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '12',
+            tokensEscrowed: '0',
+          },
+        },
+      },
+    },
+    testScalarMarketId: {
+      1: {
+        buy: {
+          orderId1: {
+            orderId: 'orderId1',
+            amount: '1.5',
+            price: '50',
+            fullPrecisionAmount: '1.5',
+            fullPrecisionPrice: '50',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '90',
+          },
+          orderId2: {
+            orderId: 'orderId2',
+            amount: '5',
+            price: '25',
+            fullPrecisionAmount: '5',
+            fullPrecisionPrice: '25',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '175',
+          },
+          orderId3: {
+            orderId: 'orderId3',
+            amount: '3.5',
+            price: '0',
+            fullPrecisionAmount: '3.5',
+            fullPrecisionPrice: '0',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '35',
+          },
+          orderId4: {
+            orderId: 'orderId4',
+            amount: '10',
+            price: '-5',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '-5',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '50',
+          },
+          orderId5: {
+            orderId: 'orderId5',
+            amount: '10',
+            price: '-5',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '-5',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '10',
+            tokensEscrowed: '0',
+          },
+        },
+        sell: {
+          orderId6: {
+            orderId: 'orderId6',
+            amount: '0.5',
+            price: '55',
+            fullPrecisionAmount: '0.5',
+            fullPrecisionPrice: '55',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '27.5',
+          },
+          orderId7: {
+            orderId: 'orderId7',
+            amount: '7.5',
+            price: '70',
+            fullPrecisionAmount: '7.5',
+            fullPrecisionPrice: '70',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '300',
+          },
+          orderId8: {
+            orderId: 'orderId8',
+            amount: '2.5',
+            price: '70',
+            fullPrecisionAmount: '2.5',
+            fullPrecisionPrice: '70',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '2.5',
+            tokensEscrowed: '0',
+          },
+          orderId9: {
+            orderId: 'orderId9',
+            amount: '2',
+            price: '100',
+            fullPrecisionAmount: '2',
+            fullPrecisionPrice: '100',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '20',
+          },
+          orderId10: {
+            orderId: 'orderId10',
+            amount: '13.5',
+            price: '105',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '105',
+            owner: '0xsomeoneElse',
+            sharesEscrowed: '0',
+            tokensEscrowed: '67.5',
+          },
+        },
+      },
     },
   },
   tradesInProgress: {},
   transactionsData: {
     trans1: {
       data: {
-        marketID: 'testBinaryMarketID',
-        outcomeID: '2',
+        marketId: 'testBinaryMarketId',
+        outcomeId: 1,
         marketType: 'binary',
         marketDescription: 'test binary market',
-        outcomeName: 'YES'
+        outcomeName: 'YES',
       },
       feePercent: {
-        value: '0.199203187250996016'
-      }
+        value: '0.199203187250996016',
+      },
     },
     trans2: {
       data: {
-        marketID: 'testCategoricalMarketID',
-        outcomeID: '1',
+        marketId: 'testCategoricalMarketId',
+        outcomeId: 0,
         marketType: 'categorical',
         marketDescription: 'test categorical market',
-        outcomeName: 'Democratic'
+        outcomeName: 'Democratic',
       },
       feePercent: {
-        value: '0.099800399201596707'
-      }
+        value: '0.099800399201596707',
+      },
     },
     trans3: {
       data: {
-        marketID: 'testScalarMarketID',
-        outcomeID: '1',
+        marketId: 'testScalarMarketId',
+        outcomeId: 0,
         marketType: 'scalar',
         marketDescription: 'test scalar market',
-        outcomeName: ''
+        outcomeName: '',
       },
       feePercent: {
-        value: '0.95763203714451532'
-      }
-    }
-  },
-};
-
-export const tradeConstOrderBooks = {
-  testBinaryMarketID: {
-    buy: {
-      orderID1: {
-        id: 'orderID1',
-        price: '0.45',
-        numShares: '10',
-        outcome: '2',
-        owner: 'owner1'
+        value: '0.95763203714451532',
       },
-      orderID2: {
-        id: 'orderID2',
-        price: '0.45',
-        numShares: '5',
-        outcome: '2',
-        owner: 'owner2'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '0.45',
-        numShares: '3',
-        outcome: '2',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '0.44',
-        numShares: '10',
-        outcome: '2',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '0.46',
-        numShares: '15',
-        outcome: '2',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '0.43',
-        numShares: '5',
-        outcome: '2',
-        owner: 'owner6'
-      }
     },
-    sell: {
-      orderID1: {
-        id: 'orderID1',
-        price: '0.4',
-        numShares: '10',
-        outcome: '2',
-        owner: 'owner1'
-      },
-      orderID2: {
-        id: 'orderID2',
-        price: '0.4',
-        numShares: '5',
-        outcome: '2',
-        owner: 'owner2'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '0.4',
-        numShares: '10',
-        outcome: '2',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '0.39',
-        numShares: '3',
-        outcome: '2',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '0.41',
-        numShares: '15',
-        outcome: '2',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '0.415',
-        numShares: '20',
-        outcome: '2',
-        owner: 'owner6'
-      }
-    }
   },
-  testCategoricalMarketID: {
-    buy: {
-      orderID1: {
-        id: 'orderID1',
-        price: '0.45',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID2: {
-        id: 'orderID2',
-        price: '0.45',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '0.45',
-        numShares: '3',
-        outcome: '1',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '0.44',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '0.46',
-        numShares: '15',
-        outcome: '1',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '0.43',
-        numShares: '5',
-        outcome: '1',
-        owner: 'owner6'
-      }
-    },
-    sell: {
-      orderID1: {
-        id: 'orderID1',
-        price: '0.4',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID2: {
-        id: 'orderID2',
-        price: '0.4',
-        numShares: '5',
-        outcome: '1',
-        owner: 'owner2'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '0.4',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '0.39',
-        numShares: '3',
-        outcome: '1',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '0.41',
-        numShares: '15',
-        outcome: '1',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '0.415',
-        numShares: '20',
-        outcome: '1',
-        owner: 'owner6'
-      }
-    }
-  },
-  testScalarMarketID: {
-    buy: {
-      orderID1: {
-        id: 'orderID1',
-        price: '45',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID2: {
-        id: 'orderID2',
-        price: '45',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '45',
-        numShares: '3',
-        outcome: '1',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '44',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '46',
-        numShares: '15',
-        outcome: '1',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '43',
-        numShares: '5',
-        outcome: '1',
-        owner: 'owner6'
-      }
-    },
-    sell: {
-      orderID1: {
-        id: 'orderID1',
-        price: '40',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner1'
-      },
-      orderID2: {
-        id: 'orderID2',
-        price: '40',
-        numShares: '5',
-        outcome: '1',
-        owner: 'owner2'
-      },
-      orderID3: {
-        id: 'orderID3',
-        price: '40',
-        numShares: '10',
-        outcome: '1',
-        owner: 'owner3'
-      },
-      orderID4: {
-        id: 'orderID4',
-        price: '39',
-        numShares: '3',
-        outcome: '1',
-        owner: 'owner4'
-      },
-      orderID5: {
-        id: 'orderID5',
-        price: '41',
-        numShares: '15',
-        outcome: '1',
-        owner: 'owner5'
-      },
-      orderID6: {
-        id: 'orderID6',
-        price: '415',
-        numShares: '20',
-        outcome: '1',
-        owner: 'owner6'
-      }
-    }
-  }
-};
-// lifted directly from augur.js with a slight change to use abi.bignum instead of BigNumber
-const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
-  if (!orders) return [];
-  const isMarketOrder = limitPrice === null || limitPrice === undefined;
-  return Object.keys(orders)
-		.map(orderId => orders[orderId])
-		.filter((order) => {
-  let isMatchingPrice;
-  if (isMarketOrder) {
-    isMatchingPrice = true;
-  } else {
-    isMatchingPrice = traderOrderType === 'buy' ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice); // eslint-disable-line new-cap
-  }
-  return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
-})
-		.sort((order1, order2) => (traderOrderType === 'buy' ? order1.price - order2.price : order2.price - order1.price));
-};
-
-// direct copy of calculate-trade-ids helper function but without calling augur.js
-export const stubCalculateBuyTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-  const orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
-  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id);
-};
-
-// direct copy of calculate-trade-ids helper function but without calling augur.js
-export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-  const orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
-  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
-};
-
-export const stubLoadAccountTrades = (marketID, cb) => {
-  assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
-	// originally some of my tests returned the order books but it turns out this isn't required, left this here just incase...
-	// cb(undefined, store.getState().orderBooks[marketID]);
-  cb();
-  return { type: 'LOAD_ACCOUNT_TRADES', marketID };
-};
-
-export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
-  const Data = UpdateTradesInProgressAction.data;
-  const tradeDetails = Data.details;
-  const action = tradeDetails.tradeActions[0];
-
-  assert.isDefined(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't defined`);
-  assert.isString(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't a String`);
-  assert.isDefined(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't defined`);
-  assert.isObject(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't a Object`);
-
-  assert.isDefined(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`);
-  assert.isString(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`);
-  assert.isDefined(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`);
-  assert.isString(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a String`);
-  assert.isDefined(Data.details, `UpdateTradesInProgressAction.data.details isn't defined`);
-  assert.isObject(Data.details, `UpdateTradesInProgressAction.data.details isn't a Object`);
-
-  assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`);
-  assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`);
-  assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`);
-  assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a string`);
-  assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`);
-  assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a string`);
-  assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`);
-  assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
-  assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);
-  assert.isString(tradeDetails.totalCost, `tradeDetails.totalCost isn't a string`);
-  assert.isDefined(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't defined`);
-  assert.isString(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't a string`);
-  assert.isDefined(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't defined`);
-  assert.isString(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't a string`);
-  assert.isDefined(tradeDetails.feePercent, `tradeDetails.feePercent isn't defined`);
-  assert.isString(tradeDetails.feePercent, `tradeDetails.feePercent isn't a string`);
-
-  assert.isDefined(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't defined`);
-  assert.isArray(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't an array`);
-
-  assert.isDefined(action, `tradeDetails.tradeActions[0] isn't defined`);
-  assert.isObject(action, `tradeDetails.tradeActions[0] isn't an object`);
-
-  assert.isDefined(action.action, `tradeDetails.tradeActions[0].action isn't defined`);
-  assert.isString(action.action, `tradeDetails.tradeActions[0].action isn't a string`);
-
-  assert.isDefined(action.shares, `tradeDetails.tradeActions[0].shares isn't defined`);
-  assert.isString(action.shares, `tradeDetails.tradeActions[0].shares isn't a string`);
-
-  assert.isDefined(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't defined`);
-  assert.isString(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't a string`);
-
-  assert.isDefined(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't defined`);
-  assert.isString(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't a string`);
-
-  assert.isDefined(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't defined`);
-  assert.isString(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't a string`);
-
-  assert.isDefined(action.costEth, `tradeDetails.tradeActions[0].costEth isn't defined`);
-  assert.isString(action.costEth, `tradeDetails.tradeActions[0].costEth isn't a string`);
-
-  assert.isDefined(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't defined`);
-  assert.isString(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't a string`);
-
-  assert.isDefined(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't defined`);
-  assert.isString(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't a string`);
-};
+}

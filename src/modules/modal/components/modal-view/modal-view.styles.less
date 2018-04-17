@@ -1,0 +1,40 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalView {
+  background-color: @color-purple;
+  height: 100vh;
+  position: fixed;
+  width: 100vw;
+  z-index: @mask-modal;
+}
+
+.ModalView__close {
+  color: @color-white;
+  height: 1rem;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2rem;
+}
+
+.ModalView__content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+
+  & > section {
+    align-items: center;
+    color: @color-white;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.ModalView__button {
+  &:extend(.button--white);
+
+  margin-top: 2rem;
+}

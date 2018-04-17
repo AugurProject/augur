@@ -1,0 +1,133 @@
+@import (reference) '~assets/styles/shared';
+
+.Outcome {
+  cursor: pointer;
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &.active,
+  &:hover {
+    background-color: @color-lightergray;
+  }
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        border-radius: 100%;
+        content: "";
+        display: block;
+        height: 6px;
+        left: 1rem;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 6px;
+      }
+    }
+
+    &:last-child {
+      padding-right: 4.5rem;
+    }
+  }
+
+  &:nth-child(1) > li:first-child::before {
+    background-color: @color-outcome-one;
+  }
+
+  &:nth-child(2) > li:first-child::before {
+    background-color: @color-outcome-two;
+  }
+
+  &:nth-child(3) > li:first-child::before {
+    background-color: @color-outcome-three;
+  }
+
+  &:nth-child(4) > li:first-child::before {
+    background-color: @color-outcome-four;
+  }
+
+  &:nth-child(5) > li:first-child::before {
+    background-color: @color-outcome-five;
+  }
+
+  &:nth-child(6) > li:first-child::before {
+    background-color: @color-outcome-six;
+  }
+
+  &:nth-child(7) > li:first-child::before {
+    background-color: @color-outcome-seven;
+  }
+
+  &:nth-child(8) > li:first-child::before {
+    background-color: @color-outcome-eight;
+  }
+}
+
+.Outcome__percent {
+  color: @color-lightgray;
+  margin-left: 0.5rem;
+}
+
+@media @breakpoint-mobile {
+  .Outcome {
+    &.active,
+    &:hover {
+      background-color: @color-darkpurple;
+    }
+
+    > li {
+      border-top-color: @color-darkpurple;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 1rem;
+
+        &::before {
+          border-radius: 0;
+          height: 100%;
+          left: 0;
+          width: 3px;
+        }
+      }
+
+      &:last-child {
+        padding-right: 1rem;
+      }
+
+      &:not(:first-child) {
+        color: @color-white;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Outcome {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
+}

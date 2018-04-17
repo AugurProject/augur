@@ -1,0 +1,17 @@
+@import (reference) '~assets/styles/shared';
+
+.toggle-height-target {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.3s ease;
+
+  &.start-open {
+    height: auto;
+  }
+}
+
+@media @breakpoint-mobile {
+  .toggle-height-target.open-on-mobile {
+    height: auto;
+  }
+}

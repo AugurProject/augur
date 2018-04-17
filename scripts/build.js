@@ -7,17 +7,27 @@ const colors = require('./common/colors');
 const BUILD_DIRECTORY = path.resolve(__dirname, '../build');
 const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 
-if(process.argv[2] === 'dev' || process.argv[2] === 'development') {
-  process.env.NODE_ENV = 'development';
-  process.env.DEBUG_BUILD = true;
-} else {
-  process.env.NODE_ENV = 'production';
+const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
+
+process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
+process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;
+
+let network = ""
+if (FLAGS.indexOf('--rinkeby') !== -1) {
+  network = 'rinkeby'
+} else if (FLAGS.indexOf('--clique') !== -1) {
+  network = 'clique'
+} else if (FLAGS.indexOf('--aura') !== -1) {
+  network = 'aura'
 }
 
+if (network) { process.env.ETHEREUM_NETWORK = network }
+
 process.env.FORCE_COLOR = true;
+network ? console.log(`Using Network: ${network}`) : console.log('Using local network');
 
 shell.echo(`
-${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Development' : ''} ==`)}
+${colors.title(`== Building Augur${process.env.NODE_ENV === 'development' ? ' -- Debug Mode' : ''} ==`)}
 
 ${colors.notice('NOTE')}	${colors.dim('| This will take some time.')}
 `);

@@ -1,0 +1,74 @@
+@import (reference) '~assets/styles/shared';
+
+.Lander {
+  display: flex;
+  min-height: 100%;
+  padding: 0 2rem;
+
+  @media @breakpoint-mobile-small {
+    padding: 0 1rem;
+  }
+}
+
+.Lander__content {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  width: 100%;
+  z-index: @default-z-index;
+}
+
+.Lander__spacer {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+.Lander__header {
+  .caps();
+
+  align-items: center;
+  color: @color-white;
+  display: flex;
+  letter-spacing: 0.075em;
+  line-height: @font-size-massive;
+  text-align: center;
+
+  @media @breakpoint-mobile-small {
+    font-size: @font-size-somewhat-large;
+    line-height: @font-size-extra-large;
+    max-width: 20.5rem;
+    padding-top: 10vh;
+  }
+}
+
+.Lander__actions {
+  align-items: center;
+  display: flex;
+
+  @media @breakpoint-mobile {
+    flex-wrap: wrap;
+  }
+}
+
+.Lander__button {
+  &:extend(.button--white);
+  &:extend(.caps--extra-large);
+
+  margin: 0 calc(@font-size-extra-large ~"*" 1.5);
+  text-align: center;
+
+  @media @breakpoint-mobile {
+    margin: @font-size-extra-large calc(@font-size-extra-large ~"*" 1.5);
+    padding: 0.75em 1em;
+    width: 100%;
+  }
+
+  @media @breakpoint-mobile-small {
+    &:first-child {
+      margin-bottom: 0;
+    }
+  }
+}

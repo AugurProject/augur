@@ -1,0 +1,65 @@
+// ANIMATIONS
+// shared animations
+// all mixins are pre-pended with `animation`
+// animations are assumed to be infinitely looped
+// appended `-<times>` denotes finite iteration
+
+// Default Animation Values
+@animation-speed-very-slow: 1200ms;
+@animation-speed-slow: 700ms;
+@animation-speed-normal: 500ms;
+@animation-speed-fast: 300ms;
+@animation-speed-very-fast: 200ms;
+
+// For accessibility w/in JS
+body {
+  --animation-speed-very-slow: unit(@animation-speed-very-slow);
+  --animation-speed-slow: unit(@animation-speed-slow);
+  --animation-speed-normal: unit(@animation-speed-normal);
+  --animation-speed-fast: unit(@animation-speed-fast);
+  --animation-speed-very-fast: unit(@animation-speed-very-fast);
+}
+
+@animation-direction-up: 'up';
+@animation-direction-right: 'right';
+@animation-direction-down: 'down';
+@animation-direction-left: 'left';
+
+@animation-default-type: ease-in-out;
+
+// 	Notifications
+.animation-flash-slow(@color) {
+  .animation(flash-slow @animation-speed-slow @animation-default-type infinite alternate);
+
+  .keyframes(flash-slow, {
+    0% { background: fade(@color, @amount-subtle) }
+    100% { background: fade(@color, @amount-light) }
+  });
+}
+
+// Transitions
+// Don't pass `all`.  Can potentially cause performance issues.
+// Instead, pass a comma separated list of property/timing/easing to watch for changes with a `;` at the end
+.transition(...) {
+  transition: @arguments;
+}
+
+//	Helpers
+.animation(@args) {
+  animation: @args;
+}
+
+// TODO -- deprecate this approach
+.keyframes(@name; @args) {
+  @keyframes @name { @args(); }
+}
+
+// Shared Animations
+
+.keyframes(expandElementHeight, {
+  to { height: auto; }
+});
+
+.keyframes(collapseElementHeight, {
+  to { height: 0; }
+});

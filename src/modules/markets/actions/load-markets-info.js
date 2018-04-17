@@ -1,46 +1,39 @@
-import { augur } from 'services/augurjs';
-import { updateMarketsData, updateEventMarketsMap, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data';
-import { loadCreatedMarketInfo } from 'modules/my-markets/actions/load-created-market-info';
+import { augur } from 'services/augurjs'
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
+import { updateMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading'
+import logError from 'utils/log-error'
 
-const MARKETS_PER_BATCH = 10;
+import { MARKET_INFO_LOADING, MARKET_INFO_LOADED } from 'modules/market/constants/market-loading-states'
 
-export function filterMarketsInfoByBranch(marketsData, branchID) {
-  const marketInfoIDs = Object.keys(marketsData);
-  const numMarkets = marketInfoIDs.length;
-  for (let i = 0; i < numMarkets; ++i) {
-    if (marketsData[marketInfoIDs[i]].branchID !== branchID) {
-      delete marketsData[marketInfoIDs[i]];
-    }
+export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, getState) => {
+  if (!marketIds || marketIds.length === 0) {
+    return callback(null, [])
   }
-  return marketsData;
+  (marketIds || []).map(marketId => dispatch(updateMarketLoading({ [marketId]: MARKET_INFO_LOADING })))
+
+  augur.markets.getMarketsInfo({ marketIds }, (err, marketsDataArray) => {
+    if (err) return loadingError(dispatch, callback, err, marketIds)
+
+    if (marketsDataArray == null || !marketsDataArray.length) return loadingError(dispatch, callback, `no markets data received`, marketIds)
+
+    const marketsData = marketsDataArray.filter(marketHasData => marketHasData).reduce((p, marketData) => {
+      if (marketData.id == null) return p
+
+      return {
+        ...p,
+        [marketData.id]: marketData,
+      }
+    }, {})
+
+    if (!Object.keys(marketsData).length) return loadingError(dispatch, callback, null, marketIds)
+
+    Object.keys(marketsData).forEach(marketId => dispatch(updateMarketLoading({ [marketId]: MARKET_INFO_LOADED })))
+    dispatch(updateMarketsData(marketsData))
+    callback(null, marketsData)
+  })
 }
 
-export const loadMarketsInfo = (marketIDs, cb) => (dispatch, getState) => {
-  const numMarketsToLoad = marketIDs.length;
-  (function loader(stepStart) {
-    const stepEnd = stepStart + MARKETS_PER_BATCH;
-    const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
-    dispatch(updateMarketsLoadingStatus(marketsToLoad, true));
-    augur.markets.batchGetMarketInfo({
-      marketIDs: marketsToLoad,
-      account: getState().loginAccount.address
-    }, (marketsData) => {
-      if (!marketsData || marketsData.error) {
-        console.error('ERROR loadMarketsInfo()', marketsData);
-      } else {
-        const branchMarketsData = filterMarketsInfoByBranch(marketsData, getState().branch.id);
-        const marketInfoIDs = Object.keys(branchMarketsData);
-        if (marketInfoIDs.length) {
-          dispatch(updateMarketsData(branchMarketsData));
-          marketInfoIDs.forEach((marketID) => {
-            dispatch(updateEventMarketsMap(branchMarketsData[marketID].eventID, [marketID]));
-            dispatch(loadCreatedMarketInfo(marketID));
-          });
-          dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));
-        }
-      }
-      if (stepEnd < numMarketsToLoad) return loader(stepEnd);
-      if (cb) cb();
-    });
-  }(0));
-};
+function loadingError(dispatch, callback, error, marketIds) {
+  (marketIds || []).map(marketId => dispatch(removeMarketLoading(marketId)))
+  callback(error)
+}

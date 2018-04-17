@@ -1,35 +1,32 @@
-import getOrder from 'modules/bids-asks/helpers/get-order';
-import store from 'src/store';
+import selectOrder from 'modules/bids-asks/selectors/select-order'
 
-export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
-
+export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS'
+export const UPDATE_ORDER_REMOVE = 'UPDATE_ORDER_REMOVE'
 /**
  *
- * @param {String} orderID
+ * @param {String} orderId
  * @param {String} status
- * @param {String} marketID
- * @param {String} type
+ * @param {String} marketId
+ * @param outcome
+ * @param {String} orderTypeLabel
  */
-export function updateOrderStatus(orderID, status, marketID, type) {
-  return (dispatch, getState) => {
-    const { orderBooks } = store.getState();
-
-    const order = getOrder(orderID, marketID, type, orderBooks);
-    if (order == null) {
-      warnNonExistingOrder(orderID, status, marketID, type);
-      return;
-    }
-
-    dispatch({
-      type: UPDATE_ORDER_STATUS,
-      orderID,
-      status,
-      marketID,
-      orderType: type
-    });
-  };
+export const updateOrderStatus = (orderId, status, marketId, outcome, orderTypeLabel) => (dispatch, getState) => {
+  const { orderBooks } = getState()
+  const order = selectOrder(orderId, marketId, outcome, orderTypeLabel, orderBooks)
+  if (order == null) {
+    return warnNonExistingOrder(orderId, status, marketId, outcome, orderTypeLabel)
+  }
+  dispatch({
+    type: UPDATE_ORDER_STATUS,
+    orderId,
+    status,
+    marketId,
+    orderType: orderTypeLabel,
+  })
 }
 
-function warnNonExistingOrder(orderID, status, marketID, type) {
-  return console.warn('updateOrderStatus: can\'t update %o', orderID, status, marketID, type);
+export const removeCanceledOrder = orderId => dispatch => dispatch({ type: UPDATE_ORDER_REMOVE, orderId })
+
+function warnNonExistingOrder(orderId, status, marketId, outcome, orderTypeLabel) {
+  return console.warn('updateOrderStatus: can\'t update %o', orderId, status, marketId, outcome, orderTypeLabel)
 }

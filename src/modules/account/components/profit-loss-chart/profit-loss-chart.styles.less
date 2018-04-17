@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+.ProfitLossChart {
+  flex: 1;
+  max-width: 20rem;
+  text-align: center;
+}
+
+.ProfitLossChart__Title {
+  margin-top: 1.25rem;
+  text-align: center;
+  width: 100%;
+}
+
+.ProfitLossChart__Title-label {
+  color: @color-lightergray;
+}
+
+.ProfitLossChart__Title-value {
+  color: @color-white;
+}
+
+@media @breakpoint-mobile {
+  .ProfitLossChart {
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    max-width: 100%;
+    width: 100%;
+
+    > div {
+      flex: 1 0 auto;
+    }
+  }
+
+  .ProfitLossChart__Title {
+    font-size: @font-size-rather-large;
+    margin: 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+  }
+
+  .ProfitLossChart__Title-label {
+    color: @color-lightergray;
+  }
+
+  .ProfitLossChart__Title-value {
+    color: @color-white;
+  }
+}

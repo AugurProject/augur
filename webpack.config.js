@@ -11,19 +11,21 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-// NOTE -- removed uglify temporarily as the git link was broken + we don't currently use this lib
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const GitRevisionPlugin = require('git-revision-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
   APP: path.resolve(__dirname, 'src'),
-  NODE_MODULES: path.resolve(__dirname, 'node_modules')
+  TEST: path.resolve(__dirname, 'test'),
 };
+
+const gitRevisionPlugin = new GitRevisionPlugin()
 
 // COMMON CONFIG
 let config = {
   entry: {
-    'assets/styles/styles': `${PATHS.APP}/styles`,
+    // 'assets/styles/styles': `${PATHS.APP}/styles`,
     'assets/scripts/vendor': [
       'react',
       'react-dom',
@@ -37,20 +39,28 @@ let config = {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: PATHS.BUILD,
-    publicPath: '/'
+    publicPath: ''
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
     extensions: [
       '.html',
       '.less',
+      '.json',
       '.js',
-      '.jsx',
-      '.json'
+      '.jsx'
     ],
     alias: {
+      // NOTE --  these aliases are utilized during build + linting,
+      //          only testing utilizes the aliases w/in .babelrc
+      src: PATHS.APP,
+      config: path.resolve(PATHS.APP, 'config'),
+      assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
-      utils: path.resolve(PATHS.APP, 'utils')
+      utils: path.resolve(PATHS.APP, 'utils'),
+      services: path.resolve(PATHS.APP, 'services'),
+      test: PATHS.TEST,
+      assertions: path.resolve(PATHS.TEST, 'assertions')
     },
     symlinks: false
   },
@@ -81,12 +91,26 @@ let config = {
         loader: 'babel'
       },
       {
+        test: /\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          options: {
+            inline: true
+          }
+        }
+      },
+      {
         test: /\.json/,
         loader: 'json'
+      },
+      {
+        test: /\.(woff|woff2)/,
+        loader: 'file'
       }
     ]
   },
   plugins: [
+    // new webpack.optimize.ModuleConcatenationPlugin(), // NOTE -- was causing hot-reload errors, removing until diagnosed
     new webpack.optimize.OccurrenceOrderPlugin(true),
     new CopyWebpackPlugin([
       {
@@ -94,11 +118,7 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/styles')
       },
       {
-        from: path.resolve(PATHS.APP, 'env.json'),
-        to: path.resolve(PATHS.BUILD, 'config')
-      },
-      {
-        from: path.resolve(PATHS.APP, 'manifest.json'),
+        from: path.resolve(PATHS.APP, 'config/manifest.json'),
         to: path.resolve(PATHS.BUILD, 'config')
       },
       {
@@ -114,11 +134,12 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/images')
       },
       {
-        from: path.resolve(__dirname, 'node_modules/airbitz-core-js-ui/assets'),
-        to: path.resolve(PATHS.BUILD, 'abcui/assets')
-      },
-      {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
+        to: PATHS.BUILD
+      },
+      // TODO -- move these to production debug config prior to release
+      {
+        from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
         to: PATHS.BUILD
       }
     ]),
@@ -137,7 +158,9 @@ let config = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD)
+        GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
+        ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || 'dev'),
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
       }
     })
   ],
@@ -154,8 +177,9 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   config = merge(config, {
     entry: {
       main: [
+        // 'webpack-hot-middleware/client?reload=true',
         'react-hot-loader/patch',
-        'webpack-hot-middleware/client?reload=true',
+        'webpack-hot-middleware/client',
         `${PATHS.APP}/main`
       ]
     },
@@ -165,9 +189,22 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: [
             'style-loader',
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]',
+              }
+            },
             'postcss-loader',
             'less-loader'
+          ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
           ]
         }
       ]
@@ -180,6 +217,8 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
 } else if (process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
+  // get network name like 'rinkeby' or 'clique' to set environment for UI
+  console.log(`Using development config file ${process.env.ETHEREUM_NETWORK}`)
   config = merge(config, {
     entry: {
       main: `${PATHS.APP}/main`
@@ -190,14 +229,27 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: [
             'style-loader',
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]',
+              }
+            },
             'postcss-loader',
             'less-loader'
+          ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
           ]
         }
       ]
     },
-    devtool: 'eval-source-map'
+    devtool: 'eval-source-map',
   });
 // PRODUCTION CONFIG
 } else {
@@ -209,14 +261,25 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       rules: [
         {
           test: /\.less/,
-          use: ExtractTextPlugin.extract({
-            use: [
-              'css-loader',
-              'postcss-loader',
-              'less-loader'
-            ],
-            fallback: 'style-loader'
-          }),
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]',
+              }
+            },
+            'postcss-loader',
+            'less-loader'
+          ]
+        },
+        {
+          test: /\.css/,
+          use: [
+            'style-loader',
+            'postcss-loader',
+          ]
         }
       ]
     },
@@ -225,11 +288,10 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       new ExtractTextPlugin({
         filename: '[name].css'
       }),
-      // new UglifyESPlugin({
-      //   comments: false,
-      //   dropConsole: true,
-      //   sourceMap: true
-      // })
+      new UglifyJSPlugin({
+        parallel: true,
+        sourceMap: true,
+      })
     ]
   });
 }

@@ -1,0 +1,47 @@
+@import (reference) '~assets/styles/shared';
+
+.TransactionMeta {
+  background-color: @color-lightergray;
+  border-top: 1px solid @color-lightergray-2;
+  display: table;
+  padding: 1rem 2rem 1.2rem;
+  width: 100%;
+
+  > li {
+    display: table-row;
+
+    &:not(:last-child) > span {
+      padding-bottom: 0.5rem;
+    }
+
+    > span {
+      display: table-cell;
+      white-space: nowrap;
+
+      &:first-child {
+        &:extend(.caps--small);
+      }
+
+      &:last-child {
+        padding-left: 2.5rem;
+        width: 100%;
+
+        /* width: 0; and min-width: 100%; are a nasty fix to get text-overflow: ellipsis; to work in a table layout. */
+        > span {
+          display: block;
+          min-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 0;
+        }
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .TransactionMeta {
+    padding: 1rem 1rem 1.2rem;
+  }
+}

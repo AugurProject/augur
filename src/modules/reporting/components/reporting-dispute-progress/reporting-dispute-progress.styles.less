@@ -1,0 +1,52 @@
+@import (reference) '~assets/styles/shared';
+
+.ReportingDisputeProgress__dispute-wrapper {
+  align-items: center;
+  display: flex;
+  width: 100%;
+}
+
+.ReportingDisputeProgress__graph {
+  background-color: @color-darkgray;
+  display: flex;
+  height: 0.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ReportingDisputeProgress__dispute-label {
+  color: @color-lightgray;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 0.6875rem;
+  margin-left: 1.5rem;
+  white-space: nowrap;
+}
+
+.ReportingDisputeProgress__dispute-tentative {
+  &:extend(.ReportingDisputeProgress__dispute-label);
+
+  color: @color-lighter-purple;
+  margin-left: 1.5rem;
+  text-transform: uppercase;
+}
+
+.ReportingDisputeProgress__graph-current {
+  background: @color-gray;
+  display: flex;
+  min-width: 11em;
+  position: relative;
+  width: 15rem;
+
+  > div:first-child {
+    background: @color-lighter-purple;
+    height: 100%;
+  }
+
+  > div:last-child {
+    background: @color-lightgray;
+    height: 100%;
+  }
+}

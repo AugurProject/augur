@@ -1,18 +1,20 @@
-import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
-import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
-import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary';
+import { generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary'
+import selectAllMarkets from 'modules/markets/selectors/markets-all'
+import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary'
+import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';
+import { MY_POSITIONS, MY_MARKETS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
+import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
 export default function () {
-  return selectPortfolioNavItems();
+  return selectPortfolioNavItems()
 }
 
 export const selectPortfolioNavItems = () => {
-  const positionsSummary = selectMyPositionsSummary();
-  const marketsSummary = selectMyMarketsSummary();
-  const reportsSummary = selectMyReportsSummary();
+  const markets = selectAllMarkets()
+  const positionsSummary = generateMarketsPositionsSummary(markets)
+  const marketsSummary = selectMyMarketsSummary()
+  const reportsSummary = selectMyReportsSummary()
   return [
     {
       label: 'Positions',
@@ -22,7 +24,7 @@ export const selectPortfolioNavItems = () => {
       leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
       trailingValue: (positionsSummary && positionsSummary.totalNet) || 0,
-      trailingValueNull: 'No Profit/Loss'
+      trailingValueNull: 'No Profit/Loss',
     },
     {
       label: 'Markets',
@@ -31,18 +33,18 @@ export const selectPortfolioNavItems = () => {
       leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEtherTokens(((marketsSummary && marketsSummary.totalValue) || 0)),
-      trailingValueNull: 'No Gain/Loss'
+      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0)),
+      trailingValueNull: 'No Gain/Loss',
     },
     {
       label: 'Reports',
-      view: MY_REPORTS,
+      view: PORTFOLIO_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatRep((reportsSummary && reportsSummary.netRep)),
-      trailingValueNull: 'No Gain/Loss'
-    }
-  ];
-};
+      trailingValueNull: 'No Gain/Loss',
+    },
+  ]
+}

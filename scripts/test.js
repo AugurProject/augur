@@ -3,7 +3,7 @@ const Listr = require('listr');
 
 const colors = require('./common/colors');
 
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = process.env.BABEL_ENV = 'test';
 process.env.FORCE_COLOR = true;
 
 shell.echo(`
@@ -11,7 +11,7 @@ ${process.argv[2] ? colors.title(`== Running Test: ${colors.notice(process.argv[
 `);
 
 const tests = new Promise((resolve, reject) => {
-  shell.exec(`mocha --require babel-register ${process.argv[2] || ''} --timeout 10000`, (code, stdout, stderr) => {
+  shell.exec(`mocha ${process.argv[2] || `"{src/**/*[-\.]test,test/**/*}.js?(x)"`} --timeout 10000`, (code, stdout, stderr) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);

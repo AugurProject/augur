@@ -1,0 +1,22 @@
+@import (reference) '~assets/styles/shared';
+
+.CategoryTagTrail {
+  display: flex;
+  // Required to make ellipsis work.
+  min-width: 0;
+
+  > div {
+    margin-right: 2rem;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .CategoryTagTrail {
+    flex-flow: column;
+
+    > div:not(:first-child) {
+      margin-right: 0;
+      margin-top: 0.5rem;
+    }
+  }
+}

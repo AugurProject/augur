@@ -1,21 +1,20 @@
-import React from 'react';
-import classNames from 'classnames';
-import ReactTooltip from 'react-tooltip';
+import React from 'react'
+import classNames from 'classnames'
+// import ReactTooltip from 'react-tooltip'
 
-import ValueDenomination from 'modules/common/components/value-denomination';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
+import getValue from 'utils/get-value'
 
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'
 
 const OrderBookRowSide = (p) => {
-  const orders = getValue(p, 'orders');
-  const nullMessage = 'No Orders';
-  const side = p.type || SELL;
-  const shouldHighlight = (side === BUY && p.selectedTradeSide[p.id] === SELL) || (side !== BUY && p.selectedTradeSide[p.id] === BUY) || (side !== BUY && p.selectedTradeSide[p.id] == null);
+  const orders = getValue(p, 'orders')
+  const nullMessage = 'No Orders'
+  const side = p.type || SELL
+  const shouldHighlight = (side === BUY && p.selectedTradeSide[p.id] === SELL) || (side !== BUY && p.selectedTradeSide[p.id] === BUY) || (side !== BUY && p.selectedTradeSide[p.id] == null)
 
   return (
     <article className={`order-book-row-side ${shouldHighlight ? 'order-book-row-side-trading' : ''}`}>
@@ -23,9 +22,9 @@ const OrderBookRowSide = (p) => {
         <NullStateMessage message={nullMessage} /> :
         <div>
           {(p.orders || []).map((order, i) => {
-            const shares = setShareDenomination(getValue(order, 'shares.formatted'), p.selectedShareDenomination);
-            const price = getValue(order, 'price.formatted');
-            const type = p.type || SELL;
+            const shares = getValue(order, 'shares.formatted')
+            const price = getValue(order, 'price.formatted')
+            const type = p.type || SELL
 
             return (
               <div
@@ -39,7 +38,7 @@ const OrderBookRowSide = (p) => {
                 <button
                   className="unstyled"
                   onClick={() => {
-                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? SHARE : PRICE);
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? SHARE : PRICE)
                   }}
                 >
                   <ValueDenomination formatted={side === BUY ? shares : price} />
@@ -47,30 +46,31 @@ const OrderBookRowSide = (p) => {
                 <button
                   className="unstyled"
                   onClick={() => {
-                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? PRICE : SHARE);
+                    p.updateTradeFromSelectedOrder(p.id, i, side, side === BUY ? PRICE : SHARE)
                   }}
                 >
                   <ValueDenomination formatted={side === BUY ? price : shares} />
                 </button>
-                {order.isOfCurrentUser &&
-                <ReactTooltip
-                  id={`${type}-${i}-orders`}
-                  type="info"
-                  effect="solid"
-                  place="top"
-                >
-                  <span className="tooltip-text">
-                    Your Order
-                  </span>
-                </ReactTooltip>
-                }
               </div>
-            );
+            )
           })}
         </div>
       }
     </article>
-  );
-};
+  )
+}
 
-export default OrderBookRowSide;
+export default OrderBookRowSide
+
+// {order.isOfCurrentUser &&
+// <ReactTooltip
+//   id={`${type}-${i}-orders`}
+//   type="info"
+//   effect="solid"
+//   place="top"
+// >
+//   <span className="tooltip-text">
+//     Your Order
+//   </span>
+// </ReactTooltip>
+// }

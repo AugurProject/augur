@@ -1,0 +1,77 @@
+@import (reference) '~assets/styles/shared';
+
+.Dropdown {
+  color: @color-lightgray;
+  cursor: pointer;
+  display: flex;
+  margin-right: 1em;
+  position: relative;
+  z-index: 1;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.Dropdown__angle-down {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: -1;
+}
+
+.Dropdown__label {
+  &:extend(.caps--medium);
+
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
+.Dropdown__list {
+  background-color: @color-white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: @color-darkpurple;
+  display: none;
+  font-size: @font-size-small;
+  line-height: @font-size-small;
+  padding: 0.5rem 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+
+  &.active {
+    display: block;
+  }
+
+  > button {
+    background-color: inherit;
+    cursor: pointer;
+    padding: 0.25rem 1rem;
+    text-align: left;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    width: 100%;
+
+    &:hover,
+    &.active {
+      background-color: @color-lightergray;
+    }
+  }
+}
+
+.Dropdown__select {
+  display: none;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
+@media @breakpoint-mobile-medium {
+  .Dropdown__label,
+  .Dropdown__list,
+  .Dropdown__list.active {
+    display: none;
+  }
+
+  .Dropdown__select {
+    display: block;
+  }
+}

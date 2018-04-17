@@ -1,31 +1,57 @@
-import { augur } from 'services/augurjs';
-import { updateTradeCommitment, updateTradeCommitLock } from 'modules/trade/actions/update-trade-commitment';
-import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
+import { augur } from 'services/augurjs'
+import { BUY } from 'modules/transactions/constants/types'
+import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress'
+import { createBigNumber } from 'utils/create-big-number'
+import { updateModal } from 'modules/modal/actions/update-modal'
+import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
+import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
+import logError from 'utils/log-error'
+import noop from 'utils/noop'
 
-export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, cb) => (dispatch, getState) => {
-  if (!marketID) return null;
-  const { loginAccount, marketsData } = getState();
-  const market = marketsData[marketID];
-
-  if (!trades || !market || outcomeID == null) {
-    console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
-    return dispatch(clearTradeInProgress(marketID));
+export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = noop) => (dispatch, getState) => {
+  if (!marketId) return null
+  const { loginAccount, marketsData } = getState()
+  const market = marketsData[marketId]
+  if (!tradeInProgress || !market || outcomeId == null) {
+    console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
+    return dispatch(clearTradeInProgress(marketId))
   }
-  const tradeGroupID = augur.trading.group.executeTradingActions(
-    { _signer: loginAccount.privateKey },
-    market,
-    outcomeID,
-    loginAccount.address,
-    () => getState().orderBooks,
-    doNotMakeOrders,
-    trades,
-    data => dispatch(updateTradeCommitment(data)),
-    isLocked => dispatch(updateTradeCommitLock(isLocked)),
-    (err, tradeGroupID) => {
-      if (err) console.error('place trade:', err, marketID, tradeGroupID);
-      cb && cb(err, tradeGroupID);
-    }
-  );
-  dispatch(clearTradeInProgress(marketID));
-  cb && cb(null, tradeGroupID);
-};
+  const bnAllowance = createBigNumber(loginAccount.allowance)
+  // try and make sure that we actually have an updated allowance.
+  if (bnAllowance.lte(0)) dispatch(checkAccountAllowance())
+  const placeTradeParams = {
+    meta: loginAccount.meta,
+    amount: tradeInProgress.numShares,
+    limitPrice: tradeInProgress.limitPrice,
+    estimatedCost: tradeInProgress.totalCost,
+    minPrice: market.minPrice,
+    maxPrice: market.maxPrice,
+    numTicks: market.numTicks,
+    _direction: tradeInProgress.side === BUY ? 0 : 1,
+    _market: marketId,
+    _outcome: parseInt(outcomeId, 10),
+    _tradeGroupId: tradeInProgress.tradeGroupId,
+    doNotCreateOrders,
+    onSent: () => callback(null, tradeInProgress.tradeGroupId),
+    onFailed: callback,
+    onSuccess: onComplete,
+  }
+  // use getState to get the latest version of allowance.
+  if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {
+    dispatch(updateModal({
+      type: MODAL_ACCOUNT_APPROVAL,
+      approveOnSent: () => {
+        augur.trading.placeTrade(placeTradeParams)
+        dispatch(clearTradeInProgress(marketId))
+      },
+      approveCallback: (err, res) => {
+        if (err) return callback(err)
+        augur.trading.placeTrade(placeTradeParams)
+        dispatch(clearTradeInProgress(marketId))
+      },
+    }))
+  } else {
+    augur.trading.placeTrade(placeTradeParams)
+    dispatch(clearTradeInProgress(marketId))
+  }
+}

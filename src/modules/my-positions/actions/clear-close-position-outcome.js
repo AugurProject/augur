@@ -1,9 +1,9 @@
-export const CLEAR_CLOSE_POSITION_OUTCOME = 'CLEAR_CLOSE_POSITION_OUTCOME';
+export const CLEAR_CLOSE_POSITION_OUTCOME = 'CLEAR_CLOSE_POSITION_OUTCOME'
 
-export function clearClosePositionOutcome(marketID, outcomeID) {
+export function clearClosePositionOutcome(marketId, outcomeId) {
   return {
     type: CLEAR_CLOSE_POSITION_OUTCOME,
-    marketID,
-    outcomeID
-  };
+    marketId,
+    outcomeId,
+  }
 }

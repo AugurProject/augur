@@ -1,0 +1,123 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalParticipateReview__form {
+  color: @color-white;
+  width: 100%;
+}
+
+.ModalParticipateReview__heading {
+  align-items: flex-start;
+  display: flex;
+  margin: 0 2rem 1.5rem;
+
+  > svg {
+    width: 1.875rem;
+  }
+
+  > h1 {
+    .caps--extra-large();
+
+    color: @color-white;
+    margin: -0.25rem 0 0 1rem;
+  }
+}
+
+.ModalParticipateReview__details {
+  .border(true, @border-top, @color-white);
+  .border(true, @border-bottom, @color-white);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 1rem 2rem;
+  padding: 1rem 0;
+}
+
+.ModalParticipateReview__labels {
+  flex: 0 1;
+  white-space: nowrap;
+  word-break: keep-all;
+
+  > li {
+    padding: 0.5rem 0;
+    text-transform: uppercase;
+  }
+}
+
+.ModalParticipateReview__values {
+  flex: 1 100%;
+  margin-left: 5rem;
+  white-space: nowrap;
+  word-break: keep-all;
+
+  > li {
+    padding: 0.5rem 0;
+  }
+}
+
+.ModalParticipateReview__actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 0 2rem;
+}
+
+.ModalParticipateReview__button {
+  .button--white();
+
+  margin-top: 2rem;
+}
+
+@media @breakpoint-mobile-small {
+  .ModalParticipateReview__heading {
+    margin: 0 1rem 1rem;
+
+    > h1 {
+      font-size: @font-size-somewhat-large;
+      line-height: @font-size-somewhat-large;
+      margin-top: 0;
+    }
+  }
+
+  .ModalParticipateReview__details {
+    // borders need to come in as well, so use margin for details
+    margin: 0 1rem 1rem;
+  }
+
+  .ModalParticipateReview__values {
+    margin-left: 3rem;
+  }
+
+  .ModalParticipateReview__actions {
+    bottom: 0;
+    flex-wrap: wrap;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+
+    > button {
+      border-radius: 0;
+      margin: 0;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+
+        &:disabled {
+          background-color: @color-lightgray;
+          color: @color-lightergray;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .ModalParticipateReview__button {
+    width: 100%;
+  }
+}

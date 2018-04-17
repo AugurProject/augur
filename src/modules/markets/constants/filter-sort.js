@@ -1,51 +1,47 @@
 // Filter/Sort Defaults
-export const FILTER_SORT_TYPE = 'open';
-export const FILTER_SORT_SORT = 'volume';
-export const FILTER_SORT_ISDESC = true;
+export const FILTER_SORT_TYPE = 'open'
+export const FILTER_SORT_SORT = 'volume'
+export const FILTER_SORT_ISDESC = true
 
 // Filter Types
-export const FILTER_TYPE_OPEN = 'open';
-export const FILTER_TYPE_REPORTING = 'reporting';
-export const FILTER_TYPE_CLOSED = 'closed';
+export const FILTER_TYPE_OPEN = 'open'
+export const FILTER_TYPE_REPORTING = 'reporting'
+export const FILTER_TYPE_CLOSED = 'closed'
 
 export const SELECT_TYPE_OPTIONS = [
   {
     label: 'Open',
-    value: FILTER_TYPE_OPEN
+    value: FILTER_TYPE_OPEN,
   },
   {
     label: 'Reporting',
-    value: FILTER_TYPE_REPORTING
+    value: FILTER_TYPE_REPORTING,
   },
   {
     label: 'Closed',
-    value: FILTER_TYPE_CLOSED
-  }
-];
+    value: FILTER_TYPE_CLOSED,
+  },
+]
 
 export const SELECT_SORT_OPTIONS = [
   {
     label: 'Volume',
-    value: 'volume'
+    value: 'volume',
   },
   {
     label: 'Newest',
-    value: 'creationTime'
+    value: 'creationTime',
   },
   {
     label: 'Expiration',
-    value: 'endDate'
+    value: 'endTime',
   },
   {
-    label: 'Taker Fee',
-    value: 'takerFeePercent'
+    label: 'Settlement Fee',
+    value: 'settlementFeePercent',
   },
-  {
-    label: 'Maker Fee',
-    value: 'makerFeePercent'
-  }
-];
+]
 
 export const SELECT_ORDER_OPTIONS = {
-  isDesc: true
-};
+  isDesc: true,
+}

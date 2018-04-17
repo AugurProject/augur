@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const EtherLogo = () => (
@@ -35,6 +35,6 @@ const EtherLogo = () => (
     <polygon className="ether-logo-cls-3" points="634.4 945 634.4 1269 1030.6 711 634.4 945" />
     <polygon className="ether-logo-cls-4" points="634.4 891 1030.4 657 634.4 477 634.4 891" />
   </svg>
-);
+)
 
-export default EtherLogo;
+export default EtherLogo

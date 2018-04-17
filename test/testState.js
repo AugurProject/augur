@@ -1,422 +1,415 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env.json';
+import network from 'config/network'
 
-import { formatNumber, formatShares } from 'utils/format-number';
-import { formatDate } from 'utils/format-date';
-import { BUY } from 'modules/transactions/constants/types';
+import { formatNumber, formatShares } from 'utils/format-number'
+import { formatDate } from 'utils/format-date'
+import { BUY } from 'modules/transactions/constants/types'
 
 const testState = {
   marketLoading: [],
   activeView: 'markets',
   accountTrades: {
-    testMarketID: {
-      testoutcomeID: [
-        { type: 1, price: '0.5', amount: '50' }
-      ]
-    }
+    testMarketId: {
+      testoutcomeId: [
+        { type: 1, price: '0.5', amount: '50' },
+      ],
+    },
   },
   auth: {
     err: null,
-    selectedAuthType: 'register'
+    selectedAuthType: 'register',
   },
   blockchain: {
-    currentBlockMillisSinceEpoch: 1461774253983,
     currentBlockTimestamp: 1461774253,
-    currentBlockNumber: 833339
+    currentBlockNumber: 833339,
   },
-  branch: {
+  universe: {
     id: '0xf69b5',
-    description: 'root branch',
-    periodLength: 4000,
-    currentPeriod: 20,
-    isReportRevealPhase: true,
-    reportPeriod: 19,
-    currentPeriodProgress: 52,
-    baseReporters: 6,
-    numEventsCreatedInPast24Hours: 4,
-    numEventsInReportPeriod: 3
+    description: 'root universe',
+    reportingPeriodDurationInSeconds: 4000,
+    currentReportingWindowAddress: 19,
+    currentReportingPeriodPercentComplete: 52,
   },
   connection: {
-    isConnected: true
+    isConnected: true,
+    isConnectedToAugurNode: true,
+    augurNodeNetworkId: '4',
+    isReconnectionPaused: false,
   },
   createMarketInProgress: {},
   favorites: {
-    testMarketID: true
+    testMarketId: true,
   },
-  env,
+  env: network[`${process.env.ETHEREUM_NETWORK || 'dev'}`],
   loginAccount: {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
-    loginID: 'testSecureID',
+    loginId: 'testSecureId',
     privateKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex'),
     derivedKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000002', 'hex'),
     keystore: {
-      address: '0x0000000000000000000000000000000000000001'
+      address: '0x0000000000000000000000000000000000000001',
     },
     localNode: false,
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',
-    prettyLoginID: 'test...reID',
+    prettyLoginId: 'test...reId',
+    ethTokens: 0,
     ether: 0,
     realEther: 0,
-    rep: 0
+    rep: 0,
   },
-  keywords: 'test testtag',
+  tags: 'test testtag',
   marketsData: {
-    testMarketID: {
+    testMarketId: {
+      id: 'testMarketId',
+      consensus: null,
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID',
       name: 'testMarket',
       description: 'some test description',
-      endDate: 123,
-      type: 'scalar',
-      minValue: 1,
-      maxValue: 2,
-      makerFee: 0.02,
-      takerFee: 0.05,
+      endTime: 123,
+      minPrice: 1,
+      maxPrice: 2,
       volume: 500,
       tags: ['tag1', 'tag2', 'tag3'],
       resolution: 'http://lmgtfy.com',
       creationTime: 100,
       creationBlock: 42,
+      numOutcomes: 2,
+      marketType: 'binary',
       outstandingShares: formatShares(10),
-      extraInfo: 'some extra info'
+      details: 'some extra info',
+      settlementFee: '0.000100000001193046',
+      reportingFeeRate: 0.0001,
+      creationFee: 0.025,
+      marketCreatorFeeRate: 0.00000000001193046,
     },
-    testMarketID2: {
+    testMarketId2: {
+      id: 'testMarketId2',
+      consensus: null,
       author: '0x0000000000000000000000000000000000000001',
-      eventID: 'testEventID2',
       name: 'testMarket2',
       description: 'some test description',
-      endDate: 123,
-      type: 'binary',
-      minValue: 1,
-      maxValue: 2,
-      makerFee: 0.02,
-      takerFee: 0.05,
+      endTime: 123,
+      minPrice: 1,
+      maxPrice: 2,
+      marketType: 'binary',
       volume: 500,
       tags: ['tag1', 'tag2', 'tag3'],
       resolution: 'http://lmgtfy.com',
       creationTime: 100,
       creationBlock: 42,
       outstandingShares: formatShares(10),
-      extraInfo: 'some extra info',
-      numOutcomes: 2
-    }
+      details: 'some extra info',
+      numOutcomes: 2,
+      settlementFee: '0.000100000001193046',
+      reportingFeeRate: 0.0001,
+      creationFee: 0.025,
+      marketCreatorFeeRate: 0.00000000001193046,
+    },
   },
   orderBooks: {
-    testMarketID: {
-      buy: {
-        '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
-          amount: '10',
-          block: 1234,
-          id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-          market: 'testMarketID',
-          outcome: '2',
-          owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
-          price: '0.42',
-          type: 'buy'
+    testMarketId: {
+      2: {
+        buy: {
+          '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
+            amount: '10',
+            block: 1234,
+            id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+            market: 'testMarketId',
+            outcome: '2',
+            owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
+            price: '0.42',
+            type: 'buy',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.42',
+            sharesEscrowed: '10',
+            tokensEscrowed: '',
+          },
+          buyOrder2Id: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder2Id',
+            market: 'testMarketId',
+            outcome: '2',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.42',
+            sharesEscrowed: '0',
+            tokensEscrowed: '4.2',
+          },
         },
-        buyOrder2ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder2ID',
-          market: 'testMarketID',
-          outcome: '2',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.42',
-          type: 'buy'
-        },
-        buyOrder3ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder3ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.42',
-          type: 'buy'
-        },
-        buyOrder4ID: {
-          amount: '10',
-          block: 1234,
-          id: 'buyOrder4ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x0000000000000000000000000000000000000001',
-          price: '0.44',
-          type: 'buy'
-        }
       },
-      sell: {
-        '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
-          amount: '20',
-          block: 1235,
-          id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
-          price: '0.58',
-          type: 'sell'
+      1: {
+        buy: {
+          buyOrder3Id: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder3Id',
+            market: 'testMarketId',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.42',
+            sharesEscrowed: '0',
+            tokensEscrowed: '4.2',
+          },
+          buyOrder4Id: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder4Id',
+            market: 'testMarketId',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.44',
+            type: 'buy',
+            fullPrecisionAmount: '10',
+            fullPrecisionPrice: '0.44',
+            sharesEscrowed: '0',
+            tokensEscrowed: '4.4',
+          },
         },
-        sellOrder2ID: {
-          amount: '20',
-          block: 1235,
-          id: 'sellOrder2ID',
-          market: 'testMarketID',
-          outcome: '1',
-          owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
-          price: '0.59',
-          type: 'sell'
-        }
-      }
-    }
+        sell: {
+          '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
+            amount: '20',
+            block: 1235,
+            id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
+            market: 'testMarketId',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.58',
+            type: 'sell',
+            fullPrecisionAmount: '20',
+            fullPrecisionPrice: '0.58',
+            sharesEscrowed: '20',
+            tokensEscrowed: '0',
+          },
+          sellOrder2Id: {
+            amount: '20',
+            block: 1235,
+            id: 'sellOrder2Id',
+            market: 'testMarketId',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.59',
+            type: 'sell',
+            fullPrecisionAmount: '20',
+            fullPrecisionPrice: '0.59',
+            sharesEscrowed: '0',
+            tokensEscrowed: '8.2',
+          },
+        },
+      },
+    },
   },
   orderCancellation: {
-    'an orderID': 'a status'
+    'an orderId': 'a status',
   },
   outcomesData: {
-    testMarketID: {
+    testMarketId: {
       1: {
         id: '1',
         outstandingShares: '47',
         name: 'testOutcome',
-        price: 35
+        price: '0.5',
       },
       2: {
         id: '2',
         outstandingShares: '156',
         name: 'testOutcome 2',
-        price: 50
+        price: '0.5',
       },
-      3: {
-        id: '3',
-        outstandingShares: '13',
-        name: 'testOutcome 3',
-        price: 48
-      },
-      4: {
-        id: '4',
-        outstandingShares: '156',
-        name: 'testOutcome 4',
-        price: 75
-      }
-    }
+    },
   },
   pagination: {
     numPerPage: 10,
-    selectedPageNum: 1
+    selectedPageNum: 1,
   },
   priceHistory: {
-    testMarketID: {},
+    testMarketId: {},
     '0xMARKET1': {
       0: [
         { amount: 10 },
-        { amount: 20 }
+        { amount: 20 },
       ],
       1: [
         { amount: 10 },
-        { amount: 20 }
-      ]
+        { amount: 20 },
+      ],
     },
     '0xMARKET2': {
       0: [
         { amount: 10 },
-        { amount: 20 }
+        { amount: 20 },
       ],
       1: [
         { amount: 10 },
-        { amount: 20 }
-      ]
+        { amount: 20 },
+      ],
     },
   },
   reports: {
     '0xf69b5': {
-      testEventID: {
-        eventID: 'testEventID',
+      testMarketId: {
+        marketId: 'testMarketId',
         isScalar: false,
         isIndeterminate: false,
-        isUnethical: false,
-        isRevealed: false
-      }
-    }
+        isSubmitted: false,
+      },
+    },
   },
-  selectedMarketID: 'testMarketID',
+  selectedMarketId: 'testMarketId',
   selectedMarketsHeader: 'testMarketHeader',
   selectedFilterSort: {
     type: 'open',
     sort: 'volume',
-    isDesc: true
+    isDesc: true,
   },
   selectedTags: {
     testtag: {
-      name: 'testtag'
+      name: 'testtag',
     },
     tag: {
-      name: 'tag'
-    }
+      name: 'tag',
+    },
   },
   tradesInProgress: {
-    testMarketID: {
-      numShares: 5000,
-      limitPrice: '0.50',
-      totalCost: '2500',
-      type: 'binary',
-      side: BUY
-    }
+    testMarketId: {
+      1: {
+        numShares: 5000,
+        limitPrice: '0.50',
+        totalCost: '2500',
+        type: 'binary',
+        side: BUY,
+        sharesFilled: 5000,
+      },
+    },
   },
-  tradeCommitLock: {},
-  reportCommitLock: {},
   transactionsData: {
     testtransaction12345: {
       id: 'testtransaction12345',
       message: 'CORS request rejected: https://faucet.augur.net/faucet/0x0000000000000000000000000000000000000001',
       status: 'failed',
       type: 'register',
-      data: {}
-    }
+      data: {},
+    },
   },
   marketCreatorFees: {
-    '0xMARKET1': 21
-  },
-  marketTrades: {
-    '0xMARKET1': {
-      0: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ],
-      1: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ]
-    },
-    '0xMARKET2': {
-      0: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ],
-      1: [
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' },
-        { test: 'test' }
-      ]
-    },
+    '0xMARKET1': 21,
   },
   allMarkets: [
     {
       id: '0xMARKET1',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-1',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
+            ],
+          },
         },
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     },
     {
       id: '0xMARKET2',
       author: '0x0000000000000000000000000000000000000001',
       description: 'test-market-2',
-      endDate: formatDate(new Date('2017/12/12')),
+      endTime: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
       outcomes: [
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
+            ],
+          },
         },
         {
           orderBook: {
             bid: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
             ],
             ask: [
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
               {
-                shares: formatShares(10)
+                shares: formatShares(10),
               },
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     },
     {
       id: '0xMARKET3',
-      author: '0xtest456'
+      author: '0xtest456',
     },
     {
       id: '0xMARKET4',
-      author: '0xtest456'
-    }
-  ]
-};
+      author: '0xtest456',
+    },
+  ],
+}
 
-export default testState;
+export default testState

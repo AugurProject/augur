@@ -1,7 +1,7 @@
-export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
-export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
-export const UPDATE_NOTIFICATION = 'UPDATE_NOTIFICATION';
-export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
+export const ADD_NOTIFICATION = 'ADD_NOTIFICATION'
+export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION'
+export const UPDATE_NOTIFICATION = 'UPDATE_NOTIFICATION'
+export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS'
 
 export function addNotification(notification) {
   if (notification != null) {
@@ -10,32 +10,32 @@ export function addNotification(notification) {
       data: {
         notification: {
           seen: false,
-          ...notification
-        }
-      }
-    };
+          ...notification,
+        },
+      },
+    }
   }
 }
 
-export function removeNotification(index) {
+export function removeNotification(id) {
   return {
     type: REMOVE_NOTIFICATION,
-    data: index
-  };
+    data: id,
+  }
 }
 
-export function updateNotification(index, notification) {
+export function updateNotification(id, notification) {
   return {
     type: UPDATE_NOTIFICATION,
     data: {
-      index,
-      notification
-    }
-  };
+      id,
+      notification,
+    },
+  }
 }
 
 export function clearNotifications() {
   return {
-    type: CLEAR_NOTIFICATIONS
-  };
+    type: CLEAR_NOTIFICATIONS,
+  }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const ScalarIcon = () => (
@@ -16,6 +16,6 @@ const ScalarIcon = () => (
     </g>
   </svg>
 
-);
+)
 
-export default ScalarIcon;
+export default ScalarIcon

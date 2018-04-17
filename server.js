@@ -1,9 +1,10 @@
 const express = require('express');
 const helmet = require('helmet');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
-
-const PROD_HOST = 'app.augur.net';
 
 if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
@@ -26,21 +27,25 @@ if (process.env.NODE_ENV === 'development') {
   app.use(express.static('build'));
 }
 
-app.use(helmet());
-app.use(require('prerender-node').set('prerenderToken', process.env.RENDERTOKEN));
+app.listen = function () {
+  let server = null;
 
-// redirect production site to secure version
-app.get('*', (req, res, next) => {
-  // res.sendFile(path.resolve(__dirname, 'build/index.html'));
-  if (req.headers['x-forwarded-proto'] !== 'https' && req.get('host') === PROD_HOST) {
-    res.redirect('https://' + PROD_HOST + req.url);
+  if (process.env.USE_SSL === 'true') {
+    const key = fs.readFileSync('augur-local.key');
+    const cert = fs.readFileSync('augur-local.crt');
+
+    server = https.createServer(
+      {
+        key,
+        cert
+      },
+      this
+    )
   } else {
-    next();   // continue to other routes if we're not redirecting
+    server = http.createServer(this)
   }
-});
 
-app.get('/', (req, res) => {
-  console.log('loaded');
-});
+  return server.listen.apply(server, arguments);
+}
 
 app.listen(process.env.PORT || 8080);

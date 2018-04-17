@@ -1,0 +1,87 @@
+@import (reference) "~assets/styles/shared";
+
+.LedgerConnect {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+
+  @media @breakpoint-small-desktop {
+    flex-flow: column;
+  }
+}
+
+.LedgerConnect__action {
+  align-items: center;
+  display: flex;
+  flex: 3 1 auto;
+  justify-content: center;
+
+  @media @breakpoint-small-desktop {
+    flex: 1 auto;
+    margin-bottom: 2rem;
+  }
+}
+
+.LedgerConnect__button {
+  &:extend(.button--purple all);
+
+  padding: 0 2rem;
+}
+
+.LedgerConnect__messages {
+  .border(true, @border-top, @border-light);
+
+  align-items: center;
+  background-color: @color-gray;
+  color: @color-white;
+  display: flex;
+  flex: 0.5 0 auto;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+  padding: 1.5em 0;
+
+  @media @breakpoint-small-desktop {
+    flex: 2 0 0%;
+    min-width: 100%;
+  }
+
+  svg {
+    align-self: center;
+    height: 3em;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  ul {
+    list-style: disc;
+    margin-top: 1em;
+    padding-left: 1.2em;
+
+    li {
+      margin: 0.2em 0;
+    }
+  }
+}
+
+.LedgerConnect__messages--visible {
+  visibility: visible;
+}
+
+@media @breakpoint-mobile-small {
+  .LedgerConnect {
+    flex-wrap: wrap;
+  }
+
+  .LedgerConnect__action {
+    flex: auto;
+    margin-bottom: 2rem;
+  }
+
+  .LedgerConnect__messages {
+    flex: auto;
+  }
+}

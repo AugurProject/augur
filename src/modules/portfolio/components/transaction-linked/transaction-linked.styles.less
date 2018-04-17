@@ -1,0 +1,50 @@
+@import (reference) '~assets/styles/shared';
+
+.LinkedTransaction__message {
+  align-items: center;
+  background-color: @color-input-background;
+  border-top: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  text-align: left;
+  width: 100%;
+
+  > div {
+    overflow: hidden;
+    padding-right: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.LinkedTransaction__message-chevron {
+  transition: transform 0.3s ease;
+
+  &.is-open {
+    transform: rotate(-180deg);
+  }
+
+  > svg {
+    width: 1.5rem;
+  }
+}
+
+.LinkedTransaction__message-text {
+  &:extend(.caps--large);
+
+  font-weight: 700;
+}
+
+.LinkedTransaction__status {
+  &:extend(.caps--extra-small);
+
+  font-weight: 500;
+  margin-bottom: 0.625rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .LinkedTransaction__message {
+    padding: 1rem;
+  }
+}

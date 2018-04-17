@@ -1,0 +1,39 @@
+@import (reference) '~assets/styles/shared';
+
+.Category__name {
+  .caps--massive();
+
+  font-weight: 400;
+  letter-spacing: 0.051em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.Category__link {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
+
+.Category__link-hidden {
+  display: block;
+  opacity: 0;
+  text-decoration: none;
+  visibility: hidden;
+}
+
+.Category__separator {
+  background: @color-very-lightpurple;
+  height: 0.0625rem;
+  margin: 1.25rem auto;
+  width: 12.125rem;
+}
+
+.Category__popularity {
+  .caps--large();
+
+  font-weight: 300;
+}

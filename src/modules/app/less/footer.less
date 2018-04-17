@@ -1,3 +1,5 @@
+@import (reference) '~assets/styles/shared';
+
 footer {
 
   .border(true, @border-top);
@@ -31,34 +33,21 @@ footer {
     }
 
     .nav-toggler-button {
-
-      .font-color-light();
-
       background-color: @color-nav-background;
       border-radius: 1.75em 1.75em 0 0;
       height: 1.75em;
       position: relative;
       top: 0.3em;
       width: 3.5em;
-
-      i {
-        .font-size-large();
-      }
     }
   }
 
   #footer_content {
-
-    .font-size-medium();
-
     display: flex;
     justify-content: center;
     pointer-events: all;
 
     @media @breakpoint-mobile {
-
-      .font-color-light;
-
       background-color: @color-nav-background;
       margin: 0;
     }

@@ -1,0 +1,29 @@
+@import (reference) '~assets/styles/shared';
+
+.MobileStats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  > li {
+    color: @color-white;
+
+    > span:first-child {
+      &:extend(.caps--small);
+
+      color: @color-lightgray;
+      margin-right: 1rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MobileStats > li {
+    width: 50%;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-bottom: 1rem;
+    }
+  }
+}

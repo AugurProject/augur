@@ -1,0 +1,137 @@
+@import (reference) '~assets/styles/shared';
+
+.Input {
+  .border(true, @border-all, @color-transparent, @border-width-2);
+
+  background-color: @color-input-background;
+  display: flex;
+
+  button,
+  .input-value-comparison {
+    background-color: @color-input-background;
+    font-weight: 500;
+  }
+
+  input {
+    .border(true, @border-all, @color-transparent, @border-width-2);
+
+    display: flex;
+    flex: 1;
+  }
+
+  input:focus {
+    .border(true, @border-all, @color-transparent, @border-width-2);
+  }
+
+  &:focus-within {
+    .border(true, @border-all, @color-input-border, @border-width-2);
+  }
+
+  .fa-search {
+    align-items: center;
+    background-color: transparent;
+    display: flex;
+    padding: 0 1em;
+  }
+
+  .box {
+    font-size: inherit;
+    padding: 1em;
+    width: 100%;
+
+    &.search-input {
+      padding-left: 0;
+    }
+  }
+
+  .close {
+    background-color: @color-transparent;
+    height: @font-size-medium;
+    line-height: @font-size-medium;
+    width: @font-size-medium;
+  }
+}
+
+.noFocus {
+  &:focus-within {
+    .border(true, @border-all, @color-transparent, @border-width-2);
+  }
+}
+
+.Input__max {
+  .caps--small();
+
+  color: @color-purple;
+  padding: 0 1rem;
+}
+
+.Input__Incremental {
+  .border(true, @border-all, @color-transparent, @border-width-2);
+
+  background-color: @color-input-background;
+  display: flex;
+
+  .box {
+    font-size: inherit;
+    padding: 1em;
+    width: 80%;
+
+    &.search-input {
+      padding-left: 0;
+    }
+  }
+
+  button,
+  .input-value-comparison {
+    background-color: @color-input-background;
+  }
+
+  input {
+    .border(true, @border-all, @color-transparent, @border-width-2);
+
+    display: flex;
+    flex: 1 1 auto;
+  }
+
+  input:focus {
+    .border(true, @border-all, @color-transparent, @border-width-2);
+  }
+
+  &:focus-within {
+    .border(true, @border-all, @color-input-border, @border-width-2);
+  }
+
+  input[type='number'] {
+    appearance: textfield;
+  }
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .fa-search {
+    align-items: center;
+    background-color: transparent;
+    display: flex;
+    padding: 0 1em;
+  }
+}
+
+.value__incrementers {
+  // .border(true, @border-left);
+
+  display: flex;
+  flex-direction: column;
+
+  button {
+    cursor: default;
+    flex: 1;
+    padding: 0 0.2em;
+
+    &:active {
+      background-color: @color-gray;
+    }
+  }
+}

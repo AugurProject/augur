@@ -1,0 +1,41 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingContent {
+  color: white;
+  width: 100%;
+
+  h4 {
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 0.8em;
+    line-height: 1.5em;
+  }
+
+  &.expanded {
+    background: #494057;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.ForkingContent__container {
+  padding-top: 1em;
+
+  &.expanded {
+    margin-left: 15%;
+    margin-right: 5%;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    width: 80%;
+  }
+}
+
+.ForkingContent__migrate_rep_button {
+  &:extend(.button--white);
+
+  margin-top: 2em;
+  padding: 0 0.4em 0.166em;
+  width: 9.75em;
+}

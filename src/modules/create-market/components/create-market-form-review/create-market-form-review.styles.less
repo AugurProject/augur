@@ -1,0 +1,82 @@
+@import (reference) '~assets/styles/shared';
+
+.CreateMarketReview {
+  color: @color-white;
+  width: 36rem;
+}
+
+.CreateMarketReview__heading {
+  &:extend(.caps--large);
+
+  border-bottom: 1px solid @color-input-background;
+  font-weight: 700;
+  margin-bottom: 1.375rem;
+  padding-bottom: 0.5rem;
+}
+
+.CreateMarketReview__list {
+  > li {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    > span:first-child {
+      &:extend(.caps--small);
+
+      color: @color-lightergray;
+      font-weight: 500;
+    }
+
+    > span:last-child {
+      font-size: 1.125rem;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.CreateMarketReview__subheading {
+  &:extend(.caps);
+
+  font-size: 1rem;
+  margin-bottom: 1.875rem;
+}
+
+.CreateMarketReview__wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+
+  > div {
+    width: 14.375rem;
+  }
+}
+
+.CreateMarketReview__smallheading {
+  &:extend(.caps--small);
+
+  margin-bottom: 1rem;
+}
+
+.CreateMarketReview__smallparagraph {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  margin: 0 0 3rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketReview__wrapper {
+    flex-wrap: wrap;
+
+    > div {
+      width: 100%;
+
+      &:first-child {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}

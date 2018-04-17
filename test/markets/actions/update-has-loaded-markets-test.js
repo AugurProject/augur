@@ -1,14 +1,13 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
 
-import { updateHasLoadedMarkets, UPDATE_HAS_LOADED_MARKETS } from 'modules/markets/actions/update-has-loaded-markets';
+
+import { updateHasLoadedMarkets, UPDATE_HAS_LOADED_MARKETS } from 'modules/markets/actions/update-has-loaded-markets'
 
 describe('modules/markets/actions/update-has-loaded-markets.js', () => {
   const test = (t) => {
     it(t.description, () => {
-      t.assertions(updateHasLoadedMarkets(t.hasLoadedMarkets));
-    });
-  };
+      t.assertions(updateHasLoadedMarkets(t.hasLoadedMarkets))
+    })
+  }
 
   test({
     description: 'should return the expected object',
@@ -16,10 +15,10 @@ describe('modules/markets/actions/update-has-loaded-markets.js', () => {
     assertions: (action) => {
       const expected = {
         type: UPDATE_HAS_LOADED_MARKETS,
-        hasLoadedMarkets: true
-      };
+        hasLoadedMarkets: true,
+      }
 
-      assert.deepEqual(action, expected, `Didn't return the expected object`);
-    }
-  });
-});
+      assert.deepEqual(action, expected, `Didn't return the expected object`)
+    },
+  })
+})

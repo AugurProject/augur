@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const AirbitzLogoIcon = () => (
   <img
@@ -6,6 +6,6 @@ const AirbitzLogoIcon = () => (
     alt="Airbitz Logo"
     src="../../assets/images/airbitz-logo-icon.png"
   />
-);
+)
 
-export default AirbitzLogoIcon;
+export default AirbitzLogoIcon

@@ -1,48 +1,50 @@
-import { createSelector } from 'reselect';
-import store from 'src/store';
-import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state';
-import { augur, abi } from 'services/augurjs';
-import { dateToBlock } from 'utils/date-to-block-to-date';
-import { formatEtherTokens } from 'utils/format-number';
-import { ZERO } from 'modules/trade/constants/numbers';
-import { selectLoginAccount } from 'modules/auth/selectors/login-account';
-import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
-import getValue from 'utils/get-value';
+import { createBigNumber } from 'utils/create-big-number'
+import { createSelector } from 'reselect'
+import store from 'src/store'
+import { selectAccountTradesState, selectCurrentTimestamp, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
+import { augur } from 'services/augurjs'
+import { dateToBlock } from 'utils/date-to-block-to-date'
+import { formatEther } from 'utils/format-number'
+import { ZERO } from 'modules/trade/constants/numbers'
+import { selectLoginAccount } from 'modules/auth/selectors/login-account'
+import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
+import getValue from 'utils/get-value'
 
 export default function () {
-  return selectCoreStats(store.getState());
+  return selectCoreStats(store.getState())
 }
 
-export const selectOutcomeLastPrice = (marketOutcomeData, outcomeID) => {
-  if (!marketOutcomeData || !outcomeID) return null;
-  return (marketOutcomeData[outcomeID] || {}).price;
-};
+export const selectOutcomeLastPrice = (marketOutcomeData, outcomeId) => {
+  if (!marketOutcomeData || !outcomeId) return null
+  return (marketOutcomeData[outcomeId] || {}).price
+}
 
 // Period is in days
 export const createPeriodPLSelector = period => createSelector(
   selectAccountTradesState,
   selectBlockchainState,
   selectOutcomesDataState,
-  (accountTrades, blockchain, outcomesData) => {
-    if (!accountTrades || !blockchain) return null;
+  selectCurrentTimestamp,
+  (accountTrades, blockchain, outcomesData, currentTimestamp) => {
+    if (!accountTrades || !blockchain) return null
 
-    const periodDate = new Date(Date.now() - (period*24*60*60*1000));
-    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber);
+    const periodDate = new Date(currentTimestamp - (period*24*60*60*1000))
+    const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber, currentTimestamp)
 
-    return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs
-      if (!outcomesData[marketID]) return p;
+    return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
+      if (!outcomesData[marketId]) return p
 
-      const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
-        const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
-        const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID);
-        const { realized, unrealized } = augur.trading.positions.calculateProfitLoss(periodTrades, lastPrice);
-        return p.plus(abi.bignum(realized).plus(abi.bignum(unrealized)));
-      }, ZERO);
+      const accumulatedPL = Object.keys(accountTrades[marketId]).reduce((p, outcomeId) => { // Iterate over outcomes
+        const periodTrades = accountTrades[marketId][outcomeId].filter(trade => trade.blockNumber > periodBlock) // Filter out trades older than 30 days
+        const lastPrice = selectOutcomeLastPrice(outcomesData[marketId], outcomeId)
+        const { realized, unrealized } = augur.trading.calculateProfitLoss({ trades: periodTrades, lastPrice })
+        return p.plus(createBigNumber(realized, 10).plus(createBigNumber(unrealized, 10)))
+      }, ZERO)
 
-      return p.plus(accumulatedPL);
-    }, ZERO);
-  }
-);
+      return p.plus(accumulatedPL)
+    }, ZERO)
+  },
+)
 
 export const selectCoreStats = createSelector(
   selectAccountTradesState,
@@ -58,18 +60,18 @@ export const selectCoreStats = createSelector(
       totalEth: {
         label: 'ETH Tokens',
         title: 'Ether Tokens -- outcome trading currency',
-        value: { ...loginAccount.ethTokens, denomination: null }
+        value: { ...loginAccount.ethTokens, denomination: null },
       },
       totalRealEth: {
         label: 'ETH',
         title: 'Ether -- pays transaction gas fees',
-        value: { ...loginAccount.eth, denomination: null }
+        value: { ...loginAccount.eth, denomination: null },
       },
       totalRep: {
         label: 'REP',
         title: 'Reputation -- event voting currency',
-        value: { ...loginAccount.rep, denomination: null }
-      }
+        value: { ...loginAccount.rep, denomination: null },
+      },
     },
     // Group 2
     // NOTE -- group two is excluded for now due to not having all OPEN orders available without calling against every market
@@ -90,18 +92,18 @@ export const selectCoreStats = createSelector(
       totalPL: {
         label: 'Total P/L',
         title: 'Profit/Loss -- net of all trades',
-        value: getValue(loginAccountPositions, 'summary.totalNet')
+        value: getValue(loginAccountPositions, 'summary.totalNet'),
       },
       totalPLMonth: {
         label: '30 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last 30 days',
-        value: formatEtherTokens(totalPLMonth)
+        value: formatEther(totalPLMonth),
       },
       totalPLDay: {
         label: '1 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last day',
-        value: formatEtherTokens(totalPLDay)
-      }
-    }
-  ]
-);
+        value: formatEther(totalPLDay),
+      },
+    },
+  ],
+)

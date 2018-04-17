@@ -1,0 +1,77 @@
+@import (reference) '~assets/styles/shared';
+
+.TopBar {
+  align-items: center;
+  background: @color-gray;
+  display: flex;
+  font-size: @font-size-medium;
+  height: 100%;
+  padding-left: 18.4rem;
+
+  > div {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.TopBar__stats {
+  display: flex;
+}
+
+.TopBar__performance {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.TopBar__stat {
+  align-items: center;
+  display: flex;
+  letter-spacing: 0.05em;
+  margin: 0 1.5rem;
+}
+
+.TopBar__notifications {
+  color: @color-white;
+}
+
+.TopBar__notification-icon {
+  margin-right: 2rem;
+  width: 1.2rem;
+}
+
+.TopBar__stat-label {
+  color: @color-white;
+  display: inline;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.TopBar__stat-value {
+  color: @color-white;
+}
+
+.TopBar__logo-text {
+  color: @color-white;
+  display: none;
+  font-size: @font-size-medium;
+  letter-spacing: 0.0625em;
+  line-height: @font-size-medium;
+  margin: -2px 0.625rem 0 0;
+  text-transform: uppercase;
+}
+
+@media @breakpoint-mobile {
+  .TopBar {
+    padding: 0;
+  }
+
+  .TopBar__stat { display: none; }
+
+  .TopBar__logo-text {
+    display: block;
+  }
+
+  .TopBar__notification-icon {
+    display: none;
+  }
+}

@@ -1,117 +1,123 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as potentially two items have itentical values
+/* eslint react/no-array-index-key: 0 */ // It's OK in this specific instance as potentially two items have itentical values
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Input from 'modules/common/components/input';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import Input from 'modules/common/components/input/input'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class InputList extends Component {
-  // TODO -- Prop Validations
   static propTypes = {
-    // className: PropTypes.string,
+    className: PropTypes.string,
+    errors: PropTypes.object,
+    itemMaxLength: PropTypes.number,
     list: PropTypes.array,
-    // errors: PropTypes.array,
+    listMaxElements: PropTypes.number,
     listMinElements: PropTypes.number,
-    // listMaxElements: PropTypes.number,
-    // itemMaxLength: PropTypes.number,
     onChange: PropTypes.func,
-    warnings: PropTypes.array
-  };
+    warnings: PropTypes.array,
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       list: this.fillMinElements(this.props.list, this.props.listMinElements),
-      warnings: []
-    };
+      warnings: [],
+    }
 
-    this.clearWarnings = debounce(this.clearWarnings.bind(this), 3000);
-    this.handleChange = this.handleChange.bind(this);
-    this.fillMinElements = this.fillMinElements.bind(this);
+    this.clearWarnings = debounce(this.clearWarnings.bind(this), 3000)
+    this.handleChange = this.handleChange.bind(this)
+    this.fillMinElements = this.fillMinElements.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.warnings && this.props.warnings !== nextProps.warnings) {
-      this.setState({ warnings: nextProps.warnings });
-      this.clearWarnings();
+    const { warnings } = this.props
+    if (nextProps.warnings && warnings !== nextProps.warnings) {
+      this.setState({ warnings: nextProps.warnings })
+      this.clearWarnings()
     }
     if (nextProps.list !== this.state.list) {
-      this.setState({ list: this.fillMinElements(nextProps.list, nextProps.listMinElements) });
+      this.setState({ list: this.fillMinElements(nextProps.list, nextProps.listMinElements) })
     }
   }
 
   clearWarnings() {
-    this.setState({ warnings: [] });
+    this.setState({ warnings: [] })
   }
 
   handleChange = (i, val) => {
-    const newList = (this.state.list || []).slice();
+    const newList = (this.state.list || []).slice()
 
     if ((!val || !val.length) && (!this.props.listMinElements || (i >= this.props.listMinElements - 1))) {
-      newList.splice(i, 1);
+      newList.splice(i, 1)
     } else {
-      newList[i] = val;
+      newList[i] = val
     }
 
-    this.props.onChange(newList);
+    this.props.onChange(newList)
 
-    this.setState({ list: newList });
+    this.setState({ list: newList })
   };
 
   fillMinElements = (list = [], minElements) => {
-    let len;
-    let i;
-    let newList = list;
+    let len
+    let i
+    let newList = list
     if (minElements && list.length < minElements) {
-      newList = newList.slice();
-      len = minElements - newList.length - 1;
+      newList = newList.slice()
+      len = minElements - newList.length - 1
       for (i = 0; i < len; i++) {
-        newList.push('');
+        newList.push('')
       }
     }
-    return newList;
+    return newList
   };
 
   render() {
-    const p = this.props;
-    const s = this.state;
-    let list = s.list;
+    const {
+      className,
+      errors,
+      itemMaxLength,
+      listMaxElements,
+      warnings,
+    } = this.props
+    const s = this.state
+    let { list } = s
 
-    if (!p.listMaxElements || list.length < p.listMaxElements) {
-      list = list.slice();
-      list.push('');
+    if (!listMaxElements || list.length < listMaxElements) {
+      list = list.slice()
+      list.push('')
     }
 
     return (
-      <div className={classNames('input-list', p.className)}>
+      <div className={classNames('input-list', className)}>
         {list.map((item, i) => (
           <div
             key={i}
             className={classNames('item', {
-              'new-item': i === list.length - 1 && (!item || !item.length)
+              'new-item': i === list.length - 1 && (!item || !item.length),
             })}
           >
             <Input
               type="text"
-              maxLength={p.itemMaxLength}
+              maxLength={itemMaxLength}
               value={item}
               onChange={newValue => this.handleChange(i, newValue)}
             />
             <span
               className={classNames({
-                'has-errors': p.errors && p.errors[i] && p.errors[i].length,
-                'has-warnings': s.warnings && s.warnings[i] && s.warnings[i].length
+                'has-errors': errors && errors[i] && errors[i].length,
+                'has-warnings': s.warnings && s.warnings[i] && s.warnings[i].length,
               })}
             >
-              {p.errors && p.errors[i]}
-              {p.warnings && p.warnings[i]}
+              {errors && errors[i]}
+              {warnings && warnings[i]}
             </span>
           </div>
         ))}
       </div>
-    );
+    )
   }
 }

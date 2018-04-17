@@ -1,0 +1,79 @@
+@import (reference) "~assets/styles/shared";
+
+.Trading {
+  height: 100%;
+  min-height: 28.25rem;
+  padding-bottom: 3.25rem;
+  position: relative;
+}
+
+.Trading__button--order-placed {
+  align-items: center;
+  background-color: @color-purple;
+  bottom: 0;
+  color: @color-white;
+  display: flex;
+  font-weight: 500;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  position: absolute;
+  width: 100%;
+
+  > span {
+    align-items: center;
+    display: flex;
+
+    > svg {
+      height: 1.25rem;
+      margin-right: 0.5rem;
+      width: 1.25rem;
+    }
+  }
+
+  > button > svg {
+    height: 0.875rem;
+    width: 0.875rem;
+  }
+}
+
+.Trading__button--trade {
+  min-height: 3.125rem;
+
+  > button {
+    &:extend(.button--purple all);
+
+    border-radius: 0;
+    bottom: 0;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    position: fixed;
+    width: 100%;
+  }
+}
+
+.Trading__initial-message {
+  border-top: 1px solid @color-darkpurple-2;
+  color: @color-lightgray;
+  padding: 3.5rem 0;
+  text-align: center;
+}
+
+.Trading__deposit-button {
+  &:extend(.button--purple all);
+
+  margin: 2rem auto 0;
+  max-width: 9.5rem;
+}
+
+@media @breakpoint-mobile {
+  .Trading {
+    height: auto;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .Trading__button--order-placed {
+    bottom: 0;
+    position: fixed;
+  }
+}

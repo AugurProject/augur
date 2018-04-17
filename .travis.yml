@@ -5,12 +5,14 @@ language: node_js
 branches:
   only:
     - master
+    - seadragon
 
 env:
   - CXX=g++-4.8
 
 node_js:
-  - "6.5"
+  - "9"
+  - "8"
 
 addons:
   apt:
@@ -20,11 +22,13 @@ addons:
     - gcc-4.8
     - g++-4.8
     - build-essential
+    - libusb-1.0-0-dev
 
 before_script:
-  - npm install
+  - yarn
 
 script:
-  - npm run lint
-  - npm run test
+  - yarn lint
+  - yarn test
   - NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  - yarn build --dev

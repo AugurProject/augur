@@ -1,166 +1,116 @@
-import Augur from 'augur.js';
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import * as mocks from 'test/mockStore';
-import { BUY, tradeTestState, tradeConstOrderBooks } from 'test/trade/constants';
+
+
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import * as mocks from 'test/mockStore'
+import { tradeTestState } from 'test/trade/constants'
 
 describe(`modules/trade/actions/place-trade.js`, () => {
-  proxyquire.noPreserveCache();
-  const augur = new Augur();
-  const { state, mockStore } = mocks.default;
-  const testState = Object.assign({}, state, tradeTestState);
-  testState.orderBooks = tradeConstOrderBooks;
-  testState.tradesInProgress = {
-    testBinaryMarketID: {
-      2: {
-        side: BUY,
-        numShares: '10',
-        limitPrice: '0.5',
-        totalFee: '0.01',
-        totalCost: '5.01',
-        tradeActions: [{
-          action: 'BID',
-          shares: '10',
-          gasEth: '0.01450404',
-          feeEth: '0.01',
-          feePercent: '0.2',
-          costEth: '5.01',
-          avgPrice: '0.501',
-          noFeePrice: '0.5'
-        }],
-        tradingFeesEth: '0.01',
-        gasFeesRealEth: '0.01450404',
-        feePercent: '0.199203187250996016'
-      }
+  proxyquire.noPreserveCache()
+  it('should handle a null/undefined outcomeId', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') }
+    const store = mockStore(testState)
+    const SelectMarket = { selectMarket: () => {} }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket,
+    })
+    store.dispatch(action.placeTrade('testBinaryMarketId', null))
+    assert.deepEqual(store.getActions(), [{
+      type: 'CLEAR_TRADE_IN_PROGRESS',
+      marketId: 'testBinaryMarketId',
+    }], `Didn't produce the expected actions for passing a null outcomeId to place-trade`)
+    store.clearActions()
+    store.dispatch(action.placeTrade('testBinaryMarketId', undefined))
+    assert.deepEqual(store.getActions(), [{
+      type: 'CLEAR_TRADE_IN_PROGRESS',
+      marketId: 'testBinaryMarketId',
+    }], `Didn't produce the expected actions for passing a undefined outcomeId to place-trade`)
+  })
+  it('should handle a null/undefined marketId', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') }
+    const store = mockStore(testState)
+    const SelectMarket = { selectMarket: () => {} }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket,
+    })
+    store.dispatch(action.placeTrade(null, '1'))
+    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketId to place-trade`)
+    store.clearActions()
+    store.dispatch(action.placeTrade(undefined, '1'))
+    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketId to place-trade`)
+  })
+  it('should handle a allowance less than estimatedCost', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = {
+      meta: { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') },
+      allowance: '0',
     }
-  };
-  testState.loginAccount = {
-    address: '0xb0b',
-    privateKey: 'this is a private key'
-  };
-  const store = mockStore(testState);
-  const SelectMarket = { selectMarket: () => {} };
-  const AugurJS = {
-    abi: {
-      bignum: () => {},
-      format_int256: () => {}
-    },
-    augur: {
-      trading: {
-        group: { executeTradingActions: () => {} }
-      }
+    const store = mockStore(testState)
+    const CheckAccountAllowance = { checkAccountAllowance: () => {} }
+    const SelectMarket = { selectMarket: () => {} }
+    const checkAllownaceActionObject = { type: 'UPDATE_LOGIN_ACCOUNT', allowance: '0' }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    sinon.stub(CheckAccountAllowance, 'checkAccountAllowance').callsFake(() => checkAllownaceActionObject)
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket,
+      '../../auth/actions/approve-account': CheckAccountAllowance,
+    })
+    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+      totalCost: '10000000',
+    }))
+    const storeActions = store.getActions()
+    const approvalAction = storeActions[1]
+    assert.deepEqual(storeActions.length, 2, 'more/less actions dispatched then expected')
+    assert.deepEqual(storeActions[0], checkAllownaceActionObject, `first action wasn't a call to checkAllowanceActionObject`)
+    assert.isObject(approvalAction)
+    assert.deepEqual(approvalAction.type, 'UPDATE_MODAL')
+    assert.isObject(approvalAction.data)
+    assert.deepEqual(approvalAction.data.type, 'MODAL_ACCOUNT_APPROVAL')
+    assert.isFunction(approvalAction.data.approveCallback)
+    store.clearActions()
+  })
+  it('should handle a allowance greater than estimatedCost (no approval needed.)', () => {
+    const { state, mockStore } = mocks.default
+    const testState = { ...state, ...tradeTestState }
+    testState.loginAccount = {
+      meta: { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') },
+      allowance: '10000000000000000000000000000000000000000000',
     }
-  };
-  sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
-  sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n));
-  sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n));
-  sinon.stub(AugurJS.augur.trading.group, 'executeTradingActions', (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
-    store.dispatch({
-      type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
-      params: [market, outcomeID, address, doNotMakeOrders, tradesInProgress]
-    });
-    callback(null);
-  });
-
-  const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
-    '../../../services/augurjs': AugurJS,
-    '../../market/selectors/market': SelectMarket
-  });
-
-  beforeEach(() => {
-    store.clearActions();
-  });
-
-  afterEach(() => {
-    store.clearActions();
-  });
-
-  it('should place a BUY trade for a binary market', () => {
-    const tradeToExecute = {
-      2: {
-        side: BUY,
-        numShares: '10',
-        limitPrice: '0.5',
-        totalFee: '0.01',
-        totalCost: '5.01',
-        tradeActions: [{
-          action: 'BID',
-          shares: '10',
-          gasEth: '0.01450404',
-          feeEth: '0.01',
-          feePercent: '0.2',
-          costEth: '5.01',
-          avgPrice: '0.501',
-          noFeePrice: '0.5'
-        }],
-        tradingFeesEth: '0.01',
-        gasFeesRealEth: '0.01450404',
-        feePercent: '0.199203187250996016'
-      }
-    };
-
-    store.dispatch(action.placeTrade('testBinaryMarketID', '2', tradeToExecute));
-    // console.log(JSON.stringify(store.getActions(), null, 2));
-    assert.deepEqual(store.getActions(), [{
-      type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
-      params: [
-        { _signer: 'this is a private key' },
-        {
-          author: 'testAuthor1',
-          branchID: '0x010101',
-          creationFee: '22.5',
-          creationTime: 1475951522,
-          cumulativeScale: '1',
-          description: 'test binary market?',
-          endDate: 1495317600,
-          eventID: 'testEventID1',
-          isLoadedMarketInfo: true,
-          consensus: null,
-          makerFee: '0.002',
-          maxValue: '2',
-          minValue: '1',
-          network: '2',
-          numOutcomes: 2,
-          topic: 'binary',
-          tags: ['binary', 'markets', null],
-          takerFee: '0.01',
-          tradingFee: '0.008',
-          tradingPeriod: 8653,
-          type: 'binary',
-          volume: '3030'
-        },
-        '2',
-        store.getActions()[0].params[3],
-        undefined,
-      ]
-    }, { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: null }, {
+    const store = mockStore(testState)
+    const CheckAccountAllowance = { checkAccountAllowance: () => {} }
+    const SelectMarket = { selectMarket: () => {} }
+    const AugurJS = { augur: { trading: { placeTrade: () => {} } } }
+    const checkAllownaceActionObject = { type: 'UPDATE_LOGIN_ACCOUNT', allowance: '10000000000000000000000000000000000000000000' }
+    sinon.stub(SelectMarket, 'selectMarket').callsFake(marketId => store.getState().marketsData[marketId])
+    sinon.stub(CheckAccountAllowance, 'checkAccountAllowance').callsFake(() => checkAllownaceActionObject)
+    sinon.stub(AugurJS.augur.trading, `placeTrade`).callsFake((params) => {
+      assert.isObject(params)
+      assert.isFunction(params.onSent)
+      assert.isFunction(params.onSuccess)
+      assert.isFunction(params.onFailed)
+    })
+    const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      '../../market/selectors/market': SelectMarket,
+      '../../auth/actions/approve-account': CheckAccountAllowance,
+      '../../../services/augurjs': AugurJS,
+    })
+    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+      totalCost: '10000000',
+    }))
+    const storeActions = store.getActions()
+    assert.deepEqual(storeActions.length, 1, 'more actions dispatched then expected')
+    const Expected = [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketID: 'testBinaryMarketID'
-    }]);
-    assert.isFunction(store.getActions()[0].params[3], 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be a function');
-  });
-
-  it('should handle a null/undefined outcomeID', () => {
-    store.dispatch(action.placeTrade('testBinaryMarketID', null));
-    assert.deepEqual(store.getActions(), [{
-      type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketID: 'testBinaryMarketID'
-    }], `Didn't produce the expected actions for passing a null outcomeID to place-trade`);
-    store.clearActions();
-    store.dispatch(action.placeTrade('testBinaryMarketID', undefined));
-    assert.deepEqual(store.getActions(), [{
-      type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketID: 'testBinaryMarketID'
-    }], `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
-  });
-
-  it('should handle a null/undefined marketID', () => {
-    store.dispatch(action.placeTrade(null, '1'));
-    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`);
-    store.clearActions();
-    store.dispatch(action.placeTrade(undefined, '1'));
-    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`);
-  });
-});
+      marketId: 'testBinaryMarketId',
+    }]
+    assert.deepEqual(storeActions, Expected, `Only Action should be to clear trade in progress`)
+    store.clearActions()
+  })
+})

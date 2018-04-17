@@ -1,0 +1,104 @@
+@import (reference) '~assets/styles/shared';
+
+.Confirm {
+  color: @color-white;
+  margin-bottom: 3.7rem;
+  padding: 0 2rem;
+  width: 36rem;
+}
+
+.Confirm__heading {
+  &:extend(.caps--large);
+
+  font-size: @font-size-large;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.Confirm__list {
+  > li {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+
+    > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightergray;
+        font-size: @font-size-normal;
+      }
+    }
+  }
+}
+
+.Confirm__list--left-align {
+  &:extend(.Confirm__list all);
+
+  > li > span {
+    text-transform: capitalize;
+    width: 50%;
+  }
+}
+
+.Confirm__subheading {
+  &:extend(.caps);
+
+  font-size: @font-size-large;
+  margin-bottom: 1.875rem;
+}
+
+.Confirm__wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  > div {
+    width: 14.375rem;
+  }
+}
+
+.Confirm__wrapper--wide {
+  &:extend(.Confirm__wrapper all);
+
+  > div {
+    border-bottom: 1px solid @color-input-background;
+    border-top: 1px solid @color-input-background;
+    padding: 2rem 0;
+    width: 50rem;
+  }
+}
+
+.Confirm__note_text {
+  color: fadeout(@color-white, 25);
+  font-size: @font-size-small;
+  line-height: @font-size-small;
+  padding-top: 2rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .Confirm {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
+  }
+
+  .Confirm__wrapper {
+    flex-wrap: wrap;
+
+    > div {
+      width: 100%;
+
+      &:first-child {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}

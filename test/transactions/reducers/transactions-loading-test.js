@@ -1,23 +1,22 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
 
-import transactionsLoading from 'modules/transactions/reducers/transactions-loading';
 
-import { UPDATE_TRANSACTIONS_LOADING } from 'modules/transactions/actions/update-transactions-loading';
+import transactionsLoading from 'modules/transactions/reducers/transactions-loading'
+
+import { UPDATE_TRANSACTIONS_LOADING } from 'modules/transactions/actions/update-transactions-loading'
 
 describe('modules/transactions/reducers/transactions-loading', () => {
-  const test = t => it(t.description, () => t.assertions());
+  const test = t => it(t.description, () => t.assertions())
 
   test({
     description: `should return the default state`,
     assertions: () => {
-      const actual = transactionsLoading(undefined, {});
+      const actual = transactionsLoading(undefined, {})
 
-      const expected = false;
+      const expected = false
 
-      assert.strictEqual(actual, expected, `Didn't return the expected value`);
-    }
-  });
+      assert.strictEqual(actual, expected, `Didn't return the expected value`)
+    },
+  })
 
   test({
     description: `should return the expected value for case UPDATE_TRANSACTIONS_LOADING`,
@@ -25,13 +24,13 @@ describe('modules/transactions/reducers/transactions-loading', () => {
       const actual = transactionsLoading(false, {
         type: UPDATE_TRANSACTIONS_LOADING,
         data: {
-          isLoading: true
-        }
-      });
+          isLoading: true,
+        },
+      })
 
-      const expected = true;
+      const expected = true
 
-      assert.strictEqual(actual, expected, `Didn't return the expected value`);
-    }
-  });
-});
+      assert.strictEqual(actual, expected, `Didn't return the expected value`)
+    },
+  })
+})

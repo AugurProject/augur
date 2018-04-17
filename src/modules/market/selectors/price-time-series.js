@@ -1,27 +1,22 @@
-import memoize from 'memoizee';
+import memoize from 'memoizee'
+// import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
 
 /**
- * Prepares data structure for Highcharts
+ * Prepares price history data for charting
  *
- * @param {Array} outcomes List of outcomes for market
+ * @param {Object} outcome
  * @param {Object} marketPriceHistory
  * @return {Array}
  */
-export const selectPriceTimeSeries = memoize((outcomes, marketPriceHistory) => {
-  if (marketPriceHistory == null) {
-    return [];
-  }
+export const selectPriceTimeSeries = memoize((outcome, marketPriceHistory) => {
+  if (outcome == null || marketPriceHistory == null || marketPriceHistory.outcome == null) return []
 
-  const priceTimeSeries = outcomes.reduce((p, outcome, i) => {
-    p[i] = {};
-    p[i].id = outcome.id;
-    p[i].name = outcome.name;
-    p[i].data = (marketPriceHistory[outcome.id] || []).map(priceTimePoint => [
-      priceTimePoint.timestamp * 1000,
-      Number(priceTimePoint.price)
-    ]).sort((a, b) => a[0] - b[0]);
-    return p;
-  }, []).sort((a, b) => a.id - b.id);
+  return marketPriceHistory.map(priceTimePoint => ({ ...priceTimePoint, timestamp: priceTimePoint.timestamp * 1000 }))
 
-  return priceTimeSeries;
-}, { max: 1 });
+  // NOTE -- historical ref, augur-node now directly returns what we require
+  // return (marketPriceHistory[outcome.id] || []).map(priceTimePoint => [
+  //   priceTimePoint.timestamp * 1000,
+  //   WrappedBigNumber(priceTimePoint.price).toNumber(),
+  //   WrappedBigNumber(priceTimePoint.amount).toNumber()
+  // ]).sort((a, b) => a[0] - b[0])
+})

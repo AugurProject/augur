@@ -1,0 +1,96 @@
+@import (reference) '~assets/styles/shared';
+
+.CreateMarketPreview {
+  background-color: @color-white;
+  padding: 4.25rem 0 3.5rem;
+}
+
+.CreateMarketPreview__description {
+  line-height: 2.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CreateMarketPreview__header,
+.CreateMarketPreview__footer-wrapper {
+  max-width: 81.25rem;
+}
+
+.CreateMarketPreview__header-wrapper {
+  flex-direction: column;
+}
+
+.CreateMarketPreview__header-wrapper,
+.CreateMarketPreview__meta {
+  display: flex;
+  margin: auto;
+  max-width: 62.75rem;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.CreateMarketPreview__header {
+  padding-bottom: 2.5rem;
+}
+
+.CreateMarketPreview__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding-top: 1rem;
+}
+
+.CreateMarketPreview__icon {
+  height: 1.5rem;
+  position: absolute;
+  right: 2rem;
+  top: 0;
+  width: 1.5rem;
+}
+
+.CreateMarketPreview__meta {
+  display: flex;
+
+  > li {
+    margin-left: 2em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    > span {
+      &:extend(.caps--medium);
+
+      color: @color-purple;
+      display: block;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightgray;
+        margin-bottom: 0.625rem;
+      }
+    }
+  }
+}
+
+.CreateMarketPreview__outcome {
+  min-height: 2.75rem;
+}
+
+.CreateMarketPreview__tags {
+  margin-bottom: 1.625rem;
+  padding-right: 2.125rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .CreateMarketPreview__header-wrapper,
+  .CreateMarketPreview__meta {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .CreateMarketPreview__tags {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+}

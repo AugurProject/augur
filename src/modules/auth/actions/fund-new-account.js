@@ -1,38 +1,22 @@
-import { augur, utils } from 'services/augurjs';
-import { loadRegisterBlockNumber } from 'modules/auth/actions/load-register-block-number';
-import { updateAssets } from 'modules/auth/actions/update-assets';
+import { augur } from 'services/augurjs'
+import { updateAssets } from 'modules/auth/actions/update-assets'
+import LogError from 'utils/log-error'
+import noop from 'utils/noop'
 
-export function fundNewAccount() {
+export function fundNewAccount(callback = LogError) {
   return (dispatch, getState) => {
-    const { env, branch, loginAccount } = getState();
-    if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
-      const fromAddress = env.fundNewAccountFromAddress.address;
-      const amount = env.fundNewAccountFromAddress.amount;
-      augur.beta.fundNewAccountFromAddress({
-        _signer: loginAccount.privateKey,
-        fromAddress,
-        amount,
-        registeredAddress: loginAccount.address,
-        branch: branch.id,
-        onSent: utils.noop,
-        onSuccess: () => {
-          dispatch(updateAssets());
-          dispatch(loadRegisterBlockNumber());
+    const { loginAccount } = getState()
+    if (augur.rpc.getNetworkID() !== '1') {
+      augur.api.LegacyReputationToken.faucet({
+        meta: loginAccount.meta,
+        onSent: noop,
+        onSuccess: (res) => {
+          console.log('LegacyReputationToken.faucet', res)
+          dispatch(updateAssets())
+          callback(null)
         },
-        onFailed: e => console.error('fundNewAccountFromAddress:', e)
-      });
-    } else {
-      augur.beta.fundNewAccountFromFaucet({
-        _signer: loginAccount.privateKey,
-        registeredAddress: loginAccount.address,
-        branch: branch.id,
-        onSent: utils.noop,
-        onSuccess: () => {
-          dispatch(updateAssets());
-          dispatch(loadRegisterBlockNumber());
-        },
-        onFailed: e => console.error('fundNewAccountFromFaucet:', e)
-      });
+        onFailed: callback,
+      })
     }
-  };
+  }
 }

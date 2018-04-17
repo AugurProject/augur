@@ -1,17 +1,17 @@
-import { describe, it, before } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, before } from 'mocha'
 
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
+import sinon from 'sinon'
+import proxyquire from 'proxyquire'
 
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';
+import { MY_POSITIONS, MY_MARKETS, PORTFOLIO_REPORTS } from 'modules/routes/constants/views'
+
+import { formatNumber, formatEther, formatRep } from 'utils/format-number'
 
 describe('modules/portfolio/selectors/nav-items', () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
 
-  let actual;
+  let actual
 
   const stubbedSelectors = {
     links: {
@@ -19,62 +19,66 @@ describe('modules/portfolio/selectors/nav-items', () => {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
+        page: 'test',
       },
       myMarketsLink: {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
+        page: 'test',
       },
       myReportsLink: {
         label: 'test',
         link: {
           href: 'test',
-          onClick: 'fake function'
+          onClick: 'fake function',
         },
-        page: 'test'
-      }
-    }
-  };
+        page: 'test',
+      },
+    },
+  }
 
   const selectors = {
-    selectMyPositionsSummary: () => {},
+    generateMarketsPositionsSummary: () => {},
     selectMyMarketsSummary: () => {},
     selectMyReportsSummary: () => {},
-    selectLinks: () => {}
-  };
+    selectAllMarkets: () => {},
+    selectLinks: () => {},
+  }
 
-  const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
+  const stubbedGenerateMarketsPositionsSummary = sinon.stub(selectors, 'generateMarketsPositionsSummary').callsFake(() => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
-      totalNet: formatEtherTokens(2)
+      totalNet: formatEther(2),
     }
-  ));
-  const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
+  ))
+  const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary').callsFake(() => (
     {
       numMarkets: 30,
-      totalValue: 10
+      totalValue: 10,
     }
-  ));
+  ))
 
-  const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
+  const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary').callsFake(() => (
     {
       numReports: 10,
-      netRep: 5
+      netRep: 5,
     }
-  ));
+  ))
+
+  const stubbedMarketsAll = sinon.stub(selectors, 'selectAllMarkets').returns([])
 
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
-    '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
+    '../../my-positions/selectors/my-positions-summary': { generateMarketsPositionsSummary: stubbedGenerateMarketsPositionsSummary },
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
-    '../../../selectors': stubbedSelectors
-  });
+    '../../markets/selectors/markets-all': stubbedMarketsAll,
+    '../../../selectors': stubbedSelectors,
+  })
 
   const expected = [
     {
@@ -84,8 +88,8 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValue: formatNumber(10, { denomination: 'positions' }),
       leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
-      trailingValue: formatEtherTokens(2),
-      trailingValueNull: 'No Profit/Loss'
+      trailingValue: formatEther(2),
+      trailingValueNull: 'No Profit/Loss',
     },
     {
       label: 'Markets',
@@ -94,38 +98,38 @@ describe('modules/portfolio/selectors/nav-items', () => {
       leadingValue: formatNumber(30, { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEtherTokens(10),
-      trailingValueNull: 'No Gain/Loss'
+      trailingValue: formatEther(10),
+      trailingValueNull: 'No Gain/Loss',
     },
     {
       label: 'Reports',
-      view: MY_REPORTS,
+      view: PORTFOLIO_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber(10, { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
       trailingValue: formatRep(5, { denomination: ' REP' }),
-      trailingValueNull: 'No Gain/Loss'
-    }
-  ];
+      trailingValueNull: 'No Gain/Loss',
+    },
+  ]
 
   before(() => {
-    actual = proxiedSelector.default();
-  });
+    actual = proxiedSelector.default()
+  })
 
   it(`should call 'selectMyPositionsSummary' once`, () => {
-    assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`);
-  });
+    assert(stubbedGenerateMarketsPositionsSummary.calledOnce, `Didn't call 'generateMarketsPositionsSummary' once as expected`)
+  })
 
   it(`should call 'selectMyMarketsSummary' once`, () => {
-    assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`);
-  });
+    assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`)
+  })
 
   it(`should call 'selectMyReportsSummary' once`, () => {
-    assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`);
-  });
+    assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`)
+  })
 
   it('should return the expected array', () => {
-    assert.deepEqual(expected, actual, `Didn't return the expected array`);
-  });
-});
+    assert.deepEqual(expected, actual, `Didn't return the expected array`)
+  })
+})

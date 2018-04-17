@@ -1,15 +1,24 @@
-import { augur } from 'services/augurjs';
-import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { augur } from 'services/augurjs'
+import { updateIsLoggedAndLoadAccountData } from 'modules/auth/actions/update-is-logged-and-load-account-data'
+import isMetaMask from 'modules/auth/helpers/is-meta-mask'
+import logError from 'utils/log-error'
 
-// Use unlocked local address (if actually unlocked)
-export const useUnlockedAccount = unlockedAddress => (dispatch) => {
-  if (!unlockedAddress) return console.error('no account address');
-  augur.rpc.isUnlocked(unlockedAddress, (isUnlocked) => {
-    if (!isUnlocked || isUnlocked.error) {
-      return console.warn('account is locked:', unlockedAddress, isUnlocked);
+const { ACCOUNT_TYPES } = augur.rpc.constants
+
+// Use unlocked local account or MetaMask account
+export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
+  if (unlockedAddress == null) return callback('no account address')
+  if (isMetaMask()) {
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK))
+    return callback(null)
+  }
+  augur.rpc.isUnlocked(unlockedAddress, (err, isUnlocked) => {
+    if (err) return callback(err)
+    if (isUnlocked === false) {
+      console.warn(`account ${unlockedAddress} is locked`)
+      return callback(null)
     }
-    augur.accounts.logout(); // clear the client-side account
-    console.log('using unlocked account:', unlockedAddress);
-    dispatch(loadAccountData({ address: unlockedAddress, isUnlocked: true }, true));
-  });
-};
+    dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.UNLOCKED_ETHEREUM_NODE))
+    callback(null)
+  })
+}

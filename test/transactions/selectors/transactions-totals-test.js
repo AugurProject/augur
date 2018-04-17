@@ -1,22 +1,22 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
-import transactionsTotalsAssertions from 'assertions/transactions-totals';
+
+
+import proxyquire from 'proxyquire'
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses'
+import transactionsTotalsAssertions from 'assertions/transactions-totals'
 
 describe(`modules/transactions/selectors/transactions-totals.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  let actual;
-  let expected;
+  proxyquire.noPreserveCache().noCallThru()
+  let actual
+  let expected
 
   it(`should return the transaction totals for a blank state`, () => {
     const Transactions = {
-      selectTransactions: () => []
-    };
+      selectTransactions: () => [],
+    }
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      './transactions': Transactions
-    });
-    actual = selector.selectTransactionsTotals({});
+      './transactions': Transactions,
+    })
+    actual = selector.selectTransactionsTotals({})
     expected = {
       numWorking: 0,
       numPending: 0,
@@ -25,31 +25,31 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       numTotal: 0,
       title: '0 Transactions',
       transactions: undefined,
-      shortTitle: '0 Total'
-    };
-    assert.deepEqual(actual, expected, `Didn't properly handle an empty state`);
-  });
+      shortTitle: '0 Total',
+    }
+    assert.deepEqual(actual, expected, `Didn't properly handle an empty state`)
+  })
 
   it(`should properly return total info on transactions`, () => {
     const Transactions = {
       selectTransactions: () => [{
         id: 'fake',
-        status: PENDING
+        status: PENDING,
       }, {
         id: 'example',
-        status: SUCCESS
+        status: SUCCESS,
       }, {
         id: 'test',
-        status: FAILED
+        status: FAILED,
       }, {
         id: 'mock',
-        status: INTERRUPTED
-      }]
-    };
+        status: INTERRUPTED,
+      }],
+    }
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      './transactions': Transactions
-    });
-    actual = selector.selectTransactionsTotals({});
+      './transactions': Transactions,
+    })
+    actual = selector.selectTransactionsTotals({})
     expected = {
       numWorking: 0,
       numPending: 1,
@@ -58,9 +58,9 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       numTotal: 4,
       title: 'Transaction Working',
       transactions: undefined,
-      shortTitle: '1 Working'
-    };
-    transactionsTotalsAssertions(actual);
-    assert.deepEqual(actual, expected, `Didn't return total info on transactions`);
-  });
-});
+      shortTitle: '1 Working',
+    }
+    transactionsTotalsAssertions(actual)
+    assert.deepEqual(actual, expected, `Didn't return total info on transactions`)
+  })
+})

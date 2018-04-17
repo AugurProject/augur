@@ -1,74 +1,139 @@
-import { augur, connect } from 'services/augurjs';
-import { BRANCH_ID } from 'modules/app/constants/network';
-import { updateEnv } from 'modules/app/actions/update-env';
-import { updateConnectionStatus } from 'modules/app/actions/update-connection';
-import { updateAssets } from 'modules/auth/actions/update-assets';
-import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses';
-import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api';
-import { loadChatMessages } from 'modules/chat/actions/load-chat-messages';
-import { setLoginAccount } from 'modules/auth/actions/set-login-account';
-import { loadBranch } from 'modules/app/actions/load-branch';
-import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay';
-import logError from 'utils/log-error';
-import noop from 'utils/noop';
+import * as AugurJS from 'services/augurjs'
+import { updateEnv } from 'modules/app/actions/update-env'
+import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection'
+import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses'
+import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api'
+import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account'
+import { logout } from 'modules/auth/actions/logout'
+import { verifyMatchingNetworkIds } from 'modules/app/actions/verify-matching-network-ids'
+import { loadUniverse } from 'modules/app/actions/load-universe'
+import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
+import { updateModal } from 'modules/modal/actions/update-modal'
+import { closeModal } from 'modules/modal/actions/close-modal'
+import getAllMarkets from 'modules/markets/selectors/markets-all'
+import logError from 'utils/log-error'
+import networkConfig from 'config/network'
 
-// for testing only
-import { reportingTestSetup } from 'modules/reports/actions/reporting-test-setup';
+import { isEmpty } from 'lodash'
 
-// fixes Reflect not being recognized in test or node 4.2
-require('core-js/es6/reflect');
+import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
 
-export function initAugur(cb) {
-  return (dispatch, getState) => {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4 && xhttp.status === 200) {
-        const env = JSON.parse(xhttp.responseText);
-        dispatch(updateEnv(env));
-        connect(env, (err, vitals) => {
-          if (err) return console.error('connect failure:', err);
-          dispatch(updateConnectionStatus(true));
-          dispatch(updateContractAddresses(vitals.contracts));
-          dispatch(updateFunctionsAPI(vitals.api.functions));
-          dispatch(updateEventsAPI(vitals.api.events));
-          dispatch(registerTransactionRelay());
-          dispatch(loadChatMessages('augur'));
-          dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
-          if (env.reportingTest) {
+const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
+const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
+const ESCAPE_HATCH_POLL_INTERVAL_DURATION = 30000
 
-            // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
-            if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1' && env.reportingTest === true) {
-              augur.api.Branches.getBranches((branches) => {
-                console.debug(window.location.hostname, branches[branches.length - 1]);
-                env.branchID = branches[branches.length - 1];
-                env.reportingTest = false;
-                if (getState().loginAccount.address) {
-                  augur.api.Faucets.fundNewAccount({
-                    _signer: getState().loginAccount.privateKey,
-                    branch: env.branchID || BRANCH_ID,
-                    onSent: noop,
-                    onSuccess: () => {
-                      dispatch(updateAssets());
-                      dispatch(loadBranch(env.branchID || BRANCH_ID));
-                    },
-                    onFailed: logError
-                  });
-                } else {
-                  dispatch(loadBranch(env.branchID || BRANCH_ID));
-                }
-              });
+const NETWORK_NAMES = {
+  1: 'Mainnet',
+  4: 'Rinkeby',
+  12346: 'Private',
+}
 
-            } else {
-              dispatch(reportingTestSetup(env.branchID));
-            }
-          } else {
-            dispatch(loadBranch(env.branchID || BRANCH_ID));
-          }
-          cb && cb();
-        });
+const windowRef = typeof window === 'undefined' ? {} : window
+
+function pollForAccount(dispatch, getState) {
+  const { env } = getState()
+  loadAccount(dispatch, null, env, (err, loadedAccount) => {
+    if (err) console.error(err)
+    let account = loadedAccount
+    setInterval(() => {
+      loadAccount(dispatch, account, env, (err, loadedAccount) => {
+        if (err) console.error(err)
+        account = loadedAccount
+      })
+    }, ACCOUNTS_POLL_INTERVAL_DURATION)
+  })
+}
+
+function loadAccount(dispatch, existing, env, callback) {
+  AugurJS.augur.rpc.eth.accounts((err, accounts) => {
+    if (err) return callback(err)
+    let account = existing
+    if (existing !== accounts[0]) {
+      account = accounts[0]
+      if (account && env['auto-login']) {
+        dispatch(useUnlockedAccount(account))
+      } else {
+        dispatch(logout())
       }
-    };
-    xhttp.open('GET', '/config/env.json', true);
-    xhttp.send();
-  };
+    }
+    callback(null, account)
+  })
+}
+
+function pollForNetwork(dispatch, getState) {
+  setInterval(() => {
+    const { modal } = getState()
+    dispatch(verifyMatchingNetworkIds((err, expectedNetworkId) => {
+      if (err) return console.error('pollForNetwork failed', err)
+      if (expectedNetworkId != null && isEmpty(modal)) {
+        dispatch(updateModal({
+          type: MODAL_NETWORK_MISMATCH,
+          expectedNetwork: NETWORK_NAMES[expectedNetworkId] || expectedNetworkId,
+        }))
+      } else if (expectedNetworkId == null && modal.type === MODAL_NETWORK_MISMATCH) {
+        dispatch(closeModal())
+      }
+    }))
+  }, NETWORK_ID_POLL_INTERVAL_DURATION)
+}
+
+function pollForEscapeHatch(dispatch, getState) {
+  setInterval(() => {
+    const { modal } = getState()
+    const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
+    AugurJS.augur.api.Controller.stopped((err, stopped) => {
+      if (stopped && !modalShowing) {
+        dispatch(updateModal({
+          type: MODAL_ESCAPE_HATCH,
+          markets: getAllMarkets(),
+          disputeBonds: [],
+          initialReports: [],
+          shares: [],
+          participationTokens: [],
+        }))
+      } else if (!stopped && modalShowing) {
+        dispatch(closeModal())
+      }
+    })
+  }, ESCAPE_HATCH_POLL_INTERVAL_DURATION)
+}
+
+export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
+  return (dispatch, getState) => {
+    const { modal } = getState()
+    AugurJS.connect(env, (err, ConnectionInfo) => {
+      if (err || !ConnectionInfo.augurNode || !ConnectionInfo.ethereumNode) {
+        return callback(err, ConnectionInfo)
+      }
+      const ethereumNodeConnectionInfo = ConnectionInfo.ethereumNode
+      dispatch(updateConnectionStatus(true))
+      dispatch(updateContractAddresses(ethereumNodeConnectionInfo.contracts))
+      dispatch(updateFunctionsAPI(ethereumNodeConnectionInfo.abi.functions))
+      dispatch(updateEventsAPI(ethereumNodeConnectionInfo.abi.events))
+      dispatch(updateAugurNodeConnectionStatus(true))
+      dispatch(registerTransactionRelay())
+      let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
+      if (windowRef.localStorage && windowRef.localStorage.getItem) {
+        const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
+        universeId = storedUniverseId === null ? universeId : storedUniverseId
+      }
+      dispatch(loadUniverse(universeId, history))
+      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
+      if (isInitialConnection) {
+        pollForAccount(dispatch, getState)
+        pollForNetwork(dispatch, getState)
+        pollForEscapeHatch(dispatch, getState)
+      }
+      callback()
+    })
+  }
+}
+
+export function initAugur(history, callback = logError) {
+  return (dispatch, getState) => {
+    const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`]
+
+    dispatch(updateEnv(env))
+    connectAugur(history, env, true, callback)(dispatch, getState)
+  }
 }

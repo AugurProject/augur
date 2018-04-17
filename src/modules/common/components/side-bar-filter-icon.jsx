@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- This stateless component is a responsive SVG
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
@@ -14,6 +14,6 @@ const SideBarFilterIcon = () => (
       <polygon fill="#FFFFFF" points="169.2,318.6 238.8,371.2 238.8,318.6" />
     </g>
   </svg>
-);
+)
 
-export default SideBarFilterIcon;
+export default SideBarFilterIcon

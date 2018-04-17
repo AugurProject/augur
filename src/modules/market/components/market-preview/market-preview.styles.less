@@ -1,0 +1,59 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketPreview {
+  .border(true);
+
+  background-color: @color-white;
+  margin: 2em 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.MarketPreview__details {
+  display: flex;
+  flex: 4;
+  flex-direction: column;
+}
+
+.MarketPreview__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding: 1rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+  }
+}
+
+.MarketPreview__returns {
+  background-color: @color-lightgray-2;
+  border-top: 1px solid @color-lightest-gray;
+  padding: 0.625rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+  }
+}
+
+.MarketPreview__outcomes {
+  .border(true, @border-left);
+
+  display: flex;
+  flex: 1;
+  padding-left: 2em;
+
+  .outcome .outcome-price {
+    color: @color-blue;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketPreview__footer,
+  .MarketPreview__returns {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

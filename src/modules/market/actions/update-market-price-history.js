@@ -1,5 +1,5 @@
-export const UPDATE_MARKET_PRICE_HISTORY = 'UPDATE_MARKET_PRICE_HISTORY';
+export const UPDATE_MARKET_PRICE_HISTORY = 'UPDATE_MARKET_PRICE_HISTORY'
 
-export function updateMarketPriceHistory(marketID, priceHistory) {
-  return { type: UPDATE_MARKET_PRICE_HISTORY, marketID, priceHistory };
+export function updateMarketPriceHistory(marketId, priceHistory) {
+  return { type: UPDATE_MARKET_PRICE_HISTORY, marketId, priceHistory }
 }

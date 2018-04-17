@@ -1,0 +1,65 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutcomeCharts {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 100%;
+
+  & > *:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+
+  h3 {
+    &:extend(.caps--large all);
+
+    color: @color-gray;
+    margin-bottom: 1.2rem;
+
+    span {
+      color: @color-white;
+      margin-right: 1rem;
+    }
+  }
+}
+
+.MarketOutcomeCharts__Charts {
+  display: flex;
+  height: 100%;
+  position: relative;
+  user-select: none;
+  width: 100%;
+  z-index: @default-z-index;
+
+  & > * {
+    overflow: hidden;
+  }
+}
+
+.MarketOutcomeCharts__candlestick {
+  flex: 2.5;
+  position: relative;
+}
+
+.MarketOutcomeCharts__candlestick-null {
+  &:extend(.caps--small);
+
+  color: @color-gray;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, calc(-100% - 30px));
+}
+
+.MarketOutcomeCharts__orders {
+  display: flex;
+  flex: 2;
+}
+
+.MarketOutcomeCharts__depth {
+  flex: 1;
+}
+
+.MarketOutcomeCharts__orderbook {
+  flex: 0.8;
+}

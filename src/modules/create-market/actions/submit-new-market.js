@@ -1,97 +1,67 @@
-import { eachOfSeries, eachLimit } from 'async';
-import { augur, constants } from 'services/augurjs';
+import { eachOfSeries, eachLimit } from 'async'
+import { constants } from 'services/augurjs'
 
-import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market';
-import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
-import { placeTrade } from 'modules/trade/actions/place-trade';
+import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market'
+import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
+import { placeTrade } from 'modules/trade/actions/place-trade'
+import { addNewMarketCreationTransactions } from 'modules/transactions/actions/add-transactions'
 
-import makePath from 'modules/app/helpers/make-path';
+import makePath from 'modules/routes/helpers/make-path'
 
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
-import { TRANSACTIONS } from 'modules/app/constants/views';
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
+import { TRANSACTIONS } from 'modules/routes/constants/views'
+import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState();
+    const { universe, loginAccount, contractAddresses } = getState()
+    const { createMarket, formattedNewMarket } = buildCreateMarket(newMarket, false, universe, loginAccount, contractAddresses)
 
-    // General Properties
-    const formattedNewMarket = {
-      branch: branch.id,
-      description: newMarket.description,
-      expDate: newMarket.endDate.timestamp / 1000,
-      resolution: newMarket.expirySource,
-      takerFee: newMarket.takerFee / 100,
-      makerFee: newMarket.makerFee / 100,
-      extraInfo: newMarket.detailsText,
-      tags: [
-        newMarket.topic,
-        ...(newMarket.keywords || [])
-      ]
-    };
-
-    // Type Specific Properties
-    switch (newMarket.type) {
-      case CATEGORICAL:
-        formattedNewMarket.minValue = 1;
-        formattedNewMarket.maxValue = newMarket.outcomes.length;
-        formattedNewMarket.numOutcomes = newMarket.outcomes.length;
-        formattedNewMarket.description = newMarket.description + CATEGORICAL_OUTCOMES_SEPARATOR + newMarket.outcomes.map(outcome => outcome).join(CATEGORICAL_OUTCOME_SEPARATOR);
-        break;
-      case SCALAR:
-        formattedNewMarket.minValue = newMarket.scalarSmallNum;
-        formattedNewMarket.maxValue = newMarket.scalarBigNum;
-        formattedNewMarket.numOutcomes = 2;
-        break;
-      case BINARY:
-      default:
-        formattedNewMarket.minValue = 1;
-        formattedNewMarket.maxValue = 2;
-        formattedNewMarket.numOutcomes = 2;
-    }
-
-    augur.create.createSingleEventMarket({
+    createMarket({
       ...formattedNewMarket,
-      _signer: loginAccount.privateKey,
+      meta: loginAccount.meta,
       onSent: (res) => {
-        history.push(makePath(TRANSACTIONS));
-        dispatch(clearNewMarket());
+        dispatch(addNewMarketCreationTransactions({ ...formattedNewMarket, ...res }))
+        history.push(makePath(TRANSACTIONS))
+        dispatch(clearNewMarket())
       },
       onSuccess: (res) => {
+        const marketId = res.callReturn
+
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
-              const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 2
+              const outcomeId = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
 
-              dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+              dispatch(updateTradesInProgress(marketId, outcomeId, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
-                  [outcomeID]: tradingActions
-                };
+                  [outcomeId]: tradingActions,
+                }
 
                 if (tradeToExecute) {
-                  dispatch(placeTrade(res.callReturn, outcomeID, tradeToExecute, null, (err) => {
-                    if (err) return console.error('ERROR: ', err);
+                  dispatch(placeTrade(marketId, outcomeId, tradeToExecute, null, (err) => {
+                    if (err) return console.error('ERROR: ', err)
 
-                    orderCB();
-                  }));
+                    orderCB()
+                  }))
                 }
-              }));
+              }))
             }, (err) => {
-              if (err !== null) return console.error('ERROR: ', err);
+              if (err !== null) return console.error('ERROR: ', err)
 
-              seriesCB();
-            });
+              seriesCB()
+            })
           }, (err) => {
-            if (err !== null) console.error('ERROR: ', err);
-          });
+            if (err !== null) console.error('ERROR: ', err)
+          })
         }
       },
       onFailed: (err) => {
-        console.error('ERROR createSingleEventMarket failed:', err);
+        console.error('ERROR create market failed:', err)
 
-        dispatch(invalidateMarketCreation(err.message));
-      }
-    });
-  };
+        dispatch(invalidateMarketCreation(err.message))
+      },
+    })
+  }
 }

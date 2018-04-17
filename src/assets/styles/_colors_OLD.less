@@ -1,0 +1,106 @@
+// COLORS
+// 	Primary Color Pallete
+@color-black: #000000;
+@color-white: #ffffff;
+@color-base: #5c2634;
+
+@color-purple: #553580;
+@color-purple-dark: #412468;
+@color-purple-light: #9b8bf5;
+
+@color-red: #ff3b34;
+@color-blue: #3299ff;
+@color-green: #28e071;
+@color-orange: #fd940a;
+@color-yellow: #fffb3e;
+
+//	Gradients
+@amount-subtle: 2%;
+@amount-muted: 10%;
+@amount-light: 15%;
+@amount-extra-light: 35%;
+
+//	Pallete Variations
+@color-black-muted: lighten(@color-black, @amount-muted);
+@color-black-light: lighten(@color-black, @amount-light);
+@color-black-extra-light: lighten(@color-black, @amount-extra-light);
+
+@color-gray-muted: lighten(@color-gray, @amount-muted);
+@color-gray-light: lighten(@color-gray, @amount-light);
+@color-gray-extra-light: lighten(@color-gray, @amount-extra-light);
+
+@color-white-muted: darken(@color-white, @amount-muted);
+
+@color-blue-subtle: lighten(@color-blue, @amount-subtle);
+@color-blue-light: lighten(@color-blue, @amount-light);
+@color-blue-extra-light: lighten(@color-blue, @amount-extra-light);
+
+@color-red-muted: lighten(@color-red, @amount-muted);
+@color-red-light: lighten(@color-red, @amount-light);
+@color-red-extra-light: lighten(@color-red, @amount-extra-light);
+
+@color-green-dark-extra-light: darken(@color-green, @amount-extra-light);
+@color-green-dark-light: darken(@color-green, @amount-light);
+@color-green-muted: lighten(@color-green, @amount-muted);
+@color-green-light: lighten(@color-green, @amount-light);
+@color-green-extra-light: lighten(@color-green, @amount-extra-light);
+
+@color-orange-light: lighten(@color-orange, @amount-light);
+
+//	Specific Uses
+@color-app-background: @color-gray-light;
+
+@color-disabled: @color-gray;
+
+@color-border: @color-gray;
+@color-border-muted: lighten(@color-border, @amount-muted);
+@color-border-light: lighten(@color-border, @amount-light);
+
+@color-text-light: @color-white;
+@color-text-light-light: darken(@color-text-light, @amount-light);
+@color-text-light-extra-light: darken(@color-text-light, @amount-extra-light);
+
+@color-text-dark-muted: lighten(@color-text-dark, @amount-muted);
+@color-text-dark-light: lighten(@color-text-dark, @amount-light);
+@color-text-dark-extra-light: lighten(@color-text-dark, @amount-extra-light);
+
+@color-nav-background: #5c2634;
+@color-nav-background-active: #391b23;
+
+@color-side-bar-background: @color-nav-background-active;
+@color-side-bar-background-active: @color-app-background;
+
+@color-footer-background: #fafaff;
+@color-mask-background: fade(@color-black, 70%);
+@color-mask-elements-under-spinner: fade(@color-black, @amount-light);
+
+@color-airbitz-logo-background: #3b5998;
+
+@color-notification-flash: lighten(@color-yellow, @amount-light);
+
+@color-drop-shadow: rgba(0, 0, 0, 0.2);
+
+// 	Mixins
+.colorize {
+  &.positive,
+  .positive {
+    .value {
+      color: @color-green;
+    }
+
+    .denomination {
+      color: @color-green-light;
+    }
+  }
+
+  &.negative,
+  .negative {
+    .value {
+      color: @color-red;
+    }
+
+    .denomination {
+      color: @color-red-muted;
+    }
+  }
+}

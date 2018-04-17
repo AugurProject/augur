@@ -1,0 +1,241 @@
+@import (reference) "~assets/styles/shared";
+
+@keyframes drawout-inner {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  49% {
+    stroke-dashoffset: 455;
+  }
+
+  51% {
+    stroke-dashoffset: 455;
+  }
+
+  100% {
+    stroke-dashoffset: 335;
+  }
+}
+
+@keyframes drawout-inner-inverse {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  49% {
+    stroke-dashoffset: 0;
+  }
+
+  51% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 82;
+  }
+}
+
+.ModalNetworkConnect__form {
+  max-width: 35rem;
+  position: relative;
+  width: 100%;
+
+  h1,
+  span {
+    color: @color-white;
+  }
+
+  h1 {
+    .caps--extra-large();
+
+    margin-bottom: 2rem;
+  }
+
+  label {
+    margin-top: 1rem;
+  }
+
+  input::placeholder {
+    color: @color-lightergray-2;
+    font-family: @din-pro;
+  }
+
+  button {
+    &:extend(.button--white);
+
+    margin-top: 2rem;
+
+    &:disabled {
+      background-color: @color-lightgray;
+      color: @color-lightergray;
+      cursor: default;
+    }
+  }
+}
+
+.ModalNetworkConnect__web3 {
+  color: @color-white;
+}
+
+div.ModalNetworkConnect__ConnectErrors {
+  color: @color-red;
+  display: inline-flex;
+  height: @font-size-large;
+  line-height: @font-size-large;
+  margin: 0.5rem 0;
+  width: 100%;
+
+  > span {
+    color: @color-red;
+    display: inline-flex;
+
+    > svg {
+      height: 1rem;
+      line-height: @font-size-large;
+      margin-right: 0.3rem;
+      width: 1rem;
+    }
+  }
+}
+
+.ModalNetworkConnect__formErrors {
+  height: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.ModalNetworkConnect__error {
+  color: @color-red;
+  display: flex;
+  margin: 0;
+  width: 100%;
+
+  > svg {
+    height: 1rem;
+    line-height: 1rem;
+    margin-right: 0.3rem;
+    width: 1rem;
+  }
+}
+
+.ModalNetworkConnect__error--field,
+.ModalNetworkConnect__error--field:focus-within,
+.ModalNetworkConnect__error--field:focus {
+  .border(true, @border-all, @color-red, @border-width-2);
+}
+
+.ModalNetworkConnect__actions {
+  align-items: flex-end;
+  display: flex;
+}
+
+.ModalNetworkConnect__AugurLogo {
+  backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
+  width: 3.5rem;
+
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-white;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-lines {
+        :local {
+          animation: drawout-inner 2.5s both infinite;
+          animation-direction: alternate;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse 2.5s both infinite;
+          animation-direction: alternate;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .mask {
+        fill: @color-purple;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .ModalNetworkConnect__formTitle {
+    margin: 0  1rem;
+  }
+
+  .ModalNetworkConnect__form {
+    margin-top: -1.8rem;
+
+    > label {
+      padding: 0 1rem;
+    }
+
+    > div {
+      margin: 0.5rem 1rem;
+    }
+
+    > div:last-of-type {
+      margin: 0;
+    }
+  }
+
+  .ModalNetworkConnect__actions {
+    bottom: 0;
+    flex-flow: column nowrap;
+    left: 0;
+    position: fixed;
+    width: 100%;
+
+    > button {
+      border-radius: 0;
+      margin: 0;
+      width: 100%;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+
+        &:disabled {
+          background-color: @color-lightgray;
+          color: @color-lightergray;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .ModalNetworkConnect__AugurLogo {
+    align-self: center;
+  }
+}
