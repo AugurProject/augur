@@ -21,8 +21,8 @@ const DisputeMarketCard = ({ history, location, market, ...p }) => {
   }))
 
   const categoriesWithClick = process(market.category)
-  const tagsWithClick = market.tags.map(tag => ({
-    tag: name,
+  const tagsWithClick = compact(market.tags).map(tag => ({
+    label: tag,
     onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
   }))
 
