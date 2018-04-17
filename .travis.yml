@@ -18,6 +18,7 @@ deploy:
   script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
           npm run docker:release:stable
   on:
+    all_branches: true
     condition: $TRAVIS_BRANCH=stable || $TRAVIS_BRANCH=petong/travis-ci
 
 git:
@@ -27,7 +28,7 @@ branches:
   only:
     - master
     - stable
-    - 'petong/travis-ci'
+    - petong/travis-ci
     - /^v\d+\.\d+\.\d+(-\d+)?$/
 
 env:
