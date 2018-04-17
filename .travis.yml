@@ -15,8 +15,9 @@ script:
 
 deploy:
   provider: script
+  skip_cleanup: true
   script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-          npm run docker:release:stable
+          npm run docker:release:stable;
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH=stable || $TRAVIS_BRANCH=petong/travis-ci
