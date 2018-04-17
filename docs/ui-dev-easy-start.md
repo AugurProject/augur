@@ -16,7 +16,7 @@ You'll need to clone augur UI only:
 
 Open up a command shell in augur directory (where you cloned the repo). Then type:
 
-    npm install
+    yarn
     
 followed by: 
 
