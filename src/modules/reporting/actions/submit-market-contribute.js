@@ -26,7 +26,7 @@ export const submitMarketContribute = (marketId, selectedOutcome, invalid, amoun
       history.push(makePath(REPORTING_DISPUTE_MARKETS))
     },
     onSuccess: () => {
-      removeAccountDispute({ marketId })
+      dispatch(removeAccountDispute({ marketId }))
       callback(null)
     },
     onFailed: (err) => {
