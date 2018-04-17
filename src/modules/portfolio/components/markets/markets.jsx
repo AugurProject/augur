@@ -11,11 +11,11 @@ import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfol
 import { TYPE_TRADE, TYPE_REPORT, TYPE_CLOSED } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { CREATE_MARKET } from 'modules/routes/constants/views'
-import { BigNumber } from 'utils/create-big-number'
 
 class MyMarkets extends Component {
   static propTypes = {
-    collectMarketCreatorFees: PropTypes.instanceOf(BigNumber).isRequired,
+    collectMarketCreatorFees: PropTypes.func.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
@@ -107,6 +107,7 @@ class MyMarkets extends Component {
   render() {
     const {
       collectMarketCreatorFees,
+      loadMarketsInfoIfNotLoaded,
       history,
       isLogged,
       isMobile,
@@ -143,6 +144,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="open"
             collectMarketCreatorFees={collectMarketCreatorFees}
+            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
           />
         }
@@ -171,6 +173,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="reporting"
             collectMarketCreatorFees={collectMarketCreatorFees}
+            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
           />
         }
@@ -199,6 +202,7 @@ class MyMarkets extends Component {
             outstandingReturns
             paginationPageParam="final"
             collectMarketCreatorFees={collectMarketCreatorFees}
+            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
           />
         }
