@@ -34,3 +34,10 @@ stages:
     if: branch = stable or branch = petong/travis-ci
 git:
   depth: 5
+branches:
+  only:
+    - master
+    - stable
+    - petong/travis-ci
+    - /^v\d+\.\d+\.\d+(-\d+)?$/
+
