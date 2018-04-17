@@ -49,7 +49,7 @@ jobs:
       if: branch IN (stable, petong/travis-ci)
       node_js: '8'
       deploy: &script
-        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release:stable;
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; travis_wait npm run docker:release:stable;
         skip_cleanup: true
 
 env:
