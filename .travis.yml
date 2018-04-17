@@ -55,6 +55,8 @@ jobs:
         provider: script
         script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; travis_wait npm run docker:release:stable;
         skip_cleanup: true
+        on:
+          all_branches: true
 
 env:
   global:
