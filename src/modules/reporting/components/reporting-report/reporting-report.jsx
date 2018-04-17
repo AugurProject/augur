@@ -18,7 +18,6 @@ import Styles from 'modules/reporting/components/reporting-report/reporting-repo
 export default class ReportingReport extends Component {
 
   static propTypes = {
-    estimateSubmitInitialReport: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool,
@@ -108,9 +107,9 @@ export default class ReportingReport extends Component {
   }
 
   calculateGasEstimates() {
-    const { estimateSubmitInitialReport, market } = this.props
+    const { submitInitialReport, market } = this.props
     const { selectedOutcome, isMarketInValid } = this.state
-    estimateSubmitInitialReport(market.id, selectedOutcome, isMarketInValid, (err, gasEstimateValue) => {
+    submitInitialReport(true, market.id, selectedOutcome, isMarketInValid, null, (err, gasEstimateValue) => {
       if (err) return console.error(err)
       const gasPrice = augur.rpc.getGasPrice()
       this.setState({ gasEstimate: formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice) })
@@ -199,7 +198,7 @@ export default class ReportingReport extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => submitInitialReport(market.id, s.selectedOutcome, s.isMarketInValid, history)}
+                onClick={() => submitInitialReport(false, market.id, s.selectedOutcome, s.isMarketInValid, history)}
               >Submit
               </button>
               }
