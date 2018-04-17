@@ -43,6 +43,8 @@ script:
 - yarn build --dev
 
 # Build docker image and push
+# this is specified as a job so it runs after all the jobs in the test phase,
+# i.e. node8 and node9 tests
 jobs:
   include:
     - stage: Deploy to stable
