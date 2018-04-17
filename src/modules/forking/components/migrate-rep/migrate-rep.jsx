@@ -20,7 +20,6 @@ export default class MigrateRep extends Component {
 
   static propTypes = {
     accountREP: PropTypes.string.isRequired,
-    estimateSubmitMigrateREP: PropTypes.func.isRequired,
     getForkMigrationTotals: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
@@ -101,12 +100,12 @@ export default class MigrateRep extends Component {
 
   calculateGasEstimates() {
     const {
-      estimateSubmitMigrateREP,
+      submitMigrateREP,
       market,
     } = this.props
     if (this.state.repAmount !== '') {
       const amount = speedomatic.fix(this.state.repAmount, 'hex')
-      estimateSubmitMigrateREP(market.id, this.state.selectedOutcome, this.state.isMarketInValid, amount, (err, gasEstimateValue) => {
+      submitMigrateREP(true, market.id, this.state.selectedOutcome, this.state.isMarketInValid, amount, null, (err, gasEstimateValue) => {
         if (err) return console.error(err)
 
         const gasPrice = augur.rpc.getGasPrice()
@@ -201,7 +200,7 @@ export default class MigrateRep extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => submitMigrateREP(market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.repAmount, 'hex'), history)}
+                onClick={() => submitMigrateREP(false, market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.repAmount, 'hex'), history)}
               >Submit
               </button>
               }
