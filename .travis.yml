@@ -35,12 +35,12 @@ jobs:
               docker push $IMAGE_BUILD
       env:
         - DOCKER_USERNAME=augurintegration
-        - secure: KDRY8LJYUEBq6k18IlPs3fPFHD2Le99laXvA+Qflw+oN1sJWEZtTu50W9MR5vHfQn1QhoQpuN+xhKnEnRTrz4jMQtd1wnOJq6+RrmZZBUw+bCJTQipQUFjdYrGus7ofFV7AheeCmDrqC0fOR+bRSqKDHyIJ6Jdt4beKiVSuUWz0=
+        - secure: "gtWPYRgm/WP9UurlzyBDODGdyFMSN4nncxC2aNtCNHzucs1PKh0dY6Uj4fUMAZObCpZ4foTpUJHG8BXTWgEgxuT/m3dlTILOSXbtMdFbKuxHE5sbgxuCWhwWuECkeoAcDmG+yZLaX+xuB+sde3aduIouwSlerJvrLw4yDveTC2FVeHbudNt641EeTGFmtJds645rMzeZfyCGKZqlzF5Rz1jWUVQ9GjTU1tx8PLcQcIPxku5z5aXx8l/ZZLN/yodN/LumZYLQrI973bz1xnFJ5NMyFHRkaOIhZAQ0Nwyr1sXUwVdqKbqg2yxDifQunV0Rn//jGRNouBdcWowmsBZw29LeA0fLRt7RTKFaLgPTJ7BeP0d3ySVo+RmW0X2iJ8fB9G7G8cjNujCrEseMaIuYRPeA4dHW8ggC0ax0Knl50dsCOxrjzh46yyc1FT8gZq/TJWdTM1v3PjmS497Y76gyQNe6xAmX8xtYd4DeeV3YaC2Vm1j2HRZCODuOdWCCX5aZ9+vUgs6/5IsDelIeyOnMeeDjCwvWzd9CTeC0u3TMgSRkKzd87BEtjI5gL5mhImnDSZgXh5XvLQQAsWzLpZTns0K/L3v/h8iZYAei8VXmKq+QAJ7Nqs7mNoU6N6j4r1CT0W315wid/thd/fawUWnFlE/vuz3GKRzff723XN63e/E="
     - stage: deploy
       script: skip
       env:
         - DOCKER_USERNAME=augurintegration
-        - secure: KDRY8LJYUEBq6k18IlPs3fPFHD2Le99laXvA+Qflw+oN1sJWEZtTu50W9MR5vHfQn1QhoQpuN+xhKnEnRTrz4jMQtd1wnOJq6+RrmZZBUw+bCJTQipQUFjdYrGus7ofFV7AheeCmDrqC0fOR+bRSqKDHyIJ6Jdt4beKiVSuUWz0=
+        - secure: "gtWPYRgm/WP9UurlzyBDODGdyFMSN4nncxC2aNtCNHzucs1PKh0dY6Uj4fUMAZObCpZ4foTpUJHG8BXTWgEgxuT/m3dlTILOSXbtMdFbKuxHE5sbgxuCWhwWuECkeoAcDmG+yZLaX+xuB+sde3aduIouwSlerJvrLw4yDveTC2FVeHbudNt641EeTGFmtJds645rMzeZfyCGKZqlzF5Rz1jWUVQ9GjTU1tx8PLcQcIPxku5z5aXx8l/ZZLN/yodN/LumZYLQrI973bz1xnFJ5NMyFHRkaOIhZAQ0Nwyr1sXUwVdqKbqg2yxDifQunV0Rn//jGRNouBdcWowmsBZw29LeA0fLRt7RTKFaLgPTJ7BeP0d3ySVo+RmW0X2iJ8fB9G7G8cjNujCrEseMaIuYRPeA4dHW8ggC0ax0Knl50dsCOxrjzh46yyc1FT8gZq/TJWdTM1v3PjmS497Y76gyQNe6xAmX8xtYd4DeeV3YaC2Vm1j2HRZCODuOdWCCX5aZ9+vUgs6/5IsDelIeyOnMeeDjCwvWzd9CTeC0u3TMgSRkKzd87BEtjI5gL5mhImnDSZgXh5XvLQQAsWzLpZTns0K/L3v/h8iZYAei8VXmKq+QAJ7Nqs7mNoU6N6j4r1CT0W315wid/thd/fawUWnFlE/vuz3GKRzff723XN63e/E="
         - TESTS=
       deploy: &script
         provider: script
