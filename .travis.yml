@@ -18,7 +18,8 @@ deploy:
   script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
           npm run docker:release:stable
   on: 
-    branch: 'petong/travis-ci'
+    branch: /.*travis-ci/
+
 git:
   depth: 5
 
