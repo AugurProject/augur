@@ -1,5 +1,3 @@
-
-
 import sinon from 'sinon'
 import marketsAwaitingDispute, { selectMarketsAwaitingDispute, __RewireAPI__ } from 'modules/reporting/selectors/select-awaiting-dispute-markets'
 
@@ -47,16 +45,22 @@ describe(`modules/reports/selectors/select-awaiting-dispute-markets.js`, () => {
           },
         })
 
-        const actual = selectMarketsAwaitingDispute.resultFunc([
+        const actual = selectMarketsAwaitingDispute.resultFunc(
+          [
+            {
+              id: '0xshouldpass',
+              reportingState: 'test',
+            },
+            {
+              id: '0xshouldnt',
+              reportingState: 'fail',
+            },
+          ],
+          {},
           {
-            id: '0xshouldpass',
-            reportingState: 'test',
+            forkingMarket: '',
           },
-          {
-            id: '0xshouldnt',
-            reportingState: 'fail',
-          },
-        ])
+        )
 
         const expected = [{
           id: '0xshouldpass',

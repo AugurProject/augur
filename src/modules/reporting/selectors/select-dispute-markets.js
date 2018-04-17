@@ -4,6 +4,7 @@ import { constants } from 'services/augurjs'
 import store from 'src/store'
 import { isEmpty } from 'lodash'
 import selectDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
+import { selectUniverseState } from 'src/select-state'
 
 export default function () {
   return selectMarketsInDispute(store.getState())
@@ -12,15 +13,21 @@ export default function () {
 export const selectMarketsInDispute = createSelector(
   selectMarkets,
   selectDisputeOutcomes,
-  (markets, disputeOutcomes) => {
+  selectUniverseState,
+  (markets, disputeOutcomes, universe) => {
     if (isEmpty(markets)) {
       return []
     }
-    const filteredMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE)
-    // Potentially forking markets come first
+    const filteredMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.id === universe.forkingMarket)
+    // Potentially forking or forking markets come first
     const potentialForkingMarkets = []
     const nonPotentialForkingMarkets = []
+    let forkingMarket = null
     filteredMarkets.forEach((market) => {
+      if (market.id === universe.forkingMarket) {
+        forkingMarket = market
+        return
+      }
       const outcomes = disputeOutcomes[market.id] || []
       let potentialFork = false
       outcomes.forEach((outcome, index) => {
@@ -28,8 +35,14 @@ export const selectMarketsInDispute = createSelector(
           potentialFork = true
         }
       })
-      potentialFork ? potentialForkingMarkets.push(market) : nonPotentialForkingMarkets.push(market)
+      if (potentialFork) {
+        potentialForkingMarkets.push(market)
+      } else {
+        nonPotentialForkingMarkets.push(market)
+      }
     })
-    return potentialForkingMarkets.concat(nonPotentialForkingMarkets)
+    const orderedMarkets = potentialForkingMarkets.concat(nonPotentialForkingMarkets)
+    if (!universe.isForking) return orderedMarkets
+    return [forkingMarket].concat(orderedMarkets)
   },
 )

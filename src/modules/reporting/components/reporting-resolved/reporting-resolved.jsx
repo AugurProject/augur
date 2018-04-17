@@ -27,8 +27,7 @@ export default class ReportingResolved extends Component {
     location: PropTypes.object,
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
-    isForking: PropTypes.bool.isRequired,
-    forkThreshold: PropTypes.object.isRequired,
+    isForkingMarketFinalized: PropTypes.bool.isRequired,
     forkingMarket: PropTypes.object,
   }
 
@@ -61,7 +60,7 @@ export default class ReportingResolved extends Component {
       location,
       markets,
       toggleFavorite,
-      isForking,
+      isForkingMarketFinalized,
       forkingMarket,
     } = this.props
     const s = this.state
@@ -74,15 +73,16 @@ export default class ReportingResolved extends Component {
         <ReportingHeader
           heading="Resolved"
         />
-        { isForking &&
+        { isForkingMarketFinalized &&
           <div>
             <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
             <DisputeMarketCard
-                market={forkingMarket}
-                location={location}
-                history={history}
-                linkType={TYPE_VIEW}
-                outcomes={[]}
+              market={forkingMarket}
+              location={location}
+              history={history}
+              linkType={TYPE_VIEW}
+              isForkingMarket
+              outcomes={[]}
             />
           </div>
         }

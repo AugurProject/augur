@@ -1,5 +1,3 @@
-
-
 import proxyquire from 'proxyquire'
 
 describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
@@ -18,8 +16,15 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
         const mockMarketsAll = {
           selectMarkets: () => ([]),
         }
+        const mockSelectUniverseState = {
+          selectUniverseState: () => ({
+            forkingMarket: '',
+            isForking: false,
+          }),
+        }
         const selector = proxyquire('../../../src/modules/reporting/selectors/select-dispute-markets.js', {
           '../../markets/selectors/markets-all': mockMarketsAll,
+          '../../../select-state': mockSelectUniverseState,
         })
 
         const actual = selector.selectMarketsInDispute()
@@ -50,8 +55,15 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
             ]
           ),
         }
+        const mockSelectUniverseState = {
+          selectUniverseState: () => ({
+            forkingMarket: '',
+            isForking: false,
+          }),
+        }
         const selector = proxyquire('../../../src/modules/reporting/selectors/select-dispute-markets.js', {
           '../../markets/selectors/markets-all': mockMarketsAll,
+          '../../../select-state': mockSelectUniverseState,
         })
 
         const actual = selector.selectMarketsInDispute()
@@ -82,8 +94,15 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
             ]
           ),
         }
+        const mockSelectUniverseState = {
+          selectUniverseState: () => ({
+            forkingMarket: '',
+            isForking: false,
+          }),
+        }
         const selector = proxyquire('../../../src/modules/reporting/selectors/select-dispute-markets.js', {
           '../../markets/selectors/markets-all': mockMarketsAll,
+          '../../../select-state': mockSelectUniverseState,
         })
 
         const actual = selector.selectMarketsInDispute()

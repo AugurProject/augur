@@ -14,7 +14,7 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const universePayload = { tx: { to: universe.id } }
   // Getting current dispute fork threshold
   augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, disputeThresholdForFork) => {
-    if (err) return next(err)
+    if (err) return callback(err)
     const forkThreshold = createBigNumber(disputeThresholdForFork, 10)
     if (forkThreshold !== universe.forkThreshold) {
       dispatch(updateUniverse({ forkThreshold }))

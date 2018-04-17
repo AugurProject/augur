@@ -14,9 +14,8 @@ import getValue from 'utils/get-value'
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
   markets: getValue(selectMarketsToReport(state), 'resolved'),
-  isForking: state.universe.isForking,
+  isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
   forkingMarket: state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null,
-  forkThreshold: state.universe.forkThreshold,
 })
 
 const mapDispatchToProps = dispatch => ({

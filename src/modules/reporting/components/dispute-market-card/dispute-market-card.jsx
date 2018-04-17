@@ -5,9 +5,9 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
+import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
 import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
-import { createBigNumber } from 'utils/create-big-number'
 
 import { MARKETS } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
@@ -17,15 +17,17 @@ import classNames from 'classnames'
 const DisputeMarketCard = (p) => {
 
   const outcomes = p.outcomes[p.market.id] || []
-  let potentialFork = false;
+  let potentialFork = false
   outcomes.forEach((outcome, index) => {
     if (outcome.potentialFork) {
       potentialFork = true
     }
   })
+  if (p.isForkingMarket) potentialFork = false
+  const showForkTop = potentialFork || p.isForkingMarket
 
   return (
-    <article className={classNames(CommonStyles.MarketCommon__container, potentialFork ? Styles['DisputeMarket__potential-fork-top'] : '')}>
+    <article className={classNames(CommonStyles.MarketCommon__container, showForkTop ? Styles['DisputeMarket__fork-top'] : '')}>
       <div className={CommonStyles.MarketCommon__topcontent}>
         <div className={CommonStyles.MarketCommon__header}>
           <ul className={BasicStyles.MarketBasics__tags}>
@@ -41,13 +43,20 @@ const DisputeMarketCard = (p) => {
           </ul>
           <div className={Styles['DisputeMarket__round-number']}>
             { potentialFork &&
-              <span className={Styles['DisptueMarket__potential-fork-label']}>Potential Fork</span>
+              <span className={Styles['DisptueMarket__fork-label']}>Potential Fork</span>
             }
-            <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-            <span className={Styles['DisptueMarket__round-text']}>{p.market && p.market.disputeInfo &&
-                p.market.disputeInfo.disputeRound
+            { p.isForkingMarket &&
+              <span className={Styles['DisptueMarket__fork-label']}>Forking</span>
             }
-            </span>
+            { !p.isForkingMarket &&
+              <span>
+                <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
+                <span className={Styles['DisptueMarket__round-text']}>{p.market && p.market.disputeInfo &&
+                    p.market.disputeInfo.disputeRound
+                }
+                </span>
+              </span>
+            }
           </div>
         </div>
 
@@ -59,10 +68,15 @@ const DisputeMarketCard = (p) => {
             {p.market.description}
           </MarketLink>
         </h1>
-        <MarketReportingPayouts
-          outcomes={outcomes}
-          forkThreshold={p.forkThreshold}
-        />
+        { p.isForkingMarket &&
+          <ForkMigrationTotals />
+        }
+        { !p.isForkingMarket &&
+          <MarketReportingPayouts
+            outcomes={outcomes}
+            forkThreshold={p.forkThreshold}
+          />
+        }
       </div>
       <div className={CommonStyles.MarketCommon__footer}>
         <MarketProperties
@@ -79,6 +93,7 @@ DisputeMarketCard.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   market: PropTypes.object.isRequired,
+  isForkingMarket: PropTypes.bool,
   isMobile: PropTypes.bool,
 }
 

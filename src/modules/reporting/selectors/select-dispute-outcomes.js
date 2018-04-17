@@ -14,6 +14,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
     accountStakeCurrent: '0',
     accountStakeCompleted: '0',
     bondSizeCurrent: newOutcomeDisputeBond,
+    potentialFork: false,
     stakeCompleted: '0',
     stakeRemaining: newOutcomeDisputeBond,
     tentativeWinning: false,
@@ -39,7 +40,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
 
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
 
-  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold) 
+  invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
@@ -73,7 +74,7 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   if (stake.payout.length === 0) return {}
 
   const potentialFork = !stake.tentativeWinning && createBigNumber(stake.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
-  
+
   let outcome
   if (stake.isInvalid) {
     // '0.5' is the indetermine/invalid id from reportable outcomes
