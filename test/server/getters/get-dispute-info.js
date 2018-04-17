@@ -18,6 +18,107 @@ describe("server/getters/get-dispute-info", () => {
     });
   };
   test({
+    description: "get dispute info from 2 markets for user 0xb0b (an initial reporter)",
+    params: {
+      marketIds: [
+        "0x0000000000000000000000000000000000000211",
+        "0x0000000000000000000000000000000000000011",
+      ],
+      account: "0x0000000000000000000000000000000000000b0b",
+    },
+    assertions: (err, disputeInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(disputeInfo, [
+        {
+          marketId: "0x0000000000000000000000000000000000000211",
+          stakeCompletedTotal: "102",
+          bondSizeOfNewStake: "204",
+          stakes: [
+            {
+              payout: [
+                "10000",
+                "0",
+              ],
+              isInvalid: false,
+              bondSizeCurrent: "204",
+              stakeCurrent: "0",
+              accountStakeCurrent: "0",
+              accountStakeTotal: "0",
+              stakeRemaining: "204",
+              bondSizeTotal: "204",
+              accountStakeCompleted: "0",
+              stakeCompleted: "0",
+              tentativeWinning: false,
+            },
+            {
+              payout: [
+                "0",
+                "10000",
+              ],
+              isInvalid: false,
+              accountStakeCompleted: "102",
+              stakeCurrent: "0",
+              stakeCompleted: "102",
+              tentativeWinning: true,
+            },
+            {
+              payout: [
+                "5000",
+                "5000",
+              ],
+              isInvalid: true,
+              bondSizeCurrent: "204",
+              stakeCurrent: "20",
+              accountStakeCurrent: "0",
+              accountStakeTotal: "0",
+              stakeRemaining: "184",
+              bondSizeTotal: "204",
+              accountStakeCompleted: "0",
+              stakeCompleted: "0",
+              tentativeWinning: false,
+            },
+          ],
+          disputeRound: 0,
+        },
+        {
+          marketId: "0x0000000000000000000000000000000000000011",
+          stakeCompletedTotal: "30102",
+          bondSizeOfNewStake: "60204",
+          stakes: [
+            {
+              payout: [
+                "0",
+                "2",
+              ],
+              isInvalid: false,
+              bondSizeCurrent: "30000",
+              stakeCurrent: "30000",
+              accountStakeCurrent: "102",
+              accountStakeTotal: "204",
+              stakeRemaining: "0",
+              bondSizeTotal: "40102",
+              accountStakeCompleted: "102",
+              stakeCompleted: "10102",
+              tentativeWinning: false,
+            },
+            {
+              payout: [
+                "1",
+                "1",
+              ],
+              isInvalid: true,
+              accountStakeCompleted: "0",
+              stakeCurrent: "0",
+              stakeCompleted: "20000",
+              tentativeWinning: true,
+            },
+          ],
+          disputeRound: 2,
+        },
+      ]);
+    },
+  });
+  test({
     description: "get dispute info from 2 markets for user 0x21",
     params: {
       marketIds: [
