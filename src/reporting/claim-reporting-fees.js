@@ -8,12 +8,6 @@ var api = require("../api");
 var contractTypes = require("../constants").CONTRACT_TYPE;
 var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
-/**
- * @typedef {Object} RedeemableContract
- * @property {string} address Ethereum address of a FeeWindow, DisputeCrowdsourcer, or InitialReporter from which to redeem fees.
- * @property {number} type Type of smart contract from which to redeem reporting fees: 0 = DisputeCrowdsourcer, 1 = InitialReporter, and 2 = FeeWindow.
- */
-
  /**
  * @typedef {Object} GasEstimateTotals
  * @property {BigNumber} crowdsourcers Total gas estimate for redeeming all DisputeCrowdsourcer reporting fees.
@@ -36,9 +30,6 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @property {Array.<string>|null} redeemedCrowdsourcers Addresses of all successfully redeemed Dispute Crowdsourcers, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {Array.<string>|null} redeemedInitialReporters Addresses of all successfully redeemed Initial Reporters, as hexadecimal strings.  Not set if `p.estimateGas` is true.
  * @property {GasEstimateInfo|null} gasEstimates Object containing a breakdown of gas estimates for all reporting fee redemption transactions. Not set if `p.estimateGas` is false.
- * @property {Array.<string>} failedFeeWindows Array of FeeWindow contract addresses from which reporting fees could not be claimed.
- * @property {Array.<string>} failedCrowdsourcers Array of DisputeCrowdsourcer contract addresses from which reporting fees could not be claimed.
- * @property {Array.<string>} failedInitialReporters Array of InitialReporter contract addresses from which reporting fees could not be claimed.
  */
 
 /**
@@ -182,21 +173,18 @@ function claimReportingFees(p) {
       redeemedFeeWindows: redeemedFeeWindows,
       redeemedCrowdsourcers: redeemedCrowdsourcers,
       redeemedInitialReporters: redeemedInitialReporters,
-      failedFeeWindows: failedFeeWindows,
-      failedCrowdsourcers: failedCrowdsourcers,
-      failedInitialReporters: failedInitialReporters,
     };
     if (p.estimateGas) {
       gasEstimates.totals.all = gasEstimates.totals.crowdsourcers.plus(gasEstimates.totals.initialReporters).plus(gasEstimates.totals.feeWindows);
       result = {
         gasEstimates: gasEstimates,
-        failedFeeWindows: failedFeeWindows,
-        failedCrowdsourcers: failedCrowdsourcers,
-        failedInitialReporters: failedInitialReporters,
       };
     }
 
     if (failedFeeWindows.length > 0 || failedCrowdsourcers > 0 || failedInitialReporters > 0) {
+      result.failedFeeWindows = failedFeeWindows;
+      result.failedCrowdsourcers = failedCrowdsourcers;
+      result.failedInitialReporters = failedInitialReporters;
       return p.onFailed(new Error("Not all transactions were successful.\n" + JSON.stringify(result)));
     }
     p.onSuccess(result);
