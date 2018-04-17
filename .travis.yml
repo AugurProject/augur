@@ -28,6 +28,7 @@ jobs:
         skip_cleanup: true
         script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
                 npm run docker:release:stable
+      if: type = push
 stages:
   - test
   - name: deploy
