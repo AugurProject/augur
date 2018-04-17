@@ -34,7 +34,7 @@ export default class MarketsView extends Component {
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfo: PropTypes.func.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
   }
 
@@ -107,7 +107,7 @@ export default class MarketsView extends Component {
       history,
       isLogged,
       isMobile,
-      loadMarketsInfo,
+      loadMarketsInfoIfNotLoaded,
       location,
       markets,
       toggleFavorite,
@@ -129,7 +129,7 @@ export default class MarketsView extends Component {
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
-          loadMarketsInfo={loadMarketsInfo}
+          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
         />
