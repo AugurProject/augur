@@ -268,12 +268,12 @@ export default class MarketOutcomeCandlestick extends Component {
         candleChart,
         drawParams,
       })
-      //
-      // drawXAxisLabels({
-      //   periodTimeSeries,
-      //   candleChart,
-      //   drawParams,
-      // })
+
+      drawXAxisLabels({
+        periodTimeSeries,
+        candleChart,
+        drawParams,
+      })
       //
       // drawCrosshairs({
       //   candleTicks,
