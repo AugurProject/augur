@@ -10,7 +10,6 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
     return order[1] < p ? order[1] : p
   }, null)
   if (min === null) min = minPrice
-  min = createBigNumber(min)
 
   const mid = () => {
     if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length === 0) {
@@ -29,7 +28,6 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
     return order[1] > p ? order[1] : p
   }, null)
   if (max === null) max = maxPrice
-  max = createBigNumber(max)
 
   return {
     min,

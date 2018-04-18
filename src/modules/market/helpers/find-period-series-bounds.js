@@ -2,27 +2,27 @@ import { isEmpty } from 'lodash'
 
 import { createBigNumber } from 'utils/create-big-number'
 
-export default function findPeriodSeriesBounds(periodTimeSeries = []) {
+export default function findPeriodSeriesBounds(periodTimeSeries = [], marketMin = createBigNumber(0), marketMax = createBigNumber(1)) {
+  console.log('marketMin/Max -- ', marketMin.toNumber(), marketMax.toNumber())
+
   const DEFAULT_BOUNDS = {
-    min: createBigNumber(0),
-    max: createBigNumber(0),
+    min: marketMin,
+    max: marketMax,
   }
 
   if (isEmpty(periodTimeSeries)) return DEFAULT_BOUNDS
 
   return (periodTimeSeries).reduce((p, item, i) => {
-    const currentItem = item
-
     if (i === 0) {
       return {
-        min: currentItem.low,
-        max: currentItem.high,
+        min: item.low,
+        max: item.high,
       }
     }
 
     return {
-      min: currentItem.low.lt(p.min) ? currentItem.low : p.min,
-      max: currentItem.high.gt(p.max) ? currentItem.high : p.max,
+      min: item.low.lt(p.min) ? item.low : p.min,
+      max: item.high.gt(p.max) ? item.high : p.max,
     }
   }, DEFAULT_BOUNDS)
 }

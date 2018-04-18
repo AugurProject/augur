@@ -10,6 +10,7 @@ export default function derivePeriodTimeSeries(event) {
   const options = event.data
 
   if ( // Can't do it
+    options.priceTimeSeries == null ||
     options.priceTimeSeries.length === 0 ||
     options.selectedPeriod.selectedPeriod === undefined ||
     options.selectedPeriod.selectedPeriod === -1
@@ -108,7 +109,7 @@ export default function derivePeriodTimeSeries(event) {
 
           return {
             ...p,
-            high: itemPrice.lt(p.high) ? itemPrice : p.high,
+            high: itemPrice.gt(p.high) ? itemPrice : p.high,
             low: itemPrice.lt(p.low) ? itemPrice : p.low,
             close: itemPrice,
             volume: (p.volume || createBigNumber(0)).plus(item.amount),
@@ -117,11 +118,13 @@ export default function derivePeriodTimeSeries(event) {
       }
     }
 
-    // NOTE --  toString BNs here due to the stripping of BN objects during
+    // NOTE --  toString BNs here due to the stripping of BN instances during
     //          serialization of the message for posted back to main thread
     Object.entries(accumulationPeriod).forEach(([key, value]) => {
       if (key !== 'period') accumulationPeriod[key] = value.toString()
     })
+
+    console.log('accumulationPeriod -- ', accumulationPeriod)
 
     return [...p, accumulationPeriod]
   }, [])
