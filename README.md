@@ -8,16 +8,13 @@ It runs locally in your browser and communicates directly with the ethereum netw
 There are several configurations to run it on testnet:
 
 * Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
-* Easy but super slow: [ipfs hosted augur client](https://ipfs.io/ipns/QmQBVeHLXPB7ifmCWZUw9PDktUoTEJfQLpR3bSVUgZgLR8/)
 * Partial Local: [run ethereum client locally](#eth_local)
 * Full Local: [run everything locally](#totally_local)
-* Production: [current status](https://github.com/AugurProject/augur/blob/seadragon/docs/production.md)
+* Production: [current status](https://github.com/AugurProject/augur/blob/master/docs/production.md)
 
 For production configuration:
 
-* IPFS: instructions TBD
-* Docker: instructions TBD
-
+* Docker: [dockerized augur client](./docs/deploy-production.md)
 
 ***
 
@@ -43,8 +40,6 @@ In the following configurations we use rinkeby testnet, here is how to get an ac
 ### overview
 
 We are hosting the UI for testnets, dev.augur.net points to rinkeby ethereum testnet node
-The configuration can be seen [here](https://dev.augur.net/config/env.json), the augur-node is hosted in the cloud.
-
 Simply point your web browser to  [dev.augur.net](http://dev.augur.net)
 
 ***
@@ -89,13 +84,7 @@ Simply copy these files to your web server of choice.
 
 ### [Docker](https://www.docker.com/)
 After git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
-```
-docker build -t augur .
-```
-This runs the built docker container and maps external port (8080) to docker container port 80. The RUN_LOCAL_ONLY disables hosting UI in IPFS, not need in this configuration
-```
-docker run -e RUN_LOCAL_ONLY=true -p 8080:80 augur
-```
+[dockerized augur client](./docs/deploy-production.md)
 
 ***
 
@@ -103,9 +92,6 @@ docker run -e RUN_LOCAL_ONLY=true -p 8080:80 augur
 These instructions go through running local ethereum node, augur-node and augur UI. This will create a local environment contracts loaded with canned data.
 
 Full instructions are here [dev-local-node](https://github.com/AugurProject/augur/blob/seadragon/docs/dev-local-node.md)
-
-
-
 
 
 
