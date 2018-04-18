@@ -34,7 +34,7 @@ export default class ReportingDisputeForm extends Component {
     if (wholeREPstake === '' || wholeREPstake == null || wholeREPstake <= 0) {
       updatedValidations.stake = 'The stake field is required.'
     } else if (bnStake.gt(bnMaxRep)) {
-      updatedValidations.stake = `Max stake value ${formatNumber(bnMaxRep, { decimals: 4, roundUp: true }).formatted}`
+      updatedValidations.stake = `Max value is ${formatNumber(bnMaxRep, { decimals: 4, roundUp: true }).formatted}`
     } else {
       delete updatedValidations.stake
     }
