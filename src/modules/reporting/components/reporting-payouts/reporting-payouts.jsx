@@ -34,7 +34,7 @@ const Outcome = ({ className, outcome }) => {
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage']} style={{ width: String(outcome.percentageComplete) + '%' }} />
             </div>
-            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentAccountStake}</span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
             <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
@@ -45,7 +45,7 @@ const Outcome = ({ className, outcome }) => {
             offset={{ left: 70, top: 6 }}
             type="light"
           >
-            <p>{currentOutcomeStake} REP Staked
+            <p>{currentAccountStake} REP Staked
             </p>
           </ReactTooltip>
         </div>
