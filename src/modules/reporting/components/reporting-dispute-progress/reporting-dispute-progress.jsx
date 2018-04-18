@@ -31,8 +31,8 @@ const ReportingDisputeProgress = (p) => {
         <div className={Styles['ReportingDisputeProgress__dispute-graph']}>
           <div className={Styles.ReportingDisputeProgress__graph}>
             <div className={Styles['ReportingDisputeProgress__graph-current']}>
-              <div style={percentageAccount} />
               <div style={percentageComplete} />
+              <div style={percentageAccount} />
             </div>
           </div>
         </div>
