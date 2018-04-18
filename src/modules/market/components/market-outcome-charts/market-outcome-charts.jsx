@@ -209,59 +209,58 @@ export default class MarketOutcomeCharts extends Component {
               />
             </div>
           }
+          <div
+            ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
+            className={classNames(Styles.MarketOutcomeCharts__orders, {
+              [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
+            })}
+          >
+            <div className={Styles.MarketOutcomeCharts__depth}>
+              <MarketOutcomeDepth
+                headerHeight={s.headerHeight}
+                isMobile={isMobile}
+                priceTimeSeries={priceTimeSeries}
+                sharedChartMargins={s.sharedChartMargins}
+                fixedPrecision={s.fixedPrecision}
+                orderBookKeys={orderBookKeys}
+                marketDepth={marketDepth}
+                marketMax={maxPrice}
+                marketMin={minPrice}
+                hoveredPrice={s.hoveredPrice}
+                hoveredDepth={s.hoveredDepth}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateHoveredDepth={this.updateHoveredDepth}
+                updateSeletedOrderProperties={updateSeletedOrderProperties}
+              />
+            </div>
+            <div className={Styles.MarketOutcomeCharts__orderbook}>
+              <MarketOutcomeOrderBook
+                headerHeight={s.headerHeight}
+                isMobile={isMobile}
+                sharedChartMargins={s.sharedChartMargins}
+                fixedPrecision={s.fixedPrecision}
+                orderBook={orderBook}
+                marketMidpoint={orderBookKeys.mid}
+                hoveredPrice={s.hoveredPrice}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updatePrecision={this.updatePrecision}
+                updateSeletedOrderProperties={updateSeletedOrderProperties}
+              />
+            </div>
+          </div>
+          <MarketOutcomeMidpoint
+            isMobile={isMobile}
+            excludeCandlestick={excludeCandlestick}
+            hasPriceHistory={hasPriceHistory}
+            hasOrders={hasOrders}
+            chartWidths={s.chartWidths}
+            headerHeight={s.headerHeight}
+            orderBookKeys={orderBookKeys}
+            sharedChartMargins={s.sharedChartMargins}
+            fixedPrecision={s.fixedPrecision}
+          />
         </div>
       </section>
     )
   }
 }
-
-// <div
-//   ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
-//   className={classNames(Styles.MarketOutcomeCharts__orders, {
-//     [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
-//   })}
-// >
-//   <div className={Styles.MarketOutcomeCharts__depth}>
-//     <MarketOutcomeDepth
-//       headerHeight={s.headerHeight}
-//       isMobile={isMobile}
-//       priceTimeSeries={priceTimeSeries}
-//       sharedChartMargins={s.sharedChartMargins}
-//       fixedPrecision={s.fixedPrecision}
-//       orderBookKeys={orderBookKeys}
-//       marketDepth={marketDepth}
-//       marketMax={maxPrice}
-//       marketMin={minPrice}
-//       hoveredPrice={s.hoveredPrice}
-//       hoveredDepth={s.hoveredDepth}
-//       updateHoveredPrice={this.updateHoveredPrice}
-//       updateHoveredDepth={this.updateHoveredDepth}
-//       updateSeletedOrderProperties={updateSeletedOrderProperties}
-//     />
-//   </div>
-//   <div className={Styles.MarketOutcomeCharts__orderbook}>
-//     <MarketOutcomeOrderBook
-//       headerHeight={s.headerHeight}
-//       isMobile={isMobile}
-//       sharedChartMargins={s.sharedChartMargins}
-//       fixedPrecision={s.fixedPrecision}
-//       orderBook={orderBook}
-//       marketMidpoint={orderBookKeys.mid}
-//       hoveredPrice={s.hoveredPrice}
-//       updateHoveredPrice={this.updateHoveredPrice}
-//       updatePrecision={this.updatePrecision}
-//       updateSeletedOrderProperties={updateSeletedOrderProperties}
-//     />
-//   </div>
-// </div>
-// <MarketOutcomeMidpoint
-//   isMobile={isMobile}
-//   excludeCandlestick={excludeCandlestick}
-//   hasPriceHistory={hasPriceHistory}
-//   hasOrders={hasOrders}
-//   chartWidths={s.chartWidths}
-//   headerHeight={s.headerHeight}
-//   orderBookKeys={orderBookKeys}
-//   sharedChartMargins={s.sharedChartMargins}
-//   fixedPrecision={s.fixedPrecision}
-// />

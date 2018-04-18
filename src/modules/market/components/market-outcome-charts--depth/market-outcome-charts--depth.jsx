@@ -7,6 +7,7 @@ import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outc
 
 import { isEqual } from 'lodash'
 import CustomPropTypes from 'utils/custom-prop-types'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
@@ -362,14 +363,19 @@ function determineDrawParams(options) {
   const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
   // Determine bounding diff
-  const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
-  const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
-  const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+  const maxDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
+  const minDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.min).toPrecision(15)).absoluteValue()
+
+  // const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
+  // const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
+  let boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
   const yDomain = [
-    Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
-    Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
+    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
   ]
+
+  boundDiff = boundDiff.toNumber()
 
   const xScale = d3.scaleLinear()
     .domain(isMobile ? d3.extent(xDomain).sort((a, b) => b - a) : d3.extent(xDomain))

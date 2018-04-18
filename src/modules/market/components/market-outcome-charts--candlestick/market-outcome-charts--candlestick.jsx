@@ -399,10 +399,9 @@ function determineDrawParams(options) {
   //  Y
   // Determine bounding diff
   // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  let boundDiff = '0'
   const maxDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
   const minDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.min).toPrecision(15)).absoluteValue()
-  boundDiff = maxDiff.gt(minDiff) ? maxDiff : minDiff
+  let boundDiff = maxDiff.gt(minDiff) ? maxDiff : minDiff
 
   const yDomain = [
     createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
