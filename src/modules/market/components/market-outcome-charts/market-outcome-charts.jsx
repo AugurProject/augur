@@ -40,6 +40,7 @@ export default class MarketOutcomeCharts extends Component {
     this.snapScroller = null
 
     this.state = {
+      candleScrolled: true,
       selectedPeriod: {},
       hoveredPeriod: {},
       hoveredDepth: [],
@@ -65,6 +66,7 @@ export default class MarketOutcomeCharts extends Component {
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
     this.updateChartsWidth = this.updateChartWidths.bind(this)
+    this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(this)
   }
 
   componentDidMount() {
@@ -150,11 +152,19 @@ export default class MarketOutcomeCharts extends Component {
 
     if (this.snapScroller != null) {
       if (this.props.isMobile) {
-        this.snapScroller.bind()
+        this.snapScroller.bind(this.determineActiveScrolledChart)
+        this.determineActiveScrolledChart()
       } else {
         this.snapScroller.unbind()
       }
     }
+  }
+
+  determineActiveScrolledChart() {
+    console.log('here!@ -- ', this.charts.scrollLeft)
+    this.setState({
+      candleScrolled:  this.charts.scrollLeft === 0 ? true : false
+    })
   }
 
   render() {
@@ -260,6 +270,20 @@ export default class MarketOutcomeCharts extends Component {
             fixedPrecision={s.fixedPrecision}
           />
         </div>
+        {isMobile &&
+          <div className={Styles.MarketOutcomeCharts__indicator}>
+            <div
+              className={classNames(Styles.MarketOutcomeCharts__dot, {
+                [Styles['MarketOutcomeCharts__dot--active']]: s.candleScrolled,
+              })}
+            />
+            <div
+              className={classNames(Styles.MarketOutcomeCharts__dot, {
+                [Styles['MarketOutcomeCharts__dot--active']]: !s.candleScrolled,
+              })}
+            />
+          </div>
+        }
       </section>
     )
   }

@@ -76,3 +76,24 @@
 .MarketOutcomeCharts__orderbook {
   flex: 0.8;
 }
+
+.MarketOutcomeCharts__indicator {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.MarketOutcomeCharts__dot {
+  background-color: @color-lightergray-2;
+  border-radius: 50%;
+  height: 0.5em;
+  margin: 0 0.25em;
+  opacity: 0.2;
+  width: 0.5em;
+}
+
+.MarketOutcomeCharts__dot--active {
+  opacity: 0.5;
+}
