@@ -156,6 +156,7 @@ export default class AppView extends Component {
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this))
     this.checkIsMobile = this.checkIsMobile.bind(this)
     this.toggleNotifications = this.toggleNotifications.bind(this)
+    this.mainSectionClickHandler = this.mainSectionClickHandler.bind(this)
   }
 
   componentWillMount() {
@@ -345,6 +346,26 @@ export default class AppView extends Component {
     }
   }
 
+  mainSectionClickHandler = (e, testSideNav = true) => {
+    const stateUpdate = {}
+    const { isMobile } = this.props
+    let updateState = false
+
+    if (testSideNav && isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
+      stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
+      updateState = true
+    }
+
+    if (this.state.isNotificationsVisible) {
+      stateUpdate.isNotificationsVisible = false
+      updateState = true
+    }
+
+    if (updateState) {
+      this.setState(stateUpdate)
+    }
+  }
+
   renderMobileMenuButton(unseenCount) {
     const menuState = this.state.mobileMenuState
 
@@ -399,25 +420,6 @@ export default class AppView extends Component {
     let tagsMargin
     let origamiScalar = 0
 
-    const mainSectionClickHandler = () => {
-      const stateUpdate = {}
-      let updateState = false
-
-      if (isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
-        stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
-        updateState = true
-      }
-
-      if (this.state.isNotificationsVisible) {
-        stateUpdate.isNotificationsVisible = false
-        updateState = true
-      }
-
-      if (updateState) {
-        this.setState(stateUpdate)
-      }
-    }
-
     if (!isMobile) {
       if (parsePath(location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110
@@ -448,7 +450,11 @@ export default class AppView extends Component {
             },
           )}
         >
-          <section className={Styles.SideBar}>
+          <section
+            className={Styles.SideBar}
+            onClick={e => this.mainSectionClickHandler(e, false)}
+            role="presentation"
+          >
             <Origami
               isMobile={isMobile}
               menuScalar={origamiScalar}
@@ -473,7 +479,11 @@ export default class AppView extends Component {
             />
           </section>
           <section className={Styles.Main}>
-            <section className={Styles.TopBar}>
+            <section
+              className={Styles.TopBar}
+              onClick={this.mainSectionClickHandler}
+              role="presentation"
+            >
               <TopBar
                 isMobile={isMobile}
                 isLogged={isLogged}
@@ -524,7 +534,7 @@ export default class AppView extends Component {
               <section
                 className={Styles.Main__content}
                 style={{ marginLeft: tagsMargin }}
-                onClick={mainSectionClickHandler}
+                onClick={this.mainSectionClickHandler}
                 role="presentation"
               >
                 <Routes />
