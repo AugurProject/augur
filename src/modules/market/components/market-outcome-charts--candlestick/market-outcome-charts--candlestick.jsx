@@ -261,13 +261,13 @@ export default class MarketOutcomeCandlestick extends Component {
         candleChart,
         drawParams,
       })
-      //
-      // drawVolume({
-      //   fixedPrecision,
-      //   periodTimeSeries,
-      //   candleChart,
-      //   drawParams,
-      // })
+
+      drawVolume({
+        fixedPrecision,
+        periodTimeSeries,
+        candleChart,
+        drawParams,
+      })
       //
       // drawXAxisLabels({
       //   periodTimeSeries,
@@ -544,20 +544,20 @@ function drawVolume(options) {
     drawParams,
   } = options
 
-  const yVolumeDomain = periodTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.volume], [])
+  const yVolumeDomain = periodTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.volume.toNumber()], [])
 
   const yVolumeScale = d3.scaleLinear()
     .domain(d3.extent(yVolumeDomain))
     .range([drawParams.containerHeight - drawParams.chartDim.bottom, drawParams.chartDim.top + ((drawParams.containerHeight - drawParams.chartDim.bottom) * 0.66)])
 
-  // candleChart.selectAll('rect.volume')
-  //   .data(periodTimeSeries)
-  //   .enter().append('rect')
-  //   .attr('x', d => drawParams.xScale(d.period))
-  //   .attr('y', d => yVolumeScale(d.volume))
-  //   .attr('height', d => drawParams.containerHeight - drawParams.chartDim.bottom - yVolumeScale(d.volume))
-  //   .attr('width', d => drawParams.candleDim.width)
-  //   .attr('class', 'period-volume')
+  candleChart.selectAll('rect.volume')
+    .data(periodTimeSeries)
+    .enter().append('rect')
+    .attr('x', d => drawParams.xScale(d.period))
+    .attr('y', d => yVolumeScale(d.volume.toNumber()))
+    .attr('height', d => drawParams.containerHeight - drawParams.chartDim.bottom - yVolumeScale(d.volume.toNumber()))
+    .attr('width', d => drawParams.candleDim.width)
+    .attr('class', 'period-volume')
 }
 
 function drawXAxisLabels(options) {

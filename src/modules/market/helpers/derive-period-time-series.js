@@ -105,8 +105,6 @@ export default function derivePeriodTimeSeries(event) {
             }
           }
 
-          // console.log(item, p)
-
           return {
             ...p,
             high: itemPrice.gt(p.high) ? itemPrice : p.high,
@@ -123,8 +121,6 @@ export default function derivePeriodTimeSeries(event) {
     Object.entries(accumulationPeriod).forEach(([key, value]) => {
       if (key !== 'period') accumulationPeriod[key] = value.toString()
     })
-
-    console.log('accumulationPeriod -- ', accumulationPeriod)
 
     return [...p, accumulationPeriod]
   }, [])

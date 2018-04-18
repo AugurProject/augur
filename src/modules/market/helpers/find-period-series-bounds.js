@@ -3,8 +3,6 @@ import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 
 export default function findPeriodSeriesBounds(periodTimeSeries = [], marketMin = createBigNumber(0), marketMax = createBigNumber(1)) {
-  console.log('marketMin/Max -- ', marketMin.toNumber(), marketMax.toNumber())
-
   const DEFAULT_BOUNDS = {
     min: marketMin,
     max: marketMax,
