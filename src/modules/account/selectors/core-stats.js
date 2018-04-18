@@ -3,7 +3,6 @@ import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectAccountTradesState, selectCurrentTimestamp, selectBlockchainState, selectOutcomesDataState } from 'src/select-state'
 import { augur } from 'services/augurjs'
-// import { dateToBlock } from 'utils/date-to-block-to-date'
 import { formatEther } from 'utils/format-number'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { selectLoginAccount } from 'modules/auth/selectors/login-account'
@@ -30,7 +29,6 @@ export const createPeriodPLSelector = period => createSelector(
 
     const periodDate = new Date(currentTimestamp - (period*24*60*60*1000))
     const periodTime = (periodDate.getTime() / 1000)
-    // const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber, currentTimestamp)
 
     return Object.keys(accountTrades).reduce((p, marketId) => { // Iterate over marketIds
       if (!outcomesData[marketId]) return p
