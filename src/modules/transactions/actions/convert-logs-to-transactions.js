@@ -10,13 +10,11 @@ export const updateLoggedTransactions = log => (dispatch, getState) => {
 }
 
 export const removeLogFromTransactions = log => (dispatch, getState) => {
-  console.log('removeLogFromTransactions', log)
   if (!log.transactionHash) return console.error(`transaction hash not found for log ${JSON.stringify(log)}`)
   dispatch(deleteTransactionsWithTransactionHash(log.transactionHash))
 }
 
 export const addLogToTransactions = log => (dispatch, getState) => {
-  console.log('addLogToTransactions', log)
   if (!log.transactionHash) return console.error(`transaction hash not found for log ${JSON.stringify(log)}`)
   dispatch(constructTransaction(log))
 }
