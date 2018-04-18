@@ -274,21 +274,21 @@ export default class MarketOutcomeCandlestick extends Component {
         candleChart,
         drawParams,
       })
-      //
-      // drawCrosshairs({
-      //   candleTicks,
-      // })
-      //
-      // attachHoverClickHandlers({
-      //   updateHoveredPeriod,
-      //   updateHoveredPrice,
-      //   periodTimeSeries,
-      //   fixedPrecision,
-      //   candleChart,
-      //   drawParams,
-      //   updateSeletedOrderProperties,
-      // })
-      //
+
+      drawCrosshairs({
+        candleTicks,
+      })
+
+      attachHoverClickHandlers({
+        updateHoveredPeriod,
+        updateHoveredPrice,
+        periodTimeSeries,
+        fixedPrecision,
+        candleChart,
+        drawParams,
+        updateSeletedOrderProperties,
+      })
+
       // Set react components to state for render
       this.setState({
         yScale: drawParams.yScale,
