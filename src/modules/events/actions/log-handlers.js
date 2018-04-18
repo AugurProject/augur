@@ -136,9 +136,12 @@ export const handleDisputeCrowdsourcerCreatedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
 }
 
-export const handleDisputeCrowdsourcerContributionLog = log => (dispatch) => {
+export const handleDisputeCrowdsourcerContributionLog = log => (dispatch, getState) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
+  if (log.reporter === getState().loginAccount.address) {
+    dispatch(loadReportingWindowBounds())
+  }
 }
 
 export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
