@@ -12,6 +12,7 @@ export interface FeeDetails {
     unclaimedEth: string;
     unclaimedRepStaked: string;
     unclaimedRepEarned: string;
+    lostRep: string;
     claimedEth: string;
     claimedRepStaked: string;
     claimedRepEarned: string;
@@ -49,6 +50,18 @@ interface CrowdsourcersRow {
   amountStaked: BigNumber;
 }
 
+interface FeeWindowCompletionStakeRow {
+  feeWindow: string;
+  amountStaked: BigNumber;
+  winning: number;
+}
+
+interface RepStakeResults {
+  unclaimedRepStaked: BigNumber;
+  unclaimedRepEarned: BigNumber;
+  lostRep: BigNumber;
+}
+
 function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { [feeWindow: string]: FeeWindowTotalTokens }) => void) {
   const query = db.select(["fee_windows.feeWindow", "participationToken.supply AS participationTokenStake", "feeToken.supply", "cash.balance"]).from("fee_windows");
   query.leftJoin("token_supply AS participationToken", "fee_windows.feeWindow", "participationToken.token");
@@ -70,6 +83,32 @@ function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null,
       };
       return acc;
     }, {}));
+  });
+}
+
+function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { redeemableFeeWindows: Array<string>, fees: RepStakeResults }) => void) {
+  const query = db.select(["fee_windows.feeWindow", "stakedRep.balance as amountStaked", "payouts.winning"]).from("fee_windows");
+  query.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
+  query.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
+  query.whereNotNull("payouts.winning");
+  query.leftJoin("balances AS stakedRep", function () {
+    this
+      .on("crowdsourcers.crowdsourcerId", db.raw("stakedRep.token"))
+      .andOn("stakedRep.owner", db.raw("?", reporter));
+  });
+  if (universe != null) query.where("fee_windows.universe", universe);
+  if (feeWindow != null) query.where("fee_windows.feeWindow", feeWindow);
+  query.asCallback((err, feeWindowCompletionStakes: Array<FeeWindowCompletionStakeRow>) => {
+    if (err) return callback(err);
+    const redeemableFeeWindows = _.uniq(_.map(feeWindowCompletionStakes, (feeWindowCompletionStake) => feeWindowCompletionStake.feeWindow));
+    const fees = _.reduce(feeWindowCompletionStakes, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
+      return {
+        unclaimedRepStaked: acc.unclaimedRepStaked.plus(feeWindowCompletionStake.winning === 0 ? ZERO : (feeWindowCompletionStake.amountStaked || ZERO)),
+        unclaimedRepEarned: acc.unclaimedRepEarned.plus(feeWindowCompletionStake.winning === 0 ? ZERO : (feeWindowCompletionStake.amountStaked || ZERO).div(2)),
+        lostRep: acc.lostRep.plus(feeWindowCompletionStake.winning === 0 ? (feeWindowCompletionStake.amountStaked || ZERO) : ZERO),
+      };
+    }, { unclaimedRepStaked: ZERO, unclaimedRepEarned: ZERO, lostRep: ZERO });
+    return callback(null, { redeemableFeeWindows, fees });
   });
 }
 
@@ -123,28 +162,33 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
     if (err) return callback(err);
     getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
       if (err) return callback(err);
-      const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
-        if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
-        const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
-        const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
-        acc = acc.plus(feesForThisWindow);
-        return acc;
-      }, ZERO);
-      const redeemableFeeWindows = _.keys(totalReporterTokensByFeeWindow);
-      const response = {
-        total: {
-          unclaimedEth: unclaimedEth.toFixed(),
-          unclaimedRepStaked: "2",
-          unclaimedRepEarned: "3",
-          claimedEth: "4",
-          claimedRepStaked: "5",
-          claimedRepEarned: "6",
-        },
-        feeWindows: redeemableFeeWindows,
-        crowdsourcers: [],
-        initialReporters: [],
-      };
-      callback(null, response);
+      getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
+        if (err || repStakeResults == null) return callback(err);
+        console.log(repStakeResults);
+        const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
+          if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
+          const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
+          const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
+          acc = acc.plus(feesForThisWindow);
+          return acc;
+        }, ZERO);
+        const redeemableFeeWindows = _.uniq(_.keys(totalReporterTokensByFeeWindow).concat(repStakeResults.redeemableFeeWindows));
+        const response = {
+          total: {
+            unclaimedEth: unclaimedEth.toFixed(),
+            unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
+            unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
+            lostRep: repStakeResults.fees.lostRep.toFixed(),
+            claimedEth: "4",
+            claimedRepStaked: "5",
+            claimedRepEarned: "6",
+          },
+          feeWindows: redeemableFeeWindows,
+          crowdsourcers: [],
+          initialReporters: [],
+        };
+        callback(null, response);
+      });
     });
   });
 }
