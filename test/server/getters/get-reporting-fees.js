@@ -40,8 +40,9 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "107.87878787878787879",
-          "unclaimedRepStaked": "2",
-          "unclaimedRepEarned": "3",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
@@ -80,8 +81,9 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "0",
-          "unclaimedRepStaked": "2",
-          "unclaimedRepEarned": "3",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
@@ -120,8 +122,9 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "0",
-          "unclaimedRepStaked": "2",
-          "unclaimedRepEarned": "3",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
@@ -155,8 +158,9 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "53.33333333333333333",
-          "unclaimedRepStaked": "2",
-          "unclaimedRepEarned": "3",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
