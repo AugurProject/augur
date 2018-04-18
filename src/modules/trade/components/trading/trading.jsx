@@ -70,6 +70,8 @@ class MarketTrading extends Component {
 
   showOrderPlaced() {
     this.setState({ showOrderPlaced: true })
+    // automatically close the order placed ribbon after 3 seconds.
+    setTimeout(() => this.setState({ showOrderPlaced: false }), 3000)
   }
 
   render() {
