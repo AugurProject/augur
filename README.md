@@ -1,6 +1,6 @@
 # augur | client
-[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=seadragon)](https://travis-ci.org/AugurProject/augur)
-[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=seadragon)](https://coveralls.io/github/AugurProject/augur?branch=seadragon)
+[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur?branch=master)
 
 Augur is a decentralized prediction market platform built on Ethereum.  
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
@@ -55,9 +55,9 @@ Simply point your web browser to  [dev.augur.net](http://dev.augur.net)
 We'll run the UI locally and use the rinkeby augur-node. We will build and host the UI locally and use the same env.json configuration as the 'Easiest' section.
 
 ### Requirements
-* [Git](https://git-scm.com/) 
+* [Git](https://git-scm.com/)
 * [Node](https://nodejs.org/)
-* [Docker](https://www.docker.com/) 
+* [Docker](https://www.docker.com/)
 
 *A Note to Windows 10 Users:*  
 Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.  
@@ -97,7 +97,7 @@ This runs the built docker container and maps external port (8080) to docker con
 docker run -e RUN_LOCAL_ONLY=true -p 8080:80 augur
 ```
 
-*** 
+***
 
 ## Run everything Locally <a name="totally_local"></a>
 These instructions go through running local ethereum node, augur-node and augur UI. This will create a local environment contracts loaded with canned data.
