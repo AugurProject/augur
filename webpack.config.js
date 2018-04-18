@@ -125,10 +125,6 @@ let config = {
         to: path.resolve(PATHS.BUILD, 'assets/images')
       },
       {
-        from: path.resolve(__dirname, 'node_modules/edge-login-ui-web/assets'),
-        to: path.resolve(PATHS.BUILD, 'assets/edge')
-      },
-      {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD
       },

@@ -3577,9 +3577,9 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-edge-login-ui-web@0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/edge-login-ui-web/-/edge-login-ui-web-0.2.9.tgz#5fbccdeed3c1d8bd9fccd53eeea0d46a5b5203fe"
+edge-login-ui-web@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/edge-login-ui-web/-/edge-login-ui-web-0.3.3.tgz#a9785fffb9268f0969cbf88d6ad2fa48b84d6a74"
   dependencies:
     cpr "^3.0.1"
     post-robot "^8.0.18"
