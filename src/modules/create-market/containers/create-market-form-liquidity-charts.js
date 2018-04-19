@@ -20,7 +20,11 @@ const mapStateToProps = (state, ownProps) => {
   const orderBook = formatOrderbook(newMarket.orderBook[selectedOutcome] || [])
   const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
-  const orderBookKeys = getOrderBookKeys(marketDepth)
+  const orderBookKeys = getOrderBookKeys(
+    marketDepth,
+    newMarket.type === SCALAR ? createBigNumber(newMarket.scalarSmallNum) : createBigNumber(0),
+    newMarket.type === SCALAR ? createBigNumber(newMarket.scalarBigNum) : createBigNumber(1),
+  )
   const hasOrders = !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length
 
   return {
