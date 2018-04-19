@@ -69,7 +69,7 @@ const MarketProperties = (p) => {
           }
           { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED)) &&
             <MarketLink
-              className={disableDispute ? Styles.MarketProperties__trade__disabled : Styles.MarketProperties__trade}
+              className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
               formattedDescription={p.formattedDescription}
               linkType={linkType}
