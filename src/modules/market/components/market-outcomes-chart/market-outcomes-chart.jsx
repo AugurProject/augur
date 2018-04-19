@@ -14,6 +14,7 @@ export default class MarketOutcomesChart extends Component {
   static propTypes = {
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
     selectedOutcome: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
   }
 
@@ -38,16 +39,20 @@ export default class MarketOutcomesChart extends Component {
   componentWillUpdate(nextProps, nextState) {
     const {
       outcomes,
+      fixedPrecision,
     } = this.props
 
-    if (!isEqual(outcomes, nextProps.outcomes)) this.drawChart(nextProps.outcomes)
+    if (
+      !isEqual(outcomes, nextProps.outcomes) ||
+      fixedPrecision !== nextProps.fixedPrecision
+    ) this.drawChart(nextProps.outcomes, fixedPrecision)
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawChart)
   }
 
-  drawChart(outcomes) {
+  drawChart(outcomes, fixedPrecision) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
         drawContainer: this.outcomesChart,
@@ -61,28 +66,21 @@ export default class MarketOutcomesChart extends Component {
         .attr('height', drawParams.height)
 
       drawTicks({
-        outcomes,
+        drawParams,
+        chart,
+        fixedPrecision,
+      })
+
+      drawXAxisLabels({
         drawParams,
         chart,
       })
 
-      const outcomeLine = d3.line()
-        .x(d => drawParams.xScale(d.timestamp))
-        .y(d => drawParams.yScale(createBigNumber(d.price).toNumber()))
-
-      // TODO -- refactor this to be more correct in d3 conventions, i.e. -- chart.select....
-      outcomes.forEach((outcome, i) => {
-        chart.append('path')
-          .data([outcome.priceTimeSeries])
-          .classed(`${Styles['outcome-line']}`, true)
-          .classed(`${Styles[`outcome-line-${i + 1}`]}`, true)
-          .attr('d', outcomeLine)
+      drawSeries({
+        chart,
+        outcomes,
+        drawParams,
       })
-
-      chart.append('g')
-        .attr('class', Styles['outcomes-axis'])
-        .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
-        .call(d3.axisBottom(drawParams.xScale))
 
       this.setState({ chart: fauxDiv.toReact() })
     }
@@ -130,13 +128,12 @@ function determineDrawParams(options) {
     outcomes,
   } = options
 
-  console.log('outcomes -- ', outcomes)
-
   const chartDim = {
     top: 20,
     right: 0,
     bottom: 30,
     left: 50,
+    tickOffset: 10,
   }
 
   const containerWidth = drawContainer.clientWidth
@@ -167,8 +164,8 @@ function determineDrawParams(options) {
 function drawTicks(options) {
   const {
     drawParams,
-    outcomes,
     chart,
+    fixedPrecision,
   } = options
 
   // Y axis
@@ -197,8 +194,6 @@ function drawTicks(options) {
     return drawParams.yDomain[0] + ((i + 1) * interval)
   })
 
-  console.log('ticks -- ', drawParams.yDomain, range, ticks)
-
   chart.append('g')
     .selectAll('line')
     .data(ticks)
@@ -211,16 +206,47 @@ function drawTicks(options) {
     .attr('y1', d => drawParams.yScale(d))
     .attr('y2', d => drawParams.yScale(d))
 
-  // chart.append('g')
-  //   .attr('class', Styles['outcomes-axis'])
-  //   .attr('transform', `translate(${drawParams.chartDim.left}, 0)`)
-  //   .call(d3.axisLeft(drawParams.yScale))
+  chart.append('g')
+    .selectAll('text')
+    .data(ticks)
+    .enter()
+    .append('text')
+    .classed(Styles['MarketOutcomesChart__tick-value'], true)
+    .attr('x', 0)
+    .attr('y', d => drawParams.yScale(d))
+    .attr('dx', 0)
+    .attr('dy', drawParams.chartDim.tickOffset)
+    .text(d => d.toFixed(fixedPrecision))
 }
 
-function drawAxisLabels() {
+function drawXAxisLabels(options) {
+  const {
+    chart,
+    drawParams,
+  } = options
 
+  chart.append('g')
+    .attr('class', Styles['MarketOutcomesChart__outcomes-axis'])
+    .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
+    .call(d3.axisBottom(drawParams.xScale))
 }
 
-function drawSeries() {
+function drawSeries(options) {
+  const {
+    drawParams,
+    outcomes,
+    chart,
+  } = options
 
+  const outcomeLine = d3.line()
+    .x(d => drawParams.xScale(d.timestamp))
+    .y(d => drawParams.yScale(createBigNumber(d.price).toNumber()))
+
+  outcomes.forEach((outcome, i) => {
+    chart.append('path')
+      .data([outcome.priceTimeSeries])
+      .classed(`${Styles['MarketOutcomesChart__outcome-line']}`, true)
+      .classed(`${Styles[`MarketOutcomesChart__outcome-line--${i + 1}`]}`, true)
+      .attr('d', outcomeLine)
+  })
 }

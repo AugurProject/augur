@@ -47,6 +47,22 @@
   }
 }
 
+.MarketOutcomesChart__outcomes-axis {
+  & > path {
+    display: none;
+  }
+
+  line {
+    stroke: @color-lightgray;
+  }
+
+  text {
+    &:extend(.caps--extra-small all);
+
+    fill: @color-lightgray;
+  }
+}
+
 .MarketOutcomesChart__bounding-line {
   stroke: @color-gray;
   stroke-width: 1px;
@@ -61,55 +77,53 @@
   display: none;
 }
 
-.outcome-line {
-  fill: none;
+.MarketOutcomesChart__tick-value {
+  &:extend(.caps--extra-small all);
 
-  &.outcome-line-1 {
-    stroke: @color-outcome-one;
-  }
-
-  &.outcome-line-2 {
-    stroke: @color-outcome-two;
-  }
-
-  &.outcome-line-3 {
-    stroke: @color-outcome-three;
-  }
-
-  &.outcome-line-4 {
-    stroke: @color-outcome-four;
-  }
-
-  &.outcome-line-5 {
-    stroke: @color-outcome-five;
-  }
-
-  &.outcome-line-6 {
-    stroke: @color-outcome-six;
-  }
-
-  &.outcome-line-7 {
-    stroke: @color-outcome-seven;
-  }
-
-  &.outcome-line-8 {
-    stroke: @color-outcome-eight;
-  }
+  fill: @color-lightgray;
 }
 
-.outcomes-axis {
+.MarketOutcomesChart__outcome-line {
+  fill: none;
+
   :global {
     .domain,
     .tick > line {
       stroke: @color-gray;
     }
-
-    .tick > text {
-      &:extend(.caps--extra-small all);
-
-      fill: @color-lightgray;
-    }
   }
+}
+
+.MarketOutcomesChart__outcome-line--1 {
+  stroke: @color-outcome-one;
+}
+
+.MarketOutcomesChart__outcome-line--2 {
+  stroke: @color-outcome-two;
+}
+
+.MarketOutcomesChart__outcome-line--3 {
+  stroke: @color-outcome-three;
+}
+
+.MarketOutcomesChart__outcome-line--4 {
+  stroke: @color-outcome-four;
+}
+
+.MarketOutcomesChart__outcome-line--5 {
+  stroke: @color-outcome-five;
+}
+
+.MarketOutcomesChart__outcome-line--6 {
+  stroke: @color-outcome-six;
+}
+
+.MarketOutcomesChart__outcome-line--7 {
+  stroke: @color-outcome-seven;
+}
+
+.MarketOutcomesChart__outcome-line--8 {
+  stroke: @color-outcome-eight;
 }
 
 :global {

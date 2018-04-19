@@ -24,6 +24,8 @@ export default class MarketOutcomeCharts extends Component {
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
+    fixedPrecision: PropTypes.number.isRequired,
+    updatePrecision: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
     priceTimeSeries: PropTypes.array,
@@ -48,7 +50,6 @@ export default class MarketOutcomeCharts extends Component {
       hoveredDepth: [],
       hoveredPrice: null,
       headerHeight: 0,
-      fixedPrecision: 4,
       sharedChartMargins: {
         top: 0,
         bottom: 30,
@@ -61,7 +62,6 @@ export default class MarketOutcomeCharts extends Component {
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
-    this.updatePrecision = this.updatePrecision.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateChartWidths = this.updateChartWidths.bind(this)
@@ -115,18 +115,6 @@ export default class MarketOutcomeCharts extends Component {
     this.setState({
       selectedPeriod,
     })
-  }
-
-  updatePrecision(isIncreasing) {
-    let { fixedPrecision } = this.state
-
-    if (isIncreasing) {
-      fixedPrecision += 1
-    } else {
-      fixedPrecision = fixedPrecision - 1 < 0 ? 0 : fixedPrecision -= 1
-    }
-
-    return this.setState({ fixedPrecision })
   }
 
   updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
@@ -183,6 +171,8 @@ export default class MarketOutcomeCharts extends Component {
       updateSeletedOrderProperties,
       excludeCandlestick,
       isMobile,
+      fixedPrecision,
+      updatePrecision,
     } = this.props
     const s = this.state
 
@@ -207,7 +197,7 @@ export default class MarketOutcomeCharts extends Component {
                 priceTimeSeries={priceTimeSeries}
                 currentBlock={currentBlock}
                 selectedPeriod={s.selectedPeriod}
-                fixedPrecision={s.fixedPrecision}
+                fixedPrecision={fixedPrecision}
                 orderBookKeys={orderBookKeys}
                 marketMax={maxPrice}
                 marketMin={minPrice}
@@ -233,7 +223,7 @@ export default class MarketOutcomeCharts extends Component {
                 isMobile={isMobile}
                 priceTimeSeries={priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
-                fixedPrecision={s.fixedPrecision}
+                fixedPrecision={fixedPrecision}
                 orderBookKeys={orderBookKeys}
                 marketDepth={marketDepth}
                 marketMax={maxPrice}
@@ -250,12 +240,12 @@ export default class MarketOutcomeCharts extends Component {
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
-                fixedPrecision={s.fixedPrecision}
+                fixedPrecision={fixedPrecision}
                 orderBook={orderBook}
                 marketMidpoint={orderBookKeys.mid}
                 hoveredPrice={s.hoveredPrice}
                 updateHoveredPrice={this.updateHoveredPrice}
-                updatePrecision={this.updatePrecision}
+                updatePrecision={updatePrecision}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
               />
             </div>
@@ -269,7 +259,7 @@ export default class MarketOutcomeCharts extends Component {
             headerHeight={s.headerHeight}
             orderBookKeys={orderBookKeys}
             sharedChartMargins={s.sharedChartMargins}
-            fixedPrecision={s.fixedPrecision}
+            fixedPrecision={fixedPrecision}
           />
         </div>
         {isMobile &&

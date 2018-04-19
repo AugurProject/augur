@@ -37,11 +37,13 @@ export default class MarketView extends Component {
     this.state = {
       selectedOutcome: props.marketType === CATEGORICAL ? null : '1',
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
+      fixedPrecision: 4,
     }
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
     this.updateSeletedOrderProperties = this.updateSeletedOrderProperties.bind(this)
     this.clearSelectedOutcome = this.clearSelectedOutcome.bind(this)
+    this.updatePrecision = this.updatePrecision.bind(this)
   }
 
   componentWillMount() {
@@ -99,6 +101,18 @@ export default class MarketView extends Component {
     })
   }
 
+  updatePrecision(isIncreasing) {
+    let { fixedPrecision } = this.state
+
+    if (isIncreasing) {
+      fixedPrecision += 1
+    } else {
+      fixedPrecision = fixedPrecision - 1 < 0 ? 0 : fixedPrecision -= 1
+    }
+
+    return this.setState({ fixedPrecision })
+  }
+
   clearSelectedOutcome() {
     this.setState({ selectedOutcome: null })
   }
@@ -125,6 +139,7 @@ export default class MarketView extends Component {
           {s.selectedOutcome === null &&
             <MarketOutcomesChart
               marketId={marketId}
+              fixedPrecision={s.fixedPrecision}
               selectedOutcome={s.selectedOutcome}
               updateSelectedOutcome={this.updateSelectedOutcome}
             />
@@ -132,6 +147,8 @@ export default class MarketView extends Component {
           {s.selectedOutcome !== null &&
             <MarketOutcomeCharts
               marketId={marketId}
+              fixedPrecision={s.fixedPrecision}
+              updatePrecision={this.updatePrecision}
               selectedOutcome={s.selectedOutcome}
               updateSeletedOrderProperties={this.updateSeletedOrderProperties}
             />
