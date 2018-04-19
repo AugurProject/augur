@@ -54,33 +54,51 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
 }
 
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
-  db("fee_windows").select("feeWindow")
+  db("fee_windows").select("feeWindow", "universe")
     .where("isActive", 1)
     .andWhere((queryBuilder) => queryBuilder.where("endTime", "<", timestamp).orWhere("startTime", ">", timestamp))
-    .asCallback((err, results?: Array<{ feeWindow: Address }>) => {
+    .asCallback((err, expiredFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
       if (err) return callback(err);
-      const expiredFeeWindows = _.map(results, (result) => result.feeWindow);
-      db("fee_windows").update("isActive", 0).whereIn("feeWindow", expiredFeeWindows).asCallback((err) => {
-        if (err) return callback(err);
-        db("fee_windows").select("feeWindow")
-          .where("isActive", 0)
-          .where("endTime", ">", timestamp)
-          .where("startTime", "<", timestamp)
-          .asCallback((err, results?: Array<{ feeWindow: Address }>) => {
-            if (err) return callback(err);
-            const newActiveFeeWindows = _.map(results, (result) => result.feeWindow);
-            db("fee_windows").update("isActive", 1).whereIn("feeWindow", newActiveFeeWindows).asCallback((err) => {
+      db("fee_windows").update("isActive", 0).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
+        .asCallback((err) => {
+          if (err) return callback(err);
+          db("fee_windows").select("feeWindow", "universe")
+            .where("isActive", 0)
+            .where("endTime", ">", timestamp)
+            .where("startTime", "<", timestamp)
+            .asCallback((err, newActiveFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
               if (err) return callback(err);
-              expiredFeeWindows.forEach((expiredFeeWindow) => {
-                augurEmitter.emit("FeeWindowClosed", { eventName: "FeeWindowClosed", feeWindow: expiredFeeWindow, blockNumber, timestamp });
-              });
-              newActiveFeeWindows.forEach((newActiveFeeWindow) => {
-                augurEmitter.emit("FeeWindowOpened", { eventName: "FeeWindowOpened", feeWindow: newActiveFeeWindow, blockNumber, timestamp });
-              });
-              return callback(null, { newActiveFeeWindows, expiredFeeWindows });
+              db("fee_windows").update("isActive", 1).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
+                .asCallback((err) => {
+                    if (err) return callback(err);
+                    if (expiredFeeWindowRows != null) {
+                      expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
+                        augurEmitter.emit("FeeWindowClosed", Object.assign({
+                            eventName: "FeeWindowClosed",
+                            blockNumber,
+                            timestamp,
+                          },
+                          expiredFeeWindowRow));
+                      });
+                    }
+                    if (newActiveFeeWindowRows != null) {
+                      newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
+                        augurEmitter.emit("FeeWindowOpened", Object.assign({
+                            eventName: "FeeWindowOpened",
+                            blockNumber,
+                            timestamp,
+                          },
+                          newActiveFeeWindowRow));
+                      });
+                      return callback(null, {
+                        newActiveFeeWindows: _.map(newActiveFeeWindowRows, (row) => row.feeWindow),
+                        expiredFeeWindows: _.map(expiredFeeWindowRows, (row) => row.feeWindow),
+                      });
+                    }
+                  },
+                );
             });
-          });
-      });
+        });
     });
 }
 
