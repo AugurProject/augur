@@ -29,6 +29,7 @@ const Favorites = p => (
       history={p.history}
       toggleFavorite={p.toggleFavorite}
       loadMarketsInfo={p.loadMarketsInfo}
+      loadMarketsInfoIfNotLoaded={p.loadMarketsInfoIfNotLoaded}
       linkType={TYPE_TRADE}
       isMobile={p.isMobile}
     />
@@ -45,6 +46,7 @@ Favorites.propTypes = {
   match: PropTypes.object.isRequired,
   toggleFavorite: PropTypes.func.isRequired,
   loadMarketsInfo: PropTypes.func.isRequired,
+  loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
   isMobile: PropTypes.bool,
 }
 

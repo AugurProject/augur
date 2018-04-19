@@ -21,7 +21,7 @@ export default class ReportingResolved extends Component {
   static propTypes = {
     history: PropTypes.object,
     isLogged: PropTypes.bool,
-    loadMarketsInfo: PropTypes.func,
+    loadMarketsInfoIfNotLoaded: PropTypes.func,
     loadReporting: PropTypes.func.isRequired,
     location: PropTypes.object,
     markets: PropTypes.array.isRequired,
@@ -53,7 +53,7 @@ export default class ReportingResolved extends Component {
     const {
       history,
       isLogged,
-      loadMarketsInfo,
+      loadMarketsInfoIfNotLoaded,
       location,
       markets,
       toggleFavorite,
@@ -77,7 +77,7 @@ export default class ReportingResolved extends Component {
           history={history}
           linkType={TYPE_VIEW}
           toggleFavorite={toggleFavorite}
-          loadMarketsInfo={loadMarketsInfo}
+          loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           paginationPageParam="reporting-resolved-page"
         />
       </section>
