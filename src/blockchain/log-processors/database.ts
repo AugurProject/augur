@@ -72,10 +72,10 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
             db("fee_windows").update("isActive", 1).whereIn("feeWindow", newActiveFeeWindows).asCallback((err) => {
               if (err) return callback(err);
               expiredFeeWindows.forEach((expiredFeeWindow) => {
-                augurEmitter.emit("FeeWindowClosed", { feeWindowId: expiredFeeWindow, blockNumber, timestamp });
+                augurEmitter.emit("FeeWindowClosed", { eventName: "FeeWindowClosed", feeWindow: expiredFeeWindow, blockNumber, timestamp });
               });
               newActiveFeeWindows.forEach((newActiveFeeWindow) => {
-                augurEmitter.emit("FeeWindowOpened", { feeWindowId: newActiveFeeWindow, blockNumber, timestamp });
+                augurEmitter.emit("FeeWindowOpened", { eventName: "FeeWindowOpened", feeWindow: newActiveFeeWindow, blockNumber, timestamp });
               });
               return callback(null, { newActiveFeeWindows, expiredFeeWindows });
             });
