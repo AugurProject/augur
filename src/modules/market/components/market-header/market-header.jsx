@@ -43,6 +43,7 @@ export default class MarketHeader extends Component {
       selectedOutcome,
     } = this.props
     const s = this.state
+    const detailsPresent = details != null && details.length > 0
 
     return (
       <section className={Styles.MarketHeader}>
@@ -81,23 +82,28 @@ export default class MarketHeader extends Component {
           </div>
         </div>
         <div
-          className={Styles[`MarketHeader__resolution-source`]}
+          className={classNames(
+            Styles[`MarketHeader__resolution-source`], 
+            {
+              [Styles[`MarketHeader__resolution-source_empty_details`]]: !detailsPresent,
+            },
+          )}
         >
           <h4>Resolution Source:</h4>
           <span>{resolutionSource || 'Outcome will be determined by news media'}</span>
         </div>
-        <div className={Styles[`MarketHeader__details-wrapper`]}>
-          <button
-            className={Styles[`MarketHeader__details-button`]}
-            onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
-          >
-            additional details {s.areMarketDetailsVisible ? <ChevronUp /> : <ChevronDown />}
-          </button>
-          <div
-            ref={(marketDetails) => { this.marketDetails = marketDetails }}
-            className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
-          >
-            {details != null &&
+        {detailsPresent &&
+          <div className={Styles[`MarketHeader__details-wrapper`]}>
+            <button
+              className={Styles[`MarketHeader__details-button`]}
+              onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
+            >
+              additional details {s.areMarketDetailsVisible ? <ChevronUp /> : <ChevronDown />}
+            </button>
+            <div
+              ref={(marketDetails) => { this.marketDetails = marketDetails }}
+              className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
+            >
               <div
                 className={Styles.MarketHeader__details}
               >
@@ -105,9 +111,9 @@ export default class MarketHeader extends Component {
                   {details}
                 </span>
               </div>
-            }
+            </div>
           </div>
-        </div>
+        }
       </section>
     )
   }
