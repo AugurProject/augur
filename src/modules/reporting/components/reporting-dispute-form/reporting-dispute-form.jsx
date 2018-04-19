@@ -327,13 +327,7 @@ export default class ReportingDisputeForm extends Component {
                   key={outcome.id}
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
-                  stakeRemaining={outcome.stakeRemaining}
-                  percentageComplete={outcome.percentageComplete}
-                  percentageAccount={outcome.percentageAccount}
                   tentativeStake={stake}
-                  bondSizeCurrent={outcome.bondSizeCurrent}
-                  stakeCurrent={outcome.stakeCurrent}
-                  accountStakeCurrent={outcome.accountStakeCurrent}
                   disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>
@@ -384,7 +378,7 @@ export default class ReportingDisputeForm extends Component {
                 min="0"
                 placeholder="0.0000 REP"
                 value={s.inputStake}
-                className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
+                className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&

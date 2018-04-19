@@ -8,7 +8,6 @@ import { selectMarket } from 'modules/market/selectors/market'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 import { submitInitialReport } from 'modules/reporting/actions/submit-initial-report'
-import { estimateSubmitInitialReport } from 'modules/reporting/actions/estimate-submit-initial-report'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = state => ({
@@ -22,8 +21,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitInitialReport: (marketId, outcomeValue, invalid, history) => dispatch(submitInitialReport(marketId, outcomeValue, invalid, history)),
-  estimateSubmitInitialReport: (marketId, selectedOutcome, invalid, callback) => dispatch(estimateSubmitInitialReport(marketId, selectedOutcome, invalid, callback)),
+  submitInitialReport: (estimateGas, marketId, outcomeValue, invalid, history, callback) => dispatch(submitInitialReport(estimateGas, marketId, outcomeValue, invalid, history, callback)),
 })
 
 
@@ -42,8 +40,7 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitInitialReport: (marketId, selectedOutcome, invalid, history) => dP.submitInitialReport(marketId, selectedOutcome, invalid, history),
-    estimateSubmitInitialReport: (marketId, selectedOutcome, invalid, callback) => dP.estimateSubmitInitialReport(marketId, selectedOutcome, invalid, callback),
+    submitInitialReport: (estimateGas, marketId, outcomeValue, invalid, history, callback) => dP.submitInitialReport(estimateGas, marketId, outcomeValue, invalid, history, callback),
   }
 }
 

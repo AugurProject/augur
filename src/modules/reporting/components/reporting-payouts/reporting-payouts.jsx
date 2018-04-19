@@ -8,12 +8,11 @@ import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
 
 const Outcome = ({ className, outcome }) => {
-  const bondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
-  const currentStakeRep = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true })
-  const currentStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
+  const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
+  const currentOutcomeStake = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true }).formatted
+  const currentStakeRep = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
+  const currentAccountStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
   const outcomeName = outcome.name === 'Indeterminate' ? 'Invalid' : outcome.name
-  const accountStake = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
-  const accountCurrentStake = accountStake.formatted === '-' ? '0' : accountStake.formatted
 
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>
@@ -43,8 +42,8 @@ const Outcome = ({ className, outcome }) => {
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage']} style={{ width: String(outcome.percentageComplete) + '%' }} />
             </div>
-            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentStake}</span>
-            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {bondSizeCurrent} REP</span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
             id={'tooltip--rep-progress-'+outcome.id}
@@ -54,7 +53,8 @@ const Outcome = ({ className, outcome }) => {
             offset={{ left: 70, top: 6 }}
             type="light"
           >
-            <p>{accountCurrentStake} REP Staked</p>
+            <p>{currentAccountStake} REP Staked
+            </p>
           </ReactTooltip>
         </div>
       }

@@ -2,14 +2,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import ReportingResolved from 'modules/reporting/components/reporting-resolved/reporting-resolved'
-// import { loadResolved } from 'modules/reporting/actions/load-resolved'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { selectMarketsToReport } from 'src/modules/reporting/selectors/select-markets-to-report'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
-import { selectMarket } from 'src/modules/market/selectors/market'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import getValue from 'utils/get-value'
+import { selectMarket } from 'src/modules/market/selectors/market'
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
@@ -20,7 +19,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadReporting: () => dispatch(loadReporting()),
-  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
+  loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 

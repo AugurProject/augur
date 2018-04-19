@@ -20,7 +20,6 @@ import Styles from 'modules/reporting/components/reporting-report/reporting-repo
 export default class ReportingDispute extends Component {
 
   static propTypes = {
-    estimateSubmitMarketContribute: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isConnected: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool,
@@ -91,12 +90,17 @@ export default class ReportingDispute extends Component {
 
   calculateGasEstimates() {
     const {
-      estimateSubmitMarketContribute,
+      submitMarketContribute,
       market,
     } = this.props
-    if (this.state.stake > 0) {
-      const amount = speedomatic.fix(this.state.stake, 'hex')
-      estimateSubmitMarketContribute(market.id, amount, (err, gasEstimateValue) => {
+    const {
+      selectedOutcome,
+      isMarketInValid,
+      stake,
+    } = this.state
+    if (stake > 0) {
+      const amount = speedomatic.fix(stake, 'hex')
+      submitMarketContribute(true, market.id, selectedOutcome, isMarketInValid, amount, null, (err, gasEstimateValue) => {
         if (err) return console.error(err)
 
         const gasPrice = augur.rpc.getGasPrice()
@@ -185,7 +189,7 @@ export default class ReportingDispute extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => submitMarketContribute(market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), history)}
+                onClick={() => submitMarketContribute(false, market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), history)}
               >Submit
               </button>
               }

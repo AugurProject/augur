@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
-import BasicStyles from 'modules/market/components/market-basics/market-basics.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
 import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
 import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
@@ -14,80 +13,84 @@ import makePath from 'modules/routes/helpers/make-path'
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import classNames from 'classnames'
 
-const DisputeMarketCard = (p) => {
+import noop from 'src/utils/noop'
+import { compact } from 'lodash'
+import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
-  const outcomes = p.outcomes[p.market.id] || []
+const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p }) => {
+  const outcomes = outcomes[market.id] || []
   let potentialFork = false
   outcomes.forEach((outcome, index) => {
     if (outcome.potentialFork) {
       potentialFork = true
     }
   })
-  if (p.isForkingMarket) potentialFork = false
-  const showForkTop = potentialFork || p.isForkingMarket
+  if (isForkingMarket) potentialFork = false
+  const showForkTop = potentialFork || isForkingMarket
+
+  const process = (...arr) => compact(arr).map(label => ({
+    label,
+    onClick: noop,
+  }))
+
+  const categoriesWithClick = process(market.category)
+  const tagsWithClick = compact(market.tags).map(tag => ({
+    label: tag,
+    onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
+  }))
 
   return (
-    <article className={classNames(CommonStyles.MarketCommon__container, showForkTop ? Styles['DisputeMarket__fork-top'] : '')}>
+    <article
+      className={classNames(CommonStyles.MarketCommon__container, showForkTop ? Styles['DisputeMarket__fork-top'] : '')}
+    >
       <div className={CommonStyles.MarketCommon__topcontent}>
         <div className={CommonStyles.MarketCommon__header}>
-          <ul className={BasicStyles.MarketBasics__tags}>
-            {p.market && p.market.tags.length > 1 &&
-              <li>Tags</li>
-            }
-            {p.market && (p.market.tags || []).map((tag, i) => i !== 0 &&
-              <li key={p.market.id + tag}>
-                <button onClick={() => toggleTag(tag, { pathname: makePath(MARKETS) }, p.history)}>
-                  {tag}
-                </button>
-              </li>)}
-          </ul>
+          <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
           <div className={Styles['DisputeMarket__round-number']}>
-            { potentialFork &&
-              <span className={Styles['DisptueMarket__fork-label']}>Potential Fork</span>
+            {potentialFork &&
+            <span className={Styles['DisptueMarket__fork-label']}>Potential Fork</span>
             }
-            { p.isForkingMarket &&
-              <span className={Styles['DisptueMarket__fork-label']}>Forking</span>
+            {isForkingMarket &&
+            <span className={Styles['DisptueMarket__fork-label']}>Forking</span>
             }
-            { !p.isForkingMarket &&
-              <span>
-                <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-                <span className={Styles['DisptueMarket__round-text']}>{p.market && p.market.disputeInfo &&
-                    p.market.disputeInfo.disputeRound
-                }
-                </span>
+            {!isForkingMarket &&
+            <span>
+              <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
+              <span className={Styles['DisptueMarket__round-text']}>{market && market.disputeInfo &&
+                market.disputeInfo.disputeRound
+              }
               </span>
+            </span>
             }
           </div>
-        </div>
-
-        <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink
-            id={p.market.id}
-            formattedDescription={p.market.formattedDescription}
-          >
-            {p.market.description}
-          </MarketLink>
-        </h1>
-        { p.isForkingMarket &&
+          <h1 className={CommonStyles.MarketCommon__description}>
+            <MarketLink
+              id={market.id}
+              formattedDescription={market.formattedDescription}
+            >
+              {market.description}
+            </MarketLink>
+          </h1>
+          {isForkingMarket &&
           <ForkMigrationTotals />
-        }
-        { !p.isForkingMarket &&
+          }
+          {!isForkingMarket &&
           <MarketReportingPayouts
             outcomes={outcomes}
             forkThreshold={p.forkThreshold}
           />
-        }
-      </div>
-      <div className={CommonStyles.MarketCommon__footer}>
-        <MarketProperties
-          {...p.market}
-          {...p}
-        />
+          }
+        </div>
+        <div className={CommonStyles.MarketCommon__footer}>
+          <MarketProperties
+            {...market}
+            {...p}
+          />
+        </div>
       </div>
     </article>
   )
 }
-
 
 DisputeMarketCard.propTypes = {
   location: PropTypes.object.isRequired,

@@ -4,8 +4,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import MarketOutcomesBinaryScalar from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
-import MarketOutcomesCategorical from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
+import MarketOutcomesBinaryScalar
+  from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
+import MarketOutcomesCategorical
+  from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
 import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
@@ -16,11 +18,15 @@ import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-ty
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 import SingleSlicePieGraph from 'src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph'
-import TimeRemainingIndicatorWrapper from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
+import TimeRemainingIndicatorWrapper
+  from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
 import { constants } from 'services/augurjs'
 import moment from 'moment'
+import noop from 'src/utils/noop'
+import { compact } from 'lodash'
+import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
-const MarketBasics = (p) => {
+const MarketBasics = ({ category, tags = [], location, history, marketType, ...p }) => {
   let ReportEndingIndicator = () => null
   if ((p.reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING) && !p.hideReportEndingIndicator) {
     const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
@@ -35,24 +41,25 @@ const MarketBasics = (p) => {
     )
   }
 
+  const process = (...arr) => compact(arr).map(label => ({
+    label,
+    onClick: noop,
+  }))
+
+  const categoriesWithClick = process(category)
+  const tagsWithClick = compact(tags).map(tag => ({
+    label: tag,
+    onClick: toggleTag(tag, location, history),
+  }))
+
   return (
     <article className={Styles.MarketBasics}>
       <div
         className={classNames(CommonStyles.MarketCommon__topcontent, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })}
       >
         <div className={Styles.MarketBasics__header}>
-          <ul className={Styles.MarketBasics__tags}>
-            {p.tags && p.tags.length > 1 &&
-            <li>Tags</li>
-            }
-            {(p.tags || []).map((tag, i) => i !== 0 &&
-              <li key={i}>
-                <button onClick={() => toggleTag(tag, p.location, p.history)}>
-                  {tag}
-                </button>
-              </li>)}
-          </ul>
-          { p.showDisputeRound &&
+          <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
+          {p.showDisputeRound &&
             <div className={Styles['MarketBasics__round-number']}>
               <span className={Styles['MarketBasics__round-label']}>Dispute Round</span>
               <span className={Styles['MarketBasics__round-text']}>
@@ -71,12 +78,18 @@ const MarketBasics = (p) => {
           </MarketLink>
         </h1>
 
-        {(p.marketType === BINARY || p.marketType === SCALAR) &&
-          <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minPrice} max={p.maxPrice} type={p.marketType} scalarDenomination={p.scalarDenomination} />
+        {(marketType === BINARY || marketType === SCALAR) &&
+        <MarketOutcomesBinaryScalar
+          outcomes={p.outcomes}
+          min={p.minPrice}
+          max={p.maxPrice}
+          type={marketType}
+          scalarDenomination={p.scalarDenomination}
+        />
         }
 
-        {p.marketType === CATEGORICAL &&
-          <MarketOutcomesCategorical outcomes={p.outcomes} />
+        {marketType === CATEGORICAL &&
+        <MarketOutcomesCategorical outcomes={p.outcomes} />
         }
       </div>
     </article>
@@ -84,13 +97,16 @@ const MarketBasics = (p) => {
 }
 
 MarketBasics.propTypes = {
+  category: PropTypes.string,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func,
   currentTimestamp: PropTypes.number.isRequired,
+  marketType: PropTypes.string,
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,
+  tags: PropTypes.arrayOf(PropTypes.string),
 }
 
 export default MarketBasics
