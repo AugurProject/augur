@@ -18,7 +18,7 @@ import { compact } from 'lodash'
 import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
 const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p }) => {
-  const outcomes = outcomes[market.id] || []
+  const outcomes = p.outcomes[market.id] || []
   let potentialFork = false
   outcomes.forEach((outcome, index) => {
     if (outcome.potentialFork) {
@@ -63,31 +63,32 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
             </span>
             }
           </div>
-          <h1 className={CommonStyles.MarketCommon__description}>
-            <MarketLink
-              id={market.id}
-              formattedDescription={market.formattedDescription}
-            >
-              {market.description}
-            </MarketLink>
-          </h1>
-          {isForkingMarket &&
+        </div>
+        <h1 className={CommonStyles.MarketCommon__description}>
+          <MarketLink
+            id={market.id}
+            formattedDescription={market.formattedDescription}
+          >
+            {market.description}
+          </MarketLink>
+        </h1>
+        {isForkingMarket &&
           <ForkMigrationTotals />
-          }
-          {!isForkingMarket &&
+        }
+        {!isForkingMarket &&
           <MarketReportingPayouts
             outcomes={outcomes}
             forkThreshold={p.forkThreshold}
           />
-          }
-        </div>
-        <div className={CommonStyles.MarketCommon__footer}>
-          <MarketProperties
-            {...market}
-            {...p}
-          />
-        </div>
+        }
       </div>
+      <div className={CommonStyles.MarketCommon__footer}>
+        <MarketProperties
+          {...market}
+          {...p}
+        />
+      </div>
+
     </article>
   )
 }
