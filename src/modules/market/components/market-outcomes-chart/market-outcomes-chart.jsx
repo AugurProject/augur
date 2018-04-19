@@ -6,6 +6,8 @@ import { isEqual } from 'lodash'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
+import { createBigNumber } from 'utils/create-big-number'
+
 import Styles from 'modules/market/components/market-outcomes-chart/market-outcomes-chart.styles'
 
 export default class MarketOutcomesChart extends Component {
@@ -64,8 +66,8 @@ export default class MarketOutcomesChart extends Component {
       chart.attr('width', width)
       chart.attr('height', height)
 
-      const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint[0])], [])
-      const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint[1])], [])
+      const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint.timestamp)], [])
+      const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => createBigNumber(dataPoint.price).toNumber())], [])
 
       const xScale = d3.scaleTime()
         .domain(d3.extent(xDomain))
@@ -76,24 +78,25 @@ export default class MarketOutcomesChart extends Component {
         .range([height - margin.bottom, margin.top])
 
       const outcomeLine = d3.line()
-        .x(d => xScale(d[0]))
-        .y(d => yScale(d[1]))
+        .x(d => xScale(d.timestamp))
+        .y(d => yScale(createBigNumber(d.price).toNumber()))
 
       // TODO -- refactor this to be more correct in d3 conventions, i.e. -- chart.select....
       outcomes.forEach((outcome, i) => {
         chart.append('path')
           .data([outcome.priceTimeSeries])
-          .attr('class', `outcome-line outcome-line-${outcome.id}`)
+          .classed(`${Styles['outcome-line']}`, true)
+          .classed(`${Styles[`outcome-line-${outcome.id}`]}`, true)
           .attr('d', outcomeLine)
       })
 
       chart.append('g')
-        .attr('class', 'outcomes-axis')
+        .attr('class', Styles['outcomes-axis'])
         .attr('transform', `translate(0, ${height - margin.bottom})`)
         .call(d3.axisBottom(xScale))
 
       chart.append('g')
-        .attr('class', 'outcomes-axis')
+        .attr('class', Styles['outcomes-axis'])
         .attr('transform', `translate(${margin.left}, 0)`)
         .call(d3.axisLeft(yScale))
 

@@ -45,55 +45,55 @@
     height: 100%;
     width: 100%;
   }
+}
 
-  :local {
-    .outcome-line {
-      fill: none;
+.outcome-line {
+  fill: none;
 
-      &.outcome-line-1 {
-        stroke: @color-outcome-one;
-      }
+  &.outcome-line-1 {
+    stroke: @color-outcome-one;
+  }
 
-      &.outcome-line-2 {
-        stroke: @color-outcome-two;
-      }
+  &.outcome-line-2 {
+    stroke: @color-outcome-two;
+  }
 
-      &.outcome-line-3 {
-        stroke: @color-outcome-three;
-      }
+  &.outcome-line-3 {
+    stroke: @color-outcome-three;
+  }
 
-      &.outcome-line-4 {
-        stroke: @color-outcome-four;
-      }
+  &.outcome-line-4 {
+    stroke: @color-outcome-four;
+  }
 
-      &.outcome-line-5 {
-        stroke: @color-outcome-five;
-      }
+  &.outcome-line-5 {
+    stroke: @color-outcome-five;
+  }
 
-      &.outcome-line-6 {
-        stroke: @color-outcome-six;
-      }
+  &.outcome-line-6 {
+    stroke: @color-outcome-six;
+  }
 
-      &.outcome-line-7 {
-        stroke: @color-outcome-seven;
-      }
+  &.outcome-line-7 {
+    stroke: @color-outcome-seven;
+  }
 
-      &.outcome-line-8 {
-        stroke: @color-outcome-eight;
-      }
+  &.outcome-line-8 {
+    stroke: @color-outcome-eight;
+  }
+}
+
+.outcomes-axis {
+  :global {
+    .domain,
+    .tick > line {
+      stroke: @color-gray;
     }
 
-    .outcomes-axis {
-      .domain,
-      .tick > line {
-        stroke: @color-gray;
-      }
+    .tick > text {
+      &:extend(.caps--extra-small all);
 
-      .tick > text {
-        &:extend(.caps--extra-small all);
-
-        stroke: @color-lightgray;
-      }
+      fill: @color-lightgray;
     }
   }
 }
