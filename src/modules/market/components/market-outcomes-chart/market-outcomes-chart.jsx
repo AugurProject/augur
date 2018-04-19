@@ -24,10 +24,14 @@ export default class MarketOutcomesChart extends Component {
     this.state = {
       chart: null,
       hoveredOutcome: null,
-      // selectedOutcome: null // NOTE -- Just a placeholder until outcomes are implemented
+      drawParams: {},
+      xScale: null,
+      yScale: null,
+      hoveredLocation: [],
     }
 
     this.drawChart = this.drawChart.bind(this)
+    this.updateHoveredLocation = this.updateHoveredLocation.bind(this)
   }
 
   componentDidMount() {
@@ -45,14 +49,24 @@ export default class MarketOutcomesChart extends Component {
     if (
       !isEqual(outcomes, nextProps.outcomes) ||
       fixedPrecision !== nextProps.fixedPrecision
-    ) this.drawChart(nextProps.outcomes, fixedPrecision)
+    ) this.drawChart(nextProps.outcomes, fixedPrecision, this.updateHoveredLocation)
+
+    if (!isEqual(this.state.hoveredLocation, nextState.hoveredLocation)) {
+      updateHoveredLocationCrosshair({
+        hoveredLocation: nextState.hoveredLocation,
+        xScale: nextState.xScale,
+        yScale: nextState.yScale,
+        drawParams: nextState.drawParams,
+        fixedPrecision: nextProps.fixedPrecision,
+      })
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawChart)
   }
 
-  drawChart(outcomes, fixedPrecision) {
+  drawChart(outcomes, fixedPrecision, updateHoveredLocation) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
         drawContainer: this.outcomesChart,
@@ -61,7 +75,7 @@ export default class MarketOutcomesChart extends Component {
 
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
-        .attr('id', 'outcomes_chart')
+        .attr('id', 'priceTimeSeries_chart')
         .attr('width', drawParams.width)
         .attr('height', drawParams.height)
 
@@ -82,8 +96,29 @@ export default class MarketOutcomesChart extends Component {
         drawParams,
       })
 
-      this.setState({ chart: fauxDiv.toReact() })
+      drawCrosshairs({
+        chart,
+      })
+
+      attachHoverHandler({
+        drawParams,
+        chart,
+        updateHoveredLocation,
+      })
+
+      this.setState({
+        chart: fauxDiv.toReact(),
+        xScale: drawParams.xScale,
+        yScale: drawParams.yScale,
+        drawParams,
+      })
     }
+  }
+
+  updateHoveredLocation(hoveredLocation) {
+    this.setState({
+      hoveredLocation,
+    })
   }
 
   render() {
@@ -249,4 +284,75 @@ function drawSeries(options) {
       .classed(`${Styles[`MarketOutcomesChart__outcome-line--${i + 1}`]}`, true)
       .attr('d', outcomeLine)
   })
+}
+
+function drawCrosshairs(options) {
+  const { chart } = options
+
+  chart.append('text')
+    .attr('id', 'hovered_priceTimeSeries_price_label')
+    .attr('class', Styles['MarketOutcomesChart__price-label'])
+
+  const crosshair = chart.append('g')
+    .attr('id', 'priceTimeSeries_crosshairs')
+    .style('display', 'none')
+
+  crosshair.append('line')
+    .attr('id', 'priceTimeSeries_crosshairY')
+    .attr('class', Styles.MarketOutcomesChart__crosshair)
+
+  crosshair.append('line')
+    .attr('id', 'priceTimeSeries_crosshairX')
+    .attr('class', Styles.MarketOutcomesChart__crosshair)
+}
+
+function attachHoverHandler(options) {
+  const {
+    updateHoveredLocation,
+    chart,
+    drawParams,
+  } = options
+
+  chart.append('rect')
+    .attr('class', Styles['MarketOutcomesChart__hover-overlay'])
+    .attr('width', drawParams.containerWidth)
+    .attr('height', drawParams.containerHeight)
+    .on('mousemove', () => {
+      updateHoveredLocation([
+        drawParams.xScale.invert(d3.mouse(d3.select('#priceTimeSeries_chart').node())[0]), // X
+        drawParams.yScale.invert(d3.mouse(d3.select('#priceTimeSeries_chart').node())[1]), // Y
+      ])
+    })
+    .on('mouseout', () => updateHoveredLocation([]))
+}
+
+function updateHoveredLocationCrosshair(options) {
+  const {
+    drawParams,
+    hoveredLocation,
+    xScale,
+    yScale,
+    fixedPrecision,
+  } = options
+
+  if (hoveredLocation.length === 0) {
+    d3.select('#priceTimeSeries_crosshairs').style('display', 'none')
+    d3.select('#hovered_priceTimeSeries_price_label').text('')
+  } else {
+    d3.select('#priceTimeSeries_crosshairs').style('display', null)
+    d3.select('#priceTimeSeries_crosshairY')
+      .attr('x1', 0)
+      .attr('y1', yScale(hoveredLocation[1]))
+      .attr('x2', drawParams.containerWidth)
+      .attr('y2', yScale(hoveredLocation[1]))
+    d3.select('#priceTimeSeries_crosshairX')
+      .attr('x1', xScale(hoveredLocation[0]))
+      .attr('y1', drawParams.chartDim.top)
+      .attr('x2', xScale(hoveredLocation[0]))
+      .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom)
+    d3.select('#hovered_priceTimeSeries_price_label')
+      .attr('x', 0)
+      .attr('y', yScale(hoveredLocation[1]) + 12)
+      .text(hoveredLocation[1].toFixed(fixedPrecision))
+  }
 }

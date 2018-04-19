@@ -63,6 +63,12 @@
   }
 }
 
+.MarketOutcomesChart__price-label {
+  &:extend(.caps--extra-small all);
+
+  fill: @color-lightgray;
+}
+
 .MarketOutcomesChart__bounding-line {
   stroke: @color-gray;
   stroke-width: 1px;
@@ -92,6 +98,12 @@
       stroke: @color-gray;
     }
   }
+}
+
+.MarketOutcomesChart__crosshair {
+  fill: none;
+  stroke: @color-white;
+  stroke-dasharray: 5;
 }
 
 .MarketOutcomesChart__outcome-line--1 {
@@ -126,9 +138,19 @@
   stroke: @color-outcome-eight;
 }
 
+.MarketOutcomesChart__hover-overlay {
+  fill: none;
+  pointer-events: visible;
+}
+
 :global {
-  #outcomes_chart {
+  #priceTimeSeries_chart {
     height: 100%;
     width: 100%;
+  }
+
+  #priceTimeSeries_crosshairs {
+    cursor: crosshair;
+    pointer-events: none;
   }
 }
