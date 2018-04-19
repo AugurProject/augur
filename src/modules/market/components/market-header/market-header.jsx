@@ -83,7 +83,7 @@ export default class MarketHeader extends Component {
         </div>
         <div
           className={classNames(
-            Styles[`MarketHeader__resolution-source`], 
+            Styles[`MarketHeader__resolution-source`],
             {
               [Styles[`MarketHeader__resolution-source_empty_details`]]: !detailsPresent,
             },
