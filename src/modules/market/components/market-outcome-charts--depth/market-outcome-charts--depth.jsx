@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
+import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth'
+
 import { isEqual } from 'lodash'
 import CustomPropTypes from 'utils/custom-prop-types'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
@@ -22,6 +25,9 @@ export default class MarketOutcomeDepth extends Component {
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     marketMin: CustomPropTypes.bigNumber, /* required */
     marketMax: CustomPropTypes.bigNumber, /* required */
+    hoveredDepth: PropTypes.array.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -51,6 +57,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     } = this.props
     this.drawDepth({
       marketDepth,
@@ -61,6 +68,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMax,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     })
 
     window.addEventListener('resize', this.drawDepthOnResize)
@@ -77,6 +85,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSeletedOrderProperties,
+      isMobile,
     } = this.props
     if (
       !isEqual(marketDepth, nextProps.marketDepth) ||
@@ -86,7 +95,8 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(updateSeletedOrderProperties, nextProps.updateSeletedOrderProperties) ||
       fixedPrecision !== nextProps.fixedPrecision ||
       marketMin !== nextProps.marketMin ||
-      marketMax !== nextProps.marketMax
+      marketMax !== nextProps.marketMax ||
+      isMobile !== nextProps.isMobile
     ) {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
@@ -97,6 +107,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSeletedOrderProperties: nextProps.updateSeletedOrderProperties,
+        isMobile: nextProps.isMobile,
       })
     }
 
@@ -138,6 +149,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax,
         updateHoveredPrice,
         updateSeletedOrderProperties,
+        isMobile,
       } = options
 
       const drawParams = determineDrawParams({
@@ -146,6 +158,7 @@ export default class MarketOutcomeDepth extends Component {
         marketDepth,
         orderBookKeys,
         fixedPrecision,
+        isMobile,
       })
 
       const depthContainer = new ReactFauxDOM.Element('div')
@@ -162,12 +175,14 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         marketMax,
+        isMobile,
       })
 
       drawLines({
         drawParams,
         depthChart,
         marketDepth,
+        isMobile,
       })
 
       setupCrosshairs({
@@ -277,8 +292,21 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   render() {
+    const {
+      fixedPrecision,
+      hoveredDepth,
+      isMobile,
+      headerHeight,
+    } = this.props
+
     return (
       <section className={Styles.MarketOutcomeDepth}>
+        <MarketOutcomeChartHeaderDepth
+          fixedPrecision={fixedPrecision}
+          hoveredDepth={hoveredDepth}
+          isMobile={isMobile}
+          headerHeight={headerHeight}
+        />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}
           className={Styles.MarketOutcomeDepth__container}
@@ -317,6 +345,7 @@ function determineDrawParams(options) {
     marketDepth,
     orderBookKeys,
     fixedPrecision,
+    isMobile,
   } = options
 
   const chartDim = {
@@ -334,22 +363,27 @@ function determineDrawParams(options) {
   const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
   // Determine bounding diff
-  const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
-  const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
-  const boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
+  const maxDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
+  const minDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.min).toPrecision(15)).absoluteValue()
+
+  // const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
+  // const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
+  let boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
   const yDomain = [
-    Number((orderBookKeys.mid - boundDiff).toFixed(fixedPrecision)),
-    Number((orderBookKeys.mid + boundDiff).toFixed(fixedPrecision)),
+    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
   ]
 
+  boundDiff = boundDiff.toNumber()
+
   const xScale = d3.scaleLinear()
-    .domain(d3.extent(xDomain))
+    .domain(isMobile ? d3.extent(xDomain).sort((a, b) => b - a) : d3.extent(xDomain))
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
-    .range([containerHeight - chartDim.bottom, chartDim.top])
+    .range([chartDim.top, containerHeight - chartDim.bottom])
 
   return {
     containerWidth,
@@ -372,6 +406,7 @@ function drawTicks(options) {
     fixedPrecision,
     marketMin,
     marketMax,
+    isMobile,
   } = options
 
   // Y Axis
@@ -389,13 +424,15 @@ function drawTicks(options) {
     .attr('y2', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
 
   //  Midpoint Label
-  depthChart.append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', drawParams.yScale(orderBookKeys.mid))
-    .attr('dx', 0)
-    .attr('dy', drawParams.chartDim.tickOffset)
-    .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+  if (!isMobile) {
+    depthChart.append('text')
+      .attr('class', 'tick-value')
+      .attr('x', 0)
+      .attr('y', drawParams.yScale(orderBookKeys.mid))
+      .attr('dx', 0)
+      .attr('dy', drawParams.chartDim.tickOffset)
+      .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+  }
 
   //  Offset Ticks
   const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
@@ -491,6 +528,7 @@ function drawLines(options) {
     drawParams,
     depthChart,
     marketDepth,
+    isMobile,
   } = options
 
   // Defs
@@ -523,8 +561,8 @@ function drawLines(options) {
 
   const area = d3.area()
     .curve(d3.curveStepAfter)
-    .x0(0)
-    .x1(d => drawParams.xScale(d[0]))
+    .x0(d => (isMobile ? drawParams.xScale(d[0]) : 0))
+    .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[0])))
     .y(d => drawParams.yScale(d[1]))
 
   Object.keys(marketDepth).forEach((side) => {
