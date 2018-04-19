@@ -30,8 +30,8 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || '0'
   const totalCost = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || '0', 10)
   const marketType = (market && market.marketType) || null
-  const minPrice = (market && (typeof market.minPrice === 'number' || typeof market.minPrice === 'string')) ? market.minPrice : null
-  const maxPrice = (market && (typeof market.maxPrice === 'number' || typeof market.maxPrice === 'string')) ? market.maxPrice : null
+  const minPrice = (market && (typeof market.minPrice === 'number')) ? market.minPrice : null
+  const maxPrice = (market && (typeof market.maxPrice === 'number')) ? market.maxPrice : null
   const adjustedTotalCost = (totalCost.gt('0')) ? totalCost.minus(totalFee).abs().toFixed() : null
   const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minPrice, maxPrice, marketType, sharesFilled, adjustedTotalCost)
 
