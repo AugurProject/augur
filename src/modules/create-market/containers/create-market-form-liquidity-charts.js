@@ -24,6 +24,7 @@ const mapStateToProps = (state, ownProps) => {
   const hasOrders = !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length
 
   return {
+    isMobile: state.isMobile,
     currentBlock: state.blockchain.currentBlockNumber || 0,
     currentTimestamp: selectCurrentTimestamp(state),
     minPrice: newMarket.type === SCALAR ? createBigNumber(newMarket.scalarSmallNum) : createBigNumber(0),

@@ -5,6 +5,9 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { createBigNumber } from 'utils/create-big-number'
 
 const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
+  if (marketDepth.asks.length === 0 && marketDepth.bids.length === 0) return { min: 0, mid: createBigNumber(0), max: 0 }
+  const bnMinPrice = createBigNumber(minPrice)
+  const bnMaxPrice = createBigNumber(maxPrice)
   let min = marketDepth[BIDS].reduce((p, order, i) => {
     if (i === 0) return order[1]
     return order[1] < p ? order[1] : p
@@ -13,7 +16,7 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
 
   const mid = () => {
     if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length === 0) {
-      return maxPrice.plus(minPrice).dividedBy(2)
+      return bnMaxPrice.plus(bnMinPrice).dividedBy(2)
     } else if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length > 0) {
       return marketDepth[BIDS][0][1]
     } else if (marketDepth[ASKS].length > 0 && marketDepth[BIDS].length === 0) {
