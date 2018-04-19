@@ -331,13 +331,7 @@ export default class ReportingDisputeForm extends Component {
                   key={outcome.id}
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
-                  stakeRemaining={outcome.stakeRemaining}
-                  percentageComplete={outcome.percentageComplete}
-                  percentageAccount={outcome.percentageAccount}
                   tentativeStake={stake}
-                  bondSizeCurrent={outcome.bondSizeCurrent}
-                  stakeCurrent={outcome.stakeCurrent}
-                  accountStakeCurrent={outcome.accountStakeCurrent}
                   disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>

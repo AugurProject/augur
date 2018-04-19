@@ -6,7 +6,7 @@ import ReportingResolved from 'modules/reporting/components/reporting-resolved/r
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { selectMarketsToReport } from 'src/modules/reporting/selectors/select-markets-to-report'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import getValue from 'utils/get-value'
 
@@ -17,7 +17,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadReporting: () => dispatch(loadReporting()),
-  loadMarketsInfo: marketIds => dispatch(loadMarketsInfo(marketIds)),
+  loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
 })
 

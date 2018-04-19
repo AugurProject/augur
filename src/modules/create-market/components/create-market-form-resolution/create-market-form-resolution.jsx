@@ -50,7 +50,7 @@ export default class CreateMarketResolution extends Component {
 
     this.state = {
       // expirySourceType: false,
-      date: Object.keys(this.props.newMarket.endTime).length ? moment(this.props.newMarket.endTime.timestamp * 1000) : null,
+      date: Object.keys(this.props.newMarket.endTime).length ? moment(this.props.newMarket.endTime.timestamp * 1000) : moment(this.props.currentTimestamp),
       focused: false,
       hours: Array.from(new Array(12), (val, index) => index + 1),
       minutes: [...Array.from(Array(9).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
@@ -141,6 +141,7 @@ export default class CreateMarketResolution extends Component {
       keyPressed,
     } = this.props
     const s = this.state
+    // console.log(s.date)
     const validations = newMarket.validations[newMarket.currentStep]
     const { utcLocalOffset } = formatDate(new Date(currentTimestamp))
 
@@ -238,6 +239,7 @@ export default class CreateMarketResolution extends Component {
               if (!date) return validateField('endTime', '')
               validateField('endTime', formatDate(date.toDate()))
             }}
+            isOutsideRange={day => day.isBefore(moment(this.props.currentTimestamp).subtract(1, 'days'))}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"

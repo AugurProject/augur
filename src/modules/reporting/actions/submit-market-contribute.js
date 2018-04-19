@@ -5,7 +5,7 @@ import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 import { removeAccountDispute } from 'modules/reporting/actions/update-account-disputes'
 
-export const submitMarketContribute = (marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
+export const submitMarketContribute = (estimateGas, marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
@@ -18,16 +18,22 @@ export const submitMarketContribute = (marketId, selectedOutcome, invalid, amoun
 
   augur.api.Market.contribute({
     meta: loginAccount.meta,
-    tx: { to: marketId },
+    tx: { to: marketId, estimateGas },
     _invalid: invalid,
     _payoutNumerators: payoutNumerators,
     _amount: amount,
     onSent: () => {
-      history.push(makePath(REPORTING_DISPUTE_MARKETS))
+      if (!estimateGas) {
+        history.push(makePath(REPORTING_DISPUTE_MARKETS))
+      }
     },
-    onSuccess: () => {
-      dispatch(removeAccountDispute({ marketId }))
-      callback(null)
+    onSuccess: (gasCost) => {
+      if (estimateGas) {
+        callback(null, gasCost)
+      } else {
+        dispatch(removeAccountDispute({ marketId }))
+        callback(null)
+      }
     },
     onFailed: (err) => {
       callback(err)
