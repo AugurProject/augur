@@ -80,6 +80,12 @@ export default class MarketHeader extends Component {
             }
           </div>
         </div>
+        <div
+          className={Styles[`MarketHeader__resolution-source`]}
+        >
+          <h4>Resolution Source:</h4>
+          <span>{resolutionSource || 'Outcome will be determined by news media'}</span>
+        </div>
         <div className={Styles[`MarketHeader__details-wrapper`]}>
           <button
             className={Styles[`MarketHeader__details-button`]}
@@ -100,12 +106,6 @@ export default class MarketHeader extends Component {
                 </span>
               </div>
             }
-            <div
-              className={Styles[`MarketHeader__resolution-source`]}
-            >
-              <h4>Resolution Source:</h4>
-              <span>{resolutionSource || 'Outcome will be determined by news media'}</span>
-            </div>
           </div>
         </div>
       </section>
