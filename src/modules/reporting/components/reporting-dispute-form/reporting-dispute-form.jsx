@@ -29,8 +29,7 @@ export default class ReportingDisputeForm extends Component {
   static checkStake(wholeREPstake, updatedValidations, maxRep) {
     const bnMaxRep = createBigNumber(formatNumber(createBigNumber(maxRep).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
     const bnStake = createBigNumber(wholeREPstake || 0)
-    console.log('max rep', bnMaxRep.toNumber())
-    console.log('current stake', bnStake.toNumber())
+
     if (wholeREPstake === '' || wholeREPstake == null || wholeREPstake <= 0) {
       updatedValidations.stake = 'The stake field is required.'
     } else if (bnStake.gt(bnMaxRep)) {
