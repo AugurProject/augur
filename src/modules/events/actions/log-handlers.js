@@ -110,7 +110,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
 }
 
 export const handleMarketFinalizedLog = log => (dispatch, getState) => (
-  dispatch(loadMarketsInfo([log.marketId], (err) => {
+  dispatch(loadMarketsInfo([log.market], (err) => {
     if (err) return console.error(err)
     const { volume, author, description } = getState().marketsData[log.market]
     dispatch(updateMarketCategoryPopularity(log.market, new BigNumber(volume, 10).negated().toFixed()))
