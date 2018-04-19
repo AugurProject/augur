@@ -29,7 +29,7 @@ export default function (numShares, limitPrice, side, minPrice, maxPrice, type, 
     calculatedPrice = createBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
     calculatedShares = sharesFilled
   }
-  if (type === SCALAR && (isNaN(minPrice) || isNaN(maxPrice))) return null
+  if (type === SCALAR && (!minPrice || isNaN(minPrice) || !maxPrice || isNaN(maxPrice))) return null
   const max = createBigNumber(type === SCALAR ? maxPrice : 1)
   const min = createBigNumber(type === SCALAR ? minPrice : 0)
   const limit = createBigNumber(calculatedPrice, 10)
