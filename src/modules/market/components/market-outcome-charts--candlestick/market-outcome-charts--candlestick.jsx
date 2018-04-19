@@ -463,12 +463,12 @@ function drawTicks(options) {
 
   //  Midpoint
   //    Conditional Tick Line
-  candleTicks.append('line')
-    .attr('class', 'tick-line tick-line--midpoint')
-    .attr('x1', drawParams.chartDim.tickOffset)
-    .attr('x2', drawParams.containerWidth)
-    .attr('y1', () => drawParams.yScale(orderBookKeys.mid))
-    .attr('y2', () => drawParams.yScale(orderBookKeys.mid))
+  // candleTicks.append('line')
+  //   .attr('class', 'tick-line tick-line--midpoint')
+  //   .attr('x1', drawParams.chartDim.tickOffset)
+  //   .attr('x2', drawParams.containerWidth)
+  //   .attr('y1', () => drawParams.yScale(orderBookKeys.mid))
+  //   .attr('y2', () => drawParams.yScale(orderBookKeys.mid))
 
   //    Label
   candleTicks.append('text')

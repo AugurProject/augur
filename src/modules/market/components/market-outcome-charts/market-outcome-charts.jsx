@@ -5,6 +5,8 @@ import ScrollSnap from 'scroll-snap'
 
 import CustomPropTypes from 'utils/custom-prop-types'
 
+import debounce from 'utils/debounce'
+
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
@@ -63,6 +65,7 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateChartWidths = this.updateChartWidths.bind(this)
+    this.debouncedUpdateChartWidths = debounce(this.updateChartWidths, 500)
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
     this.updateChartsWidth = this.updateChartWidths.bind(this)
@@ -74,7 +77,7 @@ export default class MarketOutcomeCharts extends Component {
 
     this.snapScrollHandler()
 
-    window.addEventListener('resize', this.updateChartWidths)
+    window.addEventListener('resize', this.debouncedUpdateChartWidths)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,7 +90,7 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChartWidths)
+    window.removeEventListener('resize', this.debouncedUpdateChartWidths)
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -161,9 +164,8 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   determineActiveScrolledChart() {
-    console.log('here!@ -- ', this.charts.scrollLeft)
     this.setState({
-      candleScrolled:  this.charts.scrollLeft === 0 ? true : false
+      candleScrolled: this.charts.scrollLeft === 0,
     })
   }
 
