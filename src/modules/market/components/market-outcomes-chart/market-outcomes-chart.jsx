@@ -25,8 +25,6 @@ export default class MarketOutcomesChart extends Component {
       chart: null,
       hoveredOutcome: null,
       drawParams: {},
-      xScale: null,
-      yScale: null,
       hoveredLocation: [],
     }
 
@@ -51,11 +49,13 @@ export default class MarketOutcomesChart extends Component {
       fixedPrecision !== nextProps.fixedPrecision
     ) this.drawChart(nextProps.outcomes, fixedPrecision, this.updateHoveredLocation)
 
-    if (!isEqual(this.state.hoveredLocation, nextState.hoveredLocation)) {
+    if (
+      !isEqual(this.state.hoveredLocation, nextState.hoveredLocation) ||
+      !isEqual(this.state.drawParams, nextState.drawParams) ||
+      fixedPrecision !== nextProps.fixedPrecision
+    ) {
       updateHoveredLocationCrosshair({
         hoveredLocation: nextState.hoveredLocation,
-        xScale: nextState.xScale,
-        yScale: nextState.yScale,
         drawParams: nextState.drawParams,
         fixedPrecision: nextProps.fixedPrecision,
       })
@@ -79,37 +79,42 @@ export default class MarketOutcomesChart extends Component {
         .attr('width', drawParams.width)
         .attr('height', drawParams.height)
 
-      drawTicks({
-        drawParams,
-        chart,
-        fixedPrecision,
-      })
+      if (drawParams.yDomain.length === 0) {
+        drawNullState({
+          drawParams,
+          chart,
+        })
+      } else {
+        drawTicks({
+          drawParams,
+          chart,
+          fixedPrecision,
+        })
 
-      drawXAxisLabels({
-        drawParams,
-        chart,
-      })
+        drawXAxisLabels({
+          drawParams,
+          chart,
+        })
 
-      drawSeries({
-        chart,
-        outcomes,
-        drawParams,
-      })
+        drawSeries({
+          chart,
+          outcomes,
+          drawParams,
+        })
 
-      drawCrosshairs({
-        chart,
-      })
+        drawCrosshairs({
+          chart,
+        })
 
-      attachHoverHandler({
-        drawParams,
-        chart,
-        updateHoveredLocation,
-      })
+        attachHoverHandler({
+          drawParams,
+          chart,
+          updateHoveredLocation,
+        })
+      }
 
       this.setState({
         chart: fauxDiv.toReact(),
-        xScale: drawParams.xScale,
-        yScale: drawParams.yScale,
         drawParams,
       })
     }
@@ -175,14 +180,14 @@ function determineDrawParams(options) {
   const containerHeight = drawContainer.clientHeight
 
   const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint.timestamp)], [])
-  const yDomain = d3.extent(outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => createBigNumber(dataPoint.price).toNumber())], []))
+  const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => createBigNumber(dataPoint.price).toNumber())], [])
 
   const xScale = d3.scaleTime()
     .domain(d3.extent(xDomain))
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
-    .domain(yDomain)
+    .domain(d3.extent(yDomain))
     .range([containerHeight - chartDim.bottom, chartDim.top])
 
   return {
@@ -221,12 +226,13 @@ function drawTicks(options) {
     .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom)
 
   const numberOfTicks = 5 // NOTE -- excludes bounds
-  const range = Math.abs(drawParams.yDomain[1] - drawParams.yDomain[0])
+  const yDomainExtent = d3.extent(drawParams.yDomain)
+  const range = Math.abs(yDomainExtent[1] - yDomainExtent[0])
   const interval = range / numberOfTicks
 
   const ticks = [...new Array(5)].map((_item, i) => {
-    if (i === 0) return drawParams.yDomain[0] + interval
-    return drawParams.yDomain[0] + ((i + 1) * interval)
+    if (i === 0) return yDomainExtent[0] + interval
+    return yDomainExtent[0] + ((i + 1) * interval)
   })
 
   chart.append('g')
@@ -330,8 +336,6 @@ function updateHoveredLocationCrosshair(options) {
   const {
     drawParams,
     hoveredLocation,
-    xScale,
-    yScale,
     fixedPrecision,
   } = options
 
@@ -342,17 +346,32 @@ function updateHoveredLocationCrosshair(options) {
     d3.select('#priceTimeSeries_crosshairs').style('display', null)
     d3.select('#priceTimeSeries_crosshairY')
       .attr('x1', 0)
-      .attr('y1', yScale(hoveredLocation[1]))
+      .attr('y1', drawParams.yScale(hoveredLocation[1]))
       .attr('x2', drawParams.containerWidth)
-      .attr('y2', yScale(hoveredLocation[1]))
+      .attr('y2', drawParams.yScale(hoveredLocation[1]))
     d3.select('#priceTimeSeries_crosshairX')
-      .attr('x1', xScale(hoveredLocation[0]))
+      .attr('x1', drawParams.xScale(hoveredLocation[0]))
       .attr('y1', drawParams.chartDim.top)
-      .attr('x2', xScale(hoveredLocation[0]))
+      .attr('x2', drawParams.xScale(hoveredLocation[0]))
       .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom)
     d3.select('#hovered_priceTimeSeries_price_label')
       .attr('x', 0)
-      .attr('y', yScale(hoveredLocation[1]) + 12)
+      .attr('y', drawParams.yScale(hoveredLocation[1]) + 12)
       .text(hoveredLocation[1].toFixed(fixedPrecision))
   }
+}
+
+function drawNullState(options) {
+  const {
+    drawParams,
+    chart,
+  } = options
+
+  chart.append('text')
+    .attr('class', Styles['MarketOutcomesChart__null-message'])
+    .attr('x', drawParams.containerWidth / 2)
+    .attr('y', drawParams.containerHeight / 2)
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .text('No Price History')
 }
