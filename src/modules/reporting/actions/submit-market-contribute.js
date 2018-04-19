@@ -31,7 +31,7 @@ export const submitMarketContribute = (estimateGas, marketId, selectedOutcome, i
       if (estimateGas) {
         callback(null, gasCost)
       } else {
-        removeAccountDispute({ marketId })
+        dispatch(removeAccountDispute({ marketId }))
         callback(null)
       }
     },

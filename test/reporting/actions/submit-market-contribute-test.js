@@ -49,7 +49,7 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
   }
 
   const getPayoutNumerators = sinon.stub().returns([10000, 0])
-  const removeAccountDispute = sinon.spy()
+  const removeAccountDispute = sinon.stub().returns({ type: 'REMOVE_ACCOUNT_DISPUTE' })
   submitMarketContributeReqireAPI.__Rewire__('getPayoutNumerators', getPayoutNumerators)
   submitMarketContributeReqireAPI.__Rewire__('removeAccountDispute', removeAccountDispute)
 
