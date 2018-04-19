@@ -86,7 +86,7 @@ export default class MarketOutcomesChart extends Component {
         chart.append('path')
           .data([outcome.priceTimeSeries])
           .classed(`${Styles['outcome-line']}`, true)
-          .classed(`${Styles[`outcome-line-${outcome.id}`]}`, true)
+          .classed(`${Styles[`outcome-line-${i + 1}`]}`, true)
           .attr('d', outcomeLine)
       })
 
