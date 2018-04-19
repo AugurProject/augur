@@ -1,18 +1,30 @@
-sudo: false
+dist: trusty
+
+# Sudo is required for docker daemon
+sudo: required
 
 language: node_js
 
+# Enable Docker
+services:
+  - docker
+
+# Allow building on the following branches only
+# the regular expression on the end is for TAGS because
+# when a tag is deployed, it is treated also as a branch
+# in these scripts (i.e, $TRAVIS_TAG = $TRAVIS_BRANC)
 branches:
   only:
-    - master
-
-env:
-  - CXX=g++-4.8
+  - master
+  - stable
+  - petong/travis-ci
+  - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 
 node_js:
-  - "9"
-  - "8"
+- '9'
+- '8'
 
+# Add some apt packages for libusb to enable ledger support
 addons:
   apt:
     sources:
@@ -23,11 +35,30 @@ addons:
     - build-essential
     - libusb-1.0-0-dev
 
-before_script:
-  - yarn
-
+# Scripts that will be run during the test phase. If this phase doesn't
+# complete the deploy phase will not run
 script:
-  - yarn lint
-  - yarn test
-  - NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-  - yarn build --dev
+- yarn lint; yarn test;
+- NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+- yarn build --dev
+
+# Build docker image and push
+# this is specified as a job so it runs after all the jobs in the test phase,
+# i.e. node8 and node9 tests
+jobs:
+  include:
+    - stage: Deploy to stable
+      if: branch IN (stable, petong/travis-ci)
+      node_js: '8'
+      script: skip
+      deploy: &script
+        provider: script
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release:stable;
+        skip_cleanup: true
+        on:
+          all_branches: true
+
+env:
+  global:
+    - DOCKER_USERNAME=augurintegration
+    - secure: "hfHRWYqUxQ7Ow4wsG0hJ21wtGjGpy95CuDg0maxtMxq6lsYvy0yfNawH5psX1P9cyiwWY6ryxeoD9HBx3McKbEG9vWhg4pZ63ghnwEAWMtIDq+cfhTAXenlHG+P/owJCzhch+okj77iYioXCUQccqzGl0OCyoHUgFlWZCcRb+RM="
