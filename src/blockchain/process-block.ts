@@ -187,7 +187,7 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
 
 export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   updateActiveFeeWindows(db, blockNumber, timestamp, (err, feeWindowModifications) => {
-    if (err || _.isEmpty(feeWindowModifications)) return callback(err);
+    if (err || (feeWindowModifications != null && feeWindowModifications.expiredFeeWindows.length === 0 && feeWindowModifications.newActiveFeeWindows.length === 0)) return callback(err);
     advanceIncompleteCrowdsourcers(db, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
       if (err) return callback(err);
       advanceAwaitingNextFeeWindow(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || [], (err: Error|null) => {
