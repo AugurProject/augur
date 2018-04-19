@@ -10,7 +10,9 @@ import { isEqual } from 'lodash'
 
 export default class MarketOutcomeMidpoint extends Component {
   static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
     chartWidths: PropTypes.object.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
     hasOrders: PropTypes.bool.isRequired,
@@ -34,7 +36,9 @@ export default class MarketOutcomeMidpoint extends Component {
 
   componentDidMount() {
     this.drawMidpoint({
+      isMobile: this.props.isMobile,
       chartWidths: this.props.chartWidths,
+      headerHeight: this.props.headerHeight,
       orderBookKeys: this.props.orderBookKeys,
       sharedChartMargins: this.props.sharedChartMargins,
       midpointLabelWidth: this.state.midpointLabelWidth,
@@ -51,15 +55,19 @@ export default class MarketOutcomeMidpoint extends Component {
       !isEqual(this.props.orderBookKeys, nextProps.orderBookKeys) ||
       !isEqual(this.props.sharedChartMargins, nextProps.sharedChartMargins) ||
       !isEqual(this.props.chartWidths, nextProps.chartWidths) ||
+      this.props.headerHeight !== nextProps.headerHeight ||
       this.props.fixedPrecision !== nextProps.fixedPrecision ||
       this.props.hasPriceHistory !== nextProps.hasPriceHistory ||
       this.props.hasOrders !== nextProps.hasOrders ||
       this.props.excludeCandlestick !== nextProps.excludeCandlestick ||
+      this.props.isMobile !== nextProps.isMobile ||
       this.state.midpointLabelWidth !== nextState.midpointLabelWidth ||
       this.state.candleNullMessageWidth !== nextState.candleNullMessageWidth
     ) {
       this.drawMidpoint({
+        isMobile: nextProps.isMobile,
         chartWidths: nextProps.chartWidths,
+        headerHeight: nextProps.headerHeight,
         orderBookKeys: nextProps.orderBookKeys,
         sharedChartMargins: nextProps.sharedChartMargins,
         midpointLabelWidth: nextState.midpointLabelWidth,
@@ -94,6 +102,7 @@ export default class MarketOutcomeMidpoint extends Component {
 
   drawMidpoint(options) {
     const {
+      isMobile,
       orderBookKeys,
       sharedChartMargins,
       midpointLabelWidth,
@@ -101,6 +110,7 @@ export default class MarketOutcomeMidpoint extends Component {
       hasPriceHistory,
       hasOrders,
       chartWidths,
+      headerHeight,
       fixedPrecision,
       excludeCandlestick,
     } = options
@@ -111,7 +121,10 @@ export default class MarketOutcomeMidpoint extends Component {
 
       const drawParams = determineDrawParams({
         drawContainer: this.drawContainer,
+        headerHeight,
         sharedChartMargins,
+        chartWidths,
+        isMobile,
       })
 
       // Chart Element
@@ -129,10 +142,12 @@ export default class MarketOutcomeMidpoint extends Component {
         hasOrders,
         chartWidths,
         excludeCandlestick,
+        isMobile,
       })
 
       if (hasOrders) {
         drawMidpointLabel({
+          isMobile,
           drawParams,
           orderBookKeys,
           midpointChart,
@@ -163,16 +178,19 @@ export default class MarketOutcomeMidpoint extends Component {
 function determineDrawParams(options) {
   const {
     drawContainer,
+    headerHeight,
     sharedChartMargins,
+    chartWidths,
+    isMobile,
   } = options
 
-  const containerWidth = drawContainer.clientWidth
-  const containerHeight = drawContainer.clientHeight
+  const containerWidth = isMobile ? chartWidths.candle + chartWidths.orders : drawContainer.clientWidth
+  const containerHeight = drawContainer.clientHeight + headerHeight
 
   const chartDim = {
     ...sharedChartMargins,
     tickOffset: 10,
-    right: 10,
+    right: 30,
     left: 0,
   }
 
@@ -188,6 +206,7 @@ function determineDrawParams(options) {
     containerHeight,
     chartDim,
     yScale,
+    chartWidths,
   }
 }
 
@@ -201,33 +220,84 @@ function drawMidpointLine(options) {
     hasOrders,
     chartWidths,
     excludeCandlestick,
+    isMobile,
   } = options
 
-  // Left Segment
-  midpointChart.append('line')
-    .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
-    .attr('x1', drawParams.chartDim.left)
-    .attr('x2', () => {
-      if ((hasPriceHistory && hasOrders) || (hasOrders && excludeCandlestick)) { // All the way
-        return drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right
-      } else if (hasPriceHistory && !hasOrders) { // To orders
-        return chartWidths.candle
-      } else if (!hasPriceHistory && hasOrders && !excludeCandlestick) { // To candle null label
-        return (chartWidths.candle / 2) - (candleNullMessageWidth / 2) - drawParams.chartDim.right
+  // Establish the midpoint line segments to draw
+  const drawSegments = []
+  if (excludeCandlestick) {
+    if (hasOrders) {
+      drawSegments.push({
+        start: midpointLabelWidth + drawParams.chartDim.right,
+        end: drawParams.containerWidth,
+      })
+    }
+  } else if (hasPriceHistory) {
+    if (hasOrders) {
+      if (isMobile) {
+        drawSegments.push({
+          start: drawParams.chartDim.left,
+          end: chartWidths.candle - drawParams.chartDim.right,
+        })
+        drawSegments.push({
+          start: chartWidths.candle + midpointLabelWidth + drawParams.chartDim.right,
+          end: drawParams.containerWidth,
+        })
+      } else {
+        drawSegments.push({
+          start: drawParams.chartDim.left,
+          end: drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right,
+        })
       }
+    } else {
+      drawSegments.push({
+        start: drawParams.chartDim.left,
+        end: chartWidths.candle - drawParams.chartDim.right,
+      })
+    }
+  } else {
+    drawSegments.push({
+      start: drawParams.chartDim.left,
+      end: (chartWidths.candle / 2) - (candleNullMessageWidth / 2) - (drawParams.chartDim.right / 2),
     })
-    .attr('y1', () => drawParams.yScale(0.5))
-    .attr('y2', () => drawParams.yScale(0.5))
 
-  // Right Segment
-  if (!hasPriceHistory && hasOrders && !excludeCandlestick) {
+    if (hasOrders) {
+      if (isMobile) {
+        drawSegments.push({
+          start: (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + (drawParams.chartDim.right / 2),
+          end: chartWidths.candle - drawParams.chartDim.right,
+        })
+
+        drawSegments.push({
+          start: chartWidths.candle + midpointLabelWidth + drawParams.chartDim.right,
+          end: drawParams.containerWidth,
+        })
+      } else {
+        drawSegments.push({
+          start: (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + (drawParams.chartDim.right / 2),
+          end: drawParams.containerWidth - midpointLabelWidth - (drawParams.chartDim.right / 2),
+        })
+      }
+    } else {
+      drawSegments.push({
+        start: drawParams.chartDim.left,
+        end: (chartWidths.candle / 2) - (candleNullMessageWidth / 2) - (drawParams.chartDim.right / 2),
+      })
+      drawSegments.push({
+        start: (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + (drawParams.chartDim.right / 2),
+        end: chartWidths.candle - drawParams.chartDim.right,
+      })
+    }
+  }
+
+  drawSegments.forEach((segment) => {
     midpointChart.append('line')
       .attr('class', `${Styles.MarketOutcomeMidpoint__line}`)
-      .attr('x1', (chartWidths.candle / 2) + (candleNullMessageWidth / 2) + drawParams.chartDim.right)
-      .attr('x2', hasOrders ? drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right : chartWidths.candle)
+      .attr('x1', segment.start)
+      .attr('x2', segment.end)
       .attr('y1', () => drawParams.yScale(0.5))
       .attr('y2', () => drawParams.yScale(0.5))
-  }
+  })
 
   if (!hasPriceHistory && !excludeCandlestick) {
     drawCandlestickNullMessage({
@@ -255,15 +325,16 @@ function drawMidpointLabel(options) {
     orderBookKeys,
     midpointChart,
     fixedPrecision,
+    isMobile,
   } = options
 
   //  Midpoint Label
   midpointChart.append('text')
     .attr('id', 'midpoint_label')
     .attr('class', `${Styles.MarketOutcomeMidpoint__label}`)
-    .attr('x', drawParams.containerWidth)
+    .attr('x', isMobile ? drawParams.chartWidths.candle : drawParams.containerWidth)
     .attr('y', drawParams.yScale(0.5))
-    .attr('text-anchor', 'end')
+    .attr('text-anchor', isMobile ? 'start' : 'end')
     .attr('dominant-baseline', 'central')
     .text(`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`)
 }

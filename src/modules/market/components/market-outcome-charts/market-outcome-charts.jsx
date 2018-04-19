@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import ScrollSnap from 'scroll-snap'
 
 import CustomPropTypes from 'utils/custom-prop-types'
 
-import MarketOutcomeChartsHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header'
+import debounce from 'utils/debounce'
+
 import MarketOutcomeCandlestick from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
@@ -13,13 +16,13 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
     minPrice: CustomPropTypes.bigNumber, /* required */
     maxPrice: CustomPropTypes.bigNumber, /* required */
     orderBook: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     marketDepth: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.string.isRequired,
-    currentTimestamp: PropTypes.number.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
     hasPriceHistory: PropTypes.bool,
     hasOrders: PropTypes.bool.isRequired,
@@ -31,11 +34,20 @@ export default class MarketOutcomeCharts extends Component {
   constructor(props) {
     super(props)
 
+    this.snapConfig = {
+      scrollSnapDestination: '100% 0%',
+      scrollTime: 300,
+    }
+
+    this.snapScroller = null
+
     this.state = {
+      candleScrolled: true,
       selectedPeriod: {},
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
+      headerHeight: 0,
       fixedPrecision: 4,
       sharedChartMargins: {
         top: 0,
@@ -53,16 +65,32 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateChartWidths = this.updateChartWidths.bind(this)
+    this.debouncedUpdateChartWidths = debounce(this.updateChartWidths, 500)
+    this.snapScrollHandler = this.snapScrollHandler.bind(this)
+    this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
+    this.updateChartsWidth = this.updateChartWidths.bind(this)
+    this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(this)
   }
 
   componentDidMount() {
     this.updateChartWidths()
 
-    window.addEventListener('resize', this.updateChartWidths)
+    this.snapScrollHandler()
+
+    window.addEventListener('resize', this.debouncedUpdateChartWidths)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.isMobile &&
+      prevProps.isMobile !== this.props.isMobile
+    ) {
+      this.snapScrollHandler()
+    }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChartWidths)
+    window.removeEventListener('resize', this.debouncedUpdateChartWidths)
   }
 
   updateHoveredPeriod(hoveredPeriod) {
@@ -110,10 +138,40 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
+  updateChartHeaderHeight(headerHeight) {
+    this.setState({
+      headerHeight,
+    })
+  }
+
+  snapScrollHandler() {
+    if (
+      this.snapScroller === null &&
+      this.charts != null &&
+      this.snapConfig != null
+    ) {
+      this.snapScroller = new ScrollSnap(this.charts, this.snapConfig)
+    }
+
+    if (this.snapScroller != null) {
+      if (this.props.isMobile) {
+        this.snapScroller.bind(this.determineActiveScrolledChart)
+        this.determineActiveScrolledChart()
+      } else {
+        this.snapScroller.unbind()
+      }
+    }
+  }
+
+  determineActiveScrolledChart() {
+    this.setState({
+      candleScrolled: this.charts.scrollLeft === 0,
+    })
+  }
+
   render() {
     const {
       currentBlock,
-      currentTimestamp,
       hasOrders,
       hasPriceHistory,
       marketDepth,
@@ -122,51 +180,57 @@ export default class MarketOutcomeCharts extends Component {
       orderBook,
       orderBookKeys,
       priceTimeSeries,
-      selectedOutcome,
       updateSeletedOrderProperties,
       excludeCandlestick,
+      isMobile,
     } = this.props
     const s = this.state
 
     return (
       <section className={Styles.MarketOutcomeCharts}>
-        <MarketOutcomeChartsHeader
-          excludeCandlestick={excludeCandlestick}
-          priceTimeSeries={priceTimeSeries}
-          selectedOutcome={selectedOutcome}
-          hoveredPeriod={s.hoveredPeriod}
-          hoveredDepth={s.hoveredDepth}
-          fixedPrecision={s.fixedPrecision}
-          updatePrecision={this.updatePrecision}
-          updateSelectedPeriod={this.updateSelectedPeriod}
-        />
-        <div className={Styles.MarketOutcomeCharts__Charts}>
-          <div
-            ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
-            className={Styles.MarketOutcomeCharts__candlestick}
-          >
-            <MarketOutcomeCandlestick
-              sharedChartMargins={s.sharedChartMargins}
-              priceTimeSeries={priceTimeSeries}
-              currentBlock={currentBlock}
-              currentTimestamp={currentTimestamp}
-              selectedPeriod={s.selectedPeriod}
-              fixedPrecision={s.fixedPrecision}
-              orderBookKeys={orderBookKeys}
-              marketMax={maxPrice}
-              marketMin={minPrice}
-              hoveredPrice={s.hoveredPrice}
-              updateHoveredPrice={this.updateHoveredPrice}
-              updateHoveredPeriod={this.updateHoveredPeriod}
-              updateSeletedOrderProperties={updateSeletedOrderProperties}
-            />
-          </div>
+        <div
+          ref={(charts) => { this.charts = charts }}
+          className={classNames(Styles.MarketOutcomeCharts__charts, {
+            [Styles['MarketOutcomeCharts__charts--mobile']]: isMobile,
+          })}
+        >
+          {excludeCandlestick ||
+            <div
+              ref={(candlestickContainer) => { this.candlestickContainer = candlestickContainer }}
+              className={classNames(Styles.MarketOutcomeCharts__candlestick, {
+                [Styles['MarketOutcomeCharts__candlestick--mobile']]: isMobile,
+              })}
+            >
+              <MarketOutcomeCandlestick
+                isMobile={isMobile}
+                sharedChartMargins={s.sharedChartMargins}
+                priceTimeSeries={priceTimeSeries}
+                currentBlock={currentBlock}
+                selectedPeriod={s.selectedPeriod}
+                fixedPrecision={s.fixedPrecision}
+                orderBookKeys={orderBookKeys}
+                marketMax={maxPrice}
+                marketMin={minPrice}
+                hoveredPrice={s.hoveredPrice}
+                hoveredPeriod={s.hoveredPeriod}
+                updateHoveredPrice={this.updateHoveredPrice}
+                updateHoveredPeriod={this.updateHoveredPeriod}
+                updateSelectedPeriod={this.updateSelectedPeriod}
+                updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateChartHeaderHeight={this.updateChartHeaderHeight}
+              />
+            </div>
+          }
           <div
             ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
-            className={Styles.MarketOutcomeCharts__orders}
+            className={classNames(Styles.MarketOutcomeCharts__orders, {
+              [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
+            })}
           >
             <div className={Styles.MarketOutcomeCharts__depth}>
               <MarketOutcomeDepth
+                headerHeight={s.headerHeight}
+                isMobile={isMobile}
                 priceTimeSeries={priceTimeSeries}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
@@ -175,6 +239,7 @@ export default class MarketOutcomeCharts extends Component {
                 marketMax={maxPrice}
                 marketMin={minPrice}
                 hoveredPrice={s.hoveredPrice}
+                hoveredDepth={s.hoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
@@ -182,26 +247,45 @@ export default class MarketOutcomeCharts extends Component {
             </div>
             <div className={Styles.MarketOutcomeCharts__orderbook}>
               <MarketOutcomeOrderBook
+                headerHeight={s.headerHeight}
+                isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 fixedPrecision={s.fixedPrecision}
                 orderBook={orderBook}
                 marketMidpoint={orderBookKeys.mid}
                 hoveredPrice={s.hoveredPrice}
                 updateHoveredPrice={this.updateHoveredPrice}
+                updatePrecision={this.updatePrecision}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
               />
             </div>
           </div>
           <MarketOutcomeMidpoint
+            isMobile={isMobile}
             excludeCandlestick={excludeCandlestick}
             hasPriceHistory={hasPriceHistory}
             hasOrders={hasOrders}
             chartWidths={s.chartWidths}
+            headerHeight={s.headerHeight}
             orderBookKeys={orderBookKeys}
             sharedChartMargins={s.sharedChartMargins}
             fixedPrecision={s.fixedPrecision}
           />
         </div>
+        {isMobile &&
+          <div className={Styles.MarketOutcomeCharts__indicator}>
+            <div
+              className={classNames(Styles.MarketOutcomeCharts__dot, {
+                [Styles['MarketOutcomeCharts__dot--active']]: s.candleScrolled,
+              })}
+            />
+            <div
+              className={classNames(Styles.MarketOutcomeCharts__dot, {
+                [Styles['MarketOutcomeCharts__dot--active']]: !s.candleScrolled,
+              })}
+            />
+          </div>
+        }
       </section>
     )
   }

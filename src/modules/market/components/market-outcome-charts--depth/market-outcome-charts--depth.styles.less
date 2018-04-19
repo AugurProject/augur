@@ -1,6 +1,8 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketOutcomeDepth {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   margin-right: 30px;
 }
@@ -27,12 +29,11 @@
 
 .MarketOutcomeDepth__container {
   cursor: cell;
-  height: 100%;
+  flex: 1;
 
   :global {
     #depth_chart {
-      height: 100%;
-      width: 100%;
+      position: absolute;
     }
 
     #hovered_price_label {

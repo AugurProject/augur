@@ -34,7 +34,7 @@ const TopBar = props => (
               <span>{props.stats[1].totalPLMonth.label}</span>
             </div>
             <span className={Styles['TopBar__stat-value']}>
-              {props.stats[1].totalPLMonth.value.formatted}
+              {props.stats[1].totalPLMonth.value.formatted} ETH
             </span>
           </div>
           <div className={Styles.TopBar__stat}>
@@ -44,7 +44,7 @@ const TopBar = props => (
               <span>{props.stats[1].totalPLDay.label}</span>
             </div>
             <span className={Styles['TopBar__stat-value']}>
-              {props.stats[1].totalPLDay.value.formatted}
+              {props.stats[1].totalPLDay.value.formatted} ETH
             </span>
           </div>
         </div>
