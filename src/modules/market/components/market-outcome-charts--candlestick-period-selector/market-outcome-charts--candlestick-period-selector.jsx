@@ -212,6 +212,7 @@ export default class PeriodSelector extends Component {
                     onClick={() => {
                       this.setState({
                         selectedRange: range.range === s.selectedRange ? -1 : range.range,
+                        isModalActive: false,
                       })
                     }}
                   >
@@ -239,6 +240,7 @@ export default class PeriodSelector extends Component {
                     onClick={() => {
                       this.setState({
                         selectedPeriod: period.period === s.selectedPeriod ? -1 : period.period,
+                        isModalActive: false,
                       })
                     }}
                   >
