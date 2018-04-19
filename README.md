@@ -119,6 +119,11 @@ Full instructions are here [dev-local-node](https://github.com/AugurProject/augu
 [http://docs.augur.net](http://docs.augur.net)
 
 
+## Contributing
+
+We use Clubhouse.io for our issue tracker. If you would like to contribute, please join us on Discord (https://discordapp.com/invite/JwEtX9P) and provide us with your email address so we can grant you access to our Clubhouse.
+
+
 ## Development Tips
 
 ### #1: Search the project filenames for whatever you are looking for before thinking about it too much.
