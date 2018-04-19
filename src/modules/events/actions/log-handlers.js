@@ -156,7 +156,8 @@ export const handleFeeWindowCreatedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
 }
 
-export const handelFeeWindowOpenedLog = log => (dispatch) => {
+export const handleFeeWindowOpenedLog = log => (dispatch) => {
+  console.log('handleFeeWindowOpenedLog', JSON.stringify(log))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
