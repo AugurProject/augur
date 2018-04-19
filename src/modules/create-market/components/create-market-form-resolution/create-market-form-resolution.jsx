@@ -141,6 +141,7 @@ export default class CreateMarketResolution extends Component {
       keyPressed,
     } = this.props
     const s = this.state
+    // console.log(s.date)
     const validations = newMarket.validations[newMarket.currentStep]
     const { utcLocalOffset } = formatDate(new Date(currentTimestamp))
 
@@ -238,6 +239,7 @@ export default class CreateMarketResolution extends Component {
               if (!date) return validateField('endTime', '')
               validateField('endTime', formatDate(date.toDate()))
             }}
+            isOutsideRange={day => day.isBefore(moment(this.props.currentTimestamp).subtract(1, 'days'))}
             focused={this.state.focused}
             onFocusChange={({ focused }) => this.setState({ focused })}
             displayFormat="MMM D, YYYY"
