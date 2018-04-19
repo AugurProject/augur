@@ -1,7 +1,5 @@
 import memoize from 'memoizee'
 
-import { createBigNumber } from 'utils/create-big-number'
-
 /**
  * Prepares price history data for charting
  *
