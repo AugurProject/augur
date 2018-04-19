@@ -87,7 +87,7 @@ export default class MarketPositionsList extends Component {
                 { openOrders.map((order, i) => (
                   <MarketPositionsListOrder
                     key={i}
-                    name={order.name}
+                    outcomeName={order.name}
                     order={order}
                     pending={order.pending}
                     isExtendedDisplay={false}

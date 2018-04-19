@@ -18,7 +18,6 @@ export const constructBasicTransaction = (eventName, hash, blockNumber, timestam
 }
 
 export const constructTransaction = (log, callback = logError) => (dispatch, getState) => {
-  console.info('constructTransaction', log.eventName, log)
   switch (log.eventName) {
     case 'OrderCreated':
       return dispatch(addOpenOrderTransactions({ [log.marketId]: { [log.outcome]: { [log.orderType === 0 ? 'buy' : 'sell']: log } } }))
