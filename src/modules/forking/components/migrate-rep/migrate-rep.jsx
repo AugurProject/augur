@@ -71,9 +71,8 @@ export default class MigrateRep extends Component {
   getForkMigrationTotals() {
     const {
       getForkMigrationTotals,
-      marketId,
     } = this.props
-    getForkMigrationTotals(marketId, (forkMigrationTotals) => {
+    getForkMigrationTotals((forkMigrationTotals) => {
       this.setState({
         forkMigrationTotals,
       })
