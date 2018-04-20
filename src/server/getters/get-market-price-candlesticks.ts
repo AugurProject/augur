@@ -22,8 +22,8 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
     "trades.price",
     "trades.amount",
     "blocks.timestamp",
-  ]).from("trades").leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketId });
-  if (start != null) query.where("blocks.timestamp", "<=", start);
+  ]).from("trades").join("blocks", "trades.blockNumber", "blocks.blockNumber").where({ marketId });
+  if (start != null) query.where("blocks.timestamp", ">=", start);
   if (end != null) query.where("blocks.timestamp", "<=", end);
   if (outcome) query.where({ outcome });
   query.asCallback((err: Error|null, tradesRows?: Array<MarketPriceHistoryRow>): void => {
@@ -31,7 +31,7 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
     if (!tradesRows) return callback(new Error("Internal error retrieving market price history"));
     const tradeRowsByOutcome = _.groupBy(tradesRows, "outcome");
     const oo = _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
-      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStarttime(start || 0, tradeRow.timestamp, 40));
+      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStarttime(start || 0, tradeRow.timestamp, period || 60));
       return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): any => {
         if (trades == null || trades.length === 0) return null;
         return {
