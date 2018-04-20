@@ -149,7 +149,7 @@ export default class MarketPortfolioCard extends Component {
           </div>
         </section>
         <section className={Styles.MarketCard__tablesection}>
-          {(myPositionOutcomes || []).filter(outcome => outcome.position).length !== 0 &&
+          {(myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
             <button
               className={Styles.MarketCard__headingcontainer}
               onClick={() => this.toggleTable('myPositions')}
@@ -193,7 +193,7 @@ export default class MarketPortfolioCard extends Component {
         </section>
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
-            {market.outcomes[0] && market.outcomes[0].userOpenOrders && market.outcomes[0].userOpenOrders.length !== 0 &&
+            {(myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
               <button
                 className={Styles.MarketCard__headingcontainer}
                 onClick={() => this.toggleTable('openOrders')}
@@ -209,7 +209,7 @@ export default class MarketPortfolioCard extends Component {
               </button>
             }
             <div className={PositionStyles.MarketPositionsList__table}>
-              { this.state.tableOpen.openOrders &&
+              { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
               <ul className={PositionStyles['MarketPositionsList__table-header']}>
                 <li>Outcome</li>
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
