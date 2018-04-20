@@ -11,12 +11,24 @@ interface MarketPriceHistoryRow {
   amount: BigNumber;
 }
 
+export interface Candlestick {
+  startTimestamp: number;
+  start: string;
+  end: string;
+  min: string;
+  max: string;
+}
+
+export interface UICandlesticks {
+  [outcome: number]: Array<Candlestick>;
+}
+
 function getPeriodStarttime(globalStarttime: number, periodStartime: number, period: number) {
   const secondsSinceGlobalStart = (periodStartime - globalStarttime);
   return (secondsSinceGlobalStart - secondsSinceGlobalStart % period) + globalStarttime;
 }
 
-export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome: number|undefined, start: number|undefined, end: number|undefined, period: number|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome: number|undefined, start: number|undefined, end: number|undefined, period: number|undefined, callback: (err: Error|null, result?: UICandlesticks) => void): void {
   const query = db.select([
     "trades.outcome",
     "trades.price",
@@ -32,8 +44,7 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
     const tradeRowsByOutcome = _.groupBy(tradesRows, "outcome");
     const oo = _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
       const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStarttime(start || 0, tradeRow.timestamp, period || 60));
-      return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): any => {
-        if (trades == null || trades.length === 0) return null;
+      return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): Candlestick => {
         return {
           startTimestamp: parseInt(startTimestamp, 10),
           start: _.minBy(trades, "timestamp")!.price.toFixed(),
