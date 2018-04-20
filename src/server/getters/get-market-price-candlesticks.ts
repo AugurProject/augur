@@ -42,9 +42,7 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
           max: _.maxBy(trades, "price")!.price.toFixed(),
         };
       });
-    })
+    });
     callback(null, oo);
   });
 }
-
-
