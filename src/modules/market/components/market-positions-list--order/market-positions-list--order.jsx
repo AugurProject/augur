@@ -16,7 +16,7 @@ export default class Order extends Component {
     isMobile: PropTypes.bool,
     outcomeName: PropTypes.string,
     order: PropTypes.object,
-    pending: PropTypes.string,
+    pending: PropTypes.bool,
   }
 
   constructor(props) {
@@ -76,9 +76,7 @@ export default class Order extends Component {
           { outcomeName }
           { pending &&
             <span className={Styles.Order__pending}>
-              { pending === CLOSE_DIALOG_CLOSING &&
-                <span>Cancellation Pending</span>
-              }
+              <span>Cancellation Pending</span>
             </span>
           }
         </li>

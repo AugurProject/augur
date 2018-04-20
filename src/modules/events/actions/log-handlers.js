@@ -60,7 +60,7 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
-  const isStoredTransaction = log.orderCreator === getState().loginAccount.address
+  const isStoredTransaction = log.sender === getState().loginAccount.address
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
     dispatch(updateLoggedTransactions(log))

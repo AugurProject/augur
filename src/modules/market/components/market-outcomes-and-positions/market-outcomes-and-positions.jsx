@@ -6,7 +6,7 @@ import MarketPositionsListMobile from 'modules/market/components/market-position
 
 const MarketOutcomesAndPositions = p => (
   <section>
-    { (!p.isMobile || (p.isMobile && p.selectedOutcome.length === 0)) &&
+    { (!p.isMobile || (p.isMobile && !p.selectedOutcome)) &&
       <MarketOutcomesList
         marketId={p.marketId}
         outcomes={p.outcomes}
@@ -21,11 +21,11 @@ const MarketOutcomesAndPositions = p => (
         openOrders={p.openOrders}
       />
     }
-    { p.isMobile && p.selectedOutcome.length > 0 &&
+    { p.isMobile && p.selectedOutcome &&
       <MarketPositionsListMobile
         outcome={p.outcomes.filter(outcome => outcome.id === p.selectedOutcome)[0]}
-        positions={p.positions.filter(position => position.id === p.selectedOutcome)}
-        openOrders={p.openOrders.filter(order => order.id === p.selectedOutcome)}
+        positions={p.positions.filter(position => parseInt(position.outcomeId, 10) === parseInt(p.selectedOutcome, 10))}
+        openOrders={p.openOrders.filter(order => order.outcomeId === p.selectedOutcome)}
       />
     }
   </section>

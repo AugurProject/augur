@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { createBigNumber } from 'utils/create-big-number'
 
 import getValue from 'utils/get-value'
 
@@ -14,22 +15,22 @@ export default class MobilePositions extends Component {
   }
 
   static calcAvgDiff(position, orders) {
-    const currentAvg = getValue(position, 'position.avgPrice.formattedValue') || 0
-    const currentShares = getValue(position, 'position.qtyShares.formattedValue') || 0
+    const currentAvg = createBigNumber(getValue(position, 'purchasePrice.formattedValue') || 0)
+    const currentShares = createBigNumber(getValue(position, 'qtyShares.formattedValue') || 0)
 
-    let newAvg = currentAvg * currentShares
-    let totalShares = currentShares
+    const newAvg = currentAvg.times(currentShares)
+    const totalShares = currentShares
 
     orders.forEach((order) => {
-      const thisPrice = (getValue(order, 'order.purchasePrice.formattedValue') || 0)
-      const thisShares = (getValue(order, 'order.qtyShares.formattedValue') || 0)
+      const thisPrice = createBigNumber(getValue(order, 'purchasePrice.formattedValue') || 0)
+      const thisShares = createBigNumber(getValue(order, 'qtyShares.formattedValue') || 0)
 
-      newAvg += thisPrice * thisShares
-      totalShares += thisShares
+      newAvg.plus((thisPrice.times(thisShares)))
+      totalShares.plus(thisShares)
     })
 
-    newAvg /= totalShares
-    const avgDiff = (newAvg - currentAvg).toFixed(4)
+    newAvg.dividedBy(totalShares)
+    const avgDiff = newAvg.minus(currentAvg).toFixed(4)
 
     return avgDiff < 0 ? avgDiff : `+${avgDiff}`
   }
@@ -79,7 +80,7 @@ export default class MobilePositions extends Component {
                   </span>
                 }
               </span>
-              { getValue(this.props, 'position.position.qtyShares.formatted') }
+              { getValue(position, 'qtyShares.formatted') }
             </li>
             <li>
               <span>
@@ -90,15 +91,15 @@ export default class MobilePositions extends Component {
                   </span>
                 }
               </span>
-              { getValue(this.props, 'position.position.avgPrice.formatted') } ETH
+              { getValue(position, 'avgPrice.formatted') } ETH
             </li>
             <li>
               <span>Unrealized P/L</span>
-              { getValue(this.props, 'position.position.unrealizedNet.formatted') } ETH
+              { getValue(position, 'unrealizedNet.formatted') } ETH
             </li>
             <li>
               <span>Realized P/L</span>
-              { getValue(this.props, 'position.position.realizedNet.formatted') } ETH
+              { getValue(position, 'realizedNet.formatted') } ETH
             </li>
           </ul>
         </div>
@@ -113,10 +114,17 @@ export default class MobilePositions extends Component {
             :
             <div className={Styles['MobilePositions__confirm-details']}>
               <h3>Close Position?</h3>
-              <p>This will sell your { getValue(this.props, 'position.position.qtyShares.formatted') } shares of &ldquo;{ getValue(this.props, 'position.name') }&rdquo; at market rate.</p>
+              <p>This will sell your { getValue(position, 'qtyShares.formatted') } shares of &ldquo;{ getValue(position, 'name') }&rdquo; at market rate.</p>
               <div className={Styles['MobilePositions__confirm-options']}>
                 <button onClick={e => this.setState({ showConfirm: !s.showConfirm })}>No</button>
-                <button onClick={(e) => { position.position.closePosition(); this.setState({ showConfirm: !s.showConfirm }) }}>Yes</button>
+                <button
+                  onClick={(e) => {
+                    position.closePosition()
+                    this.setState({ showConfirm: !s.showConfirm })
+                  }}
+                >
+                  Yes
+                </button>
               </div>
             </div>
           }

@@ -11,7 +11,7 @@ import Styles from 'modules/market/components/market-positions-list--position/ma
 
 export default class Position extends Component {
   static propTypes = {
-    name: PropTypes.string.isRequired,
+    outcomeName: PropTypes.string.isRequired,
     position: PropTypes.object.isRequired,
     openOrders: PropTypes.array.isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
@@ -68,6 +68,7 @@ export default class Position extends Component {
     const {
       isExtendedDisplay,
       isMobile,
+      outcomeName,
       openOrders,
       position,
     } = this.props
@@ -84,16 +85,16 @@ export default class Position extends Component {
         className={!isMobile ? Styles.Position : Styles.PortMobile}
       >
         <li>
-          { getValue(this.props, 'name') }
+          { outcomeName }
           { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span className={Styles['Position__pending-title']}>Pending</span>
-              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'order.qtyShares.formatted') } at { getValue(order, 'order.purchasePrice.formatted') } ETH</span>
+              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'qtyShares.formatted') } at { getValue(order, 'purchasePrice.formatted') } ETH</span>
             </div>
           ))}
         </li>
         <li>
-          { getValue(this.props, 'position.qtyShares.formatted') }
+          { getValue(position, 'qtyShares.formatted') }
           { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>+{ getValue(order, 'order.qtyShares.formatted') }</span>
@@ -101,7 +102,7 @@ export default class Position extends Component {
           ))}
         </li>
         <li>
-          { getValue(this.props, 'position.purchasePrice.formatted') }
+          { getValue(position, 'purchasePrice.formatted') }
           { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
             <div key={i} className={Styles.Position__pending}>
               <span>{ Position.calcAvgDiff(position, order) }</span>
@@ -110,18 +111,18 @@ export default class Position extends Component {
         </li>
         { isExtendedDisplay && !isMobile &&
           <li>
-            {getValue(this.props, 'position.lastPrice.formatted') }
+            {getValue(position, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li>{ getValue(this.props, 'position.unrealizedNet.formatted') }</li>}
-        { !isMobile && <li>{ getValue(this.props, 'position.realizedNet.formatted')} </li> }
+        { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
+        { !isMobile && <li>{ getValue(position, 'realizedNet.formatted')} </li> }
         { isExtendedDisplay &&
           <li>
-            {getValue(this.props, 'position.totalNet.formatted') }
+            {getValue(position, 'totalNet.formatted') }
           </li>
         }
         <li>
-          { getValue(this.props, 'position.qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
+          { getValue(position, 'qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
@@ -137,7 +138,7 @@ export default class Position extends Component {
             </div>
             :
             <div className={Styles['Position__confirm-details']}>
-              <p>Close position by selling { getValue(this.props, 'position.qtyShares.formatted') } shares of “{ getValue(this.props, 'name') }” at market price?</p>
+              <p>Close position by selling { getValue(position, 'qtyShares.formatted') } shares of “{ outcomeName }” at market price?</p>
               <div className={Styles['Position__confirm-options']}>
                 <button onClick={(e) => { position.closePosition(position.marketId, position.outcomeId); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
