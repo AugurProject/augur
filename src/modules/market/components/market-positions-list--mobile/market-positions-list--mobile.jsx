@@ -38,16 +38,17 @@ export default class MarketPositionsListMobile extends Component {
         { positions.length > 0 &&
           <MobilePositions
             position={positions[0]}
-            pendingOrders={openOrders.filter(order => order.pending === true)}
+            pendingOrders={openOrders.filter(order => order.pending)}
           />
         }
         { openOrders.length > 0 &&
           <div className={Styles['MarketPositionsListMobile__wrapper--orders']}>
             <h2 className={Styles['MarketPositionsListMobile__heading--orders']}>Open Orders</h2>
             <div className={Styles.MarketPositionsListMobile__orders}>
-              { [...Array(s.visibleOrders)].map((unused, i) => (
+              { [...Array(s.visibleOrders)].map((unused, i) => (openOrders[i] ? (
                 <MobileOrder key={i} order={openOrders[i]} />
-              )) }
+              ) : null))
+              }
             </div>
             { s.showViewMore &&
               <button

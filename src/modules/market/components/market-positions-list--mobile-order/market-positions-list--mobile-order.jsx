@@ -63,9 +63,9 @@ export default class MobileOrders extends Component {
         className={classNames(Styles.MobileOrder, { [`${Styles.pending}`]: order.pending })}
       >
         <li>QTY</li>
-        <li>{ getValue(this.props, 'order.order.qtyShares.formatted') }</li>
+        <li>{ getValue(order, 'unmatchedShares.formatted') }</li>
         <li>Price</li>
-        <li>{ getValue(this.props, 'order.order.purchasePrice.formatted') }</li>
+        <li>{ getValue(order, 'avgPrice.formatted') }</li>
         <li>
           { !order.pending &&
             <button
@@ -83,7 +83,14 @@ export default class MobileOrders extends Component {
           <div className={Styles['MobileOrder__confirm-details']}>
             <p>Cancel Open Order?</p>
             <div className={Styles['MobileOrder__confirm-options']}>
-              <button onClick={(e) => { order.order.cancelOrder(); this.toggleConfirm() }}>Yes</button>
+              <button
+                onClick={(e) => {
+                  order.cancelOrder()
+                  this.toggleConfirm()
+                }}
+              >
+                Yes
+              </button>
               <button onClick={this.toggleConfirm}>No</button>
             </div>
           </div>
