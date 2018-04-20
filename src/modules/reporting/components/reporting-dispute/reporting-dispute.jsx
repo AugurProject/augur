@@ -140,7 +140,7 @@ export default class ReportingDispute extends Component {
         { !isEmpty(market) && s.showingDetails &&
           <div className={Styles['ReportingReportMarket__details-wrapper']}>
             <div className={Styles['ReportingReportMarket__details-container']}>
-              { market.details != null && 
+              { market.details != null &&
                 <div className={Styles.ReportingReportMarket__details}>
                   <span>
                     {market.details}

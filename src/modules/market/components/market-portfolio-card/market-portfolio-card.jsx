@@ -211,10 +211,10 @@ export default class MarketPortfolioCard extends Component {
             <div className={PositionStyles.MarketPositionsList__table}>
               { this.state.tableOpen.openOrders &&
               <ul className={classNames(
-                  PositionStyles['MarketPositionsList__table-header'],
-                  Styles['MarketCard__table-header'],
-                )}
-                >
+                PositionStyles['MarketPositionsList__table-header'],
+                Styles['MarketCard__table-header'],
+              )}
+              >
                 <li>Outcome</li>
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
