@@ -42,7 +42,7 @@ const Outcome = ({ className, outcome }) => {
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
-            offset={{ left: 70, top: 6 }}
+            offset={{ left: 70, top: 0 }}
             type="light"
           >
             <p>{currentAccountStake} REP Staked
