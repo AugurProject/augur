@@ -227,10 +227,11 @@ export function formatGasCost(num, opts) {
 export function formatNumber(num, opts = {
   decimals: 0, decimalsRounded: 0, denomination: '', roundUp: false, roundDown: false, positiveSign: false, zeroStyled: true, minimized: false, blankZero: false, bigUnitPostfix: false,
 }) {
+  const value = num != null ? createBigNumber(num, 10) : ZERO
   const { minimized, bigUnitPostfix } = opts
   const o = {}
   let {
-    value, decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled, blankZero,
+    decimals, decimalsRounded, denomination, roundUp, roundDown, positiveSign, zeroStyled, blankZero,
   } = opts
 
   decimals = decimals || 0
@@ -241,7 +242,6 @@ export function formatNumber(num, opts = {
   roundDown = !!roundDown
   zeroStyled = zeroStyled !== false
   blankZero = blankZero !== false
-  value = num != null ? createBigNumber(num, 10) : ZERO
 
   if (value.eq(ZERO)) {
     if (zeroStyled) return formatNone()

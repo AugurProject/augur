@@ -154,7 +154,7 @@ export default class ReportingReport extends Component {
                 <p>{market.details}</p>
               }
               <h4>Resolution Source:</h4>
-              <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
+              <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank" rel="noopener noreferrer">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
             </div>
           </div>
         }

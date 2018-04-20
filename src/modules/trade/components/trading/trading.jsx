@@ -106,7 +106,7 @@ class MarketTrading extends Component {
 
     return (
       <section className={Styles.Trading}>
-        { (!isMobile || (isMobile && s.showForm)) &&
+        { (!isMobile || s.showForm) &&
           <MarketTradingWrapper
             market={market}
             isLogged={isLogged}
