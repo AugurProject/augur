@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip'
 import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
+import { ExclamationCircle } from 'modules/common/components/icons'
 
 const Outcome = ({ className, outcome }) => {
   const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
@@ -16,7 +17,14 @@ const Outcome = ({ className, outcome }) => {
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>
       <div className={Styles['MarketReportingPayouts__outcome-name']}>
-        {outcomeName}
+        { outcome.potentialFork &&
+          <span className={Styles.MarketReportingPayouts__alert_icon}>
+            {ExclamationCircle}
+          </span>
+        }
+        <span className={Styles['MarketReportingPayouts__outcome-name-text']}>
+          {outcomeName}
+        </span>
       </div>
       { outcome.tentativeWinning &&
         <div className={Styles['MarketReportingPayouts__winning-outcome-message']}>

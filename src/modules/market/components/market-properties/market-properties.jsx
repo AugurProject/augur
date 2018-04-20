@@ -21,6 +21,7 @@ const MarketProperties = (p) => {
   const isScalar = p.marketType === SCALAR
   const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
   const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
+  const disableDispute = p.loginAccount.rep === '0' && p.linkType === TYPE_DISPUTE
 
   return (
     <article>
@@ -68,7 +69,7 @@ const MarketProperties = (p) => {
           }
           { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED)) &&
             <MarketLink
-              className={Styles.MarketProperties__trade}
+              className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
               formattedDescription={p.formattedDescription}
               linkType={linkType}

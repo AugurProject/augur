@@ -9,7 +9,7 @@ export const loadMarketsInfo = (marketIds, callback = logError) => (dispatch, ge
   if (!marketIds || marketIds.length === 0) {
     return callback(null, [])
   }
-  (marketIds || []).map(marketId => dispatch(updateMarketLoading({ [marketId]: MARKET_INFO_LOADING })))
+  marketIds.map(marketId => dispatch(updateMarketLoading({ [marketId]: MARKET_INFO_LOADING })))
 
   augur.markets.getMarketsInfo({ marketIds }, (err, marketsDataArray) => {
     if (err) return loadingError(dispatch, callback, err, marketIds)

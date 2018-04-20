@@ -4,7 +4,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import logError from 'utils/log-error'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 
-export const submitInitialReport = (marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
+export const submitInitialReport = (estimateGas, marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
   const outcome = parseInt(selectedOutcome, 10)
 
@@ -17,13 +17,21 @@ export const submitInitialReport = (marketId, selectedOutcome, invalid, history,
 
   augur.api.Market.doInitialReport({
     meta: loginAccount.meta,
-    tx: { to: marketId, gas: augur.constants.DEFAULT_MAX_GAS },
+    tx: { to: marketId, estimateGas },
     _invalid: invalid,
     _payoutNumerators: payoutNumerators,
     onSent: () => {
-      history.push(makePath(REPORTING_REPORT_MARKETS))
+      if (!estimateGas) {
+        history.push(makePath(REPORTING_REPORT_MARKETS))
+      }
     },
-    onSuccess: () => callback(null),
+    onSuccess: (gasCost) => {
+      if (estimateGas) {
+        callback(null, gasCost)
+      } else {
+        callback(null)
+      }
+    },
     onFailed: err => callback(err),
   })
 }

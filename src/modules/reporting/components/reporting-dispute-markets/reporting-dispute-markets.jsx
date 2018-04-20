@@ -26,6 +26,7 @@ export default class ReportingDisputeMarkets extends Component {
     outcomes: PropTypes.object.isRequired,
     account: PropTypes.string.isRequired,
     isForking: PropTypes.bool.isRequired,
+    forkingMarket: PropTypes.string.isRequired,
     forkEndTime: PropTypes.string,
   }
 
@@ -53,6 +54,7 @@ export default class ReportingDisputeMarkets extends Component {
       outcomes,
       upcomingMarkets,
       upcomingMarketsCount,
+      forkingMarket,
     } = this.props
 
     return (
@@ -82,6 +84,7 @@ export default class ReportingDisputeMarkets extends Component {
                 location={location}
                 history={history}
                 outcomes={outcomes}
+                isForkingMarket={forkingMarket === market.id}
               />))
         }
         { marketsCount === 0 &&

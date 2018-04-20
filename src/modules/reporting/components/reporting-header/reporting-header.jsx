@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 
 import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
-
+import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
@@ -50,6 +50,7 @@ export default class ReportingHeader extends Component {
     const currentPeriodStyle = {
       width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
     }
+    const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -69,7 +70,7 @@ export default class ReportingHeader extends Component {
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
                     <span className={Styles.ReportingHeader__endTime}>Dispute Window ends { formattedDate.formattedLocal }</span>
-                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ reportingWindowStats.stake } REP Staked</span>
+                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ disputeRep } REP Staked</span>
                   </div>
                   <button
                     className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}

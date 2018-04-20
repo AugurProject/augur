@@ -16,9 +16,9 @@ import logError from 'utils/log-error'
 const mapStateToProps = (state, { history }) => {
 
   const loginAccount = selectLoginAccount(state)
+  const disputeOutcomes = marketDisputeOutcomes() || {}
   const disputableMarkets = disputeMarkets() || []
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || []
-  const disputeOutcomes = marketDisputeOutcomes() || {}
 
   return ({
     isLogged: state.isLogged,
@@ -34,6 +34,7 @@ const mapStateToProps = (state, { history }) => {
     account: loginAccount.address,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
+    forkingMarket: state.universe.forkingMarket,
   })
 }
 

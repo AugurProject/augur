@@ -42,7 +42,7 @@ describe('modules/forking/actions/submit-migrate-rep.js', () => {
             },
             ReputationToken: {
               migrateOutByPayout: (args) => {
-                assert.deepEqual(args.tx, { to: '0xREP_TOKEN' })
+                assert.deepEqual(args.tx, { to: '0xREP_TOKEN', estimateGas: false })
                 assert.equal(args.meta, 'META')
                 assert.equal(args._invalid, false)
                 assert.deepEqual(args._payoutNumerators.map(n => n.toString()), ['0', '10000'])
@@ -52,7 +52,7 @@ describe('modules/forking/actions/submit-migrate-rep.js', () => {
           },
         })
 
-        submitMigrateREP('0xMARKET', 1, false, 42, null, () => {})(null, getState)
+        submitMigrateREP(false, '0xMARKET', 1, false, 42, null, () => {})(null, getState)
       },
     })
   })

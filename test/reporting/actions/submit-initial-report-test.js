@@ -53,14 +53,14 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
 
   it(`should call callback and history`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport('testMarketId', 0, false, history, callback))
+    store.dispatch(submitInitialReport(false, 'testMarketId', 0, false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
   })
 
   it(`should call only callback`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport(null, 0, false, history, callback))
+    store.dispatch(submitInitialReport(false, null, 0, false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.notCalled, `Did call 'history' not expected`)
   })
@@ -68,28 +68,28 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
 
   it(`should call only callback with empty market id`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport('', 0, false, history, callback))
+    store.dispatch(submitInitialReport(false, '', 0, false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
   it(`should call only callback with empty market id and bad outcome`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport('', 'blah', false, history, callback))
+    store.dispatch(submitInitialReport(false, '', 'blah', false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
   it(`should only call callback with empty market id, bad outcome and is invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport('', 'blah', true, history, callback))
+    store.dispatch(submitInitialReport(false, '', 'blah', true, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
   it(`should only call callback with bad outcome`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
-    store.dispatch(submitInitialReport('testMarketId', 'blah', false, history, callback))
+    store.dispatch(submitInitialReport(false, 'testMarketId', 'blah', false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.notCalled, `Did call 'history' not expected`)
   })
@@ -97,16 +97,23 @@ describe(`modules/reporting/actions/submit-initial-report.js`, () => {
 
   it(`should call both callback and history with good data not invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurFailed)
-    store.dispatch(submitInitialReport('testMarketId', 0, false, history, callback))
+    store.dispatch(submitInitialReport(false, 'testMarketId', 0, false, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.calledOnce, `Did call 'history' not expected`)
   })
 
   it(`should call callback and history with good data and is invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__('augur', augurFailed)
-    store.dispatch(submitInitialReport('testMarketId', 0, true, history, callback))
+    store.dispatch(submitInitialReport(false, 'testMarketId', 0, true, history, callback))
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
     assert(history.push.calledOnce, `Did call 'history' not expected`)
+  })
+
+  it(`should call callback and not history with good data and is invalid`, () => {
+    submitInitialReportReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitInitialReport(true, 'testMarketId', 0, true, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.notCalled, `Did call 'history' not expected`)
   })
 
 })

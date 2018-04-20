@@ -67,6 +67,12 @@
 
 .MarketProperties__trade {
   &:extend(.button--purple all);
+
+  &.disabled {
+    &:extend(.button--purple--disabled);
+
+    pointer-events: none;
+  }
 }
 
 .MarketProperties__migrate {
