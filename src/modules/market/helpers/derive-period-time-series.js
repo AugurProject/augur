@@ -1,5 +1,7 @@
 import { MILLIS_PER_BLOCK } from 'modules/app/constants/network'
 
+import { createBigNumber } from 'utils/create-big-number'
+
 import { isEmpty } from 'lodash'
 
 export default function derivePeriodTimeSeries(event) {
@@ -8,6 +10,7 @@ export default function derivePeriodTimeSeries(event) {
   const options = event.data
 
   if ( // Can't do it
+    options.priceTimeSeries == null ||
     options.priceTimeSeries.length === 0 ||
     options.selectedPeriod.selectedPeriod === undefined ||
     options.selectedPeriod.selectedPeriod === -1
@@ -76,39 +79,48 @@ export default function derivePeriodTimeSeries(event) {
     }
 
     if (periodSeriesItems.length === 0) {
+      const lastPrice = createBigNumber(constrainedPriceTimeSeries[currentSeriesItem].price)
       accumulationPeriod = {
         ...accumulationPeriod,
-        high: constrainedPriceTimeSeries[currentSeriesItem].price,
-        low: constrainedPriceTimeSeries[currentSeriesItem].price,
-        open: constrainedPriceTimeSeries[currentSeriesItem].price,
-        close: constrainedPriceTimeSeries[currentSeriesItem].price,
-        volume: 0,
+        high: lastPrice,
+        low: lastPrice,
+        open: lastPrice,
+        close: lastPrice,
+        volume: createBigNumber(0),
       }
     } else {
       accumulationPeriod = {
         ...accumulationPeriod,
         ...periodSeriesItems.reduce((p, item, i) => {
+          const itemPrice = createBigNumber(item.price)
+
           if (i === 0) {
             return {
               ...period,
-              open: item.price,
-              high: item.price,
-              low: item.price,
-              close: item.price,
-              volume: item.amount,
+              open: itemPrice,
+              high: itemPrice,
+              low: itemPrice,
+              close: itemPrice,
+              volume: createBigNumber(item.amount),
             }
           }
 
           return {
             ...p,
-            high: item.price > p.high ? item.price : p.high,
-            low: item.price < p.low ? item.price : p.low,
-            close: item.price,
-            volume: (p.volume || 0) + item.amount,
+            high: itemPrice.gt(p.high) ? itemPrice : p.high,
+            low: itemPrice.lt(p.low) ? itemPrice : p.low,
+            close: itemPrice,
+            volume: (p.volume || createBigNumber(0)).plus(item.amount),
           }
         }, {}),
       }
     }
+
+    // NOTE --  toString BNs here due to the stripping of BN instances during
+    //          serialization of the message for posted back to main thread
+    Object.entries(accumulationPeriod).forEach(([key, value]) => {
+      if (key !== 'period') accumulationPeriod[key] = value.toString()
+    })
 
     return [...p, accumulationPeriod]
   }, [])

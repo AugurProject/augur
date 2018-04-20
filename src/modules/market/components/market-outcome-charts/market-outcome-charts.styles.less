@@ -23,9 +23,10 @@
   }
 }
 
-.MarketOutcomeCharts__Charts {
+.MarketOutcomeCharts__charts {
   display: flex;
   height: 100%;
+  overflow: hidden;
   position: relative;
   user-select: none;
   width: 100%;
@@ -36,9 +37,17 @@
   }
 }
 
+.MarketOutcomeCharts__charts--mobile {
+  overflow-x: auto;
+}
+
 .MarketOutcomeCharts__candlestick {
   flex: 2.5;
   position: relative;
+}
+
+.MarketOutcomeCharts__candlestick--mobile {
+  flex: 1 0 100%;
 }
 
 .MarketOutcomeCharts__candlestick-null {
@@ -56,10 +65,35 @@
   flex: 2;
 }
 
+.MarketOutcomeCharts__orders--mobile {
+  flex: 1 0 100%;
+}
+
 .MarketOutcomeCharts__depth {
   flex: 1;
 }
 
 .MarketOutcomeCharts__orderbook {
   flex: 0.8;
+}
+
+.MarketOutcomeCharts__indicator {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.MarketOutcomeCharts__dot {
+  background-color: @color-lightergray-2;
+  border-radius: 50%;
+  height: 0.5em;
+  margin: 0 0.25em;
+  opacity: 0.2;
+  width: 0.5em;
+}
+
+.MarketOutcomeCharts__dot--active {
+  opacity: 0.5;
 }

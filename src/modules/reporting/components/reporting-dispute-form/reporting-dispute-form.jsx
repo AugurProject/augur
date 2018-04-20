@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
-import { formatAttoRep } from 'utils/format-number'
+import { formatAttoRep, formatNumber } from 'utils/format-number'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
@@ -23,12 +23,18 @@ export default class ReportingDisputeForm extends Component {
     stake: PropTypes.number.isRequired,
     addUpdateAccountDispute: PropTypes.func.isRequired,
     getDisputeInfo: PropTypes.func.isRequired,
+    forkThreshold: PropTypes.object.isRequired,
     accountDisputeData: PropTypes.object,
   }
 
-  static checkStake(stake, updatedValidations) {
-    if (stake === '' || stake == null || stake <= 0) {
+  static checkStake(wholeREPstake, updatedValidations, maxRep) {
+    const bnMaxRep = createBigNumber(formatNumber(createBigNumber(maxRep).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
+    const bnStake = createBigNumber(wholeREPstake || 0)
+
+    if (wholeREPstake === '' || wholeREPstake == null || wholeREPstake <= 0) {
       updatedValidations.stake = 'The stake field is required.'
+    } else if (bnStake.gt(bnMaxRep)) {
+      updatedValidations.stake = `Max value is ${formatNumber(bnMaxRep, { decimals: 4, roundUp: true }).formatted}`
     } else {
       delete updatedValidations.stake
     }
@@ -44,6 +50,7 @@ export default class ReportingDisputeForm extends Component {
       inputSelectedOutcome: '',
       selectedOutcome: '',
       selectedOutcomeName: '',
+      disputeBondValue: '0',
       isMarketInValid: false,
       validations: {
         stake: false,
@@ -92,19 +99,20 @@ export default class ReportingDisputeForm extends Component {
       accountDisputeData,
       getDisputeInfo,
       market,
+      forkThreshold,
     } = this.props
 
     getDisputeInfo([market.id], (err, disputeInfos) => {
       if (err) return console.error(err)
       const disputeInfo = disputeInfos[0]
       const { bondSizeOfNewStake } = disputeInfo
-      const disputeOutcomes = selectDisputeOutcomes(market, disputeInfo.stakes, bondSizeOfNewStake)
+      const disputeOutcomes = selectDisputeOutcomes(market, disputeInfo.stakes, bondSizeOfNewStake, forkThreshold)
         .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
 
       this.setState({
         outcomes: disputeOutcomes.filter(item => !item.tentativeWinning) || [],
         currentOutcome: disputeOutcomes.find(item => item.tentativeWinning) || {},
-        disputeBondValue: parseInt(bondSizeOfNewStake, 10),
+        disputeBondValue: bondSizeOfNewStake,
         disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
       })
 
@@ -164,7 +172,7 @@ export default class ReportingDisputeForm extends Component {
       stake = createBigNumber(rawStake).decimalPlaces(4)
     }
 
-    ReportingDisputeForm.checkStake(stake, updatedValidations)
+    ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
 
     this.setState({
       inputStake: stake ? stake.toNumber() : stake,
@@ -190,7 +198,7 @@ export default class ReportingDisputeForm extends Component {
     // outcome with id of .5 means invalid
     if (selectedOutcome === '0.5') isInvalid = true
 
-    ReportingDisputeForm.checkStake(stake, updatedValidations)
+    ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep(selectedOutcome))
 
     this.setState({
       validations: updatedValidations,
@@ -258,7 +266,7 @@ export default class ReportingDisputeForm extends Component {
       }
     }
 
-    ReportingDisputeForm.checkStake(stake, updatedValidations)
+    ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
 
     this.setState({
       inputSelectedOutcome: value,
@@ -285,7 +293,7 @@ export default class ReportingDisputeForm extends Component {
 
     const value = outcome ? outcome.stakeRemaining : this.state.disputeBondValue
     const BNValue = createBigNumber(value)
-    return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).formattedValue
+    return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).fullPrecision
   }
 
 

@@ -23,10 +23,13 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) return callback(null)
+      if (!marketIds || marketIds.length === 0) {
+        dispatch(updateUpcomingDesignatedReportingMarkets([]))
+        return callback(null)
+      }
 
       dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-        if (err) return console.error(err)
+        if (err) return logError(err)
         dispatch(updateUpcomingDesignatedReportingMarkets(marketIds))
       }))
     },
@@ -41,10 +44,12 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) return callback(null)
-
+      if (!marketIds || marketIds.length === 0) {
+        dispatch(updateDesignatedReportingMarkets([]))
+        return callback(null)
+      }
       dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-        if (err) return console.error(err)
+        if (err) return logError(err)
         dispatch(updateDesignatedReportingMarkets(marketIds))
       }))
     },
@@ -59,10 +64,13 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) return callback(null)
+      if (!marketIds || marketIds.length === 0) {
+        dispatch(updateOpenMarkets([]))
+        return callback(null)
+      }
 
       dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-        if (err) return console.error(err)
+        if (err) return logError(err)
         dispatch(updateOpenMarkets(marketIds))
       }))
     },
@@ -77,10 +85,13 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) return callback(null)
+      if (!marketIds || marketIds.length === 0) {
+        dispatch(updateResolvedMarkets([]))
+        return callback(null)
+      }
 
       dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-        if (err) return console.error(err)
+        if (err) return logError(err)
         dispatch(updateResolvedMarkets(marketIds))
       }))
     },

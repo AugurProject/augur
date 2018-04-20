@@ -6,7 +6,7 @@ import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-nume
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { REPORTING_DISPUTE_MARKETS } from 'modules/routes/constants/views'
 
-export const submitMigrateREP = (marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
+export const submitMigrateREP = (estimateGas, marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData, universe } = getState()
   const outcome = parseInt(selectedOutcome, 10)
   const universeID = universe.id || UNIVERSE_ID
@@ -22,17 +22,22 @@ export const submitMigrateREP = (marketId, selectedOutcome, invalid, amount, his
     if (err) return callback(err)
     augur.api.ReputationToken.migrateOutByPayout({
       meta: loginAccount.meta,
-      tx: { to: reputationTokenAddress },
+      tx: { to: reputationTokenAddress, estimateGas },
       _invalid: invalid,
       _payoutNumerators: payoutNumerators,
       _attotokens: amount,
       onSent: () => {
-        history.push(makePath(REPORTING_DISPUTE_MARKETS))
-        callback(null)
+        if (!estimateGas) {
+          history.push(makePath(REPORTING_DISPUTE_MARKETS))
+        }
       },
-      onSuccess: () => {
-        dispatch(updateAssets())
-        callback(null)
+      onSuccess: (gasCost) => {
+        if (estimateGas) {
+          callback(null, gasCost)
+        } else {
+          dispatch(updateAssets())
+          callback(null)
+        }
       },
       onFailed: (err) => {
         callback(err)

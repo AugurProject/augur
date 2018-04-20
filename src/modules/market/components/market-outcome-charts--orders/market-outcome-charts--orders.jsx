@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders'
+
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
@@ -17,6 +19,9 @@ export default class MarketOutcomeOrderbook extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
+    updatePrecision: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
@@ -51,7 +56,10 @@ export default class MarketOutcomeOrderbook extends Component {
       orderBook,
       sharedChartMargins,
       updateHoveredPrice,
+      updatePrecision,
       updateSeletedOrderProperties,
+      isMobile,
+      headerHeight,
     } = this.props
     const s = this.state
 
@@ -60,6 +68,12 @@ export default class MarketOutcomeOrderbook extends Component {
         className={Styles.MarketOutcomeOrderBook}
         style={{ paddingBottom: sharedChartMargins.bottom }}
       >
+        <MarketOutcomeChartHeaderOrders
+          fixedPrecision={fixedPrecision}
+          updatePrecision={updatePrecision}
+          isMobile={isMobile}
+          headerHeight={headerHeight}
+        />
         <div
           ref={(asks) => { this.asks = asks }}
           className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}

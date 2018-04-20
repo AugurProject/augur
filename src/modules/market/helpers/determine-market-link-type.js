@@ -25,7 +25,7 @@ export const determineMarketLinkType = (market, loginAccount) => {
       return TYPE_DISPUTE
 
     case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
-      return TYPE_DISPUTE
+      return TYPE_VIEW
 
     default:
       return TYPE_VIEW

@@ -1,6 +1,8 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketOutcomeCandlestick {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   margin-right: 30px;
 }
@@ -27,14 +29,9 @@
 
 .MarketOutcomeCandlestick__container {
   cursor: cell;
-  height: 100%;
-  position: relative;
+  flex: 1;
 
   :global {
-    #testing {
-      background-color: red;
-    }
-
     #hovered_candlestick_price_label {
       .caps--small();
 

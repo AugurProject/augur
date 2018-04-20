@@ -22,6 +22,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       accountStakeCurrent: '0',
       accountStakeCompleted: '0',
       bondSizeCurrent: size,
+      potentialFork: false,
       stakeCompleted: '0',
       stakeRemaining: size,
       tentativeWinning: false,
@@ -96,6 +97,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1000, 9000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '90',
           stakeRemaining: '20',
@@ -105,6 +107,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [3000, 7000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '70',
           stakeRemaining: '35',
@@ -114,6 +117,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [2000, 8000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: true,
           stakeCurrent: '80',
           stakeRemaining: '10',
@@ -123,6 +127,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [4000, 6000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '60',
           stakeRemaining: '40',
@@ -132,6 +137,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [6000, 4000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '40',
           stakeRemaining: '60',
@@ -141,6 +147,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [7000, 3000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '30',
           stakeRemaining: '70',
@@ -150,6 +157,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [8000, 2000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '20',
           stakeRemaining: '300',
@@ -159,6 +167,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [5000, 5000],
           isInvalid: true,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '50',
           accountStakeCompleted: '0',
@@ -172,6 +181,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [9000, 1000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '10',
           stakeRemaining: '200',
@@ -181,6 +191,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [10000, 0],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '0',
           stakeRemaining: '100',
@@ -190,6 +201,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [0, 10000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '100',
           stakeRemaining: '15',
@@ -199,6 +211,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1500, 8500],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '85',
           stakeRemaining: '30',
@@ -208,6 +221,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [8500, 1500],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '15',
           stakeRemaining: '400',
@@ -226,7 +240,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         { ...stakes[4] },
         { ...stakes[5] },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 10000000000)
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
   })
@@ -245,7 +259,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -266,6 +280,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [2000, 8000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: true,
           id: '80',
           name: 'name',
@@ -273,6 +288,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1000, 9000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '10',
           stakeRemaining: '10',
@@ -282,6 +298,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [9000, 1000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '70',
           stakeRemaining: '70',
@@ -295,6 +312,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           stakeCompleted: '0',
           payout: [5000, 5000],
           isInvalid: true,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '25',
           stakeRemaining: '25',
@@ -304,6 +322,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1500, 8500],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '85',
           stakeRemaining: '85',
@@ -311,7 +330,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           name: '85',
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         { ...stakes[0] },
         { ...stakes[1], stakeRemaining: '10' },
@@ -330,16 +349,18 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [2000, 8000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: true,
         },
         {
           payout: [1000, 9000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: false,
           stakeRemaining: 50,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         { ...stakes[0], id: '80', name: '80' },
         { ...stakes[1], id: '90', name: '90' },
@@ -357,10 +378,11 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [2000, 8000],
           isInvalid: false,
+          potentialFork: false,
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketScalar, stakes, 100)
+      const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
         {
           ...stakes[0],
@@ -383,7 +405,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -418,7 +440,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: false,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -453,7 +475,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100)
+      const actual = selectDisputeOutcomes(marketCategorical, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -495,7 +517,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: false,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -530,7 +552,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),
@@ -559,7 +581,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
         },
       ]
-      const actual = selectDisputeOutcomes(marketBinary, stakes, 100)
+      const actual = selectDisputeOutcomes(marketBinary, stakes, 100, 1000000000)
       const expected = [
         {
           ...getDefaultStake(100),

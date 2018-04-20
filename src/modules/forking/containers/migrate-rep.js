@@ -9,7 +9,6 @@ import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 
 import { submitMigrateREP } from 'modules/forking/actions/submit-migrate-rep'
-import { estimateSubmitMigrateREP } from 'modules/forking/actions/estimate-submit-migrate-rep'
 import { getForkMigrationTotals } from 'modules/forking/actions/get-fork-migration-totals'
 
 const mapStateToProps = state => ({
@@ -23,8 +22,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitMigrateREP: (marketId, outcomeValue, invalid, amount, history) => dispatch(submitMigrateREP(marketId, outcomeValue, invalid, amount, history)),
-  estimateSubmitMigrateREP: (marketId, outcomeValue, invalid, amount, history) => dispatch(estimateSubmitMigrateREP(marketId, outcomeValue, invalid, amount, history)),
+  submitMigrateREP: (estimateGas, marketId, outcomeValue, invalid, amount, history, callback) => dispatch(submitMigrateREP(estimateGas, marketId, outcomeValue, invalid, amount, history, callback)),
   getForkMigrationTotals: (universe, callback) => dispatch(getForkMigrationTotals(universe, callback)),
 })
 
@@ -42,8 +40,7 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitMigrateREP: (marketId, selectedOutcome, invalid, amount, history) => dP.submitMigrateREP(marketId, selectedOutcome, invalid, amount, history),
-    estimateSubmitMigrateREP: (marketId, selectedOutcome, invalid, amount, history) => dP.estimateSubmitMigrateREP(marketId, selectedOutcome, invalid, amount, history),
+    submitMigrateREP: (estimateGas, marketId, outcomeValue, invalid, amount, history, callback) => dP.submitMigrateREP(estimateGas, marketId, outcomeValue, invalid, amount, history, callback),
     getForkMigrationTotals: (universe, callback) => dP.getForkMigrationTotals(sP.universe, callback),
   }
 }

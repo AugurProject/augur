@@ -1,0 +1,128 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkMigrationTotals {
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  transition: min-height 0.3s ease;
+}
+
+.ForkMigrationTotals__forkMigrationTotal-name-text {
+  vertical-align: top;
+}
+
+.ForkMigrationTotals__forkMigrationTotal-rep-migrated {
+  color: @color-lightgray;
+  font-size: 0.7em;
+  font-weight: bold;
+  margin-left: 0.5em;
+  text-transform: uppercase;
+}
+
+.ForkMigrationTotals__height-sentinel {
+  display: inline-block;
+  margin-bottom: 0.25em;
+  visibility: hidden;
+}
+
+.ForkMigrationTotals__forkMigrationTotals {
+  display: grid;
+  grid-gap: 0.75rem 3.75rem;
+  grid-template-columns: repeat(3, auto);
+}
+
+.ForkMigrationTotals__forkMigrationTotals-container {
+  display: inline-block;
+  left: 0;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+
+  &.show-more {
+    padding-right: 7.5rem;
+  }
+}
+
+.ForkMigrationTotals__forkMigrationTotal {
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.ForkMigrationTotals__forkMigrationTotal-name {
+  line-height: 1.3rem;
+  max-width: 9.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ForkMigrationTotals__winning-forkMigrationTotal-message {
+  color: #9d93d0;
+  font-size: 0.8em;
+  font-weight: 500;
+  margin-top: 0.75em;
+  text-transform: uppercase;
+}
+
+.ForkMigrationTotals__forkMigrationTotal-value {
+  &:extend(.number--large);
+
+  margin-left: 1.75rem;
+}
+
+.ForkMigrationTotals__show-more {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0.3rem;
+}
+
+@media @breakpoint-mobile {
+  .ForkMigrationTotals__forkMigrationTotals-container.show-more {
+    padding-right: 6rem;
+  }
+
+  .ForkMigrationTotals__forkMigrationTotal-value {
+    margin-left: 3vw;
+  }
+
+  .ForkMigrationTotals__forkMigrationTotals {
+    grid-gap: 0.75rem 7vw;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .ForkMigrationTotals__forkMigrationTotal {
+    align-items: flex-start;
+    flex-direction: column;
+
+    > span {
+      margin-left: 0;
+      margin-top: 0.7rem;
+      width: 100%;
+
+      &:first-child {
+        margin-top: 0;
+        order: 2;
+      }
+
+      &:last-child {
+        order: 1;
+      }
+    }
+  }
+
+  .ForkMigrationTotals__height-sentinel > span {
+    display: block;
+
+    &:first-child { margin-top: 0.7rem; }
+  }
+
+  .ForkMigrationTotals__show-more {
+    top: 0.75rem;
+  }
+}

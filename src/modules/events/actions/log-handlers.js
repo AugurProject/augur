@@ -110,10 +110,10 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
 }
 
 export const handleMarketFinalizedLog = log => (dispatch, getState) => (
-  dispatch(loadMarketsInfo([log.marketId], (err) => {
+  dispatch(loadMarketsInfo([log.market], (err) => {
     if (err) return console.error(err)
-    const { volume, author, description } = getState().marketsData[log.marketId]
-    dispatch(updateMarketCategoryPopularity(log.marketId, new BigNumber(volume, 10).negated().toFixed()))
+    const { volume, author, description } = getState().marketsData[log.market]
+    dispatch(updateMarketCategoryPopularity(log.market, new BigNumber(volume, 10).negated().toFixed()))
     const isOwnMarket = getState().loginAccount.address === author
     if (isOwnMarket) {
       dispatch(updateLoggedTransactions(log))
@@ -136,9 +136,12 @@ export const handleDisputeCrowdsourcerCreatedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
 }
 
-export const handleDisputeCrowdsourcerContributionLog = log => (dispatch) => {
+export const handleDisputeCrowdsourcerContributionLog = log => (dispatch, getState) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
+  if (log.reporter === getState().loginAccount.address) {
+    dispatch(loadReportingWindowBounds())
+  }
 }
 
 export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
@@ -152,6 +155,12 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
 }
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
+  dispatch(loadReportingWindowBounds())
+  dispatch(defaultLogHandler(log))
+}
+
+export const handleFeeWindowOpenedLog = log => (dispatch) => {
+  console.log('handleFeeWindowOpenedLog', JSON.stringify(log))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
