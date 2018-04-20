@@ -138,13 +138,15 @@ export default class ReportingDispute extends Component {
         />
         }
         { !isEmpty(market) && s.showingDetails &&
-          <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
-            <div className={Styles[`ReportingReportMarket__details-container`]}>
-              <div className={Styles.ReportingReportMarket__details}>
-                <span>
-                  {market.details}
-                </span>
-              </div>
+          <div className={Styles['ReportingReportMarket__details-wrapper']}>
+            <div className={Styles['ReportingReportMarket__details-container']}>
+              { market.details != null && 
+                <div className={Styles.ReportingReportMarket__details}>
+                  <span>
+                    {market.details}
+                  </span>
+                </div>
+              }
               <div className={Styles[`ReportingReportMarket__resolution-source`]}>
                 <h4>Resolution Source:</h4>
                 <span>{market.resolutionSource || 'Outcome will be determined by news media'}</span>

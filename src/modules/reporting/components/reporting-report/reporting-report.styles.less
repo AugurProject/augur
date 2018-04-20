@@ -11,7 +11,7 @@
   max-height: 200px;
   max-width: 62.75rem;
   overflow-y: auto;
-  padding: 1rem 0;
+  padding: 0 0 1rem 0;
 }
 
 .ReportingReportMarket__details-wrapper {
@@ -45,5 +45,20 @@
   .ReportingReportMarket__details-container {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+}
+
+
+.ReportingReportMarket__resolution-source {
+  &:extend(.caps--small);
+
+  h4 {
+    display: inline-block;
+    padding-right: 0.5em;
+    color: @color-lightgray;
+  }
+
+  span {
+    color: @color-white;
   }
 }
