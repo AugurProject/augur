@@ -11,60 +11,51 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
     if (err) {
       return callback(err);
     }
-    augur.markets.getMarkets({ universe: universe, sortBy: "endTime", isSortDescending: true }, function (err, marketIds) {
+    augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketInfos) {
       if (err) {
+        console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
       }
-      if (!marketIds || marketIds.length === 0) {
-        console.log(chalk.red("No markets available"));
-        callback("No Markets");
+      if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
+        return callback("No Market Info");
       }
-      augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketInfos) {
-        if (err) {
-          console.log(chalk.red("Error "), chalk.red(err));
-          return callback(err);
-        }
-        if (!marketInfos || !Array.isArray(marketInfos) || !marketInfos.length) {
-          return callback("No Market Info");
-        }
-        var market = marketInfos[0];
-        var marketId = market.id;
-        var outcomes = Array.from(Array(market.numOutcomes).keys());
+      var market = marketInfos[0];
+      var marketId = market.id;
+      var outcomes = Array.from(Array(market.numOutcomes).keys());
 
-        var orderTypes = ["buy", "sell"];
-        async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
-          async.eachSeries(orderTypes, function (orderType, nextOrderType) {
-            console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcomeId), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
-            console.log(chalk.green.dim("OrderId:"), chalk.green.dim("Account:"), chalk.green.dim("Amount:"), chalk.green.dim("FullPrecisionPrice:"), chalk.green.dim("FullPrecisionAmount"));
-            augur.trading.getOrders({ marketId: marketId, outcome: outcomeId, orderType: orderType }, function (err, orderBook) {
-              if (err) {
-                console.error(err);
-                return nextOrderType(err);
-              }
+      var orderTypes = ["buy", "sell"];
+      async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
+        async.eachSeries(orderTypes, function (orderType, nextOrderType) {
+          console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcomeId), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
+          console.log(chalk.green.dim("OrderId:"), chalk.green.dim("Account:"), chalk.green.dim("Amount:"), chalk.green.dim("FullPrecisionPrice:"), chalk.green.dim("FullPrecisionAmount"));
+          augur.trading.getOrders({ marketId: marketId, outcome: outcomeId, orderType: orderType }, function (err, orderBook) {
+            if (err) {
+              console.error(err);
+              return nextOrderType(err);
+            }
 
-              if (!orderBook[marketId]) {
-                console.log("No Market Orders Found");
-                return nextOrderType(null);
-              }
-              if (!orderBook[marketId][outcomeId]) {
-                console.log("No Market Orders for outcome", outcomeId);
-                return nextOrderType(null);
-              }
-              var orders = orderBook[marketId][outcomeId][orderType];
-              Object.keys(orders).forEach(function (orderId) {
-                var order = orders[orderId];
-                console.log(chalk.green(orderId), chalk.yellow(order.owner), chalk.yellow(order.amount), chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
-              });
-              nextOrderType(null);
+            if (!orderBook[marketId]) {
+              console.log("No Market Orders Found");
+              return nextOrderType(null);
+            }
+            if (!orderBook[marketId][outcomeId]) {
+              console.log("No Market Orders for outcome", outcomeId);
+              return nextOrderType(null);
+            }
+            var orders = orderBook[marketId][outcomeId][orderType];
+            Object.keys(orders).forEach(function (orderId) {
+              var order = orders[orderId];
+              console.log(chalk.green(orderId), chalk.yellow(order.owner), chalk.yellow(order.amount), chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
             });
-          }, function (err) {
-            if (err) console.log(chalk.red(err));
-            nextOutcome();
+            nextOrderType(null);
           });
-        }, function () {
-          displayTime("Current Time", timestamp);
-          callback(null);
+        }, function (err) {
+          if (err) console.log(chalk.red(err));
+          nextOutcome();
         });
+      }, function () {
+        displayTime("Current Time", timestamp);
+        callback(null);
       });
     });
   });
