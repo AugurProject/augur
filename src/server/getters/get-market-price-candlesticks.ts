@@ -42,18 +42,19 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
     if (err) return callback(err);
     if (!tradesRows) return callback(new Error("Internal error retrieving market price history"));
     const tradeRowsByOutcome = _.groupBy(tradesRows, "outcome");
-    const oo = _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
-      const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStarttime(start || 0, tradeRow.timestamp, period || 60));
-      return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): Candlestick => {
-        return {
-          startTimestamp: parseInt(startTimestamp, 10),
-          start: _.minBy(trades, "timestamp")!.price.toFixed(),
-          end: _.maxBy(trades, "timestamp")!.price.toFixed(),
-          min: _.minBy(trades, "price")!.price.toFixed(),
-          max: _.maxBy(trades, "price")!.price.toFixed(),
-        };
-      });
-    });
-    callback(null, oo);
+    callback(null,
+      _.mapValues(tradeRowsByOutcome, (outcomeTradeRows) => {
+        const outcomeTradeRowsByPeriod = _.groupBy(outcomeTradeRows, (tradeRow) => getPeriodStarttime(start || 0, tradeRow.timestamp, period || 60));
+        return _.map(outcomeTradeRowsByPeriod, (trades: Array<MarketPriceHistoryRow>, startTimestamp): Candlestick => {
+          return {
+            startTimestamp: parseInt(startTimestamp, 10),
+            start: _.minBy(trades, "timestamp")!.price.toFixed(),
+            end: _.maxBy(trades, "timestamp")!.price.toFixed(),
+            min: _.minBy(trades, "price")!.price.toFixed(),
+            max: _.maxBy(trades, "price")!.price.toFixed(),
+          };
+        });
+      }),
+    );
   });
 }
