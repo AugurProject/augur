@@ -156,6 +156,25 @@ exports.seed = async (knex: Knex): Promise<any> => {
       amount: "0.2",
       marketCreatorFees: "0",
       reporterFees: "0",
+    }, {
+      orderId: "0x1900000000000000000000000000000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000015",
+      outcome: 0,
+      shareToken: "0x1000000000000000000000000000000000000000",
+      orderType: "buy",
+      creator: "0x000000000000000000000000000000000000d00d",
+      filler: "0x0000000000000000000000000000000000000b0b",
+      blockNumber: 1400052,
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C08",
+      logIndex: 0,
+      numCreatorTokens: "0",
+      numCreatorShares: "0.4",
+      numFillerTokens: "1.0",
+      numFillerShares: "0",
+      price: "4.2",
+      amount: "0.2",
+      marketCreatorFees: "0",
+      reporterFees: "0",
     }];
     return knex.batchInsert("trades", seedData, seedData.length);
   });
