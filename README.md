@@ -12,6 +12,8 @@ There are several configurations to run it on testnet:
 * Full Local: [run everything locally](#totally_local)
 * Production: [current status](https://github.com/AugurProject/augur/blob/master/docs/production.md)
 
+* Development Environment Setups: [Various Configurations](https://github.com/AugurProject/augur/blob/master/docs/dev-local-node.md)
+
 For production configuration:
 
 * Docker: [dockerized augur client](./docs/deploy-production.md)
