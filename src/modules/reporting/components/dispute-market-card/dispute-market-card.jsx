@@ -79,6 +79,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
           <MarketReportingPayouts
             outcomes={outcomes}
             forkThreshold={p.forkThreshold}
+            marketId={market.id}
           />
         }
       </div>

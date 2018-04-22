@@ -7,12 +7,13 @@ import Styles from 'modules/reporting/components/reporting-payouts/reporting-pay
 import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
 
-const Outcome = ({ className, outcome }) => {
+const Outcome = ({ className, outcome, marketId }) => {
   const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
   const currentOutcomeStake = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true }).formatted
   const currentStakeRep = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
   const currentAccountStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
   const outcomeName = outcome.name === 'Indeterminate' ? 'Invalid' : outcome.name
+  const offset = outcome.percentageAccount === 0 ? 70 : parseInt(175 - ((outcome.percentageAccount * 1.75) / 2), 10)
 
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>
@@ -36,7 +37,7 @@ const Outcome = ({ className, outcome }) => {
           <div
             className={Styles['MarketReportingPayouts__progress-bar-container']}
             data-tip
-            data-for={'tooltip--rep-progress-'+outcome.id}
+            data-for={'tooltip--rep-progress-'+outcome.id+marketId}
           >
             <div className={Styles['MarketReportingPayouts__progress-bar']}>
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
@@ -46,11 +47,11 @@ const Outcome = ({ className, outcome }) => {
             <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
-            id={'tooltip--rep-progress-'+outcome.id}
+            id={'tooltip--rep-progress-'+outcome.id+marketId}
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
-            offset={{ left: 70, top: 6 }}
+            offset={{ left: offset, top: 6 }}
             type="light"
           >
             <p>{currentAccountStake} REP Staked
@@ -84,7 +85,7 @@ class MarketReportingPayouts extends Component {
   }
 
   render() {
-    const { outcomes } = this.props
+    const { outcomes, marketId } = this.props
 
     const totalOutcomes = outcomes.length
     const displayShowMore = totalOutcomes > 3
@@ -103,6 +104,7 @@ class MarketReportingPayouts extends Component {
           <Outcome
             className={Styles['MarketReportingPayouts__height-sentinel']}
             outcome={outcomes[0]}
+            marketId={marketId}
           />
         }
         <div
@@ -126,6 +128,7 @@ class MarketReportingPayouts extends Component {
               <Outcome
                 key={outcome.id}
                 outcome={outcome}
+                marketId={marketId}
               />
             ))}
           </div>
@@ -137,11 +140,13 @@ class MarketReportingPayouts extends Component {
 
 MarketReportingPayouts.propTypes = {
   outcomes: PropTypes.array.isRequired,
+  marketId: PropTypes.string.isRequired,
 }
 
 Outcome.propTypes = {
   outcome: PropTypes.object.isRequired,
   className: PropTypes.string,
+  marketId: PropTypes.string,
 }
 
 export default MarketReportingPayouts
