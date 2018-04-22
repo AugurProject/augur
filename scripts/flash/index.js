@@ -21,47 +21,96 @@ var fork = require("./fork");
 var approval = require("./approve-account");
 var listMarketOrders = require("./list-market-orders");
 var fillMarketOrders = require("./fill-market-orders");
+var pushTimestamp = require("./push-timestamp");
+var setTimestamp = require("./set-timestamp-cmd");
+var forceDispute = require("./force-dispute");
+var forceFinalize = require("./force-finalize");
 
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 var methods = {
   "get-balance": {
     method: getBalance,
+    opts: null,
   },
   "list-markets": {
     method: listMarkets,
+    opts: null,
   },
   "designate-report": {
     method: designatedReport,
+    opts: null,
   },
   "initial-report": {
     method: initialReport,
+    opts: null,
   },
   "dispute-contribute": {
     method: disputeContribute,
+    opts: null,
   },
   "finalize-market": {
     method: finalizeMarket,
+    opts: null,
   },
   "push-time": {
     method: pushTime,
+    opts: null,
   },
   "market-info": {
     method: marketInfo,
+    opts: null,
   },
   "show-initial-reporter": {
     method: showInitialReporter,
+    opts: null,
   },
   "fork": {
     method: fork,
+    opts: null,
   },
   "approval": {
     method: approval,
+    opts: null,
   },
   "list-market-orders": {
     method: listMarketOrders,
+    opts: null,
   },
   "fill-market-orders": {
     method: fillMarketOrders,
+    opts: null,
+  },
+  "push-timestamp": {
+    method: pushTimestamp,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      days: { flag: true, short: "d", help: "push days" },
+      weeks: { flag: true, short: "w", help: "push weeks" },
+      seconds: { flag: true, short: "s", help: "push seconds, default" },
+      count: { required: true, short: "c", help: "Required number of unit to push timestamp" },
+    },
+  },
+  "set-timestamp": {
+    method: setTimestamp,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      timestamp: { required: true, short: "t", help: "Required actual timestamp to set" },
+    },
+  },
+  "force-dispute": {
+    method: forceDispute,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      rounds: { default: 10, short: "r", help: "Number or rounds to dispute, default is 10" },
+    },
+  },
+  "force-finalize": {
+    method: forceFinalize,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
 };
 
@@ -82,6 +131,31 @@ function runCommand(method, params, network, callback) {
       return callback(err);
     }
     method.method(augur, params, auth, function (err) {
+      if (err) console.log(chalk.red("Error "), chalk.red(err));
+      console.log(chalk.green("Finished Execution"));
+      process.exit(0);
+    });
+  });
+}
+
+function runCommandWithArgs(commandName, method, args, network, callback) {
+  console.log("Running with Args");
+  console.log(chalk.yellow.dim("command"), commandName);
+  console.log(chalk.yellow.dim("parameters"), JSON.stringify(args));
+  console.log(chalk.yellow.dim("network"), network);
+  console.log(NetworkConfiguration.create);
+  var config = NetworkConfiguration.create(network);
+  console.log(chalk.yellow("network http:"), config.http);
+  var augur = new Augur();
+  augur.rpc.setDebugOptions(debugOptions);
+  var auth = getPrivateKeyFromString(config.privateKey);
+  var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
+  augur.connect({ ethereumNode: { http: config.http, pollingIntervalMilliseconds: 500 }, augurNode: augurWs }, function (err) {
+    if (err) {
+      console.log(chalk.red("Error "), chalk.red(err));
+      return callback(err);
+    }
+    method.method(augur, args, auth, function (err) {
       if (err) console.log(chalk.red("Error "), chalk.red(err));
       console.log(chalk.green("Finished Execution"));
       process.exit(0);
@@ -148,7 +222,7 @@ if (require.main === module) {
   };
   var args;
   try {
-    args = options.parse(opts, process.argv);
+    args = options.parse(opts, process.argv, function () { return true;});
     args.opt.command = args.args[2];
     args.opt.params = args.args[3];
   } catch (error) {
@@ -156,27 +230,40 @@ if (require.main === module) {
     help();
     process.exit();
   }
-  var index = methods[args.opt.command];
-  if (index == null) {
+  console.log("args:", JSON.stringify(args));
+  var method = methods[args.opt.command];
+  if (args.opt.help && !method) {
+    help();
+    process.exit();
+  }
+  if (!method) {
     console.log(chalk.red("Method Not Found"), chalk.red(args.opt.command));
     console.log(chalk.red(Object.keys(methods).join(", ")));
     console.log(chalk.red("try flash -h, to get help"));
     process.exit();
   }
-  var method = methods[args.opt.command];
-  if (method == null && args.opt.help) {
-    help();
-    process.exit();
-  } else if (method && args.opt.help) {
-    console.log(chalk.yellow("Help for"), chalk.yellow.underline(args.opt.command));
-    method.method(null, "help", null, function () { });
-    process.exit(0);
-  } else if (args.opt.network == null) {
-    console.log(chalk.red("Network is required"));
-    help();
-    process.exit();
+
+  if (method.opts) { // new way to pass parameters
+    try {
+      var localArgs = options.parse(method.opts, process.argv);
+      runCommandWithArgs(args.opt.command, method, localArgs, args.opt.network, function () {
+        process.exit();
+      });
+    } catch (error) {
+      options.help(method.opts);
+    }
+  } else { // old way to pass parameters
+    if (method && args.opt.help) {
+      console.log(chalk.yellow("Help for"), chalk.yellow.underline(args.opt.command));
+      method.method(null, "help", null, function () { });
+      process.exit(0);
+    } else if (args.opt.network == null) {
+      console.log(chalk.red("Network is required"));
+      help();
+      process.exit();
+    }
+    runCommand(method, args.opt.params, args.opt.network, function () {
+      process.exit();
+    });
   }
-  runCommand(method, args.opt.params, args.opt.network, function () {
-    process.exit();
-  });
 }
