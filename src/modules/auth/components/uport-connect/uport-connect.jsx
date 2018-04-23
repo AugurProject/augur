@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Connect } from 'uport-connect'
 import QRCode from 'qrcode.react'
 import { decode } from 'mnid'
 
