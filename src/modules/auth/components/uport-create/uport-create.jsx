@@ -29,7 +29,7 @@ export default class UportCreate extends Component {
 
   componentWillMount() {
     const { login } = this.props
-    this.uPort.requestCredentials({ notifcations: true }, this.uPortURIHandler).then((account) => login(decode(account.address)))
+    this.uPort.requestCredentials({ notifcations: true }, this.uPortURIHandler).then(account => login(decode(account.address)))
   }
 
   componentDidMount() {
