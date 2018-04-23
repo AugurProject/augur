@@ -8,16 +8,15 @@ It runs locally in your browser and communicates directly with the ethereum netw
 There are several configurations to run it on testnet:
 
 * Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
-* Partial Local: [run ethereum client locally](#eth_local)
-* Full Local: [run everything locally](#totally_local)
-* Production: [current status](https://github.com/AugurProject/augur/blob/master/docs/production.md)
+* Partial Local: [run ethereum client locally](#partial-local-)
+* Full Local: [run everything locally](#run-everything-locally-)
+* Development Environment Setups: [various configurations](https://github.com/AugurProject/augur/blob/master/docs/dev-local-node.md)
 
-* Development Environment Setups: [Various Configurations](https://github.com/AugurProject/augur/blob/master/docs/dev-local-node.md)
-
-For production configuration:
+Production configuration:
 
 * Docker: [dockerized augur client](./docs/deploy-production.md)
 
+To view the status of production status: [current production status](https://github.com/AugurProject/augur/blob/master/docs/production.md)
 ***
 
 ## Rinkeby Ethereum Account
