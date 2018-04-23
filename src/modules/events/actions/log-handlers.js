@@ -145,6 +145,7 @@ export const handleDisputeCrowdsourcerContributionLog = log => (dispatch, getSta
 }
 
 export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
+  dispatch(loadMarketsInfo([log.marketId]))
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(defaultLogHandler(log))
 }
