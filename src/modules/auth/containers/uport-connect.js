@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import UportConnect from 'modules/auth/components/uport-connect/uport-connect'
-
-import loginWithUport from 'modules/auth/actions/login-with-uport'
+import { loginWithUport } from 'modules/auth/actions/login-with-uport'
 
 const mapStateToProps = state => ({
   isMobile: state.isMobile,
