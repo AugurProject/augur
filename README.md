@@ -38,7 +38,7 @@ In the following configurations we use rinkeby testnet, here is how to get an ac
 
 ## Easiest:
 
-### overview
+### Overview
 
 We are hosting the UI for testnets, dev.augur.net points to rinkeby ethereum testnet node
 Simply point your web browser to  [dev.augur.net](http://dev.augur.net)
@@ -47,7 +47,7 @@ Simply point your web browser to  [dev.augur.net](http://dev.augur.net)
 
 ## Partial Local <a name="eth_local"></a>
 
-### overview
+### Overview
 We'll run the UI locally and use the rinkeby augur-node. We will build and host the UI locally and use the same env.json configuration as the 'Easiest' section.
 
 ### Requirements
