@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { parallel } from "async";
 import { FormattedEventLog, ErrorCallback, AsyncCallback, Address } from "../../types";
-import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent } from "./database";
+import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent, updateDisputeRound } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -30,6 +30,9 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
         nextFeeWindow: (next: AsyncCallback) => {
           updateMarketFeeWindowNext(db, augur, log.universe, log.market, next);
         },
+        updateDisputeRound: (next: AsyncCallback) => {
+          updateDisputeRound(db, log.market, next);
+        }
       }, (err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit("InitialReportSubmitted", log);
