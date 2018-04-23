@@ -16,6 +16,7 @@ const MarketOutcomeChartsHeader = p => (
         className={Styles.MarketOutcomeChartsHeader__Candlestick}
       >
         <MarketOutcomeChartsHeaderCandlestick
+          outcomeName={p.outcomeName}
           volume={p.hoveredPeriod.volume}
           open={p.hoveredPeriod.open}
           high={p.hoveredPeriod.high}
@@ -49,6 +50,7 @@ const MarketOutcomeChartsHeader = p => (
 export default MarketOutcomeChartsHeader
 
 MarketOutcomeChartsHeader.propTypes = {
+  outcomeName: PropTypes.string,
   hoveredPeriod: PropTypes.object.isRequired,
   hoveredDepth: PropTypes.array.isRequired,
   fixedPrecision: PropTypes.number.isRequired,

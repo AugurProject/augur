@@ -34,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice)
 
   return {
+    outcomeName: outcome.name,
     isMobile: state.isMobile,
     currentBlock: state.blockchain.currentBlockNumber || 0,
     orderBook: cumulativeOrderBook,

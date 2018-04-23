@@ -9,6 +9,7 @@ import StylesHeader from 'modules/market/components/market-outcome-charts--heade
 
 export default class MarketOutcomeCandlestickHeader extends Component {
   static propTypes = {
+    outcomeName: PropTypes.string,
     updateChartHeaderHeight: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -27,6 +28,7 @@ export default class MarketOutcomeCandlestickHeader extends Component {
 
   render() {
     const {
+      outcomeName,
       isMobile,
       volume,
       fixedPrecision,
@@ -44,7 +46,7 @@ export default class MarketOutcomeCandlestickHeader extends Component {
       >
         {isMobile ||
           <div className={StylesHeader.MarketOutcomeChartsHeader__Header} >
-            <h2>Placeholder Outcome</h2>
+            <h2>{outcomeName}</h2>
             <span>price (eth)</span>
           </div>
         }
