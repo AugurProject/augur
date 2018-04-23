@@ -3,7 +3,7 @@ import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { uPortSigner } from 'modules/auth/helpers/uport-signer'
 
-export const loginWithUport = (account, signingFunction) => (dispatch) => {
+export const loginWithUport = account => (dispatch) => {
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData({
     ...account,
