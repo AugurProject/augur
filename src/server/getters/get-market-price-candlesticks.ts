@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { ZERO } from "../../constants";
 
 interface MarketPriceHistoryRow {
   timestamp: number;
@@ -17,6 +18,7 @@ export interface Candlestick {
   end: string;
   min: string;
   max: string;
+  volume: string;
 }
 
 export interface UICandlesticks {
@@ -52,6 +54,7 @@ export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome:
             end: _.maxBy(trades, "timestamp")!.price.toFixed(),
             min: _.minBy(trades, "price")!.price.toFixed(),
             max: _.maxBy(trades, "price")!.price.toFixed(),
+            volume: _.reduce(trades, (totalAmount: BigNumber, tradeRow: MarketPriceHistoryRow) =>  totalAmount.plus(tradeRow.amount), ZERO)!.toFixed(),
           };
         });
       }),

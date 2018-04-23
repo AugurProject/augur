@@ -172,7 +172,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numFillerTokens: "1.0",
       numFillerShares: "0",
       price: "4.2",
-      amount: "0.2",
+      amount: "0.1",
       marketCreatorFees: "0",
       reporterFees: "0",
     }];
