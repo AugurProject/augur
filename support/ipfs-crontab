@@ -1,1 +1,0 @@
-* 3 * * * /usr/local/bin/ipfs name publish $(cat /augur/ipfs-deploy/NEW_BUILD_HASH) > /var/log/cron.log
