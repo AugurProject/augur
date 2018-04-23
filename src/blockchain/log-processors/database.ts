@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback } from "../../types";
+import { Address, ReportingState, AsyncCallback, ErrorCallback } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
@@ -138,3 +138,10 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     }
   });
 }
+
+export function updateDisputeRound(db: Knex, marketId: Address, callback: ErrorCallback) {
+  db("markets").update({
+    disputeRounds: db.count("* as completedRounds").from("crowdsourcers").where({ completed: 1, marketId }),
+  }).where({ marketId }).asCallback(callback);
+}
+
