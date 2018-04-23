@@ -1,21 +1,9 @@
-import { Connect } from 'uport-connect'
-import { augur } from 'services/augurjs'
+import { connectToUport } from 'modules/auth/helpers/connect-to-uport'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import { MODAL_UPORT } from 'modules/modal/constants/modal-types'
 
-const networks = {
-  1: 'mainnet',
-  3: 'ropsten',
-  4: undefined, // rinkeby (default)
-  42: 'kovan',
-}
-
-export const uPortSigner = transaction => dispatch => new Connect('AUGUR -- DEV', {
-  clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
-  accountType: 'keypair',
-  network: networks[augur.rpc.getNetworkID()],
-}).sendTransaction(transaction, uri => (
+export const uPortSigner = transaction => dispatch => connectToUport().sendTransaction(transaction, uri => (
   dispatch(updateModal({ type: MODAL_UPORT, uri })))
 ).then(() => (
   dispatch(closeModal()))
