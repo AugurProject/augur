@@ -16,6 +16,7 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
+    outcomeName: PropTypes.string,
     isMobile: PropTypes.bool.isRequired,
     minPrice: CustomPropTypes.bigNumber, /* required */
     maxPrice: CustomPropTypes.bigNumber, /* required */
@@ -159,6 +160,7 @@ export default class MarketOutcomeCharts extends Component {
 
   render() {
     const {
+      outcomeName,
       currentBlock,
       hasOrders,
       hasPriceHistory,
@@ -192,6 +194,7 @@ export default class MarketOutcomeCharts extends Component {
               })}
             >
               <MarketOutcomeCandlestick
+                outcomeName={outcomeName}
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
                 priceTimeSeries={priceTimeSeries}

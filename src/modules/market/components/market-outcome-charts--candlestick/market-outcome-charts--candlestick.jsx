@@ -17,6 +17,7 @@ import Styles from 'modules/market/components/market-outcome-charts--candlestick
 
 export default class MarketOutcomeCandlestick extends Component {
   static propTypes = {
+    outcomeName: PropTypes.string,
     sharedChartMargins: PropTypes.object.isRequired,
     priceTimeSeries: PropTypes.array.isRequired,
     selectedPeriod: PropTypes.object.isRequired,
@@ -316,6 +317,7 @@ export default class MarketOutcomeCandlestick extends Component {
 
   render() {
     const {
+      outcomeName,
       hoveredPeriod,
       priceTimeSeries,
       fixedPrecision,
@@ -327,6 +329,7 @@ export default class MarketOutcomeCandlestick extends Component {
     return (
       <section className={Styles.MarketOutcomeCandlestick}>
         <MarketOutcomeChartsHeaderCandlestick
+          outcomeName={outcomeName}
           isMobile={isMobile}
           volume={hoveredPeriod.volume}
           open={hoveredPeriod.open}
