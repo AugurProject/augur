@@ -7,7 +7,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  login: (account, signingFunction) => dispatch(loginWithUport(account, signingFunction)),
+  login: account => dispatch(loginWithUport(account)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UportCreate)
