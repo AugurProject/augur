@@ -122,7 +122,7 @@ export default class Position extends Component {
           </li>
         }
         <li>
-          { getValue(position, 'qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
+          <button onClick={this.toggleConfirm}>Close</button>
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}

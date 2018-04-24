@@ -66,7 +66,7 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
-
+    console.log(order)
     return (
       <ul
         ref={(order) => { this.order = order }}
@@ -95,7 +95,7 @@ export default class Order extends Component {
           <li />
         }
         <li>
-          { pending === CLOSE_DIALOG_CLOSING ?
+          { pending ?
             <span className={Styles.NotActive}>Cancel</span> :
             <button onClick={this.toggleConfirm}>Cancel</button>
           }

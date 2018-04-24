@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/constants/close-dialog-status'
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PENDING } from 'modules/market/constants/close-dialog-status'
 import { updateOrderStatus } from 'modules/bids-asks/actions/update-order-status'
 import selectOrder from 'modules/bids-asks/selectors/select-order'
 import noop from 'utils/noop'
@@ -18,7 +18,7 @@ export const cancelOrder = (orderId, marketId, outcome, orderTypeLabel, callback
     augur.api.CancelOrder.cancelOrder({
       meta: loginAccount.meta,
       _orderId: orderId,
-      onSent: noop,
+      onSent: dispatch(updateOrderStatus(orderId, CLOSE_DIALOG_PENDING, marketId, outcome, orderTypeLabel)),
       onSuccess: () => callback(null),
       onFailed: (err) => {
         dispatch(updateOrderStatus(orderId, CLOSE_DIALOG_FAILED, marketId, outcome, orderTypeLabel))
