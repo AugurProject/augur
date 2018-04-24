@@ -17,8 +17,6 @@ const Outcome = ({ className, outcome, marketId }) => {
   const bnPct = createBigNumber(outcome.percentageAccount)
   const offset = outcome.percentageAccount === 0 ? 0 : createBigNumber(120).minus(bnPct).toNumber()
 
-  console.log(bnPct.toNumber())
-  console.log(offset)
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>
       <div className={Styles['MarketReportingPayouts__outcome-name']}>
