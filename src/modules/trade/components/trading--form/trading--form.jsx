@@ -126,9 +126,8 @@ class MarketTradingForm extends Component {
     const {
       maxPrice,
       minPrice,
-      market,
     } = this.props
-    const tickSize = createBigNumber(market.tickSize)
+    // const tickSize = createBigNumber(market.tickSize)
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
