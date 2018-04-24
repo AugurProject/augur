@@ -5,7 +5,7 @@ import { augur } from 'services/augurjs'
 import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 
-import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
+import { formatEtherEstimate } from 'utils/format-number'
 import { EXPIRY_SOURCE_GENERIC } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -59,14 +59,13 @@ export default class CreateMarketReview extends Component {
       universe,
       newMarket,
     } = this.props
-    this.props.estimateSubmitNewMarket(newMarket, (err, gasEstimateValue) => {
+    this.props.estimateSubmitNewMarket(newMarket, (err, gasCost) => {
       if (err) console.error(err)
       augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id, meta }, (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err)
         // TODO add designatedReportNoShowReputationBond to state / display
-        const gasPrice = augur.rpc.getGasPrice()
         this.setState({
-          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
+          gasCost: formatEtherEstimate(gasCost || 0),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
