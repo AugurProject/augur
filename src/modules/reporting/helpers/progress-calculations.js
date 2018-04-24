@@ -21,7 +21,7 @@ export const calculatePercentage = (numSize, numTotalStake) => {
   if (totalStake.isEqualTo(0)) return 0
 
   const ratio = size.minus(totalStake).dividedBy(size)
-  return (ONE.minus(ratio).times(ONE_HUNDRED)).integerValue().toNumber()
+  return (ONE.minus(ratio).times(ONE_HUNDRED)).decimalPlaces(4).toNumber()
 }
 
 export const calculateNonAccountPercentage = (size, numStakeCurrent, numAccountStakeCurrent) => {

@@ -14,9 +14,11 @@ const Outcome = ({ className, outcome, marketId }) => {
   const currentStakeRep = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
   const currentAccountStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
   const outcomeName = outcome.name === 'Indeterminate' ? 'Invalid' : outcome.name
-  const rangeMidPoint = createBigNumber(outcome.percentageAccount).times(createBigNumber(1.75)).dividedBy(createBigNumber(2))
-  const offset = outcome.percentageAccount === 0 ? '45%' : createBigNumber(175).minus(rangeMidPoint).toNumber()
+  const bnPct = createBigNumber(outcome.percentageAccount)
+  const offset = outcome.percentageAccount === 0 ? 0 : createBigNumber(120).minus(bnPct).toNumber()
 
+  console.log(bnPct.toNumber())
+  console.log(offset)
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>
       <div className={Styles['MarketReportingPayouts__outcome-name']}>
@@ -38,10 +40,12 @@ const Outcome = ({ className, outcome, marketId }) => {
         <div>
           <div
             className={Styles['MarketReportingPayouts__progress-bar-container']}
-            data-tip
-            data-for={'tooltip--rep-progress-'+outcome.id+marketId}
           >
-            <div className={Styles['MarketReportingPayouts__progress-bar']}>
+            <div
+              className={Styles['MarketReportingPayouts__progress-bar']}
+              data-tip
+              data-for={'tooltip--rep-progress-'+outcome.id+marketId}
+            >
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
               <div className={Styles['MarketReportingPayouts__progress-bar-percentage']} style={{ width: String(outcome.percentageComplete) + '%' }} />
             </div>
