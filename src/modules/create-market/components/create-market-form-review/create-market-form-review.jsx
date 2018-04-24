@@ -105,15 +105,15 @@ export default class CreateMarketReview extends Component {
                   <span>{s.validityBond && s.validityBond.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Reporter Fee</span>
+                  <span>No-Show Bond</span>
                   <span>{s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded} REP</span>
                 </li>
                 <li>
-                  <span>Create Market Gas</span>
+                  <span>Est. Gas</span>
                   <span>{s.gasCost && s.gasCost.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Reporter Gas</span>
+                  <span>Reporter Gas Bond</span>
                   <span>{s.creationFee && s.creationFee.rounded} ETH</span>
                 </li>
               </ul>
