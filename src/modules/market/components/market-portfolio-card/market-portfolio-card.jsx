@@ -160,7 +160,7 @@ export default class MarketPortfolioCard extends Component {
               <div
                 className={Styles.MarketCard__tabletoggle}
               >
-                <ChevronFlip pointDown={this.state.tableOpen.myPositions} />
+                <ChevronFlip pointDown={!this.state.tableOpen.myPositions} />
               </div>
             </button>
           }
