@@ -55,8 +55,8 @@ export default class PortfolioReports extends Component {
           unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
           unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
           feeWindows: [],
-          crowdsourcers: [],
-          initialReporters: [],
+          forkedMarket: {},
+          nonforkedMarkets: {},
         })
         return
       }
@@ -65,8 +65,8 @@ export default class PortfolioReports extends Component {
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
-        crowdsourcers: result.crowdsourcers,
-        initialReporters: result.initialReporters,
+        forkedMarket: result.forkedMarket,
+        nonforkedMarkets: result.nonforkedMarkets,
       })
     })
   }
@@ -76,16 +76,16 @@ export default class PortfolioReports extends Component {
       unclaimedEth,
       unclaimedRep,
       feeWindows,
-      crowdsourcers,
-      initialReporters,
+      forkedMarket,
+      nonforkedMarkets,
     } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES,
       unclaimedEth,
       unclaimedRep,
       feeWindows,
-      crowdsourcers,
-      initialReporters,
+      forkedMarket,
+      nonforkedMarkets,
       canClose: true,
     })
   }
