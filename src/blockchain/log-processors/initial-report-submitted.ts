@@ -32,7 +32,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
         },
         updateDisputeRound: (next: AsyncCallback) => {
           updateDisputeRound(db, log.market, next);
-        }
+        },
       }, (err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit("InitialReportSubmitted", log);
