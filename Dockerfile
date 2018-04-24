@@ -1,7 +1,7 @@
 FROM node:8.10-stretch
 
 ENV PATH /root/.yarn/bin:$PATH
-ARG ethereum_network=stable
+ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 
 # begin install yarn
