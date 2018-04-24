@@ -144,4 +144,3 @@ export function updateDisputeRound(db: Knex, marketId: Address, callback: ErrorC
     disputeRounds: db.count("* as completedRounds").from("crowdsourcers").where({ completed: 1, marketId }),
   }).where({ marketId }).asCallback(callback);
 }
-
