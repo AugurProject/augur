@@ -82,7 +82,10 @@ export default class Position extends Component {
     return (
       <ul
         ref={(position) => { this.position = position }}
-        className={!isMobile ? Styles.Position : Styles.PortMobile}
+        className={!isMobile ?
+          classNames(Styles.Position, { [Styles['Position-not_extended']]: isExtendedDisplay })
+          : Styles.PortMobile
+        }
       >
         <li>
           { outcomeName }

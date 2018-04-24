@@ -58,7 +58,7 @@ export default class ReportingDisputeMarkets extends Component {
     } = this.props
 
     return (
-      <section>
+      <section className={Styles.ReportDisputeContainer}>
         <Helmet>
           <title>Dispute</title>
         </Helmet>
