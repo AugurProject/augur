@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import ReactTooltip from 'react-tooltip'
+import { createBigNumber } from 'utils/create-big-number'
 import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
@@ -13,7 +14,8 @@ const Outcome = ({ className, outcome, marketId }) => {
   const currentStakeRep = formatAttoRep(outcome.accountStakeCurrent, { decimals: 4, roundUp: true })
   const currentAccountStake = currentStakeRep.formatted === '-' ? '0' : currentStakeRep.formatted
   const outcomeName = outcome.name === 'Indeterminate' ? 'Invalid' : outcome.name
-  const offset = outcome.percentageAccount === 0 ? 70 : parseInt(175 - ((outcome.percentageAccount * 1.75) / 2), 10)
+  const rangeMidPoint = createBigNumber(outcome.percentageAccount).times(createBigNumber(1.75)).dividedBy(createBigNumber(2))
+  const offset = outcome.percentageAccount === 0 ? '45%' : createBigNumber(175).minus(rangeMidPoint).toNumber()
 
   return (
     <div className={className || Styles.MarketReportingPayouts__outcome}>

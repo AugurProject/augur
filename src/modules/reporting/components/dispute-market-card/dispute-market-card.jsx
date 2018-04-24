@@ -5,7 +5,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
 import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
-import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
+import ReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 
 import { MARKETS } from 'modules/routes/constants/views'
@@ -76,7 +76,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
           <ForkMigrationTotals />
         }
         {!isForkingMarket &&
-          <MarketReportingPayouts
+          <ReportingPayouts
             outcomes={outcomes}
             forkThreshold={p.forkThreshold}
             marketId={market.id}
