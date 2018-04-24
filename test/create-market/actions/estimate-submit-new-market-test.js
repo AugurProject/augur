@@ -2,10 +2,13 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { estimateSubmitNewMarket, __RewireAPI__ as estimateSubmitNewMarketReqireAPI } from 'modules/create-market/actions/estimate-submit-new-market'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
   const mockStore = configureMockStore([thunk])
-  const newMarket = { properties: 'value' }
+  const newBinaryMarket = { properties: 'value', type: BINARY }
+  const newScalarMarket = { properties: 'value', type: SCALAR }
+  const newCatMarket = { properties: 'value', type: CATEGORICAL }
   const stateData = {
     universe: {
       id: '1010101',
@@ -20,32 +23,21 @@ describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
       address: '0x1233',
     },
   }
-  const buildCreateMarketSuccess = (newMarket) => {
-    const result = {
-      createMarket: (options) => {
-        options.onSuccess('gasCostValue')
-      },
-      formattedNewMarket: newMarket,
-    }
-    return result
-  }
 
-  const buildCreateMarketFailure = (newMarket) => {
-    const result = {
-      createMarket: (options) => {
-        options.onFailed('Error')
-      },
-      formattedNewMarket: newMarket,
-    }
-    return result
+  const augur = {
+    constants: {
+      CREATE_CATEGORICAL_MARKET_GAS: 'oxygen',
+      CREATE_SCALAR_MARKET_GAS: 'helium',
+      CREATE_BINARY_MARKET_GAS: 'methane',
+    },
   }
 
   after(() => {
-    estimateSubmitNewMarketReqireAPI.__ResetDependency__('buildCreateMarket')
+    estimateSubmitNewMarketReqireAPI.__ResetDependency__('augur')
   })
 
   const test = t => it(t.description, () => {
-    estimateSubmitNewMarketReqireAPI.__Rewire__('buildCreateMarket', t.buildCreateMarket)
+    estimateSubmitNewMarketReqireAPI.__Rewire__('augur', augur)
     const store = mockStore(t.state || {})
     t.assertions(store)
   })
@@ -53,22 +45,32 @@ describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
   test({
     description: 'should call callback with success and gas cost value',
     state: stateData,
-    buildCreateMarket: buildCreateMarketSuccess,
     assertions: (store) => {
-      store.dispatch(estimateSubmitNewMarket(newMarket, (err, value) => {
+      store.dispatch(estimateSubmitNewMarket(newBinaryMarket, (err, value) => {
         assert.deepEqual(err, null, `Error value not as expected`)
-        assert.deepEqual(value, 'gasCostValue', `Didn't value as expected`)
+        assert.deepEqual(value, 'methane', `Didn't value as expected`)
       }))
     },
   })
 
   test({
-    description: 'should call callback with failure and gas cost value',
+    description: 'should call callback with success and gas cost value',
     state: stateData,
-    buildCreateMarket: buildCreateMarketFailure,
     assertions: (store) => {
-      store.dispatch(estimateSubmitNewMarket(newMarket, (err, value) => {
-        assert.deepEqual(err, 'Error', `Didn't value as expected`)
+      store.dispatch(estimateSubmitNewMarket(newScalarMarket, (err, value) => {
+        assert.deepEqual(err, null, `Error value not as expected`)
+        assert.deepEqual(value, 'helium', `Didn't value as expected`)
+      }))
+    },
+  })
+
+  test({
+    description: 'should call callback with success and gas cost value',
+    state: stateData,
+    assertions: (store) => {
+      store.dispatch(estimateSubmitNewMarket(newCatMarket, (err, value) => {
+        assert.deepEqual(err, null, `Error value not as expected`)
+        assert.deepEqual(value, 'oxygen', `Didn't value as expected`)
       }))
     },
   })
