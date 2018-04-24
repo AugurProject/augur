@@ -137,11 +137,12 @@ class MarketTradingForm extends Component {
       passedTest = false
       errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${minPrice} - ${maxPrice}`)
     }
-    if (value && value.mod(tickSize).gt('0')) {
-      errorCount += 1
-      passedTest = false
-      errors[this.INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`)
-    }
+    // removed this validation for now, let's let augur.js handle this.
+    // if (value && value.mod(tickSize).gt('0')) {
+    //   errorCount += 1
+    //   passedTest = false
+    //   errors[this.INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`)
+    // }
     return { isOrderValid: passedTest, errors, errorCount }
   }
 

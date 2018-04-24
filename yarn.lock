@@ -147,13 +147,6 @@ acorn@^5.0.0, acorn@^5.2.1, acorn@^5.4.1, acorn@^5.5.0:
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.5.3.tgz#f473dd47e0277a08e28e9bec5aeeb04751f0b8c9"
 
-active-event-stack@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/active-event-stack/-/active-event-stack-1.0.0.tgz#6b5b92ebad719afae982cd51f49c38c5b6800c50"
-  dependencies:
-    immutable "^3.7.4"
-    lodash "^3.9.3"
-
 airbnb-prop-types@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/airbnb-prop-types/-/airbnb-prop-types-2.8.1.tgz#b9e31f08a7ed77b213fefc33b53a8c6e1dd8b885"
@@ -1897,10 +1890,6 @@ chai@4.1.2:
     pathval "^1.0.0"
     type-detect "^4.0.0"
 
-chain-function@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
-
 chalk@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.3.0.tgz#b5ea48efc9c1793dccc9b4767c93914d3f2d52ba"
@@ -2040,7 +2029,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.2.5, classnames@^2.1.2, classnames@^2.2.5:
+classnames@2.2.5, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -2374,10 +2363,6 @@ copy-webpack-plugin@4.2.3:
     loader-utils "^0.2.15"
     lodash "^4.3.0"
     minimatch "^3.0.4"
-
-core-js@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.1.tgz#ae6874dc66937789b80754ff5428df66819ca50b"
 
 core-js@^1.0.0:
   version "1.2.7"
@@ -3248,10 +3233,6 @@ dom-converter@~0.1:
   dependencies:
     utila "~0.3"
 
-dom-helpers@^3.2.0:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.3.1.tgz#fc1a4e15ffdf60ddde03a480a9c0fece821dd4a6"
-
 dom-serializer@0, dom-serializer@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
@@ -3353,10 +3334,6 @@ duplexify@^3.4.2, duplexify@^3.5.3:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
-
-dynamics.js@^1.1.0:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
 
 ecc-jsbn@~0.1.1:
   version "0.1.1"
@@ -5121,7 +5098,7 @@ immutable-delete@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/immutable-delete/-/immutable-delete-1.1.0.tgz#e4a7e6e8cd05efee1d082652ae6196da6b3572fb"
 
-immutable@3.8.2, immutable@^3.7.4:
+immutable@3.8.2:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
@@ -5196,13 +5173,6 @@ inline-source@^5.0.0:
     object-assign "4.1.x"
     svgo "0.7.x"
     uglify-js "3.3.x"
-
-inline-style-prefixer@*:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/inline-style-prefixer/-/inline-style-prefixer-4.0.0.tgz#30a03df1b346ba6b1fb8a812bc3c9dabef48022d"
-  dependencies:
-    bowser "^1.7.3"
-    css-in-js-utils "^2.0.0"
 
 inline-style-prefixer@^3.0.1:
   version "3.0.8"
@@ -5955,10 +5925,6 @@ key-encoder@^1.1.6:
     bn.js "^3.1.2"
     elliptic "^5.1.0"
 
-keycode@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
-
 keythereum@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.2.tgz#612ba41cde254b17dd7737e75237ae6ee5162992"
@@ -6281,10 +6247,6 @@ lodash.unset@4.5.2:
 lodash@4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
-lodash@^3.9.3:
-  version "3.10.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
 lodash@^4.0.0, lodash@^4.1.0, lodash@^4.1.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.5"
@@ -6766,12 +6728,6 @@ nanomatch@^1.2.9:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
-
-narcissus@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/narcissus/-/narcissus-1.0.0.tgz#2462a07c4598ce9065eb41b2abbdb30d0e30f46e"
-  dependencies:
-    inline-style-prefixer "*"
 
 native-promise-only@^0.8.1:
   version "0.8.1"
@@ -8447,12 +8403,6 @@ react-addons-shallow-compare@15.6.2:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-center-component@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-center-component/-/react-center-component-3.0.0.tgz#d28986bf434e0f8ebff63c91277f1bf6ad189c72"
-  dependencies:
-    lodash "^4.0.0"
-
 react-dates@15.1.0:
   version "15.1.0"
   resolved "https://registry.yarnpkg.com/react-dates/-/react-dates-15.1.0.tgz#0f0aaa0614d096aa38c928234f9ec25bc6fe9391"
@@ -8521,19 +8471,6 @@ react-hot-loader@3.1.3:
 react-is@^16.3.1:
   version "16.3.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.3.1.tgz#ee66e6d8283224a83b3030e110056798488359ba"
-
-react-modal-dialog@4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/react-modal-dialog/-/react-modal-dialog-4.0.7.tgz#3926da2dfa91ff09f2d3149549e8d6ee5cbad9b5"
-  dependencies:
-    active-event-stack "^1.0.0"
-    classnames "^2.1.2"
-    dynamics.js "^1.1.0"
-    immutable "^3.7.4"
-    keycode "^2.1.0"
-    lodash "^3.9.3"
-    narcissus "^1.0.0"
-    react-center-component "^3.0.0"
 
 react-moment-proptypes@^1.5.0:
   version "1.5.0"
@@ -8629,17 +8566,6 @@ react-tooltip@3.4.0:
   dependencies:
     classnames "^2.2.5"
     prop-types "^15.6.0"
-
-react-transition-group@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.2.1.tgz#e9fb677b79e6455fd391b03823afe84849df4a10"
-  dependencies:
-    chain-function "^1.0.0"
-    classnames "^2.2.5"
-    dom-helpers "^3.2.0"
-    loose-envify "^1.3.1"
-    prop-types "^15.5.8"
-    warning "^3.0.0"
 
 react-with-direction@^1.1.0:
   version "1.3.0"
@@ -8859,12 +8785,6 @@ redux-thunk@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
-redux-undo@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-0.6.1.tgz#ff407749b8f468bead636e413819e92c0982eeca"
-  dependencies:
-    redux "^3.0.2"
-
 redux@3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
@@ -8874,7 +8794,7 @@ redux@3.6.0:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.2"
 
-redux@3.7.2, redux@^3.0.2:
+redux@3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   dependencies:
@@ -11143,7 +11063,3 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
-
-zxcvbn@4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
