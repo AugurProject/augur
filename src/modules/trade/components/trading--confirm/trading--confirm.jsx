@@ -60,7 +60,7 @@ const MarketTradingConfirm = (p) => {
       { p.orderType === LIMIT &&
         <ul className={Styles.TradingConfirm__total}>
           <li>
-            <span>Total Cost</span>
+            <span>Est. Cost</span>
             <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> <span>ETH</span></span>
           </li>
         </ul>
