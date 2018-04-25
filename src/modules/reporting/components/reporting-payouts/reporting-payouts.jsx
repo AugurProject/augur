@@ -39,13 +39,17 @@ const Outcome = ({ className, outcome, marketId }) => {
           <div
             className={Styles['MarketReportingPayouts__progress-bar-container']}
           >
-            <div
-              className={Styles['MarketReportingPayouts__progress-bar']}
-              data-tip
-              data-for={'tooltip--rep-progress-'+outcome.id+marketId}
-            >
-              <div className={Styles['MarketReportingPayouts__progress-bar-percentage-user']} style={{ width: String(outcome.percentageAccount) + '%' }} />
-              <div className={Styles['MarketReportingPayouts__progress-bar-percentage']} style={{ width: String(outcome.percentageComplete) + '%' }} />
+            <div className={Styles['MarketReportingPayouts__progress-bar']}>
+              <div
+                className={Styles['MarketReportingPayouts__progress-bar-percentage-user']}
+                style={{ width: String(outcome.percentageAccount) + '%' }}
+                data-tip
+                data-for={'tooltip--rep-progress-'+outcome.id+marketId}
+              />
+              <div
+                className={Styles['MarketReportingPayouts__progress-bar-percentage']}
+                style={{ width: String(outcome.percentageComplete) + '%' }}
+              />
             </div>
             <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
             <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
@@ -55,7 +59,7 @@ const Outcome = ({ className, outcome, marketId }) => {
             className={TooltipStyles.Tooltip}
             effect="solid"
             place="top"
-            offset={{ left: offset, top: 6 }}
+            offset={{ left: 0, top: 6 }}
             type="light"
           >
             <p>{currentAccountStake} REP Staked
