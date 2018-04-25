@@ -65,8 +65,10 @@ export default class PortfolioReports extends Component {
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
-        forkedMarket: result.forkedMarket,
-        nonforkedMarkets: result.nonforkedMarkets,
+        // TODO: Replace the hard-coded values below with result.forkedMarket and
+        // result.nonforkedMarkets once augur-node is returning these.
+        forkedMarket: {},
+        nonforkedMarkets: [],
       })
     })
   }
