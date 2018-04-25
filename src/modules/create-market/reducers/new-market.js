@@ -10,7 +10,7 @@ import { DEFAULT_SCALAR_TICK_SIZE } from 'augur.js/src/constants'
 
 import { createBigNumber } from 'utils/create-big-number'
 
-const DEFAULT_STATE = {
+const DEFAULT_STATE = () => ({
   isValid: false,
   validations: [
     {
@@ -63,9 +63,9 @@ const DEFAULT_STATE = {
   initialLiquidityGas: createBigNumber(0),
   initialLiquidityFees: createBigNumber(0),
   creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
-}
+})
 
-export default function (newMarket = DEFAULT_STATE, action) {
+export default function (newMarket = DEFAULT_STATE(), action) {
   switch (action.type) {
     case ADD_ORDER_TO_NEW_MARKET: {
       const existingOrders = newMarket.orderBook[action.data.outcome] || []
@@ -102,7 +102,7 @@ export default function (newMarket = DEFAULT_STATE, action) {
       }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
-      return DEFAULT_STATE
+      return DEFAULT_STATE()
     default:
       return newMarket
   }
