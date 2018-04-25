@@ -24,7 +24,6 @@ import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSo
 import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
 import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
 import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
-import { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } from "./market-participants-disavowed";
 import { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } from "./reporting-participant-disavowed";
 
 function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
