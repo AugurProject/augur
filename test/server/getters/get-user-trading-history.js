@@ -82,7 +82,7 @@ describe("server/getters/get-user-trading-history", () => {
           type: "sell",
         },
         {
-          amount: "0.2",
+          amount: "0.1",
           logIndex: 0,
           maker: false,
           marketCreatorFees: "0",
@@ -282,7 +282,7 @@ describe("server/getters/get-user-trading-history", () => {
           type: "sell",
         },
         {
-          amount: "0.2",
+          amount: "0.1",
           logIndex: 0,
           maker: false,
           marketCreatorFees: "0",
