@@ -185,14 +185,35 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
   });
 }
 
+function advanceMarketsAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: (err: (Error|null)) => void) {
+  getMarketsWithReportingState(db, ["markets.marketId", "markets.universe"])
+    .whereIn("markets.feeWindow", expiredFeeWindows)
+    .where("reportingState", ReportingState.CROWDSOURCING_DISPUTE)
+    .asCallback((err: Error|null, marketIds: Array<{ marketId: Address; universe: Address; }>) => {
+      if (err) return callback(err);
+      each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
+        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, nextMarketIdRow);
+        augurEmitter.emit("MarketState", {
+          eventName: "MarketState",
+          universe: marketIdRow.universe,
+          marketId: marketIdRow.marketId,
+          reportingState: ReportingState.AWAITING_FINALIZATION,
+        });
+      }, callback);
+    });
+}
+
 export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
   updateActiveFeeWindows(db, blockNumber, timestamp, (err, feeWindowModifications) => {
     if (err || (feeWindowModifications != null && feeWindowModifications.expiredFeeWindows.length === 0 && feeWindowModifications.newActiveFeeWindows.length === 0)) return callback(err);
     advanceIncompleteCrowdsourcers(db, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
       if (err) return callback(err);
-      advanceAwaitingNextFeeWindow(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || [], (err: Error|null) => {
+      advanceMarketsAwaitingFinalization(db, augur, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
         if (err) return callback(err);
-        callback(null);
+        advanceAwaitingNextFeeWindow(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || [], (err: Error|null) => {
+          if (err) return callback(err);
+          callback(null);
+        });
       });
     });
   });
