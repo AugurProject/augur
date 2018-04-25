@@ -49,20 +49,6 @@ export default class MarketOutcomeOrderbook extends Component {
     }
   }
 
-  componentDidMount() {
-    this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
-  }
-
-  componentDidUpdate(prevProps) {
-    const { orderBook } = this.props
-    if (
-      isEmpty(prevProps.orderBook.asks) &&
-      !isEqual(prevProps.orderBook.asks, orderBook.asks)
-    ) {
-      this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
-    }
-  }
-
   render() {
     const {
       fixedPrecision,

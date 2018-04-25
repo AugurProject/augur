@@ -144,14 +144,6 @@ export default class MarketOutcomeCandlestick extends Component {
     if (!isEqual(hoveredPrice, nextProps.hoveredPrice)) updateHoveredPriceCrosshair(hoveredPrice, this.state.yScale, this.state.chartWidth)
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!isEqual(prevState.candleChartContainer, this.state.candleChartContainer)) {
-      const elem = document.getElementById('candlestick_chart_container')
-
-      elem.scrollTo(elem.scrollWidth, 0)
-    }
-  }
-
   componentWillUnmount() {
     window.removeEventListener('resize', this.drawCandlestickOnResize)
   }
