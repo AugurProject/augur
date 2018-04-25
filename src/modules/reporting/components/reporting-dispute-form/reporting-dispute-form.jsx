@@ -168,8 +168,8 @@ export default class ReportingDisputeForm extends Component {
 
     let stake = rawStake
 
-    if (stake !== '' && !(BigNumber.isBigNumber(stake))) {
-      stake = createBigNumber(rawStake).decimalPlaces(4)
+    if (stake !== '') {
+      stake = createBigNumber(formatNumber(createBigNumber(stake).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
     }
 
     ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
