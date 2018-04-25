@@ -13,7 +13,7 @@ export default class ModalClaimReportingFees extends Component {
     recipient: PropTypes.string.isRequired,
     feeWindows: PropTypes.array.isRequired,
     forkedMarket: PropTypes.object.isRequired,
-    nonForkedMarkets: PropTypes.array.isRequired,
+    nonforkedMarkets: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
   }
@@ -32,7 +32,7 @@ export default class ModalClaimReportingFees extends Component {
     const claimReportingFeesOptions = {
       feeWindows: this.props.feeWindows,
       forkedMarket: this.props.forkedMarket,
-      nonForkedMarkets: this.props.nonForkedMarkets,
+      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: true,
       onSent: () => {},
       onFailed: (err) => {
@@ -60,7 +60,7 @@ export default class ModalClaimReportingFees extends Component {
     const claimReportingFeesOptions = {
       feeWindows: this.props.feeWindows,
       forkedMarket: this.props.forkedMarket,
-      nonForkedMarkets: this.props.nonForkedMarkets,
+      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: false,
       onSent: () => {},
       onFailed: (err) => {
