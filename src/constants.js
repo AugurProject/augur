@@ -9,7 +9,6 @@ var multiple = ten.exponentiatedBy(18);
 var SECONDS_PER_DAY = 3600 * 24;
 
 module.exports = {
-
   REPORTING_STATE: {
     PRE_REPORTING: "PRE_REPORTING",
     DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
