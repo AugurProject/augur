@@ -164,7 +164,6 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
       if (err) return callback(err);
       getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
         if (err || repStakeResults == null) return callback(err);
-        console.log(repStakeResults);
         const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
           if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
           const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };

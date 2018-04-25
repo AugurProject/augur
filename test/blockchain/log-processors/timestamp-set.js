@@ -49,9 +49,11 @@ describe("blockchain/log-processors/timestamp-set", () => {
     description: "set timestamp",
     params: {
       log1: {
+        blockNumber: 1400002,
         newTimestamp: 919191,
       },
       log2: {
+        blockNumber: 1400001,
         newTimestamp: 828282,
       },
     },
