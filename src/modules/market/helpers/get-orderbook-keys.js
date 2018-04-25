@@ -15,12 +15,12 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
     if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length === 0) {
       return maxPrice.plus(minPrice).dividedBy(2)
     } else if (marketDepth[ASKS].length === 0 && marketDepth[BIDS].length > 0) {
-      return marketDepth[BIDS][0][1]
+      return createBigNumber(`${marketDepth[BIDS][0][1]}`, 10)
     } else if (marketDepth[ASKS].length > 0 && marketDepth[BIDS].length === 0) {
-      return marketDepth[ASKS][0][1]
+      return createBigNumber(`${marketDepth[ASKS][0][1]}`, 10)
     }
 
-    return (marketDepth[ASKS][0][1] + marketDepth[BIDS][0][1]) / 2
+    return (createBigNumber(`${marketDepth[ASKS][0][1]}`, 10).plus(createBigNumber(`${marketDepth[BIDS][0][1]}`, 10))).dividedBy(2)
   }
 
   let max = marketDepth[ASKS].reduce((p, order, i) => {
@@ -28,10 +28,13 @@ const getOrderBookKeys = memoize((marketDepth, minPrice, maxPrice) => {
     return order[1] > p ? order[1] : p
   }, null)
   if (max === null) max = maxPrice
-
+  // make sure to use bignumbers
+  min = createBigNumber(`${min}`, 10)
+  max = createBigNumber(`${max}`, 10)
+  // NOTE: below used to be mid().precision(15), but by casting things to strings before making them bignumbers then we shouldn't have an issue.
   return {
     min,
-    mid: createBigNumber(mid().toPrecision(15)), // NOTE -- `toPrecision` is there to prevent the BN issue w/ numbers that have more than 15 sigfigs
+    mid: createBigNumber(mid()),
     max,
   }
 })

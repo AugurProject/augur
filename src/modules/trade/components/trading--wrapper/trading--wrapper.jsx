@@ -57,7 +57,7 @@ class MarketTradingWrapper extends Component {
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
-    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.value)
+    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
       const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({
