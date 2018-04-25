@@ -24,6 +24,8 @@ import { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSo
 import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } from "./initial-report-redeemed";
 import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
 import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
+import { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } from "./market-participants-disavowed";
+import { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } from "./reporting-participant-disavowed";
 
 function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
   callback(null);
@@ -100,6 +102,11 @@ export const logProcessors: LogProcessors = {
       add: processDisputeCrowdsourcerCompletedLog,
       remove: processDisputeCrowdsourcerCompletedLogRemoval,
     },
+    ReportingParticipantDisavowed: {
+      noAutoEmit: true,
+      add: processReportingParticipantDisavowedLog,
+      remove: processReportingParticipantDisavowedLogRemoval,
+    },
     TokensBurned: {
       noAutoEmit: true,
       add: processBurnLog,
@@ -148,6 +155,7 @@ export const logProcessors: LogProcessors = {
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
+    MarketParticipantsDisavowed: passThroughLog,
     UniverseForked: passThroughLog,
   },
   LegacyReputationToken: {
