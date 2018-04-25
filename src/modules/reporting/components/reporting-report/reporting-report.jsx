@@ -10,7 +10,7 @@ import NullStateMessage from 'modules/common/components/null-state-message/null-
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
 import ReportingReportConfirm from 'modules/reporting/components/reporting-report-confirm/reporting-report-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
-
+import MarketAdditonalDetails from 'modules/reporting/components/market-additional-details/market-additional-details'
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
@@ -148,15 +148,9 @@ export default class ReportingReport extends Component {
           />
         }
         { !isEmpty(market) && s.showingDetails &&
-          <div className={Styles[`ReportingReportMarket__details-wrapper`]}>
-            <div className={Styles[`ReportingReportMarket__details-container`]}>
-              { market.details &&
-                <p>{market.details}</p>
-              }
-              <h4>Resolution Source:</h4>
-              <span>{market.resolutionSource ? <a href={market.resolutionSource} target="_blank" rel="noopener noreferrer">{market.resolutionSource}</a> : 'Outcome will be determined by news media'}</span>
-            </div>
-          </div>
+          <MarketAdditonalDetails
+            market={market}
+          />
         }
         { !isEmpty(market) &&
           <article className={FormStyles.Form}>

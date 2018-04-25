@@ -5,7 +5,7 @@ import { augur } from 'services/augurjs'
 import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 
-import { formatEtherEstimate } from 'utils/format-number'
+import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
 import { EXPIRY_SOURCE_GENERIC } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -59,13 +59,14 @@ export default class CreateMarketReview extends Component {
       universe,
       newMarket,
     } = this.props
-    this.props.estimateSubmitNewMarket(newMarket, (err, gasCost) => {
+    this.props.estimateSubmitNewMarket(newMarket, (err, gasEstimateValue) => {
       if (err) console.error(err)
       augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id, meta }, (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err)
         // TODO add designatedReportNoShowReputationBond to state / display
+        const gasPrice = augur.rpc.getGasPrice()
         this.setState({
-          gasCost: formatEtherEstimate(gasCost || 0),
+          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
@@ -104,15 +105,15 @@ export default class CreateMarketReview extends Component {
                   <span>{s.validityBond && s.validityBond.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Reporter Fee</span>
+                  <span>No-Show Bond</span>
                   <span>{s.designatedReportNoShowReputationBond && s.designatedReportNoShowReputationBond.rounded} REP</span>
                 </li>
                 <li>
-                  <span>Create Market Gas</span>
+                  <span>Est. Gas</span>
                   <span>{s.gasCost && s.gasCost.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Reporter Gas</span>
+                  <span>Reporter Gas Bond</span>
                   <span>{s.creationFee && s.creationFee.rounded} ETH</span>
                 </li>
               </ul>
