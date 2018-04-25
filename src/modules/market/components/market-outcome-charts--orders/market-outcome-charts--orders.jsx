@@ -7,7 +7,6 @@ import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-out
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
-import { isEqual, isEmpty } from 'lodash'
 import { compose, reverse, sortBy, take } from 'lodash/fp'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
