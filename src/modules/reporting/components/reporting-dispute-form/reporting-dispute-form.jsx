@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatNumber } from 'utils/format-number'
