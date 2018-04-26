@@ -6,6 +6,7 @@ import store from 'src/store'
 import { closePosition } from 'modules/my-positions/actions/close-position'
 
 import { ZERO } from 'modules/trade/constants/numbers'
+import { BUY, SELL } from 'modules/trade/constants/types'
 
 // import { augur } from 'services/augurjs'
 import { formatEther, formatShares, formatNumber } from 'utils/format-number'
@@ -14,15 +15,20 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, openOrd
   if (!adjustedPosition) {
     return null
   }
-  const simplifiedOpenOrders = openOrders.reduce((accum, item) => {
-    accum.push({ unmatchedShares: item.unmatchedShares.fullPrecision })
+  const simplfiedOrders = openOrders.reduce((accum, item) => {
+    accum[item.type].push({
+      unmatchedShares: item.unmatchedShares.fullPrecision,
+    })
     return accum
-  }, [])
-  const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
+  }, { [BUY]: [], [SELL]: [] })
 
-  const qtySharesOpen = accumulate(simplifiedOpenOrders, 'unmatchedShares')
+  const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
+  const qtySellSharesOpen = accumulate(simplfiedOrders[SELL], 'unmatchedShares')
+  const qtyBuySharesOpen = accumulate(simplfiedOrders[BUY], 'unmatchedShares')
   const qtyShares = accumulate(adjustedPosition, 'numSharesAdjusted')
-  const adjustedQtyShares = qtyShares.plus(qtySharesOpen)
+
+  const adjustedQtyShares = qtyShares.isPositive() ? qtyShares.minus(qtySellSharesOpen) : qtyShares.plus(qtyBuySharesOpen)
+
   const realized = accumulate(adjustedPosition, 'realizedProfitLoss')
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI
