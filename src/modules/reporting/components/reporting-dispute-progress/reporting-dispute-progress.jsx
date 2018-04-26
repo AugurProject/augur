@@ -47,7 +47,6 @@ const ReportingDisputeProgress = (p) => {
 
 ReportingDisputeProgress.propTypes = {
   isSelected: PropTypes.bool.isRequired,
-  disputeBondFormatted: PropTypes.string,
   percentageComplete: PropTypes.number,
   percentageAccount: PropTypes.number,
   tentativeStake: PropTypes.number,
