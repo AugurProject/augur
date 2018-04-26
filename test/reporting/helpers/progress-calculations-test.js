@@ -76,7 +76,7 @@ describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   test({
     description: `large percentage calculation`,
     assertions: () => {
-      assert.deepEqual(calculatePercentage(createBigNumber('2098083496093750000', 10), createBigNumber('109680582682291650', 10)), 5, `Didn't call the expected method`)
+      assert.deepEqual(calculatePercentage(createBigNumber('2098083496093750000', 10), createBigNumber('109680582682291650', 10)), 5.2277, `Didn't call the expected method`)
     },
   })
 

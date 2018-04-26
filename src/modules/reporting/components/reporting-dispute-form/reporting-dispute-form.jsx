@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatNumber } from 'utils/format-number'
@@ -168,8 +168,8 @@ export default class ReportingDisputeForm extends Component {
 
     let stake = rawStake
 
-    if (stake !== '' && !(BigNumber.isBigNumber(stake))) {
-      stake = createBigNumber(rawStake).decimalPlaces(4)
+    if (stake !== '') {
+      stake = createBigNumber(formatNumber(createBigNumber(stake).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
     }
 
     ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
@@ -240,7 +240,7 @@ export default class ReportingDisputeForm extends Component {
       const minValue = parseFloat(min)
       const maxValue = parseFloat(max)
       const valueValue = parseFloat(value)
-      const bnValue = createBigNumber(value)
+      const bnValue = createBigNumber(value || 0)
       const bnTickSize = createBigNumber(tickSize)
 
       switch (true) {
