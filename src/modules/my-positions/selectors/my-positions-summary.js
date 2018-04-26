@@ -19,7 +19,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, openOrd
     return accum
   }, [])
   const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
-  
+
   const qtySharesOpen = accumulate(simplifiedOpenOrders, 'unmatchedShares')
   const qtyShares = accumulate(adjustedPosition, 'numSharesAdjusted')
   const adjustedQtyShares = qtyShares.plus(qtySharesOpen)
