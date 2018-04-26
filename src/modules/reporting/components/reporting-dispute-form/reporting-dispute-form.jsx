@@ -113,7 +113,6 @@ export default class ReportingDisputeForm extends Component {
         outcomes: disputeOutcomes.filter(item => !item.tentativeWinning) || [],
         currentOutcome: disputeOutcomes.find(item => item.tentativeWinning) || {},
         disputeBondValue: bondSizeOfNewStake,
-        disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
       })
 
       // outcomes need to be populated before validating saved data
@@ -334,14 +333,13 @@ export default class ReportingDisputeForm extends Component {
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
                   tentativeStake={stake}
-                  disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>
             ))
             }
             { market.marketType === SCALAR &&
               <li className={FormStyles['field--inline']}>
-                <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
+                <ul className={classNames(Styles.ReportingDisputeForm__table__input, FormStyles['Form__radio-buttons--per-line'])}>
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
@@ -358,6 +356,17 @@ export default class ReportingDisputeForm extends Component {
                       value={s.inputSelectedOutcome}
                       className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
+                    />
+                    <ReportingDisputeProgress
+                      key="scalar_input_progress"
+                      isSelected={s.scalarInputChoosen}
+                      tentativeStake={stake}
+                      percentageComplete={0}
+                      percentageAccount={0}
+                      bondSizeCurrent={s.disputeBondValue}
+                      stakeRemaining={s.disputeBondValue}
+                      stakeCurrent="0"
+                      accountStakeCurrent="0"
                     />
                   </li>
                   <li>
