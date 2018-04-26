@@ -84,7 +84,11 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
 function accumulate(objects, property) {
   if (!objects) return 0
   if (typeof objects === 'number') return objects
-  if (!Array.isArray(objects) && typeof objects === 'object') return objects[property]
+  if (!Array.isArray(objects) && typeof objects === 'object') return objects
   if (!Array.isArray(objects)) return 0
-  return objects.reduce((accum, item) => item[property] + accum, 0)
+  return objects.reduce((accum, item) => {
+    const bnProperty = createBigNumber(item[property], 10)
+    const bnAccum = createBigNumber(accum, 10)
+    return bnProperty.plus(bnAccum).toString()
+  }, 0)
 }
