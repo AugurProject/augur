@@ -6,34 +6,21 @@ import store from 'src/store'
 import { closePosition } from 'modules/my-positions/actions/close-position'
 
 import { ZERO } from 'modules/trade/constants/numbers'
-import { BUY, SELL } from 'modules/trade/constants/types'
 
 // import { augur } from 'services/augurjs'
 import { formatEther, formatShares, formatNumber } from 'utils/format-number'
 
-export const generateOutcomePositionSummary = memoize((adjustedPosition, openOrders) => {
+export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
   if (!adjustedPosition) {
     return null
   }
-  const simplfiedOrders = openOrders.reduce((accum, item) => {
-    accum[item.type].push({
-      unmatchedShares: item.unmatchedShares.fullPrecision,
-    })
-    return accum
-  }, { [BUY]: [], [SELL]: [] })
-
   const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
-  const qtySellSharesOpen = accumulate(simplfiedOrders[SELL], 'unmatchedShares')
-  const qtyBuySharesOpen = accumulate(simplfiedOrders[BUY], 'unmatchedShares')
   const qtyShares = accumulate(adjustedPosition, 'numSharesAdjusted')
-
-  const adjustedQtyShares = qtyShares.isPositive() ? qtyShares.minus(qtySellSharesOpen) : qtyShares.plus(qtyBuySharesOpen)
-
   const realized = accumulate(adjustedPosition, 'realizedProfitLoss')
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI
   const averagePrice = accumulate(adjustedPosition, 'averagePrice')
-  const isClosable = !!createBigNumber(adjustedQtyShares || '0').toNumber() // Based on position, can we attempt to close this position
+  const isClosable = !!createBigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
 
   const marketId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].marketId : null
   const outcomeId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].outcome : null
@@ -42,7 +29,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, openOrd
     // if in case of multiple positions for same outcome use the last one, marketId and outcome will be the same
     marketId,
     outcomeId,
-    ...generatePositionsSummary(outcomePositions, adjustedQtyShares, averagePrice, realized, unrealized),
+    ...generatePositionsSummary(outcomePositions, qtyShares, averagePrice, realized, unrealized),
     isClosable,
     closePosition: (marketId, outcomeId) => {
       store.dispatch(closePosition(marketId, outcomeId))
