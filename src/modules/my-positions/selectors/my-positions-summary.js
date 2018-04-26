@@ -10,17 +10,24 @@ import { ZERO } from 'modules/trade/constants/numbers'
 // import { augur } from 'services/augurjs'
 import { formatEther, formatShares, formatNumber } from 'utils/format-number'
 
-export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
+export const generateOutcomePositionSummary = memoize((adjustedPosition, openOrders) => {
   if (!adjustedPosition) {
     return null
   }
+  const simplifiedOpenOrders = openOrders.reduce((accum, item) => {
+    accum.push({ unmatchedShares: item.unmatchedShares.fullPrecision })
+    return accum
+  }, [])
   const outcomePositions = Array.isArray(adjustedPosition) ? adjustedPosition.length : 1
+  
+  const qtySharesOpen = accumulate(simplifiedOpenOrders, 'unmatchedShares')
   const qtyShares = accumulate(adjustedPosition, 'numSharesAdjusted')
+  const adjustedQtyShares = qtyShares.plus(qtySharesOpen)
   const realized = accumulate(adjustedPosition, 'realizedProfitLoss')
   const unrealized = accumulate(adjustedPosition, 'unrealizedProfitLoss')
   // todo: check if this calculation is correct for UI
   const averagePrice = accumulate(adjustedPosition, 'averagePrice')
-  const isClosable = !!createBigNumber(qtyShares || '0').toNumber() // Based on position, can we attempt to close this position
+  const isClosable = !!createBigNumber(adjustedQtyShares || '0').toNumber() // Based on position, can we attempt to close this position
 
   const marketId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].marketId : null
   const outcomeId = Array.isArray(adjustedPosition) && adjustedPosition.length > 0 ? adjustedPosition[outcomePositions-1].outcome : null
@@ -29,7 +36,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition) => {
     // if in case of multiple positions for same outcome use the last one, marketId and outcome will be the same
     marketId,
     outcomeId,
-    ...generatePositionsSummary(outcomePositions, qtyShares, averagePrice, realized, unrealized),
+    ...generatePositionsSummary(outcomePositions, adjustedQtyShares, averagePrice, realized, unrealized),
     isClosable,
     closePosition: (marketId, outcomeId) => {
       store.dispatch(closePosition(marketId, outcomeId))
@@ -86,8 +93,5 @@ function accumulate(objects, property) {
   if (typeof objects === 'number') return objects
   if (!Array.isArray(objects) && typeof objects === 'object') return objects[property]
   if (!Array.isArray(objects)) return 0
-  return objects.reduce((accum, item) => {
-    const bnProperty = createBigNumber(item[property], 10)
-    return bnProperty.plus(accum)
-  }, createBigNumber(0, 10))
+  return objects.reduce((accum, item) => createBigNumber(item[property], 10).plus(accum), createBigNumber(0, 10))
 }
