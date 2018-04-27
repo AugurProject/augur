@@ -18,6 +18,12 @@
   white-space: nowrap;
 }
 
+.Form__error__space {
+  &:extend(.Form__error);
+
+  margin-top: 0.5rem;
+}
+
 .Form__error--even {
   color: @color-negative;
   display: inline-block;
@@ -30,6 +36,7 @@
   white-space: nowrap;
 }
 
+.Form__error__space > svg,
 .Form__error--even > svg,
 .Form__error--field-50 > svg {
   margin: 0 0.2rem;
@@ -245,6 +252,7 @@ li.field--short {
 
     &.field--inline {
       display: block;
+      margin-top: 0;
       max-width: 21rem;
     }
   }

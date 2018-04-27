@@ -371,7 +371,7 @@ export default class ReportingDisputeForm extends Component {
                   </li>
                   <li>
                     { s.validations.hasOwnProperty('err') &&
-                      <span className={FormStyles.Form__error}>
+                      <span className={FormStyles.Form__error__space}>
                         {InputErrorIcon}{ s.validations.err }
                       </span>
                     }
