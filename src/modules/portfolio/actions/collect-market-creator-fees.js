@@ -8,9 +8,9 @@ export const collectMarketCreatorFees = (marketId, callback = logError) => (disp
   augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketId } }, (err, marketMailboxAddress) => {
     if (err) return callback(err)
     if (marketMailboxAddress == null) return callback(`no market mailbox address found for market ${marketId}`)
-    augur.api.Cash.getBalance({ _address: marketMailboxAddress }, (err, cashBalance) => {
+    augur.api.Cash.balanceOf({ _owner: marketMailboxAddress }, (err, cashBalance) => {
       if (err) return callback(err)
-      if (cashBalance == null) return callback('Cash.getBalance request failed')
+      if (cashBalance == null) return callback('Cash.balanceOf request failed')
       const bnCashBalance = speedomatic.bignum(cashBalance)
       augur.rpc.eth.getBalance([marketMailboxAddress, 'latest'], (err, attoEthBalance) => {
         if (err) return callback(err)

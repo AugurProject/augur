@@ -26,10 +26,10 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
     __RewireAPI__.__Rewire__('augur', {
       api: {
         Cash: {
-          getBalance: (params, cb) => {
-            assert.oneOf(params._address, MailboxAddresses, `Didn't get the expected params`)
+          balanceOf: (params, cb) => {
+            assert.oneOf(params._owner, MailboxAddresses, `Didn't get the expected params`)
             assert.isFunction(cb, `Callback provided isn't a function as expected`)
-            if (params._address === MailboxAddresses[0]) {
+            if (params._owner === MailboxAddresses[0]) {
               cb(null, speedomatic.fix(20, 'string'))
             } else {
               cb(null, 0)
