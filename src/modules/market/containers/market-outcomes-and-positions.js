@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
       return p
     }, [])
   }
+
   return {
     isMobile: state.isMobile,
     outcomes: market.outcomes || [],
