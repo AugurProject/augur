@@ -27,9 +27,9 @@ export default function (marketIds, callback = logError) {
 }
 
 function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, callback) {
-  augur.api.ReputationToken.getBalance({
+  augur.api.ReputationToken.balanceOf({
     tx: { to: reputationTokenAddress },
-    _address: market.id,
+    _owner: market.id,
   }, (err, attoRepBalance) => {
     if (err) return callback(err)
     const repBalance = speedomatic.unfix(attoRepBalance, 'number')

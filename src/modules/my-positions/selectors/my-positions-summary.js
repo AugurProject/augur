@@ -86,5 +86,5 @@ function accumulate(objects, property) {
   if (typeof objects === 'number') return objects
   if (!Array.isArray(objects) && typeof objects === 'object') return objects[property]
   if (!Array.isArray(objects)) return 0
-  return objects.reduce((accum, item) => item[property] + accum, 0)
+  return objects.reduce((accum, item) => createBigNumber(item[property], 10).plus(accum), createBigNumber(0, 10))
 }

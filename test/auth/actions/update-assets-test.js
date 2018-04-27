@@ -79,12 +79,12 @@ describe('modules/auth/actions/update-assets.js', () => {
                   },
                 },
                 ReputationToken: {
-                  getBalance: (value, callback) => {
+                  balanceOf: (value, callback) => {
                     callback(ERR, '10000')
                   },
                 },
                 LegacyReputationToken: {
-                  getBalance: (value, callback) => {
+                  balanceOf: (value, callback) => {
                     callback(ERR, '2000')
                   },
                   allowance: (value, callback) => {
@@ -183,12 +183,12 @@ describe('modules/auth/actions/update-assets.js', () => {
                   },
                 },
                 ReputationToken: {
-                  getBalance: (value, callback) => {
+                  balanceOf: (value, callback) => {
                     callback(null, testValue.rep)
                   },
                 },
                 LegacyReputationToken: {
-                  getBalance: (value, callback) => {
+                  balanceOf: (value, callback) => {
                     callback(null, testValue.legacyRep)
                   },
                   allowance: (value, callback) => {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Connect } from 'uport-connect'
 import QRCode from 'qrcode.react'
 import { decode } from 'mnid'
 
@@ -9,6 +8,7 @@ import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons'
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
+import { connectToUport } from 'modules/auth/helpers/connect-to-uport'
 import Styles from 'modules/auth/components/uport-connect/uport-connect.styles'
 
 export default class UportConnect extends Component {
@@ -20,19 +20,8 @@ export default class UportConnect extends Component {
 
   constructor() {
     super()
-
-    this.uPort = new Connect(
-      'AUGUR -- DEV',
-      {
-        clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
-      },
-    )
-
-    this.state = {
-      uri: '',
-      qrSize: 0,
-    }
-
+    this.uPort = connectToUport()
+    this.state = { uri: '', qrSize: 0 }
     this.uPortURIHandler = this.uPortURIHandler.bind(this)
     this.setQRSize = this.setQRSize.bind(this)
     this.debouncedSetQRSize = debounce(this.setQRSize.bind(this))
@@ -40,17 +29,13 @@ export default class UportConnect extends Component {
 
   componentWillMount() {
     const { login } = this.props
-    this.uPort.requestCredentials({
-      notifcations: true,
-    }, this.uPortURIHandler).then((account) => {
-      const signingMethod = this.uPort.getWeb3().eth.sendTransaction
-      login(decode(account.address), signingMethod)
+    this.uPort.requestCredentials({ notifcations: true }, this.uPortURIHandler).then((account) => {
+      login(decode(account.address))
     })
   }
 
   componentDidMount() {
     this.setQRSize()
-
     window.addEventListener('resize', this.debouncedSetQRSize)
   }
 
@@ -59,22 +44,10 @@ export default class UportConnect extends Component {
   }
 
   setQRSize() {
-    const {
-      isMobile,
-      isMobileSmall,
-    } = this.props
+    const { isMobile, isMobileSmall } = this.props
     const width = getValue(this, 'uPortCreate.clientWidth')
-    const height = getValue(this, 'uPortCreate.clientHeight')
-
-    if (width > height) { // Height is the constraining dimension
-
-    } else { // Width is the constraining dimension
-
-    }
-
     if (width) {
       let qrSize
-
       switch (true) {
         case isMobileSmall:
           qrSize = width / 2.5
@@ -85,7 +58,6 @@ export default class UportConnect extends Component {
         default:
           qrSize = width / 3.5
       }
-
       this.setState({ qrSize })
     }
   }
@@ -96,7 +68,6 @@ export default class UportConnect extends Component {
 
   render() {
     const s = this.state
-
     return (
       <section
         ref={(uPortCreate) => { this.uPortCreate = uPortCreate }}
@@ -104,10 +75,7 @@ export default class UportConnect extends Component {
       >
         <div>
           <h3>Connect a uPort Account</h3>
-          <QRCode
-            value={s.uri}
-            size={s.qrSize}
-          />
+          <QRCode value={s.uri} size={s.qrSize} />
           <h4>Need a uPort Account?</h4>
           <div className={Styles.Uport__apps}>
             <a

@@ -14,9 +14,9 @@ export function updateAssets(callback = logError) {
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances))
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
-      augur.api.ReputationToken.getBalance({
+      augur.api.ReputationToken.balanceOf({
         tx: { to: reputationTokenAddress },
-        _address: loginAccount.address,
+        _owner: loginAccount.address,
       }, (err, attoRepBalance) => {
         if (err) return callback(err)
         const repBalance = speedomatic.unfix(attoRepBalance, 'string')
@@ -43,8 +43,8 @@ export function updateAssets(callback = logError) {
       }
       if (allAssetsLoaded(balances)) callback(null, balances)
     })
-    augur.api.LegacyReputationToken.getBalance({
-      _address: loginAccount.address,
+    augur.api.LegacyReputationToken.balanceOf({
+      _owner: loginAccount.address,
     }, (err, attoLegacyRepBalance) => {
       if (err) return callback(err)
       const legacyRepBalance = speedomatic.unfix(attoLegacyRepBalance, 'string')
