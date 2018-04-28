@@ -5,10 +5,20 @@
 var chalk = require("chalk");
 var displayTime = require("./display-time");
 
+function help() {
+  console.log(chalk.red("Show initial reporter account for market"));
+  console.log(chalk.red("Displays all 0s if market hasn't been reported on"));
+}
+
 /**
  * Move time to Market end time and do initial report
  */
-function showInitialReporterInternal(augur, marketId, auth, callback) {
+function showInitialReporter(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var marketId = args.opt.marketId;
   augur.api.Market.getInitialReporter({ tx: { to: marketId  }}, function (err, contractId) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
@@ -31,22 +41,6 @@ function showInitialReporterInternal(augur, marketId, auth, callback) {
       callback(null);
     });
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> marketId"));
-  console.log(chalk.red("parameter 1: marketId is needed"));
-  callback(null);
-}
-
-function showInitialReporter(augur, params, auth, callback) {
-  if (!params || params === "help") {
-    help(callback);
-  } else {
-    var marketId = params;
-    console.log(chalk.yellow.dim("marketId"), marketId);
-    showInitialReporterInternal(augur, marketId, auth, callback);
-  }
 }
 
 module.exports = showInitialReporter;

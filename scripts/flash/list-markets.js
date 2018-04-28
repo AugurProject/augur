@@ -5,7 +5,17 @@
 var chalk = require("chalk");
 var displayTime = require("./display-time");
 
-function listMarketsInternal(augur, universe, callback) {
+function help() {
+  console.log(chalk.red("list all markets with various details"));
+  console.log(chalk.red("The details include endTime, description, market Id, ...."));
+}
+
+function listMarkets(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     var currentTime = new Date(timestamp * 1000);
     augur.markets.getMarkets({ universe: universe, sortBy: "endTime", isSortDescending: true }, function (err, marketIds) {
@@ -34,21 +44,6 @@ function listMarketsInternal(augur, universe, callback) {
       });
     });
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> no params needed"));
-  callback(null);
-}
-
-function listMarkets(augur, params, auth, callback) {
-  if (params === "help") {
-    help(callback);
-  } else {
-    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    console.log(chalk.green.dim("Universe"), universe);
-    listMarketsInternal(augur, universe, callback);
-  }
 }
 
 module.exports = listMarkets;

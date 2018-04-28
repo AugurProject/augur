@@ -7,14 +7,23 @@ var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
 var displayTime = require("./display-time");
 var goToFork = require("./go-to-fork");
-var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
 var getPayoutNumerators = require("./get-payout-numerators");
 var repFaucet = require("../rep-faucet");
+
+function help() {
+  console.log(chalk.red("Push a market through dispute rounds to cause a fork"));
+  console.log(chalk.red("User will be given REP sufficient to cause a fork"));
+}
 
 /**
  * Move time to Market end time and do go to a fork
  */
-function forkInternal(augur, marketId, userAuth, auth, callback) {
+function fork(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var marketId = args.opt.marketId;
   repFaucet(augur, 10000000, auth, function (err) {
     if (err) return callback(err);
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
@@ -37,7 +46,7 @@ function forkInternal(augur, marketId, userAuth, auth, callback) {
             }
             var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
             var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, false);
-            goToFork(augur, marketId, payoutNumerators, timeResult.timeAddress, userAuth, function (err) {
+            goToFork(augur, marketId, payoutNumerators, timeResult.timeAddress, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
@@ -50,36 +59,6 @@ function forkInternal(augur, marketId, userAuth, auth, callback) {
       });
     });
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> marketId,<user priv key>"));
-  console.log(chalk.red("parameter 1: marketId is needed"));
-  console.log(chalk.red("parameter 2: user priv key is needed, env var REPORTER_PRIVATE_KEY can be used, or blank to use ETHEREUM_PRIVATE_KEY"));
-  console.log(chalk.yellow("user will be given REP sufficient to cause a fork"));
-  callback(null);
-}
-
-function fork(augur, params, auth, callback) {
-  if (!params || params === "help" || params.split(",").length < 1) {
-    help(callback);
-  } else {
-    var paramArray = params.split(",");
-    var marketId = paramArray[0];
-    var userAuth = null;
-    if (process.env.REPORTER_PRIVATE_KEY) {
-      userAuth = getPrivateKeyFromString(process.env.REPORTER_PRIVATE_KEY);
-    } else if (paramArray[2] !== undefined) {
-      userAuth = getPrivateKeyFromString(paramArray[2]);
-    } else {
-      userAuth = auth;
-    }
-
-    console.log(chalk.yellow.dim("marketId"), marketId);
-    console.log(chalk.yellow.dim("reporter"), userAuth.address);
-    console.log(chalk.yellow.dim("owner"), auth.address);
-    forkInternal(augur, marketId, userAuth, auth, callback);
-  }
 }
 
 module.exports = fork;

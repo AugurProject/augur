@@ -3,6 +3,7 @@
 var Augur = require("../../src");
 var debugOptions = require("../debug-options");
 var getPrivateKeyFromString = require("../dp/lib/get-private-key").getPrivateKeyFromString;
+var getPrivateKeyFromEnv = require("../dp/lib/get-private-key").getPrivateKeyFromEnv;
 var chalk = require("chalk");
 var columnify = require("columnify");
 var options = require("options-parser");
@@ -30,55 +31,101 @@ var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 var methods = {
   "get-balance": {
     method: getBalance,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, get this accounts balances" },
+      account: { required: true, short: "a", help: "account address" },
+    },
   },
   "list-markets": {
     method: listMarkets,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, list all markets, show endTime and description" },
+    },
   },
   "designate-report": {
     method: designatedReport,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, REP is given to user if needed" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
+      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+    },
   },
   "initial-report": {
     method: initialReport,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, used for Open Reporting" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
+      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+    },
   },
   "dispute-contribute": {
     method: disputeContribute,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, push time and dispute this market" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
+      amount: { short: "a", help: "Optional: amount of REP to dispute with" },
+      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+    },
   },
   "finalize-market": {
     method: finalizeMarket,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, finalize the market, it's in the correct state" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
   "push-time": {
     method: pushTime,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, push-time has been dep. use push-timestamp or set-timestamp" },
+    },
   },
   "market-info": {
     method: marketInfo,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, show attributes of this market" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
   "show-initial-reporter": {
     method: showInitialReporter,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, show initial reporter address" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
   "fork": {
     method: fork,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, dispute this market all the way to fork" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
   "approval": {
     method: approval,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      account: { required: true, short: "a", help: "account address to be approved to trade" },
+    },
   },
   "list-market-orders": {
     method: listMarketOrders,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+    },
   },
   "fill-market-orders": {
     method: fillMarketOrders,
-    opts: null,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, script approves user if needed" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      outcome: { required: true, short: "o", help: "Outcome to fill order on" },
+      orderType: {required: true, short: "t", help: "Order type ('buy' | 'sell')"},
+    },
   },
   "push-timestamp": {
     method: pushTimestamp,
@@ -114,30 +161,6 @@ var methods = {
   },
 };
 
-function runCommand(method, params, network, callback) {
-  console.log(chalk.yellow.dim("command"), method.command);
-  console.log(chalk.yellow.dim("parameters"), params);
-  console.log(chalk.yellow.dim("network"), network);
-  console.log(NetworkConfiguration.create);
-  var config = NetworkConfiguration.create(network);
-  console.log(chalk.yellow("network http:"), config.http);
-  var augur = new Augur();
-  augur.rpc.setDebugOptions(debugOptions);
-  var auth = getPrivateKeyFromString(config.privateKey);
-  var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
-  augur.connect({ ethereumNode: { http: config.http, pollingIntervalMilliseconds: 500 }, augurNode: augurWs }, function (err) {
-    if (err) {
-      console.log(chalk.red("Error "), chalk.red(err));
-      return callback(err);
-    }
-    method.method(augur, params, auth, function (err) {
-      if (err) console.log(chalk.red("Error "), chalk.red(err));
-      console.log(chalk.green("Finished Execution"));
-      process.exit(0);
-    });
-  });
-}
-
 function runCommandWithArgs(commandName, method, args, network, callback) {
   console.log("Running with Args");
   console.log(chalk.yellow.dim("command"), commandName);
@@ -148,7 +171,7 @@ function runCommandWithArgs(commandName, method, args, network, callback) {
   console.log(chalk.yellow("network http:"), config.http);
   var augur = new Augur();
   augur.rpc.setDebugOptions(debugOptions);
-  var auth = getPrivateKeyFromString(config.privateKey);
+  var auth = process.env.ETHEREUM_PRIVATE_KEY ? getPrivateKeyFromEnv() : getPrivateKeyFromString(config.privateKey);
   var augurWs = process.env.AUGUR_WS ? process.env.AUGUR_WS : "http://localhost:9001";
   augur.connect({ ethereumNode: { http: config.http, pollingIntervalMilliseconds: 500 }, augurNode: augurWs }, function (err) {
     if (err) {
@@ -168,15 +191,14 @@ function help() {
   console.log("                                  ");
   console.log("      Welcome to FLASH ......>    ");
   console.log("                                  ");
-  console.log("Usage: flash <command> param1,param2,... -n network1,network2,...");
+  console.log("Usage: flash <command> OPTIONS");
   console.log("Command Help flash <command> -h");
 
   console.log(chalk.underline("\nUsages"));
-  console.log("Pushing Time on contracts is only possible if USE_NORMAL_TIME='false' environment variable was set when contracts were uploaded");
+  console.log("flash depends on the TimeControlled smart contract, this allows for pushing time");
 
   console.log(chalk.underline("\nCommands"));
-  console.log(Object.keys(methods).join(", "), "or help for this message");
-  console.log("Run command help to get parameters needed, ie. initial-report help");
+  console.log(Object.keys(methods).join(", "), "or -h for this message");
 
   console.log(chalk.underline("\nNetworks"));
   console.log(NETWORKS.join(", "));
@@ -208,6 +230,7 @@ function help() {
 
   console.log("               ");
   console.log(chalk.underline("\Method descriptions"));
+  console.log("               ");
   Object.keys(methods).sort(function (a, b) { return a - b;}).map(function (name) {
     console.log(chalk.underline(name));
     methods[name].method(null, "help", null, function () { });
@@ -232,38 +255,30 @@ if (require.main === module) {
   }
   console.log("args:", JSON.stringify(args));
   var method = methods[args.opt.command];
-  if (args.opt.help && !method) {
-    help();
-    process.exit();
-  }
-  if (!method) {
-    console.log(chalk.red("Method Not Found"), chalk.red(args.opt.command));
-    console.log(chalk.red(Object.keys(methods).join(", ")));
-    console.log(chalk.red("try flash -h, to get help"));
-    process.exit();
-  }
 
-  if (method.opts) { // new way to pass parameters
-    try {
-      var localArgs = options.parse(method.opts, process.argv);
-      runCommandWithArgs(args.opt.command, method, localArgs, args.opt.network, function () {
-        process.exit();
-      });
-    } catch (error) {
-      options.help(method.opts);
-    }
-  } else { // old way to pass parameters
-    if (method && args.opt.help) {
-      console.log(chalk.yellow("Help for"), chalk.yellow.underline(args.opt.command));
-      method.method(null, "help", null, function () { });
-      process.exit(0);
-    } else if (args.opt.network == null) {
-      console.log(chalk.red("Network is required"));
+  if (args.opt.help) {
+    if (!method) {
       help();
       process.exit();
     }
-    runCommand(method, args.opt.params, args.opt.network, function () {
+    options.help(method.opts);
+    process.exit();
+  }
+
+  if (!method) {
+    console.log(chalk.red("Method Not Found"), chalk.red(args.opt.command));
+    console.log(chalk.red(Object.keys(methods).join(", ")));
+    console.log(chalk.red("Try flash -h, to get help"));
+    process.exit();
+  }
+
+  try {
+    var localArgs = options.parse(method.opts, process.argv);
+    runCommandWithArgs(args.opt.command, method, localArgs, args.opt.network, function () {
       process.exit();
     });
+  } catch (error) {
+    options.help(method.opts);
   }
+
 }

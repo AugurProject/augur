@@ -5,7 +5,17 @@
 var chalk = require("chalk");
 var theGetBalance = require("../dp/lib/get-balances");
 
-function getBalanceInternal(augur, universe, address, callback) {
+function help() {
+  console.log(chalk.red("Use this command to get REP and ETH balances for account"));
+}
+
+function getBalance(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
+  var address = args.opt.account;
   console.log(chalk.green.dim("address:"), chalk.green(address));
   console.log(chalk.green.dim("universe:"), chalk.green(universe));
   theGetBalance(augur, universe, address, function (err, balances) {
@@ -14,29 +24,10 @@ function getBalanceInternal(augur, universe, address, callback) {
       return callback(JSON.stringify(err));
     }
     console.log(chalk.cyan("Balances:"));
-    console.log("Ether:      " + chalk.green(balances.ether));
-    console.log("Reputation: " + chalk.green(balances.reputation));
+    console.log("Ether: " + chalk.green(balances.ether));
+    console.log("Rep:   " + chalk.green(balances.reputation));
     callback(null);
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> <user address>"));
-  console.log(chalk.red("account address is needed to get balances"));
-  callback(null);
-}
-
-function getBalance(augur, params, auth, callback) {
-  if (params === "help") {
-    help(callback);
-  } else {
-    var account = params;
-    if (account === undefined) {
-      account = auth.address;
-    }
-    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    getBalanceInternal(augur, universe, account, callback);
-  }
 }
 
 module.exports = getBalance;

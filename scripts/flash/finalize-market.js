@@ -7,7 +7,16 @@ var getTime = require("./get-timestamp");
 var setTimestamp = require("./set-timestamp");
 var displayTime = require("./display-time");
 
-function finalizeMarketInternal(augur, marketId, auth, callback) {
+function help() {
+  console.log(chalk.red("Market is ready to be finalize, so finalize the market"));
+}
+
+function finalizeMarket(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var marketId = args.opt.marketId;
   var marketPayload = { tx: { to: marketId } };
   augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
     if (err) {
@@ -50,23 +59,6 @@ function finalizeMarketInternal(augur, marketId, auth, callback) {
       });
     });
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> marketId"));
-  console.log(chalk.red("parameter 1: marketId is needed"));
-  callback(null);
-}
-
-function finalizeMarket(augur, params, auth, callback) {
-  if (!params || params === "help") {
-    help(callback);
-  } else {
-    var marketId = params;
-    console.log(chalk.yellow.dim("marketId"), marketId);
-    console.log(chalk.yellow.dim("owner"), auth.address);
-    finalizeMarketInternal(augur, marketId, auth, callback);
-  }
 }
 
 module.exports = finalizeMarket;

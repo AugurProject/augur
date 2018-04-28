@@ -6,12 +6,21 @@ var chalk = require("chalk");
 var async = require("async");
 var displayTime = require("./display-time");
 
-function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
+function help() {
+  console.log(chalk.red("List all orders for this market"));
+}
+
+function getMarketOrders(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var marketId = args.opt.marketId;
   augur.api.Controller.getTimestamp(function (err, timestamp) {
     if (err) {
       return callback(err);
     }
-    augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketInfos) {
+    augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketInfos) {
       if (err) {
         console.log(chalk.red("Error "), chalk.red(err));
         return callback(err);
@@ -59,24 +68,6 @@ function getMarketOrdersInternal(augur, marketIds, universe, auth, callback) {
       });
     });
   });
-}
-
-function help(callback) {
-  console.log(chalk.red("params syntax --> marketId"));
-  callback(null);
-}
-
-function getMarketOrders(augur, params, auth, callback) {
-  if (params === "help") {
-    help(callback);
-  } else {
-    if (params == null) return callback("MarketId is required");
-    var marketId = params;
-    console.log(chalk.yellow.dim("marketId"), chalk.yellow(marketId));
-    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    console.log(chalk.yellow.dim("Universe"), chalk.yellow(universe));
-    getMarketOrdersInternal(augur, [marketId], universe, auth, callback);
-  }
 }
 
 module.exports = getMarketOrders;
