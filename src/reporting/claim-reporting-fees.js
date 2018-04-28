@@ -72,12 +72,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             } else {
               successfulTransactions.feeWindowRedeem.push(contract.address);
             }
-            console.log("Redeemed feeWindow", contract.address);
+            // console.log("Redeemed feeWindow", contract.address);
             nextContract();
           },
           onFailed: function () {
             failedTransactions.feeWindowRedeem.push(contract.address);
-            console.log("Failed to redeem feeWindow", contract.address);
+            // console.log("Failed to redeem feeWindow", contract.address);
             nextContract();
           },
         }));
@@ -98,12 +98,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
               } else {
                 successfulTransactions.crowdsourcerForkAndRedeem.push(contract.address);
               }
-              console.log("Forked and redeemed crowdsourcer", contract.address);
+              // console.log("Forked and redeemed crowdsourcer", contract.address);
               nextContract();
             },
             onFailed: function () {
               failedTransactions.crowdsourcerForkAndRedeem.push(contract.address);
-              console.log("Failed to forkAndRedeem crowdsourcer", contract.address);
+              // console.log("Failed to forkAndRedeem crowdsourcer", contract.address);
               nextContract();
             },
           }));
@@ -123,12 +123,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
               } else {
                 successfulTransactions.crowdsourcerRedeem.push(contract.address);
               }
-              console.log("Redeemed crowdsourcer", contract.address);
+              // console.log("Redeemed crowdsourcer", contract.address);
               nextContract();
             },
             onFailed: function () {
               failedTransactions.crowdsourcerRedeem.push(contract.address);
-              console.log("Failed to redeem crowdsourcer", contract.address);
+              // console.log("Failed to redeem crowdsourcer", contract.address);
               nextContract();
             },
           }));
@@ -150,12 +150,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
               } else {
                 successfulTransactions.initialReporterForkAndRedeem.push(contract.address);
               }
-              console.log("Forked and redeemed initialReporter", contract.address);
+              // console.log("Forked and redeemed initialReporter", contract.address);
               nextContract();
             },
             onFailed: function () {
               failedTransactions.initialReporterForkAndRedeem.push(contract.address);
-              console.log("Failed to forkAndRedeem initialReporter", contract.address);
+              // console.log("Failed to forkAndRedeem initialReporter", contract.address);
               nextContract();
             },
           }));
@@ -175,12 +175,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
               } else {
                 successfulTransactions.initialReporterRedeem.push(contract.address);
               }
-              console.log("Redeemed initialReporter", contract.address);
+              // console.log("Redeemed initialReporter", contract.address);
               nextContract();
             },
             onFailed: function () {
               failedTransactions.initialReporterRedeem.push(contract.address);
-              console.log("Failed to redeem initialReporter", contract.address);
+              // console.log("Failed to redeem initialReporter", contract.address);
               nextContract();
             },
           }));
@@ -303,12 +303,12 @@ function claimReportingFees(p) {
                   gasEstimates.totals.migrateThroughOneFork = gasEstimates.totals.migrateThroughOneFork.plus(result);
                 }
                 successfulTransactions.migrateThroughOneFork.push(nonforkedMarket.address);
-                console.log("Migrated market through one fork:", nonforkedMarket.address);
+                // console.log("Migrated market through one fork:", nonforkedMarket.address);
                 nextNonforkedMarket();
               },
               onFailed: function () {
                 failedTransactions.migrateThroughOneFork.push(nonforkedMarket.address);
-                console.log("Failed to migrate market through one fork:", nonforkedMarket.address);
+                // console.log("Failed to migrate market through one fork:", nonforkedMarket.address);
                 nextNonforkedMarket();
               },
             });
@@ -330,12 +330,12 @@ function claimReportingFees(p) {
                   gasEstimates.totals.disavowCrowdsourcers = gasEstimates.totals.disavowCrowdsourcers.plus(result);
                 }
                 successfulTransactions.disavowCrowdsourcers.push(nonforkedMarket.address);
-                console.log("Disavowed crowdsourcers for market", nonforkedMarket.address);
+                // console.log("Disavowed crowdsourcers for market", nonforkedMarket.address);
                 nextNonforkedMarket();
               },
               onFailed: function () {
                 failedTransactions.disavowCrowdsourcers.push(nonforkedMarket.address);
-                console.log("Failed to disavow crowdsourcers for", nonforkedMarket.address);
+                // console.log("Failed to disavow crowdsourcers for", nonforkedMarket.address);
                 nextNonforkedMarket();
               },
             }));

@@ -98,6 +98,7 @@
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.7.11",
     "shared-git-hooks": "1.2.1",
+    "sinon": "2.0.0",
     "uglify-js": "2.6.1"
   },
   "engines": {
