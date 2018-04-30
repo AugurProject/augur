@@ -7,7 +7,7 @@ services:
       - "8546:8546"
 
   node:
-    image: augurproject/augur-node:dev
+    image: augurproject/augur-node:core-${AUGUR_CORE_VERSION}
     ports:
       - "9001:9001"
     environment:

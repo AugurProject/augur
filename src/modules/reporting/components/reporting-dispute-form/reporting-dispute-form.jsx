@@ -397,11 +397,13 @@ export default class ReportingDisputeForm extends Component {
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
-                <button
-                  className={FormStyles['button--inline']}
-                  onClick={() => { this.setMAXStake() }}
-                >MAX
-                </button>
+                <div className={Styles.ReportingDisputeForm__container}>
+                  <button
+                    className={classNames(Styles.ReportingDisputeForm__button, FormStyles['button--inline'])}
+                    onClick={() => { this.setMAXStake() }}
+                  >MAX
+                  </button>
+                </div>
               }
             </li>
             <li>
