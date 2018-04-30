@@ -3,7 +3,6 @@
   "description": "A middleware node suitable for aggregating data for Augur from the Ethereum blockchain",
   "repository": "https://github.com/JonnyBurger/augur-node",
   "keywords": ["augur", "ethereum"],
-  "addons": ["heroku-postgresql:hobby-dev"],
   "env": {
     "ENDPOINT_HTTP": "https://rinkeby.ethereum.nodes.augur.net",
     "ENDPOINT_WS": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
