@@ -49,7 +49,8 @@ const Outcome = ({ className, outcome, marketId }) => {
               />
             </div>
             <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
-            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}> &#124; {totalBondSizeCurrent} REP</span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-break']}> / </span>
+            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}>{totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
             id={'tooltip--rep-progress-'+outcome.id+marketId}

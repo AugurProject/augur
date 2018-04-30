@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress.styles'
-import { calculateAddedStakePercentage, calculateTentativeRemainingRep } from 'modules/reporting/helpers/progress-calculations'
+import { calculateAddedStakePercentage, calculateTentativeCurrentRep } from 'modules/reporting/helpers/progress-calculations'
 
 const ReportingDisputeProgress = (p) => {
   let totalPercentageComplete = p.percentageComplete || 0
@@ -10,11 +10,11 @@ const ReportingDisputeProgress = (p) => {
   const currentPercentageComplete = p.percentageComplete || 0
   const userStaked = p.tentativeStake > 0 && p.isSelected
   const bondSizeCurrentFromatted = formatAttoRep(p.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
-  let remainingRepFormatted = formatAttoRep(p.stakeRemaining, { decimals: 4, roundUp: true }).formatted
+  let repStakedFormatted = formatAttoRep(p.stakeCurrent, { decimals: 4, roundUp: true }).formatted
 
   if (userStaked) {
     userPercentage = calculateAddedStakePercentage(p.bondSizeCurrent, p.accountStakeCurrent, p.tentativeStake)
-    remainingRepFormatted = calculateTentativeRemainingRep(p.bondSizeCurrent, p.stakeCurrent, p.tentativeStake)
+    repStakedFormatted = calculateTentativeCurrentRep(p.stakeCurrent, p.tentativeStake)
     totalPercentageComplete = currentPercentageComplete + userPercentage
   }
 
@@ -36,7 +36,11 @@ const ReportingDisputeProgress = (p) => {
             </div>
           </div>
         </div>
-        <div className={Styles['ReportingDisputeProgress__dispute-label']}>{remainingRepFormatted} Remaining &#124; { bondSizeCurrentFromatted } REP</div>
+        <div className={Styles['ReportingDisputeProgress__dispute-label']}>
+          <span className={Styles['ReportingDisputeProgress__dispute-label-total-rep-text']}>{repStakedFormatted}</span>
+          <span className={Styles['ReportingDisputeProgress__dispute-label-break']}> / </span>
+          <span className={Styles['ReportingDisputeProgress__dispute-label-goal-text']}>{ bondSizeCurrentFromatted } REP</span>
+        </div>
         { userStaked && totalPercentageComplete >= 100 &&
           <div className={Styles['ReportingDisputeProgress__dispute-tentative']}>New tentative outcome</div>
         }
