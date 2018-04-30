@@ -9,7 +9,6 @@ var approveAugurEternalApprovalValue = require("../dp/lib/approve-augur-eternal-
 var getPrivateKey = require("../dp/lib/get-private-key").getPrivateKey;
 var connectionEndpoints = require("../connection-endpoints");
 var debugOptions = require("../debug-options");
-var createOrder = require("../dp/lib/create-order");
 
 var marketId = process.argv[2];
 var orderType = process.argv[3];
@@ -44,6 +43,7 @@ getPrivateKey(null, function (err, auth) {
         console.error(err);
         process.exit(1);
       }
+      var direction = orderType === "buy" ? 0 : 1;
       augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
         async.eachSeries(marketsInfo, function (marketInfo, nextMarket) {
           console.log(chalk.yellow.dim("max price:"), chalk.yellow(marketInfo.maxPrice));
@@ -52,11 +52,30 @@ getPrivateKey(null, function (err, auth) {
           if (!price) { console.error("price needs to be set"); nextMarket(); }
           if (!shares) { console.error("shares needs to be set"); nextMarket(); }
           var tradeGroupId = augur.trading.generateTradeGroupId();
-          var order = {price: price, shares: shares };
-          createOrder(augur, marketId, parseInt(outcome, 10), marketInfo.numOutcomes, marketInfo.maxPrice, marketInfo.minPrice, marketInfo.numTicks, orderType, order, tradeGroupId, auth, function (err) {
-            if (err) console.error("create-orders failed:", err);
-            nextMarket();
-          });
+          var placeTradePayload = {
+            meta: auth,
+            amount: shares,
+            limitPrice: price,
+            minPrice: marketInfo.minPrice,
+            maxPrice: marketInfo.maxPrice,
+            numTicks: marketInfo.numTicks,
+            _direction: direction,
+            _market: marketId,
+            _outcome: outcome,
+            _tradeGroupId: tradeGroupId,
+            doNotCreateOrders: false,
+            onSent: function (res) {
+              if (debugOptions.cannedMarkets) console.log(chalk.green.dim("placeTrade sent:"), res.hash);
+            },
+            onSuccess: function () { nextMarket(null); },
+            onFailed: function (err) {
+              nextMarket(err);
+            },
+          };
+          if (debugOptions.cannedMarkets) console.log("create-order placeTradePayload:", placeTradePayload);
+
+          augur.trading.placeTrade(placeTradePayload);
+
         }, function (err) {
           if (err) console.log(chalk.red(err));
           process.exit(0);
