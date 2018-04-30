@@ -21,7 +21,7 @@ const MarketOutcomes = (p) => {
   }
 
   const currentValuePosition = {
-    left: calculatePosition(),
+    left: calculatePosition() + '%',
   }
 
   const minValue = !isNaN(p.min) && p.type !== BINARY ? `${p.min} ${scalarDenomination}` : '0 %'
