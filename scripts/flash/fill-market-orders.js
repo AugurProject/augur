@@ -20,7 +20,7 @@ function fillMarketOrder(augur, args, auth, callback) {
   var marketId = args.opt.marketId;
   var orderType = args.opt.orderType;
   var outcome = args.opt.outcome;
-  var direction = orderType === "buy" ? 0 : 1;
+  var direction = orderType === "buy" ? 1 : 0;
   augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketInfos) {
     if (err) {
       console.log(chalk.red("Error "), chalk.red(err));
@@ -37,6 +37,7 @@ function fillMarketOrder(augur, args, auth, callback) {
       }
       var market = marketInfos[0];
       var marketId = market.id;
+      console.log(chalk.yellow.dim("user"), chalk.yellow(auth.address));
       console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcome), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
       console.log(chalk.green.dim("OrderId:"), chalk.green.dim("Account:"), chalk.green.dim("Amount:"), chalk.green.dim("FullPrecisionPrice:"), chalk.green.dim("FullPrecisionAmount"));
       augur.trading.getOrders({ marketId: marketId, outcome: outcome, orderType: orderType }, function (err, orderBook) {

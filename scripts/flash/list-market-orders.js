@@ -36,7 +36,6 @@ function getMarketOrders(augur, args, auth, callback) {
       async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
         async.eachSeries(orderTypes, function (orderType, nextOrderType) {
           console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcomeId), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
-          console.log(chalk.green.dim("OrderId:"), chalk.green.dim("Account:"), chalk.green.dim("Amount:"), chalk.green.dim("FullPrecisionPrice:"), chalk.green.dim("FullPrecisionAmount"));
           augur.trading.getOrders({ marketId: marketId, outcome: outcomeId, orderType: orderType }, function (err, orderBook) {
             if (err) {
               console.error(err);
@@ -54,7 +53,8 @@ function getMarketOrders(augur, args, auth, callback) {
             var orders = orderBook[marketId][outcomeId][orderType];
             Object.keys(orders).forEach(function (orderId) {
               var order = orders[orderId];
-              console.log(chalk.green(orderId), chalk.yellow(order.owner), chalk.yellow(order.amount), chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
+              console.log(chalk.green.dim("order id"), chalk.green(orderId), chalk.yellow.dim("owner"), chalk.yellow(order.owner), chalk.yellow.dim("amount"),
+                chalk.yellow(order.amount), chalk.yellow.dim("price"), chalk.yellow(order.fullPrecisionPrice), chalk.yellow.dim("amount"), chalk.yellow(order.fullPrecisionAmount));
             });
             nextOrderType(null);
           });
