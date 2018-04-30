@@ -287,7 +287,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
         filename: '[name].css'
       }),
       new UglifyJSPlugin({
-        parallel: true,
+        parallel: false,
         sourceMap: true,
       })
     ]
