@@ -11,11 +11,19 @@ ul.ReportingDisputeForm__fields {
   > li {
     display: table-row;
 
+    @media @breakpoint-mobile-medium {
+      display: block;
+    }
+
     > button,
     > article {
       display: table-cell;
       padding-bottom: 1rem;
       vertical-align: middle;
+
+      @media @breakpoint-mobile-medium {
+        padding-bottom: 0.5rem;
+      }
     }
 
     > button {
@@ -31,6 +39,16 @@ ul.ReportingDisputeForm__fields {
     &:last-child > button,
     &:last-child > article {
       padding-bottom: 0;
+
+      @media @breakpoint-mobile-medium {
+        padding-bottom: 0.5rem;
+      }
+    }
+
+    > article {
+      @media @breakpoint-mobile-medium {
+        display: table-row;
+      }
     }
   }
 }

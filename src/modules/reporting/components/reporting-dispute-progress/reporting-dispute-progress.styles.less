@@ -4,6 +4,10 @@
   align-items: center;
   display: flex;
   width: 100%;
+
+  @media @breakpoint-mobile-medium {
+    flex-wrap: wrap;
+  }
 }
 
 .ReportingDisputeProgress__graph {
@@ -50,6 +54,15 @@
   font-size: @font-size-small;
   margin-left: 1.5rem;
   text-transform: uppercase;
+
+  @media @breakpoint-mobile-medium {
+    margin-left: 0;
+    margin-top: 0.2rem;
+  }
+
+  @media @breakpoint-mobile-small {
+    margin-left: 0.2rem;
+  }
 }
 
 .ReportingDisputeProgress__graph-current {
