@@ -2,19 +2,19 @@
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
-const { parallel } = require("async");
-const { BigNumber } = require("bignumber.js");
+const {parallel} = require("async");
+const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("../../../build/blockchain/log-processors/market-created");
-const { getMarketsWithReportingState } = require("../../../build/server/getters/database");
+const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../build/blockchain/log-processors/market-created");
+const {getMarketsWithReportingState} = require("../../../build/server/getters/database");
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
     const getState = (db, params, callback) => parallel({
-      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market }).asCallback(next),
-      categories: next => db("categories").where({ category: params.log.topic }).asCallback(next),
-      outcomes: next => db("outcomes").where({ marketId: params.log.market }).asCallback(next),
-      tokens: next => db("tokens").where({ marketId: params.log.market }).asCallback(next),
+      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
+      categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
+      outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
+      tokens: next => db("tokens").where({marketId: params.log.market}).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -148,7 +148,7 @@ describe("blockchain/log-processors/market-created", () => {
             isInvalid: null,
             forking: 0,
             needsMigration: 0,
-      }],
+          }],
           categories: [{
             category: "TEST_CATEGORY",
             popularity: 0,
