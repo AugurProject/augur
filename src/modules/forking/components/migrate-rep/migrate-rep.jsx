@@ -62,21 +62,9 @@ export default class MigrateRep extends Component {
       isMarketLoaded,
       loadFullMarket,
     } = this.props
-    this.getForkMigrationTotals()
     if (isConnected && !isMarketLoaded) {
       loadFullMarket()
     }
-  }
-
-  getForkMigrationTotals() {
-    const {
-      getForkMigrationTotals,
-    } = this.props
-    getForkMigrationTotals((forkMigrationTotals) => {
-      this.setState({
-        forkMigrationTotals,
-      })
-    })
   }
 
   prevPage() {
@@ -123,6 +111,7 @@ export default class MigrateRep extends Component {
       location,
       market,
       submitMigrateREP,
+      getForkMigrationTotals,
     } = this.props
     const s = this.state
 
@@ -163,6 +152,7 @@ export default class MigrateRep extends Component {
                 validations={s.validations}
                 repAmounts={s.repAmount}
                 accountREP={accountREP}
+                getForkMigrationTotals={getForkMigrationTotals}
               />
             }
             { s.currentStep === 1 &&
