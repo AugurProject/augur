@@ -73,16 +73,21 @@ class MarketReportingPayouts extends Component {
   constructor(props) {
     super(props)
 
+    
+
     this.state = {
-      outcomeWrapperHeight: 0,
+      outcomeWrapperHeight: this.getInitialHeight(),
       isOpen: false,
     }
 
     this.showMore = this.showMore.bind(this)
   }
 
+  getInitialHeight() {
+    return this.props.isMobile ? 100 : 0
+  }
   showMore() {
-    const outcomeWrapperHeight = this.state.isOpen ? 0 : `${this.outcomeTable.clientHeight}px`
+    const outcomeWrapperHeight = this.state.isOpen ? this.getInitialHeight() : `${this.outcomeTable.clientHeight}px`
 
     this.setState({
       outcomeWrapperHeight,
@@ -91,33 +96,50 @@ class MarketReportingPayouts extends Component {
   }
 
   render() {
-    const { outcomes, marketId } = this.props
+    const { outcomes, marketId, isMobile } = this.props
 
+    const numShown = isMobile ? 4 : 3
     const totalOutcomes = outcomes.length
-    const displayShowMore = totalOutcomes > 3
-    const showMoreText = this.state.isOpen ? `- ${totalOutcomes - 3} less` : `+ ${totalOutcomes - 3} more`
+    const displayShowMore = totalOutcomes > numShown
+    const showMoreText = this.state.isOpen ? `- ${totalOutcomes - numShown} less` : `+ ${totalOutcomes - numShown} more`
 
     const outcomeWrapperStyle = {
       minHeight: this.state.outcomeWrapperHeight,
     }
 
     return (
-      <div
-        className={Styles.MarketReportingPayouts}
-        style={outcomeWrapperStyle}
-      >
-        { outcomes.length > 0 &&
-          <Outcome
-            className={Styles['MarketReportingPayouts__height-sentinel']}
-            outcome={outcomes[0]}
-            marketId={marketId}
-          />
-        }
+      <div className={Styles.MarketReportingPayouts__container}>
         <div
-          className={classNames(Styles['MarketReportingPayouts__outcomes-container'], {
-            [`${Styles['show-more']}`]: displayShowMore,
-          })}
+          className={Styles.MarketReportingPayouts}
+          style={outcomeWrapperStyle}
         >
+          { outcomes.length > 0 &&
+            <Outcome
+              className={Styles['MarketReportingPayouts__height-sentinel']}
+              outcome={outcomes[0]}
+              marketId={marketId}
+            />
+          }
+          <div
+            className={classNames(Styles['MarketReportingPayouts__outcomes-container'], {
+              [`${Styles['show-more']}`]: displayShowMore,
+            })}
+          >
+            <div
+              ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
+              className={Styles.MarketReportingPayouts__outcomes}
+            >
+              {outcomes.length > 0 && outcomes.map(outcome => (
+                <Outcome
+                  key={outcome.id}
+                  outcome={outcome}
+                  marketId={marketId}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className={classNames(Styles['MarketReportingPayouts__button-container'])}>
           { displayShowMore &&
             <button
               className={Styles['MarketReportingPayouts__show-more']}
@@ -126,18 +148,6 @@ class MarketReportingPayouts extends Component {
               { showMoreText }
             </button>
           }
-          <div
-            ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
-            className={Styles.MarketReportingPayouts__outcomes}
-          >
-            {outcomes.length > 0 && outcomes.map(outcome => (
-              <Outcome
-                key={outcome.id}
-                outcome={outcome}
-                marketId={marketId}
-              />
-            ))}
-          </div>
         </div>
       </div>
     )
@@ -147,6 +157,8 @@ class MarketReportingPayouts extends Component {
 MarketReportingPayouts.propTypes = {
   outcomes: PropTypes.array.isRequired,
   marketId: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool,
+  isMobileSmall: PropTypes.bool,
 }
 
 Outcome.propTypes = {
