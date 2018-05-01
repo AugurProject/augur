@@ -13,13 +13,13 @@
 }
 
 .MarketReportingPayouts {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   min-height: 0;
   overflow: hidden;
   position: relative;
   transition: min-height 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }
 
 .MarketReportingPayouts__alert_icon {
@@ -45,11 +45,11 @@
   display: grid;
   grid-gap: 0.75rem 3.75rem;
   grid-template-columns: repeat(3, auto);
-  
+
   @media @breakpoint-mobile {
     grid-template-columns: repeat(2, auto);
   }
-  
+
   @media @breakpoint-mobile-small {
     grid-template-columns: repeat(1, auto);
   }
