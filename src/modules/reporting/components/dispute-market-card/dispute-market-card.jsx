@@ -5,7 +5,7 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import MarketProperties from 'modules/market/containers/market-properties'
 import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
-import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
+import MarketReportingPayouts from 'modules/reporting/containers/reporting-payouts'
 import Styles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 
 import { MARKETS } from 'modules/routes/constants/views'
@@ -17,7 +17,7 @@ import noop from 'src/utils/noop'
 import { compact } from 'lodash'
 import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
-const DisputeMarketCard = ({ history, isForkingMarket, location, market, isMobile, ...p }) => {
+const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p }) => {
   const outcomes = p.outcomes[market.id] || []
   let potentialFork = false
   outcomes.forEach((outcome, index) => {
@@ -77,7 +77,6 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, isMobil
         }
         {!isForkingMarket &&
           <MarketReportingPayouts
-            isMobile={isMobile}
             outcomes={outcomes}
             forkThreshold={p.forkThreshold}
             marketId={market.id}

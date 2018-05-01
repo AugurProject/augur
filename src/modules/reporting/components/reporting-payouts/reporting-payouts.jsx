@@ -82,7 +82,12 @@ class MarketReportingPayouts extends Component {
   }
 
   getInitialHeight() {
-    return this.props.isMobile ? 100 : 0
+    if (this.props.isMobileSmall) {
+      return 150
+    } else if (this.props.isMobile) {
+      return 100
+    }
+    return 0
   }
   showMore() {
     const outcomeWrapperHeight = this.state.isOpen ? this.getInitialHeight() : `${this.outcomeTable.clientHeight}px`
@@ -94,9 +99,9 @@ class MarketReportingPayouts extends Component {
   }
 
   render() {
-    const { outcomes, marketId, isMobile } = this.props
+    const { outcomes, marketId, isMobile, isMobileSmall } = this.props
 
-    const numShown = isMobile ? 4 : 3
+    const numShown = isMobile && !isMobileSmall ? 4 : 3
     const totalOutcomes = outcomes.length
     const displayShowMore = totalOutcomes > numShown
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - numShown} less` : `+ ${totalOutcomes - numShown} more`
