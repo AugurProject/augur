@@ -5,7 +5,6 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 import { SELL } from 'modules/trade/constants/types'
 
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
@@ -26,6 +25,12 @@ export default class Order extends Component {
       showConfirm: false,
       confirmHeight: 'auto',
       confirmMargin: '0px',
+    }
+
+    this.orderStatusText = {
+      CLOSE_DIALOG_CLOSING: '',
+      CLOSE_DIALOG_FAILED: 'Failed to Cancel Order',
+      CLOSE_DIALOG_PENDING: 'Cancellation Pending',
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
@@ -60,6 +65,7 @@ export default class Order extends Component {
       order,
       pending,
     } = this.props
+    const { orderCancellationStatus } = order
     const s = this.state
 
     const confirmStyle = {
@@ -78,7 +84,7 @@ export default class Order extends Component {
           { outcomeName }
           { pending &&
             <span className={Styles.Order__pending}>
-              <span>Cancellation Pending</span>
+              <span>{`${this.orderStatusText[orderCancellationStatus]}`}</span>
             </span>
           }
         </li>
@@ -97,7 +103,7 @@ export default class Order extends Component {
           <li />
         }
         <li>
-          { pending === CLOSE_DIALOG_CLOSING ?
+          { pending ?
             <span className={Styles.NotActive}>Cancel</span> :
             <button onClick={this.toggleConfirm}>Cancel</button>
           }

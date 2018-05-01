@@ -72,6 +72,7 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
         marketId,
         outcomeId,
         pending: !!orderCancellation[order.orderId],
+        orderCancellationStatus: orderCancellation[order.orderId],
         originalShares: formatNone(),
         avgPrice: formatEther(order.fullPrecisionPrice),
         matchedShares: formatNone(),
