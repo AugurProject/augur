@@ -420,6 +420,10 @@ export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   tradeGroupId: Bytes32|null;
 }
 
+export interface TradingHistoryRow extends TradesRow<BigNumber> {
+  timestamp: number;
+}
+
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;
   amount: BigNumberType;

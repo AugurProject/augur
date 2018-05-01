@@ -4,6 +4,7 @@ import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import {
+  Address,
   MarketsRowWithCreationTime,
   OutcomesRow,
   UIMarketInfo,
@@ -16,6 +17,7 @@ import {
   NormalizedPayout,
   NormalizedPayoutNumerators,
   StakeDetails,
+  TradingHistoryRow,
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
@@ -131,6 +133,41 @@ export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeIn
   });
 
   return info;
+}
+
+
+export function queryUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketId?: Address|null, outcome?: number|null, orderType?: string|null, earliestCreationTime?: number|null, latestCreationTime?: number|null, sortBy?: string|null, isSortDescending?: boolean|null, limit?: number|null, offset?: number|null): Knex.QueryBuilder {
+  if (universe == null && marketId == null ) throw new Error("Must provide reference to universe, specify universe or marketId");
+  const query = db.select([
+    "trades.transactionHash",
+    "trades.logIndex",
+    "trades.marketId",
+    "trades.outcome",
+    "trades.orderType",
+    "trades.price",
+    "trades.amount",
+    "trades.creator",
+    "trades.shareToken",
+    "trades.blockNumber",
+    "trades.marketCreatorFees",
+    "trades.reporterFees",
+    "trades.tradeGroupId",
+    "blocks.timestamp",
+  ]).from("trades");
+  query.leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber");
+  query.leftJoin("markets", "trades.marketId", "markets.marketId");
+  query.where((builder) => {
+    builder.where("trades.creator", account).orWhere("trades.filler", account);
+  });
+  if (universe != null) query.where("universe", universe);
+  if (marketId != null) query.where("trades.marketId", marketId);
+  if (outcome != null) query.where("trades.outcome", outcome);
+  if (orderType != null) query.where("trades.orderType", orderType);
+  if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
+  if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
+  queryModifier(query,  "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
+
+  return query;
 }
 
 export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
