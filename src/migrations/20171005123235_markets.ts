@@ -25,6 +25,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "feeWindow" varchar(66),
       "endTime" integer NOT NULL CONSTRAINT "positiveEndTime" CHECK ("endTime" > 0),
       "finalizationTime" integer,
+      "forking" boolean DEFAULT O,
       "marketStateId" integer,
       "shortDescription" text NOT NULL,
       "longDescription" text,
@@ -35,8 +36,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "numTicks" VARCHAR(255) NOT NULL,
       "consensusPayoutId" integer,
       "disputeRounds" integer,
-      "isInvalid" boolean,
-      "forking" integer
+      "isInvalid" boolean
     )`)
     .raw("CREATE INDEX endTime ON markets (endTime)");
   });

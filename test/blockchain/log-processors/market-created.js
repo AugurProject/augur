@@ -146,6 +146,7 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -302,6 +303,7 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -479,6 +481,7 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -630,6 +633,7 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",

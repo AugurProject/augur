@@ -69,6 +69,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           marketCreatorFeesCollected: "0",
           volume:                     "0",
           sharesOutstanding:          "0",
+          forking:                    0,
         };
         const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({
           marketId: log.market,
