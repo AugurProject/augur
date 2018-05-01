@@ -9,7 +9,6 @@ var speedomatic = require("speedomatic");
 var displayTime = require("./display-time");
 var setTimestamp = require("./set-timestamp");
 var getPayoutNumerators = require("./get-payout-numerators");
-var getBalance = require("../dp/lib/get-balances");
 var doMarketContribute = require("./do-market-contribute");
 
 var day = 108000; // day
@@ -102,22 +101,10 @@ function disputeContribute(augur, args, auth, callback) {
     help();
     return callback(null);
   }
-  var amount = args.opt.amount;
+  var amount = args.opt.amount || 10000;
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
   var invalid = args.opt.invalid;
-  if (amount == null) {
-    var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
-    getBalance(augur, universe, auth.address, function (err, balances) {
-      if (err) {
-        console.log(chalk.red(err));
-        return callback(JSON.stringify(err));
-      }
-      amount = balances.reputation;
-      console.log(chalk.yellow.dim("amount"), amount);
-      disputeContributeInternal(augur, marketId, outcome, amount, auth, invalid, auth, callback);
-    });
-  }
   console.log(chalk.yellow.dim("amount"), amount);
   disputeContributeInternal(augur, marketId, outcome, amount, auth, invalid, auth, callback);
 }
