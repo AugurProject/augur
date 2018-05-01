@@ -100,8 +100,12 @@ class MarketReportingPayouts extends Component {
   componentDidUpdate() {
     const calculatedHeight = this.getInitialHeight(this.props.isMobile, this.props.isMobileSmall)
     if (this.state.outcomeWrapperHeight !== calculatedHeight && !this.state.isOpen) {
-      this.setState({ outcomeWrapperHeight: calculatedHeight })
+      this.setStateFromComponent(calculatedHeight)
     }
+  }
+
+  setStateFromComponent(calculatedHeight) {
+    this.setState({ outcomeWrapperHeight: calculatedHeight })
   }
 
   getInitialHeight(isMobile, isMobileSmall) {
