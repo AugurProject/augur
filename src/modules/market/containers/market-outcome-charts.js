@@ -32,7 +32,6 @@ const mapStateToProps = (state, ownProps) => {
   const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice)
-
   return {
     outcomeName: outcome.name,
     isMobile: state.isMobile,

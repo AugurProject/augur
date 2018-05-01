@@ -23,9 +23,63 @@ ul.ReportingDisputeForm__fields {
       padding-right: 2rem;
     }
 
+    > input {
+      margin-right: 1rem;
+      width: 18rem;
+    }
+
     &:last-child > button,
     &:last-child > article {
       padding-bottom: 0;
     }
   }
+}
+
+.ReportingDisputeForm__table__input {
+  display: table;
+
+  > li {
+    display: table-row;
+    white-space: nowrap;
+
+    > button,
+    > input {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    > article {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    > button {
+      line-height: 1.75rem;
+    }
+
+    > input {
+      margin-right: 1rem;
+      width: 17.45rem;
+    }
+
+    &:last-child > button,
+    &:last-child > article {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.ReportingDisputeForm__container {
+  margin-right: 0.6em;
+  position: absolute;
+  right: 0;
+}
+
+.ReportingDisputeForm__button {
+  background: @color-lighter-purple;
+  border-radius: 3px;
+  color: @color-white;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  padding: 0.8em;
 }

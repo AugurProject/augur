@@ -194,35 +194,33 @@ export default class MigrateRepForm extends Component {
             ))
             }
             { market.marketType === SCALAR &&
-              <li className={FormStyles['field--inline']}>
-                <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
-                  <li>
-                    <button
-                      className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
-                      onClick={(e) => { this.validateScalar('', 'selectedOutcome', market.minPrice, market.maxPrice, false) }}
-                    />
-                    <input
-                      id="sr__input--outcome-scalar"
-                      type="number"
-                      ref={(input) => { this.textInput = input }}
-                      min={market.minPrice}
-                      max={market.maxPrice}
-                      step={market.tickSize}
-                      placeholder={market.scalarDenomination}
-                      value={s.inputSelectedOutcome}
-                      className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('err') && validations.selectedOutcome })}
-                      onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, false) }}
-                    />
-                  </li>
-                  <li>
-                    { validations.hasOwnProperty('err') &&
-                      <span className={FormStyles.Form__error}>
-                        {InputErrorIcon}{ validations.err }
-                      </span>
-                    }
-                  </li>
-                </ul>
-              </li>
+              <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
+                <li>
+                  <button
+                    className={classNames({ [`${FormStyles.active}`]: s.inputSelectedOutcome !== '' })}
+                    onClick={(e) => { this.validateScalar('', 'selectedOutcome', market.minPrice, market.maxPrice, false) }}
+                  />
+                  <input
+                    id="sr__input--outcome-scalar"
+                    type="number"
+                    ref={(input) => { this.textInput = input }}
+                    min={market.minPrice}
+                    max={market.maxPrice}
+                    step={market.tickSize}
+                    placeholder={market.scalarDenomination}
+                    value={s.inputSelectedOutcome}
+                    className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('err') && validations.selectedOutcome })}
+                    onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, false) }}
+                  />
+                </li>
+                <li>
+                  { validations.hasOwnProperty('err') &&
+                    <span className={FormStyles.Form__error}>
+                      {InputErrorIcon}{ validations.err }
+                    </span>
+                  }
+                </li>
+              </ul>
             }
           </ul>
         </li>

@@ -7,7 +7,6 @@ import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-out
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
-import { isEqual, isEmpty } from 'lodash'
 import { compose, reverse, sortBy, take } from 'lodash/fp'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
@@ -46,20 +45,6 @@ export default class MarketOutcomeOrderbook extends Component {
     this.state = {
       hoveredOrderIndex: null,
       hoveredSide: null,
-    }
-  }
-
-  componentDidMount() {
-    this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
-  }
-
-  componentDidUpdate(prevProps) {
-    const { orderBook } = this.props
-    if (
-      isEmpty(prevProps.orderBook.asks) &&
-      !isEqual(prevProps.orderBook.asks, orderBook.asks)
-    ) {
-      this.asks.scrollTo(0, (this.asks.scrollHeight || 0))
     }
   }
 

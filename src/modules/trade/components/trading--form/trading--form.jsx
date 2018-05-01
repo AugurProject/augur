@@ -126,9 +126,8 @@ class MarketTradingForm extends Component {
     const {
       maxPrice,
       minPrice,
-      market,
     } = this.props
-    const tickSize = createBigNumber(market.tickSize)
+    // const tickSize = createBigNumber(market.tickSize)
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
@@ -137,11 +136,12 @@ class MarketTradingForm extends Component {
       passedTest = false
       errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${minPrice} - ${maxPrice}`)
     }
-    if (value && value.mod(tickSize).gt('0')) {
-      errorCount += 1
-      passedTest = false
-      errors[this.INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`)
-    }
+    // removed this validation for now, let's let augur.js handle this.
+    // if (value && value.mod(tickSize).gt('0')) {
+    //   errorCount += 1
+    //   passedTest = false
+    //   errors[this.INPUT_TYPES.PRICE].push(`Price must be a multiple of ${tickSize}`)
+    // }
     return { isOrderValid: passedTest, errors, errorCount }
   }
 

@@ -177,8 +177,6 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
   config = merge(config, {
     entry: {
       main: [
-        // 'webpack-hot-middleware/client?reload=true',
-        'react-hot-loader/patch',
         'webpack-hot-middleware/client',
         `${PATHS.APP}/main`
       ]
@@ -289,7 +287,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
         filename: '[name].css'
       }),
       new UglifyJSPlugin({
-        parallel: true,
+        parallel: false,
         sourceMap: true,
       })
     ]

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
-import { AppContainer } from 'react-hot-loader'
 import { HashRouter } from 'react-router-dom'
 // TODO: Investigate this import see CH issue:
 // https://app.clubhouse.io/augur/story/5572/initaugur-import-issue
@@ -41,13 +40,11 @@ if (process.env.NODE_ENV === 'development') {
 function render(Root) {
   ReactDOM.render(
     <Provider store={store}>
-      <AppContainer>
-        <HashRouter>
-          <MainErrorBoundary>
-            <Root />
-          </MainErrorBoundary>
-        </HashRouter>
-      </AppContainer>
+      <HashRouter>
+        <MainErrorBoundary>
+          <Root />
+        </MainErrorBoundary>
+      </HashRouter>
     </Provider>,
     document.getElementById('app'),
   )

@@ -11,7 +11,7 @@ import NullStateMessage from 'modules/common/components/null-state-message/null-
 import MigrateRepForm from 'modules/forking/components/migrate-rep-form/migrate-rep-form'
 import MigrateRepConfirm from 'modules/forking/components/migrate-rep-confirm/migrate-rep-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
-
+import MarketAdditonalDetails from 'modules/reporting/components/market-additional-details/market-additional-details'
 import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
@@ -146,19 +146,9 @@ export default class MigrateRep extends Component {
         />
         }
         { !isEmpty(market) && s.showingDetails &&
-          <div className={Styles[`ReportingReportMarket__details-container-wrapper`]}>
-            <div className={Styles[`ReportingReportMarket__details-container`]}>
-              <div className={Styles.ReportingReportMarket__details}>
-                <span>
-                  {market.details}
-                </span>
-              </div>
-              <div className={Styles[`ReportingReportMarket__resolution-source`]}>
-                <h4>Resolution Source:</h4>
-                <span>{market.resolutionSource || 'Outcome will be determined by news media'}</span>
-              </div>
-            </div>
-          </div>
+          <MarketAdditonalDetails
+            market={market}
+          />
         }
         { !isEmpty(market) &&
           <article className={FormStyles.Form}>

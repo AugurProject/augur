@@ -21,7 +21,7 @@ export const calculatePercentage = (numSize, numTotalStake) => {
   if (totalStake.isEqualTo(0)) return 0
 
   const ratio = size.minus(totalStake).dividedBy(size)
-  return (ONE.minus(ratio).times(ONE_HUNDRED)).integerValue().toNumber()
+  return (ONE.minus(ratio).times(ONE_HUNDRED)).decimalPlaces(4).toNumber()
 }
 
 export const calculateNonAccountPercentage = (size, numStakeCurrent, numAccountStakeCurrent) => {
@@ -42,19 +42,17 @@ export const calculateAddedStakePercentage = (size, numAccountStake, numAddedSta
   return calculatePercentage(size, accountStake.plus(convertRepToAttoRep(addedStake)))
 }
 
-export const calculateTentativeRemainingRep = (size, numTotalStake, numTentativeStake) => {
+export const calculateTentativeCurrentRep = (numTotalStake, numTentativeStake) => {
   // NB: Remove whence paramaters are converted outside
   const totalStake = createBigNumber(numTotalStake, 10)
   const tentativeStake = createBigNumber(numTentativeStake, 10)
   // NB: Remove whence paramaters are converted outside
 
-  const result = calculateRemainingValue(createBigNumber(size), totalStake.plus(convertRepToAttoRep(tentativeStake))).toNumber()
+  const result = totalStake.plus(convertRepToAttoRep(tentativeStake)).toNumber()
   if (result < 0) return '0'
 
   return formatAttoRep(result, { decimals: 4, denomination: ' REP' }).formatted
 }
-
-const calculateRemainingValue = (total, portion) => total.minus(portion)
 
 const convertRepToAttoRep = (num) => {
   if (!num || num.isEqualTo(0)) return augur.constants.ZERO

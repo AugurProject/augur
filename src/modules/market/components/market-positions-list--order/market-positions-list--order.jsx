@@ -73,11 +73,13 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
-
     return (
       <ul
         ref={(order) => { this.order = order }}
-        className={!isMobile ? Styles.Order : Styles.PortMobile}
+        className={!isMobile ?
+          classNames(Styles.Order, { [Styles['Order-not_extended']]: isExtendedDisplay })
+          : Styles.PortMobile
+        }
       >
         <li>
           { outcomeName }

@@ -11,8 +11,8 @@ import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
-import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
+import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -160,13 +160,17 @@ export default class MarketPortfolioCard extends Component {
               <div
                 className={Styles.MarketCard__tabletoggle}
               >
-                <ChevronFlip pointDown={this.state.tableOpen.myPositions} />
+                <ChevronFlip pointDown={!this.state.tableOpen.myPositions} />
               </div>
             </button>
           }
           <div className={PositionStyles.MarketPositionsList__table}>
             { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).length > 0 &&
-              <ul className={PositionStyles['MarketPositionsList__table-header']}>
+              <ul className={classNames(
+                PositionStyles['MarketPositionsList__table-header'],
+                Styles['MarketCard__table-header'],
+              )}
+              >
                 <li>Outcome</li>
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
@@ -204,13 +208,17 @@ export default class MarketPortfolioCard extends Component {
                 <div
                   className={Styles.MarketCard__tabletoggle}
                 >
-                  <ChevronFlip pointDown={this.state.tableOpen.openOrders} />
+                  <ChevronFlip pointDown={!this.state.tableOpen.openOrders} />
                 </div>
               </button>
             }
             <div className={PositionStyles.MarketPositionsList__table}>
               { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
-              <ul className={PositionStyles['MarketPositionsList__table-header']}>
+              <ul className={classNames(
+                PositionStyles['MarketPositionsList__table-header'],
+                Styles['MarketCard__table-header'],
+              )}
+              >
                 <li>Outcome</li>
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}

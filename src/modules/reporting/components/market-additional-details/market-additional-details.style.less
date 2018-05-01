@@ -1,0 +1,35 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketAdditionalDetails__details-wrapper {
+  background-color: @color-darkpurple;
+}
+
+.MarketAdditionalDetails__details-container {
+  color: @color-white;
+  font-size: @font-size-small;
+  line-height: @font-size-medium;
+  margin: auto;
+  max-width: 62.75rem;
+  overflow: auto;
+  padding: 1.875rem 2rem;
+  transition: height @animation-speed-normal @animation-default-type;
+
+  > p {
+    margin: 0 0 1.5rem;
+  }
+
+  > h4 {
+    &:extend(.caps--small);
+
+    color: @color-lightgray;
+    display: inline-block;
+    padding-right: 0.5em;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketAdditionalDetails__details-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

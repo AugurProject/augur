@@ -29,15 +29,16 @@ export function formatDate(d) {
   const localAMPM = ampm(localTime[0])
   const localTimeTwelve = getTwelveHour(localTime)
   const localOffset = (date.getTimezoneOffset() / 60) * -1
+  const localOffsetFormatted = localOffset > 0 ? `+${localOffset}` : localOffset.toString()
 
   return {
     value: date,
     simpleDate: `${date.getUTCDate()} ${months[date.getUTCMonth()]}`,
     formatted: `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
     formattedShort: `${shortMonths[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
-    formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
-    formattedLocalShort: `${shortMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffset})`, // local time
-    formattedLocalShortTime: `${shortMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
+    formattedLocal: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
+    formattedLocalShort: `${shortMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} (UTC ${localOffsetFormatted})`, // local time
+    formattedLocalShortTime: `${shortMonths[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffsetFormatted})`, // local time
     full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,

@@ -1,6 +1,6 @@
 
 
-import { calculatePercentage, calculateTentativeRemainingRep, calculateAddedStakePercentage, __RewireAPI__ as RewireAPI } from 'modules/reporting/helpers/progress-calculations'
+import { calculatePercentage, calculateTentativeCurrentRep, calculateAddedStakePercentage, __RewireAPI__ as RewireAPI } from 'modules/reporting/helpers/progress-calculations'
 import { createBigNumber } from 'src/utils/create-big-number'
 
 describe(`modules/reporting/helpers/progress-calculations.js`, () => {
@@ -20,14 +20,14 @@ describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   test({
     description: `value remaining tentative stake REP`,
     assertions: () => {
-      assert.deepEqual(calculateTentativeRemainingRep(createBigNumber('62000000000000000000', 10), createBigNumber('34000000000000000000', 10), 1), '27000000000000000000', `Didn't return expected`)
+      assert.deepEqual(calculateTentativeCurrentRep(createBigNumber('34000000000000000000', 10), 1), '35000000000000000000', `Didn't return expected`)
     },
   })
 
   test({
     description: `large value remaining tentative stake REP`,
     assertions: () => {
-      assert.deepEqual(calculateTentativeRemainingRep(createBigNumber('6294250488281250000', 10), createBigNumber('349680582682291650', 10), 1), '4944569905598959000', `Didn't return expected`)
+      assert.deepEqual(calculateTentativeCurrentRep(createBigNumber('349680582682291650', 10), 1), '1349680582682291700', `Didn't return expected`)
     },
   })
 
@@ -76,7 +76,7 @@ describe(`modules/reporting/helpers/progress-calculations.js`, () => {
   test({
     description: `large percentage calculation`,
     assertions: () => {
-      assert.deepEqual(calculatePercentage(createBigNumber('2098083496093750000', 10), createBigNumber('109680582682291650', 10)), 5, `Didn't call the expected method`)
+      assert.deepEqual(calculatePercentage(createBigNumber('2098083496093750000', 10), createBigNumber('109680582682291650', 10)), 5.2277, `Didn't call the expected method`)
     },
   })
 

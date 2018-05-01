@@ -16,12 +16,30 @@
 }
 
 .ReportingDisputeProgress__dispute-label {
-  color: @color-lightgray;
-  font-size: 0.6875rem;
-  font-weight: 500;
   letter-spacing: 0.3px;
-  line-height: 0.6875rem;
-  margin-left: 1.5rem;
+  margin-left: 1rem;
+  white-space: nowrap;
+}
+
+.ReportingDisputeProgress__dispute-label-total-rep-text {
+  color: @color-lightergray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+}
+
+.ReportingDisputeProgress__dispute-label-break {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  margin-left: 0.2em;
+}
+
+.ReportingDisputeProgress__dispute-label-goal-text {
+  color: @color-lightgray;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: 1em;
+  margin-left: 0.2em;
   white-space: nowrap;
 }
 
@@ -29,24 +47,27 @@
   &:extend(.ReportingDisputeProgress__dispute-label);
 
   color: @color-lighter-purple;
+  font-size: @font-size-small;
   margin-left: 1.5rem;
   text-transform: uppercase;
 }
 
 .ReportingDisputeProgress__graph-current {
-  background: @color-gray;
+  background: #4f4761;
   display: flex;
   min-width: 11em;
   position: relative;
   width: 15rem;
 
   > div:first-child {
-    background: @color-lightgray;
+    background: @color-purple;
     height: 100%;
+    transition: width 0.4s linear;
   }
 
   > div:last-child {
     background: @color-lighter-purple;
     height: 100%;
+    transition: width 0.4s linear;
   }
 }

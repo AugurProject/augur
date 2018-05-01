@@ -12,8 +12,8 @@ export default class ModalClaimReportingFees extends Component {
     closeModal: PropTypes.func.isRequired,
     recipient: PropTypes.string.isRequired,
     feeWindows: PropTypes.array.isRequired,
-    crowdsourcers: PropTypes.array.isRequired,
-    initialReporters: PropTypes.array.isRequired,
+    forkedMarket: PropTypes.object.isRequired,
+    nonforkedMarkets: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
   }
@@ -31,8 +31,8 @@ export default class ModalClaimReportingFees extends Component {
   componentWillMount() {
     const claimReportingFeesOptions = {
       feeWindows: this.props.feeWindows,
-      crowdsourcers: this.props.crowdsourcers,
-      initialReporters: this.props.initialReporters,
+      forkedMarket: this.props.forkedMarket,
+      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: true,
       onSent: () => {},
       onFailed: (err) => {
@@ -59,8 +59,8 @@ export default class ModalClaimReportingFees extends Component {
     e.preventDefault()
     const claimReportingFeesOptions = {
       feeWindows: this.props.feeWindows,
-      crowdsourcers: this.props.crowdsourcers,
-      initialReporters: this.props.initialReporters,
+      forkedMarket: this.props.forkedMarket,
+      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: false,
       onSent: () => {},
       onFailed: (err) => {

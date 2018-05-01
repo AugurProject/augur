@@ -170,6 +170,13 @@ export default class ReportingReportForm extends Component {
           }
           { market.marketType === SCALAR &&
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
+              <li className={FormStyles['Form__radio-buttons--per-line']}>
+                <button
+                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.MARKET_IS_INVALID })}
+                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
+                >Market is invalid
+                </button>
+              </li>
               <li className={FormStyles['field--short']}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.SCALAR_VALUE })}
@@ -188,19 +195,12 @@ export default class ReportingReportForm extends Component {
                   onChange={(e) => { this.validateScalar(validations, e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                 />
               </li>
-              { validations.hasOwnProperty('err') &&
-                <li>
+              <li>
+                { validations.hasOwnProperty('err') &&
                   <span className={FormStyles.Form__error}>
                     {InputErrorIcon}{ validations.err }
                   </span>
-                </li>
-              }
-              <li className={FormStyles['Form__radio-buttons--per-line']}>
-                <button
-                  className={classNames({ [`${FormStyles.active}`]: s.activeButton === ReportingReportForm.BUTTONS.MARKET_IS_INVALID })}
-                  onClick={(e) => { this.setMarketInvalid(ReportingReportForm.BUTTONS.MARKET_IS_INVALID) }}
-                >Market is invalid
-                </button>
+                }
               </li>
             </ul>
           }

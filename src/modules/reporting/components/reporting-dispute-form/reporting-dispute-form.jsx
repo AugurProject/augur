@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatNumber } from 'utils/format-number'
@@ -113,7 +113,6 @@ export default class ReportingDisputeForm extends Component {
         outcomes: disputeOutcomes.filter(item => !item.tentativeWinning) || [],
         currentOutcome: disputeOutcomes.find(item => item.tentativeWinning) || {},
         disputeBondValue: bondSizeOfNewStake,
-        disputeBondFormatted: formatAttoRep(bondSizeOfNewStake, { decimals: 4, denomination: ' REP' }).formatted,
       })
 
       // outcomes need to be populated before validating saved data
@@ -168,8 +167,8 @@ export default class ReportingDisputeForm extends Component {
 
     let stake = rawStake
 
-    if (stake !== '' && !(BigNumber.isBigNumber(stake))) {
-      stake = createBigNumber(rawStake).decimalPlaces(4)
+    if (stake !== '') {
+      stake = createBigNumber(formatNumber(createBigNumber(stake).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
     }
 
     ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
@@ -240,7 +239,7 @@ export default class ReportingDisputeForm extends Component {
       const minValue = parseFloat(min)
       const maxValue = parseFloat(max)
       const valueValue = parseFloat(value)
-      const bnValue = createBigNumber(value)
+      const bnValue = createBigNumber(value || 0)
       const bnTickSize = createBigNumber(tickSize)
 
       switch (true) {
@@ -334,14 +333,13 @@ export default class ReportingDisputeForm extends Component {
                   {...outcome}
                   isSelected={s.selectedOutcome === outcome.id}
                   tentativeStake={stake}
-                  disputeBondFormatted={s.disputeBondFormatted}
                 />
               </li>
             ))
             }
             { market.marketType === SCALAR &&
               <li className={FormStyles['field--inline']}>
-                <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
+                <ul className={classNames(Styles.ReportingDisputeForm__table__input, FormStyles['Form__radio-buttons--per-line'])}>
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
@@ -359,10 +357,21 @@ export default class ReportingDisputeForm extends Component {
                       className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
+                    <ReportingDisputeProgress
+                      key="scalar_input_progress"
+                      isSelected={s.scalarInputChoosen}
+                      tentativeStake={stake}
+                      percentageComplete={0}
+                      percentageAccount={0}
+                      bondSizeCurrent={s.disputeBondValue}
+                      stakeRemaining={s.disputeBondValue}
+                      stakeCurrent="0"
+                      accountStakeCurrent="0"
+                    />
                   </li>
                   <li>
                     { s.validations.hasOwnProperty('err') &&
-                      <span className={FormStyles.Form__error}>
+                      <span className={FormStyles.Form__error__space}>
                         {InputErrorIcon}{ s.validations.err }
                       </span>
                     }
@@ -388,11 +397,13 @@ export default class ReportingDisputeForm extends Component {
                 onChange={(e) => { this.validateStake(e.target.value) }}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
-                <button
-                  className={FormStyles['button--inline']}
-                  onClick={() => { this.setMAXStake() }}
-                >MAX
-                </button>
+                <div className={Styles.ReportingDisputeForm__container}>
+                  <button
+                    className={classNames(Styles.ReportingDisputeForm__button, FormStyles['button--inline'])}
+                    onClick={() => { this.setMAXStake() }}
+                  >MAX
+                  </button>
+                </div>
               }
             </li>
             <li>

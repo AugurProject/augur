@@ -62,7 +62,7 @@
   color: #9d93d0;
   font-size: 0.8em;
   font-weight: 500;
-  margin-top: 0.75em;
+  margin-top: 0.55em;
   text-transform: uppercase;
 }
 
@@ -132,7 +132,7 @@
   display: flex;
   height: 0.6em;
   margin-bottom: 0.2em;
-  margin-top: 0.75em;
+  margin-top: 0.55em;
 }
 
 .MarketReportingPayouts__progress-bar {
@@ -149,20 +149,32 @@
   }
 
   > div:last-child {
-    background: @color-gray;
+    background: @color-purple;
     height: 100%;
   }
 }
 
 .MarketReportingPayouts__progress-bar-total-rep-text {
-  color: @color-darkgray;
-  font-size: 0.7em;
+  color: @color-purple;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  line-height: 0.6em;
   margin-left: 1em;
 }
 
+.MarketReportingPayouts__progress-bar-break {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  line-height: 0.6em;
+  margin-left: 0.4em;
+}
+
 .MarketReportingPayouts__progress-bar-goal-text {
-  color: @color-gray;
-  font-size: 0.7em;
+  color: @color-lightgray;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: 0.9em;
   margin-left: 0.4em;
   white-space: nowrap;
 }
