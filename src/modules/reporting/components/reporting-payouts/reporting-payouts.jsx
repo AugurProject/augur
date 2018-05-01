@@ -74,23 +74,41 @@ class MarketReportingPayouts extends Component {
     super(props)
 
     this.state = {
-      outcomeWrapperHeight: this.getInitialHeight(),
+      outcomeWrapperHeight: this.getInitialHeight(props.isMobile, props.isMobileSmall),
       isOpen: false,
     }
 
     this.showMore = this.showMore.bind(this)
   }
 
-  getInitialHeight() {
-    if (this.props.isMobileSmall) {
-      return 150
-    } else if (this.props.isMobile) {
-      return 100
+  componentDidMount() {
+    const calculatedHeight = this.getInitialHeight(this.props.isMobile, this.props.isMobileSmall)
+    this.setState({ outcomeWrapperHeight: calculatedHeight })
+  }
+
+  componentWillReceiveProps(nextProps) { // move to getDerivedStateFromProps in React 16.3
+    if (nextProps.isMobile !== this.props.isMobile || nextProps.isMobileSmall !== this.props.isMobileSmall) {
+      this.setState({
+        outcomeWrapperHeight: this.getInitialHeight(nextProps.isMobile, nextProps.isMobileSmall),
+        isOpen: false,
+      })
+    }
+  }
+
+  getInitialHeight(isMobile, isMobileSmall) {
+    // + 12 accounts for margins
+    const cellHeight = (this.outcomeTable && this.outcomeTable.firstChild && this.outcomeTable.firstChild.clientHeight + 12) || 54
+
+    if (isMobileSmall) {
+      return cellHeight * 3
+    } else if (isMobile) {
+      return cellHeight * 2
     }
     return 0
   }
+
   showMore() {
-    const outcomeWrapperHeight = this.state.isOpen ? this.getInitialHeight() : `${this.outcomeTable.clientHeight}px`
+    const outcomeWrapperHeight = this.state.isOpen ? this.getInitialHeight(this.props.isMobile, this.props.isMobileSmall) : `${this.outcomeTable.clientHeight}px`
 
     this.setState({
       outcomeWrapperHeight,
