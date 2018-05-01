@@ -81,17 +81,19 @@ class MarketReportingPayouts extends Component {
     this.showMore = this.showMore.bind(this)
   }
 
-  componentDidMount() {
-    const calculatedHeight = this.getInitialHeight(this.props.isMobile, this.props.isMobileSmall)
-    this.setState({ outcomeWrapperHeight: calculatedHeight })
-  }
-
   componentWillReceiveProps(nextProps) { // move to getDerivedStateFromProps in React 16.3
     if (nextProps.isMobile !== this.props.isMobile || nextProps.isMobileSmall !== this.props.isMobileSmall) {
       this.setState({
         outcomeWrapperHeight: this.getInitialHeight(nextProps.isMobile, nextProps.isMobileSmall),
         isOpen: false,
       })
+    }
+  }
+
+  componentDidUpdate() {
+    const calculatedHeight = this.getInitialHeight(this.props.isMobile, this.props.isMobileSmall)
+    if (this.state.outcomeWrapperHeight !== calculatedHeight && !this.state.isOpen) {
+      this.setState({ outcomeWrapperHeight: calculatedHeight })
     }
   }
 
