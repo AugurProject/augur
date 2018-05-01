@@ -89,28 +89,12 @@ export default class Position extends Component {
       >
         <li>
           { outcomeName }
-          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
-            <div key={i} className={Styles.Position__pending}>
-              <span className={Styles['Position__pending-title']}>Pending</span>
-              <span className={Styles['Position__pending-message']}>Bought { getValue(order, 'qtyShares.formatted') } at { getValue(order, 'purchasePrice.formatted') } ETH</span>
-            </div>
-          ))}
         </li>
         <li>
           { getValue(position, 'qtyShares.formatted') }
-          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
-            <div key={i} className={Styles.Position__pending}>
-              <span>+{ getValue(order, 'order.qtyShares.formatted') }</span>
-            </div>
-          ))}
         </li>
         <li>
           { getValue(position, 'purchasePrice.formatted') }
-          { openOrders && openOrders.length > 0 && openOrders.map((order, i) => (
-            <div key={i} className={Styles.Position__pending}>
-              <span>{ Position.calcAvgDiff(position, order) }</span>
-            </div>
-          ))}
         </li>
         { isExtendedDisplay && !isMobile &&
           <li>
@@ -125,7 +109,7 @@ export default class Position extends Component {
           </li>
         }
         <li>
-          { getValue(position, 'qtyShares.value') > 0 ? <button onClick={this.toggleConfirm}>Close</button> : <span className={Styles.NotActive}>Close</span>}
+          <button onClick={this.toggleConfirm}>Close</button>
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
@@ -143,7 +127,14 @@ export default class Position extends Component {
             <div className={Styles['Position__confirm-details']}>
               <p>Close position by selling { getValue(position, 'qtyShares.formatted') } shares of “{ outcomeName }” at market price?</p>
               <div className={Styles['Position__confirm-options']}>
-                <button onClick={(e) => { position.closePosition(position.marketId, position.outcomeId); this.toggleConfirm() }}>Yes</button>
+                <button
+                  onClick={(e) => {
+                    position.closePosition(position.marketId, position.outcomeId)
+                    this.toggleConfirm()
+                  }}
+                >
+                  Yes
+                </button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
             </div>
