@@ -15,19 +15,23 @@ const getPL = async function(db: Knex, augur: Augur, universe: Address, account:
   let bucketEndTime: number = startTime;
   const bucket: Array<TradingHistoryRow> = [];
   const [basis, ...profit_losses] = trades.reduce((memo: Array<any>, trade: TradingHistoryRow): Array<any> => {
+    let profit_loss = null;
     while(trade.timestamp >= bucketEndTime) {
-      memo.push({
-        timestamp: bucketEndTime,
-        profit_loss: bucket.length === 0 ? null : augur.trading.calculateProfitLoss({ bucket , lastPrice: _.last(bucket)!.price!})
-      });
+      // Only calculate the PL once and if subsquent groups wont have this trade, re-use the result
+      if (profit_loss === null && bucket.length > 0) {
+        profit_loss = augur.trading.calculateProfitLoss({ bucket , lastPrice: _.last(bucket)!.price!});
+      }
+
+      memo.push({ profit_loss, timestamp: bucketEndTime });
       bucketEndTime += periodInterval;
     }
+
     bucket.push(trade);
 
     return memo;
   }, [] as Array<any>);
 
-  return profit_loss; // Still need to adjust by "basis"
+  return profit_losses; // Still need to adjust by "basis"
 }
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number, callback: GenericCallback<Array<PLResult>>) {
