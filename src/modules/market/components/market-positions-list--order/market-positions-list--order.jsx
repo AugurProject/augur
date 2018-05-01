@@ -5,7 +5,6 @@ import React, { Component } from 'react'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PENDING } from 'modules/market/constants/close-dialog-status'
 import { SELL } from 'modules/trade/constants/types'
 
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
