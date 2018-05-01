@@ -76,7 +76,7 @@ describe('modules/forking/actions/get-fork-migration-totals.js', () => {
           },
         }
 
-        getForkMigrationTotals('0xUNIVERSE', (actual) => {
+        getForkMigrationTotals('0xUNIVERSE', (err, actual) => {
           assert.deepEqual(actual, expected, `Didn't return the expected object`)
         })(null, getState)
       },
