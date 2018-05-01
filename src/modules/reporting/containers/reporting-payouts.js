@@ -6,13 +6,10 @@ const mapStateToProps = state => ({
   isMobileSmall: state.isMobileSmall,
 })
 
-function mergeProps(stateProps, dispatchProps, ownProps) {
-
-  console.log(ownProps)
-  console.log(stateProps)
-
-  //return R.mergeAll([stateProps, dispatchProps, ownProps]);
-}
-console.log('hi2')
+const mergeProps = (sP, dP, oP) => ({
+  ...oP,
+  ...sP,
+  ...dP,
+})
 
 export default connect(mapStateToProps, mergeProps)(MarketReportingPayouts)

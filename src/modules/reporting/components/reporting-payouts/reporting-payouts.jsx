@@ -73,8 +73,6 @@ class MarketReportingPayouts extends Component {
   constructor(props) {
     super(props)
 
-    
-
     this.state = {
       outcomeWrapperHeight: this.getInitialHeight(),
       isOpen: false,

@@ -25,5 +25,5 @@ const mergeProps = (sP, dP, oP) => ({
   ...sP,
   ...dP,
 })
-console.log('hi')
+
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ReportingHeader)
