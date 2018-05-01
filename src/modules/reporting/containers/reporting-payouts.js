@@ -6,10 +6,4 @@ const mapStateToProps = state => ({
   isMobileSmall: state.isMobileSmall,
 })
 
-const mergeProps = (sP, dP, oP) => ({
-  ...oP,
-  ...sP,
-  ...dP,
-})
-
-export default connect(mapStateToProps, mergeProps)(MarketReportingPayouts)
+export default connect(mapStateToProps)(MarketReportingPayouts)

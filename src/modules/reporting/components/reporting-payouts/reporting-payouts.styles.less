@@ -3,6 +3,10 @@
 .MarketReportingPayouts__container {
   display: flex;
   flex-direction: row;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: column;
+  }
 }
 
 .MarketReportingPayouts__button-container {
@@ -10,6 +14,12 @@
   flex-direction: column;
   justify-content: flex-end;
   margin-bottom: 0.5rem;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
 }
 
 .MarketReportingPayouts {
@@ -20,6 +30,10 @@
   overflow: hidden;
   position: relative;
   transition: min-height 0.3s ease;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: row;
+  }
 }
 
 .MarketReportingPayouts__alert_icon {
