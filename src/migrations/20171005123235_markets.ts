@@ -35,7 +35,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       "numTicks" VARCHAR(255) NOT NULL,
       "consensusPayoutId" integer,
       "disputeRounds" integer,
-      "isInvalid" boolean
+      "isInvalid" boolean,
+      "forking" integer
     )`)
     .raw("CREATE INDEX endTime ON markets (endTime)");
   });
