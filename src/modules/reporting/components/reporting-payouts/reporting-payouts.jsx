@@ -7,6 +7,13 @@ import Styles from 'modules/reporting/components/reporting-payouts/reporting-pay
 import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
 
+const CELL_MARGIN = 12
+const INITIAL_CELL_HEIGHT = 54
+const NUM_ROWS_SMALL_MOBILE = 3
+const NUM_ROWS_MOBILE = 2
+const NUM_CELLS_SHOWN_MOBILE = 4
+const NUM_CELLS_SHOWN = 3
+
 const Outcome = ({ className, outcome, marketId }) => {
   const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
   const currentOutcomeStake = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true }).formatted
@@ -99,12 +106,12 @@ class MarketReportingPayouts extends Component {
 
   getInitialHeight(isMobile, isMobileSmall) {
     // + 12 accounts for margins
-    const cellHeight = (this.outcomeTable && this.outcomeTable.firstChild && this.outcomeTable.firstChild.clientHeight + 12) || 54
+    const cellHeight = (this.outcomeTable && this.outcomeTable.firstChild && this.outcomeTable.firstChild.clientHeight + CELL_MARGIN) || INITIAL_CELL_HEIGHT
 
     if (isMobileSmall) {
-      return cellHeight * 3
+      return cellHeight * NUM_ROWS_SMALL_MOBILE
     } else if (isMobile) {
-      return cellHeight * 2
+      return cellHeight * NUM_ROWS_MOBILE
     }
     return 0
   }
@@ -121,7 +128,7 @@ class MarketReportingPayouts extends Component {
   render() {
     const { outcomes, marketId, isMobile, isMobileSmall } = this.props
 
-    const numShown = isMobile && !isMobileSmall ? 4 : 3
+    const numShown = isMobile && !isMobileSmall ? NUM_CELLS_SHOWN_MOBILE : NUM_CELLS_SHOWN
     const totalOutcomes = outcomes.length
     const displayShowMore = totalOutcomes > numShown
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - numShown} less` : `+ ${totalOutcomes - numShown} more`
