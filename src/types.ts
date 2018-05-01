@@ -169,6 +169,7 @@ export interface MarketsRow<BigNumberType> {
   consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
   forking: number;
+  needsMigration: number;
 }
 
 export interface PositionsRow<BigNumberType> {

@@ -25,7 +25,7 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
 }
 
 export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("markets").select("marketId").where("forking", 1).first().asCallback((err, forkingMarket?: Address) => {
+  db("markets").select("marketId").where({forking: 1, universe: log.universe}).first().asCallback((err, forkingMarket?: Address) => {
     if (err) return callback(err);
     if (forkingMarket == null) return callback(new Error(`Could not retrieve forking market to rollback for universe ${log.universe}`));
     db("markets").update("forking", 0).where("marketId", forkingMarket).asCallback((err) => {
@@ -35,7 +35,6 @@ export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: For
         universe: log.universe,
         marketId: forkingMarket,
         reportingState: augur.constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
-        removed: true,
       });
       callback(null);
     });

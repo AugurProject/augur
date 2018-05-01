@@ -30,6 +30,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000002",
       universe: "0x000000000000000000000000000000000000000b",
@@ -56,6 +57,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000003",
       universe: "0x000000000000000000000000000000000000000b",
@@ -82,6 +84,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.ttp-inc.com/0000000000000000000000000000000000000003",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000011",
       universe: "0x000000000000000000000000000000000000000b",
@@ -108,6 +111,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000012",
       universe: "0x000000000000000000000000000000000000000b",
@@ -134,6 +138,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000013",
       universe: "0x000000000000000000000000000000000000000b",
@@ -160,6 +165,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000014",
       universe: "0x000000000000000000000000000000000000000b",
@@ -186,6 +192,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000015",
       universe: "0x000000000000000000000000000000000000000b",
@@ -212,6 +219,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000016",
       universe: "0x000000000000000000000000000000000000000b",
@@ -238,6 +246,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 949,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000017",
       universe: "0x000000000000000000000000000000000000000b",
@@ -264,6 +273,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10003,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000018",
       universe: "0x000000000000000000000000000000000000000b",
@@ -290,6 +300,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10003,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000019",
       universe: "0x000000000000000000000000000000000000000b",
@@ -316,6 +327,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000211",
       universe: "0x000000000000000000000000000000000000000b",
@@ -343,6 +355,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       numTicks: 10000,
       initialReportSize: "10",
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000222",
       universe: "0x000000000000000000000000000000000000000b",
@@ -369,6 +382,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
       forking: 0,
+      needsMigration: 0,
     }, {
       marketId: "0x0000000000000000000000000000000000000233",
       universe: "CHILD_UNIVERSE",
@@ -394,6 +408,8 @@ exports.seed = async (knex: Knex): Promise<any> => {
       designatedReportStake: "10",
       resolutionSource: "http://www.trusted-third-party.com",
       numTicks: 10000,
+      forking: 0,
+      needsMigration: 0,
     }];
     return knex.batchInsert("markets", seedData, seedData.length);
   });

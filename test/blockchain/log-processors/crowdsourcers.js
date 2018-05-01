@@ -160,6 +160,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           feeWindow: "0x2100000000000000000000000000000000000000",
           finalizationTime: null,
           forking: 0,
+          needsMigration: 0,
           initialReportSize: new BigNumber("10", 10),
           isInvalid: null,
           longDescription: null,
@@ -235,6 +236,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           reportingState: "CROWDSOURCING_DISPUTE",
           creationTime: 1509065474,
           forking: 0,
+          needsMigration: 0,
         });
       },
     },

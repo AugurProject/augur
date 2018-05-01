@@ -147,7 +147,8 @@ describe("blockchain/log-processors/market-created", () => {
             consensusPayoutId: null,
             isInvalid: null,
             forking: 0,
-          }],
+            needsMigration: 0,
+      }],
           categories: [{
             category: "TEST_CATEGORY",
             popularity: 0,
@@ -304,6 +305,7 @@ describe("blockchain/log-processors/market-created", () => {
             consensusPayoutId: null,
             isInvalid: null,
             forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -482,6 +484,7 @@ describe("blockchain/log-processors/market-created", () => {
             consensusPayoutId: null,
             isInvalid: null,
             forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -634,6 +637,7 @@ describe("blockchain/log-processors/market-created", () => {
             consensusPayoutId: null,
             isInvalid: null,
             forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
