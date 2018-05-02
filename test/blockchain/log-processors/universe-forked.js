@@ -47,7 +47,7 @@ describe("blockchain/log-processors/universe-forked", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err)
+        assert.isNull(err);
         assert.equal(records.length, 1);
         assert.equal(records[0].universe, "0x000000000000000000000000000000000000000b");
         assert.equal(records[0].marketId, "0x0000000000000000000000000000000000000211");
