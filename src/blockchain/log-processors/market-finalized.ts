@@ -5,9 +5,9 @@ import { rollbackMarketState, updateMarketState } from "./database";
 import { parallel } from "async";
 
 function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address, universe: Address, callback: ErrorCallback) {
-  db("markets").first("forking").where("marketId", finalizedMarketId).asCallback((err, isForkingMarket: number) => {
+  db("markets").first("forking").where("marketId", finalizedMarketId).asCallback((err, isForkingMarket: {forking: number}) => {
     if (err) return callback(err);
-    if (isForkingMarket !== 1) return callback(null);
+    if (isForkingMarket.forking !== 1) return callback(null);
     db("markets").update("needsMigration", 1).where({ universe }).whereNot("marketId", finalizedMarketId).asCallback(callback);
   });
 }
