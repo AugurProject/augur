@@ -102,5 +102,5 @@ describe("server/getters/get-market-price-candlesticks", () => {
     assertions: (err, marketPriceHistory) => {
       assert.isNotNull(err);
     },
-  })
+  });
 });
