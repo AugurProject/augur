@@ -14,15 +14,18 @@ const getPL = async function(db: Knex, augur: Augur, universe: Address, account:
   const trades: Array<TradingHistoryRow> = await queryUserTradingHistory(db, universe, account, null, null, null, null, endTime); 
   console.log(`Found ${trades.length} trades for account ${account}`);
 
+  // Pre make the buckets so its easy to parition trades
   const bucketEndTimes: Array<number> = [];
   for(let bucketEnd=startTime; bucketEnd < endTime; bucketEnd += periodInterval) {
     bucketEndTimes.push(bucketEnd);
   }
   bucketEndTimes.push(endTime);
 
+  console.log(bucketEndTimes);
+
   const [basis, ...profitLosses] = bucketEndTimes.map((bucketEndTime: number) => {
     // Get all the teades up to this endTime
-    const [bucket, rest] = _.partition(trades, (t: TradingHistoryRow) => t.timestamp <= bucketEndTime)
+    const bucket = _.filter(trades, (t: TradingHistoryRow) => t.timestamp <= bucketEndTime);
     return {
       timestamp: bucketEndTime,
       profitLoss: bucket.length == 0 ? null: augur.trading.calculateProfitLoss({ trades: bucket, lastPrice:  _.last(bucket)!.price })

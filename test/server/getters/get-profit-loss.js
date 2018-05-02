@@ -28,7 +28,7 @@ describe("server/getters/get-profit-loss", () => {
       account: "0x0000000000000000000000000000000000000b0b",
       startTime: START_TIME,
       endTime: START_TIME + DAY_SECONDS,
-      period: HOUR_SECONDS
+      periodInterval: HOUR_SECONDS
     },
     assertions: (err, profitLoss) => {
       assert.isNull(err);
