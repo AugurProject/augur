@@ -75,6 +75,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, finalize the market, it's in the correct state" },
       marketId: { required: true, short: "m", help: "Required market id" },
+      noPush: { flag: true, default: false, help: "normally time is pushed to finalize market, to finalize forking market don't push time" },
     },
   },
   "push-time": {

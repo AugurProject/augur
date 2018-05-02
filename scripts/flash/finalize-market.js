@@ -11,12 +11,32 @@ function help() {
   console.log(chalk.red("Market is ready to be finalize, so finalize the market"));
 }
 
+function callFinalize(augur, marketId, callback) {
+  augur.api.Market.finalize({ tx: { to: marketId  },
+    onSent: function (result) {
+      console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
+      console.log(chalk.yellow.dim("Waiting for reply ...."));
+    },
+    onSuccess: function (result) {
+      console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
+      callback(null);
+    },
+    onFailed: function (err) {
+      console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(err)));
+      callback(err);
+    },
+  });
+}
+
 function finalizeMarket(augur, args, auth, callback) {
   if (args === "help" || args.opt.help) {
     help();
     return callback(null);
   }
   var marketId = args.opt.marketId;
+  var noPush = args.opt.noPush;
+  if (noPush) return callFinalize(augur, marketId, callback);
+
   var marketPayload = { tx: { to: marketId } };
   augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowAddress) {
     if (err) {
@@ -41,20 +61,7 @@ function finalizeMarket(augur, args, auth, callback) {
             console.log(chalk.red(err));
             return callback(err);
           }
-          augur.api.Market.finalize({ tx: { to: marketId  },
-            onSent: function (result) {
-              console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
-              console.log(chalk.yellow.dim("Waiting for reply ...."));
-            },
-            onSuccess: function (result) {
-              console.log(chalk.green.dim("Success:"), chalk.green(JSON.stringify(result)));
-              callback(null);
-            },
-            onFailed: function (err) {
-              console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(err)));
-              callback(err);
-            },
-          });
+          callFinalize(augur, marketId, callback);
         });
       });
     });
