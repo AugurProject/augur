@@ -16,6 +16,7 @@ export function processMarketFinalizedLog(db: Knex, augur: Augur, log: Formatted
   parallel([
     (next) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.FINALIZED, next),
     (next) => db("payouts").where({ marketId: log.market, tentativeWinning: 1 }).update("winning", 1).asCallback(next),
+    (next) => db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: log.blockNumber }).asCallback(next),
     (next) => flagMarketsNeedingMigration(db, log.market, log.universe, next),
   ], (err: Error|null): void => {
     if (err) return callback(err);
@@ -27,6 +28,7 @@ export function processMarketFinalizedLogRemoval(db: Knex, augur: Augur, log: Fo
   parallel([
     (next) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.FINALIZED, next),
     (next) => db("payouts").where({ marketId: log.market }).update({ winning: null }).asCallback(next),
+    (next) => db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: null }).asCallback(next),
     (next) => db("markets").where({ universe: log.universe }).update({ needsMigration: 0 }).asCallback(next),
   ], (err: Error|null): void => {
     if (err) return callback(err);

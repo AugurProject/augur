@@ -321,6 +321,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketStateId: 12,
       feeWindow: "0x1000000000000000000000000000000000000000",
       endTime: 1507573470,
+      finalizationBlockNumber: 1400002,
       shortDescription: "creator b0b 5 outcomes, market finalized.",
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
       designatedReportStake: "10",

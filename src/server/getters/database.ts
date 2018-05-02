@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import {
-  MarketsRowWithCreationTime,
+  MarketsRowWithTime,
   OutcomesRow,
   UIMarketInfo,
   UIOutcomeInfo,
@@ -39,7 +39,7 @@ export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNu
   };
 }
 
-export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
+export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcomesInfo: Array<UIOutcomeInfo<BigNumber>>, winningPayoutRow: PayoutRow<BigNumber>|null): UIMarketInfo<string> {
   let consensus: NormalizedPayout<string>|null = null;
   if (winningPayoutRow != null) {
     consensus = normalizedPayoutsToFixed(normalizePayouts(winningPayoutRow));
@@ -68,6 +68,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithCreationTime,
     outstandingShares: row.sharesOutstanding,
     feeWindow: row.feeWindow,
     endTime: row.endTime,
+    finalizationBlockNumber: row.finalizationBlockNumber,
     finalizationTime: row.finalizationTime,
     reportingState: row.reportingState,
     forking: row.forking,
