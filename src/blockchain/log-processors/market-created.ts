@@ -18,11 +18,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
     designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
-    universe: (next: AsyncCallback): void => augur.api.Market.getUniverse(marketPayload, next),
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
   }, (err: Error|null, onMarketContractData?: any): void => {
     if (err) return callback(err);
-    const universePayload: {} = { tx: { to: onMarketContractData.universe, send: false } };
+    const universePayload: {} = { tx: { to: log.universe, send: false } };
     parallel({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
       designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getOrCacheDesignatedReportStake(universePayload, next),
@@ -55,7 +54,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           longDescription:            extraInfo!.longDescription || null,
           scalarDenomination:         extraInfo!._scalarDenomination || null,
           resolutionSource:           extraInfo!.resolutionSource || null,
-          universe:                   onMarketContractData!.universe,
+          universe:                   log.universe,
           numOutcomes,
           marketStateId,
           feeWindow:                  onMarketContractData!.feeWindow,
@@ -110,7 +109,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             db.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
-              db.insert({ category: log.topic, universe: onMarketContractData!.universe }).into("categories").asCallback(callback);
+              db.insert({ category: log.topic, universe: log.universe }).into("categories").asCallback(callback);
             });
           });
         });

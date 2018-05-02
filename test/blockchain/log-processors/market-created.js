@@ -43,6 +43,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -79,10 +80,6 @@ describe("blockchain/log-processors/market-created", () => {
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "10000");
-            },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000000b");
             },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
@@ -200,6 +197,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111112",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -237,10 +235,6 @@ describe("blockchain/log-processors/market-created", () => {
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "10000");
-            },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "0x000000000000000000000000000000000000000b");
             },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
@@ -380,6 +374,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111113",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -416,10 +411,6 @@ describe("blockchain/log-processors/market-created", () => {
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "10000");
-            },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "0x000000000000000000000000000000000000000b");
             },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
@@ -537,6 +528,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -569,10 +561,6 @@ describe("blockchain/log-processors/market-created", () => {
             getNumTicks: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "10000");
-            },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000000b");
             },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
