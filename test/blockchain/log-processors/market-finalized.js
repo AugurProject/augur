@@ -44,6 +44,7 @@ describe("blockchain/log-processors/market-finalized", () => {
     params: {
       log: {
         market: "0x0000000000000000000000000000000000000211",
+        universe: "0x000000000000000000000000000000000000000b",
         blockNumber: 1400001,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
         logIndex: 0,

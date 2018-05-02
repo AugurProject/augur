@@ -14,6 +14,7 @@ import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompl
 import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
+import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
 import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
 import { processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval } from "./fee-window-redeemed";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
@@ -130,6 +131,11 @@ export const logProcessors: LogProcessors = {
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
+    UniverseForked: {
+      noAutoEmit: false,
+      add: processUniverseForkedLog,
+      remove: processUniverseForkedLogRemoval,
+    },
     FeeWindowRedeemed: {
       noAutoEmit: true,
       add: processFeeWindowRedeemedLog,
@@ -155,7 +161,6 @@ export const logProcessors: LogProcessors = {
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
     MarketParticipantsDisavowed: passThroughLog,
-    UniverseForked: passThroughLog,
   },
   LegacyReputationToken: {
     Transfer: {

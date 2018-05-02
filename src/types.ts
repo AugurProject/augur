@@ -168,6 +168,8 @@ export interface MarketsRow<BigNumberType> {
   numTicks: BigNumberType;
   consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
+  forking: number;
+  needsMigration: number;
 }
 
 export interface PositionsRow<BigNumberType> {
@@ -325,6 +327,8 @@ export interface UIMarketInfo<BigNumberType> {
   endTime: number;
   finalizationTime?: number|null;
   reportingState?: ReportingState|null;
+  forking: number;
+  needsMigration: number;
   description: string;
   details?: string|null;
   scalarDenomination?: string|null;
