@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, ReportingState } from "../../types";
-import { insertPayout, updateMarketState } from "./database";
+import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {

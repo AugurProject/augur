@@ -5,7 +5,7 @@ const setupTestDb = require("../../test.database");
 const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../build/blockchain/log-processors/market-migrated");
 
 const getMarket = (db, params, callback) => {
-  db.select(["markets.marketId", "markets.universe"]).from("markets").where({"markets.marketId": params.log.market}).asCallback(callback);
+  db.select(["markets.marketId", "markets.universe", "markets.needsMigration"]).from("markets").where({"markets.marketId": params.log.market}).asCallback(callback);
 };
 
 describe("blockchain/log-processors/market-migrated", () => {
@@ -14,15 +14,18 @@ describe("blockchain/log-processors/market-migrated", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          processMarketMigratedLog(trx, t.params.augur, t.params.log, (err) => {
+          trx("markets").update("needsMigration", 1).where("marketId", t.params.log.market).asCallback((err) => {
             assert.isNull(err);
-            getMarket(trx, t.params, (err, marketRow) => {
-              t.assertions.onAdded(err, marketRow);
-              processMarketMigratedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
-                getMarket(trx, t.params, (err, marketRow) => {
-                  t.assertions.onRemoved(err, marketRow);
-                  done();
+            processMarketMigratedLog(trx, t.params.augur, t.params.log, (err) => {
+              assert.isNull(err);
+              getMarket(trx, t.params, (err, marketRow) => {
+                t.assertions.onAdded(err, marketRow);
+                processMarketMigratedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                  assert.isNull(err);
+                  getMarket(trx, t.params, (err, marketRow) => {
+                    t.assertions.onRemoved(err, marketRow);
+                    done();
+                  });
                 });
               });
             });
@@ -50,6 +53,7 @@ describe("blockchain/log-processors/market-migrated", () => {
           {
             "marketId": "0x0000000000000000000000000000000000000211",
             "universe": "NEW_UNIVERSE",
+            "needsMigration": 0,
           },
         ]);
       },
@@ -59,6 +63,7 @@ describe("blockchain/log-processors/market-migrated", () => {
           {
             "marketId": "0x0000000000000000000000000000000000000211",
             "universe": "ORIGINAL_UNIVERSE",
+            "needsMigration": 1,
           },
         ]);
       },
