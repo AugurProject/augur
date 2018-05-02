@@ -1,6 +1,5 @@
 import Augur from "augur.js";
 import { parallel } from "async";
-import * as _ from "lodash";
 import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
@@ -8,7 +7,6 @@ import { logError } from "../utils/log-error";
 import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
-import { QueryBuilder } from "knex";
 import { getMarketsWithReportingState } from "../server/getters/database";
 
 interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
@@ -74,7 +72,7 @@ function insertBlockRow(trx: Knex.Transaction, blockNumber: number, blockHash: s
 }
 
 function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  if (!block || !block.timestamp) return logError(new Error(JSON.stringify(block)));
+  if (!block || !block.timestamp) return callback(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
   blockHeadTimestamp = parseInt(block.timestamp, 16);
@@ -84,21 +82,20 @@ function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: Err
     insertBlockRow(trx, blockNumber, blockHash, timestamp, (err: Error|null) => {
       if (err) {
         trx.rollback(err);
-        logError(err);
+        return callback(err);
       } else {
         advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
           if (err != null) {
             trx.rollback(err);
-            callback(err);
+            return callback(err);
           } else {
             logQueueProcess(trx, blockHash, (err: Error|null) => {
               if (err != null) {
                 trx.rollback(err);
-                logError(err);
               } else {
                 trx.commit();
               }
-              callback(err);
+              return callback(err);
             });
           }
         });
