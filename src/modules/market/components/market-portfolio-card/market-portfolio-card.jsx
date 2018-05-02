@@ -15,6 +15,7 @@ import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer.jsx'
+import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -27,6 +28,7 @@ export default class MarketPortfolioCard extends Component {
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
+    updateModal: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -48,13 +50,13 @@ export default class MarketPortfolioCard extends Component {
   }
 
   finalizeMarket = () => {
-    console.log('ho')
-    console.log(this.props.market)
     this.props.finalizeMarket(this.props.market.id)
   }
 
+  claimProceeds = () => {
+    this.props.claimTradingProceeds([this.props.market.id])
+  }
   render() {
-    // console.log(this.props)
     const {
       buttonText,
       currentTimestamp,
@@ -64,7 +66,10 @@ export default class MarketPortfolioCard extends Component {
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
+
     let localButtonText
+    let displayLink = true
+    let buttonAction; 
     switch (linkType) {
       case TYPE_REPORT:
         localButtonText = 'Report'
@@ -74,16 +79,21 @@ export default class MarketPortfolioCard extends Component {
         break
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = 'Claim'
+        displayLink = false
+        buttonAction = this.claimProceeds
         break
       case TYPE_MIGRATE_REP:
         localButtonText = 'Migrate REP'
         break
       case TYPE_CALCULATE_PAYOUT: 
         localButtonText = 'Calculate Payout'
+        displayLink = false
+        buttonAction = this.finalizeMarket
         break
       default:
         localButtonText = 'View'
     }
+
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -261,7 +271,9 @@ export default class MarketPortfolioCard extends Component {
         <MarketPortfolioCardFooter 
           marketId={market.id} 
           linkType={linkType} 
-          buttonAction={this.finalizeMarket} 
+          localButtonText={localButtonText}
+          buttonAction={buttonAction} 
+          displayLink={displayLink}
           formattedDescription={market.description} 
         />
       </article>
