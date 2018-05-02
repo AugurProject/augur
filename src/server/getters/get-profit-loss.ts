@@ -6,32 +6,33 @@ import { queryUserTradingHistory } from "./database";
 
 export interface PLResult {
   timestamp: number;
-  profit_loss: CalculatedProfitLoss|null;
+  profitLoss: CalculatedProfitLoss|null;
 };
 
 const getPL = async function(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number): Promise<Array<PLResult>> {
-  const trades: Array<TradingHistoryRow> = await queryUserTradingHistory(db, universe, account, null, null, null, endTime); 
+  console.log(`Getting PL for ${startTime} to ${endTime}`);
+  const trades: Array<TradingHistoryRow> = await queryUserTradingHistory(db, universe, account, null, null, null, null, endTime); 
+  console.log(`Found ${trades.length} trades for account ${account}`);
 
-  let bucketEndTime: number = startTime;
-  const bucket: Array<TradingHistoryRow> = [];
-  const [basis, ...profit_losses] = trades.reduce((memo: Array<PLResult>, trade: TradingHistoryRow): Array<PLResult> => {
-    let profit_loss: CalculatedProfitLoss|null = null;
-    while(trade.timestamp >= bucketEndTime) {
-      // Only calculate the PL once and if subsquent groups wont have this trade, re-use the result
-      if (profit_loss === null && bucket.length > 0) {
-        profit_loss = augur.trading.calculateProfitLoss({ bucket , lastPrice: _.last(bucket)!.price!});
-      }
+  const bucketEndTimes: Array<number> = [];
+  for(let bucketEnd=startTime; bucketEnd < endTime; bucketEnd += periodInterval) {
+    bucketEndTimes.push(bucketEnd);
+  }
+  bucketEndTimes.push(endTime);
 
-      memo.push({ profit_loss, timestamp: bucketEndTime } );
-      bucketEndTime += periodInterval;
-    }
+  const [basis, ...profitLosses] = bucketEndTimes.map((bucketEndTime: number) => {
+    // Get all the teades up to this endTime
+    const [bucket, rest] = _.partition(trades, (t: TradingHistoryRow) => t.timestamp <= bucketEndTime)
+    return {
+      timestamp: bucketEndTime,
+      profitLoss: bucket.length == 0 ? null: augur.trading.calculateProfitLoss({ trades: bucket, lastPrice:  _.last(bucket)!.price })
+    };
+  });
 
-    bucket.push(trade);
+  console.log(basis);
+  console.log(profitLosses);
 
-    return memo;
-  }, [] as Array<PLResult>);
-
-  return profit_losses; // Still need to adjust by "basis"
+  return profitLosses; // Still need to adjust by "basis"
 }
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number, callback: GenericCallback<Array<PLResult>>) {
