@@ -14,6 +14,7 @@ import StylesHeader from 'modules/market/components/market-outcome-charts--heade
 
 const askLimit = compose(
   take(5),
+  reverse,
   sortBy('price.value'),
 )
 
