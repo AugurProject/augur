@@ -7,6 +7,7 @@ import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
 import UportConnect from 'modules/auth/containers/uport-connect'
 import MetaMaskConnect from 'modules/auth/components/metamask/metamask'
+import TrezorConnect from 'modules/auth/containers/trezor'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -26,7 +27,9 @@ export default function AuthConnect(p) {
       />
       <div className={Styles['Auth--constrained']}>
         <div className={Styles.Auth__header}>
-          <h1>Connect An Account</h1>
+          <h1>
+            Connect An Account
+          </h1>
         </div>
         <div className={Styles.Auth__content}>
           <NavPanel
@@ -45,6 +48,9 @@ export default function AuthConnect(p) {
             }
             {selectedNav === PARAMS.UPORT &&
               <UportConnect />
+            }
+            {selectedNav === PARAMS.TREZOR &&
+              <TrezorConnect />
             }
           </div>
         </div>
