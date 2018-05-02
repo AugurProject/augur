@@ -14,6 +14,7 @@ import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
+import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer.jsx'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -257,7 +258,12 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-       
+        <MarketPortfolioCardFooter 
+          marketId={market.id} 
+          linkType={linkType} 
+          buttonAction={this.finalizeMarket} 
+          formattedDescription={market.description} 
+        />
       </article>
     )
   }
