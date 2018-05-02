@@ -3,6 +3,7 @@
 var EventEmitter = require("event-emitter");
 
 module.exports = {
+  hashEventAbi: require("./hash-event-abi"),
   getAllAugurLogs: require("./get-all-augur-logs"),
   startAugurNodeEventListeners: require("./start-augur-node-event-listeners"),
   stopAugurNodeEventListeners: require("./stop-augur-node-event-listeners"),

@@ -18,6 +18,7 @@ const nodes = {
   local: {
     http: "http://127.0.0.1:8545",
     ws: "ws://127.0.0.1:8546",
+    ipc: process.env.GETH_IPC,
   }
 };
 
