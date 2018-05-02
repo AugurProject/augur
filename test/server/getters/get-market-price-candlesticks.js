@@ -95,4 +95,12 @@ describe("server/getters/get-market-price-candlesticks", () => {
       assert.deepEqual(marketPriceHistory, {});
     },
   });
+  test({
+    description: "Not passing in marketId",
+    params: {
+    },
+    assertions: (err, marketPriceHistory) => {
+      assert.isNotNull(err);
+    },
+  })
 });

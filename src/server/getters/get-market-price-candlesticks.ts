@@ -31,6 +31,7 @@ function getPeriodStarttime(globalStarttime: number, periodStartime: number, per
 }
 
 export function getMarketPriceCandlesticks(db: Knex, marketId: Address, outcome: number|undefined, start: number|undefined, end: number|undefined, period: number|undefined, callback: (err: Error|null, result?: UICandlesticks) => void): void {
+  if (marketId == null) return callback(new Error("Must provide marketId"));
   const query = db.select([
     "trades.outcome",
     "trades.price",
