@@ -65,7 +65,6 @@ export default class Positions extends Component {
             closePositionStatus={closePositionStatus}
             location={location}
             history={history}
-            linkType={TYPE_DISPUTE}
             positionsDefault={false}
             currentTimestamp={currentTimestamp}
             isMobile={isMobile}
@@ -77,7 +76,6 @@ export default class Positions extends Component {
             location={location}
             history={history}
             positionsDefault={false}
-            linkType={TYPE_CLAIM_PROCEEDS}
             currentTimestamp={currentTimestamp}
             claimTradingProceeds={claimTradingProceeds}
             isMobile={isMobile}

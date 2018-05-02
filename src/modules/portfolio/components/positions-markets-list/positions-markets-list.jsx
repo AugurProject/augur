@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
+import MarketPortfolioCard from 'modules/market/containers/market-portfolio-card'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 
 import Styles from 'modules/portfolio/components/positions-markets-list/positions-markets-list.styles'

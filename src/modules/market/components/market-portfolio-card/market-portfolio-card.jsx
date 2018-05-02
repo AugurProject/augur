@@ -3,12 +3,13 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
+import { constants } from 'services/augurjs'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
+import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
@@ -24,6 +25,7 @@ export default class MarketPortfolioCard extends Component {
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
+    finalizeMarket: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -44,7 +46,14 @@ export default class MarketPortfolioCard extends Component {
     this.setState({ tableOpen: { ...this.state.tableOpen, [tableKey]: !this.state.tableOpen[tableKey] } })
   }
 
+  finalizeMarket = () => {
+    console.log('ho')
+    console.log(this.props.market)
+    this.props.finalizeMarket(this.props.market.id)
+  }
+
   render() {
+    // console.log(this.props)
     const {
       buttonText,
       currentTimestamp,
@@ -55,7 +64,6 @@ export default class MarketPortfolioCard extends Component {
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
     let localButtonText
-
     switch (linkType) {
       case TYPE_REPORT:
         localButtonText = 'Report'
@@ -64,15 +72,17 @@ export default class MarketPortfolioCard extends Component {
         localButtonText = 'Dispute'
         break
       case TYPE_CLAIM_PROCEEDS:
-        localButtonText = 'Claim Proceeds'
+        localButtonText = 'Claim'
         break
       case TYPE_MIGRATE_REP:
         localButtonText = 'Migrate REP'
         break
+      case TYPE_CALCULATE_PAYOUT: 
+        localButtonText = 'Calculate Payout'
+        break
       default:
         localButtonText = 'View'
     }
-
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -247,20 +257,7 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType &&
-          <section className={Styles['MarketCard__tablesection-mobile']}>
-            <div className={Styles['MarketCard__headingcontainer-mobile']}>
-              <MarketLink
-                className={Styles['MarketCard__action-mobile']}
-                id={market.id}
-                formattedDescription={market.description}
-                linkType={linkType}
-              >
-                { buttonText || localButtonText }
-              </MarketLink>
-            </div>
-          </section>
-        }
+       
       </article>
     )
   }
