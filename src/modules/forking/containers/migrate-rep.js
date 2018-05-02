@@ -41,7 +41,7 @@ const mergeProps = (sP, dP, oP) => {
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
     submitMigrateREP: (estimateGas, marketId, outcomeValue, invalid, amount, history, callback) => dP.submitMigrateREP(estimateGas, marketId, outcomeValue, invalid, amount, history, callback),
-    getForkMigrationTotals: (universe, callback) => dP.getForkMigrationTotals(sP.universe, callback),
+    getForkMigrationTotals: callback => dP.getForkMigrationTotals(sP.universe, callback),
   }
 }
 

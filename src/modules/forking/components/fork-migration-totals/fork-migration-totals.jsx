@@ -48,7 +48,8 @@ class ForkMigrationTotals extends Component {
     const {
       getForkMigrationTotals,
     } = this.props
-    getForkMigrationTotals((forkMigrationTotalsMap) => {
+    getForkMigrationTotals((err, forkMigrationTotalsMap) => {
+      if (err) return console.error(err)
       this.setState({
         forkMigrationTotalsMap,
       })
