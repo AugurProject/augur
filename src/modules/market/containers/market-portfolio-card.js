@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	finalizeMarket: marketId => dispatch(finalizeMarket(marketId)),
+  finalizeMarket: marketId => dispatch(finalizeMarket(marketId)),
 })
 
 const MarketPortfolioCardContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketPortfolioCard))

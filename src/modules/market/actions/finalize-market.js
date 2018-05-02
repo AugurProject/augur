@@ -2,10 +2,8 @@ import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { formatGasCostToEther } from 'utils/format-number'
 import { closeModal } from 'modules/modal/actions/close-modal'
-import { removeMarket } from 'modules/markets/actions/update-markets-data'
 
 export const finalizeMarket = (marketId, estimateGas = false, callback = logError) => (dispatch, getState) => {
-  const { loginAccount } = getState()
   augur.api.Market.finalize({
     tx: {
       to: marketId,

@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
-import { constants } from 'services/augurjs'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
@@ -14,8 +13,7 @@ import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
-import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer.jsx'
-import { MODAL_CLAIM_REPORTING_FEES } from 'modules/modal/constants/modal-types'
+import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -28,7 +26,6 @@ export default class MarketPortfolioCard extends Component {
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -64,12 +61,13 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
     } = this.props
+
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
 
     let localButtonText
     let displayLink = true
-    let buttonAction; 
+    let buttonAction
     switch (linkType) {
       case TYPE_REPORT:
         localButtonText = 'Report'
@@ -85,7 +83,7 @@ export default class MarketPortfolioCard extends Component {
       case TYPE_MIGRATE_REP:
         localButtonText = 'Migrate REP'
         break
-      case TYPE_CALCULATE_PAYOUT: 
+      case TYPE_CALCULATE_PAYOUT:
         localButtonText = 'Calculate Payout'
         displayLink = false
         buttonAction = this.finalizeMarket
@@ -268,13 +266,13 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        <MarketPortfolioCardFooter 
-          marketId={market.id} 
-          linkType={linkType} 
-          localButtonText={localButtonText}
-          buttonAction={buttonAction} 
+        <MarketPortfolioCardFooter
+          marketId={market.id}
+          linkType={linkType}
+          localButtonText={localButtonText || buttonText}
+          buttonAction={buttonAction}
           displayLink={displayLink}
-          formattedDescription={market.description} 
+          formattedDescription={market.description}
         />
       </article>
     )
