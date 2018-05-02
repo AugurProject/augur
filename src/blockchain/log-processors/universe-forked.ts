@@ -17,7 +17,7 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
           eventName: "MarketState",
           universe: log.universe,
           marketId: forkingMarket,
-          reportingState: augur.constants.REPORTING_STATE.FORKING,
+          reportingState: ReportingState.FORKING,
         });
       });
     });
@@ -25,16 +25,16 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
 }
 
 export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("markets").select("marketId").where({forking: 1, universe: log.universe}).first().asCallback((err, forkingMarket?: Address) => {
+  db("markets").select("marketId").where({forking: 1, universe: log.universe}).first().asCallback((err, forkingMarket?: {marketId: Address} ) => {
     if (err) return callback(err);
     if (forkingMarket == null) return callback(new Error(`Could not retrieve forking market to rollback for universe ${log.universe}`));
-    db("markets").update("forking", 0).where("marketId", forkingMarket).asCallback((err) => {
+    db("markets").update("forking", 0).where("marketId", forkingMarket.marketId).asCallback((err) => {
       if (err) return callback(err);
       augurEmitter.emit("MarketState", {
         eventName: "MarketState",
         universe: log.universe,
         marketId: forkingMarket,
-        reportingState: augur.constants.REPORTING_STATE.CROWDSOURCING_DISPUTE,
+        reportingState: ReportingState.CROWDSOURCING_DISPUTE,
       });
       callback(null);
     });
