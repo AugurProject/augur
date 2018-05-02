@@ -25,7 +25,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       "feeWindow" varchar(66),
       "endTime" integer NOT NULL CONSTRAINT "positiveEndTime" CHECK ("endTime" > 0),
       "finalizationTime" integer,
-      "forking" boolean DEFAULT O,
+      "forking" boolean DEFAULT 0,
       "needsMigration" boolean DEFAULT 0,
       "marketStateId" integer,
       "shortDescription" text NOT NULL,
