@@ -47,14 +47,14 @@ const { app, servers } = runServer(db, augur);
 checkAugurDbSetup(db, (err?: Error|null): void => {
   if (err) {
     console.error("checkAugurDbSetup:", err);
-    servers.forEach((websocketServer) => websocketServer.close());
+    servers.servers.forEach((websocketServer) => websocketServer.close());
     process.exit(1);
   }
   syncAugurNodeWithBlockchain(db, augur, networkConfig, uploadBlockNumbers, (err?: Error|null): void => {
     if (err) {
       console.error("syncAugurNodeWithBlockchain:", err);
       console.error(err.stack);
-      servers.forEach((websocketServer) => websocketServer.close());
+      servers.servers.forEach((websocketServer) => websocketServer.close());
       process.exit(1);
     }
     console.log("Sync with blockchain complete.");
