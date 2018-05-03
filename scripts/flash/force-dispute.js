@@ -13,7 +13,7 @@ var displayTime = require("./display-time");
 
 function help() {
   console.log(chalk.red("Force market to dispute a number of rounds, default is 10"));
-  console.log(chalk.red("parameters are market id and rounds (default is 10) a fork could need 20"));
+  console.log(chalk.red("This will submit an initial report on market if needed"));
   console.log(chalk.red("If you want to force a fork use the fork command"));
   console.log(chalk.red("' -m <marketID> -r 7', means dispute this market 7 times"));
 }

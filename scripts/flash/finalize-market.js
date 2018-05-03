@@ -8,7 +8,8 @@ var setTimestamp = require("./set-timestamp");
 var displayTime = require("./display-time");
 
 function help() {
-  console.log(chalk.red("Market is ready to be finalize, so finalize the market"));
+  console.log(chalk.red("Push time so the Market can be finalized, depends on initial report"));
+  console.log(chalk.red("--noPush do not move time, just finalize the market"));
 }
 
 function callFinalize(augur, marketId, callback) {

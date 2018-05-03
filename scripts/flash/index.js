@@ -47,8 +47,8 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, REP is given to user if needed" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
-      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
+      invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
   },
   "initial-report": {
@@ -56,8 +56,8 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, used for Open Reporting" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
-      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
+      invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
   },
   "dispute-contribute": {
@@ -65,9 +65,9 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, push time and dispute this market" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { short: "o", default: 0, help: "Outcome, needed if invalid flag isn't used, default is 0" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
-      invalid: { flag: true, short: "i", help: "Optional: amount of REP to dispute with" },
+      invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
   },
   "finalize-market": {
