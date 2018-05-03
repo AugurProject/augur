@@ -338,21 +338,13 @@ function determineDrawParams({
 
   // Domain
   //  X
-  const xDomain = priceTimeSeries.reduce((p, dataPoint) => [...p, dataPoint.period], [])
+  const xDomain = [
+    new Date((currentTimeInSeconds - selectedRange) * 1000),
+    new Date(currentTimeInSeconds * 1000),
+  ]
 
-  const domainScaleWidth = ((candleDim.width + (candleDim.gap * 2)) * priceTimeSeries.length) - (candleDim.gap * 2)
 
-  let drawableWidth = containerWidth
-
-  // Determine the smaller scale
-  if (domainScaleWidth < containerWidth - chartDim.left - chartDim.right) { // expand domain
-    // Is determining what the synthetic domain min needs to be in order to properly scale the view for fixed spaced candles
-    if (xDomain.length !== 0) {
-      xDomain.push(xDomain[0] - (((xDomain[xDomain.length - 1] - xDomain[0]) * containerWidth) / domainScaleWidth))
-    }
-  } else {
-    drawableWidth = domainScaleWidth
-  }
+  const drawableWidth = containerWidth
 
   //  Y
   // Determine bounding diff
