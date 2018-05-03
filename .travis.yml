@@ -41,7 +41,7 @@ script:
 
 jobs:
   include:
-    - stage: deploy
+    - stage: test travis-ci
       if: branch = petong/travis-ci
       script: skip
       deploy: &script
@@ -50,7 +50,7 @@ jobs:
         skip_cleanup: true
         on:
           all_branches: true
-
+    - stage: deploy to dev
       if: branch = master
       script: skip
       deploy: &script
@@ -59,7 +59,7 @@ jobs:
         skip_cleanup: true
         on:
           all_branches: true
-
+    - stage: deploy to stable
       if: branch = stable
       script: skip
       deploy: &script
