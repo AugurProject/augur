@@ -35,7 +35,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: ZERO,
+        gasEstimate: new BigNumber("600000", 10),
         worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.8", 10),
@@ -58,7 +58,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: ZERO,
+        gasEstimate: new BigNumber("600000", 10),
         worstCaseFees: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("8.8", 10),
@@ -81,7 +81,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: ZERO,
+        gasEstimate: new BigNumber("600000", 10),
         worstCaseFees: new BigNumber("0.078", 10),
         sharesDepleted: new BigNumber("2", 10),
         tokensDepleted: ZERO,
@@ -104,7 +104,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: ZERO,
+        gasEstimate: new BigNumber("600000", 10),
         worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1", 10),
         tokensDepleted: new BigNumber("4.4", 10),
@@ -128,7 +128,7 @@ describe("trading/simulation/simulate-create-ask-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: ZERO,
+        gasEstimate: new BigNumber("600000", 10),
         worstCaseFees: new BigNumber("0.039", 10),
         sharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.35", 10),

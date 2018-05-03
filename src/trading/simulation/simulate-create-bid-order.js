@@ -11,7 +11,7 @@ function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCrea
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
-  var gasFees = ZERO;
+  var gasEstimate = new BigNumber(constants.CREATE_ORDER_GAS, 16);
   var worstCaseFees = ZERO;
   var sharePriceLong = price.minus(minPrice);
   var sharePriceShort = maxPrice.minus(price);
@@ -35,7 +35,7 @@ function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCrea
   }
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(sharePriceLong);
   return {
-    gasFees: gasFees,
+    gasEstimate: gasEstimate,
     worstCaseFees: worstCaseFees,
     otherSharesDepleted: sharesEscrowed,
     tokensDepleted: tokensEscrowed,
