@@ -8,7 +8,7 @@ import MarketPositionsListPosition from 'modules/market/components/market-positi
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
+import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'

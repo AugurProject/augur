@@ -2,6 +2,8 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
+import { convertUnixToFormattedDate } from 'utils/format-date'
+
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
@@ -30,7 +32,7 @@ const MarketPortfolioCardFooter = p => (
           {p.linkType === TYPE_CLAIM_PROCEEDS &&
             <div>
               <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
-              <span className={Styles['MarketCard__proceeds-text-small']}>{p.finalizationTime}</span>
+              <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(p.finalizationTime).formattedLocal}</span>
             </div>
           }
           <button

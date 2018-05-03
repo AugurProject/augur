@@ -1,7 +1,5 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
-import { formatGasCostToEther } from 'utils/format-number'
-import { closeModal } from 'modules/modal/actions/close-modal'
 import noop from 'utils/noop'
 
 export const sendFinalizeMarket = (marketId, callback = logError) => (dispatch, getState) => {
@@ -9,10 +7,10 @@ export const sendFinalizeMarket = (marketId, callback = logError) => (dispatch, 
   const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   augur.reporting.finalizeMarket({
-    market: marketId, 
+    market: marketId,
     onSent: noop,
     onSuccess: (res) => {
-      //do something
+      // do something
     },
     onFailed: err => callback(err),
   })

@@ -1,13 +1,14 @@
 export const calculateOutstandingReturns = (marketId, positions) => {
   let totalReturns = 0
-  // this is prob wrong, sometimes positions is empty?
   if (positions && positions[marketId]) {
-    for (let i = 0; i < positions[marketId].length; i++) {
-      for (let j = 0; j < positions[marketId][i]; j++) {
-        totalReturns += parseInt(positions[marketId][i][j].unrealizedProfitLoss, 10) // do fancy match
+    Object.keys(positions[marketId]).forEach((key) => {
+      console.log(positions[marketId][key])
+      if (positions[marketId][key]) {
+        for (let i = 0; i < positions[marketId][key].length; i++) {
+          totalReturns += parseFloat(positions[marketId][key][i].unrealizedProfitLoss)
+        }
       }
-    }
+    })
   }
-
   return totalReturns
 }

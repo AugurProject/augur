@@ -9,11 +9,11 @@ import { calculateOutstandingReturns } from 'modules/market/helpers/calculate-ou
 
 const mapStateToProps = (state, ownProps) => ({
   linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.market.id), state.loginAccount),
-  outstandingReturns: calculateOutstandingReturns(ownProps.market.id, state.accountPositions), // check if it is a claim type
+  outstandingReturns: calculateOutstandingReturns(ownProps.market.id, state.accountPositions),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)), // should this be switched to augurjs one?
+  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
 })
 
 const MarketPortfolioCardContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketPortfolioCard))
