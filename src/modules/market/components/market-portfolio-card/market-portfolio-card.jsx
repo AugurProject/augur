@@ -260,7 +260,7 @@ export default class MarketPortfolioCard extends Component {
           <MarketPortfolioCardFooter
             marketId={market.id}
             linkType={linkType}
-            localButtonText={localButtonText || buttonText}
+            localButtonText={localButtonText}
             buttonAction={buttonAction}
             outstandingReturns={outstandingReturns}
             finalizationTime={market.finalizationTime}
