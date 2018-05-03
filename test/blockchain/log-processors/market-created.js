@@ -85,6 +85,10 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "100");
             },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0xbbb1111111111111111111111111111111111111");
+            },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
@@ -123,6 +127,8 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorFeeRate: new BigNumber("0.01", 10),
             marketCreatorFeesCollected: new BigNumber("0", 10),
             marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -240,6 +246,10 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "100");
             },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
+              callback(null, "0xbbb1111111111111111111111111111111111112");
+            },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
@@ -278,6 +288,8 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorFeeRate: new BigNumber("0.01", 10),
             marketCreatorFeesCollected: new BigNumber("0", 10),
             marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111112",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -416,6 +428,10 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "100");
             },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
+              callback(null, "0xbbb1111111111111111111111111111111111113");
+            },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
@@ -454,6 +470,8 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorFeeRate: new BigNumber("0.01", 10),
             marketCreatorFeesCollected: new BigNumber("0", 10),
             marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111113",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -566,6 +584,10 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "100");
             },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0xbbb1111111111111111111111111111111111111");
+            },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
             },
@@ -604,6 +626,8 @@ describe("blockchain/log-processors/market-created", () => {
             marketCreatorFeeRate: new BigNumber("0.01", 10),
             marketCreatorFeesCollected: new BigNumber("0", 10),
             marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: null,
