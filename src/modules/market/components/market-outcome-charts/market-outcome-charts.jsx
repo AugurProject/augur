@@ -124,11 +124,14 @@ export default class MarketOutcomeCharts extends Component {
       selectedRange,
     } = this.state
 
+    // This prevents the candlestick from continuously shifting around.
+    const currentTimeAsMultipleOfPeriod = Math.floor(currentTimeInSeconds / selectedPeriod) * selectedPeriod
+
     loadCandleStickData({
       marketId,
       period: selectedPeriod,
-      start: currentTimeInSeconds - selectedRange,
-      end: currentTimeInSeconds,
+      start: currentTimeAsMultipleOfPeriod - selectedRange,
+      end: currentTimeAsMultipleOfPeriod,
       outcome: selectedOutcome.id,
     }, (err, data) => {
       if (err) return logError(err)
