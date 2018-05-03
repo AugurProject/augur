@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  finalizeMarket: marketId => dispatch(finalizeMarket(marketId)),
+  finalizeMarket: marketId => dispatch(finalizeMarket(marketId)), // should this be switched to augurjs one?
 })
 
 const MarketPortfolioCardContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketPortfolioCard))

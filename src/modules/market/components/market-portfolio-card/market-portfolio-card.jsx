@@ -63,6 +63,7 @@ export default class MarketPortfolioCard extends Component {
       market,
       outstandingReturns,
     } = this.props
+    console.log(market)
 
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -276,6 +277,7 @@ export default class MarketPortfolioCard extends Component {
           displayLink={displayLink}
           formattedDescription={market.description}
           outstandingReturns={outstandingReturns}
+          finalizationTime={market.finalizationTime}
         />
       </article>
     )

@@ -6,6 +6,7 @@ import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
+// refactor this
 const MarketPortfolioCardFooter = p => (
   <div>
     {p.linkType && p.displayLink &&
@@ -42,6 +43,12 @@ const MarketPortfolioCardFooter = p => (
           </div>
         }
         <div className={Styles['MarketCard__action-container']}>
+          {p.linkType === TYPE_CLAIM_PROCEEDS &&
+            <div>
+              <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
+              <span className={Styles['MarketCard__proceeds-text-small']}>{p.finalizationTime}</span>
+            </div>
+          }
           <button
             className={classNames(Styles['MarketCard__action-mobile'], Styles['MarketCard__action-mobile-light'])}
             id={p.id}
@@ -64,6 +71,7 @@ MarketPortfolioCardFooter.propTypes = {
   buttonAction: PropTypes.func,
   formattedDescription: PropTypes.string,
   outstandingReturns: PropTypes.number,
+  finalizationTime: PropTypes.number,
 }
 
 export default MarketPortfolioCardFooter
