@@ -151,6 +151,8 @@ export interface MarketsRow<BigNumberType> {
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
   marketCreatorFeesCollected: BigNumberType|null;
+  marketCreatorMailbox: Address;
+  marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
   category: string;
   tag1: string|null;
