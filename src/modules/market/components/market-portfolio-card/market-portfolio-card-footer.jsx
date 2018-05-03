@@ -49,7 +49,7 @@ const MarketPortfolioCardFooter = (p) => {
               </div>
             }
             <button
-              className={classNames(Styles['MarketCard__action-footer'], Styles['MarketCard__action-footer-light'])}
+              className={classNames(Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
               disabled={!canClaim}
             >
