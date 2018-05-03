@@ -7,7 +7,6 @@ import { convertUnixToFormattedDate } from 'utils/format-date'
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
-// refactor this
 const MarketPortfolioCardFooter = p => (
   <div>
     <section

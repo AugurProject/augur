@@ -8,7 +8,6 @@ import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
 const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getState) => {
-  console.log('claim called')
   const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   const winningPositions = selectWinningPositions()
