@@ -56,12 +56,12 @@ export default class MarketPortfolioCard extends Component {
   }
   render() {
     const {
-      buttonText,
       currentTimestamp,
       isMobile,
       linkType,
       market,
       outstandingReturns,
+      blockchain,
     } = this.props
 
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
@@ -258,12 +258,14 @@ export default class MarketPortfolioCard extends Component {
         </section>
         {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) &&
           <MarketPortfolioCardFooter
-            marketId={market.id}
             linkType={linkType}
             localButtonText={localButtonText}
             buttonAction={buttonAction}
             outstandingReturns={outstandingReturns}
             finalizationTime={market.finalizationTime}
+            isClaimable={(currentTimestamp - market.finalizationTime) > 0}
+            currentTimestamp={currentTimestamp}
+            endTime={market.endTime}
           />
         }
       </article>

@@ -9,9 +9,7 @@ export const sendFinalizeMarket = (marketId, callback = logError) => (dispatch, 
   augur.reporting.finalizeMarket({
     market: marketId,
     onSent: noop,
-    onSuccess: (res) => {
-      // do something
-    },
+    onSuccess: noop,
     onFailed: err => callback(err),
   })
 }
