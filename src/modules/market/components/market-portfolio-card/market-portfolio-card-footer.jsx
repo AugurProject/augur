@@ -10,7 +10,6 @@ import TimeRemainingIndicatorWrapper
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import { constants } from 'services/augurjs'
-import moment from 'moment'
 import { formatEther } from 'utils/format-number'
 
 const MarketPortfolioCardFooter = (p) => {
@@ -20,7 +19,7 @@ const MarketPortfolioCardFooter = (p) => {
   const startTime = new Date(p.finalizationTime * 1000)
 
   if (p.linkType === TYPE_CLAIM_PROCEEDS) {
-    console.log('currentTimestamp:' + p.currentTimestamp + ' startDate: ' + startTime + ' endTime: ' + finalDate)
+    console.log('currentTimestamp:' + new Date(p.currentTimestamp) + ' startDate: ' + startTime + ' endTime: ' + finalDate)
   }
   return (
     <div>
