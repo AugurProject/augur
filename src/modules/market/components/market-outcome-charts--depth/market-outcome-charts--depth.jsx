@@ -383,7 +383,7 @@ function determineDrawParams(options) {
 
   const yScale = d3.scaleLinear()
     .domain(d3.extent(yDomain))
-    .range([chartDim.top, containerHeight - chartDim.bottom])
+    .range([containerHeight - chartDim.bottom, chartDim.top])
 
   return {
     containerWidth,
