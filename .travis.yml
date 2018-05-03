@@ -38,6 +38,18 @@ script:
 - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 
 # Build docker image and push
+
+jobs:
+  include:
+    - stage: deploy
+      if: branch = petong/travis-ci
+      script: skip
+      deploy: &script
+        provider: script
+        script: echo "I love travis yml"
+        skip_cleanup: true
+        on:
+          all_branches: true
 jobs:
   include:
     - stage: deploy
@@ -59,18 +71,6 @@ jobs:
       deploy: &script
         provider: script
         script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release-stable
-        skip_cleanup: true
-        on:
-          all_branches: true
-
-jobs:
-  include:
-    - stage: deploy
-      if: branch = petong/travis-ci
-      script: skip
-      deploy: &script
-        provider: script
-        script: echo "I love travis yml"
         skip_cleanup: true
         on:
           all_branches: true
