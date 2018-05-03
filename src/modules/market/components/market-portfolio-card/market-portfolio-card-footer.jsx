@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import SingleSlicePieGraph from 'src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph'
-import { convertUnixToFormattedDate } from 'utils/format-date'
+import { convertUnixToFormattedDate, formatDate } from 'utils/format-date'
 import TimeRemainingIndicatorWrapper
   from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
 import moment from 'moment'
@@ -17,7 +17,7 @@ const MarketPortfolioCardFooter = (p) => {
   const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS
   const startTime = new Date(p.finalizationTime*1000)
   const finalTime = moment(startTime).add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
-  const canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && p.currentTimestamp - finalTime > 0
+  const canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && p.currentTimestamp - formatDate(finalTime).timestamp > 0
   return (
     <div>
       <section
