@@ -521,9 +521,9 @@ atob@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
 
-augur-core@1.0.0-3:
-  version "1.0.0-3"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-3.tgz#b2c7215f53a9a15ddbc442fbfc4e6179d9d5c0de"
+augur-core@1.0.0-4:
+  version "1.0.0-4"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-4.tgz#b1d1c4f3486c0191382bc1316051dbb01118f4d1"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -556,17 +556,17 @@ augur-core@1.0.0-3:
     rimraf "2.6.2"
     solidity-coverage "0.4.15"
 
-augur.js@4.11.0-8:
-  version "4.11.0-8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-8.tgz#7404fed52dffc6e3b303804b8585f1c542d7cf20"
+augur.js@4.11.0-9:
+  version "4.11.0-9"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-9.tgz#6ae735ea46c2524dcb5eb1a7b0b2d0cd483b6ca5"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-3"
+    augur-core "1.0.0-4"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.2.5"
+    ethrpc "5.2.6"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -4150,9 +4150,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.2.5:
-  version "5.2.5"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.2.5.tgz#7b84e2a208f4e1e298f5e4814a9283c363eee38c"
+ethrpc@5.2.6:
+  version "5.2.6"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.2.6.tgz#adc119f6234bc5cf2cbcaaf931713f66bbac04ae"
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
