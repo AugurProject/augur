@@ -60,7 +60,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
     settlementFee: row.reportingFeeRate.plus(row.marketCreatorFeeRate),
     reportingFeeRate: row.reportingFeeRate,
     marketCreatorFeeRate: row.marketCreatorFeeRate,
-    marketCreatorFeesCollected: row.marketCreatorFeesCollected!,
+    marketCreatorFeesBalance: row.marketCreatorFeesBalance!,
     marketCreatorMailbox: row.marketCreatorMailbox,
     marketCreatorMailboxOwner: row.marketCreatorMailboxOwner,
     initialReportSize: row.initialReportSize,
