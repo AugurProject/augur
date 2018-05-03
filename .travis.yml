@@ -42,15 +42,26 @@ jobs:
   include:
     - stage: deploy
       if: branch = master
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-              npm run docker:build-and-push:dev
+      script: skip
+      deploy: &script
+        provider: script
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:build-and-push:dev
+        skip_cleanup: true
+        on:
+          all_branches: true
+
 
 jobs:
   include:
     - stage: deploy
       if: branch = stable
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-              npm run docker:release-stable
+      script: skip
+      deploy: &script
+        provider: script
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release-stable
+        skip_cleanup: true
+        on:
+          all_branches: true
 
 env:
   global:
