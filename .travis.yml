@@ -50,9 +50,7 @@ jobs:
         skip_cleanup: true
         on:
           all_branches: true
-jobs:
-  include:
-    - stage: deploy
+
       if: branch = master
       script: skip
       deploy: &script
@@ -62,10 +60,6 @@ jobs:
         on:
           all_branches: true
 
-
-jobs:
-  include:
-    - stage: deploy
       if: branch = stable
       script: skip
       deploy: &script
