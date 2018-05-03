@@ -35,7 +35,7 @@ const MarketPortfolioCardFooter = (p) => {
           {p.linkType === TYPE_CLAIM_PROCEEDS &&
             <div>
               <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue}</span>
+              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
@@ -51,7 +51,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-              disabled={!canClaim}
+              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
             >
               { p.localButtonText }
             </button>
