@@ -6,7 +6,7 @@ import SingleSlicePieGraph from 'src/modules/market/components/common/single-sli
 import { convertUnixToFormattedDate } from 'utils/format-date'
 import TimeRemainingIndicatorWrapper
   from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
-
+import moment from 'moment'
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import { constants } from 'services/augurjs'
@@ -14,20 +14,10 @@ import { formatEther } from 'utils/format-number'
 
 const MarketPortfolioCardFooter = (p) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
-<<<<<<< Updated upstream
-  const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS && p.disableButton
-  const finalDate = new Date((p.finalizationTime + constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME) * 1000)
-  const startTime = new Date(p.finalizationTime * 1000)
-
-  if (p.linkType === TYPE_CLAIM_PROCEEDS) {
-    console.log('currentTimestamp:' + new Date(p.currentTimestamp) + ' startDate: ' + startTime + ' endTime: ' + finalDate)
-  }
-=======
   const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS
   const startTime = new Date(p.finalizationTime*1000)
   const finalTime = moment(startTime).add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
   const canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && p.currentTimestamp - finalTime > 0
->>>>>>> Stashed changes
   return (
     <div>
       <section
@@ -61,11 +51,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer'], Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-<<<<<<< Updated upstream
-              disabled={p.disableButton}
-=======
               disabled={!canClaim}
->>>>>>> Stashed changes
             >
               { p.localButtonText }
             </button>
