@@ -14,6 +14,9 @@ export default class MarketOutcomeCandlestickHeader extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
+    updateSelectedRange: PropTypes.func.isRequired,
+    selectedPeriod: PropTypes.number.isRequired,
+    selectedRange: PropTypes.number.isRequired,
     volume: PropTypes.number,
     open: PropTypes.number,
     high: PropTypes.number,
@@ -37,7 +40,10 @@ export default class MarketOutcomeCandlestickHeader extends Component {
       low,
       close,
       priceTimeSeries,
+      selectedPeriod,
+      selectedRange,
       updateSelectedPeriod,
+      updateSelectedRange,
     } = this.props
 
     return (
@@ -103,6 +109,9 @@ export default class MarketOutcomeCandlestickHeader extends Component {
             <PeriodSelector
               priceTimeSeries={priceTimeSeries}
               updateSelectedPeriod={updateSelectedPeriod}
+              updateSelectedRange={updateSelectedRange}
+              selectedPeriod={selectedPeriod}
+              selectedRange={selectedRange}
             />
           </div>
         </div>
