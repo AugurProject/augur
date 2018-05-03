@@ -61,7 +61,6 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       outstandingReturns,
-      blockchain,
     } = this.props
 
     const myPositionsSummary = getValue(market, 'myPositionsSummary')

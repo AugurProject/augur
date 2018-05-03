@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
@@ -12,10 +12,10 @@ import Styles from 'modules/market/components/market-portfolio-card/market-portf
 import { constants } from 'services/augurjs'
 import moment from 'moment'
 
-const MarketPortfolioCardFooter = p => {
+const MarketPortfolioCardFooter = (p) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
   const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS && !p.isClaimable
-  const finalDate = new Date(p.finalizationTime*1000);
+  const finalDate = new Date(p.finalizationTime*1000)
   const startTime = moment(p.finalDate).subtract(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
   return (
     <div>
