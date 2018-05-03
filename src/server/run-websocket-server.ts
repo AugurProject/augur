@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import Augur from "augur.js";
 import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
-import { JsonRpcRequest, WebSocketConfigs } from "../types";
+import { JsonRpcRequest, WebSocketConfigs, ServersData } from "../types";
 import { addressFormatReviver } from "./address-format-reviver";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
 import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
@@ -23,9 +23,10 @@ function safeSend( websocket: WebSocket, payload: string) {
   websocket.send(payload);
 }
 
-export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs): Array<WebSocket.Server> {
+export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs): ServersData {
 
   const servers: Array<WebSocket.Server> = [];
+  const httpServers: Array<http.Server | https.Server> = [];
 
   if ( webSocketConfigs.wss != null ) {
     console.log("Starting websocket secure server on port", webSocketConfigs.wss.port);
@@ -34,6 +35,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
       key: fs.readFileSync(webSocketConfigs.wss.certificateKeyFile),
     };
     const server = https.createServer(httpsOptions, app);
+    httpServers.push(server);
     server.listen(webSocketConfigs.wss.port);
     servers.push( new WebSocket.Server({ server }) );
   }
@@ -41,6 +43,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
   if ( webSocketConfigs.ws != null ) {
     console.log("Starting websocket server on port", webSocketConfigs.ws.port);
     const server = http.createServer(app);
+    httpServers.push(server);
     server.listen(webSocketConfigs.ws.port);
     servers.push( new WebSocket.Server({ server }) );
   }
@@ -102,5 +105,5 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
     });
   });
 
-  return servers;
+  return { servers, httpServers };
 }
