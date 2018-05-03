@@ -323,6 +323,8 @@ export interface UIMarketInfo<BigNumberType> {
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
   marketCreatorFeesCollected: BigNumberType|null;
+  marketCreatorMailbox: Address;
+  marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
   category: string;
   tags: Array<string|null>;
