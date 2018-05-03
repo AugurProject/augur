@@ -11,11 +11,12 @@ import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import { constants } from 'services/augurjs'
 import moment from 'moment'
+import { formatEther } from 'utils/format-number'
 
 const MarketPortfolioCardFooter = (p) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
-  const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS && !p.isClaimable
-  const finalDate = new Date(p.finalizationTime*1000)
+  const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS && p.disableButton
+  const finalDate = new Date(p.finalizationTime * 1000)
   const startTime = moment(p.finalDate).subtract(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
   return (
     <div>
@@ -34,7 +35,7 @@ const MarketPortfolioCardFooter = (p) => {
           {p.linkType === TYPE_CLAIM_PROCEEDS &&
             <div>
               <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              <span className={Styles['MarketCard__heavy-text']}>{p.outstandingReturns}</span>
+              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue}</span>
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
@@ -50,7 +51,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer'], Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-              disabled={p.linkType === TYPE_CLAIM_PROCEEDS ? !p.isClaimable : false}
+              disabled={p.disableButton}
             >
               { p.localButtonText }
             </button>
@@ -62,7 +63,7 @@ const MarketPortfolioCardFooter = (p) => {
 }
 
 MarketPortfolioCardFooter.propTypes = {
-  isClaimable: PropTypes.bool,
+  disableButton: PropTypes.bool,
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
   buttonAction: PropTypes.func,

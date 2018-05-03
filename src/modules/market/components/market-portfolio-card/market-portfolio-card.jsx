@@ -14,6 +14,7 @@ import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
+import { constants } from 'services/augurjs'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -68,14 +69,17 @@ export default class MarketPortfolioCard extends Component {
 
     let localButtonText
     let buttonAction
+    let disableButton
     switch (linkType) {
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = 'Claim'
         buttonAction = this.claimProceeds
+        disableButton = currentTimestamp <= (market.finalizationTime + constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME)
         break
       case TYPE_CALCULATE_PAYOUT:
         localButtonText = 'Calculate Payout'
         buttonAction = this.finalizeMarket
+        disableButton = outstandingReturns <= 0
         break
       default:
         localButtonText = 'View'
@@ -262,9 +266,9 @@ export default class MarketPortfolioCard extends Component {
             buttonAction={buttonAction}
             outstandingReturns={outstandingReturns}
             finalizationTime={market.finalizationTime}
-            isClaimable={(currentTimestamp - market.finalizationTime) > 0}
             currentTimestamp={currentTimestamp}
             endTime={market.endTime}
+            disableButton={disableButton}
           />
         }
       </article>
