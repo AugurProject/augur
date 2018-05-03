@@ -63,6 +63,7 @@ export default class MarketPortfolioCard extends Component {
       market,
       outstandingReturns,
     } = this.props
+
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
 
