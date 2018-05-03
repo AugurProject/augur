@@ -15,7 +15,7 @@ This project uses typescript and can be safely built via: `npm run build` or dir
 
 ### Configuration
 
-By default, Augur Node is configured to connect to a locally-running Ethereum node at http://localhost:8545 and ws://localhost:8546. To connect to a hosted Ethereum node is by setting the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
+By default, Augur Node is configured to connect to a locally-running Ethereum node at http://localhost:8545 and ws://localhost:8546. To connect to a hosted Ethereum node, set the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
 
     $ export ENDPOINT_HTTP=https://rinkeby.ethereum.nodes.augur.net 
     $ export ENDPOINT_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
