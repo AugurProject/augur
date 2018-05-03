@@ -16,8 +16,12 @@ import { formatEther } from 'utils/format-number'
 const MarketPortfolioCardFooter = (p) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
   const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS && p.disableButton
-  const finalDate = new Date(p.finalizationTime * 1000)
-  const startTime = moment(p.finalDate).subtract(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
+  const finalDate = moment(p.finalizationTime).add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
+  const startTime = new Date(p.finalizationTime * 1000)
+
+  if (p.linkType === TYPE_CLAIM_PROCEEDS) {
+    console.log('currentTimestamp:' + p.currentTimestamp + ' startDate: ' + startTime + ' endTime: ' + finalDate)
+  }
   return (
     <div>
       <section
