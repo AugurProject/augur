@@ -603,7 +603,7 @@ function attachHoverClickHandlers({
     .attr('width', candleDim.width + candleDim.gap)
     .attr('class', 'period-hover')
     .on('mouseover', d => updateHoveredPeriod(d))
-    .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1])))
+    .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
     .on('mouseout', () => {
       updateHoveredPeriod({})
       updateHoveredPrice(null)
