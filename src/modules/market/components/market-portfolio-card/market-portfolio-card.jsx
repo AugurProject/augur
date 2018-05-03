@@ -26,6 +26,7 @@ export default class MarketPortfolioCard extends Component {
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
+    outstandingReturns: PropTypes.number,
   }
 
   static defaultProps = {
@@ -60,6 +61,7 @@ export default class MarketPortfolioCard extends Component {
       isMobile,
       linkType,
       market,
+      outstandingReturns,
     } = this.props
 
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
@@ -273,6 +275,7 @@ export default class MarketPortfolioCard extends Component {
           buttonAction={buttonAction}
           displayLink={displayLink}
           formattedDescription={market.description}
+          outstandingReturns={outstandingReturns}
         />
       </article>
     )

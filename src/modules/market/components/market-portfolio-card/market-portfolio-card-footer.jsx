@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
-import { TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
+import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
@@ -35,18 +35,21 @@ const MarketPortfolioCardFooter = p => (
           Styles['MarketCard__headingcontainer-mobile-light'],
         )}
       >
-        {p.linkType === TYPE_CALCULATE_PAYOUT &&
-        <div>
-                Outstanding Returns
-        </div>
+        {p.linkType === TYPE_CLAIM_PROCEEDS &&
+          <div>
+            <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
+            <span className={Styles['MarketCard__heavy-text']}>{p.outstandingReturns}</span>
+          </div>
         }
-        <button
-          className={classNames(Styles['MarketCard__action-mobile'], Styles['MarketCard__action-mobile-light'])}
-          id={p.id}
-          onClick={p.buttonAction}
-        >
-          { p.localButtonText }
-        </button>
+        <div className={Styles['MarketCard__action-container']}>
+          <button
+            className={classNames(Styles['MarketCard__action-mobile'], Styles['MarketCard__action-mobile-light'])}
+            id={p.id}
+            onClick={p.buttonAction}
+          >
+            { p.localButtonText }
+          </button>
+        </div>
       </div>
     </section>
     }
@@ -60,6 +63,7 @@ MarketPortfolioCardFooter.propTypes = {
   displayLink: PropTypes.bool,
   buttonAction: PropTypes.func,
   formattedDescription: PropTypes.string,
+  outstandingReturns: PropTypes.number,
 }
 
 export default MarketPortfolioCardFooter

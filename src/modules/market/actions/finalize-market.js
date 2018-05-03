@@ -22,6 +22,7 @@ export const finalizeMarket = (marketId, estimateGas = false, callback = logErro
       }
       // if not a gas estimate, just return res and update markets.
       return callback(null, res)
+      // update positions data?
     },
     onFailed: err => callback(err),
   })

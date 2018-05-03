@@ -94,7 +94,11 @@
     padding-top: 0;
   }
 }
-
+.MarketCard__action-container {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+}
 .MarketCard__tablesection-mobile {
   display: flex;
   justify-content: flex-end;
@@ -105,8 +109,18 @@
 .MarketCard__tablesection-mobile-light {
   background-color: #ceccd8;
   padding: 1rem 2rem;
+  justify-content: flex-start;
 }
 
+.MarketCard__light-text {
+  font-size: @font-size-large;
+}
+
+.MarketCard__heavy-text {
+  font-weight: 500;
+  margin-left: 1rem;
+  font-size: @font-size-large;
+}
 .MarketCard__headingcontainer {
   align-items: center;
   clear: both;
@@ -122,7 +136,9 @@
   align-items: center;
   clear: both;
   display: flex;
+  justify-content: flex-end;
   flex-flow: row nowrap;
+  flex: 1;
 }
 
 .MarketCard__headingcontainer-mobile-light {
