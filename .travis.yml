@@ -63,6 +63,19 @@ jobs:
         on:
           all_branches: true
 
+jobs:
+  include:
+    - stage: deploy
+      if: branch = petong/travis-ci
+      script: skip
+      deploy: &script
+        provider: script
+        script: echo "I love travis yml"
+        skip_cleanup: true
+        on:
+          all_branches: true
+
+
 env:
   global:
     - DOCKER_USERNAME=augurintegration
