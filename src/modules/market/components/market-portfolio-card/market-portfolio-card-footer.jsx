@@ -3,37 +3,21 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
-import MarketLink from 'modules/market/components/market-link/market-link'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 
 // refactor this
 const MarketPortfolioCardFooter = p => (
   <div>
-    {p.linkType && p.displayLink &&
-    <section className={Styles['MarketCard__tablesection-mobile']}>
-      <div className={Styles['MarketCard__headingcontainer-mobile']}>
-        <MarketLink
-          className={Styles['MarketCard__action-mobile']}
-          id={p.marketId}
-          formattedDescription={p.formattedDescription}
-          linkType={p.linkType}
-        >
-          { p.localButtonText }
-        </MarketLink>
-      </div>
-    </section>
-    }
-    {p.linkType && !p.displayLink &&
     <section
       className={classNames(
-        Styles['MarketCard__tablesection-mobile'],
-        Styles['MarketCard__tablesection-mobile-light'],
+        Styles['MarketCard__tablesection-footer'],
+        Styles['MarketCard__tablesection-footer-light'],
       )}
     >
       <div
         className={classNames(
-          Styles['MarketCard__headingcontainer-mobile'],
-          Styles['MarketCard__headingcontainer-mobile-light'],
+          Styles['MarketCard__headingcontainer-footer'],
+          Styles['MarketCard__headingcontainer-footer-light'],
         )}
       >
         {p.linkType === TYPE_CLAIM_PROCEEDS &&
@@ -50,7 +34,7 @@ const MarketPortfolioCardFooter = p => (
             </div>
           }
           <button
-            className={classNames(Styles['MarketCard__action-mobile'], Styles['MarketCard__action-mobile-light'])}
+            className={classNames(Styles['MarketCard__action-footer'], Styles['MarketCard__action-footer-light'])}
             id={p.id}
             onClick={p.buttonAction}
           >
@@ -59,7 +43,6 @@ const MarketPortfolioCardFooter = p => (
         </div>
       </div>
     </section>
-    }
   </div>
 )
 
@@ -67,9 +50,7 @@ MarketPortfolioCardFooter.propTypes = {
   marketId: PropTypes.string.isRequired,
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
-  displayLink: PropTypes.bool,
   buttonAction: PropTypes.func,
-  formattedDescription: PropTypes.string,
   outstandingReturns: PropTypes.number,
   finalizationTime: PropTypes.number,
 }

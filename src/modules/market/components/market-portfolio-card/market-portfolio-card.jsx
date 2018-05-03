@@ -63,32 +63,19 @@ export default class MarketPortfolioCard extends Component {
       market,
       outstandingReturns,
     } = this.props
-    console.log(market)
 
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
 
     let localButtonText
-    let displayLink = true
     let buttonAction
     switch (linkType) {
-      case TYPE_REPORT:
-        localButtonText = 'Report'
-        break
-      case TYPE_DISPUTE:
-        localButtonText = 'Dispute'
-        break
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = 'Claim'
-        displayLink = false
         buttonAction = this.claimProceeds
-        break
-      case TYPE_MIGRATE_REP:
-        localButtonText = 'Migrate REP'
         break
       case TYPE_CALCULATE_PAYOUT:
         localButtonText = 'Calculate Payout'
-        displayLink = false
         buttonAction = this.finalizeMarket
         break
       default:
@@ -269,16 +256,16 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        <MarketPortfolioCardFooter
-          marketId={market.id}
-          linkType={linkType}
-          localButtonText={localButtonText || buttonText}
-          buttonAction={buttonAction}
-          displayLink={displayLink}
-          formattedDescription={market.description}
-          outstandingReturns={outstandingReturns}
-          finalizationTime={market.finalizationTime}
-        />
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) &&
+          <MarketPortfolioCardFooter
+            marketId={market.id}
+            linkType={linkType}
+            localButtonText={localButtonText || buttonText}
+            buttonAction={buttonAction}
+            outstandingReturns={outstandingReturns}
+            finalizationTime={market.finalizationTime}
+          />
+        }
       </article>
     )
   }
