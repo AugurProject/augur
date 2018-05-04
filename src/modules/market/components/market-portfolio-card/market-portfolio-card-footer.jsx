@@ -3,9 +3,10 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
 import SingleSlicePieGraph from 'src/modules/market/components/common/single-slice-pie-graph/single-slice-pie-graph'
-import { convertUnixToFormattedDate, formatDate } from 'utils/format-date'
+import { convertUnixToFormattedDate } from 'utils/format-date'
 import TimeRemainingIndicatorWrapper
   from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
+import { createBigNumber } from 'utils/create-big-number'
 import moment from 'moment'
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
@@ -14,10 +15,18 @@ import { formatEther } from 'utils/format-number'
 
 const MarketPortfolioCardFooter = (p) => {
   const WrappedGraph = TimeRemainingIndicatorWrapper(SingleSlicePieGraph)
-  const showTimestamp = p.linkType === TYPE_CLAIM_PROCEEDS
-  const startTime = new Date(p.finalizationTime*1000)
-  const finalTime = moment(startTime).add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
-  const canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && p.currentTimestamp - formatDate(finalTime).timestamp > 0
+  const currentTimestampInSeconds = p.currentTimestamp
+  let canClaim = false
+  let startTime = null
+  let finalTime = null
+  let endTimestamp = null
+  if (p.finalizationTime) {
+    startTime = new Date(p.finalizationTime*1000)
+    finalTime = moment(startTime).add(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME, 'seconds').toDate()
+    endTimestamp = createBigNumber(p.finalizationTime).plus(createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME))
+    const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
+    canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
+  }
   return (
     <div>
       <section
@@ -39,12 +48,12 @@ const MarketPortfolioCardFooter = (p) => {
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
-            {showTimestamp &&
+            {p.finalizationTime &&
               <div className={Styles['MarketCard__proceeds-container']}>
                 <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
-                <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(p.finalizationTime).formattedLocal}</span>
+                <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(endTimestamp.toNumber()).formattedLocal}</span>
                 <span className={Styles['MarketCard__proceeds-clock']}>
-                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={p.currentTimestamp} />
+                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} />
                 </span>
               </div>
             }
