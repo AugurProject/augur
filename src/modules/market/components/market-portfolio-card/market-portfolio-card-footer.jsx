@@ -27,10 +27,6 @@ const MarketPortfolioCardFooter = (p) => {
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
   }
-  let canFinalize = false
-  if (p.linkType === TYPE_CALCULATE_PAYOUT && p.outstandingReturns !== 0) {
-    canFinalize = true
-  }
   return (
     <div>
       <section
@@ -64,7 +60,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-              disabled={(p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim) || (p.linkType === TYPE_CALCULATE_PAYOUT && !canFinalize)}
+              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
             >
               { p.localButtonText }
             </button>
