@@ -60,6 +60,13 @@ describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
     assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
   })
 
+  it(`should call callback and history with good negative data`, () => {
+    submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
+    store.dispatch(submitMarketContribute(false, 'testMarketId', -10, false, 1000, history, callback))
+    assert(callback.calledOnce, `Didn't call 'callback' once as expected`)
+    assert(history.push.calledOnce, `Didn't call 'history' once as expected`)
+  })
+
   it(`should only call callback with null market id`, () => {
     submitMarketContributeReqireAPI.__Rewire__('augur', augurSuccess)
     store.dispatch(submitMarketContribute(false, null, 0, false, 1000, history, callback))
