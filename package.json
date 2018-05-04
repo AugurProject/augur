@@ -1,6 +1,6 @@
 {
   "name": "augur-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -61,7 +61,7 @@
     "electron-compile": "6.4.2"
   },
   "devDependencies": {
-    "electron": "1.8.4",
+    "electron": "2.0.0",
     "electron-forge": "5.2.0",
     "electron-prebuilt-compile": "2.0.0"
   }
