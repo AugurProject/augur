@@ -194,12 +194,12 @@ export default class MigrateRepForm extends Component {
           <h3>Choose carefully. Migrating REP is an irreversible, one-way operation.</h3>
         </li>
         <li>
-          <label>
-            <span>Outcome</span>
-          </label>
-        </li>
-        <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
+            <li>
+              <label>
+                <span>Outcome</span>
+              </label>
+            </li>
             { formattedMigrationTotals && formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
               <li key={outcome.id}>
                 <button
