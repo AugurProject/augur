@@ -25,7 +25,7 @@ var augur = new Augur();
 var ethereumNode = { http: "http://127.0.0.1:8545", ws: "ws://127.0.0.1:8546" };
 var augurNode = "ws://127.0.0.1:9001";
 
-augur.connect({ ethereumNode, augurNode }, (err) => {
+augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   // do stuff
 });
 ```
