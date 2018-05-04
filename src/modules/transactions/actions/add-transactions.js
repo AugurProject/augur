@@ -69,12 +69,8 @@ function buildTradeTransaction(trade, marketsData) {
   const header = buildHeader(transaction, TRADE)
   const meta = {}
   meta.type = TRADE
-
-  if (market.marketType === BINARY) {
-    meta.outcome = 'Yes'
-  } else if (market.marketType === CATEGORICAL) {
-    meta.outcome = market.outcomes[transaction.outcome].description
-  }
+  const outcomeName = getOutcome(market, transaction.outcome)
+  if (outcomeName) meta.outcome = outcomeName
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
   // TODO include .reportingFees and .marketCreatorFees separately?
@@ -205,7 +201,8 @@ export function addOpenOrderTransactions(openOrders) {
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
-            meta.outcome = market.marketType === BINARY ? 'Yes' : outcomeId
+            const outcomeName = getOutcome(market, transaction.outcome)
+            if (outcomeName) meta.outcome = outcomeName
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
@@ -264,6 +261,15 @@ export function addReportingTransactions(reports) {
   }
 }
 
+function getOutcome(market, outcome) {
+  let value = null
+  if (market.marketType === BINARY) {
+    value = 'Yes'
+  } else if (market.marketType === CATEGORICAL) {
+    value = market.outcomes[outcome].description
+  }
+  return value
+}
 function buildHeader(item, type, status) {
   const header = {}
   header.status = status
