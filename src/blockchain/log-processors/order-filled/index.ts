@@ -10,6 +10,7 @@ import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { BN_WEI_PER_ETHER } from "../../../constants";
+import { refreshMarketMailboxEthBalance } from "../database";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -75,7 +76,10 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           if (err) return callback(err);
           updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
             if (err) return callback(err);
-            updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, filler, tickSize, callback);
+            updateOrdersAndPositions(db, augur, marketId, orderId, orderCreator, filler, tickSize, (err) => {
+              if (err) return callback(err);
+              refreshMarketMailboxEthBalance(db, augur, marketId, callback);
+            });
           });
         });
       });
@@ -130,7 +134,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
               marketCreatorFees,
               reporterFees,
             }));
-            return callback(err);
+            refreshMarketMailboxEthBalance(db, augur, marketId, callback);
           });
         });
       });
