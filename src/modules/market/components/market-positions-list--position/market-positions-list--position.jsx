@@ -101,8 +101,8 @@ export default class Position extends Component {
             {getValue(position, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
         { !isMobile && <li>{ getValue(position, 'realizedNet.formatted')} </li> }
+        { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
         { isExtendedDisplay &&
           <li>
             {getValue(position, 'totalNet.formatted') }
