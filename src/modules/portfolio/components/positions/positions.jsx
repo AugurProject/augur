@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import makePath from 'modules/routes/helpers/make-path'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'
-import { TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
 import { MARKETS } from 'modules/routes/constants/views'
 
@@ -65,7 +64,6 @@ export default class Positions extends Component {
             closePositionStatus={closePositionStatus}
             location={location}
             history={history}
-            linkType={TYPE_DISPUTE}
             positionsDefault={false}
             currentTimestamp={currentTimestamp}
             isMobile={isMobile}
@@ -77,7 +75,6 @@ export default class Positions extends Component {
             location={location}
             history={history}
             positionsDefault={false}
-            linkType={TYPE_CLAIM_PROCEEDS}
             currentTimestamp={currentTimestamp}
             claimTradingProceeds={claimTradingProceeds}
             isMobile={isMobile}

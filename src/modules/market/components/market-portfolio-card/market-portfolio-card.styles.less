@@ -95,10 +95,44 @@
   }
 }
 
-.MarketCard__tablesection-mobile {
-  display: none;
+.MarketCard__action-container {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.MarketCard__tablesection-footer {
+  display: flex;
+  justify-content: flex-end;
   overflow: hidden;
   padding: 1.5rem 2rem;
+}
+
+.MarketCard__tablesection-footer-light {
+  background-color: #ceccd8;
+  justify-content: flex-start;
+  padding: 1rem 2rem;
+}
+
+.MarketCard__light-text {
+  font-size: @font-size-large;
+}
+
+.MarketCard__heavy-text {
+  font-size: @font-size-large;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.MarketCard__proceeds-text {
+  font-size: @font-size-small;
+  margin-right: 0.2rem;
+}
+
+.MarketCard__proceeds-text-small {
+  font-size: @font-size-small;
+  margin-right: 1rem;
 }
 
 .MarketCard__headingcontainer {
@@ -112,11 +146,17 @@
   width: 100%;
 }
 
-.MarketCard__headingcontainer-mobile {
+.MarketCard__headingcontainer-footer {
   align-items: center;
   clear: both;
-  display: none;
+  display: flex;
+  flex: 1;
   flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+
+.MarketCard__headingcontainer-footer-light {
+  display: flex;
 }
 
 .MarketCard__tableheading {
@@ -141,11 +181,28 @@
   &:extend(.button--purple all);
 }
 
-.MarketCard__action-mobile {
-  display: none;
+.MarketCard__action-footer {
+  display: flex;
   margin-right: 2rem;
 
   &:extend(.button--purple all);
+}
+
+.MarketCard__action-footer-light {
+  display: flex;
+  margin-right: 2rem;
+  padding: 0 1em 0.166em;
+  &:extend(.button--offWhite all);
+}
+
+.MarketCard__proceeds-container {
+  align-items: center;
+  display: flex;
+}
+
+.MarketCard__proceeds-clock {
+  display: inline-block;
+  margin-right: 1rem;
 }
 
 @media @breakpoint-mobile {
@@ -224,14 +281,14 @@
     padding: 0 0.5rem;
   }
 
-  .MarketCard__tablesection-mobile {
+  .MarketCard__tablesection-footer {
     border-top: 1px solid @color-lightgray;
     display: flex;
     flex-flow: row-reverse nowrap;
     padding: 0.25rem;
   }
 
-  .MarketCard__headingcontainer-mobile {
+  .MarketCard__headingcontainer-footer {
     display: flex;
   }
 
@@ -239,7 +296,7 @@
     display: none;
   }
 
-  .MarketCard__action-mobile {
+  .MarketCard__action-footer {
     display: flex;
   }
 

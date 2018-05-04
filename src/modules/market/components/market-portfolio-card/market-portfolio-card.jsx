@@ -8,11 +8,12 @@ import MarketPositionsListPosition from 'modules/market/components/market-positi
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_REPORT, TYPE_DISPUTE, TYPE_CLAIM_PROCEEDS, TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
+import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
+import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -24,6 +25,8 @@ export default class MarketPortfolioCard extends Component {
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
+    finalizeMarket: PropTypes.func.isRequired,
+    outstandingReturns: PropTypes.number,
   }
 
   static defaultProps = {
@@ -44,30 +47,34 @@ export default class MarketPortfolioCard extends Component {
     this.setState({ tableOpen: { ...this.state.tableOpen, [tableKey]: !this.state.tableOpen[tableKey] } })
   }
 
+  finalizeMarket = () => {
+    this.props.finalizeMarket(this.props.market.id)
+  }
+
+  claimProceeds = () => {
+    this.props.claimTradingProceeds([this.props.market.id])
+  }
   render() {
     const {
-      buttonText,
       currentTimestamp,
       isMobile,
       linkType,
       market,
+      outstandingReturns,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
-    let localButtonText
 
+    let localButtonText
+    let buttonAction
     switch (linkType) {
-      case TYPE_REPORT:
-        localButtonText = 'Report'
-        break
-      case TYPE_DISPUTE:
-        localButtonText = 'Dispute'
-        break
       case TYPE_CLAIM_PROCEEDS:
-        localButtonText = 'Claim Proceeds'
+        localButtonText = 'Claim'
+        buttonAction = this.claimProceeds
         break
-      case TYPE_MIGRATE_REP:
-        localButtonText = 'Migrate REP'
+      case TYPE_CALCULATE_PAYOUT:
+        localButtonText = 'Calculate Payout'
+        buttonAction = this.finalizeMarket
         break
       default:
         localButtonText = 'View'
@@ -247,19 +254,15 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType &&
-          <section className={Styles['MarketCard__tablesection-mobile']}>
-            <div className={Styles['MarketCard__headingcontainer-mobile']}>
-              <MarketLink
-                className={Styles['MarketCard__action-mobile']}
-                id={market.id}
-                formattedDescription={market.description}
-                linkType={linkType}
-              >
-                { buttonText || localButtonText }
-              </MarketLink>
-            </div>
-          </section>
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && outstandingReturns > 0 &&
+          <MarketPortfolioCardFooter
+            linkType={linkType}
+            localButtonText={localButtonText}
+            buttonAction={buttonAction}
+            outstandingReturns={outstandingReturns}
+            finalizationTime={market.finalizationTime}
+            currentTimestamp={currentTimestamp}
+          />
         }
       </article>
     )

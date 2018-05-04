@@ -1,4 +1,4 @@
-import { TYPE_VIEW, TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE } from 'modules/market/constants/link-types'
+import { TYPE_VIEW, TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_CALCULATE_PAYOUT, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { isEmpty } from 'lodash'
 
@@ -7,7 +7,6 @@ export const determineMarketLinkType = (market, loginAccount) => {
 
   const isDesignatedReporter = market.designatedReporter === loginAccount.address
   const { reportingState } = market
-
   switch (reportingState) {
 
     case constants.REPORTING_STATE.PRE_REPORTING:
@@ -26,6 +25,12 @@ export const determineMarketLinkType = (market, loginAccount) => {
 
     case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
       return TYPE_VIEW
+
+    case constants.REPORTING_STATE.AWAITING_FINALIZATION:
+      return TYPE_CALCULATE_PAYOUT
+
+    case constants.REPORTING_STATE.FINALIZED:
+      return TYPE_CLAIM_PROCEEDS
 
     default:
       return TYPE_VIEW
