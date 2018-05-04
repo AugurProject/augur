@@ -116,17 +116,17 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
   let initialReportersQuery = db("initial_reports")
     .select(["initial_reports.initialReporter", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
-    .join("market_state", "market_state.marketId", "markets.marketId")
+    .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .where("market_state.reportingState", "AWAITING_FINALIZATION") // This WHERE clause covers markets in either AWAITING_FINALIZATION or FINALIZED state
+    .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
     .where("initial_reports.redeemed", 0);
   let crowdsourcersQuery = db("crowdsourcers")
     .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
-    .join("market_state", "market_state.marketId", "markets.marketId")
+    .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .where("market_state.reportingState", "AWAITING_FINALIZATION") // This WHERE clause covers markets in either AWAITING_FINALIZATION or FINALIZED state
+    .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
     .where("balances.owner", reporter);
 
     parallel({
@@ -143,7 +143,7 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
           forkedMarket = {
             address: result.initialReporters[i].marketId,
             universeAddress: result.initialReporters[i].universe,
-            isFinalized: result.initialReporter[i].reportingState === "FINALIZED",
+            isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
             crowdsourcers: [],
             initialReporter: {
               address: result.initialReporters[i].initialReporter,
@@ -151,15 +151,16 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
             },
           };
         } else {
-          keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
-            address: result.initialReporters[i].marketId,
-            universeAddress: result.initialReporters[i].universe,
-            crowdsourcersAreDisavowed: false,
-            isMigrated: !result.initialReporters[i].needsMigration,
-            isFinalized: result.initialReporter[i].reportingState === "FINALIZED",
-            crowdsourcers: [],
-            initialReporterAddress: result.initialReporters[i].initialReporter,
-          };
+          let isFinalized = 
+            keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
+              address: result.initialReporters[i].marketId,
+              universeAddress: result.initialReporters[i].universe,
+              crowdsourcersAreDisavowed: false,
+              isMigrated: !result.initialReporters[i].needsMigration,
+              isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
+              crowdsourcers: [],
+              initialReporterAddress: result.initialReporters[i].initialReporter,
+            };
         }
       }
       for (i = 0; i < result.crowdsourcers.length; i++) {
