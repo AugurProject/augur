@@ -29,7 +29,6 @@ class MarketOutcomeCandlestick extends React.Component {
     selectedPeriod: PropTypes.number.isRequired,
     selectedRange: PropTypes.number.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
-    updateChartHeaderHeight: PropTypes.func.isRequired,
     updateHoveredPeriod: PropTypes.func.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
@@ -148,7 +147,6 @@ class MarketOutcomeCandlestick extends React.Component {
       priceTimeSeries,
       selectedPeriod,
       selectedRange,
-      updateChartHeaderHeight,
       updateHoveredPeriod,
       updateHoveredPrice,
       updateSelectedPeriod,
@@ -296,7 +294,6 @@ class MarketOutcomeCandlestick extends React.Component {
           selectedRange={selectedRange}
           updateSelectedPeriod={updateSelectedPeriod}
           updateSelectedRange={updateSelectedRange}
-          updateChartHeaderHeight={updateChartHeaderHeight}
         />
         <div
           ref={(drawContainer) => { this.drawContainer = drawContainer }}

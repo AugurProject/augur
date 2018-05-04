@@ -267,7 +267,6 @@ export default class MarketOutcomeCharts extends Component {
                 updateSelectedPeriod={this.updateSelectedPeriod}
                 updateSelectedRange={this.updateSelectedRange}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
-                updateChartHeaderHeight={this.updateChartHeaderHeight}
               />
             </div>
           }
@@ -293,6 +292,7 @@ export default class MarketOutcomeCharts extends Component {
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateChartHeaderHeight={this.updateChartHeaderHeight}
               />
             </div>
             <div className={Styles.MarketOutcomeCharts__orderbook}>
