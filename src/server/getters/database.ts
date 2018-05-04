@@ -61,6 +61,8 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
     reportingFeeRate: row.reportingFeeRate,
     marketCreatorFeeRate: row.marketCreatorFeeRate,
     marketCreatorFeesCollected: row.marketCreatorFeesCollected!,
+    marketCreatorMailbox: row.marketCreatorMailbox,
+    marketCreatorMailboxOwner: row.marketCreatorMailboxOwner,
     initialReportSize: row.initialReportSize,
     category: row.category,
     tags: [row.tag1, row.tag2],

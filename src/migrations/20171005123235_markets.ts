@@ -16,6 +16,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       "marketCreatorFeeRate" VARCHAR(255) NOT NULL,
       "marketCreatorFeesClaimed" VARCHAR(255) DEFAULT "0",
       "marketCreatorFeesCollected" VARCHAR(255) DEFAULT "0",
+      "marketCreatorMailbox" VARCHAR(255) NOT NULL,
+      "marketCreatorMailboxOwner" VARCHAR(255) NOT NULL,
       "initialReportSize" VARCHAR(255) DEFAULT "0",
       category varchar(255) NOT NULL,
       tag1 varchar(255),
