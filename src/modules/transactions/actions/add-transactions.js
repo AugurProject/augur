@@ -3,7 +3,8 @@ import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
-import { BINARY } from 'modules/markets/constants/market-types'
+import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
+import { formatShares } from 'utils/format-number'
 
 function groupByMethod(values, prop) {
   let grouped = {}
@@ -61,14 +62,19 @@ function buildTradeTransactionGroup(group, marketsData) {
 }
 
 function buildTradeTransaction(trade, marketsData) {
-  const thisMarketDataId = marketsData[trade.marketId]
-  const transaction = { ...trade, market: thisMarketDataId }
+  const market = marketsData[trade.marketId]
+  const transaction = { ...trade, market }
   transaction.status = SUCCESS
   transaction.id = `${transaction.transactionHash}-${transaction.orderId}`
   const header = buildHeader(transaction, TRADE)
   const meta = {}
   meta.type = TRADE
-  meta.outcome = thisMarketDataId.marketType === BINARY ? 'Yes' : transaction.outcome
+
+  if (market.marketType === BINARY) {
+    meta.outcome = 'Yes'
+  } else if (market.marketType === CATEGORICAL) {
+    meta.outcome = market.outcomes[transaction.outcome].description
+  }
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
   // TODO include .reportingFees and .marketCreatorFees separately?
@@ -78,7 +84,8 @@ function buildTradeTransaction(trade, marketsData) {
   if (transaction.market) {
     header.description = transaction.market.description
   }
-  transaction.message = `${transaction.type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
+  const formattedShares = formatShares(transaction.amount)
+  transaction.message = `${transaction.type} ${formattedShares.formatted} Shares @ ${transaction.price} ETH`
   header.transactions = [transaction]
   return header
 }
@@ -198,7 +205,7 @@ export function addOpenOrderTransactions(openOrders) {
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
-            meta.outcome = outcomeId // need to get payNumerators ?
+            meta.outcome = market.marketType === BINARY ? 'Yes' : outcomeId
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
