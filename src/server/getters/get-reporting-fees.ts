@@ -7,8 +7,6 @@ import Augur from "augur.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
 import { groupByAndSum } from "./database";
-// import { CONNECTING } from "ws";
-// import { rollbackMarketState } from "../../blockchain/log-processors/database";
 
 export interface CrowdsourcerState {
   address: string;
@@ -25,17 +23,17 @@ export interface ForkedMarket {
   universeAddress: string;
   isFinalized: boolean;
   crowdsourcers: Array<CrowdsourcerState>;
-  initialReporter: Array<InitialReporterState>;
+  initialReporter: InitialReporterState | {};
 }
 
 export interface NonforkedMarket {
   address: string;
-  // universeAddress: string;
-  // crowdsourcersAreDisavowed: boolean;
-  // isFinalized: boolean;
-  // isMigrated: boolean;
-  // crowdsourcers: Array<CrowdsourcerState>;
-  // initialReporter: Array<InitialReporterState>;
+  universeAddress: string;
+  crowdsourcersAreDisavowed: boolean;
+  isFinalized: boolean;
+  isMigrated: boolean;
+  crowdsourcers: Array<CrowdsourcerState>;
+  initialReporterAddress: string | null;
 }
 
 export interface FeeDetails {
@@ -49,29 +47,13 @@ export interface FeeDetails {
     claimedRepEarned: string;
   };
   feeWindows: Array<Address>;
-  // crowdsourcers: Array<Address>;
-  // initialReporters: Array<Address>;
   forkedMarket: ForkedMarket|null;
-  nonforkedMarkets: any;//Array<NonforkedMarket>;
+  nonforkedMarkets: Array<NonforkedMarket>;
 }
 
-interface ReportingParticipants {
-  crowdsourcers: Array<string>;
-  initialReporters: Array<string>; 
-}
-
-interface ForkedMarketRow {
-  address: string;
-  universeAddress: string;
-  initialReporterAddress: string;
-  crowdsourcerAddress: string;
-}
-
-interface NonforkedMarketRow {
-  address: string;
-  universeAddress: string;
-  initialReporterAddress: string;
-  crowdsourcerAddress: string;
+interface UniverseAndParentUniverse {
+  universe: string;
+  parentUniverse: string;
 }
 
 interface FeeWindowTokenRow {
@@ -114,23 +96,7 @@ interface RepStakeResults {
   lostRep: BigNumber;
 }
 
-// function getForkedMarket(db: Knex, reporter: Address, universe: Address, callback: (err: Error|null, forkedMarket?: ForkedMarket) => void) {
-//   const query = db.select(["markets.marketId AS address", "markets.universe AS universeAddress", "initial_reports.reporter AS initialReporteraddress", "crowdsourcers.crowdsourcerId AS crowdsourcerAddress"]).from("markets");
-//   query.leftJoin("initial_reports", "markets.marketId", "initial_reports.marketId");
-//   query.leftJoin("crowdsourcers", "markets.marketId", "crowdsourcers.marketId");
-//   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
-//   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
-
-//   query.where("markets.universe", universe);
-//   query.asCallback((err, forkedMarketRows: Array<ForkedMarketRow>) => {
-//     if (err) return callback(err);
-//     callback(null, _.reduce(forkedMarketRows, (acc: ForkedMarket?) => {
-
-//     }
-//   }
-// }
-
-function getRelevantUniverses(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: any) => void) {
+function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
   let query = db("fee_windows")
   .select("universes.universe", "universes.parentUniverse")
   .join("universes", "fee_windows.universe", "universes.universe")
@@ -140,87 +106,104 @@ function getRelevantUniverses(db: Knex, reporter: Address, universe: Address|nul
   } else if (feeWindow != null) {
     query.where("fee_windows.feeWindow", feeWindow);
   }
-  query.asCallback((err, relevantUniverses: any) => {
+  query.asCallback((err, universeAndParentUniverse: Array<UniverseAndParentUniverse>) => {
     if (err) return callback(err);
-    return callback(null, relevantUniverses);
+    return callback(null, universeAndParentUniverse[0]);
   });
 }
 
-function getNonforkedMarkets(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, result?: any/*{ [nonforkedMarketAddress: string]: Array<NonforkedMarket> }*/) => void) {
+function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, result?: {forkedMarket: ForkedMarket, nonforkedMarkets: Array<NonforkedMarket>}) => void) {
   let initialReportersQuery = db("initial_reports")
-    .select(["initial_reports.marketId", "balances.balance as amountStaked"])
-    .join("balances", "balances.token", "initial_reports.initialReporter")
+    .select(["initial_reports.initialReporter", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
+    .join("market_state", "market_state.marketId", "markets.marketId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .where("balances.owner", reporter || "");
+    .where("market_state.reportingState", "AWAITING_FINALIZATION") // This WHERE clause covers markets in either AWAITING_FINALIZATION or FINALIZED state
+    .where("initial_reports.redeemed", 0);
   let crowdsourcersQuery = db("crowdsourcers")
-    .select(["crowdsourcers.marketId", "balances.balance as amountStaked"])
+    .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
+    .join("market_state", "market_state.marketId", "markets.marketId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .where("balances.owner", reporter || "");
+    .where("market_state.reportingState", "AWAITING_FINALIZATION") // This WHERE clause covers markets in either AWAITING_FINALIZATION or FINALIZED state
+    .where("balances.owner", reporter);
 
     parallel({
       initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
       crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
-    }, (err: Error|null, result: ReportingParticipants) => { // change to ReportingParticipants
+    }, (err: Error|null, result: any) => {
       if (err) return callback(err);
-      // const groupedCrowdsourcers = _.groupBy(result.crowdsourcers, ["marketId"]);
-      const crowdsourcersByMarketId = _.keyBy(result.crowdsourcers, "marketId");
-      const initialReportersByMarketId = _.keyBy(result.initialReporters, "marketId");
-      callback(null, { crowdsourcersByMarketId: crowdsourcersByMarketId, initialReportersByMarketId: result.initialReporters });
+
+      let forkedMarket = {} as ForkedMarket;
+      let keyedNonforkedMarkets = {} as any;
+      let i: number;
+      for (i = 0; i < result.initialReporters.length; i++) {
+        if (result.initialReporters[i].forking && result.initialReporters[i].universe === parentUniverse) {
+          forkedMarket = {
+            address: result.initialReporters[i].marketId,
+            universeAddress: result.initialReporters[i].universe,
+            isFinalized: result.initialReporter[i].reportingState === "FINALIZED",
+            crowdsourcers: [],
+            initialReporter: {
+              address: result.initialReporters[i].initialReporter,
+              isForked: result.initialReporters[i].disavowed,
+            },
+          };
+        } else {
+          keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
+            address: result.initialReporters[i].marketId,
+            universeAddress: result.initialReporters[i].universe,
+            crowdsourcersAreDisavowed: false,
+            isMigrated: !result.initialReporters[i].needsMigration,
+            isFinalized: result.initialReporter[i].reportingState === "FINALIZED",
+            crowdsourcers: [],
+            initialReporterAddress: result.initialReporters[i].initialReporter,
+          };
+        }
+      }
+      for (i = 0; i < result.crowdsourcers.length; i++) {
+        if (result.crowdsourcers[i].forking && result.crowdsourcers[i].universe === parentUniverse) {
+          let forkedMarketIsEmpty: boolean = true;
+          for (let key in forkedMarket) {
+            if (forkedMarket.hasOwnProperty(key)) {
+              forkedMarketIsEmpty = false;
+              break;
+            }
+          }
+          if (forkedMarketIsEmpty) {
+            forkedMarket = {
+              address: result.crowdsourcers[i].marketId,
+              universeAddress: result.crowdsourcers[i].universe,
+              isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
+              crowdsourcers: [{address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed}],
+              initialReporter: {},
+            };
+          } else {
+            forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed});
+          }
+        } else if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
+            address: result.crowdsourcers[i].marketId,
+            universeAddress: result.crowdsourcers[i].universe,
+            crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed,
+            isMigrated: !result.crowdsourcers[i].needsMigration,
+            isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
+            crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
+            initialReporterAddress: null,
+          };
+        } else {
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed;
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
+        }
+      }
+      let nonforkedMarkets: Array<NonforkedMarket> = [];
+      for (let key in keyedNonforkedMarkets) {
+        nonforkedMarkets.push(keyedNonforkedMarkets[key]);
+      }
+
+      return callback(null, { forkedMarket: forkedMarket, nonforkedMarkets: nonforkedMarkets });
     });
-
-  /*
-  const crowdsourcersQuery = db.select(["fee_windows.universe as universeAddress", "markets.marketId AS marketAddress", "crowdsourcers.crowdsourcerId AS crowdsourcerAddress"]).from("fee_windows");
-  crowdsourcersQuery.leftJoin("markets", "markets.universe", "fee_windows.universe");
-  crowdsourcersQuery.leftJoin("crowdsourcers", "markets.marketId", "crowdsourcers.marketId");
-  const initialReportersQuery = db.select(["fee_windows.universe as universeAddress", "markets.marketId AS marketAddress", "initial_reports.reporter AS initialReporterAddress",]).from("fee_windows");
-  initialReportersQuery.leftJoin("markets", "markets.universe", "fee_windows.universe");
-  initialReportersQuery.leftJoin("initial_reports", "markets.marketId", "initial_reports.marketId");
-
-  if (universe != null) {
-    crowdsourcersQuery.where("fee_windows.universe", universe);
-    initialReportersQuery.where("fee_windows.universe", universe);
-
-  } else if (feeWindow != null) {
-    crowdsourcersQuery.where("fee_windows.feeWindow", feeWindow);
-    initialReportersQuery.where("fee_windows.feeWindow", universe);
-  }
-  // crowdsourcersQuery.groupBy("markets.marketId");
-  // initialReportersQuery.groupBy("initial_reports.reporter");
-
-  parallel({
-    initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
-    crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
-  }, (err: Error|null, result: ReportingParticipants) => { // change to ReportingParticipants
-    if (err) return callback(err);
-    // const groupedCrowdsourcers = _.groupBy(result.crowdsourcers, ["marketId"]);
-    const crowdsourcersByMarketId = _.keyBy(result.crowdsourcers, "marketId");
-    const initialReportersByMarketId = _.keyBy(result.initialReporters, "marketId");
-    callback(null, { crowdsourcersByMarketId: crowdsourcersByMarketId, initialReportersByMarketId: result.initialReporters });
-  });
-
-  // query.asCallback((err, nonforkedMarketRows: Array<NonforkedMarketRow>) => {
-  //   if (err) return callback(err); 
-  //   console.log(nonforkedMarketRows);
-  //   var i = 0;
-  //   const nonforkedMarkets = _.reduce(nonforkedMarketRows, (acc: Array<NonforkedMarket>, nonforkedMarketRow) => {
-  //     acc[nonforkedMarketRow.address] = {
-  //       address: nonforkedMarketRow.address,
-  //       universeAddress: nonforkedMarketRow.universeAddress,
-  //       crowdsourcersAreDisavowed: false,
-  //       isMigrated: false,
-  //       isFinalized: false,
-  //       initialReporterAddress: nonforkedMarketRow.initialReporterAddress,
-  //       crowdsourcers: {},
-  //     };
-  //     i++;
-  //     return acc;
-  //   }, {});
-  //   return callback(null, nonforkedMarkets);
-  // });
-  */
 }
 
 function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { [feeWindow: string]: FeeWindowTotalTokens }) => void) {
@@ -312,10 +295,9 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
 
 function getClaimedEth(db: Knex, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: any) => void): void {
   const claimedEthQuery = db.select(["fee_windows.feeWindow", "participationToken.balance AS participationTokens"]).from("fee_windows");
-
 }
 
-export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: any) => void): void {
+export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
 
@@ -325,35 +307,33 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
       if (err) return callback(err);
       getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
         if (err || repStakeResults == null) return callback(err);
-        getRelevantUniverses(db, reporter, universe, feeWindow, (err, relevantUniverses: any) => {
-          // callback(null, relevantUniverses);
-          if (err || relevantUniverses == null) return callback(err);
-          getNonforkedMarkets(db, reporter, relevantUniverses[0].universe, relevantUniverses[0].parentUniverse, (err, markets: any/*{ nonforkedMarkets: Array<NonforkedMarket> }*/) => {
+        getUniverseAndParentUniverse(db, reporter, universe, feeWindow, (err, universeAndParentUniverse: UniverseAndParentUniverse) => {
+          if (err || universeAndParentUniverse == null) return callback(err);
+          getMarkets(db, reporter, universeAndParentUniverse.universe, universeAndParentUniverse.parentUniverse, (err, result: {forkedMarket: ForkedMarket, nonforkedMarkets: Array<NonforkedMarket> }) => {
             if (err || repStakeResults == null) return callback(err);
-
-          //   const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
-          //     if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
-          //     const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
-          //     const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
-          //     acc = acc.plus(feesForThisWindow);
-          //     return acc;
-          //   }, ZERO);
-          //   const redeemableFeeWindows = _.uniq(_.keys(totalReporterTokensByFeeWindow).concat(repStakeResults.redeemableFeeWindows));
-          //   const response = {
-          //     total: {
-          //       unclaimedEth: unclaimedEth.toFixed(),
-          //       unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
-          //       unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
-          //       lostRep: repStakeResults.fees.lostRep.toFixed(),
-          //       claimedEth: "4",
-          //       claimedRepStaked: "5",
-          //       claimedRepEarned: "6",
-          //     },
-          //     feeWindows: redeemableFeeWindows,
-          //     forkedMarket: null,
-          //     nonforkedMarkets: markets,
-          //   };
-            callback(null, markets);
+            const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
+              if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
+              const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
+              const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
+              acc = acc.plus(feesForThisWindow);
+              return acc;
+            }, ZERO);
+            const redeemableFeeWindows = _.uniq(_.keys(totalReporterTokensByFeeWindow).concat(repStakeResults.redeemableFeeWindows));
+            const response = {
+              total: {
+                unclaimedEth: unclaimedEth.toFixed(),
+                unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
+                unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
+                lostRep: repStakeResults.fees.lostRep.toFixed(),
+                claimedEth: "4",
+                claimedRepStaked: "5",
+                claimedRepEarned: "6",
+              },
+              feeWindows: redeemableFeeWindows,
+              forkedMarket: result.forkedMarket,
+              nonforkedMarkets: result.nonforkedMarkets,
+            };
+            callback(null, response);
           });
         });
       });
