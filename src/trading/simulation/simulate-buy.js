@@ -13,7 +13,7 @@ function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAd
     sharesFilled: ZERO,
     settlementFees: ZERO,
     worstCaseFees: ZERO,
-    gasFees: ZERO,
+    gasEstimate: ZERO,
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,

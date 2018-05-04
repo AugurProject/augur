@@ -80,7 +80,8 @@ module.exports = {
   CREATE_CATEGORICAL_MARKET_GAS: "0x5e3918",
 
   CANCEL_ORDER_GAS: "0x5b8d80",
-  CREATE_ORDER_GAS: "0x5b8d80",
+  CREATE_ORDER_GAS: "0x927C0",  // 600,000 is the ceiling for executing a single trade, from Alex 5.2.2018
+  FILL_ORDER_GAS: "0xdbba0",    // 900,000 is the ceiling for executing a single trade, from Alex 5.2.2018
   TRADE_GAS: "0x5e3918",
 
   BLOCKS_PER_CHUNK: 10,
