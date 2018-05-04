@@ -9,7 +9,7 @@ const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval
 const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../build/blockchain/process-block.js");
 
 const getReportingState = (db, params, callback) => {
-  db("markets").first(["reportingState", "initialReportSize"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
+  db("markets").first(["reportingState", "initialReportSize", "marketCreatorFeesBalance"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
 };
 
 const getInitialReport = (db, params, callback) => {
@@ -75,6 +75,14 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
             },
           },
         },
+        rpc: {
+          eth: {
+            getBalance: (p, callback) => {
+              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000001", "latest"]);
+              callback(null, "0x22");
+            },
+          },
+        },
       },
       overrideTimestamp: 1509085473,
     },
@@ -84,6 +92,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.deepEqual(records, {
           initialReportSize: new BigNumber("2829", 10),
           reportingState: "AWAITING_NEXT_WINDOW",
+          marketCreatorFeesBalance: new BigNumber("0x22", 16),
         });
       },
       onAddedInitialReport: (err, records) => {
@@ -99,6 +108,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         assert.deepEqual(records, {
           initialReportSize: null,
           reportingState: "DESIGNATED_REPORTING",
+          marketCreatorFeesBalance: new BigNumber("0x22", 16),
         });
       },
     },
