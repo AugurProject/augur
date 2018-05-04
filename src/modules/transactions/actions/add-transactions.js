@@ -3,6 +3,7 @@ import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
+import { BINARY } from 'modules/markets/constants/market-types'
 
 function groupByMethod(values, prop) {
   let grouped = {}
@@ -67,7 +68,7 @@ function buildTradeTransaction(trade, marketsData) {
   const header = buildHeader(transaction, TRADE)
   const meta = {}
   meta.type = TRADE
-  meta.outcome = transaction.outcome
+  meta.outcome = thisMarketDataId.marketType === BINARY ? 'Yes' : transaction.outcome
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
   // TODO include .reportingFees and .marketCreatorFees separately?
