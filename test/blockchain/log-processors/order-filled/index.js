@@ -14,7 +14,7 @@ describe("blockchain/log-processors/order-filled", () => {
     const getState = (db, params, aux, callback) => parallel({
       orders: next => db("orders").where("orderId", params.log.orderId).asCallback(next),
       trades: next => db("trades").where("orderId", params.log.orderId).asCallback(next),
-      markets: next => db.first("volume", "sharesOutstanding", "marketCreatorFeesBalance").from("markets").where("marketId", aux.marketId).asCallback(next),
+      markets: next => db.first("volume", "sharesOutstanding").from("markets").where("marketId", aux.marketId).asCallback(next),
       outcomes: next => db.select("price", "volume").from("outcomes").where({ marketId: aux.marketId }).asCallback(next),
       categories: next => db.first("popularity").from("categories").where("category", aux.category).asCallback(next),
       positions: next => db("positions").where("account", params.log.filler).asCallback(next),
@@ -59,14 +59,6 @@ describe("blockchain/log-processors/order-filled", () => {
         logIndex: 0,
       },
       augur: {
-        rpc: {
-          eth: {
-            getBalance: (p, callback) => {
-              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000001", "latest"]);
-              callback(null, "0x22");
-            },
-          },
-        },
         api: {
           Market: {
             getShareToken: (p, callback) => {
@@ -167,7 +159,6 @@ describe("blockchain/log-processors/order-filled", () => {
         assert.deepEqual(records.markets, {
           volume: new BigNumber("3.33333333333333333333", 10),
           sharesOutstanding: new BigNumber("2", 10),
-          marketCreatorFeesBalance: new BigNumber("0x22", 16),
         });
         assert.deepEqual(records.outcomes, [
           { price: new BigNumber("0.7", 10), volume: new BigNumber("103.33333333333333333333", 10) },
@@ -298,7 +289,6 @@ describe("blockchain/log-processors/order-filled", () => {
         assert.deepEqual(records.markets, {
           volume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("2", 10),
-          marketCreatorFeesBalance: new BigNumber("0x22", 16),
         });
         assert.deepEqual(records.outcomes, [
           { price: new BigNumber("0.7", 10), volume: new BigNumber("100", 10) },
