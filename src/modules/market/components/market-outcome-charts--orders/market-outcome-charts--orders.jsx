@@ -9,7 +9,7 @@ import { BUY, SELL } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
-import { isEmpty, isEqual } from 'lodash'
+import { isEmpty, isEqual, times } from 'lodash'
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
@@ -63,6 +63,8 @@ export default class MarketOutcomeOrderbook extends Component {
     } = this.props
     const s = this.state
 
+    const orderBookAsks = orderBook.asks || []
+
     return (
       <section
         className={Styles.MarketOutcomeOrderBook}
@@ -78,7 +80,14 @@ export default class MarketOutcomeOrderbook extends Component {
           ref={(asks) => { this.asks = asks }}
           className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
         >
-          {(orderBook.asks || []).map((order, i) => (
+          {times(9 - orderBookAsks.length, i => (
+            <div
+              key={i}
+              className={Styles.MarketOutcomeOrderBook__row}
+            />
+          ))}
+
+          {orderBookAsks.map((order, i) => (
             <div
               key={order.cumulativeShares}
               className={
