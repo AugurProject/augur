@@ -136,13 +136,13 @@ export default class ReportingDisputeForm extends Component {
       selectedOutcome: accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : '',
       selectedOutcomeName: accountDisputeData.selectedOutcomeName ? accountDisputeData.selectedOutcomeName : '',
       validations: accountDisputeData.validations,
-    })
-
-    updateState({
-      isMarketInValid: this.state.isMarketInValid,
-      selectedOutcome: this.state.selectedOutcome,
-      selectedOutcomeName: this.state.selectedOutcomeName,
-      validations: this.state.validations,
+    }, () => {
+      updateState({
+        isMarketInValid: this.state.isMarketInValid,
+        selectedOutcome: this.state.selectedOutcome,
+        selectedOutcomeName: this.state.selectedOutcomeName,
+        validations: this.state.validations,
+      })
     })
   }
 
