@@ -69,6 +69,54 @@ describe("server/getters/get-reporting-fees", () => {
     },
   });
   test({
+    description: "Get reporting fees that exist in child universe and parent universe",
+    params: {
+      universe: "CHILD_UNIVERSE",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: (err, marketsMatched) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsMatched, {
+        total: {
+          "unclaimedEth": "0",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
+          "claimedEth": "4",
+          "claimedRepStaked": "5",
+          "claimedRepEarned": "6",
+        },
+        feeWindows: [
+          "0x4000000000000000000000000000000000000000",
+        ],
+        forkedMarket: {},
+        nonforkedMarkets: [
+          {
+            "address": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universeAddress": "0x000000000000000000000000000000000000000b",
+          },
+        ],
+      });
+    },
+  });
+  test({
     description: "get reporting fees for user that does not exist",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
