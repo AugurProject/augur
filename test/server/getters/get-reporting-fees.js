@@ -18,7 +18,7 @@ describe("server/getters/get-reporting-fees", () => {
     });
   };
   test({
-    description: "Get reporting fees that exist",
+    description: "Get reporting fees that exist in forked universe",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
@@ -40,8 +40,8 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "107.87878787878787879",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
+          "unclaimedRepEarned": "114.5",
+          "unclaimedRepStaked": "229",
           "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
@@ -57,7 +57,7 @@ describe("server/getters/get-reporting-fees", () => {
         nonforkedMarkets: [
           {
             "address": "0x0000000000000000000000000000000000000019",
-            "crowdsourcers": [],
+            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
             "crowdsourcersAreDisavowed": false,
             "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
             "isFinalized": true,
@@ -165,8 +165,8 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "53.33333333333333333",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
+          "unclaimedRepEarned": "114.5",
+          "unclaimedRepStaked": "229",
           "lostRep": "0",
           "claimedEth": "4",
           "claimedRepStaked": "5",
@@ -179,7 +179,7 @@ describe("server/getters/get-reporting-fees", () => {
         nonforkedMarkets: [
           {
             "address": "0x0000000000000000000000000000000000000019",
-            "crowdsourcers": [],
+            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
             "crowdsourcersAreDisavowed": false,
             "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
             "isFinalized": true,

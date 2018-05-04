@@ -114,14 +114,14 @@ function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Add
 
 function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, result?: {forkedMarket: ForkedMarket, nonforkedMarkets: Array<NonforkedMarket>}) => void) {
   let initialReportersQuery = db("initial_reports")
-    .select(["initial_reports.initialReporter", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
+    .select(["initial_reports.initialReporter", "initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
     .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
     .where("initial_reports.redeemed", 0);
   let crowdsourcersQuery = db("crowdsourcers")
-    .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
+    .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
@@ -147,7 +147,7 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
             crowdsourcers: [],
             initialReporter: {
               address: result.initialReporters[i].initialReporter,
-              isForked: result.initialReporters[i].disavowed,
+              isForked: result.initialReporters[i].disavowed ? true : false,
             },
           };
         } else {
@@ -177,24 +177,24 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
               address: result.crowdsourcers[i].marketId,
               universeAddress: result.crowdsourcers[i].universe,
               isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
-              crowdsourcers: [{address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed}],
+              crowdsourcers: [{address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false}],
               initialReporter: {},
             };
           } else {
-            forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed});
+            forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false});
           }
         } else if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
           keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
             address: result.crowdsourcers[i].marketId,
             universeAddress: result.crowdsourcers[i].universe,
-            crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed,
+            crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed ? true : false,
             isMigrated: !result.crowdsourcers[i].needsMigration,
             isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
             crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
             initialReporterAddress: null,
           };
         } else {
-          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed;
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed ? true : false;
           keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
         }
       }
