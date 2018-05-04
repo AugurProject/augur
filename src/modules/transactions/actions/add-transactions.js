@@ -2,6 +2,8 @@ import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } fr
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
+import { unfix } from 'speedomatic'
+import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
 import { formatShares } from 'utils/format-number'
@@ -115,16 +117,17 @@ export function addNewMarketCreationTransactions(market) {
     const marketCreationData = {}
     const { loginAccount } = getState()
     const transaction = {
-      market,
       timestamp: market._endTime,
       createdBy: loginAccount.address,
       id: market.hash,
     }
+    const fee = unfix(market._feePerEthInWei, 'number')
+    const percentage = createBigNumber(fee.toString()).times(createBigNumber(100)).toNumber()
     const meta = {
-      market: market.hash,
+      txhash: market.hash,
       'designated reporter': market._designatedReporterAddress,
-      'creation fee': 0,
-      'gas fees': 0,
+      'settlement fee': `${percentage} %`,
+      'gas fees': market.hasOwnProperty('gasFees') ? transaction.gasFees : 0,
     }
     transaction.meta = meta
 
