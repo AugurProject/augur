@@ -288,6 +288,11 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       new UglifyJSPlugin({
         parallel: false,
         sourceMap: true,
+      }),
+      new GitRevisionPlugin({
+        'VERSION': JSON.stringify(gitRevisionPlugin.version()),
+        'COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
+        'BRANCH': JSON.stringify(gitRevisionPlugin.branch()),
       })
     ]
   });
