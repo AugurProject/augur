@@ -103,7 +103,8 @@ AugurNodeController.prototype.onRequestConfig = function (event, data) {
 
 AugurNodeController.prototype.onSaveNetworkConfig = function (event, data) {
     const curNetworkConfig = this.config.networks[data.network];
-    this.config.networks[data.network] = data.networkConfig;
+    this.networkConfig = data.networkConfig;
+    this.config.networks[data.network] = this.networkConfig;
     if (data.network === this.config.network) {
         if (curNetworkConfig.http !== data.networkConfig.http ||
             curNetworkConfig.ws !== data.networkConfig.ws) {
@@ -167,15 +168,20 @@ AugurNodeController.prototype.startSyncProcess = function () {
             this.window.webContents.send("error", { error: err.toString() });
             return;
         }
-        syncAugurNodeWithBlockchain(this.db, this.augur, this.networkConfig, uploadBlockNumbers, err => {
-            if (err) {
-                console.error("syncAugurNodeWithBlockchain:", err);
-                this.shutDownServer();
-                this.window.webContents.send("error", { error: err.toString() });
-                return;
-            }
-            console.log("Sync with blockchain complete.");
-        });
+        try {
+            syncAugurNodeWithBlockchain(this.db, this.augur, this.networkConfig, uploadBlockNumbers, err => {
+                if (err) {
+                    console.error("syncAugurNodeWithBlockchain:", err);
+                    this.shutDownServer();
+                    this.window.webContents.send("error", { error: err.toString() });
+                    return;
+                }
+                console.log("Sync with blockchain complete.");
+            });
+        } catch (err) {
+            console.error(err);
+            this.window.webContents.send("error", { error: err.toString() });
+        }
     });
 }
 
