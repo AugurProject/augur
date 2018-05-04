@@ -9,6 +9,7 @@ import { BUY, SELL } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
+import { isEmpty, isEqual } from 'lodash'
 
 export default class MarketOutcomeOrderbook extends Component {
   static propTypes = {
@@ -31,6 +32,21 @@ export default class MarketOutcomeOrderbook extends Component {
     this.state = {
       hoveredOrderIndex: null,
       hoveredSide: null,
+    }
+  }
+
+  componentDidMount() {
+    this.asks.scrollTop = this.asks.scrollHeight
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      orderBook } = this.props
+    if (
+      isEmpty(prevProps.orderBook.asks) &&
+      !isEqual(prevProps.orderBook.asks, orderBook.asks)
+    ) {
+      this.asks.scrollTop = this.asks.scrollHeight
     }
   }
 
