@@ -1,0 +1,68 @@
+{
+  "name": "augur-app",
+  "version": "1.0.0",
+  "description": "Augur Desktop Application",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron-forge start .src/main/main.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
+  },
+  "repository": "https://github.com/AugurProject/augur-app",
+  "keywords": [
+    "Augur",
+    "Desktop",
+    "Electron",
+    "App",
+    "Application"
+  ],
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "platforms": [
+            "win32"
+          ],
+          "config": {
+            "name": "augur_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {
+            "background": "./build/background.png",
+            "format": "UFLO"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "platforms": [
+            "linux"
+          ],
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "augur-ui": "3.32.0",
+    "augur.js": "4.11.0-9",
+    "augur-core": "1.0.0-4",
+    "augur-node": "0.2.3",
+    "node-pre-gyp": "~0.6.38",
+    "knex": "0.14.6",
+    "sqlite3": "3.1.13",
+    "opn": "5.3.0",
+    "electron-compile": "6.4.2"
+  },
+  "devDependencies": {
+    "electron": "1.8.4",
+    "electron-forge": "5.2.0",
+    "electron-prebuilt-compile": "2.0.0"
+  }
+}

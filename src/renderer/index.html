@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <h1 style="display:inline;">Augur Node</h1>
+    <span style="margin-left:15px;color:#a7a2b2" id="current_network"></span>
+    <span style="position:absolute;right:5px;top:5px;"; id="notice"></span>
+    <div style="font-size:20px;margin-top:10px;" id="network_id">Network:
+      <select id="network_id_select" onchange="renderer.switchNetworkConfigForm()"></select>
+    </div>
+    <form style="margin-top:5px;" id="network_config_form">
+      <table style="width:95%;margin-left:10px;">
+        <tr>
+          <td><label>Name: </label></td>
+          <td><input id="network_name" name="name" type="text"></td>
+        </tr>
+        <tr>
+          <td><label>HTTP Endpoint: </label></td>
+          <td><input id="network_http_endpoint" name="http" type="text"></td>
+        </tr>
+        <tr>
+          <td><label>WS Endpoint: </label></td>
+          <td><input id="network_ws_endpoint" name="ws" type="text"></td>
+        </tr>
+        <tr>
+          <td colspan=2>
+            <input id="save_network_config_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Save Network Config">
+            <input id="switch_network_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Save And Switch">
+          </td>
+        </tr>
+      </table>
+    </form>
+    <div id="sync_progress" style="position:absolute;bottom:10px;left:5px;font-size:20px;">Sync Progress: <span id="sync_progress_amount">LOADING</span></div>
+    <button id="augur_ui_button" style="position:absolute;bottom:5px;right:5px;" disabled onclick="renderer.openAugurUI()">Open Augur UI</button>
+    <script>
+      try {
+        const Renderer = require("./renderer");
+        window.renderer = new Renderer();
+      } catch (err) {
+        const notice = document.getElementById("notice");
+        notice.classList.add("failure");
+        notice.classList.add("notice");
+        notice.innerHTML = err.toString();
+      }
+    </script>
+  </body>
+</html>

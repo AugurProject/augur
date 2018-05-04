@@ -1,0 +1,1 @@
+{"network":"rinkeby","networks":{"rinkeby":{"http":"http://rinkeby.ethereum.nodes.augur.net","name":"Rinkeby","ws":"wss://websocket-rinkeby.ethereum.nodes.augur.net"},"local":{"http":"http://localhost:8545","name":"Local","ws":"ws://localhost:8546"},"custom":{"http":"http://localhost:8545","name":"Custom","ws":"ws://localhost:8546"}}}

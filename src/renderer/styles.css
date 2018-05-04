@@ -1,0 +1,125 @@
+html {
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+    font-family: 'DINPro';
+    font-weight: 300;
+    src: url('assets/fonts/3449FB_0_0.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'DINPro';
+    font-weight: 400;
+    src: url('assets/fonts/3449FB_1_0.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'DINPro';
+    font-weight: 500;
+    src: url('assets/fonts/3449FB_2_0.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'DINPro';
+    font-weight: 600;
+    src: url('assets/fonts/3449FB_3_0.woff2') format('woff2');
+}
+
+body {
+    color: white;
+    background-color: #372e4b;
+    font-family: 'DINPro', sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+input[type=submit],
+button {
+    border: 1px solid white;
+    align-items: center;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.8rem;
+    font-weight: 500;
+    justify-content: center;
+    letter-spacing: 0.3px;
+    line-height: 1.125rem;
+    min-height: 2.5rem;
+    min-width: 9.75rem;
+    padding: 0 0.4em 0.166em;
+    text-transform: uppercase;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    background-color: #412468;
+    color: #ffffff;
+}
+input[type=submit]:disabled,
+button:disabled {
+    background-color: #dfdfdf;
+    color: #79797b;
+    cursor: default;
+}
+input[type=submit]:hover,
+button:hover {
+    background-color: #553580;
+}
+input[type=submit]:disabled:hover,
+button:disabled:hover {
+    background-color: #a7a2b2;
+    color: #dbdae1;
+    cursor: default;
+}
+
+select {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+tbody tr td:first-child {
+    width: 30%;
+}
+
+input {
+    border: none;
+    font-family: inherit;
+    width: 100%;
+}
+
+.success {
+    color: #00f1c4
+}
+
+.failure {
+    color: #ff0068;
+}
+
+.notice {
+    font-size: 0.8rem;
+    font-weight: 500;
+    justify-content: center;
+    display: flex;
+    letter-spacing: 0.3px;
+    line-height: 1.125rem;
+    padding: 0.5em 0.5em;
+    text-transform: uppercase;
+    border-radius: 3px;
+    background-color: rgba(113, 85, 152, 0.51);
+    -webkit-animation: fadeinout 6s linear forwards;
+    animation: fadeinout 6s linear forwards;
+}
+
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+}
