@@ -8,7 +8,7 @@ import TimeRemainingIndicatorWrapper
   from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
 import { createBigNumber } from 'utils/create-big-number'
 import moment from 'moment'
-import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
+import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import { constants } from 'services/augurjs'
 import { formatEther } from 'utils/format-number'
@@ -26,6 +26,10 @@ const MarketPortfolioCardFooter = (p) => {
     endTimestamp = createBigNumber(p.finalizationTime).plus(createBigNumber(constants.CONTRACT_INTERVAL.CLAIM_PROCEEDS_WAIT_TIME))
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
+  }
+  let canFinalize = false
+  if (p.linkType === TYPE_CALCULATE_PAYOUT && p.outstandingReturns !== 0) {
+    canFinalize = true
   }
   return (
     <div>
@@ -48,7 +52,7 @@ const MarketPortfolioCardFooter = (p) => {
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
-            {p.finalizationTime &&
+            {p.linkType === TYPE_CLAIM_PROCEEDS && p.finalizationTime && !canClaim &&
               <div className={Styles['MarketCard__proceeds-container']}>
                 <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
                 <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(endTimestamp.toNumber()).formattedLocal}</span>
@@ -60,7 +64,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
+              disabled={(p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim) || (p.linkType === TYPE_CALCULATE_PAYOUT && !canFinalize)}
             >
               { p.localButtonText }
             </button>
@@ -72,14 +76,12 @@ const MarketPortfolioCardFooter = (p) => {
 }
 
 MarketPortfolioCardFooter.propTypes = {
-  disableButton: PropTypes.bool,
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
   buttonAction: PropTypes.func,
   outstandingReturns: PropTypes.number,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
-  endTime: PropTypes.object,
 }
 
 export default MarketPortfolioCardFooter
