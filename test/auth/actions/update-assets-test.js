@@ -1,33 +1,23 @@
-
-
 import sinon from 'sinon'
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-
 import { updateAssets, __RewireAPI__ as updateAssetsRewireAPI } from 'modules/auth/actions/update-assets'
+import { __RewireAPI__ as updateEtherBalanceRewireAPI } from 'modules/auth/actions/update-ether-balance'
 
 const ETH = 'eth'
 const REP = 'rep'
 
 describe('modules/auth/actions/update-assets.js', () => {
   const mockStore = configureMockStore([thunk])
-
-  const stubbedUpdateLoginAccount = sinon.stub().returns({
-    type: 'updateLoginAccount',
-  })
-
+  const stubbedUpdateLoginAccount = sinon.stub().returns({ type: 'updateLoginAccount' })
   updateAssetsRewireAPI.__Rewire__('updateLoginAccount', stubbedUpdateLoginAccount)
-
   const test = t => it(t.description, (done) => {
     const store = mockStore(t.state || {})
-
     t.assertions(store, done)
   })
-
   afterEach(() => {
     stubbedUpdateLoginAccount.resetHistory()
   })
-
   test({
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
@@ -36,20 +26,16 @@ describe('modules/auth/actions/update-assets.js', () => {
     },
     assertions: (store, done) => {
       store.dispatch(updateAssets())
-
       assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
-
       done()
     },
   })
-
   describe('loadAssets callbacks', () => {
     const callbackTests = (asset) => {
       describe(`${asset}`, () => {
         afterEach(() => {
           updateAssetsRewireAPI.__ResetDependency__('augur')
         })
-
         test({
           description: `should call the callback with the expected error`,
           state: {
@@ -63,8 +49,7 @@ describe('modules/auth/actions/update-assets.js', () => {
           },
           assertions: (store, done) => {
             const ERR = { error: `${asset}-failure` }
-
-            updateAssetsRewireAPI.__Rewire__('augur', {
+            updateEtherBalanceRewireAPI.__Rewire__('augur', {
               rpc: {
                 eth: {
                   getBalance: (value, callback) => {
@@ -72,6 +57,8 @@ describe('modules/auth/actions/update-assets.js', () => {
                   },
                 },
               },
+            })
+            updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
                 Universe: {
                   getReputationToken: (value, callback) => {
@@ -93,19 +80,12 @@ describe('modules/auth/actions/update-assets.js', () => {
                 },
               },
             })
-
-            const callbackStub = {
-              callback: () => { },
-            }
-
+            const callbackStub = { callback: () => {} }
             sinon.stub(callbackStub, 'callback').callsFake(err => assert.deepEqual(err, ERR, `didn't call the callback with the expected error`))
-
             store.dispatch(updateAssets(callbackStub.callback))
-
             done()
           },
         })
-
         test({
           description: `should dispatch 'updateLoginAccount' if value is not present`,
           state: {
@@ -116,15 +96,12 @@ describe('modules/auth/actions/update-assets.js', () => {
           },
           assertions: (store, done) => {
             updateAssetsRewireAPI.__Rewire__('augur', {})
-
+            updateEtherBalanceRewireAPI.__Rewire__('augur', {})
             store.dispatch(updateAssets())
-
             assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
-
             done()
           },
         })
-
         test({
           description: `should dispatch 'updateLoginAccount' if value is present but doesn't equal updated value`,
           state: {
@@ -136,18 +113,13 @@ describe('modules/auth/actions/update-assets.js', () => {
             },
           },
           assertions: (store, done) => {
-            updateAssetsRewireAPI.__Rewire__('augur', {
-
-            })
-
+            updateAssetsRewireAPI.__Rewire__('augur', {})
+            updateEtherBalanceRewireAPI.__Rewire__('augur', {})
             store.dispatch(updateAssets())
-
             assert(stubbedUpdateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
-
             done()
           },
         })
-
         test({
           description: `should call the callback with the balances once all have loaded`,
           state: {
@@ -164,10 +136,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             },
           },
           assertions: (store, done) => {
-            const speedomatic =
-              {
-                unfix: (value, str) => { },
-              }
+            const speedomatic = { unfix: (value, str) => {} }
             sinon.stub(speedomatic, 'unfix').returnsArg(0)
             updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic)
             const testValue = {
@@ -175,6 +144,15 @@ describe('modules/auth/actions/update-assets.js', () => {
               legacyRep: 2000,
               rep: 20,
             }
+            updateEtherBalanceRewireAPI.__Rewire__('augur', {
+              rpc: {
+                eth: {
+                  getBalance: (value, callback) => {
+                    callback(null, testValue.eth)
+                  },
+                },
+              },
+            })
             updateAssetsRewireAPI.__Rewire__('augur', {
               api: {
                 Universe: {
@@ -196,31 +174,18 @@ describe('modules/auth/actions/update-assets.js', () => {
                   },
                 },
               },
-              rpc: {
-                eth: {
-                  getBalance: (value, callback) => {
-                    callback(null, testValue.eth)
-                  },
-                },
-              },
             })
-
-            const callbackStub = {
-              callback: () => { },
-            }
+            const callbackStub = { callback: () => {} }
             sinon.stub(callbackStub, 'callback').callsFake((err, balances) => {
               assert.isNull(err, `didn't call the callback with the expected error`)
               assert.deepEqual(balances, testValue, `didn't call the callback with the expected balances`)
             })
-
             store.dispatch(updateAssets(callbackStub.callback))
-
             done()
           },
         })
       })
     }
-
     callbackTests(ETH)
     callbackTests(REP)
   })

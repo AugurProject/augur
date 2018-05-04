@@ -2,6 +2,7 @@ import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateLoginAccount } from 'modules/auth/actions/update-login-account'
+import { updateEtherBalance } from 'modules/auth/actions/update-ether-balance'
 import { allAssetsLoaded } from 'modules/auth/selectors/balances'
 import logError from 'utils/log-error'
 
@@ -34,15 +35,10 @@ export function updateAssets(callback = logError) {
         dispatch(updateLoginAccount({ legacyRepAllowance }))
       })
     })
-    augur.rpc.eth.getBalance([loginAccount.address, 'latest'], (err, attoEthBalance) => {
-      if (err) return callback(err)
-      const ethBalance = speedomatic.unfix(attoEthBalance, 'string')
-      balances.eth = ethBalance
-      if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
-        dispatch(updateLoginAccount({ eth: ethBalance }))
-      }
+    dispatch(updateEtherBalance((err, etherBalance) => {
+      balances.eth = etherBalance
       if (allAssetsLoaded(balances)) callback(null, balances)
-    })
+    }))
     augur.api.LegacyReputationToken.balanceOf({
       _owner: loginAccount.address,
     }, (err, attoLegacyRepBalance) => {
