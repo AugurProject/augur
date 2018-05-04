@@ -4,7 +4,7 @@ Augur App is a small electron application that packages [Augur Node](https://git
 
 ## To Use
 
-The easiest way to get started is to simply download one of the OS specific installers we provide [here](https://augur.net).
+The easiest way to get started is to simply download one of the OS specific installers we provide [here](https://github.com/AugurProject/augur-app/releases).
 
 ### On Windows
 
