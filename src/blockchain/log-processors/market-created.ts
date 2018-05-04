@@ -69,7 +69,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           marketCreatorMailboxOwner:  log.marketCreator,
           initialReportSize:          null,
           reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 10),
-          marketCreatorFeesCollected: "0",
+          marketCreatorFeesBalance: "0",
           volume:                     "0",
           sharesOutstanding:          "0",
           forking:                    0,

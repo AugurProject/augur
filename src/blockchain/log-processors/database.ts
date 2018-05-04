@@ -131,7 +131,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
         { tentativeWinning },
       );
       db.insert(payoutRowWithTentativeWinning).into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
-        if (err) callback(err);
+        if (err) return callback(err);
         if (!payoutIdRow || !payoutIdRow.length) return callback(new Error("No payoutId returned"));
         callback(err, payoutIdRow[0]);
       });
@@ -143,4 +143,16 @@ export function updateDisputeRound(db: Knex, marketId: Address, callback: ErrorC
   db("markets").update({
     disputeRounds: db.count("* as completedRounds").from("crowdsourcers").where({ completed: 1, marketId }),
   }).where({ marketId }).asCallback(callback);
+}
+
+export function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, marketId: Address, callback: ErrorCallback) {
+  db("markets").first("marketCreatorMailbox").where({ marketId }).asCallback((err, marketCreatorMailboxRow?: {marketCreatorMailbox: Address}) => {
+    if (err) return callback(err);
+    if (!marketCreatorMailboxRow) return callback(new Error("Could not get market creator mailbox"));
+    augur.rpc.eth.getBalance([marketCreatorMailboxRow.marketCreatorMailbox, "latest"], (err: Error|null, mailboxBalanceResponse: string): void => {
+      if (err) return callback(err);
+      const mailboxBalance = new BigNumber(mailboxBalanceResponse, 16);
+      db("markets").update("marketCreatorFeesBalance", mailboxBalance.toFixed()).where({ marketId }).asCallback(callback);
+    });
+  });
 }

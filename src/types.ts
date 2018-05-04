@@ -150,7 +150,7 @@ export interface MarketsRow<BigNumberType> {
   creationFee: BigNumberType;
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
-  marketCreatorFeesCollected: BigNumberType|null;
+  marketCreatorFeesBalance: BigNumberType|null;
   marketCreatorMailbox: Address;
   marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
@@ -322,7 +322,7 @@ export interface UIMarketInfo<BigNumberType> {
   settlementFee: BigNumberType;
   reportingFeeRate: BigNumberType;
   marketCreatorFeeRate: BigNumberType;
-  marketCreatorFeesCollected: BigNumberType|null;
+  marketCreatorFeesBalance: BigNumberType|null;
   marketCreatorMailbox: Address;
   marketCreatorMailboxOwner: Address;
   initialReportSize: BigNumberType|null;
