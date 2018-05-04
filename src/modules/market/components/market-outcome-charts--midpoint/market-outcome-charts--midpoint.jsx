@@ -87,7 +87,7 @@ export default class MarketOutcomeMidpoint extends Component {
     }
   }
 
-  // NOTE -- these measurments are done this way due to the use of reactFauxDom
+  // NOTE -- these measurements are done this way due to the use of reactFauxDom
   getMidpointLabelWidth() {
     const midpointLabelWidth = document.getElementById('midpoint_label')
 
@@ -228,8 +228,8 @@ function drawMidpointLine(options) {
   if (excludeCandlestick) {
     if (hasOrders) {
       drawSegments.push({
-        start: midpointLabelWidth + drawParams.chartDim.right,
-        end: drawParams.containerWidth,
+        start: drawParams.chartDim.left,
+        end: drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right,
       })
     }
   } else if (hasPriceHistory) {

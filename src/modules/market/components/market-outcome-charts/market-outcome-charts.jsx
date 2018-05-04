@@ -29,7 +29,7 @@ export default class MarketOutcomeCharts extends Component {
     hasPriceHistory: PropTypes.bool,
     isMobile: PropTypes.bool.isRequired,
     marketDepth: PropTypes.object.isRequired,
-    marketId: PropTypes.string.isRequired,
+    marketId: PropTypes.string,
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     orderBook: PropTypes.object.isRequired,
@@ -88,7 +88,7 @@ export default class MarketOutcomeCharts extends Component {
 
     this.snapScrollHandler()
 
-    if (this.props.selectedOutcome) {
+    if (this.props.selectedOutcome && !this.props.excludeCandlestick) {
       this.getData()
     }
 
@@ -103,7 +103,7 @@ export default class MarketOutcomeCharts extends Component {
       this.snapScrollHandler()
     }
 
-    if (prevState.selectedPeriod !== this.state.selectedPeriod || prevState.selectedRange !== this.state.selectedRange || prevProps.selectedOutcome.id !== this.props.selectedOutcome.id || prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) {
+    if ((prevState.selectedPeriod !== this.state.selectedPeriod || prevState.selectedRange !== this.state.selectedRange || prevProps.selectedOutcome.id !== this.props.selectedOutcome.id || prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) && !this.props.excludeCandlestick) {
       this.getData()
     }
   }
