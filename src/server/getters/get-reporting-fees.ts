@@ -302,14 +302,14 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
 
-  getTotalFeeWindowTokens(db, augur, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
-    if (err) return callback(err);
-    getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
+  getUniverseAndParentUniverse(db, reporter, universe, feeWindow, (err, universeAndParentUniverse: UniverseAndParentUniverse) => {
+    if (err || universeAndParentUniverse == null) return callback(new Error("Universe or feeWindow not found"));
+    getTotalFeeWindowTokens(db, augur, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
       if (err) return callback(err);
-      getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
-        if (err || repStakeResults == null) return callback(err);
-        getUniverseAndParentUniverse(db, reporter, universe, feeWindow, (err, universeAndParentUniverse: UniverseAndParentUniverse) => {
-          if (err || universeAndParentUniverse == null) return callback(err);
+      getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
+        if (err) return callback(err);
+        getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
+          if (err || repStakeResults == null) return callback(err);
           getMarkets(db, reporter, universeAndParentUniverse.universe, universeAndParentUniverse.parentUniverse, (err, result: {forkedMarket: ForkedMarket, nonforkedMarkets: Array<NonforkedMarket> }) => {
             if (err || repStakeResults == null) return callback(err);
             const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {

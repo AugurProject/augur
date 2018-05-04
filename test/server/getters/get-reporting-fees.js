@@ -47,14 +47,24 @@ describe("server/getters/get-reporting-fees", () => {
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
           "0x3000000000000000000000000000000000000000",
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: {},
+        nonforkedMarkets: [
+          {
+            "address": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": [],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporterAddress": "0x0000000000000000000000000000000000abe123",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universeAddress": "0x000000000000000000000000000000000000000b",
+          },
+        ],
       });
     },
   });
@@ -88,14 +98,24 @@ describe("server/getters/get-reporting-fees", () => {
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
           "0x3000000000000000000000000000000000000000",
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: {},
+        nonforkedMarkets: [
+          {
+            "address": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": [],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporterAddress": "0x0000000000000000000000000000000000abe123",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universeAddress": "0x000000000000000000000000000000000000000b",
+          },
+        ],
       });
     },
   });
@@ -118,21 +138,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
-      assert.deepEqual(marketsMatched, {
-        total: {
-          "unclaimedEth": "0",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
-          "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
-        },
-        crowdsourcers: [],
-        feeWindows: [],
-        initialReporters: [],
-      });
+      assert.deepEqual(err, Error("Universe or feeWindow not found"));
+      assert.equal(marketsMatched, null);
     },
   });
   test({
@@ -165,11 +172,21 @@ describe("server/getters/get-reporting-fees", () => {
           "claimedRepStaked": "5",
           "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: {},
+        nonforkedMarkets: [
+          {
+            "address": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": [],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporterAddress": "0x0000000000000000000000000000000000abe123",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universeAddress": "0x000000000000000000000000000000000000000b",
+          },
+        ],
       });
     },
   });
