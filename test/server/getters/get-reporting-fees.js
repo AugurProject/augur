@@ -101,7 +101,25 @@ describe("server/getters/get-reporting-fees", () => {
         feeWindows: [
           "0x4000000000000000000000000000000000000000",
         ],
-        forkedMarket: {},
+        forkedMarket: {
+          "address": "0x00000000000000000000000000000000000000f1",
+          "crowdsourcers": [
+            {
+              "address": "0x0000000000000000001000000000000000000006",
+              "isForked": false,
+            },
+            {
+              "address": "0x0000000000000000001000000000000000000007",
+              "isForked": true,
+            },
+          ],
+          "initialReporter": {
+            "address": "0x0000000000000000000000000000000000abe222",
+            "isForked": false,
+          },
+          "isFinalized": true,
+          "universeAddress": "0x000000000000000000000000000000000000000b",
+        },
         nonforkedMarkets: [
           {
             "address": "0x0000000000000000000000000000000000000019",

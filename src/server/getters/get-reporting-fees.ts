@@ -150,7 +150,7 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
               isForked: result.initialReporters[i].disavowed ? true : false,
             },
           };
-        } else {
+        } else if (!result.initialReporters[i].forking) {
           let isFinalized = 
             keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
               address: result.initialReporters[i].marketId,
@@ -183,19 +183,21 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
           } else {
             forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false});
           }
-        } else if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
-          keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
-            address: result.crowdsourcers[i].marketId,
-            universeAddress: result.crowdsourcers[i].universe,
-            crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed ? true : false,
-            isMigrated: !result.crowdsourcers[i].needsMigration,
-            isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
-            crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
-            initialReporterAddress: null,
-          };
-        } else {
-          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed ? true : false;
-          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
+        } else if (!result.crowdsourcers[i].forking) {
+          if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
+            keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
+              address: result.crowdsourcers[i].marketId,
+              universeAddress: result.crowdsourcers[i].universe,
+              crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed ? true : false,
+              isMigrated: !result.crowdsourcers[i].needsMigration,
+              isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
+              crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
+              initialReporterAddress: null,
+            };
+          } else {
+            keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed ? true : false;
+            keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
+          }
         }
       }
       let nonforkedMarkets: Array<NonforkedMarket> = [];
