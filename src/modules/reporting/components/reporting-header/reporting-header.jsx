@@ -41,6 +41,7 @@ export default class ReportingHeader extends Component {
       repBalance,
       reportingWindowStats,
       updateModal,
+      doesUserHaveRep,
     } = this.props
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
     const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
@@ -63,6 +64,7 @@ export default class ReportingHeader extends Component {
                 forkEndTime={forkEndTime}
                 currentTime={currentTime}
                 expanded={false}
+                doesUserHaveRep={doesUserHaveRep}
               />
             }
             { heading === 'Dispute' && !isForking &&
