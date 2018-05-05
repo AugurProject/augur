@@ -97,7 +97,7 @@ interface RepStakeResults {
 }
 
 function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
-  let query = db("fee_windows")
+  const query = db("fee_windows")
   .select("universes.universe", "universes.parentUniverse")
   .join("universes", "fee_windows.universe", "universes.universe")
   .groupBy("fee_windows.universe");
@@ -113,14 +113,14 @@ function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Add
 }
 
 function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, result?: {forkedMarket: ForkedMarket, nonforkedMarkets: Array<NonforkedMarket>}) => void) {
-  let initialReportersQuery = db("initial_reports")
+  const initialReportersQuery = db("initial_reports")
     .select(["initial_reports.initialReporter", "initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
     .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
     .where("initial_reports.redeemed", 0);
-  let crowdsourcersQuery = db("crowdsourcers")
+  const crowdsourcersQuery = db("crowdsourcers")
     .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
@@ -129,84 +129,85 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
     .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
     .where("balances.owner", reporter);
 
-    parallel({
-      initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
-      crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
-    }, (err: Error|null, result: any) => {
-      if (err) return callback(err);
+  parallel({
+    initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
+    crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
+  }, (err: Error|null, result: any) => {
+    if (err) return callback(err);
 
-      let forkedMarket = {} as ForkedMarket;
-      let keyedNonforkedMarkets = {} as any;
-      let i: number;
-      for (i = 0; i < result.initialReporters.length; i++) {
-        if (result.initialReporters[i].forking && result.initialReporters[i].universe === parentUniverse) {
+    let forkedMarket = {} as ForkedMarket;
+    const keyedNonforkedMarkets = {} as any;
+    let i: number;
+    for (i = 0; i < result.initialReporters.length; i++) {
+      if (result.initialReporters[i].forking && result.initialReporters[i].universe === parentUniverse) {
+        forkedMarket = {
+          address: result.initialReporters[i].marketId,
+          universeAddress: result.initialReporters[i].universe,
+          isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
+          crowdsourcers: [],
+          initialReporter: {
+            address: result.initialReporters[i].initialReporter,
+            isForked: result.initialReporters[i].disavowed ? true : false,
+          },
+        };
+      } else if (!result.initialReporters[i].forking) {
+        keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
+          address: result.initialReporters[i].marketId,
+          universeAddress: result.initialReporters[i].universe,
+          crowdsourcersAreDisavowed: false,
+          isMigrated: !result.initialReporters[i].needsMigration,
+          isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
+          crowdsourcers: [],
+          initialReporterAddress: result.initialReporters[i].initialReporter,
+        };
+      }
+    }
+    for (i = 0; i < result.crowdsourcers.length; i++) {
+      if (result.crowdsourcers[i].forking && result.crowdsourcers[i].universe === parentUniverse) {
+        let forkedMarketIsEmpty: boolean = true;
+        for (const key in forkedMarket) {
+          if (forkedMarket.hasOwnProperty(key)) {
+            forkedMarketIsEmpty = false;
+            break;
+          }
+        }
+        if (forkedMarketIsEmpty) {
           forkedMarket = {
-            address: result.initialReporters[i].marketId,
-            universeAddress: result.initialReporters[i].universe,
-            isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
-            crowdsourcers: [],
-            initialReporter: {
-              address: result.initialReporters[i].initialReporter,
-              isForked: result.initialReporters[i].disavowed ? true : false,
-            },
+            address: result.crowdsourcers[i].marketId,
+            universeAddress: result.crowdsourcers[i].universe,
+            isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
+            crowdsourcers: [{address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false}],
+            initialReporter: {},
           };
-        } else if (!result.initialReporters[i].forking) {
-          let isFinalized = 
-            keyedNonforkedMarkets[result.initialReporters[i].marketId] = {
-              address: result.initialReporters[i].marketId,
-              universeAddress: result.initialReporters[i].universe,
-              crowdsourcersAreDisavowed: false,
-              isMigrated: !result.initialReporters[i].needsMigration,
-              isFinalized: result.initialReporters[i].reportingState === "FINALIZED",
-              crowdsourcers: [],
-              initialReporterAddress: result.initialReporters[i].initialReporter,
-            };
+        } else {
+          forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false});
+        }
+      } else if (!result.crowdsourcers[i].forking) {
+        if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
+            address: result.crowdsourcers[i].marketId,
+            universeAddress: result.crowdsourcers[i].universe,
+            crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed ? true : false,
+            isMigrated: !result.crowdsourcers[i].needsMigration,
+            isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
+            crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
+            initialReporterAddress: null,
+          };
+        } else {
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed ? true : false;
+          keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
         }
       }
-      for (i = 0; i < result.crowdsourcers.length; i++) {
-        if (result.crowdsourcers[i].forking && result.crowdsourcers[i].universe === parentUniverse) {
-          let forkedMarketIsEmpty: boolean = true;
-          for (let key in forkedMarket) {
-            if (forkedMarket.hasOwnProperty(key)) {
-              forkedMarketIsEmpty = false;
-              break;
-            }
-          }
-          if (forkedMarketIsEmpty) {
-            forkedMarket = {
-              address: result.crowdsourcers[i].marketId,
-              universeAddress: result.crowdsourcers[i].universe,
-              isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
-              crowdsourcers: [{address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false}],
-              initialReporter: {},
-            };
-          } else {
-            forkedMarket.crowdsourcers.push({address: result.crowdsourcers[i].crowdsourcerId, isForked: result.crowdsourcers[i].disavowed ? true : false});
-          }
-        } else if (!result.crowdsourcers[i].forking) {
-          if (!keyedNonforkedMarkets[result.crowdsourcers[i].marketId]) {
-            keyedNonforkedMarkets[result.crowdsourcers[i].marketId] = {
-              address: result.crowdsourcers[i].marketId,
-              universeAddress: result.crowdsourcers[i].universe,
-              crowdsourcersAreDisavowed: result.crowdsourcers[i].disavowed ? true : false,
-              isMigrated: !result.crowdsourcers[i].needsMigration,
-              isFinalized: result.crowdsourcers[i].reportingState === "FINALIZED",
-              crowdsourcers: [result.crowdsourcers[i].crowdsourcerId],
-              initialReporterAddress: null,
-            };
-          } else {
-            keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = result.crowdsourcers[i].disavowed ? true : false;
-            keyedNonforkedMarkets[result.crowdsourcers[i].marketId].crowdsourcers.push(result.crowdsourcers[i].crowdsourcerId);
-          }
-        }
-      }
-      let nonforkedMarkets: Array<NonforkedMarket> = [];
-      for (let key in keyedNonforkedMarkets) {
+    }
+    const nonforkedMarkets: Array<NonforkedMarket> = [];
+    for (const key in keyedNonforkedMarkets) {
+      if (keyedNonforkedMarkets.hasOwnProperty(key)) {
         nonforkedMarkets.push(keyedNonforkedMarkets[key]);
       }
+    }
 
-      return callback(null, { forkedMarket: forkedMarket, nonforkedMarkets: nonforkedMarkets });
-    });
+    return callback(null, { forkedMarket, nonforkedMarkets });
+  });
 }
 
 function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { [feeWindow: string]: FeeWindowTotalTokens }) => void) {
