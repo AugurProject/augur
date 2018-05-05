@@ -20,6 +20,7 @@ export default class ReportingHeader extends Component {
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
     currentTime: PropTypes.number.isRequired,
+    doesUserHaveRep: PropTypes.bool.isRequired,
     isForking: PropTypes.bool,
     forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
