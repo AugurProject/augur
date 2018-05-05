@@ -54,7 +54,7 @@ function forceFinalize(augur, args, auth, callback) {
                 console.log(chalk.red(err));
                 return callback(err);
               }
-              finalizeMarket(augur, marketId, auth, callback);
+              finalizeMarket(augur, args, auth, callback);
             });
           });
         });
