@@ -11,6 +11,7 @@ import MarketOutcomesCategorical
 import MarketLink from 'modules/market/components/market-link/market-link'
 
 import toggleTag from 'modules/routes/helpers/toggle-tag'
+import toggleCategory from 'modules/routes/helpers/toggle-category'
 import { formatDate } from 'utils/format-date'
 import getValue from 'utils/get-value'
 import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
@@ -22,7 +23,6 @@ import TimeRemainingIndicatorWrapper
   from 'src/modules/market/components/common/time-remaining-indicator/time-remaining-indicator'
 import { constants } from 'services/augurjs'
 import moment from 'moment'
-import noop from 'src/utils/noop'
 import { compact } from 'lodash'
 import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
@@ -43,7 +43,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
 
   const process = (...arr) => compact(arr).map(label => ({
     label,
-    onClick: noop,
+    onClick: toggleCategory(label, location, history),
   }))
 
   const categoriesWithClick = process(category)
