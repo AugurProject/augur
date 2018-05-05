@@ -14,6 +14,7 @@ import { Subscriptions } from "./subscriptions";
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
+import * as path from "path";
 
 function safeSend( websocket: WebSocket, payload: string) {
   if (websocket.readyState !== WebSocket.OPEN ) {
@@ -31,8 +32,8 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
   if ( webSocketConfigs.wss != null ) {
     console.log("Starting websocket secure server on port", webSocketConfigs.wss.port);
     const httpsOptions: https.ServerOptions = {
-      cert: fs.readFileSync(webSocketConfigs.wss.certificateFile),
-      key: fs.readFileSync(webSocketConfigs.wss.certificateKeyFile),
+      cert: fs.readFileSync(path.join(__dirname, "..", "..", webSocketConfigs.wss.certificateFile)),
+      key: fs.readFileSync(path.join(__dirname, "..", "..", webSocketConfigs.wss.certificateKeyFile)),
     };
     const server = https.createServer(httpsOptions, app);
     httpServers.push(server);

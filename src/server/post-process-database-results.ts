@@ -24,7 +24,7 @@ const whitelist: Whitelist = {
     reportingFeeRate: true,
     marketCreatorFeeRate: true,
     marketCreatorFeesClaimed: true,
-    marketCreatorFeesCollected: true,
+    marketCreatorFeesBalance: true,
     initialReportSize: true,
     volume: true,
     sharesOutstanding: true,

@@ -2,18 +2,26 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, UIMarketCreatorFee, ReportingState} from "../../types";
 import { getMarketsWithReportingState } from "./database";
+import Augur from "augur.js";
+import { ZERO } from "../../constants";
 
 interface MarketCreatorFeesRow {
   marketId: Address;
   reportingState: ReportingState;
-  marketCreatorFeesCollected: number;
-  marketCreatorFeesClaimed: number;
+  marketCreatorFeesBalance: BigNumber;
+  balance: BigNumber;
 }
 
-export function getUnclaimedMarketCreatorFees(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: Array<UIMarketCreatorFee>) => void): void {
+export function getUnclaimedMarketCreatorFees(db: Knex, augur: Augur, marketIds: Array<Address>, callback: (err: Error|null, result?: Array<UIMarketCreatorFee>) => void): void {
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
-  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "market_state.reportingState", "markets.marketCreatorFeesCollected", "markets.marketCreatorFeesClaimed"]);
+  let marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "market_state.reportingState", "markets.marketCreatorFeesBalance", "cash.balance"]);
   marketsQuery = marketsQuery.whereIn("markets.marketId", marketIds);
+  marketsQuery.leftJoin("balances AS cash", function () {
+    this
+      .on("cash.owner", db.raw("markets.marketCreatorMailbox"))
+      .andOn("cash.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+  });
+
   marketsQuery.asCallback(( err: Error|null, marketCreatorFeeRows: Array<MarketCreatorFeesRow>): void => {
     if (err != null) return callback(err);
     const feeRowsByMarket = _.keyBy(marketCreatorFeeRows, (r: MarketCreatorFeesRow): string => r.marketId);
@@ -24,7 +32,7 @@ export function getUnclaimedMarketCreatorFees(db: Knex, marketIds: Array<Address
       } else {
         return {
           marketId,
-          unclaimedFee: market.reportingState === ReportingState.FINALIZED ? market.marketCreatorFeesCollected - market.marketCreatorFeesClaimed : 0,
+          unclaimedFee: market.marketCreatorFeesBalance.plus(market.balance || ZERO).toFixed(),
         };
       }
     });
