@@ -148,7 +148,7 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           maxDisplayPrice: market.maxPrice,
         })
         const convertedCost = createBigNumber(speedomatic.unfix(calculatedTradeCost.cost, 'string'), 10)
-        const estimatedGasCost = formatGasCostToEther(createBigNumber(simulatedTrade.gasEstimate, 10), { decimalsRounded: 4 }, createBigNumber(augur.rpc.getGasPrice(), 10))
+        const estimatedGasCost = formatGasCostToEther(createBigNumber(simulatedTrade.gasEstimate || augur.constants.TRADE_GAS, 10), { decimalsRounded: 4 }, createBigNumber(augur.rpc.getGasPrice(), 10))
         const totalFee = createBigNumber(simulatedTrade.settlementFees, 10).plus(createBigNumber(estimatedGasCost, 10))
         newTradeDetails.totalFee = totalFee.toFixed()
         // newTradeDetails.totalCost = simulatedTrade.tokensDepleted
