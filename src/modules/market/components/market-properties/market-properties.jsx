@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { TYPE_CLOSED, TYPE_DISPUTE, TYPE_VIEW } from 'modules/market/constants/link-types'
+import { TYPE_CLOSED, TYPE_DISPUTE, TYPE_VIEW, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
@@ -67,7 +67,7 @@ const MarketProperties = (p) => {
               }
             </button>
           }
-          { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED)) &&
+          { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED && linkType !== TYPE_CLAIM_PROCEEDS)) &&
             <MarketLink
               className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
