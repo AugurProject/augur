@@ -32,14 +32,19 @@ const ForkingContent = (p) => {
             If you are a REP holder, please collect any outstanding REP on the Portfolio: Reporting page. Then, migrate to your chosen child universe. The forking period has ended. Read more about the forking process <a href="http://docs.augur.net/#fork-state">here</a>.
           </p>
         }
-        <MarketLink
-          className={Styles.ForkingContent__migrate_rep_button}
-          id={p.forkingMarket}
-          formattedDescription="Migrate REP"
-          linkType={TYPE_MIGRATE_REP}
-        >
-          Migrate REP
-        </MarketLink>
+        { !p.doesUserHaveRep &&
+          <button disabled className={Styles.ForkingContent__no_rep_migrate_button}>Migrate REP</button>
+        }
+        { p.doesUserHaveRep &&
+          <MarketLink
+            className={Styles.ForkingContent__migrate_rep_button}
+            id={p.forkingMarket}
+            formattedDescription="Migrate REP"
+            linkType={TYPE_MIGRATE_REP}
+          >
+            Migrate REP
+          </MarketLink>
+        }
       </div>
     </section>
   )
@@ -50,6 +55,7 @@ ForkingContent.propTypes = {
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
   expanded: PropTypes.bool.isRequired,
+  doesUserHaveRep: PropTypes.bool.isRequired,
 }
 
 export default ForkingContent
