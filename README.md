@@ -6,6 +6,16 @@ Augur App is a small electron application that packages [Augur Node](https://git
 
 The easiest way to get started is to simply download one of the OS specific installers we provide [here](https://augur.net).
 
+### On Windows
+
+After installing on Windows you'll need to create a shortcut to the executable manually to avoid slow startup times. The installed executable can be found at `%LocalAppData%\augur-app\augur-app.exe`
+
+### On Ubuntu
+
+Install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once installed you can run the app from the command line with `sudo augur-app`
+
+### From source
+
 If you want to run Augur App from source follow these steps:
 
 ```bash
