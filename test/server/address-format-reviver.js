@@ -31,7 +31,7 @@ describe("server/address-format-reviver", () => {
     it("Mixed data types", () => {
       expect(addressFormatReviver("marketIds", [4, "0xB0b0b0B", null, {bad: "thing"}])).to.deep.eq([undefined, "0x000000000000000000000000000000000b0b0b0b", undefined, undefined]);
     });
-    it("Mixed case", () => {
+    it("Extra whitespace", () => {
       expect(addressFormatReviver("marketId", "   0x0000000000000000000000000000000000000001 ")).to.eq("0x0000000000000000000000000000000000000001");
     });
   });
