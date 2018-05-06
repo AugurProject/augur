@@ -26,6 +26,7 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
   } else if (isScalar) {
 		// selectedOutcome must be a BN as string
     var priceRange = maxPrice.minus(minPrice);
+    selectedOutcome = selectedOutcome.replace(/\"/g, "");
     var reportNormalizedToZero = createBigNumber(selectedOutcome).minus(minPrice);
     var longPayout = reportNormalizedToZero.times(numTicks).dividedBy(priceRange);
     var shortPayout = numTicks.minus(longPayout);

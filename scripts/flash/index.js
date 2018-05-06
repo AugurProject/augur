@@ -47,7 +47,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, REP is given to user if needed" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\\"-10\\\"" },
       invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
   },
@@ -56,7 +56,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, used for Open Reporting" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\\"-10\\\"" },
       invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
   },
@@ -65,7 +65,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, push time and dispute this market" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag" },
+      outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\\"-10\\\"" },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
       invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
     },
@@ -124,7 +124,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, script approves user if needed" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      outcome: { required: true, short: "o", help: "Outcome to fill order on" },
+      outcome: { required: true, short: "o", help: "Outcome to fill order on, negative outcome use \\\"-10\\\"" },
       orderType: {required: true, short: "t", help: "Order type ('buy' | 'sell')"},
     },
   },

@@ -27,14 +27,20 @@ function designateReport(augur, args, auth, callback) {
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
   var invalid = args.opt.invalid;
+
   getRepTokens(augur, amount, auth, function (err) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
     }
     augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
+      if (err) {
+        console.log(chalk.red(err));
+        return callback(err);
+      }
       var market = marketsInfo[0];
-      if (market.marketType === "scalar" && (new BigNumber(market.minPrice).gt(new BigNumber(outcome)))) {
+      outcome = outcome.replace(/\"/g, "");
+      if (market.marketType === "scalar" && (new BigNumber(market.minPrice).gt(new BigNumber(parseInt(outcome, 10))))) {
         console.log(chalk.red("Scalar price is below min price"));
         callback("Error");
       }
