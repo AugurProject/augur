@@ -793,7 +793,8 @@ module.exports = {
   CREATE_CATEGORICAL_MARKET_GAS: "0x5e3918",
 
   CANCEL_ORDER_GAS: "0x5b8d80",
-  CREATE_ORDER_GAS: "0x5b8d80",
+  CREATE_ORDER_GAS: "0x927C0", // 600,000 is the ceiling for executing a single trade, from Alex 5.2.2018
+  FILL_ORDER_GAS: "0xdbba0", // 900,000 is the ceiling for executing a single trade, from Alex 5.2.2018
   TRADE_GAS: "0x5e3918",
 
   BLOCKS_PER_CHUNK: 10,
@@ -3842,7 +3843,7 @@ function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAd
     sharesFilled: ZERO,
     settlementFees: ZERO,
     worstCaseFees: ZERO,
-    gasFees: ZERO,
+    gasEstimate: ZERO,
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,
@@ -3881,7 +3882,7 @@ function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCrea
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
-  var gasFees = ZERO;
+  var gasEstimate = new BigNumber(constants.CREATE_ORDER_GAS, 16);
   var worstCaseFees = ZERO;
   var tokensEscrowed = ZERO;
   var sharesEscrowed = ZERO;
@@ -3894,7 +3895,7 @@ function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCrea
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(maxPrice.minus(price));
   if (sharesEscrowed.gt(ZERO)) worstCaseFees = calculateSettlementFee(sharesEscrowed, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong);
   return {
-    gasFees: gasFees,
+    gasEstimate: gasEstimate,
     worstCaseFees: worstCaseFees,
     sharesDepleted: sharesEscrowed,
     tokensDepleted: tokensEscrowed,
@@ -3917,7 +3918,7 @@ function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCrea
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
-  var gasFees = ZERO;
+  var gasEstimate = new BigNumber(constants.CREATE_ORDER_GAS, 16);
   var worstCaseFees = ZERO;
   var sharePriceLong = price.minus(minPrice);
   var sharePriceShort = maxPrice.minus(price);
@@ -3941,7 +3942,7 @@ function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCrea
   }
   if (numShares.gt(ZERO)) tokensEscrowed = numShares.times(sharePriceLong);
   return {
-    gasFees: gasFees,
+    gasEstimate: gasEstimate,
     worstCaseFees: worstCaseFees,
     otherSharesDepleted: sharesEscrowed,
     tokensDepleted: tokensEscrowed,
@@ -3966,7 +3967,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
-  var gasFees = ZERO;
+  var gasEstimate = new BigNumber(constants.FILL_ORDER_GAS).times(new BigNumber(matchingSortedAsks.length));
   var makerSharesDepleted = ZERO;
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
@@ -4027,7 +4028,7 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     worstCaseFees: settlementFees,
-    gasFees: gasFees,
+    gasEstimate: gasEstimate,
     otherSharesDepleted: takerSharesDepleted,
     tokensDepleted: takerTokensDepleted,
     shareBalances: shareBalances
@@ -4049,7 +4050,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
-  var gasFees = ZERO;
+  var gasEstimate = new BigNumber(constants.FILL_ORDER_GAS).times(new BigNumber(matchingSortedBids.length));
   var makerSharesDepleted = ZERO;
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
@@ -4109,7 +4110,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     worstCaseFees: settlementFees,
-    gasFees: gasFees,
+    gasEstimate: gasEstimate,
     sharesDepleted: takerSharesDepleted,
     tokensDepleted: takerTokensDepleted,
     shareBalances: shareBalances
@@ -4133,7 +4134,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     sharesFilled: ZERO,
     settlementFees: ZERO,
     worstCaseFees: ZERO,
-    gasFees: ZERO,
+    gasEstimate: ZERO,
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,
@@ -4170,7 +4171,7 @@ module.exports = simulateSell;
 /** Type definition for SimulatedTrade.
  * @typedef {Object} SimulatedTrade
  * @property {string} settlementFees Projected settlement fees paid on this trade, as a base-10 string.
- * @property {string} gasFees Projected gas fees paid on this trade, as a base-10 string.
+ * @property {string} gasEstimate Projected gas fees paid on this trade, as a base-10 string.
  * @property {string} sharesDepleted Projected number of shares of the traded outcome spent on this trade, as a base-10 string.
  * @property {string} otherSharesDepleted Projected number of shares of the other (non-traded) outcomes spent on this trade, as a base-10 string.
  * @property {string} tokensDepleted Projected number of tokens spent on this trade, as a base-10 string.
@@ -4219,7 +4220,7 @@ function simulateTrade(p) {
     sharesFilled: simulatedTrade.sharesFilled.toFixed(),
     settlementFees: simulatedTrade.settlementFees.toFixed(),
     worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
-    gasFees: simulatedTrade.gasFees.toFixed(),
+    gasEstimate: simulatedTrade.gasEstimate.toFixed(),
     sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
     otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
     tokensDepleted: simulatedTrade.tokensDepleted.toFixed(),
@@ -4539,7 +4540,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.11.0-9';
+module.exports = '4.11.0-10';
 },{}],149:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -6080,33 +6081,6 @@ module.exports={
 					"type": "address"
 				},
 				{
-					"name": "_from",
-					"type": "address"
-				},
-				{
-					"name": "_to",
-					"type": "address"
-				}
-			],
-			"name": "logMarketTransferred",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
 					"name": "_target",
 					"type": "address"
 				},
@@ -6157,37 +6131,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_universe",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				},
-				{
-					"name": "_from",
-					"type": "address"
-				},
-				{
-					"name": "_to",
-					"type": "address"
-				}
-			],
-			"name": "logMarketMailboxTransferred",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -8135,65 +8078,6 @@ module.exports={
 				}
 			],
 			"name": "InitialReporterTransferred",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "to",
-					"type": "address"
-				}
-			],
-			"name": "MarketTransferred",
-			"type": "event"
-		},
-		{
-			"anonymous": false,
-			"inputs": [
-				{
-					"indexed": true,
-					"name": "universe",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "market",
-					"type": "address"
-				},
-				{
-					"indexed": true,
-					"name": "mailbox",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "from",
-					"type": "address"
-				},
-				{
-					"indexed": false,
-					"name": "to",
-					"type": "address"
-				}
-			],
-			"name": "MarketMailboxTransferred",
 			"type": "event"
 		},
 		{
@@ -10166,10 +10050,6 @@ module.exports={
 				},
 				{
 					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"name": "_market",
 					"type": "address"
 				}
 			],
@@ -13101,29 +12981,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_owner",
-					"type": "address"
-				},
-				{
-					"name": "_market",
-					"type": "address"
-				}
-			],
-			"name": "initialize",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_token",
 					"type": "address"
 				}
@@ -13212,6 +13069,25 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_owner",
+					"type": "address"
+				}
+			],
+			"name": "initialize",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -13934,20 +13810,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": true,
-			"inputs": [],
-			"name": "getInitialReporterAddress",
-			"outputs": [
-				{
-					"name": "",
-					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "view",
 			"type": "function"
 		},
 		{
@@ -32982,7 +32844,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/private/tmp/augur.js"
+      "/home/pg/Development/augur/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -33004,11 +32866,12 @@ module.exports={
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh",
+    "/keythereum/secp256k1",
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/private/tmp/augur.js",
+  "_where": "/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -44702,7 +44565,6 @@ module.exports = {
     PRIVATE_KEY: "privateKey",
     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
     META_MASK: "metaMask",
-    TREZOR: "trezor",
   },
 
   // Number of required confirmations for transact sequence
@@ -45339,7 +45201,7 @@ var RPCError = require("../errors/rpc-error");
  * @param {Object} payload Static API data with "params" and "from" set.
  * @param {string} address The sender's Ethereum address.
  * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
- * @param {string} accountType One of "privateKey", "uPort", "ledger", or "trezor".
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
  * @param {function} callback Callback function.
  * @return {string|void} Signed transaction.
  */
@@ -45378,7 +45240,7 @@ var ACCOUNT_TYPES = require("../constants").ACCOUNT_TYPES;
  * @param {Object} payload Static ABI data with the "params" and "from" fields set.
  * @param {string} address The sender's Ethereum address.
  * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
- * @param {string} accountType One of "privateKey", "uPort", "ledger", or "trezor".
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
  * @param {function} callback Callback function.
  * @return {string|void} Transaction hash (if successful).
  */
@@ -45564,7 +45426,7 @@ var ACCOUNT_TYPES = require("../constants").ACCOUNT_TYPES;
  * Sign the transaction using either a private key or a signing function.
  * @param {Object} packaged Unsigned transaction.
  * @param {buffer|function} privateKeyOrSigner Sender's plaintext private key or signing function.
- * @param {string} accountType One of "privateKey", "uPort", "ledger", or "trezor".
+ * @param {string} accountType One of "privateKey", "uPort", or "ledger".
  * @param {function} callback Callback function.
  * @return {string} Signed and serialized raw transaction.
  */
@@ -45577,7 +45439,6 @@ function signRawTransaction(packaged, privateKeyOrSigner, accountType, callback)
         return callback(err);
       }
     case ACCOUNT_TYPES.LEDGER:
-    case ACCOUNT_TYPES.TREZOR:
       return privateKeyOrSigner(packaged, callback);
     case ACCOUNT_TYPES.U_PORT:
       return privateKeyOrSigner(packaged).then(function (transactionHash) {
@@ -47636,7 +47497,7 @@ module.exports = validateTransaction;
 
 },{"./validate-address":329,"./validate-number":333}],335:[function(require,module,exports){
 // generated by genversion
-module.exports = '5.2.6'
+module.exports = '5.2.5'
 
 },{}],336:[function(require,module,exports){
 "use strict";
