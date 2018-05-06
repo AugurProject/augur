@@ -21,12 +21,16 @@ export const inputsExpectedAsAddress: StringToBoolMap = {
   universe: true,
 };
 
+function preCleanAddress(address: string) {
+  return address.toLowerCase().trim();
+}
+
 export function addressFormatReviver (key: string, value: any) {
   if (inputsExpectedAsAddress[key] === true) {
     if ( typeof value === "string" ) {
-      return formatEthereumAddress(value.toLowerCase());
+      return formatEthereumAddress(preCleanAddress(value));
     } else if (Array.isArray(value)) {
-      return formatEthereumAddress((value).map((address) => typeof address === "string" ? address.toLowerCase() : ""));
+      return formatEthereumAddress((value).map((address) => typeof address === "string" ? preCleanAddress(address) : ""));
     }
   }
 
