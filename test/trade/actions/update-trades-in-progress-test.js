@@ -81,11 +81,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '5',
-            feePercent: '0.0247',
+            feePercent: '0.0024',
             settlementFees: '0',
-            gasFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
@@ -114,11 +114,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '10',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.018',
             totalCost: '5',
-            feePercent: '0.0247',
-            gasFees: '0',
+            feePercent: '0.0036',
             settlementFees: '0',
+            gasEstimate: '900000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
@@ -166,7 +166,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `Didn't return the correct tradeDetails object based on input`)
     })
 
-    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome. 2', () => {
+    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
       // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testBinaryMarketId: {
@@ -192,11 +192,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0.15',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '1.5',
-            feePercent: '0.08233333333333333333',
-            gasFees: '0',
+            feePercent: '0.008',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
@@ -221,11 +221,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '0',
-            gasFees: '0',
             feePercent: 'Infinity',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '0',
@@ -237,7 +237,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, "Didn't produce the expected tradeDetails object")
     })
 
-    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes 4', () => {
+    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
       store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -249,11 +249,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '12.5',
-            feePercent: '0.00988',
-            gasFees: '0',
+            feePercent: '0.00096',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
@@ -277,11 +277,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '12.5',
-            feePercent: '0.00988',
-            gasFees: '0',
+            feePercent: '0.00096',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
@@ -325,7 +325,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
 
-    it('should pass calculation tests for buying 10 shares of Outcome 1 at the default limitPrice 3', () => {
+    it('should pass calculation tests for buying 10 shares of Outcome 1 at the default limitPrice', () => {
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 1, BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -337,11 +337,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0.005',
             limitPrice: '0.7',
-            totalFee: '0.1235',
+            totalFee: '0.03',
             totalCost: '7',
-            feePercent: '0.01764285714285714286',
-            gasFees: '0',
+            feePercent: '0.00428571428571428571',
             settlementFees: '0',
+            gasEstimate: '1500000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '7',
@@ -358,7 +358,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
 
-    it('should pass calculation tests for selling 10 shares of Outcome 1 at the default limitPrice 4', () => {
+    it('should pass calculation tests for selling 10 shares of Outcome 1 at the default limitPrice', () => {
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 1, SELL, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -370,11 +370,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '10',
             limitPrice: '0.5',
-            totalFee: '0.1235',
-            gasFees: '0',
+            totalFee: '0.018',
             totalCost: '5',
-            feePercent: '0.0247',
+            feePercent: '0.0036',
             settlementFees: '0',
+            gasEstimate: '900000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '5',
@@ -422,7 +422,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `Didn't return the correct tradeDetails object based on input`)
     })
 
-    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome. 3', () => {
+    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
       // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testCategoricalMarketId: {
@@ -432,7 +432,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             limitPrice: '0.5',
             totalFee: '0.004999999999999995',
             totalCost: '-5.004999999999999995',
-            gasFees: '0',
             tradeActions: [
               {
                 action: 'BID',
@@ -447,7 +446,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             ],
             tradingFeesEth: '0.004999999999999995',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.08233333333333333333',
+            feePercent: '0.099800399201596707',
           },
         },
       }
@@ -462,11 +461,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0.15',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '1.5',
-            feePercent: '0.08233333333333333333',
-            gasFees: '0',
+            feePercent: '0.008',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1.5',
@@ -490,11 +489,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '0',
-            gasFees: '0',
             feePercent: 'Infinity',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '0',
@@ -506,7 +505,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, "Didn't produce the expected tradeDetails object")
     })
 
-    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes 6', () => {
+    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -518,11 +517,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '12.5',
-            feePercent: '0.00988',
-            gasFees: '0',
+            feePercent: '0.00096',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
@@ -546,11 +545,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '0.5',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '12.5',
-            feePercent: '0.00988',
-            gasFees: '0',
+            feePercent: '0.00096',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '12.5',
@@ -594,7 +593,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
 
-    it('should pass calculation tests for buying 10 shares of outcome 1 at the default limitPrice 1', () => {
+    it('should pass calculation tests for buying 10 shares of outcome 1 at the default limitPrice', () => {
       store.dispatch(action.updateTradesInProgress('testScalarMarketId', 1, BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -606,11 +605,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0.5',
             limitPrice: '55',
-            totalFee: '0.1235',
+            totalFee: '0.03',
             totalCost: '650',
-            feePercent: '0.00019',
-            gasFees: '0',
+            feePercent: '0.00004615384615384615',
             settlementFees: '0',
+            gasEstimate: '1500000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '650',
@@ -622,7 +621,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
-    it('should pass shape tests for Selling 10 shares of outcome 1 at the default limitPrice 2', () => {
+    it('should pass shape tests for Selling 10 shares of outcome 1 at the default limitPrice', () => {
       store.dispatch(action.updateTradesInProgress('testScalarMarketId', 1, SELL, '10.0', undefined, undefined))
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
@@ -639,11 +638,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '1.5',
             limitPrice: '50',
-            totalFee: '0.1235',
+            totalFee: '0.03',
             totalCost: '600',
-            gasFees: '0',
-            feePercent: '0.00020583333333333333',
+            feePercent: '0.00005',
             settlementFees: '0',
+            gasEstimate: '1500000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '600',
@@ -691,7 +690,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `Didn't clear the tradeDetails object`)
     })
 
-    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome. 1', () => {
+    it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
       // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
         testScalarMarketId: {
@@ -716,11 +715,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '70',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '800',
-            feePercent: '0.000154375',
-            gasFees: '0',
+            feePercent: '0.000015',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '800',
@@ -744,11 +743,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '0',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '100',
-            feePercent: '0.001235',
+            feePercent: '0.00012',
             settlementFees: '0',
-            gasFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '100',
@@ -760,7 +759,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
-    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes 5', () => {
+    it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
       store.dispatch(action.updateTradesInProgress('testScalarMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
@@ -772,11 +771,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '55',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '1625',
-            feePercent: '0.000076',
-            gasFees: '0',
+            feePercent: '0.00000738461538461538',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
@@ -800,11 +799,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '25',
             sharesFilled: '0',
             limitPrice: '55',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '1625',
-            gasFees: '0',
-            feePercent: '0.000076',
+            feePercent: '0.00000738461538461538',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '1625',
@@ -828,11 +827,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             numShares: '10',
             sharesFilled: '0',
             limitPrice: '-5',
-            gasFees: '0',
-            totalFee: '0.1235',
+            totalFee: '0.012',
             totalCost: '50',
-            feePercent: '0.00247',
+            feePercent: '0.00024',
             settlementFees: '0',
+            gasEstimate: '600000',
             sharesDepleted: '0',
             otherSharesDepleted: '0',
             tokensDepleted: '50',
