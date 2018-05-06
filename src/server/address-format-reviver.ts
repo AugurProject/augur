@@ -22,9 +22,12 @@ export const inputsExpectedAsAddress: StringToBoolMap = {
 };
 
 export function addressFormatReviver (key: string, value: any) {
-  const valueIsOfAddressType: boolean = typeof value === "string" || Array.isArray(value);
-  if (valueIsOfAddressType && inputsExpectedAsAddress[key] === true) {
-    return formatEthereumAddress(value);
+  if (inputsExpectedAsAddress[key] === true) {
+    if ( typeof value === "string" ) {
+      return formatEthereumAddress(value.toLowerCase());
+    } else if (Array.isArray(value)) {
+      return formatEthereumAddress((value).map((address) => typeof address === "string" ? address.toLowerCase() : ""));
+    }
   }
 
   return value;
