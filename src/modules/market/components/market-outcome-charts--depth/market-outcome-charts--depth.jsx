@@ -20,6 +20,7 @@ export default class MarketOutcomeDepth extends Component {
     marketDepth: PropTypes.object.isRequired,
     orderBookKeys: PropTypes.object.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    updateChartHeaderHeight: PropTypes.func.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredDepth: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
@@ -297,6 +298,7 @@ export default class MarketOutcomeDepth extends Component {
       hoveredDepth,
       isMobile,
       headerHeight,
+      updateChartHeaderHeight,
     } = this.props
 
     return (
@@ -306,6 +308,7 @@ export default class MarketOutcomeDepth extends Component {
           hoveredDepth={hoveredDepth}
           isMobile={isMobile}
           headerHeight={headerHeight}
+          updateChartHeaderHeight={updateChartHeaderHeight}
         />
         <div
           ref={(depthChart) => { this.depthChart = depthChart }}
