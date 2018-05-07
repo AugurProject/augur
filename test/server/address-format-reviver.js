@@ -24,6 +24,16 @@ describe("server/address-format-reviver", () => {
       expect(addressFormatReviver("marketId", undefined)).to.eq(undefined);
       expect(addressFormatReviver("not-in-whitelist", undefined)).to.eq(undefined);
     });
+    it("Mixed case", () => {
+      expect(addressFormatReviver("marketId", "0xB0b0b0B")).to.eq("0x000000000000000000000000000000000b0b0b0b");
+      expect(addressFormatReviver("marketIds", ["0xB0b0b0B"])).to.deep.eq(["0x000000000000000000000000000000000b0b0b0b"]);
+    });
+    it("Mixed data types", () => {
+      expect(addressFormatReviver("marketIds", [4, "0xB0b0b0B", null, {bad: "thing"}])).to.deep.eq([undefined, "0x000000000000000000000000000000000b0b0b0b", undefined, undefined]);
+    });
+    it("Extra whitespace", () => {
+      expect(addressFormatReviver("marketId", "   0x0000000000000000000000000000000000000001 ")).to.eq("0x0000000000000000000000000000000000000001");
+    });
   });
 
   describe("integration of addressFormatReviver as JSON.parse reviver", () => {

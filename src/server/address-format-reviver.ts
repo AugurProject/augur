@@ -21,10 +21,17 @@ export const inputsExpectedAsAddress: StringToBoolMap = {
   universe: true,
 };
 
+function preCleanAddress(address: string) {
+  return address.toLowerCase().trim();
+}
+
 export function addressFormatReviver (key: string, value: any) {
-  const valueIsOfAddressType: boolean = typeof value === "string" || Array.isArray(value);
-  if (valueIsOfAddressType && inputsExpectedAsAddress[key] === true) {
-    return formatEthereumAddress(value);
+  if (inputsExpectedAsAddress[key] === true) {
+    if ( typeof value === "string" ) {
+      return formatEthereumAddress(preCleanAddress(value));
+    } else if (Array.isArray(value)) {
+      return formatEthereumAddress((value).map((address) => typeof address === "string" ? preCleanAddress(address) : ""));
+    }
   }
 
   return value;
