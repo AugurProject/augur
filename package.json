@@ -53,7 +53,7 @@
     "augur-ui": "3.32.0",
     "augur.js": "4.11.0-9",
     "augur-core": "1.0.0-4",
-    "augur-node": "0.2.3",
+    "augur-node": "0.2.4",
     "node-pre-gyp": "~0.6.38",
     "knex": "0.14.6",
     "sqlite3": "3.1.13",
