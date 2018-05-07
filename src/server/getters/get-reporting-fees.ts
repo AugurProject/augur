@@ -100,7 +100,7 @@ interface RepStakeResults {
 
 function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
   const query = db("fee_windows")
-  .select("universes.universe", "universes.parentUniverse")
+  .first("universes.universe", "universes.parentUniverse")
   .join("universes", "fee_windows.universe", "universes.universe")
   .groupBy("fee_windows.universe");
   if (universe != null) {
@@ -108,9 +108,9 @@ function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindo
   } else if (feeWindow != null) {
     query.where("fee_windows.feeWindow", feeWindow);
   }
-  query.asCallback((err, universeAndParentUniverse: Array<UniverseAndParentUniverse>) => {
+  query.asCallback((err, universeAndParentUniverse: UniverseAndParentUniverse) => {
     if (err) return callback(err);
-    return callback(null, universeAndParentUniverse[0]);
+    return callback(null, universeAndParentUniverse);
   });
 }
 
