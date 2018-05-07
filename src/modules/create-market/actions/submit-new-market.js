@@ -8,7 +8,7 @@ import { addNewMarketCreationTransactions } from 'modules/transactions/actions/a
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { BUY, SELL } from 'modules/transactions/constants/types'
+import { BUY, SELL, BID } from 'modules/transactions/constants/types'
 import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
 import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
@@ -33,14 +33,13 @@ export function submitNewMarket(newMarket, history) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
               const outcomeId = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
-
-              dispatch(updateTradesInProgress(marketId, outcomeId, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+              dispatch(updateTradesInProgress(marketId, outcomeId, order.type === BID ? BUY : SELL, order.quantity, order.price, null, (err, tradingActions) => {
                 const tradeToExecute = {
                   [outcomeId]: tradingActions,
                 }
 
                 if (tradeToExecute) {
-                  dispatch(placeTrade(marketId, outcomeId, tradeToExecute, null, (err) => {
+                  dispatch(placeTrade(marketId, outcomeId, tradeToExecute[outcomeId], null, (err) => {
                     if (err) return console.error('ERROR: ', err)
 
                     orderCB()

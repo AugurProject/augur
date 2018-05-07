@@ -52,7 +52,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
         orderBookSeries: {},
         initialLiquidityEth: createBigNumber(0),
         initialLiquidityGas: createBigNumber(0),
-        initialLiquidityFees: createBigNumber(0),
         validations: [
           {
             description: false,
@@ -306,7 +305,6 @@ describe('modules/create-market/reducers/new-market.js', () => {
         orderBookSeries: {},
         initialLiquidityEth: createBigNumber(0),
         initialLiquidityGas: createBigNumber(0),
-        initialLiquidityFees: createBigNumber(0),
         validations: [
           {
             description: false,

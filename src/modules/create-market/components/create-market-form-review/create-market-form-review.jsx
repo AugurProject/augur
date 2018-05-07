@@ -25,18 +25,19 @@ export default class CreateMarketReview extends Component {
   constructor(props) {
     super(props)
 
+    const gasPrice = augur.rpc.getGasPrice()
+
     this.state = {
+      gasPrice,
       creationFee: null,
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
       // initialLiquidity: {
       // gas: null,
-      // fees: null
       // },
       formattedInitialLiquidityEth: formatEtherEstimate(this.props.newMarket.initialLiquidityEth),
-      formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherEstimate(this.props.newMarket.initialLiquidityFees),
+      formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(this.props.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, gasPrice)),
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
@@ -49,8 +50,7 @@ export default class CreateMarketReview extends Component {
   componentWillReceiveProps(nextProps) {
     const { newMarket } = this.props
     if (newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
-    if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
-    if (newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
+    if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(nextProps.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, this.state.gasPrice)) })
   }
 
   calculateMarketCreationCosts() {
@@ -66,6 +66,7 @@ export default class CreateMarketReview extends Component {
         // TODO add designatedReportNoShowReputationBond to state / display
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
+          gasPrice,
           gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
@@ -128,10 +129,6 @@ export default class CreateMarketReview extends Component {
                 <li>
                   <span>Gas</span>
                   <span>{s.formattedInitialLiquidityGas.rounded} ETH</span>
-                </li>
-                <li>
-                  <span>Fees</span>
-                  <span>{s.formattedInitialLiquidityFees.rounded} ETH</span>
                 </li>
               </ul>
             </div>

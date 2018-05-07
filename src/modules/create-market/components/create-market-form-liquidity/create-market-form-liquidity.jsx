@@ -83,15 +83,6 @@ export default class CreateMarketLiquidity extends Component {
     ) {
       this.updatePriceBounds(nextProps.newMarket.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.newMarket.orderBookSorted, nextProps.newMarket.scalarSmallNum, nextProps.newMarket.scalarBigNum)
     }
-
-    if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
-      let orderEstimate = ''
-      if (BigNumber.isBigNumber(nextState.orderQuantity) && BigNumber.isBigNumber(nextState.orderPrice)) {
-        orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
-      }
-
-      this.updateOrderEstimate(orderEstimate)
-    }
   }
 
   handleAddOrder() {
@@ -240,7 +231,6 @@ export default class CreateMarketLiquidity extends Component {
     let outcome
     let initialLiquidityEth
     let initialLiquidityGas
-    let initialLiquidityFees
 
     switch (newMarket.type) {
       case CATEGORICAL:
@@ -271,16 +261,14 @@ export default class CreateMarketLiquidity extends Component {
     const action = augur.trading.simulateTrade(orderInfo)
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityEth = newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasFees))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
+      initialLiquidityEth = newMarket.initialLiquidityEth.minus(action.tokensDepleted)
+      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasEstimate))
     } else {
-      initialLiquidityEth = newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasFees))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
+      initialLiquidityEth = newMarket.initialLiquidityEth.plus(action.tokensDepleted)
+      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasEstimate))
     }
 
-    updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
+    updateNewMarket({ initialLiquidityEth, initialLiquidityGas })
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {
@@ -351,12 +339,40 @@ export default class CreateMarketLiquidity extends Component {
     } else {
       isOrderValid = true
     }
+    let orderEstimate = ''
+    if (isOrderValid) {
+      const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
+      const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
+      const shareBalances = newMarket.outcomes.map(outcome => 0)
+      const outcome = this.state.selectedOutcome
+      const orderType = this.state.selectedNav === BID ? 0: 1
+      const orderInfo = {
+        orderType,
+        outcome,
+        shares: orderQuantity,
+        price: orderPrice,
+        tokenBalance: availableEth,
+        minPrice,
+        maxPrice,
+        marketCreatorFeeRate: newMarket.settlementFee,
+        reportingFeeRate: 0,
+        shareBalances,
+        singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
+      }
+      const action = augur.trading.simulateTrade(orderInfo)
+      if (createBigNumber(action.tokensDepleted, 10).lt(tickSize)) {
+        errors.price.push(`Est. Cost of trade must be at least ${tickSize}`)
+        isOrderValid = false
+      }
+      orderEstimate = `${action.tokensDepleted} ETH`
+    }
 
     this.setState({
       errors,
       isOrderValid,
       orderQuantity,
       orderPrice,
+      orderEstimate,
     })
   }
 
@@ -406,10 +422,22 @@ export default class CreateMarketLiquidity extends Component {
           <div className={Styles['CreateMarketLiquidity__order-form']}>
             <ul className={Styles['CreateMarketLiquidity__order-form-header']}>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
-                <button onClick={() => this.setState({ selectedNav: BID })}>Buy</button>
+                <button
+                  onClick={() => {
+                    this.setState({ selectedNav: BID }, () => this.validateForm(createBigNumber(this.state.orderQuantity || '0', 10).toString(), createBigNumber(this.state.orderPrice || '0', 10).toString()))
+                  }}
+                >
+                  Buy
+                </button>
               </li>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
-                <button onClick={() => this.setState({ selectedNav: ASK })}>Sell</button>
+                <button
+                  onClick={() => {
+                    this.setState({ selectedNav: ASK }, () => this.validateForm(createBigNumber(this.state.orderQuantity || '0', 10).toString(), createBigNumber(this.state.orderPrice || '0', 10).toString()))
+                  }}
+                >
+                  Sell
+                </button>
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
@@ -446,7 +474,7 @@ export default class CreateMarketLiquidity extends Component {
                   id="cm__input--limit-price"
                   type="number"
                   step={newMarket.tickSize}
-                  placeholder="0.0000 ETH"
+                  placeholder={`${newMarket.tickSize} ETH`}
                   value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
                   onKeyPress={e => keyPressed(e)}
