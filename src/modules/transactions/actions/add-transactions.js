@@ -201,7 +201,7 @@ export function addOpenOrderTransactions(openOrders) {
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
-            const outcomeName = getOutcome(market, transaction.outcome)
+            const outcomeName = getOutcome(market, transaction.outcome || index)
             if (outcomeName) meta.outcome = outcomeName
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
