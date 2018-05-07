@@ -360,6 +360,10 @@ export default class CreateMarketLiquidity extends Component {
         singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
       }
       const action = augur.trading.simulateTrade(orderInfo)
+      if (createBigNumber(action.tokensDepleted, 10).lt(tickSize)) {
+        errors.price.push(`Est. Cost of trade must be at least ${tickSize}`)
+        isOrderValid = false
+      }
       orderEstimate = `${action.tokensDepleted} ETH`
     }
 
@@ -418,10 +422,22 @@ export default class CreateMarketLiquidity extends Component {
           <div className={Styles['CreateMarketLiquidity__order-form']}>
             <ul className={Styles['CreateMarketLiquidity__order-form-header']}>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
-                <button onClick={() => this.setState({ selectedNav: BID })}>Buy</button>
+                <button
+                  onClick={() => {
+                    this.setState({ selectedNav: BID }, () => this.validateForm(createBigNumber(this.state.orderQuantity || '0', 10).toString(), createBigNumber(this.state.orderPrice || '0', 10).toString()))
+                  }}
+                >
+                  Buy
+                </button>
               </li>
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
-                <button onClick={() => this.setState({ selectedNav: ASK })}>Sell</button>
+                <button
+                  onClick={() => {
+                    this.setState({ selectedNav: ASK }, () => this.validateForm(createBigNumber(this.state.orderQuantity || '0', 10).toString(), createBigNumber(this.state.orderPrice || '0', 10).toString()))
+                  }}
+                >
+                  Sell
+                </button>
               </li>
             </ul>
             <ul className={Styles['CreateMarketLiquidity__order-form-body']}>
@@ -458,7 +474,7 @@ export default class CreateMarketLiquidity extends Component {
                   id="cm__input--limit-price"
                   type="number"
                   step={newMarket.tickSize}
-                  placeholder="0.0000 ETH"
+                  placeholder={`${newMarket.tickSize} ETH`}
                   value={BigNumber.isBigNumber(s.orderPrice) ? s.orderPrice.toNumber() : s.orderPrice}
                   onChange={e => this.validateForm(undefined, e.target.value)}
                   onKeyPress={e => keyPressed(e)}
