@@ -83,15 +83,6 @@ export default class CreateMarketLiquidity extends Component {
     ) {
       this.updatePriceBounds(nextProps.newMarket.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.newMarket.orderBookSorted, nextProps.newMarket.scalarSmallNum, nextProps.newMarket.scalarBigNum)
     }
-
-    if (this.state.orderQuantity !== nextState.orderQuantity || this.state.orderPrice !== nextState.orderPrice) {
-      let orderEstimate = ''
-      if (BigNumber.isBigNumber(nextState.orderQuantity) && BigNumber.isBigNumber(nextState.orderPrice)) {
-        orderEstimate = `${nextState.orderQuantity.times(nextState.orderPrice).toNumber()} ETH`
-      }
-
-      this.updateOrderEstimate(orderEstimate)
-    }
   }
 
   handleAddOrder() {
@@ -270,10 +261,10 @@ export default class CreateMarketLiquidity extends Component {
     const action = augur.trading.simulateTrade(orderInfo)
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityEth = newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
+      initialLiquidityEth = newMarket.initialLiquidityEth.minus(action.tokensDepleted)
       initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasEstimate))
     } else {
-      initialLiquidityEth = newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
+      initialLiquidityEth = newMarket.initialLiquidityEth.plus(action.tokensDepleted)
       initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasEstimate))
     }
 
@@ -348,12 +339,36 @@ export default class CreateMarketLiquidity extends Component {
     } else {
       isOrderValid = true
     }
+    let orderEstimate = ''
+    if (isOrderValid) {
+      const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
+      const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
+      const shareBalances = newMarket.outcomes.map(outcome => 0)
+      const outcome = this.state.selectedOutcome
+      const orderType = this.state.selectedNav === BID ? 0: 1
+      const orderInfo = {
+        orderType,
+        outcome,
+        shares: orderQuantity,
+        price: orderPrice,
+        tokenBalance: availableEth,
+        minPrice,
+        maxPrice,
+        marketCreatorFeeRate: newMarket.settlementFee,
+        reportingFeeRate: 0,
+        shareBalances,
+        singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
+      }
+      const action = augur.trading.simulateTrade(orderInfo)
+      orderEstimate = `${action.tokensDepleted} ETH`
+    }
 
     this.setState({
       errors,
       isOrderValid,
       orderQuantity,
       orderPrice,
+      orderEstimate,
     })
   }
 
