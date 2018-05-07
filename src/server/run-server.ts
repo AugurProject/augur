@@ -45,7 +45,8 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
     if (isNaN(maxPendingTransactions)) {
       res.status(422).send({error: "Bad value for max_pending_transactions, must be an integer in base 10"});
     } else {
-      res.send({status: (maxPendingTransactions > db.client.pool.waitingClientsCount()) ? "up" : "down", maxPendingTransactions, pendingTransactions: db.client.pool.waitingClientsCount() });
+      const waitingClientsCount = db.client.pool.pendingAcquires.length;
+      res.send({status: (maxPendingTransactions > waitingClientsCount) ? "up" : "down", maxPendingTransactions, pendingTransactions: waitingClientsCount });
     }
   });
 
