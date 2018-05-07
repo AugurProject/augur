@@ -44,9 +44,11 @@ jobs:
     - stage: test travis-ci
       if: branch = petong/travis-ci
       script: skip
-      deploy: &script
+      deploy:
         provider: script
-        script: echo "I love travis yml"
+        script:
+          - echo "I love travis yml"
+          - bash scripts/aws-deploy.sh
         skip_cleanup: true
         on:
           all_branches: true
