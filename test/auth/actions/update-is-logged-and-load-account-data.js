@@ -32,7 +32,7 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
       { type: 'AUGURJS_RPC_CLEAR' },
       { type: 'CLEAR_LOGIN_ACCOUNT' },
       { type: 'UPDATE_IS_LOGGED', data: { isLogged: true } },
-      { type: 'LOAD_ACCOUNT_DATA', account: { address: '0xB0B', meta: { accountType: 'unlockedEthereumNode', address: '0xB0B', signer: null } } },
+      { type: 'LOAD_ACCOUNT_DATA', account: { address: '0xb0b', displayAddress: '0xB0B', meta: { accountType: 'unlockedEthereumNode', address: '0xb0b', signer: null } } },
     ]),
   })
   test({
@@ -45,7 +45,7 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
       { type: 'AUGURJS_RPC_CLEAR' },
       { type: 'CLEAR_LOGIN_ACCOUNT' },
       { type: 'UPDATE_IS_LOGGED', data: { isLogged: true } },
-      { type: 'LOAD_ACCOUNT_DATA', account: { address: '0xB0B', meta: { accountType: 'metaMask', address: '0xB0B', signer: null } } },
+      { type: 'LOAD_ACCOUNT_DATA', account: { address: '0xb0b', displayAddress: '0xB0B', meta: { accountType: 'metaMask', address: '0xb0b', signer: null } } },
     ]),
   })
 })

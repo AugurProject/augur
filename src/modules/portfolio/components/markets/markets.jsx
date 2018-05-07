@@ -72,7 +72,7 @@ class MyMarkets extends Component {
   componentWillReceiveProps(nextProps) {
     const { myMarkets } = this.props
     // update the filtered markets if the myMarkets prop changes
-    if (myMarkets !== nextProps.myMarkets) {
+    if (myMarkets.length !== nextProps.myMarkets.length) {
       const openMarkets = []
       const reportingMarkets = []
       const finalMarkets = []
