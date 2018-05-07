@@ -104,7 +104,7 @@ MarketOutcomeCandlestickHeader.propTypes = {
   high: PropTypes.number,
   low: PropTypes.number,
   close: PropTypes.number,
-  priceTimeSeries: PropTypes.object,
+  priceTimeSeries: PropTypes.array,
 }
 
 export default MarketOutcomeCandlestickHeader
