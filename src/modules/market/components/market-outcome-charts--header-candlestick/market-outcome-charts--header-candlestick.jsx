@@ -43,7 +43,7 @@ const MarketOutcomeCandlestickHeader = ({
         </span>
         <span className={StylesHeader.MarketOutcomeChartsHeader__stat}>
           <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-title`]}>
-            {isMobile ? 'o' : 'open`'}
+            {isMobile ? 'o' : 'open'}
           </span>
           <span className={StylesHeader[`MarketOutcomeChartsHeader__stat-value`]}>
             {open ? open.toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
