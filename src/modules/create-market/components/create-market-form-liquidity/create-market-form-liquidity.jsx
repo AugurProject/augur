@@ -240,7 +240,6 @@ export default class CreateMarketLiquidity extends Component {
     let outcome
     let initialLiquidityEth
     let initialLiquidityGas
-    let initialLiquidityFees
 
     switch (newMarket.type) {
       case CATEGORICAL:
@@ -273,14 +272,12 @@ export default class CreateMarketLiquidity extends Component {
     if (shouldReduce) {
       initialLiquidityEth = newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
       initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasEstimate))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
     } else {
       initialLiquidityEth = newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
       initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasEstimate))
-      // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
     }
 
-    updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
+    updateNewMarket({ initialLiquidityEth, initialLiquidityGas })
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {

@@ -65,7 +65,6 @@ describe('create-market-form-outcome', () => {
       orderBookSeries: {},
       initialLiquidityEth: createBigNumber(0),
       initialLiquidityGas: createBigNumber(0),
-      initialLiquidityFees: createBigNumber(0),
       creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.',
     }
 

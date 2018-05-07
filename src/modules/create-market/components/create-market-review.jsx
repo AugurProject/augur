@@ -22,7 +22,6 @@ export default class CreateMarketReview extends Component {
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
-    initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
     settlementFee: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
@@ -37,11 +36,9 @@ export default class CreateMarketReview extends Component {
       // gasCost: null,
       // initialLiquidity: {
       // gas: null,
-      // fees: null
       // },
       formattedInitialLiquidityEth: formatEtherEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherEstimate(this.props.initialLiquidityFees),
     }
   }
 
@@ -53,7 +50,6 @@ export default class CreateMarketReview extends Component {
     const {
       currentStep,
       initialLiquidityEth,
-      initialLiquidityFees,
       initialLiquidityGas,
     } = this.props
     if (currentStep !== nextProps.currentStep &&
@@ -64,7 +60,6 @@ export default class CreateMarketReview extends Component {
 
     if (initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.initialLiquidityEth) })
     if (initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) })
-    if (initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {
@@ -90,7 +85,6 @@ export default class CreateMarketReview extends Component {
     const {
       className,
       initialLiquidityEth,
-      initialLiquidityFees,
       initialLiquidityGas,
     } = this.props
     const s = this.state
@@ -100,7 +94,6 @@ export default class CreateMarketReview extends Component {
     const gasCost = getValue(s, 'gasCost.formatted')
     const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted')
     const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted')
-    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted')
 
     return (
       <article className={`create-market-form-part create-market-form-review ${className || ''}`}>
@@ -142,7 +135,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                 </li>
               </ul>
-              {(!!initialLiquidityEth.toNumber() || !!initialLiquidityGas.toNumber() || !!initialLiquidityFees.toNumber()) &&
+              {(!!initialLiquidityEth.toNumber() || !!initialLiquidityGas.toNumber()) &&
                 <div>
                   <h3>Initial Liquidity:</h3>
                   <ul>
@@ -162,15 +155,6 @@ export default class CreateMarketReview extends Component {
                       <span>
                         {liquidityGas}
                         <span className="cost-denomination">{liquidityGas && 'ETH'}</span>
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Fees:
-                      </span>
-                      <span>
-                        {liquidityFees}
-                        <span className="cost-denomination">{liquidityFees && 'ETH Tokens'}</span>
                       </span>
                     </li>
                   </ul>

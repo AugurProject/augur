@@ -35,11 +35,9 @@ export default class CreateMarketReview extends Component {
       designatedReportNoShowReputationBond: null,
       // initialLiquidity: {
       // gas: null,
-      // fees: null
       // },
       formattedInitialLiquidityEth: formatEtherEstimate(this.props.newMarket.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(this.props.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, gasPrice)),
-      formattedInitialLiquidityFees: formatEtherEstimate(this.props.newMarket.initialLiquidityFees),
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
@@ -53,7 +51,6 @@ export default class CreateMarketReview extends Component {
     const { newMarket } = this.props
     if (newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
     if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(nextProps.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, this.state.gasPrice)) })
-    if (newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {
@@ -132,10 +129,6 @@ export default class CreateMarketReview extends Component {
                 <li>
                   <span>Gas</span>
                   <span>{s.formattedInitialLiquidityGas.rounded} ETH</span>
-                </li>
-                <li>
-                  <span>Fees</span>
-                  <span>{s.formattedInitialLiquidityFees.rounded} ETH</span>
                 </li>
               </ul>
             </div>
