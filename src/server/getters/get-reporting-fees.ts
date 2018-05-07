@@ -42,9 +42,6 @@ export interface FeeDetails {
     unclaimedRepStaked: string;
     unclaimedRepEarned: string;
     lostRep: string;
-    claimedEth: string;
-    claimedRepStaked: string;
-    claimedRepEarned: string;
   };
   feeWindows: Array<Address>;
   forkedMarket: ForkedMarket;
@@ -103,7 +100,7 @@ interface RepStakeResults {
 
 function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
   const query = db("fee_windows")
-  .first("universes.universe", "universes.parentUniverse")
+  .select("universes.universe", "universes.parentUniverse")
   .join("universes", "fee_windows.universe", "universes.universe")
   .groupBy("fee_windows.universe");
   if (universe != null) {
@@ -215,7 +212,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
   }, (err: Error|null, result: any) => {
     if (err) return callback(err);
 
-    return formatMarketInfo(result, parentUniverse);
+    return callback(null, formatMarketInfo(result, parentUniverse));
   });
 }
 
@@ -306,10 +303,6 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   });
 }
 
-function getClaimedEth(db: Knex, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: any) => void): void {
-  const claimedEthQuery = db.select(["fee_windows.feeWindow", "participationToken.balance AS participationTokens"]).from("fee_windows");
-}
-
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
@@ -338,9 +331,6 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
                 unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
                 unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
                 lostRep: repStakeResults.fees.lostRep.toFixed(),
-                claimedEth: "4",
-                claimedRepStaked: "5",
-                claimedRepEarned: "6",
               },
               feeWindows: redeemableFeeWindows,
               forkedMarket: result.forkedMarket,

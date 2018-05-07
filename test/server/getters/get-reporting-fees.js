@@ -43,9 +43,6 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepEarned": "114.5",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
@@ -94,9 +91,6 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
         feeWindows: [
           "0x4000000000000000000000000000000000000000",
@@ -160,9 +154,6 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
@@ -234,9 +225,6 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepEarned": "114.5",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
