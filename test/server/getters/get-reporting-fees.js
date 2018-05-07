@@ -114,17 +114,7 @@ describe("server/getters/get-reporting-fees", () => {
           "isFinalized": true,
           "universeAddress": "0x000000000000000000000000000000000000000b",
         },
-        nonforkedMarkets: [
-          {
-            "address": "0x0000000000000000000000000000000000000019",
-            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
-            "crowdsourcersAreDisavowed": false,
-            "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
-            "isFinalized": true,
-            "isMigrated": true,
-            "universeAddress": "0x000000000000000000000000000000000000000b",
-          },
-        ],
+        nonforkedMarkets: [],
       });
     },
   });

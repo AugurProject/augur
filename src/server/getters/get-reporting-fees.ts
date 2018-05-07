@@ -130,7 +130,7 @@ function formatMarketInfo(marketParticipants: any, parentUniverse: Address) {
           isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
         },
       };
-    } else if (!marketParticipants.initialReporters[i].forking) {
+    } else if (!marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe !== parentUniverse) {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
         address: marketParticipants.initialReporters[i].marketId,
         universeAddress: marketParticipants.initialReporters[i].universe,
@@ -162,7 +162,7 @@ function formatMarketInfo(marketParticipants: any, parentUniverse: Address) {
       } else {
         forkedMarket.crowdsourcers.push({address: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false});
       }
-    } else if (!marketParticipants.crowdsourcers[i].forking) {
+    } else if (!marketParticipants.crowdsourcers[i].forking && marketParticipants.crowdsourcers[i].universe !== parentUniverse) {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
           address: marketParticipants.crowdsourcers[i].marketId,
