@@ -191,7 +191,7 @@ export function addOpenOrderTransactions(openOrders) {
       marketHeader.id = marketHeader.hash
       let creationTime = null
       const marketTradeTransactions = []
-      eachOf(value, (value2, index) => {
+      eachOf(value, (value2, outcome) => {
         eachOf(value2, (value3, type) => {
           eachOf(value3, (value4, hash) => {
             const transaction = { marketId, type, hash, ...value4 }
@@ -201,7 +201,7 @@ export function addOpenOrderTransactions(openOrders) {
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
-            const outcomeName = getOutcome(market, transaction.outcome || index)
+            const outcomeName = getOutcome(market, outcome)
             if (outcomeName) meta.outcome = outcomeName
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
