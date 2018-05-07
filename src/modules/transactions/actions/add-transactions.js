@@ -193,8 +193,8 @@ export function addOpenOrderTransactions(openOrders) {
       const marketTradeTransactions = []
       eachOf(value, (value2, index) => {
         eachOf(value2, (value3, type) => {
-          eachOf(value3, (value4, outcomeId) => {
-            const transaction = { marketId, type, outcomeId, ...value4 }
+          eachOf(value3, (value4, hash) => {
+            const transaction = { marketId, type, hash, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             const meta = {}
