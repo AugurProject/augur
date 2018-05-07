@@ -25,7 +25,10 @@ export default class CreateMarketReview extends Component {
   constructor(props) {
     super(props)
 
+    const gasPrice = augur.rpc.getGasPrice()
+
     this.state = {
+      gasPrice,
       creationFee: null,
       gasCost: null,
       validityBond: null,
@@ -35,7 +38,7 @@ export default class CreateMarketReview extends Component {
       // fees: null
       // },
       formattedInitialLiquidityEth: formatEtherEstimate(this.props.newMarket.initialLiquidityEth),
-      formattedInitialLiquidityGas: formatEtherEstimate(this.props.newMarket.initialLiquidityGas),
+      formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(this.props.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, gasPrice)),
       formattedInitialLiquidityFees: formatEtherEstimate(this.props.newMarket.initialLiquidityFees),
     }
 
@@ -49,7 +52,7 @@ export default class CreateMarketReview extends Component {
   componentWillReceiveProps(nextProps) {
     const { newMarket } = this.props
     if (newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
-    if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.newMarket.initialLiquidityGas) })
+    if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(nextProps.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, this.state.gasPrice)) })
     if (newMarket.initialLiquidityFees !== nextProps.newMarket.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.newMarket.initialLiquidityFees) })
   }
 
@@ -66,6 +69,7 @@ export default class CreateMarketReview extends Component {
         // TODO add designatedReportNoShowReputationBond to state / display
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
+          gasPrice,
           gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),

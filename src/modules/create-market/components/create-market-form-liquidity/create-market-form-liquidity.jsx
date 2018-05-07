@@ -272,11 +272,11 @@ export default class CreateMarketLiquidity extends Component {
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = newMarket.initialLiquidityEth.minus(order.price.times(order.quantity))
-      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasFees))
+      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasEstimate))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.minus(WrappedBigNumber(action.feeEth))
     } else {
       initialLiquidityEth = newMarket.initialLiquidityEth.plus(order.quantity.times(order.price))
-      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasFees))
+      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasEstimate))
       // initialLiquidityFees = this.props.newMarket.initialLiquidityFees.plus(WrappedBigNumber(action.feeEth))
     }
 
