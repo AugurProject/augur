@@ -14,7 +14,6 @@ const MarketTradingConfirm = (p) => {
   const numShares = getValue(p, 'trade.numShares')
   const limitPrice = getValue(p, 'trade.limitPrice')
   const tradingFees = getValue(p, 'trade.totalFee')
-  const feePercent = getValue(p, 'trade.totalFeePercent')
   const potentialEthProfit = getValue(p, 'trade.potentialEthProfit')
   const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent')
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
@@ -54,7 +53,7 @@ const MarketTradingConfirm = (p) => {
         }
         <li>
           <span>Fee</span>
-          <span>{tradingFees ? tradingFees.formattedValue : '0'} <span>ETH ({feePercent ? feePercent.formattedValue : '0'}%)</span></span>
+          <span>{tradingFees ? tradingFees.formattedValue : '0'} <span>ETH</span></span>
         </li>
       </ul>
       { p.orderType === LIMIT &&
