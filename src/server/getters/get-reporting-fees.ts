@@ -196,6 +196,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
     .whereIn("market_state.reportingState", ["AWAITING_FINALIZATION", "FINALIZED"])
+    .where("initial_reports.reporter", reporter)
     .where("initial_reports.redeemed", 0);
   const crowdsourcersQuery = db("crowdsourcers")
     .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
