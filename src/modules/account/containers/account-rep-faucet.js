@@ -4,7 +4,6 @@ import getRep from 'modules/account/actions/get-rep'
 import AccountRepFaucet from 'modules/account/components/account-rep-faucet/account-rep-faucet'
 
 const mapStateToProps = state => ({
-  address: state.loginAccount.address,
 })
 
 const mapDispatchToProps = dispatch => ({
