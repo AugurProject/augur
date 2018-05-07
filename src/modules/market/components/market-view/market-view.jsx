@@ -14,6 +14,7 @@ import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { BUY } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/market/components/market-view/market-view.styles'
+import { precisionClampFunction } from 'src/modules/market/helpers/clamp-fixed-precision'
 
 export default class MarketView extends Component {
   static propTypes = {
@@ -107,10 +108,10 @@ export default class MarketView extends Component {
     if (isIncreasing) {
       fixedPrecision += 1
     } else {
-      fixedPrecision = fixedPrecision - 1 < 0 ? 0 : fixedPrecision -= 1
+      fixedPrecision -= 1
     }
 
-    return this.setState({ fixedPrecision })
+    this.setState({ fixedPrecision: precisionClampFunction(fixedPrecision) })
   }
 
   clearSelectedOutcome() {

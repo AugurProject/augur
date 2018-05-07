@@ -7,9 +7,11 @@ import { clearLoginAccount } from 'modules/auth/actions/update-login-account'
 export const updateIsLoggedAndLoadAccountData = (unlockedAddress, accountType) => (dispatch) => {
   augur.rpc.clear() // clear ethrpc transaction history, registered callbacks, and notifications
   dispatch(clearLoginAccount()) // clear the loginAccount data in local state
-  const address = toChecksumAddress(unlockedAddress)
+  const displayAddress = toChecksumAddress(unlockedAddress)
+  const address = unlockedAddress
   const loginAccount = {
     address,
+    displayAddress,
     meta: { accountType, address, signer: null },
   }
   dispatch(updateIsLogged(true))

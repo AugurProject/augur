@@ -21,7 +21,6 @@ const AccountRepFaucet = p => (
 
 
 AccountRepFaucet.propTypes = {
-  address: PropTypes.string.isRequired,
   repFaucet: PropTypes.func.isRequired,
 }
 

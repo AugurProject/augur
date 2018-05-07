@@ -170,6 +170,10 @@ For more information on the script tool [disco parrot](https://github.com/AugurP
 
 Here are misc. script to do operations on the local node and to change time. More scripts will be created as they are needed. Environment variables can be used or passed into the command like ETHEREUM_PRIVATE_KEY is in the examples below:
 
+Note: for convenience create alias for `flash` 
+    
+    alias flash='node scripts/flash $*'
+
 For changing time on the contracts, use flash in augur.js:
 
     ** create open order
@@ -187,33 +191,35 @@ There is a `augur.js` utility named `flash` to help with changing time and other
 A few caveats about pushing time: `augur-node` maintains a state machine, so once the time has been pushed to a certain market state that market can not go back. Time can be push and pulled, forward and backwards but know that once a block has been mined with a timestamp that changes the market state then that market can not go back:
 
     To get flash help and command names
-    node scripts/flash -h
-    node scripts/flash <command-name> -h
+    flash -h
+    flash <command-name> -h
 
     Examples:
     ** change time
-    node scripts/flash push-time PUSH,+3d       # pushes time by adding 3 days
-    node scripts/flash push-time SET,CURRENT    # sets contract time to your local time
-    node scripts/flash push-time SET,1546322400 # sets the contract time to unix timestamp
+    flash push-timestamp -c 3 -d       # pushes time by adding 3 days
+    flash set-timestamp -t 1525392001  # sets contract time to your local time
 
     ** do initial reporter
-    node scripts/flash designate-report <market id>,<market outcome>,<invalid> # uses ETHEREUM_PRIVATE_KEY as designated reporter
+    flash designate-report -m <market id> -o <market outcome> 
 
     ** show initial report
-    node scripts/flash show-initial-reporter <market id>  # shows if market has been reported on and gives details
+    # shows if market has been reported on and gives details
+    flash show-initial-reporter -m <market id>  
 
     ** finialize market
-    node scripts/flash finalize-market <market id>  # will push time so market can be finalized, needs initial report
+    # will push time so market can be finalized, needs initial report
+    flash finalize-market -m <market id>  
 
     General helpers
-
+    ** get account balances
+    flash get-balance -a <account address>
     ** list market
-    node scripts/flash list-markets
+    flash list-markets
 
     ** list market properties
-    node scripts/flash market-info <market id>
+    flash market-info -m <market id>
 
-    ** and more, more will be added so check it out
+    ** there are more scripts, checkout flash -h
 
 ## Summary
 

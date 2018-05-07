@@ -505,6 +505,7 @@ export default class AppView extends Component {
                   forkingMarket={universe.forkingMarket}
                   forkEndTime={universe.forkEndTime}
                   currentTime={blockchain.currentAugurTimestamp}
+                  doesUserHaveRep={loginAccount.rep > 0}
                 />
               </section>
             }

@@ -29,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadUserMarkets((err, marketIds) => {
     if (err) return logError(err)
     // if we have marketIds back, let's load the info so that we can properly display myMarkets.
-    dispatch(loadMarketsInfo(marketIds))
+    dispatch(loadMarketsInfoIfNotLoaded(marketIds))
     dispatch(loadUnclaimedFees(marketIds))
   })),
   collectMarketCreatorFees: (marketId, callback) => dispatch(collectMarketCreatorFees(marketId, callback)),

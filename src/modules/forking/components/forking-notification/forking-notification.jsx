@@ -36,6 +36,7 @@ class ForkingNotification extends Component {
       currentTime,
       forkEndTime,
       forkingMarket,
+      doesUserHaveRep,
     } = this.props
     const forkWindowActive = Number(forkEndTime) > currentTime
 
@@ -75,6 +76,7 @@ class ForkingNotification extends Component {
             forkEndTime={forkEndTime}
             currentTime={currentTime}
             expanded
+            doesUserHaveRep={doesUserHaveRep}
           />
         }
       </section>
@@ -87,6 +89,7 @@ ForkingNotification.propTypes = {
   forkingMarket: PropTypes.string.isRequired,
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
+  doesUserHaveRep: PropTypes.bool.isRequired,
 }
 
 export default ForkingNotification

@@ -11,9 +11,9 @@ import Styles from 'modules/reporting/components/dispute-market-card/dispute-mar
 import { MARKETS } from 'modules/routes/constants/views'
 import makePath from 'modules/routes/helpers/make-path'
 import toggleTag from 'modules/routes/helpers/toggle-tag'
+import toggleCategory from 'modules/routes/helpers/toggle-category'
 import classNames from 'classnames'
 
-import noop from 'src/utils/noop'
 import { compact } from 'lodash'
 import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
 
@@ -30,7 +30,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
 
   const process = (...arr) => compact(arr).map(label => ({
     label,
-    onClick: noop,
+    onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
   }))
 
   const categoriesWithClick = process(market.category)
