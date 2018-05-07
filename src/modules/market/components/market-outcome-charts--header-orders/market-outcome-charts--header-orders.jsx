@@ -13,18 +13,20 @@ const MarketOutcomeChartsHeaderOrders = p => (
     {p.isMobile ||
       <div className={StylesHeader.MarketOutcomeChartsHeader__Header} >
         <span>Order Book</span>
-        <div className={StylesHeader['MarketOutcomeChartsHeader__precision-selector']}>
-          <button
-            onClick={() => p.updatePrecision(false)}
-          >
-            -
-          </button>
-          <button
-            onClick={() => p.updatePrecision(true)}
-          >
-            +
-          </button>
-        </div>
+        { p.updatePrecision &&
+          <div className={StylesHeader['MarketOutcomeChartsHeader__precision-selector']}>
+            <button
+              onClick={() => p.updatePrecision(false)}
+            >
+              -
+            </button>
+            <button
+              onClick={() => p.updatePrecision(true)}
+            >
+              +
+            </button>
+          </div>
+        }
       </div>
     }
     <div className={classNames(StylesHeader.MarketOutcomeChartsHeader__stats, Styles['MarketOutcomeChartsHeader__stats--orders'])}>
@@ -51,7 +53,7 @@ export default MarketOutcomeChartsHeaderOrders
 
 MarketOutcomeChartsHeaderOrders.propTypes = {
   fixedPrecision: PropTypes.number.isRequired,
-  updatePrecision: PropTypes.func.isRequired,
+  updatePrecision: PropTypes.func,
   isMobile: PropTypes.bool.isRequired,
   headerHeight: PropTypes.number.isRequired,
 }

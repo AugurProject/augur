@@ -43,7 +43,6 @@ const mapStateToProps = (state, ownProps) => {
     selectedOutcome: {
       id: selectedOutcome,
     },
-    updatePrecision: noop,
     hasOrders,
   }
 }
