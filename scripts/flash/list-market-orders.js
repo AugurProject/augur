@@ -33,6 +33,7 @@ function getMarketOrders(augur, args, auth, callback) {
       var outcomes = Array.from(Array(market.numOutcomes).keys());
 
       var orderTypes = ["buy", "sell"];
+      console.log(chalk.green.dim("MarketId"), chalk.green(market.id));
       async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
         async.eachSeries(orderTypes, function (orderType, nextOrderType) {
           console.log(chalk.yellow.dim("outcome:"), chalk.yellow(outcomeId), chalk.yellow.dim("order type:"), chalk.yellow(orderType));
@@ -54,7 +55,7 @@ function getMarketOrders(augur, args, auth, callback) {
             Object.keys(orders).forEach(function (orderId) {
               var order = orders[orderId];
               console.log(chalk.green.dim("order id"), chalk.green(orderId), chalk.yellow.dim("owner"), chalk.yellow(order.owner), chalk.yellow.dim("amount"),
-                chalk.yellow(order.amount), chalk.yellow.dim("price"), chalk.yellow(order.fullPrecisionPrice), chalk.yellow.dim("amount"), chalk.yellow(order.fullPrecisionAmount));
+                chalk.yellow(order.amount), chalk.yellow.dim("price"), chalk.yellow(order.fullPrecisionPrice));
             });
             nextOrderType(null);
           });

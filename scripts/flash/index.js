@@ -22,6 +22,7 @@ var fork = require("./fork");
 var approval = require("./approve-account");
 var listMarketOrders = require("./list-market-orders");
 var fillMarketOrders = require("./fill-market-orders");
+var createMarketOrder = require("./create-market-order");
 var pushTimestamp = require("./push-timestamp");
 var setTimestamp = require("./set-timestamp-cmd");
 var forceDispute = require("./force-dispute");
@@ -126,6 +127,17 @@ var methods = {
       marketId: { required: true, short: "m", help: "Required market id" },
       outcome: { required: true, short: "o", help: "Outcome to fill order on, negative outcome use \\\"-10\\\"" },
       orderType: {required: true, short: "t", help: "Order type ('buy' | 'sell')"},
+    },
+  },
+  "create-market-order": {
+    method: createMarketOrder,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, script approves user if needed" },
+      marketId: { required: true, short: "m", help: "Required market id" },
+      outcome: { required: true, short: "o", help: "Outcome to fill order on, negative outcome use \\\"-10\\\"" },
+      orderType: {required: true, short: "t", help: "Order type ('buy' | 'sell')"},
+      price: {required: true, short: "p", help: "Price of the order"},
+      shares: {required: true, short: "s", help: "Shares of the order"},
     },
   },
   "push-timestamp": {
