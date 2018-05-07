@@ -12,7 +12,6 @@ import { formatEther, formatShares } from 'utils/format-number'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { BID } from 'modules/transactions/constants/types'
-import noop from 'src/utils/noop'
 
 const mapStateToProps = (state, ownProps) => {
   const { newMarket } = state
