@@ -101,9 +101,9 @@ interface RepStakeResults {
   lostRep: BigNumber;
 }
 
-function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
+function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
   const query = db("fee_windows")
-  .select("universes.universe", "universes.parentUniverse")
+  .first("universes.universe", "universes.parentUniverse")
   .join("universes", "fee_windows.universe", "universes.universe")
   .groupBy("fee_windows.universe");
   if (universe != null) {
@@ -117,7 +117,7 @@ function getUniverseAndParentUniverse(db: Knex, reporter: Address, universe: Add
   });
 }
 
-function formatMarketInfo(marketParticipants: any, parentUniverse: Address, callback: (err: Error|null, formattedMarketInfo?: FormattedMarketInfo) => void) {
+function formatMarketInfo(marketParticipants: any, parentUniverse: Address) {
   let forkedMarket = {} as ForkedMarket;
   const keyedNonforkedMarkets = {} as any;
   let i: number;
@@ -189,16 +189,16 @@ function formatMarketInfo(marketParticipants: any, parentUniverse: Address, call
     }
   }
 
-  return callback(null, {forkedMarket, nonforkedMarkets});
+  return {forkedMarket, nonforkedMarkets};
 }
 
-function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, formattedMarketInfo?: FormattedMarketInfo) => void) {
+function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: Address, parentUniverse: Address, callback: (err: Error|null, formattedMarketInfo?: FormattedMarketInfo) => void) {
   const initialReportersQuery = db("initial_reports")
     .select(["initial_reports.initialReporter", "initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
+    .whereIn("market_state.reportingState", ["AWAITING_FINALIZATION", "FINALIZED"])
     .where("initial_reports.redeemed", 0);
   const crowdsourcersQuery = db("crowdsourcers")
     .select(["crowdsourcers.crowdsourcerId", "crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
@@ -206,7 +206,7 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereIn("markets.universe", [universe, parentUniverse])
-    .andWhere((queryBuilder) => queryBuilder.where("market_state.reportingState", "AWAITING_FINALIZATION").orWhere("market_state.reportingState", "FINALIZED"))
+    .whereIn("market_state.reportingState", ["AWAITING_FINALIZATION", "FINALIZED"])
     .where("balances.owner", reporter);
 
   parallel({
@@ -215,10 +215,7 @@ function getMarkets(db: Knex, reporter: Address, universe: Address, parentUniver
   }, (err: Error|null, result: any) => {
     if (err) return callback(err);
 
-    formatMarketInfo(result, parentUniverse, (err, formattedMarketInfo: FormattedMarketInfo) => {
-      if (err) return callback(err);
-      return callback(null, formattedMarketInfo);
-    });
+    return formatMarketInfo(result, parentUniverse);
   });
 }
 
@@ -317,7 +314,7 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
 
-  getUniverseAndParentUniverse(db, reporter, universe, feeWindow, (err, universeAndParentUniverse: UniverseAndParentUniverse) => {
+  getUniverseAndParentUniverse(db, universe, feeWindow, (err, universeAndParentUniverse: UniverseAndParentUniverse) => {
     if (err || universeAndParentUniverse == null) return callback(new Error("Universe or feeWindow not found"));
     getTotalFeeWindowTokens(db, augur, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
       if (err) return callback(err);
@@ -325,7 +322,7 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
         if (err) return callback(err);
         getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
           if (err || repStakeResults == null) return callback(err);
-          getMarkets(db, reporter, universeAndParentUniverse.universe, universeAndParentUniverse.parentUniverse, (err, result: FormattedMarketInfo) => {
+          getMarketsReportingParticipants(db, reporter, universeAndParentUniverse.universe, universeAndParentUniverse.parentUniverse, (err, result: FormattedMarketInfo) => {
             if (err || repStakeResults == null) return callback(err);
             const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
               if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
