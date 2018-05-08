@@ -19,7 +19,6 @@ const MarketTradingConfirm = (p) => {
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
   const potentialLossPercent = getValue(p, 'trade.potentialLossPercent')
   const totalCost = getValue(p, 'trade.totalCost')
-  const gasFeesRealEth = getValue(p, 'trade.gasFeesRealEth')
 
   return (
     <section className={Styles.TradingConfirm}>
@@ -55,10 +54,6 @@ const MarketTradingConfirm = (p) => {
         <li>
           <span>Fee</span>
           <span>{tradingFees ? tradingFees.formattedValue : '0'} <span>ETH</span></span>
-        </li>
-        <li>
-          <span>Est. GAS</span>
-          <span>{gasFeesRealEth ? gasFeesRealEth.formattedValue : '0'} <span>ETH</span></span>
         </li>
       </ul>
       { p.orderType === LIMIT &&

@@ -13,16 +13,6 @@ describe('modules/trade/helpers/generate-trade.js', () => {
 
   it('should generate trade object', () => {
     assert.deepEqual(trade, {
-      gasFeesRealEth: {
-        denomination: '',
-        formatted: '',
-        formattedValue: 0,
-        full: '',
-        minimized: '',
-        rounded: '',
-        roundedValue: 0,
-        value: 0,
-      },
       limitPrice: '0.50',
       numShares: 5000,
       maxNumShares: {
