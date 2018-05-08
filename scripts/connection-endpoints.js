@@ -8,6 +8,7 @@ var ethereumNode = {
   connectionTimeout: 60000,
 };
 if (process.env.ETHEREUM_WS != null) ethereumNode.ws = process.env.ETHEREUM_WS;
+if (process.env.ETHEREUM_IPC != null) ethereumNode.ipc = process.env.ETHEREUM_IPC;
 
 module.exports.augurNode = augurNode;
 module.exports.ethereumNode = ethereumNode;

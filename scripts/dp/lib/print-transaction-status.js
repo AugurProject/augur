@@ -12,7 +12,7 @@ function printTransactionStatus(ethrpc, transactionHash, callback) {
     if (err) return callback(err);
     if (receipt == null) return callback(new Error("could not get transaction receipt"));
     if (debugOptions.cannedMarkets) {
-      console.log(chalk.cyan("transaction"), chalk.green(transactionHash), chalk.cyan("status"), chalk.yellow(receipt.status));
+      console.log(chalk.cyan("transaction"), chalk.green(transactionHash), chalk.cyan("status"), chalk.yellow(receipt.status), chalk.cyan("used"), chalk.yellow(parseInt(receipt.gasUsed, 16)), chalk.cyan("gas"));
     }
     callback(null);
   });
