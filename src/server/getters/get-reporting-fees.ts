@@ -159,8 +159,8 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
       };
     } else if (!marketParticipants.initialReporters[i].forking) {
       if (marketParticipants.initialReporters[i].universe !== parentUniverse ||
-          (marketParticipants.initialReporters[i].universe === parentUniverse && 
-           marketParticipants.initialReporters[i].reportingState !== ReportingState.FINALIZED && 
+          (marketParticipants.initialReporters[i].universe === parentUniverse &&
+           marketParticipants.initialReporters[i].reportingState !== ReportingState.FINALIZED &&
            !marketParticipants.initialReporters[i].disavowed)) {
         keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
           marketId: marketParticipants.initialReporters[i].marketId,
@@ -189,8 +189,8 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
       }
     } else if (!marketParticipants.crowdsourcers[i].forking) {
       if (marketParticipants.crowdsourcers[i].universe !== parentUniverse ||
-          (marketParticipants.crowdsourcers[i].universe === parentUniverse && 
-           marketParticipants.crowdsourcers[i].reportingState !== ReportingState.FINALIZED && 
+          (marketParticipants.crowdsourcers[i].universe === parentUniverse &&
+           marketParticipants.crowdsourcers[i].reportingState !== ReportingState.FINALIZED &&
            !marketParticipants.crowdsourcers[i].disavowed)) {
         if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
           keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
