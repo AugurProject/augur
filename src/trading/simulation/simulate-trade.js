@@ -9,7 +9,6 @@
 /** Type definition for SimulatedTrade.
  * @typedef {Object} SimulatedTrade
  * @property {string} settlementFees Projected settlement fees paid on this trade, as a base-10 string.
- * @property {string} gasEstimate Projected gas fees paid on this trade, as a base-10 string.
  * @property {string} sharesDepleted Projected number of shares of the traded outcome spent on this trade, as a base-10 string.
  * @property {string} otherSharesDepleted Projected number of shares of the other (non-traded) outcomes spent on this trade, as a base-10 string.
  * @property {string} tokensDepleted Projected number of tokens spent on this trade, as a base-10 string.
@@ -58,7 +57,6 @@ function simulateTrade(p) {
     sharesFilled: simulatedTrade.sharesFilled.toFixed(),
     settlementFees: simulatedTrade.settlementFees.toFixed(),
     worstCaseFees: simulatedTrade.worstCaseFees.toFixed(),
-    gasEstimate: simulatedTrade.gasEstimate.toFixed(),
     sharesDepleted: simulatedTrade.sharesDepleted.toFixed(),
     otherSharesDepleted: simulatedTrade.otherSharesDepleted.toFixed(),
     tokensDepleted: simulatedTrade.tokensDepleted.toFixed(),
