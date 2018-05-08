@@ -19,8 +19,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("numFillerShares", "varchar(255) NOT NULL CONSTRAINT \"nonnegativeNumFillerShares\" CHECK (ltrim(\"numFillerShares\", '-') = \"numFillerShares\")");
       table.specificType("reporterFees", "varchar(255) NOT NULL CONSTRAINT \"nonnegativeSettlementFees\" CHECK (ltrim(\"reporterFees\", '-') = \"reporterFees\")");
       table.specificType("marketCreatorFees", "varchar(255) NOT NULL CONSTRAINT \"nonnegativeSettlementFees\" CHECK (ltrim(\"marketCreatorFees\", '-') = \"marketCreatorFees\")");
-      table.string("price", 255).notNullable();
-      table.string("amount", 255).notNullable();
+      table.specificType("price", "varchar(255) CONSTRAINT \"nonnegativePrice\" CHECK (ltrim(\"price\", '-') = \"price\")");
+      table.specificType("amount", "varchar(255) CONSTRAINT \"nonnegativeAmount\" CHECK (ltrim(\"amount\", '-') = \"amount\")");
       table.integer("tradeGroupId");
 
       table.unique(["transactionHash", "logIndex"]);

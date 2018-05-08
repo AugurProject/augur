@@ -32,9 +32,9 @@ exports.up = async (knex: Knex): Promise<any> => {
       "longDescription" text,
       "scalarDenomination" text,
       "designatedReporter" varchar(66) NOT NULL,
-      "designatedReportStake" VARCHAR(255),
+      "designatedReportStake" varchar(255) CONSTRAINT "nonnegativeDesignatedReportStake" CHECK (ltrim("designatedReportStake", '-') = "designatedReportStake"),
       "resolutionSource" text,
-      "numTicks" VARCHAR(255) NOT NULL,
+      "numTicks" varchar(255) NOT NULL CONSTRAINT "nonnegativeNumTicks" CHECK (ltrim("numTicks", '-') = "numTicks"),
       "consensusPayoutId" integer,
       "disputeRounds" integer,
       "isInvalid" boolean
