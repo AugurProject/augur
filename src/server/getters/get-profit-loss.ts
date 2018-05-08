@@ -10,8 +10,13 @@ export interface PLResult {
   profitLoss: CalculatedProfitLoss|null;
 };
 
+export interface PLBucket {
+  endTime: number;
+  lastPrice: string;
+};
+
 // Perhaps port this to Augur.js
-export function calculateBucketedProfitLoss(augur: Augur, trades: Array<TradingHistoryRow>, startTime: number, endTime: number, periodInterval: number) {
+export function calculateBucketedProfitLoss(augur: Augur, trades: Array<TradingHistoryRow>, buckets: Array<PLBuckets>, startTime: number, endTime: number, periodInterval: number) {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
   if (endTime <= startTime) throw new Error("endTime must be greater than startTime");
@@ -26,14 +31,6 @@ export function calculateBucketedProfitLoss(augur: Augur, trades: Array<TradingH
   if (basisTrades.length > 0) {
     basis = augur.trading.calculateProfitLoss({ trades: basisTrades, lastPrice: _.last(basisTrades)!.price });
   }
-
-  // Pre make the buckets so its easy to parition trades
-  const bucketEndTimes: Array<number> = [];
-  for(let bucketEnd=startTime + periodInterval; bucketEnd < endTime; bucketEnd += periodInterval) {
-    bucketEndTimes.push(bucketEnd);
-  }
-  bucketEndTimes.push(endTime);
-
 
   console.log("Basis: ", basis);
   console.log("Trades: ", windowTrades);
@@ -56,6 +53,16 @@ export function calculateBucketedProfitLoss(augur: Augur, trades: Array<TradingH
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number, callback: GenericCallback<Array<PLResult>>) {
   console.log(`Getting PL for ${startTime} to ${endTime}`);
+  // Pre make the buckets so its easy to parition trades
+  const buckets: Array<Partial<PlBucket>> = [];
+  for(let bucketEndTime=startTime + periodInterval; bucketEndTime < endTime; bucketEndTime += periodInterval) {
+    buckets.push({
+      endTime: bucketEndTime
+    });
+  }
+  buckets.push({ endTime });
+
+
   try {
     queryUserTradingHistory(db, universe, account, null, null, null, null, endTime).orderBy("trades.marketId").orderBy("trades.outcome").asCallback((err, trades: Array<TradingHistoryRow>) => {
       if (err) return callback(err);
@@ -64,7 +71,7 @@ export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account
         .chain(trades)
         .groupBy((trade) => _.values(_.pick(trade, ["marketId", "outcome"])))
         .values()
-        .map((trades: Array<TradingHistoryRow>, group: any) => Object.assign({}, group, calculateBucketedProfitLoss(augur, trades, startTime, endTime, periodInterval)))
+        .map((trades: Array<TradingHistoryRow>, group: {marketId: string, outcome: number}) => Object.assign({}, group, calculateBucketedProfitLoss(augur, group.marketId, group.outcome, trades, startTime, endTime, periodInterval)))
         .value();
 
       console.log(res);
