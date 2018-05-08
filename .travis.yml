@@ -1,54 +1,58 @@
 dist: trusty
-
-# Sudo is required for docker daemon
 sudo: required
-
 language: node_js
-
-# Enable Docker
 services:
-  - docker
-
+- docker
 git:
   depth: 5
-
 notifications:
   email: false
-
-# Allow building on the following branches only
-# the regular expression on the end is for TAGS because
-# when a tag is deployed, it is treated also as a branch
-# in these scripts (i.e, $TRAVIS_TAG = $TRAVIS_BRANC)
 branches:
   only:
   - master
   - stable
   - petong/travis-ci
   - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
-
-# NodeJS Versions
-# This will automatically detect yarn support and run yarn for us
 node_js:
 - '8'
-
-# Scripts that will be run during the test phase. If this phase doesn't
-# complete the deploy phase will not run
 script:
 - npm run lint
-- istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
-
-# Build docker image and push
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
-          npm run docker:release:stable;
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH=stable || $TRAVIS_BRANCH=petong/travis-ci
-
+- istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
+  ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
+  | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+jobs:
+  include:
+  - stage: test travis-ci
+    if: branch = petong/travis-ci
+    script: skip
+    deploy:
+      provider: script
+      script: echo "I love travis yml" && bash scripts/aws-deploy.sh
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: deploy to dev
+    if: branch = master
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:build-and-push:dev && bash scripts/aws-deploy.sh
+      skip_cleanup: true
+      on:
+        all_branches: true
+  - stage: deploy to stable
+    if: branch = stable
+    script: skip
+    deploy:
+      provider: script
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release-stable
+      skip_cleanup: true
+      on:
+        all_branches: true
 env:
   global:
     - DOCKER_USERNAME=augurintegration
-    - secure: "gtWPYRgm/WP9UurlzyBDODGdyFMSN4nncxC2aNtCNHzucs1PKh0dY6Uj4fUMAZObCpZ4foTpUJHG8BXTWgEgxuT/m3dlTILOSXbtMdFbKuxHE5sbgxuCWhwWuECkeoAcDmG+yZLaX+xuB+sde3aduIouwSlerJvrLw4yDveTC2FVeHbudNt641EeTGFmtJds645rMzeZfyCGKZqlzF5Rz1jWUVQ9GjTU1tx8PLcQcIPxku5z5aXx8l/ZZLN/yodN/LumZYLQrI973bz1xnFJ5NMyFHRkaOIhZAQ0Nwyr1sXUwVdqKbqg2yxDifQunV0Rn//jGRNouBdcWowmsBZw29LeA0fLRt7RTKFaLgPTJ7BeP0d3ySVo+RmW0X2iJ8fB9G7G8cjNujCrEseMaIuYRPeA4dHW8ggC0ax0Knl50dsCOxrjzh46yyc1FT8gZq/TJWdTM1v3PjmS497Y76gyQNe6xAmX8xtYd4DeeV3YaC2Vm1j2HRZCODuOdWCCX5aZ9+vUgs6/5IsDelIeyOnMeeDjCwvWzd9CTeC0u3TMgSRkKzd87BEtjI5gL5mhImnDSZgXh5XvLQQAsWzLpZTns0K/L3v/h8iZYAei8VXmKq+QAJ7Nqs7mNoU6N6j4r1CT0W315wid/thd/fawUWnFlE/vuz3GKRzff723XN63e/E="
-
+    - AWS_REGION=us-east-1
+    - secure: gtWPYRgm/WP9UurlzyBDODGdyFMSN4nncxC2aNtCNHzucs1PKh0dY6Uj4fUMAZObCpZ4foTpUJHG8BXTWgEgxuT/m3dlTILOSXbtMdFbKuxHE5sbgxuCWhwWuECkeoAcDmG+yZLaX+xuB+sde3aduIouwSlerJvrLw4yDveTC2FVeHbudNt641EeTGFmtJds645rMzeZfyCGKZqlzF5Rz1jWUVQ9GjTU1tx8PLcQcIPxku5z5aXx8l/ZZLN/yodN/LumZYLQrI973bz1xnFJ5NMyFHRkaOIhZAQ0Nwyr1sXUwVdqKbqg2yxDifQunV0Rn//jGRNouBdcWowmsBZw29LeA0fLRt7RTKFaLgPTJ7BeP0d3ySVo+RmW0X2iJ8fB9G7G8cjNujCrEseMaIuYRPeA4dHW8ggC0ax0Knl50dsCOxrjzh46yyc1FT8gZq/TJWdTM1v3PjmS497Y76gyQNe6xAmX8xtYd4DeeV3YaC2Vm1j2HRZCODuOdWCCX5aZ9+vUgs6/5IsDelIeyOnMeeDjCwvWzd9CTeC0u3TMgSRkKzd87BEtjI5gL5mhImnDSZgXh5XvLQQAsWzLpZTns0K/L3v/h8iZYAei8VXmKq+QAJ7Nqs7mNoU6N6j4r1CT0W315wid/thd/fawUWnFlE/vuz3GKRzff723XN63e/E=
+    - secure: KZUJSNHTH68oJZJChip/im8ieUogbikhV7MrugIOdOVV1AAGDMNITpatcnS7RvM5t4XgFHN7CUglBsYbfKYDhBLF1GOPXziCwjoEEF6B5p9qmb8OWBZVJJXawQcTenyjO01nHGjvsC09sB3AEakS9ejKg8R2wgHOQVQtGxkc7WxiATExyqSQkLs2lXkvll7p9mY34jqhcT5KcvQ/EWVX98rLOW7bEbc1qnRTk4TyfNL1z55OXkJoazaCHFK6WrMO3sgGG6Jy25AFqF94a41N6YUHmlPVoNc1kdkj4W+IbwDZezIQOdfn0tR4M+Y8GAJ1GYL3KX8ob99G6Y0aisX1sExUjaCsxbMhCc/VJI5PSMo3zwyJd9lBJoWFQP54e3XZrbjjWbED5qJmmpbi/XTzVyNkHpek+IYZU4Fh62w+B9vtTDLmQF6+WSaFtUwo2+Cl/3/MiL69H1pnIwlWQUvB3Nn4A+UGbNu0GIJwuqBwiBG6YUA0PSMYsT3ByispOZC6CT1c3tCOrOeoefYVx2731BAlrAuokKITDcfEhf0DXIzhXrbGJZa2COjy4wmMxIBrbgS9+vZTLxF28ArVxWKGp3VId1Gfk4nw3T8yweA9u8C5t7lKcidTNjJTFHJuOkF6+oFjwYBIDLdFE3/VA1o1L71GoxYPrgawdmNGtVv3RpE=
+    - secure: DaRXf8c33x2O7o2JmS5zRSgaJ1veJB2Y5VYsMd3GD1+eZERxJYmAM5cEwKy0aMctwcgeFACiKXYmRO8VbbIFVYOPLcuBVGCBiJSVtaJQcTN8W3bxJxwZA9b78l0Y1YKAOUFWVYVDMfyap71weunvkb2EEhAnMXcsA7PFoS98vVOEDiQI5rgtb23w1Z5g0t87WNHlZ8MZ8r1TJW/muP/JiKF1/e1BnWdxCo9GbPhGH531yHj+H/qNbYEL8uPOEPUO3S2ASkTPE/ocDEV1sS2thge7DTpITo2/O8PeXv6yA8B0ElCX3Rcn6D/NwUpsTnngd4DNNrWyCyInHqOGK625qRPbY68ucyCgS2mfW6qBa5PtsGX7d4psmVIF6u2cenjT/Xi6NUG/E8Elc5vtcUh8RTtf+mBB7LryuwzjZsrFf3lEDhqXpCpPympjdg2t9LMnkhsT8+dG9QnbZ5oXqGk/0GUrR23zYiKNS1ETUCHw+4DVs1qf7I4PQwSz/Lyy1xFtewMFn63NtTglx5Nscy0btIqHRGF5SUMMZv9hKjh11ErdcU3sKh3DLk26eJiHl+CDOUz/LxX4VgmiN6MgvBhyIb7u7HNXTBU8mjjcZrw5C90WUbslCb/jUcqS3PciIDm6e9jTcYKmOR4YI9FGv4yWa7zcAjUvJgyqz0goLCeD0IQ=
