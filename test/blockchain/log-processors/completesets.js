@@ -78,7 +78,7 @@ describe("blockchain/log-processors/completesets", () => {
           numSharesAdjustedForUserIntention: new BigNumber("2", 10),
           realizedProfitLoss: new BigNumber("0", 10),
           unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
+          averagePrice: new BigNumber("0.75", 10),
           lastUpdated: positions[0].lastUpdated,
         }, {
           positionId: 22,
