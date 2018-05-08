@@ -164,7 +164,7 @@ function formatMarketInfo(augur: Augur, marketParticipants: any, parentUniverse:
       } else {
         if (forkedMarket) {
           forkedMarket.crowdsourcers.push({address: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false});
-        }     
+        }
       }
     } else if (!marketParticipants.crowdsourcers[i].forking && marketParticipants.crowdsourcers[i].universe !== parentUniverse) {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
