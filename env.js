@@ -18,7 +18,7 @@ const nodes = {
   local: {
     http: "http://127.0.0.1:8545",
     ws: "ws://127.0.0.1:8546",
-    ipc: process.env.GETH_IPC,
+    ipc: process.env.ETHEREUM_IPC,
   }
 };
 
@@ -27,6 +27,14 @@ const augurNode = "ws://127.0.0.1:9001";
 
 augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   if (err) return console.error(err);
+  augur.events.startBlockListeners({
+    onAdded: function (block) {
+      console.log("Block added:", parseInt(block.number, 16), block.hash);
+    },
+    onRemoved: function (block) {
+      console.log("Block removed:", parseInt(block.number, 16), block.hash);
+    },
+  });
   global.networkId = augur.rpc.getNetworkID();
   global.universe = augur.contracts.addresses[networkId].Universe;
   console.log(chalk.cyan("Network"), chalk.green(networkId));
