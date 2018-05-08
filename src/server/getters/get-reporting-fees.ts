@@ -23,7 +23,7 @@ export interface ForkedMarket {
   universeAddress: string;
   isFinalized: boolean;
   crowdsourcers: Array<CrowdsourcerState>;
-  initialReporter: InitialReporterState | null;
+  initialReporter: InitialReporterState|null;
 }
 
 export interface NonforkedMarket {
@@ -33,7 +33,7 @@ export interface NonforkedMarket {
   isFinalized: boolean;
   isMigrated: boolean;
   crowdsourcers: Array<CrowdsourcerState>;
-  initialReporterAddress: string | null;
+  initialReporterAddress: string|null;
 }
 
 export interface FeeDetails {
