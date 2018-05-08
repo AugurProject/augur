@@ -46,9 +46,7 @@ jobs:
       script: skip
       deploy: &script
         provider: script
-        script:
-          - echo "I love travis yml"
-          - bash scripts/aws-deploy.sh
+        script: echo "I love travis yml" && bash scripts/aws-deploy.sh
         skip_cleanup: true
         on:
           all_branches: true
