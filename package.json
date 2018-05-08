@@ -66,6 +66,7 @@
     "immutable-delete": "1.1.0",
     "keccak": "1.2.0",
     "lodash.assign": "4.2.0",
+    "lodash.clonedeep": "4.5.0",
     "lodash.isequal": "4.5.0",
     "options-parser": "0.4.0",
     "parrotsay-api": "0.1.1",
