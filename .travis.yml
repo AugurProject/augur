@@ -44,7 +44,7 @@ jobs:
     - stage: test travis-ci
       if: branch = petong/travis-ci
       script: skip
-      deploy:
+      deploy: &script
         provider: script
         script:
           - echo "I love travis yml"
