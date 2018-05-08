@@ -5,7 +5,7 @@ var clonedeep = require("lodash.clonedeep");
 
 // upgrade from old config (single address per type) to new config (array of addresses per type)
 function createConfiguration(options) {
-  var configuration = assign({}, clonedeep(options), { contracts: options.contracts || {} });
+  var configuration = assign({ contracts: {} }, clonedeep(options));
   if (!Array.isArray(configuration.httpAddresses)) configuration.httpAddresses = [];
   if (!Array.isArray(configuration.wsAddresses)) configuration.wsAddresses = [];
   if (!Array.isArray(configuration.ipcAddresses)) configuration.ipcAddresses = [];
