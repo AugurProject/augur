@@ -200,8 +200,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
     }
   }
 
-  const nonforkedMarketKeys = Object.keys(keyedNonforkedMarkets);
-  const nonforkedMarkets = nonforkedMarketKeys.map(function(key) { return keyedNonforkedMarkets[key]; });
+  const nonforkedMarkets = Object.keys(keyedNonforkedMarkets).map((key) => keyedNonforkedMarkets[key]);
 
   return {forkedMarket, nonforkedMarkets};
 }
