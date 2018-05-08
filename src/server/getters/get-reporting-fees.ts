@@ -4,10 +4,8 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, AsyncCallback, ReportingState } from "../../types";
 import Augur from "augur.js";
-import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
 import { groupByAndSum } from "./database";
-import { getMarketsClosingInDateRange } from "./get-markets-closing-in-date-range";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
@@ -33,8 +31,8 @@ export interface NonforkedMarket {
   crowdsourcersAreDisavowed: boolean;
   isFinalized: boolean;
   isMigrated: boolean;
-  crowdsourcers: Array<CrowdsourcerState>;
-  initialReporterAddress: Address|null;
+  crowdsourcers: Array<Address>;
+  initialReporter: Address|null;
 }
 
 export interface FeeDetails {
@@ -143,7 +141,7 @@ function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindo
 
 function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUniverse: Address) {
   let forkedMarket: ForkedMarket|null = null;
-  const keyedNonforkedMarkets = {} as any;
+  const keyedNonforkedMarkets: {[marketId: string]: NonforkedMarket} = {};
   let i: number;
   for (i = 0; i < marketParticipants.initialReporters.length; i++) {
     if (marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe === parentUniverse) {
