@@ -27,7 +27,6 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null
   const totalFee = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || '0', 10)
   const feePercent = (outcomeTradeInProgress && outcomeTradeInProgress.feePercent) || '0'
-  const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || '0'
   const totalCost = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || '0', 10)
   const marketType = (market && market.marketType) || null
   const minPrice = (market && (typeof market.minPrice === 'number')) ? market.minPrice : null
@@ -70,7 +69,6 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
 
     totalFee: formatEther(totalFee, { blankZero: true }),
     totalFeePercent: formatEther(feePercent, { blankZero: true }),
-    gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
     totalCost: formatEther(totalCost.abs().toFixed(), { blankZero: false }),
 
     tradeTypeOptions: [
@@ -97,11 +95,6 @@ export const generateTradeSummary = memoize((tradeOrders) => {
 
   if (tradeOrders && tradeOrders.length) {
     tradeSummary = tradeOrders.reduce((p, tradeOrder) => {
-
-      // total gas
-      if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
-        p.totalGas = p.totalGas.plus(createBigNumber(tradeOrder.data.gasFees.value, 10))
-      }
 
       // trade order
       p.tradeOrders.push(tradeOrder)
@@ -139,7 +132,6 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
       noFeePrice: formatEther(noFeePrice),
       tradingFees: formatEther(tradeAction.feeEth),
       feePercent: formatPercent(tradeAction.feePercent),
-      gasFees: formatEther(tradeAction.gasEth),
     }
   })
 }, { max: 5 })
