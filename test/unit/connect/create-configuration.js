@@ -8,6 +8,9 @@ var createConfiguration = require("../../../src/connect/create-configuration");
 describe("connect/create-configuration", function () {
   var test = function (t) {
     it(t.description, function () {
+      Object.freeze(t.params.options.httpAddresses);
+      Object.freeze(t.params.options.wsAddresses);
+      Object.freeze(t.params.options.ipcAddresses);
       t.assertions(createConfiguration(t.params.options));
     });
   };
@@ -16,6 +19,7 @@ describe("connect/create-configuration", function () {
     params: {
       options: {
         http: "http://somewhere:1234",
+        httpAddresses: [],
         ws: null,
         ipc: null,
         api: { events: null, functions: null },
@@ -164,6 +168,31 @@ describe("connect/create-configuration", function () {
         httpAddresses: ["http://127.0.0.1:8545"],
         wsAddresses: ["ws://127.0.0.1:8546"],
         ipcAddresses: ["/home/jack/.ethereum/geth.ipc"],
+      });
+    },
+  });
+  test({
+    description: "Ignore blank URLs",
+    params: {
+      options: {
+        http: "http://somewhere:1234",
+        httpAddresses: [],
+        ws: "",
+        ipc: null,
+        api: { events: null, functions: null },
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+      },
+    },
+    assertions: function (configuration) {
+      assert.deepEqual(configuration, {
+        http: "http://somewhere:1234",
+        ws: "",
+        ipc: null,
+        api: { events: null, functions: null },
+        contracts: { 3: { contract1: "0xc1", contract2: "0xc2" } },
+        httpAddresses: ["http://somewhere:1234"],
+        wsAddresses: [],
+        ipcAddresses: [],
       });
     },
   });
