@@ -59,13 +59,13 @@ describe("server/getters/get-reporting-fees", () => {
         forkedMarket: null,
         nonforkedMarkets: [
           {
-            "address": "0x0000000000000000000000000000000000000019",
+            "marketId": "0x0000000000000000000000000000000000000019",
             "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
             "crowdsourcersAreDisavowed": false,
-            "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
+            "initialReporter": "0x0000000000000000000000000000000000abe111",
             "isFinalized": true,
             "isMigrated": true,
-            "universeAddress": "0x000000000000000000000000000000000000000b",
+            "universe": "0x000000000000000000000000000000000000000b",
           },
         ],
       });
@@ -108,23 +108,23 @@ describe("server/getters/get-reporting-fees", () => {
           "0x4000000000000000000000000000000000000000",
         ],
         forkedMarket: {
-          "address": "0x00000000000000000000000000000000000000f1",
+          "marketId": "0x00000000000000000000000000000000000000f1",
           "crowdsourcers": [
             {
-              "address": "0x0000000000000000001000000000000000000006",
+              "crowdsourcerId": "0x0000000000000000001000000000000000000006",
               "isForked": false,
             },
             {
-              "address": "0x0000000000000000001000000000000000000007",
+              "crowdsourcerId": "0x0000000000000000001000000000000000000007",
               "isForked": true,
             },
           ],
           "initialReporter": {
-            "address": "0x0000000000000000000000000000000000abe222",
+            "initialReporterId": "0x0000000000000000000000000000000000abe222",
             "isForked": false,
           },
           "isFinalized": true,
-          "universeAddress": "0x000000000000000000000000000000000000000b",
+          "universe": "0x000000000000000000000000000000000000000b",
         },
         nonforkedMarkets: [],
       });
@@ -242,13 +242,13 @@ describe("server/getters/get-reporting-fees", () => {
         forkedMarket: null,
         nonforkedMarkets: [
           {
-            "address": "0x0000000000000000000000000000000000000019",
+            "marketId": "0x0000000000000000000000000000000000000019",
             "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
             "crowdsourcersAreDisavowed": false,
-            "initialReporterAddress": "0x0000000000000000000000000000000000abe111",
+            "initialReporter": "0x0000000000000000000000000000000000abe111",
             "isFinalized": true,
             "isMigrated": true,
-            "universeAddress": "0x000000000000000000000000000000000000000b",
+            "universe": "0x000000000000000000000000000000000000000b",
           },
         ],
       });
