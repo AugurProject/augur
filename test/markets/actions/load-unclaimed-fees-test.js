@@ -24,9 +24,10 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
       augurNode: {
         submitRequest: (label, p, cb) => {
           assert.deepEqual(label, 'getUnclaimedMarketCreatorFees', `Didn't call the correct getter function from augurNode`)
+          console.log('marketIds', p.marketIds)
           if (!p.marketIds) return cb({ error: 'must include marketIds parameter' })
-          if (p.marketIds.length === 0) return cb(null, {})
-          cb(null, { '0xabc1': 0, '0xabc2': 0, '0xabc3': 0 })
+          if (p.marketIds.length === 0) return cb(null, [])
+          cb(null, [{ marketId: '0xabc1', unclaimedFee: '0' }, { marketId: '0xabc2', unclaimedFee: '0' }, { marketId: '0xabc3', unclaimedFee: '0' }])
         },
       },
     })
@@ -44,9 +45,9 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
       },
       assertions: (store) => {
         // use default MarketIds, which is []
-        store.dispatch(loadUnclaimedFees(undefined, (err, unclaimedFees) => {
+        store.dispatch(loadUnclaimedFees([], (err, unclaimedFees) => {
           assert.isNull(err, `Didn't return null for error as expected`)
-          assert.deepEqual(unclaimedFees, {}, `Expected unclaimedFees to be an empty object`)
+          assert.deepEqual(unclaimedFees, [], `Expected unclaimedFees to be an empty object`)
         }))
 
         const actual = store.getActions()
@@ -91,11 +92,11 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
       },
       assertions: (store) => {
         store.dispatch(loadUnclaimedFees(['0xabc1', '0xabc2', '0xabc3'], (err, unclaimedFees) => {
-          const expectedUnclaimedFees = {
-            '0xabc1': 0,
-            '0xabc2': 0,
-            '0xabc3': 0,
-          }
+          const expectedUnclaimedFees = [
+            { marketId: '0xabc1', unclaimedFee: '0' },
+            { marketId: '0xabc2', unclaimedFee: '0' },
+            { marketId: '0xabc3', unclaimedFee: '0' },
+          ]
 
           assert.isNull(err, `Didn't return null for error as expected`)
           assert.deepEqual(unclaimedFees, expectedUnclaimedFees, `Unexpected unclaimed Fees Object`)
@@ -107,9 +108,9 @@ describe('modules/markets/actions/load-unclaimed-fees.js', () => {
           type: ACTIONS.UPDATE_MARKETS_DATA,
           data: {
             marketsData: {
-              '0xabc1': { unclaimedCreatorFees: 0 },
-              '0xabc2': { unclaimedCreatorFees: 0 },
-              '0xabc3': { unclaimedCreatorFees: 0 },
+              '0xabc1': { unclaimedCreatorFees: '0' },
+              '0xabc2': { unclaimedCreatorFees: '0' },
+              '0xabc3': { unclaimedCreatorFees: '0' },
             },
           },
         }]

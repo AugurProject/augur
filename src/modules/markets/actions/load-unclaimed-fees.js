@@ -1,5 +1,6 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
+import speedomatic from 'speedomatic'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
 
 export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispatch, getState) => {
@@ -8,11 +9,11 @@ export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispa
 
     const { marketsData } = getState()
 
-    const updatedMarketsData = marketIds.reduce((p, market, value) => ({
+    const updatedMarketsData = marketIds.reduce((p, market, index) => ({
       ...p,
       [market]: {
         ...marketsData[market],
-        unclaimedCreatorFees: marketsUnclaimedFees[market],
+        unclaimedCreatorFees: speedomatic.unfix(marketsUnclaimedFees[index].unclaimedFee, 'string'),
       },
     }), {})
 

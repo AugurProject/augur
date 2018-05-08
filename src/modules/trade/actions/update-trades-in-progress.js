@@ -8,7 +8,6 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import logError from 'utils/log-error'
-import { formatGasCostToEther } from 'utils/format-number'
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS'
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
@@ -148,8 +147,6 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           maxDisplayPrice: market.maxPrice,
         })
         const convertedCost = createBigNumber(speedomatic.unfix(calculatedTradeCost.cost, 'string'), 10)
-        const estimatedGasCost = formatGasCostToEther(createBigNumber(simulatedTrade.gasEstimate, 10), { decimalsRounded: 4 }, createBigNumber(augur.rpc.getGasPrice(), 10))
-        newTradeDetails.gasFeesRealEth = estimatedGasCost
         const totalFee = createBigNumber(simulatedTrade.settlementFees, 10)
         newTradeDetails.totalFee = totalFee.toFixed()
         // newTradeDetails.totalCost = simulatedTrade.tokensDepleted

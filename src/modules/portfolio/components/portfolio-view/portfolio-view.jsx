@@ -5,7 +5,7 @@ import AuthenticatedRoute from 'modules/routes/components/authenticated-route/au
 
 import PortfolioHeader from 'modules/portfolio/containers/portfolio-header'
 import MyPositions from 'modules/portfolio/containers/positions'
-import MyMarkets from 'modules/portfolio/containers/markets'
+import MyMarkets from 'modules/portfolio/containers/my-markets'
 import Favorites from 'modules/portfolio/containers/favorites'
 import Transactions from 'modules/portfolio/containers/transactions'
 import Reports from 'modules/portfolio/containers/reports'
