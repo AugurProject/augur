@@ -18,11 +18,17 @@ describe("server/getters/get-reporting-fees", () => {
     });
   };
   test({
-    description: "Get reporting fees that exist",
+    description: "Get reporting fees that exist in forked universe",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -40,21 +46,87 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "107.87878787878787879",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
+          "unclaimedRepEarned": "114.5",
+          "unclaimedRepStaked": "229",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
           "0x3000000000000000000000000000000000000000",
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: null,
+        nonforkedMarkets: [
+          {
+            "marketId": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporter": "0x0000000000000000000000000000000000abe111",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universe": "0x000000000000000000000000000000000000000b",
+          },
+        ],
+      });
+    },
+  });
+  test({
+    description: "Get reporting fees that exist in child universe and parent universe",
+    params: {
+      universe: "CHILD_UNIVERSE",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: (err, marketsMatched) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsMatched, {
+        total: {
+          "unclaimedEth": "0",
+          "unclaimedRepStaked": "0",
+          "unclaimedRepEarned": "0",
+          "lostRep": "0",
+        },
+        feeWindows: [
+          "0x4000000000000000000000000000000000000000",
+        ],
+        forkedMarket: {
+          "marketId": "0x00000000000000000000000000000000000000f1",
+          "crowdsourcers": [
+            {
+              "crowdsourcerId": "0x0000000000000000001000000000000000000006",
+              "isForked": false,
+            },
+            {
+              "crowdsourcerId": "0x0000000000000000001000000000000000000007",
+              "isForked": true,
+            },
+          ],
+          "initialReporter": {
+            "initialReporterId": "0x0000000000000000000000000000000000abe222",
+            "isForked": false,
+          },
+          "isFinalized": true,
+          "universe": "0x000000000000000000000000000000000000000b",
+        },
+        nonforkedMarkets: [],
       });
     },
   });
@@ -64,6 +136,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x00000000000000000000000000000000000n0b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -84,18 +162,15 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
           "0x3000000000000000000000000000000000000000",
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: null,
+        nonforkedMarkets: [],
       });
     },
   });
@@ -105,6 +180,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "0x000000000000000000000000000000000000n0n0",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -118,21 +199,8 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
-      assert.deepEqual(marketsMatched, {
-        total: {
-          "unclaimedEth": "0",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
-          "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
-        },
-        crowdsourcers: [],
-        feeWindows: [],
-        initialReporters: [],
-      });
+      assert.deepEqual(err, Error("Universe or feeWindow not found"));
+      assert.equal(marketsMatched, null);
     },
   });
   test({
@@ -141,6 +209,12 @@ describe("server/getters/get-reporting-fees", () => {
       feeWindow: "0x1000000000000000000000000000000000000000",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -158,18 +232,25 @@ describe("server/getters/get-reporting-fees", () => {
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "53.33333333333333333",
-          "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "0",
+          "unclaimedRepEarned": "114.5",
+          "unclaimedRepStaked": "229",
           "lostRep": "0",
-          "claimedEth": "4",
-          "claimedRepStaked": "5",
-          "claimedRepEarned": "6",
         },
-        crowdsourcers: [],
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
         ],
-        initialReporters: [],
+        forkedMarket: null,
+        nonforkedMarkets: [
+          {
+            "marketId": "0x0000000000000000000000000000000000000019",
+            "crowdsourcers": ["0x0000000000000000001000000000000000000003"],
+            "crowdsourcersAreDisavowed": false,
+            "initialReporter": "0x0000000000000000000000000000000000abe111",
+            "isFinalized": true,
+            "isMigrated": true,
+            "universe": "0x000000000000000000000000000000000000000b",
+          },
+        ],
       });
     },
   });
