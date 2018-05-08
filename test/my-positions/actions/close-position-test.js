@@ -152,6 +152,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
         const actual = store.getActions()
         const expected = [
           { type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP },
+          { type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME },
           { type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP },
         ]
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
@@ -214,6 +215,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
         const actual = store.getActions()
         const expected = [
           { type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP },
+          { type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME },
           { type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP },
         ]
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
