@@ -136,7 +136,7 @@ export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeIn
 }
 
 
-export function queryUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketId?: Address|null, outcome?: number|null, orderType?: string|null, earliestCreationTime?: number|null, latestCreationTime?: number|null, sortBy?: string|null, isSortDescending?: boolean|null, limit?: number|null, offset?: number|null): Knex.QueryBuilder {
+export function queryTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account?: Address, marketId?: Address|null, outcome?: number|null, orderType?: string|null, earliestCreationTime?: number|null, latestCreationTime?: number|null, sortBy?: string|null, isSortDescending?: boolean|null, limit?: number|null, offset?: number|null): Knex.QueryBuilder {
   if (universe == null && marketId == null ) throw new Error("Must provide reference to universe, specify universe or marketId");
   const query = db.select([
     "trades.transactionHash",
@@ -156,9 +156,8 @@ export function queryUserTradingHistory(db: Knex|Knex.Transaction, universe: Add
   ]).from("trades");
   query.leftJoin("blocks", "trades.blockNumber", "blocks.blockNumber");
   query.leftJoin("markets", "trades.marketId", "markets.marketId");
-  query.where((builder) => {
-    builder.where("trades.creator", account).orWhere("trades.filler", account);
-  });
+
+  if (account != null) query.where((builder) => builder.where("trades.creator", account).orWhere("trades.filler", account));
   if (universe != null) query.where("universe", universe);
   if (marketId != null) query.where("trades.marketId", marketId);
   if (outcome != null) query.where("trades.outcome", outcome);
