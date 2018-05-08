@@ -2,55 +2,53 @@ dist: trusty
 sudo: required
 language: node_js
 services:
-- docker
+  - docker
 branches:
   only:
-  - master
-  - stable
-  - petong/travis-ci
-  - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
+    - master
+    - stable
+    - petong/travis-ci
+    - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
-- '9'
-- '8'
+  - '9'
+  - '8'
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
-    - g++-4.8
-    - build-essential
-    - libusb-1.0-0-dev
+      - gcc-4.8
+      - g++-4.8
+      - build-essential
+      - libusb-1.0-0-dev
 script:
-- yarn lint; yarn test;
-- NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha
-  --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report
-  --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-- yarn build --dev
+  - yarn lint; yarn test;
+  - NODE_ENV='test' node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha --timeout 10000 --require babel-register && node ./node_modules/nyc/bin/nyc.js report --require babel-register --reporter=lcov && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  - yarn build --dev
 jobs:
   include:
   - stage: Deploy to stable
-    if: branch = stable
-    node_js: '8'
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
-      skip_cleanup: true
-      on:
-        all_branches: true
+      if: branch = stable
+      node_js: '8'
+      script: skip
+      deploy:
+        provider: script
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
+        skip_cleanup: true
+        on:
+          all_branches: true
   - stage: Deploy to dev
-    if: branch = master
-    script: skip
-    deploy:
-      provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
-      skip_cleanup: true
-      on:
-        all_branches: true
+      if: branch = master
+      script: skip
+      deploy:
+        provider: script
+        script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
+        skip_cleanup: true
+        on:
+          all_branches: true
 env:
   global:
-  - DOCKER_USERNAME=augurintegration
-  - secure: hfHRWYqUxQ7Ow4wsG0hJ21wtGjGpy95CuDg0maxtMxq6lsYvy0yfNawH5psX1P9cyiwWY6ryxeoD9HBx3McKbEG9vWhg4pZ63ghnwEAWMtIDq+cfhTAXenlHG+P/owJCzhch+okj77iYioXCUQccqzGl0OCyoHUgFlWZCcRb+RM=
-  - secure: E1ZQXRLO8inA+tIhmgpfUChM5/HckwYDEAwuQc1A6WYTVujGP6jH80hSPz/n0E64bZJPwqYoRbjeZRUTY5BXwpikmbCDdeZ6z2IsoZyWiMyU5tBz2hPs2r5KW7qywDU6uuUNsr5iJyUCMyYprWo6cYPY/UnHXiIyvArE2SXwqv0=
-  - secure: G3V3uOQp7uxrec0BKlYry2jjSF14umFUSW0hmut/SPaTwtFqDVtFNTTtyBTN8mryvkQybUdoq9Lei1nVcgifebQMCY70Ya/wq8h6uo1AHMw9CbsZNErP35JHx5hrYZXZqsP71YRjrX4bU24aG6zYqwDkeHj3GrMk98Mgev4tdmc=
+    - DOCKER_USERNAME=augurintegration
+    - secure: hfHRWYqUxQ7Ow4wsG0hJ21wtGjGpy95CuDg0maxtMxq6lsYvy0yfNawH5psX1P9cyiwWY6ryxeoD9HBx3McKbEG9vWhg4pZ63ghnwEAWMtIDq+cfhTAXenlHG+P/owJCzhch+okj77iYioXCUQccqzGl0OCyoHUgFlWZCcRb+RM=
+    - secure: E1ZQXRLO8inA+tIhmgpfUChM5/HckwYDEAwuQc1A6WYTVujGP6jH80hSPz/n0E64bZJPwqYoRbjeZRUTY5BXwpikmbCDdeZ6z2IsoZyWiMyU5tBz2hPs2r5KW7qywDU6uuUNsr5iJyUCMyYprWo6cYPY/UnHXiIyvArE2SXwqv0=
+    - secure: G3V3uOQp7uxrec0BKlYry2jjSF14umFUSW0hmut/SPaTwtFqDVtFNTTtyBTN8mryvkQybUdoq9Lei1nVcgifebQMCY70Ya/wq8h6uo1AHMw9CbsZNErP35JHx5hrYZXZqsP71YRjrX4bU24aG6zYqwDkeHj3GrMk98Mgev4tdmc=
