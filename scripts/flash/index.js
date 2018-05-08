@@ -10,6 +10,7 @@ var options = require("options-parser");
 
 var NetworkConfiguration = require("augur-core").NetworkConfiguration;
 var getBalance = require("./get-balance");
+var getMarketBalance = require("./get-market-balance");
 var listMarkets  = require("./list-markets");
 var designatedReport = require("./designated-report");
 var initialReport = require("./initial-report");
@@ -35,6 +36,14 @@ var methods = {
     method: getBalance,
     opts: {
       help: {flag: true, short: "h", help: "This help, get this accounts balances" },
+      account: { required: true, short: "a", help: "account address" },
+    },
+  },
+  "get-market-balance": {
+    method: getMarketBalance,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, get this accounts balances" },
+      marketId: { required: true, short: "m", help: "Required market id" },
       account: { required: true, short: "a", help: "account address" },
     },
   },
@@ -251,7 +260,7 @@ function help() {
   console.log("               ");
   console.log(chalk.underline("\Method descriptions"));
   console.log("               ");
-  Object.keys(methods).sort(function (a, b) { return a - b;}).map(function (name) {
+  Object.keys(methods).sort().map(function (name) {
     console.log(chalk.underline(name));
     methods[name].method(null, "help", null, function () { });
     console.log("               ");
