@@ -22,7 +22,7 @@ export const constructTransaction = (log, callback = logError) => (dispatch, get
     case 'OrderCreated':
       return dispatch(addOpenOrderTransactions({ [log.marketId]: { [log.outcome]: { [log.orderType === 0 ? 'buy' : 'sell']: log } } }))
     case 'OrderFilled':
-      return dispatch(addTradeTransactions({ [log.outcome]: [log] }))
+      return dispatch(addTradeTransactions([log]))
     case 'TokensTransferred':
       return dispatch(addTransferTransactions([log]))
     case 'MarketCreated':
