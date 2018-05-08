@@ -157,16 +157,19 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
           isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
         },
       };
-    } else if (!marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe !== parentUniverse) {
-      keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
-        marketId: marketParticipants.initialReporters[i].marketId,
-        universe: marketParticipants.initialReporters[i].universe,
-        crowdsourcersAreDisavowed: false,
-        isMigrated: !marketParticipants.initialReporters[i].needsMigration,
-        isFinalized: marketParticipants.initialReporters[i].reportingState === ReportingState.FINALIZED,
-        crowdsourcers: [],
-        initialReporter: marketParticipants.initialReporters[i].initialReporter,
-      };
+    } else if (!marketParticipants.initialReporters[i].forking) {
+      if (marketParticipants.initialReporters[i].universe !== parentUniverse ||
+          (marketParticipants.initialReporters[i].universe === parentUniverse && marketParticipants.initialReporters[i].reportingState !== ReportingState.FINALIZED && !marketParticipants.initialReporters[i].disavowed)) {
+        keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
+          marketId: marketParticipants.initialReporters[i].marketId,
+          universe: marketParticipants.initialReporters[i].universe,
+          crowdsourcersAreDisavowed: false,
+          isMigrated: !marketParticipants.initialReporters[i].needsMigration,
+          isFinalized: marketParticipants.initialReporters[i].reportingState === ReportingState.FINALIZED,
+          crowdsourcers: [],
+          initialReporter: marketParticipants.initialReporters[i].initialReporter,
+        };
+      }
     }
   }
   for (i = 0; i < marketParticipants.crowdsourcers.length; i++) {
@@ -182,20 +185,23 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
           initialReporter: null,
         };
       }
-    } else if (!marketParticipants.crowdsourcers[i].forking && marketParticipants.crowdsourcers[i].universe !== parentUniverse) {
-      if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
-        keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
-          marketId: marketParticipants.crowdsourcers[i].marketId,
-          universe: marketParticipants.crowdsourcers[i].universe,
-          crowdsourcersAreDisavowed: marketParticipants.crowdsourcers[i].disavowed ? true : false,
-          isMigrated: !marketParticipants.crowdsourcers[i].needsMigration,
-          isFinalized: marketParticipants.crowdsourcers[i].reportingState === ReportingState.FINALIZED,
-          crowdsourcers: [marketParticipants.crowdsourcers[i].crowdsourcerId],
-          initialReporter: null,
-        };
-      } else {
-        keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = marketParticipants.crowdsourcers[i].disavowed ? true : false;
-        keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcers.push(marketParticipants.crowdsourcers[i].crowdsourcerId);
+    } else if (!marketParticipants.crowdsourcers[i].forking) {
+      if (marketParticipants.crowdsourcers[i].universe !== parentUniverse ||
+          (marketParticipants.crowdsourcers[i].universe === parentUniverse && marketParticipants.crowdsourcers[i].reportingState !== ReportingState.FINALIZED && !marketParticipants.crowdsourcers[i].disavowed)) {
+        if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
+          keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
+            marketId: marketParticipants.crowdsourcers[i].marketId,
+            universe: marketParticipants.crowdsourcers[i].universe,
+            crowdsourcersAreDisavowed: marketParticipants.crowdsourcers[i].disavowed ? true : false,
+            isMigrated: !marketParticipants.crowdsourcers[i].needsMigration,
+            isFinalized: marketParticipants.crowdsourcers[i].reportingState === ReportingState.FINALIZED,
+            crowdsourcers: [marketParticipants.crowdsourcers[i].crowdsourcerId],
+            initialReporter: null,
+          };
+        } else {
+          keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = marketParticipants.crowdsourcers[i].disavowed ? true : false;
+          keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcers.push(marketParticipants.crowdsourcers[i].crowdsourcerId);
+        }
       }
     }
   }
