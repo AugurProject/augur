@@ -23,6 +23,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -50,7 +56,7 @@ describe("server/getters/get-reporting-fees", () => {
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        forkedMarket: {},
+        forkedMarket: null,
         nonforkedMarkets: [
           {
             "address": "0x0000000000000000000000000000000000000019",
@@ -71,6 +77,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "CHILD_UNIVERSE",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -124,6 +136,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x00000000000000000000000000000000000n0b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -151,7 +169,7 @@ describe("server/getters/get-reporting-fees", () => {
           "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
         ],
-        forkedMarket: {},
+        forkedMarket: null,
         nonforkedMarkets: [],
       });
     },
@@ -162,6 +180,12 @@ describe("server/getters/get-reporting-fees", () => {
       universe: "0x000000000000000000000000000000000000n0n0",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -185,6 +209,12 @@ describe("server/getters/get-reporting-fees", () => {
       feeWindow: "0x1000000000000000000000000000000000000000",
       reporter: "0x0000000000000000000000000000000000000b0b",
       augur: {
+        constants: {
+          REPORTING_STATE: {
+            AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+            FINALIZED: "FINALIZED",
+          },
+        },
         contracts: {
           addresses: {
             974: {
@@ -209,7 +239,7 @@ describe("server/getters/get-reporting-fees", () => {
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
         ],
-        forkedMarket: {},
+        forkedMarket: null,
         nonforkedMarkets: [
           {
             "address": "0x0000000000000000000000000000000000000019",
