@@ -70,38 +70,34 @@ class MyMarkets extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { myMarkets } = this.props
-    // update the filtered markets if the myMarkets prop changes
-    if (myMarkets.length !== nextProps.myMarkets.length) {
-      const openMarkets = []
-      const reportingMarkets = []
-      const finalMarkets = []
-      const filteredMarketsOpen = []
-      const filteredMarketsReporting = []
-      const filteredMarketsFinal = []
+    const openMarkets = []
+    const reportingMarkets = []
+    const finalMarkets = []
+    const filteredMarketsOpen = []
+    const filteredMarketsReporting = []
+    const filteredMarketsFinal = []
 
-      nextProps.myMarkets.forEach((market, index) => {
-        if (market.reportingState === this.reportingStates.PRE_REPORTING) {
-          openMarkets.push(market)
-          filteredMarketsOpen.push(market.id)
-        } else if (market.reportingState === this.reportingStates.FINALIZED) {
-          finalMarkets.push(market)
-          filteredMarketsFinal.push(market.id)
-        } else {
-          reportingMarkets.push(market)
-          filteredMarketsReporting.push(market.id)
-        }
-      })
+    nextProps.myMarkets.forEach((market, index) => {
+      if (market.reportingState === this.reportingStates.PRE_REPORTING) {
+        openMarkets.push(market)
+        filteredMarketsOpen.push(market.id)
+      } else if (market.reportingState === this.reportingStates.FINALIZED) {
+        finalMarkets.push(market)
+        filteredMarketsFinal.push(market.id)
+      } else {
+        reportingMarkets.push(market)
+        filteredMarketsReporting.push(market.id)
+      }
+    })
 
-      this.setState({
-        openMarkets,
-        reportingMarkets,
-        finalMarkets,
-        filteredMarketsOpen,
-        filteredMarketsReporting,
-        filteredMarketsFinal,
-      })
-    }
+    this.setState({
+      openMarkets,
+      reportingMarkets,
+      finalMarkets,
+      filteredMarketsOpen,
+      filteredMarketsReporting,
+      filteredMarketsFinal,
+    })
   }
 
   render() {
