@@ -5,8 +5,8 @@ exports.up = async (knex: Knex): Promise<any> => {
     return knex.schema.raw(`CREATE TABLE outcomes (
       "marketId" varchar(42) NOT NULL,
       outcome integer NOT NULL CONSTRAINT "nonnegativeOutcomeOutcome" CHECK ("nonnegativeOutcomeOutcome" >= 0),
-      price VARCHAR(255) NOT NULL,
-      volume VARCHAR(255) NOT NULL,
+      price VARCHAR(255) NOT NULL CONSTRAINT "nonnegativePrice" CHECK (ltrim("price", '-') = "price"),
+      volume VARCHAR(255) NOT NULL CONSTRAINT "nonnegativeVolume" CHECK (ltrim("volume", '-') = "volume"),
       description text,
       UNIQUE("marketId", outcome)
     )`);
