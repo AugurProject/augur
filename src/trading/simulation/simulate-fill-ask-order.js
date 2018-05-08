@@ -13,7 +13,6 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
-  var gasEstimate = new BigNumber(constants.FILL_ORDER_GAS).times(new BigNumber(matchingSortedAsks.length));
   var makerSharesDepleted = ZERO;
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
@@ -74,7 +73,6 @@ function simulateFillAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     worstCaseFees: settlementFees,
-    gasEstimate: gasEstimate,
     otherSharesDepleted: takerSharesDepleted,
     tokensDepleted: takerTokensDepleted,
     shareBalances: shareBalances,

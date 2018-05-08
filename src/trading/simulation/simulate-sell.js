@@ -13,7 +13,6 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     sharesFilled: ZERO,
     settlementFees: ZERO,
     worstCaseFees: ZERO,
-    gasEstimate: ZERO,
     sharesDepleted: ZERO,
     otherSharesDepleted: ZERO,
     tokensDepleted: ZERO,
