@@ -125,7 +125,12 @@ export default class Position extends Component {
             </div>
             :
             <div className={Styles['Position__confirm-details']}>
-              <p>Close position by selling { getValue(position, 'qtyShares.formatted') } shares of “{ outcomeName }” at market price?</p>
+              { getValue(position, 'qtyShares.value') >= 0 &&
+                <p>Close position by selling { getValue(position, 'qtyShares.formatted') } shares of “{ outcomeName }” at market price?</p>
+              }
+              { getValue(position, 'qtyShares.value') < 0 &&
+                <p>Close position by buying back { getValue(position, 'qtyShares.formatted').replace('-', '') } shares of “{ outcomeName }” at market price?</p>
+              }
               <div className={Styles['Position__confirm-options']}>
                 <button
                   onClick={(e) => {
