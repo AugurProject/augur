@@ -121,8 +121,8 @@ interface UnclaimedCrowdsourcerRow {
 }
 
 interface MarketParticipantRows {
-  initialReporters: UnclaimedInitialReporterRow[], 
-  crowdsourcers: UnclaimedCrowdsourcerRow[],
+  initialReporters: Array<UnclaimedInitialReporterRow>;
+  crowdsourcers: Array<UnclaimedCrowdsourcerRow>;
 }
 
 function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: UniverseAndParentUniverse) => void) {
@@ -200,7 +200,8 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
     }
   }
 
-  const nonforkedMarkets = Object.keys(keyedNonforkedMarkets).map(function(key) { return keyedNonforkedMarkets[key]; });
+  const nonforkedMarketKeys = Object.keys(keyedNonforkedMarkets);
+  const nonforkedMarkets = nonforkedMarketKeys.map(function(key) { return keyedNonforkedMarkets[key]; });
 
   return {forkedMarket, nonforkedMarkets};
 }
