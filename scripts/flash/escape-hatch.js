@@ -4,7 +4,15 @@
 
 var chalk = require("chalk");
 
+function help() {
+  console.log(chalk.red("Pulls the escape hatch"));
+}
+
 function escapeHatch(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
   var controller = augur.contracts.addresses[augur.rpc.getNetworkID()].Controller;
   augur.api.Controller.emergencyStop({
     meta: auth,
