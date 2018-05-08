@@ -162,6 +162,9 @@ let config = {
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || 'dev'),
         CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
       }
+    }),
+    new GitRevisionPlugin({
+      branch: true
     })
   ],
   node: {
@@ -210,6 +213,9 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
+      new GitRevisionPlugin({
+        branch: true
+      })
     ]
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)
