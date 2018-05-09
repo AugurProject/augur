@@ -15,19 +15,18 @@ branches:
   - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
 - '8'
-script:
-- npm run lint
-- istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
-  ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
-  | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
 jobs:
   include:
   - stage: test travis-ci
     if: branch = petong/travis-ci
-    script: skip
+    script:
+    - npm run lint
+    - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
+      ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
+      | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
-      script: echo "I love travis yml" && bash scripts/aws-deploy.sh
+      script: echo "I love travis yml"
       skip_cleanup: true
       on:
         all_branches: true
