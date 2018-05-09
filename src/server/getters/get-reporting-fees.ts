@@ -4,10 +4,8 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, AsyncCallback, ReportingState } from "../../types";
 import Augur from "augur.js";
-import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
 import { groupByAndSum } from "./database";
-import { getMarketsClosingInDateRange } from "./get-markets-closing-in-date-range";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
@@ -33,8 +31,8 @@ export interface NonforkedMarket {
   crowdsourcersAreDisavowed: boolean;
   isFinalized: boolean;
   isMigrated: boolean;
-  crowdsourcers: Array<CrowdsourcerState>;
-  initialReporterAddress: Address|null;
+  crowdsourcers: Array<Address>;
+  initialReporter: Address|null;
 }
 
 export interface FeeDetails {
@@ -143,7 +141,7 @@ function getUniverseAndParentUniverse(db: Knex, universe: Address|null, feeWindo
 
 function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUniverse: Address) {
   let forkedMarket: ForkedMarket|null = null;
-  const keyedNonforkedMarkets = {} as any;
+  const keyedNonforkedMarkets: {[marketId: string]: NonforkedMarket} = {};
   let i: number;
   for (i = 0; i < marketParticipants.initialReporters.length; i++) {
     if (marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe === parentUniverse) {
@@ -157,7 +155,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
           isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
         },
       };
-    } else if (!marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe !== parentUniverse) {
+    } else if (!marketParticipants.initialReporters[i].forking) {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
         marketId: marketParticipants.initialReporters[i].marketId,
         universe: marketParticipants.initialReporters[i].universe,
@@ -182,7 +180,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
           initialReporter: null,
         };
       }
-    } else if (!marketParticipants.crowdsourcers[i].forking && marketParticipants.crowdsourcers[i].universe !== parentUniverse) {
+    } else if (!marketParticipants.crowdsourcers[i].forking) {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
           marketId: marketParticipants.crowdsourcers[i].marketId,
