@@ -67,7 +67,8 @@ export default class Order extends Component {
     } = this.props
     const { orderCancellationStatus } = order
     const s = this.state
-
+    const orderPrice = getValue(order, 'avgPrice.formatted')
+    const orderShares = getValue(order, 'unmatchedShares.formatted')
     const confirmStyle = {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
@@ -89,10 +90,10 @@ export default class Order extends Component {
           }
         </li>
         <li>
-          { order.type === SELL ? <span>-</span> : <span>+</span> } { getValue(order, 'unmatchedShares.formatted') }
+          { order.type === SELL ? <span>-</span> : <span>+</span> } { orderShares }
         </li>
         <li>
-          { getValue(order, 'avgPrice.formatted') }
+          { orderPrice }
         </li>
         { isExtendedDisplay && !isMobile &&
           <li />
@@ -121,7 +122,7 @@ export default class Order extends Component {
               </div>
             </div> :
             <div className={Styles['Order__confirm-details']}>
-              <p>Cancel order for { getValue(order, 'unmatchedShares.formatted') } shares of &ldquo;{ outcomeName }&rdquo; at { getValue(order, 'avgPrice.formatted') } ETH?</p>
+              <p>{`Cancel order for ${orderShares} shares ${outcomeName ? `of "${outcomeName}"` : ''} at ${orderPrice} ETH?`}</p>
               <div className={Styles['Order__confirm-options']}>
                 <button onClick={(e) => { order.cancelOrder(order.id, order.marketId, order.outcomeId, order.type); this.toggleConfirm() }}>Yes</button>
                 <button onClick={this.toggleConfirm}>No</button>
