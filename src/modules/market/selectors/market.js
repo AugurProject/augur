@@ -44,7 +44,6 @@ import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-serie
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import getOrderBookSeries from 'modules/order-book/selectors/order-book-series'
-import getOutstandingShares from 'modules/market/selectors/helpers/get-outstanding-shares'
 
 import { generateTrade, generateTradeSummary } from 'modules/trade/helpers/generate-trade'
 import hasUserEnoughFunds from 'modules/trade/helpers/has-user-enough-funds'
@@ -290,8 +289,6 @@ export function assembleMarket(
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))
 
       market.tags = (market.tags || []).filter(tag => !!tag)
-
-      market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}))
 
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
 

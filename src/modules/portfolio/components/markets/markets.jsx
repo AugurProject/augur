@@ -137,7 +137,6 @@ class MyMarkets extends Component {
             toggleFavorite={toggleFavorite}
             loadMarketsInfo={loadMarketsInfo}
             linkType={TYPE_TRADE}
-            outstandingReturns
             paginationPageParam="open"
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
@@ -166,7 +165,6 @@ class MyMarkets extends Component {
             toggleFavorite={toggleFavorite}
             loadMarketsInfo={loadMarketsInfo}
             linkType={TYPE_REPORT}
-            outstandingReturns
             paginationPageParam="reporting"
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
@@ -195,7 +193,6 @@ class MyMarkets extends Component {
             toggleFavorite={toggleFavorite}
             loadMarketsInfo={loadMarketsInfo}
             linkType={TYPE_CLOSED}
-            outstandingReturns
             paginationPageParam="final"
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}

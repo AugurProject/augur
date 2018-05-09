@@ -75,7 +75,7 @@ MarketPortfolioCardFooter.propTypes = {
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
   buttonAction: PropTypes.func,
-  outstandingReturns: PropTypes.number,
+  outstandingReturns: PropTypes.string,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
 }

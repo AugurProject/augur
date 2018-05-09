@@ -10,6 +10,7 @@ import { MARKETS } from 'modules/routes/constants/views'
 
 export default class Positions extends Component {
   static propTypes = {
+    marketIds: PropTypes.array.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -21,12 +22,14 @@ export default class Positions extends Component {
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
     claimTradingProceeds: PropTypes.func.isRequired,
+    getWinningBalances: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
   }
 
   componentWillMount() {
-    const { loadAccountTrades } = this.props
+    const { loadAccountTrades, marketIds, getWinningBalances } = this.props
     loadAccountTrades()
+    getWinningBalances(marketIds)
   }
 
   render() {
