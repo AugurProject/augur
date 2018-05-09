@@ -49,9 +49,9 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
   const buckets: Array<PLBucket> = [];
   for(let bucketEndTime=startTime; bucketEndTime < endTime; bucketEndTime += periodInterval) {
-    buckets.push({ timestamp: bucketEndTime });
+    buckets.push({ timestamp: bucketEndTime, profitLoss: null });
   }
-  buckets.push({ timestamp: endTime });
+  buckets.push({ timestamp: endTime, profitLoss: null });
 
   return buckets;
 }
@@ -119,7 +119,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   // separately
   const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
 
-  if (_.isEmpty(tradesByOutcome)) return buckets.slice(1).map((bucket) => Object.assign({profitLoss: null}, bucket));
+  if (_.isEmpty(tradesByOutcome)) return buckets.slice(1);
 
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss

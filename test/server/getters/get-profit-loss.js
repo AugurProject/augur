@@ -44,8 +44,10 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     const buckets = bucketRangeByInterval(10000, 10040, 20000);
     assert.deepEqual(buckets, [{
       timestamp: 10000,
+      profitLoss: null
     }, {
       timestamp: 10040,
+      profitLoss: null
     }]);
 
     done();
@@ -55,14 +57,19 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     const buckets = bucketRangeByInterval(10000, 10040, 10);
     assert.deepEqual(buckets, [{
       timestamp: 10000,
+      profitLoss: null
     }, {
       timestamp: 10010,
+      profitLoss: null
     }, {
       timestamp: 10020,
+      profitLoss: null
     }, {
-      timestamp: 10020,
+      timestamp: 10030,
+      profitLoss: null
     }, {
       timestamp: 10040,
+      profitLoss: null
     }]);
 
     done();
