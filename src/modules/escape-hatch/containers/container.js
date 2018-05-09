@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import { augur } from 'services/augurjs'
 import EscapeHatchView from 'modules/escape-hatch/components/escape-hatch'
 
 import selectEscapeHatchData from 'modules/escape-hatch/selectors/escape-hatch-data'
@@ -18,6 +19,7 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   loginAccount: state.loginAccount,
   escapeHatchData: selectEscapeHatchData(state),
+  gasPrice: augur.rpc.getGasPrice(),
 })
 
 const mapDispatchToProps = dispatch => ({
