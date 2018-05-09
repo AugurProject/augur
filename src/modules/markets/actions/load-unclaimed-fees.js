@@ -14,11 +14,13 @@ export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispa
       nextMarket()
     }))
   }, (err) => {
+    // log error, but don't stop updating markets unclaimedFees
+    if (err) console.error(err)
     const updatedMarketsData = marketIds.reduce((p, marketId, index) => ({
       ...p,
       [marketId]: {
         ...marketsData[marketId],
-        unclaimedCreatorFees: unclaimedFees[marketId],
+        unclaimedCreatorFees: unclaimedFees[marketId] || '0',
       },
     }), {})
     dispatch(updateMarketsData(updatedMarketsData))
