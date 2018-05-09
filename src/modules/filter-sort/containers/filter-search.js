@@ -1,24 +1,23 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import getAllMarkets from 'modules/markets/selectors/markets-all'
-
 import FilterSearch from 'modules/filter-sort/components/filter-search/filter-search'
-import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted'
+import { getSelectedTagsAndCategoriesFromLocation } from 'src/modules/markets/helpers/get-selected-tags-and-categories-from-location'
 
-const mapStateToProps = state => ({
-  items: getAllMarkets(),
-})
+const mapStateToProps = (state, { location }) => {
+  const {
+    category,
+    tags,
+    keywords,
+  } = getSelectedTagsAndCategoriesFromLocation(location)
 
-const mapDispatchToProps = dispatch => ({
-  updateIndices: (p) => {
-    if (p.indices) {
-      dispatch(clearMarketsFilteredSorted())
-      dispatch(updateMarketsFilteredSorted(p.indices))
-    }
-  },
-})
+  return {
+    category,
+    tags,
+    keywords,
+  }
+}
 
-const FilterSearchContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(FilterSearch))
+const FilterSearchContainer = withRouter(connect(mapStateToProps)(FilterSearch))
 
 export default FilterSearchContainer

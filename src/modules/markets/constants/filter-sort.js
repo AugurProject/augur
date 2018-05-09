@@ -1,3 +1,10 @@
+// Keys to search on market objects.
+export const FILTER_SEARCH_KEYS = [
+  'description',
+  ['outcomes', 'description'],
+  ['tags'],
+]
+
 // Filter/Sort Defaults
 export const FILTER_SORT_TYPE = 'open'
 export const FILTER_SORT_SORT = 'volume'
