@@ -195,12 +195,14 @@ function advanceMarketsAwaitingFinalization(db: Knex, augur: Augur, blockNumber:
     .asCallback((err: Error|null, marketIds: Array<{ marketId: Address; universe: Address; }>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
-        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, nextMarketIdRow);
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
-          universe: marketIdRow.universe,
-          marketId: marketIdRow.marketId,
-          reportingState: ReportingState.AWAITING_FINALIZATION,
+        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, (err: Error|null) => {
+          augurEmitter.emit("MarketState", {
+            eventName: "MarketState",
+            universe: marketIdRow.universe,
+            marketId: marketIdRow.marketId,
+            reportingState: ReportingState.AWAITING_FINALIZATION,
+          });
+          db("payouts").where({ marketId: marketIdRow.marketId, tentativeWinning: 1 }).update("winning", 1).asCallback(nextMarketIdRow);
         });
       }, callback);
     });
