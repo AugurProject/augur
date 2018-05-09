@@ -1,23 +1,29 @@
-import { augur } from 'services/augurjs'
+import async from 'async'
 import logError from 'utils/log-error'
-import speedomatic from 'speedomatic'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
+import { collectMarketCreatorFees } from 'modules/portfolio/actions/collect-market-creator-fees'
 
 export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispatch, getState) => {
-  augur.augurNode.submitRequest('getUnclaimedMarketCreatorFees', { marketIds }, (err, marketsUnclaimedFees) => {
-    if (err) return callback(err)
-
-    const { marketsData } = getState()
-
-    const updatedMarketsData = marketIds.reduce((p, market, index) => ({
+  if (marketIds == null || marketIds.length === 0) return callback(null, [])
+  const { marketsData } = getState()
+  const unclaimedFees = {}
+  async.eachSeries(marketIds, (marketId, nextMarket) => {
+    dispatch(collectMarketCreatorFees(true, marketId, (err, balance) => {
+      if (err) return nextMarket(err)
+      unclaimedFees[marketId] = balance
+      nextMarket()
+    }))
+  }, (err) => {
+    // log error, but don't stop updating markets unclaimedFees
+    if (err) console.error(err)
+    const updatedMarketsData = marketIds.reduce((p, marketId, index) => ({
       ...p,
-      [market]: {
-        ...marketsData[market],
-        unclaimedCreatorFees: speedomatic.unfix(marketsUnclaimedFees[index].unclaimedFee, 'string'),
+      [marketId]: {
+        ...marketsData[marketId],
+        unclaimedCreatorFees: unclaimedFees[marketId] || '0',
       },
     }), {})
-
     dispatch(updateMarketsData(updatedMarketsData))
-    callback(null, marketsUnclaimedFees)
+    callback(null, updatedMarketsData)
   })
 }
