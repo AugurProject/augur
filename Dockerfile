@@ -33,7 +33,7 @@ COPY . /augur
 COPY support/local-run.sh /augur/local-run.sh
 
 # workaround a bug when running inside an alpine docker image
-RUN rm /augur/yarn.lock
+RUN rm -f /augur/yarn.lock
 
 RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev
 
