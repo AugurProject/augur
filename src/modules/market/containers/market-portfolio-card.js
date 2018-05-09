@@ -6,6 +6,7 @@ import { determineMarketLinkType } from 'modules/market/helpers/determine-market
 import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 import { selectMarket } from 'modules/market/selectors/market'
 import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
+import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestampInSeconds(state),
@@ -13,6 +14,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
 })
 

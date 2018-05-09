@@ -26,6 +26,7 @@ export default class MarketPortfolioCard extends Component {
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
+    getWinningBalances: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -40,6 +41,12 @@ export default class MarketPortfolioCard extends Component {
         openOrders: false,
       },
     }
+  }
+
+  componentWillMount() {
+    const { market, getWinningBalances } = this.props
+    console.log('getWinningBalances([market.id])', market.id)
+    getWinningBalances([market.id])
   }
 
   toggleTable(tableKey) {

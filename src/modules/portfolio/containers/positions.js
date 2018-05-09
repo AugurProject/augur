@@ -9,7 +9,6 @@ import getClosePositionStatus from 'modules/my-positions/selectors/close-positio
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
-import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 import { constants } from 'services/augurjs'
 
 const mapStateToProps = (state) => {
@@ -23,7 +22,6 @@ const mapStateToProps = (state) => {
   const markets = getPositionsMarkets(positions, openOrders)
   // TODO -- getting each section of markets should be it's own call
   const marketsCount = markets.length
-  const marketIds = markets.reduce((p, market) => [...p, market.id], [])
   markets.forEach((market, index) => {
     if (market.reportingState === reportingStates.FINALIZED) {
       closedMarkets.push(market)
@@ -35,7 +33,6 @@ const mapStateToProps = (state) => {
   })
 
   return {
-    marketIds,
     currentTimestamp: selectCurrentTimestamp(state),
     marketsCount,
     openPositionMarkets,
@@ -50,7 +47,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   loadAccountTrades: () => dispatch(loadAccountTrades()),
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
   claimTradingProceeds: marketIds => dispatch(claimTradingProceeds(marketIds)),

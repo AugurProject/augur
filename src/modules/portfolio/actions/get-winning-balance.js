@@ -15,7 +15,9 @@ export const getWinningBalance = (marketIds = [], callback = logError) => (dispa
       delete marketsData[marketId].outstandingReturns
     })
 
-    const updatedMarketsData = winningBalance.filter(balance => balance.winnings !== '0').reduce((p, balance) => ({
+    const balances = winningBalance.filter(balance => balance.winnings !== '0')
+    if (balances.length === 0) return callback(null, {})
+    const updatedMarketsData = balances.reduce((p, balance) => ({
       ...p,
       [balance.marketId]: {
         ...marketsData[balance.marketId],
