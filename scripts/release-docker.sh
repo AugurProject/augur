@@ -25,7 +25,6 @@ docker push augurproject/augur:${augur_env}
 if [[ ${TRAVIS} = true && ${augur_env} == "dev" ]]; then
     sudo apt-get install libssl-dev pyasn1
     # we need aws cli tools to deploy
-    sudo pip install requests[security]
     sudo pip install awscli
     aws --region=us-east-1 ecs update-service  --service dev-augur-ui --cluster ${cluster} --force-new-deployment
 fi
