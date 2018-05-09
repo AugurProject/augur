@@ -45,7 +45,6 @@ export default class MarketPortfolioCard extends Component {
 
   componentWillMount() {
     const { market, getWinningBalances } = this.props
-    console.log('getWinningBalances([market.id])', market.id)
     getWinningBalances([market.id])
   }
 
