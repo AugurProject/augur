@@ -99,8 +99,8 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
         subscriptions.removeAllListeners();
       });
 
-      websocket.on("error", function(e){	
-        console.error(e);
+      websocket.on("error", (err) => {
+        console.error(err);
       });
     });
 
