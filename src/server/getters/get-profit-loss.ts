@@ -119,6 +119,8 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   // separately
   const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
 
+  if (_.isEmpty(tradesByOutcome)) return buckets.slice(1).map((bucket) => Object.assign({profitLoss: null}, bucket));
+
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss
   const results = await Promise.all(_.map(tradesByOutcome, async (trades: Array<TradingHistoryRow>, key: string): Promise<Array<PLBucket>> => {
@@ -127,8 +129,10 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     return calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice);
   }));
 
-  // Drop the market & outcome groups, and then re-group by bucket timestamp,
-  // and aggregate all of the PLBuckets by bucket
+  console.log("results: ", results);
+
+  // We have results! Drop the market & outcome groups, and then re-group by
+  // bucket timestamp, and aggregate all of the PLBuckets by bucket
   const summed = groupOutcomesProfitLossByBucket(results).map((bucket: Array<PLBucket>) => {
     return bucket.reduce(sumProfitLossResults, {timestamp: 0, profitLoss: null});
   });

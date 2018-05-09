@@ -67,6 +67,14 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
 
     done();
   });
+
+
+  it("generates 31 buckets", (done) => {
+    const buckets = bucketRangeByInterval(0, 30 * 86400, 86400);
+    assert.equal(buckets.length, 31);
+
+    done();
+  });
 });
 
 describe("server/getters/get-profit-loss", () => {
@@ -75,20 +83,28 @@ describe("server/getters/get-profit-loss", () => {
 
   const testWithDatabase = (t, done) => {
     getProfitLoss(connection, augur, t.params.universe, t.params.account, t.params.startTime, t.params.endTime, t.params.periodInterval, (err, profitLoss) => {
-      t.assertions(err, profitLoss);
+      try {
+        t.assertions(err, profitLoss);
+      } catch (e) {
+        return done(e);
+      }
       done();
     });
   };
 
   const testWithMockedData = (t, done) => {
-    var profitLoss = null;
-    var error = null;
     try {
-      profitLoss = calculateBucketProfitLoss(augur, t.params.trades, t.params.buckets);
-    } catch (e) {
-      error = e;
+      var profitLoss = null;
+      var error = null;
+      try {
+        profitLoss = calculateBucketProfitLoss(augur, t.params.trades, t.params.buckets);
+      } catch (e) {
+        error = e;
+      }
+      t.assertions(error, profitLoss);
+    } catch(e) {
+      return done(e);
     }
-    t.assertions(error, profitLoss);
     done();
   };
 
@@ -214,6 +230,24 @@ describe("server/getters/get-profit-loss", () => {
       }
     }, done);
   });
+
+
+  it("generates 30 PLs all with null profitLoss", (done) => {
+    testWithDatabase({
+      params: {
+        universe: "0x000000000000000000000000000000000000000b",
+        account: "0x1000000000000000000000000000000000000b0b",
+        startTime: 0,
+        endTime: 30*86400,
+        periodInterval: 86400
+      },
+      assertions: (err, profitLoss) => {
+        assert.isNull(err);
+        assert.equal(profitLoss.length, 30);
+      }
+    }, done);
+  });
+
 
 
   var trades1 = [{
