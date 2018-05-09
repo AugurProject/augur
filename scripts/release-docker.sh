@@ -22,7 +22,7 @@ docker push augurproject/augur:${augur_env}
 
 # for use in travis-ci
 # aws deploy
-if [[ ${travis} = true && ${augur_env} == "dev" ]]; then
+if [[ ${TRAVIS} = true && ${augur_env} == "dev" ]]; then
     sudo apt-get install libssl-dev pyasn1
     # we need aws cli tools to deploy
     sudo pip install awscli
