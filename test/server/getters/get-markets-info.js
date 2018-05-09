@@ -511,8 +511,11 @@ describe("server/getters/get-markets-info", () => {
           consensus: {
             isInvalid: false,
             payout: [
-              "1",
-              "1",
+              "10000",
+              "0",
+              "0",
+              "0",
+              "0",
             ],
           },
           outcomes: [

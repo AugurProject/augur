@@ -170,7 +170,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000211",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000211",
-          marketStateId: 17,
+          marketStateId: 18,
           marketType: "binary",
           maxPrice: new BigNumber("1", 10),
           minPrice: new BigNumber("0", 10),

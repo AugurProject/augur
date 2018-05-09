@@ -13,12 +13,28 @@ exports.seed = async (knex: Knex): Promise<any> => {
       initialReporter: "0x0000000000000000000000000000000000abe123",
       redeemed: false,
     }, {
+      marketId: "0x0000000000000000000000000000000000000019",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      payoutId: 5,
+      isDesignatedReporter: true,
+      amountStaked: "102",
+      initialReporter: "0x0000000000000000000000000000000000abe111",
+      redeemed: false,
+    }, {
       marketId: "0x0000000000000000000000000000000000000211",
       reporter: "0x0000000000000000000000000000000000000b0b",
       payoutId: 5,
       isDesignatedReporter: true,
       amountStaked: "102",
       initialReporter: "0x0000000000000000000000000000000000abe321",
+      redeemed: false,
+    }, {
+      marketId: "0x00000000000000000000000000000000000000f1",
+      reporter: "0x0000000000000000000000000000000000000b0b",
+      payoutId: 5,
+      isDesignatedReporter: true,
+      amountStaked: "102",
+      initialReporter: "0x0000000000000000000000000000000000abe222",
       redeemed: false,
     },
     ];
