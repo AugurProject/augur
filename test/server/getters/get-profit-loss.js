@@ -1,13 +1,73 @@
 const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {calculateBucketedProfitLoss, getProfitLoss} = require("../../../build/server/getters/get-profit-loss");
+const {calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval} = require("../../../build/server/getters/get-profit-loss");
 
 const START_TIME = 1506474500;
 const MINUTE_SECONDS = 60;
 const HOUR_SECONDS = MINUTE_SECONDS*60;
 const DAY_SECONDS = HOUR_SECONDS*24;
 const WEEK_SECONDS = DAY_SECONDS*7;
+
+describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
+  it("throws when startTime is negative", (done) => {
+    assert.throws(() => bucketRangeByInterval(-1, 0, 1), Error, "startTime must be a valid unix timestamp, greater than 0");
+    done();
+  });
+
+  it("throws when endTime is negative", (done) => {
+    assert.throws(() => bucketRangeByInterval(0, -1, 1), Error, "endTime must be a valid unix timestamp, greater than 0");
+    done();
+  });
+
+  it("throws when periodInterval is negative", (done) => {
+    assert.throws(() => bucketRangeByInterval(0, 1, -1), Error, "periodInterval must be positive integer (seconds)");
+    done();
+  });
+
+  it("throws when periodInterval is zero", (done) => {
+    assert.throws(() => bucketRangeByInterval(0, 1, 0), Error, "periodInterval must be positive integer (seconds)");
+    done();
+  });
+
+  it("throws when startTime is equal to endTime", (done) => {
+    assert.throws(() => bucketRangeByInterval(0, 0, 1), Error, "endTime must be greater than startTime");
+    done();
+  });
+
+  it("throws when startTime is greater than endTime", (done) => {
+    assert.throws(() => bucketRangeByInterval(1, 0, 1), Error, "endTime must be greater than startTime");
+    done();
+  });
+
+  it("generates a range including only startTime and endTime", (done) => {
+    const buckets = bucketRangeByInterval(10000, 10040, 20000);
+    assert.deepEqual(buckets, [{
+      timestamp: 10000,
+    }, {
+      timestamp: 10040,
+    }]);
+
+    done();
+  });
+
+  it("generates a range of 5 buckets, including start and end times every 10 seconds", (done) => {
+    const buckets = bucketRangeByInterval(10000, 10040, 10);
+    assert.deepEqual(buckets, [{
+      timestamp: 10000,
+    }, {
+      timestamp: 10010,
+    }, {
+      timestamp: 10020,
+    }, {
+      timestamp: 10020,
+    }, {
+      timestamp: 10040,
+    }]);
+
+    done();
+  });
+});
 
 describe("server/getters/get-profit-loss", () => {
   var connection = null;
@@ -24,7 +84,7 @@ describe("server/getters/get-profit-loss", () => {
     var profitLoss = null;
     var error = null;
     try {
-      profitLoss = calculateBucketedProfitLoss(augur, t.params.trades, t.params.startTime, t.params.endTime, t.params.periodInterval);
+      profitLoss = calculateBucketProfitLoss(augur, t.params.trades, t.params.buckets);
     } catch (e) {
       error = e;
     }
@@ -100,7 +160,6 @@ describe("server/getters/get-profit-loss", () => {
             "profitLoss": {
               "meanOpenPrice": "5.5",
               "position": "-1.4",
-              "queued": "0",
               "realized": "0",
               "unrealized": "0",
             },
@@ -108,51 +167,46 @@ describe("server/getters/get-profit-loss", () => {
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.423529411764705882352726729479670656141252219970008205302322994349998585292702939668266983561101208158771264465382112440932708598590951532128",
+              "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
-              "queued": "0",
               "realized": "0",
-              "unrealized": "-0.1300000000000000000003645598845598845598712260509860509860509096050024050024050025639461279461279461300888504088504088504143953823953823953824",
+              "unrealized": "-0.13",
             },
             "timestamp": 1506474520,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.423529411764705882352726729479670656141252219970008205302322994349998585292702939668266983561101208158771264465382112440932708598590951532128",
+              "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
-              "queued": "0",
               "realized": "0",
-              "unrealized": "-0.1300000000000000000003645598845598845598712260509860509860509096050024050024050025639461279461279461300888504088504088504143953823953823953824",
+              "unrealized": "-0.13",
             },
             "timestamp": 1506474530,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.423529411764705882352726729479670656141252219970008205302322994349998585292702939668266983561101208158771264465382112440932708598590951532128",
+              "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
-              "queued": "0",
               "realized": "0",
-              "unrealized": "-0.1300000000000000000003645598845598845598712260509860509860509096050024050024050025639461279461279461300888504088504088504143953823953823953824",
+              "unrealized": "-0.13",
             },
             "timestamp": 1506474540,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.423529411764705882352726729479670656141252219970008205302322994349998585292702939668266983561101208158771264465382112440932708598590951532128",
+              "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
-              "queued": "0",
               "realized": "0",
-              "unrealized": "-0.1300000000000000000003645598845598845598712260509860509860509096050024050024050025639461279461279461300888504088504088504143953823953823953824",
+              "unrealized": "-0.13",
             },
             "timestamp": 1506474550,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.423529411764705882352726729479670656141252219970008205302322994349998585292702939668266983561101208158771264465382112440932708598590951532128",
+              "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
-              "queued": "0",
               "realized": "0",
-              "unrealized": "-0.1300000000000000000003645598845598845598712260509860509860509096050024050024050025639461279461279461300888504088504088504143953823953823953824",
+              "unrealized": "-0.13",
             },
             "timestamp": 1506474560,
           }
@@ -192,6 +246,10 @@ describe("server/getters/get-profit-loss", () => {
     testWithMockedData({
       params: {
         trades: trades1,
+        buckets: [{
+          timestamp: 20000,
+          lastPrice: "0.3"
+        }],
         startTime: 0,
         endTime: 20000,
         periodInterval: 20000,
@@ -216,6 +274,19 @@ describe("server/getters/get-profit-loss", () => {
     testWithMockedData({
       params: {
         trades: trades1,
+        buckets: [{
+          timestamp: 10010,
+          lastPrice: "0.1"
+        }, {
+          timestamp: 10020,
+          lastPrice: "0.2"
+        }, {
+          timestamp: 10030,
+          lastPrice: "0.2"
+        }, {
+          timestamp: 10040,
+          lastPrice: "0.3"
+        }],
         startTime: 10000,
         endTime: 10040,
         periodInterval: 10,
@@ -265,10 +336,33 @@ describe("server/getters/get-profit-loss", () => {
   });
 
   it("calculates pl for 1 period, and 4 periods, and verifies last period PLs are equal", (done) => {
-    var pls1 = calculateBucketedProfitLoss(augur, trades1, 0, 10040, 20000);
+    var buckets1 = [{
+      timestamp: 10000,
+      lastPrice: null
+    }, {
+      timestamp: 2000,
+      lastPrice: "0.3"
+    }];
+    var pls1 = calculateBucketProfitLoss(augur, trades1, buckets1);
     assert.equal(pls1.length, 1);
 
-    var pls2 = calculateBucketedProfitLoss(augur, trades1, 10000, 10040, 10);
+    var buckets2 = [{
+      timestamp: 10000,
+      lastPrice: null
+    }, {
+      timestamp: 10010,
+      lastPrice: "0.1"
+    }, {
+      timestamp: 10020,
+      lastPrice: "0.2"
+    }, {
+      timestamp: 10030,
+      lastPrice: "0.2"
+    }, {
+      timestamp: 10040,
+      lastPrice: "0.3"
+    }];
+    var pls2 = calculateBucketProfitLoss(augur, trades1, buckets2);
     assert.equal(pls2.length, 4);
 
     var result = {
@@ -294,7 +388,15 @@ describe("server/getters/get-profit-loss", () => {
       price: "0.3",
       maker: true,
     });
-    var pls1 = calculateBucketedProfitLoss(augur, trades2, 0, 10040, 20000);
+    
+    var buckets = [{
+      timestamp: 10000,
+      lastPrice: null
+    }, {
+      timestamp: 10040,
+      lastPrice: "0.3"
+    }];
+    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -325,37 +427,16 @@ describe("server/getters/get-profit-loss", () => {
       price: "0.3",
       maker: true,
     }].concat(trades1);
-    var pls1 = calculateBucketedProfitLoss(augur, trades2, 10000, 10040, 20000);
-    assert.equal(pls1.length, 1);
 
-    var result = {
-      "meanOpenPrice": "0.166666666666666666667",
-      "position": "10",
-      "queued": "0",
-      "realized": "1.166666666666666666665",
-      "unrealized": "1.33333333333333333333",
-    };
-
-    assert.deepEqual(pls1[0].profitLoss, result);
-
-    done();
-  });
-  it("calculates pl for one period, with basis which nets out", (done) => {
-    // These two trades net out, leaving a 0 basis
-    var trades2 = [{
-      timestamp: 8000,
-      type: "buy",
-      amount: "5",
-      price: "0.3",
-      maker: true,
+    var buckets = [{
+      timestamp: 10000,
+      lastPrice: "0.3"
     }, {
-      timestamp: 9000,
-      type: "sell",
-      amount: "5",
-      price: "0.3",
-      maker: true,
-    }].concat(trades1);
-    var pls1 = calculateBucketedProfitLoss(augur, trades2, 10000, 10040, 20000);
+      timestamp: 10040,
+      lastPrice: "0.3"
+    }];
+
+    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -387,7 +468,15 @@ describe("server/getters/get-profit-loss", () => {
       maker: true,
     }].concat(trades1);
 
-    var pls1 = calculateBucketedProfitLoss(augur, trades2, 10000, 10040, 20000);
+    var buckets = [{
+      timestamp: 10000,
+      lastPrice: "0.1"
+    }, {
+      timestamp: 10040,
+      lastPrice: "0.3"
+    }];
+
+    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -403,33 +492,4 @@ describe("server/getters/get-profit-loss", () => {
     done();
   });
 
-  it("throws when startTime is negative", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, -1, 0, 1), Error, "startTime must be a valid unix timestamp, greater than 0");
-    done();
-  });
-
-  it("throws when endTime is negative", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, 0, -1, 1), Error, "endTime must be a valid unix timestamp, greater than 0");
-    done();
-  });
-
-  it("throws when periodInterval is negative", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, 0, 1, -1), Error, "periodInterval must be positive integer (seconds)");
-    done();
-  });
-
-  it("throws when periodInterval is zero", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, 0, 1, 0), Error, "periodInterval must be positive integer (seconds)");
-    done();
-  });
-
-  it("throws when startTime is equal to endTime", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, 0, 0, 1), Error, "endTime must be greater than startTime");
-    done();
-  });
-
-  it("throws when startTime is greater than endTime", (done) => {
-    assert.throws(() => calculateBucketedProfitLoss(augur, trades1, 1, 0, 1), Error, "endTime must be greater than startTime");
-    done();
-  });
 });

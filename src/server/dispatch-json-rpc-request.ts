@@ -26,6 +26,7 @@ import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
 import { getUniversesInfo } from "./getters/get-universes-info";
+import { getProfitLoss } from "./getters/get-profit-loss";
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   console.log(request);
@@ -80,6 +81,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getContractAddresses(augur, callback);
     case "getUniversesInfo":
       return getUniversesInfo(db, augur, request.params.universe, request.params.account, callback);
+    case "getProfitLoss":
+      return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }
