@@ -1,5 +1,4 @@
 import { createBigNumber } from 'utils/create-big-number'
-import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { TWO } from 'modules/trade/constants/numbers'
@@ -133,24 +132,14 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           maxPrice: market.maxPrice,
           price: newTradeDetails.limitPrice,
           shares: newTradeDetails.numShares,
-          marketCreatorFeeRate: market.settlementFee,
+          marketCreatorFeeRate: market.marketCreatorFeeRate,
           singleOutcomeOrderBook: (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) || {},
           shouldCollectReportingFees: !market.isDisowned,
           reportingFeeRate: market.reportingFeeRate,
         })
-        const calculatedTradeCost = augur.trading.calculateTradeCost({
-          displayPrice: newTradeDetails.limitPrice,
-          displayAmount: newTradeDetails.numShares,
-          numTicks: market.numTicks,
-          orderType: newTradeDetails.side === BUY ? 0 : 1,
-          minDisplayPrice: market.minPrice,
-          maxDisplayPrice: market.maxPrice,
-        })
-        const convertedCost = createBigNumber(speedomatic.unfix(calculatedTradeCost.cost, 'string'), 10)
         const totalFee = createBigNumber(simulatedTrade.settlementFees, 10)
         newTradeDetails.totalFee = totalFee.toFixed()
-        // newTradeDetails.totalCost = simulatedTrade.tokensDepleted
-        newTradeDetails.totalCost = createBigNumber(simulatedTrade.tokensDepleted).eq(convertedCost) ? simulatedTrade.tokensDepleted : convertedCost.toString()
+        newTradeDetails.totalCost = simulatedTrade.tokensDepleted
         newTradeDetails.feePercent = totalFee.dividedBy(createBigNumber(simulatedTrade.tokensDepleted, 10)).toFixed()
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({
