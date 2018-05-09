@@ -145,16 +145,16 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows, parentUnive
   let i: number;
   for (i = 0; i < marketParticipants.initialReporters.length; i++) {
     if (marketParticipants.initialReporters[i].forking && marketParticipants.initialReporters[i].universe === parentUniverse) {
-        forkedMarket = {
-          marketId: marketParticipants.initialReporters[i].marketId,
-          universe: marketParticipants.initialReporters[i].universe,
-          isFinalized: marketParticipants.initialReporters[i].reportingState === ReportingState.FINALIZED,
-          crowdsourcers: [],
-          initialReporter: {
-            initialReporterId: marketParticipants.initialReporters[i].initialReporter,
-            isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
-          },
-        };
+      forkedMarket = {
+        marketId: marketParticipants.initialReporters[i].marketId,
+        universe: marketParticipants.initialReporters[i].universe,
+        isFinalized: marketParticipants.initialReporters[i].reportingState === ReportingState.FINALIZED,
+        crowdsourcers: [],
+        initialReporter: {
+          initialReporterId: marketParticipants.initialReporters[i].initialReporter,
+          isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
+        },
+      };
     } else if (!marketParticipants.initialReporters[i].forking) {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
         marketId: marketParticipants.initialReporters[i].marketId,
