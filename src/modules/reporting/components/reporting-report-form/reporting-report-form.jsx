@@ -94,7 +94,7 @@ export default class ReportingReportForm extends Component {
     const minValue = parseFloat(min)
     const maxValue = parseFloat(max)
     const valueValue = parseFloat(value)
-    const bnValue = createBigNumber(value)
+    const bnValue = createBigNumber(value || 0)
     const bnTickSize = createBigNumber(tickSize)
 
     if (value === '') {

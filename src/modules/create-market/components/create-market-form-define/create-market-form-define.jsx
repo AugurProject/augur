@@ -27,12 +27,15 @@ export default class CreateMarketDefine extends Component {
   constructor(props) {
     super(props)
 
+    const localValue = {}
+    localValue.tag1 = props.newMarket.tag1
+    localValue.tag2 = props.newMarket.tag2
+    localValue.category = props.newMarket.category
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
-      // suggestedCatClicked: false,
+      localValue,
     }
-
     this.filterCategories = this.filterCategories.bind(this)
     this.updateFilteredCategories = this.updateFilteredCategories.bind(this)
     this.validateTag = this.validateTag.bind(this)
@@ -89,8 +92,15 @@ export default class CreateMarketDefine extends Component {
       default:
         updatedMarket.validations[currentStep][fieldName] = true
     }
+    const { localValue } = this.state
+    localValue[fieldName] = value
+    this.setState({
+      localValue,
+    })
 
-    updatedMarket[fieldName] = value
+    if (updatedMarket.validations[currentStep][fieldName] === true) {
+      updatedMarket[fieldName] = value
+    }
     updatedMarket.isValid = isValid(currentStep)
 
     updateNewMarket(updatedMarket)
@@ -104,6 +114,13 @@ export default class CreateMarketDefine extends Component {
       keyPressed,
     } = this.props
     const s = this.state
+
+    let tagMessage = null
+    if (newMarket.validations[newMarket.currentStep].tag1.length) {
+      tagMessage = newMarket.validations[newMarket.currentStep].tag1
+    } else if (newMarket.validations[newMarket.currentStep].tag2.length) {
+      tagMessage = newMarket.validations[newMarket.currentStep].tag2
+    }
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
@@ -142,7 +159,7 @@ export default class CreateMarketDefine extends Component {
             id="cm__input--cat"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].category.length })}
             type="text"
-            value={newMarket.category}
+            value={s.localValue.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
             onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
@@ -179,15 +196,15 @@ export default class CreateMarketDefine extends Component {
         <li className={Styles.CreateMarketDefine__tags}>
           <label htmlFor="cm__input--tag1">
             <span>Tags</span>
-            { (newMarket.validations[newMarket.currentStep].tag1.length || newMarket.validations[newMarket.currentStep].tag2.length) &&
-              <span className={StylesForm.CreateMarketForm__error}>{InputErrorIcon}{ newMarket.validations[newMarket.currentStep].tag1 }</span>
+            { (tagMessage) &&
+              <span className={StylesForm['CreateMarketForm__error--abs']}>{InputErrorIcon}{ tagMessage }</span>
             }
           </label>
           <input
             id="cm__input--tag1"
             type="text"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag1.length })}
-            value={newMarket.tag1}
+            value={s.localValue.tag1}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
             onChange={e => this.validateTag('tag1', e.target.value, TAGS_MAX_LENGTH, false)}
@@ -197,7 +214,7 @@ export default class CreateMarketDefine extends Component {
             id="cm__input--tag2"
             type="text"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag2.length })}
-            value={newMarket.tag2}
+            value={s.localValue.tag2}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
             onChange={e => this.validateTag('tag2', e.target.value, TAGS_MAX_LENGTH, false)}
