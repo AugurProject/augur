@@ -2,6 +2,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address } from "../../types";
+import { ZERO } from "../../constants";
 
 export interface BetterWorseResult {
   betterOrderId: Address|null;
@@ -9,7 +10,7 @@ export interface BetterWorseResult {
 }
 
 interface OrderRow {
-  orderId: string;
+  orderId: string|null;
   price: BigNumber;
 }
 
@@ -25,19 +26,17 @@ export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: numbe
     if (err) return callback(err);
     const priceBN = new BigNumber(price);
     const [lesserOrders, greaterOrders] = _.partition(orders, (order) => order.price.isLessThan(priceBN));
-    lesserOrders.sort(sortOrders);
-    greaterOrders.sort(sortOrders);
-    const greaterOrder = (greaterOrders.length > 0 ? greaterOrders[0].orderId : null);
-    const lesserOrder = (lesserOrders.length > 0 ? lesserOrders[lesserOrders.length - 1].orderId : null);
+    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || order.price.isLessThan(result.price) ? order : result), { orderId: null, price: ZERO});
+    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || order.price.isGreaterThan(result.price) ? order : result), { orderId: null, price: ZERO});
     if (orderType === "buy") {
       return callback(null, {
-        betterOrderId: greaterOrder,
-        worseOrderId: lesserOrder,
+        betterOrderId: greaterOrder.orderId,
+        worseOrderId: lesserOrder.orderId,
       });
     } else {
       return callback(null, {
-        betterOrderId: lesserOrder,
-        worseOrderId: greaterOrder,
+        betterOrderId: lesserOrder.orderId,
+        worseOrderId: greaterOrder.orderId,
       });
     }
   });
