@@ -93,7 +93,6 @@ export const selectClosePositionStatus = createSelector(
 // user to try again if an action is available
 function delayClearTradeGroupIds(marketId, outcomeId) {
   setTimeout(() => {
-    console.log('clearClosePositionOutcome')
     store.dispatch(clearClosePositionOutcome(marketId, outcomeId))
     store.dispatch(removeClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_NO_ORDERS))
   }, 3000)

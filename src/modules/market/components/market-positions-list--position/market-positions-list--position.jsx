@@ -81,11 +81,15 @@ export default class MarketPositionsListPosition extends Component {
       marginTop: s.confirmMargin,
     }
     const positionShares = getValue(position, 'qtyShares.formatted')
+
     const status = closePositionStatus[position.marketId]
     const positionStatus = status ? status[position.outcomeId] : null
-    console.log('positionStatus', positionStatus)
-    const pendingOrders = openOrders.length > 0
     const noOrders = positionStatus === CLOSE_DIALOG_NO_ORDERS
+    const pendingOrders = openOrders.length > 0
+
+    // TODO: clean up all these variables
+    // remove console log
+    console.log('positionStatus', positionStatus)
 
     return (
       <ul
