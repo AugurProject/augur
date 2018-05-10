@@ -4,9 +4,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-
+import { Close } from 'modules/common/components/icons'
 import getValue from 'utils/get-value'
-import { CLOSE_DIALOG_NO_ORDERS } from 'modules/market/constants/close-dialog-status'
+import { CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_SUCCESS, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 import Styles from 'modules/market/components/market-positions-list--position/market-positions-list--position.styles'
 
 export default class MarketPositionsListPosition extends Component {
@@ -49,15 +49,19 @@ export default class MarketPositionsListPosition extends Component {
     const { closePositionStatus, position } = prevProps
     const status = closePositionStatus[position.marketId]
     const positionStatus = status ? status[position.outcomeId] : null
+    console.log('positionStatus', positionStatus)
     if (positionStatus !== this.state.positionStatus) {
       this.updateState(positionStatus, positionStatus !== null)
     }
   }
 
   updateState(positionStatus, showConfirm) {
+    let confirmation = showConfirm
+    if (positionStatus === CLOSE_DIALOG_SUCCESS) confirmation = false
+    if (positionStatus === CLOSE_DIALOG_CLOSING) confirmation = false
     this.setState({
       positionStatus,
-      showConfirm,
+      showConfirm: confirmation,
     })
   }
 
@@ -101,7 +105,9 @@ export default class MarketPositionsListPosition extends Component {
     let message = null
     let onlyOkButton = true
     if (s.positionStatus === CLOSE_DIALOG_NO_ORDERS) {
-      message = 'No Open Orders found, Position can not be closed.'
+      message = 'Position cannot be closed. Create a new order to sell your shares.'
+    } else if (s.positionStatus === CLOSE_DIALOG_PARTIALLY_FAILED) {
+      message = 'Position partially closed. Create a new order to sell your remaining shares.'
     } else if (openOrders.length > 0) {
       message = 'Positions cannot be closed while orders are pending.'
     } else if (s.showConfirm) {
@@ -154,7 +160,7 @@ export default class MarketPositionsListPosition extends Component {
               <p>{message}</p>
               { onlyOkButton &&
                 <div className={Styles['Position__confirm-options']}>
-                  <button onClick={this.toggleConfirm}>Ok</button>
+                  <button onClick={this.toggleConfirm}>{Close}</button>
                 </div>
               }
               { !onlyOkButton &&

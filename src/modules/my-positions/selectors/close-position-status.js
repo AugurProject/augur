@@ -63,6 +63,7 @@ export const selectClosePositionStatus = createSelector(
           return { ...p, [outcomeId]: CLOSE_DIALOG_SUCCESS }
         }
 
+        // TODO: This selector needs to be refactored along with closePositionTradeGroups reducer, so that partial fills are known
         // Close Position Partially Failed
         if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIds.length && numberOfSuccessfulTransactions === 0) {
 
@@ -78,6 +79,7 @@ export const selectClosePositionStatus = createSelector(
       }, {})
 
       if (Object.keys(outcomeStatuses).length !== 0) {
+        delayClearTradeGroupIds(marketId, Object.keys(outcomeStatuses)[0])
         return { ...p, [marketId]: outcomeStatuses }
       }
 
