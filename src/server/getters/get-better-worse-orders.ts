@@ -14,10 +14,6 @@ interface OrderRow {
   price: BigNumber;
 }
 
-function sortOrders(left: OrderRow, right: OrderRow) {
-  return left.price.isGreaterThan(right.price) ? 1 : -1;
-}
-
 export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: string, callback: (err?: Error|null, result?: BetterWorseResult) => void): void {
   if (marketId == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketId, outcome, orderType, and price"));
   if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "buy" or "sell"`));
