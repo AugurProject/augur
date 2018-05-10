@@ -19,6 +19,7 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
 
     const ACTIONS = {
       UPDATE_MARKETS_DATA: 'UPDATE_MARKETS_DATA',
+      UPDATE_UNCLAIMED_DATA: 'UPDATE_UNCLAIMED_DATA',
     }
     const MailboxAddresses = ['0xmailbox01', '0xmailbox02']
     const MarketIds = ['0xmyMarket01', '0xmyMarket02']
@@ -79,11 +80,17 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
         marketIds,
       },
     }))
+    __RewireAPI__.__Rewire__('loadUnclaimedFees', marketId => ({
+      type: ACTIONS.UPDATE_UNCLAIMED_DATA,
+      data: {
+        marketId,
+      },
+    }))
 
     test({
       description: `Should fire a withdrawEther and updateMarketsData if we have ETH to collect from a market.`,
       assertions: (store) => {
-        store.dispatch(collectMarketCreatorFees(MarketIds[0], (err, amountOfEthToBeCollected) => {
+        store.dispatch(collectMarketCreatorFees(false, MarketIds[0], (err, amountOfEthToBeCollected) => {
           assert.isNull(err, `Didn't return null for error as expected`)
           assert.deepEqual(amountOfEthToBeCollected, '30.5', `Expected the amount of ETH to be collected from market to be '30.5'`)
         }))
@@ -94,6 +101,10 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
           type: ACTIONS.UPDATE_MARKETS_DATA,
           data: {
             marketIds: [MarketIds[0]],
+          } }, {
+          type: ACTIONS.UPDATE_UNCLAIMED_DATA,
+          data: {
+            marketId: [MarketIds[0]],
           },
         }]
 
@@ -104,7 +115,7 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
     test({
       description: `Shouldn't fire a withdrawEther or updateMarketsData if we have 0 ETH to collect from a market.`,
       assertions: (store) => {
-        store.dispatch(collectMarketCreatorFees(MarketIds[1], (err, amountOfEthToBeCollected) => {
+        store.dispatch(collectMarketCreatorFees(false, MarketIds[1], (err, amountOfEthToBeCollected) => {
           assert.isNull(err, `Didn't return null for error as expected`)
           assert.deepEqual(amountOfEthToBeCollected, '0', `Expected the amount of ETH to be collected from market to be '0'`)
         }))

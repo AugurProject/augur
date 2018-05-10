@@ -1,10 +1,5 @@
 import { createSelector } from 'reselect'
-import store from 'src/store'
 import { selectCategoriesState } from 'src/select-state'
-
-export default function () {
-  return selectCategories(store.getState())
-}
 
 export const selectCategories = createSelector(
   selectCategoriesState,

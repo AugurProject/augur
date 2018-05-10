@@ -13,7 +13,6 @@ import marketLoading from 'modules/market/reducers/market-loading'
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
 import outcomesData from 'modules/markets/reducers/outcomes-data'
 import favorites from 'modules/markets/reducers/favorites'
-import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted'
 import reports from 'modules/reports/reducers/reports'
 import marketsWithAccountReport from 'modules/my-reports/reducers/markets-with-account-report'
 import orderBooks from 'modules/bids-asks/reducers/order-books'
@@ -62,7 +61,6 @@ export function createReducer() {
     hasLoadedMarkets,
     outcomesData,
     favorites,
-    marketsFilteredSorted,
     reports,
     marketsWithAccountReport,
     selectedMarketId,

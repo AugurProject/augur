@@ -15,7 +15,7 @@ const OutstandingReturns = p => (
       <button
         className={Styles.MarketOutstandingReturns__collect}
         onClick={() => {
-          p.collectMarketCreatorFees(p.id)
+          p.collectMarketCreatorFees(false, p.id)
         }}
       >
         Claim
