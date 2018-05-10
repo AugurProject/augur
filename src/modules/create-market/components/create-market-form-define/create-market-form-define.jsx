@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-
+import { uniq, isEmpty } from 'lodash'
 import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -27,14 +27,14 @@ export default class CreateMarketDefine extends Component {
   constructor(props) {
     super(props)
 
-    const localValue = {}
-    localValue.tag1 = props.newMarket.tag1
-    localValue.tag2 = props.newMarket.tag2
-    localValue.category = props.newMarket.category
+    const localValues = {}
+    localValues.tag1 = props.newMarket.tag1
+    localValues.tag2 = props.newMarket.tag2
+    localValues.category = props.newMarket.category
     this.state = {
       suggestedCategories: this.filterCategories(this.props.newMarket.category),
       shownSuggestions: 2,
-      localValue,
+      localValues,
     }
     this.filterCategories = this.filterCategories.bind(this)
     this.updateFilteredCategories = this.updateFilteredCategories.bind(this)
@@ -67,17 +67,17 @@ export default class CreateMarketDefine extends Component {
       updateNewMarket,
     } = this.props
     const { currentStep } = newMarket
-
+    const { localValues } = this.state
     const updatedMarket = { ...newMarket }
 
-    const compareFields = ['tag1', 'tag2', 'category']
-    const compareValues = []
-
-    compareFields.indexOf(fieldName) !== -1 && compareFields.splice(compareFields.indexOf(fieldName), 1)
-
-    compareFields.forEach((value) => {
-      if (newMarket[value] !== '') compareValues.push(newMarket[value])
+    localValues[fieldName] = value
+    this.setState({
+      localValues,
     })
+
+    // compare unquiness remove empty values
+    const localValuesLen = Object.values(localValues).filter(x => !isEmpty(x)).length
+    const isUnique = uniq(Object.values(localValues).filter(x => !isEmpty(x))).length === localValuesLen
 
     switch (true) {
       case typeof value === 'string' && !value.length && isRequired:
@@ -86,20 +86,19 @@ export default class CreateMarketDefine extends Component {
       case maxLength && value.length > maxLength:
         updatedMarket.validations[currentStep][fieldName] = `Maximum length is ${maxLength}.`
         break
-      case compareValues.indexOf(value) !== -1:
+      case !isUnique:
         updatedMarket.validations[currentStep][fieldName] = 'Tag and category names must be unique.'
         break
       default:
-        updatedMarket.validations[currentStep][fieldName] = true
+        Object.keys(localValues).forEach((fieldName) => {
+          updatedMarket.validations[currentStep][fieldName] = true
+        })
     }
-    const { localValue } = this.state
-    localValue[fieldName] = value
-    this.setState({
-      localValue,
-    })
 
     if (updatedMarket.validations[currentStep][fieldName] === true) {
-      updatedMarket[fieldName] = value
+      Object.keys(localValues).forEach((fieldName) => {
+        updatedMarket[fieldName] = localValues[fieldName]
+      })
     }
     updatedMarket.isValid = isValid(currentStep)
 
@@ -159,7 +158,7 @@ export default class CreateMarketDefine extends Component {
             id="cm__input--cat"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].category.length })}
             type="text"
-            value={s.localValue.category}
+            value={s.localValues.category}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Help users find your market by defining its category"
             onChange={(e) => { this.updateFilteredCategories(e.target.value); this.validateTag('category', e.target.value, TAGS_MAX_LENGTH) }}
@@ -204,7 +203,7 @@ export default class CreateMarketDefine extends Component {
             id="cm__input--tag1"
             type="text"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag1.length })}
-            value={s.localValue.tag1}
+            value={s.localValues.tag1}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 1"
             onChange={e => this.validateTag('tag1', e.target.value, TAGS_MAX_LENGTH, false)}
@@ -214,7 +213,7 @@ export default class CreateMarketDefine extends Component {
             id="cm__input--tag2"
             type="text"
             className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: newMarket.validations[newMarket.currentStep].tag2.length })}
-            value={s.localValue.tag2}
+            value={s.localValues.tag2}
             maxLength={TAGS_MAX_LENGTH}
             placeholder="Tag 2"
             onChange={e => this.validateTag('tag2', e.target.value, TAGS_MAX_LENGTH, false)}
