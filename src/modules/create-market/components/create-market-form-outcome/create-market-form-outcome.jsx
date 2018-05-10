@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import speedomatic from 'speedomatic'
+import { uniq, isEmpty } from 'lodash'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import {
@@ -205,6 +206,8 @@ export default class CreateMarketOutcome extends Component {
     const { outcomes } = updatedMarket
     outcomes[index] = value
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
+    const cleanedOutcomesLen = Object.values(cleanedOutcomes).filter(x => !isEmpty(x)).length
+    const isUnique = uniq(Object.values(cleanedOutcomes).filter(x => !isEmpty(x))).length === cleanedOutcomesLen
 
     switch (true) {
       case cleanedOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM:
@@ -213,7 +216,7 @@ export default class CreateMarketOutcome extends Component {
       case cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM:
         updatedMarket.validations[currentStep].outcomes = 'Please enter a max of 8 outcomes.'
         break
-      case value !== '' && cleanedOutcomes.filter(outcome => outcome === value).length >= 2:
+      case !isUnique:
         updatedMarket.validations[currentStep].outcomes = 'Outcome names must be unique.'
         break
       default:
