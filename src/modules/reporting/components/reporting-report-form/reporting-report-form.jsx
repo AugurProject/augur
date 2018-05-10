@@ -21,6 +21,7 @@ export default class ReportingReportForm extends Component {
     stake: PropTypes.string.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
+    insufficientRep: PropTypes.bool,
   }
 
   static BUTTONS = {
@@ -138,6 +139,7 @@ export default class ReportingReportForm extends Component {
       selectedOutcome,
       stake,
       validations,
+      insufficientRep,
     } = this.props
     const s = this.state
 
@@ -205,6 +207,13 @@ export default class ReportingReportForm extends Component {
             </ul>
           }
         </li>
+        { !isOpenReporting && insufficientRep &&
+          <label>
+            <span className={Styles['ReportingReport__insufficient-funds']}>
+              {InputErrorIcon}You have insufficient REP to create this report.
+            </span>
+          </label>
+        }
         { !isOpenReporting &&
         <li>
           <label htmlFor="sr__input--stake">
