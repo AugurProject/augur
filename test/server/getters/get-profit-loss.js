@@ -74,8 +74,15 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   });
 
 
-  it("generates 31 buckets", (done) => {
+  it("generates 31 buckets with explicit periodInteval", (done) => {
     const buckets = bucketRangeByInterval(0, 30 * 86400, 86400);
+    assert.equal(buckets.length, 31);
+
+    done();
+  });
+
+  it("generates 31 buckets with implicit periodInteval", (done) => {
+    const buckets = bucketRangeByInterval(0, 30 * 86400);
     assert.equal(buckets.length, 31);
 
     done();
