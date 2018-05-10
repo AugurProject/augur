@@ -7,17 +7,14 @@ import moment from 'moment'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 
 import debounce from 'utils/debounce'
-import getValue from 'utils/get-value'
 import { formatEther } from 'utils/format-number'
-import { formatDate } from 'utils/format-date'
 
 import Styles from 'modules/portfolio/components/performance-graph/performance-graph.styles'
 
 class PerformanceGraph extends Component {
   static propTypes = {
-    performanceData: PropTypes.object,
-    universe: PropTypes.string,
-    currentAugurTimestamp: PropTypes.number,
+    universe: PropTypes.string.isRequired,
+    currentAugurTimestamp: PropTypes.number.isRequired,
     getProfitLoss: PropTypes.func.isRequired,
   }
 
@@ -26,20 +23,28 @@ class PerformanceGraph extends Component {
 
     this.periodIntervals = {
       HOUR: 3600,
+      HALF_DAY: 43200,
       DAY: 86400,
       WEEK: 604800,
-      MONTH: 2419200,
+      MONTH: 2592000,
+      YEAR: 39030400,
+    }
+
+    this.timeFrames = {
+      DAY: (props.currentAugurTimestamp - this.periodIntervals.DAY),
+      WEEK: (props.currentAugurTimestamp - this.periodIntervals.WEEK),
+      MONTH: (props.currentAugurTimestamp - this.periodIntervals.MONTH),
       ALL: 0,
     }
 
     this.state = {
-      graphType: 'unrealized',
+      graphType: 'total',
       graphTypeOptions: [
         { label: 'Total', value: 'total' },
         { label: 'Total Realized', value: 'realized' },
         { label: 'Total Unrealized', value: 'unrealized' },
       ],
-      graphTypeDefault: 'unrealized',
+      graphTypeDefault: 'total',
       graphPeriod: 'DAY',
       graphPeriodOptions: [
         { label: 'Past 24hrs', value: 'DAY' },
@@ -48,12 +53,18 @@ class PerformanceGraph extends Component {
         { label: 'All', value: 'ALL' },
       ],
       graphPeriodDefault: 'DAY',
-      startTime: (props.currentAugurTimestamp - this.periodIntervals.DAY),
+      startTime: this.timeFrames.DAY,
+      endTime: props.currentAugurTimestamp,
+      periodInterval: this.periodIntervals.HOUR,
+      selectedSeriesData: [],
+      performanceData: [],
     }
 
     this.changeDropdown = this.changeDropdown.bind(this)
     this.updateChart = this.updateChart.bind(this)
     this.updateChartDebounced = debounce(this.updateChart.bind(this))
+    this.updatePerformanceData = this.updatePerformanceData.bind(this)
+    this.parsePerformanceData = this.parsePerformanceData.bind(this)
   }
 
   componentDidMount() {
@@ -113,7 +124,7 @@ class PerformanceGraph extends Component {
         },
         labels: {
           formatter() {
-            return formatDate(new Date(this.value)).simpleDate
+            return moment.unix(this.value).format('LL')
           },
           style: {
             color: '#a7a2b2',
@@ -209,11 +220,17 @@ class PerformanceGraph extends Component {
 
     window.addEventListener('resize', this.updateChartDebounced)
 
-    this.updateChart()
+    this.updatePerformanceData()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.graphType !== this.state.graphType || prevState.graphPeriod !== this.state.graphPeriod) this.updateChart()
+    if (prevState.graphPeriod !== this.state.graphPeriod) {
+      // fetch data as we need a new range of info
+      this.updatePerformanceData()
+    } else if (prevState.graphType !== this.state.graphType) {
+      // update chart based on data we have in state, no fetch
+      this.parsePerformanceData()
+    }
   }
 
   componentWillUnmount() {
@@ -221,73 +238,115 @@ class PerformanceGraph extends Component {
   }
 
   changeDropdown(value) {
-    let newType = this.state.graphType
-    let newPeriod = this.state.graphPeriod
+    let {
+      graphType,
+      graphPeriod,
+      startTime,
+      periodInterval,
+    } = this.state
 
     this.state.graphTypeOptions.forEach((type, ind) => {
       if (type.value === value) {
-        newType = value
+        graphType = value
       }
     })
 
     this.state.graphPeriodOptions.forEach((period, ind) => {
       if (period.value === value) {
-        newPeriod = value
+        graphPeriod = value
       }
     })
 
-    this.setState({ graphType: newType, graphPeriod: newPeriod })
+    if (graphPeriod !== this.state.graphPeriod) {
+      startTime = this.timeFrames[graphPeriod]
+      switch (graphPeriod) {
+        case ('ALL'):
+          // TODO: update this to Month or Year if appropriate.
+          periodInterval = this.periodIntervals.MONTH
+          break
+        case ('MONTH'):
+          periodInterval = this.periodIntervals.DAY
+          break
+        case ('WEEK'):
+          periodInterval = this.periodIntervals.HALF_DAY
+          break
+        case ('DAY'):
+        default:
+          periodInterval = this.periodIntervals.HOUR
+          break
+      }
+    }
+
+    this.setState({ graphType, graphPeriod, startTime, periodInterval })
+  }
+
+  parsePerformanceData() {
+    const {
+      performanceData,
+      graphType,
+    } = this.state
+    const selectedSeriesData = [{
+      name: graphType,
+      color: '#553580',
+    }]
+    const seriesData = []
+    performanceData.forEach((object, index) => {
+      const plotPoint = []
+      const { profitLoss } = object
+      plotPoint.push(object.timestamp)
+      if (profitLoss && profitLoss[graphType]) {
+        plotPoint.push(formatEther(profitLoss[graphType]).formattedValue)
+      } else {
+        plotPoint.push(0)
+      }
+      seriesData.push(plotPoint)
+    })
+    selectedSeriesData[0].data = seriesData
+    this.setState({ selectedSeriesData }, () => {
+      this.updateChart()
+    })
+  }
+
+  updatePerformanceData() {
+    const {
+      universe,
+      getProfitLoss,
+    } = this.props
+    const {
+      startTime,
+      endTime,
+      periodInterval,
+    } = this.state
+
+    getProfitLoss(universe, startTime, endTime, periodInterval, (err, performanceData) => {
+      if (err) return console.error(err)
+      this.setState({ performanceData }, () => {
+        this.parsePerformanceData()
+      })
+    })
   }
 
   updateChart() {
-    const {
-      universe,
-      currentAugurTimestamp,
-      performanceData,
-      getProfitLoss,
-    } = this.props
-
-    getProfitLoss(universe, this.state.startTime, currentAugurTimestamp, this.periodIntervals.HOUR, (err, performanceData) => {
-      console.log(err, performanceData)
-      const performanceDataPackage = [{
-        name: 'Total',
-        color: '#553580',
-      }]
-      const pData = []
-      const { graphType } = this.state
-      performanceData.forEach((object, index) => {
-        const plotPoint = []
-        const { profitLoss } = object
-        plotPoint.push(object.timestamp)
-        if (profitLoss && profitLoss[graphType]) {
-          plotPoint.push(formatEther(profitLoss[graphType]).formattedValue)
-        } else {
-          plotPoint.push(0)
-        }
-        pData.push(plotPoint)
-      })
-      console.log('out', pData)
-      performanceDataPackage[0].data = pData
-      performanceDataPackage.forEach((series, i) => {
-        if (this.performanceGraph.series[i] == null) {
-          this.performanceGraph.addSeries({
-            type: 'area',
-            color: '#ffffff',
-            className: Styles.PerformanceGraph__Series,
-            marker: {
-              fillColor: 'white',
-              lineColor: 'white',
-            },
-            name: series.name,
-            data: series.data,
-          }, false)
-        } else {
-          this.performanceGraph.series[i].setData(series.data, false)
-        }
-      })
-  
-      this.performanceGraph.redraw()
+    const { selectedSeriesData } = this.state
+    selectedSeriesData.forEach((series, i) => {
+      if (this.performanceGraph.series[i] == null) {
+        this.performanceGraph.addSeries({
+          type: 'area',
+          color: '#ffffff',
+          className: Styles.PerformanceGraph__Series,
+          marker: {
+            fillColor: 'white',
+            lineColor: 'white',
+          },
+          name: series.name,
+          data: series.data,
+        }, false)
+      } else {
+        this.performanceGraph.series[i].setData(series.data, true)
+      }
     })
+
+    this.performanceGraph.redraw()
   }
 
   render() {
