@@ -14,6 +14,7 @@ import { processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompl
 import { processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval } from "./initial-report-submitted";
 import { processMarketFinalizedLog, processMarketFinalizedLogRemoval } from "./market-finalized";
 import { processUniverseCreatedLog, processUniverseCreatedLogRemoval } from "./universe-created";
+import { processUniverseForkedLog, processUniverseForkedLogRemoval } from "./universe-forked";
 import { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } from "./fee-window-created";
 import { processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval } from "./fee-window-redeemed";
 import { processApprovalLog, processApprovalLogRemoval } from "./token/approval";
@@ -25,6 +26,7 @@ import { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRem
 import { processInitialReporterTransferredLog, processInitialReporterTransferredLogRemoval } from "./initial-report-transferred";
 import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
 import { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } from "./reporting-participant-disavowed";
+import { processMarketMailboxTransferredLog, processMarketMailboxTransferredLogRemoval } from "./market-mailbox-transferred";
 
 function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
   callback(null);
@@ -62,6 +64,11 @@ export const logProcessors: LogProcessors = {
       noAutoEmit: true,
       add: processMarketCreatedLog,
       remove: processMarketCreatedLogRemoval,
+    },
+    MarketMailboxTransferred: {
+      noAutoEmit: false,
+      add: processMarketMailboxTransferredLog,
+      remove: processMarketMailboxTransferredLogRemoval,
     },
     MarketMigrated: {
       add: processMarketMigratedLog,
@@ -130,6 +137,11 @@ export const logProcessors: LogProcessors = {
       add: processUniverseCreatedLog,
       remove: processUniverseCreatedLogRemoval,
     },
+    UniverseForked: {
+      noAutoEmit: false,
+      add: processUniverseForkedLog,
+      remove: processUniverseForkedLogRemoval,
+    },
     FeeWindowRedeemed: {
       noAutoEmit: true,
       add: processFeeWindowRedeemedLog,
@@ -155,7 +167,6 @@ export const logProcessors: LogProcessors = {
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
     MarketParticipantsDisavowed: passThroughLog,
-    UniverseForked: passThroughLog,
   },
   LegacyReputationToken: {
     Transfer: {

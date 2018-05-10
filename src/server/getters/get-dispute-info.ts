@@ -1,7 +1,7 @@
 import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithCreationTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
+import { Address, MarketsRowWithTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
@@ -14,7 +14,7 @@ interface DisputeRound {
 }
 
 interface DisputesResult {
-  markets: Array<MarketsRowWithCreationTime>;
+  markets: Array<MarketsRowWithTime>;
   stakesCompleted: Array<StakeRow>;
   stakesCurrent: Array<ActiveCrowdsourcer>;
   accountStakesCompleted: Array<StakeRow>;

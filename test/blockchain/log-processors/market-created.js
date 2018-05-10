@@ -2,19 +2,19 @@
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
-const { parallel } = require("async");
-const { BigNumber } = require("bignumber.js");
+const {parallel} = require("async");
+const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const { processMarketCreatedLog, processMarketCreatedLogRemoval } = require("../../../build/blockchain/log-processors/market-created");
-const { getMarketsWithReportingState } = require("../../../build/server/getters/database");
+const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../build/blockchain/log-processors/market-created");
+const {getMarketsWithReportingState} = require("../../../build/server/getters/database");
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
     const getState = (db, params, callback) => parallel({
-      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market }).asCallback(next),
-      categories: next => db("categories").where({ category: params.log.topic }).asCallback(next),
-      outcomes: next => db("outcomes").where({ marketId: params.log.market }).asCallback(next),
-      tokens: next => db("tokens").where({ marketId: params.log.market }).asCallback(next),
+      markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
+      categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
+      outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
+      tokens: next => db("tokens").where({marketId: params.log.market}).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -43,6 +43,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -80,13 +81,13 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "10000");
             },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000000b");
-            },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "100");
+            },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0xbbb1111111111111111111111111111111111111");
             },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
@@ -124,8 +125,9 @@ describe("blockchain/log-processors/market-created", () => {
             reportingFeeRate: new BigNumber("0.001", 10),
             disputeRounds: null,
             marketCreatorFeeRate: new BigNumber("0.01", 10),
-            marketCreatorFeesCollected: new BigNumber("0", 10),
-            marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -135,8 +137,8 @@ describe("blockchain/log-processors/market-created", () => {
             reportingState: "PRE_REPORTING",
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
-            finalizationTime: null,
-            marketStateId: 17,
+            finalizationBlockNumber: null,
+            marketStateId: 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -146,6 +148,8 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -198,6 +202,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111112",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -236,13 +241,13 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "10000");
             },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
-              callback(null, "0x000000000000000000000000000000000000000b");
-            },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
               callback(null, "100");
+            },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111112");
+              callback(null, "0xbbb1111111111111111111111111111111111112");
             },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
@@ -280,8 +285,9 @@ describe("blockchain/log-processors/market-created", () => {
             reportingFeeRate: new BigNumber("0.001", 10),
             disputeRounds: null,
             marketCreatorFeeRate: new BigNumber("0.01", 10),
-            marketCreatorFeesCollected: new BigNumber("0", 10),
-            marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111112",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -291,8 +297,8 @@ describe("blockchain/log-processors/market-created", () => {
             reportingState: "PRE_REPORTING",
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
-            finalizationTime: null,
-            marketStateId: 17,
+            finalizationBlockNumber: null,
+            marketStateId: 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -302,6 +308,8 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -376,6 +384,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111113",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -413,13 +422,13 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "10000");
             },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
-              callback(null, "0x000000000000000000000000000000000000000b");
-            },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
               callback(null, "100");
+            },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111113");
+              callback(null, "0xbbb1111111111111111111111111111111111113");
             },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
@@ -457,8 +466,9 @@ describe("blockchain/log-processors/market-created", () => {
             reportingFeeRate: new BigNumber("0.001", 10),
             disputeRounds: null,
             marketCreatorFeeRate: new BigNumber("0.01", 10),
-            marketCreatorFeesCollected: new BigNumber("0", 10),
-            marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111113",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: "TEST_TAG_1",
@@ -468,8 +478,8 @@ describe("blockchain/log-processors/market-created", () => {
             reportingState: "PRE_REPORTING",
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
-            finalizationTime: null,
-            marketStateId: 17,
+            finalizationBlockNumber: null,
+            marketStateId: 18,
             shortDescription: "this is a test market",
             longDescription: "this is the long description of a test market",
             scalarDenomination: null,
@@ -479,6 +489,8 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -531,6 +543,7 @@ describe("blockchain/log-processors/market-created", () => {
     params: {
       log: {
         blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
         market: "0x1111111111111111111111111111111111111111",
         marketCreator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "0.1",
@@ -564,13 +577,13 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "10000");
             },
-            getUniverse: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
-              callback(null, "0x000000000000000000000000000000000000000b");
-            },
             getMarketCreatorSettlementFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
               callback(null, "100");
+            },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0xbbb1111111111111111111111111111111111111");
             },
             getShareToken: (p, callback) => {
               callback(null, `SHARE_TOKEN_${p._outcome}`);
@@ -608,8 +621,9 @@ describe("blockchain/log-processors/market-created", () => {
             reportingFeeRate: new BigNumber("0.001", 10),
             disputeRounds: null,
             marketCreatorFeeRate: new BigNumber("0.01", 10),
-            marketCreatorFeesCollected: new BigNumber("0", 10),
-            marketCreatorFeesClaimed: new BigNumber("0", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
             initialReportSize: null,
             category: "TEST_CATEGORY",
             tag1: null,
@@ -619,8 +633,8 @@ describe("blockchain/log-processors/market-created", () => {
             reportingState: "PRE_REPORTING",
             feeWindow: "0x1000000000000000000000000000000000000001",
             endTime: 4886718345,
-            finalizationTime: null,
-            marketStateId: 17,
+            finalizationBlockNumber: null,
+            marketStateId: 18,
             shortDescription: "this is a test market",
             longDescription: null,
             scalarDenomination: null,
@@ -630,6 +644,8 @@ describe("blockchain/log-processors/market-created", () => {
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",

@@ -10,7 +10,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getUnclaimedMarketCreatorFees(db, t.params.marketIds, (err, marketFees) => {
+        getUnclaimedMarketCreatorFees(db, t.params.augur, t.params.marketIds, (err, marketFees) => {
           t.assertions(err, marketFees);
           done();
         });
@@ -24,17 +24,29 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
       ],
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
     },
     assertions: (err, marketFees) => {
       assert.isNull(err);
       assert.deepEqual(marketFees, [
         {
           marketId: "0x0000000000000000000000000000000000000001",
-          unclaimedFee: 0,
+          unclaimedFee: "0",
         },
         {
           marketId: "0x0000000000000000000000000000000000000002",
-          unclaimedFee: 0,
+          unclaimedFee: "0",
         },
       ]);
     },
@@ -43,6 +55,18 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
     description: "Empty marketIds array",
     params: {
       marketIds: [],
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              Cash: "CASH",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
     },
     assertions: (err, marketFees) => {
       assert.isNull(err);

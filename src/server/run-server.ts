@@ -4,20 +4,20 @@ import * as Knex from "knex";
 import Augur from "augur.js";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets } from "./getters/get-markets";
-import { Address} from "../types";
+import { Address, ServersData } from "../types";
 
 // tslint:disable-next-line:no-var-requires
 const { websocketConfigs } = require("../../config");
 
 export interface RunServerResult {
   app: express.Application;
-  servers: Array<WebSocket.Server>;
+  servers: ServersData;
 }
 
 export function runServer(db: Knex, augur: Augur): RunServerResult {
   const app: express.Application = express();
 
-  const servers: Array<WebSocket.Server> = runWebsocketServer(db, app, augur, websocketConfigs);
+  const servers: ServersData = runWebsocketServer(db, app, augur, websocketConfigs);
 
   app.get("/", (req, res) => {
     res.send("Hello World");
@@ -45,7 +45,8 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
     if (isNaN(maxPendingTransactions)) {
       res.status(422).send({error: "Bad value for max_pending_transactions, must be an integer in base 10"});
     } else {
-      res.send({status: (maxPendingTransactions > db.client.pool.waitingClientsCount()) ? "up" : "down", maxPendingTransactions, pendingTransactions: db.client.pool.waitingClientsCount() });
+      const waitingClientsCount = db.client.pool.pendingAcquires.length;
+      res.send({status: (maxPendingTransactions > waitingClientsCount) ? "up" : "down", maxPendingTransactions, pendingTransactions: waitingClientsCount });
     }
   });
 
