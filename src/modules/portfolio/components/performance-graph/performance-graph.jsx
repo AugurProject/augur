@@ -55,7 +55,6 @@ class PerformanceGraph extends Component {
       graphPeriodDefault: 'DAY',
       startTime: this.timeFrames.DAY,
       endTime: props.currentAugurTimestamp,
-      periodInterval: this.periodIntervals.HOUR,
       selectedSeriesData: [],
       performanceData: [],
     }
@@ -209,9 +208,11 @@ class PerformanceGraph extends Component {
           fontWeight: '700',
         },
         shadow: false,
+        shared: true,
+        xDateFormat: '%m %d',
         shape: 'none',
-        pointFormat: '<b style="color:{point.color}">{point.y} ETH</b>',
-        valueDecimals: 2,
+        pointFormat: '<b style="color:{point.color}">{point.y} ETH</b> <br/> <b style="color:{point.color}">{point.x}</b>',
+        valueDecimals: 4,
       },
       credits: {
         enabled: false,
@@ -242,7 +243,6 @@ class PerformanceGraph extends Component {
       graphType,
       graphPeriod,
       startTime,
-      periodInterval,
     } = this.state
 
     this.state.graphTypeOptions.forEach((type, ind) => {
@@ -259,25 +259,9 @@ class PerformanceGraph extends Component {
 
     if (graphPeriod !== this.state.graphPeriod) {
       startTime = this.timeFrames[graphPeriod]
-      switch (graphPeriod) {
-        case ('ALL'):
-          // TODO: update this to Month or Year if appropriate.
-          periodInterval = this.periodIntervals.MONTH
-          break
-        case ('MONTH'):
-          periodInterval = this.periodIntervals.DAY
-          break
-        case ('WEEK'):
-          periodInterval = this.periodIntervals.HALF_DAY
-          break
-        case ('DAY'):
-        default:
-          periodInterval = this.periodIntervals.HOUR
-          break
-      }
     }
 
-    this.setState({ graphType, graphPeriod, startTime, periodInterval })
+    this.setState({ graphType, graphPeriod, startTime })
   }
 
   parsePerformanceData() {
@@ -315,11 +299,14 @@ class PerformanceGraph extends Component {
     const {
       startTime,
       endTime,
-      periodInterval,
     } = this.state
 
-    getProfitLoss(universe, startTime, endTime, periodInterval, (err, performanceData) => {
+    getProfitLoss(universe, startTime, endTime, null, (err, rawPerformanceData) => {
       if (err) return console.error(err)
+      // make the first entry into the data a 0 value to make sure we start from 0 PL
+      const interval = rawPerformanceData[1].timestamp - rawPerformanceData[0].timestamp
+      let performanceData = [{ timestamp: (rawPerformanceData[0].timestamp - interval), profitLoss: { unrealized: '0', realized: '0', total: '0' } }]
+      performanceData = performanceData.concat(rawPerformanceData)
       this.setState({ performanceData }, () => {
         this.parsePerformanceData()
       })
