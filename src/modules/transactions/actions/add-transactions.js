@@ -1,3 +1,5 @@
+import pluralize from 'pluralize'
+
 import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
@@ -18,6 +20,12 @@ function groupByMethod(values, prop) {
     }
   })
   return grouped
+}
+
+function formatTransactionMessage(sumBuy, sumSell, txType) {
+  const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
+  const sells = (sumSell !== 0 ? `${sumSell} ${SELL}` : '')
+  return buys + (sumBuy !== 0 && sumSell !== 0 ? ' & ' : ' ') + sells + ` ${pluralize(txType, (sumBuy + sumSell))}`
 }
 
 export function addTradeTransactions(trades) {
@@ -59,7 +67,8 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
-  header.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Trades`
+
+  header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
   return header
 }
 
@@ -217,7 +226,9 @@ export function addOpenOrderTransactions(openOrders) {
       })
       // TODO: last order creation time will be in header, eariest activite
       marketHeader.timestamp = creationTime
-      marketHeader.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Orders`
+      console.log(sumBuy)
+      console.log(sumSell)
+      marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
       transactions[marketHeader.id] = marketHeader
     })
