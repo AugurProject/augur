@@ -19,7 +19,6 @@ augur.connect(connectionEndpoints, function (err) {
   if (err) return console.error(err);
   var universe = augur.contracts.addresses[augur.rpc.getNetworkID()].Universe;
   augur.markets.getMarkets({ universe: universe, sortBy: "description" }, function (err, marketIds) {
-    console.log("marketIds:", marketIds);
     if (err) return console.error(err);
     augur.markets.getMarketsInfo({ marketIds: marketIds }, function (err, marketsInfo) {
       if (err) return console.error(err);

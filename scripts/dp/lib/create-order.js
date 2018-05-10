@@ -60,7 +60,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         },
         onFailed: function (err) {
           if (debugOptions.cannedMarkets) {
-            console.log(chalk.red.bold("publicCreateOrder failed:"), err, chalk.cyan.dim(JSON.stringify(order)));
+            console.log(chalk.red.bold("publicCreateOrder failed:"), err, { marketId: marketId, outcome: outcome, orderType: orderType, displayPrice: displayPrice });
           }
           printTransactionStatus(augur.rpc, (err || {}).hash, function (e) {
             if (e) return callback(e);
@@ -79,6 +79,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       minPrice: minPrice,
       maxPrice: maxPrice,
       numTicks: numTicks,
+      estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       _direction: orderTypeCode,
       _market: marketId,
       _outcome: outcome,

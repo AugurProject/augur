@@ -29,10 +29,10 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   if (err) return console.error(err);
   augur.events.startBlockListeners({
     onAdded: function (block) {
-      console.log("Block added:", parseInt(block.number, 16), block.hash);
+      // console.log("Block added:", parseInt(block.number, 16), block.hash);
     },
     onRemoved: function (block) {
-      console.log("Block removed:", parseInt(block.number, 16), block.hash);
+      // console.log("Block removed:", parseInt(block.number, 16), block.hash);
     },
   });
   global.networkId = augur.rpc.getNetworkID();
