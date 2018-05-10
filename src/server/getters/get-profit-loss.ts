@@ -66,7 +66,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
   if (endTime <= startTime) throw new Error("endTime must be greater than startTime");
   if (periodInterval !== null && periodInterval <= 0) throw new Error("periodInterval must be positive integer (seconds)");
 
-  const interval = periodInterval == null ? (endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS : periodInterval;
+  const interval = periodInterval == null ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS) : periodInterval;
 
   const buckets: Array<PLBucket> = [];
   for (let bucketEndTime = startTime; bucketEndTime < endTime; bucketEndTime += interval) {
