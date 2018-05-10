@@ -6,11 +6,19 @@ var chalk = require("chalk");
 var speedomatic = require("speedomatic");
 var async = require("async");
 var BigNumber = require("bignumber.js");
+var constants = require("../../src/constants");
 
 function help() {
   console.log(chalk.red("Get share tokens on market outcomes for user account"));
   console.log(chalk.red("Adjusted Shares is formatted shares times numTicks"));
   console.log(chalk.red("Shows market mailbox balance as well"));
+}
+
+function showWinningBalance(augur, marketId, address, callback) {
+  var winningPayload = {marketIds: [marketId], account: address };
+  augur.augurNode.submitRequest("getWinningBalance", winningPayload, function (err, value) {
+    callback(err, value);
+  });
 }
 
 function getMarketBalance(augur, args, auth, callback) {
@@ -24,12 +32,14 @@ function getMarketBalance(augur, args, auth, callback) {
   console.log(chalk.cyan.dim("address:"), chalk.green(address));
   console.log(chalk.cyan.dim("universe:"), chalk.green(universe));
   console.log(chalk.cyan.dim("marketId:"), chalk.green(marketId));
+
   augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err, marketsInfo) {
     if (err) {
       console.log(chalk.red(err));
       return callback(err);
     }
     var market = marketsInfo[0];
+    var showMarketWinningBalance = market.reportingState === constants.REPORTING_STATE.FINALIZED || market.reportingState === market.reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION;
     var numTicks = market.numTicks;
     var outcomes = Array.from(Array(market.numOutcomes).keys());
     var marketMailboxAddress = market.marketCreatorMailbox;
@@ -50,6 +60,16 @@ function getMarketBalance(augur, args, auth, callback) {
         var combined = speedomatic.unfix(bnAttoEthBalance.plus(bnCashBalance), "string");
         console.log(chalk.green.dim("Total balance:"), chalk.green(combined));
         console.log(chalk.yellow.dim("numTicks"), chalk.yellow(numTicks));
+
+        if (showMarketWinningBalance) {
+          console.log(chalk.yellow.dim("Market State"), chalk.yellow(market.reportingState));
+          showWinningBalance(augur, marketId, address, function (err, value) {
+            if (!err) {
+              console.log(chalk.yellow.dim("Account Winning Balance"));
+              console.log(chalk.yellow.dim("Balance: "), chalk.yellow(JSON.stringify(value)));
+            }
+          });
+        }
         async.eachSeries(outcomes, function (outcomeId, nextOutcome) {
           console.log(chalk.yellow.dim("Outcome: "), chalk.yellow(outcomeId));
           augur.api.Market.getShareToken({tx: { to: marketId}, _outcome: outcomeId}, function (err, shareToken) {
