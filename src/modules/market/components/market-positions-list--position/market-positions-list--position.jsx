@@ -6,16 +6,17 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-
+import { CLOSE_DIALOG_NO_ORDERS } from 'modules/market/constants/close-dialog-status'
 import Styles from 'modules/market/components/market-positions-list--position/market-positions-list--position.styles'
 
-export default class Position extends Component {
+export default class MarketPositionsListPosition extends Component {
   static propTypes = {
     outcomeName: PropTypes.string.isRequired,
     position: PropTypes.object.isRequired,
     openOrders: PropTypes.array.isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    closePositionStatus: PropTypes.object.isRequired,
   }
 
   static calcAvgDiff(position, order) {
@@ -71,6 +72,7 @@ export default class Position extends Component {
       outcomeName,
       openOrders,
       position,
+      closePositionStatus,
     } = this.props
     const s = this.state
 
@@ -79,6 +81,11 @@ export default class Position extends Component {
       marginTop: s.confirmMargin,
     }
     const positionShares = getValue(position, 'qtyShares.formatted')
+    const status = closePositionStatus[position.marketId]
+    const positionStatus = status ? status[position.outcomeId] : null
+    console.log('positionStatus', positionStatus)
+    const pendingOrders = openOrders.length > 0
+    const noOrders = positionStatus === CLOSE_DIALOG_NO_ORDERS
 
     return (
       <ul
@@ -120,14 +127,20 @@ export default class Position extends Component {
           className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          { openOrders.length > 0 ?
+          { noOrders &&
+            <div className={Styles['Position__confirm-details']}>
+              <p>No Open Orders found, Position can not be closed.</p>
+            </div>
+          }
+          { pendingOrders &&
             <div className={Styles['Position__confirm-details']}>
               <p>Positions cannot be closed while orders are pending.</p>
               <div className={Styles['Position__confirm-options']}>
                 <button onClick={this.toggleConfirm}>Ok</button>
               </div>
             </div>
-            :
+          }
+          { !noOrders && !pendingOrders &&
             <div className={Styles['Position__confirm-details']}>
               <p>{`Close position by ${getValue(position, 'qtyShares.value') < 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`}</p>
               <div className={Styles['Position__confirm-options']}>

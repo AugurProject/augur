@@ -61,6 +61,7 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       outstandingReturns,
+      closePositionStatus,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -197,6 +198,7 @@ export default class MarketPortfolioCard extends Component {
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
                   isMobile={isMobile}
+                  closePositionStatus={closePositionStatus}
                 />
               ))}
             </div>
@@ -246,6 +248,7 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
+                      closePositionStatus={closePositionStatus}
                     />
                   ))
                 ))

@@ -16,7 +16,6 @@ export default class Positions extends Component {
     openPositionMarkets: PropTypes.array.isRequired,
     reportingMarkets: PropTypes.array.isRequired,
     closedMarkets: PropTypes.array.isRequired,
-    closePositionStatus: PropTypes.object.isRequired,
     loadAccountTrades: PropTypes.func.isRequired,
     marketsCount: PropTypes.number.isRequired,
     registerBlockNumber: PropTypes.number,
@@ -32,7 +31,6 @@ export default class Positions extends Component {
   render() {
     const {
       claimTradingProceeds,
-      closePositionStatus,
       closedMarkets,
       currentTimestamp,
       history,
@@ -52,7 +50,6 @@ export default class Positions extends Component {
           <PositionsMarketsList
             title="Open"
             markets={openPositionMarkets}
-            closePositionStatus={closePositionStatus}
             location={location}
             history={history}
             currentTimestamp={currentTimestamp}
@@ -61,7 +58,6 @@ export default class Positions extends Component {
           <PositionsMarketsList
             title="In Reporting"
             markets={reportingMarkets}
-            closePositionStatus={closePositionStatus}
             location={location}
             history={history}
             positionsDefault={false}
@@ -71,7 +67,6 @@ export default class Positions extends Component {
           <PositionsMarketsList
             title="Finalized"
             markets={closedMarkets}
-            closePositionStatus={closePositionStatus}
             location={location}
             history={history}
             positionsDefault={false}

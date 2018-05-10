@@ -5,7 +5,6 @@ import { selectCurrentTimestamp } from 'src/select-state'
 import Positions from 'modules/portfolio/components/positions/positions'
 import getLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions'
 import getOpenOrders from 'modules/user-open-orders/selectors/open-orders'
-import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
@@ -38,7 +37,6 @@ const mapStateToProps = (state) => {
     openPositionMarkets,
     reportingMarkets,
     closedMarkets,
-    closePositionStatus: getClosePositionStatus(),
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
     registerBlockNumber: state.loginAccount.registerBlockNumber,
