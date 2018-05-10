@@ -220,7 +220,9 @@ export default class CreateMarketOutcome extends Component {
         updatedMarket.validations[currentStep].outcomes = true
     }
 
-    updatedMarket.outcomes = outcomes
+    if (updatedMarket.validations[currentStep].outcomes === true) {
+      updatedMarket.outcomes = outcomes
+    }
     updatedMarket.isValid = isValid(currentStep)
 
     updateNewMarket(updatedMarket)
