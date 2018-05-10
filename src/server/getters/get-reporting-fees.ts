@@ -130,7 +130,7 @@ function getUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, 
   }
   query.asCallback((err, currentUniverse: {universe: Address}) => {
     if (err) return callback(err);
-    if (!currentUniverse || !currentUniverse.universe) return callback(new Error("Universe or feeWindow not found")); 
+    if (!currentUniverse || !currentUniverse.universe) return callback(new Error("Universe or feeWindow not found"));
     return callback(null, currentUniverse.universe);
   });
 }
