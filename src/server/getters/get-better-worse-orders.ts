@@ -1,31 +1,43 @@
-import { parallel } from "async";
 import * as Knex from "knex";
-import { Address, AsyncCallback } from "../../types";
+import * as _ from "lodash";
+import { BigNumber } from "bignumber.js";
+import { Address } from "../../types";
 
-interface PricesResult {
-  higherPriceRow: {orderId: string|null};
-  lowerPriceRow: {orderId: string|null};
+export interface BetterWorseResult {
+  betterOrderId: Address|null;
+  worseOrderId: Address|null;
 }
 
-export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
+interface OrderRow {
+  orderId: string;
+  price: BigNumber;
+}
+
+function sortOrders(left: OrderRow, right: OrderRow) {
+  return left.price.isGreaterThan(right.price) ? 1 : -1;
+}
+
+export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: string, callback: (err?: Error|null, result?: BetterWorseResult) => void): void {
   if (marketId == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketId, outcome, orderType, and price"));
   if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "buy" or "sell"`));
-  const ordersQuery = db("orders").first("orderId").where({ orderState: "OPEN", marketId, outcome, orderType });
-  parallel({
-    higherPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", ">", price).orderBy("price", "ASC").asCallback(next),
-    lowerPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", "<", price).orderBy("price", "DESC").asCallback(next),
-  }, (err: Error|null, pricesResult: PricesResult ): void => {
+  const ordersQuery = db("orders").select("orderId", "price").where({ orderState: "OPEN", marketId, outcome, orderType });
+  ordersQuery.asCallback((err: Error|null, orders: Array<OrderRow>) => {
     if (err) return callback(err);
-    const { higherPriceRow, lowerPriceRow } = pricesResult;
+    const priceBN = new BigNumber(price);
+    const [lesserOrders, greaterOrders] = _.partition(orders, (order) => order.price.isLessThan(priceBN));
+    lesserOrders.sort(sortOrders);
+    greaterOrders.sort(sortOrders);
+    const greaterOrder = (greaterOrders.length > 0 ? greaterOrders[0].orderId : null);
+    const lesserOrder = (lesserOrders.length > 0 ? lesserOrders[lesserOrders.length - 1].orderId : null);
     if (orderType === "buy") {
       return callback(null, {
-        betterOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
-        worseOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
+        betterOrderId: greaterOrder,
+        worseOrderId: lesserOrder,
       });
     } else {
       return callback(null, {
-        betterOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
-        worseOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
+        betterOrderId: lesserOrder,
+        worseOrderId: greaterOrder,
       });
     }
   });

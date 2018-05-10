@@ -60,7 +60,7 @@ describe("server/getters/get-better-worse-orders", () => {
       assert.isNull(err);
       assert.deepEqual(betterWorseOrders, {
         betterOrderId: null,
-        worseOrderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
+        worseOrderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
       });
     },
   });
