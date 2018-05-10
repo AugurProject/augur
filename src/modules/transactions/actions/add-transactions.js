@@ -20,6 +20,12 @@ function groupByMethod(values, prop) {
   return grouped
 }
 
+function formatTransactionMessage(sumBuy, sumSell, txType) {
+  const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
+  const sells = (sumSell !== 0 ? `${sumSell} ${SELL}` : '')
+  return buys + (sumBuy !== 0 && sumSell !== 0 ? ' & ' : ' ') + sells + ' ' + (sumBuy + sumSell > 1 ? txType + 's' : txType)
+}
+
 export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
@@ -59,7 +65,8 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
-  header.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Trades`
+
+  header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
   return header
 }
 
@@ -217,7 +224,7 @@ export function addOpenOrderTransactions(openOrders) {
       })
       // TODO: last order creation time will be in header, eariest activite
       marketHeader.timestamp = creationTime
-      marketHeader.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Orders`
+      marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
       transactions[marketHeader.id] = marketHeader
     })
