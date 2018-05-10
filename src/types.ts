@@ -135,7 +135,7 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  marketId: string;
+  marketId: Address;
 }
 
 export interface MarketsRow<BigNumberType> {

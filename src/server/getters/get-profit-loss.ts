@@ -74,7 +74,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
   return buckets;
 }
 
-export const getBucketLastTradePrices = async (db: Knex, universe: string, marketId: string, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> => {
+async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime);
 
   const bucketsWithLastPrice = buckets.map((bucket: PLBucket) => {
@@ -92,7 +92,7 @@ export const getBucketLastTradePrices = async (db: Knex, universe: string, marke
     return bucket;
   });
   return bucketsWithLastPrice;
-};
+}
 
 function groupOutcomesProfitLossByBucket(results: any) {
   return _.zip(..._.values(results));
