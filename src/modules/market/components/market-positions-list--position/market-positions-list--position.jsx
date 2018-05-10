@@ -39,9 +39,26 @@ export default class MarketPositionsListPosition extends Component {
       showConfirm: false,
       confirmHeight: 'auto',
       confirmMargin: '0px',
+      positionStatus: null,
     }
 
     this.toggleConfirm = this.toggleConfirm.bind(this)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { closePositionStatus, position } = prevProps
+    const status = closePositionStatus[position.marketId]
+    const positionStatus = status ? status[position.outcomeId] : null
+    if (positionStatus !== this.state.positionStatus) {
+      this.updateState(positionStatus, positionStatus !== null)
+    }
+  }
+
+  updateState(positionStatus, showConfirm) {
+    this.setState({
+      positionStatus,
+      showConfirm,
+    })
   }
 
   toggleConfirm() {
@@ -72,7 +89,6 @@ export default class MarketPositionsListPosition extends Component {
       outcomeName,
       openOrders,
       position,
-      closePositionStatus,
     } = this.props
     const s = this.state
 
@@ -82,14 +98,16 @@ export default class MarketPositionsListPosition extends Component {
     }
     const positionShares = getValue(position, 'qtyShares.formatted')
 
-    const status = closePositionStatus[position.marketId]
-    const positionStatus = status ? status[position.outcomeId] : null
-    const noOrders = positionStatus === CLOSE_DIALOG_NO_ORDERS
-    const pendingOrders = openOrders.length > 0
-
-    // TODO: clean up all these variables
-    // remove console log
-    console.log('positionStatus', positionStatus)
+    let message = null
+    let onlyOkButton = true
+    if (s.positionStatus === CLOSE_DIALOG_NO_ORDERS) {
+      message = 'No Open Orders found, Position can not be closed.'
+    } else if (openOrders.length > 0) {
+      message = 'Positions cannot be closed while orders are pending.'
+    } else if (s.showConfirm) {
+      onlyOkButton = false
+      message = `Close position by ${getValue(position, 'qtyShares.value') < 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
+    }
 
     return (
       <ul
@@ -131,22 +149,15 @@ export default class MarketPositionsListPosition extends Component {
           className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
           style={confirmStyle}
         >
-          { noOrders &&
+          { message &&
             <div className={Styles['Position__confirm-details']}>
-              <p>No Open Orders found, Position can not be closed.</p>
-            </div>
-          }
-          { pendingOrders &&
-            <div className={Styles['Position__confirm-details']}>
-              <p>Positions cannot be closed while orders are pending.</p>
-              <div className={Styles['Position__confirm-options']}>
-                <button onClick={this.toggleConfirm}>Ok</button>
-              </div>
-            </div>
-          }
-          { !noOrders && !pendingOrders &&
-            <div className={Styles['Position__confirm-details']}>
-              <p>{`Close position by ${getValue(position, 'qtyShares.value') < 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`}</p>
+              <p>{message}</p>
+              { onlyOkButton &&
+                <div className={Styles['Position__confirm-options']}>
+                  <button onClick={this.toggleConfirm}>Ok</button>
+                </div>
+              }
+              { !onlyOkButton &&
               <div className={Styles['Position__confirm-options']}>
                 <button
                   onClick={(e) => {
@@ -154,10 +165,11 @@ export default class MarketPositionsListPosition extends Component {
                     this.toggleConfirm()
                   }}
                 >
-                  Yes
+                Yes
                 </button>
                 <button onClick={this.toggleConfirm}>No</button>
               </div>
+              }
             </div>
           }
         </div>
