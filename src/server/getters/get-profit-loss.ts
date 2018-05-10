@@ -5,11 +5,30 @@ import BigNumber from "bignumber.js";
 import { Augur, CalculatedProfitLoss } from "augur.js";
 import { Address, TradingHistoryRow, GenericCallback, AsyncCallback } from "../../types";
 import { queryTradingHistory } from "./database";
+import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
+// Make the math tolerable until we have a chance to fix the BN->Stringness in augur.js
+function add(n1: string, n2: string) {
+  return new BigNumber(n1, 10).plus(new BigNumber(n2));
+}
+
+function sub(n1: string, n2: string) {
+  return new BigNumber(n1, 10).minus(new BigNumber(n2));
+}
+
+function times(n1: string, n2: string) {
+  return new BigNumber(n1, 10).times(new BigNumber(n2));
+}
+
+function div(n1: string, n2: string) {
+  return new BigNumber(n1, 10).div(new BigNumber(n2));
+}
+
+export type ProfitLoss = Record<"position" | "meanOpenPrice" | "realized" | "unrealized" | "total", string>
 export interface PLBucket {
   timestamp: number;
   lastPrice?: string;
-  profitLoss?: Record<"position" | "meanOpenPrice" | "realized" | "unrealized", string> | CalculatedProfitLoss | null;
+  profitLoss?:  ProfitLoss | null;
 };
 
 export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradingHistoryRow>, buckets: Array<PLBucket>): Array<PLBucket> {
@@ -20,20 +39,18 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradingHis
     if (bucket.lastPrice == null) return bucket;
 
     const bucketTrades = _.filter(trades, (t: TradingHistoryRow) => t.timestamp < bucket.timestamp);
-    return Object.assign({}, bucket, {
-      profitLoss: augur.trading.calculateProfitLoss({
-        trades: bucketTrades,
-        lastPrice:  bucket.lastPrice,
-      })
-    });
+    const calcProfitLoss = augur.trading.calculateProfitLoss({ trades: bucketTrades, lastPrice:  bucket.lastPrice, });
+    const profitLoss = Object.assign({}, calcProfitLoss, { total: add(calcProfitLoss.realized, calcProfitLoss.unrealized).toFixed() });
+    return Object.assign({}, bucket, { profitLoss });
   });
 
   if (basisPL.profitLoss != null && windowPLs.length > 0) {
     return windowPLs.map((pl) => {
       if (pl.profitLoss == null) return pl;
       return Object.assign({}, pl, {
-        realized: new BigNumber(pl.profitLoss.realized).minus(new BigNumber(basisPL.profitLoss!.realized)).toFixed(),
-        unrealized: new BigNumber(pl.profitLoss.unrealized).minus(new BigNumber(basisPL.profitLoss!.unrealized)).toFixed(),
+        realized: sub(pl.profitLoss.realized, basisPL.profitLoss!.realized).toFixed(),
+        total: sub(pl.profitLoss.total, basisPL.profitLoss!.total).toFixed(),
+        unrealized: sub(pl.profitLoss.unrealized, basisPL.profitLoss!.unrealized).toFixed(),
       });
     });
   }
@@ -87,23 +104,25 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
 
   const leftAveragePrice = new BigNumber(left.profitLoss.meanOpenPrice, 10);
   const leftPosition = new BigNumber(left.profitLoss.position, 10);
-  const leftRealized = new BigNumber(left.profitLoss.realized, 10);
-  const leftUnrealized = new BigNumber(left.profitLoss.unrealized, 10);
 
   const rightAveragePrice = new BigNumber(right.profitLoss.meanOpenPrice, 10);
   const rightPosition = new BigNumber(right.profitLoss.position, 10);
-  const rightRealized = new BigNumber(right.profitLoss.realized, 10);
-  const rightUnrealized = new BigNumber(right.profitLoss.unrealized, 10);
 
-  const totalPosition = leftPosition.plus(rightPosition);
+  const position = leftPosition.plus(rightPosition);
+  const meanOpenPrice = (leftAveragePrice.times(leftPosition).plus(rightAveragePrice.times(rightPosition))).dividedBy(position);
+  const realized = add(left.profitLoss.realized, right.profitLoss.realized);
+  const unrealized = add(left.profitLoss.unrealized, right.profitLoss.unrealized);
+  const total = realized.plus(unrealized);
+
   return {
     timestamp: left.timestamp,
-    profitLoss: {
-      meanOpenPrice: (leftAveragePrice.times(leftPosition).plus(rightAveragePrice.times(rightPosition))).dividedBy(totalPosition).toFixed(),
-      position: totalPosition.toFixed(),
-      realized: leftRealized.plus(rightRealized).toFixed(),
-      unrealized: leftUnrealized.plus(rightUnrealized).toFixed(),
-    }
+    profitLoss: formatBigNumberAsFixed({
+      meanOpenPrice,
+      position,
+      realized,
+      unrealized,
+      total
+    })
   };
 }
 

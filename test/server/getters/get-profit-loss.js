@@ -485,6 +485,7 @@ describe("server/getters/get-profit-loss", () => {
       "position": "10",
       "queued": "0",
       "realized": "1.166666666666666666665",
+      "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
     };
 
