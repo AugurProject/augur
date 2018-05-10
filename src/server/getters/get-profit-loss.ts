@@ -127,18 +127,17 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
 }
 
 async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number): Promise<Array<PLBucket>> {
-  // Bucket the time range into periods of `periodInterval`
-  const buckets = bucketRangeByInterval(startTime, endTime, periodInterval);
-
   // get all the trades for this user from the beginning of time, until
   // `endTime`
   const trades: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime).orderBy("trades.marketId").orderBy("trades.outcome");
 
+  if (trades.length === 0) return bucketRangeByInterval(startTime, endTime, periodInterval).slice(1);
+
+  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime, periodInterval);
+
   // group these trades by their market & outcome, so we can process each
   // separately
   const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
-
-  if (_.isEmpty(tradesByOutcome)) return buckets.slice(1);
 
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss

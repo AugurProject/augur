@@ -140,6 +140,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506478100,
@@ -149,6 +150,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506481700,
@@ -158,6 +160,54 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
+              "unrealized": "-0.13",
+            },
+            "timestamp": 1506485300,
+          },
+        ]);
+      }
+    }, done);
+  });
+
+  it("buckets datapoints from the first trade the user made", (done) => {
+    testWithDatabase({
+      params: {
+        universe: "0x000000000000000000000000000000000000000b",
+        account: "0x0000000000000000000000000000000000000b0b",
+        startTime: 0,
+        endTime: START_TIME + 3*HOUR_SECONDS,
+        periodInterval: HOUR_SECONDS
+      },
+      assertions: (err, profitLoss) => {
+        assert.isNull(err);
+        assert.deepEqual(profitLoss, [
+          {
+            "profitLoss": {
+              "meanOpenPrice": "5.42352941176470588235",
+              "position": "-1.7",
+              "realized": "0",
+              "total": "-0.13",
+              "unrealized": "-0.13",
+            },
+            "timestamp": 1506478115,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "5.42352941176470588235",
+              "position": "-1.7",
+              "realized": "0",
+              "total": "-0.13",
+              "unrealized": "-0.13",
+            },
+            "timestamp": 1506481715,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "5.42352941176470588235",
+              "position": "-1.7",
+              "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506485300,
