@@ -4,7 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent, updateDisputeRound } from "./database";
+import { updateMarketState, rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindow } from "./database";
 import { groupByAndSum } from "../../server/getters/database";
 import { QueryBuilder } from "knex";
 import { parallel } from "async";
@@ -144,7 +144,7 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
     parallel([
       (next: AsyncCallback) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateDisputeRound(db, log.market, next),
-      (next: AsyncCallback) => updateMarketFeeWindowNext(db, augur, log.universe, log.market, next),
+      (next: AsyncCallback) => updateMarketFeeWindow(db, augur, log.universe, log.market, true, next),
       (next: AsyncCallback) => updateIncompleteCrowdsourcers(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
@@ -165,7 +165,7 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
     parallel([
       (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateDisputeRound(db, log.market, next),
-      (next: AsyncCallback) => updateMarketFeeWindowCurrent(db, log.universe, log.market, next),
+      (next: AsyncCallback) => updateMarketFeeWindow(db, augur, log.universe, log.market, false, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);

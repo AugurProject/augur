@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { parallel } from "async";
 import { FormattedEventLog, ErrorCallback, AsyncCallback, Address } from "../../types";
-import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindowNext, updateMarketFeeWindowCurrent, updateDisputeRound, refreshMarketMailboxEthBalance } from "./database";
+import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindow, updateDisputeRound, refreshMarketMailboxEthBalance } from "./database";
 import { augurEmitter } from "../../events";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -28,7 +28,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
           db("markets").update({initialReportSize: log.amountStaked}).where({marketId: log.market}).asCallback(next);
         },
         nextFeeWindow: (next: AsyncCallback) => {
-          updateMarketFeeWindowNext(db, augur, log.universe, log.market, next);
+          updateMarketFeeWindow(db, augur, log.universe, log.market, true, next);
         },
         updateDisputeRound: (next: AsyncCallback) => {
           updateDisputeRound(db, log.market, next);
@@ -56,7 +56,7 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
         db("markets").update({initialReportSize: null}).where({marketId: log.market}).asCallback(next);
       },
       currentFeeWindow: (next: AsyncCallback) => {
-        updateMarketFeeWindowCurrent(db, log.universe, log.market, next);
+        updateMarketFeeWindow(db, augur, log.universe, log.market, false, next);
       },
       refreshMarketMailboxEthBalance: (next: AsyncCallback) => refreshMarketMailboxEthBalance(db, augur, log.market, next),
     }, (err: Error|null): void => {

@@ -21,27 +21,12 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   }).where({ marketId }).asCallback(callback);
 }
 
-export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Address, timestamp: number, callback: AsyncCallback) {
-  db("fee_windows").first().select("feeWindow").where({ universe }).where("endTime", ">", timestamp).where("startTime", "<=", timestamp)
-    .asCallback((err, feeWindowRow?: { feeWindow: Address }) => {
-      if (err) return callback(err);
-      if (feeWindowRow == null) {
-        // Will only occur in false time environments, due to a FeeWindow being Created after block which it applies to
-        // TODO: Remove once we feel comfortable with FeeWindow behavior
-        console.warn(`Time moved too fast, could not find feeWindow for ${universe} @ ${timestamp}`);
-        return callback(null);
-      }
-      const feeWindow = feeWindowRow.feeWindow;
-      db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
-    });
-}
-
-export function updateMarketFeeWindowNext(db: Knex, augur: Augur, universe: Address, marketId: Address, callback: AsyncCallback) {
-  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime() + augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS, callback);
-}
-
-export function updateMarketFeeWindowCurrent(db: Knex, universe: Address, marketId: Address, callback: AsyncCallback) {
-  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime(), callback);
+export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean, callback: AsyncCallback) {
+  const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
+  augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
+    if (err) return callback(err);
+    db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
+  });
 }
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
