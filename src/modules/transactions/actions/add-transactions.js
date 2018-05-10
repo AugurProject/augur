@@ -159,6 +159,7 @@ export function addMarketCreationTransactions(marketsCreated) {
       transaction.timestamp = (market || {}).creationTime
       const meta = {}
       meta.market = transaction.marketId
+      meta['creation fee'] = market.creationFee
       meta['market type'] = market.marketType
       transaction.meta = meta
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
