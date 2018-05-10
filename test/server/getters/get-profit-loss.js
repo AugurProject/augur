@@ -6,8 +6,6 @@ const {calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval} = requir
 const START_TIME = 1506474500;
 const MINUTE_SECONDS = 60;
 const HOUR_SECONDS = MINUTE_SECONDS*60;
-const DAY_SECONDS = HOUR_SECONDS*24;
-const WEEK_SECONDS = DAY_SECONDS*7;
 
 describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   it("throws when startTime is negative", (done) => {
@@ -44,10 +42,10 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     const buckets = bucketRangeByInterval(10000, 10040, 20000);
     assert.deepEqual(buckets, [{
       timestamp: 10000,
-      profitLoss: null
+      profitLoss: null,
     }, {
       timestamp: 10040,
-      profitLoss: null
+      profitLoss: null,
     }]);
 
     done();
@@ -57,19 +55,19 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     const buckets = bucketRangeByInterval(10000, 10040, 10);
     assert.deepEqual(buckets, [{
       timestamp: 10000,
-      profitLoss: null
+      profitLoss: null,
     }, {
       timestamp: 10010,
-      profitLoss: null
+      profitLoss: null,
     }, {
       timestamp: 10020,
-      profitLoss: null
+      profitLoss: null,
     }, {
       timestamp: 10030,
-      profitLoss: null
+      profitLoss: null,
     }, {
       timestamp: 10040,
-      profitLoss: null
+      profitLoss: null,
     }]);
 
     done();
@@ -109,7 +107,7 @@ describe("server/getters/get-profit-loss", () => {
         error = e;
       }
       t.assertions(error, profitLoss);
-    } catch(e) {
+    } catch (e) {
       return done(e);
     }
     done();
@@ -120,7 +118,7 @@ describe("server/getters/get-profit-loss", () => {
       if (err) return done(new Error(err));
       connection = db;
       done();
-    })
+    });
   });
 
   it("generates 3 datapoints for user with trades in one period after start time", (done) => {
@@ -130,7 +128,7 @@ describe("server/getters/get-profit-loss", () => {
         account: "0x0000000000000000000000000000000000000b0b",
         startTime: START_TIME,
         endTime: START_TIME + 3*HOUR_SECONDS,
-        periodInterval: HOUR_SECONDS
+        periodInterval: HOUR_SECONDS,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
@@ -166,7 +164,7 @@ describe("server/getters/get-profit-loss", () => {
             "timestamp": 1506485300,
           },
         ]);
-      }
+      },
     }, done);
   });
 
@@ -177,7 +175,7 @@ describe("server/getters/get-profit-loss", () => {
         account: "0x0000000000000000000000000000000000000b0b",
         startTime: 0,
         endTime: START_TIME + 3*HOUR_SECONDS,
-        periodInterval: HOUR_SECONDS
+        periodInterval: HOUR_SECONDS,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
@@ -213,7 +211,7 @@ describe("server/getters/get-profit-loss", () => {
             "timestamp": 1506485300,
           },
         ]);
-      }
+      },
     }, done);
   });
 
@@ -224,7 +222,7 @@ describe("server/getters/get-profit-loss", () => {
         account: "0x0000000000000000000000000000000000000b0b",
         startTime: START_TIME,
         endTime: START_TIME + MINUTE_SECONDS,
-        periodInterval: 10
+        periodInterval: 10,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
@@ -234,6 +232,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.5",
               "position": "-1.4",
               "realized": "0",
+              "total": "0",
               "unrealized": "0",
             },
             "timestamp": 1506474510,
@@ -243,6 +242,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506474520,
@@ -252,6 +252,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506474530,
@@ -261,6 +262,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506474540,
@@ -270,6 +272,7 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506474550,
@@ -279,12 +282,13 @@ describe("server/getters/get-profit-loss", () => {
               "meanOpenPrice": "5.42352941176470588235",
               "position": "-1.7",
               "realized": "0",
+              "total": "-0.13",
               "unrealized": "-0.13",
             },
             "timestamp": 1506474560,
-          }
+          },
         ]);
-      }
+      },
     }, done);
   });
 
@@ -296,15 +300,14 @@ describe("server/getters/get-profit-loss", () => {
         account: "0x1000000000000000000000000000000000000b0b",
         startTime: 0,
         endTime: 30*86400,
-        periodInterval: 86400
+        periodInterval: 86400,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
         assert.equal(profitLoss.length, 30);
-      }
+      },
     }, done);
   });
-
 
 
   var trades1 = [{
@@ -338,26 +341,28 @@ describe("server/getters/get-profit-loss", () => {
       params: {
         trades: trades1,
         buckets: [{
+          timestamp: 10000,
+          lastPrice: "0.1",
+        }, {
           timestamp: 20000,
-          lastPrice: "0.3"
+          lastPrice: "0.3",
         }],
-        startTime: 0,
-        endTime: 20000,
-        periodInterval: 20000,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
         assert.deepEqual(profitLoss, [{
           timestamp: 20000,
+          lastPrice: "0.3",
           profitLoss: {
             position: "10",
             meanOpenPrice: "0.166666666666666666667",
-            realized: "1.166666666666666666665",
+            realized: "1.16666666666666666666",
+            total: "2.49999999999999999999",
             unrealized: "1.33333333333333333333",
             queued: "0",
-          }}
+          }},
         ]);
-      }
+      },
     }, done);
   });
 
@@ -366,21 +371,21 @@ describe("server/getters/get-profit-loss", () => {
       params: {
         trades: trades1,
         buckets: [{
+          timestamp: 10000,
+          lastPrice: null,
+        }, {
           timestamp: 10010,
-          lastPrice: "0.1"
+          lastPrice: "0.1",
         }, {
           timestamp: 10020,
-          lastPrice: "0.2"
+          lastPrice: "0.2",
         }, {
           timestamp: 10030,
-          lastPrice: "0.2"
+          lastPrice: "0.2",
         }, {
           timestamp: 10040,
-          lastPrice: "0.3"
+          lastPrice: "0.3",
         }],
-        startTime: 10000,
-        endTime: 10040,
-        periodInterval: 10,
       },
       assertions: (err, profitLoss) => {
         assert.isNull(err);
@@ -390,68 +395,75 @@ describe("server/getters/get-profit-loss", () => {
             "position": "10",
             "queued": "0",
             "realized": "0",
+            "total": "0",
             "unrealized": "0",
           },
           "timestamp": 10010,
+          "lastPrice": "0.1",
         }, {
           "profitLoss": {
             "meanOpenPrice": "0.1",
             "position": "5",
             "queued": "0",
             "realized": "0.5",
+            "total": "1",
             "unrealized": "0.5",
           },
           "timestamp": 10020,
+          "lastPrice": "0.2",
         }, {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "15",
             "queued": "0",
             "realized": "0.5",
+            "total": "0.999999999999999999995",
             "unrealized": "0.499999999999999999995",
           },
           "timestamp": 10030,
+          "lastPrice": "0.2",
         }, {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "10",
             "queued": "0",
             "realized": "1.166666666666666666665",
+            "total": "2.49999999999999999999",
             "unrealized": "1.33333333333333333333",
           },
-          "timestamp": 10040
-        }
-        ]);
-      }
+          "timestamp": 10040,
+          "lastPrice": "0.3",
+        }]);
+      },
     }, done);
   });
 
   it("calculates pl for 1 period, and 4 periods, and verifies last period PLs are equal", (done) => {
     var buckets1 = [{
       timestamp: 10000,
-      lastPrice: null
+      lastPrice: null,
     }, {
-      timestamp: 2000,
-      lastPrice: "0.3"
+      timestamp: 20000,
+      lastPrice: "0.3",
     }];
     var pls1 = calculateBucketProfitLoss(augur, trades1, buckets1);
     assert.equal(pls1.length, 1);
 
     var buckets2 = [{
       timestamp: 10000,
-      lastPrice: null
+      lastPrice: null,
     }, {
       timestamp: 10010,
-      lastPrice: "0.1"
+      lastPrice: "0.1",
     }, {
       timestamp: 10020,
-      lastPrice: "0.2"
+      lastPrice: "0.2",
     }, {
       timestamp: 10030,
-      lastPrice: "0.2"
+      lastPrice: "0.2",
     }, {
       timestamp: 10040,
-      lastPrice: "0.3"
+      lastPrice: "0.3",
     }];
     var pls2 = calculateBucketProfitLoss(augur, trades1, buckets2);
     assert.equal(pls2.length, 4);
@@ -461,6 +473,7 @@ describe("server/getters/get-profit-loss", () => {
       "position": "10",
       "queued": "0",
       "realized": "1.166666666666666666665",
+      "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
     };
 
@@ -479,13 +492,13 @@ describe("server/getters/get-profit-loss", () => {
       price: "0.3",
       maker: true,
     });
-    
+
     var buckets = [{
       timestamp: 10000,
-      lastPrice: null
+      lastPrice: null,
     }, {
       timestamp: 10040,
-      lastPrice: "0.3"
+      lastPrice: "0.3",
     }];
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
@@ -495,6 +508,7 @@ describe("server/getters/get-profit-loss", () => {
       "position": "10",
       "queued": "0",
       "realized": "1.166666666666666666665",
+      "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
     };
 
@@ -521,10 +535,10 @@ describe("server/getters/get-profit-loss", () => {
 
     var buckets = [{
       timestamp: 10000,
-      lastPrice: "0.3"
+      lastPrice: "0.3",
     }, {
       timestamp: 10040,
-      lastPrice: "0.3"
+      lastPrice: "0.3",
     }];
 
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
@@ -534,7 +548,7 @@ describe("server/getters/get-profit-loss", () => {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
       "queued": "0",
-      "realized": "1.166666666666666666665",
+      "realized": "1.16666666666666666666",
       "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
     };
@@ -562,21 +576,22 @@ describe("server/getters/get-profit-loss", () => {
 
     var buckets = [{
       timestamp: 10000,
-      lastPrice: "0.1"
+      lastPrice: "0.1",
     }, {
       timestamp: 10040,
-      lastPrice: "0.3"
+      lastPrice: "0.3",
     }];
 
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
-      "meanOpenPrice": "0.166666666666666666667",
-      "position": "10",
-      "queued": "0",
-      "realized": "1.166666666666666666665",
-      "unrealized": "1.33333333333333333333",
+      "meanOpenPrice": "0.176923076923076923077",
+      "position": "8",
+      "queued": "1.5",
+      "realized": "1.11538461538461538461",
+      "total": "2.09999999999999999999",
+      "unrealized": "0.98461538461538461538",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);

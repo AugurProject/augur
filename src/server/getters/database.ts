@@ -135,7 +135,6 @@ export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeIn
   return info;
 }
 
-
 export function queryTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account?: Address|null, marketId?: Address|null, outcome?: number|null, orderType?: string|null, earliestCreationTime?: number|null, latestCreationTime?: number|null, sortBy?: string|null, isSortDescending?: boolean|null, limit?: number|null, offset?: number|null): Knex.QueryBuilder {
   if (universe == null && marketId == null ) throw new Error("Must provide reference to universe, specify universe or marketId");
   const query = db.select([
