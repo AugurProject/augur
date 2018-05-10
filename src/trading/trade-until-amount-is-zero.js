@@ -11,7 +11,6 @@ var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
 var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
 var api = require("../api");
-var ethrpc = require("../rpc-interface");
 var noop = require("../utils/noop");
 var constants = require("../constants");
 
