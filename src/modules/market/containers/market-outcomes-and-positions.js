@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import MarketOutcomesAndPositions from 'modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions'
 import { selectMarket } from 'modules/market/selectors/market'
 import { sortOpenOrders } from 'modules/user-open-orders/selectors/open-orders'
+import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
@@ -27,6 +28,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
+    closePositionStatus: getClosePositionStatus(),
     isMobile: state.isMobile,
     outcomes: market.outcomes || [],
     positions,

@@ -17,6 +17,7 @@ export default class MarketPositionsList extends Component {
   static propTypes = {
     openOrders: PropTypes.array,
     positions: PropTypes.array.isRequired,
+    closePositionStatus: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -31,6 +32,7 @@ export default class MarketPositionsList extends Component {
     const {
       openOrders,
       positions,
+      closePositionStatus,
     } = this.props
     const s = this.state
 
@@ -68,6 +70,7 @@ export default class MarketPositionsList extends Component {
                     openOrders={openOrders.filter(order => order.id === position.id && order.pending === true)}
                     isExtendedDisplay={false}
                     isMobile={false}
+                    closePositionStatus={closePositionStatus}
                   />
                 ))}
               </div>
