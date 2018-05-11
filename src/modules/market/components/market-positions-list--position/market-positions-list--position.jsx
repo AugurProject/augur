@@ -22,8 +22,8 @@ export default class Position extends Component {
     const positionAvg = getValue(position, 'avgPrice.formattedValue') || 0
     const positionShares = getValue(position, 'qtyShares.formattedValue') || 0
 
-    const orderPrice = (getValue(order, 'order.purchasePrice.formattedValue') || 0)
-    const orderShares = (getValue(order, 'order.qtyShares.formattedValue') || 0)
+    const orderPrice = (getValue(order, 'purchasePrice.formattedValue') || 0)
+    const orderShares = (getValue(order, 'qtyShares.formattedValue') || 0)
 
     const newAvg = ((positionAvg * positionShares) + (orderPrice * orderShares)) / (positionShares + orderShares)
     const avgDiff = (newAvg - positionAvg).toFixed(4)
@@ -78,6 +78,7 @@ export default class Position extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
+    const positionShares = getValue(position, 'qtyShares.formatted')
 
     return (
       <ul
@@ -91,7 +92,7 @@ export default class Position extends Component {
           { outcomeName }
         </li>
         <li>
-          { getValue(position, 'qtyShares.formatted') }
+          { positionShares }
         </li>
         <li>
           { getValue(position, 'purchasePrice.formatted') }
@@ -109,7 +110,10 @@ export default class Position extends Component {
           </li>
         }
         <li>
-          <button onClick={this.toggleConfirm}>Close</button>
+          {positionShares !== '0' ?
+            <button onClick={this.toggleConfirm}>Close</button> :
+            <span className={Styles.NotActive}>Close</span>
+          }
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
@@ -125,7 +129,7 @@ export default class Position extends Component {
             </div>
             :
             <div className={Styles['Position__confirm-details']}>
-              <p>Close position by selling { getValue(position, 'qtyShares.formatted') } shares of “{ outcomeName }” at market price?</p>
+              <p>{`Close position by ${getValue(position, 'qtyShares.value') < 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`}</p>
               <div className={Styles['Position__confirm-options']}>
                 <button
                   onClick={(e) => {

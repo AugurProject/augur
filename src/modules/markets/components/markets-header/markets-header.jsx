@@ -69,13 +69,6 @@ export default class MarketsHeader extends Component {
     }
   }
 
-  // setPathDependentFilters(location) {
-  //   const path = parsePath(location.pathname)[0]
-  //
-  //   const filterByMarketFavorites = path === FAVORITES
-  //   this.setState({ filterByMarketFavorites })
-  // }
-
   render() {
     // const p = this.props
     const s = this.state
@@ -85,11 +78,6 @@ export default class MarketsHeader extends Component {
         <div className={Styles.MarketsHeader__search} >
           <FilterSearch
             searchPlaceholder="Search"
-            searchKeys={[
-              'description',
-              ['outcomes', 'description'],
-              ['tags'],
-            ]}
           />
         </div>
         <div className={Styles.MarketsHeader__wrapper}>

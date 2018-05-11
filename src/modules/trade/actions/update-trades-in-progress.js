@@ -1,5 +1,4 @@
 import { createBigNumber } from 'utils/create-big-number'
-import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { TWO } from 'modules/trade/constants/numbers'
@@ -8,7 +7,6 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import logError from 'utils/log-error'
-import { formatGasCostToEther } from 'utils/format-number'
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS'
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
@@ -115,14 +113,14 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
             data: { marketId, outcomeId, details: newTradeDetails },
           })
         }
-        const { numOutcomes } = market
-        const cleanAccountPositions = new Array(numOutcomes).fill('0')
+        const cleanAccountPositions = new Array(market.numOutcomes).fill('0')
         if (Array.isArray(accountPositions) && accountPositions.length) {
-          for (let i = 0; i < numOutcomes; i++) {
-            if (accountPositions[i] != null && !isNaN(accountPositions[i].numShares)) {
-              cleanAccountPositions[i] = accountPositions[i].numShares
+          accountPositions.reduce((cleanAccountPositions, position) => {
+            if (position.marketId === market.id) {
+              cleanAccountPositions[position.outcome] = position.numShares
             }
-          }
+            return cleanAccountPositions
+          }, cleanAccountPositions)
         }
         const simulatedTrade = augur.trading.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
@@ -134,26 +132,14 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
           maxPrice: market.maxPrice,
           price: newTradeDetails.limitPrice,
           shares: newTradeDetails.numShares,
-          marketCreatorFeeRate: market.settlementFee,
+          marketCreatorFeeRate: market.marketCreatorFeeRate,
           singleOutcomeOrderBook: (orderBooks && orderBooks[marketId] && orderBooks[marketId][outcomeId]) || {},
           shouldCollectReportingFees: !market.isDisowned,
           reportingFeeRate: market.reportingFeeRate,
         })
-        const calculatedTradeCost = augur.trading.calculateTradeCost({
-          displayPrice: newTradeDetails.limitPrice,
-          displayAmount: newTradeDetails.numShares,
-          numTicks: market.numTicks,
-          orderType: newTradeDetails.side === BUY ? 0 : 1,
-          minDisplayPrice: market.minPrice,
-          maxDisplayPrice: market.maxPrice,
-        })
-        const convertedCost = createBigNumber(speedomatic.unfix(calculatedTradeCost.cost, 'string'), 10)
-        const estimatedGasCost = formatGasCostToEther(createBigNumber(simulatedTrade.gasEstimate, 10), { decimalsRounded: 4 }, createBigNumber(augur.rpc.getGasPrice(), 10))
-        newTradeDetails.gasFeesRealEth = estimatedGasCost
         const totalFee = createBigNumber(simulatedTrade.settlementFees, 10)
         newTradeDetails.totalFee = totalFee.toFixed()
-        // newTradeDetails.totalCost = simulatedTrade.tokensDepleted
-        newTradeDetails.totalCost = createBigNumber(simulatedTrade.tokensDepleted).eq(convertedCost) ? simulatedTrade.tokensDepleted : convertedCost.toString()
+        newTradeDetails.totalCost = simulatedTrade.tokensDepleted
         newTradeDetails.feePercent = totalFee.dividedBy(createBigNumber(simulatedTrade.tokensDepleted, 10)).toFixed()
         if (isNaN(newTradeDetails.feePercent)) newTradeDetails.feePercent = '0'
         dispatch({

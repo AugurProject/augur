@@ -17,7 +17,7 @@ import networkConfig from 'config/network'
 
 import { isEmpty } from 'lodash'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED, MODAL_DISCLAIMER, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
@@ -128,7 +128,13 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
       if (windowRef.localStorage && windowRef.localStorage.getItem) {
         const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
+        const disclaimerSeen = windowRef.localStorage.getItem('disclaimerSeen')
         universeId = storedUniverseId === null ? universeId : storedUniverseId
+        if (!disclaimerSeen) {
+          dispatch(updateModal({
+            type: MODAL_DISCLAIMER,
+          }))
+        }
       }
       dispatch(loadUniverse(universeId, history))
       if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())

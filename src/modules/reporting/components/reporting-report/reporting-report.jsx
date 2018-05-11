@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
+import { createBigNumber } from 'utils/create-big-number'
 
-import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
+import { formatEtherEstimate, formatGasCostToEther, formatRep } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import ReportingReportForm from 'modules/reporting/components/reporting-report-form/reporting-report-form'
@@ -23,12 +24,14 @@ export default class ReportingReport extends Component {
     isLogged: PropTypes.bool,
     isMarketLoaded: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
+    isDesignatedReporter: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
     location: PropTypes.object,
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitInitialReport: PropTypes.func.isRequired,
     universe: PropTypes.string.isRequired,
+    availableRep: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -124,9 +127,14 @@ export default class ReportingReport extends Component {
       location,
       market,
       submitInitialReport,
+      availableRep,
+      isDesignatedReporter,
     } = this.props
     const s = this.state
 
+    const BNstake = createBigNumber(formatRep(s.stake).fullPrecision)
+    const insufficientRep = !isOpenReporting ? createBigNumber(availableRep).lt(BNstake) : false
+    const disableReview = !Object.keys(s.validations).every(key => s.validations[key] === true) || insufficientRep || (!isDesignatedReporter && !isOpenReporting)
     return (
       <section>
         <Helmet>
@@ -163,6 +171,8 @@ export default class ReportingReport extends Component {
                 stake={s.stake}
                 validations={s.validations}
                 isOpenReporting={isOpenReporting}
+                insufficientRep={insufficientRep}
+                isDesignatedReporter={isDesignatedReporter}
               />
             }
             { s.currentStep === 1 &&
@@ -185,7 +195,7 @@ export default class ReportingReport extends Component {
               </button>
               <button
                 className={classNames(FormStyles.Form__next, { [`${FormStyles['hide-button']}`]: s.currentStep === 1 })}
-                disabled={!Object.keys(s.validations).every(key => s.validations[key] === true)}
+                disabled={disableReview}
                 onClick={Object.keys(s.validations).every(key => s.validations[key] === true) ? this.nextPage : undefined}
               >Review
               </button>

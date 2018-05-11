@@ -16,7 +16,6 @@ import { isEqual } from 'lodash'
 import Modal from 'modules/modal/containers/modal-view'
 import TopBar from 'modules/app/components/top-bar/top-bar'
 import ForkingNotification from 'modules/forking/components/forking-notification/forking-notification'
-import MarketsInnerNav from 'modules/app/components/inner-nav/markets-inner-nav'
 import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
 import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
 import ReportingInnerNav from 'modules/app/components/inner-nav/reporting-inner-nav'
@@ -47,6 +46,7 @@ import { MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
 import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
+import MarketsInnerNavContainer from 'src/modules/app/containers/markets-inner-nav'
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -59,7 +59,7 @@ const SUB_MENU = 'subMenu'
 const MAIN_MENU = 'mainMenu'
 
 const navTypes = {
-  [MARKETS]: MarketsInnerNav,
+  [MARKETS]: MarketsInnerNavContainer,
   [MY_MARKETS]: PortfolioInnerNav,
   [MY_POSITIONS]: PortfolioInnerNav,
   [FAVORITES]: PortfolioInnerNav,
@@ -88,7 +88,6 @@ export default class AppView extends Component {
     location: PropTypes.object.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
-    marketsFilteredSorted: PropTypes.array,
     modal: PropTypes.object.isRequired,
     selectedCategory: PropTypes.string,
     universe: PropTypes.object.isRequired,
@@ -153,7 +152,9 @@ export default class AppView extends Component {
 
     this.shouldComponentUpdate = shouldComponentUpdatePure
 
+    this.openSubMenu = this.openSubMenu.bind(this)
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this))
+    this.innerNavMenuMobileClick = this.innerNavMenuMobileClick.bind(this)
     this.checkIsMobile = this.checkIsMobile.bind(this)
     this.toggleNotifications = this.toggleNotifications.bind(this)
     this.mainSectionClickHandler = this.mainSectionClickHandler.bind(this)
@@ -222,6 +223,10 @@ export default class AppView extends Component {
         this.toggleMenuTween(SUB_MENU, true)
       }
     }
+  }
+
+  openSubMenu() {
+    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
   }
 
   changeMenu(nextBasePath) {
@@ -366,6 +371,10 @@ export default class AppView extends Component {
     }
   }
 
+  innerNavMenuMobileClick() {
+    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
+  }
+
   renderMobileMenuButton(unseenCount) {
     const menuState = this.state.mobileMenuState
 
@@ -381,7 +390,7 @@ export default class AppView extends Component {
       >
         {icon}
         {menuState === mobileMenuStates.CLOSED && !!unseenCount &&
-          AlertCircle(Styles['SideBar__mobile-bars-unseen'])
+        AlertCircle(Styles['SideBar__mobile-bars-unseen'])
         }
       </button>
     )
@@ -390,7 +399,6 @@ export default class AppView extends Component {
   render() {
     const {
       blockchain,
-      categories,
       coreStats,
       history,
       isLogged,
@@ -398,7 +406,6 @@ export default class AppView extends Component {
       location,
       loginAccount,
       markets,
-      marketsFilteredSorted,
       modal,
       universe,
       isLoading,
@@ -410,10 +417,8 @@ export default class AppView extends Component {
 
     const InnerNav = this.state.currentInnerNavType
     let innerNavMenuMobileClick
-    if (InnerNav === MarketsInnerNav) {
-      innerNavMenuMobileClick = () => {
-        this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
-      }
+    if (InnerNav === MarketsInnerNavContainer) {
+      innerNavMenuMobileClick = this.innerNavMenuMobileClick // eslint-disable-line prefer-destructuring
     }
 
     let categoriesMargin
@@ -517,16 +522,14 @@ export default class AppView extends Component {
                 <InnerNav
                   currentBasePath={this.state.currentBasePath}
                   isMobile={isMobile}
+                  location={location}
+                  history={history}
                   mobileMenuState={s.mobileMenuState}
                   mobileMenuClick={innerNavMenuMobileClick}
                   subMenuScalar={subMenu.scalar}
-                  categories={categories}
                   markets={markets}
-                  marketsFilteredSorted={marketsFilteredSorted}
-                  openSubMenu={() => this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })}
+                  openSubMenu={this.openSubMenu}
                   privateKey={loginAccount.privateKey}
-                  location={location}
-                  history={history}
                 />
               }
               {!InnerNav &&

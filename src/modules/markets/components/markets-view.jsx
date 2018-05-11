@@ -5,17 +5,8 @@ import { Helmet } from 'react-helmet'
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
 
-// import getValue from 'utils/get-value'
-import parseQuery from 'modules/routes/helpers/parse-query'
 import isEqual from 'lodash/isEqual'
 
-// import parsePath from 'modules/routes/helpers/parse-path'
-// import makePath from 'modules/routes/helpers/make-path'
-
-// import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
-import { CATEGORY_PARAM_NAME, FILTER_SEARCH_PARAM, TAGS_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
-import { QUERY_VALUE_DELIMITER } from 'modules/routes/constants/query-value-delimiter'
-import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
@@ -26,30 +17,31 @@ export default class MarketsView extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
+    category: PropTypes.string,
     hasLoadedCategory: PropTypes.object.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsByCategory: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    updateMarketsFilteredSorted: PropTypes.func.isRequired,
-    clearMarketsFilteredSorted: PropTypes.func.isRequired,
+    tags: PropTypes.array,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       canLoadMarkets,
+      category,
       hasLoadedCategory,
       hasLoadedMarkets,
       loadMarkets,
       loadMarketsByCategory,
-      location,
     } = this.props
-    loadMarkets({
+
+    loadMarketsFn({
       canLoadMarkets,
-      location,
+      category,
       loadMarkets,
       loadMarketsByCategory,
       hasLoadedMarkets,
@@ -57,48 +49,32 @@ export default class MarketsView extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const {
       canLoadMarkets,
+      category,
       hasLoadedCategory,
       hasLoadedMarkets,
-      location,
+      loadMarkets,
+      loadMarketsByCategory,
     } = this.props
     if (
-      (canLoadMarkets !== nextProps.canLoadMarkets && nextProps.canLoadMarkets) ||
-      location !== nextProps.location ||
-      !isEqual(hasLoadedCategory, nextProps.hasLoadedCategory) ||
-      (hasLoadedMarkets !== nextProps.hasLoadedMarkets && !nextProps.hasLoadedMarkets)
+      (category !== prevProps.category) ||
+      (canLoadMarkets !== prevProps.canLoadMarkets && canLoadMarkets) ||
+
+      !isEqual(hasLoadedCategory, prevProps.hasLoadedCategory) ||
+      (hasLoadedMarkets !== prevProps.hasLoadedMarkets && !hasLoadedMarkets)
     ) {
-      loadMarkets({
-        canLoadMarkets: nextProps.canLoadMarkets,
-        location: nextProps.location,
-        loadMarkets: nextProps.loadMarkets,
-        loadMarketsByCategory: nextProps.loadMarketsByCategory,
+      loadMarketsFn({
+        canLoadMarkets,
+        category,
+        location,
+        loadMarkets,
+        loadMarketsByCategory,
         hasLoadedMarkets,
         hasLoadedCategory,
       })
     }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const newTags = decodeURIComponent(parseQuery(nextProps.location.search)[TAGS_PARAM_NAME] || '')
-    if (newTags.length) {
-      const marketsFilteredByTags = filterByTags(newTags.split(QUERY_VALUE_DELIMITER), nextProps.markets)
-      if (!isEqual(marketsFilteredByTags, nextProps.filteredMarkets)) {
-        this.props.updateMarketsFilteredSorted(marketsFilteredByTags)
-      }
-    }
-    // }
-    // if (!isEqual(this.state.markets, nextState.markets)) {
-    //   this.props.updateMarketsFilteredSorted(nextState.markets)
-    //   checkFavoriteMarketsCount(nextState.markets, nextProps.location, nextProps.history)
-    // }
-  }
-
-  componentWillUnmount() {
-    const { clearMarketsFilteredSorted } = this.props
-    clearMarketsFilteredSorted()
   }
 
   render() {
@@ -138,26 +114,15 @@ export default class MarketsView extends Component {
   }
 }
 
-function loadMarkets(options) {
-  if (options.canLoadMarkets) {
-    const category = parseQuery(options.location.search)[CATEGORY_PARAM_NAME]
-    const search = parseQuery(options.location.search)[FILTER_SEARCH_PARAM]
-    const tag = parseQuery(options.location.search)[TAGS_PARAM_NAME]
+function loadMarketsFn({ canLoadMarkets, category, hasLoadedCategory, loadMarketsByCategory, loadMarkets }) {
+  if (canLoadMarkets) {
     // Expected behavior is to load a specific category if one is present
     // else, if we aren't searching (which is a local market data search)
     // then load markets (loads all markets)
-    if (category && (!tag || !options.hasLoadedCategory[category])) {
-      options.loadMarketsByCategory(category)
-    } else if (!search && !tag) {
-      options.loadMarkets()
+    if (category && !hasLoadedCategory[category]) {
+      loadMarketsByCategory(category)
+    } else {
+      loadMarkets()
     }
   }
 }
-
-// function checkFavoriteMarketsCount(filteredMarkets, location, history) {
-//   const path = parsePath(location.pathname)[0]
-//
-//   if (path === FAVORITES && !filteredMarkets.length) {
-//     history.push(makePath(MARKETS))
-//   }
-// }

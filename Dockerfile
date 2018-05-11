@@ -6,7 +6,9 @@ ENV ETHEREUM_NETWORK=$ethereum_network
 
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
-RUN apt-get -y update \
+RUN curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
+  && echo 'deb http://nginx.org/packages/debian/ stretch nginx' > /etc/apt/sources.list.d/nginx.list \
+  && apt-get -y update \
   && apt-get -y upgrade \
   && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
   && /bin/bash \
@@ -16,7 +18,10 @@ RUN apt-get -y update \
 # end install yarn
 
 # Vhost to serve files
-COPY support/nginx-default.conf /etc/nginx/sites-available/default
+COPY support/nginx-default.conf /etc/nginx/conf.d/default.conf
+
+# nginx logs
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
 
 # begin create caching layer
 COPY package.json /augur/package.json
@@ -33,7 +38,7 @@ COPY . /augur
 COPY support/local-run.sh /augur/local-run.sh
 
 # workaround a bug when running inside an alpine docker image
-RUN rm /augur/yarn.lock
+RUN rm -f /augur/yarn.lock
 
 RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev
 

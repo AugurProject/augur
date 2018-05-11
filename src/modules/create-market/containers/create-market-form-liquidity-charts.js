@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     currentBlock: state.blockchain.currentBlockNumber || 0,
     currentTimestamp: selectCurrentTimestamp(state),
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
-    fixedPrecision: 6,
+    fixedPrecision: 4,
     minPrice: newMarket.type === SCALAR ? createBigNumber(newMarket.scalarSmallNum) : createBigNumber(0),
     maxPrice: newMarket.type === SCALAR ? createBigNumber(newMarket.scalarBigNum) : createBigNumber(1),
     orderBook: cumulativeOrderBook,

@@ -57,11 +57,6 @@ export default function (market) {
       assert.isString(market.endTimeLabel)
     })
 
-    it('market.outstandingShares', () => {
-      assert.isDefined(market.outstandingShares)
-      assertFormattedNumber(market.outstandingShares, 'market.outstandingShares')
-    })
-
     it('market.settlementFeePercent', () => {
       assert.isDefined(market.settlementFeePercent)
       assertFormattedNumber(market.settlementFeePercent, 'market.settlementFeePercent')

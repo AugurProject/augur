@@ -20,6 +20,12 @@ function groupByMethod(values, prop) {
   return grouped
 }
 
+function formatTransactionMessage(sumBuy, sumSell, txType) {
+  const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
+  const sells = (sumSell !== 0 ? `${sumSell} ${SELL}` : '')
+  return buys + (sumBuy !== 0 && sumSell !== 0 ? ' & ' : ' ') + sells + ' ' + (sumBuy + sumSell > 1 ? txType + 's' : txType)
+}
+
 export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
@@ -59,7 +65,8 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
-  header.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Trades`
+
+  header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
   return header
 }
 
@@ -75,8 +82,6 @@ function buildTradeTransaction(trade, marketsData) {
   if (outcomeName) meta.outcome = outcomeName
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
-  // TODO include .reportingFees and .marketCreatorFees separately?
-  meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
   transaction.meta = meta
   header.status = SUCCESS
   if (transaction.market) {
@@ -101,7 +106,6 @@ export function addTransferTransactions(transfers) {
       meta.txhash = transaction.transactionHash
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
-      meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
       meta.confirmations = blockchain.currentBlockNumber - transaction.creationBlockNumber
       transaction.meta = meta
       header.message = 'Transfer'
@@ -127,7 +131,6 @@ export function addNewMarketCreationTransactions(market) {
       txhash: market.hash,
       'designated reporter': market._designatedReporterAddress,
       'settlement fee': `${percentage} %`,
-      'gas fees': market.hasOwnProperty('gasFees') ? transaction.gasFees : 0,
     }
     transaction.meta = meta
 
@@ -156,9 +159,8 @@ export function addMarketCreationTransactions(marketsCreated) {
       transaction.timestamp = (market || {}).creationTime
       const meta = {}
       meta.market = transaction.marketId
-      meta['creation fee'] = transaction.hasOwnProperty('creationFee') && transaction.creationFee !== undefined ? transaction.creationFee : 0
-      meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
-
+      meta['creation fee'] = market.creationFee
+      meta['market type'] = market.marketType
       transaction.meta = meta
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       header.message = 'Market Creation'
@@ -209,7 +211,6 @@ export function addOpenOrderTransactions(openOrders) {
             meta.status = transaction.orderState
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
-            meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
             transaction.meta = meta
             marketTradeTransactions.push(transaction)
             if (type === BUY) {
@@ -223,7 +224,7 @@ export function addOpenOrderTransactions(openOrders) {
       })
       // TODO: last order creation time will be in header, eariest activite
       marketHeader.timestamp = creationTime
-      marketHeader.message = `${sumBuy} ${BUY} & ${sumSell} ${SELL} Orders`
+      marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
       transactions[marketHeader.id] = marketHeader
     })
@@ -248,7 +249,6 @@ export function addReportingTransactions(reports) {
           meta.marketId = transaction.marketId
           meta.staked = `${transaction.amountStaked} REP`
           meta.numerators = JSON.stringify(transaction.payoutNumerators)
-          meta['gas fees'] = transaction.hasOwnProperty('gasFees') ? transaction.gasFees : 0
           transaction.meta = meta
           transaction.timestamp = transaction.creationTime
           const header = buildHeader(transaction, REPORTING, SUCCESS)
@@ -266,6 +266,7 @@ export function addReportingTransactions(reports) {
 
 function getOutcome(market, outcome) {
   let value = null
+  if (!market || !outcome) return value
   if (market.marketType === BINARY) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
