@@ -13,6 +13,7 @@ import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-report
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
+import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer'
 
 import { Close } from 'modules/common/components/icons'
 
@@ -115,6 +116,9 @@ export default class ModalView extends Component {
               {...modal}
               closeModal={closeModal}
             />
+          }
+          {modal.type === TYPES.MODAL_DISCLAIMER &&
+            <ModalDisclaimer {...modal} />
           }
           {showBigCancel &&
             <button
