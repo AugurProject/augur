@@ -113,14 +113,14 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
             data: { marketId, outcomeId, details: newTradeDetails },
           })
         }
-        const { numOutcomes } = market
-        const cleanAccountPositions = new Array(numOutcomes).fill('0')
+        const cleanAccountPositions = new Array(market.numOutcomes).fill('0')
         if (Array.isArray(accountPositions) && accountPositions.length) {
-          for (let i = 0; i < numOutcomes; i++) {
-            if (accountPositions[i] != null && !isNaN(accountPositions[i].numShares)) {
-              cleanAccountPositions[i] = accountPositions[i].numShares
+          accountPositions.reduce((cleanAccountPositions, position) => {
+            if (position.marketId === market.id) {
+              cleanAccountPositions[position.outcome] = position.numShares
             }
-          }
+            return cleanAccountPositions
+          }, cleanAccountPositions)
         }
         const simulatedTrade = augur.trading.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
