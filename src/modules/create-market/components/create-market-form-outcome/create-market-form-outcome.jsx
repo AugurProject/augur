@@ -152,7 +152,7 @@ export default class CreateMarketOutcome extends Component {
         updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax}`
         break
       case scalarBigNum !== '' && scalarSmallNum.gte(scalarBigNum):
-        updatedMarket.validations[currentStep].scalarSmallNum = 'Max must be larger than min.'
+        updatedMarket.validations[currentStep].scalarSmallNum = 'Min must be less than max.'
         break
       default:
         updatedMarket.validations[currentStep].scalarSmallNum = true
@@ -171,7 +171,7 @@ export default class CreateMarketOutcome extends Component {
         updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax}`
         break
       case scalarSmallNum !== '' && scalarBigNum.lte(scalarSmallNum):
-        updatedMarket.validations[currentStep].scalarBigNum = 'Max must be larger than min.'
+        updatedMarket.validations[currentStep].scalarBigNum = 'Max must be more than min.'
         break
       default:
         updatedMarket.validations[currentStep].scalarBigNum = true
