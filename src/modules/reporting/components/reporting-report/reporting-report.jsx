@@ -134,7 +134,7 @@ export default class ReportingReport extends Component {
 
     const BNstake = createBigNumber(formatRep(s.stake).fullPrecision)
     const insufficientRep = !isOpenReporting ? createBigNumber(availableRep).lt(BNstake) : false
-    const disableReview = !Object.keys(s.validations).every(key => s.validations[key] === true) || insufficientRep
+    const disableReview = !Object.keys(s.validations).every(key => s.validations[key] === true) || insufficientRep || (!isDesignatedReporter && !isOpenReporting)
     return (
       <section>
         <Helmet>
