@@ -30,8 +30,16 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             minDisplayPrice: marketInfo.minPrice,
             maxDisplayPrice: marketInfo.maxPrice,
           });
-          if (speedomatic.unfix(tradeCost.cost).gt(1)) {
+          while (speedomatic.unfix(tradeCost.cost).gt(1)) {
             sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(tradeCost.cost).toFixed();
+            tradeCost = augur.trading.calculateTradeCost({
+              displayPrice: displayPrice,
+              displayAmount: sharesToTrade,
+              numTicks: marketInfo.numTicks,
+              orderType: direction,
+              minDisplayPrice: marketInfo.minPrice,
+              maxDisplayPrice: marketInfo.maxPrice,
+            });
           }
           augur.trading.placeTrade({
             meta: auth,
@@ -40,6 +48,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
             numTicks: marketInfo.numTicks,
             minPrice: marketInfo.minPrice,
             maxPrice: marketInfo.maxPrice,
+            estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
             _direction: direction,
             _market: marketInfo.id,
             _outcome: outcomeToTrade,
