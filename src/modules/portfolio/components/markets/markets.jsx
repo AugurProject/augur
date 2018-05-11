@@ -179,7 +179,7 @@ class MyMarkets extends Component {
             <div
               className={Styles['Markets__SortBar-title']}
             >
-              Finalized
+              Resolved
             </div>
           </div>
         }

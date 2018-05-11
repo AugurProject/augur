@@ -69,7 +69,7 @@ export default class Positions extends Component {
             isMobile={isMobile}
           />
           <PositionsMarketsList
-            title="Finalized"
+            title="Resolved"
             markets={closedMarkets}
             closePositionStatus={closePositionStatus}
             location={location}
