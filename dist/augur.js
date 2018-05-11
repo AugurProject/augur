@@ -2178,6 +2178,40 @@ var api = require("../api");
 var contractTypes = require("../constants").CONTRACT_TYPE;
 var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
+/**
+ * @typedef {Object} ForkedMarket
+ * @property {string} address Ethereum contract address of the Forked Market, as a hexadecimal string.
+ * @property {string} universeAddress Ethereum contract address of Universe to which the Forked Market belongs, as a hexadecimal string.
+ * @property {boolen} isFinalized Whether the Forked Market has been Finalized (i.e., the function Market.finalize` has been called on it successfully).
+ * @property {Array.<CrowdsourcerState>} crowdsourcers Array of objects containing information about the Forked Market’s DisputeCrowdsourcers.
+ * @property {InitialReporterState|null} initialReporter Object containing information about the Forked Market’s InitialReporter.
+ */
+
+/**
+ * @typedef {Object} CrowdsourcerState
+ * @property {string} crowdsourcerId Ethereum contract address of a DisputeCrowdsourcer belonging to a Forked Market, as a hexadecimal string.
+ * @property {boolean} isForked Whether the DisputeCrowdsourcer has been forked (i.e., has had its DisputeCrowdsourcer.fork function called successfully).
+ * @property {BigNumber} unclaimedRepStaked Amount of unclaimed REP the user has staked in the DisputeCrowdsourcer.
+ */
+
+/**
+ * @typedef {Object} InitialReporterState
+ * @property {string} initialReporterId Ethereum contract address of the InitialReporter belonging to a Forked Market, as a hexadecimal string.
+ * @property {boolean} isForked Whether the InitialReporter has been forked (i.e., has had its InitialReporter.fork function called successfully).
+ * @property {BigNumber} unclaimedRepStaked Amount of unclaimed REP the user has staked in the IntialReporter.
+ */
+
+/**
+* @typedef {Object} NonforkedMarket
+* @property {string} marketId Ethereum contract address of the non-Forked Market, as a hexadecimal string.
+* @property {string} universe Ethereum contract address of Universe to which the non-Forked Market belongs, as a hexadecimal string.
+* @property {boolean} crowdsourcersAreDisavowed Whether the non-Forked Market's DisputeCrowdsourcers have been disavowed (i.e., its `Market.disavowCrowdsourcers` function has been called successfully).
+* @property {boolean} isMigrated Whether the non-Forked Market has been migrated to the Child Universe of its original Universe (i.e., its `Market.isMigrated` function has been called successfully).
+* @property {boolean} isFinalized Whether the non-Forked Market has been Finalized (i.e., its `Market.finalize` function has been called successfully).
+* @property {Array.<string>} crowdsourcers Array of Ethereum contract addresses of the non-Forked Market's DisputeCrowdsourcers, as hexadecimal strings.
+* @property {string|null} initialReporter Ethereum contract address of the non-Forked Market's InitialReporter, as a hexadecimal string.
+*/
+
 function redeemContractFees(p, payload, successfulTransactions, failedTransactions, gasEstimates) {
   var redeemableContracts = [];
   var i;
@@ -2191,16 +2225,16 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
     if (p.forkedMarket.crowdsourcers) {
       for (i = 0; i < p.forkedMarket.crowdsourcers.length; i++) {
         redeemableContracts.push({
-          address: p.forkedMarket.crowdsourcers[i].address,
+          address: p.forkedMarket.crowdsourcers[i].crowdsourcerId,
           isForked: p.forkedMarket.crowdsourcers[i].isForked,
           marketIsForked: true,
           type: contractTypes.DISPUTE_CROWDSOURCER
         });
       }
     }
-    if (p.forkedMarket.initialReporter && p.forkedMarket.initialReporter.address) {
+    if (p.forkedMarket.initialReporter && p.forkedMarket.initialReporter.initialReporterId) {
       redeemableContracts.push({
-        address: p.forkedMarket.initialReporter.address,
+        address: p.forkedMarket.initialReporter.initialReporterId,
         isForked: p.forkedMarket.initialReporter.isForked,
         marketIsForked: true,
         type: contractTypes.INITIAL_REPORTER
@@ -2217,7 +2251,7 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
       });
     }
     redeemableContracts.push({
-      address: p.nonforkedMarkets[i].initialReporterAddress,
+      address: p.nonforkedMarkets[i].initialReporter,
       isFinalized: p.nonforkedMarkets[i].isFinalized,
       marketIsForked: false,
       type: contractTypes.INITIAL_REPORTER
@@ -2365,12 +2399,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
       successfulTransactions: successfulTransactions
     };
     if (p.estimateGas) {
-      gasEstimates.totals.all = gasEstimates.totals.disavowCrowdsourcers.plus(gasEstimates.totals.migrateThroughOneFork).plus(gasEstimates.totals.crowdsourcerForkAndRedeem).plus(gasEstimates.totals.initialReporterForkAndRedeem).plus(gasEstimates.totals.feeWindowRedeem).plus(gasEstimates.totals.crowdsourcerRedeem).plus(gasEstimates.totals.initialReporterRedeem);
+      gasEstimates.totals.all = gasEstimates.totals.disavowCrowdsourcers.plus(gasEstimates.totals.crowdsourcerForkAndRedeem).plus(gasEstimates.totals.initialReporterForkAndRedeem).plus(gasEstimates.totals.feeWindowRedeem).plus(gasEstimates.totals.crowdsourcerRedeem).plus(gasEstimates.totals.initialReporterRedeem);
       result = {
         gasEstimates: gasEstimates
       };
     }
-    if (failedTransactions.disavowCrowdsourcers.length > 0 || failedTransactions.migrateThroughOneFork.length > 0 || failedTransactions.crowdsourcerForkAndRedeem.length > 0 || failedTransactions.initialReporterForkAndRedeem.length > 0 || failedTransactions.feeWindowRedeem.length > 0 || failedTransactions.crowdsourcerRedeem > 0 || failedTransactions.initialReporterRedeem > 0) {
+    if (failedTransactions.disavowCrowdsourcers.length > 0 || failedTransactions.crowdsourcerForkAndRedeem.length > 0 || failedTransactions.initialReporterForkAndRedeem.length > 0 || failedTransactions.feeWindowRedeem.length > 0 || failedTransactions.crowdsourcerRedeem > 0 || failedTransactions.initialReporterRedeem > 0) {
       result.failedTransactions = failedTransactions;
       return p.onFailed(new Error("Not all transactions were successful.\n" + JSON.stringify(result)));
     }
@@ -2379,33 +2413,37 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
 }
 
 /**
- * TODO: Add updated JSDoc info for input/returned values.
- *
  * Claims all reporting fees for a user as follows:
  *
- * If the forked market is finalized:
- *   Call `Market.migrateThroughOneFork` for all non-forked, non-finalized non-migrated markets in the same universe as the forked market.
- * Else:
- *   Call `Market.disavowCrowdsourcers` for all non-forked, non-finalized, non-disavowed markets in the same universe as the forked market.
+ * If a forked market exists in the current universe:
+ *   For all non-finalized markets in current universe where the user has unclaimed fees in the reporting participants:
+ *     Call `Market.disavowCrowdsourcers`
  *
- * Once the above transactions are finished:
- *   Call `FeeWindow.redeem` on all specified FeeWindows
- *   For each DisputeCrowdsourcer the user unredeemed staked in:
- *     If its market is forked and `DisputeCrowdsourcer.fork` has not been called:
- *       Call `DisputeCrowdsourcer.forkAndRedeem`
+ * Once the above has been completed:
+ *   Call `FeeWindow.redeem` on all fee windows in the current universe where the user has unclaimed participation tokens
+ *   For each reporting participant of the forked market in which the user has unclaimed fees:
+ *     If `DisputeCrowdsourcer.fork`/`InitialReporter.fork` has not been called:
+ *       Call `DisputeCrowdsourcer.forkAndRedeem`/`InitialReporter.forkAndRedeem`
  *     Else:
- *       Call `DisputeCrowdsourcer.redeem`
- *   For each InitialReporter the user has unredeemed stake in:
- *     If its market is forked and `InitialReporter.fork` has not been called:
- *       Call `InitialReporter.forkAndRedeem`
- *     Else:
- *       Call `InitialReporter.redeem`
+ *       Call `DisputeCrowdsourcer.redeem`/`InitialReporter.redeem`
+ *   For all other reporting participants:
+ *     Call `DisputeCrowdsourcer.redeem`/`InitialReporter.redeem`
+ *
+ * @param {Object} p Parameters object.
+ * @param {string} p.redeemer Ethereum address attempting to redeem reporting fees, as a hexadecimal string.
+ * @param {Array.<string>} p.feeWindows Array of FeeWindow contract addresses which to claim reporting fees, as hexadecimal strings.
+ * @param {ForkedMarket} p.forkedMarket Object containing information about the Forked Market in which the user has unclaimed fees in the Parent Universe(if there is one).
+ * @param {Array.<NonforkedMarket>} p.nonforkedMarkets Array containing objects with information about the non-Forked Markets in which the user has unclaimed fees.
+ * @param {boolean} p.estimateGas Whether to return gas estimates for the transactions instead of actually making the transactions.
+ * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
+ * @param {function} p.onSent Called if/when the transactions are broadcast to the network. (Currently used as a placeholder and not actually used by this function.)
+ * @param {function} p.onSuccess Called if/when all transactions are sealed and confirmed.
+ * @param {function} p.onFailed Called if/when all transactions have been attempted and at least one transaction has failed. Error message shows which transactions succeeded and which ones failed.
  */
 function claimReportingFees(p) {
   var payload = immutableDelete(p, ["redeemer", "feeWindows", "forkedMarket", "nonforkedMarkets", "estimateGas", "onSent", "onSuccess", "onFailed"]);
   var successfulTransactions = {
     disavowCrowdsourcers: [],
-    migrateThroughOneFork: [],
     crowdsourcerForkAndRedeem: [],
     initialReporterForkAndRedeem: [],
     feeWindowRedeem: [],
@@ -2414,7 +2452,6 @@ function claimReportingFees(p) {
   };
   var failedTransactions = {
     disavowCrowdsourcers: [],
-    migrateThroughOneFork: [],
     crowdsourcerForkAndRedeem: [],
     initialReporterForkAndRedeem: [],
     feeWindowRedeem: [],
@@ -2423,7 +2460,6 @@ function claimReportingFees(p) {
   };
   var gasEstimates = {
     disavowCrowdsourcers: [],
-    migrateThroughOneFork: [],
     crowdsourcerForkAndRedeem: [],
     initialReporterForkAndRedeem: [],
     feeWindowRedeem: [],
@@ -2431,7 +2467,6 @@ function claimReportingFees(p) {
     initialReporterRedeem: [],
     totals: {
       disavowCrowdsourcers: new BigNumber(0),
-      migrateThroughOneFork: new BigNumber(0),
       crowdsourcerForkAndRedeem: new BigNumber(0),
       initialReporterForkAndRedeem: new BigNumber(0),
       feeWindowRedeem: new BigNumber(0),
@@ -2441,66 +2476,33 @@ function claimReportingFees(p) {
     }
   };
 
-  if (p.forkedMarket && p.forkedMarket.address) {
+  if (p.forkedMarket) {
     async.eachLimit(p.nonforkedMarkets, PARALLEL_LIMIT, function (nonforkedMarket, nextNonforkedMarket) {
-      if (nonforkedMarket.universeAddress === p.forkedMarket.universeAddress) {
-        if (p.forkedMarket.isFinalized) {
-          if (nonforkedMarket.isFinalized || nonforkedMarket.isMigrated) {
-            nextNonforkedMarket();
-          } else {
-            api().Market.migrateThroughOneFork({
-              tx: {
-                to: nonforkedMarket.address,
-                estimateGas: p.estimateGas
-              },
-              onSent: function onSent() {},
-              onSuccess: function onSuccess(result) {
-                if (p.estimateGas) {
-                  result = new BigNumber(result, 16);
-                  gasEstimates.migrateThroughOneFork.push({ address: nonforkedMarket.address, estimate: result });
-                  gasEstimates.totals.migrateThroughOneFork = gasEstimates.totals.migrateThroughOneFork.plus(result);
-                }
-                successfulTransactions.migrateThroughOneFork.push(nonforkedMarket.address);
-                // console.log("Migrated market through one fork:", nonforkedMarket.address);
-                nextNonforkedMarket();
-              },
-              onFailed: function onFailed() {
-                failedTransactions.migrateThroughOneFork.push(nonforkedMarket.address);
-                // console.log("Failed to migrate market through one fork:", nonforkedMarket.address);
-                nextNonforkedMarket();
-              }
-            });
-          }
-        } else {
-          if (nonforkedMarket.isFinalized || nonforkedMarket.crowdsourcersAreDisavowed) {
-            nextNonforkedMarket();
-          } else {
-            api().Market.disavowCrowdsourcers(assign({}, payload, {
-              tx: {
-                to: nonforkedMarket.address,
-                estimateGas: p.estimateGas
-              },
-              onSent: function onSent() {},
-              onSuccess: function onSuccess(result) {
-                if (p.estimateGas) {
-                  result = new BigNumber(result, 16);
-                  gasEstimates.disavowCrowdsourcers.push({ address: nonforkedMarket.address, estimate: result });
-                  gasEstimates.totals.disavowCrowdsourcers = gasEstimates.totals.disavowCrowdsourcers.plus(result);
-                }
-                successfulTransactions.disavowCrowdsourcers.push(nonforkedMarket.address);
-                // console.log("Disavowed crowdsourcers for market", nonforkedMarket.address);
-                nextNonforkedMarket();
-              },
-              onFailed: function onFailed() {
-                failedTransactions.disavowCrowdsourcers.push(nonforkedMarket.address);
-                // console.log("Failed to disavow crowdsourcers for", nonforkedMarket.address);
-                nextNonforkedMarket();
-              }
-            }));
-          }
-        }
-      } else {
+      if (nonforkedMarket.isFinalized) {
         nextNonforkedMarket();
+      } else {
+        api().Market.disavowCrowdsourcers(assign({}, payload, {
+          tx: {
+            to: nonforkedMarket.marketId,
+            estimateGas: p.estimateGas
+          },
+          onSent: function onSent() {},
+          onSuccess: function onSuccess(result) {
+            if (p.estimateGas) {
+              result = new BigNumber(result, 16);
+              gasEstimates.disavowCrowdsourcers.push({ address: nonforkedMarket.marketId, estimate: result });
+              gasEstimates.totals.disavowCrowdsourcers = gasEstimates.totals.disavowCrowdsourcers.plus(result);
+            }
+            successfulTransactions.disavowCrowdsourcers.push(nonforkedMarket.marketId);
+            // console.log("Disavowed crowdsourcers for market", nonforkedMarket.marketId);
+            nextNonforkedMarket();
+          },
+          onFailed: function onFailed() {
+            failedTransactions.disavowCrowdsourcers.push(nonforkedMarket.marketId);
+            // console.log("Failed to disavow crowdsourcers for", nonforkedMarket.marketId);
+            nextNonforkedMarket();
+          }
+        }));
       }
     }, function () {
       redeemContractFees(p, payload, successfulTransactions, failedTransactions, gasEstimates);
@@ -4253,7 +4255,6 @@ var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
 var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
 var api = require("../api");
-var ethrpc = require("../rpc-interface");
 var noop = require("../utils/noop");
 var constants = require("../constants");
 
@@ -4291,66 +4292,56 @@ function tradeUntilAmountIsZero(p) {
   var maxCost = tradeCost.cost;
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
-  var cost = p.estimatedCost != null && new BigNumber(p.estimatedCost, 10).gt(constants.ZERO) ? speedomatic.fix(p.estimatedCost) : maxCost;
+  var cost = p.estimatedCost != null ? speedomatic.fix(p.estimatedCost) : maxCost;
   console.log("cost:", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
-  if (cost.lt(constants.PRECISION.zero)) {
+  if (tradeCost.onChainAmount.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-  ethrpc.eth.gasPrice(null, function (err, gasPrice) {
-    if (err) return p.onFailed(err);
-    var estimatedGasCost = new BigNumber(constants.TRADE_GAS, 16).times(new BigNumber(gasPrice, 16));
-    console.log("estimated gas cost:", estimatedGasCost.toFixed(), "wei", speedomatic.unfix(estimatedGasCost, "string"), "eth");
-    // Note: disabled temporarily for testing, do not remove!
-    // if (estimatedGasCost.gt(cost)) {
-    //   console.info("tradeUntilAmountIsZero complete: only dust remaining");
-    //   return p.onSuccess(null);
-    // }
-    var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
-      tx: assign({ value: convertBigNumberToHexString(cost), gas: constants.TRADE_GAS }, p.tx),
-      _fxpAmount: convertBigNumberToHexString(onChainAmount),
-      _price: convertBigNumberToHexString(onChainPrice),
-      onSuccess: function onSuccess(res) {
-        var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
-        var onChainFillPrice = calculateOnChainFillPrice(orderType, onChainPrice, p.numTicks);
-        getTradeAmountRemaining({
-          transactionHash: res.hash,
-          startingOnChainAmount: onChainAmount,
-          onChainFillPrice: onChainFillPrice,
-          tickSize: tickSize
-        }, function (err, tradeOnChainAmountRemaining) {
-          if (err) return p.onFailed(err);
-          console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
-          console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
-          if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
-            if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
-            return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
-          }
-          var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
-          console.log("actual cost:     ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
-          if (updatedEstimatedCost != null) {
-            console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
-            console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
-            console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
-          }
-          tradeUntilAmountIsZero(assign({}, p, {
-            estimatedCost: updatedEstimatedCost,
-            _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
-            onSent: noop // so that p.onSent only fires when the first transaction is sent
-          }));
-        });
-      }
-    });
-    if (p.doNotCreateOrders) {
-      api().Trade.publicFillBestOrder(tradePayload);
-    } else {
-      api().Trade.publicTrade(tradePayload);
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
+    tx: assign({ value: convertBigNumberToHexString(cost), gas: constants.TRADE_GAS }, p.tx),
+    _fxpAmount: convertBigNumberToHexString(onChainAmount),
+    _price: convertBigNumberToHexString(onChainPrice),
+    onSuccess: function onSuccess(res) {
+      var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
+      var onChainFillPrice = calculateOnChainFillPrice(orderType, onChainPrice, p.numTicks);
+      getTradeAmountRemaining({
+        transactionHash: res.hash,
+        startingOnChainAmount: onChainAmount,
+        onChainFillPrice: onChainFillPrice,
+        tickSize: tickSize
+      }, function (err, tradeOnChainAmountRemaining) {
+        if (err) return p.onFailed(err);
+        console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
+        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
+        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
+          return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
+        }
+        var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
+        console.log("actual cost:     ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
+        if (updatedEstimatedCost != null) {
+          console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
+          console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
+          console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
+        }
+        tradeUntilAmountIsZero(assign({}, p, {
+          estimatedCost: updatedEstimatedCost,
+          _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
+          onSent: noop // so that p.onSent only fires when the first transaction is sent
+        }));
+      });
     }
   });
+  if (p.doNotCreateOrders) {
+    api().Trade.publicFillBestOrder(tradePayload);
+  } else {
+    api().Trade.publicTrade(tradePayload);
+  }
 }
 
 module.exports = tradeUntilAmountIsZero;
-},{"../api":7,"../constants":30,"../rpc-interface":86,"../utils/convert-big-number-to-hex-string":133,"../utils/convert-on-chain-amount-to-display-amount":137,"../utils/noop":146,"./calculate-on-chain-fill-price":89,"./calculate-tick-size":90,"./calculate-trade-cost":92,"./get-trade-amount-remaining":101,"bignumber.js":153,"immutable-delete":370,"lodash.assign":383,"speedomatic":489}],132:[function(require,module,exports){
+},{"../api":7,"../constants":30,"../utils/convert-big-number-to-hex-string":133,"../utils/convert-on-chain-amount-to-display-amount":137,"../utils/noop":146,"./calculate-on-chain-fill-price":89,"./calculate-tick-size":90,"./calculate-trade-cost":92,"./get-trade-amount-remaining":101,"bignumber.js":153,"immutable-delete":370,"lodash.assign":383,"speedomatic":489}],132:[function(require,module,exports){
 "use strict";
 
 var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
@@ -4531,7 +4522,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.11.0-14';
+module.exports = '4.11.0-15';
 },{}],149:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
