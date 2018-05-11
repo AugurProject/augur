@@ -5,7 +5,7 @@ export default function parseMarketTitle(description) {
 
   const title = words.reduce(
     (prev, word, i) => (
-      prev.length < 40 && i + 1 < words.length ?
+      prev.length < 40 && i < words.length ?
         `${prev} ${word}` :
         prev),
     '',

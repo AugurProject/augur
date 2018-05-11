@@ -20,7 +20,9 @@ export default class ReportingReportForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     stake: PropTypes.string.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
+    isDesignatedReporter: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
+    insufficientRep: PropTypes.bool,
   }
 
   static BUTTONS = {
@@ -94,7 +96,7 @@ export default class ReportingReportForm extends Component {
     const minValue = parseFloat(min)
     const maxValue = parseFloat(max)
     const valueValue = parseFloat(value)
-    const bnValue = createBigNumber(value)
+    const bnValue = createBigNumber(value || 0)
     const bnTickSize = createBigNumber(tickSize)
 
     if (value === '') {
@@ -138,9 +140,16 @@ export default class ReportingReportForm extends Component {
       selectedOutcome,
       stake,
       validations,
+      insufficientRep,
+      isDesignatedReporter,
     } = this.props
     const s = this.state
-
+    let errorMessage = null
+    if (!isDesignatedReporter && !isOpenReporting) {
+      errorMessage = 'You are not the Designated Reporter for this market. Only the Designated Reporter may submit a report.'
+    } else if (insufficientRep && !isOpenReporting) {
+      errorMessage = 'You have insufficient REP to create this report.'
+    }
     return (
       <ul className={classNames(Styles.ReportingReportForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -205,6 +214,13 @@ export default class ReportingReportForm extends Component {
             </ul>
           }
         </li>
+        { errorMessage &&
+          <label>
+            <span className={Styles['ReportingReport__insufficient-funds']}>
+              {InputErrorIcon}{errorMessage}
+            </span>
+          </label>
+        }
         { !isOpenReporting &&
         <li>
           <label htmlFor="sr__input--stake">

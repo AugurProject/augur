@@ -18,7 +18,7 @@ export default class MarketOutcomeOrderbook extends Component {
     fixedPrecision: PropTypes.number.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
-    updatePrecision: PropTypes.func.isRequired,
+    updatePrecision: PropTypes.func,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
     selectedOutcome: PropTypes.any,

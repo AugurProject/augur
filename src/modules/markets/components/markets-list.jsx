@@ -21,14 +21,12 @@ export default class MarketsList extends Component {
     paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
-    outstandingReturns: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
   }
 
   static defaultProps = {
     showPagination: true,
-    outstandingReturns: false,
   }
 
   constructor(props) {
@@ -96,7 +94,6 @@ export default class MarketsList extends Component {
       isMobile,
       location,
       markets,
-      outstandingReturns,
       paginationPageParam,
       showPagination,
       toggleFavorite,
@@ -121,7 +118,6 @@ export default class MarketsList extends Component {
                   toggleFavorite={toggleFavorite}
                   location={location}
                   history={history}
-                  outstandingReturns={outstandingReturns}
                   collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
                   linkType={TYPE_TRADE}
