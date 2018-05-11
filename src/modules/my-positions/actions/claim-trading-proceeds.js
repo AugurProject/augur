@@ -4,6 +4,7 @@ import { updateAssets } from 'modules/auth/actions/update-assets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import cancelOpenOrdersInClosedMarkets from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets'
 import selectWinningPositions from 'modules/my-positions/selectors/winning-positions'
+import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
@@ -21,6 +22,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
       onSuccess: (claimedMarkets) => {
         dispatch(updateAssets())
         each(claimedMarkets, (marketId, nextMarketId) => {
+          dispatch(getWinningBalance([marketId]))
           dispatch(loadMarketsInfo([marketId], nextMarketId))
         }, err => callback(err))
       },

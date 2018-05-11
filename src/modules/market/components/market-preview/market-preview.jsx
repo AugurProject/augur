@@ -44,7 +44,6 @@ MarketPreview.propTypes = {
   cardStyle: PropTypes.string,
   hideReportEndingIndicator: PropTypes.bool,
   linkType: PropTypes.string,
-  outstandingReturns: PropTypes.bool,
   collectMarketCreatorFees: PropTypes.func,
 }
 
