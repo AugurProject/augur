@@ -17,6 +17,8 @@ const mapStateToProps = state => ({
   universe: state.universe.id,
   marketsData: state.marketsData,
   isMobile: state.isMobile,
+  availableRep: getValue(state, 'loginAccount.rep'),
+  userAddress: state.loginAccount.address,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -29,12 +31,13 @@ const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME]
   const market = selectMarket(marketId)
   const isOpenReporting = market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING
-
+  const isDesignatedReporter = market.designatedReporter === sP.userAddress
   return {
     ...oP,
     ...sP,
     marketId,
     isOpenReporting,
+    isDesignatedReporter,
     isLogged: sP.isLogged,
     isConnected: sP.isConnected && getValue(sP, 'universe.id') != null,
     isMarketLoaded: sP.marketsData[marketId] != null,

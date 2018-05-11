@@ -26,6 +26,12 @@
   white-space: nowrap;
 }
 
+.CreateMarketForm__error--abs {
+  &:extend(.CreateMarketForm__error);
+
+  position: absolute;
+}
+
 .CreateMarketForm__error--bottom {
   &:extend(.CreateMarketForm__error);
 
@@ -34,6 +40,7 @@
 }
 
 .CreateMarketForm__error > svg,
+.CreateMarketForm__error--abs > svg,
 .CreateMarketForm__error--bottom > svg,
 .CreateMarketForm__error--field-50 > svg,
 .CreateMarketForm__error--insufficient-funds > svg {

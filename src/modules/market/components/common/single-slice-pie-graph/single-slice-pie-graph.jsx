@@ -7,7 +7,7 @@ export default function SingleSlicePieGraph({ percentage }) {
   const degree = ((180 - (360 * percentage)) - 90)
   const purple = '#412468' // @color-purple
   const color1 = (percentage > 0.5) ? purple : 'transparent'
-  const color2 = (percentage > 0.5) ? 'transparent' : 'white'
+  const color2 = 'transparent'
 
   const CircleStyling = {
     backgroundImage: `

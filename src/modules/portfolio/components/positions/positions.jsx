@@ -65,7 +65,7 @@ export default class Positions extends Component {
             isMobile={isMobile}
           />
           <PositionsMarketsList
-            title="Finalized"
+            title="Resolved"
             markets={closedMarkets}
             location={location}
             history={history}

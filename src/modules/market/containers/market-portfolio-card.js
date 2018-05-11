@@ -8,6 +8,8 @@ import { selectMarket } from 'modules/market/selectors/market'
 import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
 import { calculateOutstandingReturns } from 'modules/market/helpers/calculate-outstanding-returns'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
+import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
+
 
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestampInSeconds(state),
@@ -17,6 +19,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
 })
 

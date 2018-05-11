@@ -400,6 +400,7 @@ export default class AppView extends Component {
     const {
       blockchain,
       coreStats,
+      history,
       isLogged,
       isMobile,
       location,
@@ -521,6 +522,8 @@ export default class AppView extends Component {
                 <InnerNav
                   currentBasePath={this.state.currentBasePath}
                   isMobile={isMobile}
+                  location={location}
+                  history={history}
                   mobileMenuState={s.mobileMenuState}
                   mobileMenuClick={innerNavMenuMobileClick}
                   subMenuScalar={subMenu.scalar}

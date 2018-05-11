@@ -30,7 +30,7 @@ const mapStateToProps = (state, ownProps) => {
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),
     orderBook: cumulativeOrderBook,
     hasPriceHistory: priceTimeSeries.length !== 0,
-    hasOrders: !isEmpty(cumulativeOrderBook[BIDS]) && !isEmpty(cumulativeOrderBook[ASKS]),
+    hasOrders: !isEmpty(cumulativeOrderBook[BIDS]) || !isEmpty(cumulativeOrderBook[ASKS]),
     priceTimeSeries,
     marketDepth,
     orderBookKeys,

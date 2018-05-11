@@ -26,7 +26,7 @@ export default class MarketPortfolioCard extends Component {
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
-    outstandingReturns: PropTypes.number,
+    getWinningBalances: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -41,6 +41,11 @@ export default class MarketPortfolioCard extends Component {
         openOrders: false,
       },
     }
+  }
+
+  componentWillMount() {
+    const { market, getWinningBalances } = this.props
+    getWinningBalances([market.id])
   }
 
   toggleTable(tableKey) {
@@ -257,12 +262,12 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && outstandingReturns > 0 &&
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && market.outstandingReturns &&
           <MarketPortfolioCardFooter
             linkType={linkType}
             localButtonText={localButtonText}
             buttonAction={buttonAction}
-            outstandingReturns={outstandingReturns}
+            outstandingReturns={market.outstandingReturns}
             finalizationTime={market.finalizationTime}
             currentTimestamp={currentTimestamp}
           />
