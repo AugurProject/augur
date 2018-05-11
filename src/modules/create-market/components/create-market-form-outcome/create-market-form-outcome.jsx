@@ -44,10 +44,10 @@ export default class CreateMarketOutcome extends Component {
       scalarMin: createBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
       scalarMax: createBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
       scalarType: {
-        MIN_PRICE : 'MIN_PRICE',
-        MAX_PRICE : 'MAX_PRICE',
-        TICK_SIZE : 'TICK_SIZE',
-      }
+        MIN_PRICE: 'MIN_PRICE',
+        MAX_PRICE: 'MAX_PRICE',
+        TICK_SIZE: 'TICK_SIZE',
+      },
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
