@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
+import ModalNetworkDisabled from 'modules/modal/components/modal-network-disabled/modal-network-disabled'
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
 import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
@@ -95,6 +96,9 @@ export default class ModalView extends Component {
           }
           {modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...modal} />
+          }
+          {modal.type === TYPES.MODAL_NETWORK_DISABLED &&
+            <ModalNetworkDisabled {...modal} />
           }
           {modal.type === TYPES.MODAL_NETWORK_CONNECT &&
             <ModalNetworkConnect />

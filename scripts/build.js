@@ -21,7 +21,13 @@ if (FLAGS.indexOf('--rinkeby') !== -1) {
   network = 'aura'
 }
 
+let enableMainNet = 'false';
+if (FLAGS.indexOf('--enableMainnet') !== -1) {
+  enableMainNet = 'true';
+}
+
 if (network) { process.env.ETHEREUM_NETWORK = network }
+process.env.ENABLE_MAINNET = enableMainNet
 
 process.env.FORCE_COLOR = true;
 network ? console.log(`Using Network: ${network}`) : console.log('Using local network');
