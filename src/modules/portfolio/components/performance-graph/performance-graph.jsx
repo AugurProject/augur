@@ -209,9 +209,10 @@ class PerformanceGraph extends Component {
         },
         shadow: false,
         shared: true,
-        xDateFormat: '%m %d',
         shape: 'none',
-        pointFormat: '<b style="color:{point.color}">{point.y} ETH</b> <br/> <b style="color:{point.color}">{point.x}</b>',
+        pointFormatter() {
+          return `<p style="line-height:1.2rem"><b style="color:${this.color}">${this.y} ETH</b><br/>${moment.unix(this.x).format('LLL')}</p>`
+        },
         valueDecimals: 4,
       },
       credits: {
@@ -329,7 +330,7 @@ class PerformanceGraph extends Component {
           data: series.data,
         }, false)
       } else {
-        this.performanceGraph.series[i].setData(series.data, true)
+        this.performanceGraph.series[i].setData(series.data, false, {}, false)
       }
     })
 
