@@ -24,6 +24,7 @@ export default class ReportingReport extends Component {
     isLogged: PropTypes.bool,
     isMarketLoaded: PropTypes.bool.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
+    isDesignatedReporter: PropTypes.bool.isRequired,
     loadFullMarket: PropTypes.func.isRequired,
     location: PropTypes.object,
     market: PropTypes.object.isRequired,
@@ -127,11 +128,12 @@ export default class ReportingReport extends Component {
       market,
       submitInitialReport,
       availableRep,
+      isDesignatedReporter,
     } = this.props
     const s = this.state
 
     const BNstake = createBigNumber(formatRep(s.stake).fullPrecision)
-    const insufficientRep = createBigNumber(availableRep).lt(BNstake)
+    const insufficientRep = !isOpenReporting ? createBigNumber(availableRep).lt(BNstake) : false
     const disableReview = !Object.keys(s.validations).every(key => s.validations[key] === true) || insufficientRep
     return (
       <section>
@@ -170,6 +172,7 @@ export default class ReportingReport extends Component {
                 validations={s.validations}
                 isOpenReporting={isOpenReporting}
                 insufficientRep={insufficientRep}
+                isDesignatedReporter={isDesignatedReporter}
               />
             }
             { s.currentStep === 1 &&

@@ -20,6 +20,7 @@ export default class ReportingReportForm extends Component {
     selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     stake: PropTypes.string.isRequired,
     isOpenReporting: PropTypes.bool.isRequired,
+    isDesignatedReporter: PropTypes.bool.isRequired,
     isMarketInValid: PropTypes.bool,
     insufficientRep: PropTypes.bool,
   }
@@ -140,9 +141,15 @@ export default class ReportingReportForm extends Component {
       stake,
       validations,
       insufficientRep,
+      isDesignatedReporter,
     } = this.props
     const s = this.state
-
+    let errorMessage = null
+    if (!isDesignatedReporter && !isOpenReporting) {
+      errorMessage = 'You are not the Designated Reporter for this market. Only the Designated Reporter may submit a report.'
+    } else if (insufficientRep && !isOpenReporting) {
+      errorMessage = 'You have insufficient REP to create this report.'
+    }
     return (
       <ul className={classNames(Styles.ReportingReportForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -207,10 +214,10 @@ export default class ReportingReportForm extends Component {
             </ul>
           }
         </li>
-        { !isOpenReporting && insufficientRep &&
+        { errorMessage &&
           <label>
             <span className={Styles['ReportingReport__insufficient-funds']}>
-              {InputErrorIcon}You have insufficient REP to create this report.
+              {InputErrorIcon}{errorMessage}
             </span>
           </label>
         }
