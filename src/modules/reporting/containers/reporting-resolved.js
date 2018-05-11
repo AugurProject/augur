@@ -13,7 +13,7 @@ import { selectMarket } from 'src/modules/market/selectors/market'
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
   markets: getValue(selectMarketsToReport(state), 'resolved'),
-  isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
+  isForkingMarketFinalized: state.universe.isForkingMarketFinalized || false,
   forkingMarket: state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null,
 })
 
