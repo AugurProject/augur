@@ -35,6 +35,11 @@ export default class MarketPositionsListPosition extends Component {
   constructor(props) {
     super(props)
 
+    this.messageMap = {
+      [CLOSE_DIALOG_NO_ORDERS]: 'Position cannot be closed. Create a new order to sell your shares.',
+      [CLOSE_DIALOG_PARTIALLY_FAILED]: 'Position partially closed. Create a new order to sell your remaining shares.',
+    }
+
     this.state = {
       showConfirm: false,
       confirmHeight: 'auto',
@@ -49,7 +54,6 @@ export default class MarketPositionsListPosition extends Component {
     const { closePositionStatus, position } = prevProps
     const status = closePositionStatus[position.marketId]
     const positionStatus = status ? status[position.outcomeId] : null
-    console.log('positionStatus', positionStatus)
     if (positionStatus !== this.state.positionStatus) {
       this.updateState(positionStatus, positionStatus !== null)
     }
@@ -102,16 +106,12 @@ export default class MarketPositionsListPosition extends Component {
     }
     const positionShares = getValue(position, 'qtyShares.formatted')
 
-    let message = null
-    let onlyOkButton = true
-    if (s.positionStatus === CLOSE_DIALOG_NO_ORDERS) {
-      message = 'Position cannot be closed. Create a new order to sell your shares.'
-    } else if (s.positionStatus === CLOSE_DIALOG_PARTIALLY_FAILED) {
-      message = 'Position partially closed. Create a new order to sell your remaining shares.'
-    } else if (openOrders.length > 0) {
+    let message = this.messageMap[s.positionStatus]
+    let cancelOnly = true
+    if (!message && openOrders.length > 0) {
       message = 'Positions cannot be closed while orders are pending.'
-    } else if (s.showConfirm) {
-      onlyOkButton = false
+    } else if (!message && s.showConfirm) {
+      cancelOnly = false
       message = `Close position by ${getValue(position, 'qtyShares.value') < 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
     }
 
@@ -158,12 +158,12 @@ export default class MarketPositionsListPosition extends Component {
           { message &&
             <div className={Styles['Position__confirm-details']}>
               <p>{message}</p>
-              { onlyOkButton &&
+              { cancelOnly && s.showConfirm &&
                 <div className={Styles['Position__confirm-options']}>
                   <button onClick={this.toggleConfirm}>{Close}</button>
                 </div>
               }
-              { !onlyOkButton &&
+              { !cancelOnly &&
               <div className={Styles['Position__confirm-options']}>
                 <button
                   onClick={(e) => {
