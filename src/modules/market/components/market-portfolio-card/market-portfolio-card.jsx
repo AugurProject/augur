@@ -65,7 +65,6 @@ export default class MarketPortfolioCard extends Component {
       isMobile,
       linkType,
       market,
-      outstandingReturns,
       closePositionStatus,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')

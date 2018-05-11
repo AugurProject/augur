@@ -9,12 +9,9 @@ import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 
-
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestampInSeconds(state),
   linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.market.id), state.loginAccount),
-  outstandingReturns: 
-  (ownProps.market.id, state.accountPositions),
   closePositionStatus: getClosePositionStatus(),
 })
 
