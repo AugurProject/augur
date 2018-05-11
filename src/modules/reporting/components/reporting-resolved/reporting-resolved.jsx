@@ -27,7 +27,7 @@ export default class ReportingResolved extends Component {
     location: PropTypes.object,
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
-    isForkingMarketFinalized: PropTypes.bool.isRequired,
+    isForkingMarketFinalized: PropTypes.bool,
     forkingMarket: PropTypes.object,
   }
 
