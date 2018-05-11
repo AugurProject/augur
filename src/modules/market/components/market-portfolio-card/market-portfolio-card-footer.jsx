@@ -54,7 +54,7 @@ const MarketPortfolioCardFooter = (p) => {
                 <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
                 <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(endTimestamp.toNumber()).formattedLocal}</span>
                 <span className={Styles['MarketCard__proceeds-clock']}>
-                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} />
+                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} backgroundColor="#ceccd8" />
                 </span>
               </div>
             }
