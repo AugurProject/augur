@@ -1,9 +1,8 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { mapValues } from "async";
 import BigNumber from "bignumber.js";
-import { Augur, CalculatedProfitLoss } from "augur.js";
-import { Address, TradingHistoryRow, GenericCallback, AsyncCallback } from "../../types";
+import { Augur } from "augur.js";
+import { Address, TradingHistoryRow, GenericCallback } from "../../types";
 import { queryTradingHistory } from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 
@@ -15,14 +14,6 @@ function add(n1: string, n2: string) {
 
 function sub(n1: string, n2: string) {
   return new BigNumber(n1, 10).minus(new BigNumber(n2));
-}
-
-function times(n1: string, n2: string) {
-  return new BigNumber(n1, 10).times(new BigNumber(n2));
-}
-
-function div(n1: string, n2: string) {
-  return new BigNumber(n1, 10).div(new BigNumber(n2));
 }
 
 export type ProfitLoss = Record<"position" | "meanOpenPrice" | "realized" | "unrealized" | "total", string>;
@@ -80,7 +71,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime);
 
-  const bucketsWithLastPrice = buckets.map((bucket: PLBucket) => {
+  return buckets.map((bucket: PLBucket) => {
     // This insertion point will give us the place in the sorted "outcomeTrades" array
     // where out bucket can go without changing the sort order, which means that one entry
     // before that location is the "last trade" in that window.
@@ -94,7 +85,6 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
 
     return bucket;
   });
-  return bucketsWithLastPrice;
 }
 
 function groupOutcomesProfitLossByBucket(results: any) {
