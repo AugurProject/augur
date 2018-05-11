@@ -94,11 +94,6 @@ export default class CreateMarketDefine extends Component {
           updatedMarket.validations[currentStep][fieldName] = true
         })
     }
-    const { localValue } = this.state
-    localValue[fieldName] = value
-    this.setState({
-      localValue,
-    })
 
     if (updatedMarket.validations[currentStep][fieldName] === true) {
       Object.keys(localValues).forEach((fieldName) => {
