@@ -4,14 +4,13 @@ import { Address } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { InitialReportersRow, UIInitialReporters } from "../../types";
 
-export function getInitialReporters(db: Knex, augur: Augur, reporter: Address, redeemed: boolean|null|undefined, withRepBalance: boolean|null|undefined, callback: (err: Error|null, result?: any) => void): void {
+export function getInitialReporters(db: Knex, augur: Augur, universe: Address, reporter: Address, redeemed: boolean|null|undefined, withRepBalance: boolean|null|undefined, callback: (err: Error|null, result?: any) => void): void {
   let query = db("initial_reports")
     .select(["marketID", "reporter", "amountStaked", "initialReporter", "redeemed", "isDesignatedReporter", "balances.balance AS repBalance"])
     .join("balances", "balances.owner", "=", "initial_reports.initialReporter")
-    .where({
-      reporter,
-      "balances.token": augur.contracts.addresses[augur.rpc.getNetworkID()].ReputationToken,
-    });
+    .join("universes", "universes.universe", db.raw("?", universe))
+    .where({reporter})
+    .where("balances.token", db.raw("universes.reputationToken"));
 
   if (withRepBalance) query = query.where("repBalance", ">", "0");
   if (redeemed != null) query = query.where({ redeemed });

@@ -65,7 +65,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getDisputeInfo":
       return getDisputeInfo(db, request.params.marketIds, request.params.account, callback);
     case "getInitialReporters":
-      return getInitialReporters(db, augur, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
+      return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getReportingFees":
       return getReportingFees(db, augur, request.params.reporter, request.params.universe, request.params.feeWindow, callback);
     case "getForkMigrationTotals":
