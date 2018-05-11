@@ -135,7 +135,7 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  marketId: string;
+  marketId: Address;
 }
 
 export interface MarketsRow<BigNumberType> {
@@ -430,6 +430,10 @@ export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   marketCreatorFees: BigNumberType;
   reporterFees: BigNumberType;
   tradeGroupId: Bytes32|null;
+}
+
+export interface TradingHistoryRow extends TradesRow<BigNumber> {
+  timestamp: number;
 }
 
 export interface TimestampedPriceAmount<BigNumberType> {
