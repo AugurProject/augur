@@ -39,7 +39,7 @@ function getMarketBalance(augur, args, auth, callback) {
       return callback(err);
     }
     var market = marketsInfo[0];
-    var showMarketWinningBalance = market.reportingState === constants.REPORTING_STATE.FINALIZED || market.reportingState === market.reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION;
+    var showMarketWinningBalance = market.reportingState === constants.REPORTING_STATE.FINALIZED || market.reportingState === constants.REPORTING_STATE.AWAITING_FINALIZATION;
     var numTicks = market.numTicks;
     var outcomes = Array.from(Array(market.numOutcomes).keys());
     var marketMailboxAddress = market.marketCreatorMailbox;
