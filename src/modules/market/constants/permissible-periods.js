@@ -11,7 +11,7 @@ export const RANGES = [
   {
     duration: 86400,
     label: 'Past day',
-    default: true,
+    isDefault: true,
   },
   {
     duration: 604800,
@@ -29,25 +29,29 @@ export const RANGES = [
 
 export const
   PERIODS = [
-  {
-    duration: 60,
-    label: 'Every minute',
-  },
-  {
-    duration: 3600,
-    label: 'Hourly',
-    default: true,
-  },
-  {
-    duration: 86400,
-    label: 'Daily',
-  },
-  {
-    duration: 604800,
-    label: 'Weekly',
-  },
-  {
-    duration: 2629800,
-    label: 'Monthly',
-  },
-]
+    {
+      duration: 30,
+      label: 'Every thirty seconds',
+    },
+    {
+      duration: 60,
+      label: 'Every minute',
+    },
+    {
+      duration: 3600,
+      label: 'Hourly',
+      isDefault: true,
+    },
+    {
+      duration: 86400,
+      label: 'Daily',
+    },
+    {
+      duration: 604800,
+      label: 'Weekly',
+    },
+    {
+      duration: 2629800,
+      label: 'Monthly',
+    },
+  ]

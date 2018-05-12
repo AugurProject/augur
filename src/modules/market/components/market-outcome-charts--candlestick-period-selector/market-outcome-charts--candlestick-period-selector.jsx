@@ -7,6 +7,7 @@ import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
 import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
+import { limitPeriodByRange } from 'src/modules/market/helpers'
 
 export default class PeriodSelector extends Component {
   static propTypes = {
@@ -79,6 +80,9 @@ export default class PeriodSelector extends Component {
     const selectedPeriodLabel = (PERIODS.find(period => period.duration === selectedPeriod) || {}).label || null
     const selectedRangeLabel = (RANGES.find(range => range.duration === selectedRange) || {}).label || null
 
+    const periodsToDisplay = limitPeriodByRange(selectedRange)
+
+
     return (
       <section className={Styles.PeriodSelector}>
         <button
@@ -135,7 +139,7 @@ export default class PeriodSelector extends Component {
           <div className={Styles.PeriodSelector__column}>
             <h1>Period</h1>
             <ul>
-              {PERIODS.map(period => (
+              {periodsToDisplay.map(period => (
                 <li
                   key={period.duration}
                   className={Styles.PeriodSelector__value}
