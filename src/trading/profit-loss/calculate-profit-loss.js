@@ -52,11 +52,12 @@ function calculateProfitLoss(p) {
   }
   PL.position = PL.position.toFixed();
   PL.meanOpenPrice = PL.meanOpenPrice.toFixed();
+  PL.realized = PL.realized.plus(PL.queued);
+  PL.total = PL.realized.plus(PL.unrealized).toFixed();
   PL.realized = PL.realized.toFixed();
-  PL.unrealized = PL.unrealized.plus(PL.queued).toFixed();
-  PL.queued = PL.queued.toFixed();
-  // console.log("Queued P/L:", PL.queued);
-  return immutableDelete(immutableDelete(PL, "completeSetsBought"), "tradeQueue");
+  PL.unrealized = PL.unrealized.toFixed();
+  // console.log("Queued P/L:", PL.queued.toFixed());
+  return immutableDelete(PL, ["completeSetsBought", "tradeQueue", "queued"]);
 }
 
 module.exports = calculateProfitLoss;
