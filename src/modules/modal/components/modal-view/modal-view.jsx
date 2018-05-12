@@ -6,15 +6,14 @@ import PropTypes from 'prop-types'
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
-import ModalNetworkDisabled from 'modules/modal/components/modal-network-disabled/modal-network-disabled'
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
 import ModalApproval from 'modules/modal/containers/modal-approval'
 import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
-import ModalClaimReportingFees from 'modules/modal/containers/modal-claim-reporting-fees'
+import ModalClaimReportingFeesForkedMarket from 'modules/modal/containers/modal-claim-reporting-fees-forked-market'
+import ModalClaimReportingFeesNonforkedMarkets from 'modules/modal/containers/modal-claim-reporting-fees-nonforked-markets'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
-import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer'
 
 import { Close } from 'modules/common/components/icons'
 
@@ -97,9 +96,6 @@ export default class ModalView extends Component {
           {modal.type === TYPES.MODAL_NETWORK_MISMATCH &&
             <ModalNetworkMismatch {...modal} />
           }
-          {modal.type === TYPES.MODAL_NETWORK_DISABLED &&
-            <ModalNetworkDisabled {...modal} />
-          }
           {modal.type === TYPES.MODAL_NETWORK_CONNECT &&
             <ModalNetworkConnect />
           }
@@ -112,17 +108,17 @@ export default class ModalView extends Component {
           {modal.type === TYPES.MODAL_ESCAPE_HATCH &&
             <ModalEscapeHatch {...this.props} />
           }
-          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES &&
-            <ModalClaimReportingFees {...modal} />
+          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET &&
+            <ModalClaimReportingFeesForkedMarket {...modal} />
+          }
+          {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS &&
+            <ModalClaimReportingFeesNonforkedMarkets {...modal} />
           }
           {modal.type === TYPES.MODAL_MIGRATE_MARKET &&
             <ModalMigrateMarket
               {...modal}
               closeModal={closeModal}
             />
-          }
-          {modal.type === TYPES.MODAL_DISCLAIMER &&
-            <ModalDisclaimer {...modal} />
           }
           {showBigCancel &&
             <button

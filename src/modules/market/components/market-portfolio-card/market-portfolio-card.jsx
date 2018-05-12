@@ -15,18 +15,39 @@ import PositionStyles from 'modules/market/components/market-positions-list/mark
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
 
+// import MarketProperties from 'modules/market/containers/market-properties'
+import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
+// import MarketReportingPayouts from 'modules/reporting/containers/reporting-payouts'
+import DisputeMarketCardStyles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
+import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET } from 'modules/modal/constants/modal-types'
+
+// import { MARKETS } from 'modules/routes/constants/views'
+// import makePath from 'modules/routes/helpers/make-path'
+// import toggleTag from 'modules/routes/helpers/toggle-tag'
+// import toggleCategory from 'modules/routes/helpers/toggle-category'
+
+// import { compact } from 'lodash'
+// import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
+
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
     buttonText: PropTypes.string,
+    claimReportingFeesForkedMarket: PropTypes.func,
     claimTradingProceeds: PropTypes.func,
     closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
+    finalizeMarket: PropTypes.func.isRequired,
+    // forkThreshold: PropTypes.object,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
+    outcomes: PropTypes.object,
+    outstandingReturns: PropTypes.number,
     positionsDefault: PropTypes.bool,
-    finalizeMarket: PropTypes.func.isRequired,
-    getWinningBalances: PropTypes.func.isRequired,
+    unclaimedForkEth: PropTypes.object,
+    unclaimedForkRep: PropTypes.object,
+    userHasClaimableForkFees: PropTypes.bool,
+    updateModal: PropTypes.func,
   }
 
   static defaultProps = {
@@ -43,11 +64,6 @@ export default class MarketPortfolioCard extends Component {
     }
   }
 
-  componentWillMount() {
-    const { market, getWinningBalances } = this.props
-    getWinningBalances([market.id])
-  }
-
   toggleTable(tableKey) {
     this.setState({ tableOpen: { ...this.state.tableOpen, [tableKey]: !this.state.tableOpen[tableKey] } })
   }
@@ -59,13 +75,38 @@ export default class MarketPortfolioCard extends Component {
   claimProceeds = () => {
     this.props.claimTradingProceeds([this.props.market.id])
   }
+
+  // claimReportingFeesForkedMarket = () => {
+  //   this.props.claimReportingFeesForkedMarket([this.props.market.id])
+  // }
+
+  handleClaimReportingFeesForkedMarket = () => {
+    // const {
+    //   unclaimedForkEth,
+    //   unclaimedForkRep,
+    //   forkedMarket,
+    // } = this.state
+    this.props.updateModal({
+      type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
+      unclaimedEth: this.props.unclaimedForkEth,
+      unclaimedRep: this.props.unclaimedForkRep,
+      forkedMarket: this.props.market,
+      canClose: true,
+    })
+  }
+
   render() {
     const {
       currentTimestamp,
+      userHasClaimableForkFees,
       isMobile,
+      // forkThreshold,
       linkType,
       market,
-      closePositionStatus,
+      // outcomes,
+      outstandingReturns,
+      unclaimedForkEth,
+      unclaimedForkRep,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -75,7 +116,11 @@ export default class MarketPortfolioCard extends Component {
     switch (linkType) {
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = 'Claim'
-        buttonAction = this.claimProceeds
+        if (userHasClaimableForkFees) {
+          buttonAction = this.handleClaimReportingFeesForkedMarket
+        } else {
+          buttonAction = this.claimProceeds
+        }
         break
       case TYPE_CALCULATE_PAYOUT:
         localButtonText = 'Calculate Payout'
@@ -83,6 +128,50 @@ export default class MarketPortfolioCard extends Component {
         break
       default:
         localButtonText = 'View'
+    }
+
+    if (userHasClaimableForkFees) {
+      return (
+        <article
+          className={classNames(CommonStyles.MarketCommon__container, DisputeMarketCardStyles['DisputeMarket__fork-top'])}
+        >
+          <section
+            className={classNames(
+              CommonStyles.MarketCommon__topcontent,
+              Styles.MarketCard__topcontent,
+            )}
+          >
+            <div className={CommonStyles.MarketCommon__topcontent}>
+              <h1 className={CommonStyles.MarketCommon__description}>
+                <MarketLink
+                  id={market.id}
+                  formattedDescription={market.formattedDescription}
+                >
+                  {market.description}
+                </MarketLink>
+              </h1>
+              <ForkMigrationTotals />
+              {/* {!isForkingMarket &&
+                <MarketReportingPayouts
+                  outcomes={outcomes}
+                  forkThreshold={forkThreshold}
+                  marketId={market.id}
+                />
+              } */}
+            </div>
+          </section>
+          <MarketPortfolioCardFooter
+            linkType={linkType}
+            localButtonText={localButtonText}
+            buttonAction={buttonAction}
+            outstandingReturns={outstandingReturns}
+            finalizationTime={market.finalizationTime}
+            currentTimestamp={currentTimestamp}
+            unclaimedForkEth={unclaimedForkEth}
+            unclaimedForkRep={unclaimedForkRep}
+          />
+        </article>
+      )
     }
 
     return (
@@ -202,7 +291,6 @@ export default class MarketPortfolioCard extends Component {
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
                   isMobile={isMobile}
-                  closePositionStatus={closePositionStatus}
                 />
               ))}
             </div>
@@ -252,7 +340,6 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
-                      closePositionStatus={closePositionStatus}
                     />
                   ))
                 ))
@@ -261,12 +348,12 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && market.outstandingReturns &&
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && outstandingReturns > 0 &&
           <MarketPortfolioCardFooter
             linkType={linkType}
             localButtonText={localButtonText}
             buttonAction={buttonAction}
-            outstandingReturns={market.outstandingReturns}
+            outstandingReturns={outstandingReturns}
             finalizationTime={market.finalizationTime}
             currentTimestamp={currentTimestamp}
           />

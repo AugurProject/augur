@@ -27,6 +27,7 @@ const MarketPortfolioCardFooter = (p) => {
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
   }
+  const userHasClaimableForkFees = ((p.unclaimedForkEth && p.unclaimedForkEth.value > 0) || (p.unclaimedForkRep && p.unclaimedForkRep.value > 0))
 
   return (
     <div>
@@ -45,7 +46,15 @@ const MarketPortfolioCardFooter = (p) => {
           {p.linkType === TYPE_CLAIM_PROCEEDS &&
             <div>
               <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns, { decimals: 2 }).minimized} ETH</span>
+              {userHasClaimableForkFees &&
+                <div>
+                  <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEth.formattedValue} ETH</span>
+                  <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkRep.formattedValue} REP</span>
+                </div>
+              }
+              {!userHasClaimableForkFees &&
+                <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
+              }
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
@@ -54,17 +63,27 @@ const MarketPortfolioCardFooter = (p) => {
                 <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
                 <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(endTimestamp.toNumber()).formattedLocal}</span>
                 <span className={Styles['MarketCard__proceeds-clock']}>
-                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} backgroundColor="#ceccd8" />
+                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} />
                 </span>
               </div>
             }
-            <button
-              className={classNames(Styles['MarketCard__action-footer-light'])}
-              onClick={p.buttonAction}
-              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
-            >
-              { p.localButtonText }
-            </button>
+            {userHasClaimableForkFees &&
+              <button
+                className={classNames(Styles['MarketCard__action-footer-light'])}
+                onClick={p.buttonAction}
+              >
+                { p.localButtonText }
+              </button>
+            }
+            {!userHasClaimableForkFees &&
+              <button
+                className={classNames(Styles['MarketCard__action-footer-light'])}
+                onClick={p.buttonAction}
+                disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
+              >
+                { p.localButtonText }
+              </button>
+            }
           </div>
         </div>
       </section>
@@ -76,9 +95,11 @@ MarketPortfolioCardFooter.propTypes = {
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
   buttonAction: PropTypes.func,
-  outstandingReturns: PropTypes.string,
+  outstandingReturns: PropTypes.number,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
+  unclaimedForkEth: PropTypes.object,
+  unclaimedForkRep: PropTypes.object,
 }
 
 export default MarketPortfolioCardFooter
