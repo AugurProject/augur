@@ -1,3 +1,4 @@
+import { augur } from 'services/augurjs'
 import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
@@ -6,7 +7,8 @@ import { unfix } from 'speedomatic'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
-import { formatShares } from 'utils/format-number'
+import { formatAttoRep, formatShares } from 'utils/format-number'
+import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 function groupByMethod(values, prop) {
   let grouped = {}
@@ -80,6 +82,8 @@ function buildTradeTransaction(trade, marketsData) {
   meta.type = TRADE
   const outcomeName = getOutcome(market, transaction.outcome)
   if (outcomeName) meta.outcome = outcomeName
+  const formattedShares = formatShares(transaction.amount)
+  meta.shares = formattedShares.formatted
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
   transaction.meta = meta
@@ -87,17 +91,19 @@ function buildTradeTransaction(trade, marketsData) {
   if (transaction.market) {
     header.description = transaction.market.description
   }
-  const formattedShares = formatShares(transaction.amount)
   transaction.message = `${transaction.type} ${formattedShares.formatted} Shares @ ${transaction.price} ETH`
   header.transactions = [transaction]
   return header
 }
 
 export function addTransferTransactions(transfers) {
+  const FillOrderContractAddress = augur.contracts.addresses[augur.rpc.getNetworkID()].FillOrder
   return (dispatch, getState) => {
     const { blockchain } = getState()
     const transactions = {}
     each(transfers, (transfer) => {
+      // filter out market trade transfers from FillOrder contract
+      if (transfer.sender.toLowerCase() === FillOrderContractAddress.toLowerCase()) return
       const transaction = { ...transfer }
       transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
@@ -159,8 +165,8 @@ export function addMarketCreationTransactions(marketsCreated) {
       transaction.timestamp = (market || {}).creationTime
       const meta = {}
       meta.market = transaction.marketId
-      meta['creation fee'] = market.creationFee
-      meta['market type'] = market.marketType
+      meta['creation fee'] = (market || {}).creationFee
+      meta['market type'] = (market || {}).marketType
       transaction.meta = meta
       const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
       header.message = 'Market Creation'
@@ -243,18 +249,21 @@ export function addReportingTransactions(reports) {
           const transaction = {
             universe, marketId, ...report, market,
           }
+          const amountStaked = formatAttoRep(transaction.amountStaked, { decimals: 4, roundUp: true })
+          // TODO: get is the market Invalid
+          const outcomeName = calculatePayoutNumeratorsValue(market, transaction.payoutNumerators, transaction.isInvalid)
           transaction.id = transaction.transactionHash + transaction.logIndex
           const meta = {}
           meta.txhash = transaction.transactionHash
           meta.marketId = transaction.marketId
-          meta.staked = `${transaction.amountStaked} REP`
-          meta.numerators = JSON.stringify(transaction.payoutNumerators)
+          meta.staked = `${amountStaked.formatted} REP`
+          meta.outcome = outcomeName
           transaction.meta = meta
           transaction.timestamp = transaction.creationTime
           const header = buildHeader(transaction, REPORTING, SUCCESS)
           header.transactions = [transaction]
           header.message = 'Market Reporting'
-          header.description = `Staked  ${transaction.amountStaked} REP on market ${market.description}`
+          header.description = `Staked  ${amountStaked.formatted} REP on market ${market.description}`
           // create unique id
           transactions[transaction.id] = header
         })
