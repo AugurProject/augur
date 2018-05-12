@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 /**
- * @todo Create shared unit test files to reduce amount of redundant code for testing claimReportingFees.
+ * @todo Create shared unit test files to reduce amount of redundant code for testing claiming of reporting fees.
  */
 
 "use strict";
@@ -13,18 +13,14 @@ var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
 var sinon = require("sinon");
 
-describe("reporting/claim-reporting-fees", function () {
-  var claimReportingFees;
-  var disputeCrowdsourcerForkAndRedeemStub;
+describe("reporting/claim-reporting-fees-nonforked-markets", function () {
+  var claimReportingFeesNonforkedMarkets;
   var disputeCrowdsourcerRedeemStub;
   var feeWindowRedeemStub;
-  var initialReporterForkAndRedeemStub;
   var initialReporterRedeemStub;
   var marketDisavowCrowdsourcersStub;
-  var DISPUTE_CROWDSOURCER_FORK_AND_REDEEM_GAS_ESTIMATE = "0x5318";
   var DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE = "0x5418";
   var FEE_WINDOW_REDEEM_GAS_ESTIMATE = "0x5418";
-  var INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE = "0x5318";
   var INITIAL_REPORTER_REDEEM_GAS_ESTIMATE = "0x5418";
   var MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE = "0x5318";
   var NONFORKED_MARKET_UNIVERSE_ADDRESS = "0x0fAdd00000000000000000000000000000000000";
@@ -135,18 +131,16 @@ describe("reporting/claim-reporting-fees", function () {
     ],
     estimateGas: true,
   };
-  var claimReportingFeesResult;
+  var claimReportingFeesNonforkedMarketsResult;
   var api = function () {
     return {
       DisputeCrowdsourcer: {
-        forkAndRedeem: disputeCrowdsourcerForkAndRedeemStub,
         redeem: disputeCrowdsourcerRedeemStub,
       },
       FeeWindow: {
         redeem: feeWindowRedeemStub,
       },
       InitialReporter: {
-        forkAndRedeem: initialReporterForkAndRedeemStub,
         redeem: initialReporterRedeemStub,
       },
       Market: {
@@ -155,44 +149,34 @@ describe("reporting/claim-reporting-fees", function () {
     };
   };
 
-  describe("When a forked market does not exist in the parent universe", function () {
+  describe("When a user wants to claim fees on non-forked markets and a forked market does not exist in the same universe", function () {
     describe("and estimateGas is true", function () {
       before(function () {
-        disputeCrowdsourcerForkAndRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "forkAndRedeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
         feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
-        initialReporterForkAndRedeemStub = sinon.stub(api().InitialReporter, "forkAndRedeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
         marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
-        claimReportingFees = proxyquire("../../../src/reporting/claim-reporting-fees", {
+        claimReportingFeesNonforkedMarkets = proxyquire("../../../src/reporting/claim-reporting-fees-nonforked-markets", {
           "../api": api,
         });
-        claimReportingFees(assign(params, {
+        claimReportingFeesNonforkedMarkets(assign(params, {
           onSent: noop,
           onSuccess: function (res) {
-            claimReportingFeesResult = res;
+            claimReportingFeesNonforkedMarketsResult = res;
           },
           onFailed: noop,
         }));
       });
 
       after(function () {
-        disputeCrowdsourcerForkAndRedeemStub = null;
         disputeCrowdsourcerRedeemStub = null;
         feeWindowRedeemStub = null;
-        initialReporterForkAndRedeemStub = null;
         initialReporterRedeemStub = null;
         marketDisavowCrowdsourcersStub = null;
       });
 
-      describe("DisputeCrowdsourcer.forkAndRedeem", function () {
-        it("should not be called", function () {
-          sinon.assert.notCalled(disputeCrowdsourcerForkAndRedeemStub);
-        });
-      });
-
       describe("DisputeCrowdsourcer.redeem", function () {
-        it("should be called once for every dispute crowdsourcer belonging to a non-forked market or belonging to the forked market and having had its DisputeCrowdsourcer.fork function caled", function () {
+        it("should be called once for every dispute crowdsourcer belonging to a non-forked market or belonging to the forked market and having had its DisputeCrowdsourcer.fork function called", function () {
           sinon.assert.callCount(disputeCrowdsourcerRedeemStub, 16);
         });
         it("should receive the expected input parameters for each call to DisputeCrowdsourcer.redeem", function () {
@@ -247,14 +231,8 @@ describe("reporting/claim-reporting-fees", function () {
         });
       });
 
-      describe("InitialReporter.forkAndRedeem", function () {
-        it("should not be called", function () {
-          sinon.assert.notCalled(initialReporterForkAndRedeemStub);
-        });
-      });
-
       describe("InitialReporter.redeem", function () {
-        it("should be called once for every initial reporter belonging to a non-forked market or belonging to the forked market and having had its InitialReporter.fork function caled", function () {
+        it("should be called once for every initial reporter belonging to a non-forked market or belonging to the forked market and having had its InitialReporter.fork function called", function () {
           sinon.assert.callCount(initialReporterRedeemStub, 8);
         });
         it("should receive the expected input parameters for each call to InitialReport.redeem", function () {
@@ -292,16 +270,12 @@ describe("reporting/claim-reporting-fees", function () {
       describe("returned object", function () {
         it("should contain the expected gas estimates", function () {
           var disavowCrowdsourcersTotal = new BigNumber(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(marketDisavowCrowdsourcersStub.callCount);
-          var crowdsourcerForkAndRedeemTotal = new BigNumber(DISPUTE_CROWDSOURCER_FORK_AND_REDEEM_GAS_ESTIMATE, 16).multipliedBy(disputeCrowdsourcerForkAndRedeemStub.callCount);
-          var initialReporterForkAndRedeemTotal = new BigNumber(INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE, 16).multipliedBy(initialReporterForkAndRedeemStub.callCount);
           var feeWindowRedeemTotal = new BigNumber(FEE_WINDOW_REDEEM_GAS_ESTIMATE, 16).multipliedBy(feeWindowRedeemStub.callCount);
           var crowdsourcerRedeemTotal = new BigNumber(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(disputeCrowdsourcerRedeemStub.callCount);
           var initialReporterRedeemTotal = new BigNumber(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE, 16).multipliedBy(initialReporterRedeemStub.callCount);
           var expectedResult = {
             gasEstimates: {
               disavowCrowdsourcers: [],
-              crowdsourcerForkAndRedeem: [],
-              initialReporterForkAndRedeem: [],
               feeWindowRedeem: [
                 { address: "0xfeeAdd0000000000000000000000000000000001", estimate: new BigNumber(FEE_WINDOW_REDEEM_GAS_ESTIMATE, 16) },
               ],
@@ -335,21 +309,17 @@ describe("reporting/claim-reporting-fees", function () {
               ],
               totals: {
                 disavowCrowdsourcers: disavowCrowdsourcersTotal,
-                crowdsourcerForkAndRedeem: crowdsourcerForkAndRedeemTotal,
-                initialReporterForkAndRedeem: initialReporterForkAndRedeemTotal,
                 feeWindowRedeem: feeWindowRedeemTotal,
                 crowdsourcerRedeem: crowdsourcerRedeemTotal,
                 initialReporterRedeem: initialReporterRedeemTotal,
                 all: disavowCrowdsourcersTotal
-                    .plus(crowdsourcerForkAndRedeemTotal)
-                    .plus(initialReporterForkAndRedeemTotal)
                     .plus(feeWindowRedeemTotal)
                     .plus(crowdsourcerRedeemTotal)
                     .plus(initialReporterRedeemTotal),
               },
             },
           };
-          assert.deepEqual(expectedResult.gasEstimates, claimReportingFeesResult.gasEstimates);
+          assert.deepEqual(expectedResult.gasEstimates, claimReportingFeesNonforkedMarketsResult.gasEstimates);
         });
       });
     });
@@ -357,32 +327,24 @@ describe("reporting/claim-reporting-fees", function () {
     describe("and estimateGas is false", function () {
       before(function () {
         params.estimateGas = false;
-        disputeCrowdsourcerForkAndRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "forkAndRedeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
         feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
-        initialReporterForkAndRedeemStub = sinon.stub(api().InitialReporter, "forkAndRedeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
         marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
-        claimReportingFees = proxyquire("../../../src/reporting/claim-reporting-fees", {
+        claimReportingFeesNonforkedMarkets = proxyquire("../../../src/reporting/claim-reporting-fees-nonforked-markets", {
           "../api": api,
         });
-        claimReportingFees(assign(params, {
+        claimReportingFeesNonforkedMarkets(assign(params, {
           onSent: noop,
           onSuccess: function (res) {
-            claimReportingFeesResult = res;
+            claimReportingFeesNonforkedMarketsResult = res;
           },
           onFailed: noop,
         }));
       });
 
-      describe("DisputeCrowdsourcer.forkAndRedeem", function () {
-        it("should not be called", function () {
-          sinon.assert.notCalled(disputeCrowdsourcerForkAndRedeemStub);
-        });
-      });
-
       describe("DisputeCrowdsourcer.redeem", function () {
-        it("should be called once for every dispute crowdsourcer belonging to a non-forked market or belonging to the forked market and having had its DisputeCrowdsourcer.fork function caled", function () {
+        it("should be called once for every dispute crowdsourcer belonging to a non-forked market or belonging to the forked market and having had its DisputeCrowdsourcer.fork function called", function () {
           sinon.assert.callCount(disputeCrowdsourcerRedeemStub, 16);
         });
         it("should receive the expected input parameters for each call to DisputeCrowdsourcer.redeem", function () {
@@ -437,14 +399,8 @@ describe("reporting/claim-reporting-fees", function () {
         });
       });
 
-      describe("InitialReporter.forkAndRedeem", function () {
-        it("should not be called", function () {
-          sinon.assert.notCalled(initialReporterForkAndRedeemStub);
-        });
-      });
-
       describe("InitialReporter.redeem", function () {
-        it("should be called once for every initial reporter belonging to a non-forked market or belonging to the forked market and having had its InitialReporter.fork function caled", function () {
+        it("should be called once for every initial reporter belonging to a non-forked market or belonging to the forked market and having had its InitialReporter.fork function called", function () {
           sinon.assert.callCount(initialReporterRedeemStub, 8);
         });
         it("should receive the expected input parameters for each call to InitialReport.redeem", function () {
@@ -484,8 +440,6 @@ describe("reporting/claim-reporting-fees", function () {
           var expectedResult = {
             successfulTransactions: {
               disavowCrowdsourcers: [],
-              crowdsourcerForkAndRedeem: [],
-              initialReporterForkAndRedeem: [],
               feeWindowRedeem: ["0xfeeAdd0000000000000000000000000000000001"],
               crowdsourcerRedeem: [
                 "0x0fcAdd0000000000000000000000000000000001",
@@ -518,7 +472,7 @@ describe("reporting/claim-reporting-fees", function () {
             },
           };
 
-          assert.deepEqual(expectedResult, claimReportingFeesResult);
+          assert.deepEqual(expectedResult, claimReportingFeesNonforkedMarketsResult);
         });
       });
     });

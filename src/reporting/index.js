@@ -1,7 +1,8 @@
 "use strict";
 
 module.exports = {
-  claimReportingFees: require("./claim-reporting-fees"),
+  claimReportingFeesForkedMarket: require("./claim-reporting-fees-forked-market"),
+  claimReportingFeesNonforkedMarkets: require("./claim-reporting-fees-nonforked-markets"),
   finalizeMarket: require("./finalize-market"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
   getDisputeInfo: require("./get-dispute-info"),
