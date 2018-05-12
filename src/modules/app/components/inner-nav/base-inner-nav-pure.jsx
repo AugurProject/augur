@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
-
+import { isNull } from 'lodash'
 import MenuItem from 'modules/app/components/inner-nav/menu-item'
 
 const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScalar, mobileMenuState }) => {
@@ -37,7 +37,6 @@ const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScal
       }
     </MenuItem>
   )
-
   return (
     <aside
       className={classNames(
@@ -53,7 +52,7 @@ const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScal
         )}
         style={subMenuAnimatedStyle}
       >
-        {submenuItems.map(item => <DataToItem key={item.label} {...item} />)}
+        {(submenuItems.filter(item => !isNull(item.label))).map(item => <DataToItem key={item.label} {...item} />)}
       </ul>
       <ul
         className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}
