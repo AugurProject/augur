@@ -34,7 +34,6 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
     if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
-    console.log(`ZZ MARKET STATE ${marketId} => ${reportingState}`);
     setMarketStateToLatest(db, marketId, callback);
   });
 }
