@@ -70,6 +70,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
           size: log.size,
           payoutId,
           completed: null,
+          disavowed: 0,
         };
         db.insert(crowdsourcerToInsert).into("crowdsourcers").asCallback((err: Error|null): void => {
           if (err) return callback(err);

@@ -150,6 +150,7 @@ describe("blockchain/log-processors/market-created", () => {
             isInvalid: null,
             forking: 0,
             needsMigration: 0,
+            needsDisavowal: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -310,6 +311,7 @@ describe("blockchain/log-processors/market-created", () => {
             isInvalid: null,
             forking: 0,
             needsMigration: 0,
+            needsDisavowal: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -491,6 +493,7 @@ describe("blockchain/log-processors/market-created", () => {
             isInvalid: null,
             forking: 0,
             needsMigration: 0,
+            needsDisavowal: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",
@@ -646,6 +649,7 @@ describe("blockchain/log-processors/market-created", () => {
             isInvalid: null,
             forking: 0,
             needsMigration: 0,
+            needsDisavowal: 0,
           }],
           categories: [{
             category: "TEST_CATEGORY",

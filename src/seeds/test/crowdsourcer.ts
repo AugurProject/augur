@@ -15,6 +15,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E00",
       logIndex: 0,
       completed: 1,
+      disavowed: 0,
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000002",
       marketId: "0x0000000000000000000000000000000000000011",
@@ -26,6 +27,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       completed: 1,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E01",
       logIndex: 0,
+      disavowed: 0,
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000005",
       marketId: "0x0000000000000000000000000000000000000011",
@@ -36,6 +38,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       blockNumber: 1400102,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E01",
       logIndex: 0,
+      disavowed: 0,
     }, {
       crowdsourcerId: "0x0000000000000000001000000000000000000003",
       marketId: "0x0000000000000000000000000000000000000019",
@@ -46,6 +49,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       blockNumber: 1400102,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E01",
       logIndex: 1,
+      disavowed: 0,
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000004",
       marketId: "0x0000000000000000000000000000000000000211",
@@ -56,6 +60,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       blockNumber: 1500002,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F01",
       logIndex: 1,
+      disavowed: 0,
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000006",
       marketId: "0x00000000000000000000000000000000000000f1",
@@ -66,6 +71,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       blockNumber: 1500002,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000F01",
       logIndex: 1,
+      disavowed: 0,
     },  {
       crowdsourcerId: "0x0000000000000000001000000000000000000007",
       marketId: "0x00000000000000000000000000000000000000f1",
