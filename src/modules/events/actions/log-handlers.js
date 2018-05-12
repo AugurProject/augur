@@ -19,6 +19,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import { MY_MARKETS } from 'modules/routes/constants/views'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { loadDisputing } from 'modules/reporting/actions/load-disputing'
+import loadCategories from 'modules/categories/actions/load-categories'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -32,6 +33,7 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
     dispatch(removeMarket(log.market))
   } else {
     dispatch(loadMarketsInfo([log.market]))
+    dispatch(loadCategories())
   }
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
