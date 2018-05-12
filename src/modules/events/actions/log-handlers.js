@@ -114,6 +114,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) => (
     if (err) return console.error(err)
     const { volume, author, description } = getState().marketsData[log.market]
     dispatch(updateMarketCategoryPopularity(log.market, new BigNumber(volume, 10).negated().toFixed()))
+    dispatch(loadReporting())
     const isOwnMarket = getState().loginAccount.address === author
     if (isOwnMarket) {
       dispatch(updateLoggedTransactions(log))
