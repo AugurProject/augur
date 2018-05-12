@@ -10,6 +10,9 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
     if (err) return callback(err);
     insertPayout( db, log.market, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
       const reportToInsert = {
+        blockNumber: log.blockNumber,
+        transactionHash: log.transactionHash,
+        logIndex: log.logIndex,
         marketId: log.market,
         isDesignatedReporter: log.isDesignatedReporter,
         reporter: log.reporter,
