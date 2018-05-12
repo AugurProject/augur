@@ -18,6 +18,7 @@ import { isCurrentMarket } from 'modules/trade/helpers/is-current-market'
 import makePath from 'modules/routes/helpers/make-path'
 import { MY_MARKETS } from 'modules/routes/constants/views'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
+import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -104,6 +105,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(loadReporting())
+    dispatch(loadDisputing())
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
   }
