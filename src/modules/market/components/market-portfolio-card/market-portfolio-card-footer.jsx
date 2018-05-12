@@ -43,19 +43,16 @@ const MarketPortfolioCardFooter = (p) => {
             Styles['MarketCard__headingcontainer-footer-light'],
           )}
         >
-          {p.linkType === TYPE_CLAIM_PROCEEDS &&
-            <div>
-              <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              {userHasClaimableForkFees &&
-                <div>
-                  <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEth.formattedValue} ETH</span>
-                  <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkRep.formattedValue} REP</span>
-                </div>
-              }
-              {!userHasClaimableForkFees &&
-                <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
-              }
-            </div>
+          {p.linkType === TYPE_CLAIM_PROCEEDS && userHasClaimableForkFees &&
+            <span className={Styles['MarketCard__light-text']}>Outstanding Returns
+              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEth.formattedValue} ETH</span>|
+              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkRep.formattedValue} REP</span>
+            </span>
+          }
+          {p.linkType === TYPE_CLAIM_PROCEEDS && !userHasClaimableForkFees &&
+            <span className={Styles['MarketCard__light-text']}>Outstanding Returns
+              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
+            </span>
           }
           <div className={Styles['MarketCard__action-container']}>
             {p.linkType === TYPE_CLAIM_PROCEEDS && p.finalizationTime && !canClaim &&

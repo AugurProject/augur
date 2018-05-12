@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
+import { compact } from 'lodash'
 import PropTypes from 'prop-types'
 
+import { dateHasPassed } from 'utils/format-date'
 import getValue from 'utils/get-value'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
@@ -9,25 +11,19 @@ import MarketPositionsListOrder from 'modules/market/components/market-positions
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
-import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
+import DisputeMarketCardStyles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
-
-// import MarketProperties from 'modules/market/containers/market-properties'
+import MarketProperties from 'modules/market/containers/market-properties'
 import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
-// import MarketReportingPayouts from 'modules/reporting/containers/reporting-payouts'
-import DisputeMarketCardStyles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET } from 'modules/modal/constants/modal-types'
-
-// import { MARKETS } from 'modules/routes/constants/views'
-// import makePath from 'modules/routes/helpers/make-path'
-// import toggleTag from 'modules/routes/helpers/toggle-tag'
-// import toggleCategory from 'modules/routes/helpers/toggle-category'
-
-// import { compact } from 'lodash'
-// import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
+import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
+import { MARKETS } from 'modules/routes/constants/views'
+import makePath from 'modules/routes/helpers/make-path'
+import toggleTag from 'modules/routes/helpers/toggle-tag'
+import toggleCategory from 'modules/routes/helpers/toggle-category'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -37,7 +33,8 @@ export default class MarketPortfolioCard extends Component {
     closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
-    // forkThreshold: PropTypes.object,
+    forkedMarketReportingFeesInfo: PropTypes.object,
+    isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
@@ -76,21 +73,12 @@ export default class MarketPortfolioCard extends Component {
     this.props.claimTradingProceeds([this.props.market.id])
   }
 
-  // claimReportingFeesForkedMarket = () => {
-  //   this.props.claimReportingFeesForkedMarket([this.props.market.id])
-  // }
-
   handleClaimReportingFeesForkedMarket = () => {
-    // const {
-    //   unclaimedForkEth,
-    //   unclaimedForkRep,
-    //   forkedMarket,
-    // } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
       unclaimedEth: this.props.unclaimedForkEth,
       unclaimedRep: this.props.unclaimedForkRep,
-      forkedMarket: this.props.market,
+      forkedMarket: this.props.forkedMarketReportingFeesInfo,
       canClose: true,
     })
   }
@@ -98,15 +86,13 @@ export default class MarketPortfolioCard extends Component {
   render() {
     const {
       currentTimestamp,
-      userHasClaimableForkFees,
       isMobile,
-      // forkThreshold,
       linkType,
       market,
-      // outcomes,
       outstandingReturns,
       unclaimedForkEth,
       unclaimedForkRep,
+      userHasClaimableForkFees,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -131,6 +117,16 @@ export default class MarketPortfolioCard extends Component {
     }
 
     if (userHasClaimableForkFees) {
+      const process = (...arr) => compact(arr).map(label => ({
+        label,
+        onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
+      }))
+      const categoriesWithClick = process(market.category)
+      const tagsWithClick = compact(market.tags).map(tag => ({
+        label: tag,
+        onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
+      }))
+
       return (
         <article
           className={classNames(CommonStyles.MarketCommon__container, DisputeMarketCardStyles['DisputeMarket__fork-top'])}
@@ -138,27 +134,32 @@ export default class MarketPortfolioCard extends Component {
           <section
             className={classNames(
               CommonStyles.MarketCommon__topcontent,
-              Styles.MarketCard__topcontent,
+              DisputeMarketCardStyles.MarketCard__topcontent,
             )}
           >
-            <div className={CommonStyles.MarketCommon__topcontent}>
-              <h1 className={CommonStyles.MarketCommon__description}>
-                <MarketLink
-                  id={market.id}
-                  formattedDescription={market.formattedDescription}
-                >
-                  {market.description}
-                </MarketLink>
-              </h1>
-              <ForkMigrationTotals />
-              {/* {!isForkingMarket &&
-                <MarketReportingPayouts
-                  outcomes={outcomes}
-                  forkThreshold={forkThreshold}
-                  marketId={market.id}
-                />
-              } */}
+            <div className={CommonStyles.MarketCommon__header}>
+              <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
+              <div className={DisputeMarketCardStyles['DisputeMarket__round-number']}>
+                <span className={DisputeMarketCardStyles['DisputeMarket__fork-label']}>Forking</span>
+              </div>
             </div>
+
+            <h1 className={CommonStyles.MarketCommon__description}>
+              <MarketLink
+                id={market.id}
+                formattedDescription={market.formattedDescription}
+              >
+                {market.description}
+              </MarketLink>
+            </h1>
+
+            <ForkMigrationTotals />
+          </section>
+          <section className={Styles.MarketCommon__footer}>
+            <MarketProperties
+              {...this.props}
+              endTime={market.endTime}
+            />
           </section>
           <MarketPortfolioCardFooter
             linkType={linkType}

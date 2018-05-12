@@ -48,10 +48,10 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
           <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
           <div className={Styles['DisputeMarket__round-number']}>
             {potentialFork &&
-            <span className={Styles['DisptueMarket__fork-label']}>Potential Fork</span>
+            <span className={Styles['DisputeMarket__fork-label']}>Potential Fork</span>
             }
             {isForkingMarket &&
-            <span className={Styles['DisptueMarket__fork-label']}>Forking</span>
+            <span className={Styles['DisputeMarket__fork-label']}>Forking</span>
             }
             {!isForkingMarket &&
             <span>

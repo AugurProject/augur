@@ -14,18 +14,15 @@ import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
 import getValue from 'utils/get-value'
 
 const mapStateToProps = (state) => {
-  // const forkingMarket = selectMarket('0xbcde24abef27b2e537b8ded8139c7991de308607')
-  const forkingMarket = state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null
+  // const forkedMarket = state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null
+  // TODO: Remove hard-coding below
+  const forkedMarket = selectMarket('0xbcde24abef27b2e537b8ded8139c7991de308607')
   return {
     closePositionStatus: getClosePositionStatus(),
     currentTimestamp: selectCurrentTimestamp(state),
-    forkingMarket,
-    // forkThreshold: state.universe.forkThreshold,
-    // isForkingMarket: state.universe.isForking,
-    isForkingMarket: state.universe.isForking,
-    // isMobile: state.isMobile,
+    forkedMarket,
+    isLogged: state.isLogged,
     linkType: TYPE_CLAIM_PROCEEDS,
-    // outcomes: forkingMarket.outcomes || [],
     reporter: getValue(state, 'loginAccount.address'),
     universe: state.universe,
   }

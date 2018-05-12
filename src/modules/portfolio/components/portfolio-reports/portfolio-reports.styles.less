@@ -1,7 +1,6 @@
 @import (reference) '~assets/styles/shared';
 
 .PortfolioReports {
-  color: @color-white;
   padding: 0 2rem 2rem;
 
   > h4 {
@@ -9,12 +8,17 @@
 
     color: @color-white;
   }
+  > h5 {
+    color: @color-white;
+    padding: 0.6875rem 0rem 3.0625rem;
+  }
 }
 
 .PortfolioReports__details {
   .border(true, @border-bottom, @color-white);
 
   align-content: space-between;
+  color: @color-white;
   display: flex;
   padding: 2rem 0;
 }
@@ -41,6 +45,7 @@ button.PortfolioReports__claim {
   &:extend(.button--white all);
 
   align-self: flex-end;
+  margin-right: 2.75rem;
   padding: 0 2rem;
 }
 

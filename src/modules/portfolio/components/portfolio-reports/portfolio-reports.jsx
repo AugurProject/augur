@@ -10,25 +10,22 @@ import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-rep
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    universe: PropTypes.object.isRequired,
-    reporter: PropTypes.string.isRequired,
-    getReportingFees: PropTypes.func.isRequired,
-    updateModal: PropTypes.func.isRequired,
-    forkingMarket: PropTypes.object,
-
     buttonText: PropTypes.string,
     claimReportingFeesForkedMarket: PropTypes.func.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
+    getReportingFees: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
-    forkThreshold: PropTypes.object.isRequired,
-    isForkingMarket: PropTypes.bool,
+    forkedMarket: PropTypes.object,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
     location: PropTypes.object.isRequired,
-    market: PropTypes.object.isRequired,
     outcomes: PropTypes.object.isRequired,
+    reporter: PropTypes.string.isRequired,
+    universe: PropTypes.object.isRequired,
+    updateModal: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -78,7 +75,6 @@ export default class PortfolioReports extends Component {
     }
 
     this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(this)
-    // this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
   }
 
   componentWillMount() {
@@ -106,12 +102,37 @@ export default class PortfolioReports extends Component {
         // unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
         // unclaimedForkEth: formatEther(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
         // unclaimedForkRep: formatAttoRep(result.total.unclaimedForkRep, { decimals: 4, zeroStyled: true }),
+        // feeWindows: result.feeWindows,
+        // forkedMarket: result.forkedMarket,
+        // nonforkedMarkets: result.nonforkedMarkets,
+
+        // TODO: Remove hard-coding below
         unclaimedEth: formatEther(1, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(2, { decimals: 4, zeroStyled: true }),
         unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
         unclaimedForkRep: formatAttoRep(333, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
-        forkedMarket: result.forkedMarket,
+        forkedMarket: {
+          markeId: '0xf000000000000000000000000000000000000001',
+          universe: '0xu000000000000000000000000000000000000001',
+          isFinalized: true,
+
+          crowdsourcers: [
+            {
+              crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23001',
+              isForked: true,
+            },
+            {
+              crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23002',
+              isForked: false,
+            },
+          ],
+
+          initialReporter: {
+            initialReporterId: '0xfd2355a7e5a7adb23b51f54027e624bfe0e23001',
+            isForked: false,
+          },
+        },
         nonforkedMarkets: result.nonforkedMarkets,
       })
     })
@@ -141,15 +162,11 @@ export default class PortfolioReports extends Component {
       claimReportingFeesForkedMarket,
       closePositionStatus,
       currentTimestamp,
-      forkingMarket,
-      history,
       finalizeMarket,
-      forkThreshold,
-      isForkingMarket,
-      // isMobile,
+      forkedMarket,
+      history,
+      isLogged,
       linkType,
-      // location,
-      // outcomes,
       updateModal,
     } = this.props
     const s = this.state
@@ -158,7 +175,7 @@ export default class PortfolioReports extends Component {
     if (s.unclaimedEth.formatted === '-' && s.unclaimedRep.formatted === '-') {
       disableClaimReportingFeesNonforkedMarketsButton = 'disabled'
     }
-    const userHasClaimableForkFees = isForkingMarket && forkingMarket && (s.unclaimedForkEth.value > 0 || s.unclaimedForkRep.value > 0)
+    const userHasClaimableForkFees = forkedMarket && (s.unclaimedForkEth.value > 0 || s.unclaimedForkRep.value > 0)
 
     return (
       <div>
@@ -186,7 +203,7 @@ export default class PortfolioReports extends Component {
         {userHasClaimableForkFees &&
           <section className={Styles.PortfolioReports}>
             <h4>
-              Forking Market
+              Forked Market
             </h4>
             <h5>
               REP staked on an outcome of the forking market will be available in the outcome&#39;s corresponding universe once claimed.
@@ -196,13 +213,11 @@ export default class PortfolioReports extends Component {
               closePositionStatus={closePositionStatus}
               currentTimestamp={currentTimestamp}
               finalizeMarket={finalizeMarket}
-              forkThreshold={forkThreshold}
+              forkedMarketReportingFeesInfo={s.forkedMarket}
               history={history}
-              // isMobile={isMobile}
+              isLogged={isLogged}
               linkType={linkType}
-              // location={location}
-              market={forkingMarket}
-              // outcomes={outcomes}
+              market={forkedMarket}
               unclaimedForkEth={s.unclaimedForkEth}
               unclaimedForkRep={s.unclaimedForkRep}
               updateModal={updateModal}
