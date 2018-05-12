@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
-import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
+import { FormattedEventLog, ErrorCallback, Address, AsyncCallback, FeeWindowState } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { updateMarketState, rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindow } from "./database";
@@ -55,7 +55,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
   insertPayout(db, log.market, log.payoutNumerators, log.invalid, false, (err, payoutId) => {
     if (err) return callback(err);
     db("fee_windows").select(["feeWindow"]).first()
-      .where("isActive", 1)
+      .where("state", FeeWindowState.CURRENT)
       .where({ universe: log.universe })
       .asCallback((err: Error|null, feeWindowRow?: { feeWindow: string }|null): void => {
         if (err) return callback(err);
