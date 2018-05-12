@@ -38,17 +38,21 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   });
 }
 
+// 0 = future
+// 1 = present
+// 2 = past
+
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
   db("fee_windows").select("feeWindow", "universe")
-    .where("isActive", 1)
-    .andWhere((queryBuilder) => queryBuilder.where("endTime", "<", timestamp).orWhere("startTime", ">", timestamp))
+    .whereNot("isActive", 2)
+    .where("endTime", "<", timestamp)
     .asCallback((err, expiredFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
       if (err) return callback(err);
-      db("fee_windows").update("isActive", 0).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
+      db("fee_windows").update("isActive", 2).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
         .asCallback((err) => {
           if (err) return callback(err);
           db("fee_windows").select("feeWindow", "universe")
-            .where("isActive", 0)
+            .whereNot("isActive", 1)
             .where("endTime", ">", timestamp)
             .where("startTime", "<", timestamp)
             .asCallback((err, newActiveFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
