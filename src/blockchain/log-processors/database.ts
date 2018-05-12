@@ -25,7 +25,6 @@ export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address,
   const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
   augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
     if (err) return callback(err);
-    console.log(`ZZ SETTING ${marketId} to FW ${feeWindow} @ ${feeWindowAtTime}`);
     db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
   });
 }
