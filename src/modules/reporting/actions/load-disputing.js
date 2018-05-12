@@ -21,7 +21,6 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     (err, result) => {
       if (err) return callback(err)
 
-      // Load the associated market data
       dispatch(loadMarketsInfoIfNotLoaded(result))
       dispatch(updateCrowdDisputeMarkets(result))
       dispatch(loadMarketsDisputeInfo(result))
@@ -38,7 +37,6 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     (err, result) => {
       if (err) return callback(err)
 
-      // Load the associated market data
       dispatch(loadMarketsInfoIfNotLoaded(result))
       dispatch(updateAwaitingDisputeMarkets(result))
       dispatch(loadMarketsDisputeInfo(result))
