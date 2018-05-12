@@ -23,7 +23,7 @@ export enum ReportingState {
 export enum FeeWindowState {
   PAST = "PAST",
   CURRENT = "CURRENT",
-  FUTURE = "FUTURE,"
+  FUTURE = "FUTURE",
 }
 
 export enum DisputeTokenState {
