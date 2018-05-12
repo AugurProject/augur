@@ -47,7 +47,6 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
         })
       },
     }
-console.log(this.props)
     this.props.claimReportingFeesForkedMarket(ClaimReportingFeesForkedMarketOptions)
   }
 
