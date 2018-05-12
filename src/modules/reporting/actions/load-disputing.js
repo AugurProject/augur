@@ -1,7 +1,7 @@
 import { augur, constants } from 'services/augurjs'
 import logError from 'src/utils/log-error'
 import { loadMarketsInfoIfNotLoaded } from 'src/modules/markets/actions/load-markets-info-if-not-loaded'
-
+import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import updateAwaitingDisputeMarkets from 'src/modules/reporting/actions/update-awaiting-dispute'
 import updateCrowdDisputeMarkets from 'src/modules/reporting/actions/update-crowd-dispute'
 
@@ -21,10 +21,9 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     (err, result) => {
       if (err) return callback(err)
 
-      // Load the associated market data
       dispatch(loadMarketsInfoIfNotLoaded(result))
-
       dispatch(updateCrowdDisputeMarkets(result))
+      dispatch(loadMarketsDisputeInfo(result))
     },
   )
 
@@ -38,10 +37,9 @@ export const loadDisputing = (callback = logError) => (dispatch, getState) => {
     (err, result) => {
       if (err) return callback(err)
 
-      // Load the associated market data
       dispatch(loadMarketsInfoIfNotLoaded(result))
-
       dispatch(updateAwaitingDisputeMarkets(result))
+      dispatch(loadMarketsDisputeInfo(result))
     },
   )
 }

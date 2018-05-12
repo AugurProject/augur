@@ -6,6 +6,7 @@ import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/u
 import { useUnlockedAccount } from 'modules/auth/actions/use-unlocked-account'
 import { logout } from 'modules/auth/actions/logout'
 import { verifyMatchingNetworkIds } from 'modules/app/actions/verify-matching-network-ids'
+import { checkIfMainnet } from 'modules/app/actions/check-if-mainnet'
 import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import { updateModal } from 'modules/modal/actions/update-modal'
@@ -16,7 +17,7 @@ import networkConfig from 'config/network'
 
 import { isEmpty } from 'lodash'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED, MODAL_DISCLAIMER, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
@@ -74,6 +75,18 @@ function pollForNetwork(dispatch, getState) {
         dispatch(closeModal())
       }
     }))
+    if (process.env.ENABLE_MAINNET !== 'true') {
+      dispatch(checkIfMainnet((err, isMainnet) => {
+        if (err) return console.error('pollForNetwork failed', err)
+        if (isMainnet && isEmpty(modal)) {
+          dispatch(updateModal({
+            type: MODAL_NETWORK_DISABLED,
+          }))
+        } else if (!isMainnet && modal.type === MODAL_NETWORK_DISABLED) {
+          dispatch(closeModal())
+        }
+      }))
+    }
   }, NETWORK_ID_POLL_INTERVAL_DURATION)
 }
 
@@ -115,7 +128,13 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
       if (windowRef.localStorage && windowRef.localStorage.getItem) {
         const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
+        const disclaimerSeen = windowRef.localStorage.getItem('disclaimerSeen')
         universeId = storedUniverseId === null ? universeId : storedUniverseId
+        if (!disclaimerSeen) {
+          dispatch(updateModal({
+            type: MODAL_DISCLAIMER,
+          }))
+        }
       }
       dispatch(loadUniverse(universeId, history))
       if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())

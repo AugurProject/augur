@@ -37,7 +37,7 @@ export default class MarketOutcomeCharts extends Component {
     outcomeName: PropTypes.string,
     priceTimeSeries: PropTypes.array,
     selectedOutcome: PropTypes.object.isRequired,
-    updatePrecision: PropTypes.func.isRequired,
+    updatePrecision: PropTypes.func,
     updateSeletedOrderProperties: PropTypes.func.isRequired,
   }
 
@@ -53,8 +53,8 @@ export default class MarketOutcomeCharts extends Component {
 
     this.state = {
       candleScrolled: true,
-      selectedPeriod: PERIODS[0].period,
-      selectedRange: RANGES[1].range,
+      selectedPeriod: PERIODS[1].period, // Hour
+      selectedRange: RANGES[2].range, // Day
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,

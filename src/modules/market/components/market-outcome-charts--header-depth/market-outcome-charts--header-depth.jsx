@@ -56,7 +56,7 @@ export default class MarketOutcomeDepthHeader extends Component {
             qty
             </span>
             <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-              {isNumber(hoveredDepth[2]) ? hoveredDepth[2].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
+              {isNumber(hoveredDepth[2]) ? hoveredDepth[2].toFixed(2).toString() : <span>&mdash;</span>}
             </span>
           </span>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>
@@ -64,7 +64,7 @@ export default class MarketOutcomeDepthHeader extends Component {
             depth
             </span>
             <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-              {isNumber(hoveredDepth[0]) ? hoveredDepth[0].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
+              {isNumber(hoveredDepth[0]) ? hoveredDepth[0].toFixed(2).toString() : <span>&mdash;</span>}
             </span>
           </span>
         </div>

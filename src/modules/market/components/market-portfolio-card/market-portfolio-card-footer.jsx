@@ -27,6 +27,7 @@ const MarketPortfolioCardFooter = (p) => {
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
   }
+
   return (
     <div>
       <section
@@ -44,7 +45,7 @@ const MarketPortfolioCardFooter = (p) => {
           {p.linkType === TYPE_CLAIM_PROCEEDS &&
             <div>
               <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
+              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns, { decimals: 2 }).minimized} ETH</span>
             </div>
           }
           <div className={Styles['MarketCard__action-container']}>
@@ -53,7 +54,7 @@ const MarketPortfolioCardFooter = (p) => {
                 <span className={Styles['MarketCard__proceeds-text']}>Proceeds Available</span>
                 <span className={Styles['MarketCard__proceeds-text-small']}>{convertUnixToFormattedDate(endTimestamp.toNumber()).formattedLocal}</span>
                 <span className={Styles['MarketCard__proceeds-clock']}>
-                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} />
+                  <WrappedGraph startDate={startTime} endTime={finalTime} currentTimestamp={currentTimestampInSeconds*1000} backgroundColor="#ceccd8" />
                 </span>
               </div>
             }
@@ -75,7 +76,7 @@ MarketPortfolioCardFooter.propTypes = {
   linkType: PropTypes.string.isRequired,
   localButtonText: PropTypes.string.isRequired,
   buttonAction: PropTypes.func,
-  outstandingReturns: PropTypes.number,
+  outstandingReturns: PropTypes.string,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
 }

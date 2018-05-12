@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import speedomatic from 'speedomatic'
+import { uniq, isEmpty } from 'lodash'
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import {
@@ -43,6 +44,11 @@ export default class CreateMarketOutcome extends Component {
       showAddOutcome: CreateMarketOutcome.calculateOutcomeFieldCount(this.props) < 8,
       scalarMin: createBigNumber(speedomatic.constants.INT256_MIN_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
       scalarMax: createBigNumber(speedomatic.constants.INT256_MAX_VALUE).decimalPlaces(18, BigNumber.ROUND_DOWN),
+      scalarType: {
+        MIN_PRICE: 'MIN_PRICE',
+        MAX_PRICE: 'MAX_PRICE',
+        TICK_SIZE: 'TICK_SIZE',
+      },
     }
 
     this.handleAddOutcomeClick = this.handleAddOutcomeClick.bind(this)
@@ -122,10 +128,11 @@ export default class CreateMarketOutcome extends Component {
       updateNewMarket,
     } = this.props
     const { currentStep } = newMarket
+    const { scalarType } = this.state
 
     const updatedMarket = { ...newMarket }
-    let scalarSmallNum = type === 'small' ? value : updatedMarket.scalarSmallNum
-    let scalarBigNum = type === 'big' ? value : updatedMarket.scalarBigNum
+    let scalarSmallNum = type === scalarType.MIN_PRICE ? value : updatedMarket.scalarSmallNum
+    let scalarBigNum = type === scalarType.MAX_PRICE ? value : updatedMarket.scalarBigNum
 
     if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
       scalarSmallNum = createBigNumber(scalarSmallNum)
@@ -135,49 +142,44 @@ export default class CreateMarketOutcome extends Component {
       scalarBigNum = createBigNumber(scalarBigNum)
     }
 
-    if (type === 'small') {
-      switch (true) {
-        case scalarSmallNum === '':
-          updatedMarket.validations[currentStep].scalarSmallNum = 'This field is required.'
-          break
-        case scalarSmallNum.lt(this.state.scalarMin):
-          updatedMarket.validations[currentStep].scalarSmallNum = `Must be greater than: ${this.state.scalarMin}`
-          break
-        case scalarSmallNum.gt(this.state.scalarMax):
-          updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax}`
-          break
-        case scalarBigNum !== '' && scalarSmallNum.gte(scalarBigNum):
-          updatedMarket.validations[currentStep].scalarSmallNum = 'Min must be less than max.'
-          break
-        default:
-          updatedMarket.validations[currentStep].scalarSmallNum = true
-      }
-
-      updatedMarket.scalarSmallNum = scalarSmallNum
+    switch (true) {
+      case scalarSmallNum === '':
+        updatedMarket.validations[currentStep].scalarSmallNum = 'This field is required.'
+        break
+      case scalarSmallNum.lt(this.state.scalarMin):
+        updatedMarket.validations[currentStep].scalarSmallNum = `Must be greater than: ${this.state.scalarMin}`
+        break
+      case scalarSmallNum.gt(this.state.scalarMax):
+        updatedMarket.validations[currentStep].scalarSmallNum = `Must be less than: ${this.state.scalarMax}`
+        break
+      case scalarBigNum !== '' && scalarSmallNum.gte(scalarBigNum):
+        updatedMarket.validations[currentStep].scalarSmallNum = 'Min must be less than max.'
+        break
+      default:
+        updatedMarket.validations[currentStep].scalarSmallNum = true
     }
+    updatedMarket.scalarSmallNum = scalarSmallNum
 
-    if (type === 'big') {
-      switch (true) {
-        case scalarBigNum === '':
-          updatedMarket.validations[currentStep].scalarBigNum = 'This field is required.'
-          break
-        case scalarBigNum.lt(this.state.scalarMin):
-          updatedMarket.validations[currentStep].scalarBigNum = `Must be greater than: ${this.state.scalarMin}`
-          break
-        case scalarBigNum.gt(this.state.scalarMax):
-          updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax}`
-          break
-        case scalarSmallNum !== '' && scalarBigNum.lte(scalarSmallNum):
-          updatedMarket.validations[currentStep].scalarBigNum = 'Max must be larger than min.'
-          break
-        default:
-          updatedMarket.validations[currentStep].scalarBigNum = true
-      }
 
-      updatedMarket.scalarBigNum = scalarBigNum
+    switch (true) {
+      case scalarBigNum === '':
+        updatedMarket.validations[currentStep].scalarBigNum = 'This field is required.'
+        break
+      case scalarBigNum.lt(this.state.scalarMin):
+        updatedMarket.validations[currentStep].scalarBigNum = `Must be greater than: ${this.state.scalarMin}`
+        break
+      case scalarBigNum.gt(this.state.scalarMax):
+        updatedMarket.validations[currentStep].scalarBigNum = `Must be less than: ${this.state.scalarMax}`
+        break
+      case scalarSmallNum !== '' && scalarBigNum.lte(scalarSmallNum):
+        updatedMarket.validations[currentStep].scalarBigNum = 'Max must be more than min.'
+        break
+      default:
+        updatedMarket.validations[currentStep].scalarBigNum = true
     }
+    updatedMarket.scalarBigNum = scalarBigNum
 
-    if (type === 'tickSize') {
+    if (type === scalarType.TICK_SIZE) {
       if (value < 0) {
         updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
       } else if (!value) {
@@ -205,6 +207,8 @@ export default class CreateMarketOutcome extends Component {
     const { outcomes } = updatedMarket
     outcomes[index] = value
     const cleanedOutcomes = outcomes.filter(outcome => outcome !== '')
+    const cleanedOutcomesLen = Object.values(cleanedOutcomes).filter(x => !isEmpty(x)).length
+    const isUnique = uniq(Object.values(cleanedOutcomes).filter(x => !isEmpty(x))).length === cleanedOutcomesLen
 
     switch (true) {
       case cleanedOutcomes.length < CATEGORICAL_OUTCOMES_MIN_NUM:
@@ -213,14 +217,16 @@ export default class CreateMarketOutcome extends Component {
       case cleanedOutcomes.length > CATEGORICAL_OUTCOMES_MAX_NUM:
         updatedMarket.validations[currentStep].outcomes = 'Please enter a max of 8 outcomes.'
         break
-      case value !== '' && cleanedOutcomes.filter(outcome => outcome === value).length >= 2:
+      case !isUnique:
         updatedMarket.validations[currentStep].outcomes = 'Outcome names must be unique.'
         break
       default:
         updatedMarket.validations[currentStep].outcomes = true
     }
 
-    updatedMarket.outcomes = outcomes
+    if (updatedMarket.validations[currentStep].outcomes === true) {
+      updatedMarket.outcomes = outcomes
+    }
     updatedMarket.isValid = isValid(currentStep)
 
     updateNewMarket(updatedMarket)
@@ -332,7 +338,7 @@ export default class CreateMarketOutcome extends Component {
                 value={BigNumber.isBigNumber(newMarket.scalarSmallNum) ? newMarket.scalarSmallNum.toNumber() : newMarket.scalarSmallNum}
                 placeholder="Min Value"
                 onChange={(e) => {
-                  this.validateScalarNum(e.target.value, 'small')
+                  this.validateScalarNum(e.target.value, s.scalarType.MIN_PRICE)
                 }}
                 onKeyPress={e => keyPressed(e)}
               />
@@ -354,7 +360,7 @@ export default class CreateMarketOutcome extends Component {
                 value={BigNumber.isBigNumber(newMarket.scalarBigNum) ? newMarket.scalarBigNum.toNumber() : newMarket.scalarBigNum}
                 placeholder="Max Value"
                 onChange={(e) => {
-                  this.validateScalarNum(e.target.value, 'big')
+                  this.validateScalarNum(e.target.value, s.scalarType.MAX_PRICE)
                 }}
                 onKeyPress={e => keyPressed(e)}
               />
@@ -388,7 +394,7 @@ export default class CreateMarketOutcome extends Component {
                 step="0.0001"
                 value={newMarket.tickSize}
                 placeholder="Tick Size"
-                onChange={e => this.validateScalarNum(e.target.value, 'tickSize')}
+                onChange={e => this.validateScalarNum(e.target.value, s.scalarType.TICK_SIZE)}
                 onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&

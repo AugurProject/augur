@@ -18,6 +18,7 @@ import { isCurrentMarket } from 'modules/trade/helpers/is-current-market'
 import makePath from 'modules/routes/helpers/make-path'
 import { MY_MARKETS } from 'modules/routes/constants/views'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
+import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -104,6 +105,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(loadReporting())
+    dispatch(loadDisputing())
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
   }
@@ -114,6 +116,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) => (
     if (err) return console.error(err)
     const { volume, author, description } = getState().marketsData[log.market]
     dispatch(updateMarketCategoryPopularity(log.market, new BigNumber(volume, 10).negated().toFixed()))
+    dispatch(loadReporting())
     const isOwnMarket = getState().loginAccount.address === author
     if (isOwnMarket) {
       dispatch(updateLoggedTransactions(log))

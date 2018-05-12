@@ -18,7 +18,6 @@ const PositionsMarketsList = p => (
         (<MarketPortfolioCard
           key={market.id}
           market={market}
-          closePositionStatus={p.closePositionStatus}
           location={p.location}
           history={p.history}
           linkType={p.linkType}
@@ -34,7 +33,6 @@ const PositionsMarketsList = p => (
 PositionsMarketsList.propTypes = {
   title: PropTypes.string.isRequired,
   markets: PropTypes.array.isRequired,
-  closePositionStatus: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   linkType: PropTypes.string,

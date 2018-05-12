@@ -19,6 +19,7 @@ const MarketOutcomesAndPositions = p => (
       <MarketPositionsList
         positions={p.positions}
         openOrders={p.openOrders}
+        closePositionStatus={p.closePositionStatus}
       />
     }
     { p.isMobile && p.selectedOutcome &&

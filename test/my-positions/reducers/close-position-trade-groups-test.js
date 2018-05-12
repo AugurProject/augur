@@ -83,6 +83,11 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
             0: ['0x00000TradeGroupID1', '0x00000TradeGroupID2'],
             1: ['0x00000TradeGroupID3'],
           },
+          '0xMarketID2': {
+            3: [
+              '0x00000TradeGroupID4',
+            ],
+          },
         })
       },
     })
@@ -106,6 +111,10 @@ describe('modules/my-positions/reducers/close-position-trade-groups.js', () => {
       assertions: (res) => {
         assert.deepEqual(res, {
           '0xMarketID1': {
+            0: [
+              '0x00000TradeGroupID1',
+              '0x00000TradeGroupID2',
+            ],
             1: ['0x00000TradeGroupID3'],
           },
           '0xMarketID2': {

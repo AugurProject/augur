@@ -83,17 +83,31 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
       sortBy: 'endTime',
       universe: universe.id,
     },
-    (err, marketIds) => {
+    (err, finalizedMarketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) {
-        dispatch(updateResolvedMarkets([]))
-        return callback(null)
-      }
 
-      dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
-        if (err) return logError(err)
-        dispatch(updateResolvedMarkets(marketIds))
-      }))
+      augur.augurNode.submitRequest(
+        'getMarkets',
+        {
+          reportingState: constants.REPORTING_STATE.AWAITING_FINALIZATION,
+          sortBy: 'endTime',
+          universe: universe.id,
+        },
+        (err, awaitingFinalizationMarketIds) => {
+          if (err) return callback(err)
+
+          const marketIds = awaitingFinalizationMarketIds.concat(finalizedMarketIds)
+          if (!marketIds || marketIds.length === 0) {
+            dispatch(updateResolvedMarkets([]))
+            return callback(null)
+          }
+
+          dispatch(loadMarketsInfoIfNotLoaded(marketIds, (err, marketData) => {
+            if (err) return logError(err)
+            dispatch(updateResolvedMarkets(marketIds))
+          }))
+        },
+      )
     },
   )
 }

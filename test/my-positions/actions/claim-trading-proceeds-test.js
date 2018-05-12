@@ -20,11 +20,13 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         },
       }
       const LoadMarketsInfo = { loadMarketsInfo: () => {} }
+      const GetWinningBalance = { getWinningBalance: () => {} }
       const UpdateAssets = {}
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions)
       const claimTradingProceeds = proxyquire('../../../src/modules/my-positions/actions/claim-trading-proceeds.js', {
         '../../../services/augurjs': AugurJS,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
+        '../../portfolio/actions/get-winning-balance': GetWinningBalance,
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions,
       }).default
@@ -36,6 +38,9 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo').callsFake((marketIds, callback) => (dispatch, getState) => {
         dispatch({ type: 'LOAD_MARKETS_INFO', marketIds })
         callback(null)
+      })
+      sinon.stub(GetWinningBalance, 'getWinningBalance').callsFake((marketIds, callback) => (dispatch, getState) => {
+        dispatch({ type: 'GET_WINNING_BALANCE', marketIds })
       })
       UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' })
       store.dispatch(claimTradingProceeds())
@@ -95,6 +100,9 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         markets: ['0xa1'],
       }, {
         type: 'UPDATE_ASSETS',
+      }, {
+        type: 'GET_WINNING_BALANCE',
+        marketIds: ['0xa1'],
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa1'],
@@ -165,6 +173,9 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       }, {
         type: 'UPDATE_ASSETS',
       }, {
+        type: 'GET_WINNING_BALANCE',
+        marketIds: ['0xa2'],
+      }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa2'],
       }])
@@ -217,8 +228,14 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       }, {
         type: 'UPDATE_ASSETS',
       }, {
+        type: 'GET_WINNING_BALANCE',
+        marketIds: ['0xa2'],
+      }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa2'],
+      }, {
+        type: 'GET_WINNING_BALANCE',
+        marketIds: ['0xa3'],
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa3'],
@@ -267,6 +284,9 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         markets: ['0xa3'],
       }, {
         type: 'UPDATE_ASSETS',
+      }, {
+        type: 'GET_WINNING_BALANCE',
+        marketIds: ['0xa3'],
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa3'],

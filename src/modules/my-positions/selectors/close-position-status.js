@@ -2,9 +2,9 @@ import { createSelector } from 'reselect'
 import store from 'src/store'
 import { selectClosePositionTradeGroupsState, selectTransactionsDataState } from 'src/select-state'
 import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome'
-
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status'
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses'
+import { removeClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group'
 
 export default function () {
   return selectClosePositionStatus(store.getState())
@@ -63,6 +63,7 @@ export const selectClosePositionStatus = createSelector(
           return { ...p, [outcomeId]: CLOSE_DIALOG_SUCCESS }
         }
 
+        // TODO: This selector needs to be refactored along with closePositionTradeGroups reducer, so that partial fills are known
         // Close Position Partially Failed
         if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIds.length && numberOfSuccessfulTransactions === 0) {
 
@@ -78,6 +79,7 @@ export const selectClosePositionStatus = createSelector(
       }, {})
 
       if (Object.keys(outcomeStatuses).length !== 0) {
+        delayClearTradeGroupIds(marketId, Object.keys(outcomeStatuses)[0])
         return { ...p, [marketId]: outcomeStatuses }
       }
 
@@ -92,5 +94,8 @@ export const selectClosePositionStatus = createSelector(
 // This will ultimately clear the outcome status and allow for the
 // user to try again if an action is available
 function delayClearTradeGroupIds(marketId, outcomeId) {
-  setTimeout(() => store.dispatch(clearClosePositionOutcome(marketId, outcomeId)), 3000)
+  setTimeout(() => {
+    store.dispatch(clearClosePositionOutcome(marketId, outcomeId))
+    store.dispatch(removeClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_NO_ORDERS))
+  }, 3000)
 }

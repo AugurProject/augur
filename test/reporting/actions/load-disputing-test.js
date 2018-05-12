@@ -43,6 +43,7 @@ describe('loadDisputing action', () => {
 
     loadDisputingRewire.__Rewire__('augur', mockAugur)
     loadDisputingRewire.__Rewire__('loadMarketsInfoIfNotLoaded', () => () => {})
+    loadDisputingRewire.__Rewire__('loadMarketsDisputeInfo', () => () => {})
 
     store = mockStore(initialStoreState)
   })
@@ -50,6 +51,7 @@ describe('loadDisputing action', () => {
   afterEach(() => {
     loadDisputingRewire.__ResetDependency__('augur')
     loadDisputingRewire.__ResetDependency__('loadMarketsInfoIfNotLoaded')
+    loadDisputingRewire.__ResetDependency__('loadMarketsDisputeInfo')
   })
 
   it('should load upcoming dispute markets for a given user in side the given universe', () => {

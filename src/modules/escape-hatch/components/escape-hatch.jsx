@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Styles from 'modules/escape-hatch/components/escape-hatch.styles'
-import { formatGasCost, formatEtherEstimate } from 'utils/format-number'
+import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number'
 import PropTypes from 'prop-types'
 
 export default class EscapeHatchView extends Component {
@@ -13,6 +13,7 @@ export default class EscapeHatchView extends Component {
     loadParticipationTokens: PropTypes.func.isRequired,
     loadInitialReporters: PropTypes.func.isRequired,
     loadDisputeCrowdsourcers: PropTypes.func.isRequired,
+    gasPrice: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -77,6 +78,7 @@ export default class EscapeHatchView extends Component {
     const {
       escapeHatchData,
       loginAccount,
+      gasPrice,
     } = this.props
     const s = this.state
 
@@ -123,7 +125,7 @@ export default class EscapeHatchView extends Component {
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>
-              <span>{formatGasCost(escapeHatchData.gas).rounded}</span>
+              <span>{formatGasCostToEther(escapeHatchData.gas, { decimalsRounded: 4 }, gasPrice)}</span>
             </div>
           </article>
           <hr />
