@@ -38,7 +38,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1509670273,
       endTime: 1509670273 + 604800,
-      state: FeeWindowState.PAST,
+      state: FeeWindowState.FUTURE,
       fees: 0,
       feeToken: "NEXT_FEE_TOKEN",
     }, {
@@ -47,7 +47,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "CHILD_UNIVERSE",
       startTime: 1509065473,
       endTime: 1511657473,
-      state: FeeWindowState.PAST,
+      state: FeeWindowState.FUTURE,
       fees: 0,
       feeToken: "FEE_TOKEN_CHILD_UNIVERSE",
     }];
