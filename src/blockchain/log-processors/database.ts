@@ -40,7 +40,6 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   });
 }
 
-
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
   db("fee_windows").select("feeWindow", "universe")
     .whereNot("state", FeeWindowState.PAST)
