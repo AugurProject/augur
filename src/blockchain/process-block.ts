@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
-import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address } from "../types";
+import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { getMarketsWithReportingState } from "../server/getters/database";
@@ -229,7 +229,7 @@ function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumbe
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeFeeWindow.feeWindow"])
     .join("fee_windows as activeFeeWindow", "activeFeeWindow.universe", "markets.universe")
     .whereIn("markets.feeWindow", newActiveFeeWindows)
-    .where("activeFeeWindow.isActive", 1)
+    .where("activeFeeWindow.state", FeeWindowState.CURRENT)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
     .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);

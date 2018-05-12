@@ -8,11 +8,11 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("universe", 42).notNullable();
       table.specificType("startTime", "integer NOT NULL CONSTRAINT nonnegativeStartTime CHECK (startTime >= 0)");
       table.specificType("endTime", "integer NOT NULL CONSTRAINT nonnegativeEndTime CHECK (endTime >= 0)");
-      table.integer("isActive");
+      table.string("state");
       table.string("fees", 255).defaultTo("0");
       table.string("feeToken").notNullable();
 
-      table.index(["universe", "isActive"]);
+      table.index(["universe", "state"]);
     });
   });
 };

@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback, ErrorCallback } from "../../types";
+import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
@@ -44,20 +44,20 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
 
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
   db("fee_windows").select("feeWindow", "universe")
-    .whereNot("isActive", 2)
+    .whereNot("state", FeeWindowState.PAST)
     .where("endTime", "<", timestamp)
     .asCallback((err, expiredFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
       if (err) return callback(err);
-      db("fee_windows").update("isActive", 2).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
+      db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
         .asCallback((err) => {
           if (err) return callback(err);
           db("fee_windows").select("feeWindow", "universe")
-            .whereNot("isActive", 1)
+            .whereNot("state", FeeWindowState.CURRENT)
             .where("endTime", ">", timestamp)
             .where("startTime", "<", timestamp)
             .asCallback((err, newActiveFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
               if (err) return callback(err);
-              db("fee_windows").update("isActive", 1).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
+              db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
                 .asCallback((err) => {
                     if (err) return callback(err);
                     if (expiredFeeWindowRows != null) {

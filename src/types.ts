@@ -20,6 +20,12 @@ export enum ReportingState {
   AWAITING_FORK_MIGRATION = "AWAITING_FORK_MIGRATION",
 }
 
+export enum FeeWindowState {
+  PAST = "PAST",
+  CURRENT = "CURRENT",
+  FUTURE = "FUTURE,"
+}
+
 export enum DisputeTokenState {
   ALL = "ALL",
   UNCLAIMED = "UNCLAIMED",
@@ -283,7 +289,7 @@ export interface UIFeeWindowCurrent {
   endTime: number;
   feeWindow: Address;
   feeWindowId: number;
-  isActive: number;
+  state: FeeWindowState;
   startTime: number;
   universe: Address;
   totalStake?: number;
@@ -488,7 +494,7 @@ export interface FeeWindowRow {
   feeWindowId: number;
   universe: Address;
   startTime: number;
-  isActive: number;
+  state: FeeWindowState;
   endTime: number;
   fees: number|string;
 }

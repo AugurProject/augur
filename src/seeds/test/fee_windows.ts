@@ -1,4 +1,5 @@
 import * as Knex from "knex";
+import { FeeWindowState } from "../../types";
 
 exports.seed = async (knex: Knex): Promise<any> => {
   // Deletes ALL existing entries
@@ -10,7 +11,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1506473473,
       endTime: 1506473515,
-      isActive: 0,
+      state: FeeWindowState.PAST,
       fees: 0,
       feeToken: "FEE_TOKEN_1",
     }, {
@@ -19,7 +20,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1506474500,
       endTime: 1506480000,
-      isActive: 0,
+      state: FeeWindowState.PAST,
       fees: 0,
       feeToken: "FEE_TOKEN_3",
     }, {
@@ -28,7 +29,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1509065473,
       endTime: 1509065473 + 604800,
-      isActive: 1,
+      state: FeeWindowState.CURRENT,
       fees: 0,
       feeToken: "FEE_TOKEN_2",
     }, {
@@ -37,7 +38,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "0x000000000000000000000000000000000000000b",
       startTime: 1509670273,
       endTime: 1509670273 + 604800,
-      isActive: 0,
+      state: FeeWindowState.PAST,
       fees: 0,
       feeToken: "NEXT_FEE_TOKEN",
     }, {
@@ -46,7 +47,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "CHILD_UNIVERSE",
       startTime: 1509065473,
       endTime: 1511657473,
-      isActive: 1,
+      state: FeeWindowState.PAST,
       fees: 0,
       feeToken: "FEE_TOKEN_CHILD_UNIVERSE",
     }];
