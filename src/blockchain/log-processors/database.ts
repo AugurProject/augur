@@ -25,6 +25,7 @@ export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address,
   const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
   augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
     if (err) return callback(err);
+    console.log(`ZZ SETTING ${marketId} to FW ${feeWindow} @ ${feeWindowAtTime}`);
     db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
   });
 }
@@ -34,13 +35,11 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
   db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
     if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
+    console.log(`ZZ MARKET STATE ${marketId} => ${reportingState}`);
     setMarketStateToLatest(db, marketId, callback);
   });
 }
 
-// 0 = future
-// 1 = present
-// 2 = past
 
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
   db("fee_windows").select("feeWindow", "universe")
