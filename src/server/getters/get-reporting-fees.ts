@@ -344,7 +344,7 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
                 unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
                 lostRep: repStakeResults.fees.lostRep.toFixed(),
               },
-              feeWindows: redeemableFeeWindows,
+              feeWindows: redeemableFeeWindows.sort(),
               forkedMarket: result.forkedMarket,
               nonforkedMarkets: result.nonforkedMarkets,
             };
