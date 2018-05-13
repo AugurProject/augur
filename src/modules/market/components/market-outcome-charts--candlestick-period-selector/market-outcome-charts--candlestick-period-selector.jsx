@@ -7,6 +7,7 @@ import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
 import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
+import { limitPeriodByRange } from 'src/modules/market/helpers'
 
 export default class PeriodSelector extends Component {
   static propTypes = {
@@ -49,7 +50,7 @@ export default class PeriodSelector extends Component {
     } = this.props
 
 
-    updateSelectedRange(range.range === selectedRange ? -1 : range.range)
+    updateSelectedRange(range.duration === selectedRange ? -1 : range.duration)
     this.setState({
       isModalActive: false,
     })
@@ -62,7 +63,7 @@ export default class PeriodSelector extends Component {
     } = this.props
 
 
-    updateSelectedPeriod(period.period === selectedPeriod ? -1 : period.period)
+    updateSelectedPeriod(period.duration === selectedPeriod ? -1 : period.duration)
     this.setState({
       isModalActive: false,
     })
@@ -76,8 +77,11 @@ export default class PeriodSelector extends Component {
 
     const s = this.state
 
-    const selectedPeriodLabel = (PERIODS.find(period => period.period === selectedPeriod) || {}).label || null
-    const selectedRangeLabel = (RANGES.find(range => range.range === selectedRange) || {}).label || null
+    const selectedPeriodLabel = (PERIODS.find(period => period.duration === selectedPeriod) || {}).label || null
+    const selectedRangeLabel = (RANGES.find(range => range.duration === selectedRange) || {}).label || null
+
+    const periodsToDisplay = limitPeriodByRange(selectedRange)
+
 
     return (
       <section className={Styles.PeriodSelector}>
@@ -115,13 +119,13 @@ export default class PeriodSelector extends Component {
             <ul>
               {RANGES.map(range => (
                 <li
-                  key={range.range}
+                  key={range.duration}
                   className={Styles.PeriodSelector__value}
                 >
                   <button
                     className={
                       classNames({
-                        [Styles['PeriodSelector__value--active']]: range.range === selectedRange,
+                        [Styles['PeriodSelector__value--active']]: range.duration === selectedRange,
                       })
                     }
                     onClick={() => this.selectRange(range)}
@@ -135,15 +139,15 @@ export default class PeriodSelector extends Component {
           <div className={Styles.PeriodSelector__column}>
             <h1>Period</h1>
             <ul>
-              {PERIODS.map(period => (
+              {periodsToDisplay.map(period => (
                 <li
-                  key={period.period}
+                  key={period.duration}
                   className={Styles.PeriodSelector__value}
                 >
                   <button
                     className={
                       classNames({
-                        [Styles['PeriodSelector__value--active']]: period.period === selectedPeriod,
+                        [Styles['PeriodSelector__value--active']]: period.duration === selectedPeriod,
                       })
                     }
                     onClick={() => this.selectPeriod(period)}
