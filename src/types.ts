@@ -181,6 +181,7 @@ export interface MarketsRow<BigNumberType> {
   isInvalid?: boolean|null;
   forking: number;
   needsMigration: number;
+  needsDisavowal: number;
 }
 
 export interface PositionsRow<BigNumberType> {

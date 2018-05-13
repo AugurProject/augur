@@ -175,6 +175,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           finalizationBlockNumber: null,
           forking: 0,
           needsMigration: 0,
+          needsDisavowal: 0,
           initialReportSize: new BigNumber("10", 10),
           isInvalid: null,
           longDescription: null,
@@ -253,6 +254,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           creationTime: 1509065474,
           forking: 0,
           needsMigration: 0,
+          needsDisavowal: 0,
         });
       },
     },
