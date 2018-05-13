@@ -60,13 +60,13 @@ const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, fork
       <section className={Styles.MarketCommon__footer}>
         <MarketProperties
           {...this.props}
-          endTime={market.endTime}
+          {...market}
         />
       </section>
       <MarketPortfolioCardFooter
         linkType={linkType}
         localButtonText={localButtonText}
-        buttonAction={this.handleClaimReportingFeesForkedMarket}
+        buttonAction={buttonAction}
         outstandingReturns={market.outstandingReturns}
         finalizationTime={market.finalizationTime}
         currentTimestamp={currentTimestamp}
