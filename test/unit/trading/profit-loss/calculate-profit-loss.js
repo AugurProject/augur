@@ -20,7 +20,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         meanOpenPrice: "0",
         realized: "0",
         unrealized: "0",
-        queued: "0",
+        total: "0",
       });
     },
   });
@@ -34,7 +34,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         meanOpenPrice: "0",
         realized: "0",
         unrealized: "0",
-        queued: "0",
+        total: "0",
       });
     },
   });
@@ -55,7 +55,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "2",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -74,7 +74,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "1",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -93,7 +93,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "3",
           realized: "0",
           unrealized: "-1",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -112,7 +112,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "3",
           realized: "0",
           unrealized: "-2",
-          queued: "0",
+          total: "-2",
         });
       },
     });
@@ -131,7 +131,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -155,7 +155,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "1",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -179,7 +179,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -203,7 +203,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "2",
           unrealized: "0",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -232,7 +232,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -261,7 +261,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -290,7 +290,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -319,7 +319,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -348,7 +348,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "2",
           unrealized: "0",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -372,7 +372,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "2",
           realized: "-1",
           unrealized: "-2",
-          queued: "0",
+          total: "-3",
         });
       },
     });
@@ -401,7 +401,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "-1",
           unrealized: "0",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -425,7 +425,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.5",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -454,7 +454,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.5",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -478,7 +478,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -502,7 +502,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "3",
-          queued: "0",
+          total: "3",
         });
       },
     });
@@ -526,7 +526,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "-3",
-          queued: "0",
+          total: "-3",
         });
       },
     });
@@ -550,7 +550,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "-7",
-          queued: "0",
+          total: "-7",
         });
       },
     });
@@ -579,7 +579,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.3",
           realized: "-1",
           unrealized: "-1",
-          queued: "0",
+          total: "-2",
         });
       },
     });
@@ -608,7 +608,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.2",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -637,7 +637,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.2",
           realized: "0",
           unrealized: "-1",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -671,7 +671,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -705,7 +705,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0.5",
           unrealized: "0",
-          queued: "0",
+          total: "0.5",
         });
       },
     });
@@ -739,7 +739,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.166666666666666666667",
           realized: "0.166666666666666666665",
           unrealized: "-0.66666666666666666667",
-          queued: "0",
+          total: "-0.500000000000000000005",
         });
       },
     });
@@ -773,7 +773,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.166666666666666666667",
           realized: "1.166666666666666666665",
           unrealized: "1.33333333333333333333",
-          queued: "0",
+          total: "2.499999999999999999995",
         });
       },
     });
@@ -797,7 +797,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -821,7 +821,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.15",
           realized: "0",
           unrealized: "-1",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -845,7 +845,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.15",
           realized: "0",
           unrealized: "-3",
-          queued: "0",
+          total: "-3",
         });
       },
     });
@@ -869,7 +869,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -891,9 +891,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          realized: "0",
-          unrealized: "-1",
-          queued: "-1",
+          realized: "-1",
+          unrealized: "0",
+          total: "-1",
         });
       },
     });
@@ -915,9 +915,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          realized: "0",
-          unrealized: "1",
-          queued: "1",
+          realized: "1",
+          unrealized: "0",
+          total: "1",
         });
       },
     });
@@ -946,7 +946,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "-1",
           unrealized: "0",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -975,7 +975,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -1002,9 +1002,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          realized: "-0.5",
-          unrealized: "-0.5",
-          queued: "-0.5",
+          realized: "-1",
+          unrealized: "0",
+          total: "-1",
         });
       },
     });
@@ -1036,9 +1036,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          realized: "-0.5",
-          unrealized: "-0.5",
-          queued: "-0.5",
+          realized: "-1",
+          unrealized: "0",
+          total: "-1",
         });
       },
     });
@@ -1065,9 +1065,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "5",
           meanOpenPrice: "0.2",
-          realized: "0",
-          unrealized: "-1",
-          queued: "-1",
+          realized: "-1",
+          unrealized: "0",
+          total: "-1",
         });
       },
     });
@@ -1086,7 +1086,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.5",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -1115,7 +1115,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.25",
           realized: "0",
           unrealized: "-0.05",
-          queued: "0",
+          total: "-0.05",
         });
       },
     });
@@ -1142,9 +1142,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "5",
           meanOpenPrice: "0.5",
-          realized: "0",
-          unrealized: "-2.5",
-          queued: "-1",
+          realized: "-1",
+          unrealized: "-1.5",
+          total: "-2.5",
         });
       },
     });
@@ -1168,7 +1168,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -1190,9 +1190,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          queued: "0.5",
-          realized: "0",
-          unrealized: "0.5",
+          realized: "0.5",
+          unrealized: "0",
+          total: "0.5",
         });
       },
     });
@@ -1219,9 +1219,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          queued: "0",
           realized: "0.5",
           unrealized: "0",
+          total: "0.5",
         });
       },
     });
@@ -1243,9 +1243,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "0",
           meanOpenPrice: "0",
-          realized: "0",
-          unrealized: "0.05",
-          queued: "0.05",
+          realized: "0.05",
+          unrealized: "0",
+          total: "0.05",
         });
       },
     });
@@ -1267,9 +1267,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-1",
           meanOpenPrice: "0.1",
-          realized: "0",
-          unrealized: "0.1",
-          queued: "0.05",
+          realized: "0.05",
+          unrealized: "0.05",
+          total: "0.1",
         });
       },
     });
@@ -1293,7 +1293,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.05",
           realized: "0.05",
           unrealized: "0.05",
-          queued: "0",
+          total: "0.1",
         });
       },
     });
@@ -1315,9 +1315,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-5",
           meanOpenPrice: "0.1",
-          realized: "0",
-          unrealized: "0.5",
-          queued: "0.25",
+          realized: "0.25",
+          unrealized: "0.25",
+          total: "0.5",
         });
       },
     });
@@ -1339,9 +1339,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-5",
           meanOpenPrice: "0.1",
-          realized: "0",
-          unrealized: "-0.5",
-          queued: "-0.25",
+          realized: "-0.25",
+          unrealized: "-0.25",
+          total: "-0.5",
         });
       },
     });
@@ -1363,9 +1363,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "10",
           meanOpenPrice: "0.15",
-          realized: "0",
-          unrealized: "-0.5",
-          queued: "-0.5",
+          realized: "-0.5",
+          unrealized: "0",
+          total: "-0.5",
         });
       },
     });
@@ -1394,7 +1394,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0.25",
           unrealized: "0.25",
-          queued: "0",
+          total: "0.5",
         });
       },
     });
@@ -1421,9 +1421,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-5",
           meanOpenPrice: "0.1",
-          realized: "0",
-          unrealized: "0.5",
-          queued: "0.25",
+          realized: "0.25",
+          unrealized: "0.25",
+          total: "0.5",
         });
       },
     });
@@ -1457,7 +1457,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0.25",
           unrealized: "0.25",
-          queued: "0",
+          total: "0.5",
         });
       },
     });
@@ -1484,9 +1484,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-5",
           meanOpenPrice: "0.1",
-          realized: "0",
-          unrealized: "0.3",
-          queued: "0.05",
+          realized: "0.05",
+          unrealized: "0.25",
+          total: "0.3",
         });
       },
     });
@@ -1520,7 +1520,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0.05",
           unrealized: "0.25",
-          queued: "0",
+          total: "0.3",
         });
       },
     });
@@ -1547,9 +1547,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "-10",
           meanOpenPrice: "0.15",
-          realized: "0",
-          unrealized: "-1",
-          queued: "-0.5",
+          realized: "-0.5",
+          unrealized: "-0.5",
+          total: "-1",
         });
       },
     });
@@ -1583,7 +1583,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.15",
           realized: "-0.5",
           unrealized: "-0.5",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -1612,7 +1612,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.48",
           realized: "-0.4",
           unrealized: "0",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1636,7 +1636,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.48",
           realized: "-0.4",
           unrealized: "0",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1665,7 +1665,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.48",
           realized: "-0.4",
           unrealized: "0",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1694,7 +1694,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.48",
           realized: "-0.4",
           unrealized: "0",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1722,7 +1722,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "-0.4",
           unrealized: "0",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1745,7 +1745,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.52",
           realized: "-0.24",
           unrealized: "-0.16",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1773,7 +1773,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.52",
           realized: "-0.24",
           unrealized: "-0.16",
-          queued: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1800,9 +1800,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "10",
           meanOpenPrice: "0.52",
-          realized: "0",
-          unrealized: "-0.4",
-          queued: "-0.4",
+          realized: "-0.4",
+          unrealized: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1824,9 +1824,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "10",
           meanOpenPrice: "0.52",
-          realized: "0",
-          unrealized: "-0.4",
-          queued: "-0.4",
+          realized: "-0.4",
+          unrealized: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1848,9 +1848,9 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
         assert.deepEqual(output, {
           position: "10",
           meanOpenPrice: "0.52",
-          realized: "0",
-          unrealized: "-0.4",
-          queued: "-0.4",
+          realized: "-0.4",
+          unrealized: "0",
+          total: "-0.4",
         });
       },
     });
@@ -1872,7 +1872,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "2",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -1891,7 +1891,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "1",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -1910,7 +1910,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "3",
           realized: "0",
           unrealized: "-1",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -1929,7 +1929,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "3",
           realized: "0",
           unrealized: "-2",
-          queued: "0",
+          total: "-2",
         });
       },
     });
@@ -1948,7 +1948,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -1972,7 +1972,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "0",
           unrealized: "1",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -1996,7 +1996,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -2020,7 +2020,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "2",
           unrealized: "0",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -2049,7 +2049,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -2078,7 +2078,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -2107,7 +2107,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "1",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -2136,7 +2136,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -2165,7 +2165,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "1",
           realized: "2",
           unrealized: "0",
-          queued: "0",
+          total: "2",
         });
       },
     });
@@ -2189,7 +2189,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "2",
           realized: "-1",
           unrealized: "-2",
-          queued: "0",
+          total: "-3",
         });
       },
     });
@@ -2218,7 +2218,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "-1",
           unrealized: "0",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -2242,7 +2242,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.5",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -2271,7 +2271,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.5",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -2295,7 +2295,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0",
           realized: "1",
           unrealized: "0",
-          queued: "0",
+          total: "1",
         });
       },
     });
@@ -2319,7 +2319,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "3",
-          queued: "0",
+          total: "3",
         });
       },
     });
@@ -2343,7 +2343,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "-3",
-          queued: "0",
+          total: "-3",
         });
       },
     });
@@ -2367,7 +2367,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.45",
           realized: "0",
           unrealized: "-7",
-          queued: "0",
+          total: "-7",
         });
       },
     });
@@ -2396,7 +2396,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.3",
           realized: "-1",
           unrealized: "-1",
-          queued: "0",
+          total: "-2",
         });
       },
     });
@@ -2425,7 +2425,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.2",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -2454,7 +2454,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.2",
           realized: "0",
           unrealized: "-1",
-          queued: "0",
+          total: "-1",
         });
       },
     });
@@ -2488,7 +2488,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0",
           unrealized: "0",
-          queued: "0",
+          total: "0",
         });
       },
     });
@@ -2522,7 +2522,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.1",
           realized: "0.5",
           unrealized: "0",
-          queued: "0",
+          total: "0.5",
         });
       },
     });
@@ -2556,7 +2556,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.166666666666666666667",
           realized: "0.166666666666666666665",
           unrealized: "-0.66666666666666666667",
-          queued: "0",
+          total: "-0.500000000000000000005",
         });
       },
     });
@@ -2590,7 +2590,7 @@ describe("trading/profit-loss/calculate-profit-loss", function () {
           meanOpenPrice: "0.166666666666666666667",
           realized: "1.166666666666666666665",
           unrealized: "1.33333333333333333333",
-          queued: "0",
+          total: "2.499999999999999999995",
         });
       },
     });
