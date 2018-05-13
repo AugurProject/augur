@@ -282,7 +282,7 @@ function processReport(market, transaction) {
   const header = Object.assign(buildHeader(transaction, REPORTING, SUCCESS), {
     transactions: [transaction],
     message: `${transaction.meta.type}`,
-    description: `Staked ${amountStaked.formatted} REP on market ${market.description}`,
+    description: `Staked ${amountStaked.formatted} REP on "${market.description}"`,
   })
   return header
 }
