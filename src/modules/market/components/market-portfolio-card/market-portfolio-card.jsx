@@ -28,18 +28,15 @@ import toggleCategory from 'modules/routes/helpers/toggle-category'
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
     buttonText: PropTypes.string,
-    claimReportingFeesForkedMarket: PropTypes.func,
     claimTradingProceeds: PropTypes.func,
     closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     forkedMarketReportingFeesInfo: PropTypes.object,
-    isLogged: PropTypes.bool.isRequired,
+    getWinningBalances: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
-    outcomes: PropTypes.object,
-    outstandingReturns: PropTypes.number,
     positionsDefault: PropTypes.bool,
     unclaimedForkEth: PropTypes.object,
     unclaimedForkRep: PropTypes.object,
@@ -59,6 +56,11 @@ export default class MarketPortfolioCard extends Component {
         openOrders: false,
       },
     }
+  }
+
+  componentWillMount() {
+    const { market, getWinningBalances } = this.props
+    getWinningBalances([market.id])
   }
 
   toggleTable(tableKey) {
@@ -85,11 +87,11 @@ export default class MarketPortfolioCard extends Component {
 
   render() {
     const {
+      closePositionStatus,
       currentTimestamp,
       isMobile,
       linkType,
       market,
-      outstandingReturns,
       unclaimedForkEth,
       unclaimedForkRep,
       userHasClaimableForkFees,
@@ -165,7 +167,7 @@ export default class MarketPortfolioCard extends Component {
             linkType={linkType}
             localButtonText={localButtonText}
             buttonAction={buttonAction}
-            outstandingReturns={outstandingReturns}
+            outstandingReturns={market.outstandingReturns}
             finalizationTime={market.finalizationTime}
             currentTimestamp={currentTimestamp}
             unclaimedForkEth={unclaimedForkEth}
@@ -292,6 +294,7 @@ export default class MarketPortfolioCard extends Component {
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
                   isMobile={isMobile}
+                  closePositionStatus={closePositionStatus}
                 />
               ))}
             </div>
@@ -341,6 +344,7 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
+                      closePositionStatus={closePositionStatus}
                     />
                   ))
                 ))
@@ -349,12 +353,12 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && outstandingReturns > 0 &&
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && market.outstandingReturns &&
           <MarketPortfolioCardFooter
             linkType={linkType}
             localButtonText={localButtonText}
             buttonAction={buttonAction}
-            outstandingReturns={outstandingReturns}
+            outstandingReturns={market.outstandingReturns}
             finalizationTime={market.finalizationTime}
             currentTimestamp={currentTimestamp}
           />
