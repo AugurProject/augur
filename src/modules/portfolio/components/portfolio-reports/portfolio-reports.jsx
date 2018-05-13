@@ -104,10 +104,9 @@ export default class PortfolioReports extends Component {
         forkedMarket: result.forkedMarket,
         nonforkedMarkets: result.nonforkedMarkets,
 
-        // TODO: Remove hard-coded lines below once testing is done.
+        // TODO: Remove hard-coded lines below once augur-node bug is fixed.
         unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
         unclaimedForkRep: formatAttoRep(333, { decimals: 4, zeroStyled: true }),
-
         // unclaimedEth: formatEther(1, { decimals: 4, zeroStyled: true }),
         // unclaimedRep: formatAttoRep(2, { decimals: 4, zeroStyled: true }),
         // feeWindows: result.feeWindows,
@@ -160,13 +159,13 @@ export default class PortfolioReports extends Component {
     const {
       unclaimedForkEth,
       unclaimedForkRep,
-      forkedMarketReportingFeesInfo,
+      forkedMarket,
     } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
       unclaimedEth: unclaimedForkEth,
       unclaimedRep: unclaimedForkRep,
-      forkedMarket: forkedMarketReportingFeesInfo,
+      forkedMarket,
       canClose: true,
     })
   }

@@ -59,7 +59,7 @@ const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, fork
       </section>
       <section className={Styles.MarketCommon__footer}>
         <MarketProperties
-          {...this.props}
+          linkType={linkType}
           {...market}
         />
       </section>
