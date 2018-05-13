@@ -156,21 +156,6 @@ export default class PortfolioReports extends Component {
     })
   }
 
-  // handleClaimReportingFeesForkedMarket() {
-  //   const {
-  //     unclaimedForkEth,
-  //     uunclaimedForkRep,
-  //     forkedMarketReportingFeesInfo,
-  //   } = this.state
-  //   this.props.updateModal({
-  //     type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
-  //     unclaimedEth: unclaimedForkEth,
-  //     unclaimedRep: uunclaimedForkRep,
-  //     forkedMarket: forkedMarketReportingFeesInfo,
-  //     canClose: true,
-  //   })
-  // }
-
   handleClaimReportingFeesForkedMarket = () => {
     const {
       unclaimedForkEth,
