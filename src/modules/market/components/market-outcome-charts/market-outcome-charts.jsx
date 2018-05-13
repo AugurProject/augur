@@ -132,7 +132,7 @@ export default class MarketOutcomeCharts extends Component {
       marketId,
       period: selectedPeriod,
       start: currentTimeAsMultipleOfPeriod - selectedRange,
-      end: currentTimeAsMultipleOfPeriod,
+      end: currentTimeInSeconds,
       outcome: selectedOutcome.id,
     }, (err, data) => {
       if (err) return logError(err)
