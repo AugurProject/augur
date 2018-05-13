@@ -27,6 +27,10 @@ describe("server/getters/get-initial-reporters", () => {
       assert.deepEqual(initialReporters, {
         "0x0000000000000000000000000000000000abe123": {
           marketId: "0x0000000000000000000000000000000000000011",
+          blockNumber: 1400100,
+          logIndex: 0,
+          timestamp: 1506480000,
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E00",
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: "102",
           initialReporter: "0x0000000000000000000000000000000000abe123",
@@ -36,6 +40,10 @@ describe("server/getters/get-initial-reporters", () => {
         },
         "0x0000000000000000000000000000000000abe321": {
           marketId: "0x0000000000000000000000000000000000000211",
+          blockNumber: 1400100,
+          logIndex: 0,
+          timestamp: 1506480000,
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E00",
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: "102",
           initialReporter: "0x0000000000000000000000000000000000abe321",
