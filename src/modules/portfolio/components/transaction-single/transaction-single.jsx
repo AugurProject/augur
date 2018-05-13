@@ -42,7 +42,9 @@ export default class TransactionSingle extends Component {
           ref={(singleTransactionMeta) => { this.singleTransactionMeta = singleTransactionMeta }}
           className={ToggleHeightStyles['toggle-height-target']}
         >
-          <TransactionMeta meta={transaction.transactions[0].meta} />
+          { transaction.transactions &&
+            <TransactionMeta meta={transaction.transactions[0].meta} />
+          }
         </div>
       </div>
     )

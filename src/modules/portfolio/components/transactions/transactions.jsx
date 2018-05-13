@@ -111,7 +111,7 @@ export default class Transactions extends Component {
             [...Array(s.boundedLength)].map((unused, i) => {
               const transaction = transactions[(s.lowerBound - 1) + i]
               if (transaction) {
-                if (transaction.transactions && transaction.transactions.length <= 1) {
+                if (!transaction.transactions || (transaction.transactions && transaction.transactions.length <= 1)) {
                   return <TransactionSingle key={transaction.hash} transaction={transaction} />
                 }
                 return <TransactionMultiple key={transaction.hash} transaction={transaction} />

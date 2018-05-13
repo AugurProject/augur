@@ -100,7 +100,6 @@ function buildTradeTransaction(trade, marketsData) {
 export function addTransferTransactions(transfers) {
   const FillOrderContractAddress = augur.contracts.addresses[augur.rpc.getNetworkID()].FillOrder
   return (dispatch, getState) => {
-    const { blockchain } = getState()
     const transactions = {}
     each(transfers, (transfer) => {
       // filter out market trade transfers from FillOrder contract
@@ -110,13 +109,20 @@ export function addTransferTransactions(transfers) {
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       const meta = {}
+      meta.value = transaction.value
+      if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
+        transaction.symbol = 'REP'
+        meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
+        header.message = 'No Show bond Transfer'
+        header.description = `${meta.value} ${transaction.symbol} transferred for no-show bond`
+      } else {
+        header.message = 'Transfer'
+        header.description = `${meta.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
+      }
       meta.txhash = transaction.transactionHash
       meta.recipient = transaction.recipient
       meta.sender = transaction.sender
-      meta.confirmations = blockchain.currentBlockNumber - transaction.creationBlockNumber
       transaction.meta = meta
-      header.message = 'Transfer'
-      header.description = `${transaction.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
       transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
@@ -157,24 +163,29 @@ export function addMarketCreationTransactions(marketsCreated) {
   return (dispatch, getState) => {
     const marketCreationData = {}
     const { loginAccount, marketsData } = getState()
-    each(marketsCreated, (marketId) => {
-      const market = marketsData[marketId]
-      const transaction = { marketId, market }
-      transaction.timestamp = transaction.creationTime
-      transaction.createdBy = loginAccount.address
-      transaction.id = marketId
-      transaction.timestamp = (market || {}).creationTime
-      const meta = {}
-      meta.market = transaction.marketId
-      meta['creation fee'] = (market || {}).creationFee
-      meta['market type'] = (market || {}).marketType
-      transaction.meta = meta
-      const header = buildHeader(transaction, MARKET_CREATION, SUCCESS)
-      header.message = 'Market Creation'
-      if (transaction.market !== undefined) {
-        header.description = market.description
+    each(marketsCreated, (marketIdOrObject) => {
+      const market = marketsData[marketIdOrObject]
+      const marketId = marketIdOrObject
+      // we already get market creation from augur-node
+      if (typeof marketIdOrObject === 'object') return
+      const transaction = Object.assign({ marketId, market }, {
+        timestamp: market.creationTime,
+        createdBy: loginAccount.address,
+        id: marketId,
+      })
+      transaction.meta = {
+        market: transaction.marketId,
+        'creation fee': market.creationFee,
+        'market type': market.marketType,
+        category: market.category,
+        'end time': convertUnixToFormattedDate(market.endTime).formattedLocal,
+        'designated reporter': market.designatedReporter,
       }
-      header.transactions = [transaction]
+      const header = Object.assign(buildHeader(transaction, MARKET_CREATION, SUCCESS), {
+        message: 'Market Creation',
+        description: market.description,
+        transactions: [transaction],
+      })
       marketCreationData[transaction.id] = header
     })
     dispatch(updateTransactionsData(marketCreationData))
@@ -193,14 +204,15 @@ export function addOpenOrderTransactions(openOrders) {
       index += 1
       let sumBuy = 0
       let sumSell = 0
-      const marketHeader = {}
-      marketHeader.status = 'Market Outcome Trade'
-      marketHeader.hash = marketId + index
+      const marketHeader = {
+        status: 'Market Outcome Trade',
+        hash: marketId + index,
+        sortOrder: getSortOrder(OPEN_ORDER),
+        id: marketHeader.hash,
+      }
       if (market !== undefined) {
         marketHeader.description = market.description
       }
-      marketHeader.sortOrder = getSortOrder(OPEN_ORDER)
-      marketHeader.id = marketHeader.hash
       let creationTime = null
       const marketTradeTransactions = []
       eachOf(value, (value2, outcome) => {
