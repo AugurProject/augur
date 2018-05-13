@@ -128,7 +128,11 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   // `endTime`
   const trades: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime)
     .orderBy("trades.marketId")
-    .orderBy("trades.outcome");
+    .orderBy("trades.outcome").map((row: TradingHistoryRow) => {
+      return Object.assign(row, {
+        maker: account === row.creator!
+      });
+    });
 
   if (trades.length === 0) return bucketRangeByInterval(startTime, endTime, periodInterval).slice(1);
 
