@@ -137,8 +137,8 @@ export default class MarketPositionsListPosition extends Component {
             {getValue(position, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li>{ getValue(position, 'realizedNet.formatted')} </li> }
         { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
+        { !isMobile && <li>{ getValue(position, 'realizedNet.formatted')} </li> }
         { isExtendedDisplay &&
           <li>
             {getValue(position, 'totalNet.formatted') }
