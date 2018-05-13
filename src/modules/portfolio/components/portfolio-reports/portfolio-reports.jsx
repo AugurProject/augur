@@ -3,23 +3,22 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import { formatAttoRep, formatEther } from 'utils/format-number'
-import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 
+import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
+import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
+import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-reports.styles'
 
 export default class PortfolioReports extends Component {
   static propTypes = {
     claimReportingFeesForkedMarket: PropTypes.func.isRequired,
-    closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     getReportingFees: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
-    linkType: PropTypes.string,
     reporter: PropTypes.string.isRequired,
     universe: PropTypes.object.isRequired,
     updateModal: PropTypes.func.isRequired,
@@ -157,19 +156,14 @@ export default class PortfolioReports extends Component {
   render() {
     const {
       claimReportingFeesForkedMarket,
-      closePositionStatus,
       currentTimestamp,
       finalizeMarket,
       forkedMarket,
       getWinningBalances,
-      history,
       isLogged,
-      linkType,
       updateModal,
     } = this.props
     const s = this.state
-    console.log(this.props.universe)
-
     let disableClaimReportingFeesNonforkedMarketsButton = ''
     if (s.unclaimedEth.formatted === '-' && s.unclaimedRep.formatted === '-') {
       disableClaimReportingFeesNonforkedMarketsButton = 'disabled'
@@ -209,14 +203,13 @@ export default class PortfolioReports extends Component {
             </h5>
             <MarketPortfolioCard
               claimReportingFeesForkedMarket={claimReportingFeesForkedMarket}
-              closePositionStatus={closePositionStatus}
+              closePositionStatus={getClosePositionStatus}
               currentTimestamp={currentTimestamp}
               finalizeMarket={finalizeMarket}
               forkedMarketReportingFeesInfo={s.forkedMarket}
               getWinningBalances={getWinningBalances}
-              history={history}
               isLogged={isLogged}
-              linkType={linkType}
+              linkType={TYPE_CLAIM_PROCEEDS}
               market={forkedMarket}
               unclaimedForkEth={s.unclaimedForkEth}
               unclaimedForkRep={s.unclaimedForkRep}
