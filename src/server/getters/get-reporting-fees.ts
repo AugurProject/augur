@@ -116,6 +116,7 @@ interface UnclaimedCrowdsourcerRow {
 interface MarketParticipantRows {
   initialReporters: Array<UnclaimedInitialReporterRow>;
   crowdsourcers: Array<UnclaimedCrowdsourcerRow>;
+  forkedMarket: ForkedMarket;
 }
 
 function getUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Address) => void) {
@@ -136,20 +137,17 @@ function getUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, 
 }
 
 function formatMarketInfo(marketParticipants: MarketParticipantRows) {
-  let forkedMarket: ForkedMarket|null = null;
+  const forkedMarket = marketParticipants.forkedMarket;
+  if (forkedMarket) {
+    forkedMarket.crowdsourcers = [];
+  }
   const keyedNonforkedMarkets: {[marketId: string]: NonforkedMarket} = {};
   let i: number;
   for (i = 0; i < marketParticipants.initialReporters.length; i++) {
     if (marketParticipants.initialReporters[i].forking) {
-      forkedMarket = {
-        marketId: marketParticipants.initialReporters[i].marketId,
-        universe: marketParticipants.initialReporters[i].universe,
-        isFinalized: marketParticipants.initialReporters[i].reportingState === ReportingState.FINALIZED,
-        crowdsourcers: [],
-        initialReporter: {
-          initialReporterId: marketParticipants.initialReporters[i].initialReporter,
-          isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
-        },
+      forkedMarket.initialReporter = {
+        initialReporterId: marketParticipants.initialReporters[i].initialReporter,
+        isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
       };
     } else {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
@@ -165,17 +163,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
   }
   for (i = 0; i < marketParticipants.crowdsourcers.length; i++) {
     if (marketParticipants.crowdsourcers[i].forking) {
-      if (forkedMarket) {
-        forkedMarket.crowdsourcers.push({crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false});
-      } else {
-        forkedMarket = {
-          marketId: marketParticipants.crowdsourcers[i].marketId,
-          universe: marketParticipants.crowdsourcers[i].universe,
-          isFinalized: marketParticipants.crowdsourcers[i].reportingState === ReportingState.FINALIZED,
-          crowdsourcers: [{crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false}],
-          initialReporter: null,
-        };
-      }
+      forkedMarket.crowdsourcers.push({crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false});
     } else {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
@@ -218,10 +206,16 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .whereRaw("(market_state.reportingState IN (?, ?) OR crowdsourcers.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2])
     .andWhere("markets.universe", universe)
     .andWhere("balances.owner", reporter);
+  const forkedMarketQuery = db("markets")
+    .first(["markets.marketId", "markets.universe", db.raw("market_state.reportingState = 'FINALIZED' as isFinalized")])
+    .where("markets.forking", 1)
+    .where("markets.universe", universe)
+    .join("market_state", "markets.marketId", "market_state.marketId");
 
   parallel({
     initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
     crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
+    forkedMarket: (next: AsyncCallback) => forkedMarketQuery.asCallback(next),
   }, (err: Error|null, result: MarketParticipantRows) => {
     if (err) return callback(err);
     return callback(null, formatMarketInfo(result));
