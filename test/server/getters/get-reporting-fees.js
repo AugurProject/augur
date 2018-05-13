@@ -60,18 +60,18 @@ describe("server/getters/get-reporting-fees", () => {
           crowdsourcers: [
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000006",
-              isForked: false,
+              needsFork: true,
             },
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000007",
-              isForked: true,
+              needsFork: false,
             },
           ],
           initialReporter: {
             initialReporterId: "0x0000000000000000000000000000000000abe222",
-            isForked: false,
+            needsFork: true,
           },
-          isFinalized: true,
+          isFinalized: 1,
           marketId: "0x00000000000000000000000000000000000000f1",
           universe: "0x000000000000000000000000000000000000000b",
         },
@@ -125,7 +125,7 @@ describe("server/getters/get-reporting-fees", () => {
         feeWindows: [
           "0x4000000000000000000000000000000000000000",
         ],
-        forkedMarket: null,
+        forkedMarket: undefined,
         "nonforkedMarkets": [],
       });
     },
@@ -169,7 +169,12 @@ describe("server/getters/get-reporting-fees", () => {
           "0x2100000000000000000000000000000000000000",
           "0x3000000000000000000000000000000000000000",
         ],
-        forkedMarket: null,
+        forkedMarket: {
+          "isFinalized": 1,
+          "crowdsourcers": [],
+          "marketId": "0x00000000000000000000000000000000000000f1",
+          "universe": "0x000000000000000000000000000000000000000b",
+        },
         nonforkedMarkets: [],
       });
     },
@@ -243,18 +248,18 @@ describe("server/getters/get-reporting-fees", () => {
           crowdsourcers: [
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000006",
-              isForked: false,
+              needsFork: true,
             },
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000007",
-              isForked: true,
+              needsFork: false,
             },
           ],
           initialReporter: {
             initialReporterId: "0x0000000000000000000000000000000000abe222",
-            isForked: false,
+            needsFork: true,
           },
-          isFinalized: true,
+          isFinalized: 1,
           marketId: "0x00000000000000000000000000000000000000f1",
           universe: "0x000000000000000000000000000000000000000b",
         },
