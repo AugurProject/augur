@@ -366,7 +366,6 @@ describe("server/getters/get-profit-loss", () => {
             realized: "1.16666666666666666666",
             total: "2.49999999999999999999",
             unrealized: "1.33333333333333333333",
-            queued: "0",
           }},
         ]);
       },
@@ -400,7 +399,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.1",
             "position": "10",
-            "queued": "0",
             "realized": "0",
             "total": "0",
             "unrealized": "0",
@@ -411,7 +409,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.1",
             "position": "5",
-            "queued": "0",
             "realized": "0.5",
             "total": "1",
             "unrealized": "0.5",
@@ -422,7 +419,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "15",
-            "queued": "0",
             "realized": "0.5",
             "total": "0.999999999999999999995",
             "unrealized": "0.499999999999999999995",
@@ -433,7 +429,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "10",
-            "queued": "0",
             "realized": "1.166666666666666666665",
             "total": "2.49999999999999999999",
             "unrealized": "1.33333333333333333333",
@@ -478,7 +473,6 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.166666666666666666665",
       "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
@@ -513,7 +507,6 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.166666666666666666665",
       "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
@@ -554,7 +547,6 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.16666666666666666666",
       "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
@@ -595,7 +587,6 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.176923076923076923077",
       "position": "8",
-      "queued": "1.5",
       "realized": "1.11538461538461538461",
       "total": "2.09999999999999999999",
       "unrealized": "0.98461538461538461538",
@@ -606,4 +597,77 @@ describe("server/getters/get-profit-loss", () => {
     done();
   });
 
+  // ACCOUNT 1
+  it("performs trades buy @ 0.5 and sell @ 0.1 and gets realized gain", (done) => {
+    const trades = [{
+    /* MADE A BUY ORDER */
+        timestamp: 10000,
+        type: "buy",
+        price: "0.5",
+        amount: "10",
+        maker: false,
+      },
+      {
+    /* FILLING THE BUY ORDER */
+        timestamp: 10020,
+        type: "buy",
+        price: "0.1",
+        amount: "10",
+        maker: true,
+    }];
+
+    const buckets = [{
+      timestamp: 10000,
+      lastPrice: null,
+    }, {
+      timestamp: 20000,
+      lastPrice: 0.1,
+    }];
+    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+
+    assert.deepEqual(results[0].profitLoss, results2);
+    assert.deepEqual(results2, {
+      "meanOpenPrice": "0",
+      "position": "0",
+      "realized": "4",
+      "total": "4",
+      "unrealized": "0",
+    });
+
+    done();
+  });
+
+  // ACCOUNT 2
+  it("THIS DOES SOMETHING", (done) => {
+    const trades = [{
+        timestamp: 10000,
+        type: "buy",
+        price: "0.5",
+        amount: "10",
+        maker: true,
+      },
+      {
+        timestamp: 10020,
+        type: "buy",
+        price: "0.1",
+        amount: "10",
+        maker: true,
+    }];
+
+    const buckets = [{
+      timestamp: 10000,
+      lastPrice: null,
+    }, {
+      timestamp: 20000,
+      lastPrice: 0.1,
+    }];
+    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+
+    assert.deepEqual(results[0].profitLoss, results2);
+    assert.deepEqual(results2, {});
+
+    done();
+  });
 });

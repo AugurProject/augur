@@ -31,8 +31,8 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradingHis
     if (bucket.lastPrice == null) return bucket;
 
     const bucketTrades = _.filter(trades, (t: TradingHistoryRow) => t.timestamp < bucket.timestamp);
-    const calcProfitLoss = augur.trading.calculateProfitLoss({ trades: bucketTrades, lastPrice: bucket.lastPrice });
-    const profitLoss = Object.assign({}, calcProfitLoss, { total: add(calcProfitLoss.realized, calcProfitLoss.unrealized).toFixed() });
+    const profitLoss = augur.trading.calculateProfitLoss({ trades: bucketTrades, lastPrice: bucket.lastPrice });
+    console.log("PROFIT LOSS: ", JSON.stringify(profitLoss))
     return Object.assign({}, bucket, { profitLoss });
   });
 
