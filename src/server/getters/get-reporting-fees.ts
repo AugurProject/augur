@@ -9,12 +9,12 @@ import { groupByAndSum } from "./database";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
-  isForked: boolean;
+  needsFork: boolean;
 }
 
 export interface InitialReporterState {
   initialReporterId: Address;
-  isForked: boolean;
+  needsFork: boolean;
 }
 
 export interface ForkedMarket {
@@ -147,7 +147,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
     if (marketParticipants.initialReporters[i].forking) {
       forkedMarket.initialReporter = {
         initialReporterId: marketParticipants.initialReporters[i].initialReporter,
-        isForked: marketParticipants.initialReporters[i].disavowed ? true : false,
+        needsFork: marketParticipants.initialReporters[i].disavowed ? false : true,
       };
     } else {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
@@ -163,7 +163,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
   }
   for (i = 0; i < marketParticipants.crowdsourcers.length; i++) {
     if (marketParticipants.crowdsourcers[i].forking) {
-      forkedMarket.crowdsourcers.push({crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, isForked: marketParticipants.crowdsourcers[i].disavowed ? true : false});
+      forkedMarket.crowdsourcers.push({crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, needsFork: marketParticipants.crowdsourcers[i].disavowed ? false : true});
     } else {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {

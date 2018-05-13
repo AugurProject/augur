@@ -60,16 +60,16 @@ describe("server/getters/get-reporting-fees", () => {
           crowdsourcers: [
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000006",
-              isForked: false,
+              needsFork: true,
             },
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000007",
-              isForked: true,
+              needsFork: false,
             },
           ],
           initialReporter: {
             initialReporterId: "0x0000000000000000000000000000000000abe222",
-            isForked: false,
+            needsFork: true,
           },
           isFinalized: 1,
           marketId: "0x00000000000000000000000000000000000000f1",
@@ -248,16 +248,16 @@ describe("server/getters/get-reporting-fees", () => {
           crowdsourcers: [
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000006",
-              isForked: false,
+              needsFork: true,
             },
             {
               crowdsourcerId: "0x0000000000000000001000000000000000000007",
-              isForked: true,
+              needsFork: false,
             },
           ],
           initialReporter: {
             initialReporterId: "0x0000000000000000000000000000000000abe222",
-            isForked: false,
+            needsFork: true,
           },
           isFinalized: 1,
           marketId: "0x00000000000000000000000000000000000000f1",
