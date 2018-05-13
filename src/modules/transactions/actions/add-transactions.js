@@ -4,6 +4,7 @@ import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each, groupBy } from 'async'
 import { unfix } from 'speedomatic'
+import { isNull } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
@@ -242,35 +243,48 @@ export function addReportingTransactions(reports) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     const transactions = {}
-    eachOf(reports, (value, universe) => {
-      eachOf(value, (value1, marketId) => {
-        eachOf(value1, (report, index) => {
+    eachOf(reports, (reports, universe) => {
+      eachOf(reports, (value1, marketId) => {
+        eachOf(value1, (value2, reportType) => {
           const market = marketsData[marketId]
-          const transaction = {
-            universe, marketId, ...report, market,
+          if (reportType === 'initialReporter' && !isNull(value2)) {
+            const transaction = {
+              universe, marketId, ...value2, market, reportType,
+            }
+            transactions[transaction.transactionHash] = processReport(market, transaction)
+          } else {
+            eachOf(value2, (report, index) => {
+              const transaction = {
+                universe, marketId, ...report, market, reportType,
+              }
+              transactions[transaction.transactionHash] = processReport(market, transaction)
+            })
           }
-          const amountStaked = formatAttoRep(transaction.amountStaked, { decimals: 4, roundUp: true })
-          // TODO: get is the market Invalid
-          const outcomeName = calculatePayoutNumeratorsValue(market, transaction.payoutNumerators, transaction.isInvalid)
-          transaction.id = transaction.transactionHash + transaction.logIndex
-          const meta = {}
-          meta.txhash = transaction.transactionHash
-          meta.marketId = transaction.marketId
-          meta.staked = `${amountStaked.formatted} REP`
-          meta.outcome = outcomeName
-          transaction.meta = meta
-          transaction.timestamp = transaction.creationTime
-          const header = buildHeader(transaction, REPORTING, SUCCESS)
-          header.transactions = [transaction]
-          header.message = 'Market Reporting'
-          header.description = `Staked  ${amountStaked.formatted} REP on market ${market.description}`
-          // create unique id
-          transactions[transaction.id] = header
         })
       })
     })
     dispatch(updateTransactionsData(transactions))
   }
+}
+
+function processReport(market, transaction) {
+  const amountStaked = formatAttoRep(transaction.amountStaked, { decimals: 4, roundUp: true })
+  const outcomeName = getOutcome(transaction.market, calculatePayoutNumeratorsValue(market, transaction.payoutNumerators, transaction.isInvalid))
+  transaction.id = transaction.transactionHash + transaction.logIndex
+  transaction.meta = {
+    txhash: transaction.transactionHash,
+    type: transaction.reportType === 'initialReporter' ? 'Initial Report' : 'Dispute',
+    staked: `${amountStaked.formatted} REP`,
+    outcome: outcomeName,
+    marketId: transaction.marketId,
+  }
+  transaction.timestamp = transaction.creationTime
+  const header = Object.assign(buildHeader(transaction, REPORTING, SUCCESS), {
+    transactions: [transaction],
+    message: `${transaction.meta.type}`,
+    description: `Staked ${amountStaked.formatted} REP on market ${market.description}`,
+  })
+  return header
 }
 
 function getOutcome(market, outcome) {
@@ -280,6 +294,8 @@ function getOutcome(market, outcome) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
     value = market.outcomes[outcome].description
+  } else {
+    value = outcome
   }
   return value
 }
