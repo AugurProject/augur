@@ -4,9 +4,10 @@ import { Helmet } from 'react-helmet'
 
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
-import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
-import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
-import { MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
+// import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
+import PortfolioReportsForkedMarketCard from 'modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card'
+// import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
+import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET, MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-reports.styles'
 
@@ -70,6 +71,7 @@ export default class PortfolioReports extends Component {
       },
     }
 
+    this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
     this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(this)
   }
 
@@ -96,17 +98,18 @@ export default class PortfolioReports extends Component {
       this.setState({
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
-        unclaimedForkEth: formatEther(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
-        unclaimedForkRep: formatAttoRep(result.total.unclaimedForkRep, { decimals: 4, zeroStyled: true }),
+        // unclaimedForkEth: formatEther(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
+        // unclaimedForkRep: formatAttoRep(result.total.unclaimedForkRep, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
         forkedMarket: result.forkedMarket,
         nonforkedMarkets: result.nonforkedMarkets,
 
         // TODO: Remove hard-coded lines below once testing is done.
+        unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
+        unclaimedForkRep: formatAttoRep(333, { decimals: 4, zeroStyled: true }),
+
         // unclaimedEth: formatEther(1, { decimals: 4, zeroStyled: true }),
         // unclaimedRep: formatAttoRep(2, { decimals: 4, zeroStyled: true }),
-        // unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
-        // unclaimedForkRep: formatAttoRep(333, { decimals: 4, zeroStyled: true }),
         // feeWindows: result.feeWindows,
         // forkedMarket: {
         //   markeId: '0xbcde24abef27b2e537b8ded8139c7991de308607',
@@ -153,22 +156,52 @@ export default class PortfolioReports extends Component {
     })
   }
 
+  // handleClaimReportingFeesForkedMarket() {
+  //   const {
+  //     unclaimedForkEth,
+  //     uunclaimedForkRep,
+  //     forkedMarketReportingFeesInfo,
+  //   } = this.state
+  //   this.props.updateModal({
+  //     type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
+  //     unclaimedEth: unclaimedForkEth,
+  //     unclaimedRep: uunclaimedForkRep,
+  //     forkedMarket: forkedMarketReportingFeesInfo,
+  //     canClose: true,
+  //   })
+  // }
+
+  handleClaimReportingFeesForkedMarket = () => {
+    const {
+      unclaimedForkEth,
+      unclaimedForkRep,
+      forkedMarketReportingFeesInfo,
+    } = this.state
+    this.props.updateModal({
+      type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
+      unclaimedEth: unclaimedForkEth,
+      unclaimedRep: unclaimedForkRep,
+      forkedMarket: forkedMarketReportingFeesInfo,
+      canClose: true,
+    })
+  }
+
   render() {
     const {
-      claimReportingFeesForkedMarket,
+      // claimReportingFeesForkedMarket,
       currentTimestamp,
       finalizeMarket,
       forkedMarket,
-      getWinningBalances,
-      isLogged,
-      updateModal,
+      // getWinningBalances,
+      // isLogged,
+      // updateModal,
     } = this.props
     const s = this.state
     let disableClaimReportingFeesNonforkedMarketsButton = ''
     if (s.unclaimedEth.formatted === '-' && s.unclaimedRep.formatted === '-') {
       disableClaimReportingFeesNonforkedMarketsButton = 'disabled'
     }
-    const userHasClaimableForkFees = forkedMarket && (s.unclaimedForkEth.value > 0 || s.unclaimedForkRep.value > 0)
+    const userHasClaimableForkFees = s.forkedMarket && (s.unclaimedForkEth.value > 0 || s.unclaimedForkRep.value > 0)
 
     return (
       <div>
@@ -201,7 +234,7 @@ export default class PortfolioReports extends Component {
             <h5>
               REP staked on an outcome of the forking market will be available in the outcome&#39;s corresponding universe once claimed.
             </h5>
-            <MarketPortfolioCard
+            {/* <MarketPortfolioCard
               claimReportingFeesForkedMarket={claimReportingFeesForkedMarket}
               closePositionStatus={getClosePositionStatus}
               currentTimestamp={currentTimestamp}
@@ -215,6 +248,17 @@ export default class PortfolioReports extends Component {
               unclaimedForkRep={s.unclaimedForkRep}
               updateModal={updateModal}
               userHasClaimableForkFees={userHasClaimableForkFees}
+            /> */}
+            <PortfolioReportsForkedMarketCard
+              buttonAction={this.handleClaimReportingFeesForkedMarket}
+              currentTimestamp={currentTimestamp}
+              finalizeMarket={finalizeMarket}
+              forkedMarketReportingFeesInfo={s.forkedMarket}
+              linkType={TYPE_CLAIM_PROCEEDS}
+              market={forkedMarket}
+              unclaimedForkEth={s.unclaimedForkEth}
+              unclaimedForkRep={s.unclaimedForkRep}
+              updateModal={this.handleClaimReportingFeesNonforkedMarkets}
             />
           </section>
         }
