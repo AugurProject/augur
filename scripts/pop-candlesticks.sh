@@ -15,13 +15,20 @@ OUTCOME=1
 curl https://gist.githubusercontent.com/justinbarry/bf6cd9afcd8778027e211105562b89d7/raw/cae40936cc1930e310411ec27d957769b93d8068/data.tsv | \
 while IFS=$'\t' read -r -a dataArray
 do
-  for j in "${dataArray[@]}"
-  do
-    echo "Sell trade $j";
-    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a npx flash create-market-order --marketId $MARKET_ID --outcome $OUTCOME --orderType sell --shares "$(jot  -p 4 -r 1 0 1)" --price "$j"
+  for ((i = 0; i < ${#dataArray[@]}; ++i)); do
+    if ! ((i % 2)); then
+      TRANS_ONE_TYPE='sell'
+      TRANS_TWO_TYPE='buy'
+    else
+      TRANS_ONE_TYPE='buy'
+      TRANS_TWO_TYPE='sell'
+    fi
 
-    echo "Filling trade $j";
-    ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 npx flash fill-market-orders -m $MARKET_ID -o $OUTCOME -t buy;
+    echo "Sell trade $i";
+    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a npx flash create-market-order --marketId $MARKET_ID --outcome $OUTCOME --orderType $TRANS_ONE_TYPE --shares "$(jot  -p 4 -r 1 0 1)" --price "${dataArray[$i]}"
+
+    echo "Filling trade $i";
+    ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 npx flash fill-market-orders -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE;
 
     npx flash push-timestamp -s -c 600;
   done
