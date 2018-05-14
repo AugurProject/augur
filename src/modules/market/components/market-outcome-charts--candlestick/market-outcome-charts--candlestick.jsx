@@ -139,6 +139,7 @@ class MarketOutcomeCandlestick extends React.Component {
 
   render() {
     const {
+      currentTimeInSeconds,
       fixedPrecision,
       hoveredPeriod,
       hoveredPrice,
@@ -187,7 +188,7 @@ class MarketOutcomeCandlestick extends React.Component {
       left: chartDim.left,
     })
 
-    if (containerHeight > 0 && containerWidth > 0) {
+    if (containerHeight > 0 && containerWidth > 0 && currentTimeInSeconds) {
       const candleTicks = d3.select(candleTicksContainer)
         .append('svg')
         .attr('width', containerWidth)
