@@ -208,7 +208,6 @@ export function addOpenOrderTransactions(openOrders) {
         status: 'Market Outcome Trade',
         hash: marketId + index,
         sortOrder: getSortOrder(OPEN_ORDER),
-        id: hash,
       }
       if (market !== undefined) {
         marketHeader.description = market.description
