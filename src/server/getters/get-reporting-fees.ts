@@ -315,8 +315,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
   participationTokenQuery.asCallback((err: Error|null, participationTokens: Array<ParticipationTokensRow>) => {
     if (err) return callback(err);
-
-    const kk = _.map(participationTokens, (participationToken) => {
+    const participationTokenEthFees = _.map(participationTokens, (participationToken) => {
       const totalFeeTokensInFeeWindow = new BigNumber(participationToken.feeTokenSupply).plus(new BigNumber(participationToken.participationTokenSupply));
       const cashInFeeWindow = new BigNumber(participationToken.cashFeeWindow);
       const participationTokens = new BigNumber(participationToken.participationTokens);
@@ -328,7 +327,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
         participationTokens,
       };
     });
-    callback(null, kk);
+    callback(null, participationTokenEthFees);
   });
 }
 
@@ -363,10 +362,10 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
   participantQuery.where("all_participants.reporter", reporter);
-  participantQuery.asCallback((err: Error|null, participantEthFeeRows: any) => {
+  participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<any>) => {
     if (err) return callback(err);
     // const participantEthFees = {};
-    const kk = _.map(participantEthFeeRows, (ethFeeRows) => {
+    const participantEthFees = _.map(participantEthFeeRows, (ethFeeRows): ParticipantEthFee => {
       const totalFeeTokensInFeeWindow = new BigNumber(ethFeeRows.feeTokenSupply).plus(new BigNumber(ethFeeRows.participationTokenSupply));
       const participantShareOfFeeWindow = totalFeeTokensInFeeWindow.isZero() ? ZERO : new BigNumber(ethFeeRows.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
       const cashInFeeWindow = new BigNumber(ethFeeRows.cashFeeWindow);
@@ -379,10 +378,9 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
         ethFees,
       };
     });
-    callback(err, kk);
+    callback(err, participantEthFees);
   });
 }
-
 
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
@@ -393,21 +391,22 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
     getParticipantEthFees(db, augur, reporter, universe, feeWindow, (err, participantEthFees?: Array<ParticipantEthFee>) => {
       console.log(participantEthFees);
       if (err || participantEthFees == null) return callback(err);
-      getParticipationTokenEthFees(db, augur, reporter, universe, feeWindow, (err: Error|null, hi: any) => {
-        if (err || hi == null) return callback(err);
-        console.log(hi);
+      getParticipationTokenEthFees(db, augur, reporter, universe, feeWindow, (err: Error|null, participationTokenEthFees: any) => {
+        if (err || participationTokenEthFees == null) return callback(err);
+        console.log(participationTokenEthFees);
         getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
           if (err || repStakeResults == null) return callback(err);
           getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
             if (err || repStakeResults == null) return callback(err);
-            const unclaimedEth = _.reduce(participantEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
-            const redeemableFeeWindows = _.map(hi, "feeWindow");
+            const unclaimedParticipantEthFees = _.reduce(participantEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
+            const unclaimedParticipationTokenEthFees = _.reduce(participationTokenEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
+            const redeemableFeeWindows = _.map(participationTokenEthFees, "feeWindow");
             const response = {
               total: {
-                unclaimedEth: unclaimedEth.toFixed(),
-                unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
-                unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
-                lostRep: repStakeResults.fees.lostRep.toFixed(),
+                unclaimedEth: unclaimedParticipantEthFees.plus(unclaimedParticipationTokenEthFees).toFixed(0, BigNumber.ROUND_DOWN),
+                unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
+                unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(0, BigNumber.ROUND_DOWN),
+                lostRep: repStakeResults.fees.lostRep.toFixed(0, BigNumber.ROUND_DOWN),
               },
               feeWindows: redeemableFeeWindows.sort(),
               forkedMarket: result.forkedMarket,

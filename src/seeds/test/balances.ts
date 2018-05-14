@@ -49,6 +49,10 @@ exports.seed = async (knex: Knex): Promise<any> => {
       owner: "0x2000000000000000000000000000000000000000",
       balance: "2000",
     }, {
+      token: "CASH",
+      owner: "0x3000000000000000000000000000000000000000",
+      balance: "200",
+    }, {
       token: "REP_TOKEN",
       owner: "0x0000000000000000000000000000000000abe123",
       balance: "2000",
@@ -58,15 +62,15 @@ exports.seed = async (knex: Knex): Promise<any> => {
       balance: "2000",
     }, {
       token: "FEE_TOKEN_1",
-      owner: "0x0000000000000000000000000000000000000b0b",
+      owner: "0x0000000000000000000000000000000000abe222",
       balance: "100",
     }, {
       token: "FEE_TOKEN_2",
-      owner: "0x0000000000000000000000000000000000000b0b",
+      owner: "0x0000000000000000001000000000000000000003",
       balance: "60",
     }, {
       token: "FEE_TOKEN_3",
-      owner: "0x0000000000000000000000000000000000000b0b", // TODO: these should be crowdsourcers
+      owner: "0x0000000000000000000000000000000000abe123",
       balance: "60",
     }, {
       token: "0x2000000000000000000000000000000000000000",
