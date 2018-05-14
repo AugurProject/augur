@@ -68,6 +68,7 @@ interface FeeWindowTotalTokens {
 interface ReporterStakes {
   participationTokens: Array<ParticipationTokensRow>;
   crowdsourcers: Array<CrowdsourcersRow>;
+  initialReporters: Array<InitialReportersRow>;
 }
 
 interface ParticipationTokensRow {
@@ -80,10 +81,25 @@ interface CrowdsourcersRow {
   amountStaked: BigNumber;
 }
 
+interface InitialReportersRow {
+  feeWindow: Address;
+  amountStaked: BigNumber;
+}
+
 interface FeeWindowCompletionStakeRow {
   feeWindow: Address;
   amountStaked: BigNumber;
   winning: number;
+}
+
+interface InitialReporterStakeRow {
+  amountStaked: BigNumber;
+  winning: number;
+}
+
+interface StakedRepResults {
+  crowdsourcers: Array<FeeWindowCompletionStakeRow>;
+  initialReporters: Array<InitialReporterStakeRow>;
 }
 
 interface RepStakeResults {
@@ -247,27 +263,48 @@ function getTotalFeeWindowTokens(db: Knex, augur: Augur, universe: Address|null,
 }
 
 function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { redeemableFeeWindows: Array<string>, fees: RepStakeResults }) => void) {
-  const query = db.select(["fee_windows.feeWindow", "stakedRep.balance as amountStaked", "payouts.winning"]).from("fee_windows");
-  query.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
-  query.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
-  query.whereNotNull("payouts.winning");
-  query.leftJoin("balances AS stakedRep", function () {
+  const crowdsourcerQuery = db.select(["fee_windows.feeWindow", "stakedRep.balance as amountStaked", "payouts.winning"]).from("fee_windows");
+  crowdsourcerQuery.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
+  crowdsourcerQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
+  crowdsourcerQuery.whereNotNull("payouts.winning");
+  crowdsourcerQuery.leftJoin("balances AS stakedRep", function () {
     this
       .on("crowdsourcers.crowdsourcerId", db.raw("stakedRep.token"))
       .andOn("stakedRep.owner", db.raw("?", reporter));
   });
-  if (universe != null) query.where("fee_windows.universe", universe);
-  if (feeWindow != null) query.where("fee_windows.feeWindow", feeWindow);
-  query.asCallback((err, feeWindowCompletionStakes: Array<FeeWindowCompletionStakeRow>) => {
+  if (universe != null) crowdsourcerQuery.where("fee_windows.universe", universe);
+  if (feeWindow != null) crowdsourcerQuery.where("fee_windows.feeWindow", feeWindow);
+
+  const initialReportersQuery = db.select(["initial_reports.amountStaked", "payouts.winning"]).from("initial_reports");
+  initialReportersQuery.join("payouts", "initial_reports.payoutId", "payouts.payoutId");
+  initialReportersQuery.whereNotNull("payouts.winning");
+  initialReportersQuery.where("initial_reports.reporter", reporter);
+  if (universe != null) {
+    initialReportersQuery.join("markets", "markets.marketId", "initial_reports.marketId");
+    initialReportersQuery.where("markets.universe", universe);
+  }
+
+  parallel({
+    crowdsourcers: (next: AsyncCallback) => crowdsourcerQuery.asCallback(next),
+    initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
+  }, (err: Error|null, result: StakedRepResults) => {
     if (err) return callback(err);
-    const redeemableFeeWindows = _.uniq(_.map(feeWindowCompletionStakes, (feeWindowCompletionStake) => feeWindowCompletionStake.feeWindow));
-    const fees = _.reduce(feeWindowCompletionStakes, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
+    const redeemableFeeWindows = _.uniq(_.map(result.crowdsourcers, (feeWindowCompletionStake) => feeWindowCompletionStake.feeWindow));
+    let fees = _.reduce(result.crowdsourcers, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
       return {
         unclaimedRepStaked: acc.unclaimedRepStaked.plus(feeWindowCompletionStake.winning === 0 ? ZERO : (feeWindowCompletionStake.amountStaked || ZERO)),
         unclaimedRepEarned: acc.unclaimedRepEarned.plus(feeWindowCompletionStake.winning === 0 ? ZERO : (feeWindowCompletionStake.amountStaked || ZERO).div(2)),
         lostRep: acc.lostRep.plus(feeWindowCompletionStake.winning === 0 ? (feeWindowCompletionStake.amountStaked || ZERO) : ZERO),
       };
     }, { unclaimedRepStaked: ZERO, unclaimedRepEarned: ZERO, lostRep: ZERO });
+    fees = _.reduce(result.initialReporters, (acc: RepStakeResults, initialReporterStake: InitialReporterStakeRow) => {
+      return {
+        unclaimedRepStaked: acc.unclaimedRepStaked.plus(initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO)),
+        unclaimedRepEarned: acc.unclaimedRepEarned.plus(initialReporterStake.winning === 0 ? ZERO : (initialReporterStake.amountStaked || ZERO).div(2)),
+        lostRep: acc.lostRep.plus(initialReporterStake.winning === 0 ? (initialReporterStake.amountStaked || ZERO) : ZERO),
+      };
+    }, fees);
+
     return callback(null, { redeemableFeeWindows, fees });
   });
 }
@@ -289,19 +326,30 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   if (universe != null) crowdsourcerQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) crowdsourcerQuery.where("fee_windows.feeWindow", feeWindow);
 
+  const initialReportersQuery = db.select(["fee_windows.feeWindow", "initial_reports.amountStaked"]).from("fee_windows");
+  initialReportersQuery.join("balances", "balances.token", "fee_windows.feeToken");
+  initialReportersQuery.join("initial_reports", "initial_reports.initialReportId", "balances.owner");
+  initialReportersQuery.where("initial_reports.reporter", reporter);
+  if (universe != null) initialReportersQuery.where("fee_windows.universe", universe);
+  if (feeWindow != null) initialReportersQuery.where("fee_windows.feeWindow", feeWindow);
+
   parallel({
     participationTokens: (next: AsyncCallback) => participationTokenQuery.asCallback(next),
     crowdsourcers: (next: AsyncCallback) => crowdsourcerQuery.asCallback(next),
+    initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
   }, (err: Error|null, result: ReporterStakes) => { // change to ReporterStakes
     if (err) return callback(err);
     const groupedCrowdsourcers = groupByAndSum(result.crowdsourcers, ["feeWindow"], ["amountStaked"]);
     const crowdsourcersByFeeWindow = _.keyBy(groupedCrowdsourcers, "feeWindow");
+    const groupedInitialReporters = groupByAndSum(result.initialReporters, ["feeWindow"], ["amountStaked"]);
+    const initialReportersByFeeWindow = _.keyBy(groupedInitialReporters, "feeWindow");
     const participationTokensByFeeWindow = _.keyBy(result.participationTokens, "feeWindow");
     const allFeeWindows = _.union(_.keys(crowdsourcersByFeeWindow), _.keys(participationTokensByFeeWindow));
     const totalTokensByFeeWindow = _.reduce(allFeeWindows, (acc: { [feeWindow: string]: BigNumber }, feeWindow) => {
         const crowdsourcerTokens = (crowdsourcersByFeeWindow[feeWindow] && crowdsourcersByFeeWindow[feeWindow].amountStaked) || ZERO;
         const participationTokens = (participationTokensByFeeWindow[feeWindow] && participationTokensByFeeWindow[feeWindow].participationTokens) || ZERO;
-        acc[feeWindow] = crowdsourcerTokens.plus(participationTokens);
+        const initialReporterTokens = (initialReportersByFeeWindow[feeWindow] && initialReportersByFeeWindow[feeWindow].amountStaked) || ZERO;
+        acc[feeWindow] = crowdsourcerTokens.plus(participationTokens).plus(initialReporterTokens);
         return acc;
       }, {},
     );
