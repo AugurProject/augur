@@ -109,7 +109,7 @@ export function addTransferTransactions(transfers) {
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
       const meta = {
-        value: transaction.value
+        value: transaction.value,
       }
       if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
         transaction.symbol = 'REP'
