@@ -106,7 +106,7 @@ export default class CreateMarketForm extends Component {
     // need valid url
     if (fieldName === 'expirySource') {
       if (!/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(value)) {
-        updatedMarket.validations[currentStep][fieldName] = 'Url requires http:// or https:// and extention .com, .io, .net ...'
+        updatedMarket.validations[currentStep][fieldName] = 'Url is invalid.'
       }
     }
     updatedMarket[fieldName] = value
