@@ -1,4 +1,6 @@
 #!/bin/bash
 
+IMAGE=augurproject/augur-node
 TAG=core-$(node scripts/core-version.js)
-docker push augurproject/augur-node:$TAG
+docker push $IMAGE:$TAG
+docker push $IMAGE:dev

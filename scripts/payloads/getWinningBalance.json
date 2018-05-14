@@ -1,0 +1,9 @@
+{
+  "id": 4,
+  "jsonrpc": "2.0",
+  "method": "getWinningBalance",
+  "params": {
+    "marketIds": ["0x9c0d56766ddf313bcd519666b0af3b8d51f27f79"],
+    "account": "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb"
+  }
+}

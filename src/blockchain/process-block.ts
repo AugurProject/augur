@@ -40,12 +40,18 @@ export function getOverrideTimestamp(): number|null {
   return overrideTimestamps[overrideTimestamps.length - 1];
 }
 
-export function processBlock(db: Knex, augur: Augur, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlock(db, augur, block, callback));
+export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
+  processQueue.push((next) => _processBlock(db, augur, block, (err: Error|null): void => {
+    if (err) return callback(err);
+    return next();
+  }));
 }
 
-export function processBlockRemoval(db: Knex, block: BlockDetail): void {
-  processQueue.push((callback) => _processBlockRemoval(db, block, callback));
+export function processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
+  processQueue.push((next) => _processBlockRemoval(db, block, (err: Error|null): void => {
+    if (err) return callback(err);
+    return next();
+  }));
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {

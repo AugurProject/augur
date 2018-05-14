@@ -48,14 +48,18 @@ describe("blockchain/log-processors/universe-forked", () => {
     assertions: {
       onAdded: (err, records) => {
         assert.isNull(err);
-        assert.equal(records.length, 1);
+        assert.equal(records.length, 2);
         assert.equal(records[0].universe, "0x000000000000000000000000000000000000000b");
         assert.equal(records[0].marketId, "0x0000000000000000000000000000000000000211");
         assert.equal(records[0].forking, 1);
+        // Pre-existing hard-coded forked market
+        assert.equal(records[1].universe, "0x000000000000000000000000000000000000000b");
+        assert.equal(records[1].marketId, "0x00000000000000000000000000000000000000f1");
+        assert.equal(records[1].forking, 1);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
-        assert.equal(records.length, 0);
+        assert.equal(records.length, 1);
       },
     },
   });
