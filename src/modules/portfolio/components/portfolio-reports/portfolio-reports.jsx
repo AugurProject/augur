@@ -96,40 +96,11 @@ export default class PortfolioReports extends Component {
       this.setState({
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
-        // unclaimedForkEth: formatEther(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
-        // unclaimedForkRep: formatAttoRep(result.total.unclaimedForkRep, { decimals: 4, zeroStyled: true }),
+        unclaimedForkEth: formatEther(result.total.unclaimedForkEthFees, { decimals: 4, zeroStyled: true }),
+        unclaimedForkRep: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
         forkedMarket: result.forkedMarket,
         nonforkedMarkets: result.nonforkedMarkets,
-
-        // TODO: Remove hard-coded lines below once augur-node bug is fixed.
-        unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
-        unclaimedForkRep: formatAttoRep(524520874023437500.5, { decimals: 4, zeroStyled: true }),
-        // unclaimedEth: formatEther(1, { decimals: 4, zeroStyled: true }),
-        // unclaimedRep: formatAttoRep(2, { decimals: 4, zeroStyled: true }),
-        // feeWindows: result.feeWindows,
-        // forkedMarket: {
-        //   markeId: '0xbcde24abef27b2e537b8ded8139c7991de308607',
-        //   universe: '0xu000000000000000000000000000000000000001',
-        //   isFinalized: true,
-
-        //   crowdsourcers: [
-        //     {
-        //       crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23001',
-        //       isForked: true,
-        //     },
-        //     {
-        //       crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23002',
-        //       isForked: false,
-        //     },
-        //   ],
-
-        //   initialReporter: {
-        //     initialReporterId: '0xfd2355a7e5a7adb23b51f54027e624bfe0e23001',
-        //     isForked: false,
-        //   },
-        // },
-        // nonforkedMarkets: result.nonforkedMarkets,
       })
     })
   }
