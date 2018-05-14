@@ -15,7 +15,7 @@ const MarketPreview = p => (
     <div className={classNames(Styles.MarketPreview__footer, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <MarketProperties {...p} />
     </div>
-    { p.outstandingReturns && p.unclaimedCreatorFees.value > 0 &&
+    { p.unclaimedCreatorFees.value > 0 &&
       <div className={classNames(Styles.MarketPreview__returns, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
         <OutstandingReturns
           id={p.id}
