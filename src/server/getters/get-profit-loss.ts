@@ -153,7 +153,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
       const [marketId, outcome] = key.split(",");
       const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, parseInt(outcome, 10), endTime, buckets);
       return calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice);
-    })
+    }),
   );
 
   // We have results! Drop the market & outcome groups, and then re-group by
