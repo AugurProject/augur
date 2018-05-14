@@ -124,6 +124,7 @@ export default class MarketOutcomeDepth extends Component {
     ) {
       this.drawCrosshairs({
         hoveredPrice: nextProps.hoveredPrice,
+        fixedPrecision: nextProps.fixedPrecision,
         marketDepth: nextProps.marketDepth,
         yScale: nextState.yScale,
         xScale: nextState.xScale,
@@ -251,6 +252,7 @@ export default class MarketOutcomeDepth extends Component {
         containerWidth,
         marketMin,
         marketMax,
+        fixedPrecision,
       } = options
 
       if (hoveredPrice == null) {
@@ -280,6 +282,8 @@ export default class MarketOutcomeDepth extends Component {
           d3.select('#crosshairX')
             .style('display', 'none')
         }
+        const yPosition = yScale(hoveredPrice)
+        const clampedHoveredPrice = yScale.invert(yPosition)
 
         d3.select('#crosshairY')
           .attr('x1', 0)
@@ -290,7 +294,7 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#hovered_price_label')
           .attr('x', 0)
           .attr('y', yScale(hoveredPrice) + 12)
-          .text(hoveredPrice)
+          .text(clampedHoveredPrice.toFixed(fixedPrecision))
       }
     }
   }
@@ -392,6 +396,7 @@ function determineDrawParams(options) {
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
+    .clamp(true)
     .domain(d3.extent(yDomain))
     .range([containerHeight - chartDim.bottom, chartDim.top])
 

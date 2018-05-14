@@ -280,7 +280,7 @@ class MarketOutcomeCandlestick extends React.Component {
         xScale,
       })
 
-      updateHoveredPriceCrosshair(hoveredPrice, yScale, containerWidth)
+      updateHoveredPriceCrosshair(hoveredPrice, yScale, containerWidth, fixedPrecision)
     }
 
     return (
@@ -368,6 +368,7 @@ function determineDrawParams({
     .range([chartDim.left, drawableWidth - chartDim.left - chartDim.right])
 
   const yScale = d3.scaleLinear()
+    .clamp(true)
     .domain(d3.extent(yDomain))
     .range([containerHeight - chartDim.bottom, chartDim.top])
 
@@ -613,21 +614,24 @@ function attachHoverClickHandlers({
     })
 }
 
-function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth) {
+function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrecision) {
   if (hoveredPrice == null) {
     d3.select('#candlestick_crosshairs').style('display', 'none')
     d3.select('#hovered_candlestick_price_label').text('')
   } else {
+    const yPosition = yScale(hoveredPrice)
+    const clampedHoveredPrice = yScale.invert(yPosition)
+
     d3.select('#candlestick_crosshairs').style('display', null)
     d3.select('#candlestick_crosshairY')
       .attr('x1', 0)
-      .attr('y1', yScale(hoveredPrice))
+      .attr('y1', yPosition)
       .attr('x2', chartWidth)
-      .attr('y2', yScale(hoveredPrice))
+      .attr('y2', yPosition)
     d3.select('#hovered_candlestick_price_label')
       .attr('x', 0)
       .attr('y', yScale(hoveredPrice) + 12)
-      .text(hoveredPrice)
+      .text(clampedHoveredPrice.toFixed(fixedPrecision))
   }
 }
 
