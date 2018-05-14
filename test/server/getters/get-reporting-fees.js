@@ -160,12 +160,7 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepEarned": "0",
           "lostRep": "0",
         },
-        feeWindows: [
-          "0x1000000000000000000000000000000000000000",
-          "0x2000000000000000000000000000000000000000",
-          "0x2100000000000000000000000000000000000000",
-          "0x3000000000000000000000000000000000000000",
-        ],
+        feeWindows: [],
         forkedMarket: {
           "isFinalized": 1,
           "crowdsourcers": [],
