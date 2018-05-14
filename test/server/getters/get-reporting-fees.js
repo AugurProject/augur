@@ -45,13 +45,13 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "174",
+          "unclaimedEth": "200",
           "unclaimedRepEarned": "114",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
         },
         feeWindows: [
-          "0x2000000000000000000000000000000000000000",
+          "0x1000000000000000000000000000000000000000",
         ],
         forkedMarket: {
           crowdsourcers: [
@@ -114,7 +114,7 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "120",
+          "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
           "unclaimedRepEarned": "0",
           "lostRep": "0",
@@ -226,12 +226,12 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "120",
+          "unclaimedEth": "200",
           "unclaimedRepEarned": "114",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
         },
-        feeWindows: [],
+        feeWindows: ["0x1000000000000000000000000000000000000000"],
         forkedMarket: {
           crowdsourcers: [
             {

@@ -2,11 +2,9 @@ import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
-import { Address, AsyncCallback, ReportingState } from "../../types";
+import { Address, AsyncCallback, FeeWindowState, ReportingState } from "../../types";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
-import { groupByAndSum } from "./database";
-import { QueryBuilder } from "knex";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
@@ -285,7 +283,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   });
 }
 
-function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
+function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Array<ParticipationTokenEthFee>) => void) {
   const participationTokenQuery = db.select([
     "fee_windows.feeWindow",
     "participationToken.balance AS participationTokens",
@@ -306,6 +304,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
   participationTokenQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
   participationTokenQuery.whereNot("participationTokens", "0");
+  participationTokenQuery.where("fee_windows.state", FeeWindowState.PAST);
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
   participationTokenQuery.asCallback((err: Error|null, participationTokens: Array<ParticipationTokensEthFeeRow>) => {
@@ -357,6 +356,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
   participantQuery.where("all_participants.reporter", reporter);
+  participantQuery.whereRaw("(reportingState IN (?, ?) OR disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2]);
   participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<ParticipantEthFeeRow>) => {
     if (err) return callback(err);
     const participantEthFees = _.map(participantEthFeeRows, (ethFeeRows): ParticipantEthFee => {
