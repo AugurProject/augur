@@ -16,7 +16,7 @@ Install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once i
 
 ### From source
 
-If you want to run Augur App from source follow these steps:
+If you want to run Augur App from source you'll need git and npm installed on your machine, then follow these steps:
 
 ```bash
 # Clone this repository
