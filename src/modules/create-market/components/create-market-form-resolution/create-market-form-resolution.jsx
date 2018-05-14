@@ -254,11 +254,11 @@ export default class CreateMarketResolution extends Component {
               if (this.state.date == null) {
                 const date = moment(this.props.currentTimestamp)
                 this.setState({
-                  date
+                  date,
                 })
                 validateField('endTime', formatDate(date.toDate()))
               }
-              this.setState({focused})
+              this.setState({ focused })
             }}
             displayFormat="MMM D, YYYY"
             numberOfMonths={1}
