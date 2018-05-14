@@ -4,7 +4,7 @@ import logError from 'utils/log-error'
 import { map, mapValues } from 'lodash/fp'
 
 const mutatePeriod = map(({ max, min, start, end, startTimestamp, volume }) => ({
-  duration: new Date(startTimestamp * 1000),
+  period: new Date(startTimestamp * 1000),
   open: parseFloat(start),
   close: parseFloat(end),
   low: parseFloat(min),
@@ -21,7 +21,7 @@ const mutateOutcome = mapValues(mutatePeriod)
  * @property {number} outcome
  * @property {number} start
  * @property {number} end
- * @property {number} duration
+ * @property {number} period
  */
 
 /**
