@@ -344,7 +344,7 @@ export default class CreateMarketLiquidity extends Component {
       const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
       const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
       const shareBalances = newMarket.outcomes.map(outcome => 0)
-      const outcome = this.state.selectedOutcome
+      const outcome = this.props.newMarket.type === CATEGORICAL ? newMarket.outcomes.indexOf(this.state.selectedOutcome) : this.state.selectedOutcome
       const orderType = this.state.selectedNav === BID ? 0: 1
       const orderInfo = {
         orderType,
