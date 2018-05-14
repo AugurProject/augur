@@ -13,6 +13,7 @@ import { BUY, SELL } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles'
 import { createBigNumber } from 'src/utils/create-big-number'
+import { getTickIntervalForRange } from 'src/modules/market/helpers'
 
 class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
@@ -241,6 +242,8 @@ class MarketOutcomeCandlestick extends React.Component {
         yDomain,
       })
 
+      const tickInterval = getTickIntervalForRange(selectedRange)
+
       drawXAxisLabels({
         priceTimeSeries,
         candleChart,
@@ -249,6 +252,7 @@ class MarketOutcomeCandlestick extends React.Component {
         chartDim,
         candleDim,
         boundDiff,
+        tickInterval,
         yDomain,
         xScale,
       })
@@ -527,13 +531,14 @@ function drawXAxisLabels({
   chartDim,
   candleDim,
   boundDiff,
+  tickInterval,
   yDomain,
   xScale,
 }) {
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${containerHeight - chartDim.bottom})`)
-    .call(d3.axisBottom(xScale))
+    .call(d3.axisBottom(xScale).ticks(tickInterval))
     .select('path').remove()
 }
 

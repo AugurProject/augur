@@ -1,5 +1,4 @@
-import { partial } from 'lodash/fp'
-
+import { compose, find, partial, property } from 'lodash/fp'
 
 // 'full' meaning no partial application
 import { clampPeriodByRange as fullClampPeriodByRange } from 'src/modules/market/helpers/clamp-period-by-range'
@@ -17,3 +16,8 @@ export const defaultRangePeriodDurations = getDefaultRangePeriodDuration(RANGES,
 export const limitPeriodByRange = partial(fullLimitPeriodByRange, [
   PERIODS,
 ])
+
+export const getTickIntervalForRange = range => compose(
+  property('tickInterval'),
+  find({ duration: range }),
+)(RANGES)
