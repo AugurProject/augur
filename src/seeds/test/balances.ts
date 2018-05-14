@@ -99,7 +99,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       token: "REP_TOKEN_SECOND_GRAND_CHILD",
       owner: "0x0000000000000000000000000000000000000021",
-      balance: "4",
+      balance: "0",
     }, {
       token: "0xe0e1900000000000000000000000000000000000",
       owner: "0x0000000000000000000000000000000000000b0b",
