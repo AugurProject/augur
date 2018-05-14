@@ -2,10 +2,19 @@ const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval} = require("../../../build/server/getters/get-profit-loss");
+const sqlite3 = require("sqlite3");
+const Knex = require("knex");
+const { postProcessDatabaseResults } = require("../../../build/server/post-process-database-results");
 
 const START_TIME = 1506474500;
 const MINUTE_SECONDS = 60;
 const HOUR_SECONDS = MINUTE_SECONDS*60;
+
+const BigNumber = require('bignumber.js');
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
+});
 
 describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   it("throws when startTime is negative", (done) => {
@@ -89,6 +98,81 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   });
 });
 
+
+describe("tests for test/profitloss.db", () => {
+  var connection = null;
+  var augur = new Augur();
+
+
+  beforeEach((done) => {
+    sqlite3.verbose();
+    connection = Knex({
+      client: "sqlite3",
+      connection: {
+        filename: "./test/profitloss.db",
+      },
+      acquireConnectionTimeout: 5 * 60 * 1000,
+      useNullAsDefault: true,
+      postProcessResponse: postProcessDatabaseResults,
+    });
+
+    done();
+  });
+
+  it("has 2 trades", (done) => {
+    connection("trades").select("*").asCallback((err, results) => {
+      assert.isNull(err);
+      assert.equal(results.length, 2);
+      done();
+    });
+  });
+
+  const universe = "0x1b8dae4f281a437e797f6213c6564926a04d9959";
+  const account1 = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
+  const account2 = "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6";
+  const endTime = Date.now();
+  it("has a total PL of -4eth for account1", (done) => {
+    getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
+      try {
+        assert.deepEqual(results, [{
+          "lastPrice": "0.1",
+          "profitLoss": {
+            "meanOpenPrice": "0",
+            "position": "0",
+            "realized": "-4",
+            "total": "-4",
+            "unrealized": "0",
+          },
+          "timestamp": endTime,
+        }]);
+      } catch(e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+  it("has a total PL of 4eth for account2", (done) => {
+    getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
+      try {
+        assert.deepEqual(results, [{
+          "lastPrice": "0.1",
+          "profitLoss": {
+            "meanOpenPrice": "0",
+            "position": "0",
+            "realized": "4",
+            "total": "4",
+            "unrealized": "0",
+          },
+          "timestamp": endTime,
+        }]);
+      } catch(e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+});
+
 describe("server/getters/get-profit-loss", () => {
   var connection = null;
   var augur = new Augur();
@@ -142,31 +226,31 @@ describe("server/getters/get-profit-loss", () => {
         assert.deepEqual(profitLoss, [
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506478100,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506481700,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506485300,
           },
@@ -189,31 +273,31 @@ describe("server/getters/get-profit-loss", () => {
         assert.deepEqual(profitLoss, [
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
-            "timestamp": 1506478115,
+            "timestamp": 1506478100,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
-            "timestamp": 1506481715,
+            "timestamp": 1506481700,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506485300,
           },
@@ -237,7 +321,7 @@ describe("server/getters/get-profit-loss", () => {
           {
             "profitLoss": {
               "meanOpenPrice": "5.5",
-              "position": "-1.4",
+              "position": "0.6",
               "realized": "0",
               "total": "0",
               "unrealized": "0",
@@ -246,51 +330,51 @@ describe("server/getters/get-profit-loss", () => {
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506474520,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506474530,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506474540,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506474550,
           },
           {
             "profitLoss": {
-              "meanOpenPrice": "5.42352941176470588235",
-              "position": "-1.7",
-              "realized": "0",
-              "total": "-0.13",
-              "unrealized": "-0.13",
+              "meanOpenPrice": "5.5",
+              "position": "0.9",
+              "realized": "0.13",
+              "total": "0.26",
+              "unrealized": "0.13",
             },
             "timestamp": 1506474560,
           },
@@ -366,7 +450,6 @@ describe("server/getters/get-profit-loss", () => {
             realized: "1.16666666666666666666",
             total: "2.49999999999999999999",
             unrealized: "1.33333333333333333333",
-            queued: "0",
           }},
         ]);
       },
@@ -400,7 +483,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.1",
             "position": "10",
-            "queued": "0",
             "realized": "0",
             "total": "0",
             "unrealized": "0",
@@ -411,7 +493,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.1",
             "position": "5",
-            "queued": "0",
             "realized": "0.5",
             "total": "1",
             "unrealized": "0.5",
@@ -422,7 +503,6 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "15",
-            "queued": "0",
             "realized": "0.5",
             "total": "0.999999999999999999995",
             "unrealized": "0.499999999999999999995",
@@ -433,9 +513,8 @@ describe("server/getters/get-profit-loss", () => {
           "profitLoss": {
             "meanOpenPrice": "0.166666666666666666667",
             "position": "10",
-            "queued": "0",
             "realized": "1.166666666666666666665",
-            "total": "2.49999999999999999999",
+            "total": "2.499999999999999999995",
             "unrealized": "1.33333333333333333333",
           },
           "timestamp": 10040,
@@ -478,9 +557,8 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.166666666666666666665",
-      "total": "2.49999999999999999999",
+      "total": "2.499999999999999999995",
       "unrealized": "1.33333333333333333333",
     };
 
@@ -513,9 +591,8 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.166666666666666666665",
-      "total": "2.49999999999999999999",
+      "total": "2.499999999999999999995",
       "unrealized": "1.33333333333333333333",
     };
 
@@ -554,7 +631,6 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.166666666666666666667",
       "position": "10",
-      "queued": "0",
       "realized": "1.16666666666666666666",
       "total": "2.49999999999999999999",
       "unrealized": "1.33333333333333333333",
@@ -566,7 +642,6 @@ describe("server/getters/get-profit-loss", () => {
   });
 
   it("calculates pl for one period, with basis doesnt net out", (done) => {
-    // These two trades net out, leaving a 0 basis
     var trades2 = [{
       timestamp: 8000,
       type: "buy",
@@ -595,10 +670,9 @@ describe("server/getters/get-profit-loss", () => {
     var result = {
       "meanOpenPrice": "0.176923076923076923077",
       "position": "8",
-      "queued": "1.5",
-      "realized": "1.11538461538461538461",
-      "total": "2.09999999999999999999",
-      "unrealized": "0.98461538461538461538",
+      "realized": "1.71538461538461538461",
+      "total": "2.1",
+      "unrealized": "0.38461538461538461538",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);
@@ -606,4 +680,81 @@ describe("server/getters/get-profit-loss", () => {
     done();
   });
 
+  it("Account 1 has 4eth Total P/L", (done) => {
+    const trades = [{
+        timestamp: 10000,
+        type: "sell",
+        price: "0.5",
+        amount: "10",
+        maker: true,
+      },
+      {
+        timestamp: 10020,
+        type: "buy",
+        price: "0.1",
+        amount: "10",
+        maker: true,
+    }];
+
+    const buckets = [{
+      timestamp: 10000,
+      lastPrice: null,
+    }, {
+      timestamp: 20000,
+      lastPrice: 0.1,
+    }];
+    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+
+    assert.deepEqual(results[0].profitLoss, results2);
+    assert.deepEqual(results2, {
+      "meanOpenPrice": "0",
+      "position": "0",
+      "realized": "-4",
+      "total": "-4",
+      "unrealized": "0",
+    });
+
+    done();
+  });
+
+  it("Account 2 has +4eth P/L", (done) => {
+    const trades = [{
+    /* MADE A BUY ORDER */
+        timestamp: 10000,
+        type: "sell",
+        price: "0.5",
+        amount: "10",
+        maker: false,
+      },
+      {
+    /* FILLING THE BUY ORDER */
+        timestamp: 10020,
+        type: "buy",
+        price: "0.1",
+        amount: "10",
+        maker: false,
+    }];
+
+    const buckets = [{
+      timestamp: 10000,
+      lastPrice: null,
+    }, {
+      timestamp: 20000,
+      lastPrice: 0.1,
+    }];
+    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+
+    assert.deepEqual(results[0].profitLoss, results2);
+    assert.deepEqual(results2, {
+      "meanOpenPrice": "0",
+      "position": "0",
+      "realized": "4",
+      "total": "4",
+      "unrealized": "0",
+    });
+
+    done();
+  });
 });
