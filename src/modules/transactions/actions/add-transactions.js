@@ -108,8 +108,9 @@ export function addTransferTransactions(transfers) {
       transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
       header.transactions = [transaction]
-      const meta = {}
-      meta.value = transaction.value
+      const meta = {
+        value: transaction.value
+      }
       if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
         transaction.symbol = 'REP'
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
@@ -119,10 +120,12 @@ export function addTransferTransactions(transfers) {
         header.message = 'Transfer'
         header.description = `${meta.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
       }
-      meta.txhash = transaction.transactionHash
-      meta.recipient = transaction.recipient
-      meta.sender = transaction.sender
-      transaction.meta = meta
+      transaction.meta = Object.assign(meta, {
+        txhash: transaction.transactionHash,
+        recipient: transaction.recipient,
+        sender: transaction.sender,
+        block: transaction.blockNumber,
+      })
       transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
@@ -315,7 +318,9 @@ function buildHeader(item, type, status) {
   header.status = status
   header.hash = item.id
   // TODO: need to sort by datetime in render
-  header.timestamp = convertUnixToFormattedDate(item.timestamp ? item.timestamp : item.creationTime)
+  if (item.timestamp) {
+    header.timestamp = convertUnixToFormattedDate(item.timestamp)
+  }
   header.sortOrder = getSortOrder(type)
   return header
 }
