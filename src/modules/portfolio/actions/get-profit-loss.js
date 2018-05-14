@@ -13,7 +13,7 @@ export default function getProfitLoss(universe, startTime, endTime, periodInterv
       'getProfitLoss',
       {
         universe,
-        address: loginAccount.address,
+        account: loginAccount.address,
         startTime,
         endTime,
         periodInterval,
