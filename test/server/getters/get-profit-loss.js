@@ -139,8 +139,8 @@ describe("tests for test/profitloss.db", () => {
           "profitLoss": {
             "meanOpenPrice": "0",
             "position": "0",
-            "realized": "4",
-            "total": "4",
+            "realized": "-4",
+            "total": "-4",
             "unrealized": "0",
           },
           "timestamp": endTime,
@@ -159,8 +159,8 @@ describe("tests for test/profitloss.db", () => {
           "profitLoss": {
             "meanOpenPrice": "0",
             "position": "0",
-            "realized": "-4",
-            "total": "-4",
+            "realized": "4",
+            "total": "4",
             "unrealized": "0",
           },
           "timestamp": endTime,
@@ -680,20 +680,17 @@ describe("server/getters/get-profit-loss", () => {
     done();
   });
 
-  // ACCOUNT 1
-  it("ACCOUNT 1", (done) => {
+  it("Account 1 has 4eth Total P/L", (done) => {
     const trades = [{
-    /* MADE A BUY ORDER */
         timestamp: 10000,
-        type: "buy",
+        type: "sell",
         price: "0.5",
         amount: "10",
         maker: true,
       },
       {
-    /* FILLING THE BUY ORDER */
         timestamp: 10020,
-        type: "sell",
+        type: "buy",
         price: "0.1",
         amount: "10",
         maker: true,
@@ -721,18 +718,19 @@ describe("server/getters/get-profit-loss", () => {
     done();
   });
 
-  // ACCOUNT 2
-  it("THIS DOES SOMETHING", (done) => {
+  it("Account 2 has +4eth P/L", (done) => {
     const trades = [{
+    /* MADE A BUY ORDER */
         timestamp: 10000,
-        type: "buy",
+        type: "sell",
         price: "0.5",
         amount: "10",
         maker: false,
       },
       {
+    /* FILLING THE BUY ORDER */
         timestamp: 10020,
-        type: "sell",
+        type: "buy",
         price: "0.1",
         amount: "10",
         maker: false,

@@ -131,10 +131,10 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     .orderBy("trades.marketId")
     .orderBy("trades.outcome");
     
-  const trades: Array<TradeRow> = tradeHistory.map((row: TradingHistoryRow): TradeRow => {
-      return Object.assign({}, row, {
-        type: row.orderType!,
-        maker: account === row.creator!
+  const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
+      return Object.assign({}, trade, {
+        type: trade.orderType! == "buy" ? "sell" : "buy",
+        maker: account === trade.creator!
       });
     }) as Array<TradeRow>;
 
