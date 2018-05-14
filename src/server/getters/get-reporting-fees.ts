@@ -68,7 +68,10 @@ interface FeeWindowTotalTokens {
 
 interface ParticipationTokensRow {
   feeWindow: Address;
-  participationTokens: BigNumber;
+  participationTokens: string;
+  feeTokenSupply: string;
+  participationTokenSupply: string;
+  cashFeeWindow: string;
 }
 
 interface CrowdsourcersRow {
@@ -287,10 +290,10 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   });
 }
 
-function getParticipationTokenEthFees(db: Knex, augur:Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
+function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
   const participationTokenQuery = db.select([
     "fee_windows.feeWindow",
-    "participationToken.balance AS participationTokenBalance",
+    "participationToken.balance AS participationTokens",
     db.raw("IFNULL(feeTokenSupply.supply,0) as feeTokenSupply"),
     db.raw("IFNULL(participationTokenSupply.supply,0) as participationTokenSupply"),
     db.raw("IFNULL(cashFeeWindow.balance,0) as cashFeeWindow"),
@@ -307,13 +310,25 @@ function getParticipationTokenEthFees(db: Knex, augur:Augur, reporter: Address, 
   });
   participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
   participationTokenQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
-  participationTokenQuery.whereNot("participationTokenBalance", "0");
+  participationTokenQuery.whereNot("participationTokens", "0");
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
   participationTokenQuery.asCallback((err: Error|null, participationTokens: Array<ParticipationTokensRow>) => {
     if (err) return callback(err);
-    const participationTokensByFeeWindow = _.keyBy(participationTokens, "feeWindow");
-    callback(null, participationTokensByFeeWindow);
+
+    const kk = _.map(participationTokens, (participationToken) => {
+      const totalFeeTokensInFeeWindow = new BigNumber(participationToken.feeTokenSupply).plus(new BigNumber(participationToken.participationTokenSupply));
+      const cashInFeeWindow = new BigNumber(participationToken.cashFeeWindow);
+      const participationTokens = new BigNumber(participationToken.participationTokens);
+      const reporterShareOfFeeWindow = totalFeeTokensInFeeWindow.isZero() ? ZERO : participationTokens.dividedBy(totalFeeTokensInFeeWindow);
+      const ethFees = reporterShareOfFeeWindow.times(cashInFeeWindow);
+      return {
+        feeWindow: participationToken.feeWindow,
+        ethFees,
+        participationTokens,
+      };
+    });
+    callback(null, kk);
   });
 }
 
@@ -386,7 +401,7 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
           getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
             if (err || repStakeResults == null) return callback(err);
             const unclaimedEth = _.reduce(participantEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
-            const redeemableFeeWindows = _.uniq(_.map(participantEthFees, "feeWindow").concat(repStakeResults.redeemableFeeWindows));
+            const redeemableFeeWindows = _.map(hi, "feeWindow");
             const response = {
               total: {
                 unclaimedEth: unclaimedEth.toFixed(),
