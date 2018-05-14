@@ -16,6 +16,7 @@
   "scripts": {
     "go": "scripts/go.sh",
     "start": "node ./build",
+    "debug": "node --inspect-brk ./build",
     "test": "mocha test",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test",
     "build": "tsc",
