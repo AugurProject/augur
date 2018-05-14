@@ -1,16 +1,16 @@
 const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval} = require("../../../build/server/getters/get-profit-loss");
+const { calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval } = require("../../../build/server/getters/get-profit-loss");
 const sqlite3 = require("sqlite3");
 const Knex = require("knex");
 const { postProcessDatabaseResults } = require("../../../build/server/post-process-database-results");
 
 const START_TIME = 1506474500;
 const MINUTE_SECONDS = 60;
-const HOUR_SECONDS = MINUTE_SECONDS*60;
+const HOUR_SECONDS = MINUTE_SECONDS * 60;
 
-const BigNumber = require('bignumber.js');
+const BigNumber = require("bignumber.js");
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
@@ -49,39 +49,47 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
 
   it("generates a range including only startTime and endTime", (done) => {
     const buckets = bucketRangeByInterval(10000, 10040, 20000);
-    assert.deepEqual(buckets, [{
-      timestamp: 10000,
-      profitLoss: null,
-    }, {
-      timestamp: 10040,
-      profitLoss: null,
-    }]);
+    assert.deepEqual(buckets, [
+      {
+        timestamp: 10000,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10040,
+        profitLoss: null,
+      },
+    ]);
 
     done();
   });
 
   it("generates a range of 5 buckets, including start and end times every 10 seconds", (done) => {
     const buckets = bucketRangeByInterval(10000, 10040, 10);
-    assert.deepEqual(buckets, [{
-      timestamp: 10000,
-      profitLoss: null,
-    }, {
-      timestamp: 10010,
-      profitLoss: null,
-    }, {
-      timestamp: 10020,
-      profitLoss: null,
-    }, {
-      timestamp: 10030,
-      profitLoss: null,
-    }, {
-      timestamp: 10040,
-      profitLoss: null,
-    }]);
+    assert.deepEqual(buckets, [
+      {
+        timestamp: 10000,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10010,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10020,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10030,
+        profitLoss: null,
+      },
+      {
+        timestamp: 10040,
+        profitLoss: null,
+      },
+    ]);
 
     done();
   });
-
 
   it("generates 31 buckets with explicit periodInteval", (done) => {
     const buckets = bucketRangeByInterval(0, 30 * 86400, 86400);
@@ -98,11 +106,9 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   });
 });
 
-
 describe("tests for test/profitloss.db", () => {
   var connection = null;
   var augur = new Augur();
-
 
   beforeEach((done) => {
     sqlite3.verbose();
@@ -120,11 +126,13 @@ describe("tests for test/profitloss.db", () => {
   });
 
   it("has 2 trades", (done) => {
-    connection("trades").select("*").asCallback((err, results) => {
-      assert.isNull(err);
-      assert.equal(results.length, 2);
-      done();
-    });
+    connection("trades")
+      .select("*")
+      .asCallback((err, results) => {
+        assert.isNull(err);
+        assert.equal(results.length, 2);
+        done();
+      });
   });
 
   const universe = "0x1b8dae4f281a437e797f6213c6564926a04d9959";
@@ -134,18 +142,20 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of -4eth for account1", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [{
-          "lastPrice": "0.1",
-          "profitLoss": {
-            "meanOpenPrice": "0",
-            "position": "0",
-            "realized": "-4",
-            "total": "-4",
-            "unrealized": "0",
+        assert.deepEqual(results, [
+          {
+            lastPrice: "0.1",
+            profitLoss: {
+              meanOpenPrice: "0",
+              position: "0",
+              realized: "-4",
+              total: "-4",
+              unrealized: "0",
+            },
+            timestamp: endTime,
           },
-          "timestamp": endTime,
-        }]);
-      } catch(e) {
+        ]);
+      } catch (e) {
         return done(e);
       }
       done();
@@ -154,18 +164,20 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [{
-          "lastPrice": "0.1",
-          "profitLoss": {
-            "meanOpenPrice": "0",
-            "position": "0",
-            "realized": "4",
-            "total": "4",
-            "unrealized": "0",
+        assert.deepEqual(results, [
+          {
+            lastPrice: "0.1",
+            profitLoss: {
+              meanOpenPrice: "0",
+              position: "0",
+              realized: "4",
+              total: "4",
+              unrealized: "0",
+            },
+            timestamp: endTime,
           },
-          "timestamp": endTime,
-        }]);
-      } catch(e) {
+        ]);
+      } catch (e) {
         return done(e);
       }
       done();
@@ -213,353 +225,399 @@ describe("server/getters/get-profit-loss", () => {
   });
 
   it("generates 3 datapoints for user with trades in one period after start time", (done) => {
-    testWithDatabase({
-      params: {
-        universe: "0x000000000000000000000000000000000000000b",
-        account: "0x0000000000000000000000000000000000000b0b",
-        startTime: START_TIME,
-        endTime: START_TIME + 3*HOUR_SECONDS,
-        periodInterval: HOUR_SECONDS,
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+          startTime: START_TIME,
+          endTime: START_TIME + 3 * HOUR_SECONDS,
+          periodInterval: HOUR_SECONDS,
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.deepEqual(profitLoss, [
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506478100,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506481700,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506485300,
+            },
+          ]);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.deepEqual(profitLoss, [
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506478100,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506481700,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506485300,
-          },
-        ]);
-      },
-    }, done);
+      done
+    );
   });
 
   it("buckets datapoints from the first trade the user made", (done) => {
-    testWithDatabase({
-      params: {
-        universe: "0x000000000000000000000000000000000000000b",
-        account: "0x0000000000000000000000000000000000000b0b",
-        startTime: 0,
-        endTime: START_TIME + 3*HOUR_SECONDS,
-        periodInterval: HOUR_SECONDS,
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+          startTime: 0,
+          endTime: START_TIME + 3 * HOUR_SECONDS,
+          periodInterval: HOUR_SECONDS,
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.deepEqual(profitLoss, [
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506478100,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506481700,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506485300,
+            },
+          ]);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.deepEqual(profitLoss, [
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506478100,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506481700,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506485300,
-          },
-        ]);
-      },
-    }, done);
+      done
+    );
   });
 
   it("generates 3 PL datapoints for user with trades in three periods after start time", (done) => {
-    testWithDatabase({
-      params: {
-        universe: "0x000000000000000000000000000000000000000b",
-        account: "0x0000000000000000000000000000000000000b0b",
-        startTime: START_TIME,
-        endTime: START_TIME + MINUTE_SECONDS,
-        periodInterval: 10,
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+          startTime: START_TIME,
+          endTime: START_TIME + MINUTE_SECONDS,
+          periodInterval: 10,
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.deepEqual(profitLoss, [
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.6",
+                realized: "0",
+                total: "0",
+                unrealized: "0",
+              },
+              timestamp: 1506474510,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474520,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474530,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474540,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474550,
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "5.5",
+                position: "-0.9",
+                realized: "-0.13",
+                total: "-0.26",
+                unrealized: "-0.13",
+              },
+              timestamp: 1506474560,
+            },
+          ]);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.deepEqual(profitLoss, [
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.6",
-              "realized": "0",
-              "total": "0",
-              "unrealized": "0",
-            },
-            "timestamp": 1506474510,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506474520,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506474530,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506474540,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506474550,
-          },
-          {
-            "profitLoss": {
-              "meanOpenPrice": "5.5",
-              "position": "0.9",
-              "realized": "0.13",
-              "total": "0.26",
-              "unrealized": "0.13",
-            },
-            "timestamp": 1506474560,
-          },
-        ]);
-      },
-    }, done);
+      done
+    );
   });
-
 
   it("generates 30 PLs all with null profitLoss", (done) => {
-    testWithDatabase({
-      params: {
-        universe: "0x000000000000000000000000000000000000000b",
-        account: "0x1000000000000000000000000000000000000b0b",
-        startTime: 0,
-        endTime: 30*86400,
-        periodInterval: 86400,
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x1000000000000000000000000000000000000b0b",
+          startTime: 0,
+          endTime: 30 * 86400,
+          periodInterval: 86400,
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.equal(profitLoss.length, 30);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.equal(profitLoss.length, 30);
-      },
-    }, done);
+      done
+    );
   });
 
-
-  var trades1 = [{
-    timestamp: 10000,
-    type: "sell",
-    amount: "10",
-    price: "0.1",
-    maker: true,
-  }, {
-    timestamp: 10010,
-    type: "buy",
-    amount: "5",
-    price: "0.2",
-    maker: true,
-  }, {
-    timestamp: 10020,
-    type: "sell",
-    amount: "10",
-    price: "0.2",
-    maker: true,
-  }, {
-    timestamp: 10030,
-    type: "buy",
-    amount: "5",
-    price: "0.3",
-    maker: true,
-  }];
+  var trades1 = [
+    {
+      timestamp: 10000,
+      type: "sell",
+      amount: "10",
+      price: "0.1",
+      maker: true,
+    },
+    {
+      timestamp: 10010,
+      type: "buy",
+      amount: "5",
+      price: "0.2",
+      maker: true,
+    },
+    {
+      timestamp: 10020,
+      type: "sell",
+      amount: "10",
+      price: "0.2",
+      maker: true,
+    },
+    {
+      timestamp: 10030,
+      type: "buy",
+      amount: "5",
+      price: "0.3",
+      maker: true,
+    },
+  ];
 
   it("calculates pl for all data as one period with no basis", (done) => {
-    testWithMockedData({
-      params: {
-        trades: trades1,
-        buckets: [{
-          timestamp: 10000,
-          lastPrice: "0.1",
-        }, {
-          timestamp: 20000,
-          lastPrice: "0.3",
-        }],
+    testWithMockedData(
+      {
+        params: {
+          trades: trades1,
+          buckets: [
+            {
+              timestamp: 10000,
+              lastPrice: "0.1",
+            },
+            {
+              timestamp: 20000,
+              lastPrice: "0.3",
+            },
+          ],
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.deepEqual(profitLoss, [
+            {
+              timestamp: 20000,
+              lastPrice: "0.3",
+              profitLoss: {
+                position: "10",
+                meanOpenPrice: "0.166666666666666666667",
+                realized: "1.16666666666666666666",
+                total: "2.49999999999999999999",
+                unrealized: "1.33333333333333333333",
+              },
+            },
+          ]);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.deepEqual(profitLoss, [{
-          timestamp: 20000,
-          lastPrice: "0.3",
-          profitLoss: {
-            position: "10",
-            meanOpenPrice: "0.166666666666666666667",
-            realized: "1.16666666666666666666",
-            total: "2.49999999999999999999",
-            unrealized: "1.33333333333333333333",
-          }},
-        ]);
-      },
-    }, done);
+      done
+    );
   });
 
   it("calculates pl for 4 periods with no basis", (done) => {
-    testWithMockedData({
-      params: {
-        trades: trades1,
-        buckets: [{
-          timestamp: 10000,
-          lastPrice: null,
-        }, {
-          timestamp: 10010,
-          lastPrice: "0.1",
-        }, {
-          timestamp: 10020,
-          lastPrice: "0.2",
-        }, {
-          timestamp: 10030,
-          lastPrice: "0.2",
-        }, {
-          timestamp: 10040,
-          lastPrice: "0.3",
-        }],
+    testWithMockedData(
+      {
+        params: {
+          trades: trades1,
+          buckets: [
+            {
+              timestamp: 10000,
+              lastPrice: null,
+            },
+            {
+              timestamp: 10010,
+              lastPrice: "0.1",
+            },
+            {
+              timestamp: 10020,
+              lastPrice: "0.2",
+            },
+            {
+              timestamp: 10030,
+              lastPrice: "0.2",
+            },
+            {
+              timestamp: 10040,
+              lastPrice: "0.3",
+            },
+          ],
+        },
+        assertions: (err, profitLoss) => {
+          assert.isNull(err);
+          assert.deepEqual(profitLoss, [
+            {
+              profitLoss: {
+                meanOpenPrice: "0.1",
+                position: "10",
+                realized: "0",
+                total: "0",
+                unrealized: "0",
+              },
+              timestamp: 10010,
+              lastPrice: "0.1",
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "0.1",
+                position: "5",
+                realized: "0.5",
+                total: "1",
+                unrealized: "0.5",
+              },
+              timestamp: 10020,
+              lastPrice: "0.2",
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "0.166666666666666666667",
+                position: "15",
+                realized: "0.5",
+                total: "0.999999999999999999995",
+                unrealized: "0.499999999999999999995",
+              },
+              timestamp: 10030,
+              lastPrice: "0.2",
+            },
+            {
+              profitLoss: {
+                meanOpenPrice: "0.166666666666666666667",
+                position: "10",
+                realized: "1.166666666666666666665",
+                total: "2.499999999999999999995",
+                unrealized: "1.33333333333333333333",
+              },
+              timestamp: 10040,
+              lastPrice: "0.3",
+            },
+          ]);
+        },
       },
-      assertions: (err, profitLoss) => {
-        assert.isNull(err);
-        assert.deepEqual(profitLoss, [{
-          "profitLoss": {
-            "meanOpenPrice": "0.1",
-            "position": "10",
-            "realized": "0",
-            "total": "0",
-            "unrealized": "0",
-          },
-          "timestamp": 10010,
-          "lastPrice": "0.1",
-        }, {
-          "profitLoss": {
-            "meanOpenPrice": "0.1",
-            "position": "5",
-            "realized": "0.5",
-            "total": "1",
-            "unrealized": "0.5",
-          },
-          "timestamp": 10020,
-          "lastPrice": "0.2",
-        }, {
-          "profitLoss": {
-            "meanOpenPrice": "0.166666666666666666667",
-            "position": "15",
-            "realized": "0.5",
-            "total": "0.999999999999999999995",
-            "unrealized": "0.499999999999999999995",
-          },
-          "timestamp": 10030,
-          "lastPrice": "0.2",
-        }, {
-          "profitLoss": {
-            "meanOpenPrice": "0.166666666666666666667",
-            "position": "10",
-            "realized": "1.166666666666666666665",
-            "total": "2.499999999999999999995",
-            "unrealized": "1.33333333333333333333",
-          },
-          "timestamp": 10040,
-          "lastPrice": "0.3",
-        }]);
-      },
-    }, done);
+      done
+    );
   });
 
   it("calculates pl for 1 period, and 4 periods, and verifies last period PLs are equal", (done) => {
-    var buckets1 = [{
-      timestamp: 10000,
-      lastPrice: null,
-    }, {
-      timestamp: 20000,
-      lastPrice: "0.3",
-    }];
+    var buckets1 = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 20000,
+        lastPrice: "0.3",
+      },
+    ];
     var pls1 = calculateBucketProfitLoss(augur, trades1, buckets1);
     assert.equal(pls1.length, 1);
 
-    var buckets2 = [{
-      timestamp: 10000,
-      lastPrice: null,
-    }, {
-      timestamp: 10010,
-      lastPrice: "0.1",
-    }, {
-      timestamp: 10020,
-      lastPrice: "0.2",
-    }, {
-      timestamp: 10030,
-      lastPrice: "0.2",
-    }, {
-      timestamp: 10040,
-      lastPrice: "0.3",
-    }];
+    var buckets2 = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 10010,
+        lastPrice: "0.1",
+      },
+      {
+        timestamp: 10020,
+        lastPrice: "0.2",
+      },
+      {
+        timestamp: 10030,
+        lastPrice: "0.2",
+      },
+      {
+        timestamp: 10040,
+        lastPrice: "0.3",
+      },
+    ];
     var pls2 = calculateBucketProfitLoss(augur, trades1, buckets2);
     assert.equal(pls2.length, 4);
 
     var result = {
-      "meanOpenPrice": "0.166666666666666666667",
-      "position": "10",
-      "realized": "1.166666666666666666665",
-      "total": "2.499999999999999999995",
-      "unrealized": "1.33333333333333333333",
+      meanOpenPrice: "0.166666666666666666667",
+      position: "10",
+      realized: "1.166666666666666666665",
+      total: "2.499999999999999999995",
+      unrealized: "1.33333333333333333333",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);
@@ -578,22 +636,25 @@ describe("server/getters/get-profit-loss", () => {
       maker: true,
     });
 
-    var buckets = [{
-      timestamp: 10000,
-      lastPrice: null,
-    }, {
-      timestamp: 10040,
-      lastPrice: "0.3",
-    }];
+    var buckets = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 10040,
+        lastPrice: "0.3",
+      },
+    ];
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
-      "meanOpenPrice": "0.166666666666666666667",
-      "position": "10",
-      "realized": "1.166666666666666666665",
-      "total": "2.499999999999999999995",
-      "unrealized": "1.33333333333333333333",
+      meanOpenPrice: "0.166666666666666666667",
+      position: "10",
+      realized: "1.166666666666666666665",
+      total: "2.499999999999999999995",
+      unrealized: "1.33333333333333333333",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);
@@ -603,37 +664,43 @@ describe("server/getters/get-profit-loss", () => {
 
   it("calculates pl for one period, with basis which nets out", (done) => {
     // These two trades net out, leaving a 0 basis
-    var trades2 = [{
-      timestamp: 8000,
-      type: "buy",
-      amount: "5",
-      price: "0.3",
-      maker: true,
-    }, {
-      timestamp: 9000,
-      type: "sell",
-      amount: "5",
-      price: "0.3",
-      maker: true,
-    }].concat(trades1);
+    var trades2 = [
+      {
+        timestamp: 8000,
+        type: "buy",
+        amount: "5",
+        price: "0.3",
+        maker: true,
+      },
+      {
+        timestamp: 9000,
+        type: "sell",
+        amount: "5",
+        price: "0.3",
+        maker: true,
+      },
+    ].concat(trades1);
 
-    var buckets = [{
-      timestamp: 10000,
-      lastPrice: "0.3",
-    }, {
-      timestamp: 10040,
-      lastPrice: "0.3",
-    }];
+    var buckets = [
+      {
+        timestamp: 10000,
+        lastPrice: "0.3",
+      },
+      {
+        timestamp: 10040,
+        lastPrice: "0.3",
+      },
+    ];
 
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
-      "meanOpenPrice": "0.166666666666666666667",
-      "position": "10",
-      "realized": "1.16666666666666666666",
-      "total": "2.49999999999999999999",
-      "unrealized": "1.33333333333333333333",
+      meanOpenPrice: "0.166666666666666666667",
+      position: "10",
+      realized: "1.16666666666666666666",
+      total: "2.49999999999999999999",
+      unrealized: "1.33333333333333333333",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);
@@ -642,37 +709,43 @@ describe("server/getters/get-profit-loss", () => {
   });
 
   it("calculates pl for one period, with basis doesnt net out", (done) => {
-    var trades2 = [{
-      timestamp: 8000,
-      type: "buy",
-      amount: "5",
-      price: "0.4",
-      maker: true,
-    }, {
-      timestamp: 9000,
-      type: "sell",
-      amount: "3",
-      price: "0.1",
-      maker: true,
-    }].concat(trades1);
+    var trades2 = [
+      {
+        timestamp: 8000,
+        type: "buy",
+        amount: "5",
+        price: "0.4",
+        maker: true,
+      },
+      {
+        timestamp: 9000,
+        type: "sell",
+        amount: "3",
+        price: "0.1",
+        maker: true,
+      },
+    ].concat(trades1);
 
-    var buckets = [{
-      timestamp: 10000,
-      lastPrice: "0.1",
-    }, {
-      timestamp: 10040,
-      lastPrice: "0.3",
-    }];
+    var buckets = [
+      {
+        timestamp: 10000,
+        lastPrice: "0.1",
+      },
+      {
+        timestamp: 10040,
+        lastPrice: "0.3",
+      },
+    ];
 
     var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
-      "meanOpenPrice": "0.176923076923076923077",
-      "position": "8",
-      "realized": "1.71538461538461538461",
-      "total": "2.1",
-      "unrealized": "0.38461538461538461538",
+      meanOpenPrice: "0.176923076923076923077",
+      position: "8",
+      realized: "1.71538461538461538461",
+      total: "2.1",
+      unrealized: "0.38461538461538461538",
     };
 
     assert.deepEqual(pls1[0].profitLoss, result);
@@ -681,7 +754,8 @@ describe("server/getters/get-profit-loss", () => {
   });
 
   it("Account 1 has 4eth Total P/L", (done) => {
-    const trades = [{
+    const trades = [
+      {
         timestamp: 10000,
         type: "sell",
         price: "0.5",
@@ -694,33 +768,38 @@ describe("server/getters/get-profit-loss", () => {
         price: "0.1",
         amount: "10",
         maker: true,
-    }];
+      },
+    ];
 
-    const buckets = [{
-      timestamp: 10000,
-      lastPrice: null,
-    }, {
-      timestamp: 20000,
-      lastPrice: 0.1,
-    }];
+    const buckets = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 20000,
+        lastPrice: 0.1,
+      },
+    ];
     const results = calculateBucketProfitLoss(augur, trades, buckets);
-    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+    const results2 = augur.trading.calculateProfitLoss({ trades, lastPrice: 0.1 });
 
     assert.deepEqual(results[0].profitLoss, results2);
     assert.deepEqual(results2, {
-      "meanOpenPrice": "0",
-      "position": "0",
-      "realized": "-4",
-      "total": "-4",
-      "unrealized": "0",
+      meanOpenPrice: "0",
+      position: "0",
+      realized: "-4",
+      total: "-4",
+      unrealized: "0",
     });
 
     done();
   });
 
   it("Account 2 has +4eth P/L", (done) => {
-    const trades = [{
-    /* MADE A BUY ORDER */
+    const trades = [
+      {
+        /* MADE A BUY ORDER */
         timestamp: 10000,
         type: "sell",
         price: "0.5",
@@ -728,31 +807,35 @@ describe("server/getters/get-profit-loss", () => {
         maker: false,
       },
       {
-    /* FILLING THE BUY ORDER */
+        /* FILLING THE BUY ORDER */
         timestamp: 10020,
         type: "buy",
         price: "0.1",
         amount: "10",
         maker: false,
-    }];
+      },
+    ];
 
-    const buckets = [{
-      timestamp: 10000,
-      lastPrice: null,
-    }, {
-      timestamp: 20000,
-      lastPrice: 0.1,
-    }];
+    const buckets = [
+      {
+        timestamp: 10000,
+        lastPrice: null,
+      },
+      {
+        timestamp: 20000,
+        lastPrice: 0.1,
+      },
+    ];
     const results = calculateBucketProfitLoss(augur, trades, buckets);
-    const results2 = augur.trading.calculateProfitLoss( { trades, lastPrice: 0.1} )
+    const results2 = augur.trading.calculateProfitLoss({ trades, lastPrice: 0.1 });
 
     assert.deepEqual(results[0].profitLoss, results2);
     assert.deepEqual(results2, {
-      "meanOpenPrice": "0",
-      "position": "0",
-      "realized": "4",
-      "total": "4",
-      "unrealized": "0",
+      meanOpenPrice: "0",
+      position: "0",
+      realized: "4",
+      total: "4",
+      unrealized: "0",
     });
 
     done();
