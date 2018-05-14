@@ -129,6 +129,7 @@ export default class MarketOutcomeOrderbook extends Component {
                 className={Styles.MarketOutcomeOrderBook__RowItem}
                 onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: BUY,
                 })}
               >
@@ -191,6 +192,7 @@ export default class MarketOutcomeOrderbook extends Component {
                 className={Styles.MarketOutcomeOrderBook__RowItem}
                 onClick={() => updateSeletedOrderProperties({
                   orderPrice: order.price.value.toString(),
+                  orderQuantity: order.cumulativeShares.toString(),
                   selectedNav: SELL,
                 })}
               >
