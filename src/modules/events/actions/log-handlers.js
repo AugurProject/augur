@@ -138,6 +138,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) => (
 
 export const handleDisputeCrowdsourcerCreatedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
+  dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
 
@@ -152,11 +153,13 @@ export const handleDisputeCrowdsourcerContributionLog = log => (dispatch, getSta
 export const handleDisputeCrowdsourcerCompletedLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId]))
   dispatch(loadMarketsDisputeInfo([log.marketId]))
+  dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
 
 export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
+  dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
 
@@ -166,7 +169,6 @@ export const handleFeeWindowCreatedLog = log => (dispatch) => {
 }
 
 export const handleFeeWindowOpenedLog = log => (dispatch) => {
-  console.log('handleFeeWindowOpenedLog', JSON.stringify(log))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
 }
