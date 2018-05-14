@@ -4,9 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
-// import MarketPortfolioCard from 'modules/market/components/market-portfolio-card/market-portfolio-card'
 import PortfolioReportsForkedMarketCard from 'modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card'
-// import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET, MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
 import { TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-reports.styles'
@@ -106,7 +104,7 @@ export default class PortfolioReports extends Component {
 
         // TODO: Remove hard-coded lines below once augur-node bug is fixed.
         unclaimedForkEth: formatEther(124, { decimals: 4, zeroStyled: true }),
-        unclaimedForkRep: formatAttoRep(333, { decimals: 4, zeroStyled: true }),
+        unclaimedForkRep: formatAttoRep(524520874023437500.5, { decimals: 4, zeroStyled: true }),
         // unclaimedEth: formatEther(1, { decimals: 4, zeroStyled: true }),
         // unclaimedRep: formatAttoRep(2, { decimals: 4, zeroStyled: true }),
         // feeWindows: result.feeWindows,
@@ -172,13 +170,9 @@ export default class PortfolioReports extends Component {
 
   render() {
     const {
-      // claimReportingFeesForkedMarket,
       currentTimestamp,
       finalizeMarket,
       forkedMarket,
-      // getWinningBalances,
-      // isLogged,
-      // updateModal,
     } = this.props
     const s = this.state
     let disableClaimReportingFeesNonforkedMarketsButton = ''
@@ -218,21 +212,6 @@ export default class PortfolioReports extends Component {
             <h5>
               REP staked on an outcome of the forking market will be available in the outcome&#39;s corresponding universe once claimed.
             </h5>
-            {/* <MarketPortfolioCard
-              claimReportingFeesForkedMarket={claimReportingFeesForkedMarket}
-              closePositionStatus={getClosePositionStatus}
-              currentTimestamp={currentTimestamp}
-              finalizeMarket={finalizeMarket}
-              forkedMarketReportingFeesInfo={s.forkedMarket}
-              getWinningBalances={getWinningBalances}
-              isLogged={isLogged}
-              linkType={TYPE_CLAIM_PROCEEDS}
-              market={forkedMarket}
-              unclaimedForkEth={s.unclaimedForkEth}
-              unclaimedForkRep={s.unclaimedForkRep}
-              updateModal={updateModal}
-              userHasClaimableForkFees={userHasClaimableForkFees}
-            /> */}
             <PortfolioReportsForkedMarketCard
               buttonAction={this.handleClaimReportingFeesForkedMarket}
               currentTimestamp={currentTimestamp}

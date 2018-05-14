@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
-import { compact } from 'lodash'
 import PropTypes from 'prop-types'
 
-import { dateHasPassed } from 'utils/format-date'
 import getValue from 'utils/get-value'
 
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
@@ -11,19 +9,11 @@ import MarketPositionsListOrder from 'modules/market/components/market-positions
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
+import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
-import DisputeMarketCardStyles from 'modules/reporting/components/dispute-market-card/dispute-market-card.style'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
 import Styles from 'modules/market/components/market-portfolio-card/market-portfolio-card.styles'
 import MarketPortfolioCardFooter from 'modules/market/components/market-portfolio-card/market-portfolio-card-footer'
-import MarketProperties from 'modules/market/containers/market-properties'
-import ForkMigrationTotals from 'modules/forking/containers/fork-migration-totals'
-import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET } from 'modules/modal/constants/modal-types'
-import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
-import { MARKETS } from 'modules/routes/constants/views'
-import makePath from 'modules/routes/helpers/make-path'
-import toggleTag from 'modules/routes/helpers/toggle-tag'
-import toggleCategory from 'modules/routes/helpers/toggle-category'
 
 export default class MarketPortfolioCard extends Component {
   static propTypes = {
@@ -31,17 +21,12 @@ export default class MarketPortfolioCard extends Component {
     claimTradingProceeds: PropTypes.func,
     closePositionStatus: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
-    finalizeMarket: PropTypes.func.isRequired,
-    forkedMarketReportingFeesInfo: PropTypes.object,
-    getWinningBalances: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
     linkType: PropTypes.string,
     market: PropTypes.object.isRequired,
     positionsDefault: PropTypes.bool,
-    unclaimedForkEth: PropTypes.object,
-    unclaimedForkRep: PropTypes.object,
-    userHasClaimableForkFees: PropTypes.bool,
-    updateModal: PropTypes.func,
+    finalizeMarket: PropTypes.func.isRequired,
+    getWinningBalances: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -74,27 +59,13 @@ export default class MarketPortfolioCard extends Component {
   claimProceeds = () => {
     this.props.claimTradingProceeds([this.props.market.id])
   }
-
-  handleClaimReportingFeesForkedMarket = () => {
-    this.props.updateModal({
-      type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
-      unclaimedEth: this.props.unclaimedForkEth,
-      unclaimedRep: this.props.unclaimedForkRep,
-      forkedMarket: this.props.forkedMarketReportingFeesInfo,
-      canClose: true,
-    })
-  }
-
   render() {
     const {
-      closePositionStatus,
       currentTimestamp,
       isMobile,
       linkType,
       market,
-      unclaimedForkEth,
-      unclaimedForkRep,
-      userHasClaimableForkFees,
+      closePositionStatus,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -104,11 +75,7 @@ export default class MarketPortfolioCard extends Component {
     switch (linkType) {
       case TYPE_CLAIM_PROCEEDS:
         localButtonText = 'Claim'
-        if (userHasClaimableForkFees) {
-          buttonAction = this.handleClaimReportingFeesForkedMarket
-        } else {
-          buttonAction = this.claimProceeds
-        }
+        buttonAction = this.claimProceeds
         break
       case TYPE_CALCULATE_PAYOUT:
         localButtonText = 'Calculate Payout'
@@ -116,65 +83,6 @@ export default class MarketPortfolioCard extends Component {
         break
       default:
         localButtonText = 'View'
-    }
-
-    if (userHasClaimableForkFees) {
-      const process = (...arr) => compact(arr).map(label => ({
-        label,
-        onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
-      }))
-      const categoriesWithClick = process(market.category)
-      const tagsWithClick = compact(market.tags).map(tag => ({
-        label: tag,
-        onClick: toggleTag(tag, { pathname: makePath(MARKETS) }, history),
-      }))
-
-      return (
-        <article
-          className={classNames(CommonStyles.MarketCommon__container, DisputeMarketCardStyles['DisputeMarket__fork-top'])}
-        >
-          <section
-            className={classNames(
-              CommonStyles.MarketCommon__topcontent,
-              DisputeMarketCardStyles.MarketCard__topcontent,
-            )}
-          >
-            <div className={CommonStyles.MarketCommon__header}>
-              <CategoryTagTrail categories={categoriesWithClick} tags={tagsWithClick} />
-              <div className={DisputeMarketCardStyles['DisputeMarket__round-number']}>
-                <span className={DisputeMarketCardStyles['DisputeMarket__fork-label']}>Forking</span>
-              </div>
-            </div>
-
-            <h1 className={CommonStyles.MarketCommon__description}>
-              <MarketLink
-                id={market.id}
-                formattedDescription={market.formattedDescription}
-              >
-                {market.description}
-              </MarketLink>
-            </h1>
-
-            <ForkMigrationTotals />
-          </section>
-          <section className={Styles.MarketCommon__footer}>
-            <MarketProperties
-              {...this.props}
-              endTime={market.endTime}
-            />
-          </section>
-          <MarketPortfolioCardFooter
-            linkType={linkType}
-            localButtonText={localButtonText}
-            buttonAction={buttonAction}
-            outstandingReturns={market.outstandingReturns}
-            finalizationTime={market.finalizationTime}
-            currentTimestamp={currentTimestamp}
-            unclaimedForkEth={unclaimedForkEth}
-            unclaimedForkRep={unclaimedForkRep}
-          />
-        </article>
-      )
     }
 
     return (
