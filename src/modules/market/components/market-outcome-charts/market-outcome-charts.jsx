@@ -22,7 +22,7 @@ import { clampPeriodByRange, defaultRangePeriodDurations } from 'src/modules/mar
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    currentTimeInSeconds: PropTypes.number.isRequired,
+    currentTimeInSeconds: PropTypes.number,
     excludeCandlestick: PropTypes.bool,
     fixedPrecision: PropTypes.number.isRequired,
     hasOrders: PropTypes.bool.isRequired,
@@ -132,7 +132,7 @@ export default class MarketOutcomeCharts extends Component {
       marketId,
       period: selectedPeriod,
       start: currentTimeAsMultipleOfPeriod - selectedRange,
-      end: currentTimeAsMultipleOfPeriod,
+      end: currentTimeInSeconds,
       outcome: selectedOutcome.id,
     }, (err, data) => {
       if (err) return logError(err)
