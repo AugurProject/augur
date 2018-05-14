@@ -17,7 +17,7 @@ import { getTickIntervalForRange } from 'src/modules/market/helpers'
 
 class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
-    currentTimeInSeconds: PropTypes.number.isRequired,
+    currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
     hoveredPeriod: PropTypes.object.isRequired,
     hoveredPrice: PropTypes.any,
