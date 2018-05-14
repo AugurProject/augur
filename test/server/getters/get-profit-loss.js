@@ -131,7 +131,7 @@ describe("tests for test/profitloss.db", () => {
   const account1 = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
   const account2 = "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6";
   const endTime = Date.now();
-  it("has a total PL of 4eth for account1", (done) => {
+  it("has a total PL of -4eth for account1", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
         assert.deepEqual(results, [{
@@ -151,7 +151,7 @@ describe("tests for test/profitloss.db", () => {
       done();
     });
   });
-  it("has a total PL of -4eth for account2", (done) => {
+  it("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
         assert.deepEqual(results, [{
