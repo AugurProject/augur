@@ -91,15 +91,6 @@ let config = {
         loader: 'babel'
       },
       {
-        test: /\.worker\.js$/,
-        use: {
-          loader: 'worker-loader',
-          options: {
-            inline: true
-          }
-        }
-      },
-      {
         test: /\.json/,
         loader: 'json'
       },

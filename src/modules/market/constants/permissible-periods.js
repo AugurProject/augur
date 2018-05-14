@@ -1,50 +1,71 @@
+import {
+  timeDay,
+  timeHour,
+  timeMinute,
+  timeMonth,
+  timeSecond,
+} from 'd3'
+
 // Note: times are in seconds
 export const RANGES = [
   {
-    range: 60,
+    duration: 60,
     label: 'Past minute',
+    tickInterval: timeSecond.every(30),
   },
   {
-    range: 3600,
+    duration: 3600,
     label: 'Past hour',
+    tickInterval: timeMinute.every(10),
   },
   {
-    range: 86400,
+    duration: 86400,
     label: 'Past day',
+    isDefault: true,
+    tickInterval: timeHour.every(3),
   },
   {
-    range: 604800,
+    duration: 604800,
     label: 'Past week',
+    tickInterval: timeDay.every(1),
   },
   {
-    range: 2629800,
+    duration: 2629800,
     label: 'Past month',
+    tickInterval: timeDay.every(6),
   },
   {
-    range: 31557600,
+    duration: 31557600,
     label: 'Past year',
+    tickInterval: timeMonth.every(1),
   },
 ]
 
-export const PERIODS = [
-  {
-    period: 60,
-    label: 'Every minute',
-  },
-  {
-    period: 3600,
-    label: 'Hourly',
-  },
-  {
-    period: 86400,
-    label: 'Daily',
-  },
-  {
-    period: 604800,
-    label: 'Weekly',
-  },
-  {
-    period: 2629800,
-    label: 'Monthly',
-  },
-]
+export const
+  PERIODS = [
+    {
+      duration: 30,
+      label: 'Every thirty seconds',
+    },
+    {
+      duration: 60,
+      label: 'Every minute',
+    },
+    {
+      duration: 3600,
+      label: 'Hourly',
+      isDefault: true,
+    },
+    {
+      duration: 86400,
+      label: 'Daily',
+    },
+    {
+      duration: 604800,
+      label: 'Weekly',
+    },
+    {
+      duration: 2629800,
+      label: 'Monthly',
+    },
+  ]

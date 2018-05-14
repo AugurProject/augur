@@ -5,7 +5,7 @@ import { CreateMarketEdit } from 'modules/common/components/icons'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import getValue from 'utils/get-value'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/trade/components/trading--confirm/trading--confirm.styles'
@@ -27,7 +27,7 @@ const MarketTradingConfirm = (p) => {
         <button onClick={p.prevPage}>{ CreateMarketEdit }</button>
       </div>
       <ul className={Styles.TradingConfirm__details}>
-        { !p.isMobile && p.market.marketType !== SCALAR &&
+        { !p.isMobile && p.market.marketType === CATEGORICAL &&
           <li>
             <span>Outcome</span>
             <span>{ p.selectedOutcome.name }</span>

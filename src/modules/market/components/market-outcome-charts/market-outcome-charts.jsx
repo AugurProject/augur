@@ -18,11 +18,11 @@ import Styles from 'modules/market/components/market-outcome-charts/market-outco
 import { loadCandleStickData } from 'modules/market/actions/load-candlestick-data'
 
 import { BigNumber } from 'bignumber.js'
-import { PERIODS, RANGES } from 'src/modules/market/constants/permissible-periods'
+import { clampPeriodByRange, defaultRangePeriodDurations } from 'src/modules/market/helpers'
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {
-    currentTimeInSeconds: PropTypes.number.isRequired,
+    currentTimeInSeconds: PropTypes.number,
     excludeCandlestick: PropTypes.bool,
     fixedPrecision: PropTypes.number.isRequired,
     hasOrders: PropTypes.bool.isRequired,
@@ -51,10 +51,11 @@ export default class MarketOutcomeCharts extends Component {
 
     this.snapScroller = null
 
+    const { range, period } = defaultRangePeriodDurations
     this.state = {
       candleScrolled: true,
-      selectedPeriod: PERIODS[1].period, // Hour
-      selectedRange: RANGES[2].range, // Day
+      selectedPeriod: period,
+      selectedRange: range,
       hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
@@ -131,7 +132,7 @@ export default class MarketOutcomeCharts extends Component {
       marketId,
       period: selectedPeriod,
       start: currentTimeAsMultipleOfPeriod - selectedRange,
-      end: currentTimeAsMultipleOfPeriod,
+      end: currentTimeInSeconds,
       outcome: selectedOutcome.id,
     }, (err, data) => {
       if (err) return logError(err)
@@ -163,7 +164,9 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   updateSelectedRange(selectedRange) {
+    const selectedPeriod = clampPeriodByRange(selectedRange, this.state.selectedPeriod)
     this.setState({
+      selectedPeriod,
       selectedRange,
     })
   }

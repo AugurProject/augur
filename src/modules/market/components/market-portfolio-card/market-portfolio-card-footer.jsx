@@ -27,6 +27,7 @@ const MarketPortfolioCardFooter = (p) => {
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
   }
+  const userHasClaimableForkFees = ((p.unclaimedForkEthFees && p.unclaimedForkEthFees.value > 0) || (p.unclaimedForkRepStaked && p.unclaimedForkRepStaked.value > 0))
 
   return (
     <div>
@@ -42,11 +43,16 @@ const MarketPortfolioCardFooter = (p) => {
             Styles['MarketCard__headingcontainer-footer-light'],
           )}
         >
-          {p.linkType === TYPE_CLAIM_PROCEEDS &&
-            <div>
-              <span className={Styles['MarketCard__light-text']}>Outstanding Returns</span>
-              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns, { decimals: 2 }).minimized} ETH</span>
-            </div>
+          {p.linkType === TYPE_CLAIM_PROCEEDS && userHasClaimableForkFees &&
+            <span className={Styles['MarketCard__light-text']}>Outstanding Returns
+              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEthFees.formattedValue} ETH</span>|
+              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkRepStaked.formattedValue} REP</span>
+            </span>
+          }
+          {p.linkType === TYPE_CLAIM_PROCEEDS && !userHasClaimableForkFees &&
+            <span className={Styles['MarketCard__light-text']}>Outstanding Returns
+              <span className={Styles['MarketCard__heavy-text']}>{formatEther(p.outstandingReturns).formattedValue} ETH</span>
+            </span>
           }
           <div className={Styles['MarketCard__action-container']}>
             {p.linkType === TYPE_CLAIM_PROCEEDS && p.finalizationTime && !canClaim &&
@@ -61,7 +67,7 @@ const MarketPortfolioCardFooter = (p) => {
             <button
               className={classNames(Styles['MarketCard__action-footer-light'])}
               onClick={p.buttonAction}
-              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim}
+              disabled={p.linkType === TYPE_CLAIM_PROCEEDS && !canClaim && !userHasClaimableForkFees}
             >
               { p.localButtonText }
             </button>
@@ -79,6 +85,8 @@ MarketPortfolioCardFooter.propTypes = {
   outstandingReturns: PropTypes.string,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
+  unclaimedForkEthFees: PropTypes.object,
+  unclaimedForkRepStaked: PropTypes.object,
 }
 
 export default MarketPortfolioCardFooter
