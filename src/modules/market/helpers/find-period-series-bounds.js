@@ -17,8 +17,8 @@ export default function findPeriodSeriesBounds(periodTimeSeries = [], marketMin 
     }
 
     return {
-      min: Math.min(item.low, p.min),
-      max: Math.max(item.high, p.max),
+      min: Math.min(item.low, p.min).toString(),
+      max: Math.max(item.high, p.max).toString(),
     }
   }, DEFAULT_BOUNDS)
 }
