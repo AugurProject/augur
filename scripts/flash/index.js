@@ -79,6 +79,7 @@ var methods = {
       outcome: { required: true, short: "o", help: "Outcome, sets outcome to use, can be overridden by invalid flag, negative outcome use \\\"-10\\\"" },
       amount: { short: "a", help: "Optional: amount of REP to dispute with" },
       invalid: { flag: true, short: "i", help: "Overrides outcome to pass invalid" },
+      noPush: { short: "n", flag: true, default: false, help: "normally time is pushed to dispute contribute on market, simply don't push time" },
     },
   },
   "finalize-market": {
@@ -86,7 +87,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, finalize the market, it's in the correct state" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      noPush: { flag: true, default: false, help: "normally time is pushed to finalize market, to finalize forking market don't push time" },
+      noPush: { short: "n", flag: true, default: false, help: "normally time is pushed to finalize market, to finalize forking market don't push time" },
     },
   },
   "push-time": {

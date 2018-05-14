@@ -18,10 +18,22 @@ function help() {
   console.log(chalk.red("Time is pushed into the next fee windows so that the market can be disputed"));
   console.log(chalk.red("If there isn't a next fee window then the market will needed to be reporterd on, which creates a next fee window"));
   console.log(chalk.red("user will be give REP if balance is 0"));
+  console.log(chalk.red("Use noPush to just dispute contribute and not worry about time moving"));
 }
 
-function disputeContributeInternal(augur, marketId, outcome, amount, disputerAuth, invalid, auth, callback) {
-  getRepTokens(augur, amount, disputerAuth, function (err) {
+function disputeContribute(augur, args, auth, callback) {
+  if (args === "help" || args.opt.help) {
+    help();
+    return callback(null);
+  }
+  var amount = args.opt.amount || 10000;
+  var marketId = args.opt.marketId;
+  var outcome = args.opt.outcome;
+  var invalid = args.opt.invalid;
+  var noPush = args.opt.noPush;
+  console.log(chalk.yellow.dim("amount"), amount);
+
+  getRepTokens(augur, amount, auth, function (err) {
     if (err) {
       console.log(chalk.red("Error"), chalk.red(err));
       return callback(err);
@@ -34,6 +46,19 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
         return callback("Could not get market info");
       }
       var market = marketsInfo[0];
+      var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+      var attoREP = speedomatic.fix(amount, "hex");
+
+      if (noPush) {
+        doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
+          if (err) {
+            return callback("Market contribute Failed");
+          }
+          console.log(chalk.green("Market contribute Done"));
+          callback(null);
+        });
+      }
+
       var marketPayload = { tx: { to: marketId } };
       augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
         if (err) {
@@ -66,8 +91,6 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
                 console.log(chalk.red(err));
                 return callback(err);
               }
-              var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
-              var attoREP = speedomatic.fix(amount, "hex");
               console.log(chalk.yellow("sending amount REP"), chalk.yellow(attoREP), chalk.yellow(amount));
               augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
                 if (err) {
@@ -76,7 +99,7 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
                 }
                 console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
                 if (result) {
-                  doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, disputerAuth, function (err) {
+                  doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
                     if (err) {
                       return callback("Market contribute Failed");
                     }
@@ -94,19 +117,6 @@ function disputeContributeInternal(augur, marketId, outcome, amount, disputerAut
       });
     });
   });
-}
-
-function disputeContribute(augur, args, auth, callback) {
-  if (args === "help" || args.opt.help) {
-    help();
-    return callback(null);
-  }
-  var amount = args.opt.amount || 10000;
-  var marketId = args.opt.marketId;
-  var outcome = args.opt.outcome;
-  var invalid = args.opt.invalid;
-  console.log(chalk.yellow.dim("amount"), amount);
-  disputeContributeInternal(augur, marketId, outcome, amount, auth, invalid, auth, callback);
 }
 
 module.exports = disputeContribute;
