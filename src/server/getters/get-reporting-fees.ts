@@ -279,6 +279,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   initialReportersQuery.join("payouts", "initial_reports.payoutId", "payouts.payoutId");
   initialReportersQuery.whereNotNull("payouts.winning");
   initialReportersQuery.where("initial_reports.reporter", reporter);
+  initialReportersQuery.whereNot("initial_reports.redeemed");
   if (universe != null) {
     initialReportersQuery.join("markets", "markets.marketId", "initial_reports.marketId");
     initialReportersQuery.where("markets.universe", universe);
@@ -330,6 +331,7 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   initialReportersQuery.join("balances", "balances.token", "fee_windows.feeToken");
   initialReportersQuery.join("initial_reports", "initial_reports.initialReportId", "balances.owner");
   initialReportersQuery.where("initial_reports.reporter", reporter);
+  initialReportersQuery.whereNot("initial_reports.redeemed");
   if (universe != null) initialReportersQuery.where("fee_windows.universe", universe);
   if (feeWindow != null) initialReportersQuery.where("fee_windows.feeWindow", feeWindow);
 
