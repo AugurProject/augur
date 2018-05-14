@@ -4,16 +4,14 @@ import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
 import { formatGasCostToEther } from 'utils/format-number'
 
-import Styles from 'modules/modal/components/modal-claim-reporting-fees/modal-claim-reporting-fees.styles'
+import Styles from 'modules/modal/components/modal-claim-reporting-fees-forked-market/modal-claim-reporting-fees-forked-market.styles'
 
-export default class ModalClaimReportingFees extends Component {
+export default class ModalClaimReportingFeesForkedMarket extends Component {
   static propTypes = {
-    claimReportingFees: PropTypes.func.isRequired,
+    claimReportingFeesForkedMarket: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
     recipient: PropTypes.string.isRequired,
-    feeWindows: PropTypes.array.isRequired,
     forkedMarket: PropTypes.object.isRequired,
-    nonforkedMarkets: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
   }
@@ -22,45 +20,40 @@ export default class ModalClaimReportingFees extends Component {
     super(props)
 
     this.state = {
-      claimReportingFeesGasEstimate: '0',
+      ClaimReportingFeesForkedMarketGasEstimate: '0',
     }
 
-    this.handleClaimReportingFees = this.handleClaimReportingFees.bind(this)
+    this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
   }
 
   componentWillMount() {
-    const claimReportingFeesOptions = {
-      feeWindows: this.props.feeWindows,
+    const ClaimReportingFeesForkedMarketOptions = {
       forkedMarket: this.props.forkedMarket,
-      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: true,
       onSent: () => {},
       onFailed: (err) => {
         // Default to 0 for now if we recieve an error.
-        const claimReportingFeesGasEstimate = '0'
+        const ClaimReportingFeesForkedMarketGasEstimate = '0'
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
-          claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
+          ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(ClaimReportingFeesForkedMarketGasEstimate, { decimalsRounded: 4 }, gasPrice),
         })
       },
       onSuccess: (result) => {
-        // Default to 0 for now if we recieve an error.
-        const claimReportingFeesGasEstimate = result.gasEstimates.totals.all.toString()
+        const ClaimReportingFeesForkedMarketGasEstimate = result.gasEstimates.totals.all.toString()
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
-          claimReportingFeesGasEstimate: formatGasCostToEther(claimReportingFeesGasEstimate, { decimalsRounded: 4 }, gasPrice),
+          ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(ClaimReportingFeesForkedMarketGasEstimate, { decimalsRounded: 4 }, gasPrice),
         })
       },
     }
-    this.props.claimReportingFees(claimReportingFeesOptions)
+    this.props.claimReportingFeesForkedMarket(ClaimReportingFeesForkedMarketOptions)
   }
 
-  handleClaimReportingFees(e) {
+  handleClaimReportingFeesForkedMarket(e) {
     e.preventDefault()
-    const claimReportingFeesOptions = {
-      feeWindows: this.props.feeWindows,
+    const ClaimReportingFeesForkedMarketOptions = {
       forkedMarket: this.props.forkedMarket,
-      nonforkedMarkets: this.props.nonforkedMarkets,
       estimateGas: false,
       onSent: () => {},
       onFailed: (err) => {
@@ -70,7 +63,7 @@ export default class ModalClaimReportingFees extends Component {
         this.props.closeModal()
       },
     }
-    this.props.claimReportingFees(claimReportingFeesOptions)
+    this.props.claimReportingFeesForkedMarket(ClaimReportingFeesForkedMarketOptions)
   }
 
   render() {
@@ -82,34 +75,34 @@ export default class ModalClaimReportingFees extends Component {
     const s = this.state
 
     // In theory, this modal should never be shown if there is no unclaimed ETH/REP, but check whether button should be disabled anyway.
-    let disableClaimReportingFeesButton = ''
+    let disableClaimReportingFeesForkedMarketButton = ''
     if (unclaimedRep.formatted === '-' && unclaimedEth.formatted === '-') {
-      disableClaimReportingFeesButton = 'disabled'
+      disableClaimReportingFeesForkedMarketButton = 'disabled'
     }
 
     return (
       <form
-        className={Styles.ModalClaimReportingFees__form}
-        onSubmit={this.handleClaimReportingFees}
+        className={Styles.ModalClaimReportingFeesForkedMarket__form}
+        onSubmit={this.handleClaimReportingFeesForkedMarket}
       >
-        <div className={Styles.ModalClaimReportingFees__heading}>
+        <div className={Styles.ModalClaimReportingFeesForkedMarket__heading}>
           <h1>Review Withdrawl</h1>
         </div>
-        <div className={Styles.ModalClaimReportingFees__details}>
-          <ul className={Styles.ModalClaimReportingFees__info}>
+        <div className={Styles.ModalClaimReportingFeesForkedMarket__details}>
+          <ul className={Styles.ModalClaimReportingFeesForkedMarket__info}>
             <li><span>Recipient</span><span>{recipient}</span></li>
             <li><span>Rep</span><span>{unclaimedRep.formatted}</span></li>
             <li><span>Eth</span><span>{unclaimedEth.formatted}</span></li>
-            <li><span>Gas</span><span>{s.claimReportingFeesGasEstimate}</span></li>
+            <li><span>Gas</span><span>{s.ClaimReportingFeesForkedMarketGasEstimate}</span></li>
           </ul>
         </div>
-        <div className={Styles.ModalClaimReportingFees__message}>
+        <div className={Styles.ModalClaimReportingFeesForkedMarket__message}>
           Transferring all funds may require multiple signed transactions.
         </div>
-        <div className={Styles.ModalClaimReportingFees__actions}>
+        <div className={Styles.ModalClaimReportingFeesForkedMarket__actions}>
           <button
-            className={Styles.ModalClaimReportingFees__button}
-            disabled={disableClaimReportingFeesButton}
+            className={Styles.ModalClaimReportingFeesForkedMarket__button}
+            disabled={disableClaimReportingFeesForkedMarketButton}
             type="submit"
           >
             Submit

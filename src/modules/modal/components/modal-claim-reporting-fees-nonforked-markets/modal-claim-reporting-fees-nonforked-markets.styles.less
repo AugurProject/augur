@@ -1,0 +1,135 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalClaimReportingFeesNonforkedMarkets__form {
+  color: @color-white;
+  max-width: 35rem;
+  width: 100%;
+}
+
+.ModalClaimReportingFeesNonforkedMarkets__heading {
+  align-items: flex-start;
+  display: flex;
+  margin: 0;
+
+  > h1 {
+    .caps--extra-large();
+
+    color: @color-white;
+  }
+}
+
+.ModalClaimReportingFeesNonforkedMarkets__details {
+  .border(true, @border-top, @color-white);
+  .border(true, @border-bottom, @color-white);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 1rem 0;
+  padding: 1rem 0;
+}
+
+.ModalClaimReportingFeesNonforkedMarkets__info {
+  flex: 0 1;
+  white-space: nowrap;
+  word-break: keep-all;
+
+  > li {
+    align-content: space-between;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0.5rem 0;
+    text-transform: uppercase;
+
+    > span:first-of-type {
+      flex: 0 0 10rem;
+    }
+
+    > span {
+      flex: 1;
+    }
+  }
+}
+
+.ModalClaimReportingFeesNonforkedMarkets__actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 0;
+}
+
+.ModalClaimReportingFeesNonforkedMarkets__button {
+  .button--white();
+
+  margin-top: 2rem;
+}
+
+@media @breakpoint-mobile-small {
+  .ModalClaimReportingFeesNonforkedMarkets__heading {
+    margin: 0 1rem 1rem;
+
+    > h1 {
+      font-size: @font-size-somewhat-large;
+      line-height: @font-size-somewhat-large;
+      margin-top: 0;
+    }
+  }
+
+  .ModalClaimReportingFeesNonforkedMarkets__details {
+    // borders need to come in as well, so use margin for details
+    margin: 0 1rem 1rem;
+  }
+
+  .ModalClaimReportingFeesNonforkedMarkets__info {
+    flex: 1;
+    white-space: normal;
+    word-break: break-all;
+
+    > li {
+      > span:first-of-type {
+        flex: 0 0 6rem;
+      }
+
+      > span {
+        flex: 1;
+      }
+    }
+  }
+
+  .ModalClaimReportingFeesNonforkedMarkets__message {
+    margin: 1rem;
+  }
+
+  .ModalClaimReportingFeesNonforkedMarkets__actions {
+    bottom: 0;
+    flex-wrap: wrap;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+
+    > button {
+      border-radius: 0;
+      margin: 0;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+
+        &:disabled {
+          background-color: @color-lightgray;
+          color: @color-lightergray;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .ModalClaimReportingFeesNonforkedMarkets__button {
+    width: 100%;
+  }
+}
