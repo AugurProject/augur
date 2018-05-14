@@ -74,18 +74,6 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
               callback(null, "0x0000000000000000000000000000000000abe123");
             },
           },
-          Universe: {
-            getFeeWindowByTimestamp: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              const feeWindowByTimestamp = {
-                1509085473: "0x2000000000000000000000000000000000000000",
-                1509690273: "0x2100000000000000000000000000000000000000",
-              };
-              const feeWindow = feeWindowByTimestamp[p._timestamp];
-              assert.isString(feeWindow, `No window at timestamp: ${p._timestamp}`);
-              callback(null, feeWindow);
-            },
-          },
         },
         rpc: {
           eth: {

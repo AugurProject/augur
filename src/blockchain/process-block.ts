@@ -4,7 +4,7 @@ import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
 import { logError } from "../utils/log-error";
-import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address, FeeWindowState } from "../types";
+import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAddressRow, ReportingState, Address } from "../types";
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { getMarketsWithReportingState } from "../server/getters/database";
@@ -40,18 +40,12 @@ export function getOverrideTimestamp(): number|null {
   return overrideTimestamps[overrideTimestamps.length - 1];
 }
 
-export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  processQueue.push((next) => _processBlock(db, augur, block, (err: Error|null): void => {
-    if (err) return callback(err);
-    return next();
-  }));
+export function processBlock(db: Knex, augur: Augur, block: BlockDetail): void {
+  processQueue.push((callback) => _processBlock(db, augur, block, callback));
 }
 
-export function processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
-  processQueue.push((next) => _processBlockRemoval(db, block, (err: Error|null): void => {
-    if (err) return callback(err);
-    return next();
-  }));
+export function processBlockRemoval(db: Knex, block: BlockDetail): void {
+  processQueue.push((callback) => _processBlockRemoval(db, block, callback));
 }
 
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
@@ -188,22 +182,19 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
   });
 }
 
-function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: (err: (Error|null)) => void) {
+function advanceMarketsAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: (err: (Error|null)) => void) {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe"])
     .whereIn("markets.feeWindow", expiredFeeWindows)
-    .whereNot("markets.needsMigration", 1)
-    .whereNot("markets.forking", 1)
+    .where("reportingState", ReportingState.CROWDSOURCING_DISPUTE)
     .asCallback((err: Error|null, marketIds: Array<{ marketId: Address; universe: Address; }>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
-        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, (err: Error|null) => {
-          augurEmitter.emit("MarketState", {
-            eventName: "MarketState",
-            universe: marketIdRow.universe,
-            marketId: marketIdRow.marketId,
-            reportingState: ReportingState.AWAITING_FINALIZATION,
-          });
-          db("payouts").where({ marketId: marketIdRow.marketId, tentativeWinning: 1 }).update("winning", 1).asCallback(nextMarketIdRow);
+        updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, nextMarketIdRow);
+        augurEmitter.emit("MarketState", {
+          eventName: "MarketState",
+          universe: marketIdRow.universe,
+          marketId: marketIdRow.marketId,
+          reportingState: ReportingState.AWAITING_FINALIZATION,
         });
       }, callback);
     });
@@ -214,9 +205,9 @@ export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: numb
     if (err || (feeWindowModifications != null && feeWindowModifications.expiredFeeWindows.length === 0 && feeWindowModifications.newActiveFeeWindows.length === 0)) return callback(err);
     advanceIncompleteCrowdsourcers(db, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
       if (err) return callback(err);
-      advanceMarketsToAwaitingFinalization(db, augur, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
+      advanceMarketsAwaitingFinalization(db, augur, blockNumber, feeWindowModifications!.expiredFeeWindows || [], (err: Error|null) => {
         if (err) return callback(err);
-        advanceMarketsToCrowdsourcingDispute(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || [], (err: Error|null) => {
+        advanceAwaitingNextFeeWindow(db, augur, blockNumber, feeWindowModifications!.newActiveFeeWindows || [], (err: Error|null) => {
           if (err) return callback(err);
           callback(null);
         });
@@ -225,15 +216,16 @@ export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: numb
   });
 }
 
-function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumber: number, newActiveFeeWindows: Array<Address>, callback: AsyncCallback) {
+function advanceAwaitingNextFeeWindow(db: Knex, augur: Augur, blockNumber: number, newActiveFeeWindows: Array<Address>, callback: AsyncCallback) {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeFeeWindow.feeWindow"])
     .join("fee_windows as activeFeeWindow", "activeFeeWindow.universe", "markets.universe")
     .whereIn("markets.feeWindow", newActiveFeeWindows)
-    .where("activeFeeWindow.state", FeeWindowState.CURRENT)
+    .where("activeFeeWindow.isActive", 1)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
     .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
+        console.log(`Updating market ${marketIdRow.marketId} to crowdsourcing dispute`);
         augurEmitter.emit("MarketState", {
           eventName: "MarketState",
           universe: marketIdRow.universe,

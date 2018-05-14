@@ -24,11 +24,6 @@ exports.seed = async (knex: Knex): Promise<any> => {
       symbol: "shares",
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
-    }, {
-      contractAddress: "0xe0e1900000000000000000000000000000000000",
-      symbol: "shares",
-      marketId: "0x0000000000000000000000000000000000000019",
-      outcome: 0,
     }];
     return knex.batchInsert("tokens", seedData, seedData.length);
   });

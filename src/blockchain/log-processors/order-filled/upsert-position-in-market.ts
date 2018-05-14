@@ -15,7 +15,6 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address,
     const realizedProfitLoss = new Array(numOutcomes);
     const unrealizedProfitLoss = new Array(numOutcomes);
     const positionInMarketAdjustedForUserIntention = new Array(numOutcomes);
-    const averagePrice = new Array(numOutcomes);
     forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
       augur.api.Orders.getLastOutcomePrice({ _market: marketId, _outcome: outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
         if (err) return callback(err);
@@ -24,18 +23,17 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address,
           if (err) return callback(err);
           calculateProfitLossInOutcome(db, augur, account, marketId, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {
             if (err) return nextOutcome(err);
-            const { realized, unrealized, position, meanOpenPrice } = profitLossInOutcome!;
+            const { realized, unrealized, position } = profitLossInOutcome!;
             realizedProfitLoss[outcome] = realized;
             unrealizedProfitLoss[outcome] = unrealized;
             positionInMarketAdjustedForUserIntention[outcome] = position;
-            averagePrice[outcome] = meanOpenPrice;
             nextOutcome();
           });
         });
       });
     }, (err: Error|null): void => {
       if (err) return callback(err);
-      (!positionsRows!.length ? insertPositionInMarket : updatePositionInMarket)(db, account, marketId, positionInMarket, realizedProfitLoss, unrealizedProfitLoss, positionInMarketAdjustedForUserIntention, averagePrice, callback);
+      (!positionsRows!.length ? insertPositionInMarket : updatePositionInMarket)(db, account, marketId, positionInMarket, realizedProfitLoss, unrealizedProfitLoss, positionInMarketAdjustedForUserIntention, callback);
     });
   });
 }

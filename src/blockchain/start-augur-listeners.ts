@@ -16,8 +16,8 @@ export function startAugurListeners(db: Knex, augur: Augur, highestBlockNumber: 
     (err: Error) => {
       if (err) return callback(err);
       augur.events.startBlockListeners({
-        onAdded: (block: BlockDetail): void => processBlock(db, augur, block, callback),
-        onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block, callback),
+        onAdded: (block: BlockDetail): void => processBlock(db, augur, block),
+        onRemoved: (block: BlockDetail): void => processBlockRemoval(db, block),
       });
       callback(null);
     },

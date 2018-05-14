@@ -102,20 +102,6 @@ describe("blockchain/log-processors/crowdsourcers", () => {
       },
       augur: {
         constants: new Augur().constants,
-        api: {
-          Universe: {
-            getFeeWindowByTimestamp: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              const feeWindowByTimestamp = {
-                1509085473: "0x2000000000000000000000000000000000000000",
-                1509690273: "0x2100000000000000000000000000000000000000",
-              };
-              const feeWindow = feeWindowByTimestamp[p._timestamp];
-              assert.isString(feeWindow);
-              callback(null, feeWindow);
-            },
-          },
-        },
       },
       overrideTimestamp: 1509085473,
     },
@@ -175,7 +161,6 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           finalizationBlockNumber: null,
           forking: 0,
           needsMigration: 0,
-          needsDisavowal: 0,
           initialReportSize: new BigNumber("10", 10),
           isInvalid: null,
           longDescription: null,
@@ -185,7 +170,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000211",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
           marketId: "0x0000000000000000000000000000000000000211",
-          marketStateId: 18,
+          marketStateId: 17,
           marketType: "binary",
           maxPrice: new BigNumber("1", 10),
           minPrice: new BigNumber("0", 10),
@@ -254,7 +239,6 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           creationTime: 1509065474,
           forking: 0,
           needsMigration: 0,
-          needsDisavowal: 0,
         });
       },
     },

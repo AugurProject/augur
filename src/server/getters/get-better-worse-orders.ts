@@ -1,38 +1,31 @@
+import { parallel } from "async";
 import * as Knex from "knex";
-import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
-import { Address } from "../../types";
-import { ZERO } from "../../constants";
+import { Address, AsyncCallback } from "../../types";
 
-export interface BetterWorseResult {
-  betterOrderId: Address|null;
-  worseOrderId: Address|null;
+interface PricesResult {
+  higherPriceRow: {orderId: string|null};
+  lowerPriceRow: {orderId: string|null};
 }
 
-interface OrderRow {
-  orderId: string|null;
-  price: BigNumber;
-}
-
-export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: string, callback: (err?: Error|null, result?: BetterWorseResult) => void): void {
+export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: number, callback: (err?: Error|null, result?: any) => void): void {
   if (marketId == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketId, outcome, orderType, and price"));
   if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "buy" or "sell"`));
-  const ordersQuery = db("orders").select("orderId", "price").where({ orderState: "OPEN", marketId, outcome, orderType });
-  ordersQuery.asCallback((err: Error|null, orders: Array<OrderRow>) => {
+  const ordersQuery = db("orders").first("orderId").where({ orderState: "OPEN", marketId, outcome, orderType });
+  parallel({
+    higherPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", ">", price).orderBy("price", "ASC").asCallback(next),
+    lowerPriceRow: (next: AsyncCallback) => ordersQuery.clone().where("price", "<", price).orderBy("price", "DESC").asCallback(next),
+  }, (err: Error|null, pricesResult: PricesResult ): void => {
     if (err) return callback(err);
-    const priceBN = new BigNumber(price);
-    const [lesserOrders, greaterOrders] = _.partition(orders, (order) => order.price.isLessThan(priceBN));
-    const greaterOrder = _.reduce(greaterOrders, (result, order) => (result.orderId === null || order.price.isLessThan(result.price) ? order : result), { orderId: null, price: ZERO});
-    const lesserOrder = _.reduce(lesserOrders, (result, order) => (result.orderId === null || order.price.isGreaterThan(result.price) ? order : result), { orderId: null, price: ZERO});
+    const { higherPriceRow, lowerPriceRow } = pricesResult;
     if (orderType === "buy") {
       return callback(null, {
-        betterOrderId: greaterOrder.orderId,
-        worseOrderId: lesserOrder.orderId,
+        betterOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
+        worseOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
       });
     } else {
       return callback(null, {
-        betterOrderId: lesserOrder.orderId,
-        worseOrderId: greaterOrder.orderId,
+        betterOrderId: (lowerPriceRow ? lowerPriceRow.orderId : null),
+        worseOrderId: (higherPriceRow ? higherPriceRow.orderId : null),
       });
     }
   });

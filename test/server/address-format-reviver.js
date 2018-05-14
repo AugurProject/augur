@@ -100,7 +100,6 @@ describe("server/address-format-reviver", () => {
     });
 
     it("getter definitions do not use a variable name in inputsExpectedAsAddress which is not an address", () => {
-      // If this fails you have a getter that uses an "id" variable name, but has its type as string instead of Address
       const actualAddressList = Object.keys(inputsExpectedAsAddress).sort();
       const expectedNonAddressDefinitions = Object.keys(nonAddressDefinitions)
         .sort();

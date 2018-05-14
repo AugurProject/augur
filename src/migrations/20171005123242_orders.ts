@@ -16,9 +16,9 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("fullPrecisionPrice", 255).notNullable();
       table.string("fullPrecisionAmount", 255).notNullable();
       table.string("price", 255).notNullable();
-      table.specificType("amount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
-      table.specificType("tokensEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (ltrim(\"tokensEscrowed\", '-') = \"tokensEscrowed\")");
-      table.specificType("sharesEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (ltrim(\"sharesEscrowed\", '-') = \"sharesEscrowed\")");
+      table.string("amount", 255).notNullable();
+      table.string("tokensEscrowed", 255).notNullable();
+      table.string("sharesEscrowed", 255).notNullable();
       table.string("tradeGroupId", 42);
       table.integer("isRemoved").nullable();
     });

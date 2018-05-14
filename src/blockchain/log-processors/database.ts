@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, ReportingState, AsyncCallback, ErrorCallback, FeeWindowState } from "../../types";
+import { Address, ReportingState, AsyncCallback, ErrorCallback } from "../../types";
 import { BigNumber } from "bignumber.js";
 import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
@@ -21,12 +21,27 @@ function setMarketStateToLatest(db: Knex, marketId: Address, callback: AsyncCall
   }).where({ marketId }).asCallback(callback);
 }
 
-export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address, marketId: Address, next: boolean, callback: AsyncCallback) {
-  const feeWindowAtTime = getCurrentTime() + (next ? augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS : 0);
-  augur.api.Universe.getFeeWindowByTimestamp({ _timestamp: feeWindowAtTime, tx: { to: universe } }, (err: Error, feeWindow: Address) => {
-    if (err) return callback(err);
-    db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
-  });
+export function updateMarketFeeWindow(db: Knex, universe: Address, marketId: Address, timestamp: number, callback: AsyncCallback) {
+  db("fee_windows").first().select("feeWindow").where({ universe }).where("endTime", ">", timestamp).where("startTime", "<=", timestamp)
+    .asCallback((err, feeWindowRow?: { feeWindow: Address }) => {
+      if (err) return callback(err);
+      if (feeWindowRow == null) {
+        // Will only occur in false time environments, due to a FeeWindow being Created after block which it applies to
+        // TODO: Remove once we feel comfortable with FeeWindow behavior
+        console.warn(`Time moved too fast, could not find feeWindow for ${universe} @ ${timestamp}`);
+        return callback(null);
+      }
+      const feeWindow = feeWindowRow.feeWindow;
+      db("markets").update({ feeWindow }).where({ marketId }).asCallback(callback);
+    });
+}
+
+export function updateMarketFeeWindowNext(db: Knex, augur: Augur, universe: Address, marketId: Address, callback: AsyncCallback) {
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime() + augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS, callback);
+}
+
+export function updateMarketFeeWindowCurrent(db: Knex, universe: Address, marketId: Address, callback: AsyncCallback) {
+  return updateMarketFeeWindow(db, universe, marketId, getCurrentTime(), callback);
 }
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
@@ -40,20 +55,20 @@ export function updateMarketState(db: Knex, marketId: Address, blockNumber: numb
 
 export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp: number, callback: (err: Error|null, results?: FeeWindowModifications) => void) {
   db("fee_windows").select("feeWindow", "universe")
-    .whereNot("state", FeeWindowState.PAST)
-    .where("endTime", "<", timestamp)
+    .where("isActive", 1)
+    .andWhere((queryBuilder) => queryBuilder.where("endTime", "<", timestamp).orWhere("startTime", ">", timestamp))
     .asCallback((err, expiredFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
       if (err) return callback(err);
-      db("fee_windows").update("state", FeeWindowState.PAST).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
+      db("fee_windows").update("isActive", 0).whereIn("feeWindow", _.map(expiredFeeWindowRows, (result) => result.feeWindow))
         .asCallback((err) => {
           if (err) return callback(err);
           db("fee_windows").select("feeWindow", "universe")
-            .whereNot("state", FeeWindowState.CURRENT)
+            .where("isActive", 0)
             .where("endTime", ">", timestamp)
             .where("startTime", "<", timestamp)
             .asCallback((err, newActiveFeeWindowRows?: Array<{ feeWindow: Address; universe: Address }>) => {
               if (err) return callback(err);
-              db("fee_windows").update("state", FeeWindowState.CURRENT).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
+              db("fee_windows").update("isActive", 1).whereIn("feeWindow", _.map(newActiveFeeWindowRows, (row) => row.feeWindow))
                 .asCallback((err) => {
                     if (err) return callback(err);
                     if (expiredFeeWindowRows != null) {

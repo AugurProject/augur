@@ -24,7 +24,7 @@ describe("server/getters/get-reporting-summary", () => {
     assertions: (err, reportingSummary) => {
       assert.isNull(err);
       assert.deepEqual(reportingSummary, {
-        "AWAITING_FINALIZATION": 1,
+        "AWAITING_NEXT_WINDOW": 1,
         "DESIGNATED_REPORTING": 8,
         "CROWDSOURCING_DISPUTE": 2,
         "FINALIZED": 1,

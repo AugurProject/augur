@@ -98,10 +98,6 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
         clearInterval(pingInterval);
         subscriptions.removeAllListeners();
       });
-
-      websocket.on("error", (err) => {
-        console.error(err);
-      });
     });
 
     server.on("error", (err: Error): void => {

@@ -74,7 +74,6 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           sharesOutstanding:          "0",
           forking:                    0,
           needsMigration:             0,
-          needsDisavowal:             0,
           finalizationBlockNumber:    null,
         };
         const outcomesDataToInsert: Partial<OutcomesRow<string>> = formatBigNumberAsFixed<Partial<OutcomesRow<BigNumber>>, Partial<OutcomesRow<string>>>({

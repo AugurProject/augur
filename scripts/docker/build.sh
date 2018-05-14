@@ -6,4 +6,4 @@ TAG=core-$(node scripts/core-version.js)
 docker pull node:8
 
 IMAGE_NAME=augurproject/augur-node
-docker build --no-cache . -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:dev
+docker build --no-cache . -t $IMAGE_NAME:$TAG

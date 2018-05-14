@@ -43,7 +43,7 @@ describe("blockchain/log-processors/market-finalized", () => {
     description: "binary market MarketFinalized log and removal",
     params: {
       log: {
-        market: "0x0000000000000000000000000000000000000013",
+        market: "0x0000000000000000000000000000000000000211",
         universe: "0x000000000000000000000000000000000000000b",
         blockNumber: 1400001,
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -54,7 +54,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         rpc: {
           eth: {
             getBalance: (p, callback) => {
-              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000013", "latest"]);
+              assert.deepEqual(p, ["0xbbb0000000000000000000000000000000000211", "latest"]);
               callback(null, "0x91f");
             },
           },
@@ -66,13 +66,13 @@ describe("blockchain/log-processors/market-finalized", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           market: {
-            marketId: "0x0000000000000000000000000000000000000013",
+            marketId: "0x0000000000000000000000000000000000000211",
             reportingState: "FINALIZED",
             marketCreatorFeesBalance: new BigNumber("0x91f", 16),
           },
           winningPayout: {
             "isInvalid": 0,
-            "marketId": "0x0000000000000000000000000000000000000013",
+            "marketId": "0x0000000000000000000000000000000000000211",
             "payout0": new BigNumber(0),
             "payout1": new BigNumber(10000),
             "payout2": null,
@@ -81,7 +81,7 @@ describe("blockchain/log-processors/market-finalized", () => {
             "payout5": null,
             "payout6": null,
             "payout7": null,
-            "payoutId": 8,
+            "payoutId": 5,
             "tentativeWinning": 1,
             "winning": 1,
           },
@@ -91,25 +91,11 @@ describe("blockchain/log-processors/market-finalized", () => {
         assert.isNull(err);
         assert.deepEqual(records, {
           market: {
-            marketId: "0x0000000000000000000000000000000000000013",
-            reportingState: "AWAITING_FINALIZATION",
+            marketId: "0x0000000000000000000000000000000000000211",
+            reportingState: "CROWDSOURCING_DISPUTE",
             marketCreatorFeesBalance: new BigNumber("0x91f", 16),
           },
-          winningPayout: {
-            "isInvalid": 0,
-            "marketId": "0x0000000000000000000000000000000000000013",
-            "payout0": new BigNumber(0),
-            "payout1": new BigNumber(10000),
-            "payout2": null,
-            "payout3": null,
-            "payout4": null,
-            "payout5": null,
-            "payout6": null,
-            "payout7": null,
-            "payoutId": 8,
-            "tentativeWinning": 1,
-            "winning": 1,
-          },
+          winningPayout: undefined,
         });
       },
     },

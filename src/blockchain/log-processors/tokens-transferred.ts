@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { series } from "async";
+import { parallel } from "async";
 import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
@@ -24,7 +24,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
   db.insert(tokenTransferDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("TokensTransferred", Object.assign({}, log, tokenTransferDataToInsert));
-    series([
+    parallel([
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, next),
       (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, next),
     ], (err: Error|null): void => {
@@ -40,7 +40,7 @@ export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: 
     augurEmitter.emit("TokensTransferred", log);
     const token = log.token || log.address;
     const value = new BigNumber(log.value || log.amount, 10);
-    series([
+    parallel([
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, value, next),
       (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, value, next),
     ], (err: Error|null): void => {
