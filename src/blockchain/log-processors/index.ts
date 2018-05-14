@@ -27,6 +27,7 @@ import { processInitialReporterTransferredLog, processInitialReporterTransferred
 import { processMarketMigratedLog, processMarketMigratedLogRemoval } from "./market-migrated";
 import { processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval } from "./reporting-participant-disavowed";
 import { processMarketMailboxTransferredLog, processMarketMailboxTransferredLogRemoval } from "./market-mailbox-transferred";
+import { processMarketParticipantsDisavowedLog, processMarketParticipantsDisavowedLogRemoval } from "./market-participants-disavowed";
 
 function noop(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
   callback(null);
@@ -166,7 +167,10 @@ export const logProcessors: LogProcessors = {
       add: processCompleteSetsPurchasedOrSoldLog,
       remove: processCompleteSetsPurchasedOrSoldLogRemoval,
     },
-    MarketParticipantsDisavowed: passThroughLog,
+    MarketParticipantsDisavowed: {
+      add: processMarketParticipantsDisavowedLog,
+      remove: processMarketParticipantsDisavowedLogRemoval,
+    },
   },
   LegacyReputationToken: {
     Transfer: {
