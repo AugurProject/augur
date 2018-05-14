@@ -170,13 +170,22 @@ export default class CreateMarketResolution extends Component {
               >Outcome will be detailed on a public website
               </button>
               { newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
-                <input
-                  type="text"
-                  value={newMarket.expirySource}
-                  placeholder="Define URL"
-                  onChange={e => validateField('expirySource', e.target.value)}
-                  onKeyPress={e => keyPressed(e)}
-                />
+                <div>
+                  <input
+                    type="text"
+                    value={newMarket.expirySource}
+                    placeholder="Define URL"
+                    onChange={e => validateField('expirySource', e.target.value)}
+                    onKeyPress={e => keyPressed(e)}
+                  />
+                  { newMarket.validations[newMarket.currentStep].expirySource &&
+                    <span className={StylesForm['CreateMarketForm__error--bottom']}>
+                      {InputErrorIcon}{
+                        newMarket.validations[newMarket.currentStep].expirySource
+                      }
+                    </span>
+                  }
+                </div>
               }
             </li>
           </ul>
@@ -241,7 +250,16 @@ export default class CreateMarketResolution extends Component {
             }}
             isOutsideRange={day => day.isBefore(moment(this.props.currentTimestamp).subtract(1, 'days'))}
             focused={this.state.focused}
-            onFocusChange={({ focused }) => this.setState({ focused })}
+            onFocusChange={({ focused }) => {
+              if (this.state.date == null) {
+                const date = moment(this.props.currentTimestamp)
+                this.setState({
+                  date
+                })
+                validateField('endTime', formatDate(date.toDate()))
+              }
+              this.setState({focused})
+            }}
             displayFormat="MMM D, YYYY"
             numberOfMonths={1}
             navPrev={<ChevronLeft />}
