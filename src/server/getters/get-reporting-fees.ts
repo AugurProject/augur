@@ -163,7 +163,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
     if (marketParticipants.initialReporters[i].forking) {
       forkedMarket.initialReporter = {
         initialReporterId: marketParticipants.initialReporters[i].initialReporter,
-        needsFork: marketParticipants.initialReporters[i].disavowed ? false : true,
+        needsFork: !marketParticipants.initialReporters[i].disavowed,
       };
     } else {
       keyedNonforkedMarkets[marketParticipants.initialReporters[i].marketId] = {
@@ -179,20 +179,20 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
   }
   for (i = 0; i < marketParticipants.crowdsourcers.length; i++) {
     if (marketParticipants.crowdsourcers[i].forking) {
-      forkedMarket.crowdsourcers.push({ crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, needsFork: marketParticipants.crowdsourcers[i].disavowed ? false : true });
+      forkedMarket.crowdsourcers.push({ crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, needsFork: !marketParticipants.crowdsourcers[i].disavowed });
     } else {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
           marketId: marketParticipants.crowdsourcers[i].marketId,
           universe: marketParticipants.crowdsourcers[i].universe,
-          crowdsourcersAreDisavowed: marketParticipants.crowdsourcers[i].disavowed ? true : false,
+          crowdsourcersAreDisavowed: !!marketParticipants.crowdsourcers[i].disavowed,
           isMigrated: !marketParticipants.crowdsourcers[i].needsMigration,
           isFinalized: marketParticipants.crowdsourcers[i].reportingState === ReportingState.FINALIZED,
           crowdsourcers: [marketParticipants.crowdsourcers[i].crowdsourcerId],
           initialReporter: null,
         };
       } else {
-        keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = marketParticipants.crowdsourcers[i].disavowed ? true : false;
+        keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcersAreDisavowed = !!marketParticipants.crowdsourcers[i].disavowed;
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId].crowdsourcers.push(marketParticipants.crowdsourcers[i].crowdsourcerId);
       }
     }
@@ -389,8 +389,8 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
           if (err || repStakeResults == null) return callback(err);
           getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
             if (err || repStakeResults == null) return callback(err);
-            const unclaimedParticipantEthFees = _.reduce(participantEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
-            const unclaimedParticipationTokenEthFees = _.reduce(participationTokenEthFees, (acc, e) => acc.plus(e.ethFees), ZERO);
+            const unclaimedParticipantEthFees = _.reduce(participantEthFees, (acc, cur) => acc.plus(cur.ethFees), ZERO);
+            const unclaimedParticipationTokenEthFees = _.reduce(participationTokenEthFees, (acc, cur) => acc.plus(cur.ethFees), ZERO);
             const redeemableFeeWindows = _.map(participationTokenEthFees, "feeWindow");
             const response = {
               total: {
