@@ -136,17 +136,23 @@ interface MarketParticipantRows {
   forkedMarket: ForkedMarket;
 }
 
+interface ParticipantEthFee {
+  feeWindow: string;
+  participantAddress: string;
+  ethFees: BigNumber;
+}
+
 function getUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Address) => void) {
   const query = db("fee_windows")
-  .first("universes.universe", "universes.parentUniverse")
-  .join("universes", "fee_windows.universe", "universes.universe")
-  .groupBy("fee_windows.universe");
+    .first("universes.universe", "universes.parentUniverse")
+    .join("universes", "fee_windows.universe", "universes.universe")
+    .groupBy("fee_windows.universe");
   if (universe != null) {
     query.where("fee_windows.universe", universe);
   } else if (feeWindow != null) {
     query.where("fee_windows.feeWindow", feeWindow);
   }
-  query.asCallback((err, currentUniverse: {universe: Address}) => {
+  query.asCallback((err, currentUniverse: { universe: Address }) => {
     if (err) return callback(err);
     if (!currentUniverse || !currentUniverse.universe) return callback(new Error("Universe or feeWindow not found"));
     return callback(null, currentUniverse.universe);
@@ -158,7 +164,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
   if (forkedMarket) {
     forkedMarket.crowdsourcers = [];
   }
-  const keyedNonforkedMarkets: {[marketId: string]: NonforkedMarket} = {};
+  const keyedNonforkedMarkets: { [marketId: string]: NonforkedMarket } = {};
   let i: number;
   for (i = 0; i < marketParticipants.initialReporters.length; i++) {
     if (marketParticipants.initialReporters[i].forking) {
@@ -180,7 +186,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
   }
   for (i = 0; i < marketParticipants.crowdsourcers.length; i++) {
     if (marketParticipants.crowdsourcers[i].forking) {
-      forkedMarket.crowdsourcers.push({crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, needsFork: marketParticipants.crowdsourcers[i].disavowed ? false : true});
+      forkedMarket.crowdsourcers.push({ crowdsourcerId: marketParticipants.crowdsourcers[i].crowdsourcerId, needsFork: marketParticipants.crowdsourcers[i].disavowed ? false : true });
     } else {
       if (!keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId]) {
         keyedNonforkedMarkets[marketParticipants.crowdsourcers[i].marketId] = {
@@ -201,7 +207,7 @@ function formatMarketInfo(marketParticipants: MarketParticipantRows) {
 
   const nonforkedMarkets = Object.keys(keyedNonforkedMarkets).map((key) => keyedNonforkedMarkets[key]);
 
-  return {forkedMarket, nonforkedMarkets};
+  return { forkedMarket, nonforkedMarkets };
 }
 
 function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: Address, callback: (err: Error|null, formattedMarketInfo?: FormattedMarketInfo) => void) {
@@ -280,7 +286,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   initialReportersQuery.join("payouts", "initial_reports.payoutId", "payouts.payoutId");
   initialReportersQuery.whereNotNull("payouts.winning");
   initialReportersQuery.where("initial_reports.reporter", reporter);
-  initialReportersQuery.whereNot("initial_reports.redeemed");
+  initialReportersQuery.whereNot("initial_reports.redeemed", 1);
   if (universe != null) {
     initialReportersQuery.join("markets", "markets.marketId", "initial_reports.marketId");
     initialReportersQuery.where("markets.universe", universe);
@@ -360,7 +366,7 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   });
 }
 
-function getParticipantInfo(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
+function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
   const participantQuery = db.select([
     "participantAddress",
     "fee_windows.feeWindow",
@@ -395,28 +401,25 @@ function getParticipantInfo(db: Knex, augur: Augur, reporter: Address, universe:
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
   participantQuery.where("all_participants.reporter", reporter);
   console.log(participantQuery.toSQL());
-  participantQuery.asCallback((err: Error|null, stuff: any) => {
+  participantQuery.asCallback((err: Error|null, participantEthFeeRows: any) => {
     if (err) return callback(err);
     // const participantEthFees = {};
-    const kk = _.map(stuff, (hi) => {
-      const totalFeeTokensInFeeWindow = new BigNumber(hi.feeTokenSupply).plus(new BigNumber(hi.participationTokenSupply));
-      const participantShareOfFeeWindow = new BigNumber(hi.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
-
-      const participantEthFees = new BigNumber(hi.cashParticipant).plus
-
-      const reporterShareOfParticipant = new BigNumber(hi.reporterBalance).dividedBy(hi.size);
-
-
-      const ethFees = new BigNumber(
-      console.log(participantShareOfFeeTokens.toFixed());
+    const kk = _.map(participantEthFeeRows, (ethFeeRows) => {
+      const totalFeeTokensInFeeWindow = new BigNumber(ethFeeRows.feeTokenSupply).plus(new BigNumber(ethFeeRows.participationTokenSupply));
+      const participantShareOfFeeWindow = new BigNumber(ethFeeRows.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
+      const cashInFeeWindow = new BigNumber(ethFeeRows.cashFeeWindow);
+      const participantEthFees = new BigNumber(ethFeeRows.cashParticipant).plus(participantShareOfFeeWindow.times(cashInFeeWindow));
+      const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.size);
+      const ethFees = reporterShareOfParticipant.times(participantEthFees);
+      console.log(ethFees.toFixed());
       return {
-        participantAddress: hi.participantAddress,
-        feeWindow: hi.feeWindow,
-        ethFees: ZERO,
+        participantAddress: ethFeeRows.participantAddress,
+        feeWindow: ethFeeRows.feeWindow,
+        ethFees,
       };
-    } );
+    });
     console.log(kk);
-    callback(err, stuff);
+    callback(err, participantEthFeeRows);
   });
 }
 
@@ -427,36 +430,27 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
 
   getUniverse(db, universe, feeWindow, (err, currentUniverse: Address) => {
     if (err || !currentUniverse) return callback(new Error("Universe or feeWindow not found"));
-    getParticipantInfo(db, augur, reporter, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
-      console.log(totalFeeWindowTokens);
-      if (err) return callback(err);
-      getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
-        if (err) return callback(err);
-        getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
+    getParticipantEthFees(db, augur, reporter, universe, feeWindow, (err, participantEthFees?: Array<ParticipantEthFee>) => {
+      console.log(participantEthFees);
+      if (err || participantEthFees == null) return callback(err);
+      getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
+        if (err || repStakeResults == null) return callback(err);
+        getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
           if (err || repStakeResults == null) return callback(err);
-          getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
-            if (err || repStakeResults == null) return callback(err);
-            const unclaimedEth = _.reduce(_.keys(totalReporterTokensByFeeWindow), (acc, feeWindow) => {
-              if (totalReporterTokensByFeeWindow[feeWindow].isEqualTo(ZERO)) return acc;
-              const thisFeeWindowTokens = (totalFeeWindowTokens && totalFeeWindowTokens[feeWindow]) || { totalTokens: ZERO, cashBalance: ZERO };
-              const feesForThisWindow = totalReporterTokensByFeeWindow[feeWindow].dividedBy(thisFeeWindowTokens.totalTokens).times(thisFeeWindowTokens.cashBalance);
-              acc = acc.plus(feesForThisWindow);
-              return acc;
-            }, ZERO);
-            const redeemableFeeWindows = _.uniq(_.keys(totalReporterTokensByFeeWindow).concat(repStakeResults.redeemableFeeWindows));
-            const response = {
-              total: {
-                unclaimedEth: unclaimedEth.toFixed(),
-                unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
-                unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
-                lostRep: repStakeResults.fees.lostRep.toFixed(),
-              },
-              feeWindows: redeemableFeeWindows.sort(),
-              forkedMarket: result.forkedMarket,
-              nonforkedMarkets: result.nonforkedMarkets,
-            };
-            callback(null, response);
-          });
+          const unclaimedEth = groupByAndSum(participantEthFees, [], ["ethFees"])
+          const redeemableFeeWindows = _.uniq(_.map(participantEthFees, "feeWindow").concat(repStakeResults.redeemableFeeWindows));
+          const response = {
+            total: {
+              unclaimedEth: "",
+              unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(),
+              unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(),
+              lostRep: repStakeResults.fees.lostRep.toFixed(),
+            },
+            feeWindows: redeemableFeeWindows.sort(),
+            forkedMarket: result.forkedMarket,
+            nonforkedMarkets: result.nonforkedMarkets,
+          };
+          callback(null, response);
         });
       });
     });
