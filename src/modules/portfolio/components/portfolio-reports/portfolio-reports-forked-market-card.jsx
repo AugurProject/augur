@@ -16,7 +16,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import toggleTag from 'modules/routes/helpers/toggle-tag'
 import toggleCategory from 'modules/routes/helpers/toggle-category'
 
-const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, forkedMarketReportingFeesInfo, linkType, market, unclaimedForkEth, unclaimedForkRep, updateModal }) => {
+const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, forkedMarketReportingFeesInfo, linkType, market, unclaimedForkEthFees, unclaimedForkRepStaked, updateModal }) => {
   const process = (...arr) => compact(arr).map(label => ({
     label,
     onClick: toggleCategory(label, { pathname: makePath(MARKETS) }, history),
@@ -70,8 +70,8 @@ const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, fork
         outstandingReturns={market.outstandingReturns}
         finalizationTime={market.finalizationTime}
         currentTimestamp={currentTimestamp}
-        unclaimedForkEth={unclaimedForkEth}
-        unclaimedForkRep={unclaimedForkRep}
+        unclaimedForkEthFees={unclaimedForkEthFees}
+        unclaimedForkRepStaked={unclaimedForkRepStaked}
       />
     </article>
   )
@@ -83,8 +83,8 @@ PortfolioReportsForkedMarketCard.propTypes = {
   forkedMarketReportingFeesInfo: PropTypes.object,
   linkType: PropTypes.string,
   market: PropTypes.object.isRequired,
-  unclaimedForkEth: PropTypes.object,
-  unclaimedForkRep: PropTypes.object,
+  unclaimedForkEthFees: PropTypes.object,
+  unclaimedForkRepStaked: PropTypes.object,
   updateModal: PropTypes.func,
 }
 
