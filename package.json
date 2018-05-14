@@ -55,8 +55,8 @@
     "@types/sqlite3": "3.1.1",
     "@types/uuid": "3.4.3",
     "@types/ws": "3.0.2",
-    "async": "1.5.2",
-    "augur.js": "4.11.0-13",
+    "async": "2.6.0",
+    "augur.js": "4.11.0-14",
     "bignumber.js": "6.0.0",
     "chalk": "2.3.2",
     "express": "4.16.2",
@@ -70,6 +70,7 @@
     "speedomatic": "2.1.2",
     "sqlite3": "4.0.0",
     "uuid": "3.1.0",
+    "webpack": "4.8.1",
     "ws": "3.2.0"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { Address, AsyncCallback, FeeWindowRow, UIFeeWindowCurrent } from "../../types";
+import { Address, AsyncCallback, FeeWindowRow, FeeWindowState, UIFeeWindowCurrent } from "../../types";
 import { parallel } from "async";
 import { BigNumber } from "bignumber.js";
 import { sumBy } from "./database";
@@ -20,7 +20,7 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
       "startTime",
       "universe",
     ]).first().from("fee_windows")
-    .where("isActive", 1)
+    .where("state", FeeWindowState.CURRENT)
     .where({ universe });
 
   query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {

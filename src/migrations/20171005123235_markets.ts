@@ -38,7 +38,8 @@ exports.up = async (knex: Knex): Promise<any> => {
       "numTicks" varchar(255) NOT NULL CONSTRAINT "nonnegativeNumTicks" CHECK (ltrim("numTicks", '-') = "numTicks"),
       "consensusPayoutId" integer,
       "disputeRounds" integer,
-      "isInvalid" boolean
+      "isInvalid" boolean,
+      "needsDisavowal" boolean DEFAULT 0
     )`)
     .raw("CREATE INDEX endTime ON markets (endTime)");
   });

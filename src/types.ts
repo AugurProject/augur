@@ -20,6 +20,12 @@ export enum ReportingState {
   AWAITING_FORK_MIGRATION = "AWAITING_FORK_MIGRATION",
 }
 
+export enum FeeWindowState {
+  PAST = "PAST",
+  CURRENT = "CURRENT",
+  FUTURE = "FUTURE",
+}
+
 export enum DisputeTokenState {
   ALL = "ALL",
   UNCLAIMED = "UNCLAIMED",
@@ -135,7 +141,7 @@ export interface GetAccountTransferHistoryRequest {
 }
 
 export interface MarketsContractAddressRow {
-  marketId: string;
+  marketId: Address;
 }
 
 export interface MarketsRow<BigNumberType> {
@@ -175,6 +181,7 @@ export interface MarketsRow<BigNumberType> {
   isInvalid?: boolean|null;
   forking: number;
   needsMigration: number;
+  needsDisavowal: number;
 }
 
 export interface PositionsRow<BigNumberType> {
@@ -283,7 +290,7 @@ export interface UIFeeWindowCurrent {
   endTime: number;
   feeWindow: Address;
   feeWindowId: number;
-  isActive: number;
+  state: FeeWindowState;
   startTime: number;
   universe: Address;
   totalStake?: number;
@@ -432,6 +439,10 @@ export interface TradesRow<BigNumberType> extends BaseTransactionRow {
   tradeGroupId: Bytes32|null;
 }
 
+export interface TradingHistoryRow extends TradesRow<BigNumber> {
+  timestamp: number;
+}
+
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;
   amount: BigNumberType;
@@ -456,8 +467,10 @@ export interface JoinedReportsMarketsRow<BigNumberType> extends Payout<BigNumber
   marketId: Address;
   universe: Address;
   feeWindow: Address;
-  crowdsourcerId: Address;
+  crowdsourcerId?: Address;
+  initialReporter?: Address;
   marketType: string;
+  participantType: string;
   amountStaked: BigNumberType;
 
 }
@@ -484,7 +497,7 @@ export interface FeeWindowRow {
   feeWindowId: number;
   universe: Address;
   startTime: number;
-  isActive: number;
+  state: FeeWindowState;
   endTime: number;
   fees: number|string;
 }

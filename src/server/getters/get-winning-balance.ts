@@ -9,7 +9,6 @@ interface WinningPayoutRows extends PayoutRow<BigNumber> {
   marketId: Address;
   reportingState: ReportingState;
   balance: BigNumber;
-  numTicks: BigNumber;
   outcome: number;
 }
 
@@ -21,7 +20,7 @@ export interface MarketWinnings {
 export function getWinningBalance(db: Knex, augur: Augur, marketIds: Array<Address>, account: Address, callback: (err: Error|null, result?: Array<MarketWinnings>) => void): void {
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
   if (account == null) return callback(new Error("must include account parameter"));
-  const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "markets.numTicks", "balances.balance", "balances.owner", "shareTokens.outcome", "payouts.*"]);
+  const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "balances.balance", "balances.owner", "shareTokens.outcome", "payouts.*"]);
   marketsQuery.whereIn("markets.marketId", marketIds);
   marketsQuery.whereIn("reportingState", [ReportingState.FINALIZED, ReportingState.AWAITING_FINALIZATION]);
   marketsQuery.join("tokens AS shareTokens", function () {
@@ -44,7 +43,7 @@ export function getWinningBalance(db: Knex, augur: Augur, marketIds: Array<Addre
     const calculatedWinnings = _.map(winningPayoutRows, (winningPayoutRow) => {
       const payoutKey = `payout${winningPayoutRow.outcome}` as keyof PayoutRow<BigNumber>;
       const payout = winningPayoutRow[payoutKey] as BigNumber;
-      const winnings: BigNumber = payout.dividedBy(winningPayoutRow.numTicks).times(winningPayoutRow.balance);
+      const winnings: BigNumber = payout.times(winningPayoutRow.balance);
       return {marketId: winningPayoutRow.marketId, winnings: winnings.decimalPlaces(0, BigNumber.ROUND_DOWN) };
     });
     callback(null, groupByAndSum(calculatedWinnings, ["marketId"], ["winnings"]));

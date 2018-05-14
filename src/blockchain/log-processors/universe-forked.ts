@@ -12,13 +12,13 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
       if (err) return callback(err);
       updateMarketState(db, forkingMarket, log.blockNumber, ReportingState.FORKING, (err) => {
         if (err) return callback(err);
-        callback(null);
         augurEmitter.emit("MarketState", {
           eventName: "MarketState",
           universe: log.universe,
           marketId: forkingMarket,
           reportingState: ReportingState.FORKING,
         });
+        db("markets").increment("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket).asCallback(callback);
       });
     });
   });
@@ -36,7 +36,7 @@ export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: For
         marketId: forkingMarket,
         reportingState: ReportingState.CROWDSOURCING_DISPUTE,
       });
-      callback(null);
+      db("markets").decrement("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket.marketId).asCallback(callback);
     });
   });
 }

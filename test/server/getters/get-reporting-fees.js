@@ -52,11 +52,29 @@ describe("server/getters/get-reporting-fees", () => {
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
-          "0x3000000000000000000000000000000000000000",
-          "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
+          "0x2100000000000000000000000000000000000000",
+          "0x3000000000000000000000000000000000000000",
         ],
-        forkedMarket: null,
+        forkedMarket: {
+          crowdsourcers: [
+            {
+              crowdsourcerId: "0x0000000000000000001000000000000000000006",
+              needsFork: true,
+            },
+            {
+              crowdsourcerId: "0x0000000000000000001000000000000000000007",
+              needsFork: false,
+            },
+          ],
+          initialReporter: {
+            initialReporterId: "0x0000000000000000000000000000000000abe222",
+            needsFork: true,
+          },
+          isFinalized: 1,
+          marketId: "0x00000000000000000000000000000000000000f1",
+          universe: "0x000000000000000000000000000000000000000b",
+        },
         nonforkedMarkets: [
           {
             "marketId": "0x0000000000000000000000000000000000000019",
@@ -72,7 +90,7 @@ describe("server/getters/get-reporting-fees", () => {
     },
   });
   test({
-    description: "Get reporting fees that exist in child universe and parent universe",
+    description: "Get reporting fees that exist in child universe",
     params: {
       universe: "CHILD_UNIVERSE",
       reporter: "0x0000000000000000000000000000000000000b0b",
@@ -107,31 +125,13 @@ describe("server/getters/get-reporting-fees", () => {
         feeWindows: [
           "0x4000000000000000000000000000000000000000",
         ],
-        forkedMarket: {
-          "marketId": "0x00000000000000000000000000000000000000f1",
-          "crowdsourcers": [
-            {
-              "crowdsourcerId": "0x0000000000000000001000000000000000000006",
-              "isForked": false,
-            },
-            {
-              "crowdsourcerId": "0x0000000000000000001000000000000000000007",
-              "isForked": true,
-            },
-          ],
-          "initialReporter": {
-            "initialReporterId": "0x0000000000000000000000000000000000abe222",
-            "isForked": false,
-          },
-          "isFinalized": true,
-          "universe": "0x000000000000000000000000000000000000000b",
-        },
-        nonforkedMarkets: [],
+        forkedMarket: undefined,
+        "nonforkedMarkets": [],
       });
     },
   });
   test({
-    description: "get reporting fees for user that does not exist",
+    description: "Get reporting fees for user that does not exist",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       reporter: "0x00000000000000000000000000000000000n0b0b",
@@ -165,17 +165,22 @@ describe("server/getters/get-reporting-fees", () => {
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
-          "0x3000000000000000000000000000000000000000",
-          "0x2100000000000000000000000000000000000000",
           "0x2000000000000000000000000000000000000000",
+          "0x2100000000000000000000000000000000000000",
+          "0x3000000000000000000000000000000000000000",
         ],
-        forkedMarket: null,
+        forkedMarket: {
+          "isFinalized": 1,
+          "crowdsourcers": [],
+          "marketId": "0x00000000000000000000000000000000000000f1",
+          "universe": "0x000000000000000000000000000000000000000b",
+        },
         nonforkedMarkets: [],
       });
     },
   });
   test({
-    description: "get reporting fees for universe that does not exist",
+    description: "Get reporting fees for universe that does not exist",
     params: {
       universe: "0x000000000000000000000000000000000000n0n0",
       reporter: "0x0000000000000000000000000000000000000b0b",
@@ -204,7 +209,7 @@ describe("server/getters/get-reporting-fees", () => {
     },
   });
   test({
-    description: "get reporting fees by feeWindow",
+    description: "Get reporting fees by feeWindow",
     params: {
       feeWindow: "0x1000000000000000000000000000000000000000",
       reporter: "0x0000000000000000000000000000000000000b0b",
@@ -239,7 +244,25 @@ describe("server/getters/get-reporting-fees", () => {
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
         ],
-        forkedMarket: null,
+        forkedMarket: {
+          crowdsourcers: [
+            {
+              crowdsourcerId: "0x0000000000000000001000000000000000000006",
+              needsFork: true,
+            },
+            {
+              crowdsourcerId: "0x0000000000000000001000000000000000000007",
+              needsFork: false,
+            },
+          ],
+          initialReporter: {
+            initialReporterId: "0x0000000000000000000000000000000000abe222",
+            needsFork: true,
+          },
+          isFinalized: 1,
+          marketId: "0x00000000000000000000000000000000000000f1",
+          universe: "0x000000000000000000000000000000000000000b",
+        },
         nonforkedMarkets: [
           {
             "marketId": "0x0000000000000000000000000000000000000019",
