@@ -6,6 +6,7 @@ import { Address, AsyncCallback, ReportingState } from "../../types";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
 import { groupByAndSum } from "./database";
+import { QueryBuilder } from "knex";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
@@ -359,13 +360,75 @@ function getReporterFeeTokens(db: Knex, reporter: Address, universe: Address|nul
   });
 }
 
+function getParticipantInfo(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: {}) => void) {
+  const participantQuery = db.select([
+    "participantAddress",
+    "fee_windows.feeWindow",
+    "fee_windows.feeToken",
+    "reporterBalance",
+    "size",
+    "reputationToken",
+    "reputationTokenBalance",
+    "feeToken.balance as feeTokenBalance",
+    "feeTokenSupply.supply as feeTokenSupply",
+    db.raw("IFNULL(cashFeeWindow.balance,0) as cashFeeWindow"),
+    db.raw("IFNULL(cashParticipant.balance,0) as cashParticipant"),
+    db.raw("IFNULL(participationTokenSupply.supply,0) as participationTokenSupply"),
+    "forking",
+    "disavowed"]).from("all_participants");
+  participantQuery.join("balances as feeToken", "feeToken.owner", "all_participants.participantAddress");
+  participantQuery.join("fee_windows", "fee_windows.feeToken", "feeToken.token");
+
+  participantQuery.leftJoin("balances AS cashFeeWindow", function () {
+    this
+      .on("cashFeeWindow.owner", db.raw("fee_windows.feeWindow"))
+      .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+  });
+
+  participantQuery.leftJoin("balances AS cashParticipant", function () {
+    this
+      .on("cashParticipant.owner", db.raw("participantAddress"))
+      .andOn("cashParticipant.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+  });
+
+  participantQuery.join("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
+  participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
+  participantQuery.where("all_participants.reporter", reporter);
+  console.log(participantQuery.toSQL());
+  participantQuery.asCallback((err: Error|null, stuff: any) => {
+    if (err) return callback(err);
+    // const participantEthFees = {};
+    const kk = _.map(stuff, (hi) => {
+      const totalFeeTokensInFeeWindow = new BigNumber(hi.feeTokenSupply).plus(new BigNumber(hi.participationTokenSupply));
+      const participantShareOfFeeWindow = new BigNumber(hi.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
+
+      const participantEthFees = new BigNumber(hi.cashParticipant).plus
+
+      const reporterShareOfParticipant = new BigNumber(hi.reporterBalance).dividedBy(hi.size);
+
+
+      const ethFees = new BigNumber(
+      console.log(participantShareOfFeeTokens.toFixed());
+      return {
+        participantAddress: hi.participantAddress,
+        feeWindow: hi.feeWindow,
+        ethFees: ZERO,
+      };
+    } );
+    console.log(kk);
+    callback(err, stuff);
+  });
+}
+
+
 export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
   if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
 
   getUniverse(db, universe, feeWindow, (err, currentUniverse: Address) => {
     if (err || !currentUniverse) return callback(new Error("Universe or feeWindow not found"));
-    getTotalFeeWindowTokens(db, augur, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
+    getParticipantInfo(db, augur, reporter, universe, feeWindow, (err, totalFeeWindowTokens?: { [feeWindow: string]: FeeWindowTotalTokens }) => {
+      console.log(totalFeeWindowTokens);
       if (err) return callback(err);
       getReporterFeeTokens(db, reporter, universe, feeWindow, (err, totalReporterTokensByFeeWindow: { [feeWindow: string]: BigNumber }) => {
         if (err) return callback(err);
