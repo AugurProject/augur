@@ -160,6 +160,8 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         isMobile,
+        marketMax,
+        marketMin,
       })
 
       const depthContainer = new ReactFauxDOM.Element('div')
@@ -176,6 +178,7 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         marketMax,
+        marketMin,
         isMobile,
       })
 
@@ -349,6 +352,8 @@ function determineDrawParams(options) {
     orderBookKeys,
     fixedPrecision,
     isMobile,
+    marketMax,
+    marketMin,
   } = options
 
   const chartDim = {
@@ -359,6 +364,10 @@ function determineDrawParams(options) {
     tickOffset: 10,
   }
 
+
+  // If spread is zero we default to market min/max.
+  const marketMinMax = (orderBookKeys.max.isEqualTo(orderBookKeys.min)) ? { ...orderBookKeys, min: marketMin, max: marketMax } : orderBookKeys
+
   const containerWidth = depthChart.clientWidth
   const containerHeight = depthChart.clientHeight
   const drawHeight = containerHeight - chartDim.top - chartDim.bottom
@@ -366,16 +375,14 @@ function determineDrawParams(options) {
   const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
   // Determine bounding diff
-  const maxDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
-  const minDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.min).toPrecision(15)).absoluteValue()
+  const maxDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
+  const minDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.min).toPrecision(15)).absoluteValue()
 
-  // const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
-  // const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
   let boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
   const yDomain = [
-    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(marketMinMax.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(marketMinMax.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
   ]
 
   boundDiff = boundDiff.toNumber()
