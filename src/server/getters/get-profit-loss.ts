@@ -167,6 +167,9 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number|null, callback: GenericCallback<Array<PLBucket>>) {
   try {
+    if (typeof universe !== "string") throw new Error("Universe Address Required");
+    if (typeof account !== "string") throw new Error("Account Address Required");
+
     getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime, endTime, periodInterval)
       .then((results: Array<PLBucket>) => callback(null, results))
       .catch(callback);
