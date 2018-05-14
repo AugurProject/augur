@@ -23,7 +23,7 @@ export interface PLBucket {
   profitLoss?: ProfitLoss | null;
 }
 
-export type TradeRow = TradingHistoryRow & { type: string, maker: boolean};
+export type TradeRow = TradingHistoryRow & { type: string; maker: boolean };
 
 export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>, buckets: Array<PLBucket>): Array<PLBucket> {
   if (buckets == null) throw new Error("Buckets are required");
@@ -52,7 +52,7 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>,
   return windowPLs;
 }
 
-export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number|null): Array<PLBucket> {
+export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<PLBucket> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
   if (endTime <= startTime) throw new Error("endTime must be greater than startTime");
@@ -124,7 +124,7 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
   };
 }
 
-async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number|null): Promise<Array<PLBucket>> {
+async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<Array<PLBucket>> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
   const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false)
@@ -132,11 +132,11 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     .orderBy("trades.outcome");
 
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
-      return Object.assign({}, trade, {
-        type: trade.orderType! === "buy" ? "sell" : "buy",
-        maker: account === trade.creator!,
-      });
-    }) as Array<TradeRow>;
+    return Object.assign({}, trade, {
+      type: trade.orderType! === "buy" ? "sell" : "buy",
+      maker: account === trade.creator!,
+    });
+  }) as Array<TradeRow>;
 
   if (trades.length === 0) return bucketRangeByInterval(startTime, endTime, periodInterval).slice(1);
 
@@ -153,7 +153,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
       const [marketId, outcome] = key.split(",");
       const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, parseInt(outcome, 10), endTime, buckets);
       return calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice);
-    }),
+    })
   );
 
   // We have results! Drop the market & outcome groups, and then re-group by
@@ -165,7 +165,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   return summed;
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number|null, callback: GenericCallback<Array<PLBucket>>) {
+export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<Array<PLBucket>>) {
   try {
     if (typeof universe !== "string") throw new Error("Universe Address Required");
     if (typeof account !== "string") throw new Error("Account Address Required");
