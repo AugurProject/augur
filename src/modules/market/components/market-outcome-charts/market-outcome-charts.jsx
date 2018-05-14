@@ -89,7 +89,7 @@ export default class MarketOutcomeCharts extends Component {
 
     this.snapScrollHandler()
 
-    if (this.props.selectedOutcome && !this.props.excludeCandlestick) {
+    if (this.props.selectedOutcome && !this.props.excludeCandlestick && this.props.currentTimeInSeconds) {
       this.getData()
     }
 

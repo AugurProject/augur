@@ -124,6 +124,7 @@ export default class MarketOutcomeDepth extends Component {
     ) {
       this.drawCrosshairs({
         hoveredPrice: nextProps.hoveredPrice,
+        fixedPrecision: nextProps.fixedPrecision,
         marketDepth: nextProps.marketDepth,
         yScale: nextState.yScale,
         xScale: nextState.xScale,
@@ -160,6 +161,8 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         isMobile,
+        marketMax,
+        marketMin,
       })
 
       const depthContainer = new ReactFauxDOM.Element('div')
@@ -176,6 +179,7 @@ export default class MarketOutcomeDepth extends Component {
         orderBookKeys,
         fixedPrecision,
         marketMax,
+        marketMin,
         isMobile,
       })
 
@@ -248,6 +252,7 @@ export default class MarketOutcomeDepth extends Component {
         containerWidth,
         marketMin,
         marketMax,
+        fixedPrecision,
       } = options
 
       if (hoveredPrice == null) {
@@ -277,6 +282,8 @@ export default class MarketOutcomeDepth extends Component {
           d3.select('#crosshairX')
             .style('display', 'none')
         }
+        const yPosition = yScale(hoveredPrice)
+        const clampedHoveredPrice = yScale.invert(yPosition)
 
         d3.select('#crosshairY')
           .attr('x1', 0)
@@ -287,7 +294,7 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#hovered_price_label')
           .attr('x', 0)
           .attr('y', yScale(hoveredPrice) + 12)
-          .text(hoveredPrice)
+          .text(clampedHoveredPrice.toFixed(fixedPrecision))
       }
     }
   }
@@ -349,6 +356,8 @@ function determineDrawParams(options) {
     orderBookKeys,
     fixedPrecision,
     isMobile,
+    marketMax,
+    marketMin,
   } = options
 
   const chartDim = {
@@ -359,6 +368,10 @@ function determineDrawParams(options) {
     tickOffset: 10,
   }
 
+
+  // If spread is zero we default to market min/max.
+  const marketMinMax = (orderBookKeys.max.isEqualTo(orderBookKeys.min)) ? { ...orderBookKeys, min: marketMin, max: marketMax } : orderBookKeys
+
   const containerWidth = depthChart.clientWidth
   const containerHeight = depthChart.clientHeight
   const drawHeight = containerHeight - chartDim.top - chartDim.bottom
@@ -366,16 +379,14 @@ function determineDrawParams(options) {
   const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0]], [])], [])
 
   // Determine bounding diff
-  const maxDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
-  const minDiff = createBigNumber(orderBookKeys.mid.minus(orderBookKeys.min).toPrecision(15)).absoluteValue()
+  const maxDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
+  const minDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.min).toPrecision(15)).absoluteValue()
 
-  // const maxDiff = Math.abs(orderBookKeys.mid - orderBookKeys.max)
-  // const minDiff = Math.abs(orderBookKeys.mid - orderBookKeys.min)
   let boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
 
   const yDomain = [
-    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(marketMinMax.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    createBigNumber(marketMinMax.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
   ]
 
   boundDiff = boundDiff.toNumber()
@@ -385,6 +396,7 @@ function determineDrawParams(options) {
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
+    .clamp(true)
     .domain(d3.extent(yDomain))
     .range([containerHeight - chartDim.bottom, chartDim.top])
 
