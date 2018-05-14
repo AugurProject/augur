@@ -710,8 +710,8 @@ describe("server/getters/get-profit-loss", () => {
     assert.deepEqual(results2, {
       "meanOpenPrice": "0",
       "position": "0",
-      "realized": "4",
-      "total": "4",
+      "realized": "-4",
+      "total": "-4",
       "unrealized": "0",
     });
 
@@ -750,8 +750,8 @@ describe("server/getters/get-profit-loss", () => {
     assert.deepEqual(results2, {
       "meanOpenPrice": "0",
       "position": "0",
-      "realized": "-4",
-      "total": "-4",
+      "realized": "4",
+      "total": "4",
       "unrealized": "0",
     });
 
