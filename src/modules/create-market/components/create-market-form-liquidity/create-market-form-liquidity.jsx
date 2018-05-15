@@ -470,7 +470,11 @@ export default class CreateMarketLiquidity extends Component {
                     label="Choose an Outcome"
                     default={s.selectedOutcome || ''}
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
-                    onChange={value => this.setState({ selectedOutcome: value })}
+                    onChange={(value) => {
+                      this.setState({ selectedOutcome: value }, () => {
+                        this.validateForm()
+                      })
+                    }}
                     isMobileSmall={isMobileSmall}
                   />
                 </li>
