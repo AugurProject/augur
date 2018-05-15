@@ -78,7 +78,7 @@ export default class MarketPortfolioCard extends Component {
         buttonAction = this.claimProceeds
         break
       case TYPE_FINALIZE_MARKET:
-        localButtonText = 'Finalize Market'
+        localButtonText = 'Calculate Payout'
         buttonAction = this.finalizeMarket
         break
       default:
