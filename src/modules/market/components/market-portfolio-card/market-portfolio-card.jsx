@@ -8,7 +8,7 @@ import MarketPositionsListPosition from 'modules/market/components/market-positi
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { TYPE_CLAIM_PROCEEDS, TYPE_CALCULATE_PAYOUT } from 'modules/market/constants/link-types'
+import { TYPE_CLAIM_PROCEEDS, TYPE_FINALIZE_MARKET } from 'modules/market/constants/link-types'
 import { dateHasPassed } from 'utils/format-date'
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import PositionStyles from 'modules/market/components/market-positions-list/market-positions-list.styles'
@@ -77,7 +77,7 @@ export default class MarketPortfolioCard extends Component {
         localButtonText = 'Claim'
         buttonAction = this.claimProceeds
         break
-      case TYPE_CALCULATE_PAYOUT:
+      case TYPE_FINALIZE_MARKET:
         localButtonText = 'Calculate Payout'
         buttonAction = this.finalizeMarket
         break
@@ -261,7 +261,7 @@ export default class MarketPortfolioCard extends Component {
             </div>
           </div>
         </section>
-        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_CALCULATE_PAYOUT) && market.outstandingReturns &&
+        {linkType && (linkType === TYPE_CLAIM_PROCEEDS || linkType === TYPE_FINALIZE_MARKET) && market.outstandingReturns &&
           <MarketPortfolioCardFooter
             linkType={linkType}
             localButtonText={localButtonText}
