@@ -12,7 +12,7 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import CreateMarketFormLiquidityCharts from 'modules/create-market/containers/create-market-form-liquidity-charts'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
 
