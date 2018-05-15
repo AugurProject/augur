@@ -133,19 +133,15 @@ interface ParticipationTokenEthFee extends FeeWindowEthFee {
   participationTokens: BigNumber;
 }
 
-function getUniverse(db: Knex, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Address) => void) {
+function getUniverse(db: Knex, universe: Address, callback: (err: Error|null, result?: Address) => void) {
   const query = db("fee_windows")
     .first("universes.universe", "universes.parentUniverse")
     .join("universes", "fee_windows.universe", "universes.universe")
-    .groupBy("fee_windows.universe");
-  if (universe != null) {
-    query.where("fee_windows.universe", universe);
-  } else if (feeWindow != null) {
-    query.where("fee_windows.feeWindow", feeWindow);
-  }
+    .groupBy("fee_windows.universe")
+    .where("fee_windows.universe", universe);
   query.asCallback((err, currentUniverse: { universe: Address }) => {
     if (err) return callback(err);
-    if (!currentUniverse || !currentUniverse.universe) return callback(new Error("Universe or feeWindow not found"));
+    if (!currentUniverse || !currentUniverse.universe) return callback(new Error("Universe not found"));
     return callback(null, currentUniverse.universe);
   });
 }
@@ -236,7 +232,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
   });
 }
 
-function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: { fees: RepStakeResults }) => void) {
+function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: { fees: RepStakeResults }) => void) {
   const crowdsourcerQuery = db.select(["fee_windows.feeWindow", "stakedRep.balance as amountStaked", "payouts.winning"]).from("fee_windows");
   crowdsourcerQuery.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
   crowdsourcerQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
@@ -247,7 +243,6 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
       .andOn("stakedRep.owner", db.raw("?", reporter));
   });
   if (universe != null) crowdsourcerQuery.where("fee_windows.universe", universe);
-  if (feeWindow != null) crowdsourcerQuery.where("fee_windows.feeWindow", feeWindow);
 
   const initialReportersQuery = db.select(["initial_reports.amountStaked", "payouts.winning"]).from("initial_reports");
   initialReportersQuery.join("payouts", "initial_reports.payoutId", "payouts.payoutId");
@@ -283,7 +278,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   });
 }
 
-function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Array<ParticipationTokenEthFee>) => void) {
+function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: Array<ParticipationTokenEthFee>) => void) {
   const participationTokenQuery = db.select([
     "fee_windows.feeWindow",
     "participationToken.balance AS participationTokens",
@@ -306,7 +301,6 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   participationTokenQuery.whereNot("participationTokens", "0");
   participationTokenQuery.where("fee_windows.state", FeeWindowState.PAST);
   if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
-  if (feeWindow != null) participationTokenQuery.where("fee_windows.feeWindow", feeWindow);
   participationTokenQuery.asCallback((err: Error|null, participationTokens: Array<ParticipationTokensEthFeeRow>) => {
     if (err) return callback(err);
     const participationTokenEthFees = _.map(participationTokens, (participationToken) => {
@@ -325,7 +319,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   });
 }
 
-function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
+function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
   const participantQuery = db.select([
     "participantAddress",
     "fee_windows.feeWindow",
@@ -376,16 +370,16 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   });
 }
 
-export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, feeWindow: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
+export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null, universe: Address|null, callback: (err: Error|null, result?: FeeDetails) => void): void {
   if (reporter == null) return callback(new Error("Must provide reporter"));
-  if (universe == null && feeWindow == null) return callback(new Error("Must provide universe or feeWindow"));
-  getUniverse(db, universe, feeWindow, (err, currentUniverse: Address) => {
+  if (universe == null) return callback(new Error("Must provide universe"));
+  getUniverse(db, universe, (err, currentUniverse: Address) => {
     if (err || !currentUniverse) return callback(new Error("Universe or feeWindow not found"));
-    getParticipantEthFees(db, augur, reporter, universe, feeWindow, (err, participantEthFees?: Array<ParticipantEthFee>) => {
+    getParticipantEthFees(db, augur, reporter, universe, (err, participantEthFees?: Array<ParticipantEthFee>) => {
       if (err || participantEthFees == null) return callback(err);
-      getParticipationTokenEthFees(db, augur, reporter, universe, feeWindow, (err, participationTokenEthFees: Array<ParticipationTokenEthFee>) => {
+      getParticipationTokenEthFees(db, augur, reporter, universe, (err, participationTokenEthFees: Array<ParticipationTokenEthFee>) => {
         if (err || participationTokenEthFees == null) return callback(err);
-        getStakedRepResults(db, reporter, universe, feeWindow, (err, repStakeResults) => {
+        getStakedRepResults(db, reporter, universe, (err, repStakeResults) => {
           if (err || repStakeResults == null) return callback(err);
           getMarketsReportingParticipants(db, reporter, currentUniverse, (err, result: FormattedMarketInfo) => {
             if (err || repStakeResults == null) return callback(err);
