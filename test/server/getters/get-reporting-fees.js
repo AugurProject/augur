@@ -45,16 +45,13 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "107.87878787878787879",
-          "unclaimedRepEarned": "114.5",
+          "unclaimedEth": "200",
+          "unclaimedRepEarned": "114",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
         },
         feeWindows: [
           "0x1000000000000000000000000000000000000000",
-          "0x2000000000000000000000000000000000000000",
-          "0x2100000000000000000000000000000000000000",
-          "0x3000000000000000000000000000000000000000",
         ],
         forkedMarket: {
           crowdsourcers: [
@@ -122,9 +119,7 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepEarned": "0",
           "lostRep": "0",
         },
-        feeWindows: [
-          "0x4000000000000000000000000000000000000000",
-        ],
+        feeWindows: [],
         forkedMarket: undefined,
         "nonforkedMarkets": [],
       });
@@ -163,12 +158,7 @@ describe("server/getters/get-reporting-fees", () => {
           "unclaimedRepEarned": "0",
           "lostRep": "0",
         },
-        feeWindows: [
-          "0x1000000000000000000000000000000000000000",
-          "0x2000000000000000000000000000000000000000",
-          "0x2100000000000000000000000000000000000000",
-          "0x3000000000000000000000000000000000000000",
-        ],
+        feeWindows: [],
         forkedMarket: {
           "isFinalized": 1,
           "crowdsourcers": [],
@@ -236,14 +226,12 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "53.33333333333333333",
-          "unclaimedRepEarned": "114.5",
+          "unclaimedEth": "200",
+          "unclaimedRepEarned": "114",
           "unclaimedRepStaked": "229",
           "lostRep": "0",
         },
-        feeWindows: [
-          "0x1000000000000000000000000000000000000000",
-        ],
+        feeWindows: ["0x1000000000000000000000000000000000000000"],
         forkedMarket: {
           crowdsourcers: [
             {
