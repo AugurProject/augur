@@ -7,7 +7,7 @@ import { getCurrentTime } from "../../blockchain/process-block";
 export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account: Address, includeCurrent: boolean, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));
 
-  let query = db.select(["fee_windows.feeWindow", "fee_windows.startTime", "fee_windows.endTime", "balances.balance", "participation_token.supply AS participationTokenStake", "fee_token.supply AS feeTokenStake", "cash.balance as totalFees"]).from("fee_windows")
+  let query = db.select(["fee_windows.feeWindow", "fee_windows.startTime", "fee_windows.endTime", "balances.balance", "participation_token.supply AS participationTokenStake", db.raw("IFNULL(fee_token.supply, 0) AS feeTokenStake"), db.raw("IFNULL(cash.balance, 0) as totalFees")]).from("fee_windows")
     .join("balances", "fee_windows.feeWindow", "balances.token")
     .join("token_supply AS participation_token", "participation_token.token", "fee_windows.feeWindow")
     .leftJoin("token_supply AS fee_token", "fee_token.token", "fee_windows.feeToken")
@@ -29,7 +29,7 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
         startTime: cur.startTime,
         endTime: cur.endTime,
         balance: cur.balance,
-        expectedFees: cur.balance.times(cur.totalFees || 0).dividedBy(totalStake),
+        expectedFees: cur.balance.times(cur.totalFees).dividedBy(totalStake),
       });
       return acc;
     }, {}));
