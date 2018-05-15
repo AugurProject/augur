@@ -256,7 +256,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     .join("payouts", "initial_reports.payoutId", "payouts.payoutId")
     .join("markets", "markets.marketId", "initial_reports.marketId")
     .where("markets.universe", universe)
-    .where(db.raw("(payouts.winning or markets.forking"))
+    .where(db.raw("(payouts.winning or markets.forking)"))
     .where("initial_reports.reporter", reporter)
     .whereNot("initial_reports.redeemed", 1);
 
