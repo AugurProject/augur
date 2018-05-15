@@ -103,7 +103,7 @@ export function addTransferTransactions(transfers) {
     const transactions = {}
     each(transfers, (transfer) => {
       // filter out market trade transfers from FillOrder contract
-      if (transfer.sender.toLowerCase() === FillOrderContractAddress.toLowerCase()) return
+      if (transfer.sender && transfer.sender.toLowerCase() === FillOrderContractAddress.toLowerCase()) return
       const transaction = { ...transfer }
       transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
@@ -111,20 +111,24 @@ export function addTransferTransactions(transfers) {
       const meta = {
         value: transaction.value,
       }
-      if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
-        transaction.symbol = 'REP'
+      if ( transaction.symbol === 'ParticipationToken') {
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
+        header.message = 'Participation Tokens purchased'
+        header.description = `${meta.value} Participation purchased`
+      } else if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
+        meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
+        transaction.symbol = 'REP'
         header.message = 'No Show bond Transfer'
         header.description = `${meta.value} ${transaction.symbol} transferred for no-show bond`
       } else {
         header.message = 'Transfer'
         header.description = `${meta.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
+        meta.sender = transaction.sender
+        meta.block = transaction.blockNumber
       }
       transaction.meta = Object.assign(meta, {
         txhash: transaction.transactionHash,
         recipient: transaction.recipient,
-        sender: transaction.sender,
-        block: transaction.blockNumber,
       })
       transactions[transaction.id] = header
     })
@@ -320,6 +324,8 @@ function buildHeader(item, type, status) {
   // TODO: need to sort by datetime in render
   if (item.timestamp) {
     header.timestamp = convertUnixToFormattedDate(item.timestamp)
+  } else if (item.creationTime) {
+    header.timestamp = convertUnixToFormattedDate(item.creationTime)
   }
   header.sortOrder = getSortOrder(type)
   return header
