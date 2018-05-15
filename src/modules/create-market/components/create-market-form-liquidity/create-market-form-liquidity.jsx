@@ -12,7 +12,7 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import CreateMarketFormLiquidityCharts from 'modules/create-market/containers/create-market-form-liquidity-charts'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
 
@@ -31,28 +31,30 @@ export default class CreateMarketLiquidity extends Component {
     availableEth: PropTypes.string.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
     keyPressed: PropTypes.func.isRequired,
+    liquidityState: PropTypes.object.isRequired,
+    updateState: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
+    const defaultOutcome = this.props.newMarket.type === CATEGORICAL ? '' : 1
     this.state = {
       errors: {
         quantity: [],
         price: [],
       },
       isOrderValid: false,
-      orderPrice: '',
-      orderQuantity: '',
-      orderEstimate: '',
+      orderPrice: props.liquidityState && props.liquidityState.orderPrice ? props.liquidityState.orderPrice : '',
+      orderQuantity: props.liquidityState && props.liquidityState.orderQuantity ? props.liquidityState.orderQuantity : '',
+      orderEstimate: props.liquidityState && props.liquidityState.orderEstimate ? props.liquidityState.orderEstimate : '',
       minPrice: createBigNumber(0),
       maxPrice: createBigNumber(1),
-      selectedNav: BID,
-      selectedOutcome: this.props.newMarket.type === SCALAR || this.props.newMarket.type === BINARY ? 1 : '',
+      selectedNav: props.liquidityState && props.liquidityState.selectedNav ? props.liquidityState.selectedNav : BID,
+      selectedOutcome: props.liquidityState && props.liquidityState.selectedOutcome ? props.liquidityState.selectedOutcome : defaultOutcome,
     }
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
-    // this.handleRemoveOrder = this.handleRemoveOrder.bind(this)
     this.updatePriceBounds = this.updatePriceBounds.bind(this)
     this.updateSeries = this.updateSeries.bind(this)
     this.sortOrderBook = this.sortOrderBook.bind(this)
@@ -64,6 +66,12 @@ export default class CreateMarketLiquidity extends Component {
   componentWillMount() {
     const { newMarket } = this.props
     this.updatePriceBounds(newMarket.type, this.state.selectedOutcome, this.state.selectedNav, newMarket.orderBookSorted, newMarket.scalarSmallNum, newMarket.scalarBigNum)
+  }
+
+  componentDidMount() {
+    if (Object.keys(this.props.liquidityState).length > 0) {
+      this.validateForm()
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,6 +91,19 @@ export default class CreateMarketLiquidity extends Component {
     ) {
       this.updatePriceBounds(nextProps.newMarket.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.newMarket.orderBookSorted, nextProps.newMarket.scalarSmallNum, nextProps.newMarket.scalarBigNum)
     }
+  }
+
+  componentWillUnmount() {
+    const liquidityState = {
+      orderPrice: this.state.orderPrice,
+      orderQuantity: this.state.orderQuantity,
+      orderEstimate: this.state.orderEstimate,
+      selectedOutcome: this.state.selectedOutcome,
+      selectedNav: this.state.selectedNav,
+    }
+    this.props.updateState({
+      liquidityState,
+    })
   }
 
   handleAddOrder() {
@@ -390,7 +411,6 @@ export default class CreateMarketLiquidity extends Component {
     const s = this.state
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
-
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
@@ -447,7 +467,7 @@ export default class CreateMarketLiquidity extends Component {
                   <InputDropdown
                     className={Styles['CreateMarketLiquidity__outcomes-categorical']}
                     label="Choose an Outcome"
-                    default=""
+                    default={s.selectedOutcome || ''}
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={(value) => {
                       this.setState({ selectedOutcome: value }, () => {
