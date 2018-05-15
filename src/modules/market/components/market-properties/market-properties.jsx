@@ -22,7 +22,6 @@ const MarketProperties = (p) => {
   const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
   const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
   const disableDispute = p.loginAccount.rep === '0' && p.linkType === TYPE_DISPUTE
-  const finalTime = p.finalizationTime ? convertUnixToFormattedDate(p.finalizationTime) : null
 
   return (
     <article>
@@ -54,12 +53,6 @@ const MarketProperties = (p) => {
             <span>Winning Outcome</span>
             {consensus}
           </li>
-          }
-          { finalTime &&
-            <li>
-              <span>Finalized</span>
-              <span>{ p.isMobile ? finalTime.formattedLocalShort : finalTime.formattedLocalShortTime }</span>
-            </li>
           }
         </ul>
         <div className={Styles.MarketProperties__actions}>
