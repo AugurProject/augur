@@ -58,9 +58,31 @@ export function transferFunds(amount, currency, toAddress) {
           universe: universe.id,
           reputationToSend: amount,
           _to: to,
-          onSent,
-          onSuccess,
-          onFailed,
+          onSent: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer REP -- Pending`,
+              description: `${amount} REP -> ${trimString(to)}`,
+              timestamp: selectCurrentTimestampInSeconds(getState()),
+            }))
+          },
+          onSuccess: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer REP -- Success`,
+              description: `${amount} REP -> ${trimString(to)}`,
+              timestamp: selectCurrentTimestampInSeconds(getState()),
+            }))
+            dispatch(updateAssets)
+          },
+          onFailed: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer REP -- Failed`,
+              description: `${amount} REP -> ${trimString(to)}`,
+              timestamp: selectCurrentTimestampInSeconds(getState()),
+            }))
+          },
         })
       default:
         console.error('transferFunds: unknown currency', currency)
