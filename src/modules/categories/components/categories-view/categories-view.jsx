@@ -69,7 +69,6 @@ export default class CategoriesView extends Component {
   }
 
   startCategoryCarousel() {
-    const { categories } = this.props
     this.setState({ heroCategoryIndex: 0 })
 
     const doCarouselTween = (from, to, cb) => tween({
@@ -114,11 +113,11 @@ export default class CategoriesView extends Component {
     } = this.props
     const {
       heroCategoryIndex,
-      heroCategoryOpacity
+      heroCategoryOpacity,
       boundedLength,
       lowerBound,
       itemsPerPage,
-     } = this.state
+    } = this.state
     const heroCategory = categories[heroCategoryIndex]
 
     return (
