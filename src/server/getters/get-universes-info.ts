@@ -52,8 +52,8 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
         return formatBigNumberAsFixed<UIUniverseInfoRow<BigNumber>, UIUniverseInfoRow<string>>({
           universe: row.universe,
           parentUniverse: row.parentUniverse,
-          balance: row.balance,
-          supply: row.supply,
+          balance: row.balance || "0",
+          supply: row.supply || "0",
           numMarkets: row.numMarkets,
           payout: normalizedPayoutsToFixed(normalizePayouts(row)).payout,
           isInvalid: row.isInvalid,
