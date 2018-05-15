@@ -13,9 +13,9 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
     .leftJoin("token_supply AS fee_token", "fee_token.token", "fee_windows.feeToken")
     .leftJoin("balances AS cash", function () {
       this
-        .on("cash.owner", db.raw("fee_windows.feeWindow"));
+        .on("cash.owner", db.raw("fee_windows.feeWindow"))
+        .andOn("cash.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
       })
-    .where("cash.token", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash)
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
     .where("balances.owner", account);
@@ -29,7 +29,7 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
         startTime: cur.startTime,
         endTime: cur.endTime,
         balance: cur.balance,
-        expectedFees: cur.balance.times(cur.totalFees).dividedBy(totalStake),
+        expectedFees: cur.balance.times(cur.totalFees || 0).dividedBy(totalStake),
       });
       return acc;
     }, {}));
