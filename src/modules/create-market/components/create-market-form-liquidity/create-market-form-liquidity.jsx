@@ -411,7 +411,6 @@ export default class CreateMarketLiquidity extends Component {
     const s = this.state
 
     const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
-    console.log('s.selectedOutcome ', s.selectedOutcome)
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
