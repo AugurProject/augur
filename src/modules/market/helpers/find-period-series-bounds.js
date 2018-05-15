@@ -11,8 +11,8 @@ export default function findPeriodSeriesBounds(periodTimeSeries = [], marketMin 
   return (periodTimeSeries).reduce((p, item, i) => {
     if (i === 0) {
       return {
-        min: item.low,
-        max: item.high,
+        min: item.low.toString(),
+        max: item.high.toString(),
       }
     }
 
