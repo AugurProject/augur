@@ -37,7 +37,6 @@ export default class CreateMarketForm extends Component {
 
     this.state = {
       pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
-      liquidityState: {},
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -46,7 +45,6 @@ export default class CreateMarketForm extends Component {
     this.validateNumber = this.validateNumber.bind(this)
     this.isValid = this.isValid.bind(this)
     this.keyPressed = this.keyPressed.bind(this)
-    this.updateState = this.updateState.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,10 +81,6 @@ export default class CreateMarketForm extends Component {
     if (event.key === 'Enter') {
       this.nextPage()
     }
-  }
-
-  updateState(newState) {
-    this.setState(newState)
   }
 
   validateField(fieldName, value, maxLength) {
@@ -244,8 +238,6 @@ export default class CreateMarketForm extends Component {
                 availableEth={availableEth}
                 isMobileSmall={isMobileSmall}
                 keyPressed={this.keyPressed}
-                liquidityState={s.liquidityState}
-                updateState={this.updateState}
               />
             }
             { newMarket.currentStep === 4 &&
