@@ -118,7 +118,7 @@ describe("server/getters/get-reporting-fees", () => {
         total: {
           "unclaimedEth": "0",
           "unclaimedRepStaked": "0",
-          "unclaimedRepEarned": "114",
+          "unclaimedRepEarned": "0",
           "unclaimedForkEth": "0",
           "unclaimedForkRepStaked": "0",
           "lostRep": "0",
