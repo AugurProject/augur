@@ -80,7 +80,8 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     'getMarkets',
     {
       reportingState: constants.REPORTING_STATE.FINALIZED,
-      sortBy: 'endTime',
+      sortBy: 'finalizationBlockNumber',
+      isSortDescending: true,
       universe: universe.id,
     },
     (err, finalizedMarketIds) => {
@@ -91,6 +92,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
         {
           reportingState: constants.REPORTING_STATE.AWAITING_FINALIZATION,
           sortBy: 'endTime',
+          isSortDescending: true,
           universe: universe.id,
         },
         (err, awaitingFinalizationMarketIds) => {
