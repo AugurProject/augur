@@ -19,6 +19,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     transferFundsReqireAPI.__ResetDependency__('augur')
     transferFundsReqireAPI.__ResetDependency__('updateAssets')
     transferFundsReqireAPI.__ResetDependency__('addNotification')
+    transferFundsReqireAPI.__ResetDependency__('updateNotifications')
+    transferFundsReqireAPI.__ResetDependency__('selectCurrentTimestampInSeconds')
   })
 
   test({
@@ -118,15 +120,20 @@ describe('modules/auth/actions/transfer-funds.js', () => {
         type: 'addNotification',
       })
 
+      const updateNotification = sinon.stub().returns({
+        type: 'updateNotification',
+      })
+
       transferFundsReqireAPI.__Rewire__('augur', {
         assets,
       })
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets)
       transferFundsReqireAPI.__Rewire__('addNotification', addNotification)
+      transferFundsReqireAPI.__Rewire__('updateNotification', updateNotification)
 
       store.dispatch(transferFunds(10, ETH, '0xtest2'))
 
-      assert(addNotification.calledOnce, `didn't call 'addNotifications' once as expected`)
+      assert(updateNotification.calledOnce, `didn't call 'updateNotifications' once as expected`)
       assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`)
 
       done()
@@ -146,14 +153,14 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     assertions: (done, store) => {
       const assets = {
         sendReputation: (options) => {
-          options.onSuccess()
+          options.onSuccess({ hash: 'hashValue' })
         },
       }
 
       const updateAssets = sinon.stub().returns({
         type: 'updateAssets',
       })
-
+      transferFundsReqireAPI.__Rewire__('selectCurrentTimestampInSeconds', () => {})
       transferFundsReqireAPI.__Rewire__('augur', {
         assets,
       })
