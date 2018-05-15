@@ -111,7 +111,7 @@ export function addTransferTransactions(transfers) {
       const meta = {
         value: transaction.value,
       }
-      if ( transaction.symbol === 'ParticipationToken') {
+      if (transaction.symbol === 'ParticipationToken') {
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
         header.message = 'Participation Tokens purchased'
         header.description = `${meta.value} Participation purchased`
