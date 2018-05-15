@@ -93,7 +93,6 @@
 }
 
 .MarketHeader__details {
-  display: inline-block;
   max-height: 200px;
   overflow-y: auto;
   padding: 1em;
@@ -106,14 +105,37 @@
 
   h4 {
     display: inline-block;
+    padding-bottom: 0.2rem;
     padding-right: 0.5em;
   }
 
   span {
     color: @color-white;
+
+    @media @breakpoint-mobile-small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 
 .MarketHeader__resolution-source--empty_details {
   margin-bottom: 1.2rem;
+}
+
+@media @breakpoint-mobile {
+  .MarketHeader {
+    margin-top: 3rem;
+  }
+
+  .MarketHeader__main-values {
+    flex-direction: column;
+  }
+
+  .MarketHeader__properties {
+    margin-bottom: 1.25rem;
+    margin-left: 0;
+  }
 }
