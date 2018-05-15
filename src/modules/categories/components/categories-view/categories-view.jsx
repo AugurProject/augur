@@ -2,12 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
-
-// TODO: implement null state for categories list (needs design)
-// import NullStateMessage from 'modules/common/components/null-state-message';
+import { createBigNumber } from 'utils/create-big-number'
 import CategoryList from 'modules/categories/components/category-list/category-list'
 import Paginator from 'modules/common/components/paginator/paginator'
-
 
 import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -72,7 +69,6 @@ export default class CategoriesView extends Component {
   }
 
   startCategoryCarousel() {
-    const { categories } = this.props
     this.setState({ heroCategoryIndex: 0 })
 
     const doCarouselTween = (from, to, cb) => tween({
@@ -88,14 +84,16 @@ export default class CategoriesView extends Component {
     const waitThenChange = () => {
       this.carouselTimeout = setTimeout(() => {
         doCarouselTween(1, 0, () => {
-          const s = this.state
-          const nextIndex = (s.heroCategoryIndex + 1) % categories.length
-          this.setState({ heroCategoryIndex: nextIndex })
+          const { heroCategoryIndex } = this.state
+          const { categories } = this.props
+          if (categories.length > 0) {
+            const nextIndex = createBigNumber(heroCategoryIndex).plus(createBigNumber(1)).mod(createBigNumber(categories.length)).toNumber()
+            this.setState({ heroCategoryIndex: nextIndex })
+          }
           doCarouselTween(0, 1, waitThenChange)
         })
       }, 5000)
     }
-
     doCarouselTween(0, 1, waitThenChange)
   }
 
@@ -113,8 +111,14 @@ export default class CategoriesView extends Component {
       isMobile,
       location,
     } = this.props
-    const s = this.state
-    const heroCategory = categories[s.heroCategoryIndex]
+    const {
+      heroCategoryIndex,
+      heroCategoryOpacity,
+      boundedLength,
+      lowerBound,
+      itemsPerPage,
+    } = this.state
+    const heroCategory = categories[heroCategoryIndex]
 
     return (
       <section className={Styles.Categories}>
@@ -126,7 +130,7 @@ export default class CategoriesView extends Component {
           <div className={Styles.CategoriesHeading}>
             <h3>Bet on</h3>
             {heroCategory &&
-            <h2 style={{ opacity: s.heroCategoryOpacity }}>
+            <h2 style={{ opacity: heroCategoryOpacity }}>
               {heroCategory &&
                 <Link
                   to={{
@@ -144,11 +148,11 @@ export default class CategoriesView extends Component {
             }
             <div className={Styles.CategoriesHeading__separator} />
           </div>
-          {!!(categories && categories.length && s.boundedLength) &&
+          {!!(categories && categories.length && boundedLength) &&
             <CategoryList
               categories={categories}
-              lowerBound={s.lowerBound}
-              boundedLength={isMobile ? s.boundedLength : s.itemsPerPage}
+              lowerBound={lowerBound}
+              boundedLength={isMobile ? boundedLength : itemsPerPage}
             />
           }
         </div>
@@ -156,7 +160,7 @@ export default class CategoriesView extends Component {
           <div className={Styles.Categories__paginator}>
             <Paginator
               itemsLength={categories.length}
-              itemsPerPage={s.itemsPerPage}
+              itemsPerPage={itemsPerPage}
               location={location}
               history={history}
               setSegment={this.setSegment}
