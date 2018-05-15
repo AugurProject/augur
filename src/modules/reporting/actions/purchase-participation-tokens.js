@@ -3,6 +3,7 @@ import speedomatic from 'speedomatic'
 import logError from 'utils/log-error'
 import { formatGasCostToEther } from 'utils/format-number'
 import { closeModal } from 'modules/modal/actions/close-modal'
+import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
 
 export const purchaseParticipationTokens = (amount, estimateGas = false, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
@@ -22,11 +23,10 @@ export const purchaseParticipationTokens = (amount, estimateGas = false, callbac
       },
       onSuccess: (res) => {
         if (estimateGas) {
-          // if just a gas estimate, return the gas cost.
           const gasPrice = augur.rpc.getGasPrice()
           return callback(null, formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice))
         }
-        // if not a gas estimate, just return res.
+        dispatch(loadReportingWindowBounds())
         return callback(null, res)
       },
       onFailed: err => callback(err),
