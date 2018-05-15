@@ -52,6 +52,7 @@ function getBalance(augur, args, auth, callback) {
               return callback(JSON.stringify(err));
             }
             console.log(chalk.cyan("Current Fee Window:"));
+            console.log(chalk.green.dim("fee window:"), chalk.green(feeWindow));
             displayTime("Start Time", startTime);
             displayTime("End Time", endTime);
             console.log("Participation Tokens: " + chalk.green(speedomatic.unfix(balance, "string")));

@@ -29,9 +29,20 @@ var setTimestamp = require("./set-timestamp-cmd");
 var forceDispute = require("./force-dispute");
 var forceFinalize = require("./force-finalize");
 var escapeHatch = require("./escape-hatch");
+var transferAssets = require("./transfer-assets");
 
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 var methods = {
+  "transfer-assets": {
+    method: transferAssets,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, transfer ETH or REP" },
+      ether: { flag: true, short: "e", help: "indicates ETH" },
+      rep: { flag: true, short: "r", help: "indicates REP" },
+      to: { required: true, short: "t", help: "account address sending assets to" },
+      amount: { required: true, short: "a", help: "amount of asset to transfer" },
+    },
+  },
   "get-balance": {
     method: getBalance,
     opts: {
