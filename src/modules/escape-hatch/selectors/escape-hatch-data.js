@@ -1,6 +1,5 @@
 import { createBigNumber } from 'utils/create-big-number'
 import { createSelector } from 'reselect'
-import speedomatic from 'speedomatic'
 import { each } from 'async'
 import store from 'src/store'
 import { selectAccountPositionsState, selectMarketsDataState, selectParticipationTokens, selectInitialReporters, selectDisputeCrowdsourcerTokens } from 'src/select-state'
@@ -19,9 +18,9 @@ export const getEscapeHatchData = createSelector(
   selectDisputeCrowdsourcerTokens,
   (marketsData, myMarkets, accountPositions, partcipationTokens, initialReporters, disputeCrowdsourcers = {}) => {
     const data = {
-      eth: 0,
-      rep: 0,
-      gas: 0,
+      eth: createBigNumber(0),
+      rep: createBigNumber(0),
+      gas: createBigNumber(0),
       ownedMarketsWithFunds: [],
       marketsWithShares: [],
       fundsAvailableForWithdrawl: false,
@@ -30,9 +29,10 @@ export const getEscapeHatchData = createSelector(
     // Market escape hatch
     each(myMarkets, (myMarket) => {
       const market = marketsData[myMarket.id]
-      if (market.repBalance > 0) {
-        data.rep += market.repBalance
-        data.gas += market.escapeHatchGasCost
+      if (market.repBalance > 0 || market.ethBalance > 0) {
+        data.rep = market.repBalance > 0 ? data.rep.plus(market.repBalance) : data.rep
+        data.eth = market.ethBalance > 0 ? data.eth.plus(market.ethBalance) : data.eth
+        data.gas = data.gas.plus(market.escapeHatchGasCost || 0)
         data.ownedMarketsWithFunds.push(market)
       }
     })
@@ -41,8 +41,8 @@ export const getEscapeHatchData = createSelector(
     Object.keys(accountPositions).forEach((marketId) => {
       const market = marketsData[marketId]
       if (market.frozenSharesValue > 0) {
-        data.eth += market.frozenSharesValue
-        data.gas += market.tradingEscapeHatchGasCost
+        data.eth = data.eth.plus(market.frozenSharesValue)
+        data.gas = data.gas.plus(market.tradingEscapeHatchGasCost || 0)
         data.marketsWithShares.push(market)
       }
     })
@@ -50,24 +50,24 @@ export const getEscapeHatchData = createSelector(
     Object.keys(disputeCrowdsourcers).forEach((disputeCrowdsourcerID) => {
       const disputeCrowdsourcer = disputeCrowdsourcers[disputeCrowdsourcerID]
       if (disputeCrowdsourcer.balance > 0) {
-        data.rep = speedomatic.unfix(disputeCrowdsourcer.balance).add(createBigNumber(data.rep))
-        data.gas += disputeCrowdsourcer.escapeHatchGasCost
+        data.rep = data.rep.plus(disputeCrowdsourcer.balance)
+        data.gas = data.gas.plus(disputeCrowdsourcer.escapeHatchGasCost || 0)
       }
     })
 
     Object.keys(initialReporters).forEach((initialReporterID) => {
       const initialReporter = initialReporters[initialReporterID]
       if (initialReporter.repBalance > 0) {
-        data.rep = speedomatic.unfix(initialReporter.repBalance).add(createBigNumber(data.rep))
-        data.gas += initialReporter.escapeHatchGasCost
+        data.rep = data.rep.plus(initialReporter.repBalance)
+        data.gas = data.gas.plus(initialReporter.escapeHatchGasCost || 0)
       }
     })
 
     Object.keys(partcipationTokens).forEach((participationTokenID) => {
       const partcipationToken = partcipationTokens[participationTokenID]
       if (partcipationToken.balance > 0) {
-        data.rep += partcipationToken.balance
-        data.gas += partcipationToken.escapeHatchGasCost
+        data.rep = data.rep.plus(partcipationToken.balance)
+        data.gas = data.gas.plus(partcipationToken.escapeHatchGasCost || 0)
       }
     })
 

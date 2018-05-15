@@ -1,5 +1,5 @@
 import immutableDelete from 'immutable-delete'
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST, UPDATE_MARKETS_DISPUTE_INFO, REMOVE_MARKET } from 'modules/markets/actions/update-markets-data'
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKET_CATEGORY, UPDATE_MARKET_REP_BALANCE, UPDATE_MARKET_FROZEN_SHARES_VALUE, UPDATE_MARKET_ESCAPE_HATCH_GAS_COST, UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST, UPDATE_MARKETS_DISPUTE_INFO, REMOVE_MARKET, UPDATE_MARKET_ETH_BALANCE } from 'modules/markets/actions/update-markets-data'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -32,6 +32,15 @@ export default function (marketsData = DEFAULT_STATE, action) {
         [action.marketId]: {
           ...marketsData[action.marketId],
           repBalance: action.repBalance,
+        },
+      }
+    case UPDATE_MARKET_ETH_BALANCE:
+      if (!action.marketId) return marketsData
+      return {
+        ...marketsData,
+        [action.marketId]: {
+          ...marketsData[action.marketId],
+          ethBalance: action.ethBalance,
         },
       }
     case UPDATE_MARKET_FROZEN_SHARES_VALUE:

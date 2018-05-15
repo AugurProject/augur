@@ -23,9 +23,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadUserMarkets((err, marketIds) => {
+  loadMarkets: () => dispatch(loadUserMarkets((err, ownedMarketIds) => {
     if (err) return logError(err)
-    dispatch(loadEmergencyWithdrawlAssets(marketIds))
+    dispatch(loadEmergencyWithdrawlAssets(ownedMarketIds))
   })),
   loadParticipationTokens: () => dispatch(loadUserParticipationTokens()),
   loadInitialReporters: () => dispatch(loadUserInitialReporters()),

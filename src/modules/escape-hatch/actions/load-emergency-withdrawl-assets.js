@@ -1,28 +1,33 @@
 import speedomatic from 'speedomatic'
+import { createBigNumber } from 'utils/create-big-number'
 import { each } from 'async'
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
-import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateMarketEscapeHatchGasCost, updateMarketTradingEscapeHatchGasCost } from 'modules/markets/actions/update-markets-data'
+import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateMarketEscapeHatchGasCost, updateMarketTradingEscapeHatchGasCost, updateMarketEthBalance } from 'modules/markets/actions/update-markets-data'
+import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
-export default function (marketIds, callback = logError) {
+export default function (ownedMarketIds, tradingMarketIds, callback = logError) {
   return (dispatch, getState) => {
-    const { accountPositions, marketsData, universe } = getState()
+    const { marketsData, universe } = getState()
     const universeID = universe.id || UNIVERSE_ID
 
     // Update all owned market REP balances
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
-      each(marketIds, (marketId) => {
+      each(ownedMarketIds, (marketId) => {
         doUpdateMarketRepBalance(marketsData[marketId], reputationTokenAddress, dispatch, callback)
       })
     })
 
     // Update all markets with their frozen shares value
-    Object.keys(accountPositions).forEach((marketId) => {
-      doUpdateShareFrozenValue(marketsData[marketId], dispatch, callback)
-    })
+    dispatch(loadAccountPositions({}, (err, accountPositions) => {
+      if (err) return callback(err)
+      each(accountPositions, (position) => {
+        doUpdateShareFrozenValue(getState().marketsData[position.marketId], dispatch, callback)
+      })
+    }))
   }
 }
 
@@ -32,10 +37,13 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
     _owner: market.id,
   }, (err, attoRepBalance) => {
     if (err) return callback(err)
-    const repBalance = speedomatic.unfix(attoRepBalance, 'number')
-    if (!market.repBalance || market.repBalance !== repBalance) {
-      dispatch(updateMarketRepBalance(market.id, repBalance))
-      if (repBalance > 0) {
+    augur.rpc.eth.getBalance([market.id, 'latest'], (err, attoEtherBalance) => {
+      if (err) return callback(err)
+      const repBalance = createBigNumber(attoRepBalance)
+      const ethBalance = createBigNumber(attoEtherBalance)
+      if (!market.repBalance || market.repBalance !== repBalance) dispatch(updateMarketRepBalance(market.id, repBalance))
+      if (!market.ethBalance || market.ethBalance !== ethBalance) dispatch(updateMarketEthBalance(market.id, ethBalance))
+      if (repBalance > 0 || ethBalance > 0) {
         augur.api.Market.withdrawInEmergency({
           tx: { estimateGas: true, to: market.id },
           onSent: noop,
@@ -46,7 +54,7 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
           onFailed: callback,
         })
       }
-    }
+    })
   })
 }
 
@@ -56,7 +64,7 @@ function doUpdateShareFrozenValue(market, dispatch, callback) {
     _market: market.id,
   }, (err, attoEth) => {
     if (err) return callback(err)
-    const frozenSharesValue = speedomatic.unfix(attoEth, 'number')
+    const frozenSharesValue = createBigNumber(attoEth)
     if (!market.frozenSharesValue || market.frozenSharesValue !== frozenSharesValue) {
       dispatch(updateMarketFrozenSharesValue(market.id, frozenSharesValue))
       if (frozenSharesValue > 0) {

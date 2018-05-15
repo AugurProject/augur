@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Styles from 'modules/escape-hatch/components/escape-hatch.styles'
-import { formatGasCostToEther, formatEtherEstimate } from 'utils/format-number'
+import { formatGasCostToEther, formatAttoRep, formatAttoEth } from 'utils/format-number'
 import PropTypes from 'prop-types'
 
 export default class EscapeHatchView extends Component {
@@ -58,7 +58,14 @@ export default class EscapeHatchView extends Component {
       loadInitialReporters()
       loadDisputeCrowdsourcers()
     }
-    this.setState({ fundsAvailableForWithdrawl: nextProps.escapeHatchData.fundsAvailableForWithdrawl > 0 })
+
+    const fundsAvailableForWithdrawl = nextProps.escapeHatchData.fundsAvailableForWithdrawl > 0
+    let { onEscapeHatchLanding } = this.state.onEscapeHatchLanding
+    onEscapeHatchLanding = onEscapeHatchLanding || !fundsAvailableForWithdrawl
+    this.setState({
+      fundsAvailableForWithdrawl,
+      onEscapeHatchLanding,
+    })
   }
 
   withdraw(e, ...args) {
@@ -117,11 +124,11 @@ export default class EscapeHatchView extends Component {
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>REP</span>
-              <span>{formatEtherEstimate(escapeHatchData.rep).rounded}</span>
+              <span>{formatAttoRep(escapeHatchData.rep, { decimalsRounded: 4, roundUp: true }).roundedValue}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>ETH</span>
-              <span>{formatEtherEstimate(escapeHatchData.eth).rounded}</span>
+              <span>{formatAttoEth(escapeHatchData.eth, { decimalsRounded: 4, roundUp: true }).roundedValue}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>
