@@ -5,8 +5,7 @@ import { selectEdgeContextState } from 'src/select-state'
 
 export const UPDATE_EDGE_CONTEXT = 'UPDATE_EDGE_CONTEXT'
 
-const hasUsers = edgeContext =>
-  edgeContext.users && Object.keys(edgeContext.users).length > 0
+const hasUsers = edgeContext => Object.keys(edgeContext.localUsers).length > 0
 
 export const prepareEdgeContext = history => (dispatch, getState) => {
   const edgeContext = selectEdgeContextState(getState())
