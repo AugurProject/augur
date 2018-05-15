@@ -1,4 +1,4 @@
-import { TYPE_VIEW, TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_CALCULATE_PAYOUT, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
+import { TYPE_VIEW, TYPE_REPORT, TYPE_DISPUTE, TYPE_TRADE, TYPE_FINALIZE_MARKET, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
 import { constants } from 'services/augurjs'
 import { isEmpty } from 'lodash'
 
@@ -27,7 +27,7 @@ export const determineMarketLinkType = (market, loginAccount) => {
       return TYPE_VIEW
 
     case constants.REPORTING_STATE.AWAITING_FINALIZATION:
-      return TYPE_CALCULATE_PAYOUT
+      return TYPE_FINALIZE_MARKET
 
     case constants.REPORTING_STATE.FINALIZED:
       return TYPE_CLAIM_PROCEEDS
