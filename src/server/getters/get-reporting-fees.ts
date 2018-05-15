@@ -232,7 +232,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
   });
 }
 
-function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: { fees: RepStakeResults }) => void) {
+function getStakedRepResults(db: Knex, reporter: Address, universe: Address, callback: (err: Error|null, result?: { fees: RepStakeResults }) => void) {
   const crowdsourcerQuery = db.select(["fee_windows.feeWindow", "stakedRep.balance as amountStaked", "payouts.winning"]).from("fee_windows");
   crowdsourcerQuery.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
   crowdsourcerQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
@@ -242,17 +242,15 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
       .on("crowdsourcers.crowdsourcerId", db.raw("stakedRep.token"))
       .andOn("stakedRep.owner", db.raw("?", reporter));
   });
-  if (universe != null) crowdsourcerQuery.where("fee_windows.universe", universe);
+  crowdsourcerQuery.where("fee_windows.universe", universe);
 
-  const initialReportersQuery = db.select(["initial_reports.amountStaked", "payouts.winning"]).from("initial_reports");
-  initialReportersQuery.join("payouts", "initial_reports.payoutId", "payouts.payoutId");
-  initialReportersQuery.whereNotNull("payouts.winning");
-  initialReportersQuery.where("initial_reports.reporter", reporter);
-  initialReportersQuery.whereNot("initial_reports.redeemed", 1);
-  if (universe != null) {
-    initialReportersQuery.join("markets", "markets.marketId", "initial_reports.marketId");
-    initialReportersQuery.where("markets.universe", universe);
-  }
+  const initialReportersQuery = db.select(["initial_reports.amountStaked", "payouts.winning"]).from("initial_reports")
+    .join("payouts", "initial_reports.payoutId", "payouts.payoutId")
+    .join("markets", "markets.marketId", "initial_reports.marketId")
+    .where("markets.universe", universe)
+    .whereNotNull("payouts.winning")
+    .where("initial_reports.reporter", reporter)
+    .whereNot("initial_reports.redeemed", 1);
 
   parallel({
     crowdsourcers: (next: AsyncCallback) => crowdsourcerQuery.asCallback(next),
@@ -278,7 +276,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address|null
   });
 }
 
-function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: Array<ParticipationTokenEthFee>) => void) {
+function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address, callback: (err: Error|null, result?: Array<ParticipationTokenEthFee>) => void) {
   const participationTokenQuery = db.select([
     "fee_windows.feeWindow",
     "participationToken.balance AS participationTokens",
@@ -296,11 +294,11 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
       .on("cashFeeWindow.owner", db.raw("fee_windows.feeWindow"))
       .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
   });
-  participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
-  participationTokenQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
-  participationTokenQuery.whereNot("participationTokens", "0");
-  participationTokenQuery.where("fee_windows.state", FeeWindowState.PAST);
-  if (universe != null) participationTokenQuery.where("fee_windows.universe", universe);
+  participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken")
+    .leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow")
+    .whereNot("participationTokens", "0")
+    .where("fee_windows.state", FeeWindowState.PAST)
+    .where("fee_windows.universe", universe);
   participationTokenQuery.asCallback((err: Error|null, participationTokens: Array<ParticipationTokensEthFeeRow>) => {
     if (err) return callback(err);
     const participationTokenEthFees = _.map(participationTokens, (participationToken) => {
@@ -319,7 +317,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   });
 }
 
-function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address|null, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
+function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
   const participantQuery = db.select([
     "participantAddress",
     "fee_windows.feeWindow",
@@ -349,6 +347,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   });
   participantQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken");
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow");
+  participantQuery.where("all_participants.universe", universe);
   participantQuery.where("all_participants.reporter", reporter);
   participantQuery.whereRaw("(reportingState IN (?, ?) OR disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2]);
   participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<ParticipantEthFeeRow>) => {
