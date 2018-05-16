@@ -27,6 +27,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
                 assert.isNull(err);
                 getFeeWindow(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

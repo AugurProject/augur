@@ -19,6 +19,7 @@ describe("blockchain/log-processors/universe-created", () => {
                 assert.isNull(err);
                 getUniverse(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

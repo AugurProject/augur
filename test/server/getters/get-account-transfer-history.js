@@ -11,6 +11,7 @@ describe("server/getters/get-account-transfer-history", () => {
         if (err) assert.fail(err);
         getAccountTransferHistory(db, t.params.account, t.params.token, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
+          db.destroy();
           done();
         });
       });

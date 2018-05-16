@@ -11,6 +11,7 @@ describe("server/getters/get-all-orders", () => {
         assert.isNull(err);
         getAllOrders(db, t.params.account, (err, orders) => {
           t.assertions(err, orders);
+          db.destroy();
           done();
         });
       });

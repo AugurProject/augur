@@ -19,6 +19,7 @@ describe("blockchain/log-processors/market-participants-disavowed", () => {
                 assert.isNull(err);
                 getMarketCrowdsourcers(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

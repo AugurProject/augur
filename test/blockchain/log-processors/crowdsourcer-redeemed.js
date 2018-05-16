@@ -19,6 +19,7 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
                 assert.isNull(err);
                 getRedeemed(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

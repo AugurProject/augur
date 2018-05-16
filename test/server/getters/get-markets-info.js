@@ -12,6 +12,7 @@ describe("server/getters/get-markets-info", () => {
         if (err) assert.fail(err);
         getMarketsInfo(db, t.params.marketIds, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
+          db.destroy();
           done();
         });
       });

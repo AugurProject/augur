@@ -11,6 +11,7 @@ describe("server/getters/get-user-trading-positions", () => {
         assert.isNull(err);
         getUserTradingPositions(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
           t.assertions(err, userTradingPositions);
+          db.destroy();
           done();
         });
       });

@@ -11,6 +11,7 @@ describe("server/getters/get-initial-reporters", () => {
         assert.isNull(err);
         getInitialReporters(db, t.params.augur, t.params.universe, t.params.reporter, t.params.redeemed, t.params.withRepBalance, (err, initialReporters) => {
           t.assertions(err, initialReporters);
+          db.destroy();
           done();
         });
       });

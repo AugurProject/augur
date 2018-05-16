@@ -25,6 +25,7 @@ describe("blockchain/log-processors/market-migrated", () => {
                     assert.isNull(err);
                     getMarket(trx, t.params, (err, marketRow) => {
                       t.assertions.onRemoved(err, marketRow);
+                      db.destroy();
                       done();
                     });
                   });
