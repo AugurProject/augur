@@ -14,6 +14,8 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
     forkedMarket: PropTypes.object.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
+    getReportingFees: PropTypes.func.isRequired,
+    updateAssets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -31,16 +33,16 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       forkedMarket: this.props.forkedMarket,
       estimateGas: true,
       onSent: () => {},
-      onFailed: (err) => {
-        // Default to 0 for now if we recieve an error.
-        const ClaimReportingFeesForkedMarketGasEstimate = '0'
+      onSuccess: (result) => {
+        const ClaimReportingFeesForkedMarketGasEstimate = result.gasEstimates.totals.all.toString()
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(ClaimReportingFeesForkedMarketGasEstimate, { decimalsRounded: 4 }, gasPrice),
         })
       },
-      onSuccess: (result) => {
-        const ClaimReportingFeesForkedMarketGasEstimate = result.gasEstimates.totals.all.toString()
+      onFailed: (err) => {
+        // Default to 0 for now if we recieve an error.
+        const ClaimReportingFeesForkedMarketGasEstimate = '0'
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
           ClaimReportingFeesForkedMarketGasEstimate: formatGasCostToEther(ClaimReportingFeesForkedMarketGasEstimate, { decimalsRounded: 4 }, gasPrice),
@@ -56,10 +58,13 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
       forkedMarket: this.props.forkedMarket,
       estimateGas: false,
       onSent: () => {},
-      onFailed: (err) => {
+      onSuccess: (result) => {
+        this.props.getReportingFees(() => {
+          this.props.updateAssets()
+        })
         this.props.closeModal()
       },
-      onSuccess: (result) => {
+      onFailed: (err) => {
         this.props.closeModal()
       },
     }
