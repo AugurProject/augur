@@ -210,7 +210,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .select(["initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?) OR initial_reports.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2])
+    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR initial_reports.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .where("markets.universe", universe)
     .where("initial_reports.reporter", reporter)
     .where("initial_reports.redeemed", 0);
@@ -220,7 +220,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?) OR crowdsourcers.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2])
+    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .andWhere("markets.universe", universe)
     .andWhere("balances.owner", reporter);
   const forkedMarketQuery = db("markets")
@@ -397,10 +397,12 @@ export function getReportingFees(db: Knex, augur: Augur, reporter: Address|null,
             const unclaimedForkEthFees = _.reduce(participantEthFees, (acc, cur) => acc.plus(cur.fork ? cur.ethFees : 0), ZERO);
             const unclaimedParticipationTokenEthFees = _.reduce(participationTokenEthFees, (acc, cur) => acc.plus(cur.ethFees), ZERO);
             const redeemableFeeWindows = _.map(participationTokenEthFees, "feeWindow");
+            const participationTokenRepStaked = _.reduce(participationTokenEthFees, (acc, cur) => acc.plus(cur.participationTokens), ZERO);
+            const unclaimedRepStaked = repStakeResults.fees.unclaimedRepStaked.plus(participationTokenRepStaked);
             const response = {
               total: {
                 unclaimedEth: unclaimedParticipantEthFees.plus(unclaimedParticipationTokenEthFees).toFixed(0, BigNumber.ROUND_DOWN),
-                unclaimedRepStaked: repStakeResults.fees.unclaimedRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
+                unclaimedRepStaked: unclaimedRepStaked.toFixed(0, BigNumber.ROUND_DOWN),
                 unclaimedRepEarned: repStakeResults.fees.unclaimedRepEarned.toFixed(0, BigNumber.ROUND_DOWN),
                 lostRep: repStakeResults.fees.lostRep.toFixed(0, BigNumber.ROUND_DOWN),
                 unclaimedForkEth: unclaimedForkEthFees.plus(unclaimedParticipationTokenEthFees).toFixed(0, BigNumber.ROUND_DOWN),
