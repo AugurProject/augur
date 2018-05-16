@@ -91,24 +91,29 @@ function pollForNetwork(dispatch, getState) {
 }
 
 function pollForEscapeHatch(dispatch, getState) {
+  doPollForEscapeHatch(dispatch, getState)
   setInterval(() => {
-    const { modal } = getState()
-    const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
-    AugurJS.augur.api.Controller.stopped((err, stopped) => {
-      if (stopped && !modalShowing) {
-        dispatch(updateModal({
-          type: MODAL_ESCAPE_HATCH,
-          markets: getAllMarkets(),
-          disputeBonds: [],
-          initialReports: [],
-          shares: [],
-          participationTokens: [],
-        }))
-      } else if (!stopped && modalShowing) {
-        dispatch(closeModal())
-      }
-    })
+    doPollForEscapeHatch(dispatch, getState)
   }, ESCAPE_HATCH_POLL_INTERVAL_DURATION)
+}
+
+function doPollForEscapeHatch(dispatch, getState) {
+  const { modal } = getState()
+  const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
+  AugurJS.augur.api.Controller.stopped((err, stopped) => {
+    if (stopped && !modalShowing) {
+      dispatch(updateModal({
+        type: MODAL_ESCAPE_HATCH,
+        markets: getAllMarkets(),
+        disputeBonds: [],
+        initialReports: [],
+        shares: [],
+        participationTokens: [],
+      }))
+    } else if (!stopped && modalShowing) {
+      dispatch(closeModal())
+    }
+  })
 }
 
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {

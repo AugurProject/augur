@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs'
 import { each } from 'async'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
-import { updateMarketRepBalance, updateMarketFrozenSharesValue } from 'modules/markets/actions/update-markets-data'
+import { updateMarketRepBalance, updateMarketEthBalance, updateMarketFrozenSharesValue } from 'modules/markets/actions/update-markets-data'
 import { updateParticipationTokenBalance } from 'modules/my-participation-tokens/actions/update-participation-tokens'
 import { updateInitialReporterRepBalance } from 'modules/my-initial-reporters/actions/update-initial-reporters'
 import { updateDisputeCrowdsourcersBalance } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
@@ -11,7 +11,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
     const {
-      partcipationTokens, initialReporters, disputeCrowdsourcers = {}, loginAccount,
+      participationTokens, initialReporters, disputeCrowdsourcerTokens = {}, loginAccount,
     } = getState()
 
     each(ownedMarkets, (market) => {
@@ -22,6 +22,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         onSuccess: (res) => {
           console.log('Market.withdrawInEmergency', res)
           dispatch(updateMarketRepBalance(market.id, 0))
+          dispatch(updateMarketEthBalance(market.id, 0))
         },
         onFailed: callback,
       })
@@ -40,8 +41,8 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       })
     })
 
-    Object.keys(disputeCrowdsourcers).forEach((disputeCrowdsourcerID) => {
-      const disputeCrowdsourcer = disputeCrowdsourcers[disputeCrowdsourcerID]
+    Object.keys(disputeCrowdsourcerTokens).forEach((disputeCrowdsourcerID) => {
+      const disputeCrowdsourcer = disputeCrowdsourcerTokens[disputeCrowdsourcerID]
       if (!disputeCrowdsourcer.redeemed) {
         augur.api.DisputeCrowdsourcer.withdrawInEmergency({
           tx: { to: disputeCrowdsourcerID },
@@ -70,9 +71,9 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       }
     })
 
-    Object.keys(partcipationTokens).forEach((participationTokenID) => {
-      const partcipationToken = partcipationTokens[participationTokenID]
-      if (partcipationToken.balance > 0) {
+    Object.keys(participationTokens).forEach((participationTokenID) => {
+      const participationToken = participationTokens[participationTokenID]
+      if (participationToken.balance > 0) {
         augur.api.FeeWindow.withdrawInEmergency({
           tx: { to: participationTokenID },
           onSent: noop,

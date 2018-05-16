@@ -208,6 +208,13 @@ export function formatAttoRep(num, opts) {
   return formatNumber(createBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
 }
 
+// At some point potentially refactor all this to be more generic (e.g formatAttoAmount)
+export function formatAttoEth(num, opts) {
+  if (!num || num === 0 || isNaN(num)) return 0
+  const { ETHER } = augur.rpc.constants
+  return formatNumber(createBigNumber(num.toString()).dividedBy(ETHER).toNumber(), opts)
+}
+
 export function formatGasCost(num, opts) {
   return formatNumber(
     num,
