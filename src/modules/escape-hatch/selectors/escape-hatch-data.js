@@ -16,7 +16,7 @@ export const getEscapeHatchData = createSelector(
   selectParticipationTokens,
   selectInitialReporters,
   selectDisputeCrowdsourcerTokens,
-  (marketsData, myMarkets, accountPositions, partcipationTokens, initialReporters, disputeCrowdsourcers = {}) => {
+  (marketsData, myMarkets, accountPositions, participationTokens, initialReporters, disputeCrowdsourcers = {}) => {
     const data = {
       eth: createBigNumber(0),
       rep: createBigNumber(0),
@@ -63,8 +63,8 @@ export const getEscapeHatchData = createSelector(
       }
     })
 
-    Object.keys(partcipationTokens).forEach((participationTokenID) => {
-      const partcipationToken = partcipationTokens[participationTokenID]
+    Object.keys(participationTokens).forEach((participationTokenID) => {
+      const partcipationToken = participationTokens[participationTokenID]
       if (partcipationToken.balance > 0) {
         data.rep = data.rep.plus(partcipationToken.balance)
         data.gas = data.gas.plus(partcipationToken.escapeHatchGasCost || 0)
