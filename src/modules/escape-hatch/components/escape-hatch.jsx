@@ -60,7 +60,7 @@ export default class EscapeHatchView extends Component {
     }
 
     const fundsAvailableForWithdrawal = nextProps.escapeHatchData.fundsAvailableForWithdrawal > 0
-    let { onEscapeHatchLanding } = this.state.onEscapeHatchLanding
+    let { onEscapeHatchLanding } = this.state
     onEscapeHatchLanding = onEscapeHatchLanding || !fundsAvailableForWithdrawal
     this.setState({
       fundsAvailableForWithdrawal,
