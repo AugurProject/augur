@@ -5,7 +5,7 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 
 export const loadAccountOrders = (options = {}, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
-  augur.trading.getOrders({ ...options, orderState: augur.constants.ORDER_STATE.OPEN, creator: loginAccount.address, universe: universe.id }, (err, orders) => {
+  augur.trading.getOrders({ ...options, creator: loginAccount.address, universe: universe.id }, (err, orders) => {
     if (err) return callback(err)
     if (orders == null || Object.keys(orders).length === 0) return callback(null)
     const marketIds = Object.keys(orders)
