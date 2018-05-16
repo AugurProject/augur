@@ -87,7 +87,7 @@ export default class PortfolioReports extends Component {
         return
       }
 
-      const unclaimedRepTotal = new BigNumber(result.total.unclaimedRepStaked).plus(new BigNumber(result.total.unclaimedRepEarned))
+      const unclaimedRepTotal = new BigNumber(result.total.unclaimedRepStaked).plus(new BigNumber(result.total.unclaimedRepEarned)).toString()
 
       this.setState({
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
