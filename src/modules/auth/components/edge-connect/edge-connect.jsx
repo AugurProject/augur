@@ -26,17 +26,15 @@ export default class Edge extends Component {
           <title>Edge</title>
         </Helmet>
         <button
-          className={
-            classNames(
-              Styles.button,
-              Styles[`button--purple`],
-              Styles.Edge__button,
-            )
-          }
+          className={classNames(
+            Styles.button,
+            Styles[`button--purple`],
+            Styles.Edge__button,
+          )}
           disabled={p.edgeContext == null}
           onClick={() => p.edgeLoginLink(p.history)}
         >
-          Connect Edge Account
+          {p.edgeContext == null ? 'Loading...' : 'Connect Edge Account'}
         </button>
       </section>
     )
