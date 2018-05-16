@@ -28,15 +28,10 @@ function startBlockchainEventListeners(eventCallbacks, startingBlockNumber, onSe
   blockStream.subscribeToOnLogAdded(subscriptions.onLogAdded);
   blockStream.subscribeToOnLogRemoved(subscriptions.onLogRemoved);
   async.forEachOf(eventCallbacks, function (callbacks, contractName, nextContract) {
-    async.forEachOf(callbacks, function (callback, eventName, nextEvent) {
-      if (!isFunction(callback) || !eventsAbi[contractName] || !eventsAbi[contractName][eventName]) {
-        return nextEvent(new Error("ABI not found for event " + eventName + " on contract " + contractName));
-      }
-      if (!addFilter(blockStream, contractName, eventName, eventsAbi[contractName][eventName], activeContracts, subscriptions.addSubscription, callback)) {
-        return nextEvent(new Error("Event subscription setup failed: " + contractName + " " + eventName));
-      }
-      nextEvent(null);
-    }, nextContract);
+    if (!addFilter(blockStream, contractName, callbacks, eventsAbi[contractName], activeContracts, subscriptions.addSubscription)) {
+      return nextContract(new Error("Add filter failed for contract" + contractName));
+    }
+    nextContract(null);
   }, function (err) {
     if (err) return onSetupComplete(err);
     onSetupComplete(null);

@@ -56,15 +56,14 @@ describe("events/start-blockchain-event-listeners", function () {
       },
     },
     stub: {
-      addFilter: function (blockStream, contractName, eventName, eventAbi, contracts, addSubscription, onMessage) {
+      addFilter: function (blockStream, contractName, callbacks, contractAbi, contracts, addSubscription) {
         assert.isFunction(blockStream.subscribeToOnLogAdded);
         assert.isFunction(blockStream.subscribeToOnLogRemoved);
         assert.strictEqual(contractName, "TestContractName");
-        assert.strictEqual(eventName, "TestEventName");
-        assert.deepEqual(eventAbi, mockEventsAbi.TestContractName.TestEventName);
+        assert.deepEqual(callbacks, { TestEventName: noop });
+        assert.deepEqual(contractAbi, mockEventsAbi.TestContractName);
         assert.deepEqual(contracts, mockContractAddresses["4"]);
         assert.isFunction(addSubscription);
-        assert.isFunction(onMessage);
         return true;
       },
       rpcInterface: {
