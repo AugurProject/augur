@@ -6,12 +6,14 @@ import { updateMarketRepBalance, updateMarketEthBalance, updateMarketFrozenShare
 import { updateParticipationTokenBalance } from 'modules/my-participation-tokens/actions/update-participation-tokens'
 import { updateInitialReporterRepBalance } from 'modules/my-initial-reporters/actions/update-initial-reporters'
 import { updateDisputeCrowdsourcersBalance } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
+import { updateOrderClearEscrowed } from 'modules/escape-hatch/actions/update-all-orders'
+import { doUpdateShareFrozenValue } from 'modules/escape-hatch/actions/load-emergency-withdrawal-assets'
 
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
     const {
-      participationTokens, initialReporters, disputeCrowdsourcerTokens = {}, loginAccount,
+      participationTokens, initialReporters, disputeCrowdsourcerTokens, allOrders = {}, loginAccount,
     } = getState()
 
     each(ownedMarkets, (market) => {
@@ -85,5 +87,19 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         })
       }
     })
+
+    Object.keys(allOrders).forEach((orderId) => {
+      const order = allOrders[orderId];
+      const orderHasSharesEscrowed = order.sharesEscrowed > 0;
+      augur.api.CancelOrder.cancelOrder({
+        onSent: noop,
+        onSuccess: (res) => {
+          console.log('CancelOrder.cancelOrder', res)
+          dispatch(updateOrderClearEscrowed(orderId))
+          if (orderHasSharesEscrowed) dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, logError))
+        },
+        onFailed: callback,
+      })
+    });
   }
 }

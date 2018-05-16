@@ -131,6 +131,10 @@ export default class EscapeHatchView extends Component {
               <span>{formatAttoEth(escapeHatchData.eth, { decimalsRounded: 4, roundUp: true }).roundedValue}</span>
             </div>
             <div>
+              <span className={Styles.EscapeHatch_LabelCell}>SHARES</span>
+              <span>{formatAttoRep(escapeHatchData.shares, { decimalsRounded: 4, roundUp: true }).roundedValue}</span>
+            </div>
+            <div>
               <span className={Styles.EscapeHatch_LabelCell}>GAS</span>
               <span>{formatGasCostToEther(escapeHatchData.gas, { decimalsRounded: 4 }, gasPrice)}</span>
             </div>
