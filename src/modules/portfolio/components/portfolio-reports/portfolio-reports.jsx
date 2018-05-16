@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import BigNumber from 'bignumber.js'
 
+import { createBigNumber } from 'utils/create-big-number'
 import { formatAttoRep, formatEther } from 'utils/format-number'
 
 import PortfolioReportsForkedMarketCard from 'modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card'
@@ -87,7 +87,7 @@ export default class PortfolioReports extends Component {
         return
       }
 
-      const unclaimedRepTotal = new BigNumber(result.total.unclaimedRepStaked).plus(new BigNumber(result.total.unclaimedRepEarned)).toString()
+      const unclaimedRepTotal = createBigNumber(result.total.unclaimedRepStaked).plus(createBigNumber(result.total.unclaimedRepEarned)).toString()
 
       this.setState({
         unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
