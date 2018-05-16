@@ -7,6 +7,7 @@ import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 import { selectMarket } from 'modules/market/selectors/market'
 import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
+import { updateAssets } from 'modules/auth/actions/update-assets'
 
 const mapStateToProps = (state) => {
   const forkedMarket = state.universe.isForking ? selectMarket(state.universe.forkingMarket) : null
@@ -22,6 +23,7 @@ const mapDispatchToProps = dispatch => ({
   getReportingFees: callback => dispatch(getReportingFees(callback)),
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),
   updateModal: modal => dispatch(updateModal(modal)),
+  updateAssets: () => dispatch(updateAssets()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PortfolioReports)

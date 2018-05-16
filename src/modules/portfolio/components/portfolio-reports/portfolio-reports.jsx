@@ -19,6 +19,7 @@ export default class PortfolioReports extends Component {
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
+    updateAssets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -69,9 +70,14 @@ export default class PortfolioReports extends Component {
 
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
     this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(this)
+    this.modalCallback = this.modalCallback.bind(this)
   }
 
   componentWillMount() {
+    this.updateReportingFees()
+  }
+
+  updateReportingFees(callback) {
     this.props.getReportingFees((err, result) => {
 
       if (err) {
@@ -98,6 +104,7 @@ export default class PortfolioReports extends Component {
         forkedMarket: result.forkedMarket,
         nonforkedMarkets: result.nonforkedMarkets,
       })
+      if (callback) callback()
     })
   }
 
@@ -117,6 +124,7 @@ export default class PortfolioReports extends Component {
       forkedMarket,
       nonforkedMarkets,
       canClose: true,
+      modalCallback: this.modalCallback,
     })
   }
 
@@ -132,6 +140,13 @@ export default class PortfolioReports extends Component {
       unclaimedRep: unclaimedForkRepStaked,
       forkedMarket,
       canClose: true,
+      modalCallback: this.modalCallback,
+    })
+  }
+
+  modalCallback = (results) => {
+    this.updateReportingFees(() => {
+      this.props.updateAssets()
     })
   }
 

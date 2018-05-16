@@ -16,8 +16,7 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
     nonforkedMarkets: PropTypes.array.isRequired,
     unclaimedEth: PropTypes.object.isRequired,
     unclaimedRep: PropTypes.object.isRequired,
-    getReportingFees: PropTypes.func.isRequired,
-    updateAssets: PropTypes.func.isRequired,
+    modalCallback: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -65,9 +64,7 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
       estimateGas: false,
       onSent: () => {},
       onSuccess: (result) => {
-        this.props.getReportingFees(() => {
-          this.props.updateAssets()
-        })
+        this.props.modalCallback(result)
         this.props.closeModal()
       },
       onFailed: (err) => {
