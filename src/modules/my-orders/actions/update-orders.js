@@ -2,10 +2,10 @@ import { eachOf } from 'async'
 import { updateOrderBook } from 'modules/bids-asks/actions/update-order-book'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import logError from 'utils/log-error'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const updateSingleMarketOrderBook = (updatedOrdersInMarket, isOrderCreation) => (dispatch, getState) => (
-  Object.keys(updatedOrdersInMarket).forEach(outcome => updatedOrdersInMarket[outcome].forEach(orderLog => (
-    dispatch(updateOrderBook(orderLog.marketId, outcome, orderLog.orderType, getState().orderBooks[orderLog.marketId]))
+  Object.keys(updatedOrdersInMarket).forEach(outcome => updatedOrdersInMarket[outcome].forEach(orderLog => (dispatch(updateOrderBook(orderLog.marketId, outcome, (orderLog.orderType === '0' ? BUY : SELL), getState().orderBooks[orderLog.marketId][orderLog.outcome]))
   )))
 )
 
