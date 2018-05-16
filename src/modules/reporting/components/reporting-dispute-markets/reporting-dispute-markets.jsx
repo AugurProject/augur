@@ -93,7 +93,7 @@ export default class ReportingDisputeMarkets extends Component {
           />
         }
         <article className={MarketsHeaderStyles.MarketsHeader}>
-          <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>{ isForking ? "Dispute Paused" : "Upcoming Dispute Window" }</h4>
+          <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>{ isForking ? 'Dispute Paused' : 'Upcoming Dispute Window' }</h4>
         </article>
         {upcomingMarketsCount > 0 &&
             upcomingMarkets.map(market =>
