@@ -20,6 +20,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
                 assert.isNull(err);
                 getTokenBalances(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

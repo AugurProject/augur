@@ -11,6 +11,7 @@ describe("server/getters/get-fork-migration-totals", () => {
         assert.isNull(err);
         getForkMigrationTotals(db, t.params.augur, t.params.parentUniverse, (err, forkMigrationTotals) => {
           t.assertions(err, forkMigrationTotals);
+          db.destroy();
           done();
         });
       });

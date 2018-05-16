@@ -20,6 +20,7 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
                 assert.isNull(err);
                 getTradingProceeds(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

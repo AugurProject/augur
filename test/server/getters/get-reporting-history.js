@@ -11,6 +11,7 @@ describe("server/getters/get-reporting-history", () => {
         assert.isNull(err);
         getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketId, t.params.feeWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
+          db.destroy();
           done();
         });
       });

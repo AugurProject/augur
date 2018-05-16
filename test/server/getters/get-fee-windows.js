@@ -15,6 +15,7 @@ describe("server/getters/get-fee-windows", () => {
           assert.isNull(err);
           getFeeWindows(db, t.params.augur, t.params.universe, t.params.account, t.params.includeCurrent, (err, feeWindows) => {
             t.assertions(err, feeWindows);
+            db.destroy();
             done();
           });
         });

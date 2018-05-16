@@ -28,6 +28,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
                       t.assertions.onRemoved(err, records);
                       getTokenBalances(trx, t.params, (err, balances) => {
                         t.assertions.onRemovedBalances(err, balances);
+                        db.destroy();
                         done();
                       });
                     });

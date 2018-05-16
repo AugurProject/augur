@@ -20,6 +20,7 @@ describe("blockchain/log-processors/order-canceled", () => {
                 assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

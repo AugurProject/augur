@@ -32,6 +32,7 @@ describe("blockchain/log-processors/timestamp-set", () => {
                         t.assertions.onRemoved2(err, records, getOverrideTimestamp());
                         processTimestampSetLogRemoval(trx, t.params.augur, t.params.log1, (err) => {
                           t.assertions.onRemoved1(err, records, getOverrideTimestamp());
+                          db.destroy();
                           done();
                         });
                       });

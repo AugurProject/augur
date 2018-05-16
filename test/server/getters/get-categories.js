@@ -11,6 +11,7 @@ describe("server/getters/get-categories", () => {
         if (err) assert.fail(err);
         getCategories(db, t.params.universe, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, categoriesInfo) => {
           t.assertions(err, categoriesInfo);
+          db.destroy();
           done();
         });
       });

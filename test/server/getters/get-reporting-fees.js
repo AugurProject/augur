@@ -12,6 +12,7 @@ describe("server/getters/get-reporting-fees", () => {
         if (dbErr) assert.fail(dbErr);
         getReportingFees(db, t.params.augur, t.params.reporter, t.params.universe, (err, marketsMatched) => {
           t.assertions(err, marketsMatched);
+          db.destroy();
           done();
         });
       });

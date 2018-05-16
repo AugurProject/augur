@@ -80,7 +80,7 @@
     "coveralls": "3.0.1",
     "eslint": "3.17.1",
     "istanbul": "0.4.5",
-    "mocha": "3.2.0",
+    "mocha": "5.1.1",
     "mocha-lcov-reporter": "0.0.2",
     "node-gyp": "3.6.2",
     "node-pre-gyp": "0.10.0",
