@@ -571,3 +571,9 @@ export interface ServersData {
   servers: Array<WebSocket.Server>;
   httpServers: Array<http.Server | https.Server>;
 }
+
+export interface AllOrdersRow<BigNumberType> {
+  orderId: Address;
+  tokensEscrowed: BigNumberType;
+  sharesEscrowed: BigNumberType;
+}
