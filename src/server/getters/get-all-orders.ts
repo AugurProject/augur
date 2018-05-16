@@ -7,7 +7,7 @@ export interface AllOrders {
 }
 
 export function getAllOrders(db: Knex, account: Address, callback: (err: Error|null, result?: AllOrders) => void): void {
-  const query = db.select(["orderId", "tokensEscrowed", "sharesEscrowed"]).from("orders").where("orderCreator", account);
+  const query = db.select(["orderId", "tokensEscrowed", "sharesEscrowed", "marketId"]).from("orders").where("orderCreator", account);
   query.asCallback((err: Error|null, allOrders?: Array<AllOrdersRow<BigNumber>>): void => {
     if (err) return callback(err);
     if (!allOrders) return callback(err, {});
@@ -16,6 +16,7 @@ export function getAllOrders(db: Knex, account: Address, callback: (err: Error|n
         orderId: cur.orderId,
         tokensEscrowed: cur.tokensEscrowed,
         sharesEscrowed: cur.sharesEscrowed,
+        marketId: cur.marketId,
       });
       return acc;
     }, {}));

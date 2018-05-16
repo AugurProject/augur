@@ -576,4 +576,5 @@ export interface AllOrdersRow<BigNumberType> {
   orderId: Address;
   tokensEscrowed: BigNumberType;
   sharesEscrowed: BigNumberType;
+  marketId: Address;
 }
