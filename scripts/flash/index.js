@@ -55,7 +55,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, get this accounts balances" },
       marketId: { required: true, short: "m", help: "Required market id" },
-      account: { required: true, short: "a", help: "account address" },
+      account: { short: "a", help: "account address" },
     },
   },
   "list-markets": {
