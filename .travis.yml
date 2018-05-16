@@ -20,6 +20,8 @@ install:
 - npm install
 script:
 - npm run build
+after_success:
+  - scripts/post_build.py
 before_deploy:
 - git config --global user.email "builds@travis-ci.com"
 - git config --global user.name "Travis CI"
