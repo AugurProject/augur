@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
 import { createBigNumber } from 'utils/create-big-number'
-import { formatAttoRep, formatEther } from 'utils/format-number'
+import { formatAttoRep, formatAttoEth } from 'utils/format-number'
 
 import PortfolioReportsForkedMarketCard from 'modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card'
 import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET, MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
@@ -82,9 +82,9 @@ export default class PortfolioReports extends Component {
 
       if (err) {
         this.setState({
-          unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
+          unclaimedEth: formatAttoEth(0, { decimals: 4, zeroStyled: true }),
           unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
-          unclaimedForkEth: formatEther(0, { decimals: 4, zeroStyled: true }),
+          unclaimedForkEth: formatAttoEth(0, { decimals: 4, zeroStyled: true }),
           unclaimedForkRepStaked: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
           feeWindows: [],
           forkedMarket: null,
@@ -96,9 +96,9 @@ export default class PortfolioReports extends Component {
       const unclaimedRepTotal = createBigNumber(result.total.unclaimedRepStaked).plus(createBigNumber(result.total.unclaimedRepEarned)).toString()
 
       this.setState({
-        unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
+        unclaimedEth: formatAttoEth(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
         unclaimedRep: formatAttoRep(unclaimedRepTotal, { decimals: 4, zeroStyled: true }),
-        unclaimedForkEth: formatEther(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
+        unclaimedForkEth: formatAttoEth(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
         unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
         forkedMarket: result.forkedMarket,
