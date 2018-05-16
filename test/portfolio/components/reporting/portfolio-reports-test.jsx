@@ -42,17 +42,7 @@ describe('portfolio-reports', () => {
         })
 
         it('should receive three arguments', () => {
-          assert.deepEqual(getReportingFees.args[0].length, 3)
-        })
-
-        it('should receive first argument that matches expected value', () => {
-          const expected = '0xcd8569bb29493f01cffc394e050d2533aa5ea824'
-          assert.deepEqual(getReportingFees.args[0][0], expected)
-        })
-
-        it('should receive second argument that matches expected value', () => {
-          const expected = '0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb'
-          assert.deepEqual(getReportingFees.args[0][1], expected)
+          assert.deepEqual(getReportingFees.args[0].length, 1)
         })
       })
 

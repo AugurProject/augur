@@ -18,8 +18,6 @@ export default class PortfolioReports extends Component {
     finalizeMarket: PropTypes.func.isRequired,
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
-    reporter: PropTypes.string.isRequired,
-    universe: PropTypes.object.isRequired,
     updateModal: PropTypes.func.isRequired,
   }
 
@@ -74,11 +72,7 @@ export default class PortfolioReports extends Component {
   }
 
   componentWillMount() {
-    const {
-      reporter,
-      universe,
-    } = this.props
-    this.props.getReportingFees(universe.id, reporter, (err, result) => {
+    this.props.getReportingFees((err, result) => {
 
       if (err) {
         this.setState({
