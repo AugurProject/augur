@@ -11,7 +11,6 @@ import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-rep
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    claimReportingFeesForkedMarket: PropTypes.func.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     getReportingFees: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,

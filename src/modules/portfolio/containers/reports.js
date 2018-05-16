@@ -3,7 +3,6 @@ import { selectCurrentTimestamp } from 'src/select-state'
 
 import PortfolioReports from 'modules/portfolio/components/portfolio-reports/portfolio-reports'
 import { updateModal } from 'modules/modal/actions/update-modal'
-import claimReportingFeesForkedMarket from 'modules/portfolio/actions/claim-reporting-fees-forked-market'
 import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 import { selectMarket } from 'modules/market/selectors/market'
@@ -19,7 +18,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  claimReportingFeesForkedMarket: callback => dispatch(claimReportingFeesForkedMarket(callback)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
   getReportingFees: callback => dispatch(getReportingFees(callback)),
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),

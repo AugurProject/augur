@@ -1,14 +1,15 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 
-export default function claimReportingFeesNonforkedMarkets(callback = logError) {
+export default function claimReportingFeesNonforkedMarkets(options, callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState()
-    const options = {
+    const payload = {
+      ...options,
       meta: loginAccount.meta,
       redeemer: loginAccount.address,
     }
-    augur.reporting.claimReportingFeesNonforkedMarkets(options, (err, result) => {
+    augur.reporting.claimReportingFeesNonforkedMarkets(payload, (err, result) => {
       if (err) return callback(err)
       callback(null, result)
     })
