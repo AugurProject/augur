@@ -86,7 +86,7 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
         onSubmit={this.handleClaimReportingFeesForkedMarket}
       >
         <div className={Styles.ModalClaimReportingFeesForkedMarket__heading}>
-          <h1>Review Withdrawl</h1>
+          <h1>Review Withdrawal</h1>
         </div>
         <div className={Styles.ModalClaimReportingFeesForkedMarket__details}>
           <ul className={Styles.ModalClaimReportingFeesForkedMarket__info}>

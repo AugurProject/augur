@@ -20,7 +20,7 @@ export default class EscapeHatchView extends Component {
     super(props)
 
     this.state = {
-      fundsAvailableForWithdrawl: false,
+      fundsAvailableForWithdrawal: false,
       onEscapeHatchLanding: true,
     }
 
@@ -59,11 +59,11 @@ export default class EscapeHatchView extends Component {
       loadDisputeCrowdsourcers()
     }
 
-    const fundsAvailableForWithdrawl = nextProps.escapeHatchData.fundsAvailableForWithdrawl > 0
+    const fundsAvailableForWithdrawal = nextProps.escapeHatchData.fundsAvailableForWithdrawal > 0
     let { onEscapeHatchLanding } = this.state.onEscapeHatchLanding
-    onEscapeHatchLanding = onEscapeHatchLanding || !fundsAvailableForWithdrawl
+    onEscapeHatchLanding = onEscapeHatchLanding || !fundsAvailableForWithdrawal
     this.setState({
-      fundsAvailableForWithdrawl,
+      fundsAvailableForWithdrawal,
       onEscapeHatchLanding,
     })
   }
@@ -98,24 +98,24 @@ export default class EscapeHatchView extends Component {
             alt="Alert"
             src="../../assets/images/alert-icon.svg"
           />
-          {s.fundsAvailableForWithdrawl &&
+          {s.fundsAvailableForWithdrawal &&
           <h1 className={Styles.EscapeHatch_AlertHeader}>Action required</h1>
           }
-          <div className={Styles.EscapeHatch_Text}>Augur&#39;s development team has identified a potential vulnerability within its contracts and has frozen all activity in order to protect your funds. {s.fundsAvailableForWithdrawl && <span>Withdraw your funds by clicking the button below.</span> }</div>
-          {s.fundsAvailableForWithdrawl &&
+          <div className={Styles.EscapeHatch_Text}>Augur&#39;s development team has identified a potential vulnerability within its contracts and has frozen all activity in order to protect your funds. {s.fundsAvailableForWithdrawal && <span>Withdraw your funds by clicking the button below.</span> }</div>
+          {s.fundsAvailableForWithdrawal &&
           <div className={Styles.EscapeHatch_Text}>Please note: Transferring all funds may require multiple signed transactions.</div>
           }
-          {!s.fundsAvailableForWithdrawl &&
+          {!s.fundsAvailableForWithdrawal &&
           <div className={Styles.EscapeHatch_Text}>You currently have no funds available to withdraw. If you believe this is incorrect, please contact support.</div>
           }
-          {s.fundsAvailableForWithdrawl &&
+          {s.fundsAvailableForWithdrawal &&
           <button onClick={this.withdraw} className={Styles.EscapeHatch_WithdrawButton}>Withdraw all funds</button>
           }
         </div>
         }
         {!s.onEscapeHatchLanding &&
         <div className={Styles.EscapeHatch_ReviewContainer}>
-          <h1 className={Styles.EscapeHatch_ReviewHeader}>Review withdrawl</h1>
+          <h1 className={Styles.EscapeHatch_ReviewHeader}>Review withdrawal</h1>
           <hr />
           <article className={Styles.EscapeHatch_ReviewSummary}>
             <div>

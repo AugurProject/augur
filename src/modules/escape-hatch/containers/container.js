@@ -7,7 +7,7 @@ import EscapeHatchView from 'modules/escape-hatch/components/escape-hatch'
 import selectEscapeHatchData from 'modules/escape-hatch/selectors/escape-hatch-data'
 
 import { loadUserMarkets } from 'modules/markets/actions/load-user-markets'
-import loadEmergencyWithdrawlAssets from 'modules/escape-hatch/actions/load-emergency-withdrawl-assets'
+import loadEmergencyWithdrawalAssets from 'modules/escape-hatch/actions/load-emergency-withdrawal-assets'
 import loadUserParticipationTokens from 'modules/my-participation-tokens/actions/load-participation-tokens'
 import loadUserInitialReporters from 'modules/my-initial-reporters/actions/load-initial-reporters'
 import loadUserDisputeCrowdsourcers from 'modules/my-dispute-crowdsourcer-tokens/actions/load-dispute-crowdsourcer-tokens'
@@ -25,7 +25,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadMarkets: () => dispatch(loadUserMarkets((err, ownedMarketIds) => {
     if (err) return logError(err)
-    dispatch(loadEmergencyWithdrawlAssets(ownedMarketIds))
+    dispatch(loadEmergencyWithdrawalAssets(ownedMarketIds))
   })),
   loadParticipationTokens: () => dispatch(loadUserParticipationTokens()),
   loadInitialReporters: () => dispatch(loadUserInitialReporters()),
