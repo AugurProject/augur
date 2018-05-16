@@ -84,7 +84,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
           min={p.minPrice}
           max={p.maxPrice}
           type={marketType}
-          scalarDenomination={p.scalarDenomination}
+          scalarDenomination={p.isMobile ? '' : p.scalarDenomination}
         />
         }
 
