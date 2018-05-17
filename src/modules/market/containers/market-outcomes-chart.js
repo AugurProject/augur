@@ -4,10 +4,13 @@ import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart
 
 import { selectMarket } from 'modules/market/selectors/market'
 import { selectCurrentTimestamp } from 'src/select-state'
+import { createBigNumber } from 'src/utils/create-big-number'
 
 const mapStateToProps = (state, ownProps) => {
   const {
     creationTime = {},
+    maxPrice = createBigNumber(1),
+    minPrice = createBigNumber(0),
     outcomes = [],
   } = selectMarket(ownProps.marketId)
 
@@ -17,6 +20,8 @@ const mapStateToProps = (state, ownProps) => {
     creationTime: creationTime.value.getTime(),
     currentTimestamp: selectCurrentTimestamp(state),
     estimatedInitialPrice,
+    maxPrice: maxPrice.toNumber(),
+    minPrice: minPrice.toNumber(),
     outcomes,
   }
 }

@@ -15,6 +15,8 @@ export default class MarketOutcomesChart extends Component {
     creationTime: PropTypes.number,
     currentTimestamp: PropTypes.number,
     estimatedInitialPrice: PropTypes.number,
+    maxPrice: PropTypes.number,
+    minPrice: PropTypes.number,
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
@@ -78,6 +80,8 @@ export default class MarketOutcomesChart extends Component {
     currentTimestamp,
     estimatedInitialPrice,
     fixedPrecision,
+    maxPrice,
+    minPrice,
     outcomes,
   }) {
     if (this.outcomesChart) {
@@ -86,6 +90,8 @@ export default class MarketOutcomesChart extends Component {
         currentTimestamp,
         estimatedInitialPrice,
         drawContainer: this.outcomesChart,
+        maxPrice,
+        minPrice,
         outcomes,
       })
 
@@ -185,7 +191,8 @@ function determineDrawParams(options) {
     creationTime,
     currentTimestamp,
     drawContainer,
-    estimatedInitialPrice,
+    maxPrice,
+    minPrice,
     outcomes,
   } = options
 
@@ -204,9 +211,7 @@ function determineDrawParams(options) {
     creationTime, currentTimestamp,
 
   ])
-  const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => createBigNumber(dataPoint.price).toNumber())], [
-    estimatedInitialPrice,
-  ])
+  const yDomain = [minPrice, maxPrice]
 
   const xScale = d3.scaleTime()
     .domain(d3.extent(xDomain))
