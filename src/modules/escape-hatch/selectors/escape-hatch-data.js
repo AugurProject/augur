@@ -28,7 +28,7 @@ export const getEscapeHatchData = createSelector(
       gas: createBigNumber(0),
       ownedMarketsWithFunds: [],
       marketsWithShares: [],
-      fundsAvailableForWithdrawal: false,
+      fundsAvailableForWithdrawal: createBigNumber(0),
     }
 
     // Market escape hatch
@@ -83,7 +83,7 @@ export const getEscapeHatchData = createSelector(
       data.gas = data.gas.plus(CANCEL_ORDER_GAS_ESTIMATE)
     })
 
-    data.fundsAvailableForWithdrawal = data.rep + data.eth + data.shares > 0
+    data.fundsAvailableForWithdrawal = data.rep.plus(data.eth).plus(data.shares)
 
     return data
   },
