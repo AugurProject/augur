@@ -27,18 +27,23 @@ export default class ReportingDisputeForm extends Component {
     accountDisputeData: PropTypes.object,
   }
 
-  static checkStake(wholeREPstake, updatedValidations, maxRep) {
-    const bnMaxRep = createBigNumber(formatNumber(createBigNumber(maxRep).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
+  static checkStake(wholeREPstake, updatedValidations, maxRepObject) {
     const bnStake = createBigNumber(wholeREPstake || 0)
 
     if (wholeREPstake === '' || wholeREPstake == null || wholeREPstake <= 0) {
       updatedValidations.stake = 'The stake field is required.'
-    } else if (bnStake.gt(bnMaxRep)) {
-      updatedValidations.stake = `Max value is ${formatNumber(bnMaxRep, { decimals: 4, roundUp: true }).formatted}`
+    } else if (bnStake.gt(maxRepObject.bnValue)) {
+      updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`
     } else {
       delete updatedValidations.stake
     }
     return updatedValidations
+  }
+
+  static constructRepObject(value) {
+    const BNValue = createBigNumber(value)
+    const result = formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true })
+    return { raw: value, formatted: result, bnValue: BNValue }
   }
 
   constructor(props) {
@@ -161,26 +166,27 @@ export default class ReportingDisputeForm extends Component {
     }
   }
 
-  validateStake(rawStake) {
+  validateStake(rawStakeObj) {
     const { updateState } = this.props
     const updatedValidations = { ...this.state.validations }
+    let completeStakeObj = rawStakeObj
 
-    let stake = rawStake
-
-    if (stake !== '') {
-      stake = createBigNumber(formatNumber(createBigNumber(stake).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
+    if (!completeStakeObj.formatted) {
+      // convert user inputted value to attoRep
+      const attoRep = createBigNumber(formatNumber(createBigNumber(completeStakeObj.raw).toNumber(), { decimals: 4, roundUp: true }).formattedValue)
+      completeStakeObj = ReportingDisputeForm.constructRepObject(attoRep || 0)
     }
 
-    ReportingDisputeForm.checkStake(stake, updatedValidations, this.calculateMaxRep())
+    ReportingDisputeForm.checkStake(completeStakeObj.raw, updatedValidations, completeStakeObj)
 
     this.setState({
-      inputStake: stake ? stake.toNumber() : stake,
+      inputStake: rawStakeObj.formatted.formattedValue,
       validations: updatedValidations,
     })
 
     updateState({
       validations: updatedValidations,
-      stake: stake ? stake.toNumber() : 0,
+      stake: createBigNumber(rawStakeObj.raw).toNumber(),
     })
   }
 
@@ -290,9 +296,7 @@ export default class ReportingDisputeForm extends Component {
       return result
     })
 
-    const value = outcome ? outcome.stakeRemaining : this.state.disputeBondValue
-    const BNValue = createBigNumber(value)
-    return formatAttoRep(BNValue.toNumber(), { decimals: 4, roundUp: true }).fullPrecision
+    return ReportingDisputeForm.constructRepObject(outcome ? outcome.stakeRemaining : this.state.disputeBondValue)
   }
 
 
@@ -394,7 +398,7 @@ export default class ReportingDisputeForm extends Component {
                 placeholder="0.0000 REP"
                 value={s.inputStake}
                 className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
-                onChange={(e) => { this.validateStake(e.target.value) }}
+                onChange={(e) => { this.validateStake({ raw: e.target.value }) }}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
                 <div className={Styles.ReportingDisputeForm__container}>
