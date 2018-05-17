@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");

@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var decodeTag = require("../tag/decode-tag");

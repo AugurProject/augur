@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var async = require("async");
 var immutableDelete = require("immutable-delete");
 var claimTradingProceeds = require("./claim-trading-proceeds");

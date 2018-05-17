@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var async = require("async");
 var encodeNumberAsJSNumber = require("speedomatic").encodeNumberAsJSNumber;
 var parseLogMessage = require("./parse-message/parse-log-message");

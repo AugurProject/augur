@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var encodeTransactionInputs = require("./encode-transaction-inputs");
 var ethrpc = require("../rpc-interface");
 var isFunction = require("../utils/is-function");

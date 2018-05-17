@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");

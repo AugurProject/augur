@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var formatLoggedEventInputs = require("../../format/log/format-logged-event-inputs");
 var formatLogMessage = require("../../format/log/format-log-message");
 var isFunction = require("../../utils/is-function");
