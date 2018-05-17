@@ -13,8 +13,8 @@ export default function (allOrdersData = DEFAULT_STATE, action) {
         ...allOrdersData,
         [action.orderId]: {
           ...allOrdersData[action.orderId],
-          tokensEscrowed: "0",
-          sharesEscrowed: "0",
+          tokensEscrowed: '0',
+          sharesEscrowed: '0',
         },
       }
     }

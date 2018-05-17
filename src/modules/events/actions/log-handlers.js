@@ -68,7 +68,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.sender === getState().loginAccount.address
   const { modal } = getState()
   const escapeHatchModalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
-  if (escapeHatchModalShowing) return;
+  if (escapeHatchModalShowing) return
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
     dispatch(updateLoggedTransactions(log))

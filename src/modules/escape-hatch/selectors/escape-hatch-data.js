@@ -81,7 +81,7 @@ export const getEscapeHatchData = createSelector(
       data.eth = data.eth.plus(createBigNumber(speedomatic.fix(order.tokensEscrowed)))
       data.shares = data.shares.plus(createBigNumber(speedomatic.fix(order.sharesEscrowed)))
       data.gas = data.gas.plus(CANCEL_ORDER_GAS_ESTIMATE)
-    });
+    })
 
     data.fundsAvailableForWithdrawal = data.rep + data.eth + data.shares > 0
 
