@@ -77,7 +77,8 @@ export const getEscapeHatchData = createSelector(
     })
 
     Object.keys(orders).forEach((orderId) => {
-      const order = orders[orderId];
+      const orderId = Object.keys(orders)[0]
+      const order = orders[orderId]
       data.eth = data.eth.plus(createBigNumber(speedomatic.fix(order.tokensEscrowed)))
       data.shares = data.shares.plus(createBigNumber(speedomatic.fix(order.sharesEscrowed)))
       data.gas = data.gas.plus(CANCEL_ORDER_GAS_ESTIMATE)

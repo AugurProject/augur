@@ -89,6 +89,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
     })
 
     Object.keys(allOrders).forEach((orderId) => {
+      const orderId = Object.keys(allOrders)[0];
       const order = allOrders[orderId];
       const orderHasSharesEscrowed = order.sharesEscrowed > 0;
       augur.api.CancelOrder.cancelOrder({
@@ -97,7 +98,18 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         onSuccess: (res) => {
           console.log('CancelOrder.cancelOrder', res)
           dispatch(updateOrderClearEscrowed(orderId))
-          if (orderHasSharesEscrowed) dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, logError))
+          if (orderHasSharesEscrowed) dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, () => {
+            augur.api.TradingEscapeHatch.claimSharesInUpdate({
+              meta: loginAccount.meta,
+              _market: order.marketId,
+              onSent: noop,
+              onSuccess: (res) => {
+                console.log('TradingEscapeHatch.claimSharesInUpdate', res)
+                dispatch(updateMarketFrozenSharesValue(order.marketId, 0))
+              },
+              onFailed: callback,
+            })
+          }))
         },
         onFailed: callback,
       })
