@@ -18,7 +18,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
       each(ownedMarketIds, (marketId) => {
-        doUpdateMarketRepBalance(marketsData[marketId], reputationTokenAddress, dispatch, callback)
+        doUpdateMarketRepBalance(marketsData[marketId], loginAccount, reputationTokenAddress, dispatch, callback)
       })
     })
 
@@ -38,7 +38,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
   }
 }
 
-function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, callback) {
+function doUpdateMarketRepBalance(market, loginAccount, reputationTokenAddress, dispatch, callback) {
   augur.api.ReputationToken.balanceOf({
     meta: loginAccount.meta,
     tx: { to: reputationTokenAddress },
