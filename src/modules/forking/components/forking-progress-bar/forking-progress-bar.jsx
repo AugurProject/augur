@@ -24,7 +24,7 @@ const ForkingProgressBar = (p) => {
         <div className={Styles.ForkingProgressBar__graph}>
           <div className={percentagePassed <= 90 ? Styles.ForkingProgressBar__current : Styles.ForkingProgressBar__current_overflow}>
             <div style={percentageCompleteWidth}>
-              <span>{ daysRemaining } {daysRemaining === 1 ? 'day' : 'days'} left</span>
+              <span>{ daysRemaining } days left</span>
             </div>
           </div>
         </div>
