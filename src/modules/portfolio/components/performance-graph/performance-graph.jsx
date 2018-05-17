@@ -16,6 +16,7 @@ class PerformanceGraph extends Component {
     universe: PropTypes.string.isRequired,
     currentAugurTimestamp: PropTypes.number.isRequired,
     getProfitLoss: PropTypes.func.isRequired,
+    isAnimating: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -133,10 +134,10 @@ class PerformanceGraph extends Component {
           },
         },
         tickLength: 6,
-        showFirstLabel: false,
-        showLastLabel: false,
+        showFirstLabel: true,
+        showLastLabel: true,
         tickPositioner(low, high) {
-          const positions = [low, this.dataMin, this.dataMax, high]
+          const positions = [this.dataMin, this.dataMax]
           return positions
         },
       },
@@ -169,18 +170,20 @@ class PerformanceGraph extends Component {
           let positions = [-0.15, 0, 0.5, 1]
           if (this.series[0]) {
             positions = []
-            const minData = this.dataMin === 0 ? -0.15 : (this.dataMin - 0.15)
-            const maxData = this.dataMax === 0 ? 0.15 : (Math.ceil(this.dataMax) + (this.dataMax * 0.05))
-            const median = ((minData + maxData) / 2)
-            positions.push(minData)
-            if (this.dataMin === 0) {
-              positions.push(0)
+            let minTickValue = this.dataMin === 0 ? -0.25 : (this.dataMin - (Math.abs(this.dataMin) * 0.25))
+            let maxTickValue = this.dataMax === 0 ? 0.25 : (Math.ceil(this.dataMax) + (this.dataMax * 0.05))
+            if (this.dataMin === 0 && this.dataMax > 0) {
+              minTickValue = ((Math.abs(this.dataMax) * 0.25) * -1)
             }
+            if (this.dataMax === 0 && this.dataMin < 0) {
+              maxTickValue = (Math.abs(this.dataMin) * 0.25)
+            }
+            const median = ((minTickValue + maxTickValue) / 2)
+            positions.push(minTickValue)
+            if (median > 0) positions.push(0)
             positions.push(median)
-            if (this.dataMax === 0) {
-              positions.push(0)
-            }
-            positions.push(maxData)
+            if (median < 0) positions.push(0)
+            positions.push(maxTickValue)
           }
           return positions
         },
@@ -230,11 +233,11 @@ class PerformanceGraph extends Component {
 
     window.addEventListener('resize', this.updateChartDebounced)
 
-    this.updatePerformanceData()
+    if (!this.props.isAnimating) this.updatePerformanceData()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.graphPeriod !== this.state.graphPeriod) {
+    if (prevState.graphPeriod !== this.state.graphPeriod || (prevProps.isAnimating !== this.props.isAnimating && prevProps.isAnimating)) {
       // fetch data as we need a new range of info
       this.updatePerformanceData()
     } else if (prevState.graphType !== this.state.graphType) {
