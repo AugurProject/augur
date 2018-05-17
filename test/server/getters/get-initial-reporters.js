@@ -26,6 +26,19 @@ describe("server/getters/get-initial-reporters", () => {
     assertions: (err, initialReporters) => {
       assert.isNull(err);
       assert.deepEqual(initialReporters, {
+        "0x0000000000000000000000000000000000abe111": {
+          amountStaked: "102",
+          blockNumber: 1400100,
+          initialReporter: "0x0000000000000000000000000000000000abe111",
+          isDesignatedReporter: 1,
+          logIndex: 0,
+          marketId: "0x0000000000000000000000000000000000000019",
+          redeemed: 0,
+          repBalance: "4000000",
+          reporter: "0x0000000000000000000000000000000000000b0b",
+          timestamp: 1506480000,
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000E00",
+        },
         "0x0000000000000000000000000000000000abe123": {
           marketId: "0x0000000000000000000000000000000000000011",
           blockNumber: 1400100,
