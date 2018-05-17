@@ -21,7 +21,9 @@ function getTradeAmountRemaining(p, callback) {
   ethrpc.getTransactionReceipt(p.transactionHash, function (err, transactionReceipt) {
     if (err) return callback(new Error("getTransactionReceipt failed"));
     if (!transactionReceipt) return callback(new Error("transaction receipt not found"));
-    if (!Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) return callback(new Error("logs not found"));
+    if (!Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
+      return callback(null, tradeOnChainAmountRemaining);
+    }
     var orderFilledEventSignature = eventsAbi.Augur.OrderFilled.signature;
     var orderCreatedEventSignature = eventsAbi.Augur.OrderCreated.signature;
     var logs = transactionReceipt.logs;

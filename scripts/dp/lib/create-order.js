@@ -35,7 +35,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       var publicCreateOrderPayload = {
         meta: auth,
-        tx: { value: augur.utils.convertBigNumberToHexString(tradeCost.cost), gas: augur.constants.DEFAULT_MAX_GAS },
+        tx: { value: augur.utils.convertBigNumberToHexString(tradeCost.cost) },
         _type: orderTypeCode,
         _attoshares: augur.utils.convertBigNumberToHexString(tradeCost.onChainAmount),
         _displayPrice: augur.utils.convertBigNumberToHexString(tradeCost.onChainPrice),

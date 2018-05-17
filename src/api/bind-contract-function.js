@@ -11,8 +11,8 @@ function bindContractFunction(functionAbi) {
     var payload = assign({}, functionAbi);
     if (arguments && arguments.length) {
       var params = Array.prototype.slice.call(arguments);
-      if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
-        if (params && isObject(params[0])) {
+      if (payload.constant || (params[0] != null && params[0].tx != null && params[0].tx.send === false)) {
+        if (params != null && isObject(params[0])) {
           payload.params = encodeTransactionInputs(params[0], payload.inputs, payload.signature);
           if (isObject(params[0].meta) && params[0].meta.address) assign(payload, { from: params[0].meta.address });
           if (isObject(params[0].tx)) assign(payload, { from: (params[0].meta || {}).address }, params[0].tx);
@@ -27,7 +27,7 @@ function bindContractFunction(functionAbi) {
       }
     }
     var onSent, onSuccess, onFailed, signer, accountType;
-    if (params && isObject(params[0])) {
+    if (params != null && isObject(params[0])) {
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;

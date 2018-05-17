@@ -5,6 +5,7 @@ var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
+var calculateTradeGas = require("./calculate-trade-gas");
 var calculateTickSize = require("./calculate-tick-size");
 var calculateOnChainFillPrice = require("./calculate-on-chain-fill-price");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
@@ -55,7 +56,7 @@ function tradeUntilAmountIsZero(p) {
     return p.onSuccess(null);
   }
   var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
-    tx: assign({ value: convertBigNumberToHexString(cost), gas: constants.TRADE_GAS }, p.tx),
+    tx: assign({ value: convertBigNumberToHexString(cost), gas: speedomatic.prefixHex(calculateTradeGas().toString(16)) }, p.tx),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
@@ -70,8 +71,8 @@ function tradeUntilAmountIsZero(p) {
         if (err) return p.onFailed(err);
         console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
         console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
-        if (new BigNumber(tradeOnChainAmountRemaining, 10).eq(onChainAmount)) {
-          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining);
+        if (tradeOnChainAmountRemaining.eq(onChainAmount)) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
         var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");

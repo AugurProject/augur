@@ -149,8 +149,8 @@ describe("trading/get-trade-amount-remaining", function () {
       },
     },
     assertions: function (err, tradeOnChainAmountRemaining) {
-      assert.strictEqual(err.message, "logs not found");
-      assert.isUndefined(tradeOnChainAmountRemaining);
+      assert.isNull(err);
+      assert.strictEqual(tradeOnChainAmountRemaining.toFixed(), "100000000000000");
     },
   });
 });
