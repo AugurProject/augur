@@ -89,7 +89,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
     })
 
     Object.keys(allOrders).forEach((orderId) => {
-      const orderId = Object.keys(allOrders)[0];
       const order = allOrders[orderId];
       const orderHasSharesEscrowed = order.sharesEscrowed > 0;
       augur.api.CancelOrder.cancelOrder({
