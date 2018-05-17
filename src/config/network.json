@@ -38,8 +38,8 @@
   "rinkeby": {
     "augur-node": "wss://rinkeby.augur.nodes.augur.net",
     "ethereum-node": {
-      "http": "https://rinkeby.ethereum.nodes.augur.net",
-      "ws": "wss://websocket-rinkeby.ethereum.nodes.augur.net",
+      "http": "https://rinkeby.augur.net/ethereum-http",
+      "ws": "wss://rinkeby.augur.net/ethereum-ws",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000
@@ -56,8 +56,8 @@
   "stable": {
     "augur-node": "wss://test.augur.net/augur-node",
     "ethereum-node": {
-      "http": "https://test.augur.net/ethereum-http",
-      "ws": "wss://test.augur.net/ethereum-ws",
+      "http": "https://rinkeby.augur.net/ethereum-http",
+      "ws": "wss://rinkeby.augur.net/ethereum-ws",
       "pollingIntervalMilliseconds": 10000,
       "blockRetention": 100,
       "connectionTimeout": 60000
