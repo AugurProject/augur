@@ -62,7 +62,7 @@
     "chalk": "2.3.2",
     "express": "4.16.2",
     "knex": "0.14.4",
-    "lodash": "4.17.5",
+    "lodash": "4.17.10",
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
     "speedomatic": "2.1.2",
