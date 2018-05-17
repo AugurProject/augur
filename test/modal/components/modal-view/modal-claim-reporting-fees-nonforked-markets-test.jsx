@@ -26,13 +26,13 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
       {
         crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23001',
         needsFork: true,
-        unclaimedEthFees: new BigNumber(123.456, 10),
+        unclaimedEth: new BigNumber(123.456, 10),
         unclaimedRepStaked: new BigNumber(654.321, 10),
       },
       {
         crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23002',
         needsFork: false,
-        unclaimedEthFees: new BigNumber(123.456, 10),
+        unclaimedEth: new BigNumber(123.456, 10),
         unclaimedRepStaked: new BigNumber(654.321, 10),
       },
     ],
@@ -40,7 +40,7 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
     initialReporter: {
       initialReporterId: '0xfd2355a7e5a7adb23b51f54027e624bfe0e23001',
       isForked: false,
-      unclaimedEthFees: new BigNumber(123.456, 10),
+      unclaimedEth: new BigNumber(123.456, 10),
       unclaimedRepStaked: new BigNumber(654.321, 10),
     },
   }

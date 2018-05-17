@@ -27,7 +27,7 @@ const MarketPortfolioCardFooter = (p) => {
     const timeHasPassed = createBigNumber(currentTimestampInSeconds).minus(endTimestamp)
     canClaim = p.linkType === TYPE_CLAIM_PROCEEDS && timeHasPassed.toNumber() > 0
   }
-  const userHasClaimableForkFees = ((p.unclaimedForkEthFees && p.unclaimedForkEthFees.value > 0) || (p.unclaimedForkRepStaked && p.unclaimedForkRepStaked.value > 0))
+  const userHasClaimableForkFees = ((p.unclaimedForkEth && p.unclaimedForkEth.value > 0) || (p.unclaimedForkRepStaked && p.unclaimedForkRepStaked.value > 0))
 
   return (
     <div>
@@ -45,7 +45,7 @@ const MarketPortfolioCardFooter = (p) => {
         >
           {p.linkType === TYPE_CLAIM_PROCEEDS && userHasClaimableForkFees &&
             <span className={Styles['MarketCard__light-text']}>Outstanding Returns
-              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEthFees.formattedValue} ETH</span>|
+              <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkEth.formattedValue} ETH</span>|
               <span className={Styles['MarketCard__heavy-text']}>{p.unclaimedForkRepStaked.formattedValue} REP</span>
             </span>
           }
@@ -85,7 +85,7 @@ MarketPortfolioCardFooter.propTypes = {
   outstandingReturns: PropTypes.string,
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
-  unclaimedForkEthFees: PropTypes.object,
+  unclaimedForkEth: PropTypes.object,
   unclaimedForkRepStaked: PropTypes.object,
 }
 

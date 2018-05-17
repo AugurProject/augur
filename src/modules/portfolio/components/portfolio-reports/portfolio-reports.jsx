@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { formatAttoRep, formatEther } from 'utils/format-number'
+import { createBigNumber } from 'utils/create-big-number'
+import { formatAttoRep, formatAttoEth } from 'utils/format-number'
 
 import PortfolioReportsForkedMarketCard from 'modules/portfolio/components/portfolio-reports/portfolio-reports-forked-market-card'
 import { MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET, MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS } from 'modules/modal/constants/modal-types'
@@ -11,16 +12,14 @@ import Styles from 'modules/portfolio/components/portfolio-reports/portfolio-rep
 
 export default class PortfolioReports extends Component {
   static propTypes = {
-    claimReportingFeesForkedMarket: PropTypes.func.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     getReportingFees: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
-    reporter: PropTypes.string.isRequired,
-    universe: PropTypes.object.isRequired,
     updateModal: PropTypes.func.isRequired,
+    updateAssets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -47,7 +46,7 @@ export default class PortfolioReports extends Component {
         denomination: '',
         full: '-',
       },
-      unclaimedForkEthFees: {
+      unclaimedForkEth: {
         value: 0,
         formattedValue: 0,
         formatted: '-',
@@ -71,20 +70,21 @@ export default class PortfolioReports extends Component {
 
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
     this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(this)
+    this.modalCallback = this.modalCallback.bind(this)
   }
 
   componentWillMount() {
-    const {
-      reporter,
-      universe,
-    } = this.props
-    this.props.getReportingFees(universe.id, reporter, (err, result) => {
+    this.updateReportingFees()
+  }
+
+  updateReportingFees(callback) {
+    this.props.getReportingFees((err, result) => {
 
       if (err) {
         this.setState({
-          unclaimedEth: formatEther(0, { decimals: 4, zeroStyled: true }),
+          unclaimedEth: formatAttoEth(0, { decimals: 4, zeroStyled: true }),
           unclaimedRep: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
-          unclaimedForkEthFees: formatEther(0, { decimals: 4, zeroStyled: true }),
+          unclaimedForkEth: formatAttoEth(0, { decimals: 4, zeroStyled: true }),
           unclaimedForkRepStaked: formatAttoRep(0, { decimals: 4, zeroStyled: true }),
           feeWindows: [],
           forkedMarket: null,
@@ -93,32 +93,18 @@ export default class PortfolioReports extends Component {
         return
       }
 
-      // TODO: Remove hard-coded lines below once augur-node bug is fixed.
-      result.forkedMarket.crowdsourcers = [
-        {
-          crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23001',
-          needsFork: true,
-        },
-        {
-          crowdsourcerId: '0xfc2355a7e5a7adb23b51f54027e624bfe0e23002',
-          needsFork: false,
-        },
-      ]
-      result.forkedMarket.initialReporter = {
-
-      }
-      result.total.unclaimedForkEthFees = '124.345'
-      result.total.unclaimedForkRepStaked = '524520874023437500.5'
+      const unclaimedRepTotal = createBigNumber(result.total.unclaimedRepStaked).plus(createBigNumber(result.total.unclaimedRepEarned)).toString()
 
       this.setState({
-        unclaimedEth: formatEther(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
-        unclaimedRep: formatAttoRep(result.total.unclaimedRepStaked, { decimals: 4, zeroStyled: true }),
-        unclaimedForkEthFees: formatEther(result.total.unclaimedForkEthFees, { decimals: 4, zeroStyled: true }),
+        unclaimedEth: formatAttoEth(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
+        unclaimedRep: formatAttoRep(unclaimedRepTotal, { decimals: 4, zeroStyled: true }),
+        unclaimedForkEth: formatAttoEth(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
         unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, zeroStyled: true }),
         feeWindows: result.feeWindows,
         forkedMarket: result.forkedMarket,
         nonforkedMarkets: result.nonforkedMarkets,
       })
+      if (callback) callback()
     })
   }
 
@@ -138,21 +124,29 @@ export default class PortfolioReports extends Component {
       forkedMarket,
       nonforkedMarkets,
       canClose: true,
+      modalCallback: this.modalCallback,
     })
   }
 
   handleClaimReportingFeesForkedMarket = () => {
     const {
-      unclaimedForkEthFees,
+      unclaimedForkEth,
       unclaimedForkRepStaked,
       forkedMarket,
     } = this.state
     this.props.updateModal({
       type: MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
-      unclaimedEth: unclaimedForkEthFees,
+      unclaimedEth: unclaimedForkEth,
       unclaimedRep: unclaimedForkRepStaked,
       forkedMarket,
       canClose: true,
+      modalCallback: this.modalCallback,
+    })
+  }
+
+  modalCallback = (results) => {
+    this.updateReportingFees(() => {
+      this.props.updateAssets()
     })
   }
 
@@ -167,7 +161,7 @@ export default class PortfolioReports extends Component {
     if (s.unclaimedEth.formatted === '-' && s.unclaimedRep.formatted === '-') {
       disableClaimReportingFeesNonforkedMarketsButton = 'disabled'
     }
-    const userHasClaimableForkFees = s.forkedMarket && (s.unclaimedForkEthFees.value > 0 || s.unclaimedForkRepStaked.value > 0)
+    const userHasClaimableForkFees = s.forkedMarket && (s.unclaimedForkEth.value > 0 || s.unclaimedForkRepStaked.value > 0)
 
     return (
       <div>
@@ -207,7 +201,7 @@ export default class PortfolioReports extends Component {
               forkedMarketReportingFeesInfo={s.forkedMarket}
               linkType={TYPE_CLAIM_PROCEEDS}
               market={forkedMarket}
-              unclaimedForkEthFees={s.unclaimedForkEthFees}
+              unclaimedForkEth={s.unclaimedForkEth}
               unclaimedForkRepStaked={s.unclaimedForkRepStaked}
               updateModal={this.handleClaimReportingFeesNonforkedMarkets}
             />

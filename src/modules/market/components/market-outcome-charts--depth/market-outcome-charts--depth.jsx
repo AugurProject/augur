@@ -167,10 +167,13 @@ export default class MarketOutcomeDepth extends Component {
 
       const depthContainer = new ReactFauxDOM.Element('div')
 
+      // padding for overflowing x-axis ticks
+      const widthPadding = 30
+
       const depthChart = d3.select(depthContainer)
         .append('svg')
         .attr('id', 'depth_chart')
-        .attr('width', drawParams.containerWidth)
+        .attr('width', drawParams.containerWidth + widthPadding)
         .attr('height', drawParams.containerHeight)
 
       drawTicks({

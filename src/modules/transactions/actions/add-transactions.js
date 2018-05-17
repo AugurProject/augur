@@ -251,7 +251,7 @@ export function addOpenOrderTransactions(openOrders) {
       marketHeader.timestamp = creationTime
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
-      transactions[marketHeader.id] = marketHeader
+      transactions[marketHeader.hash] = marketHeader
     })
     dispatch(updateTransactionsData(transactions))
   }

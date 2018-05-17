@@ -102,6 +102,10 @@
   version "9.6.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.7.tgz#5f3816d1db2155edcde1b2e3aa5d0e5c520cb564"
 
+"@types/yargs@11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-11.0.0.tgz#124b9ed9c65b7091cc36da59ae12cbd47d8745ea"
+
 JSONStream@^0.8.4:
   version "0.8.4"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-0.8.4.tgz#91657dfe6ff857483066132b4618b62e8f4887bd"
@@ -529,9 +533,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-augur-core@1.0.0-4:
-  version "1.0.0-4"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-4.tgz#b1d1c4f3486c0191382bc1316051dbb01118f4d1"
+augur-core@1.0.0-5:
+  version "1.0.0-5"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-5.tgz#e55af68f98eb5faab8e96c26478a63378d7143b9"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -539,6 +543,7 @@ augur-core@1.0.0-4:
     "@types/mkdirp" "0.5.1"
     "@types/mocha" "2.2.43"
     "@types/node" "9.6.7"
+    "@types/yargs" "11.0.0"
     async-file "2.0.2"
     async-mkdirp "1.2.0"
     binascii "0.0.1"
@@ -563,18 +568,19 @@ augur-core@1.0.0-4:
     replace "0.3.0"
     rimraf "2.6.2"
     solidity-coverage "0.4.15"
+    yargs "11.0.0"
 
-augur.js@4.11.0-14:
-  version "4.11.0-14"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-14.tgz#fd7a99813bb786d40db3466d09cb1f33d2e2e887"
+augur.js@4.11.0-17:
+  version "4.11.0-17"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-17.tgz#5526fc855843abf75fa94b494b41fc78026715d6"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-4"
+    augur-core "1.0.0-5"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.3.1"
+    ethrpc "5.3.2"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -4205,9 +4211,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.3.1.tgz#4eb962f18d8353fc63d6719711e3ce1038907216"
+ethrpc@5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.3.2.tgz#90988d50d6b5575a244a3724ed78f4c5b0239402"
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
@@ -4218,10 +4224,7 @@ ethrpc@5.3.1:
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
-    lodash.assign "4.2.0"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    lodash.unset "4.5.2"
+    lodash "4.17.10"
     oboe "2.1.3"
     postinstall-build "5.0.1"
     redux "3.6.0"
@@ -6716,10 +6719,6 @@ lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
 
-lodash.get@4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
-
 lodash.get@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-3.7.0.tgz#3ce68ae2c91683b281cc5394128303cbf75e691f"
@@ -6759,25 +6758,17 @@ lodash.reduce@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
 
-lodash.set@4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
-
 lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash.unset@4.5.2:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/lodash.unset/-/lodash.unset-4.5.2.tgz#370d1d3e85b72a7e1b0cdf2d272121306f23e4ed"
+lodash@4.17.10, lodash@^4.0.0, lodash@^4.1.0, lodash@^4.1.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
+  version "4.17.10"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
 lodash@4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
-lodash@^4.0.0, lodash@^4.1.0, lodash@^4.1.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
-  version "4.17.10"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
 log-driver@^1.2.5:
   version "1.2.7"
@@ -11950,6 +11941,23 @@ yargs-parser@^9.0.2:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-9.0.2.tgz#9ccf6a43460fe4ed40a9bb68f48d43b8a68cc077"
   dependencies:
     camelcase "^4.1.0"
+
+yargs@11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-11.0.0.tgz#c052931006c5eee74610e5fc0354bedfd08a201b"
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.1.1"
+    find-up "^2.1.0"
+    get-caller-file "^1.0.1"
+    os-locale "^2.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1"
+    yargs-parser "^9.0.2"
 
 yargs@^1.2.6:
   version "1.3.3"
