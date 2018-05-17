@@ -54,7 +54,7 @@
     }
   },
   "stable": {
-    "augur-node": "wss://test.augur.net/augur-node",
+    "augur-node": "wss://stable.augur.net/augur-node",
     "ethereum-node": {
       "http": "https://rinkeby.augur.net/ethereum-http",
       "ws": "wss://rinkeby.augur.net/ethereum-ws",
