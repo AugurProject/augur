@@ -30,6 +30,7 @@ export default class ReportingDispute extends Component {
     marketId: PropTypes.string.isRequired,
     submitMarketContribute: PropTypes.func.isRequired,
     universe: PropTypes.string.isRequired,
+    availableRep: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -67,6 +68,7 @@ export default class ReportingDispute extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.availableRep !== this.props.availableRep) return true
     return !isEqual(nextState, this.state)
   }
 
@@ -118,6 +120,7 @@ export default class ReportingDispute extends Component {
       location,
       market,
       submitMarketContribute,
+      availableRep,
     } = this.props
     const s = this.state
 
@@ -153,6 +156,7 @@ export default class ReportingDispute extends Component {
                 market={market}
                 updateState={this.updateState}
                 stake={s.stake}
+                availableRep={availableRep}
               />
             }
             { s.currentStep === 1 &&
