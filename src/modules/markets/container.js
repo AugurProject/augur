@@ -27,7 +27,7 @@ const mapStateToProps = (state, { location }) => {
     tags,
   } = getSelectedTagsAndCategoriesFromLocation(location)
 
-  const categoryFilter = category ? filter({ category }) : identity
+  const categoryFilter = category ? filter(m => m.category.toLowerCase() === category.toLowerCase()) : identity
 
   // The filterBySearch function returns ids not objects.
   const keywordFilter = keywords ? filterBySearch(keywords, FILTER_SEARCH_KEYS) : map('id')
