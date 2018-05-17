@@ -138,10 +138,6 @@ interface ParticipantEthFee {
 
 }
 
-interface ParticipantEthFeeOnParticipant extends ParticipantEthFee {
-  feeWindow: null;
-}
-
 interface ParticipationTokenEthFee  {
   feeWindow: string;
   ethFees: BigNumber;
