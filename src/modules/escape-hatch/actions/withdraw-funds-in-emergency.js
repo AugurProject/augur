@@ -92,6 +92,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const order = allOrders[orderId];
       const orderHasSharesEscrowed = order.sharesEscrowed > 0;
       augur.api.CancelOrder.cancelOrder({
+        _orderId: orderId,
         onSent: noop,
         onSuccess: (res) => {
           console.log('CancelOrder.cancelOrder', res)
