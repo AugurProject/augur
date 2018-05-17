@@ -105,12 +105,13 @@ export default class MarketPositionsListPosition extends Component {
       marginTop: s.confirmMargin,
     }
     const positionShares = getValue(position, 'qtyShares.formatted')
+    const isClosable = getValue(position, 'isClosable')
 
     let message = this.messageMap[s.positionStatus]
     let cancelOnly = true
-    if (!message && openOrders.length > 0) {
+    if (!message && openOrders.length > 0 && isClosable) {
       message = 'Positions cannot be closed while orders are pending.'
-    } else if (!message && s.showConfirm) {
+    } else if (!message && s.showConfirm && isClosable) {
       cancelOnly = false
       message = `Close position by ${getValue(position, 'qtyShares.value') > 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
     }
@@ -152,7 +153,7 @@ export default class MarketPositionsListPosition extends Component {
         </li>
         <div
           ref={(confirmMessage) => { this.confirmMessage = confirmMessage }}
-          className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: s.showConfirm })}
+          className={classNames(Styles.Position__confirm, { [`${Styles['is-open']}`]: (s.showConfirm && message) })}
           style={confirmStyle}
         >
           { message &&
