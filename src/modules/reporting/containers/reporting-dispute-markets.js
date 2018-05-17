@@ -26,7 +26,6 @@ const mapStateToProps = (state, { history }) => {
     doesUserHaveRep: (loginAccount.rep.value > 0),
     markets: disputableMarkets,
     upcomingMarkets: upcomingDisputableMarkets,
-    marketsCount: disputableMarkets.length,
     upcomingMarketsCount: upcomingDisputableMarkets.length,
     isMobile: state.isMobile,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
@@ -34,7 +33,7 @@ const mapStateToProps = (state, { history }) => {
     account: loginAccount.address,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
-    forkingMarket: state.universe.forkingMarket,
+    forkingMarketId: state.universe.forkingMarket,
   })
 }
 
