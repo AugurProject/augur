@@ -51,6 +51,7 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderCreatedLog = log => (dispatch, getState) => {
+  dispatch(loadMarketsInfo([log.marketId]))
   const isStoredTransaction = log.orderCreator === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
@@ -63,6 +64,7 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
+  dispatch(loadMarketsInfo([log.marketId]))
   const isStoredTransaction = log.sender === getState().loginAccount.address
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
@@ -76,6 +78,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderFilledLog = log => (dispatch, getState) => {
+  dispatch(loadMarketsInfo([log.marketId]))
   const { address } = getState().loginAccount
   const isStoredTransaction = log.filler === address || log.creator === address
   const popularity = log.removed ? new BigNumber(log.amount, 10).negated().toFixed() : log.amount
