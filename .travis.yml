@@ -39,7 +39,7 @@ jobs:
       | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:build-and-push && bash scripts/aws-deploy.sh
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
       skip_cleanup: true
       on:
         all_branches: true
@@ -52,7 +52,7 @@ jobs:
       | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release:stable && bash scripts/aws-deploy.sh
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
       skip_cleanup: true
       on:
         all_branches: true

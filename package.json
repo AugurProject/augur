@@ -37,8 +37,8 @@
     "sqlite": "./scripts/sqlite.sh",
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
     "docker:build": "scripts/docker/build.sh",
-    "docker:build-and-push": "npm run docker:build && scripts/docker/push.sh",
-    "docker:release:stable": "bash scripts/release-stable.sh"
+    "docker:release": "bash scripts/release-docker.sh"
+
   },
   "repository": {
     "type": "git",
