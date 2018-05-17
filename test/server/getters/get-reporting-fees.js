@@ -46,7 +46,7 @@ describe("server/getters/get-reporting-fees", () => {
       assert.isNull(err);
       assert.deepEqual(marketsMatched, {
         total: {
-          "unclaimedEth": "200",
+          "unclaimedEth": "1200",
           "unclaimedRepEarned": "0",
           "unclaimedRepStaked": "391",
           "unclaimedForkEth": "0",
