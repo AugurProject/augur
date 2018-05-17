@@ -45,6 +45,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const disputeCrowdsourcer = disputeCrowdsourcerTokens[disputeCrowdsourcerID]
       if (!disputeCrowdsourcer.redeemed) {
         augur.api.DisputeCrowdsourcer.withdrawInEmergency({
+          meta: loginAccount.meta,
           tx: { to: disputeCrowdsourcerID },
           onSent: noop,
           onSuccess: (res) => {
@@ -59,6 +60,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const initialReporter = initialReporters[initialReporterID]
       if (!initialReporter.redeemed) {
         augur.api.InitialReporter.withdrawInEmergency({
+          meta: loginAccount.meta,
           tx: { to: initialReporterID },
           onSent: noop,
           onSuccess: (res) => {
@@ -73,6 +75,7 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const participationToken = participationTokens[participationTokenID]
       if (participationToken.balance > 0) {
         augur.api.FeeWindow.withdrawInEmergency({
+          meta: loginAccount.meta,
           tx: { to: participationTokenID },
           onSent: noop,
           onSuccess: (res) => {

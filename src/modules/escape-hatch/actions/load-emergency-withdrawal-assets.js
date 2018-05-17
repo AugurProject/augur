@@ -40,6 +40,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
 
 function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, callback) {
   augur.api.ReputationToken.balanceOf({
+    meta: loginAccount.meta,
     tx: { to: reputationTokenAddress },
     _owner: market.id,
   }, (err, attoRepBalance) => {
@@ -77,6 +78,7 @@ export function doUpdateShareFrozenValue(market, loginAccount, dispatch, callbac
       dispatch(updateMarketFrozenSharesValue(market.id, frozenSharesValue))
       if (frozenSharesValue > 0) {
         augur.api.TradingEscapeHatch.claimSharesInUpdate({
+          meta: loginAccount.meta,
           tx: { estimateGas: true },
           _market: market.id,
           onSent: noop,
