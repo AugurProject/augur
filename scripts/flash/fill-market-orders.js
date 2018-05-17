@@ -2,6 +2,7 @@
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var async = require("async");
 var chalk = require("chalk");
 var noop = require("../../src/utils/noop");
@@ -49,8 +50,12 @@ function fillMarketOrder(augur, args, auth, callback) {
           return callback("No Market Orders Found");
         }
         var orders = orderBook[marketId][outcome][orderType];
-        async.eachSeries(Object.keys(orders), function (orderId, nextOrder) {
-          var order = orders[orderId];
+        // Right now orders are in a random order
+        // sort by price ascending
+        var sortedOrders = Object.values(orders).sort(function (a, b) {
+          return new BigNumber(a.price).comparedTo(new BigNumber(b.price));
+        });
+        async.eachSeries(sortedOrders, function (order, nextOrder) {
           console.log(chalk.yellow(order.fullPrecisionPrice), chalk.yellow(order.fullPrecisionAmount));
 
           augur.trading.placeTrade({
