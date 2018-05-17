@@ -87,12 +87,13 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
       const order = allOrders[orderId]
       const orderHasSharesEscrowed = order.sharesEscrowed > 0
       augur.api.CancelOrder.cancelOrder({
+        meta: loginAccount.meta,
         _orderId: orderId,
         onSent: noop,
         onSuccess: (res) => {
           dispatch(updateOrderClearEscrowed(orderId))
           if (orderHasSharesEscrowed) {
-            dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, () => {
+            dispatch(doUpdateShareFrozenValue(order.marketId, loginAccount, dispatch, () => {
               augur.api.TradingEscapeHatch.claimSharesInUpdate({
                 meta: loginAccount.meta,
                 _market: order.marketId,

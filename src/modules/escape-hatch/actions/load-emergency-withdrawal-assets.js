@@ -26,7 +26,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
     dispatch(loadAccountPositions({}, (err, accountPositions) => {
       if (err) return callback(err)
       each(accountPositions, (position) => {
-        doUpdateShareFrozenValue(getState().marketsData[position.marketId], dispatch, callback)
+        doUpdateShareFrozenValue(getState().marketsData[position.marketId], loginAccount, dispatch, callback)
       })
     }))
 
@@ -65,8 +65,9 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
   })
 }
 
-export function doUpdateShareFrozenValue(market, dispatch, callback) {
+export function doUpdateShareFrozenValue(market, loginAccount, dispatch, callback) {
   augur.api.TradingEscapeHatch.getFrozenShareValueInMarket({
+    meta: loginAccount.meta,
     tx: { send: false },
     _market: market.id,
   }, (err, attoEth) => {
