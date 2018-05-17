@@ -16,7 +16,8 @@ import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
 
 const MarketProperties = (p) => {
-  const shareVolumeRounded = getValue(p, 'volume.full')
+  const shareVolumeRounded = getValue(p, 'volume.formatted')
+  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
   const isScalar = p.marketType === SCALAR
   const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
   const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
@@ -28,7 +29,7 @@ const MarketProperties = (p) => {
         <ul className={Styles.MarketProperties__meta}>
           <li>
             <span>Volume</span>
-            <ValueDenomination formatted={shareVolumeRounded} />
+            <ValueDenomination formatted={shareVolumeRounded} denomination={shareDenomination} />
           </li>
           <li>
             <span>Fee</span>
