@@ -11,6 +11,19 @@ function help() {
   console.log(chalk.red("Use this command to get REP and ETH balances for account"));
 }
 
+function showCashBalance(augur, address, label, callback) {
+  augur.api.Cash.balanceOf({ _owner: address }, function (err, cashBalance) {
+    if (err) {
+      console.log(chalk.red(err));
+      return callback(err);
+    }
+    var bnCashBalance = speedomatic.bignum(cashBalance);
+    var totalCashBalance = speedomatic.unfix(bnCashBalance, "string");
+    console.log("Cash:", chalk.green(totalCashBalance));
+    callback(null);
+  });
+}
+
 function getBalance(augur, args, auth, callback) {
   if (args === "help" || args.opt.help) {
     help();
@@ -28,35 +41,42 @@ function getBalance(augur, args, auth, callback) {
     console.log(chalk.cyan("Balances:"));
     console.log("Ether: " + chalk.green(balances.ether));
     console.log("Rep:   " + chalk.green(balances.reputation));
-    var universePayload = { tx: { to: universe } };
-    augur.api.Universe.getCurrentFeeWindow(universePayload, function (err, feeWindow) {
+    showCashBalance(augur, address, "Cash Balance", function (err) {
       if (err) {
         console.log(chalk.red(err));
         return callback(JSON.stringify(err));
       }
-      var feeWindowPayload = { tx: { to: feeWindow } };
-      augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, startTime) {
+      var universePayload = { tx: { to: universe } };
+      augur.api.Universe.getCurrentFeeWindow(universePayload, function (err, feeWindow) {
         if (err) {
           console.log(chalk.red(err));
           return callback(JSON.stringify(err));
         }
-        augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
+        var feeWindowPayload = { tx: { to: feeWindow } };
+        augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, startTime) {
           if (err) {
             console.log(chalk.red(err));
             return callback(JSON.stringify(err));
           }
-          feeWindowPayload = { tx: { to: feeWindow }, _owner: address };
-          augur.api.FeeWindow.balanceOf(feeWindowPayload, function (err, balance) {
+          augur.api.FeeWindow.getEndTime(feeWindowPayload, function (err, endTime) {
             if (err) {
               console.log(chalk.red(err));
               return callback(JSON.stringify(err));
             }
-            console.log(chalk.cyan("Current Fee Window:"));
-            console.log(chalk.green.dim("fee window:"), chalk.green(feeWindow));
-            displayTime("Start Time", startTime);
-            displayTime("End Time", endTime);
-            console.log("Participation Tokens: " + chalk.green(speedomatic.unfix(balance, "string")));
-            callback(null);
+            feeWindowPayload = { tx: { to: feeWindow }, _owner: address };
+            augur.api.FeeWindow.balanceOf(feeWindowPayload, function (err, balance) {
+              if (err) {
+                console.log(chalk.red(err));
+                return callback(JSON.stringify(err));
+              }
+              console.log(chalk.cyan("Current Fee Window:"));
+              console.log(chalk.green.dim("fee window:"), chalk.green(feeWindow));
+              displayTime("Start Time", startTime);
+              displayTime("End Time", endTime);
+              console.log("Participation Tokens: " + chalk.green(speedomatic.unfix(balance, "string")));
+
+              callback(null);
+            });
           });
         });
       });
