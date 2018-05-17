@@ -56,14 +56,18 @@ function finalizeMarket(augur, args, auth, callback) {
           console.log(chalk.red(err));
           return callback(err);
         }
-        displayTime("Old Current Time", timeResult.timestamp);
-        setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
-          if (err) {
-            console.log(chalk.red(err));
-            return callback(err);
-          }
+        displayTime("Current Time", timeResult.timestamp);
+        if (parseInt(timeResult.timestamp, 10) > endTime) {
           callFinalize(augur, marketId, callback);
-        });
+        } else {
+          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+            if (err) {
+              console.log(chalk.red(err));
+              return callback(err);
+            }
+            callFinalize(augur, marketId, callback);
+          });
+        }
       });
     });
   });
