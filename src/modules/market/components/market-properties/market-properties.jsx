@@ -17,7 +17,6 @@ import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
 
 const MarketProperties = (p) => {
   const shareVolumeRounded = getValue(p, 'volume.full')
-  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
   const isScalar = p.marketType === SCALAR
   const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
   const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
