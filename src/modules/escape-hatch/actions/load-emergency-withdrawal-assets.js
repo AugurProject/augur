@@ -4,13 +4,14 @@ import { each } from 'async'
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateMarketRepBalance, updateMarketFrozenSharesValue, updateMarketEscapeHatchGasCost, updateMarketTradingEscapeHatchGasCost, updateMarketEthBalance } from 'modules/markets/actions/update-markets-data'
+import { updateAllOrdersData } from 'modules/escape-hatch/actions/update-all-orders'
 import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
 export default function (ownedMarketIds, tradingMarketIds, callback = logError) {
   return (dispatch, getState) => {
-    const { marketsData, universe } = getState()
+    const { marketsData, universe, loginAccount } = getState()
     const universeID = universe.id || UNIVERSE_ID
 
     // Update all owned market REP balances
@@ -28,6 +29,12 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
         doUpdateShareFrozenValue(getState().marketsData[position.marketId], dispatch, callback)
       })
     }))
+
+    // Get orders
+    augur.augurNode.submitRequest('getAllOrders', { account: loginAccount.address }, (err, allOrders) => {
+      if (err) return callback(err)
+      dispatch(updateAllOrdersData(allOrders))
+    })
   }
 }
 
@@ -58,7 +65,7 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
   })
 }
 
-function doUpdateShareFrozenValue(market, dispatch, callback) {
+export function doUpdateShareFrozenValue(market, dispatch, callback) {
   augur.api.TradingEscapeHatch.getFrozenShareValueInMarket({
     tx: { send: false },
     _market: market.id,

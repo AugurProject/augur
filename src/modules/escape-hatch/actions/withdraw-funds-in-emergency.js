@@ -6,12 +6,14 @@ import { updateMarketRepBalance, updateMarketEthBalance, updateMarketFrozenShare
 import { updateParticipationTokenBalance } from 'modules/my-participation-tokens/actions/update-participation-tokens'
 import { updateInitialReporterRepBalance } from 'modules/my-initial-reporters/actions/update-initial-reporters'
 import { updateDisputeCrowdsourcersBalance } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
+import { updateOrderClearEscrowed } from 'modules/escape-hatch/actions/update-all-orders'
+import { doUpdateShareFrozenValue } from 'modules/escape-hatch/actions/load-emergency-withdrawal-assets'
 
 export default function (ownedMarkets, marketsWithShares, callback = logError) {
   return (dispatch, getState) => {
 
     const {
-      participationTokens, initialReporters, disputeCrowdsourcerTokens = {}, loginAccount,
+      participationTokens, initialReporters, disputeCrowdsourcerTokens, allOrders = {}, loginAccount,
     } = getState()
 
     each(ownedMarkets, (market) => {
@@ -20,7 +22,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         tx: { to: market.id },
         onSent: noop,
         onSuccess: (res) => {
-          console.log('Market.withdrawInEmergency', res)
           dispatch(updateMarketRepBalance(market.id, 0))
           dispatch(updateMarketEthBalance(market.id, 0))
         },
@@ -34,7 +35,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         _market: market.id,
         onSent: noop,
         onSuccess: (res) => {
-          console.log('TradingEscapeHatch.claimSharesInUpdate', res)
           dispatch(updateMarketFrozenSharesValue(market.id, 0))
         },
         onFailed: callback,
@@ -48,7 +48,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: disputeCrowdsourcerID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('DisputeCrowdsourcer.withdrawInEmergency', res)
             dispatch(updateDisputeCrowdsourcersBalance(disputeCrowdsourcerID, 0))
           },
           onFailed: callback,
@@ -63,7 +62,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: initialReporterID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('InitialReporter.withdrawInEmergency', res)
             dispatch(updateInitialReporterRepBalance(initialReporterID, 0))
           },
           onFailed: callback,
@@ -78,12 +76,37 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: participationTokenID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('FeeWindow.withdrawInEmergency', res)
             dispatch(updateParticipationTokenBalance(participationTokenID, 0))
           },
           onFailed: callback,
         })
       }
+    })
+
+    Object.keys(allOrders).forEach((orderId) => {
+      const order = allOrders[orderId]
+      const orderHasSharesEscrowed = order.sharesEscrowed > 0
+      augur.api.CancelOrder.cancelOrder({
+        _orderId: orderId,
+        onSent: noop,
+        onSuccess: (res) => {
+          dispatch(updateOrderClearEscrowed(orderId))
+          if (orderHasSharesEscrowed) {
+            dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, () => {
+              augur.api.TradingEscapeHatch.claimSharesInUpdate({
+                meta: loginAccount.meta,
+                _market: order.marketId,
+                onSent: noop,
+                onSuccess: (res) => {
+                  dispatch(updateMarketFrozenSharesValue(order.marketId, 0))
+                },
+                onFailed: callback,
+              })
+            }))
+          }
+        },
+        onFailed: callback,
+      })
     })
   }
 }

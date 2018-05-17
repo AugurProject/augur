@@ -12,7 +12,6 @@ import loadUserParticipationTokens from 'modules/my-participation-tokens/actions
 import loadUserInitialReporters from 'modules/my-initial-reporters/actions/load-initial-reporters'
 import loadUserDisputeCrowdsourcers from 'modules/my-dispute-crowdsourcer-tokens/actions/load-dispute-crowdsourcer-tokens'
 import withdrawFundsInEmergency from 'modules/escape-hatch/actions/withdraw-funds-in-emergency'
-
 import logError from 'utils/log-error'
 
 const mapStateToProps = state => ({

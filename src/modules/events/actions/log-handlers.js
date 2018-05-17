@@ -20,6 +20,8 @@ import { MY_MARKETS } from 'modules/routes/constants/views'
 import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 import loadCategories from 'modules/categories/actions/load-categories'
+import { MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
+
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -64,6 +66,9 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
 
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.sender === getState().loginAccount.address
+  const { modal } = getState()
+  const escapeHatchModalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
+  if (escapeHatchModalShowing) return
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
     dispatch(updateLoggedTransactions(log))

@@ -43,6 +43,7 @@ import modal from 'modules/modal/reducers/modal'
 import participationTokens from 'modules/my-participation-tokens/reducers/participation-token-data'
 import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
 import disputeCrowdsourcerTokens from 'modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data'
+import allOrders from 'modules/escape-hatch/reducers/all-orders-data'
 
 export function createReducer() {
   return {
@@ -90,5 +91,6 @@ export function createReducer() {
     initialReporters,
     disputeCrowdsourcerTokens,
     accountDisputes,
+    allOrders,
   }
 }
