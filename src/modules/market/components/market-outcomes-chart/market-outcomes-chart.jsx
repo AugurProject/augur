@@ -32,12 +32,13 @@ export default class MarketOutcomesChart extends Component {
     }
 
     this.drawChart = this.drawChart.bind(this)
+    this.onResize = this.onResize.bind(this)
     this.updateHoveredLocation = this.updateHoveredLocation.bind(this)
   }
 
   componentDidMount() {
     this.drawChart(this.props)
-    window.addEventListener('resize', this.drawChart)
+    window.addEventListener('resize', this.onResize)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -49,7 +50,7 @@ export default class MarketOutcomesChart extends Component {
     if (
       !isEqual(outcomes, nextProps.outcomes) ||
       fixedPrecision !== nextProps.fixedPrecision
-    ) this.drawChart(nextProps, fixedPrecision, this.updateHoveredLocation)
+    ) this.drawChart(nextProps)
 
     if (
       !isEqual(this.state.hoveredLocation, nextState.hoveredLocation) ||
@@ -65,15 +66,20 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.drawChart)
+    window.removeEventListener('resize', this.onResize)
+  }
+
+  onResize() {
+    this.drawChart(this.props)
   }
 
   drawChart({
     creationTime,
     currentTimestamp,
     estimatedInitialPrice,
+    fixedPrecision,
     outcomes,
-  }, fixedPrecision, updateHoveredLocation) {
+  }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
         creationTime,
@@ -121,7 +127,7 @@ export default class MarketOutcomesChart extends Component {
         attachHoverHandler({
           drawParams,
           chart,
-          updateHoveredLocation,
+          updateHoveredLocation: this.updateHoveredLocation,
         })
       }
 
