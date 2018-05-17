@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 
 function defaultOutOfBandErrorHandler(err) {
   if (err) console.error(err);

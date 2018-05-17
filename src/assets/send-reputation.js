@@ -1,6 +1,6 @@
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var speedomatic = require("speedomatic");
 var api = require("../api");
 

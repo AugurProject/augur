@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var path = require("path");
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var Augur = require("../../src");
 var debugOptions = require("../debug-options");
 var connectionEndpoints = require("../connection-endpoints");

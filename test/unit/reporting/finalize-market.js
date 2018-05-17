@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
 

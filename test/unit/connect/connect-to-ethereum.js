@@ -2,7 +2,7 @@
 
 "use strict";
 
-var assign = require("lodash.assign");
+var assign = require("lodash").assign;
 var os = require("os");
 var assert = require("chai").assert;
 var connectToEthereum = require("../../../src/connect/connect-to-ethereum");
