@@ -22,7 +22,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         tx: { to: market.id },
         onSent: noop,
         onSuccess: (res) => {
-          console.log('Market.withdrawInEmergency', res)
           dispatch(updateMarketRepBalance(market.id, 0))
           dispatch(updateMarketEthBalance(market.id, 0))
         },
@@ -36,7 +35,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         _market: market.id,
         onSent: noop,
         onSuccess: (res) => {
-          console.log('TradingEscapeHatch.claimSharesInUpdate', res)
           dispatch(updateMarketFrozenSharesValue(market.id, 0))
         },
         onFailed: callback,
@@ -50,7 +48,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: disputeCrowdsourcerID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('DisputeCrowdsourcer.withdrawInEmergency', res)
             dispatch(updateDisputeCrowdsourcersBalance(disputeCrowdsourcerID, 0))
           },
           onFailed: callback,
@@ -65,7 +62,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: initialReporterID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('InitialReporter.withdrawInEmergency', res)
             dispatch(updateInitialReporterRepBalance(initialReporterID, 0))
           },
           onFailed: callback,
@@ -80,7 +76,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
           tx: { to: participationTokenID },
           onSent: noop,
           onSuccess: (res) => {
-            console.log('FeeWindow.withdrawInEmergency', res)
             dispatch(updateParticipationTokenBalance(participationTokenID, 0))
           },
           onFailed: callback,
@@ -95,7 +90,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
         _orderId: orderId,
         onSent: noop,
         onSuccess: (res) => {
-          console.log('CancelOrder.cancelOrder', res)
           dispatch(updateOrderClearEscrowed(orderId))
           if (orderHasSharesEscrowed) {
             dispatch(doUpdateShareFrozenValue(order.marketId, dispatch, () => {
@@ -104,7 +98,6 @@ export default function (ownedMarkets, marketsWithShares, callback = logError) {
                 _market: order.marketId,
                 onSent: noop,
                 onSuccess: (res) => {
-                  console.log('TradingEscapeHatch.claimSharesInUpdate', res)
                   dispatch(updateMarketFrozenSharesValue(order.marketId, 0))
                 },
                 onFailed: callback,
