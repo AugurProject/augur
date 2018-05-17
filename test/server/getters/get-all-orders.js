@@ -42,7 +42,7 @@ describe("server/getters/get-all-orders", () => {
           "sharesEscrowed": "0",
           "tokensEscrowed": "1.2",
           "marketId": "0x0000000000000000000000000000000000000001",
-        }
+        },
       });
     },
   });
