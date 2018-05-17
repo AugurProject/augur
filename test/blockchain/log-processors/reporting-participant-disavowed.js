@@ -26,6 +26,7 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
                 assert.isNull(err);
                 getParticipantState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

@@ -19,6 +19,7 @@ describe("blockchain/log-processors/completesets", () => {
               processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, positions) => {
                   t.assertions.onUpdated(err, positions);
+                  db.destroy();
                   done();
                 });
               });

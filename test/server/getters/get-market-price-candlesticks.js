@@ -11,6 +11,7 @@ describe("server/getters/get-market-price-candlesticks", () => {
         assert.isNull(err);
         getMarketPriceCandlesticks(db, t.params.marketId, t.params.outcome, t.params.start, t.params.end, t.params.period, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
+          db.destroy();
           done();
         });
       });

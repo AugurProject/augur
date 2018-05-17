@@ -11,6 +11,7 @@ describe("server/getters/get-markets-in-category", () => {
         assert.isNull(err);
         getMarketsInCategory(db, t.params.universe, t.params.category, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInCategory) => {
           t.assertions(err, marketsInCategory);
+          db.destroy();
           done();
         });
       });

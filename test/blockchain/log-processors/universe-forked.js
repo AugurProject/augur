@@ -25,6 +25,7 @@ describe("blockchain/log-processors/universe-forked", () => {
                     t.assertions.onRemoved(err, records);
                     getOtherMarket(trx, t.params, (err, records) => {
                       t.assertions.otherMarketOnRemoved(err, records);
+                      db.destroy();
                       done();
                     });
                   });

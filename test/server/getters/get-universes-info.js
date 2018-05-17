@@ -11,6 +11,7 @@ describe("server/getters/get-universes-info", () => {
         assert.isNull(err);
         getUniversesInfo(db, t.params.augur, t.params.universe, t.params.account, (err, universes) => {
           t.assertions(err, universes);
+          db.destroy();
           done();
         });
       });

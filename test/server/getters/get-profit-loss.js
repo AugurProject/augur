@@ -125,6 +125,11 @@ describe("tests for test/profitloss.db", () => {
     done();
   });
 
+  afterEach((done) => {
+    connection.destroy();
+    done();
+  });
+
   it("has 2 trades", (done) => {
     connection("trades")
       .select("*")
@@ -222,6 +227,11 @@ describe("server/getters/get-profit-loss", () => {
       connection = db;
       done();
     });
+  });
+
+  afterEach((done) => {
+    connection.destroy();
+    done();
   });
 
   it("generates 3 datapoints for user with trades in one period after start time", (done) => {

@@ -11,6 +11,7 @@ describe("server/getters/get-dispute-tokens", () => {
         assert.isNull(err);
         getDisputeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
           t.assertions(err, stakeTokens);
+          db.destroy();
           done();
         });
       });

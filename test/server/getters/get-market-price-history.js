@@ -11,6 +11,7 @@ describe("server/getters/get-market-price-history", () => {
         assert.isNull(err);
         getMarketPriceHistory(db, t.params.marketId, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
+          db.destroy();
           done();
         });
       });

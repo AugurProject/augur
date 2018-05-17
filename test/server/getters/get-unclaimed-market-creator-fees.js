@@ -12,6 +12,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
         if (err) assert.fail(err);
         getUnclaimedMarketCreatorFees(db, t.params.augur, t.params.marketIds, (err, marketFees) => {
           t.assertions(err, marketFees);
+          db.destroy();
           done();
         });
       });

@@ -28,6 +28,7 @@ describe("blockchain/log-processors/market-created", () => {
                 assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

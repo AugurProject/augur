@@ -12,6 +12,7 @@ describe("server/getters/get-dispute-info", () => {
         if (err) assert.fail(err);
         getDisputeInfo(db, t.params.marketIds, t.params.account, (err, disputeInfo) => {
           t.assertions(err, disputeInfo);
+          db.destroy();
           done();
         });
       });

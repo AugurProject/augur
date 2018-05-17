@@ -11,6 +11,7 @@ describe("server/getters/get-better-worse-orders", () => {
         assert.isNull(err);
         getBetterWorseOrders(db, t.params.marketId, t.params.outcome, t.params.orderType, t.params.price, (err, betterWorseOrders) => {
           t.assertions(err, betterWorseOrders);
+          db.destroy();
           done();
         });
       });

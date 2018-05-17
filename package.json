@@ -57,7 +57,7 @@
     "@types/uuid": "3.4.3",
     "@types/ws": "3.0.2",
     "async": "2.6.0",
-    "augur.js": "4.11.0-16",
+    "augur.js": "4.11.0-17",
     "bignumber.js": "6.0.0",
     "chalk": "2.3.2",
     "express": "4.16.2",
@@ -69,7 +69,7 @@
     "sqlite3": "4.0.0",
     "uuid": "3.1.0",
     "webpack": "4.8.1",
-    "ws": "3.2.0"
+    "ws": "5.1.1"
   },
   "devDependencies": {
     "@types/knex": "0.14.8",
@@ -77,7 +77,7 @@
     "coveralls": "3.0.1",
     "eslint": "3.17.1",
     "istanbul": "0.4.5",
-    "mocha": "3.2.0",
+    "mocha": "5.1.1",
     "mocha-lcov-reporter": "0.0.2",
     "node-gyp": "3.6.2",
     "node-pre-gyp": "0.10.0",

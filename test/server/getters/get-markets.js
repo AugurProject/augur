@@ -13,6 +13,7 @@ describe("server/getters/get-markets", () => {
         if (err) assert.fail(err);
         getMarkets(db, t.params.universe, t.params.creator, t.params.category, t.params.reportingState, t.params.feeWindow, t.params.designatedReporter, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsMatched) => {
           t.assertions(err, marketsMatched);
+          db.destroy();
           done();
         });
       });

@@ -31,6 +31,7 @@ describe("blockchain/log-processors/order-filled", () => {
               processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, t.aux, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

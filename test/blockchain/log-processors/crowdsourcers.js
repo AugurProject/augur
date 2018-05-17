@@ -71,6 +71,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
                       verify(processDisputeCrowdsourcerCreatedLogRemoval, getCrowdsourcer, t.assertions.onCreatedRemoved, () => {
                         removeOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
                           assert.isNotNull(err);
+                          db.destroy();
                           done();
                         });
                       });

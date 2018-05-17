@@ -11,6 +11,7 @@ describe("server/getters/get-user-trading-history", () => {
         assert.isNull(err);
         getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
+          db.destroy();
           done();
         });
       });

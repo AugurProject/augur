@@ -12,6 +12,7 @@ describe("server/getters/get-fee-window-current", () => {
         if (err) assert.fail(err);
         getFeeWindowCurrent(db, t.params.universe, t.params.reporter, (err, feeWindow) => {
           t.assertions(err, feeWindow);
+          db.destroy();
           done();
         });
       });
