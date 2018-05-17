@@ -7,6 +7,7 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrders, callback = logError, onComplete = noop) => (dispatch, getState) => {
   if (!marketId) return null
@@ -34,7 +35,9 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     doNotCreateOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupId),
     onFailed: callback,
-    onSuccess: onComplete,
+    onSuccess: () => {
+      dispatch(loadMarketsInfo([marketId]))
+    },
   }
   // use getState to get the latest version of allowance.
   if (createBigNumber(getState().loginAccount.allowance).lte(createBigNumber(tradeInProgress.totalCost))) {
