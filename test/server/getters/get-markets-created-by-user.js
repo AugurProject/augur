@@ -9,7 +9,7 @@ describe("server/getters/get-markets-created-by-user", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
-        getMarketsCreatedByUser(db, t.params.universe, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
+        getMarketsCreatedByUser(db, t.params.universe, t.params.creator, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
           db.destroy();
           done();
@@ -37,6 +37,23 @@ describe("server/getters/get-markets-created-by-user", () => {
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000011",
+        "0x0000000000000000000000000000000000000211",
+        "0x0000000000000000000000000000000000000222",
+        "0x00000000000000000000000000000000000000f1",
+      ]);
+    },
+  });
+  test({
+    description: "user has created many markets but we filter by time",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      creator: "0x0000000000000000000000000000000000000b0b",
+      earliestCreationTime: 1506474500,
+    },
+    assertions: (err, marketsCreatedByUser) => {
+      assert.isNull(err);
+      assert.deepEqual(marketsCreatedByUser, [
+        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
         "0x00000000000000000000000000000000000000f1",
