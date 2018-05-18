@@ -160,7 +160,7 @@ export default class ReportingDisputeForm extends Component {
 
     if (stakeValue === '' || stakeValue == null || stakeValue <= 0) {
       updatedValidations.stake = 'The stake field is required.'
-    } else if (bnStake.gt(createBigNumber(maxRepObject.formatted.fullPrecision))) {
+    } else if (bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue))) {
       updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`
     } else if (this.state.bnAvailableRep.lt(bnStake)) {
       updatedValidations.stake = `Desposit Stake is greater then your available amount`
