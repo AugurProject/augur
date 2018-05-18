@@ -114,7 +114,7 @@ class MarketTradingForm extends Component {
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
-    if (value && value.lt(0)) {
+    if (value && value.lte(0)) {
       errorCount += 1
       passedTest = false
       errors[this.INPUT_TYPES.QUANTITY].push('Quantity must be greater than 0')
