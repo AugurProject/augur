@@ -131,7 +131,7 @@ class MarketTradingForm extends Component {
     let errorCount = 0
     let passedTest = !!isOrderValid
     if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
-    if (value && (value.lt(minPrice) || value.gt(maxPrice))) {
+    if (value && (value.lte(minPrice) || value.gt(maxPrice))) {
       errorCount += 1
       passedTest = false
       errors[this.INPUT_TYPES.PRICE].push(`Price must be between ${minPrice} - ${maxPrice}`)
