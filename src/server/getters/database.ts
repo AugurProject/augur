@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { isFieldBigNumber } from "../post-process-database-results";
 import {
   Address,
   MarketsRowWithTime,
@@ -25,11 +26,28 @@ export interface Dictionary {
   [key: string]: any;
 }
 
-export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
+function queryModifierDB(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
   if (limit != null) query = query.limit(limit);
   if (offset != null) query = query.offset(offset);
   return query;
+}
+
+function queryModifierUserland(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
+  return query.select(knex.raw("? as xMySorterFieldx", [sortBy || defaultSortBy])).tap((rows) => {
+    const descendingSorter = (left, right) => left['xMySorterFieldx'].comparedTo(right['xMySorterFieldx']);
+    const ascendingSorter  = (left, right) => right['xMySorterFieldx'].comparedTo(left['xMySorterFieldx']);
+    const results = rows.sort(isSortDescending ? descendingSorter : ascendingSorter);
+    if (limit == null && offset == null)
+      return results;
+    return results.splice(offset || 0, limit);
+  });
+}
+
+export function queryModifier(query: Knex.QueryBuilder, defaultSortBy: string, defaultSortOrder: string, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined): Knex.QueryBuilder {
+  const sortFieldName = (sortBy || defaultSortBy).split(".").pop();
+  const modifierFn = isFieldBigNumber(sortFieldName!) ? queryModifierUserland : queryModifierDB;
+  return modifierFn(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset);
 }
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {

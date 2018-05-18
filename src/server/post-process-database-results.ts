@@ -1,14 +1,14 @@
 import BigNumber from "bignumber.js";
 
-interface Mapping {
+interface FieldWhitelist {
   [key: string]: boolean;
 }
 
-interface Whitelist {
-  [className: string]: Mapping;
+interface TableWhitelist {
+  [className: string]: FieldWhitelist;
 }
 
-const whitelist: Whitelist = {
+const whitelist: TableWhitelist = {
   crowdsourcers: {
     size: true,
     amountStaked: true,
@@ -95,8 +95,8 @@ const whitelist: Whitelist = {
   },
 };
 
-const FIELD_NAMES: Mapping = (() => {
-  const namesonly: Mapping = {};
+const FIELD_NAMES: FieldWhitelist = (() => {
+  const namesonly: FieldWhitelist = {};
   for (const key in whitelist) {
     if (whitelist.hasOwnProperty(key)) {
       Object.assign(namesonly, whitelist[key]);
@@ -105,12 +105,16 @@ const FIELD_NAMES: Mapping = (() => {
   return namesonly;
 })();
 
+export function isFieldBigNumber(fieldName: string): boolean {
+  return FIELD_NAMES[key] === true;
+}
+
 // We're converting these values in place isntead of cloning the whole object
 function convertToBigNumber(row: any) {
   if (row === null || typeof row !== "object") return row;
 
   for (const key in row) {
-    if (row.hasOwnProperty(key) && FIELD_NAMES[key] === true && typeof row[key] === "string") {
+    if (row.hasOwnProperty(key) && isFieldBigNumber(key) && typeof row[key] === "string") {
       row[key] = new BigNumber(row[key], 10);
     }
   }
