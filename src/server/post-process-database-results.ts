@@ -106,7 +106,7 @@ const FIELD_NAMES: FieldWhitelist = (() => {
 })();
 
 export function isFieldBigNumber(fieldName: string): boolean {
-  return FIELD_NAMES[key] === true;
+  return FIELD_NAMES[fieldName] === true;
 }
 
 // We're converting these values in place isntead of cloning the whole object
