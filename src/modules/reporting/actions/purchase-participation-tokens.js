@@ -1,13 +1,12 @@
 import { augur } from 'services/augurjs'
 import speedomatic from 'speedomatic'
 import logError from 'utils/log-error'
-import noop from 'utils/noop'
 import { formatGasCostToEther } from 'utils/format-number'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
 
 export const purchaseParticipationTokens = (amount, estimateGas = false, callback = logError) => (dispatch, getState) => {
-  const { universe, loginAccount } = getState()
+  const { universe } = getState()
   augur.reporting.getFeeWindowCurrent({ universe: universe.id }, (err, currFeeWindowInfo) => {
     if (err) return callback(err)
     let methodFunc = augur.api.FeeWindow.buy
