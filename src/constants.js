@@ -99,4 +99,6 @@ module.exports = {
   PARALLEL_LIMIT: 10,
 
   TRADE_GROUP_ID_NUM_BYTES: 32,
+
+  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000),
 };

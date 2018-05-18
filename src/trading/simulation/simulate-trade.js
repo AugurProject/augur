@@ -18,6 +18,7 @@
 var BigNumber = require("bignumber.js");
 var simulateBuy = require("./simulate-buy");
 var simulateSell = require("./simulate-sell");
+var constants = require("../../constants");
 
 /**
  * Determine the sequence of makes/takes that will be executed to fill the specified order, and return the user's
@@ -43,6 +44,8 @@ function simulateTrade(p) {
   if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = p.price ? new BigNumber(p.price, 10) : p.price;
+  var ethValueTotal = price.times(sharesToCover);
+  if (ethValueTotal.lt(constants.MINIMUM_TRADE_VALUE)) throw new Error("Order value must be greater than 0.0001 ETH");
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
   var minPrice = new BigNumber(p.minPrice, 10);
   var maxPrice = new BigNumber(p.maxPrice, 10);

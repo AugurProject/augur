@@ -183,4 +183,42 @@ describe("trading/simulation/simulate-trade", function () {
       assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
     },
   });
+  test({
+    description: "throw if order value is not minimum",
+    params: {
+      orderType: 0,
+      outcome: 0,
+      shares: "0.000001",
+      shareBalances: ["0", "5"],
+      tokenBalance: "0",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      price: "0.5",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (err) {
+      assert.strictEqual(err.message, "Order value must be greater than 0.0001 ETH");
+    },
+  });
 });
