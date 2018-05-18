@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import { isEqual } from 'lodash'
 import Styles from 'modules/forking/components/fork-migration-totals/fork-migration-totals.styles'
 import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 
 const ForkMigrationTotal = ({ className, forkMigrationTotal }) => {
-  const currentMigrated = forkMigrationTotal.rep.rounded ? forkMigrationTotal.rep.rounded : '0'
+  const currentMigrated = forkMigrationTotal.rep.full ? forkMigrationTotal.rep.full : '0'
   const forkMigrationTotalName = forkMigrationTotal.name === 'Indeterminate' ? 'Invalid' : forkMigrationTotal.name
 
   return (
@@ -38,9 +39,10 @@ class ForkMigrationTotals extends Component {
     }
 
     this.showMore = this.showMore.bind(this)
+    this.getForkMigrationTotals()
   }
 
-  componentWillMount() {
+  componentDidUpdate() {
     this.getForkMigrationTotals()
   }
 
