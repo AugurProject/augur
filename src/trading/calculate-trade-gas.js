@@ -14,8 +14,8 @@ function calculateTradeGas() {
   var currentBlock = ethrpc.getCurrentBlock();
   if (currentBlock == null) return constants.MINIMUM_TRADE_GAS;
   var blockGasLimit = new BigNumber(currentBlock.gasLimit, 16);
-  var tradeGasLowerBound = blockGasLimit.times(constants.TRADE_GAS_LOWER_BOUND_MULTIPLIER);
-  var tradeGasUpperBound = blockGasLimit.times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER);
+  var tradeGasLowerBound = blockGasLimit.times(constants.TRADE_GAS_LOWER_BOUND_MULTIPLIER).integerValue(BigNumber.ROUND_UP);
+  var tradeGasUpperBound = blockGasLimit.times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER).integerValue(BigNumber.ROUND_DOWN);
   if (tradeGasUpperBound.lt(constants.MINIMUM_TRADE_GAS)) return constants.MINIMUM_TRADE_GAS;
   if (tradeGasLowerBound.gt(constants.MINIMUM_TRADE_GAS)) return tradeGasLowerBound;
   return tradeGasUpperBound;
