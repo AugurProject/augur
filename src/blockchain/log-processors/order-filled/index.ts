@@ -42,7 +42,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
         const orderCreator = ordersRow.orderCreator!;
         const price = ordersRow.fullPrecisionPrice!;
         const orderType = ordersRow.orderType!;
-        const amount = log.amount!;
+        const amount = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled, 10), tickSize);
         const numCreatorTokens = fixedPointToDecimal(new BigNumber(log.numCreatorTokens, 10), BN_WEI_PER_ETHER);
         const numCreatorShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numCreatorShares, 10), tickSize);
         const numFillerTokens = fixedPointToDecimal(new BigNumber(log.numFillerTokens, 10), BN_WEI_PER_ETHER);
