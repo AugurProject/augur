@@ -4,6 +4,7 @@ import universe from 'modules/universe/reducers/universe'
 import connection from 'modules/app/reducers/connection'
 import isMobile from 'modules/app/reducers/is-mobile'
 import isMobileSmall from 'modules/app/reducers/is-mobile-small'
+import isAnimating from 'modules/app/reducers/is-animating'
 import loginAccount from 'modules/auth/reducers/login-account'
 import isLogged from 'modules/auth/reducers/is-logged'
 import ledgerStatus from 'modules/auth/reducers/ledger-status'
@@ -53,6 +54,7 @@ export function createReducer() {
     connection,
     isMobile,
     isMobileSmall,
+    isAnimating,
     loginAccount,
     isLogged,
     ledgerStatus,

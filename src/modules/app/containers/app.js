@@ -13,12 +13,14 @@ import getAllMarkets from 'modules/markets/selectors/markets-all'
 import { initAugur } from 'modules/app/actions/init-augur'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { isLoading } from 'modules/app/selectors/is-loading'
+import { updateIsAnimating } from 'modules/app/actions/update-is-animating'
 import {
   selectBlockchainState,
   selectConnectionState,
   selectIsLogged,
   selectIsMobile,
   selectIsMobileSmall,
+  selectIsAnimating,
   selectLoginAccountState,
   selectModal,
   selectUniverseState,
@@ -34,6 +36,7 @@ const mapStateToProps = state => ({
   isLogged: selectIsLogged(state),
   isMobile: selectIsMobile(state),
   isMobileSmall: selectIsMobileSmall(state),
+  isAnimating: selectIsAnimating(state),
   loginAccount: selectLoginAccountState(state),
   markets: getAllMarkets(),
   marketsHeader: selectMarketsHeader(state),
@@ -48,6 +51,7 @@ const mapDispatchToProps = dispatch => ({
   initAugur: (history, cb) => dispatch(initAugur(history, cb)),
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
+  updateIsAnimating: isAnimating => dispatch(updateIsAnimating(isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
 })
 
