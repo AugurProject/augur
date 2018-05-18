@@ -291,7 +291,6 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     let fees = _.reduce(result.crowdsourcers, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
       marketDisputed[feeWindowCompletionStake.marketId] = true;
       const disavowed = feeWindowCompletionStake.disavowed || feeWindowCompletionStake.needsDisavowal;
-      console.log(disavowed, feeWindowCompletionStake.needsDisavowal, feeWindowCompletionStake.marketId );
       const getsRep = feeWindowCompletionStake.winning || disavowed || !feeWindowCompletionStake.completed;
       const earnsRep = feeWindowCompletionStake.completed && (feeWindowCompletionStake.winning > 0);
       const lostRep = feeWindowCompletionStake.completed && (feeWindowCompletionStake.winning === 0);
