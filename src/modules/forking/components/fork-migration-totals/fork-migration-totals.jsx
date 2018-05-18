@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { isEqual } from 'lodash'
 import Styles from 'modules/forking/components/fork-migration-totals/fork-migration-totals.styles'
 import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 
