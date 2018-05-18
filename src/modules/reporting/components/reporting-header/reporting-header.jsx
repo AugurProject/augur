@@ -52,7 +52,7 @@ export default class ReportingHeader extends Component {
     const currentPeriodStyle = {
       width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
     }
-    const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue
+    const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue || 0
 
     return (
       <article className={Styles.ReportingHeader}>
