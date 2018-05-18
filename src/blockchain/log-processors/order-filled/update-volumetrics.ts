@@ -49,11 +49,11 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
       if (err) return callback(err);
       db("markets").where({ marketId }).update({ sharesOutstanding: augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(sharesOutstanding, 10), tickSize).toFixed() }).asCallback((err: Error|null): void => {
         if (err) return callback(err);
-        db.first("numCreatorShares", "numCreatorTokens", "price", "orderType").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
+        db.first("numCreatorShares", "numCreatorTokens", "price", "orderType", "amount").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
           if (err) return callback(err);
           if (!tradesRow) return callback(new Error("trade not found"));
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
-          let amount = calculateNumberOfSharesTraded(numCreatorShares!, numCreatorTokens!, calculateFillPrice(augur, price!, minPrice, maxPrice, orderType!));
+          let amount = tradesRow.amount!;
           if (!isIncrease) amount = amount.negated();
 
           parallel({
