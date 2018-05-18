@@ -74,10 +74,6 @@ export default class ReportingDisputeForm extends Component {
     return !isEqual(nextState, this.state)
   }
 
-  componentDidUpdate(nextProps) {
-    this.updateDisptueInfoState()
-  }
-
   componentWillUnmount() {
     const {
       addUpdateAccountDispute,
