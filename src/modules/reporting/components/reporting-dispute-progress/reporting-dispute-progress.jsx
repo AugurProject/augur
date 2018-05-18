@@ -9,11 +9,11 @@ const ReportingDisputeProgress = (p) => {
   let userPercentage = p.percentageAccount || 0
   const currentPercentageComplete = p.percentageComplete || 0
   const userStaked = p.tentativeStake > 0 && p.isSelected
-  const bondSizeCurrentFromatted = formatAttoRep(p.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
+  const bondSizeCurrent = formatAttoRep(p.bondSizeCurrent, { decimals: 4, roundUp: true })
   let repStakedFormatted = formatAttoRep(p.stakeCurrent, { decimals: 4, roundUp: true }).formatted
 
   if (userStaked) {
-    userPercentage = calculateAddedStakePercentage(p.bondSizeCurrent, p.accountStakeCurrent, p.tentativeStake)
+    userPercentage = calculateAddedStakePercentage(bondSizeCurrent.fullPrecision, p.accountStakeCurrent, p.tentativeStake)
     repStakedFormatted = calculateTentativeCurrentRep(p.stakeCurrent, p.tentativeStake)
     totalPercentageComplete = currentPercentageComplete + userPercentage
   }
@@ -39,7 +39,7 @@ const ReportingDisputeProgress = (p) => {
         <div className={Styles['ReportingDisputeProgress__dispute-label']}>
           <span className={Styles['ReportingDisputeProgress__dispute-label-total-rep-text']}>{repStakedFormatted}</span>
           <span className={Styles['ReportingDisputeProgress__dispute-label-break']}> / </span>
-          <span className={Styles['ReportingDisputeProgress__dispute-label-goal-text']}>{ bondSizeCurrentFromatted } REP</span>
+          <span className={Styles['ReportingDisputeProgress__dispute-label-goal-text']}>{ bondSizeCurrent.formatted } REP</span>
         </div>
         { userStaked && totalPercentageComplete >= 100 &&
           <div className={Styles['ReportingDisputeProgress__dispute-tentative']}>New tentative outcome</div>

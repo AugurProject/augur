@@ -21,7 +21,8 @@ export const calculatePercentage = (numSize, numTotalStake) => {
   if (totalStake.isEqualTo(0)) return 0
 
   const ratio = size.minus(totalStake).dividedBy(size)
-  return (ONE.minus(ratio).times(ONE_HUNDRED)).decimalPlaces(4).toNumber()
+  const value = ONE.minus(ratio).times(ONE_HUNDRED).toFixed(4, 1)
+  return createBigNumber(value).toNumber()
 }
 
 export const calculateNonAccountPercentage = (size, numStakeCurrent, numAccountStakeCurrent) => {
@@ -39,7 +40,7 @@ export const calculateAddedStakePercentage = (size, numAccountStake, numAddedSta
   const addedStake = createBigNumber(numAddedStake, 10)
   // NB: Remove whence paramaters are converted outside
 
-  return calculatePercentage(size, accountStake.plus(convertRepToAttoRep(addedStake)))
+  return calculatePercentage(size, accountStake.plus(addedStake))
 }
 
 export const calculateTentativeCurrentRep = (numTotalStake, numTentativeStake) => {

@@ -14,10 +14,10 @@ const ReportingDisputeConfirm = p => (
               <span>Proposed Outcome</span>
               <span>{ !p.isMarketInValid ? p.selectedOutcome : 'Invalid' }</span>
             </li>
-            { p.stake &&
+            { p.stakeInfo && p.stakeInfo.displayValue &&
               <li>
                 <span>Stake</span>
-                <span>{ p.stake } REP</span>
+                <span>{ p.stakeInfo.displayValue } REP</span>
               </li>
             }
             <li>
@@ -34,7 +34,7 @@ const ReportingDisputeConfirm = p => (
 ReportingDisputeConfirm.propTypes = {
   market: PropTypes.object.isRequired,
   selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  stake: PropTypes.number.isRequired,
+  stakeInfo: PropTypes.object.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   isMarketInValid: PropTypes.bool,
 }

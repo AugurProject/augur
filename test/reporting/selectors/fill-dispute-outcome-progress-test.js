@@ -49,7 +49,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const expected = {
         ...outcome,
         percentageComplete: 47.6625,
-        percentageAccount: 52.3375,
+        percentageAccount: 52.3374,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
     },
@@ -68,7 +68,7 @@ describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
       const actual = fillDisputeOutcomeProgess(disputeBond, outcome)
       const expected = {
         ...outcome,
-        percentageComplete: 52.3375,
+        percentageComplete: 52.3374,
         percentageAccount: 0,
       }
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
