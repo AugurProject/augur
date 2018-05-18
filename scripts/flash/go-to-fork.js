@@ -24,7 +24,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopBefore, au
         console.log(chalk.red(err));
         return callback(err);
       }
-      if (numParticipants === 20) {
+      if (parseInt(numParticipants, 10) === 20) {
         console.log(chalk.green("Successfully got to pre-forking state"));
         return callback(null);
       }
