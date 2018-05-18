@@ -26,7 +26,7 @@ function preCleanAddress(address: string) {
 }
 
 export function addressFormatReviver (key: string, value: any) {
-  if (inputsExpectedAsAddress[key] === true) {
+  if (inputsExpectedAsAddress[key]) {
     if ( typeof value === "string" ) {
       return formatEthereumAddress(preCleanAddress(value));
     } else if (Array.isArray(value)) {

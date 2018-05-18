@@ -158,11 +158,9 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
 
   // We have results! Drop the market & outcome groups, and then re-group by
   // bucket timestamp, and aggregate all of the PLBuckets by bucket
-  const summed = groupOutcomesProfitLossByBucket(results).map((bucket: Array<PLBucket>) => {
+  return groupOutcomesProfitLossByBucket(results).map((bucket: Array<PLBucket>) => {
     return bucket.reduce(sumProfitLossResults, { timestamp: 0, profitLoss: null });
   });
-
-  return summed;
 }
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<Array<PLBucket>>) {

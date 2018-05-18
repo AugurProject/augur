@@ -2,7 +2,7 @@ export function sortDirection(isSortDescending: boolean|null|undefined, defaultS
   let sortDirection;
   if (isSortDescending == null) {
     sortDirection = defaultSortDirection;
-  } else if (isSortDescending === true) {
+  } else if (isSortDescending) {
     sortDirection = "desc";
   } else {
     sortDirection = "asc";
