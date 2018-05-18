@@ -53,7 +53,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
           if (err) return callback(err);
           if (!tradesRow) return callback(new Error("trade not found"));
           const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
-          let amount = tradesRow.amount;
+          let amount = tradesRow.amount!;
           if (!isIncrease) amount = amount.negated();
 
           parallel({
