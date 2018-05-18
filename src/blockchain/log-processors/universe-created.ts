@@ -18,7 +18,14 @@ export function processUniverseCreatedLog(db: Knex, augur: Augur, log: Formatted
       db.insert(universeToInsert).into("universes").asCallback((err: Error|null): void => {
         if (err) return callback(err);
         augurEmitter.emit("UniverseCreated", log);
-        callback(null);
+        const repToken = [{
+          contractAddress: reputationToken,
+          symbol: "REP",
+        }];
+        db("tokens").insert(repToken).asCallback((err) => {
+          if (err) return callback(err);
+          callback(null);
+        });
       });
     });
   });
