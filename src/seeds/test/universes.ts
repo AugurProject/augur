@@ -21,6 +21,10 @@ exports.seed = async (knex: Knex): Promise<any> => {
       universe: "SECOND_GRAND_CHILD_UNIVERSE",
       parentUniverse: "CHILD_UNIVERSE",
       reputationToken: "REP_TOKEN_SECOND_GRAND_CHILD",
+    }, {
+      universe: "0x000000000000000000000000000000000000000d",
+      parentUniverse: 0x000000000000000000000000000000000000000b,
+      reputationToken: "REP_TOKEN_d",
     }], 1000);
   });
 };
