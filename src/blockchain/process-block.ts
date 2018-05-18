@@ -203,7 +203,7 @@ function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumbe
             marketId: marketIdRow.marketId,
             reportingState: ReportingState.AWAITING_FINALIZATION,
           });
-          db("payouts").where({ marketId: marketIdRow.marketId, tentativeWinning: 1 }).update("winning", 1).asCallback(nextMarketIdRow);
+          db("payouts").where({ marketId: marketIdRow.marketId }).update("winning", db.raw("tentativeWinning")).asCallback(nextMarketIdRow);
         });
       }, callback);
     });
