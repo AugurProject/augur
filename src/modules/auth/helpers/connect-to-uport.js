@@ -1,4 +1,3 @@
-import memoize from 'memoizee'
 import { Connect } from 'uport-connect'
 import { augur } from 'services/augurjs'
 
@@ -9,7 +8,8 @@ const NETWORKS = {
   42: 'kovan',
 }
 
-export const connectToUport = memoize(() => new Connect('AUGUR -- DEV', {
+export const connectToUport = () => new Connect('AUGUR -- DEV', {
   clientId: '2ofGiHuZhhpDMAQeDxjoDhEsUQd1MayECgd',
+  accountType: 'keypair',
   network: NETWORKS[augur.rpc.getNetworkID()],
-}), { max: 1 })
+})

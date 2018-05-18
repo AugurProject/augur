@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode.react'
+import { decode } from 'mnid'
 
 import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons'
 
@@ -14,12 +15,12 @@ export default class UportConnect extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
-    networkId: PropTypes.string.isRequired,
     login: PropTypes.func.isRequired,
   }
 
   constructor() {
     super()
+    this.uPort = connectToUport()
     this.state = { uri: '', qrSize: 0 }
     this.uPortURIHandler = this.uPortURIHandler.bind(this)
     this.setQRSize = this.setQRSize.bind(this)
@@ -28,9 +29,8 @@ export default class UportConnect extends Component {
 
   componentWillMount() {
     const { login } = this.props
-    const uPort = connectToUport(this.props.networkId)
-    uPort.requestCredentials({ notifcations: true, accountType: 'keypair' }, this.uPortURIHandler).then((credentials) => {
-      login(credentials, uPort)
+    this.uPort.requestCredentials({ notifcations: true }, this.uPortURIHandler).then((account) => {
+      login(decode(account.address))
     })
   }
 

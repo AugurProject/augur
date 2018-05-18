@@ -7,18 +7,20 @@ import { AppleAppStore, GooglePlayStore } from 'modules/common/components/icons'
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 
+import { decode } from 'mnid'
+
 import { connectToUport } from 'modules/auth/helpers/connect-to-uport'
 import Styles from 'modules/auth/components/uport-create/uport-create.styles'
 
 export default class UportCreate extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    networkId: PropTypes.string.isRequired,
     login: PropTypes.func.isRequired,
   }
 
   constructor() {
     super()
+    this.uPort = connectToUport()
     this.state = { uri: '', qrSize: 0 }
     this.uPortURIHandler = this.uPortURIHandler.bind(this)
     this.setQRSize = this.setQRSize.bind(this)
@@ -27,9 +29,8 @@ export default class UportCreate extends Component {
 
   componentWillMount() {
     const { login } = this.props
-    const uPort = connectToUport(this.props.networkId)
-    uPort.requestCredentials({ notifcations: true, accountType: 'keypair' }, this.uPortURIHandler).then((credentials) => {
-      login(credentials, uPort)
+    this.uPort.requestCredentials({ notifcations: true }, this.uPortURIHandler).then((account) => {
+      login(decode(account.address))
     })
   }
 
