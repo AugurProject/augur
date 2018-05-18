@@ -18,7 +18,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
     augur.api.Universe.getReputationToken({ tx: { to: universeID } }, (err, reputationTokenAddress) => {
       if (err) return callback(err)
       each(ownedMarketIds, (marketId) => {
-        doUpdateMarketRepBalance(marketsData[marketId], reputationTokenAddress, dispatch, callback)
+        doUpdateMarketRepBalance(marketsData[marketId], loginAccount, reputationTokenAddress, dispatch, callback)
       })
     })
 
@@ -26,7 +26,7 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
     dispatch(loadAccountPositions({}, (err, accountPositions) => {
       if (err) return callback(err)
       each(accountPositions, (position) => {
-        doUpdateShareFrozenValue(getState().marketsData[position.marketId], dispatch, callback)
+        doUpdateShareFrozenValue(getState().marketsData[position.marketId], loginAccount, dispatch, callback)
       })
     }))
 
@@ -38,8 +38,9 @@ export default function (ownedMarketIds, tradingMarketIds, callback = logError) 
   }
 }
 
-function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, callback) {
+function doUpdateMarketRepBalance(market, loginAccount, reputationTokenAddress, dispatch, callback) {
   augur.api.ReputationToken.balanceOf({
+    meta: loginAccount.meta,
     tx: { to: reputationTokenAddress },
     _owner: market.id,
   }, (err, attoRepBalance) => {
@@ -65,8 +66,9 @@ function doUpdateMarketRepBalance(market, reputationTokenAddress, dispatch, call
   })
 }
 
-export function doUpdateShareFrozenValue(market, dispatch, callback) {
+export function doUpdateShareFrozenValue(market, loginAccount, dispatch, callback) {
   augur.api.TradingEscapeHatch.getFrozenShareValueInMarket({
+    meta: loginAccount.meta,
     tx: { send: false },
     _market: market.id,
   }, (err, attoEth) => {
@@ -76,6 +78,7 @@ export function doUpdateShareFrozenValue(market, dispatch, callback) {
       dispatch(updateMarketFrozenSharesValue(market.id, frozenSharesValue))
       if (frozenSharesValue > 0) {
         augur.api.TradingEscapeHatch.claimSharesInUpdate({
+          meta: loginAccount.meta,
           tx: { estimateGas: true },
           _market: market.id,
           onSent: noop,

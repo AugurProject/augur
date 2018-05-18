@@ -118,8 +118,8 @@ export function addTransferTransactions(transfers) {
       } else if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
         transaction.symbol = 'REP'
-        header.message = 'No Show bond Transfer'
-        header.description = `${meta.value} ${transaction.symbol} transferred for no-show bond`
+        header.message = 'Rep Transfer'
+        header.description = `${meta.value} ${transaction.symbol} transferred`
       } else {
         header.message = 'Transfer'
         header.description = `${meta.value} ${transaction.symbol} transferred from ${transaction.sender} to ${transaction.recipient}`
