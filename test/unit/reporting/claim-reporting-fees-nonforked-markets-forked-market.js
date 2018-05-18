@@ -341,14 +341,14 @@ describe("reporting/claim-reporting-fees-nonforked-markets", function () {
                 { address: "0x0f1Add0000000000000000000000000000000016", estimate: new BigNumber(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE, 16) },
               ],
               totals: {
-                disavowCrowdsourcers: disavowCrowdsourcersTotal,
-                feeWindowRedeem: feeWindowRedeemTotal,
-                crowdsourcerRedeem: crowdsourcerRedeemTotal,
-                initialReporterRedeem: initialReporterRedeemTotal,
+                disavowCrowdsourcers: disavowCrowdsourcersTotal.toString(),
+                feeWindowRedeem: feeWindowRedeemTotal.toString(),
+                crowdsourcerRedeem: crowdsourcerRedeemTotal.toString(),
+                initialReporterRedeem: initialReporterRedeemTotal.toString(),
                 all: disavowCrowdsourcersTotal
                     .plus(feeWindowRedeemTotal)
                     .plus(crowdsourcerRedeemTotal)
-                    .plus(initialReporterRedeemTotal),
+                    .plus(initialReporterRedeemTotal).toString(),
               },
             },
           };

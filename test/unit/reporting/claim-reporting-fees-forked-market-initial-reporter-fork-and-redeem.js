@@ -175,14 +175,14 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
               ],
               initialReporterRedeem: [],
               totals: {
-                crowdsourcerForkAndRedeem: crowdsourcerForkAndRedeemTotal,
-                initialReporterForkAndRedeem: initialReporterForkAndRedeemTotal,
-                crowdsourcerRedeem: crowdsourcerRedeemTotal,
-                initialReporterRedeem: initialReporterRedeemTotal,
+                crowdsourcerForkAndRedeem: crowdsourcerForkAndRedeemTotal.toString(),
+                initialReporterForkAndRedeem: initialReporterForkAndRedeemTotal.toString(),
+                crowdsourcerRedeem: crowdsourcerRedeemTotal.toString(),
+                initialReporterRedeem: initialReporterRedeemTotal.toString(),
                 all: crowdsourcerForkAndRedeemTotal
                     .plus(initialReporterForkAndRedeemTotal)
                     .plus(crowdsourcerRedeemTotal)
-                    .plus(initialReporterRedeemTotal),
+                    .plus(initialReporterRedeemTotal).toString(),
               },
             },
           };

@@ -12,16 +12,12 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @typedef {Object} CrowdsourcerState
  * @property {string} crowdsourcerId Ethereum contract address of a DisputeCrowdsourcer belonging to a Forked Market, as a hexadecimal string.
  * @property {boolean} needsFork Whether `DisputeCrowdsourcer.fork` has been called successfully on the DisputeCrowdsourcer.
- * @property {BigNumber} unclaimedEthFees Amount of unclaimed ETH the user can redeem from the DisputeCrowdsourcer.
- * @property {BigNumber} unclaimedRepStaked Amount of unclaimed REP the user has staked in the DisputeCrowdsourcer.
  */
 
 /**
  * @typedef {Object} InitialReporterState
  * @property {string} initialReporterId Ethereum contract address of the InitialReporter belonging to a Forked Market, as a hexadecimal string.
  * @property {boolean} needsFork Whether `InitialReporter.fork` has been called successfully on the InitialReporter.
- * @property {BigNumber} unclaimedEthFees Amount of unclaimed ETH the user can redeem from the InitialReporter.
- * @property {BigNumber} unclaimedRepStaked Amount of unclaimed REP the user has staked in the InitialReporter.
  */
 
 /**
@@ -219,6 +215,13 @@ function claimReportingFeesForkedMarket(p) {
                                 .plus(gasEstimates.totals.initialReporterForkAndRedeem)
                                 .plus(gasEstimates.totals.crowdsourcerRedeem)
                                 .plus(gasEstimates.totals.initialReporterRedeem);
+
+      gasEstimates.totals.crowdsourcerForkAndRedeem = gasEstimates.totals.crowdsourcerForkAndRedeem.toString();
+      gasEstimates.totals.initialReporterForkAndRedeem = gasEstimates.totals.initialReporterForkAndRedeem.toString();
+      gasEstimates.totals.crowdsourcerRedeem = gasEstimates.totals.crowdsourcerRedeem.toString();
+      gasEstimates.totals.initialReporterRedeem = gasEstimates.totals.initialReporterRedeem.toString();
+      gasEstimates.totals.all =  gasEstimates.totals.all.toString();
+
       result = {
         gasEstimates: gasEstimates,
       };
