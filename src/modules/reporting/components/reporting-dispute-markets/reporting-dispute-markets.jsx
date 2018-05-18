@@ -17,7 +17,6 @@ export default class ReportingDisputeMarkets extends Component {
     doesUserHaveRep: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
     upcomingMarkets: PropTypes.array.isRequired,
-    marketsCount: PropTypes.number.isRequired,
     upcomingMarketsCount: PropTypes.number.isRequired,
     isMobile: PropTypes.bool,
     navigateToAccountDepositHandler: PropTypes.func.isRequired,
@@ -26,7 +25,7 @@ export default class ReportingDisputeMarkets extends Component {
     outcomes: PropTypes.object.isRequired,
     account: PropTypes.string.isRequired,
     isForking: PropTypes.bool.isRequired,
-    forkingMarket: PropTypes.string.isRequired,
+    forkingMarketId: PropTypes.string.isRequired,
     forkEndTime: PropTypes.string,
   }
 
@@ -49,13 +48,20 @@ export default class ReportingDisputeMarkets extends Component {
       isMobile,
       location,
       markets,
-      marketsCount,
       navigateToAccountDepositHandler,
       outcomes,
       upcomingMarkets,
       upcomingMarketsCount,
-      forkingMarket,
+      forkingMarketId,
     } = this.props
+
+    let forkingMarket = null
+    let nonForkingMarkets = markets
+    if (isForking) {
+      forkingMarket = markets.find(market => market.id === forkingMarketId)
+      nonForkingMarkets = markets.filter(market => market.id !== forkingMarketId)
+    }
+    const nonForkingMarketsCount = nonForkingMarkets.length
 
     return (
       <section className={Styles.ReportDisputeContainer}>
@@ -75,8 +81,19 @@ export default class ReportingDisputeMarkets extends Component {
             onClickHandler={navigateToAccountDepositHandler}
           />}
         </section>
-        { marketsCount > 0 &&
-            markets.map(market =>
+        { isForking &&
+          <DisputeMarketCard
+            key={forkingMarketId}
+            market={forkingMarket}
+            isMobile={isMobile}
+            location={location}
+            history={history}
+            outcomes={outcomes}
+            isForkingMarket
+          />
+        }
+        { nonForkingMarketsCount > 0 && !isForking &&
+            nonForkingMarkets.map(market =>
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
@@ -84,10 +101,10 @@ export default class ReportingDisputeMarkets extends Component {
                 location={location}
                 history={history}
                 outcomes={outcomes}
-                isForkingMarket={forkingMarket === market.id}
+                isForkingMarket={false}
               />))
         }
-        { marketsCount === 0 &&
+        { nonForkingMarketsCount === 0 && !isForking &&
           <NullStateMessage
             message="There are currently no markets available for dispute."
           />
@@ -95,6 +112,18 @@ export default class ReportingDisputeMarkets extends Component {
         <article className={MarketsHeaderStyles.MarketsHeader}>
           <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>{ isForking ? 'Dispute Paused' : 'Upcoming Dispute Window' }</h4>
         </article>
+        { nonForkingMarketsCount > 0 && isForking &&
+            nonForkingMarkets.map(market =>
+              (<DisputeMarketCard
+                key={market.id}
+                market={market}
+                isMobile={isMobile}
+                location={location}
+                history={history}
+                outcomes={outcomes}
+                isForkingMarket={false}
+              />))
+        }
         {upcomingMarketsCount > 0 &&
             upcomingMarkets.map(market =>
               (<DisputeMarketCard
