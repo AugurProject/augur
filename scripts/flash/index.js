@@ -126,6 +126,7 @@ var methods = {
     opts: {
       help: {flag: true, short: "h", help: "This help, dispute this market all the way to fork" },
       marketId: { required: true, short: "m", help: "Required market id" },
+      stopBefore: { flag: true, short: "s", help: "Stop just short of a fork"},
     },
   },
   "approval": {

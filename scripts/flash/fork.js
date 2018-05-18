@@ -46,7 +46,7 @@ function fork(augur, args, auth, callback) {
             }
             var priceOrOutcome = market.marketType === "scalar" ? market.minPrice : 0;
             var payoutNumerators = getPayoutNumerators(market, priceOrOutcome, false);
-            goToFork(augur, marketId, payoutNumerators, timeResult.timeAddress, auth, function (err) {
+            goToFork(augur, marketId, payoutNumerators, timeResult.timeAddress, args.opt.stopBefore, auth, function (err) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
