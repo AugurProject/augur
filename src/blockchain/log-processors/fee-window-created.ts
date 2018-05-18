@@ -25,7 +25,8 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
         symbol: "ParticipationToken",
       }, {
         contractAddress: feeToken,
-        symbol: `FeeToken@${log.feeWindow}`,
+        symbol: `FeeToken`,
+        feeWindow: log.feeWindow,
       }];
       db("tokens").insert(feeWindowTokens).asCallback((err) => {
         if (err) return callback(err);
@@ -40,6 +41,6 @@ export function processFeeWindowCreatedLogRemoval(db: Knex, augur: Augur, log: F
   augurEmitter.emit("FeeWindowCreated", log);
   db.from("fee_windows").where({ feeWindow: log.feeWindow }).del().asCallback((err) => {
     if (err) return callback(err);
-    db("tokens").where("contractAddress", log.feeWindow).orWhere("symbol", `FeeToken@${log.feeWindow}`).del().asCallback(callback);
+    db("tokens").where("contractAddress", log.feeWindow).orWhere("feeWindow", log.feeWindow).del().asCallback(callback);
   });
 }
