@@ -11,7 +11,6 @@ import { WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  console.log("MRKT");
   const marketPayload: {} = { tx: { to: log.market } };
   parallel({
     numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
