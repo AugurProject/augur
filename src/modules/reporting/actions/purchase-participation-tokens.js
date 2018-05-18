@@ -10,36 +10,22 @@ export const purchaseParticipationTokens = (amount, estimateGas = false, callbac
   const { universe, loginAccount } = getState()
   augur.reporting.getFeeWindowCurrent({ universe: universe.id }, (err, currFeeWindowInfo) => {
     if (err) return callback(err)
-    const feeWindowAddress = currFeeWindowInfo.feeWindow
-    if (feeWindowAddress == null) {
-      augur.api.Universe.buyParticipationTokens({
-        tx: {
-          meta: loginAccount.meta,
-          to: universe.id,
-          estimateGas,
-        },
-        onSent: noop,
-        onSuccess: (res) => {
-          if (estimateGas) {
-            const gasPrice = augur.rpc.getGasPrice()
-            return callback(null, formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice))
-          }
-          return callback(null, res)
-        },
-        onFailed: err => callback(err),
-      })
-    } else {
-      return dispatch(buyParticipationTokens(amount, feeWindowAddress, estimateGas, callback))
+    let methodFunc = augur.api.FeeWindow.buy
+    let address = currFeeWindowInfo.feeWindow
+    if (address == null) {
+      methodFunc = augur.api.Universe.buyParticipationTokens
+      address = universe.id
     }
+    return dispatch(callMethod(methodFunc, amount, address, estimateGas, callback))
   })
 }
 
-const buyParticipationTokens = (amount, feeWindowAddress, estimateGas = false, callback) => (dispatch, getState) => {
+const callMethod = (method, amount, address, estimateGas = false, callback) => (dispatch, getState) => {
   const { loginAccount } = getState()
-  augur.api.FeeWindow.buy({
+  method({
     tx: {
       meta: loginAccount.meta,
-      to: feeWindowAddress,
+      to: address,
       estimateGas,
     },
     _attotokens: speedomatic.fix(amount, 'hex'),
