@@ -89,7 +89,7 @@ export default class MarketPositionsListPosition extends Component {
       confirmHeight,
       confirmMargin,
       showConfirm: !this.state.showConfirm,
-      closeOutcomeName: outcomeName
+      closeOutcomeName: outcomeName,
     })
   }
 
