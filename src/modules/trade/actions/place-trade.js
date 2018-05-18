@@ -23,7 +23,6 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     meta: loginAccount.meta,
     amount: tradeInProgress.numShares,
     limitPrice: tradeInProgress.limitPrice,
-    estimatedCost: tradeInProgress.totalCost,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     numTicks: market.numTicks,

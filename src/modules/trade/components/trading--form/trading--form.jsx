@@ -42,6 +42,8 @@ class MarketTradingForm extends Component {
       MARKET_ORDER_SIZE: 'marketOrderTotal',
     }
 
+    this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000)
+
     this.state = {
       [this.INPUT_TYPES.QUANTITY]: '',
       [this.INPUT_TYPES.PRICE]: '',
@@ -154,17 +156,23 @@ class MarketTradingForm extends Component {
     let isOrderValid = true
     let errorCount = 0
 
-    let value = order[this.INPUT_TYPES.QUANTITY] && createBigNumber(order[this.INPUT_TYPES.QUANTITY])
-    const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(value, errors, isOrderValid)
+    const quantity = order[this.INPUT_TYPES.QUANTITY] && createBigNumber(order[this.INPUT_TYPES.QUANTITY])
+    const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(quantity, errors, isOrderValid)
     isOrderValid = quantityValid
     errorCount += quantityErrorCount
     errors = { ...errors, ...quantityErrors }
 
-    value = order[this.INPUT_TYPES.PRICE] && createBigNumber(order[this.INPUT_TYPES.PRICE])
-    const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(value, errors, isOrderValid)
+    const price = order[this.INPUT_TYPES.PRICE] && createBigNumber(order[this.INPUT_TYPES.PRICE])
+    const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(price, errors, isOrderValid)
     isOrderValid = priceValid
     errorCount += priceErrorCount
     errors = { ...errors, ...priceErrors }
+
+    if (isOrderValid && quantity && price && quantity.times(price).lt(this.MINIMUM_TRADE_VALUE)) {
+      isOrderValid = false
+      errorCount += 1
+      errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].push(`Order size must be at least ${this.MINIMUM_TRADE_VALUE.toString()} ETH.`)
+    }
 
     return { isOrderValid, errors, errorCount }
   }
