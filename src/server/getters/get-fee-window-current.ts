@@ -19,7 +19,7 @@ function fabricateFeeWindow(db: Knex, augur: Augur, universe: Address, callback:
     const feeWindowId = Math.floor(getCurrentTime() / augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS);
     const startTime = feeWindowId * augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS;
     const endTime = (feeWindowId + 1) * augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS;
-    callback( null, {
+    callback(null, {
       feeWindow: null,
       feeWindowId,
       startTime,
@@ -42,54 +42,52 @@ export function getFeeWindowCurrent(db: Knex, augur: Augur, universe: Address, r
     .where("state", FeeWindowState.CURRENT)
     .where({ universe });
   query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {
-      if (err) return callback(err);
-      if (!feeWindowRow) return fabricateFeeWindow(db, augur, universe, callback);
-      if (reporter == null) {
-        return callback(null, feeWindowRow);
-      } else {
-        const participantQuery = db.select("reporterBalance as amountStaked").from("all_participants")
-          .join("markets", "markets.marketId", "all_participants.marketId")
-          .where("markets.feeWindow", feeWindowRow.feeWindow)
-          .where("reporter", reporter);
+    if (err) return callback(err);
+    if (!feeWindowRow) return fabricateFeeWindow(db, augur, universe, callback);
+    if (reporter == null) {
+      return callback(null, feeWindowRow);
+    } else {
+      const participantQuery = db.select("reporterBalance as amountStaked").from("all_participants")
+        .join("markets", "markets.marketId", "all_participants.marketId")
+        .where("markets.feeWindow", feeWindowRow.feeWindow)
+        .where("reporter", reporter);
 
-        const participationTokenQuery = db.first([
-          "participationToken.balance AS amountStaked",
-        ]).from("fee_windows")
-          .join("balances AS participationToken", function () {
-            this
-              .on("participationToken.token", db.raw("fee_windows.feeWindow"))
-              .andOn("participationToken.owner", db.raw("?", [reporter]));
-          })
-          .where("fee_windows.feeWindow", feeWindowRow.feeWindow);
+      const participationTokenQuery = db.first([
+        "participationToken.balance AS amountStaked",
+      ]).from("fee_windows")
+        .join("balances AS participationToken", function () {
+          this
+            .on("participationToken.token", db.raw("fee_windows.feeWindow"))
+            .andOn("participationToken.owner", db.raw("?", [reporter]));
+        })
+        .where("fee_windows.feeWindow", feeWindowRow.feeWindow);
 
-        parallel({
-          participantContributions: (next: AsyncCallback) => {
-            participantQuery.asCallback((err: Error|null, results?: Array<{ amountStaked: BigNumber }>) => {
-              if (err || results == null || results.length === 0) return next(err, ZERO);
-              const pick = sumBy(results, "amountStaked");
-              next(null, pick.amountStaked || ZERO);
-            });
+      parallel({
+        participantContributions: (next: AsyncCallback) => {
+          participantQuery.asCallback((err: Error|null, results?: Array<{ amountStaked: BigNumber }>) => {
+            if (err || results == null || results.length === 0) return next(err, ZERO);
+            const pick = sumBy(results, "amountStaked");
+            next(null, pick.amountStaked || ZERO);
+          });
+        },
+        participationTokens: (next: AsyncCallback) => {
+          participationTokenQuery.asCallback((err: Error|null, results?: { amountStaked: BigNumber }) => {
+            if (err || results == null) return next(err, ZERO);
+            next(null, results.amountStaked);
+          });
+        },
+      }, (err: Error|null, stakes: StakeRows): void => {
+        if (err) return callback(err);
+        const totalStake = (stakes.participantContributions).plus((stakes.participationTokens));
+        callback(null, Object.assign(
+          {
+            totalStake: totalStake.toFixed(),
+            participantContributions: stakes.participantContributions.toFixed(),
+            participationTokens: stakes.participationTokens.toFixed(),
           },
-          participationTokens: (next: AsyncCallback) => {
-            participationTokenQuery.asCallback((err: Error|null, results?: { amountStaked: BigNumber }) => {
-              if (err || results == null) return next(err, ZERO);
-              next(null, results.amountStaked);
-            });
-          },
-        }, (err: Error|null, stakes: StakeRows): void => {
-          if (err) return callback(err);
-          const totalStake = (stakes.participantContributions).plus((stakes.participationTokens));
-          callback(null, Object.assign(
-            {
-              totalStake: totalStake.toFixed(),
-              participantContributions: stakes.participantContributions.toFixed(),
-              participationTokens: stakes.participationTokens.toFixed(),
-            },
-            feeWindowRow,
-          ));
-        });
-      }
+          feeWindowRow,
+        ));
+      });
     }
-  )
-  ;
+  });
 }
