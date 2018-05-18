@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
-import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
-import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders'
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
@@ -59,8 +58,7 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
     dispatch(updateOrder(log, true))
-    dispatch(loadAccountOrders({ marketId: log.marketId }))
-    dispatch(loadAccountPositions({ marketId: log.marketId }))
+    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
 }
@@ -76,8 +74,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
     dispatch(updateOrder(log, false))
-    dispatch(loadAccountOrders({ marketId: log.marketId }))
-    dispatch(loadAccountPositions({ marketId: log.marketId }))
+    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
 }
@@ -93,8 +90,7 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     dispatch(updateMarketCategoryPopularity(log.market, popularity))
     dispatch(updateAssets())
     dispatch(updateOrder(log, false))
-    dispatch(loadAccountOrders({ marketId: log.marketId }))
-    dispatch(loadAccountPositions({ marketId: log.marketId }))
+    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
 }
@@ -104,8 +100,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
     dispatch(updateAssets())
-    dispatch(loadAccountOrders({ marketId: log.marketId }))
-    dispatch(loadAccountPositions({ marketId: log.marketId }))
+    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
 }
