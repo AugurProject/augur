@@ -94,6 +94,7 @@ export default class AppView extends Component {
     updateIsMobile: PropTypes.func.isRequired,
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
+    updateIsAnimating: PropTypes.func.isRequired,
     url: PropTypes.string,
     isLoading: PropTypes.bool,
   }
@@ -320,6 +321,7 @@ export default class AppView extends Component {
                           (nowOpen && (this.state[menuKey].scalar === 1)))
     if (alreadyDone) {
       if (cb && (typeof cb) === 'function') cb()
+      this.props.updateIsAnimating(false)
     } else {
       const baseMenuState = { open: nowOpen }
       const currentTween = tween({
@@ -331,9 +333,11 @@ export default class AppView extends Component {
           setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
         },
       }).then(() => {
+        this.props.updateIsAnimating(false)
         if (cb && (typeof cb) === 'function') cb()
         setMenuState({ locked: false, currentTween: null })
       })
+      this.props.updateIsAnimating(true)
       setMenuState({ currentTween })
     }
   }
