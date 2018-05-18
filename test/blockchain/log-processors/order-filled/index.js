@@ -47,6 +47,7 @@ describe("blockchain/log-processors/order-filled", () => {
         shareToken: "0x1000000000000000000000000000000000000000",
         filler: "FILLER_ADDRESS",
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
+        amount: "1.42857142857142857143",
         numCreatorShares: "0",
         numCreatorTokens: fix("1", "string"),
         numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed(),
@@ -153,7 +154,7 @@ describe("blockchain/log-processors/order-filled", () => {
           marketCreatorFees: new BigNumber("0", 10),
           reporterFees: new BigNumber("0", 10),
           price: new BigNumber("0.7", 10),
-          amount: new BigNumber("3.33333333333333333333", 10),
+          amount: new BigNumber("1.42857142857142857143", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
