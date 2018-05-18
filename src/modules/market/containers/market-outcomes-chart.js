@@ -14,7 +14,10 @@ const mapStateToProps = (state, ownProps) => {
     outcomes = [],
   } = selectMarket(ownProps.marketId)
 
-  const estimatedInitialPrice = outcomes.length > 0 ? (1 / outcomes.length): 0
+
+  // (minPrice + ((maxPrice - minPrice) / outcomes.length)
+  const adjusted = createBigNumber(maxPrice).minus(minPrice).div(outcomes.length)
+  const estimatedInitialPrice = createBigNumber(minPrice).plus(adjusted).toNumber()
 
   return {
     creationTime: creationTime.value.getTime(),
