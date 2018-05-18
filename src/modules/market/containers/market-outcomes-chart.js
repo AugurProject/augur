@@ -3,28 +3,30 @@ import { connect } from 'react-redux'
 import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart/market-outcomes-chart'
 
 import { selectMarket } from 'modules/market/selectors/market'
+import { selectCurrentTimestamp } from 'src/select-state'
+import { createBigNumber } from 'src/utils/create-big-number'
 
-// Mock priceTimeSeries Data
-// import memoize from 'memoizee'
-// const generateRandomPriceTimeSeries = memoize((outcomeID) => {
-//   const now = Date.now()
-//   const timeDiff = (now - new Date(2017, 8).getTime()) // Can tweak this for more range
-//   const startTime = now - timeDiff
-//
-//   return [...new Array(1000)].map((value, i, array) => ({
-//     timestamp: Number((startTime + (i * (timeDiff / array.length))).toFixed(0)),
-//     price: (Math.random().toPrecision(15)).toString(),
-//     amount: (((Math.random() * (10 - 1)) + 1).toPrecision(15)).toString(),
-//   }))
-// }, { max: 8 })
-// const getOutcomesWithMockPriceTimeSeries = outcomes => outcomes.map(outcome => ({
-//   ...outcome,
-//   priceTimeSeries: generateRandomPriceTimeSeries(outcome.id),
-// }))
+const mapStateToProps = (state, ownProps) => {
+  const {
+    creationTime = {},
+    maxPrice = createBigNumber(1),
+    minPrice = createBigNumber(0),
+    outcomes = [],
+  } = selectMarket(ownProps.marketId)
 
-const mapStateToProps = (state, ownProps) => ({
-  // outcomes: getOutcomesWithMockPriceTimeSeries(selectMarket(ownProps.marketId).outcomes || []), // Mock priceTimeSeries
-  outcomes: selectMarket(ownProps.marketId).outcomes || [],
-})
+
+  // (minPrice + ((maxPrice - minPrice) / outcomes.length)
+  const adjusted = createBigNumber(maxPrice).minus(minPrice).div(outcomes.length)
+  const estimatedInitialPrice = createBigNumber(minPrice).plus(adjusted).toNumber()
+
+  return {
+    creationTime: creationTime.value.getTime(),
+    currentTimestamp: selectCurrentTimestamp(state),
+    estimatedInitialPrice,
+    maxPrice: maxPrice.toNumber(),
+    minPrice: minPrice.toNumber(),
+    outcomes,
+  }
+}
 
 export default connect(mapStateToProps)(MarketOutcomesChart)

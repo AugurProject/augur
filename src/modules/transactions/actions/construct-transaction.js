@@ -3,7 +3,7 @@ import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransa
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { formatEther } from 'utils/format-number'
-import { formatDate } from 'utils/format-date'
+import { convertUnixToFormattedDate } from 'utils/format-date'
 import logError from 'utils/log-error'
 
 export const constructBasicTransaction = (eventName, hash, blockNumber, timestamp, message, description, gasFees = 0, status = SUCCESS) => {
@@ -13,7 +13,7 @@ export const constructBasicTransaction = (eventName, hash, blockNumber, timestam
   if (message) transaction.message = message
   transaction.description = description || ''
   if (gasFees) transaction.gasFees = formatEther(gasFees)
-  transaction.timestamp = formatDate(timestamp)
+  transaction.timestamp = convertUnixToFormattedDate(timestamp)
   return transaction
 }
 

@@ -2,13 +2,30 @@
 set -x
 
 args=("$@")
+augur_service=dev-augur-ui
 augur_env=${args[0]}
 version=$(date -u +%Y-%m-%d-%H%M)
+
+aws_preconfigure () {
+    # we need aws cli tools to deploy
+    if [[ ${TRAVIS} = true ]]; then
+        sudo apt-get install libssl-dev python-pyasn1 python3-pyasn1
+        sudo pip install awscli
+    fi
+}
+
+aws_deploy () {
+    aws --region=us-east-1 ecs update-service  --service "$augur_service" --cluster "${cluster}" --force-new-deployment
+}
 
 case ${augur_env} in
     dev)
         network="rinkeby"
         cluster="dev-augur-net"
+        ;;
+    stable)
+        network="stable"
+        cluster="stable-augur-net"
         ;;
     *)
         network=${augur_env}
@@ -20,12 +37,6 @@ docker build . --build-arg ethereum_network=${network} --tag augurproject/augur:
 docker push augurproject/augur:$version
 docker push augurproject/augur:${augur_env}
 
-# for use in travis-ci
-# aws deploy
-if [[ ${TRAVIS} = true && ${augur_env} == "dev" ]]; then
-    sudo apt-get install libssl-dev pyasn1
-    # we need aws cli tools to deploy
-    sudo pip install awscli
-    aws --region=us-east-1 ecs update-service  --service dev-augur-ui --cluster ${cluster} --force-new-deployment
-fi
-
+# install packages needed to deploy to aws, then deploy
+aws_preconfigure
+aws_deploy

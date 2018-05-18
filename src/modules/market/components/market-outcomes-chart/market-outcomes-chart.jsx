@@ -12,6 +12,11 @@ import Styles from 'modules/market/components/market-outcomes-chart/market-outco
 
 export default class MarketOutcomesChart extends Component {
   static propTypes = {
+    creationTime: PropTypes.number,
+    currentTimestamp: PropTypes.number,
+    estimatedInitialPrice: PropTypes.number,
+    maxPrice: PropTypes.number,
+    minPrice: PropTypes.number,
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
@@ -29,13 +34,13 @@ export default class MarketOutcomesChart extends Component {
     }
 
     this.drawChart = this.drawChart.bind(this)
+    this.onResize = this.onResize.bind(this)
     this.updateHoveredLocation = this.updateHoveredLocation.bind(this)
   }
 
   componentDidMount() {
-    this.drawChart(this.props.outcomes)
-
-    window.addEventListener('resize', this.drawChart)
+    this.drawChart(this.props)
+    window.addEventListener('resize', this.onResize)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -47,7 +52,7 @@ export default class MarketOutcomesChart extends Component {
     if (
       !isEqual(outcomes, nextProps.outcomes) ||
       fixedPrecision !== nextProps.fixedPrecision
-    ) this.drawChart(nextProps.outcomes, fixedPrecision, this.updateHoveredLocation)
+    ) this.drawChart(nextProps)
 
     if (
       !isEqual(this.state.hoveredLocation, nextState.hoveredLocation) ||
@@ -63,13 +68,30 @@ export default class MarketOutcomesChart extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.drawChart)
+    window.removeEventListener('resize', this.onResize)
   }
 
-  drawChart(outcomes, fixedPrecision, updateHoveredLocation) {
+  onResize() {
+    this.drawChart(this.props)
+  }
+
+  drawChart({
+    creationTime,
+    currentTimestamp,
+    estimatedInitialPrice,
+    fixedPrecision,
+    maxPrice,
+    minPrice,
+    outcomes,
+  }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
+        creationTime,
+        currentTimestamp,
+        estimatedInitialPrice,
         drawContainer: this.outcomesChart,
+        maxPrice,
+        minPrice,
         outcomes,
       })
 
@@ -98,6 +120,8 @@ export default class MarketOutcomesChart extends Component {
 
         drawSeries({
           chart,
+          creationTime,
+          estimatedInitialPrice,
           outcomes,
           drawParams,
         })
@@ -109,7 +133,7 @@ export default class MarketOutcomesChart extends Component {
         attachHoverHandler({
           drawParams,
           chart,
-          updateHoveredLocation,
+          updateHoveredLocation: this.updateHoveredLocation,
         })
       }
 
@@ -164,7 +188,11 @@ export default class MarketOutcomesChart extends Component {
 
 function determineDrawParams(options) {
   const {
+    creationTime,
+    currentTimestamp,
     drawContainer,
+    maxPrice,
+    minPrice,
     outcomes,
   } = options
 
@@ -179,8 +207,11 @@ function determineDrawParams(options) {
   const containerWidth = drawContainer.clientWidth
   const containerHeight = drawContainer.clientHeight
 
-  const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint.timestamp)], [])
-  const yDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => createBigNumber(dataPoint.price).toNumber())], [])
+  const xDomain = outcomes.reduce((p, outcome) => [...p, ...outcome.priceTimeSeries.map(dataPoint => dataPoint.timestamp)], [
+    creationTime, currentTimestamp,
+
+  ])
+  const yDomain = [minPrice, maxPrice]
 
   const xScale = d3.scaleTime()
     .domain(d3.extent(xDomain))
@@ -274,10 +305,18 @@ function drawXAxisLabels(options) {
 
 function drawSeries(options) {
   const {
+
+    creationTime,
     drawParams,
+    estimatedInitialPrice,
     outcomes,
     chart,
   } = options
+
+  const initialPoint = {
+    price: estimatedInitialPrice.toString(),
+    timestamp: creationTime,
+  }
 
   const outcomeLine = d3.line()
     .x(d => drawParams.xScale(d.timestamp))
@@ -285,7 +324,7 @@ function drawSeries(options) {
 
   outcomes.forEach((outcome, i) => {
     chart.append('path')
-      .data([outcome.priceTimeSeries])
+      .data([[initialPoint, ...outcome.priceTimeSeries]])
       .classed(`${Styles['MarketOutcomesChart__outcome-line']}`, true)
       .classed(`${Styles[`MarketOutcomesChart__outcome-line--${i + 1}`]}`, true)
       .attr('d', outcomeLine)
