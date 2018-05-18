@@ -5,6 +5,8 @@ import { Helmet } from 'react-helmet'
 import { augur } from 'services/augurjs'
 
 import speedomatic from 'speedomatic'
+import { createBigNumber } from 'utils/create-big-number'
+import { ZERO } from 'modules/trade/constants/numbers'
 import { formatGasCostToEther } from 'utils/format-number'
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -43,7 +45,7 @@ export default class ReportingDispute extends Component {
       isMarketInValid: null,
       selectedOutcome: '',
       selectedOutcomeName: '',
-      stake: 0,
+      stakeInfo: { displayValue: 0, repValue: '0' },
       validations: {
         stake: false,
         selectedOutcome: null,
@@ -98,10 +100,10 @@ export default class ReportingDispute extends Component {
     const {
       selectedOutcome,
       isMarketInValid,
-      stake,
+      stakeInfo,
     } = this.state
-    if (stake > 0) {
-      const amount = speedomatic.fix(stake, 'hex')
+    if (createBigNumber(stakeInfo.repValue).gt(ZERO)) {
+      const amount = speedomatic.fix(stakeInfo.repValue, 'hex')
       submitMarketContribute(true, market.id, selectedOutcome, isMarketInValid, amount, null, (err, gasEstimateValue) => {
         if (err) return console.error(err)
 
@@ -155,7 +157,7 @@ export default class ReportingDispute extends Component {
               <ReportingDisputeForm
                 market={market}
                 updateState={this.updateState}
-                stake={s.stake}
+                stakeInfo={s.stakeInfo}
                 availableRep={availableRep}
               />
             }
@@ -164,7 +166,7 @@ export default class ReportingDispute extends Component {
                 market={market}
                 isMarketInValid={s.isMarketInValid}
                 selectedOutcome={s.selectedOutcomeName}
-                stake={s.stake}
+                stakeInfo={s.stakeInfo}
                 gasEstimate={s.gasEstimate}
               />
             }
@@ -183,7 +185,7 @@ export default class ReportingDispute extends Component {
               { s.currentStep === 1 &&
               <button
                 className={FormStyles.Form__submit}
-                onClick={() => submitMarketContribute(false, market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stake, 'hex'), history)}
+                onClick={() => submitMarketContribute(false, market.id, s.selectedOutcome, s.isMarketInValid, speedomatic.fix(s.stakeInfo.repValue, 'hex'), history)}
               >Submit
               </button>
               }
