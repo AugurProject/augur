@@ -286,14 +286,15 @@ export interface UIStakeInfo<BigNumberType> {
   stakes: Array<StakeDetails<BigNumberType>>;
 }
 
-export interface UIFeeWindowCurrent {
+export interface UIFeeWindowCurrent<BigNumberType> {
   endTime: number;
-  feeWindow: Address;
+  feeWindow: Address|null;
   feeWindowId: number;
-  state: FeeWindowState;
   startTime: number;
   universe: Address;
-  totalStake?: number;
+  totalStake?: BigNumberType;
+  participantContributions?: BigNumberType;
+  participationTokens?: BigNumberType;
 
 }
 
