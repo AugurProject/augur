@@ -9,7 +9,7 @@ var setTimestamp = require("./set-timestamp");
 
 var ALL_THE_REP = 6000000000000000000000000;
 
-function goToFork(augur, marketId, payoutNumerators, timeAddress, stopBefore, auth, callback) {
+function goToFork(augur, marketId, payoutNumerators, timeAddress, stopsBefore, auth, callback) {
   augur.api.Market.getForkingMarket({tx: { to: marketId }}, function (err, forkingMarket) {
     if (err) {
       console.log(chalk.red(err));
@@ -24,7 +24,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopBefore, au
         console.log(chalk.red(err));
         return callback(err);
       }
-      if (numParticipants === 20) {
+      if (stopsBefore && parseInt(numParticipants, 10) === (20 - stopsBefore)) {
         console.log(chalk.green("Successfully got to pre-forking state"));
         return callback(null);
       }
@@ -49,7 +49,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopBefore, au
                   console.log(chalk.red(err));
                   return callback(err);
                 }
-                goToFork(augur, marketId, payoutNumerators.reverse(), timeAddress, stopBefore, auth, callback);
+                goToFork(augur, marketId, payoutNumerators.reverse(), timeAddress, stopsBefore, auth, callback);
               });
             });
           });
@@ -59,7 +59,7 @@ function goToFork(augur, marketId, payoutNumerators, timeAddress, stopBefore, au
               console.log(chalk.red(err));
               return callback(err);
             }
-            goToFork(augur, marketId, payoutNumerators.reverse(), timeAddress, stopBefore, auth, callback);
+            goToFork(augur, marketId, payoutNumerators.reverse(), timeAddress, stopsBefore, auth, callback);
           });
         }
       });
