@@ -29,9 +29,10 @@ function calculateTradeCost(p) {
   var displayPrice = new BigNumber(p.displayPrice, 10);
   var displayAmount = new BigNumber(p.displayAmount, 10);
   var numTicks = new BigNumber(p.numTicks, 10);
-  var tickSize = maxDisplayPrice.minus(minDisplayPrice).dividedBy(numTicks);
+  var displayRange =  maxDisplayPrice.minus(minDisplayPrice);
+  var tickSize = displayRange.dividedBy(numTicks);
   var onChainPrice = convertDisplayPriceToOnChainPrice(displayPrice, minDisplayPrice, tickSize);
-  var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, tickSize);
+  var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks);
   var cost;
   if (p.orderType === 0) {
     onChainPrice = onChainPrice.integerValue(BigNumber.ROUND_CEIL);

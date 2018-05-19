@@ -1,7 +1,6 @@
 "use strict";
 
 var assign = require("lodash").assign;
-var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
@@ -25,7 +24,6 @@ var constants = require("../constants");
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
  * @param {string} p.minPrice The minimum display price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display price for this market, as a base-10 string.
- * @param {string=} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
@@ -46,16 +44,15 @@ function tradeUntilAmountIsZero(p) {
     minDisplayPrice: p.minPrice,
     maxDisplayPrice: p.maxPrice,
   });
-  var maxCost = tradeCost.cost;
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
-  var cost = p.estimatedCost != null ? speedomatic.fix(p.estimatedCost) : maxCost;
+  var cost = tradeCost.cost;
   console.log("cost:", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (tradeCost.onChainAmount.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "estimatedCost", "minPrice", "maxPrice"]), {
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice"]), {
     tx: assign({ value: convertBigNumberToHexString(cost), gas: speedomatic.prefixHex(calculateTradeGas().toString(16)) }, p.tx),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
@@ -75,15 +72,7 @@ function tradeUntilAmountIsZero(p) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
-        var updatedEstimatedCost = p.estimatedCost == null ? null : speedomatic.unfix(cost.minus(new BigNumber(res.value, 16)), "string");
-        console.log("actual cost:     ", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
-        if (updatedEstimatedCost != null) {
-          console.log("estimated cost:     ", speedomatic.fix(p.estimatedCost, "string"), "wei", p.estimatedCost, "eth");
-          console.log("value of last trade:", new BigNumber(res.value, 16).toFixed(), "wei", speedomatic.unfix(res.value, "string"), "eth");
-          console.log("updated estimated cost:", speedomatic.fix(updatedEstimatedCost, "string"), "wei", updatedEstimatedCost, "eth");
-        }
         tradeUntilAmountIsZero(assign({}, p, {
-          estimatedCost: updatedEstimatedCost,
           _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
