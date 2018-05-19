@@ -27,7 +27,7 @@ function designateReport(augur, args, auth, callback) {
   var marketId = args.opt.marketId;
   var outcome = args.opt.outcome;
   var invalid = args.opt.invalid;
-
+  var noPush = args.opt.noPush;
   getRepTokens(augur, amount, auth, function (err) {
     if (err) {
       console.log(chalk.red(err));
@@ -44,31 +44,41 @@ function designateReport(augur, args, auth, callback) {
         console.log(chalk.red("Scalar price is below min price"));
         callback("Error");
       }
-      var marketPayload = { tx: { to: marketId } };
-      augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
-        console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
-        getTime(augur, auth, function (err, timeResult) {
+      var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
+      if (noPush) {
+        doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
           if (err) {
-            console.log(chalk.red(err));
-            return callback(err);
+            return callback("Initial Report Failed");
           }
-          endTime = parseInt(endTime, 10) + 10000;
-          setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
+          console.log(chalk.green("Initial Report Done"));
+          callback(null);
+        });
+      } else {
+        var marketPayload = { tx: { to: marketId } };
+        augur.api.Market.getEndTime(marketPayload, function (err, endTime) {
+          console.log(chalk.red.dim("Market End Time"), chalk.red(endTime));
+          getTime(augur, auth, function (err, timeResult) {
             if (err) {
               console.log(chalk.red(err));
               return callback(err);
             }
-            var payoutNumerators = getPayoutNumerators(market, outcome, invalid);
-            doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+            endTime = parseInt(endTime, 10) + 10000;
+            setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
               if (err) {
-                return callback("Initial Report Failed");
+                console.log(chalk.red(err));
+                return callback(err);
               }
-              console.log(chalk.green("Initial Report Done"));
-              callback(null);
+              doInitialReport(augur, marketId, payoutNumerators, invalid, auth, function (err) {
+                if (err) {
+                  return callback("Initial Report Failed");
+                }
+                console.log(chalk.green("Initial Report Done"));
+                callback(null);
+              });
             });
           });
         });
-      });
+      }
     });
   });
 }
