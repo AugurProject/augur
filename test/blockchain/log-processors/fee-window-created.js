@@ -7,9 +7,9 @@ const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require(
 
 const getFeeWindow = (db, params, callback) => parallel({
   fee_windows: next => db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(next),
-  tokens: next => db("tokens").select(["contractAddress", "symbol"])
+  tokens: next => db("tokens").select(["contractAddress", "symbol", "feeWindow"])
     .where("contractAddress", params.log.feeWindow)
-    .orWhere("symbol", `FeeToken@${params.log.feeWindow}`)
+    .orWhere("feeWindow", params.log.feeWindow)
     .asCallback(next),
 }, callback);
 
@@ -71,10 +71,12 @@ describe("blockchain/log-processors/fee-window-created", () => {
             {
               contractAddress: "0xf000000000000000000000000000000000000000",
               symbol: "ParticipationToken",
+              feeWindow: null,
             },
             {
               contractAddress: "FEE_TOKEN",
-              symbol: "FeeToken@0xf000000000000000000000000000000000000000",
+              symbol: "FeeToken",
+              feeWindow: "0xf000000000000000000000000000000000000000",
             },
           ],
         });

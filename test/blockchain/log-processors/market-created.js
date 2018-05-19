@@ -14,7 +14,7 @@ describe("blockchain/log-processors/market-created", () => {
       markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
       categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
       outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
-      tokens: next => db("tokens").where({marketId: params.log.market}).asCallback(next),
+      tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({marketId: params.log.market}).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {

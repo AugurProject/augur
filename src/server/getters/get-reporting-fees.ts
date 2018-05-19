@@ -378,7 +378,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.leftJoin("balances as feeToken", function () {
     this
       .on("feeToken.owner", db.raw("all_participants.participantAddress"))
-      .andOn("feeToken.token", "!=", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+      .andOn("feeToken.token",  db.raw("?", "fee_windows.feeToken" ));
   });
   participantQuery.leftJoin("fee_windows", "fee_windows.feeToken", "feeToken.token");
   participantQuery.leftJoin("balances AS cashFeeWindow", function () {
