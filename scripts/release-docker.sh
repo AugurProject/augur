@@ -37,8 +37,8 @@ esac
 
 docker build . --build-arg ethereum_network=${network} --tag augurproject/${augur_repo}:${augur_env} --tag augurproject/${augur_repo}:$version
 
-docker push augurproject/augur:$version
-docker push augurproject/augur:${augur_env}
+docker push augurproject/${augur_repo}:${version}
+docker push augurproject/${augur_repo}:${augur_env}
 
 # install packages needed to deploy to aws, then deploy
 aws_preconfigure
