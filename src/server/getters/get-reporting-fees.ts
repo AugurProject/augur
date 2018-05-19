@@ -229,7 +229,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
+    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?) OR markets.needsDisavowal)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .andWhere("markets.universe", universe)
     .andWhere("balances.owner", reporter);
   const forkedMarketQuery = db("markets")
