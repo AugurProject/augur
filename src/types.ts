@@ -213,6 +213,10 @@ export interface CategoriesRow {
   popularity: string|number;
 }
 
+export interface CategoryRow {
+  category: string;
+}
+
 export interface BlocksRow {
   blockNumber: number;
   timestamp: number;
