@@ -3,7 +3,7 @@ set -x
 set -e
 
 args=("$@")
-augur_service=dev-augur-ui
+augur_repo=augur-node
 augur_env=${args[0]}
 version=$(date -u +%Y-%m-%d-%H%M)
 
@@ -23,20 +23,22 @@ case ${augur_env} in
     dev)
         network="rinkeby"
         cluster="dev-augur-net"
+        augur_service="dev-augur-node"
         ;;
     stable)
         network="stable"
         cluster="stable-augur-net"
+        augur_service="stable-augur-node"
         ;;
     *)
         network=${augur_env}
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version || exit 1
+docker build . --build-arg ethereum_network=${network} --tag augurproject/${augur_repo}:${augur_env} --tag augurproject/${augur_repo}:$version
 
-docker push augurproject/augur:$version
-docker push augurproject/augur:${augur_env}
+docker push augurproject/${augur_repo}:${version}
+docker push augurproject/${augur_repo}:${augur_env}
 
 # install packages needed to deploy to aws, then deploy
 aws_preconfigure
