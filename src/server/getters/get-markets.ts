@@ -14,8 +14,7 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
   if (feeWindow != null) query.where({ feeWindow });
   if (designatedReporter != null) query.where({ designatedReporter });
 
-  queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
+  queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
     if (!marketsRows) return callback(null);
     callback(null, marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId));

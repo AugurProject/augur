@@ -27,8 +27,7 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
   query.whereNull("isRemoved");
   if ( orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
-  queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
+  queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, ordersRows?: Array<OrdersRowWithCreationTime>): void => {
     if (err) return callback(err);
     if (!ordersRows) return callback(new Error("Unexpected error fetching order rows"));
     const orders: UIOrders<string> = {};

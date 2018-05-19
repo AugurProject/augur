@@ -38,8 +38,7 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
   if (token != null) query.andWhere({ token });
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  queryModifier(query, "creationBlockNumber", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((error: Error|null, results: Array<TransferRow<BigNumber>>) => {
+  queryModifier(db, query, "transfers.blockNumber", "desc", sortBy, isSortDescending, limit, offset, (error: Error|null, results: Array<TransferRow<BigNumber>>) => {
     if (error) return callback(error);
 
     callback(null, results.map((result) => formatBigNumberAsFixed<TransferRow<BigNumber>, TransferRow<string>>(result)));

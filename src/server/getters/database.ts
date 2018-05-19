@@ -2,6 +2,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
+import { GenericCallback } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { isFieldBigNumber } from "../post-process-database-results";
 import {
@@ -26,7 +27,7 @@ export interface Dictionary {
   [key: string]: any;
 }
 
-function queryModifierDB(
+export function queryModifierDB(
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
@@ -34,43 +35,53 @@ function queryModifierDB(
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
   offset: number | null | undefined
-): Promise<any> {
+): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
   if (limit != null) query = query.limit(limit);
   if (offset != null) query = query.offset(offset);
   return query;
 }
 
-function queryModifierUserland(
+function queryModifierUserland<T>(
+  db: Knex,
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
   sortBy: string | null | undefined,
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
-  offset: number | null | undefined
-): Promise<any> {
-  return query.select(Knex.raw("? as xMySorterFieldx", [sortBy || defaultSortBy])).tap((rows) => {
-    const descendingSorter = (left: any, right: any) => left.xMySorterFieldx.comparedTo(right.xMySorterFieldx);
-    const ascendingSorter = (left: any, right: any) => right.xMySorterFieldx.comparedTo(left.xMySorterFieldx);
+  offset: number | null | undefined,
+  callback: GenericCallback<Array<T>>
+): void {
+  type RowWithSort = T & {xMySorterFieldx: BigNumber};
+  query.select(db.raw("? as xMySorterFieldx", [sortBy || defaultSortBy])).asCallback((error: Error|null, rows: Array<T>) => {
+    if (error) return callback(error);
+    const descendingSorter = (left: RowWithSort, right: RowWithSort) => left.xMySorterFieldx.comparedTo(right.xMySorterFieldx);
+    const ascendingSorter = (left: RowWithSort, right: RowWithSort) => right.xMySorterFieldx.comparedTo(left.xMySorterFieldx);
     const results = rows.sort(isSortDescending ? descendingSorter : ascendingSorter);
-    if (limit == null && offset == null) return results;
-    return results.splice(offset || 0, limit);
+    if (limit == null && offset == null)
+      return callback(null, results);
+    return callback(null, results.splice(offset || 0, limit || results.length));
   });
 }
 
-export function queryModifier(
+export function queryModifier<T>(
+  db: Knex,
   query: Knex.QueryBuilder,
   defaultSortBy: string,
   defaultSortOrder: string,
   sortBy: string | null | undefined,
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
-  offset: number | null | undefined
-): Promise<any> {
+  offset: number | null | undefined,
+  callback: GenericCallback<Array<T>>
+): void {
   const sortFieldName = (sortBy || defaultSortBy).split(".").pop();
-  const modifierFn = isFieldBigNumber(sortFieldName!) ? queryModifierUserland : queryModifierDB;
-  return modifierFn(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset);
+  if(isFieldBigNumber(sortFieldName!)) {
+    queryModifierUserland(db, query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset, callback);
+  } else {
+    queryModifierDB(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset).asCallback(callback);
+  }
 }
 
 export function reshapeOutcomesRowToUIOutcomeInfo(outcomesRow: OutcomesRow<BigNumber>): UIOutcomeInfo<BigNumber> {
@@ -224,7 +235,8 @@ export function queryTradingHistory(
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
-  queryModifier(query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
+  
+  //queryModifierDB(query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
 
   return query;
 }
