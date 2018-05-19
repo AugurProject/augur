@@ -3,6 +3,7 @@ set -x
 set -e
 
 args=("$@")
+augur_repo=augur-node
 augur_env=${args[0]}
 version=$(date -u +%Y-%m-%d-%H%M)
 
@@ -34,7 +35,7 @@ case ${augur_env} in
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --tag augurproject/augur-node:${augur_env} --tag augurproject/augur-node:$version || exit 1
+docker build . --build-arg ethereum_network=${network} --tag augurproject/${augur_repo}:${augur_env} --tag augurproject/${augur_repo}:$version
 
 docker push augurproject/augur:$version
 docker push augurproject/augur:${augur_env}
