@@ -35,9 +35,9 @@ case ${augur_env} in
 esac
 
 image_name=augurproject/augur-node
-docker build . --build-arg ethereum_network=${network} --tag ${image_name}:${augur_env} --tag ${image_name}:$version || exit 1
+docker build . --build-arg ethereum_network=${network} --tag ${image_name}:${augur_env} --tag ${image_name}:${version} || exit 1
 
-docker push augurproject/${image_name}:$version
+docker push augurproject/${image_name}:${version}
 docker push augurproject/${image_name}:${augur_env}
 
 # install packages needed to deploy to aws, then deploy
