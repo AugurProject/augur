@@ -38,7 +38,7 @@ function AugurNodeController() {
     if (!fs.existsSync(appDataPath)){
         fs.mkdirSync(appDataPath);
     }
-    this.configPath = path.join(appDataPath, '../config.json')
+    this.configPath = path.join(appDataPath, 'config.json')
     this.augurDbPath = path.join(appDataPath, 'augur.db')
     if (!fs.existsSync(this.configPath)) {
         this.config = defaultConfig;
