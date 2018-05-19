@@ -115,8 +115,10 @@ export function addTransferTransactions(transfers) {
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
         header.message = 'Participation Tokens purchased'
         header.description = `${meta.value} Participation purchased`
-      } else if (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred') {
+      } else if (transaction.symbol == 'REP' || (transaction.market === '0x0000000000000000000000000000000000000000' && transaction.eventName === 'TokensTransferred')) {
         meta.value = `${formatAttoRep(transaction.value, { decimals: 4, roundUp: true }).formatted}`
+        meta.block = transaction.blockNumber || transaction.creationBlockNumber
+        meta.sender = transaction.sender
         transaction.symbol = 'REP'
         header.message = 'Rep Transfer'
         header.description = `${meta.value} ${transaction.symbol} transferred`

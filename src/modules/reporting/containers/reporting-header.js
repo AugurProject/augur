@@ -9,7 +9,7 @@ import { updateModal } from 'modules/modal/actions/update-modal'
 const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.isMobile,
-  repBalance: state.loginAccount.rep,
+  repBalance: state.loginAccount.rep || 0,
   forkingMarket: state.universe.forkingMarket,
   currentTime: state.blockchain.currentAugurTimestamp,
   doesUserHaveRep: state.loginAccount.rep > 0,
