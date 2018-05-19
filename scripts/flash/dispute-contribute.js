@@ -57,64 +57,64 @@ function disputeContribute(augur, args, auth, callback) {
           console.log(chalk.green("Market contribute Done"));
           callback(null);
         });
-      }
-
-      var marketPayload = { tx: { to: marketId } };
-      augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
-        if (err) {
-          console.log(chalk.red(err));
-          return callback("Could not get Fee Window");
-        }
-        if (feeWindowId === "0x0000000000000000000000000000000000000000") {
-          console.log(chalk.red("feeWindowId has not been created"));
-          return callback("Market doesn't have fee window, need to report");
-        }
-        console.log(chalk.yellow("Market Fee Window"), chalk.yellow(feeWindowId));
-        var feeWindowPayload = { tx: { to: feeWindowId } };
-        augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
+      } else {
+        var marketPayload = { tx: { to: marketId } };
+        augur.api.Market.getFeeWindow(marketPayload, function (err, feeWindowId) {
           if (err) {
             console.log(chalk.red(err));
-            callback("Could not get Fee Window");
+            return callback("Could not get Fee Window");
           }
-          getTime(augur, auth, function (err, timeResult) {
+          if (feeWindowId === "0x0000000000000000000000000000000000000000") {
+            console.log(chalk.red("feeWindowId has not been created"));
+            return callback("Market doesn't have fee window, need to report");
+          }
+          console.log(chalk.yellow("Market Fee Window"), chalk.yellow(feeWindowId));
+          var feeWindowPayload = { tx: { to: feeWindowId } };
+          augur.api.FeeWindow.getStartTime(feeWindowPayload, function (err, feeWindowStartTime) {
             if (err) {
               console.log(chalk.red(err));
-              return callback(err);
+              callback("Could not get Fee Window");
             }
-
-            var setTime = parseInt(feeWindowStartTime, 10) + day;
-            displayTime("Current timestamp", timeResult.timestamp);
-            displayTime("Fee Window end time", feeWindowStartTime);
-            displayTime("Set Time to", setTime);
-            setTimestamp(augur, setTime, timeResult.timeAddress, auth, function (err) {
+            getTime(augur, auth, function (err, timeResult) {
               if (err) {
                 console.log(chalk.red(err));
                 return callback(err);
               }
-              console.log(chalk.yellow("sending amount REP"), chalk.yellow(attoREP), chalk.yellow(amount));
-              augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+
+              var setTime = parseInt(feeWindowStartTime, 10) + day;
+              displayTime("Current timestamp", timeResult.timestamp);
+              displayTime("Fee Window end time", feeWindowStartTime);
+              displayTime("Set Time to", setTime);
+              setTimestamp(augur, setTime, timeResult.timeAddress, auth, function (err) {
                 if (err) {
                   console.log(chalk.red(err));
                   return callback(err);
                 }
-                console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
-                if (result) {
-                  doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
-                    if (err) {
-                      return callback("Market contribute Failed");
-                    }
-                    console.log(chalk.green("Market contribute Done"));
-                    callback(null);
-                  });
-                } else {
-                  console.log(chalk.red("Fee Window isn't active"));
-                  callback("Fee Window isn't active");
-                }
+                console.log(chalk.yellow("sending amount REP"), chalk.yellow(attoREP), chalk.yellow(amount));
+                augur.api.FeeWindow.isActive(feeWindowPayload, function (err, result) {
+                  if (err) {
+                    console.log(chalk.red(err));
+                    return callback(err);
+                  }
+                  console.log(chalk.green.dim("Few Window is active"), chalk.green(result));
+                  if (result) {
+                    doMarketContribute(augur, marketId, attoREP, payoutNumerators, invalid, auth, function (err) {
+                      if (err) {
+                        return callback("Market contribute Failed");
+                      }
+                      console.log(chalk.green("Market contribute Done"));
+                      callback(null);
+                    });
+                  } else {
+                    console.log(chalk.red("Fee Window isn't active"));
+                    callback("Fee Window isn't active");
+                  }
+                });
               });
             });
           });
         });
-      });
+      }
     });
   });
 }
