@@ -21,10 +21,6 @@ import StylesForm from 'modules/create-market/components/create-market-form/crea
 
 const PRECISION = 4
 
-formatOrderValue(orderValue) {
-  return orderValue !== '' ? createBigNumber(this.state.orderQuantity, 10).toString() : orderValue
-}
-
 export default class CreateMarketLiquidity extends Component {
 
   static propTypes = {
@@ -405,6 +401,10 @@ export default class CreateMarketLiquidity extends Component {
     this.setState({ orderEstimate })
   }
 
+  formatOrderValue(orderValue) {
+    return orderValue !== '' ? createBigNumber(this.state.orderQuantity, 10).toString() : orderValue
+  }
+
   render() {
     const {
       isMobileSmall,
@@ -448,7 +448,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: BID }, () => this.validateForm(formatOrderValue(this.state.orderQuantity), formatOrderValue(this.state.orderPrice))
+                    this.setState({ selectedNav: BID }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Buy
@@ -457,7 +457,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: ASK }, () => this.validateForm(formatOrderValue(this.state.orderQuantity), formatOrderValue(this.state.orderPrice))
+                    this.setState({ selectedNav: ASK }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Sell
