@@ -8,6 +8,7 @@ const { runServer } = require("augur-node/build/server/run-server");
 const fs = require('fs');
 const path = require('path');
 const { ipcMain } = require('electron');
+const appData = require('app-data-folder');
 
 const { uploadBlockNumbers } = require("augur-node/config");
 
@@ -33,8 +34,12 @@ const defaultConfig = {
 }
 
 function AugurNodeController() {
-    this.configPath = path.join(__dirname, '../config.json')
-    this.augurDbPath = path.join(__dirname, '../augur.db')
+    let appDataPath = appData("augur");
+    if (!fs.existsSync(appDataPath)){
+        fs.mkdirSync(appDataPath);
+    }
+    this.configPath = path.join(appDataPath, '../config.json')
+    this.augurDbPath = path.join(appDataPath, 'augur.db')
     if (!fs.existsSync(this.configPath)) {
         this.config = defaultConfig;
         fs.writeFileSync(this.configPath, JSON.stringify(this.config));
