@@ -15,7 +15,17 @@ After installing on Windows, you will need to manually create a shortcut to the 
 
 ### On Ubuntu
 
-Install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once installed, you can run the app from the command line with `augur-app`
+First, install dependencies:
+
+```bash
+$ apt-get install libgconf2-4
+```
+
+Then, install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`.  Once installed, run the app from the command line:
+
+```bash
+augur-app
+```
 
 ### From source
 
