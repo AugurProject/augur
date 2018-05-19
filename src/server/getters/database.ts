@@ -195,17 +195,18 @@ export function uiStakeInfoToFixed(stakeInfo: UIStakeInfo<BigNumber>): UIStakeIn
 export function queryTradingHistory(
   db: Knex | Knex.Transaction,
   universe: Address | null,
-  account?: Address | null,
-  marketId?: Address | null,
-  outcome?: number | null,
-  orderType?: string | null,
-  earliestCreationTime?: number | null,
-  latestCreationTime?: number | null,
-  sortBy?: string | null,
-  isSortDescending?: boolean | null,
-  limit?: number | null,
-  offset?: number | null
-): Knex.QueryBuilder {
+  account: Address | null,
+  marketId: Address | null,
+  outcome: number | null,
+  orderType: string | null,
+  earliestCreationTime: number | null,
+  latestCreationTime: number | null,
+  sortBy: string | null,
+  isSortDescending: boolean | null,
+  limit: number | null,
+  offset: number | null,
+  callback: GenericCallback<Array<TradingHistoryRow>>
+): void {
   if (universe == null && marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   const query = db
     .select([
@@ -230,15 +231,24 @@ export function queryTradingHistory(
 
   if (account != null) query.where((builder) => builder.where("trades.creator", account).orWhere("trades.filler", account));
   if (universe != null) query.where("universe", universe);
-  if (marketId != null) query.where("trades.marketId", marketId);
-  if (outcome != null) query.where("trades.outcome", outcome);
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
-  
-  //queryModifierDB(query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset);
+ 
+  // Return results grouped by marketId / outcomeId if more than one market or outcome can be returned
+  if (marketId != null) {
+    query.where("trades.marketId", marketId);
+  } else {
+    query.orderBy("trades.marketId");
+  }
 
-  return query;
+  if (outcome != null) {
+    query.where("trades.outcome", outcome);
+  } else {
+    query.orderBy("trades.outcome");
+  }
+
+  queryModifier(db, query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset, callback);
 }
 
 export function groupByAndSum<T extends Dictionary>(rows: Array<T>, groupFields: Array<string>, sumFields: Array<string>): Array<T> {
