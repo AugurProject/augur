@@ -51,7 +51,7 @@ describe("blockchain/log-processors/order-filled", () => {
         amountFilled: "142857142857142",
         numCreatorShares: "0",
         numCreatorTokens: fix("1", "string"),
-        numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed(),
+        numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed(),
         numFillerTokens: "0",
         marketCreatorFees: "0",
         reporterFees: "0",
@@ -71,7 +71,7 @@ describe("blockchain/log-processors/order-filled", () => {
           Orders: {
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
             },
             getLastOutcomePrice: (p, callback) => {
               assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
@@ -83,13 +83,13 @@ describe("blockchain/log-processors/order-filled", () => {
             },
             getVolume: (p, callback) => {
               assert.deepEqual(p, { _market: "0x0000000000000000000000000000000000000001" });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
             },
           },
           ShareToken: {
             totalSupply: (p, callback) => {
               assert.deepEqual(p, { tx: { to: "0x1000000000000000000000000000000000000000" } });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", "0.0001").toFixed());
+              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
             },
           },
         },
@@ -158,12 +158,13 @@ describe("blockchain/log-processors/order-filled", () => {
           amount: new BigNumber("1.42857142857142", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
+        console.log(records.markets.volume.toNumber());
         assert.deepEqual(records.markets, {
-          volume: new BigNumber("3.33333333333333333333", 10),
+          volume: new BigNumber("1.42857142857142", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
         assert.deepEqual(records.outcomes, [
-          { price: new BigNumber("0.7", 10), volume: new BigNumber("103.33333333333333333333", 10) },
+          { price: new BigNumber("0.7", 10), volume: new BigNumber("101.42857142857142", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
@@ -173,7 +174,7 @@ describe("blockchain/log-processors/order-filled", () => {
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
         ]);
         assert.deepEqual(records.categories, {
-          popularity: 3.3333333333333335,
+          popularity: 1.42857142857142,
         });
         assert.deepEqual(records.positions, [{
           positionId: 21,
