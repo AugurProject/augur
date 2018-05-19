@@ -231,22 +231,11 @@ export function queryTradingHistory(
 
   if (account != null) query.where((builder) => builder.where("trades.creator", account).orWhere("trades.filler", account));
   if (universe != null) query.where("universe", universe);
+  if (marketId != null) query.where("trades.marketId", marketId);
+  if (outcome != null) query.where("trades.outcome", outcome);
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
- 
-  // Return results grouped by marketId / outcomeId if more than one market or outcome can be returned
-  if (marketId != null) {
-    query.where("trades.marketId", marketId);
-  } else {
-    query.orderBy("trades.marketId");
-  }
-
-  if (outcome != null) {
-    query.where("trades.outcome", outcome);
-  } else {
-    query.orderBy("trades.outcome");
-  }
 
   queryModifier(db, query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset, callback);
 }
