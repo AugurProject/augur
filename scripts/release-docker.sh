@@ -3,7 +3,6 @@ set -x
 set -e
 
 args=("$@")
-augur_service=dev-augur-ui
 augur_env=${args[0]}
 version=$(date -u +%Y-%m-%d-%H%M)
 
@@ -23,10 +22,12 @@ case ${augur_env} in
     dev)
         network="rinkeby"
         cluster="dev-augur-net"
+        augur_service="dev-augur-node"
         ;;
     stable)
         network="stable"
         cluster="stable-augur-net"
+        augur_service="stable-augur-node"
         ;;
     *)
         network=${augur_env}
