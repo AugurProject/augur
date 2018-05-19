@@ -146,13 +146,15 @@ function runCannedData(command, networks, callback) {
         core.ContractDeployer.deployToNetwork(network, deployerConfiguration).then(function () {
           augur.contracts.reloadAddresses(function (err) {
             if (err) return callback(err);
-
             augur.connect({ ethereumNode: ethereumNode }, function (err) {
               if (err) return callback(err);
-              repFaucet(augur, 100000, auth, function (err) {
-                if (err) return callback(err);
-                createMarkets(augur, auth, callback);
-              });
+              // geth bug related to contract availability for estimating gas requires timeout
+              setTimeout(function () {
+                repFaucet(augur, 100000, auth, function (err) {
+                  if (err) return callback(err);
+                  createMarkets(augur, auth, callback);
+                });
+              }, 4000);
             });
           });
         });
