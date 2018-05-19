@@ -34,7 +34,7 @@ case ${augur_env} in
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --tag augurproject/augur:${augur_env} --tag augurproject/augur:$version || exit 1
+docker build . --build-arg ethereum_network=${network} --tag augurproject/augur-node:${augur_env} --tag augurproject/augur:$version || exit 1
 
 docker push augurproject/augur:$version
 docker push augurproject/augur:${augur_env}
