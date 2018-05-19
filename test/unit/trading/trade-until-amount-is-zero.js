@@ -691,7 +691,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._direction, 0);
               assert.strictEqual(p._market, "MARKET_ADDRESS");
               assert.strictEqual(p._outcome, 1);
-              assert.strictEqual(p._fxpAmount, "0x1c6bf52634000");
+              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
               assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.times(2).times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER).toString(16));

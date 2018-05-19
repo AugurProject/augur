@@ -29,7 +29,7 @@ function calculateTradeCost(p) {
   var maxDisplayPrice = new BigNumber(p.maxDisplayPrice, 10);
   var displayPrice = new BigNumber(p.displayPrice, 10);
   var displayAmount = new BigNumber(p.displayAmount, 10);
-  var sharesProvided = new BigNumber(p.sharesProvided, 10);
+  var sharesProvided = new BigNumber(p.sharesProvided || "0", 10);
   var numTicks = new BigNumber(p.numTicks, 10);
   var displayRange =  maxDisplayPrice.minus(minDisplayPrice);
   var tickSize = displayRange.dividedBy(numTicks);
