@@ -19,7 +19,7 @@ matrix:
 install:
 - npm install
 script:
-- npm run build
+- npm start
 after_success:
   - scripts/post_build.py
 before_deploy:
