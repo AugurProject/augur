@@ -12,7 +12,7 @@ After installing on Windows you'll need to create a shortcut to the executable m
 
 ### On Ubuntu
 
-Install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once installed you can run the app from the command line with `sudo augur-app`
+Install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once installed you can run the app from the command line with `augur-app`
 
 ### From source
 
