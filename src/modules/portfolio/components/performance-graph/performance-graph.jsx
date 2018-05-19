@@ -65,10 +65,39 @@ class PerformanceGraph extends Component {
     this.updateChartDebounced = debounce(this.updateChart.bind(this))
     this.updatePerformanceData = this.updatePerformanceData.bind(this)
     this.parsePerformanceData = this.parsePerformanceData.bind(this)
+    this.chartSetup = this.chartSetup.bind(this)
+    this.chartFullRefresh = this.chartFullRefresh.bind(this)
   }
 
   componentDidMount() {
     noData(Highcharts)
+    this.chartFullRefresh(!this.props.isAnimating)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if ((prevProps.isAnimating && !this.props.isAnimating) || !this.state.selectedSeriesData.length) {
+      // fetch data as we need a new range of info
+      this.chartFullRefresh(true)
+    } else if (prevState.graphPeriod !== this.state.graphPeriod) {
+      this.updatePerformanceData()
+    } else if (prevState.graphType !== this.state.graphType) {
+      // update chart based on data we have in state, no fetch
+      this.parsePerformanceData()
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateChartDebounced)
+  }
+
+  chartFullRefresh(forceUpdate = false) {
+    this.chartSetup(() => {
+      if (forceUpdate) this.updatePerformanceData()
+    })
+  }
+
+  chartSetup(callback = (() => {})) {
+    window.removeEventListener('resize', this.updateChartDebounced)
 
     Highcharts.setOptions({
       lang: {
@@ -233,21 +262,7 @@ class PerformanceGraph extends Component {
 
     window.addEventListener('resize', this.updateChartDebounced)
 
-    if (!this.props.isAnimating) this.updatePerformanceData()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.graphPeriod !== this.state.graphPeriod || (prevProps.isAnimating !== this.props.isAnimating && prevProps.isAnimating)) {
-      // fetch data as we need a new range of info
-      this.updatePerformanceData()
-    } else if (prevState.graphType !== this.state.graphType) {
-      // update chart based on data we have in state, no fetch
-      this.parsePerformanceData()
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChartDebounced)
+    callback()
   }
 
   changeDropdown(value) {
