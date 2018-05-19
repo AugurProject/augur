@@ -168,12 +168,6 @@ class MarketTradingForm extends Component {
     errorCount += priceErrorCount
     errors = { ...errors, ...priceErrors }
 
-    if (isOrderValid && quantity && price && quantity.times(price).lt(this.MINIMUM_TRADE_VALUE)) {
-      isOrderValid = false
-      errorCount += 1
-      errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].push(`Order size must be at least ${this.MINIMUM_TRADE_VALUE.toString()} ETH.`)
-    }
-
     return { isOrderValid, errors, errorCount }
   }
 

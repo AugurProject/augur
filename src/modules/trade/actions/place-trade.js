@@ -17,12 +17,16 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     return dispatch(clearTradeInProgress(marketId))
   }
   const bnAllowance = createBigNumber(loginAccount.allowance)
+  const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10)
+  const otherSharesDepleted = createBigNumber(tradeInProgress.otherSharesDepleted, 10)
+  const sharesProvided = sharesDepleted.eq(0) ? otherSharesDepleted.toString() : sharesDepleted.toString()
   // try and make sure that we actually have an updated allowance.
   if (bnAllowance.lte(0)) dispatch(checkAccountAllowance())
   const placeTradeParams = {
     meta: loginAccount.meta,
     amount: tradeInProgress.numShares,
     limitPrice: tradeInProgress.limitPrice,
+    sharesProvided,
     minPrice: market.minPrice,
     maxPrice: market.maxPrice,
     numTicks: market.numTicks,
