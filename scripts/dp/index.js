@@ -149,7 +149,7 @@ function runCannedData(command, networks, callback) {
             augur.connect({ ethereumNode: ethereumNode }, function (err) {
               if (err) return callback(err);
               // geth bug related to contract availability for estimating gas requires timeout
-              setTimeout(() => {
+              setTimeout(function() {
                 repFaucet(augur, 100000, auth, function (err) {
                   if (err) return callback(err);
                   createMarkets(augur, auth, callback);
