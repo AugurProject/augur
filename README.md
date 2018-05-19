@@ -1,6 +1,7 @@
 # Augur App
 
 [![Build Status](https://travis-ci.com/AugurProject/augur-app.svg?branch=master)](https://travis-ci.com/AugurProject/augur-app)
+[![npm version](https://badge.fury.io/js/augur-app.svg)](https://badge.fury.io/js/augur-app)
 
 Augur App is a small electron application that packages [Augur Node](https://github.com/AugurProject/augur-node) and the [Augur UI](https://github.com/AugurProject/augur), so you can use Augur locally with an Ethereum node of your choosing.
 
