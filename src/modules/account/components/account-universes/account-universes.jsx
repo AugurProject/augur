@@ -73,7 +73,7 @@ export default class AccountUniverses extends Component {
           }
           {currentLevel && currentLevel.length > 0 &&
             <div className={Styles.AccountUniverses__description}>
-              <h4>Current and Sibling Universes</h4>
+              <h4>Current Universe and Siblings</h4>
               {currentLevel.map(universeInfo => (
                 <AccountUniverseDescription
                   switchUniverse={p.switchUniverse}
