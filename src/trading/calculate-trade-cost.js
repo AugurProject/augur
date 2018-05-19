@@ -45,7 +45,7 @@ function calculateTradeCost(p) {
     onChainPrice = onChainPrice.integerValue(BigNumber.ROUND_FLOOR);
     cost = calculateAskCost(onChainPrice, onChainAmountForPrice, numTicks);
   }
-  console.log(JSON.stringify({ cost, onChainAmount, onChainSharesProvided, onChainPrice }));
+  console.log(JSON.stringify({ cost: cost, onChainAmount: onChainAmount, onChainSharesProvided: onChainSharesProvided, onChainPrice: onChainPrice }));
   return { cost: cost.integerValue(BigNumber.ROUND_CEIL), onChainAmount: onChainAmount.integerValue(BigNumber.ROUND_FLOOR), onChainPrice: onChainPrice };
 }
 
