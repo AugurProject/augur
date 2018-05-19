@@ -72,7 +72,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 }
 
 async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
-  const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false);
+  const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null);
 
   return buckets.map((bucket: PLBucket) => {
     // This insertion point will give us the place in the sorted "outcomeTrades" array
@@ -129,7 +129,7 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
 async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<Array<PLBucket>> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
-  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false);
+  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null);
 
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
     return Object.assign({}, trade, {

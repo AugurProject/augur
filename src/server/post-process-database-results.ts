@@ -96,7 +96,9 @@ const whitelist: TableWhitelist = {
 };
 
 const FIELD_NAMES: FieldWhitelist = (() => {
-  const namesonly: FieldWhitelist = {};
+  // xMySorterFieldx is a magic value used for auto-ordering by big
+  // number
+  const namesonly: FieldWhitelist = {xMySorterFieldx: true};
   for (const key in whitelist) {
     if (whitelist.hasOwnProperty(key)) {
       Object.assign(namesonly, whitelist[key]);

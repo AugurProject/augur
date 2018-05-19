@@ -2,6 +2,7 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { sortDirection } from "../../utils/sort-direction";
+import { safeBigNumberCompare } from "../../utils/safe-big-number-compare";
 import { GenericCallback } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { isFieldBigNumber } from "../post-process-database-results";
@@ -54,14 +55,18 @@ function queryModifierUserland<T>(
   callback: GenericCallback<Array<T>>
 ): void {
   type RowWithSort = T & {xMySorterFieldx: BigNumber};
-  query.select(db.raw("? as xMySorterFieldx", [sortBy || defaultSortBy])).asCallback((error: Error|null, rows: Array<T>) => {
+  query.select(db.raw(`? as "xMySorterFieldx"`, [sortBy || defaultSortBy])).asCallback((error: Error|null, rows: Array<T>) => {
     if (error) return callback(error);
-    const descendingSorter = (left: RowWithSort, right: RowWithSort) => left.xMySorterFieldx.comparedTo(right.xMySorterFieldx);
-    const ascendingSorter = (left: RowWithSort, right: RowWithSort) => right.xMySorterFieldx.comparedTo(left.xMySorterFieldx);
-    const results = rows.sort(isSortDescending ? descendingSorter : ascendingSorter);
-    if (limit == null && offset == null)
-      return callback(null, results);
-    return callback(null, results.splice(offset || 0, limit || results.length));
+    try {
+      const descendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(left.xMySorterFieldx, right.xMySorterFieldx);
+      const ascendingSorter  = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(right.xMySorterFieldx, left.xMySorterFieldx);
+      const results = rows.sort(isSortDescending ? descendingSorter : ascendingSorter);
+      if (limit == null && offset == null)
+        return callback(null, results);
+      return callback(null, results.splice(offset || 0, limit || results.length));
+    } catch(e) {
+      callback(e);
+    }
   });
 }
 
@@ -76,8 +81,8 @@ export function queryModifier<T>(
   offset: number | null | undefined,
   callback: GenericCallback<Array<T>>
 ): void {
-  const sortFieldName = (sortBy || defaultSortBy).split(".").pop();
-  if(isFieldBigNumber(sortFieldName!)) {
+  const sortFieldName = (sortBy || defaultSortBy || "").split(".").pop();
+  if(sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
     queryModifierUserland(db, query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset, callback);
   } else {
     queryModifierDB(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset).asCallback(callback);
