@@ -205,34 +205,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
-    it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
-      // marketId, outcomeId, side, numShares, limitPrice, maxCost
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, undefined, '0', undefined))
-      assert.deepEqual(store.getActions()[0], {
-        type: 'UPDATE_TRADE_IN_PROGRESS',
-        data: {
-          marketId: 'testBinaryMarketId',
-          outcomeId: 0,
-          details: {
-            side: 'buy',
-            numShares: '10',
-            sharesFilled: '0',
-            limitPrice: '0',
-            totalFee: '0',
-            totalCost: '0',
-            feePercent: '0',
-            settlementFees: '0',
-            sharesDepleted: '0',
-            otherSharesDepleted: '0',
-            tokensDepleted: '0',
-            shareBalances: ['0', '0'],
-            worstCaseFees: '0',
-            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
-          },
-        },
-      }, "Didn't produce the expected tradeDetails object")
-    })
-
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
       store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
@@ -466,33 +438,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
     })
 
-    it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 0, BUY, undefined, '0', undefined))
-      assert.deepEqual(store.getActions()[0], {
-        type: 'UPDATE_TRADE_IN_PROGRESS',
-        data: {
-          marketId: 'testCategoricalMarketId',
-          outcomeId: 0,
-          details: {
-            side: 'buy',
-            numShares: '10',
-            sharesFilled: '0',
-            limitPrice: '0',
-            totalFee: '0',
-            totalCost: '0',
-            feePercent: '0',
-            settlementFees: '0',
-            sharesDepleted: '0',
-            otherSharesDepleted: '0',
-            tokensDepleted: '0',
-            shareBalances: ['0', '0', '0', '0'],
-            worstCaseFees: '0',
-            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
-          },
-        },
-      }, "Didn't produce the expected tradeDetails object")
-    })
-
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
@@ -712,33 +657,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
           },
         },
       }, `Didn't update the tradeDetails object to the new calcs given new limit`)
-    })
-
-    it('should handle a trade in progress if limitPrice is set to 0 on a scalar market where 0 should be valid', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketId', 0, BUY, undefined, '0', undefined))
-      assert.deepEqual(store.getActions()[0], {
-        type: 'UPDATE_TRADE_IN_PROGRESS',
-        data: {
-          marketId: 'testScalarMarketId',
-          outcomeId: 0,
-          details: {
-            side: 'buy',
-            numShares: '10',
-            sharesFilled: '0',
-            limitPrice: '0',
-            totalFee: '0',
-            totalCost: '100',
-            feePercent: '0',
-            settlementFees: '0',
-            sharesDepleted: '0',
-            otherSharesDepleted: '0',
-            tokensDepleted: '100',
-            shareBalances: ['0', '0'],
-            worstCaseFees: '0',
-            tradeGroupId: store.getActions()[0].data.details.tradeGroupId,
-          },
-        },
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
     })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
