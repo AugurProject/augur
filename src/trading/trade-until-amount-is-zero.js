@@ -2,6 +2,7 @@
 
 var assign = require("lodash").assign;
 var speedomatic = require("speedomatic");
+var BigNumber = require("bignumber.js");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
 var calculateTradeGas = require("./calculate-trade-gas");
@@ -18,6 +19,7 @@ var constants = require("../constants");
  * @param {Object} p Parameters object.
  * @param {string} p._price Normalized limit price for this trade, as a base-10 string.
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
+ * @param {string} p.sharesProvided Number of shares already owned and provided for this trade, as a base-10 string.
  * @param {string} p.numTicks The number of ticks for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
@@ -36,9 +38,11 @@ function tradeUntilAmountIsZero(p) {
   var displayAmount = p._fxpAmount;
   var displayPrice = p._price;
   var orderType = p._direction;
+  var sharesProvided = new BigNumber(p.sharesProvided, 10);
+  var amountNotOwned = new BigNumber(displayAmount, 10).minus(sharesProvided);
   var tradeCost = calculateTradeCost({
     displayPrice: displayPrice,
-    displayAmount: displayAmount,
+    displayAmount: amountNotOwned,
     numTicks: p.numTicks,
     orderType: orderType,
     minDisplayPrice: p.minPrice,
@@ -72,8 +76,12 @@ function tradeUntilAmountIsZero(p) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
+        var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
+        var newSharesProvided = newAmount.minus(amountNotOwned);
+        newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
+          _fxpAmount: newAmount.toFixed(),
+          sharesProvided: newSharesProvided,
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

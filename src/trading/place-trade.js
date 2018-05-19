@@ -8,6 +8,7 @@ var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.amount Number of shares to trade, as a base-10 string.
+ * @param {string} p.sharesProvided Number of shares already owned and provided for this trade, as a base-10 string.
  * @param {string} p.limitPrice Display (non-normalized) limit price for this trade, as a base-10 string.
  * @param {string} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string} p.minPrice The minimum display (non-normalized) price for this market, as a base-10 string.
@@ -16,7 +17,6 @@ var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
- * @param {string=} p.estimatedCost Total cost (in ETH) of this trade, as a base-10 string.
  * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  * @param {boolean=} p.doNotCreateOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
