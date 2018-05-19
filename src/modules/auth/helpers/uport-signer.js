@@ -1,10 +1,9 @@
-import { connectToUport } from 'modules/auth/helpers/connect-to-uport'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
 import { MODAL_UPORT } from 'modules/modal/constants/modal-types'
 
-export const uPortSigner = transaction => (dispatch) => {
-  const uPortSigner = connectToUport().sendTransaction(transaction, uri => dispatch(updateModal({ type: MODAL_UPORT, uri })))
+export const uPortSigner = (uPort, transaction) => (dispatch, getState) => {
+  const uPortSigner = uPort.sendTransaction(transaction, uri => dispatch(updateModal({ type: MODAL_UPORT, uri })))
   uPortSigner
     .then(() => dispatch(closeModal()))
     .catch(err => dispatch(updateModal({ type: MODAL_UPORT, error: `Failed to Sign with "${err}"`, canClose: true })))
