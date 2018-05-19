@@ -38,11 +38,10 @@ function tradeUntilAmountIsZero(p) {
   var displayAmount = p._fxpAmount;
   var displayPrice = p._price;
   var orderType = p._direction;
-  var sharesProvided = new BigNumber(p.sharesProvided, 10);
-  var amountNotOwned = new BigNumber(displayAmount, 10).minus(sharesProvided);
   var tradeCost = calculateTradeCost({
     displayPrice: displayPrice,
-    displayAmount: amountNotOwned,
+    displayAmount: displayAmount,
+    sharesProvided: p.sharesProvided,
     numTicks: p.numTicks,
     orderType: orderType,
     minDisplayPrice: p.minPrice,
@@ -77,7 +76,7 @@ function tradeUntilAmountIsZero(p) {
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
         var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
-        var newSharesProvided = newAmount.minus(amountNotOwned);
+        var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
         newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
         tradeUntilAmountIsZero(assign({}, p, {
           _fxpAmount: newAmount.toFixed(),
