@@ -5,8 +5,7 @@ import logError from 'utils/log-error'
 import { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const updateSingleMarketOrderBook = (updatedOrdersInMarket, isOrderCreation) => (dispatch, getState) => (
-  Object.keys(updatedOrdersInMarket).forEach(outcome => updatedOrdersInMarket[outcome].forEach(orderLog => (dispatch(updateOrderBook(orderLog.marketId, outcome, (orderLog.orderType === '0' ? BUY : SELL), getState().orderBooks[orderLog.marketId][orderLog.outcome]))
-  )))
+  Object.keys(updatedOrdersInMarket).forEach(outcome => updatedOrdersInMarket[outcome].forEach(orderLog => (dispatch(updateOrderBook(orderLog.marketId, outcome, (orderLog.orderType === '0' ? BUY : SELL), { [orderLog.orderId]: orderLog })))))
 )
 
 export const updateOrdersInMarket = (marketId, updatedOrdersInMarket, isOrderCreation, callback = logError) => (dispatch, getState) => {
