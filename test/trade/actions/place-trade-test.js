@@ -64,6 +64,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     })
     store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
       totalCost: '10000000',
+      sharesDepleted: '0',
+      otherSharesDepleted: '0',
     }))
     const storeActions = store.getActions()
     const approvalAction = storeActions[1]
@@ -103,6 +105,8 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     })
     store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
       totalCost: '10000000',
+      sharesDepleted: '0',
+      otherSharesDepleted: '0',
     }))
     const storeActions = store.getActions()
     assert.deepEqual(storeActions.length, 1, 'more actions dispatched then expected')
