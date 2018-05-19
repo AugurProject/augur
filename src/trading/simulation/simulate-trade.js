@@ -44,11 +44,11 @@ function simulateTrade(p) {
   if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = p.price ? new BigNumber(p.price, 10) : p.price;
-  var ethValueTotal = price.times(sharesToCover);
-  if (ethValueTotal.lt(constants.MINIMUM_TRADE_VALUE)) throw new Error("Order value must be greater than 0.0001 ETH");
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
   var minPrice = new BigNumber(p.minPrice, 10);
   var maxPrice = new BigNumber(p.maxPrice, 10);
+  var ethValueTotal = price.minus(minPrice).times(sharesToCover);
+  if (ethValueTotal.lt(constants.MINIMUM_TRADE_VALUE)) throw new Error("Order value must be greater than 0.0001 ETH");
   var marketCreatorFeeRate = new BigNumber(p.marketCreatorFeeRate, 10);
   var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
