@@ -37,7 +37,7 @@ function AugurNodeController() {
     this.augurDbPath = path.join(__dirname, '../augur.db')
     if (!fs.existsSync(this.configPath)) {
         this.config = defaultConfig;
-        fs.writeFileSync(this.configPath, JSON.stringify(this.config));
+        fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4));
     }
     else {
         this.config = JSON.parse(fs.readFileSync(this.configPath));
@@ -111,7 +111,7 @@ AugurNodeController.prototype.onSaveNetworkConfig = function (event, data) {
                 this.restart();
             }
     }
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config));
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4));
     event.sender.send('saveNetworkConfigResponse', data);
 }
 
@@ -120,7 +120,7 @@ AugurNodeController.prototype.onSwitchNetwork = function (event, data) {
     this.config.networks[data.network] = data.networkConfig;
     this.networkConfig = this.config.networks[this.config.network];
     this.restart();
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config));
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4));
     event.sender.send('onSwitchNetworkResponse', data);
 }
 
