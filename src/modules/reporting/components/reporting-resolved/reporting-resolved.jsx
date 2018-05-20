@@ -74,7 +74,7 @@ export default class ReportingResolved extends Component {
           heading="Resolved"
         />
         { isForkingMarketFinalized &&
-          <div>
+          <div className={Styles['ReportingResolved__forked-market-card']}>
             <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
             <DisputeMarketCard
               market={forkingMarket}

@@ -3,12 +3,6 @@
 .AccountUniverses {
   background: white;
   padding: 5.5rem 4.625rem 7rem;
-
-  h4 {
-    font-weight: bold;
-    margin-bottom: 3em;
-    text-transform: uppercase;
-  }
 }
 
 .AccountUniverses__heading {
@@ -33,11 +27,21 @@
 
   > div {
     margin-right: 2%;
-    min-width: 31%;
+    width: 32%;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
 .AccountUniverses__description {
+  > h4 {
+    font-weight: bold;
+    margin-bottom: 3em;
+    text-transform: uppercase;
+  }
+
   > a {
     &:extend(.caps--large);
 
@@ -54,9 +58,18 @@
   .AccountUniverses {
     padding: 3.125rem 2rem;
   }
+
+  .AccountUniverses__main > div {
+    width: 48%;
+  }
 }
 
 @media @breakpoint-mobile-medium {
+  .AccountUniverses__main > div {
+    margin-right: 0;
+    width: 100%;
+  }
+
   .AccountUniverses__heading {
     margin-bottom: 1rem;
 
@@ -66,6 +79,11 @@
   }
 
   .AccountUniverses__description {
+    > h4 {
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+    }
+
     > p {
       font-size: @font-size-normal;
       line-height: @font-size-somewhat-large;

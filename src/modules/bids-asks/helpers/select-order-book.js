@@ -6,7 +6,7 @@ import store from 'src/store'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { BIDS, ASKS, CANCELED } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/trade/constants/types'
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
@@ -84,6 +84,7 @@ const selectAggregatePricePoints = memoize((outcomeId, side, orders, orderCancel
   const shareCountPerPrice = Object.keys(orders[outcomeId][side])
     .map(orderId => orders[outcomeId][side][orderId])
     .filter(order => orderCancellation[order.orderId] !== CLOSE_DIALOG_CLOSING)
+    .filter(order => order.orderState !== CANCELED)
     .map(order => ({
       ...order,
       isOfCurrentUser: isOrderOfUser(order, currentUserAddress),

@@ -14,6 +14,7 @@
 .AccountUniverseDescription__container {
   border-bottom: 1px solid @color-lightergray;
   display: flex;
+  justify-content: space-between;
   padding-bottom: 1em;
 }
 
@@ -44,15 +45,22 @@
 
 .AccountUniversesDescription__button {
   &:extend(.button--purple all);
+
+  margin-right: 1rem;
+  min-width: 7.75rem;
 }
 
 .AccountUniversesDescription__current_universe_button {
   &:extend(.button--white--short all);
 
-  border: 1px solid @color-darkpurple;
+  border: 2px solid @color-darkpurple;
   color: @color-darkpurple;
+  cursor: auto;
+  margin-right: 1rem;
+  min-width: 7.75rem;
 
-  &:disabled {
+  &:hover {
+    background-color: @color-white;
     color: @color-darkpurple;
   }
 }
