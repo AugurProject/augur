@@ -219,7 +219,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .select(["initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR initial_reports.disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
+    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR initial_reports.disavowed IN (?, ?) OR markets.forking)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .where("markets.universe", universe)
     .where("initial_reports.reporter", reporter)
     .where("initial_reports.redeemed", 0);
@@ -229,7 +229,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?) OR markets.needsDisavowal)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
+    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?) OR markets.needsDisavowal or markets.forking)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .andWhere("markets.universe", universe)
     .andWhere("balances.owner", reporter);
   const forkedMarketQuery = db("markets")
@@ -288,6 +288,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
 
     const marketDisputed: AddressMap = {};
 
+    console.log(result.crowdsourcers);
     let fees = _.reduce(result.crowdsourcers, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
       marketDisputed[feeWindowCompletionStake.marketId] = true;
       const disavowed = feeWindowCompletionStake.disavowed || feeWindowCompletionStake.needsDisavowal;
