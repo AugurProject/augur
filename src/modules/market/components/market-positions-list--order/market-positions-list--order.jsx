@@ -83,7 +83,7 @@ export default class Order extends Component {
         }
       >
         <li>
-          { outcomeName }
+          { outcomeName || orderPrice}
           { pending &&
             <span className={Styles.Order__pending}>
               <span>{`${this.orderStatusText[orderCancellationStatus]}`}</span>
