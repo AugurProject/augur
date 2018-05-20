@@ -128,7 +128,7 @@ export default class MarketPositionsListPosition extends Component {
         }
       >
         <li>
-          { outcomeName }
+          { outcomeName || getValue(position, 'purchasePrice.formatted')}
         </li>
         <li>
           { positionShares }
