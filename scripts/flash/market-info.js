@@ -33,7 +33,7 @@ function marketInfo(augur, args, auth, callback) {
       if (marketInfo === null) {
         return callback("Market is null");
       }
-      Object.keys(marketInfo).forEach(function (key) {
+      Object.keys(marketInfo).sort().forEach(function (key) {
         var item = marketInfo[key];
         if (item) {
           if (typeof(item) !== "object") {
