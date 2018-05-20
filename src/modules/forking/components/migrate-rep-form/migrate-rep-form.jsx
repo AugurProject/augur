@@ -208,7 +208,7 @@ export default class MigrateRepForm extends Component {
                 >{outcome.name === 'Indeterminate' ? 'Market is Invalid': outcome.name}
                   <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep.formatted) || '0'} REP Migrated</span>
                   { outcome && outcome.winner &&
-                    <span className={Styles.MigrateRepForm__winning_outcome}> WINNING OUTCOME</span>
+                    <span className={Styles.MigrateRepForm__winning_outcome}> WINNING UNIVERSE</span>
                   }
                 </button>
               </li>
