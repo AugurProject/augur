@@ -10,6 +10,7 @@ const otherMarket = "0x0000000000000000000000000000000000000222";
 const getForkRows = (db, params, callback) => parallel({
   forkingMarket: next => db("markets").where({universe: params.log.universe, forking: 1}).asCallback(next),
   otherMarket: next => db("markets").where({marketId: otherMarket}).asCallback(next),
+  universe: next => db("universes").where({universe: params.log.universe}).asCallback(next),
 }, callback);
 // const getUniverse = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
 
@@ -67,6 +68,7 @@ describe("blockchain/log-processors/universe-forked", () => {
         assert.equal(records.forkingMarket[1].marketId, "0x00000000000000000000000000000000000000f1");
         assert.equal(records.forkingMarket[1].forking, 1);
         assert.equal(records.otherMarket[0].needsDisavowal, 1);
+        assert.equal(records.universe[0].forked, 1);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
@@ -75,6 +77,7 @@ describe("blockchain/log-processors/universe-forked", () => {
         assert.equal(records.forkingMarket[0].marketId, "0x00000000000000000000000000000000000000f1");
         assert.equal(records.forkingMarket[0].forking, 1);
         assert.equal(records.otherMarket[0].needsDisavowal, 0);
+        assert.equal(records.universe[0].forked, 0);
       },
     },
   });
