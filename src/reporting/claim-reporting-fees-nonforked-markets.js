@@ -31,6 +31,8 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
  * @property {string|null} initialReporter Ethereum contract address of the non-Forked Market's InitialReporter, as a hexadecimal string.
  */
 
+var CROWDSOURCER_REDEEM_ESTIMATE = new BigNumber(500000, 10);
+
 function redeemContractFees(p, payload, successfulTransactions, failedTransactions, gasEstimates) {
   var redeemableContracts = [];
   var i;
@@ -42,10 +44,17 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
   }
   for (i = 0; i < p.nonforkedMarkets.length; i++) {
     for (var j = 0; j < p.nonforkedMarkets[i].crowdsourcers.length; j++) {
-      redeemableContracts.push({
-        address: p.nonforkedMarkets[i].crowdsourcers[j],
-        type: contractTypes.DISPUTE_CROWDSOURCER,
-      });
+      var crowdsourcerAddress = p.nonforkedMarkets[i].crowdsourcers[j];
+      var marketWasDisavowed = successfulTransactions.disavowCrowdsourcers.indexOf(p.nonforkedMarkets[i].marketId) !== -1;
+      if (p.estimateGas && marketWasDisavowed) {
+        gasEstimates.crowdsourcerRedeem.push({address: crowdsourcerAddress, estimate: CROWDSOURCER_REDEEM_ESTIMATE});
+        gasEstimates.totals.crowdsourcerRedeem = gasEstimates.totals.crowdsourcerRedeem.plus(CROWDSOURCER_REDEEM_ESTIMATE);
+      } else {
+        redeemableContracts.push({
+          address: crowdsourcerAddress,
+          type: contractTypes.DISPUTE_CROWDSOURCER,
+        });
+      }
     }
     if (p.forkedMarket) {
       if (p.nonforkedMarkets[i].isFinalized) {
@@ -235,7 +244,7 @@ function claimReportingFeesNonforkedMarkets(p) {
 
   if (p.forkedMarket) {
     async.eachLimit(p.nonforkedMarkets, PARALLEL_LIMIT, function (nonforkedMarket, nextNonforkedMarket) {
-      if (nonforkedMarket.isFinalized) {
+      if (nonforkedMarket.isFinalized || nonforkedMarket.crowdsourcersAreDisavowed) {
         nextNonforkedMarket();
       } else {
         api().Market.disavowCrowdsourcers(assign({}, payload, {
