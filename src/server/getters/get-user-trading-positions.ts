@@ -19,8 +19,7 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
   const query = db.select(["positions.marketId", "positions.outcome", "positions.averagePrice", "positions.numShares", "positions.realizedProfitLoss", "positions.unrealizedProfitLoss", "markets.marketType"]).from("positions").join("markets", "positions.marketId", "markets.marketId").where("positions.account", account);
   if (universe != null) query.where("markets.universe", universe);
   if (marketId != null) query.where("positions.marketId", marketId);
-  queryModifier(query, "outcome", "asc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err: Error|null, positionsRows?: Array<PositionsRowWithMarketType<BigNumber>>): void => {
+  queryModifier(db, query, "outcome", "asc", sortBy, isSortDescending, limit, offset, (err: Error|null, positionsRows?: Array<PositionsRowWithMarketType<BigNumber>>): void => {
     if (err) return callback(err);
     if (!positionsRows) return callback(new Error("Internal error retrieving positions"));
 

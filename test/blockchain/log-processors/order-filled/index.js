@@ -158,7 +158,6 @@ describe("blockchain/log-processors/order-filled", () => {
           amount: new BigNumber("1.42857142857142", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
-        console.log(records.markets.volume.toNumber());
         assert.deepEqual(records.markets, {
           volume: new BigNumber("1.42857142857142", 10),
           sharesOutstanding: new BigNumber("2", 10),

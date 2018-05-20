@@ -47,7 +47,6 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
     if (feeWindow != null) query.where("feeWindow", feeWindow);
     if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
     if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-    queryModifier(query, "creationBlockNumber", "asc", sortBy, isSortDescending, limit, offset);
     return query;
   }
 
@@ -70,8 +69,8 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
   crowdsourcersQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
   if (marketId != null) crowdsourcersQuery.where("crowdsourcers.marketId", marketId);
   parallel({
-    initialReport: (next: AsyncCallback) => initialReportQuery.asCallback(next),
-    crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
+    initialReport: (next: AsyncCallback) => queryModifier(db, initialReportQuery, "creationBlockNumber", "asc", sortBy, isSortDescending, limit, offset, next),
+    crowdsourcers: (next: AsyncCallback) => queryModifier(db, crowdsourcersQuery, "creationBlockNumber", "asc", sortBy, isSortDescending, limit, offset, next),
   }, (err: Error|null, participantResults: ParticipantResults<BigNumber>): void => {
     if (err) return callback(err);
     if (!participantResults) return callback(new Error("Internal error retrieving reporting history"));
