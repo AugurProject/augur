@@ -4,6 +4,7 @@ import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-pro
 import { createBigNumber } from 'utils/create-big-number'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
+import { ZERO } from 'modules/trade/constants/numbers'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 import logError from 'utils/log-error'
 import noop from 'utils/noop'
@@ -19,9 +20,9 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
   const bnAllowance = createBigNumber(loginAccount.allowance)
   const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10)
   const otherSharesDepleted = createBigNumber(tradeInProgress.otherSharesDepleted, 10)
-  const sharesProvided = sharesDepleted.eq(0) ? otherSharesDepleted.toString() : sharesDepleted.toString()
-  // try and make sure that we actually have an updated allowance.
-  if (bnAllowance.lte(0)) dispatch(checkAccountAllowance())
+  const sharesProvided = sharesDepleted.eq(ZERO) ? otherSharesDepleted.toFixed() : sharesDepleted.toFixed()
+  // make sure that we actually have an updated allowance.
+  if (bnAllowance.lte(ZERO)) dispatch(checkAccountAllowance())
   const placeTradeParams = {
     meta: loginAccount.meta,
     amount: tradeInProgress.numShares,
