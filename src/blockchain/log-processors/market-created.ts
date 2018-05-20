@@ -112,7 +112,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
               { creationTime: getCurrentTime() },
               log,
               marketsDataToInsert));
-            db.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+            db.select("popularity").from("categories").where({ category: log.topic, universe: log.universe }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
               db.insert({ category: log.topic, universe: log.universe }).into("categories").asCallback(callback);
