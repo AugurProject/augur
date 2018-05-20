@@ -8,7 +8,7 @@ export interface CategoriesRow {
 }
 
 export function getCategories(db: Knex, universe: Address, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err: Error|null, result?: Array<CategoriesRow>) => void): void {
-  let query = db.select(["category", "popularity"]).from("categories").where({ universe });
+  const query = db.select(["category", "popularity"]).from("categories").where({ universe });
   queryModifier(db, query, "popularity", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, categoriesInfo?: Array<CategoriesRow>): void => {
     if (err) return callback(err);
     if (!categoriesInfo) return callback(null);

@@ -5,7 +5,7 @@ import { Augur } from "augur.js";
 import { Address, TradingHistoryRow, GenericCallback } from "../../types";
 import { queryTradingHistory as queryTradingHistoryCallback} from "./database";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-const {promisify} = require('util');
+import { promisify } from "util";
 const queryTradingHistory = promisify(queryTradingHistoryCallback);
 
 const DEFAULT_NUMBER_OF_BUCKETS = 30;

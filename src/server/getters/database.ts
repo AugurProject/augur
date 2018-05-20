@@ -35,7 +35,7 @@ export function queryModifierDB(
   sortBy: string | null | undefined,
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
-  offset: number | null | undefined
+  offset: number | null | undefined,
 ): Knex.QueryBuilder {
   query = query.orderBy(sortBy || defaultSortBy, sortDirection(isSortDescending, defaultSortOrder));
   if (limit != null) query = query.limit(limit);
@@ -52,7 +52,7 @@ function queryModifierUserland<T>(
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
   offset: number | null | undefined,
-  callback: GenericCallback<Array<T>>
+  callback: GenericCallback<Array<T>>,
 ): void {
   type RowWithSort = T & {xMySorterFieldx: BigNumber};
 
@@ -61,7 +61,7 @@ function queryModifierUserland<T>(
 
   if (sortBy != null) {
     sortField = sortBy;
-    if(typeof(isSortDescending) !== "undefined" && isSortDescending !== null) {
+    if (typeof(isSortDescending) !== "undefined" && isSortDescending !== null) {
       sortDescending = isSortDescending;
     }
   }
@@ -75,7 +75,7 @@ function queryModifierUserland<T>(
       if (limit == null && offset == null)
         return callback(null, results);
       return callback(null, results.slice(offset || 0, limit || results.length));
-    } catch(e) {
+    } catch (e) {
       callback(e);
     }
   });
@@ -90,10 +90,10 @@ export function queryModifier<T>(
   isSortDescending: boolean | null | undefined,
   limit: number | null | undefined,
   offset: number | null | undefined,
-  callback: GenericCallback<Array<T>>
+  callback: GenericCallback<Array<T>>,
 ): void {
   const sortFieldName = (sortBy || defaultSortBy || "").split(".").pop();
-  if(sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
+  if (sortFieldName !== "" && isFieldBigNumber(sortFieldName!)) {
     queryModifierUserland(db, query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset, callback);
   } else {
     queryModifierDB(query, defaultSortBy, defaultSortOrder, sortBy, isSortDescending, limit, offset).asCallback(callback);
@@ -158,7 +158,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
     }),
     {
       consensus,
-    }
+    },
   );
 }
 
@@ -221,7 +221,7 @@ export function queryTradingHistory(
   isSortDescending: boolean | null,
   limit: number | null,
   offset: number | null,
-  callback: GenericCallback<Array<TradingHistoryRow>>
+  callback: GenericCallback<Array<TradingHistoryRow>>,
 ): void {
   if (universe == null && marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
   const query = db
