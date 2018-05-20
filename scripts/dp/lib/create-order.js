@@ -75,6 +75,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
     var placeTradePayload = {
       meta: auth,
       amount: displayAmount,
+      sharesProvided: "0",
       limitPrice: displayPrice,
       minPrice: minPrice,
       maxPrice: maxPrice,

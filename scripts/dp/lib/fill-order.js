@@ -44,6 +44,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           augur.trading.placeTrade({
             meta: auth,
             amount: sharesToTrade,
+            sharesProvided: "0",
             limitPrice: displayPrice,
             numTicks: marketInfo.numTicks,
             minPrice: marketInfo.minPrice,
