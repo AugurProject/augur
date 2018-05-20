@@ -14,6 +14,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
   var tradeCost = augur.trading.calculateTradeCost({
     displayPrice: displayPrice,
     displayAmount: displayAmount,
+    sharesProvided: "0",
     numTicks: numTicks,
     orderType: orderTypeCode,
     minDisplayPrice: minPrice,
@@ -68,13 +69,14 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
           });
         },
       };
-      console.log("publicCreateOrder payload:", publicCreateOrderPayload);
+      if (debugOptions.cannedMarkets) console.log("publicCreateOrder payload:", publicCreateOrderPayload);
       augur.api.CreateOrder.publicCreateOrder(publicCreateOrderPayload);
     });
   } else {
     var placeTradePayload = {
       meta: auth,
       amount: displayAmount,
+      sharesProvided: "0",
       limitPrice: displayPrice,
       minPrice: minPrice,
       maxPrice: maxPrice,

@@ -39,6 +39,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -105,6 +106,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -171,6 +173,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -237,6 +240,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -302,6 +306,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
       minPrice: "0",
@@ -366,6 +371,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -445,6 +451,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -510,6 +517,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       numTicks: "10000",
       minPrice: "0",
@@ -574,6 +582,7 @@ describe("trading/trade-until-amount-is-zero", function () {
       _market: "MARKET_ADDRESS",
       _outcome: 2,
       _fxpAmount: "10",
+      sharesProvided: "0",
       _price: "0.5",
       estimatedCost: "5",
       numTicks: "10000",
@@ -625,6 +634,72 @@ describe("trading/trade-until-amount-is-zero", function () {
             },
             publicTrade: function () {
               assert.fail();
+            },
+          },
+        };
+      },
+    },
+  });
+  test({
+    description: "buy 10 outcome 1 @ 0.5 providing 5 shares of outcome 0",
+    params: {
+      meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
+      _direction: 0,
+      _market: "MARKET_ADDRESS",
+      _outcome: 1,
+      _fxpAmount: "10",
+      sharesProvided: "5",
+      _price: "0.5",
+      numTicks: "10000",
+      minPrice: "0",
+      maxPrice: "1",
+      _tradeGroupId: "0x1",
+      doNotCreateOrders: false,
+      onSent: function (res) {
+        assert.strictEqual(res.hash, "TRANSACTION_HASH");
+      },
+      onSuccess: function (res) {
+        assert.isNull(res);
+      },
+      onFailed: function (err) {
+        throw new Error(err);
+      },
+    },
+    mock: {
+      getTradeAmountRemaining: function (p, callback) {
+        callback(null, new BigNumber(0));
+      },
+      rpcInterface: {
+        eth: {
+          gasPrice: function (p, callback) {
+            callback(null, GAS_PRICE);
+          },
+        },
+        getCurrentBlock: function () {
+          return { gasLimit: "0x" + constants.MINIMUM_TRADE_GAS.times(2).toString(16) };
+        },
+      },
+      api: function () {
+        return {
+          Trade: {
+            publicFillBestOrder: function () {
+              assert.fail();
+            },
+            publicTrade: function (p) {
+              assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
+              assert.strictEqual(p.meta.accountType, "privateKey");
+              assert.strictEqual(p._direction, 0);
+              assert.strictEqual(p._market, "MARKET_ADDRESS");
+              assert.strictEqual(p._outcome, 1);
+              assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
+              assert.strictEqual(p._price, "0x1388");
+              assert.strictEqual(p._tradeGroupId, "0x1");
+              assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.times(2).times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER).toString(16));
+              assert.isFunction(p.onSent);
+              assert.isFunction(p.onSuccess);
+              assert.isFunction(p.onFailed);
+              p.onSent({ hash: "TRANSACTION_HASH" });
+              p.onSuccess({ hash: "TRANSACTION_HASH", value: speedomatic.fix("5", "hex") });
             },
           },
         };

@@ -2,6 +2,7 @@
 
 var assign = require("lodash").assign;
 var speedomatic = require("speedomatic");
+var BigNumber = require("bignumber.js");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
 var calculateTradeGas = require("./calculate-trade-gas");
@@ -18,6 +19,7 @@ var constants = require("../constants");
  * @param {Object} p Parameters object.
  * @param {string} p._price Normalized limit price for this trade, as a base-10 string.
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
+ * @param {string} p.sharesProvided Number of shares already owned and provided for this trade, as a base-10 string.
  * @param {string} p.numTicks The number of ticks for this market.
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
@@ -39,6 +41,7 @@ function tradeUntilAmountIsZero(p) {
   var tradeCost = calculateTradeCost({
     displayPrice: displayPrice,
     displayAmount: displayAmount,
+    sharesProvided: p.sharesProvided,
     numTicks: p.numTicks,
     orderType: orderType,
     minDisplayPrice: p.minPrice,
@@ -52,7 +55,7 @@ function tradeUntilAmountIsZero(p) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice"]), {
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
     tx: assign({ value: convertBigNumberToHexString(cost), gas: speedomatic.prefixHex(calculateTradeGas().toString(16)) }, p.tx),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
@@ -72,8 +75,12 @@ function tradeUntilAmountIsZero(p) {
           if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
           return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
         }
+        var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
+        var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
+        newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
         tradeUntilAmountIsZero(assign({}, p, {
-          _fxpAmount: convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(),
+          _fxpAmount: newAmount.toFixed(),
+          sharesProvided: newSharesProvided,
           onSent: noop, // so that p.onSent only fires when the first transaction is sent
         }));
       });

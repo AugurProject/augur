@@ -326,6 +326,36 @@ module.exports = [{
   },
 }, {
   marketType: "categorical",
+  _description: "Which city will have the lowest median single-family home price in " + thisYear + "?",
+  _endTime: parseInt(new Date("4-1-" + nextYear).getTime() / 1000, 10),
+  _outcomes: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong"],
+  _topic: "housing",
+  _extraInfo: {
+    resolutionSource: "http://www.demographia.com",
+    tags: ["economy", "bubble"],
+  },
+  orderBook: {
+    buy: {
+      0: singleOutcomeBids,
+      1: singleOutcomeBids,
+      2: singleOutcomeBids,
+      3: singleOutcomeBids,
+      4: singleOutcomeBids,
+      5: singleOutcomeBids,
+      6: singleOutcomeBids,
+    },
+    sell: {
+      0: singleOutcomeAsks,
+      1: singleOutcomeAsks,
+      2: singleOutcomeAsks,
+      3: singleOutcomeAsks,
+      4: singleOutcomeAsks,
+      5: singleOutcomeAsks,
+      6: singleOutcomeAsks,
+    },
+  },
+}, {
+  marketType: "categorical",
   _description: "Which city will have the highest median single-family home price in " + thisYear + "?",
   _endTime: parseInt(new Date("4-1-" + nextYear).getTime() / 1000, 10),
   _outcomes: ["London", "New York", "Los Angeles", "San Francisco", "Tokyo", "Palo Alto", "Hong Kong", "other"],

@@ -25,6 +25,7 @@ describe("trading/place-trade", function () {
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       amount: "10",
+      sharesProvided: "0",
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
@@ -77,6 +78,7 @@ describe("trading/place-trade", function () {
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       amount: "10",
+      sharesProvided: "0",
       limitPrice: "2",
       minPrice: "1",
       maxPrice: "3",
