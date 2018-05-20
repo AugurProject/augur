@@ -7,6 +7,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("parentUniverse", 42).nullable();
       table.integer("payoutId").nullable();
       table.string("reputationToken", 42).notNullable();
+      table.boolean("forked").notNullable();
     });
   });
 };

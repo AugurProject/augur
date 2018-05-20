@@ -9,6 +9,7 @@ describe("blockchain/log-processors/universe-forked", () => {
     const otherMarket = "0x0000000000000000000000000000000000000222";
     const getForkingMarket = (db, params, callback) => db("markets").where({ universe: params.log.universe, forking: 1 }).asCallback(callback);
     const getOtherMarket = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
+    const getUniverse = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);

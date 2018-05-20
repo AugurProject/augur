@@ -18,14 +18,18 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
           marketId: forkingMarket,
           reportingState: ReportingState.FORKING,
         });
-        db("markets").increment("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket).asCallback(callback);
+        db("markets").increment("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket)
+          .asCallback((err) => {
+            if (err) return callback(err);
+            db("universes").update("forked", true).where({ universe: log.universe }).asCallback(callback);
+          });
       });
     });
   });
 }
 
 export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db("markets").select("marketId").where({forking: 1, universe: log.universe}).first().asCallback((err, forkingMarket?: {marketId: Address} ) => {
+  db("markets").select("marketId").where({ forking: 1, universe: log.universe }).first().asCallback((err, forkingMarket?: { marketId: Address }) => {
     if (err) return callback(err);
     if (forkingMarket == null) return callback(new Error(`Could not retrieve forking market to rollback for universe ${log.universe}`));
     db("markets").update("forking", 0).where("marketId", forkingMarket.marketId).asCallback((err) => {
@@ -36,7 +40,10 @@ export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: For
         marketId: forkingMarket,
         reportingState: ReportingState.CROWDSOURCING_DISPUTE,
       });
-      db("markets").decrement("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket.marketId).asCallback(callback);
+      db("markets").decrement("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket.marketId).asCallback((err) => {
+        if (err) return callback(err);
+        db("universes").update("forked", false).where({ universe: log.universe }).asCallback(callback);
+      });
     });
   });
 }
