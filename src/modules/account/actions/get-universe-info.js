@@ -129,6 +129,7 @@ function getUniverseName(parentUniverseData, universeData) {
     return outcomeId
   }
 
-  const outcome = parentUniverseData.reportableOutcomes.find(outcome => outcome.id === outcomeId)
-  return outcome ? outcome.name : 'Unidentified'
+  const outcome = parentUniverseData.reportableOutcomes[outcomeId]
+  const outComeLabel = outcome && (outcome.description || outcome.name)
+  return outComeLabel || 'Unidentified'
 }
