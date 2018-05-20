@@ -144,6 +144,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           test: 'object',
         },
         address: '0x1233',
+        allowance: '100',
       },
       newMarket: {
         properties: 'value',
