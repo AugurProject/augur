@@ -46,7 +46,7 @@ describe("trading/simulation/simulate-buy", function () {
         otherSharesDepleted: new BigNumber("3", 10),
         sharesDepleted: ZERO,
         tokensDepleted: ZERO,
-        shareBalances: [ZERO, new BigNumber("4", 10)],
+        shareBalances: [ZERO, new BigNumber("2", 10)],
       });
     },
   });

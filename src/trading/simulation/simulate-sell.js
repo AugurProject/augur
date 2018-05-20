@@ -29,7 +29,7 @@ function simulateSell(outcome, sharesToCover, shareBalances, tokenBalance, userA
     var simulatedFillBidOrder = simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, outcome, shareBalances);
     simulatedSell = sumSimulatedResults(simulatedSell, simulatedFillBidOrder);
     if (simulatedFillBidOrder.sharesToCover.gt(PRECISION.zero) && price !== null) {
-      simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(simulatedFillBidOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances));
+      simulatedSell = sumSimulatedResults(simulatedSell, simulateCreateAskOrder(simulatedFillBidOrder.sharesToCover, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, simulatedFillBidOrder.shareBalances));
     }
   }
 

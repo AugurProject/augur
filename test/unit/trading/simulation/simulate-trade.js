@@ -8,11 +8,14 @@ var simulateTrade = require("../../../../src/trading/simulation/simulate-trade")
 describe("trading/simulation/simulate-trade", function () {
   var test = function (t) {
     it(t.description, function () {
+      var result = null;
       try {
-        t.assertions(simulateTrade(t.params));
+        result = simulateTrade(t.params);
       } catch (exc) {
-        t.assertions(exc);
+        result = exc;
       }
+
+      t.assertions(result);
     });
   };
   test({
@@ -57,7 +60,7 @@ describe("trading/simulation/simulate-trade", function () {
         otherSharesDepleted: "3",
         sharesDepleted: "0",
         tokensDepleted: "0",
-        shareBalances: ["0", "4"],
+        shareBalances: ["0", "2"],
       });
     },
   });
@@ -259,6 +262,59 @@ describe("trading/simulation/simulate-trade", function () {
     },
     assertions: function (err) {
       assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
+    },
+  });
+
+  test({
+    description: "User places a BUY order for 10 shares of YES at .5 which should cost 2.5 ETH to send.",
+    params: {
+      "orderType": 0,
+      "outcome": 1,
+      "shareBalances": ["5", "0"],
+      "tokenBalance": "17.121611917",
+      "userAddress": "0xb82f241a91d3cd37a75e07ef0b4b01b1322de041",
+      "minPrice": "0",
+      "maxPrice": "1",
+      "price": 0.5,
+      "shares": "10",
+      "marketCreatorFeeRate": "0.02",
+      "singleOutcomeOrderBook": {
+        "buy": {},
+        "sell": {
+          "0xd7043bdfa9b2e999cfede9d02ca47c3a535c48b95bd95478dc5c3764db3eff11": {
+            "orderId": "0xd7043bdfa9b2e999cfede9d02ca47c3a535c48b95bd95478dc5c3764db3eff11",
+            "creationBlockNumber": 1324,
+            "transactionHash": "0xbb92cee8f2f49a6256406e858fb99c72a491e9582f92fb3404b3cbffc3ad3d92",
+            "logIndex": 2,
+            "shareToken": "0x6da40916a32047664645d4d10ef2d38e9e8948cd",
+            "owner": "0xbd355a7e5a7adb23b51f54027e624bfe0e238df6",
+            "creationTime": 1526836896,
+            "orderState": "OPEN",
+            "price": "0.5",
+            "amount": "5",
+            "fullPrecisionPrice": "0.5",
+            "fullPrecisionAmount": "5",
+            "tokensEscrowed": "0",
+            "sharesEscrowed": "5",
+          },
+        },
+      },
+      "shouldCollectReportingFees": true,
+      "reportingFeeRate": "0.01",
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        "otherSharesDepleted": "5",
+        "settlementFees": "0.075",
+        "shareBalances": [
+          "0",
+          "0",
+        ],
+        "sharesDepleted": "0",
+        "sharesFilled": "5",
+        "tokensDepleted": "2.5",
+        "worstCaseFees": "0.075",
+      });
     },
   });
 });
