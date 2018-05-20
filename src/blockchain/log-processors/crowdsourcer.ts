@@ -41,7 +41,11 @@ function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: Err
 }
 
 function updateIncompleteCrowdsourcers(db: Knex, marketId: Address, callback: ErrorCallback) {
-  db("crowdsourcers").update({ completed: 0 }).where({ marketId, completed: null }).asCallback(callback);
+  db("crowdsourcers").update({ completed: 0, disavowed: db.raw("disavowed + 1") }).where({ marketId, completed: null }).asCallback(callback);
+}
+
+function rollbackIncompleteCrowdsourcers(db: Knex, marketId: Address, callback: ErrorCallback) {
+  db("crowdsourcers").update({ completed: null, disavowed: db.raw("disavowed - 1") }).where({ marketId, completed: 0 }).asCallback(callback);
 }
 
 function rollbackCrowdsourcerCompletion(db: Knex, crowdsourcerId: Address, marketId: Address, callback: ErrorCallback) {
@@ -167,6 +171,7 @@ export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: A
       (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateDisputeRound(db, log.market, next),
       (next: AsyncCallback) => updateMarketFeeWindow(db, augur, log.universe, log.market, false, next),
+      (next: AsyncCallback) => rollbackIncompleteCrowdsourcers(db, log.market, next),
       (next: AsyncCallback) => updateTentativeWinningPayout(db, log.market, next),
     ], (err: Error|null) => {
       if (err) return callback(err);
