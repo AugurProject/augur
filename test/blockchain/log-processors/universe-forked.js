@@ -12,8 +12,6 @@ const getForkRows = (db, params, callback) => parallel({
   otherMarket: next => db("markets").where({marketId: otherMarket}).asCallback(next),
   universe: next => db("universes").where({universe: params.log.universe}).asCallback(next),
 }, callback);
-// const getUniverse = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
-
 
 describe("blockchain/log-processors/universe-forked", () => {
   const test = (t) => {
