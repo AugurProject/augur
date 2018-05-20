@@ -55,15 +55,26 @@ function queryModifierUserland<T>(
   callback: GenericCallback<Array<T>>
 ): void {
   type RowWithSort = T & {xMySorterFieldx: BigNumber};
-  query.select(db.raw(`? as "xMySorterFieldx"`, [sortBy || defaultSortBy])).asCallback((error: Error|null, rows: Array<T>) => {
+
+  let sortField: string = defaultSortBy;
+  let sortDescending: boolean = defaultSortOrder.toLowerCase() === "desc";
+
+  if (sortBy != null) {
+    sortField = sortBy;
+    if(typeof(isSortDescending) !== "undefined" && isSortDescending !== null) {
+      sortDescending = isSortDescending;
+    }
+  }
+
+  query.select(db.raw(`?? as "xMySorterFieldx"`, [sortField])).asCallback((error: Error|null, rows: Array<RowWithSort>) => {
     if (error) return callback(error);
     try {
-      const descendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(left.xMySorterFieldx, right.xMySorterFieldx);
-      const ascendingSorter  = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(right.xMySorterFieldx, left.xMySorterFieldx);
-      const results = rows.sort(isSortDescending ? descendingSorter : ascendingSorter);
+      const ascendingSorter = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(left.xMySorterFieldx, right.xMySorterFieldx);
+      const descendingSorter  = (left: RowWithSort, right: RowWithSort) => safeBigNumberCompare(right.xMySorterFieldx, left.xMySorterFieldx);
+      const results = rows.sort(sortDescending ? descendingSorter : ascendingSorter);
       if (limit == null && offset == null)
         return callback(null, results);
-      return callback(null, results.splice(offset || 0, limit || results.length));
+      return callback(null, results.slice(offset || 0, limit || results.length));
     } catch(e) {
       callback(e);
     }

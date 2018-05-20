@@ -8,7 +8,7 @@ describe("server/getters/get-markets-in-category", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getMarketsInCategory(db, t.params.universe, t.params.category, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsInCategory) => {
           t.assertions(err, marketsInCategory);
           db.destroy();
@@ -24,20 +24,20 @@ describe("server/getters/get-markets-in-category", () => {
       category: "test category",
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, [
+        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
         "0x0000000000000000000000000000000000000014",
-        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000017",
         "0x0000000000000000000000000000000000000018",
         "0x0000000000000000000000000000000000000019",
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000011",
+        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
         "0x00000000000000000000000000000000000000f1",
@@ -52,10 +52,10 @@ describe("server/getters/get-markets-in-category", () => {
       limit: 2,
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, [
+        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
-        "0x0000000000000000000000000000000000000013",
       ]);
     },
   });
@@ -66,7 +66,7 @@ describe("server/getters/get-markets-in-category", () => {
       category: "empty category",
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, []);
     },
   });

@@ -8,7 +8,7 @@ describe("server/getters/get-markets-created-by-user", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getMarketsCreatedByUser(db, t.params.universe, t.params.creator, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsCreatedByUser) => {
           t.assertions(err, marketsCreatedByUser);
           db.destroy();
@@ -24,7 +24,7 @@ describe("server/getters/get-markets-created-by-user", () => {
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
@@ -50,7 +50,7 @@ describe("server/getters/get-markets-created-by-user", () => {
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -63,7 +63,7 @@ describe("server/getters/get-markets-created-by-user", () => {
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, []);
     },
   });

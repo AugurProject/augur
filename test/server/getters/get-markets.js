@@ -25,20 +25,20 @@ describe("server/getters/get-markets", () => {
       universe: "0x000000000000000000000000000000000000000b",
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsMatched, [
+        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
         "0x0000000000000000000000000000000000000014",
-        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000017",
         "0x0000000000000000000000000000000000000018",
         "0x0000000000000000000000000000000000000019",
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000011",
+        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
         "0x00000000000000000000000000000000000000f1",
@@ -51,7 +51,7 @@ describe("server/getters/get-markets", () => {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsMatched, []);
     },
   });
@@ -62,19 +62,19 @@ describe("server/getters/get-markets", () => {
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, [
+        "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
         "0x0000000000000000000000000000000000000014",
         "0x0000000000000000000000000000000000000015",
-        "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000017",
         "0x0000000000000000000000000000000000000018",
         "0x0000000000000000000000000000000000000019",
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000011",
+        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
         "0x00000000000000000000000000000000000000f1",
@@ -88,7 +88,7 @@ describe("server/getters/get-markets", () => {
       creator: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -101,7 +101,7 @@ describe("server/getters/get-markets", () => {
       creator: "0x0000000000000000000000000000000000000bbb",
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, []);
     },
   });
@@ -112,20 +112,20 @@ describe("server/getters/get-markets", () => {
       category: "test category",
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, [
+        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
         "0x0000000000000000000000000000000000000013",
         "0x0000000000000000000000000000000000000014",
-        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000016",
         "0x0000000000000000000000000000000000000017",
         "0x0000000000000000000000000000000000000018",
         "0x0000000000000000000000000000000000000019",
         "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000011",
+        "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",
         "0x0000000000000000000000000000000000000222",
         "0x00000000000000000000000000000000000000f1",
@@ -140,10 +140,10 @@ describe("server/getters/get-markets", () => {
       limit: 2,
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, [
+        "0x0000000000000000000000000000000000000015",
         "0x0000000000000000000000000000000000000012",
-        "0x0000000000000000000000000000000000000013",
       ]);
     },
   });
@@ -154,7 +154,7 @@ describe("server/getters/get-markets", () => {
       category: "empty category",
     },
     assertions: (err, marketsInCategory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInCategory, []);
     },
   });
@@ -166,7 +166,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsUpcomingDesignatedReporting, []);
     },
   });
@@ -179,7 +179,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsUpcomingDesignatedReporting, [
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -193,7 +193,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -207,7 +207,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsAwaitingDesignatedReporting, []);
     },
   });
@@ -220,7 +220,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -242,7 +242,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: true,
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000012",
@@ -263,7 +263,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -276,7 +276,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsAwaitingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsAwaitingDesignatedReporting, []);
     },
   });
@@ -289,7 +289,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000001",
         "0x0000000000000000000000000000000000000002",
@@ -309,7 +309,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000003",
       ]);
@@ -322,7 +322,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0xf0f0f0f0f0f0f0f0b0b0b0b0b0b0b0f0f0f0f0b0",
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsUpcomingDesignatedReporting, []);
     },
   });
@@ -335,7 +335,7 @@ describe("server/getters/get-markets", () => {
       isSortDescending: false,
     },
     assertions: (err, marketsUpcomingDesignatedReporting) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsUpcomingDesignatedReporting, [
         "0x0000000000000000000000000000000000000222",
       ]);
@@ -349,7 +349,7 @@ describe("server/getters/get-markets", () => {
       designatedReporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000222",
       ]);
