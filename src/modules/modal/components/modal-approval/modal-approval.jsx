@@ -16,7 +16,7 @@ const ModalApproval = p => (
       </button>
       <button
         onClick={(e) => {
-          e.preventDefault()
+          if (!p.modal.continueDefault) e.preventDefault()
           p.approveAccount(p.modal.approveOnSent, p.modal.approveCallback)
           p.closeModal()
         }}
@@ -33,6 +33,7 @@ ModalApproval.propTypes = {
   modal: PropTypes.shape({
     approveCallback: PropTypes.func.isRequired,
   }),
+  continueDefault: PropTypes.bool,
 }
 
 export default ModalApproval
