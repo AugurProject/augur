@@ -2,34 +2,34 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processUniverseForkedLog, processUniverseForkedLogRemoval } = require("../../../build/blockchain/log-processors/universe-forked");
+const {parallel} = require("async");
+const {processUniverseForkedLog, processUniverseForkedLogRemoval} = require("../../../build/blockchain/log-processors/universe-forked");
+
+const otherMarket = "0x0000000000000000000000000000000000000222";
+
+const getForkRows = (db, params, callback) => parallel({
+  forkingMarket: next => db("markets").where({universe: params.log.universe, forking: 1}).asCallback(next),
+  otherMarket: next => db("markets").where({marketId: otherMarket}).asCallback(next),
+}, callback);
+// const getUniverse = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
+
 
 describe("blockchain/log-processors/universe-forked", () => {
   const test = (t) => {
-    const otherMarket = "0x0000000000000000000000000000000000000222";
-    const getForkingMarket = (db, params, callback) => db("markets").where({ universe: params.log.universe, forking: 1 }).asCallback(callback);
-    const getOtherMarket = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
-    const getUniverse = (db, params, callback) => db("markets").where({ marketId: otherMarket }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
           processUniverseForkedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
-            getForkingMarket(trx, t.params, (err, records) => {
+            getForkRows(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              getOtherMarket(trx, t.params, (err, records) => {
-                t.assertions.otherMarketOnAdded(err, records);
-                processUniverseForkedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                  assert.isNull(err);
-                  getForkingMarket(trx, t.params, (err, records) => {
-                    t.assertions.onRemoved(err, records);
-                    getOtherMarket(trx, t.params, (err, records) => {
-                      t.assertions.otherMarketOnRemoved(err, records);
-                      db.destroy();
-                      done();
-                    });
-                  });
+              processUniverseForkedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
+                getForkRows(trx, t.params, (err, records) => {
+                  t.assertions.onRemoved(err, records);
+                  db.destroy();
+                  done();
                 });
               });
             });
@@ -58,24 +58,23 @@ describe("blockchain/log-processors/universe-forked", () => {
     assertions: {
       onAdded: (err, records) => {
         assert.isNull(err);
-        assert.equal(records.length, 2);
-        assert.equal(records[0].universe, "0x000000000000000000000000000000000000000b");
-        assert.equal(records[0].marketId, "0x0000000000000000000000000000000000000211");
-        assert.equal(records[0].forking, 1);
+        assert.equal(records.forkingMarket.length, 2);
+        assert.equal(records.forkingMarket[0].universe, "0x000000000000000000000000000000000000000b");
+        assert.equal(records.forkingMarket[0].marketId, "0x0000000000000000000000000000000000000211");
+        assert.equal(records.forkingMarket[0].forking, 1);
         // Pre-existing hard-coded forked market
-        assert.equal(records[1].universe, "0x000000000000000000000000000000000000000b");
-        assert.equal(records[1].marketId, "0x00000000000000000000000000000000000000f1");
-        assert.equal(records[1].forking, 1);
-      },
-      otherMarketOnAdded: (err, records) => {
-        assert.equal(records[0].needsDisavowal, 1);
+        assert.equal(records.forkingMarket[1].universe, "0x000000000000000000000000000000000000000b");
+        assert.equal(records.forkingMarket[1].marketId, "0x00000000000000000000000000000000000000f1");
+        assert.equal(records.forkingMarket[1].forking, 1);
+        assert.equal(records.otherMarket[0].needsDisavowal, 1);
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
-        assert.equal(records.length, 1);
-      },
-      otherMarketOnRemoved: (err, records) => {
-        assert.equal(records[0].needsDisavowal, 0);
+        assert.equal(records.forkingMarket.length, 1);
+        assert.equal(records.forkingMarket[0].universe, "0x000000000000000000000000000000000000000b");
+        assert.equal(records.forkingMarket[0].marketId, "0x00000000000000000000000000000000000000f1");
+        assert.equal(records.forkingMarket[0].forking, 1);
+        assert.equal(records.otherMarket[0].needsDisavowal, 0);
       },
     },
   });
