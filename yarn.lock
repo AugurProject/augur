@@ -539,9 +539,9 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-augur-core@1.0.0-8:
-  version "1.0.0-8"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-8.tgz#8b248df946977a07e06b97f0da961b5485e79f81"
+augur-core@1.0.0-9:
+  version "1.0.0-9"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-9.tgz#1c776115ffac69be074a1cdfa009a76a8322588c"
   dependencies:
     "@types/chai" "4.0.4"
     "@types/chai-as-promised" "7.1.0"
@@ -576,12 +576,12 @@ augur-core@1.0.0-8:
     solidity-coverage "0.4.15"
     yargs "11.0.0"
 
-augur.js@4.11.0-22:
-  version "4.11.0-22"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-22.tgz#dc7e184d1a0e86ef65f07b033fd08ff309caf422"
+augur.js@4.11.0-23:
+  version "4.11.0-23"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.11.0-23.tgz#006d23166de51bf0a766271697ab54f4e631fe70"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-8"
+    augur-core "1.0.0-9"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
