@@ -87,6 +87,7 @@ function buildTradeTransaction(trade, marketsData) {
   meta.shares = formattedShares.formatted
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
+  meta.txhash = transaction.transactionHash
   transaction.meta = meta
   header.status = SUCCESS
   if (transaction.market) {
