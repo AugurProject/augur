@@ -190,6 +190,8 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
 
 function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: (err: (Error|null)) => void) {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe"])
+    .join("universes", "markets.universe", "universes.universe")
+    .where("universes.forked", 0)
     .whereIn("markets.feeWindow", expiredFeeWindows)
     .whereNot("markets.needsMigration", 1)
     .whereNot("markets.forking", 1)
@@ -227,10 +229,12 @@ export function advanceFeeWindowActive(db: Knex, augur: Augur, blockNumber: numb
 
 function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumber: number, newActiveFeeWindows: Array<Address>, callback: AsyncCallback) {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "activeFeeWindow.feeWindow"])
+    .join("universes", "markets.universe", "universes.universe")
     .join("fee_windows as activeFeeWindow", "activeFeeWindow.universe", "markets.universe")
     .whereIn("markets.feeWindow", newActiveFeeWindows)
     .where("activeFeeWindow.state", FeeWindowState.CURRENT)
     .where("reportingState", ReportingState.AWAITING_NEXT_WINDOW)
+    .where("universes.forked", 0)
     .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {

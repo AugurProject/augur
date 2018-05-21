@@ -1,8 +1,25 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { FormattedEventLog, ErrorCallback, Address, ReportingState } from "../../types";
+import { FormattedEventLog, ErrorCallback, Address, ReportingState, MarketsContractAddressRow } from "../../types";
 import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
+import { getMarketsWithReportingState } from "../../server/getters/database";
+import { forEach } from "async";
+
+// set all crowdsourcers completed to 0, and markets.disputeRounds = null if no initial report, 0 if there is
+function uncompleteNonforkingCrowdsourcers(db: Knex, universe: Address, forkingMarket: Address, callback: ErrorCallback) {
+  db("crowdsourcers").update("completed", 0)
+    .whereIn("marketId", (queryBuilder) => queryBuilder.from("markets").select("marketId").where({ universe }).whereNot("marketId", forkingMarket))
+    .asCallback((err) => {
+      if (err) return callback(err);
+      db("markets").update({ disputeRounds: null }).where({ universe }).whereNot("marketId", forkingMarket).asCallback((err) => {
+        if (err) return callback(err);
+        db("markets").update({ disputeRounds: 0 }).where({ universe }).whereNot("marketId", forkingMarket)
+          .whereIn("marketId", (queryBuilder) => queryBuilder.from("initial_reports").select("marketId"))
+          .asCallback(callback);
+      });
+    });
+}
 
 export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   augur.api.Universe.getForkingMarket({ tx: { to: log.universe } }, (err: Error|null, forkingMarket?: Address): void => {
@@ -21,7 +38,31 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
         db("markets").increment("needsDisavowal", 1).where({ universe: log.universe }).whereNot("marketId", forkingMarket)
           .asCallback((err) => {
             if (err) return callback(err);
-            db("universes").update("forked", true).where({ universe: log.universe }).asCallback(callback);
+            db("universes").update("forked", true).where({ universe: log.universe }).asCallback((err: Error|null) => {
+              if (err) return callback(err);
+              getMarketsWithReportingState(db).from("markets").select("markets.marketId")
+                .where({ universe: log.universe })
+                .whereIn("reportingState", [ReportingState.AWAITING_FINALIZATION, ReportingState.CROWDSOURCING_DISPUTE, ReportingState.AWAITING_NEXT_WINDOW])
+                .asCallback((err, marketsToRevert?: Array<MarketsContractAddressRow>) => {
+                  if (err || marketsToRevert == null) return callback(err);
+                  console.log(marketsToRevert);
+                  forEach(marketsToRevert, (marketIdRow: MarketsContractAddressRow, nextMarketId: ErrorCallback): void => {
+                    updateMarketState(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
+                      if (err) return nextMarketId(err);
+                      augurEmitter.emit("MarketState", {
+                        eventName: "MarketState",
+                        universe: log.universe,
+                        marketId: marketIdRow.marketId,
+                        reportingState: ReportingState.AWAITING_FORK_MIGRATION,
+                      });
+                      nextMarketId(null);
+                    });
+                  }, (err) => {
+                    if (err) return callback(err);
+                    uncompleteNonforkingCrowdsourcers(db, log.universe, forkingMarket, callback);
+                  });
+                });
+            });
           });
       });
     });

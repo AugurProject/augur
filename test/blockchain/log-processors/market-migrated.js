@@ -3,9 +3,12 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../build/blockchain/log-processors/market-migrated");
+const {getMarketsWithReportingState} = require("../../../build/server/getters/database");
+const ReportingState = require("../../../build/types").ReportingState;
 
 const getMarket = (db, params, callback) => {
-  db.select(["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal"]).from("markets").where({"markets.marketId": params.log.market}).asCallback(callback);
+  getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "feeWindow", "reportingState"])
+    .from("markets").where({"markets.marketId": params.log.market}).asCallback(callback);
 };
 
 describe("blockchain/log-processors/market-migrated", () => {
@@ -48,6 +51,20 @@ describe("blockchain/log-processors/market-migrated", () => {
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
         logIndex: 0,
       },
+      augur: {
+        constants: {
+          CONTRACT_INTERVAL: {
+            DISPUTE_ROUND_DURATION_SECONDS: 999,
+          },
+        },
+        api: {
+          Universe: {
+            getFeeWindowByTimestamp: (args, callback) => {
+              return callback(null, "0x0000000000000000000000000000000000FEE000");
+            },
+          },
+        },
+      },
     },
     assertions: {
       onAdded: (err, marketRow) => {
@@ -58,6 +75,8 @@ describe("blockchain/log-processors/market-migrated", () => {
             "universe": "NEW_UNIVERSE",
             "needsMigration": 0,
             "needsDisavowal": 0,
+            "feeWindow": "0x0000000000000000000000000000000000FEE000",
+            "reportingState": ReportingState.CROWDSOURCING_DISPUTE,
           },
         ]);
       },
@@ -69,6 +88,8 @@ describe("blockchain/log-processors/market-migrated", () => {
             "universe": "ORIGINAL_UNIVERSE",
             "needsMigration": 1,
             "needsDisavowal": 1,
+            "feeWindow": "0x0000000000000000000000000000000000FEE000",
+            "reportingState": ReportingState.CROWDSOURCING_DISPUTE,
           },
         ]);
       },
