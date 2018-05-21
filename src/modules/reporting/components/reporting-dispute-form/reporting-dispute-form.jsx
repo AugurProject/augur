@@ -417,7 +417,12 @@ export default class ReportingDisputeForm extends Component {
                 placeholder="0.0000 REP"
                 value={s.inputStake}
                 className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
-                onChange={(e) => { this.validateStake({ raw: e.target.value }) }}
+                onChange={(e) => {
+                  if (e.target.value > 0) this.validateStake({ raw: e.target.value })
+                  this.setState({
+                    inputStake: e.target.value,
+                  })
+                }}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
                 <div className={Styles.ReportingDisputeForm__container}>
