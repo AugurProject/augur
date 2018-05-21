@@ -9,6 +9,7 @@ import { getForkMigrationTotals } from 'modules/forking/actions/get-fork-migrati
 const mapStateToProps = state => ({
   universe: state.universe.id,
   forkingMarketId: state.universe.forkingMarket,
+  currentBlockNumber: state.blockchain.currentBlockNumber,
 })
 
 const mapDispatchToProps = dispatch => ({
