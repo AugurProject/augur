@@ -17,7 +17,7 @@ interface OrderRow {
 export function getBetterWorseOrders(db: Knex, marketId: Address, outcome: number, orderType: string, price: string, callback: (err?: Error|null, result?: BetterWorseResult) => void): void {
   if (marketId == null || outcome == null || orderType == null || price == null) return callback(new Error("Must provide marketId, outcome, orderType, and price"));
   if (orderType !== "buy" && orderType !== "sell") return callback(new Error(`orderType must be either "buy" or "sell"`));
-  const ordersQuery = db("orders").select("orderId", "price").where({ orderState: "OPEN", marketId, outcome, orderType });
+  const ordersQuery = db("orders").select("orderId", "price").where({ orderState: "OPEN", marketId, outcome, orderType }).whereNull("isRemoved");
   ordersQuery.asCallback((err: Error|null, orders: Array<OrderRow>) => {
     if (err) return callback(err);
     const priceBN = new BigNumber(price);
