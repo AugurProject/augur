@@ -69,12 +69,6 @@ export default class ReportingDispute extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.availableRep !== this.props.availableRep) return true
-    if (nextState !== this.state) return true
-    return !isEqual(nextState, this.state)
-  }
-
   prevPage() {
     this.setState({ currentStep: this.state.currentStep <= 0 ? 0 : this.state.currentStep - 1 })
   }
