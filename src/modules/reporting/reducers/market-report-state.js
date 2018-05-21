@@ -5,6 +5,7 @@ import { UPDATE_OPEN_REPORTING_MARKETS } from 'src/modules/reporting/actions/upd
 import { UPDATE_AWAITING_DISPUTE_MARKETS } from 'modules/reporting/actions/update-awaiting-dispute'
 import { UPDATE_CROWD_DISPUTE_MARKETS } from 'modules/reporting/actions/update-crowd-dispute'
 import { UPDATE_RESOLVED_REPORTING_MARKETS } from 'modules/reporting/actions/update-resolved-reporting'
+import { REMOVE_MARKET } from '../../markets/actions/update-markets-data'
 
 const DEFAULT_STATE = {
   designated: [],
@@ -51,6 +52,14 @@ export default function (marketReportState = DEFAULT_STATE, action) {
         ...marketReportState,
         resolved: action.data,
       }
+    case REMOVE_MARKET:
+      return Object.keys(marketReportState).reduce((p, type) => {
+        const markets = marketReportState[type].filter(marketId => marketId !== action.marketId)
+        return {
+          ...p,
+          [type]: markets,
+        }
+      }, {})
     case RESET_STATE:
       return DEFAULT_STATE
     default:
