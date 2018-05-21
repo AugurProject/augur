@@ -289,7 +289,9 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     const marketDisputed: AddressMap = {};
 
     let fees = _.reduce(result.crowdsourcers, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
-      marketDisputed[feeWindowCompletionStake.marketId] = true;
+      if (feeWindowCompletionStake.completed) {
+        marketDisputed[feeWindowCompletionStake.marketId] = true;
+      }
       const disavowed = feeWindowCompletionStake.disavowed || feeWindowCompletionStake.needsDisavowal;
       const getsRep = feeWindowCompletionStake.winning || disavowed || !feeWindowCompletionStake.completed;
       const earnsRep = feeWindowCompletionStake.completed && (feeWindowCompletionStake.winning > 0);
@@ -385,6 +387,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
       .on("cashFeeWindow.owner", db.raw("feeToken.feeWindow"))
       .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
   });
+  console.log(participantQuery.toSQL())
   participantQuery.leftJoin("balances AS cashParticipant", function () {
     this
       .on("cashParticipant.owner", db.raw("participantAddress"))
