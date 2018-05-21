@@ -46,6 +46,16 @@ class ForkMigrationTotals extends Component {
     this.getForkMigrationTotals()
   }
 
+  componentWillReceiveProps(newProps) {
+    const updateBlock = createBigNumber(this.state.blockNumber)
+    const currentBlock = createBigNumber(newProps.currentBlockNumber)
+    if (currentBlock.gt(updateBlock)) {
+      this.setState({
+        blockNumber: this.props.currentBlockNumber,
+      })
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const updateBlock = createBigNumber(this.state.blockNumber)
     const currentBlock = createBigNumber(nextProps.currentBlockNumber)
@@ -65,7 +75,6 @@ class ForkMigrationTotals extends Component {
       if (err) return console.error(err)
       this.setState({
         forkMigrationTotalsMap,
-        blockNumber: this.props.currentBlockNumber,
       })
     })
   }
