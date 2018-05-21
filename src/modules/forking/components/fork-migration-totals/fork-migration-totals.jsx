@@ -48,7 +48,7 @@ class ForkMigrationTotals extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const updateBlock = createBigNumber(this.state.blockNumber).plus(createBigNumber(1))
+    const updateBlock = createBigNumber(this.state.blockNumber)
     const currentBlock = createBigNumber(nextProps.currentBlockNumber)
     if (currentBlock.gt(updateBlock)) return true
     return false
