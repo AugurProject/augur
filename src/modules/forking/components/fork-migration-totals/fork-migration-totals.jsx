@@ -40,7 +40,6 @@ class ForkMigrationTotals extends Component {
     }
 
     this.showMore = this.showMore.bind(this)
-    this.getForkMigrationTotals()
   }
 
   componentWillMount() {
@@ -54,7 +53,7 @@ class ForkMigrationTotals extends Component {
     return false
   }
 
-  componentDidUpdate() {
+  componentWillUpdate() {
     this.getForkMigrationTotals()
   }
 
