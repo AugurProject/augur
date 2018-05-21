@@ -50,6 +50,11 @@ describe("blockchain/log-processors/completesets", () => {
             },
           },
         },
+        utils: {
+          convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
+            return onChainPrice.times(tickSize).plus(minDisplayPrice);
+          },
+        },
         trading: {
           calculateProfitLoss: (p) => ({
             position: "2",

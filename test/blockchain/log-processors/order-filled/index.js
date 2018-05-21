@@ -109,6 +109,11 @@ describe("blockchain/log-processors/order-filled", () => {
           normalizePrice: p => p.price,
         },
       },
+      utils: {
+        convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
+          return onChainPrice.times(tickSize).plus(minDisplayPrice);
+        },
+      },
     },
     aux: {
       marketId: "0x0000000000000000000000000000000000000001",

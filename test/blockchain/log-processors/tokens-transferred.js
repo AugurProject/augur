@@ -141,6 +141,11 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           },
           normalizePrice: p => p.price,
         },
+        utils: {
+          convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
+            return onChainPrice.times(tickSize).plus(minDisplayPrice);
+          },
+        },
       },
     },
     assertions: {

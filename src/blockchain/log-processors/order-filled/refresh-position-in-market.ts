@@ -12,14 +12,14 @@ export function refreshPositionInMarket(db: Knex, augur: Augur, marketId: Addres
     const minPrice = marketsRow.minPrice!;
     const maxPrice = marketsRow.maxPrice!;
     const numTicks = marketsRow.numTicks!;
-    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice).toFixed();
+    const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
     augur.trading.getPositionInMarket({
       market: marketId,
       address: account,
-      tickSize,
+      tickSize: tickSize.toFixed(),
     }, (err: Error|null, positions: Array<string>): void => {
       if (err) return callback(err);
-      upsertPositionInMarket(db, augur, account, marketId, numTicks, positions, (err: Error|null) => {
+      upsertPositionInMarket(db, augur, account, marketId, minPrice, tickSize, positions, (err: Error|null) => {
         if (err) return callback(err);
         callback(err, positions);
       });
