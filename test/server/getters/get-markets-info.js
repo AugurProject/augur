@@ -557,7 +557,7 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "An array with a null value",
     params: {
-      marketIds: [null],
+      marketIds: [undefined],
     },
     assertions: (err, marketInfo) => {
       assert.isNull(err);
