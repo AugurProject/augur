@@ -77,10 +77,9 @@ export default class MarketOutcomeOrderbook extends Component {
           headerHeight={headerHeight}
         />
         <div
-          ref={(asks) => { this.asks = asks }}
           className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
         >
-          <div className={Styles.MarketOutcomeOrderBook__container}>
+          <div className={Styles.MarketOutcomeOrderBook__container} ref={(asks) => { this.asks = asks }} >
             {times(9 - orderBookAsks.length, i => (
               <div
                 key={i}
