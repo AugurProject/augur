@@ -426,7 +426,7 @@ export default class ReportingDisputeForm extends Component {
                     inputStake: e.target.value,
                     validations,
                   })
-                  this.props.updateState({
+                  updateState({
                     validations,
                   })
                 }}
