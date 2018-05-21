@@ -555,6 +555,16 @@ describe("server/getters/get-markets-info", () => {
     },
   });
   test({
+    description: "An array with a null value",
+    params: {
+      marketIds: [undefined],
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketInfo, [null]);
+    },
+  });
+  test({
     description: "market does not exist",
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],

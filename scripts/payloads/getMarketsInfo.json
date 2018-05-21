@@ -2,7 +2,5 @@
   "id": 4,
   "jsonrpc": "2.0",
   "method": "getMarketsInfo",
-  "params": {
-    "marketIds": ["0x0000000000000000000000000000000000000001"]
-  }
+  "params": { "marketIds":  [null] }
 }

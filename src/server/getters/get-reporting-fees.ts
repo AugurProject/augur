@@ -288,7 +288,6 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
 
     const marketDisputed: AddressMap = {};
 
-    console.log(result.crowdsourcers);
     let fees = _.reduce(result.crowdsourcers, (acc: RepStakeResults, feeWindowCompletionStake: FeeWindowCompletionStakeRow) => {
       marketDisputed[feeWindowCompletionStake.marketId] = true;
       const disavowed = feeWindowCompletionStake.disavowed || feeWindowCompletionStake.needsDisavowal;

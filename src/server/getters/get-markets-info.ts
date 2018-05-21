@@ -13,14 +13,15 @@ interface MarketOutcomeResult {
 
 export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (err: Error|null, result?: UIMarketsInfo<string>) => void): void {
   const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db);
-  if (marketIds == null) return callback(new Error("must include marketIds parameter"));
-  marketsQuery.whereIn("markets.marketId", marketIds);
+  if (marketIds == null || ! _.isArray(marketIds) ) return callback(new Error("must include marketIds parameter"));
+  const cleanedMarketIds = _.compact(marketIds);
+  marketsQuery.whereIn("markets.marketId", cleanedMarketIds);
   marketsQuery.leftJoin("blocks as finalizationBlockNumber", "finalizationBlockNumber.blockNumber", "markets.finalizationBlockNumber").select("finalizationBlockNumber.timestamp as finalizationTime");
 
   parallel({
     marketsRows: (next: AsyncCallback) => marketsQuery.asCallback(next),
-    outcomesRows: (next: AsyncCallback) => db("outcomes").whereIn("marketId", marketIds).asCallback(next),
-    winningPayoutRows: (next: AsyncCallback) => db("payouts").whereIn("marketId", marketIds).where("winning", 1).asCallback(next),
+    outcomesRows: (next: AsyncCallback) => db("outcomes").whereIn("marketId", cleanedMarketIds).asCallback(next),
+    winningPayoutRows: (next: AsyncCallback) => db("payouts").whereIn("marketId", cleanedMarketIds).where("winning", 1).asCallback(next),
   }, (err: Error|null, marketOutcomeResult: MarketOutcomeResult ): void => {
     if (err) return callback(err);
     const { marketsRows, outcomesRows, winningPayoutRows } = marketOutcomeResult;

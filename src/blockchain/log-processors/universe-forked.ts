@@ -45,7 +45,6 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
                 .whereIn("reportingState", [ReportingState.AWAITING_FINALIZATION, ReportingState.CROWDSOURCING_DISPUTE, ReportingState.AWAITING_NEXT_WINDOW])
                 .asCallback((err, marketsToRevert?: Array<MarketsContractAddressRow>) => {
                   if (err || marketsToRevert == null) return callback(err);
-                  console.log(marketsToRevert);
                   forEach(marketsToRevert, (marketIdRow: MarketsContractAddressRow, nextMarketId: ErrorCallback): void => {
                     updateMarketState(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
                       if (err) return nextMarketId(err);
