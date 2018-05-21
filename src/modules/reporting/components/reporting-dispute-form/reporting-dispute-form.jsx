@@ -323,6 +323,7 @@ export default class ReportingDisputeForm extends Component {
     const {
       market,
       stakeInfo,
+      updateState,
     } = this.props
     const s = this.state
 
@@ -418,9 +419,15 @@ export default class ReportingDisputeForm extends Component {
                 value={s.inputStake}
                 className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
                 onChange={(e) => {
-                  if (e.target.value > 0) this.validateStake({ raw: e.target.value })
+                  if (e.target.value > 0) return this.validateStake({ raw: e.target.value })
+                  const { validations } = this.state
+                  validations.stake = 'The stake field is required.'
                   this.setState({
                     inputStake: e.target.value,
+                    validations,
+                  })
+                  this.props.updateState({
+                    validations,
                   })
                 }}
               />

@@ -71,6 +71,7 @@ export default class ReportingDispute extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.availableRep !== this.props.availableRep) return true
+    if (nextState !== this.state) return true
     return !isEqual(nextState, this.state)
   }
 
