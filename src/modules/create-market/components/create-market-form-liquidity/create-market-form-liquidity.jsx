@@ -20,6 +20,7 @@ import Styles from 'modules/create-market/components/create-market-form-liquidit
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 
 const PRECISION = 4
+const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000)
 
 export default class CreateMarketLiquidity extends Component {
 
@@ -283,10 +284,10 @@ export default class CreateMarketLiquidity extends Component {
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
       initialLiquidityEth = newMarket.initialLiquidityEth.minus(action.tokensDepleted)
-      initialLiquidityGas = newMarket.initialLiquidityGas.minus(createBigNumber(action.gasEstimate || 0))
+      initialLiquidityGas = newMarket.initialLiquidityGas.minus(NEW_ORDER_GAS_ESTIMATE)
     } else {
       initialLiquidityEth = newMarket.initialLiquidityEth.plus(action.tokensDepleted)
-      initialLiquidityGas = newMarket.initialLiquidityGas.plus(createBigNumber(action.gasEstimate || 0))
+      initialLiquidityGas = newMarket.initialLiquidityGas.plus(NEW_ORDER_GAS_ESTIMATE)
     }
 
     updateNewMarket({ initialLiquidityEth, initialLiquidityGas })
