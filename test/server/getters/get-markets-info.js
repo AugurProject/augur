@@ -563,7 +563,7 @@ describe("server/getters/get-markets-info", () => {
       assert.isNull(err);
       assert.deepEqual(marketInfo, [null]);
     },
-  })
+  });
   test({
     description: "market does not exist",
     params: {
