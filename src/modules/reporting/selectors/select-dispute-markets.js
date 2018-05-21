@@ -18,7 +18,7 @@ export const selectMarketsInDispute = createSelector(
     if (isEmpty(markets)) {
       return []
     }
-    const filteredMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.id === universe.forkingMarket)
+    const filteredMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.AWAITING_FORK_MIGRATION || market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.id === universe.forkingMarket)
     // Potentially forking or forking markets come first
     const potentialForkingMarkets = []
     const nonPotentialForkingMarkets = []

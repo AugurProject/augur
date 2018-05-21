@@ -19,7 +19,7 @@ export const selectMarketDisputeOutcomes = createSelector(
     if (isEmpty(markets)) {
       return {}
     }
-    const disputeMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW)
+    const disputeMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.AWAITING_FORK_MIGRATION || market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW)
     const disputeOutcomes = {}
     const outcomes = disputeMarkets.reduce((p, m) => {
       if (m.disputeInfo) {

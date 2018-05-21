@@ -135,7 +135,7 @@ export default class ReportingDisputeMarkets extends Component {
                 outcomes={outcomes}
               />))
         }
-        { upcomingMarketsCount === 0 &&
+        { upcomingMarketsCount === 0 && nonForkingMarkets === 0 &&
           <NullStateMessage
             message="There are currently no markets slated for the upcoming dispute window."
           />
