@@ -1,49 +1,60 @@
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
+import * as _ from "lodash";
+import Augur from "augur.js";
 import { Address } from "../../types";
-import { getMarketsWithReportingState } from "./database";
+import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 
 interface ShareTokenBalances {
   marketId: Address;
-  balance: BigNumber;
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
+  numTicks: BigNumber;
   owner: Address;
   outcome: number;
-};
+  balance: BigNumber | null;
+}
 
+export interface MarketBalances {
+  [market: string]: Array<string>;
+}
 
-interface MarketBalances {
-  [market: string]: Array<string>
-};
-
-export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Address>, account: Address, callback: (err: Error|null, result?: Array<ShareTokenBalances>) => void): void {
+export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Address>, account: Address, callback: (err: Error|null, result?: MarketBalances) => void): void {
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
   if (account == null) return callback(new Error("must include account parameter"));
 
   // NB: we don't really need market state here, but this is a convenient
   // helper non-the-less considering simplifing.
-  const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["markets.marketId", "balances.balance", "balances.owner", "shareTokens.outcome"]);
-  marketsQuery.whereIn("markets.marketId", marketIds);
-  marketsQuery.join("tokens AS shareTokens", function () {
-    this
-      .on("shareTokens.marketId", "markets.marketId")
-      .andOn("symbol", db.raw("?", "shares"));
-  });
-  marketsQuery.join("balances", function () {
-    this
-      .on("balances.token", "shareTokens.contractAddress")
-      .andOn("balances.owner", db.raw("?", account));
-  });
-  marketsQuery.orderBy("markets.marketId");
-  marketsQuery.orderBy("shareTokens.outcome");
-  marketsQuery.asCallback(( err: Error|null, balances: Array<ShareTokenBalances>): void => {
+  const query = db("tokens")
+    .select("tokens.marketId", "tokens.outcome", "balances.balance", "markets.minPrice", "markets.maxPrice", "markets.numTicks")
+    .join("markets", function() {
+      this
+        .on("markets.marketId", "tokens.marketId");
+    })
+    .leftJoin("balances", function () {
+      this
+        .on("balances.token", "tokens.contractAddress")
+        .andOn("balances.owner", db.raw("?", account));
+    })
+    .orderBy("tokens.marketId")
+    .orderBy("tokens.outcome")
+    .whereIn("tokens.marketId", marketIds);
+
+  query.asCallback(( err: Error|null, balances: Array<ShareTokenBalances>): void => {
     if (err != null) return callback(err);
 
+    console.log(balances);
     const balancesByMarket = _.chain(balances)
       .groupBy((row) => row.marketId)
-      .mapValues((groupedBalances: Array<ShareTokenBalances>) => groupedBalances.map((row) => row.balance))
-      .value();
+      .mapValues((groupedBalances: Array<ShareTokenBalances>) => {
+        return groupedBalances.map((row) => {
+          if (row.balance === null) return "0";
 
-    console.log(balancesByMarket);
+          const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
+          return augur.utils.convertOnChainPriceToDisplayPrice(row.balance, row.minPrice, tickSize).toFixed();
+        });
+      })
+      .value();
 
     callback(null, balancesByMarket);
   });
