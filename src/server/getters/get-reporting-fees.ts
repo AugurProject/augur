@@ -70,7 +70,7 @@ interface ParticipantEthFeeRow extends EthFeeRow {
   feeTokenBalance: string;
   cashParticipant: string;
   reporterBalance: string;
-  size: BigNumber;
+  participantSupply: string;
   forking: boolean;
 }
 
@@ -367,7 +367,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
     "feeToken.feeWindow",
     "feeToken.token as feeToken",
     "reporterBalance",
-    "size",
+    "participantSupply",
     "forking",
     "reputationToken",
     "reputationTokenBalance",
@@ -403,7 +403,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
       const participantShareOfFeeWindow = totalFeeTokensInFeeWindow.isZero() ? ZERO : new BigNumber(ethFeeRows.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
       const cashInFeeWindow = new BigNumber(ethFeeRows.cashFeeWindow);
       const participantEthFees = participantShareOfFeeWindow.times(cashInFeeWindow);
-      const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.size);
+      const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.participantSupply);
       const ethFees = reporterShareOfParticipant.times(participantEthFees);
       return {
         participantAddress: ethFeeRows.participantAddress,
@@ -415,7 +415,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
     // keyBy/valuesIn reduces down to a single object per participantAddress
     const cashBalanceByParticipant: Array<ParticipantEthFeeRow> = _.valuesIn(_.keyBy(participantEthFeeRows, "participantAddress"));
     const participantEthFeesOnParticipant: Array<ParticipantEthFee> = _.map(cashBalanceByParticipant, (ethFeeRows) => {
-      const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.size);
+      const reporterShareOfParticipant = new BigNumber(ethFeeRows.reporterBalance).dividedBy(ethFeeRows.participantSupply);
       const participantEthFees = new BigNumber(ethFeeRows.cashParticipant);
       const ethFees = reporterShareOfParticipant.times(participantEthFees);
       return {
