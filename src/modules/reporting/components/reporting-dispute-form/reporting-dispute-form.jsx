@@ -181,6 +181,19 @@ export default class ReportingDisputeForm extends Component {
     const { updateState } = this.props
     const { ETHER } = augur.rpc.constants
     const updatedValidations = { ...this.state.validations }
+
+    if (rawStakeObj.raw <= 0) {
+      const { validations } = this.state
+      validations.stake = 'The stake field is required.'
+      this.setState({
+        inputStake: rawStakeObj.raw,
+        validations,
+      })
+      updateState({
+        validations,
+      })
+      return
+    }
     let completeStakeObj = rawStakeObj
 
     if (!completeStakeObj.formatted) {
@@ -418,18 +431,7 @@ export default class ReportingDisputeForm extends Component {
                 placeholder="0.0000 REP"
                 value={s.inputStake}
                 className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('stake') && s.validations.selectedOutcome })}
-                onChange={(e) => {
-                  if (e.target.value > 0) return this.validateStake({ raw: e.target.value })
-                  const { validations } = this.state
-                  validations.stake = 'The stake field is required.'
-                  this.setState({
-                    inputStake: e.target.value,
-                    validations,
-                  })
-                  updateState({
-                    validations,
-                  })
-                }}
+                onChange={e => this.validateStake({ raw: e.target.value })}
               />
               { s.selectedOutcomeName && s.selectedOutcomeName.length > 0 &&
                 <div className={Styles.ReportingDisputeForm__container}>
