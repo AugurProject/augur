@@ -160,6 +160,58 @@ describe("tests for test/trading-proceeds-claimed.db", () => {
   });
 });
 
+describe("tests for test/trading-proceeds-claimed-2.db", () => {
+  var connection = null;
+  var augur = new Augur();
+  const universe = "0x8e9d71cb6e9080bc04f6fd562f5dd68af0163baf";
+  const account1 = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
+  const endTime = Date.now();
+
+  beforeEach((done) => {
+    sqlite3.verbose();
+    connection = Knex({
+      client: "sqlite3",
+      connection: {
+        filename: "./test/trading-proceeds-claimed-2.db",
+      },
+      acquireConnectionTimeout: 5 * 60 * 1000,
+      useNullAsDefault: true,
+      postProcessResponse: postProcessDatabaseResults,
+    });
+
+    done();
+  });
+
+  afterEach((done) => {
+    connection.destroy();
+    done();
+  });
+
+  it("has a finalized market", (done) => {
+    connection("markets")
+      .select("*")
+      .whereNotNull("finalizationBlockNumber")
+      .asCallback((err, results) => {
+        assert.ifError(err);
+        assert.isNotNull(results);
+        assert.equal(results.length, 9);
+
+        done();
+      });
+  });
+
+  it("calculates PL for a user for all time", (done) => {
+    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551482278, null, (err, results) => {
+      try {
+        assert.deepEqual(results, []);
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+});
+
 
 
 describe("tests for test/profitloss.db", () => {

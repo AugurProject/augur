@@ -124,8 +124,8 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
     // defined in the `payouts` table. This will effectively adjust the unrealized
     // profit and loss for the shares held for this outcome for this bucket.
     if (outcomeFinalized !== null && outcomeFinalized.timestamp <= bucket.timestamp) {
-      console.log("Using finalized outcome price");
-      return Object.assign({}, bucket, { lastPrice: outcomeFinalized.lastPrice });
+      console.log(`Using finalized outcome price ${outcomeFinalized.timestamp} <= ${bucket.timestamp}`);
+      return Object.assign({}, bucket, { lastPrice: outcomeFinalized.lastPrice.toFixed() });
     }
 
     // This insertion point will give us the place in the sorted "outcomeTrades" array
