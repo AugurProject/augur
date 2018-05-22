@@ -50,7 +50,7 @@ export default class ReportingReport extends Component {
         selectedOutcome: null,
       },
       reporterGasCost: null,
-      designatedReportNoShowReputationBond: 0,
+      designatedReportNoShowReputationBond: formatEtherEstimate(props.market.designatedReportStake),
       gasEstimate: '0',
     }
 
@@ -102,7 +102,6 @@ export default class ReportingReport extends Component {
       const repAmount = formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond)
 
       this.setState({
-        designatedReportNoShowReputationBond: repAmount,
         reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
         stake: isOpenReporting ? '0' : repAmount.formatted,
       })
