@@ -25,7 +25,7 @@ do
     fi
 
     echo "Sell trade $i";
-    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a npx flash create-market-order --marketId $MARKET_ID --outcome $OUTCOME --orderType $TRANS_ONE_TYPE --shares "$(jot  -p 4 -r 1 0 1)" --price "${dataArray[$i]}"
+    ETHEREUM_PRIVATE_KEY=fae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a npx flash create-market-order --marketId $MARKET_ID --outcome $OUTCOME --orderType $TRANS_ONE_TYPE --amount "$(jot  -p 4 -r 1 0 1)" --price "${dataArray[$i]}"
 
     echo "Filling trade $i";
     ETHEREUM_PRIVATE_KEY=48c5da6dff330a9829d843ea90c2629e8134635a294c7e62ad4466eb2ae03712 npx flash fill-market-orders -m $MARKET_ID -o $OUTCOME -t $TRANS_TWO_TYPE;
