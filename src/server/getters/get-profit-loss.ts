@@ -184,7 +184,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
 
   // group these trades by their market & outcome, so we can process each
   // separately
-  const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome", "finalizedBlockNumber"])));
+  const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
 
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss
