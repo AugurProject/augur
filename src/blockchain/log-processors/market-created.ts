@@ -26,7 +26,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     const universePayload: {} = { tx: { to: log.universe, send: false } };
     parallel({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
-      designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getOrCacheDesignatedReportStake(universePayload, next),
+      designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
@@ -62,7 +62,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           feeWindow:                  onMarketContractData.feeWindow,
           endTime:                    parseInt(onMarketContractData.endTime!, 10),
           designatedReporter:         onMarketContractData.designatedReporter,
-          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake, WEI_PER_ETHER),
+          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake.balance, WEI_PER_ETHER),
           numTicks:                   onMarketContractData.numTicks,
           marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData.marketCreatorSettlementFeeDivisor!, 10),
           marketCreatorMailbox:       onMarketContractData.marketCreatorMailbox,
