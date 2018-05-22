@@ -35,7 +35,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
             const { all } = rawPerformanceData
             Object.keys(marketPositionData[marketId]).reduce((acc, outcome) => {
               acc[marketId][outcome] = marketPositionData[marketId][outcome]
-              if (all && all[marketId] && all[marketId][outcome] && all[marketId][outcome].length) {
+              if (all && all[marketId] && all[marketId][outcome] && all[marketId][outcome].length && all[marketId][outcome][0].profitLoss) {
                 acc[marketId][outcome][0].realizedProfitLoss = all[marketId][outcome][0].profitLoss.realized
                 acc[marketId][outcome][0].unrealizedProfitLoss = all[marketId][outcome][0].profitLoss.unrealized
               }
