@@ -29,6 +29,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
       designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
+      if (onUniverseContractData.designatedReportStake == null) return callback(new Error("No REP balance on this market, fail"));
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketId: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
