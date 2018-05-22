@@ -30,7 +30,7 @@ Here are the commands to get docker running and augur-node connected.
     npm explore augur.js -- npm run docker:geth:pop
 
     # sanity check
-    npm explorer augur.js -- npm run core:version
+    npm explore augur.js -- npm run core:version
 
     # quick commmand to clean augur-node env and build and start
     npm run clean-start
