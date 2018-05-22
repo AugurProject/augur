@@ -19,10 +19,12 @@ const MarketProperties = (p) => {
   const shareVolumeFormatted = getValue(p, 'volume.formatted')
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
   const isScalar = p.marketType === SCALAR
-  const consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
+  let consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
   const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
   const disableDispute = p.loginAccount.rep === '0' && p.linkType === TYPE_DISPUTE
-
+  if (getValue(p, 'consensus.isInvalid')) {
+    consensus = 'Invalid'
+  }
   return (
     <article>
       <section className={Styles.MarketProperties}>
