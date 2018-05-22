@@ -387,7 +387,6 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
       .on("cashFeeWindow.owner", db.raw("feeToken.feeWindow"))
       .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
   });
-  console.log(participantQuery.toSQL())
   participantQuery.leftJoin("balances AS cashParticipant", function () {
     this
       .on("cashParticipant.owner", db.raw("participantAddress"))
@@ -399,7 +398,6 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.whereRaw("(reportingState IN (?, ?) OR disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2]);
   participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<ParticipantEthFeeRow>) => {
     if (err) return callback(err);
-    console.log("HH", participantEthFeeRows);
     const participantEthFeesOnWindow = _.map(participantEthFeeRows, (ethFeeRows): ParticipantEthFee => {
       const totalFeeTokensInFeeWindow = new BigNumber(ethFeeRows.feeTokenSupply).plus(new BigNumber(ethFeeRows.participationTokenSupply));
       const participantShareOfFeeWindow = totalFeeTokensInFeeWindow.isZero() ? ZERO : new BigNumber(ethFeeRows.feeTokenBalance).dividedBy(totalFeeTokensInFeeWindow);
