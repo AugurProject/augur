@@ -93,7 +93,7 @@ function queryWinningPayoutForMarket(db: Knex, marketId: Address): Knex.QueryBui
     .join("payouts", function() {
       this.on("payouts.marketId", "markets.marketId").andOn("payouts.winning", db.raw("1"));
     })
-    .where("markets.marketId", marketId+"1");
+    .where("markets.marketId", marketId+"");
 }
 
 async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: number) {
@@ -103,6 +103,8 @@ async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: nu
   const marketPayout: NormalizedPayout<BigNumber> = normalizePayouts(payout);
 
   // this is the same as augur.utils.convertOnChainPriceToDisplayPrice
+  // I hate having to get it off an `augur` instance when its unrelated
+  // to a connection
   const tickSize = numTicksToTickSize(payout.numTicks, payout.minPrice, payout.maxPrice);
   const lastPrice = marketPayout.payout[outcome]!.times(tickSize).plus(payout.minPrice);
   return { timestamp: payout.timestamp, lastPrice };
@@ -112,12 +114,17 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null);
   const outcomeFinalized = await getFinalizedOutcomePrice(db, marketId, outcome);
 
+  if (outcomeFinalized) {
+    console.log(marketId, outcomeFinalized.timestamp, outcomeFinalized.lastPrice.toFixed());
+  }
+
   return buckets.map((bucket: PLBucket) => {
     // This market has been finalized and this bucket is after the time which
     // that happened. We will fix the price for this outcome at the value
     // defined in the `payouts` table. This will effectively adjust the unrealized
     // profit and loss for the shares held for this outcome for this bucket.
     if (outcomeFinalized !== null && outcomeFinalized.timestamp <= bucket.timestamp) {
+      console.log("Using finalized outcome price");
       return Object.assign({}, bucket, { lastPrice: outcomeFinalized.lastPrice });
     }
 
