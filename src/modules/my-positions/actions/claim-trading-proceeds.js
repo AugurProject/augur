@@ -8,7 +8,7 @@ import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
-const CLAIM_SHARES_GAS_COST = 2000000
+const CLAIM_SHARES_GAS_COST = 3000000
 
 const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState()
