@@ -147,7 +147,7 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of -4eth for account1", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [
+        assert.deepEqual(results.aggregate, [
           {
             lastPrice: "0.1",
             profitLoss: {
@@ -169,7 +169,7 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [
+        assert.deepEqual(results.aggregate, [
           {
             lastPrice: "0.1",
             profitLoss: {
@@ -246,7 +246,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.isNull(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -296,7 +296,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.isNull(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -346,7 +346,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.isNull(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -426,7 +426,8 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.isNull(err);
-          assert.equal(profitLoss.length, 30);
+          assert.equal(profitLoss.aggregate.length, 30);
+          assert.deepEqual(profitLoss.all, {});
         },
       },
       done
