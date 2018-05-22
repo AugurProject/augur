@@ -19,10 +19,7 @@ export function processTradingProceedsClaimedLog(db: Knex, augur: Augur, log: Fo
   db("trading_proceeds").insert(tradingProceedsToInsert).asCallback((err?: Error|null) => {
     if (err) return callback(err);
     augurEmitter.emit("TradingProceedsClaimed", log);
-    refreshPositionInMarket(db, augur, log.market, log.sender, (err: Error|null) => {
-      if (err) return callback(err);
-      callback(null);
-    });
+    refreshPositionInMarket(db, augur, log.market, log.sender, callback);
   });
 }
 
@@ -30,9 +27,6 @@ export function processTradingProceedsClaimedLogRemoval(db: Knex, augur: Augur, 
   db.from("trading_proceeds").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err?: Error|null) => {
     if (err) return callback(err);
     augurEmitter.emit("TradingProceedsClaimed", log);
-    refreshPositionInMarket(db, augur, log.market, log.sender, (err: Error|null) => {
-      if (err) return callback(err);
-      callback(null);
-    });
+    refreshPositionInMarket(db, augur, log.market, log.sender, callback);
   });
 }
