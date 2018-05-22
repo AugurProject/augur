@@ -81,7 +81,7 @@ export function processDisputeCrowdsourcerCreatedLog(db: Knex, augur: Augur, log
           augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
             log,
             crowdsourcerToInsert));
-          callback(null);
+          db.insert({contractAddress: log.disputeCrowdsourcer, marketId: log.market, symbol: "Crowdsourcer"}).into("tokens").asCallback(callback);
         });
       });
   });
@@ -93,7 +93,7 @@ export function processDisputeCrowdsourcerCreatedLogRemoval(db: Knex, augur: Aug
     augurEmitter.emit("DisputeCrowdsourcerCreated", Object.assign({},
       log,
       { marketId: log.market }));
-    callback(null);
+    db.where({contractAddress: log.disputeCrowdsourcer }).from("tokens").del().asCallback(callback);
   });
 }
 
