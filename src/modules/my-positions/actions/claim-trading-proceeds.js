@@ -8,25 +8,28 @@ import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
+const CLAIM_SHARES_GAS_COST = 1500000
+
 const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   const winningPositions = selectWinningPositions()
   const markets = !marketIds || marketIds.length === 0 ? winningPositions.map(winningPosition => winningPosition.id) : marketIds
   if (markets.length > 0) {
-    augur.trading.claimMarketsTradingProceeds({
-      meta: loginAccount.meta,
-      markets,
-      _shareHolder: loginAccount.address,
-      onSent: noop,
-      onSuccess: (claimedMarkets) => {
-        dispatch(updateAssets())
-        each(claimedMarkets, (marketId, nextMarketId) => {
+    each(markets, (marketId) => {
+      augur.api.ClaimTradingProceeds.claimTradingProceeds({
+        tx: {gas: CLAIM_SHARES_GAS_COST},
+        meta: loginAccount.meta,
+        _market: marketId,
+        _shareHolder: loginAccount.address,
+        onSent: noop,
+        onSuccess: (claimedMarkets) => {
+          dispatch(updateAssets())
           dispatch(getWinningBalance([marketId]))
-          dispatch(loadMarketsInfo([marketId], nextMarketId))
-        }, err => callback(err))
-      },
-      onFailed: err => callback(err),
+          dispatch(loadMarketsInfo([marketId]))
+        },
+        onFailed: err => callback(err),
+      });
     })
   }
   // has claimed proceeds on all finalized markets so close open orders
