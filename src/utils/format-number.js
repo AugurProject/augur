@@ -101,7 +101,7 @@ export function formatPercent(num, opts) {
 
 export function formatShares(num, opts) {
   const formattedShares = formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 2,
