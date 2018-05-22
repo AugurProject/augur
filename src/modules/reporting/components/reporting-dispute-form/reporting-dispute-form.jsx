@@ -336,7 +336,6 @@ export default class ReportingDisputeForm extends Component {
     const {
       market,
       stakeInfo,
-      updateState,
     } = this.props
     const s = this.state
 

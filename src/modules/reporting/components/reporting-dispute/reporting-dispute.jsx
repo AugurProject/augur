@@ -14,7 +14,7 @@ import ReportingDisputeForm from 'modules/reporting/containers/reporting-dispute
 import ReportingDisputeConfirm from 'modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm'
 import { TYPE_VIEW } from 'modules/market/constants/link-types'
 import MarketAdditonalDetails from 'modules/reporting/components/market-additional-details/market-additional-details'
-import { isEmpty, isEqual } from 'lodash'
+import { isEmpty } from 'lodash'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report/reporting-report.styles'
 
