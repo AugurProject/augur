@@ -65,6 +65,7 @@ function fillMarketOrder(augur, args, auth, callback) {
             numTicks: market.numTicks,
             minPrice: market.minPrice,
             maxPrice: market.maxPrice,
+            sharesProvided: "0",
             _direction: direction,
             _market: marketId,
             _outcome: outcome,

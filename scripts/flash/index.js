@@ -162,7 +162,8 @@ var methods = {
       outcome: { required: true, short: "o", help: "Outcome to fill order on, negative outcome use \\\"-10\\\"" },
       orderType: {required: true, short: "t", help: "Order type ('buy' | 'sell')"},
       price: {required: true, short: "p", help: "Price of the order"},
-      shares: {required: true, short: "s", help: "Shares of the order"},
+      amount: {required: true, short: "a", help: "amount of shares to purchase with eth"},
+      useShares: {flag: true, short: "s", help: "use existing shares for the order"},
     },
   },
   "push-timestamp": {
