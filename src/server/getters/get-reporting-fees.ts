@@ -231,7 +231,8 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?) OR markets.needsDisavowal or markets.forking)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
     .andWhere("markets.universe", universe)
-    .andWhere("balances.owner", reporter);
+    .andWhere("balances.owner", reporter)
+    .andWhereNot("balances.balance", "0");
   const forkedMarketQuery = db("markets")
     .first(["markets.marketId", "markets.universe", db.raw("market_state.reportingState = 'FINALIZED' as isFinalized")])
     .where("markets.forking", 1)
@@ -395,6 +396,8 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "feeToken.feeWindow");
   participantQuery.where("all_participants.universe", universe);
   participantQuery.where("all_participants.reporter", reporter);
+  participantQuery.whereNot("all_participants.participantSupply", "0");
+  participantQuery.whereNot("all_participants.reporterBalance", "0");
   participantQuery.whereRaw("(reportingState IN (?, ?) OR disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2]);
   participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<ParticipantEthFeeRow>) => {
     if (err) return callback(err);
