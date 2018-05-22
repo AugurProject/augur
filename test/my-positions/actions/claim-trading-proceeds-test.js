@@ -16,7 +16,9 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       const Speedomatic = { bignum: () => {} }
       const AugurJS = {
         augur: {
-          trading: { claimMarketsTradingProceeds: () => {} },
+          api: {
+            ClaimTradingProceeds: { claimTradingProceeds: () => {} },
+          },
         },
       }
       const LoadMarketsInfo = { loadMarketsInfo: () => {} }
@@ -31,13 +33,12 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         '../selectors/winning-positions': WinningPositions,
       }).default
       sinon.stub(Speedomatic, 'bignum').callsFake(n => createBigNumber(n, 10))
-      sinon.stub(AugurJS.augur.trading, 'claimMarketsTradingProceeds').callsFake((p) => {
-        store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', markets: p.markets })
+      sinon.stub(AugurJS.augur.api.ClaimTradingProceeds, 'claimTradingProceeds').callsFake((p) => {
+        store.dispatch({ type: 'CLAIM_MARKETS_TRADING_PROCEEDS', _market: p._market })
         p.onSuccess(p.markets)
       })
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo').callsFake((marketIds, callback) => (dispatch, getState) => {
         dispatch({ type: 'LOAD_MARKETS_INFO', marketIds })
-        callback(null)
       })
       sinon.stub(GetWinningBalance, 'getWinningBalance').callsFake((marketIds, callback) => (dispatch, getState) => {
         dispatch({ type: 'GET_WINNING_BALANCE', marketIds })
@@ -97,7 +98,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa1'],
+        _market: '0xa1',
       }, {
         type: 'UPDATE_ASSETS',
       }, {
@@ -169,7 +170,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa2'],
+        _market: '0xa2',
       }, {
         type: 'UPDATE_ASSETS',
       }, {
@@ -224,7 +225,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa2', '0xa3'],
+        _market: '0xa2',
       }, {
         type: 'UPDATE_ASSETS',
       }, {
@@ -233,6 +234,11 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIds: ['0xa2'],
+      }, {
+        type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
+        _market: '0xa3',
+      }, {
+        type: 'UPDATE_ASSETS',
       }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa3'],
@@ -281,7 +287,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
-        markets: ['0xa3'],
+        _market: '0xa3',
       }, {
         type: 'UPDATE_ASSETS',
       }, {
