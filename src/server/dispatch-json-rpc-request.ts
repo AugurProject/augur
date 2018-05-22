@@ -11,6 +11,7 @@ import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
+import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { getFeeWindows } from "./getters/get-fee-windows";
 import { getFeeWindowCurrent } from "./getters/get-fee-window-current";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
@@ -89,6 +90,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getUniversesInfo(db, augur, request.params.universe, request.params.account, callback);
     case "getProfitLoss":
       return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
+    case "getUserShareBalances":
+      return getUserShareBalances(db, augur, request.params.marketIds, request.params.account, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }
