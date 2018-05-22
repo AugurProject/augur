@@ -169,19 +169,23 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results.aggregate, [
-          {
-            lastPrice: "0.1",
-            profitLoss: {
-              meanOpenPrice: "0",
-              position: "0",
-              realized: "4",
-              total: "4",
-              unrealized: "0",
-            },
-            timestamp: endTime,
+
+        var expected = [{
+          lastPrice: "0.1",
+          profitLoss: {
+            meanOpenPrice: "0",
+            position: "0",
+            realized: "4",
+            total: "4",
+            unrealized: "0",
           },
-        ]);
+          timestamp: endTime,
+        }];
+        assert.deepEqual(results.aggregate, expected);
+
+        assert.deepEqual(results.all, {
+          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected],
+        });
       } catch (e) {
         return done(e);
       }

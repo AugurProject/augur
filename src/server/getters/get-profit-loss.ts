@@ -153,21 +153,46 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
 
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss
+  interface GroupResults {
+    marketId: string;
+    outcome: number;
+    profitLoss: Array<PLBucket>;
+  }
   const results = await Promise.all(
-    _.map(tradesByOutcome, async (trades: Array<TradeRow>, key: string): Promise<Array<PLBucket>> => {
-      const [marketId, outcome] = key.split(",");
-      const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, parseInt(outcome, 10), endTime, buckets);
-      return calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice);
+    _.map(tradesByOutcome, async (trades: Array<TradeRow>, key: string): Promise<GroupResults> => {
+      const [marketId, outcomeAny] = key.split(",");
+      const outcome = parseInt(outcomeAny, 10);
+      const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, outcome, endTime, buckets);
+      return {marketId, outcome, profitLoss: calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice)};
     }),
   );
 
   // We have results! Drop the market & outcome groups, and then re-group by
   // bucket timestamp, and aggregate all of the PLBuckets by bucket
-  const aggregate = groupOutcomesProfitLossByBucket(results).map((bucket: Array<PLBucket>) => {
+  const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.profitLoss)).map((bucket: Array<PLBucket>) => {
     return bucket.reduce(sumProfitLossResults, { timestamp: 0, profitLoss: null });
   });
 
-  return { aggregate, all: results};
+  const all = _
+    .chain(results)
+    .groupBy((result) => result.marketId)
+    .mapValues((results: Array<GroupResults>) => {
+      const byOutcome = _
+        .chain(results)
+        .groupBy((result) => result.outcome)
+        .mapValues((results: Array<GroupResults>) => results.map((result) => result.profitLoss))
+        .value();
+
+      const array = [];
+      for (let i = 0; i < 8; i++) {
+        array.push(byOutcome[i.toString()] || null);
+      }
+
+      return _.dropRightWhile(_.flatten(array), (v) => v === null);
+    })
+    .value();
+
+  return { aggregate, all};
 }
 
 export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<ProfitLossResults>) {
