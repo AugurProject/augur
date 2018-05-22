@@ -31,11 +31,11 @@ export default class ReportingDisputeForm extends Component {
 
   static constructRepObject(raw) {
     const { ETHER } = augur.rpc.constants
-    const adjRaw = raw || 0
+    const adjRaw = raw
 
     return {
-      formatted: formatAttoRep(createBigNumber(adjRaw).toNumber(), { decimals: 4, roundUp: true }),
-      fullAmount: createBigNumber(adjRaw).dividedBy(ETHER).toFixed(),
+      formatted: formatAttoRep(createBigNumber(adjRaw, 10), { decimals: 4, roundUp: true }),
+      fullAmount: createBigNumber(adjRaw, 10).dividedBy(ETHER).toFixed(),
     }
   }
 
@@ -49,7 +49,7 @@ export default class ReportingDisputeForm extends Component {
       selectedOutcome: '',
       selectedOutcomeName: '',
       disputeBondValue: '0',
-      bnAvailableRep: createBigNumber(this.props.availableRep),
+      bnAvailableRep: createBigNumber(this.props.availableRep, 10),
       isMarketInValid: false,
       validations: {
         stake: false,
@@ -154,9 +154,11 @@ export default class ReportingDisputeForm extends Component {
   checkStake(stakeValue, updatedValidations, maxRepObject) {
     const bnStake = createBigNumber(stakeValue)
 
-    if (stakeValue === '' || stakeValue == null || stakeValue <= 0) {
+    if (stakeValue === '' || stakeValue == null || stakeValue === 0) {
       updatedValidations.stake = 'The stake field is required.'
-    } else if (bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue))) {
+    } else if (stakeValue < 0) {
+      updatedValidations.stake = 'The stake field must be a positive value.'
+    } else if (bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue, 10))) {
       updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`
     } else if (this.state.bnAvailableRep.lt(bnStake)) {
       updatedValidations.stake = `Desposit Stake is greater then your available amount`
@@ -181,38 +183,37 @@ export default class ReportingDisputeForm extends Component {
     const { updateState } = this.props
     const { ETHER } = augur.rpc.constants
     const updatedValidations = { ...this.state.validations }
+    let completeStakeObj = rawStakeObj
 
-    if (rawStakeObj.raw <= 0) {
-      const { validations } = this.state
-      validations.stake = 'The stake field is required.'
+    if (completeStakeObj.raw === '') {
+      delete updatedValidations.stake
       this.setState({
-        inputStake: rawStakeObj.raw,
-        validations,
+        inputStake: completeStakeObj.raw,
+        validations: updatedValidations,
       })
       updateState({
-        validations,
+        validations: updatedValidations,
       })
       return
     }
-    let completeStakeObj = rawStakeObj
 
     if (!completeStakeObj.formatted) {
       // convert user inputted value to attoRep
-      const rep = createBigNumber(completeStakeObj.raw.length === 0 ? 0 : completeStakeObj.raw).times(ETHER)
-      const attoRep = createBigNumber(formatNumber(rep.toNumber(), { decimals: 4, roundUp: true }).formattedValue)
-      completeStakeObj = ReportingDisputeForm.constructRepObject(attoRep.toNumber() || 0)
+      const rep = createBigNumber(completeStakeObj.raw, 10).times(ETHER)
+      const attoRep = createBigNumber(formatNumber(rep, { decimals: 4, roundUp: true }).formattedValue, 10)
+      completeStakeObj = ReportingDisputeForm.constructRepObject(attoRep)
     }
 
     const maxInfo = this.calculateMaxRep(this.state.selectedOutcome)
     this.checkStake(completeStakeObj.formatted.formattedValue, updatedValidations, maxInfo)
 
-    const newStake = { displayValue: completeStakeObj.formatted.formattedValue, repValue: completeStakeObj.fullAmount || '0' }
+    const newStake = { displayValue: completeStakeObj.formatted.formattedValue, repValue: completeStakeObj.fullAmount }
     if (completeStakeObj.formatted.formattedValue === maxInfo.formatted.formattedValue) {
       newStake.repValue = maxInfo.fullAmount
     }
 
     this.setState({
-      inputStake: completeStakeObj.formatted.formattedValue || '',
+      inputStake: completeStakeObj.formatted.formattedValue,
       validations: updatedValidations,
     })
 
