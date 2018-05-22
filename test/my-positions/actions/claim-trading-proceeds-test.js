@@ -16,7 +16,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       const Speedomatic = { bignum: () => {} }
       const AugurJS = {
         augur: {
-          api: { 
+          api: {
             ClaimTradingProceeds: { claimTradingProceeds: () => {} },
           },
         },
