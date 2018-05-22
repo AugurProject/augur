@@ -340,19 +340,19 @@ export default class CreateMarketLiquidity extends Component {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
         } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-        } else if (orderPrice.gt(this.state.maxPrice)) {
-          errors.price.push('Price cannot exceed 1')
+        } else if (orderPrice.gte(this.state.maxPrice)) {
+          errors.price.push('Price must be less than 1')
         } else if (orderPrice.lt(this.state.minPrice)) {
-          errors.price.push('Price cannot be below 0')
+          errors.price.push('Price must be greater than 0')
         }
       } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.gte(asks[0].price)) {
         errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
       } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lte(bids[0].price)) {
         errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
-      } else if (orderPrice.gt(this.state.maxPrice)) {
-        errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`)
-      } else if (orderPrice.lt(this.state.minPrice)) {
-        errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`)
+      } else if (orderPrice.gte(this.state.maxPrice)) {
+        errors.price.push(`Price must be less than ${this.state.maxPrice.toNumber()}`)
+      } else if (orderPrice.lte(this.state.minPrice)) {
+        errors.price.push(`Price must be greater than ${this.state.minPrice.toNumber()}`)
       }
     }
 
