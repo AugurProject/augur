@@ -4,9 +4,9 @@ import { BUY, SELL } from 'modules/transactions/constants/types'
 import { TWO } from 'modules/trade/constants/numbers'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
-import { loadAccountPositions } from 'modules/my-positions/actions/load-account-positions'
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book'
 import logError from 'utils/log-error'
+import { loadUsershareBalances } from 'src/modules/my-positions/actions/load-user-share-balances'
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS'
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS'
@@ -106,26 +106,20 @@ export function updateTradesInProgress(marketId, outcomeId, side, numShares, lim
 
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
-      dispatch(loadAccountPositions({ market: marketId }, (err, accountPositions) => {
+      dispatch(loadUsershareBalances({ market: marketId }, (err, userShareBalances = []) => {
         if (err) {
           return dispatch({
             type: UPDATE_TRADE_IN_PROGRESS,
             data: { marketId, outcomeId, details: newTradeDetails },
           })
         }
-        const cleanAccountPositions = new Array(market.numOutcomes).fill('0')
-        if (Array.isArray(accountPositions) && accountPositions.length) {
-          accountPositions.reduce((cleanAccountPositions, position) => {
-            if (position.marketId === market.id) {
-              cleanAccountPositions[position.outcome] = position.numShares
-            }
-            return cleanAccountPositions
-          }, cleanAccountPositions)
-        }
+
+        const paddedArray = new Array(market.numOutcomes - userShareBalances.length).fill('0')
+        const paddedUserShareBalances = userShareBalances.concat(paddedArray)
         const simulatedTrade = augur.trading.simulateTrade({
           orderType: newTradeDetails.side === BUY ? 0 : 1,
           outcome: parseInt(outcomeId, 10),
-          shareBalances: cleanAccountPositions,
+          shareBalances: paddedUserShareBalances,
           tokenBalance: (loginAccount.eth && loginAccount.eth.toString()) || '0',
           userAddress: loginAccount.address,
           minPrice: market.minPrice,

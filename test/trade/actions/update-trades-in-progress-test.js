@@ -45,14 +45,14 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const state = Object.assign({}, testState, tradeTestState)
     const store = mockStore(state)
     const mockSelectMarket = {}
-    const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, []),
+    const mockLoadUserShareBalances = {
+      loadUsershareBalances: (options, callback) => dispatch => callback(null, []),
     }
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketId)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
-      '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
+      '../../my-positions/actions/load-user-share-balances': mockLoadUserShareBalances,
       '../../market/selectors/market': mockSelectMarket,
     })
 
@@ -266,15 +266,15 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockStore = configureMockStore(middlewares)
     const state = Object.assign({}, testState, tradeTestState)
     const store = mockStore(state)
-    const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, []),
+    const mockLoadUserShareBalances = {
+      loadUsershareBalances: (options, callback) => dispatch => callback(null, []),
     }
     const mockSelectMarket = {}
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketId)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
-      '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
+      '../../my-positions/actions/load-user-share-balances': mockLoadUserShareBalances,
       '../../market/selectors/market': mockSelectMarket,
     })
 
@@ -499,15 +499,15 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockStore = configureMockStore(middlewares)
     const state = Object.assign({}, testState, tradeTestState)
     const store = mockStore(state)
-    const mockLoadAccountPositions = {
-      loadAccountPositions: (options, callback) => dispatch => callback(null, ['0', '0']),
+    const mockLoadUserShareBalances = {
+      loadUsershareBalances: (options, callback) => dispatch => callback(null, ['0', '0']),
     }
     const mockSelectMarket = {}
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketId)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
-      '../../my-positions/actions/load-account-positions': mockLoadAccountPositions,
+      '../../my-positions/actions/load-user-share-balances': mockLoadUserShareBalances,
       '../../market/selectors/market': mockSelectMarket,
     })
 
