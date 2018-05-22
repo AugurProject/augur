@@ -45,7 +45,7 @@ function createMarketOrder(augur, args, auth, callback) {
 
       augur.trading.placeTrade({
         meta: auth,
-        amount: !useShares ? amount : "0",
+        amount: amount,
         limitPrice: price,
         numTicks: market.numTicks,
         minPrice: market.minPrice,
