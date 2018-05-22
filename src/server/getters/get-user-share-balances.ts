@@ -50,8 +50,7 @@ export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Ad
         return groupedBalances.map((row) => {
           if (row.balance === null) return "0";
 
-          const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
-          return augur.utils.convertOnChainAmountToDisplayAmount(row.balance, tickSize).toFixed();
+          return new BigNumber(row.balance, 10).dividedBy(10 ** 18).toFixed();
         });
       })
       .value();
