@@ -10,6 +10,7 @@ import {
   handleOrderFilledLog,
   handleTradingProceedsClaimedLog,
   handleInitialReportSubmittedLog,
+  handleInitialReporterRedeemedLog,
   handleMarketFinalizedLog,
   handleDisputeCrowdsourcerCreatedLog,
   handleDisputeCrowdsourcerContributionLog,
@@ -37,6 +38,7 @@ export const listenToUpdates = history => (dispatch, getState) => {
     OrderFilled: dispatch(wrapLogHandler(handleOrderFilledLog)),
     TradingProceedsClaimed: dispatch(wrapLogHandler(handleTradingProceedsClaimedLog)),
     InitialReportSubmitted: dispatch(wrapLogHandler(handleInitialReportSubmittedLog)),
+    InitialReporterRedeemed: dispatch(wrapLogHandler(handleInitialReporterRedeemedLog)),
     MarketFinalized: dispatch(wrapLogHandler(handleMarketFinalizedLog)),
     DisputeCrowdsourcerCreated: dispatch(wrapLogHandler(handleDisputeCrowdsourcerCreatedLog)),
     DisputeCrowdsourcerContribution: dispatch(wrapLogHandler(handleDisputeCrowdsourcerContributionLog)),
@@ -51,7 +53,6 @@ export const listenToUpdates = history => (dispatch, getState) => {
     FeeWindowOpened: dispatch(wrapLogHandler(handleFeeWindowOpenedLog)),
     InitialReporterTransferred: dispatch(wrapLogHandler()),
     TimestampSet: dispatch(wrapLogHandler()),
-    InitialReporterRedeemed: dispatch(wrapLogHandler()),
     FeeWindowRedeemed: dispatch(wrapLogHandler()),
     UniverseCreated: dispatch(wrapLogHandler()),
   }, logError)
