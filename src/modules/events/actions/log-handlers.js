@@ -52,11 +52,19 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
 }
 
 export const handleTokensMintedLog = log => (dispatch, getState) => {
-  dispatch(updateAssets())
+  const { address } = getState().loginAccount
+  const isStoredTransaction = log.target === address
+  if (isStoredTransaction) {
+    dispatch(updateAssets())
+  }
 }
 
 export const handleTokensBurnedLog = log => (dispatch, getState) => {
-  dispatch(updateAssets())
+  const { address } = getState().loginAccount
+  const isStoredTransaction = log.target === address
+  if (isStoredTransaction) {
+    dispatch(updateAssets())
+  }
 }
 
 export const handleOrderCreatedLog = log => (dispatch, getState) => {
