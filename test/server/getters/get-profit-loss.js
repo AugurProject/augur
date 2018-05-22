@@ -134,7 +134,7 @@ describe("tests for test/profitloss.db", () => {
     connection("trades")
       .select("*")
       .asCallback((err, results) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(results.length, 2);
         done();
       });
@@ -245,7 +245,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: HOUR_SECONDS,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               profitLoss: {
@@ -295,7 +295,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: HOUR_SECONDS,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               profitLoss: {
@@ -345,7 +345,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: 10,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               profitLoss: {
@@ -425,7 +425,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: 86400,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.equal(profitLoss.length, 30);
         },
       },
@@ -481,7 +481,7 @@ describe("server/getters/get-profit-loss", () => {
           ],
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               timestamp: 20000,
@@ -530,7 +530,7 @@ describe("server/getters/get-profit-loss", () => {
           ],
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               profitLoss: {
