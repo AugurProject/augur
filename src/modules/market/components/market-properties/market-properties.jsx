@@ -39,15 +39,6 @@ const MarketProperties = (p) => {
             <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
             <span>{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
           </li>
-          {p.marketCreatorFeesCollected &&
-          <li>
-            <span>Collected Returns</span>
-            <ValueDenomination
-              formatted={p.marketCreatorFeesCollected.rounded}
-              denomination={p.marketCreatorFeesCollected.denomination}
-            />
-          </li>
-          }
           {consensus &&
           <li>
             <span>Winning Outcome</span>
