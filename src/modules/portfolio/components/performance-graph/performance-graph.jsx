@@ -185,7 +185,7 @@ class PerformanceGraph extends Component {
           x: 5,
           format: '{value} ETH',
           formatter() {
-            return formatEther(this.value).full
+            return formatEther(this.value).formattedValue
           },
           style: {
             color: '#a7a2b2',
@@ -331,9 +331,10 @@ class PerformanceGraph extends Component {
     getProfitLoss(universe, startTime, endTime, null, (err, rawPerformanceData) => {
       if (err) return console.error(err)
       // make the first entry into the data a 0 value to make sure we start from 0 PL
-      const interval = rawPerformanceData[1].timestamp - rawPerformanceData[0].timestamp
-      let performanceData = [{ timestamp: (rawPerformanceData[0].timestamp - interval), profitLoss: { unrealized: '0', realized: '0', total: '0' } }]
-      performanceData = performanceData.concat(rawPerformanceData)
+      const { aggregate } = rawPerformanceData
+      const interval = aggregate[1].timestamp - aggregate[0].timestamp
+      let performanceData = [{ timestamp: (aggregate[0].timestamp - interval), profitLoss: { unrealized: '0', realized: '0', total: '0' } }]
+      performanceData = performanceData.concat(aggregate)
       this.setState({ performanceData }, () => {
         this.parsePerformanceData()
       })
