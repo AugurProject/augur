@@ -4,10 +4,12 @@ import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { Augur } from "augur.js";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import {
   Address,
   BlocksRow,
   Payout,
+  MarketPricing,
   NormalizedPayout,
   TradingHistoryRow,
   GenericCallback,
@@ -38,7 +40,7 @@ export interface PLBucket {
 }
 
 export type TradeRow = TradingHistoryRow & { type: string; maker: boolean };
-export type PayoutWithBlockRow = Payout<BigNumber> & BlocksRow;
+export type PayoutBlockAndPricing= Payout<BigNumber> & BlocksRow & MarketPricing<BigNumber>;
 
 export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>, buckets: Array<PLBucket>): Array<PLBucket> {
   if (buckets == null) throw new Error("Buckets are required");
@@ -86,20 +88,24 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
 function queryWinningPayoutForMarket(db: Knex, marketId: Address): Knex.QueryBuilder {
   return db("markets")
-    .first(["payouts.*", "blocks.*"])
+    .first(["payouts.*", "blocks.*", "markets.minPrice", "markets.maxPrice", "markets.numTicks"])
     .join("blocks", "blocks.blockNumber", "markets.finalizationBlockNumber")
     .join("payouts", function() {
       this.on("payouts.marketId", "markets.marketId").andOn("payouts.winning", db.raw("1"));
     })
-    .where("markets.marketId", marketId);
+    .where("markets.marketId", marketId+"1");
 }
 
 async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: number) {
-  const payoutWithBlock: PayoutWithBlockRow | null | undefined  = await queryWinningPayoutForMarket(db, marketId);
-  if (payoutWithBlock == null)  return null;
+  const payout: PayoutBlockAndPricing | null | undefined  = await queryWinningPayoutForMarket(db, marketId);
+  if (payout == null)  return null;
 
-  const marketPayout: NormalizedPayout<BigNumber> = normalizePayouts(payoutWithBlock);
-  return { timestamp: payoutWithBlock.timestamp, lastPrice: marketPayout.payout[outcome]! };
+  const marketPayout: NormalizedPayout<BigNumber> = normalizePayouts(payout);
+
+  // this is the same as augur.utils.convertOnChainPriceToDisplayPrice
+  const tickSize = numTicksToTickSize(payout.numTicks, payout.minPrice, payout.maxPrice);
+  const lastPrice = marketPayout.payout[outcome]!.times(tickSize).plus(payout.minPrice);
+  return { timestamp: payout.timestamp, lastPrice };
 }
 
 async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
