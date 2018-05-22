@@ -18,7 +18,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
   if (markets.length > 0) {
     each(markets, (marketId) => {
       augur.api.ClaimTradingProceeds.claimTradingProceeds({
-        tx: {gas: CLAIM_SHARES_GAS_COST},
+        tx: { gas: CLAIM_SHARES_GAS_COST },
         meta: loginAccount.meta,
         _market: marketId,
         _shareHolder: loginAccount.address,
@@ -29,7 +29,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
           dispatch(loadMarketsInfo([marketId]))
         },
         onFailed: err => callback(err),
-      });
+      })
     })
   }
   // has claimed proceeds on all finalized markets so close open orders
