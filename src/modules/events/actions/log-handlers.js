@@ -51,6 +51,22 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
   }
 }
 
+export const handleTokensMintedLog = log => (dispatch, getState) => {
+  const { address } = getState().loginAccount
+  const isStoredTransaction = log.target === address
+  if (isStoredTransaction) {
+    dispatch(updateAssets())
+  }
+}
+
+export const handleTokensBurnedLog = log => (dispatch, getState) => {
+  const { address } = getState().loginAccount
+  const isStoredTransaction = log.target === address
+  if (isStoredTransaction) {
+    dispatch(updateAssets())
+  }
+}
+
 export const handleOrderCreatedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.marketId]))
   const isStoredTransaction = log.orderCreator === getState().loginAccount.address
@@ -175,6 +191,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
+  dispatch(updateAssets())
 }
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
@@ -185,4 +202,8 @@ export const handleFeeWindowCreatedLog = log => (dispatch) => {
 export const handleFeeWindowOpenedLog = log => (dispatch) => {
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
+}
+
+export const handleFeeWindowRedeemedLog = log => (dispatch) => {
+  dispatch(updateAssets())
 }
