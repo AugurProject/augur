@@ -1,12 +1,8 @@
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var speedomatic = require("speedomatic");
 
-function convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks, snapNumTicks) {
-  if (snapNumTicks && (numTicks.eq(10002) || numTicks.eq(10003))) {
-    numTicks = new BigNumber(10000, 10);
-  }
+function convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks) {
   var tickSize = displayRange.dividedBy(numTicks);
   return speedomatic.fix(displayAmount).times(tickSize);
 }
