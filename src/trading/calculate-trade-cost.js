@@ -1,8 +1,10 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+
 var calculateBidCost = require("./calculate-bid-cost");
 var calculateAskCost = require("./calculate-ask-cost");
+var calculateTickSize = require("../trading/calculate-tick-size");
 var convertDisplayPriceToOnChainPrice = require("../utils/convert-display-price-to-on-chain-price");
 var convertDisplayAmountToOnChainAmount = require("../utils/convert-display-amount-to-on-chain-amount");
 
@@ -32,7 +34,7 @@ function calculateTradeCost(p) {
   var sharesProvided = new BigNumber(p.sharesProvided || "0", 10);
   var numTicks = new BigNumber(p.numTicks, 10);
   var displayRange =  maxDisplayPrice.minus(minDisplayPrice);
-  var tickSize = displayRange.dividedBy(numTicks);
+  var tickSize = calculateTickSize(numTicks, p.minDisplayPrice, p.maxDisplayPrice);
   var onChainPrice = convertDisplayPriceToOnChainPrice(displayPrice, minDisplayPrice, tickSize);
   var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks);
   var onChainSharesProvided = convertDisplayAmountToOnChainAmount(sharesProvided, displayRange, numTicks);
