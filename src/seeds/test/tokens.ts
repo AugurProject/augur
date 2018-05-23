@@ -15,6 +15,11 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: null,
       outcome: null,
     }, {
+      contractAddress: "REP_TOKEN",
+      symbol: "REP",
+      marketId: null,
+      outcome: null,
+    }, {
       contractAddress: "0x2000000000000000000000000000000000000000",
       symbol: "shares",
       marketId: "0x0000000000000000000000000000000000000001",

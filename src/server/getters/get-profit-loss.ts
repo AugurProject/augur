@@ -44,6 +44,11 @@ export interface PLBucket {
 export type TradeRow = TradingHistoryRow & { type: string; maker: boolean } | ProceedTradesRow<BigNumber>;
 export type PayoutBlockAndPricing= Payout<BigNumber> & BlocksRow & MarketPricing<BigNumber>;
 
+export interface ProfitLossResults {
+  aggregate: Array<PLBucket>;
+  all: any;
+}
+
 export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>, buckets: Array<PLBucket>): Array<PLBucket> {
   if (buckets == null) throw new Error("Buckets are required");
   if (typeof buckets.map === "undefined") throw new Error(`buckets must be an array, got ${buckets}`);
@@ -74,7 +79,7 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>,
 export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<PLBucket> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
-  if (endTime <= startTime) throw new Error("endTime must be greater than startTime");
+  if (endTime < startTime) throw new Error("endTime must be greater than or equal startTime");
   if (periodInterval !== null && periodInterval <= 0) throw new Error("periodInterval must be positive integer (seconds)");
 
   const interval = periodInterval == null ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS) : periodInterval;
@@ -181,15 +186,7 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
   };
 }
 
-function queryTradingProceeds(db: Knex, universe: Address, account: Address, endTime: null) {
-  db("trading_proceeds")
-    .select("blocks.timestamp, trading_proceeds.*")
-    .join("blocks", "trading_proceeds.blockNumber", "blocks.blockNumber")
-    .join("markets", "trading_proceeds.marketId", "markets.marketId")
-    .where("blocks.timestamp", "<", endTime);
-}
-
-async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<Array<PLBucket>> {
+async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<ProfitLossResults> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
   const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null);
@@ -206,7 +203,7 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     });
   }).concat(claimHistory).sort((a,b) => b.timestamp - a.timestamp);
 
-  if (trades.length === 0) return bucketRangeByInterval(startTime, endTime, periodInterval).slice(1);
+  if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime, periodInterval).slice(1), all: {} };
 
   const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime, periodInterval);
 
@@ -216,28 +213,54 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
 
   // For each group, gather the last trade prices for each bucket, and
   // calculate each bucket's profit and loss
+  interface GroupResults {
+    marketId: string;
+    outcome: number;
+    profitLoss: Array<PLBucket>;
+  }
   const results = await Promise.all(
-    _.map(tradesByOutcome, async (trades: Array<TradeRow>): Promise<Array<PLBucket>> => {
-      const exampleTrade = trades[0];
-      const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, exampleTrade.marketId, exampleTrade.outcome, endTime, buckets);
-      return calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice);
+    _.map(tradesByOutcome, async (trades: Array<TradeRow>, key: string): Promise<GroupResults> => {
+      const { marketId, outcome } = trades[0];
+      const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, outcome, endTime, buckets);
+      return {marketId, outcome, profitLoss: calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice)};
     }),
   );
 
   // We have results! Drop the market & outcome groups, and then re-group by
   // bucket timestamp, and aggregate all of the PLBuckets by bucket
-  return groupOutcomesProfitLossByBucket(results).map((bucket: Array<PLBucket>) => {
+  const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.profitLoss)).map((bucket: Array<PLBucket>) => {
     return bucket.reduce(sumProfitLossResults, { timestamp: 0, profitLoss: null });
   });
+
+  const all = _
+    .chain(results)
+    .groupBy((result) => result.marketId)
+    .mapValues((results: Array<GroupResults>) => {
+      const byOutcome = _
+        .chain(results)
+        .groupBy((result) => result.outcome)
+        .mapValues((results: Array<GroupResults>) => results.map((result) => result.profitLoss))
+        .value();
+
+      const array = [];
+      for (let i = 0; i < 8; i++) {
+        array.push(byOutcome[i.toString()] || null);
+      }
+
+      return _.dropRightWhile(_.flatten(array), (v) => v === null);
+    })
+    .value();
+
+  return { aggregate, all};
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<Array<PLBucket>>) {
+export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<ProfitLossResults>) {
   try {
     if (typeof universe !== "string") throw new Error("Universe Address Required");
     if (typeof account !== "string") throw new Error("Account Address Required");
 
     getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime, endTime, periodInterval)
-      .then((results: Array<PLBucket>) => callback(null, results));
+      .then((results: ProfitLossResults) => callback(null, results))
   } catch (e) {
     callback(e);
   }

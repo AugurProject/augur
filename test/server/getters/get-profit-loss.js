@@ -37,13 +37,13 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     done();
   });
 
-  it("throws when startTime is equal to endTime", (done) => {
-    assert.throws(() => bucketRangeByInterval(0, 0, 1), Error, "endTime must be greater than startTime");
+  it("throws when startTime is greater than endTime", (done) => {
+    assert.throws(() => bucketRangeByInterval(1, 0, 1), Error, "endTime must be greater than or equal startTime");
     done();
   });
 
-  it("throws when startTime is greater than endTime", (done) => {
-    assert.throws(() => bucketRangeByInterval(1, 0, 1), Error, "endTime must be greater than startTime");
+  it("Does not throw when startTime is equal to endTime", (done) => {
+    assert.doesNotThrow(() => bucketRangeByInterval(0, 0, 1));
     done();
   });
 
@@ -151,11 +151,11 @@ describe("tests for test/trading-proceeds-claimed.db", () => {
   it("calculates PL for a user for all time", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, []);
+        assert.deepEqual(results.aggregate, []);
+        done();
       } catch (e) {
         return done(e);
       }
-      done();
     });
   });
 });
@@ -203,11 +203,11 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   it("calculates PL for a user for all time", (done) => {
     getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478)/4, (err, results) => {
       try {
-        assert.deepEqual(results, []);
+        assert.deepEqual(results.aggregate, []);
+        done();
       } catch (e) {
-        return done(e);
+        done(e);
       }
-      done();
     });
   });
 });
@@ -255,7 +255,7 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of -4eth for account1", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [
+        assert.deepEqual(results.aggregate, [
           {
             lastPrice: "0.1",
             profitLoss: {
@@ -277,19 +277,23 @@ describe("tests for test/profitloss.db", () => {
   it("has a total PL of 4eth for account2", (done) => {
     getProfitLoss(connection, augur, universe, account2, 0, endTime, endTime, (err, results) => {
       try {
-        assert.deepEqual(results, [
-          {
-            lastPrice: "0.1",
-            profitLoss: {
-              meanOpenPrice: "0",
-              position: "0",
-              realized: "4",
-              total: "4",
-              unrealized: "0",
-            },
-            timestamp: endTime,
+
+        var expected = [{
+          lastPrice: "0.1",
+          profitLoss: {
+            meanOpenPrice: "0",
+            position: "0",
+            realized: "4",
+            total: "4",
+            unrealized: "0",
           },
-        ]);
+          timestamp: endTime,
+        }];
+        assert.deepEqual(results.aggregate, expected);
+
+        assert.deepEqual(results.all, {
+          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected],
+        });
       } catch (e) {
         return done(e);
       }
@@ -354,7 +358,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.ifError(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -404,7 +408,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.ifError(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -454,7 +458,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.ifError(err);
-          assert.deepEqual(profitLoss, [
+          assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
                 meanOpenPrice: "5.5",
@@ -534,7 +538,9 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.ifError(err);
-          assert.equal(profitLoss.length, 30);
+          assert.isNull(err);
+          assert.equal(profitLoss.aggregate.length, 30);
+          assert.deepEqual(profitLoss.all, {});
         },
       },
       done

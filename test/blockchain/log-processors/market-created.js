@@ -99,10 +99,6 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
             },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
-            },
           },
         },
         constants,
@@ -259,10 +255,6 @@ describe("blockchain/log-processors/market-created", () => {
             getOrCacheReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
-            },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -442,10 +434,6 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
             },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
-            },
           },
         },
         constants,
@@ -597,10 +585,6 @@ describe("blockchain/log-processors/market-created", () => {
             getOrCacheReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
-            },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
             },
           },
         },
