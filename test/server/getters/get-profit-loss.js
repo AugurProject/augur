@@ -201,7 +201,7 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   });
 
   it("calculates PL for a user for all time", (done) => {
-    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551482278, null, (err, results) => {
+    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478)/4, (err, results) => {
       try {
         assert.deepEqual(results, []);
       } catch (e) {

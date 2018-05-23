@@ -451,6 +451,15 @@ export interface TradingHistoryRow extends TradesRow<BigNumber> {
   timestamp: number;
 }
 
+export interface ProceedTradesRow<BigNumberType> {
+  timestamp: number;
+  marketId: Address;
+  outcome: number;
+  price: BigNumberType;
+  amount: BigNumberType;
+  type: "sell",
+  maker: false
+}
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;
   amount: BigNumberType;
