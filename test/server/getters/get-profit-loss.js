@@ -37,13 +37,13 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
     done();
   });
 
-  it("throws when startTime is equal to endTime", (done) => {
-    assert.throws(() => bucketRangeByInterval(0, 0, 1), Error, "endTime must be greater than startTime");
+  it("throws when startTime is greater than endTime", (done) => {
+    assert.throws(() => bucketRangeByInterval(1, 0, 1), Error, "endTime must be greater than or equal startTime");
     done();
   });
 
-  it("throws when startTime is greater than endTime", (done) => {
-    assert.throws(() => bucketRangeByInterval(1, 0, 1), Error, "endTime must be greater than startTime");
+  it("Does not throw when startTime is equal to endTime", (done) => {
+    assert.doesNotThrow(() => bucketRangeByInterval(0, 0, 1));
     done();
   });
 

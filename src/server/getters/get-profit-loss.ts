@@ -62,7 +62,7 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>,
 export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<PLBucket> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
-  if (endTime <= startTime) throw new Error("endTime must be greater than startTime");
+  if (endTime < startTime) throw new Error("endTime must be greater than or equal startTime");
   if (periodInterval !== null && periodInterval <= 0) throw new Error("periodInterval must be positive integer (seconds)");
 
   const interval = periodInterval == null ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS) : periodInterval;
