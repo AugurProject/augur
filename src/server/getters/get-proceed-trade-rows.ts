@@ -66,16 +66,16 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
       // I hate having to get it off an `augur` instance when its unrelated
       // to a connection
       const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
+      const amount = row.balance.div(tickSize);
       const price = payout.times(tickSize).plus(row.minPrice);
       return {
         marketId: row.marketId,
-        amount: fixedPointToDecimal(row.balance, BN_WEI_PER_ETHER),
         outcome: row.outcome,
         timestamp: row.timestamp,
+        amount,
         price,
         type: "sell",
-        maker: false,
-        isCompleteSet: true
+        maker: false
       };
     });
 }

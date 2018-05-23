@@ -121,17 +121,12 @@ async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: A
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null);
   const outcomeFinalized = await getFinalizedOutcomePrice(db, marketId, outcome);
 
-  if (outcomeFinalized) {
-    console.log(marketId, outcomeFinalized.timestamp, outcomeFinalized.price.toFixed());
-  }
-
   return buckets.map((bucket: PLBucket) => {
     // This market has been finalized and this bucket is after the time which
     // that happened. We will fix the price for this outcome at the value
     // defined in the `payouts` table. This will effectively adjust the unrealized
     // profit and loss for the shares held for this outcome for this bucket.
     if (outcomeFinalized !== null && outcomeFinalized.timestamp < bucket.timestamp) {
-      console.log(`Using finalized outcome price ${outcomeFinalized.timestamp} < ${bucket.timestamp}`);
       return Object.assign({}, bucket, { lastPrice: outcomeFinalized.price.toFixed() });
     }
 
@@ -192,16 +187,12 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null);
   const marketIds = _.uniq(_.map(tradeHistory, 'marketId'));
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account);
-
-  claimHistory.forEach((h) => console.log(formatBigNumberAsFixed(h)));
-
-
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
     return Object.assign({}, trade, {
       type: trade.orderType! === "buy" ? "sell" : "buy",
       maker: account === trade.creator!,
     });
-  }).concat(claimHistory).sort((a,b) => b.timestamp - a.timestamp);
+  }).concat(claimHistory).sort((a,b) => a.timestamp - b.timestamp);
 
   if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime, periodInterval).slice(1), all: {} };
 

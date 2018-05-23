@@ -459,7 +459,6 @@ export interface ProceedTradesRow<BigNumberType> {
   amount: BigNumberType;
   type: "sell";
   maker: false;
-  isCompleteSet: true;
 }
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;

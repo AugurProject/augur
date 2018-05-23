@@ -148,7 +148,7 @@ describe("tests for test/trading-proceeds-claimed.db", () => {
       });
   });
 
-  it("calculates PL for a user for all time", (done) => {
+  it("calculates PL for a user for all time 2", (done) => {
     getProfitLoss(connection, augur, universe, account1, 0, endTime, endTime, (err, results) => {
       try {
         assert.deepEqual(results.aggregate, []);
@@ -203,7 +203,51 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   it("calculates PL for a user for all time", (done) => {
     getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478)/4, (err, results) => {
       try {
-        assert.deepEqual(results.aggregate, []);
+        assert.deepEqual(results.aggregate, [
+          {
+            "lastPrice": "0.5",
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "-0.0000000000000000000000004",
+              "total": "-0.0000000000000000000000004",
+              "unrealized": "0",
+            },
+            "timestamp": 1551115093.25,
+          },
+          {
+            "lastPrice": "0.5",
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "-0.0000000000000000000000004",
+              "total": "-0.0000000000000000000000004",
+              "unrealized": "0",
+            },
+            "timestamp": 1551352708.5,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "0",
+              "total": "4.997",
+              "unrealized": "4.997",
+            },
+            "timestamp": 1551590323.75,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "0.99940035978412952229",
+              "position": "-10005999999999999990.006",
+              "realized": "4.997",
+              "total": "4.997",
+              "unrealized": "0",
+            },
+            "timestamp": 1551827939,
+          },
+        ]);
+
         done();
       } catch (e) {
         done(e);
