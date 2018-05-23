@@ -18,6 +18,8 @@
 var BigNumber = require("bignumber.js");
 var simulateBuy = require("./simulate-buy");
 var simulateSell = require("./simulate-sell");
+var convertDisplayPriceToAdjustedForNumTicksDisplayPrice = require("../../utils/convert-display-price-to-adjusted-for-num-ticks-display-price");
+var convertDisplayPricesInSingleOutcomeOrderBookSideToAdjustedForNumTicksDisplayPrices = require("../convert-display-prices-in-single-outcome-order-book-side-to-adjusted-for-num-ticks-display-prices");
 
 /**
  * Determine the sequence of makes/takes that will be executed to fill the specified order, and return the user's
@@ -32,6 +34,7 @@ var simulateSell = require("./simulate-sell");
  * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks (price points) for this market, as a base-10 string.
  * @param {string|null} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
  * @param {string} p.shares Number of shares to trade, as a base-10 string.
  * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
@@ -42,7 +45,13 @@ var simulateSell = require("./simulate-sell");
 function simulateTrade(p) {
   if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
-  var price = p.price ? new BigNumber(p.price, 10) : p.price;
+  var price = p.price != null ? convertDisplayPriceToAdjustedForNumTicksDisplayPrice({ displayPrice: p.price, numTicks: p.numTicks, maxPrice: p.maxPrice, minPrice: p.minPrice }) : null;
+  if (p.singleOutcomeOrderBook.buy && Object.keys(p.singleOutcomeOrderBook.buy).length) {
+    p.singleOutcomeOrderBook.buy = convertDisplayPricesInSingleOutcomeOrderBookSideToAdjustedForNumTicksDisplayPrices(p.singleOutcomeOrderBook.buy, p.numTicks, p.minPrice, p.maxPrice);
+  }
+  if (p.singleOutcomeOrderBook.sell && Object.keys(p.singleOutcomeOrderBook.sell).length) {
+    p.singleOutcomeOrderBook.sell = convertDisplayPricesInSingleOutcomeOrderBookSideToAdjustedForNumTicksDisplayPrices(p.singleOutcomeOrderBook.sell, p.numTicks, p.minPrice, p.maxPrice);
+  }
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
   var minPrice = new BigNumber(p.minPrice, 10);
   var maxPrice = new BigNumber(p.maxPrice, 10);

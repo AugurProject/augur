@@ -8,9 +8,9 @@ var convertOnChainPriceToDisplayPrice = require("./convert-on-chain-price-to-dis
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.displayPrice Display price for this trade, as a base-10 string.
- * @param {string} p.numTicks The number of ticks for this market.
- * @param {string} p.maxDisplayPrice The maximum display price for this market, as a base-10 string.
- * @param {string} p.minDisplayPrice The minimum display price for this market, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks (price points) for this market, as a base-10 string.
+ * @param {string} p.maxPrice The maximum display price for this market, as a base-10 string.
+ * @param {string} p.minPrice The minimum display price for this market, as a base-10 string.
  * @return {BigNumber} Display price adjusted for numTicks.
  */
 function convertDisplayPriceToAdjustedForNumTicksDisplayPrice(p) {

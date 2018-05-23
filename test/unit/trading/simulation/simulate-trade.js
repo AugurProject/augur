@@ -29,6 +29,7 @@ describe("trading/simulation/simulate-trade", function () {
       userAddress: "USER_ADDRESS",
       minPrice: "0",
       maxPrice: "1",
+      numTicks: "10000",
       price: "0.7",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
@@ -76,6 +77,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -122,6 +124,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -161,6 +164,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -200,6 +204,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -238,6 +243,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -276,6 +282,7 @@ describe("trading/simulation/simulate-trade", function () {
       "minPrice": "0",
       "maxPrice": "1",
       "price": 0.5,
+      numTicks: "10000",
       "shares": "10",
       "marketCreatorFeeRate": "0.02",
       "singleOutcomeOrderBook": {
@@ -314,6 +321,53 @@ describe("trading/simulation/simulate-trade", function () {
         "sharesFilled": "5",
         "tokensDepleted": "2.5",
         "worstCaseFees": "0.075",
+      });
+    },
+  });
+  test({
+    description: "simulate trade (buy), numTicks=10003",
+    params: {
+      orderType: 0,
+      outcome: 0,
+      shares: "3",
+      shareBalances: ["0", "5"],
+      tokenBalance: "0",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      numTicks: "10003",
+      price: "0.7",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: "2",
+        settlementFees: "0.00600019994001799457",
+        worstCaseFees: "0.00900029991002699185",
+        otherSharesDepleted: "3",
+        sharesDepleted: "0",
+        tokensDepleted: "0",
+        shareBalances: ["0", "2"],
       });
     },
   });
