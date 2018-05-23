@@ -3,7 +3,7 @@ import { updateLoginAccount } from 'modules/auth/actions/update-login-account'
 import logError from 'utils/log-error'
 
 export const updateTopBarPL = (options = {}, callback = logError) => (dispatch, getState) => {
-  const { universe, loginAccount, blockchain } = getState()
+  const { universe, loginAccount } = getState()
   if (loginAccount.address == null || universe.id == null) return callback(null)
   augur.augurNode.submitRequest(
     'getProfitLoss',
