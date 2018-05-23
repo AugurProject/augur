@@ -37,7 +37,7 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
   marketsQuery.whereIn("reportingState", [ReportingState.FINALIZED, ReportingState.AWAITING_FINALIZATION]);
   marketsQuery.join("trading_proceeds", function() {
     this
-      .on("trading_proceeds.shareToken", "shareTokens.contractAddress")
+      .on("trading_proceeds.shareToken", "shareTokens.contractAddress");
   });
   marketsQuery.join("tokens AS shareTokens", function () {
     this
@@ -57,7 +57,7 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
   marketsQuery.join("blocks as proceeds_block", "trading_proceeds.blockNumber", "proceeds_block.blockNumber");
 
   const winningPayoutRows: Array<WinningPayoutRow> = await marketsQuery;
-  
+
   return _
     .map(winningPayoutRows, (row: WinningPayoutRow): ProceedTradesRow<BigNumber> => {
       const payoutKey = `payout${row.outcome}` as keyof PayoutRow<BigNumber>;
@@ -75,7 +75,7 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
         amount,
         price,
         type: "sell",
-        maker: false
+        maker: false,
       };
     });
-}
+};

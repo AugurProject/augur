@@ -100,7 +100,7 @@ function queryWinningPayoutForMarket(db: Knex, marketId: Address): Knex.QueryBui
     .join("payouts", function() {
       this.on("payouts.marketId", "markets.marketId").andOn("payouts.winning", db.raw("1"));
     })
-    .where("markets.marketId", marketId+"");
+    .where("markets.marketId", marketId + "");
 }
 
 async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: number) {
@@ -185,14 +185,14 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   // get all the trades for this user from the beginning of time, until
   // `endTime`
   const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null);
-  const marketIds = _.uniq(_.map(tradeHistory, 'marketId'));
+  const marketIds = _.uniq(_.map(tradeHistory, "marketId"));
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account);
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
     return Object.assign({}, trade, {
       type: trade.orderType! === "buy" ? "sell" : "buy",
       maker: account === trade.creator!,
     });
-  }).concat(claimHistory).sort((a,b) => a.timestamp - b.timestamp);
+  }).concat(claimHistory).sort((a, b) => a.timestamp - b.timestamp);
 
   if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime, periodInterval).slice(1), all: {} };
 
@@ -251,7 +251,7 @@ export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account
     if (typeof account !== "string") throw new Error("Account Address Required");
 
     getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime, endTime, periodInterval)
-      .then((results: ProfitLossResults) => callback(null, results))
+      .then((results: ProfitLossResults) => callback(null, results));
   } catch (e) {
     callback(e);
   }

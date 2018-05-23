@@ -165,7 +165,6 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
   var augur = new Augur();
   const universe = "0x8e9d71cb6e9080bc04f6fd562f5dd68af0163baf";
   const account1 = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
-  const endTime = Date.now();
 
   beforeEach((done) => {
     sqlite3.verbose();
@@ -255,7 +254,6 @@ describe("tests for test/trading-proceeds-claimed-2.db", () => {
     });
   });
 });
-
 
 
 describe("tests for test/profitloss.db", () => {
