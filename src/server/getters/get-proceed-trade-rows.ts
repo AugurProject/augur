@@ -18,7 +18,7 @@ interface WinningPayoutRow extends PayoutRow<BigNumber> {
   outcome: number;
 }
 
-export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Array<Address>, account: Address): Promise<Array<ProceedTradesRow<BigNumber>>> {
+export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Array<Address>, account: Address, endTime: number): Promise<Array<ProceedTradesRow<BigNumber>>> {
   if (marketIds == null) throw new Error("must include marketIds parameter");
   if (account == null) throw new Error("must include account parameter");
 
@@ -54,7 +54,11 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
       .on("payouts.marketId", "markets.marketId")
       .andOn("payouts.winning", db.raw("1"));
   });
-  marketsQuery.join("blocks as proceeds_block", "trading_proceeds.blockNumber", "proceeds_block.blockNumber");
+  marketsQuery.join("blocks as proceeds_block", function () {
+    this
+      .on("trading_proceeds.blockNumber", "proceeds_block.blockNumber")
+      .andOn(db.raw("proceeds_block.timestamp < ?", endTime));
+  });
 
   const winningPayoutRows: Array<WinningPayoutRow> = await marketsQuery;
 
