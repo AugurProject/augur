@@ -18,7 +18,7 @@ interface WinningPayoutRow extends PayoutRow<BigNumber> {
   outcome: number;
 }
 
-export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Array<Address>, account: Address): Promise<Array<ProceedTradesRow<BigNumber>>> => {
+export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Array<Address>, account: Address): Promise<Array<ProceedTradesRow<BigNumber>>> {
   if (marketIds == null) throw new Error("must include marketIds parameter");
   if (account == null) throw new Error("must include account parameter");
 
@@ -78,4 +78,4 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
         maker: false,
       };
     });
-};
+}
