@@ -35,7 +35,7 @@ function calculateTradeCost(p) {
   var displayRange =  maxDisplayPrice.minus(minDisplayPrice);
   var tickSize = calculateTickSize(numTicks, p.minDisplayPrice, p.maxDisplayPrice);
   var onChainPrice = convertDisplayPriceToOnChainPrice(displayPrice, minDisplayPrice, tickSize);
-  var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks);
+  var onChainAmount = convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTicks, true);
   var onChainSharesProvided = convertDisplayAmountToOnChainAmount(sharesProvided, displayRange, numTicks);
   var onChainAmountForPrice = onChainAmount.minus(onChainSharesProvided);
   var cost;
