@@ -10,8 +10,8 @@ export const updateTopBarPL = (options = {}, callback = logError) => (dispatch, 
     {
       universe: universe.id,
       account: loginAccount.address,
-      startTime: (blockchain.currentAugurTimestamp - 2592000),
-      endTime: blockchain.currentAugurTimestamp,
+      startTime: (Math.round((new Date()).getTime() / 1000) - 2592000),
+      endTime: Math.round((new Date()).getTime() / 1000),
       periodInterval: null,
     },
     (err, rawPerformanceData) => {
@@ -26,8 +26,8 @@ export const updateTopBarPL = (options = {}, callback = logError) => (dispatch, 
     {
       universe: universe.id,
       account: loginAccount.address,
-      startTime: (blockchain.currentAugurTimestamp - 86400),
-      endTime: blockchain.currentAugurTimestamp,
+      startTime: (Math.round((new Date()).getTime() / 1000) - 86400),
+      endTime: Math.round((new Date()).getTime() / 1000),
       periodInterval: null,
     },
     (err, rawPerformanceData) => {
