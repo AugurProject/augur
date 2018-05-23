@@ -3,8 +3,8 @@
 import sinon from 'sinon'
 import { createBigNumber } from 'utils/create-big-number'
 
-import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
-import { formatEther, formatRep } from 'utils/format-number'
+import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
+// import { formatEther, formatRep } from 'utils/format-number'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 
