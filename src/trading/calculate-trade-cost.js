@@ -1,10 +1,9 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-
 var calculateBidCost = require("./calculate-bid-cost");
 var calculateAskCost = require("./calculate-ask-cost");
-var calculateTickSize = require("../trading/calculate-tick-size");
+var calculateTickSize = require("./calculate-tick-size");
 var convertDisplayPriceToOnChainPrice = require("../utils/convert-display-price-to-on-chain-price");
 var convertDisplayAmountToOnChainAmount = require("../utils/convert-display-amount-to-on-chain-amount");
 

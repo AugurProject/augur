@@ -86,9 +86,9 @@ describe("trading/calculate-trade-cost", function () {
       numTicks: "10002",
     },
     assertions: function (tradeCost) {
-      assert.strictEqual(tradeCost.cost.toFixed(), "75000000000000000");
+      assert.strictEqual(tradeCost.cost.toFixed(), "75020000000000000");
       assert.strictEqual(tradeCost.onChainAmount.toFixed(), "10000000000000");
-      assert.strictEqual(tradeCost.onChainPrice.toFixed(), "7500");
+      assert.strictEqual(tradeCost.onChainPrice.toFixed(), "7502");
     },
   });
   test({
@@ -102,9 +102,9 @@ describe("trading/calculate-trade-cost", function () {
       numTicks: "10002",
     },
     assertions: function (tradeCost) {
-      assert.strictEqual(tradeCost.cost.toFixed(), "25020000000000000");
+      assert.strictEqual(tradeCost.cost.toFixed(), "25010000000000000");
       assert.strictEqual(tradeCost.onChainAmount.toFixed(), "10000000000000");
-      assert.strictEqual(tradeCost.onChainPrice.toFixed(), "7500");
+      assert.strictEqual(tradeCost.onChainPrice.toFixed(), "7501");
     },
   });
 });

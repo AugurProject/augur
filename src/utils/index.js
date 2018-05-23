@@ -6,4 +6,5 @@ module.exports = {
   convertOnChainPriceToDisplayPrice: require("./convert-on-chain-price-to-display-price"),
   convertDisplayAmountToOnChainAmount: require("./convert-display-amount-to-on-chain-amount"),
   convertOnChainAmountToDisplayAmount: require("./convert-on-chain-amount-to-display-amount"),
+  convertDisplayPriceToAdjustedForNumTicksDisplayPrice: require("./convert-display-price-to-adjusted-for-num-ticks-display-price"),
 };

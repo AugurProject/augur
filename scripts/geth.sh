@@ -21,8 +21,8 @@ ln -s $symlinked $symlink
 
 if [ "${networkid}" = "1" ]; then
   address="0x63524e3fe4791aefce1e932bbfb3fdf375bfad89"
-  # geth --syncmode=$syncmode --cache=$cache --maxpeers=$maxpeers --etherbase=$address console
-  geth --nodiscover --syncmode=$syncmode --cache=$cache --maxpeers=$maxpeers --etherbase=$address console
+  geth --syncmode=$syncmode --cache=$cache --maxpeers=$maxpeers --etherbase=$address console
+  # geth --nodiscover --syncmode=$syncmode --cache=$cache --maxpeers=$maxpeers --etherbase=$address console
 else
   if [ "${networkid}" = "3" ]; then
     extraflags="--testnet"
