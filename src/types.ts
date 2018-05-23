@@ -144,14 +144,18 @@ export interface MarketsContractAddressRow {
   marketId: Address;
 }
 
-export interface MarketsRow<BigNumberType> {
+export interface MarketPricing<BigNumberType> {
+  minPrice: BigNumberType;
+  maxPrice: BigNumberType;
+  numTicks: BigNumberType;
+}
+
+export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> {
   marketId: Address;
   universe: Address;
   marketType: string;
-  numOutcomes: number;
-  minPrice: BigNumberType;
-  maxPrice: BigNumberType;
   marketCreator: Address;
+  numOutcomes: number;
   creationBlockNumber: number;
   creationFee: BigNumberType;
   reportingFeeRate: BigNumberType;
@@ -176,7 +180,6 @@ export interface MarketsRow<BigNumberType> {
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
-  numTicks: BigNumberType;
   consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
   forking: number;
@@ -448,6 +451,15 @@ export interface TradingHistoryRow extends TradesRow<BigNumber> {
   timestamp: number;
 }
 
+export interface ProceedTradesRow<BigNumberType> {
+  timestamp: number;
+  marketId: Address;
+  outcome: number;
+  price: BigNumberType;
+  amount: BigNumberType;
+  type: "sell";
+  maker: false;
+}
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;
   amount: BigNumberType;

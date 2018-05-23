@@ -106,6 +106,102 @@ describe("server/getters/get-profit-loss#bucketRangeByInterval", () => {
   });
 });
 
+describe("tests for test/trading-proceeds-claimed-2.db", () => {
+  var connection = null;
+  var augur = new Augur();
+  const universe = "0x8e9d71cb6e9080bc04f6fd562f5dd68af0163baf";
+  const account1 = "0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb";
+
+  beforeEach((done) => {
+    sqlite3.verbose();
+    connection = Knex({
+      client: "sqlite3",
+      connection: {
+        filename: "./test/trading-proceeds-claimed-2.db",
+      },
+      acquireConnectionTimeout: 5 * 60 * 1000,
+      useNullAsDefault: true,
+      postProcessResponse: postProcessDatabaseResults,
+    });
+
+    done();
+  });
+
+  afterEach((done) => {
+    connection.destroy();
+    done();
+  });
+
+  it("has a finalized market", (done) => {
+    connection("markets")
+      .select("*")
+      .whereNotNull("finalizationBlockNumber")
+      .asCallback((err, results) => {
+        assert.ifError(err);
+        assert.isNotNull(results);
+        assert.equal(results.length, 9);
+
+        done();
+      });
+  });
+
+  it("calculates PL for a user for all time", (done) => {
+    getProfitLoss(connection, augur, universe, account1, 1550877478, 1551827939, (1551827939 - 1550877478)/4, (err, results) => {
+      try {
+        assert.deepEqual(results.aggregate, [
+          {
+            "lastPrice": "0.5",
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "-0.0000000000000000000000004",
+              "total": "-0.0000000000000000000000004",
+              "unrealized": "0",
+            },
+            "timestamp": 1551115093.25,
+          },
+          {
+            "lastPrice": "0.5",
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "-0.0000000000000000000000004",
+              "total": "-0.0000000000000000000000004",
+              "unrealized": "0",
+            },
+            "timestamp": 1551352708.5,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "0.5",
+              "position": "9.994",
+              "realized": "0",
+              "total": "4.997",
+              "unrealized": "4.997",
+            },
+            "timestamp": 1551590323.75,
+          },
+          {
+            "profitLoss": {
+              "meanOpenPrice": "0.99940035978412952229",
+              "position": "-10005999999999999990.006",
+              "realized": "4.997",
+              "total": "4.997",
+              "unrealized": "0",
+            },
+            "timestamp": 1551827939,
+          },
+        ]);
+
+        done();
+      } catch (e) {
+        done(e);
+      }
+    });
+  });
+});
+
+
 describe("tests for test/profitloss.db", () => {
   var connection = null;
   var augur = new Augur();
@@ -134,7 +230,7 @@ describe("tests for test/profitloss.db", () => {
     connection("trades")
       .select("*")
       .asCallback((err, results) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(results.length, 2);
         done();
       });
@@ -249,7 +345,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: HOUR_SECONDS,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
@@ -299,7 +395,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: HOUR_SECONDS,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
@@ -349,7 +445,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: 10,
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss.aggregate, [
             {
               profitLoss: {
@@ -429,6 +525,7 @@ describe("server/getters/get-profit-loss", () => {
           periodInterval: 86400,
         },
         assertions: (err, profitLoss) => {
+          assert.ifError(err);
           assert.isNull(err);
           assert.equal(profitLoss.aggregate.length, 30);
           assert.deepEqual(profitLoss.all, {});
@@ -486,7 +583,7 @@ describe("server/getters/get-profit-loss", () => {
           ],
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               timestamp: 20000,
@@ -535,7 +632,7 @@ describe("server/getters/get-profit-loss", () => {
           ],
         },
         assertions: (err, profitLoss) => {
-          assert.isNull(err);
+          assert.ifError(err);
           assert.deepEqual(profitLoss, [
             {
               profitLoss: {
