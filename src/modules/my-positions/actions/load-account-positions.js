@@ -2,6 +2,7 @@ import { augur } from 'services/augurjs'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import { updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data'
 import logError from 'utils/log-error'
+import { updateTopBarPL } from 'modules/my-positions/actions/update-top-bar-pl'
 
 export const loadAccountPositions = (options = {}, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount, blockchain } = getState()
@@ -44,8 +45,9 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
             dispatch(updateAccountPositionsData(marketPositionData, marketId))
           },
         )
+        dispatch(updateTopBarPL())
+        callback(null, positions)
       })
-      callback(null, positions)
     }))
   })
 }
