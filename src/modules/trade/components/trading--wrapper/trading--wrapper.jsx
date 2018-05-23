@@ -45,6 +45,7 @@ class MarketTradingWrapper extends Component {
       marketQuantity: '',
       selectedNav: BUY,
       currentPage: 0,
+      doNotCreateOrders: false,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -96,6 +97,7 @@ class MarketTradingWrapper extends Component {
       marketOrderTotal: '',
       marketQuantity: '',
       currentPage: 0,
+      doNotCreateOrders: false,
     })
   }
 
@@ -163,6 +165,7 @@ class MarketTradingWrapper extends Component {
                 orderEstimate={s.orderEstimate}
                 marketOrderTotal={s.marketOrderTotal}
                 marketQuantity={s.marketQuantity}
+                doNotCreateOrders={s.doNotCreateOrders}
                 selectedOutcome={selectedOutcome}
                 nextPage={this.nextPage}
                 updateState={this.updateState}
@@ -181,6 +184,7 @@ class MarketTradingWrapper extends Component {
             orderEstimate={s.orderEstimate}
             marketOrderTotal={s.marketOrderTotal}
             marketQuantity={s.marketQuantity}
+            doNotCreateOrders={s.doNotCreateOrders}
             selectedOutcome={selectedOutcome}
             prevPage={this.prevPage}
             trade={selectedOutcome.trade}

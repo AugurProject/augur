@@ -33,6 +33,7 @@ export default class MarketView extends Component {
       orderPrice: '',
       orderQuantity: '',
       selectedNav: BUY,
+      doNotCreateOrders: false,
     }
 
     this.state = {
