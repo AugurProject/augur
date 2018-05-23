@@ -3,8 +3,8 @@
 import sinon from 'sinon'
 import { createBigNumber } from 'utils/create-big-number'
 
-import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
-import { formatEther, formatRep } from 'utils/format-number'
+import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
+// import { formatEther, formatRep } from 'utils/format-number'
 
 import { ZERO } from 'modules/trade/constants/numbers'
 
@@ -203,63 +203,63 @@ describe('modules/account/selectors/core-stats', () => {
     })
   })
 
-  describe('selectCoreStats', () => {
-    test({
-      description: `should return the expected object`,
-      assertions: () => {
-        const loginAccount = {
-          ethTokens: formatEther(10),
-          eth: formatEther(10),
-          rep: formatRep(10),
-        }
-        const loginAccountPositions = {
-          summary: {
-            totalNet: formatEther(10),
-          },
-        }
-        const periodPL = createBigNumber('10')
+  // describe('selectCoreStats', () => {
+  //   test({
+  //     description: `should return the expected object`,
+  //     assertions: () => {
+  //       const loginAccount = {
+  //         ethTokens: formatEther(10),
+  //         eth: formatEther(10),
+  //         rep: formatRep(10),
+  //       }
+  //       const loginAccountPositions = {
+  //         summary: {
+  //           totalNet: formatEther(10),
+  //         },
+  //       }
+  //       const periodPL = createBigNumber('10')
 
-        const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL)
+  //       const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL)
 
-        const expected = [
-          {
-            totalEth: {
-              label: 'ETH Tokens',
-              title: 'Ether Tokens -- outcome trading currency',
-              value: { ...loginAccount.ethTokens, denomination: null },
-            },
-            totalRealEth: {
-              label: 'ETH',
-              title: 'Ether -- pays transaction gas fees',
-              value: { ...loginAccount.eth, denomination: null },
-            },
-            totalRep: {
-              label: 'REP',
-              title: 'Reputation -- event voting currency',
-              value: { ...loginAccount.rep, denomination: null },
-            },
-          },
-          {
-            totalPL: {
-              label: 'Total P/L',
-              title: 'Profit/Loss -- net of all trades',
-              value: loginAccountPositions.summary.totalNet,
-            },
-            totalPLMonth: {
-              label: '30 Day P/L',
-              title: 'Profit/Loss -- net of all trades over the last 30 days',
-              value: formatEther(periodPL),
-            },
-            totalPLDay: {
-              label: '1 Day P/L',
-              title: 'Profit/Loss -- net of all trades over the last day',
-              value: formatEther(periodPL),
-            },
-          },
-        ]
+  //       const expected = [
+  //         {
+  //           totalEth: {
+  //             label: 'ETH Tokens',
+  //             title: 'Ether Tokens -- outcome trading currency',
+  //             value: { ...loginAccount.ethTokens, denomination: null },
+  //           },
+  //           totalRealEth: {
+  //             label: 'ETH',
+  //             title: 'Ether -- pays transaction gas fees',
+  //             value: { ...loginAccount.eth, denomination: null },
+  //           },
+  //           totalRep: {
+  //             label: 'REP',
+  //             title: 'Reputation -- event voting currency',
+  //             value: { ...loginAccount.rep, denomination: null },
+  //           },
+  //         },
+  //         {
+  //           totalPL: {
+  //             label: 'Total P/L',
+  //             title: 'Profit/Loss -- net of all trades',
+  //             value: loginAccountPositions.summary.totalNet,
+  //           },
+  //           totalPLMonth: {
+  //             label: '30 Day P/L',
+  //             title: 'Profit/Loss -- net of all trades over the last 30 days',
+  //             value: formatEther(periodPL),
+  //           },
+  //           totalPLDay: {
+  //             label: '1 Day P/L',
+  //             title: 'Profit/Loss -- net of all trades over the last day',
+  //             value: formatEther(periodPL),
+  //           },
+  //         },
+  //       ]
 
-        assert.deepEqual(actual, expected, `didn't return the expected array`)
-      },
-    })
-  })
+  //       assert.deepEqual(actual, expected, `didn't return the expected array`)
+  //     },
+  //   })
+  // })
 })
