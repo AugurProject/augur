@@ -3,11 +3,16 @@ import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, ReportingState, PayoutRow, ProceedTradesRow } from "../../types";
 import { getMarketsWithReportingState, groupByAndSum } from "./database";
+import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { BN_WEI_PER_ETHER } from "../../constants";
 import Augur from "augur.js";
 
 interface WinningPayoutRow extends PayoutRow<BigNumber> {
   timestamp: number;
   marketId: Address;
+  numTicks: BigNumber;
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
   reportingState: ReportingState;
   balance: BigNumber;
   outcome: number;
@@ -17,7 +22,17 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
   if (marketIds == null) throw new Error("must include marketIds parameter");
   if (account == null) throw new Error("must include account parameter");
 
-  const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, ["proceeds_block.timestamp", "markets.marketId", "balances.balance", "balances.owner", "shareTokens.outcome", "payouts.*"]);
+  const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, [
+    "proceeds_block.timestamp",
+    "markets.marketId",
+    "markets.numTicks",
+    "markets.minPrice",
+    "markets.maxPrice",
+    "trading_proceeds.numShares as balance",
+    "balances.owner",
+    "shareTokens.outcome",
+    "payouts.*",
+  ]);
   marketsQuery.whereIn("markets.marketId", marketIds);
   marketsQuery.whereIn("reportingState", [ReportingState.FINALIZED, ReportingState.AWAITING_FINALIZATION]);
   marketsQuery.join("trading_proceeds", function() {
@@ -47,14 +62,20 @@ export const getProceedTradeRows = async (db: Knex, augur: Augur, marketIds: Arr
     .map(winningPayoutRows, (row: WinningPayoutRow): ProceedTradesRow<BigNumber> => {
       const payoutKey = `payout${row.outcome}` as keyof PayoutRow<BigNumber>;
       const payout = row[payoutKey] as BigNumber;
+      // this is the same as augur.utils.convertOnChainPriceToDisplayPrice
+      // I hate having to get it off an `augur` instance when its unrelated
+      // to a connection
+      const tickSize = numTicksToTickSize(row.numTicks, row.minPrice, row.maxPrice);
+      const price = payout.times(tickSize).plus(row.minPrice);
       return {
         marketId: row.marketId,
-        amount: row.balance,
+        amount: fixedPointToDecimal(row.balance, BN_WEI_PER_ETHER),
         outcome: row.outcome,
-        price: payout,
         timestamp: row.timestamp,
+        price,
         type: "sell",
-        maker: false
+        maker: false,
+        isCompleteSet: true
       };
     });
 }

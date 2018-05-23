@@ -193,8 +193,8 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   const marketIds = _.uniq(_.map(tradeHistory, 'marketId'));
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account);
 
+  claimHistory.forEach((h) => console.log(formatBigNumberAsFixed(h)));
 
-  console.log("claim history: ", claimHistory.length, claimHistory);
 
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
     return Object.assign({}, trade, {
