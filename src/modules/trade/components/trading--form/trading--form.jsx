@@ -185,6 +185,8 @@ class MarketTradingForm extends Component {
 
   validateForm(property, rawValue) {
     const { updateState } = this.props
+    // since the order changed by user action, make sure we can place orders.
+    updateState('doNotCreateOrders', false)
     let value = rawValue
     if (!(BigNumber.isBigNumber(value)) && value !== '') value = createBigNumber(value)
     const updatedState = {

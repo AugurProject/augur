@@ -185,7 +185,7 @@ class PerformanceGraph extends Component {
           x: 5,
           format: '{value} ETH',
           formatter() {
-            return formatEther(this.value).formattedValue
+            return `${formatEther(this.value).formattedValue} ETH`
           },
           style: {
             color: '#a7a2b2',

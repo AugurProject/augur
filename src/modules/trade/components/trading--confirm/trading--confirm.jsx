@@ -19,6 +19,7 @@ const MarketTradingConfirm = (p) => {
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
   const potentialLossPercent = getValue(p, 'trade.potentialLossPercent')
   const totalCost = getValue(p, 'trade.totalCost')
+  const { doNotCreateOrders } = p
 
   return (
     <section className={Styles.TradingConfirm}>
@@ -98,7 +99,7 @@ const MarketTradingConfirm = (p) => {
               }
             }, (res) => {
               // onComplete CB
-            })
+            }, doNotCreateOrders)
             p.prevPage()
           }}
         >Confirm
