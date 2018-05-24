@@ -156,7 +156,7 @@ describe("trading/filter-and-sort-by-price", function () {
           amount: "1",
           fullPrecisionPrice: "0.6",
           owner: "OWNER_ADDRESS",
-        }
+        },
       },
     },
     assertions: function (filteredSortedOrders) {
