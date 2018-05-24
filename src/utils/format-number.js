@@ -107,7 +107,7 @@ export function formatShares(num, opts) {
       decimals: SHARES_NUMBER_OF_DECIMALS,
       decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
       denomination: ` share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
-      minimized: true,
+      minimized: false,
       zeroStyled: false,
       blankZero: false,
       roundDown: true,
