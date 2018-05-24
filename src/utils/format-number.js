@@ -50,6 +50,7 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 */
 
 export const ETHER_NUMBER_OF_DECIMALS = 4
+export const SHARES_NUMBER_OF_DECIMALS = 4
 
 export function formatEther(num, opts) {
   return formatNumber(
@@ -103,8 +104,8 @@ export function formatShares(num, opts) {
   const formattedShares = formatNumber(
     num,
     {
-      decimals: 2,
-      decimalsRounded: 2,
+      decimals: SHARES_NUMBER_OF_DECIMALS,
+      decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
       denomination: ` share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
       minimized: true,
       zeroStyled: false,
