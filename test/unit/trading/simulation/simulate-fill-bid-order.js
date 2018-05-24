@@ -72,7 +72,7 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         worstCaseFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
+        shareBalances: [new BigNumber("0", 10), new BigNumber("2", 10)],
       });
     },
   });
@@ -130,7 +130,7 @@ describe("trading/simulation/simulate-fill-bid-order", function () {
         worstCaseFees: new BigNumber("0", 10),
         sharesDepleted: new BigNumber("0", 10),
         tokensDepleted: new BigNumber("0.6", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)],
+        shareBalances: [new BigNumber("0", 10), new BigNumber("2", 10)],
       });
     },
   });

@@ -74,7 +74,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
         worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.4", 10),
-        shareBalances: [ZERO, ZERO],
+        shareBalances: [new BigNumber("2", 10), ZERO],
       });
     },
   });
@@ -132,7 +132,7 @@ describe("trading/simulation/simulate-fill-ask-order", function () {
         worstCaseFees: ZERO,
         otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.4", 10),
-        shareBalances: [ZERO, ZERO],
+        shareBalances: [new BigNumber("2", 10), ZERO],
       });
     },
   });

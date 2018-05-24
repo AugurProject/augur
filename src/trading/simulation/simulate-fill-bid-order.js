@@ -2,6 +2,7 @@
 
 var BigNumber = require("bignumber.js");
 var calculateSettlementFee = require("./calculate-settlement-fee");
+var modifyOtherShareBalances = require("./modify-other-share-balances");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
@@ -15,6 +16,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
   var makerTokensDepleted = ZERO;
   var takerSharesDepleted = ZERO;
   var takerTokensDepleted = ZERO;
+  var takerOtherSharesGainedByDepletingTokens = ZERO;
   var sharesFilled = ZERO;
   matchingSortedBids.forEach(function (matchingBid) {
     var takerDesiredSharesForThisOrder = BigNumber.min(new BigNumber(matchingBid.amount, 10), sharesToCover);
@@ -42,6 +44,7 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
       var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceShort);
       makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
       takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
+      takerOtherSharesGainedByDepletingTokens = takerOtherSharesGainedByDepletingTokens.plus(makerSharesEscrowed);
       takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(makerSharesEscrowed);
       makerSharesEscrowed = ZERO;
     }
@@ -61,10 +64,16 @@ function simulateFillBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
       var makerPortionOfCompleteSetCost = takerDesiredSharesForThisOrder.times(sharePriceLong);
       makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
       takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
+      takerOtherSharesGainedByDepletingTokens = takerOtherSharesGainedByDepletingTokens.plus(takerDesiredSharesForThisOrder);
       takerDesiredSharesForThisOrder = ZERO;
     }
   });
-  shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
+  if (takerSharesDepleted.gt(ZERO)) {
+    shareBalances[outcome] = shareBalances[outcome].minus(takerSharesDepleted);
+  }
+  if (takerOtherSharesGainedByDepletingTokens.gt(ZERO)) {
+    shareBalances = modifyOtherShareBalances(outcome, takerOtherSharesGainedByDepletingTokens, shareBalances, true);
+  }
   return {
     sharesFilled: sharesFilled,
     sharesToCover: sharesToCover,

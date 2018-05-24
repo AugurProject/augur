@@ -3,6 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
+var BigNumber = require("bignumber.js");
 var filterByPriceAndUserSortByPrice = require("../../../src/trading/filter-by-price-and-user-sort-by-price");
 
 describe("trading/filter-by-price-and-user-sort-by-price", function () {
@@ -20,12 +21,12 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         BID_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_1: {
           amount: "1",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
       },
@@ -33,11 +34,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "2",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "1",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },
@@ -51,17 +52,17 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         BID_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_1: {
           amount: "1",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_3: {
           amount: "7",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "USER_ADDRESS",
         },
       },
@@ -69,11 +70,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "2",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "1",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },
@@ -87,27 +88,27 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         BID_0: {
           amount: "2",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_1: {
           amount: "1",
-          fullPrecisionPrice: "0.5",
+          fullPrecisionPrice: new BigNumber("0.5", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_3: {
           amount: "7",
-          fullPrecisionPrice: "0.8",
+          fullPrecisionPrice: new BigNumber("0.8", 10),
           owner: "USER_ADDRESS",
         },
         BID_4: {
           amount: "3",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         BID_5: {
           amount: "42",
-          fullPrecisionPrice: "0.4",
+          fullPrecisionPrice: new BigNumber("0.4", 10),
           owner: "OWNER_ADDRESS",
         },
       },
@@ -115,11 +116,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "3",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "2",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },
@@ -133,12 +134,12 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         ASK_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_1: {
           amount: "1",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
       },
@@ -146,11 +147,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "1",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "2",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },
@@ -164,17 +165,17 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         ASK_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_1: {
           amount: "1",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_3: {
           amount: "1",
-          fullPrecisionPrice: "0.65",
+          fullPrecisionPrice: new BigNumber("0.65", 10),
           owner: "USER_ADDRESS",
         },
       },
@@ -182,11 +183,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "1",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "2",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },
@@ -200,27 +201,27 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         ASK_0: {
           amount: "2",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_1: {
           amount: "1",
-          fullPrecisionPrice: "0.9",
+          fullPrecisionPrice: new BigNumber("0.9", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_3: {
           amount: "7",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           owner: "USER_ADDRESS",
         },
         ASK_4: {
           amount: "3",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           owner: "OWNER_ADDRESS",
         },
         ASK_5: {
           amount: "42",
-          fullPrecisionPrice: "0.71",
+          fullPrecisionPrice: new BigNumber("0.71", 10),
           owner: "OWNER_ADDRESS",
         },
       },
@@ -228,11 +229,11 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "2",
-        fullPrecisionPrice: "0.6",
+        fullPrecisionPrice: new BigNumber("0.6", 10),
         owner: "OWNER_ADDRESS",
       }, {
         amount: "3",
-        fullPrecisionPrice: "0.7",
+        fullPrecisionPrice: new BigNumber("0.7", 10),
         owner: "OWNER_ADDRESS",
       }]);
     },

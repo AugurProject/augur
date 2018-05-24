@@ -31,7 +31,7 @@ describe("trading/simulation/simulate-sell", function () {
       buyOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
@@ -46,7 +46,7 @@ describe("trading/simulation/simulate-sell", function () {
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.9", 10),
-        shareBalances: [ZERO, new BigNumber("5", 10)],
+        shareBalances: [ZERO, new BigNumber("7", 10)],
       });
     },
   });
@@ -67,7 +67,7 @@ describe("trading/simulation/simulate-sell", function () {
       buyOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
@@ -103,14 +103,14 @@ describe("trading/simulation/simulate-sell", function () {
       buyOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.8",
+          fullPrecisionPrice: new BigNumber("0.8", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
         },
         ORDER_1: {
           amount: "1",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           sharesEscrowed: "1",
           outcome: 0,
           owner: "OWNER_ADDRESS",
@@ -125,7 +125,7 @@ describe("trading/simulation/simulate-sell", function () {
         otherSharesDepleted: ZERO,
         sharesDepleted: ZERO,
         tokensDepleted: new BigNumber("0.7", 10),
-        shareBalances: [ZERO, new BigNumber("5", 10)],
+        shareBalances: [ZERO, new BigNumber("8", 10)],
       });
     },
   });

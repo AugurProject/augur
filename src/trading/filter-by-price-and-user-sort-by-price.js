@@ -4,10 +4,10 @@ var BigNumber = require("bignumber.js");
 
 var compareOrdersByPrice = {
   0: function (order1, order2) {
-    return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
+    return BigNumber.isBigNumber(order1.fullPrecisionPrice) ? order1.fullPrecisionPrice.minus(order2.fullPrecisionPrice) : order1.fullPrecisionPrice - order2.fullPrecisionPrice;
   },
   1: function (order1, order2) {
-    return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
+    return BigNumber.isBigNumber(order2.fullPrecisionPrice) ? order2.fullPrecisionPrice.minus(order1.fullPrecisionPrice) : order2.fullPrecisionPrice - order1.fullPrecisionPrice;
   },
 };
 
@@ -31,7 +31,11 @@ function filterByPriceAndUserSortByPrice(p) {
     if (isMarketOrder) {
       isMatchingPrice = true;
     } else {
-      isMatchingPrice = p.orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(p.price) : new BigNumber(order.fullPrecisionPrice, 10).gte(p.price);
+      if (BigNumber.isBigNumber(order.fullPrecisionPrice)) {
+        isMatchingPrice = p.orderType === 0 ? order.fullPrecisionPrice.lte(p.price) : order.fullPrecisionPrice.gte(p.price);
+      } else {
+        isMatchingPrice = p.orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(p.price) : new BigNumber(order.fullPrecisionPrice, 10).gte(p.price);
+      }
     }
     return order.owner !== p.userAddress && isMatchingPrice;
   }).sort(compareOrdersByPrice[p.orderType]);

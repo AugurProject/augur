@@ -14,7 +14,6 @@ describe("trading/simulation/simulate-trade", function () {
       } catch (exc) {
         result = exc;
       }
-
       t.assertions(result);
     });
   };
@@ -108,7 +107,7 @@ describe("trading/simulation/simulate-trade", function () {
         otherSharesDepleted: "0",
         sharesDepleted: "0",
         tokensDepleted: "0.9",
-        shareBalances: ["0", "5"],
+        shareBalances: ["0", "7"],
       });
     },
   });
@@ -119,7 +118,7 @@ describe("trading/simulation/simulate-trade", function () {
       outcome: 1,
       shares: "101",
       shareBalances: ["0", "100"],
-      tokenBalance: "0",
+      tokenBalance: "1",
       userAddress: "USER_ADDRESS",
       minPrice: "0",
       maxPrice: "1",
@@ -148,7 +147,7 @@ describe("trading/simulation/simulate-trade", function () {
         sharesDepleted: "100",
         otherSharesDepleted: "0",
         tokensDepleted: "0.3",
-        shareBalances: ["0", "0"],
+        shareBalances: ["1", "0"],
       });
     },
   });
@@ -159,7 +158,7 @@ describe("trading/simulation/simulate-trade", function () {
       outcome: 1,
       shares: "101",
       shareBalances: ["100", "0"],
-      tokenBalance: "0",
+      tokenBalance: "1",
       userAddress: "USER_ADDRESS",
       minPrice: "0",
       maxPrice: "1",
@@ -188,7 +187,7 @@ describe("trading/simulation/simulate-trade", function () {
         sharesDepleted: "0",
         otherSharesDepleted: "100",
         tokensDepleted: "0.7",
-        shareBalances: ["0", "0"],
+        shareBalances: ["0", "1"],
       });
     },
   });
@@ -270,7 +269,6 @@ describe("trading/simulation/simulate-trade", function () {
       assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
     },
   });
-
   test({
     description: "User places a BUY order for 10 shares of YES at .5 which should cost 2.5 ETH to send.",
     params: {
@@ -325,7 +323,7 @@ describe("trading/simulation/simulate-trade", function () {
     },
   });
   test({
-    description: "simulate trade (buy), numTicks=10003",
+    description: "simulate trade (buy using shares, shares escrowed), numTicks=10003",
     params: {
       orderType: 0,
       outcome: 0,
@@ -362,12 +360,200 @@ describe("trading/simulation/simulate-trade", function () {
     assertions: function (output) {
       assert.deepEqual(output, {
         sharesFilled: "2",
-        settlementFees: "0.00600019994001799457",
-        worstCaseFees: "0.00900029991002699185",
+        settlementFees: "0.0059982005398380486",
+        worstCaseFees: "0.0089973008097570729",
         otherSharesDepleted: "3",
         sharesDepleted: "0",
         tokensDepleted: "0",
         shareBalances: ["0", "2"],
+      });
+    },
+  });
+  test({
+    description: "simulate trade (buy using tokens, tokens escrowed), numTicks=10003",
+    params: {
+      orderType: 0,
+      outcome: 1,
+      shares: "3",
+      shareBalances: ["0", "0"],
+      tokenBalance: "10",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      numTicks: "10003",
+      price: "0.7",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "0",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: "2",
+        settlementFees: "0",
+        worstCaseFees: "0",
+        otherSharesDepleted: "0",
+        sharesDepleted: "0",
+        tokensDepleted: "2.09997000899730081486",
+        shareBalances: ["0", "2"],
+      });
+    },
+  });
+  test({
+    description: "simulate trade (buy using shares, tokens escrowed), numTicks=10003",
+    params: {
+      orderType: 0,
+      outcome: 1,
+      shares: "3",
+      shareBalances: ["10", "0"],
+      tokenBalance: "0",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      numTicks: "10003",
+      price: "0.7",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: "2",
+        settlementFees: "0.0059982005398380486",
+        worstCaseFees: "0.0089973008097570729",
+        otherSharesDepleted: "3",
+        sharesDepleted: "0",
+        tokensDepleted: "0",
+        shareBalances: ["7", "0"],
+      });
+    },
+  });
+  test({
+    description: "simulate trade (sell using shares, shares escrowed), numTicks=10003",
+    params: {
+      orderType: 1,
+      outcome: 1,
+      shares: "3",
+      shareBalances: ["0", "5"],
+      tokenBalance: "0",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      numTicks: "10003",
+      price: "0.7",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: "2",
+        settlementFees: "0.01399980005998200543",
+        worstCaseFees: "0.02099970008997300815",
+        otherSharesDepleted: "0",
+        sharesDepleted: "3",
+        tokensDepleted: "0",
+        shareBalances: ["0", "2"],
+      });
+    },
+  });
+  test({
+    description: "simulate trade (sell using tokens, shares escrowed), numTicks=10003",
+    params: {
+      orderType: 1,
+      outcome: 1,
+      shares: "3",
+      shareBalances: ["0", "0"],
+      tokenBalance: "10",
+      userAddress: "USER_ADDRESS",
+      minPrice: "0",
+      maxPrice: "1",
+      numTicks: "10003",
+      price: "0.7",
+      marketCreatorFeeRate: "0",
+      reportingFeeRate: "0.01",
+      shouldCollectReportingFees: 1,
+      singleOutcomeOrderBook: {
+        buy: {
+          BID_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+        sell: {
+          ASK_0: {
+            amount: "2",
+            fullPrecisionPrice: "0.7",
+            sharesEscrowed: "2",
+            owner: "OWNER_ADDRESS",
+          },
+        },
+      },
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        sharesFilled: "2",
+        settlementFees: "0",
+        worstCaseFees: "0",
+        otherSharesDepleted: "0",
+        sharesDepleted: "0",
+        tokensDepleted: "0.89973008097570729",
+        shareBalances: ["2", "0"],
       });
     },
   });

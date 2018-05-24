@@ -4,16 +4,16 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var depleteOtherShareBalances = require("../../../../src/trading/simulation/deplete-other-share-balances");
+var modifyOtherShareBalances = require("../../../../src/trading/simulation/modify-other-share-balances");
 
-describe("trading/simulation/deplete-other-share-balances", function () {
+describe("trading/simulation/modify-other-share-balances", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(depleteOtherShareBalances(t.params.outcome, t.params.sharesDepleted, t.params.shareBalances));
+      t.assertions(modifyOtherShareBalances(t.params.outcome, t.params.sharesDepleted, t.params.shareBalances));
     });
   };
   test({
-    description: "Two outcomes, deplete all but outcome 1",
+    description: "Two outcomes, modify all but outcome 1",
     params: {
       outcome: 1,
       sharesDepleted: new BigNumber("1", 10),
@@ -24,7 +24,7 @@ describe("trading/simulation/deplete-other-share-balances", function () {
     },
   });
   test({
-    description: "Five outcomes, deplete all but outcome 0",
+    description: "Five outcomes, modify all but outcome 0",
     params: {
       outcome: 0,
       sharesDepleted: new BigNumber("2", 10),

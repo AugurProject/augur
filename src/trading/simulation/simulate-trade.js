@@ -46,6 +46,8 @@ function simulateTrade(p) {
   if (p.orderType !== 0 && p.orderType !== 1) throw new Error("Order type must be 0 (buy) or 1 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = p.price != null ? convertDisplayPriceToAdjustedForNumTicksDisplayPrice({ displayPrice: p.price, numTicks: p.numTicks, maxPrice: p.maxPrice, minPrice: p.minPrice }) : null;
+  var minPrice = convertDisplayPriceToAdjustedForNumTicksDisplayPrice({ displayPrice: p.minPrice, numTicks: p.numTicks, maxPrice: p.maxPrice, minPrice: p.minPrice });
+  var maxPrice = convertDisplayPriceToAdjustedForNumTicksDisplayPrice({ displayPrice: p.maxPrice, numTicks: p.numTicks, maxPrice: p.maxPrice, minPrice: p.minPrice });
   if (p.singleOutcomeOrderBook.buy && Object.keys(p.singleOutcomeOrderBook.buy).length) {
     p.singleOutcomeOrderBook.buy = convertDisplayPricesInSingleOutcomeOrderBookSideToAdjustedForNumTicksDisplayPrices(p.singleOutcomeOrderBook.buy, p.numTicks, p.minPrice, p.maxPrice);
   }
@@ -53,8 +55,6 @@ function simulateTrade(p) {
     p.singleOutcomeOrderBook.sell = convertDisplayPricesInSingleOutcomeOrderBookSideToAdjustedForNumTicksDisplayPrices(p.singleOutcomeOrderBook.sell, p.numTicks, p.minPrice, p.maxPrice);
   }
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
-  var minPrice = new BigNumber(p.minPrice, 10);
-  var maxPrice = new BigNumber(p.maxPrice, 10);
   var marketCreatorFeeRate = new BigNumber(p.marketCreatorFeeRate, 10);
   var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;

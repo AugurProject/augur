@@ -11,8 +11,14 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
   var displayPrice = order.price;
   var displayAmount = order.shares;
   var orderTypeCode = orderType === "buy" ? 0 : 1;
-  var tradeCost = augur.trading.calculateTradeCost({
+  var adjustedForNumTicksDisplayPrice = augur.utils.convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
     displayPrice: displayPrice,
+    numTicks: numTicks,
+    minPrice: minPrice,
+    maxPrice: maxPrice,
+  }).toFixed();
+  var tradeCost = augur.trading.calculateTradeCost({
+    displayPrice: adjustedForNumTicksDisplayPrice,
     displayAmount: displayAmount,
     sharesProvided: "0",
     numTicks: numTicks,
@@ -21,7 +27,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
     maxDisplayPrice: maxPrice,
   });
   if (debugOptions.cannedMarkets) {
-    console.log("price:", displayPrice, tradeCost.onChainPrice.toFixed());
+    console.log("price:", displayPrice, adjustedForNumTicksDisplayPrice, tradeCost.onChainPrice.toFixed());
     console.log("amount:", displayAmount, tradeCost.onChainAmount.toFixed());
     console.log("numTicks:", numTicks);
     console.log(chalk.green.bold("cost:"), chalk.cyan(speedomatic.unfix(tradeCost.cost, "string")), chalk.cyan.dim("ETH"));
@@ -31,12 +37,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       orderType: orderType,
       marketId: marketId,
       outcome: outcome,
-      price: augur.utils.convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-        displayPrice: displayPrice,
-        numTicks: numTicks,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
-      }).toFixed(),
+      price: adjustedForNumTicksDisplayPrice,
     }, function (err, betterWorseOrders) {
       if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       augur.api.CreateOrder.publicCreateOrder({
@@ -66,7 +67,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         },
         onFailed: function (err) {
           if (debugOptions.cannedMarkets) {
-            console.log(chalk.red.bold("publicCreateOrder failed:"), err, { marketId: marketId, outcome: outcome, orderType: orderType, displayPrice: displayPrice });
+            console.log(chalk.red.bold("publicCreateOrder failed:"), err, { marketId: marketId, outcome: outcome, orderType: orderType, displayPrice: displayPrice, adjustedForNumTicksDisplayPrice: adjustedForNumTicksDisplayPrice });
           }
           printTransactionStatus(augur.rpc, (err || {}).hash, function (e) {
             if (e) return callback(e);
@@ -76,7 +77,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       });
     });
   } else {
-    var placeTradePayload = {
+    augur.trading.placeTrade({
       meta: auth,
       amount: displayAmount,
       sharesProvided: "0",
@@ -84,7 +85,6 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       minPrice: minPrice,
       maxPrice: maxPrice,
       numTicks: numTicks,
-      estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       _direction: orderTypeCode,
       _market: marketId,
       _outcome: outcome,
@@ -95,9 +95,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       },
       onSuccess: function () { callback(null); },
       onFailed: callback,
-    };
-    if (debugOptions.cannedMarkets) console.log("create-order placeTradePayload:", placeTradePayload);
-    augur.trading.placeTrade(placeTradePayload);
+    });
   }
 }
 
