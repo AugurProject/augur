@@ -53,7 +53,7 @@ export const ETHER_NUMBER_OF_DECIMALS = 4
 
 export function formatEther(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -69,7 +69,7 @@ export function formatEther(num, opts) {
 
 export function formatEtherEstimate(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -85,7 +85,7 @@ export function formatEtherEstimate(num, opts) {
 
 export function formatPercent(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -124,7 +124,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -140,7 +140,7 @@ export function formatRep(num, opts) {
 
 export function formatRepTokens(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 2,
