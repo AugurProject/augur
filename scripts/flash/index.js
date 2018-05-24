@@ -30,9 +30,18 @@ var forceDispute = require("./force-dispute");
 var forceFinalize = require("./force-finalize");
 var escapeHatch = require("./escape-hatch");
 var transferAssets = require("./transfer-assets");
+var tradeCompleteSets = require("./trade-complete-sets");
 
 var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
 var methods = {
+  "trade-complete-sets": {
+    method: tradeCompleteSets,
+    opts: {
+      help: {flag: true, short: "h", help: "This help, transfer ETH or REP" },
+      marketId: { short: "m", help: "Optional, will just grab one if not provided" },
+      amount: { required: true, short: "a", help: "amount of asset to transfer" },
+    },
+  },
   "transfer-assets": {
     method: transferAssets,
     opts: {
