@@ -11,7 +11,6 @@ var calculateOnChainFillPrice = require("./calculate-on-chain-fill-price");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
 var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
-var convertDisplayPriceToAdjustedForNumTicksDisplayPrice = require("../utils/convert-display-price-to-adjusted-for-num-ticks-display-price");
 var api = require("../api");
 var noop = require("../utils/noop");
 var constants = require("../constants");
@@ -40,12 +39,7 @@ function tradeUntilAmountIsZero(p) {
   var displayPrice = p._price;
   var orderType = p._direction;
   var tradeCost = calculateTradeCost({
-    displayPrice: convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-      displayPrice: displayPrice,
-      numTicks: p.numTicks,
-      minPrice: p.minPrice,
-      maxPrice: p.maxPrice,
-    }).toFixed(),
+    displayPrice: displayPrice,
     displayAmount: displayAmount,
     sharesProvided: p.sharesProvided,
     numTicks: p.numTicks,

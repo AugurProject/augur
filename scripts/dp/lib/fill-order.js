@@ -22,14 +22,8 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           if (debugOptions.cannedMarkets) console.log(chalk.cyan("Filling order:"), chalk.red.bold(orderType), orderToFill);
           var displayPrice = orderToFill.fullPrecisionPrice.toString();
           var direction = orderType === "sell" ? 0 : 1;
-          var adjustedForNumTicksDisplayPrice = augur.utils.convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-            displayPrice: displayPrice,
-            numTicks: marketInfo.numTicks,
-            minPrice: marketInfo.minPrice,
-            maxPrice: marketInfo.maxPrice,
-          }).toFixed();
           var tradeCost = augur.trading.calculateTradeCost({
-            displayPrice: adjustedForNumTicksDisplayPrice,
+            displayPrice: displayPrice,
             displayAmount: sharesToTrade,
             sharesProvided: "0",
             numTicks: marketInfo.numTicks,
@@ -40,7 +34,7 @@ function fillOrder(augur, universe, fillerAddress, outcomeToTrade, sharesToTrade
           while (speedomatic.unfix(tradeCost.cost).gt(1)) {
             sharesToTrade = new BigNumber(sharesToTrade, 10).dividedBy(2).toFixed();
             tradeCost = augur.trading.calculateTradeCost({
-              displayPrice: adjustedForNumTicksDisplayPrice,
+              displayPrice: displayPrice,
               displayAmount: sharesToTrade,
               sharesProvided: "0",
               numTicks: marketInfo.numTicks,

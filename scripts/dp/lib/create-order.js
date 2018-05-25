@@ -11,14 +11,8 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
   var displayPrice = order.price;
   var displayAmount = order.shares;
   var orderTypeCode = orderType === "buy" ? 0 : 1;
-  var adjustedForNumTicksDisplayPrice = augur.utils.convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-    displayPrice: displayPrice,
-    numTicks: numTicks,
-    minPrice: minPrice,
-    maxPrice: maxPrice,
-  }).toFixed();
   var tradeCost = augur.trading.calculateTradeCost({
-    displayPrice: adjustedForNumTicksDisplayPrice,
+    displayPrice: displayPrice,
     displayAmount: displayAmount,
     sharesProvided: "0",
     numTicks: numTicks,
@@ -27,7 +21,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
     maxDisplayPrice: maxPrice,
   });
   if (debugOptions.cannedMarkets) {
-    console.log("price:", displayPrice, adjustedForNumTicksDisplayPrice, tradeCost.onChainPrice.toFixed());
+    console.log("price:", displayPrice, tradeCost.onChainPrice.toFixed());
     console.log("amount:", displayAmount, tradeCost.onChainAmount.toFixed());
     console.log("numTicks:", numTicks);
     console.log(chalk.green.bold("cost:"), chalk.cyan(speedomatic.unfix(tradeCost.cost, "string")), chalk.cyan.dim("ETH"));
@@ -37,7 +31,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       orderType: orderType,
       marketId: marketId,
       outcome: outcome,
-      price: adjustedForNumTicksDisplayPrice,
+      price: displayPrice,
     }, function (err, betterWorseOrders) {
       if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       augur.api.CreateOrder.publicCreateOrder({
@@ -67,7 +61,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
         },
         onFailed: function (err) {
           if (debugOptions.cannedMarkets) {
-            console.log(chalk.red.bold("publicCreateOrder failed:"), err, { marketId: marketId, outcome: outcome, orderType: orderType, displayPrice: displayPrice, adjustedForNumTicksDisplayPrice: adjustedForNumTicksDisplayPrice });
+            console.log(chalk.red.bold("publicCreateOrder failed:"), err, { marketId: marketId, outcome: outcome, orderType: orderType, displayPrice: displayPrice });
           }
           printTransactionStatus(augur.rpc, (err || {}).hash, function (e) {
             if (e) return callback(e);
