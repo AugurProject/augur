@@ -29,7 +29,6 @@ var simulateSell = require("./simulate-sell");
  * @param {number} p.outcome Outcome ID to trade, must be an integer value on [0, 7].
  * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
  * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
- * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
  * @param {string|null} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
@@ -51,8 +50,8 @@ function simulateTrade(p) {
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
   var shareBalances = p.shareBalances.map(function (shareBalance) { return new BigNumber(shareBalance, 10); });
   var simulatedTrade = p.orderType === 0 ?
-    simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.sell) :
-    simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.buy);
+    simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.sell) :
+    simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.singleOutcomeOrderBook.buy);
   return {
     sharesFilled: simulatedTrade.sharesFilled.toFixed(),
     settlementFees: simulatedTrade.settlementFees.toFixed(),

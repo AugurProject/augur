@@ -17,10 +17,9 @@ var compareOrdersByPrice = {
  * @param {require("./get-orders").SingleOutcomeOrderBookSide} p.singleOutcomeOrderBookSide Bids or asks for a particular market and outcome.
  * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
  * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @param {string} p.userAddress The user's Ethereum address, as a hexadecimal string.
  * @return {require("./get-orders").Order[]} Array of filtered and sorted orders.
  */
-function filterByPriceAndUserSortByPrice(p) {
+function filterAndSortByPrice(p) {
   if (!p || !p.singleOutcomeOrderBookSide) return [];
   var isMarketOrder = p.price == null;
   return Object.keys(p.singleOutcomeOrderBookSide).map(function (orderId) {
@@ -37,8 +36,8 @@ function filterByPriceAndUserSortByPrice(p) {
         isMatchingPrice = p.orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(p.price) : new BigNumber(order.fullPrecisionPrice, 10).gte(p.price);
       }
     }
-    return order.owner !== p.userAddress && isMatchingPrice;
+    return isMatchingPrice;
   }).sort(compareOrdersByPrice[p.orderType]);
 }
 
-module.exports = filterByPriceAndUserSortByPrice;
+module.exports = filterAndSortByPrice;

@@ -5,7 +5,7 @@ module.exports = {
   getUserTradingHistory: require("./get-user-trading-history"),
   getUserTradingPositions: require("./get-user-trading-positions"),
   getPositionInMarket: require("./get-position-in-market"),
-  filterByPriceAndUserSortByPrice: require("./filter-by-price-and-user-sort-by-price"),
+  filterAndSortByPrice: require("./filter-by-price-and-user-sort-by-price"),
   claimMarketsTradingProceeds: require("./claim-markets-trading-proceeds"),
   claimTradingProceeds: require("./claim-trading-proceeds"),
   simulateTrade: require("./simulation"),

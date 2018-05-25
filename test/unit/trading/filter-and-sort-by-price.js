@@ -3,20 +3,23 @@
 "use strict";
 
 var assert = require("chai").assert;
+<<<<<<< HEAD:test/unit/trading/filter-by-price-and-user-sort-by-price.js
 var BigNumber = require("bignumber.js");
 var filterByPriceAndUserSortByPrice = require("../../../src/trading/filter-by-price-and-user-sort-by-price");
+=======
+var filterAndSortByPrice = require("../../../src/trading/filter-and-sort-by-price");
+>>>>>>> master:test/unit/trading/filter-and-sort-by-price.js
 
-describe("trading/filter-by-price-and-user-sort-by-price", function () {
+describe("trading/filter-and-sort-by-price", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(filterByPriceAndUserSortByPrice(t.params));
+      t.assertions(filterAndSortByPrice(t.params));
     });
   };
   test({
     description: "selling: 2 bids",
     params: {
       orderType: 1,
-      userAddress: "USER_ADDRESS",
       price: "0.6",
       singleOutcomeOrderBookSide: {
         BID_0: {
@@ -44,46 +47,9 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     },
   });
   test({
-    description: "selling: 3 bids, 1 from user",
+    description: "selling: 4 bids, 2 with price too low",
     params: {
       orderType: 1,
-      userAddress: "USER_ADDRESS",
-      price: "0.6",
-      singleOutcomeOrderBookSide: {
-        BID_0: {
-          amount: "2",
-          fullPrecisionPrice: new BigNumber("0.7", 10),
-          owner: "OWNER_ADDRESS",
-        },
-        BID_1: {
-          amount: "1",
-          fullPrecisionPrice: new BigNumber("0.6", 10),
-          owner: "OWNER_ADDRESS",
-        },
-        BID_3: {
-          amount: "7",
-          fullPrecisionPrice: new BigNumber("0.6", 10),
-          owner: "USER_ADDRESS",
-        },
-      },
-    },
-    assertions: function (filteredSortedOrders) {
-      assert.deepEqual(filteredSortedOrders, [{
-        amount: "2",
-        fullPrecisionPrice: new BigNumber("0.7", 10),
-        owner: "OWNER_ADDRESS",
-      }, {
-        amount: "1",
-        fullPrecisionPrice: new BigNumber("0.6", 10),
-        owner: "OWNER_ADDRESS",
-      }]);
-    },
-  });
-  test({
-    description: "selling: 5 bids, 1 from user, 2 with price too low",
-    params: {
-      orderType: 1,
-      userAddress: "USER_ADDRESS",
       price: "0.6",
       singleOutcomeOrderBookSide: {
         BID_0: {
@@ -95,11 +61,6 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
           amount: "1",
           fullPrecisionPrice: new BigNumber("0.5", 10),
           owner: "OWNER_ADDRESS",
-        },
-        BID_3: {
-          amount: "7",
-          fullPrecisionPrice: new BigNumber("0.8", 10),
-          owner: "USER_ADDRESS",
         },
         BID_4: {
           amount: "3",
@@ -129,7 +90,6 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     description: "buying: 2 asks",
     params: {
       orderType: 0,
-      userAddress: "USER_ADDRESS",
       price: "0.7",
       singleOutcomeOrderBookSide: {
         ASK_0: {
@@ -157,46 +117,9 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     },
   });
   test({
-    description: "buying: 3 asks, 1 from user",
+    description: "buying: 4 asks, 2 with price too high",
     params: {
       orderType: 0,
-      userAddress: "USER_ADDRESS",
-      price: "0.7",
-      singleOutcomeOrderBookSide: {
-        ASK_0: {
-          amount: "2",
-          fullPrecisionPrice: new BigNumber("0.7", 10),
-          owner: "OWNER_ADDRESS",
-        },
-        ASK_1: {
-          amount: "1",
-          fullPrecisionPrice: new BigNumber("0.6", 10),
-          owner: "OWNER_ADDRESS",
-        },
-        ASK_3: {
-          amount: "1",
-          fullPrecisionPrice: new BigNumber("0.65", 10),
-          owner: "USER_ADDRESS",
-        },
-      },
-    },
-    assertions: function (filteredSortedOrders) {
-      assert.deepEqual(filteredSortedOrders, [{
-        amount: "1",
-        fullPrecisionPrice: new BigNumber("0.6", 10),
-        owner: "OWNER_ADDRESS",
-      }, {
-        amount: "2",
-        fullPrecisionPrice: new BigNumber("0.7", 10),
-        owner: "OWNER_ADDRESS",
-      }]);
-    },
-  });
-  test({
-    description: "buying: 5 asks, 1 from user, 2 with price too high",
-    params: {
-      orderType: 0,
-      userAddress: "USER_ADDRESS",
       price: "0.7",
       singleOutcomeOrderBookSide: {
         ASK_0: {
@@ -208,11 +131,6 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
           amount: "1",
           fullPrecisionPrice: new BigNumber("0.9", 10),
           owner: "OWNER_ADDRESS",
-        },
-        ASK_3: {
-          amount: "7",
-          fullPrecisionPrice: new BigNumber("0.6", 10),
-          owner: "USER_ADDRESS",
         },
         ASK_4: {
           amount: "3",
@@ -242,7 +160,6 @@ describe("trading/filter-by-price-and-user-sort-by-price", function () {
     description: "return empty array if no order book provided",
     params: {
       orderType: 1,
-      userAddress: "USER_ADDRESS",
       price: "0.7",
       singleOutcomeOrderBookSide: {},
     },
