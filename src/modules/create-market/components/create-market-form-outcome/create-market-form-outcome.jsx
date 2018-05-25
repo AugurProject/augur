@@ -211,7 +211,7 @@ export default class CreateMarketOutcome extends Component {
     }
 
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
-    if (typeof scalarBigNum === 'object' && typeof scalarSmallNum === 'object' && typeof numTicksBigNum === 'object') {
+    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum)) {
       // Always check if (maxPrice - minPrice) / precision is an even number
       if ((scalarBigNum.minus(scalarSmallNum).div(numTicksBigNum)).mod(2).toString() !== '0') {
         updatedMarket.validations[currentStep].tickSize =`Total ticks must be even.`
