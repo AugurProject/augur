@@ -267,7 +267,7 @@ export class Augur {
     getPositionInMarket: ApiFunction;
     placeTrade: ApiFunction;
     tradeUntilAmountIsZero: ApiFunction;
-    filterByPriceAndUserSortByPrice(p: {
+    filterAndSortByPrice(p: {
       singleOutcomeOrderBookSide: SingleOutcomeOrderBookSide;
       orderType: number;
       price: any;

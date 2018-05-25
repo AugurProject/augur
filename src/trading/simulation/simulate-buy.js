@@ -3,12 +3,12 @@
 var simulateCreateBidOrder = require("./simulate-create-bid-order");
 var simulateFillAskOrder = require("./simulate-fill-ask-order");
 var sumSimulatedResults = require("./sum-simulated-results");
-var filterByPriceAndUserSortByPrice = require("../filter-by-price-and-user-sort-by-price");
+var filterAndSortByPrice = require("../filter-and-sort-by-price");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
+function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
   var simulatedBuy = {
     sharesFilled: ZERO,
     settlementFees: ZERO,
@@ -18,7 +18,7 @@ function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAd
     tokensDepleted: ZERO,
     shareBalances: shareBalances,
   };
-  var matchingSortedAsks = filterByPriceAndUserSortByPrice({ singleOutcomeOrderBookSide: sellOrderBook, orderType: 0, price: price, userAddress: userAddress });
+  var matchingSortedAsks = filterAndSortByPrice({ singleOutcomeOrderBookSide: sellOrderBook, orderType: 0, price: price });
 
   // if no matching asks, then user is bidding: no settlement fees
   if (!matchingSortedAsks.length && price !== null) {

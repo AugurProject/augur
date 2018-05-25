@@ -11,7 +11,7 @@ var ZERO = constants.ZERO;
 describe("trading/simulation/simulate-buy", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(simulateBuy(t.params.outcomeId, t.params.sharesToCover, t.params.shareBalances, t.params.tokenBalance, t.params.userAddress, t.params.minPrice, t.params.maxPrice, t.params.price, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.sellOrderBook));
+      t.assertions(simulateBuy(t.params.outcomeId, t.params.sharesToCover, t.params.shareBalances, t.params.tokenBalance, t.params.minPrice, t.params.maxPrice, t.params.price, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.sellOrderBook));
     });
   };
   test({
@@ -21,7 +21,6 @@ describe("trading/simulation/simulate-buy", function () {
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
-      userAddress: "USER_ADDRESS",
       minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
       price: new BigNumber("0.7", 10),
@@ -57,7 +56,6 @@ describe("trading/simulation/simulate-buy", function () {
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
-      userAddress: "USER_ADDRESS",
       minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
       price: new BigNumber("0.7", 10),
@@ -93,7 +91,6 @@ describe("trading/simulation/simulate-buy", function () {
       sharesToCover: new BigNumber("3", 10),
       shareBalances: [ZERO, new BigNumber("5", 10)],
       tokenBalance: ZERO,
-      userAddress: "USER_ADDRESS",
       minPrice: ZERO,
       maxPrice: new BigNumber("1", 10),
       price: new BigNumber("0.7", 10),
