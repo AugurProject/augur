@@ -67,7 +67,13 @@ class MarketTradingWrapper extends Component {
     }
 
     // Updates from chart clicks
-    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) this.setState({ ...nextProps.selectedOrderProperties })
+    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) {
+      this.setState({ ...nextProps.selectedOrderProperties })
+    }
+
+    if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
+      this.setState({orderPrice: '', orderQuantity: '', orderEstimate: ''})
+    }
   }
 
   prevPage() {
