@@ -36,7 +36,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
 
   let maxNumShares
   if (limitPrice != null) {
-    const orders = augur.trading.filterByPriceAndUserSortByPrice({
+    const orders = augur.trading.filterAndSortByPrice({
       singleOutcomeOrderBookSide: (orderBooks[outcome.id] || {})[side === TRANSACTIONS_TYPES.BUY ? TRANSACTIONS_TYPES.SELL : TRANSACTIONS_TYPES.BUY],
       orderType: side,
       price: limitPrice,
