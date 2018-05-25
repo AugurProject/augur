@@ -30,7 +30,7 @@ describe("trading/simulation/simulate-buy", function () {
       sellOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
@@ -65,7 +65,7 @@ describe("trading/simulation/simulate-buy", function () {
       sellOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.8",
+          fullPrecisionPrice: new BigNumber("0.8", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
@@ -100,14 +100,14 @@ describe("trading/simulation/simulate-buy", function () {
       sellOrderBook: {
         ORDER_0: {
           amount: "2",
-          fullPrecisionPrice: "0.6",
+          fullPrecisionPrice: new BigNumber("0.6", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",
         },
         ORDER_1: {
           amount: "1",
-          fullPrecisionPrice: "0.7",
+          fullPrecisionPrice: new BigNumber("0.7", 10),
           sharesEscrowed: "2",
           outcome: 0,
           owner: "OWNER_ADDRESS",

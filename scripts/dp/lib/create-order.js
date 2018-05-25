@@ -31,12 +31,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       orderType: orderType,
       marketId: marketId,
       outcome: outcome,
-      price: augur.utils.convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-        displayPrice: displayPrice,
-        numTicks: numTicks,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
-      }).toFixed(),
+      price: displayPrice,
     }, function (err, betterWorseOrders) {
       if (err) betterWorseOrders = { betterOrderId: "0x0", worseOrderId: "0x0" };
       augur.api.CreateOrder.publicCreateOrder({
@@ -76,7 +71,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       });
     });
   } else {
-    var placeTradePayload = {
+    augur.trading.placeTrade({
       meta: auth,
       amount: displayAmount,
       sharesProvided: "0",
@@ -84,7 +79,6 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       minPrice: minPrice,
       maxPrice: maxPrice,
       numTicks: numTicks,
-      estimatedCost: speedomatic.unfix(tradeCost.cost, "string"),
       _direction: orderTypeCode,
       _market: marketId,
       _outcome: outcome,
@@ -95,9 +89,7 @@ function createOrder(augur, marketId, outcome, numOutcomes, maxPrice, minPrice, 
       },
       onSuccess: function () { callback(null); },
       onFailed: callback,
-    };
-    if (debugOptions.cannedMarkets) console.log("create-order placeTradePayload:", placeTradePayload);
-    augur.trading.placeTrade(placeTradePayload);
+    });
   }
 }
 

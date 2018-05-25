@@ -4,7 +4,6 @@ var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
-var convertDisplayPriceToAdjustedForNumTicksDisplayPrice = require("../utils/convert-display-price-to-adjusted-for-num-ticks-display-price");
 
 /**
  * @param {Object} p Parameters object.
@@ -30,12 +29,7 @@ function placeTrade(p) {
     orderType: (["buy", "sell"])[p._direction],
     marketId: p._market,
     outcome: p._outcome,
-    price: convertDisplayPriceToAdjustedForNumTicksDisplayPrice({
-      displayPrice: p.limitPrice,
-      numTicks: p.numTicks,
-      minPrice: p.minPrice,
-      maxPrice: p.maxPrice,
-    }).toFixed(),
+    price: p.limitPrice,
   }, function (err, betterWorseOrders) {
     if (err) return p.onFailed(err);
     tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {

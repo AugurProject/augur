@@ -14,7 +14,6 @@ describe("trading/simulation/simulate-trade", function () {
       } catch (exc) {
         result = exc;
       }
-
       t.assertions(result);
     });
   };
@@ -28,6 +27,7 @@ describe("trading/simulation/simulate-trade", function () {
       tokenBalance: "0",
       minPrice: "0",
       maxPrice: "1",
+      numTicks: "10000",
       price: "0.7",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
@@ -74,6 +74,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -104,7 +105,7 @@ describe("trading/simulation/simulate-trade", function () {
         otherSharesDepleted: "0",
         sharesDepleted: "0",
         tokensDepleted: "0.9",
-        shareBalances: ["0", "5"],
+        shareBalances: ["0", "7"],
       });
     },
   });
@@ -115,10 +116,11 @@ describe("trading/simulation/simulate-trade", function () {
       outcome: 1,
       shares: "101",
       shareBalances: ["0", "100"],
-      tokenBalance: "0",
+      tokenBalance: "1",
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -142,7 +144,7 @@ describe("trading/simulation/simulate-trade", function () {
         sharesDepleted: "100",
         otherSharesDepleted: "0",
         tokensDepleted: "0.3",
-        shareBalances: ["0", "0"],
+        shareBalances: ["1", "0"],
       });
     },
   });
@@ -153,10 +155,11 @@ describe("trading/simulation/simulate-trade", function () {
       outcome: 1,
       shares: "101",
       shareBalances: ["100", "0"],
-      tokenBalance: "0",
+      tokenBalance: "1",
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -180,7 +183,7 @@ describe("trading/simulation/simulate-trade", function () {
         sharesDepleted: "0",
         otherSharesDepleted: "100",
         tokensDepleted: "0.7",
-        shareBalances: ["0", "0"],
+        shareBalances: ["0", "1"],
       });
     },
   });
@@ -195,6 +198,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -232,6 +236,7 @@ describe("trading/simulation/simulate-trade", function () {
       minPrice: "0",
       maxPrice: "1",
       price: "0.7",
+      numTicks: "10000",
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
@@ -258,7 +263,6 @@ describe("trading/simulation/simulate-trade", function () {
       assert.strictEqual(err.message, "Order type must be 0 (buy) or 1 (sell)");
     },
   });
-
   test({
     description: "User places a BUY order for 10 shares of YES at .5 which should cost 2.5 ETH to send.",
     params: {
@@ -269,6 +273,7 @@ describe("trading/simulation/simulate-trade", function () {
       "minPrice": "0",
       "maxPrice": "1",
       "price": 0.5,
+      numTicks: "10000",
       "shares": "10",
       "marketCreatorFeeRate": "0.02",
       "singleOutcomeOrderBook": {
