@@ -139,7 +139,7 @@ export default class CreateMarketForm extends Component {
 
     let value = rawValue
 
-    if (value !== '') {
+    if (value !== '' && value !== '0.0') {
       value = parseFloat(value)
       value = parseFloat(value.toFixed(decimals))
     }
