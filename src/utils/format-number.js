@@ -50,10 +50,11 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 */
 
 export const ETHER_NUMBER_OF_DECIMALS = 4
+export const SHARES_NUMBER_OF_DECIMALS = 4
 
 export function formatEther(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -69,7 +70,7 @@ export function formatEther(num, opts) {
 
 export function formatEtherEstimate(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: ETHER_NUMBER_OF_DECIMALS,
       decimalsRounded: ETHER_NUMBER_OF_DECIMALS,
@@ -85,7 +86,7 @@ export function formatEtherEstimate(num, opts) {
 
 export function formatPercent(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -103,10 +104,10 @@ export function formatShares(num, opts) {
   const formattedShares = formatNumber(
     num,
     {
-      decimals: 2,
-      decimalsRounded: 2,
+      decimals: SHARES_NUMBER_OF_DECIMALS,
+      decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
       denomination: ` share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
-      minimized: true,
+      minimized: false,
       zeroStyled: false,
       blankZero: false,
       roundDown: true,
@@ -124,7 +125,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -140,7 +141,7 @@ export function formatRep(num, opts) {
 
 export function formatRepTokens(num, opts) {
   return formatNumber(
-    encodeNumberAsJSNumber(num),
+    num,
     {
       decimals: 2,
       decimalsRounded: 2,
