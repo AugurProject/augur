@@ -153,6 +153,7 @@ export default class CreateMarketOutcome extends Component {
     // reset errors
     updatedMarket.validations[currentStep].scalarBigNum = true
     updatedMarket.validations[currentStep].scalarSmallNum = true
+    updatedMarket.validations[currentStep].tickSize = true
 
     switch (true) {
       case scalarSmallNum === '':
@@ -207,6 +208,11 @@ export default class CreateMarketOutcome extends Component {
           updatedMarket.validations[currentStep].tickSize = true
       }
       updatedMarket.tickSize = value
+    }
+
+    // Always check if (maxPrice - minPrice) / precision is an even number
+    if (((scalarBigNum - scalarSmallNum) / numTicksBigNum) % 2 !== 0) {
+      updatedMarket.validations[currentStep].tickSize =`Total ticks must be even.`
     }
 
     updatedMarket.isValid = isValid(currentStep)
