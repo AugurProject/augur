@@ -3,12 +3,8 @@
 "use strict";
 
 var assert = require("chai").assert;
-<<<<<<< HEAD:test/unit/trading/filter-by-price-and-user-sort-by-price.js
 var BigNumber = require("bignumber.js");
-var filterByPriceAndUserSortByPrice = require("../../../src/trading/filter-by-price-and-user-sort-by-price");
-=======
 var filterAndSortByPrice = require("../../../src/trading/filter-and-sort-by-price");
->>>>>>> master:test/unit/trading/filter-and-sort-by-price.js
 
 describe("trading/filter-and-sort-by-price", function () {
   var test = function (t) {
@@ -24,12 +20,12 @@ describe("trading/filter-and-sort-by-price", function () {
       singleOutcomeOrderBookSide: {
         BID_0: {
           amount: "2",
-          fullPrecisionPrice: new BigNumber("0.7", 10),
+          fullPrecisionPrice: "0.7",
           owner: "OWNER_ADDRESS",
         },
         BID_1: {
           amount: "1",
-          fullPrecisionPrice: new BigNumber("0.6", 10),
+          fullPrecisionPrice: "0.6",
           owner: "OWNER_ADDRESS",
         },
       },
@@ -37,11 +33,11 @@ describe("trading/filter-and-sort-by-price", function () {
     assertions: function (filteredSortedOrders) {
       assert.deepEqual(filteredSortedOrders, [{
         amount: "2",
-        fullPrecisionPrice: new BigNumber("0.7", 10),
+        fullPrecisionPrice: "0.7",
         owner: "OWNER_ADDRESS",
       }, {
         amount: "1",
-        fullPrecisionPrice: new BigNumber("0.6", 10),
+        fullPrecisionPrice: "0.6",
         owner: "OWNER_ADDRESS",
       }]);
     },

@@ -4,10 +4,10 @@ var BigNumber = require("bignumber.js");
 
 var compareOrdersByPrice = {
   0: function (order1, order2) {
-    return BigNumber.isBigNumber(order1.fullPrecisionPrice) ? order1.fullPrecisionPrice.minus(order2.fullPrecisionPrice) : order1.fullPrecisionPrice - order2.fullPrecisionPrice;
+    return BigNumber.isBigNumber(order1.fullPrecisionPrice) ? order1.fullPrecisionPrice.minus(order2.fullPrecisionPrice) : new BigNumber(order1.fullPrecisionPrice, 10).minus(new BigNumber(order2.fullPrecisionPrice, 10));
   },
   1: function (order1, order2) {
-    return BigNumber.isBigNumber(order2.fullPrecisionPrice) ? order2.fullPrecisionPrice.minus(order1.fullPrecisionPrice) : order2.fullPrecisionPrice - order1.fullPrecisionPrice;
+    return BigNumber.isBigNumber(order2.fullPrecisionPrice) ? order2.fullPrecisionPrice.minus(order1.fullPrecisionPrice) : new BigNumber(order2.fullPrecisionPrice, 10).minus(new BigNumber(order1.fullPrecisionPrice, 10));
   },
 };
 
