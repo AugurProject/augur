@@ -46,8 +46,8 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
           },
         )
         dispatch(updateTopBarPL())
-        callback(null, positions)
       })
+      callback(null, positions)
     }))
   })
 }
