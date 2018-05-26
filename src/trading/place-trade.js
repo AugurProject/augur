@@ -36,7 +36,7 @@ function placeTrade(p) {
       _price: p.limitPrice,
       _fxpAmount: p.amount,
       _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
-      _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
+      _worseOrderId: "0x0",
     }));
   });
 }

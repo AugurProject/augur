@@ -119,7 +119,7 @@ describe("trading/place-trade", function () {
         assert.strictEqual(p._price, "2");
         assert.strictEqual(p._tradeGroupId, "0x1");
         assert.strictEqual(p._betterOrderId, "BETTER_ORDER_ID");
-        assert.strictEqual(p._worseOrderId, "WORSE_ORDER_ID");
+        assert.strictEqual(p._worseOrderId, "0x0");
         p.onSent({ hash: "TRANSACTION_HASH" });
         p.onSuccess({ hash: "TRANSACTION_HASH" });
       },
