@@ -58,7 +58,8 @@ class MarketTradingWrapper extends Component {
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
-    if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
+    if ((this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) ||
+      (this.props.initialMessage !== nextProps.initialMessage)) {
       this.clearOrderForm()
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
