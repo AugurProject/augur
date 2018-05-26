@@ -58,6 +58,7 @@ class MarketTradingWrapper extends Component {
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
+    if (this.props.selectedOutcome === null) return this.clearOrderForm()
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
       return this.clearOrderForm()
     }
