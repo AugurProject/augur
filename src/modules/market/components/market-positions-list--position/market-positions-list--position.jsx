@@ -55,8 +55,7 @@ export default class MarketPositionsListPosition extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { closePositionStatus, position } = prevProps
     const status = closePositionStatus[position.marketId]
-    let positionStatus = status ? status[position.outcomeId] : null
-    if (!positionStatus) positionStatus = null
+    const positionStatus = status && status[position.outcomeId] ? status[position.outcomeId] : null
     if (positionStatus !== this.state.positionStatus) {
       this.updateState(positionStatus, positionStatus !== null)
     }
