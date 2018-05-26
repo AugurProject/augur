@@ -21,7 +21,12 @@ export default function (closePositionTradeGroups = DEFAULT_STATE, action) {
     case REMOVE_CLOSE_POSITION_TRADE_GROUP: {
       return Object.keys(closePositionTradeGroups[action.marketId] || {}).reduce((p, outcomeId) => {
         if (outcomeId !== action.outcomeId) {
-          return { ...p, [outcomeId]: closePositionTradeGroups[action.marketId][outcomeId] }
+          return {
+            ...p,
+            [action.marketId]: {
+              [outcomeId]: closePositionTradeGroups[action.marketId][outcomeId],
+            },
+          }
         }
 
         return p
