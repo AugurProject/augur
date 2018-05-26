@@ -12,6 +12,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import getValue from 'utils/get-value'
+import { isEqual } from 'lodash'
 
 import { BUY, SELL, LIMIT } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
@@ -55,6 +56,7 @@ class MarketTradingWrapper extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
       return this.clearOrderForm()
@@ -66,7 +68,11 @@ class MarketTradingWrapper extends Component {
         orderEstimate,
       })
     }
-    this.setState({ ...nextProps.selectedOrderProperties })
+
+    // Updates from chart clicks
+    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) {
+      this.setState({ ...nextProps.selectedOrderProperties })
+    }
   }
 
   prevPage() {
