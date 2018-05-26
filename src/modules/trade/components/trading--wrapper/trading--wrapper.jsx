@@ -56,10 +56,9 @@ class MarketTradingWrapper extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { selectedOrderProperties } = this.props
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
-      this.clearOrderForm()
+      return this.clearOrderForm()
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
@@ -68,11 +67,7 @@ class MarketTradingWrapper extends Component {
         orderEstimate,
       })
     }
-
-    // Updates from chart clicks
-    if (!isEqual(selectedOrderProperties, nextProps.selectedOrderProperties)) {
-      this.setState({ ...nextProps.selectedOrderProperties })
-    }
+    this.setState({ ...nextProps.selectedOrderProperties })
   }
 
   prevPage() {
