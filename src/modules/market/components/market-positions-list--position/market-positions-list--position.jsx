@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Close } from 'modules/common/components/icons'
 import getValue from 'utils/get-value'
-import { CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_SUCCESS, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
+import { CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_SUCCESS, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/constants/close-dialog-status'
 import Styles from 'modules/market/components/market-positions-list--position/market-positions-list--position.styles'
 
 export default class MarketPositionsListPosition extends Component {
@@ -38,6 +38,7 @@ export default class MarketPositionsListPosition extends Component {
     this.messageMap = {
       [CLOSE_DIALOG_NO_ORDERS]: 'Position cannot be closed. Create a new order to sell your shares.',
       [CLOSE_DIALOG_PARTIALLY_FAILED]: 'Position partially closed. Create a new order to sell your remaining shares.',
+      [CLOSE_DIALOG_FAILED]: 'Position failed to closed. Try again',
     }
 
     this.state = {
@@ -54,7 +55,7 @@ export default class MarketPositionsListPosition extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { closePositionStatus, position } = prevProps
     const status = closePositionStatus[position.marketId]
-    const positionStatus = status ? status[position.outcomeId] : null
+    const positionStatus = status && status[position.outcomeId] ? status[position.outcomeId] : null
     if (positionStatus !== this.state.positionStatus) {
       this.updateState(positionStatus, positionStatus !== null)
     }
