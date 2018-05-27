@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { BigNumber } from 'utils/create-big-number'
 
 import { isNumber } from 'lodash/fp'
 
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 import { ASKS } from 'modules/order-book/constants/order-book-order-types'
-import { BigNumber } from 'utils/create-big-number'
 
 
 export default class MarketOutcomeDepthHeader extends Component {
