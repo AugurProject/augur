@@ -100,6 +100,11 @@ export default class CreateMarketDefine extends Component {
         updatedMarket[fieldName] = localValues[fieldName]
       })
     }
+
+    if (fieldName !== 'category') {
+      // category is a required field, verify
+      this.validateTag('category', updatedMarket.category, TAGS_MAX_LENGTH)
+    }
     updatedMarket.isValid = isValid(currentStep)
 
     updateNewMarket(updatedMarket)
