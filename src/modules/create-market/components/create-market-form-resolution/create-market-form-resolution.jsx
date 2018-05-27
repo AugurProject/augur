@@ -7,7 +7,7 @@ import moment from 'moment'
 
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
-import { SingleDatePicker, isInclusivelyAfterDay } from 'react-dates'
+import { SingleDatePicker } from 'react-dates'
 
 import { formatDate } from 'utils/format-date'
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
@@ -248,7 +248,7 @@ export default class CreateMarketResolution extends Component {
               if (!date) return validateField('endTime', '')
               validateField('endTime', formatDate(date.toDate()))
             }}
-            isOutsideRange={day => !isInclusivelyAfterDay(day, moment(this.props.currentTimestamp))}
+            isOutsideRange={day => day.isBefore(moment(this.props.currentTimestamp))}
             focused={this.state.focused}
             onFocusChange={({ focused }) => {
               if (this.state.date == null) {
