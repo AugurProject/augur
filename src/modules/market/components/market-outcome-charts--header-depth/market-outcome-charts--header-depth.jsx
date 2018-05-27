@@ -6,6 +6,7 @@ import { isNumber } from 'lodash/fp'
 import Styles from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 
 import { ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { BigNumber } from 'utils/create-big-number'
 
 
 export default class MarketOutcomeDepthHeader extends Component {
@@ -64,7 +65,7 @@ export default class MarketOutcomeDepthHeader extends Component {
             depth
             </span>
             <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-              {isNumber(hoveredDepth[0]) ? hoveredDepth[0].toFixed(2).toString() : <span>&mdash;</span>}
+              {BigNumber.isBigNumber(hoveredDepth[0]) ? hoveredDepth[0].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
             </span>
           </span>
         </div>
