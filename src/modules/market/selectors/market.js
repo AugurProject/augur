@@ -236,12 +236,12 @@ export function assembleMarket(
           ...outcomeData,
           id: outcomeId,
           marketId,
-          lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
+          lastPrice: outcomeData.price ? formatEther(outcomeData.price, { positiveSign: false }) : null,
         }
 
         if (market.isScalar) {
           // note: not actually a percent
-          if (outcome.lastPrice.value) {
+          if (outcome.lastPrice) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
@@ -249,6 +249,8 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
+            // TODO: need better way to format zero value, need not to use 0 as default
+            if (outcome.lastPrice.value === 0) outcome.lastPricePercent.formatted = '0'
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
@@ -258,11 +260,17 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
+            // TODO: show '-' to indicate no trades occurred, need not to use midpoint as default
+            // modify if augur-node sends null as price
+            outcome.lastPricePercent.formatted = '-'
           }
-        } else if (outcome.lastPrice.value) {
+        } else if (outcome.lastPrice) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
+          // TODO: show '-' to indicate no trades occurred, need not to use midpoint as default
+          // modify if augur-node sends null as price
+          // outcome.lastPricePercent.formatted = '-'
         }
 
         outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, orderBooks || {})
