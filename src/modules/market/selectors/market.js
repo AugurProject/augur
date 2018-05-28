@@ -26,7 +26,7 @@ import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/fo
 import { convertUnixToFormattedDate } from 'utils/format-date'
 import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
-
+import { ZERO } from 'modules/trade/constants/numbers'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
@@ -236,12 +236,12 @@ export function assembleMarket(
           ...outcomeData,
           id: outcomeId,
           marketId,
-          lastPrice: outcomeData.price || outcomeData.price === '0' ? formatEther(outcomeData.price, { positiveSign: false }) : null,
+          lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
 
         if (market.isScalar) {
           // note: not actually a percent
-          if (outcome.lastPrice) {
+          if (createBigNumber(outcome.volume).gt(ZERO)) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
@@ -249,8 +249,8 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
-            // TODO: need better way to format zero value, need not to use 0 as default
-            if (outcome.lastPrice.value === 0) outcome.lastPricePercent.formatted = '0'
+            // format-number thinks 0 is '-', need to correct
+            if (outcome.lastPrice.fullPrecision === '0') outcome.lastPricePercent.formatted = '0'
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
@@ -260,17 +260,11 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
-            // TODO: show '-' to indicate no trades occurred, need not to use midpoint as default
-            // modify if augur-node sends null as price
-            outcome.lastPricePercent.formatted = '-'
           }
-        } else if (outcome.lastPrice) {
+        } else if (outcome.lastPrice.value) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
-          // TODO: show '-' to indicate no trades occurred, need not to use midpoint as default
-          // modify if augur-node sends null as price
-          // outcome.lastPricePercent.formatted = '-'
         }
 
         outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, orderBooks || {})
