@@ -149,7 +149,6 @@ describe('events/actions/listen-to-updates', () => {
         { type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] },
         { type: 'LOAD_REPORTING' },
         { type: 'UPDATE_LOGGED_TRANSACTIONS', log: { eventName: 'InitialReportSubmitted', market: 'MARKET_ADDRESS', reporter: 'MY_ADDRESS', universe: 'UNIVERSE_ADDRESS' } },
-        { type: 'UPDATE_ASSETS' },
       ]),
     })
   })

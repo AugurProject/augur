@@ -134,7 +134,6 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       store.dispatch(transferFunds(10, ETH, '0xtest2'))
 
       assert(updateNotification.calledOnce, `didn't call 'updateNotifications' once as expected`)
-      assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`)
 
       done()
     },
@@ -167,8 +166,6 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets)
 
       store.dispatch(transferFunds(10, REP, '0xtest2'))
-
-      assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`)
 
       done()
     },

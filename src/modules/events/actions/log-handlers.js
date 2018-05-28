@@ -4,7 +4,6 @@ import { loadAccountTrades } from 'modules/my-positions/actions/load-account-tra
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
-import { updateAssets } from 'modules/auth/actions/update-assets'
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 import { removeMarket } from 'modules/markets/actions/update-markets-data'
 import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price'
@@ -38,7 +37,6 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
   }
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
   }
 }
 
@@ -47,7 +45,6 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.from === address || log.to === address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
   }
 }
 
@@ -55,7 +52,7 @@ export const handleTokensMintedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.target === address
   if (isStoredTransaction) {
-    dispatch(updateAssets())
+    dispatch(defaultLogHandler(log))
   }
 }
 
@@ -63,7 +60,7 @@ export const handleTokensBurnedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.target === address
   if (isStoredTransaction) {
-    dispatch(updateAssets())
+    dispatch(defaultLogHandler(log))
   }
 }
 
@@ -72,7 +69,6 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.orderCreator === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
     dispatch(updateOrder(log, true))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
@@ -88,7 +84,6 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
     dispatch(updateOrder(log, false))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
@@ -104,7 +99,6 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     dispatch(updateLoggedTransactions(log))
     dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
     dispatch(updateMarketCategoryPopularity(log.market, popularity))
-    dispatch(updateAssets())
     dispatch(updateOrder(log, false))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
@@ -115,7 +109,6 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.sender === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
@@ -128,7 +121,6 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
     dispatch(loadReporting())
     dispatch(loadDisputing())
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
   }
 }
 
@@ -139,7 +131,6 @@ export const handleInitialReporterRedeemedLog = log => (dispatch, getState) => {
     dispatch(loadReporting())
     dispatch(loadDisputing())
     dispatch(updateLoggedTransactions(log))
-    dispatch(updateAssets())
   }
 }
 
@@ -191,7 +182,6 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
-  dispatch(updateAssets())
 }
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
@@ -203,5 +193,5 @@ export const handleFeeWindowOpenedLog = log => (dispatch) => {
 }
 
 export const handleFeeWindowRedeemedLog = log => (dispatch) => {
-  dispatch(updateAssets())
+  dispatch(defaultLogHandler(log))
 }
