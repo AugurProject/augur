@@ -53,7 +53,7 @@ export default class CreateMarketResolution extends Component {
       date: Object.keys(this.props.newMarket.endTime).length ? moment(this.props.newMarket.endTime.timestamp * 1000) : null,
       focused: false,
       hours: Array.from(new Array(12), (val, index) => index + 1),
-      minutes: [...Array.from(Array(10).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
+      minutes: [...Array.from(Array(9).keys(), (val, index) => '0' + index), ...Array.from(Array(50).keys(), (val, index) => index + 10)],
       ampm: ['AM', 'PM'],
     }
 
