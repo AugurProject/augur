@@ -24,7 +24,6 @@ module.exports = [{
     tags: ["SpaceX", "spaceflight"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will SpaceX successfully complete a manned flight beyond Earth orbit by the end of " + thisYear + "?",
@@ -35,7 +34,6 @@ module.exports = [{
     tags: ["SpaceX", "spaceflight"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
 }, {
   marketType: "binary",
   _description: "Will SpaceX successfully complete a Mars landing (manned or unmanned) by the end of " + thisYear + "?",
@@ -177,22 +175,6 @@ module.exports = [{
     longDescription: "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis",
     _scalarDenomination: "parts-per-billion",
   },
-  orderBook: {
-    buy: {
-      "1": [
-        { shares: "0.0001", price: "1000" },
-        { shares: "0.0001", price: "900" },
-        { shares: "0.0001", price: "775" },
-      ],
-    },
-    sell: {
-      "1": [
-        { shares: "0.00001", price: "1050" },
-        { shares: "0.00001", price: "1250" },
-        { shares: "0.00001", price: "1500" },
-      ],
-    },
-  },
 }, {
   marketType: "scalar",
   _description: "New antibiotics approved by the FDA in " + thisYear,
@@ -283,18 +265,6 @@ module.exports = [{
     resolutionSource: "",
     tags: ["elections", "US politics"],
     longDescription: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia). http://www.nationalpopularvote.com",
-  },
-  orderBook: {
-    buy: {
-      0: singleOutcomeBids,
-      1: singleOutcomeBids,
-      2: singleOutcomeBids,
-    },
-    sell: {
-      0: singleOutcomeAsks,
-      1: singleOutcomeAsks,
-      2: singleOutcomeAsks,
-    },
   },
 }, {
   marketType: "categorical",
