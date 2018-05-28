@@ -100,8 +100,6 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         _market: '0xa1',
       }, {
-        type: 'UPDATE_ASSETS',
-      }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa1'],
       }, {
@@ -172,8 +170,6 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         _market: '0xa2',
       }, {
-        type: 'UPDATE_ASSETS',
-      }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa2'],
       }, {
@@ -227,8 +223,6 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         _market: '0xa2',
       }, {
-        type: 'UPDATE_ASSETS',
-      }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa2'],
       }, {
@@ -237,8 +231,6 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       }, {
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         _market: '0xa3',
-      }, {
-        type: 'UPDATE_ASSETS',
       }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa3'],
@@ -288,8 +280,6 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
       assert.deepEqual(actions, [{
         type: 'CLAIM_MARKETS_TRADING_PROCEEDS',
         _market: '0xa3',
-      }, {
-        type: 'UPDATE_ASSETS',
       }, {
         type: 'GET_WINNING_BALANCE',
         marketIds: ['0xa3'],

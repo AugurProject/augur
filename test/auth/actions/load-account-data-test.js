@@ -71,7 +71,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         { type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' },
         { type: 'UPDATE_LOGIN_ACCOUNT', data: { address: '0xb0b' } },
         { type: 'UPDATE_ACCOUNT_TRADES_DATA' },
-        { type: 'UPDATE_ASSETS' },
         { type: 'CHECK_ACCOUNT_ALLOWANCE' },
       ])
     },
@@ -99,7 +98,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         { type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' },
         { type: 'UPDATE_LOGIN_ACCOUNT', data: { address: '0xb0b', name: 'jack', isUnlocked: true, airbitzAccount: { username: 'jack' } } },
         { type: 'UPDATE_ACCOUNT_TRADES_DATA' },
-        { type: 'UPDATE_ASSETS' },
         { type: 'CHECK_ACCOUNT_ALLOWANCE' },
       ])
     },

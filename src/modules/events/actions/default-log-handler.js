@@ -1,5 +1,4 @@
 import { augur } from 'services/augurjs'
-import { updateAssets } from 'modules/auth/actions/update-assets'
 import { updateLoggedTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
 
 export const defaultLogHandler = log => (dispatch, getState) => {
@@ -9,7 +8,6 @@ export const defaultLogHandler = log => (dispatch, getState) => {
     const isOwnTransaction = transaction.from === getState().loginAccount.address
     if (isOwnTransaction) {
       dispatch(updateLoggedTransactions(log))
-      dispatch(updateAssets())
     }
   })
 }

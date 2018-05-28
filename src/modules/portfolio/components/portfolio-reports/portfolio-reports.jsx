@@ -19,7 +19,6 @@ export default class PortfolioReports extends Component {
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
-    updateAssets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -145,9 +144,7 @@ export default class PortfolioReports extends Component {
   }
 
   modalCallback = (results) => {
-    this.updateReportingFees(() => {
-      this.props.updateAssets()
-    })
+    this.updateReportingFees()
   }
 
   render() {

@@ -1,6 +1,5 @@
 import { each } from 'async'
 import { augur } from 'services/augurjs'
-import { updateAssets } from 'modules/auth/actions/update-assets'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import cancelOpenOrdersInClosedMarkets from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets'
 import selectWinningPositions from 'modules/my-positions/selectors/winning-positions'
@@ -24,7 +23,6 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
         _shareHolder: loginAccount.address,
         onSent: noop,
         onSuccess: (claimedMarkets) => {
-          dispatch(updateAssets())
           dispatch(getWinningBalance([marketId]))
           dispatch(loadMarketsInfo([marketId]))
         },

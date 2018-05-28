@@ -27,28 +27,10 @@ export function updateAssets(callback = logError) {
         }
         if (allAssetsLoaded(balances)) callback(null, balances)
       })
-      augur.api.LegacyReputationToken.allowance({
-        _owner: loginAccount.address,
-        _spender: reputationTokenAddress,
-      }, (err, legacyRepAllowance) => {
-        if (err) callback(err)
-        dispatch(updateLoginAccount({ legacyRepAllowance }))
-      })
     })
     dispatch(updateEtherBalance((err, etherBalance) => {
       balances.eth = etherBalance
       if (allAssetsLoaded(balances)) callback(null, balances)
     }))
-    augur.api.LegacyReputationToken.balanceOf({
-      _owner: loginAccount.address,
-    }, (err, attoLegacyRepBalance) => {
-      if (err) return callback(err)
-      const legacyRepBalance = speedomatic.unfix(attoLegacyRepBalance, 'string')
-      balances.legacyRep = legacyRepBalance
-      if (!loginAccount.legacyRep || loginAccount.legacyRep !== legacyRepBalance) {
-        dispatch(updateLoginAccount({ legacyRep: legacyRepBalance }))
-      }
-      if (allAssetsLoaded(balances)) callback(null, balances)
-    })
   }
 }

@@ -1,6 +1,5 @@
 import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
-import { updateAssets } from 'modules/auth/actions/update-assets'
 import { updateNotification, addNotification } from 'modules/notifications/actions/update-notifications'
 import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
@@ -34,7 +33,6 @@ export function transferFunds(amount, currency, toAddress) {
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
-            dispatch(updateAssets)
           },
           onFailed: (tx) => {
             dispatch(updateNotification(tx.hash, {
@@ -64,7 +62,6 @@ export function transferFunds(amount, currency, toAddress) {
               description: `${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
-            dispatch(updateAssets)
           },
           onFailed: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {

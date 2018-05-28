@@ -3,7 +3,6 @@ import logError from 'utils/log-error'
 import makePath from 'modules/routes/helpers/make-path'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
-import { updateAssets } from 'modules/auth/actions/update-assets'
 import { REPORTING_DISPUTE_MARKETS } from 'modules/routes/constants/views'
 
 export const submitMigrateREP = (estimateGas, marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
@@ -35,7 +34,6 @@ export const submitMigrateREP = (estimateGas, marketId, selectedOutcome, invalid
         if (estimateGas) {
           callback(null, gasCost)
         } else {
-          dispatch(updateAssets())
           callback(null)
         }
       },
