@@ -11,16 +11,18 @@ import { augur } from 'services/augurjs'
  * @return {Boolean}
 */
 export default function isAddress(address) {
-  if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+  // make sure the address passed has `0x` to start it.
+  const formattedAddress = `0x${address.replace('0x', '')}`
+  if (!/^(0x)?[0-9a-f]{40}$/i.test(formattedAddress)) {
     // check if it has the basic requirements of an address
     return false
-  } else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
+  } else if (/^(0x)?[0-9a-f]{40}$/.test(formattedAddress) || /^(0x)?[0-9A-F]{40}$/.test(formattedAddress)) {
     // If it's all small caps or all all caps, return true
     return true
   }
 
   // Otherwise check each case
-  return isChecksumAddress(address)
+  return isChecksumAddress(formattedAddress)
 }
 /**
  * Checks if the given string is a checksummed address
