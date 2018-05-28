@@ -26,7 +26,7 @@ import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/fo
 import { convertUnixToFormattedDate } from 'utils/format-date'
 import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/select-state'
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
-
+import { ZERO } from 'modules/trade/constants/numbers'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
@@ -241,7 +241,7 @@ export function assembleMarket(
 
         if (market.isScalar) {
           // note: not actually a percent
-          if (outcome.lastPrice.value) {
+          if (createBigNumber(outcome.volume).gt(ZERO)) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
@@ -249,6 +249,8 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
+            // format-number thinks 0 is '-', need to correct
+            if (outcome.lastPrice.fullPrecision === '0') outcome.lastPricePercent.formatted = '0'
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
