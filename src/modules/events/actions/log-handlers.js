@@ -196,12 +196,10 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
   dispatch(loadReportingWindowBounds())
-  dispatch(defaultLogHandler(log))
 }
 
 export const handleFeeWindowOpenedLog = log => (dispatch) => {
   dispatch(loadReportingWindowBounds())
-  dispatch(defaultLogHandler(log))
 }
 
 export const handleFeeWindowRedeemedLog = log => (dispatch) => {
