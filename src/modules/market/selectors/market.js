@@ -236,7 +236,7 @@ export function assembleMarket(
           ...outcomeData,
           id: outcomeId,
           marketId,
-          lastPrice: outcomeData.price ? formatEther(outcomeData.price, { positiveSign: false }) : null,
+          lastPrice: outcomeData.price || outcomeData.price === '0' ? formatEther(outcomeData.price, { positiveSign: false }) : null,
         }
 
         if (market.isScalar) {
