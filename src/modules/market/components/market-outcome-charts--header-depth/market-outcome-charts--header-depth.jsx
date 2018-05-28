@@ -38,6 +38,7 @@ export default class MarketOutcomeDepthHeader extends Component {
     return (
       <section
         ref={(header) => { this.header = header }}
+        className={Styles.MarketOutcomeChartsHeader__Container}
       >
         <div className={Styles.MarketOutcomeChartsHeader__Header} >
           <span>Market Depth</span>
