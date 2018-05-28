@@ -9,7 +9,6 @@ export const submitInitialReport = (estimateGas, marketId, selectedOutcome, inva
   const outcome = parseInt(selectedOutcome, 10)
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
-  if (!invalid && outcome < 0) return callback(null)
 
   const market = marketsData[marketId]
   if (!market) return callback('Market not found')
