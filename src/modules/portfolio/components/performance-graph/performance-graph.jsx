@@ -199,19 +199,22 @@ class PerformanceGraph extends Component {
           let positions = [-0.15, 0, 0.5, 1]
           if (this.series[0]) {
             positions = []
-            let minTickValue = this.dataMin === 0 ? -0.25 : (this.dataMin - (Math.abs(this.dataMin) * 0.25))
-            let maxTickValue = this.dataMax === 0 ? 0.25 : (Math.ceil(this.dataMax) + (this.dataMax * 0.05))
+            const rangeMargin = ((this.dataMax - this.dataMin) * 0.2)
+            let minTickValue = this.dataMin >= 0 ? -0.25 : (this.dataMin - rangeMargin)
+            let maxTickValue = this.dataMax <= 0 ? 0.25 : (this.dataMax + rangeMargin)
             if (this.dataMin === 0 && this.dataMax > 0) {
-              minTickValue = ((Math.abs(this.dataMax) * 0.25) * -1)
+              minTickValue = (rangeMargin * -1)
             }
             if (this.dataMax === 0 && this.dataMin < 0) {
-              maxTickValue = (Math.abs(this.dataMin) * 0.25)
+              maxTickValue = rangeMargin
             }
             const median = ((minTickValue + maxTickValue) / 2)
             positions.push(minTickValue)
+            positions.push(this.dataMin)
             if (median > 0) positions.push(0)
             positions.push(median)
             if (median < 0) positions.push(0)
+            positions.push(this.dataMax)
             positions.push(maxTickValue)
           }
           return positions
