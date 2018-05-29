@@ -17,6 +17,28 @@ describe('portfolio-reports', () => {
     before(() => {
       getReportingFees = sinon.spy()
       const isLogged=true
+      const reportingFees = {
+        unclaimedEth: {
+          value: 0,
+          formattedValue: 0,
+          formatted: '-',
+          roundedValue: 0,
+          rounded: '-',
+          minimized: '-',
+          denomination: '',
+          full: '-',
+        },
+        unclaimedRep: {
+          value: 0,
+          formattedValue: 0,
+          formatted: '-',
+          roundedValue: 0,
+          rounded: '-',
+          minimized: '-',
+          denomination: '',
+          full: '-',
+        },
+      }
 
       const universe = {
         id: '0xcd8569bb29493f01cffc394e050d2533aa5ea824',
@@ -32,6 +54,7 @@ describe('portfolio-reports', () => {
         reporter="0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb"
         getReportingFees={getReportingFees}
         isLogged={isLogged}
+        reportingFees={reportingFees}
       />)
     })
 
@@ -39,10 +62,6 @@ describe('portfolio-reports', () => {
       describe('getReportingFees function', () => {
         it('should get called once with args ', () => {
           assert.isOk(getReportingFees)
-        })
-
-        it('should receive three arguments', () => {
-          assert.deepEqual(getReportingFees.args[0].length, 1)
         })
       })
 
