@@ -380,7 +380,7 @@ export default class ReportingDisputeForm extends Component {
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
-                      onClick={(e) => { this.validateScalar('', 'selectedOutcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
+                      onClick={(e) => { this.validateScalar('', 'selected outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
                     <input
                       id="sr__input--outcome-scalar"

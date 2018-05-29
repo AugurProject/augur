@@ -122,7 +122,7 @@ export default class MigrateRepForm extends Component {
     this.textInput.focus()
   }
 
-  validateScalar(value, humanName, min, max, isInvalid) {
+  validateScalar(value, humanName, min, max, tickSize, isInvalid) {
     const {
       updateState,
       validations,
@@ -141,6 +141,8 @@ export default class MigrateRepForm extends Component {
       const minValue = parseFloat(min)
       const maxValue = parseFloat(max)
       const valueValue = parseFloat(value)
+      const bnValue = createBigNumber(valueValue || 0)
+      const bnTickSize = createBigNumber(tickSize)
 
       switch (true) {
         case value === '':
@@ -151,6 +153,9 @@ export default class MigrateRepForm extends Component {
           break
         case (valueValue > maxValue || valueValue < minValue):
           updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
+          break
+        case bnValue.mod(bnTickSize).gt('0'):
+          updatedValidations.err = `The ${humanName} field must be a multiple of ${tickSize}.`
           break
         default:
           delete updatedValidations.err
@@ -187,7 +192,6 @@ export default class MigrateRepForm extends Component {
       inputSelectedOutcome,
       inputRepAmount,
     } = this.state
-
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -219,7 +223,7 @@ export default class MigrateRepForm extends Component {
                 <li>
                   <button
                     className={classNames({ [`${FormStyles.active}`]: inputSelectedOutcome !== '' })}
-                    onClick={(e) => { this.validateScalar('', 'selectedOutcome', market.minPrice, market.maxPrice, false) }}
+                    onClick={(e) => { this.validateScalar('', 'selected outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                   />
                   <input
                     id="sr__input--outcome-scalar"
@@ -231,7 +235,7 @@ export default class MigrateRepForm extends Component {
                     placeholder={market.scalarDenomination}
                     value={inputSelectedOutcome}
                     className={classNames({ [`${FormStyles['Form__error--field']}`]: validations.hasOwnProperty('err') && validations.selectedOutcome })}
-                    onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, false) }}
+                    onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                   />
                 </li>
                 <li>
