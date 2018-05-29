@@ -1,3 +1,4 @@
+
 dist: trusty
 sudo: required
 language: node_js
@@ -49,6 +50,4 @@ jobs:
 env:
   global:
     - DOCKER_USERNAME=augurintegration
-    - secure: hfHRWYqUxQ7Ow4wsG0hJ21wtGjGpy95CuDg0maxtMxq6lsYvy0yfNawH5psX1P9cyiwWY6ryxeoD9HBx3McKbEG9vWhg4pZ63ghnwEAWMtIDq+cfhTAXenlHG+P/owJCzhch+okj77iYioXCUQccqzGl0OCyoHUgFlWZCcRb+RM=
-    - secure: E1ZQXRLO8inA+tIhmgpfUChM5/HckwYDEAwuQc1A6WYTVujGP6jH80hSPz/n0E64bZJPwqYoRbjeZRUTY5BXwpikmbCDdeZ6z2IsoZyWiMyU5tBz2hPs2r5KW7qywDU6uuUNsr5iJyUCMyYprWo6cYPY/UnHXiIyvArE2SXwqv0=
-    - secure: G3V3uOQp7uxrec0BKlYry2jjSF14umFUSW0hmut/SPaTwtFqDVtFNTTtyBTN8mryvkQybUdoq9Lei1nVcgifebQMCY70Ya/wq8h6uo1AHMw9CbsZNErP35JHx5hrYZXZqsP71YRjrX4bU24aG6zYqwDkeHj3GrMk98Mgev4tdmc=
+    - secure: "MO4JALU+CPvNHPPCUoBcOCdlK/Kuh2j/Po5a0goP/+mUX+KHDd9HlsNVT/aI4GQQcQ5Qal3tcw0Jwi7THPSq4uGqDi4s5i6luPkt8s+xdX3GSotpYCWGm0chLLbD+J1NW3H8T0aiSkXQIHy5PYEJVqpsL1RceRFWp2xcgN8GOlg="
