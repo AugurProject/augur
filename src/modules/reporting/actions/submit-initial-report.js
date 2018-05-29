@@ -6,7 +6,7 @@ import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-nume
 
 export const submitInitialReport = (estimateGas, marketId, selectedOutcome, invalid, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
-  const outcome = parseInt(selectedOutcome, 10)
+  const outcome = parseFloat(selectedOutcome)
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
 
