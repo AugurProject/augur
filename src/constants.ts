@@ -24,6 +24,7 @@ export const BN_WEI_PER_ETHER: BigNumber = new BigNumber(10, 10).exponentiatedBy
 export const WEI_PER_ETHER: string = BN_WEI_PER_ETHER.toFixed();
 
 export const ZERO = new BigNumber(0);
+export const ONE = new BigNumber(1);
 
 export enum TokenType {
   ReputationToken,
