@@ -51,3 +51,5 @@ env:
   global:
     - DOCKER_USERNAME=augurintegration
     - secure: "MO4JALU+CPvNHPPCUoBcOCdlK/Kuh2j/Po5a0goP/+mUX+KHDd9HlsNVT/aI4GQQcQ5Qal3tcw0Jwi7THPSq4uGqDi4s5i6luPkt8s+xdX3GSotpYCWGm0chLLbD+J1NW3H8T0aiSkXQIHy5PYEJVqpsL1RceRFWp2xcgN8GOlg="
+    - secure: "DMLAQUAoS94gaJZIdcJWUk3aTP2ZAyiArCqU0OtJeOiTQHh9DPMZ5oywjJtj7kucwBu1uY4GzlPyokgtngWCEAGxpkc3J4Jfd7/mAbx59bHbEZURTOu4onJ7BzNS/V1mdZomVAJezlYBgImaHVfCflwz3g7wk7NPZnmxtlJlUKM="
+    - secure: "VxySk4B7HqpbSwBNEb8qBbD7j9W2nRGo8hT0mFdK7uZmiqp404OAb+HUoR9ctPzRCQBsZTQIYxUOk5Dht0vavVW1WcTl9MXw5EjABJRb1K0zOWRhR/BFrNScjrw/mHrmwaLy0Ft2rzCwVJAAge4aPf/G/4mkC1yNdVhHU8uQXFg="
