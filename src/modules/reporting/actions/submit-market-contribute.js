@@ -7,7 +7,7 @@ import { removeAccountDispute } from 'modules/reporting/actions/update-account-d
 
 export const submitMarketContribute = (estimateGas, marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState()
-  const outcome = parseInt(selectedOutcome, 10)
+  const outcome = parseFloat(selectedOutcome, 10)
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
 
