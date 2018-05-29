@@ -14,6 +14,7 @@ const mapStateToProps = (state) => {
     currentTimestamp: selectCurrentTimestamp(state),
     forkedMarket,
     isLogged: state.isLogged,
+    reportingFees: state.reportingWindowStats.reportingFees,
   }
 }
 
