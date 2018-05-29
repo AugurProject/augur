@@ -7,7 +7,7 @@ import { REPORTING_DISPUTE_MARKETS } from 'modules/routes/constants/views'
 
 export const submitMigrateREP = (estimateGas, marketId, selectedOutcome, invalid, amount, history, callback = logError) => (dispatch, getState) => {
   const { loginAccount, marketsData, universe } = getState()
-  const outcome = parseFloat(selectedOutcome, 10)
+  const outcome = parseFloat(selectedOutcome)
   const universeID = universe.id || UNIVERSE_ID
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
