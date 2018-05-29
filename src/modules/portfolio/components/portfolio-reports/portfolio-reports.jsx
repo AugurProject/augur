@@ -22,49 +22,6 @@ export default class PortfolioReports extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      unclaimedEth: {
-        value: 0,
-        formattedValue: 0,
-        formatted: '-',
-        roundedValue: 0,
-        rounded: '-',
-        minimized: '-',
-        denomination: '',
-        full: '-',
-      },
-      unclaimedRep: {
-        value: 0,
-        formattedValue: 0,
-        formatted: '-',
-        roundedValue: 0,
-        rounded: '-',
-        minimized: '-',
-        denomination: '',
-        full: '-',
-      },
-      unclaimedForkEth: {
-        value: 0,
-        formattedValue: 0,
-        formatted: '-',
-        roundedValue: 0,
-        rounded: '-',
-        minimized: '-',
-        denomination: '',
-        full: '-',
-      },
-      unclaimedForkRepStaked: {
-        value: 0,
-        formattedValue: 0,
-        formatted: '-',
-        roundedValue: 0,
-        rounded: '-',
-        minimized: '-',
-        denomination: '',
-        full: '-',
-      },
-    }
-
     this.handleClaimReportingFeesForkedMarket = this.handleClaimReportingFeesForkedMarket.bind(this)
     this.handleClaimReportingFeesNonforkedMarkets = this.handleClaimReportingFeesNonforkedMarkets.bind(this)
     this.modalCallback = this.modalCallback.bind(this)
