@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
-import { ZERO } from "./constants";
+import { ZERO, ONE } from "../constants";
 
 export function convertDivisorToRate(divisor: string, base?: number) {
   const d = new BigNumber(divisor, base || 10);
   if (d.isEqualTo(ZERO)) return "0";
-  return new BigNumber(1, 10).dividedBy(d).toFixed();
+  return new ONE.dividedBy(d).toFixed();
 }
