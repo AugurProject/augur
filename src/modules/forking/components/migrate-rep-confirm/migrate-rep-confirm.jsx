@@ -11,7 +11,7 @@ const MigrateRepConfirm = p => (
         <ul className={ConfirmStyles['Confirm__list--left-align']}>
           <li>
             <span>Outcome</span>
-            <span>{ p.selectedOutcomeName }</span>
+            <span>{ p.selectedOutcomeName === 'Indeterminate' ? 'Invalid' : p.selectedOutcomeName }</span>
           </li>
           <li>
             <span>Migrating</span>
