@@ -53,6 +53,7 @@ export default class ReportingDisputeForm extends Component {
       validations: {
         stake: false,
         selectedOutcome: null,
+        isDisputeActive: true,
       },
       scalarInputChoosen: false,
     }
@@ -65,6 +66,15 @@ export default class ReportingDisputeForm extends Component {
     if (this.props.accountDisputeData) {
       this.setAccountDisputeData(this.props.accountDisputeData)
     }
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { disputeInfo } = newProps.market
+    const updatedValidations = { ...this.state.validations }
+    updatedValidations.isDisputeActive = disputeInfo.disputeRound === this.state.currentDisputeRound
+    this.setState({
+      validations: updatedValidations,
+    })
   }
 
   componentWillUnmount() {
@@ -340,9 +350,6 @@ export default class ReportingDisputeForm extends Component {
               <label className={Styles.ReportingDisputeForm__tentative} >New tentative outcome</label>
             }
           </p>
-          { s.currentDisputeRound !== disputeRound &&
-            <label className={Styles.ReportingDisputeForm__disputeEnded} >Dispute round has ended</label>
-          }
         </li>
         <li>
           <label>
@@ -442,6 +449,13 @@ export default class ReportingDisputeForm extends Component {
                 </span>
               }
             </li>
+            { s.validations.hasOwnProperty('isDisputeActive') && !s.validations.isDisputeActive &&
+              <label>
+                <span className={Styles.ReportingDisputeForm__disputeEnded}>
+                  {InputErrorIcon}{`Dispute round has ended, wait for next round to dispute`}
+                </span>
+              </label>
+            }
           </ul>
         </li>
       </ul>
