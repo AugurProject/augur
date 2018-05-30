@@ -40,6 +40,7 @@
 
 .MarketHeader__properties {
   display: flex;
+  flex-wrap: wrap;
   margin-left: 75px;
 }
 
@@ -59,6 +60,18 @@
 
   span:last-of-type {
     color: @color-white;
+  }
+}
+
+.MarketHeader__scalar-property {
+  min-width: 130px;
+
+  &:not(:last-of-type) {
+    margin-right: 0;
+  }
+
+  &:nth-child(3n) {
+    flex-basis: 50%;
   }
 }
 
@@ -137,5 +150,9 @@
   .MarketHeader__properties {
     margin-bottom: 1.25rem;
     margin-left: 0;
+  }
+
+  .MarketHeader__property {
+    margin-bottom: 1rem;
   }
 }

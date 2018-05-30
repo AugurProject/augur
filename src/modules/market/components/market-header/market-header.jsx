@@ -6,7 +6,7 @@ import toggleHeight from 'utils/toggle-height/toggle-height'
 
 import { ChevronLeft, ChevronDown, ChevronUp } from 'modules/common/components/icons'
 
-import { CATEGORICAL } from 'modules/markets/constants/market-types'
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
@@ -70,9 +70,15 @@ export default class MarketHeader extends Component {
           <div className={Styles.MarketHeader__properties}>
             {!!coreProperties &&
               Object.keys(coreProperties).map(property => (
+                coreProperties[property] !== null &&
                 <div
                   key={property}
-                  className={Styles.MarketHeader__property}
+                  className={classNames(
+                    Styles.MarketHeader__property,
+                    {
+                      [Styles['MarketHeader__scalar-property']]: (marketType === SCALAR),
+                    },
+                  )}
                 >
                   <span>{property}</span>
                   <span>{coreProperties[property]}</span>
