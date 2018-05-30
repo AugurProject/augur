@@ -15,7 +15,6 @@ describe("blockchain/log-processors/order-created", () => {
       setupTestDb((err, db) => {
         assert.isNull(err);
         db.transaction((trx) => {
-          t.params.augur.utils = augur.utils;
           processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
             assert.isNull(err);
             getState(trx, t.params, (err, records) => {
@@ -52,14 +51,7 @@ describe("blockchain/log-processors/order-created", () => {
         logIndex: 0,
       },
       augur: {
-        api: {
-          Orders: {
-            getAmount: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "3000000000000000000");
-            },
-          },
-        },
+        utils: augur.utils,
       },
     },
     assertions: {
