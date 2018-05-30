@@ -12,9 +12,6 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
-import selectDisputeOutcomes from 'modules/reporting/selectors/select-dispute-outcomes'
-import fillDisputeOutcomeProgress from 'modules/reporting/selectors/fill-dispute-outcome-progress'
-import { isEqual } from 'lodash'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -23,10 +20,11 @@ export default class ReportingDisputeForm extends Component {
     updateState: PropTypes.func.isRequired,
     stakeInfo: PropTypes.object.isRequired,
     addUpdateAccountDispute: PropTypes.func.isRequired,
-    getDisputeInfo: PropTypes.func.isRequired,
+    loadMarketsDisputeInfo: PropTypes.func.isRequired,
     forkThreshold: PropTypes.object.isRequired,
     accountDisputeData: PropTypes.object,
     availableRep: PropTypes.string.isRequired,
+    outcomes: PropTypes.array,
   }
 
   static constructRepObject(raw) {
@@ -41,21 +39,22 @@ export default class ReportingDisputeForm extends Component {
 
   constructor(props) {
     super(props)
+    const { bondSizeOfNewStake, disputeRound } = props.market.disputeInfo
 
     this.state = {
-      outcomes: [],
       inputStake: this.props.stakeInfo.displayValue || '',
       inputSelectedOutcome: '',
       selectedOutcome: '',
       selectedOutcomeName: '',
-      disputeBondValue: '0',
+      currentDisputeRound: disputeRound,
+      disputeBondValue: bondSizeOfNewStake,
       bnAvailableRep: createBigNumber(this.props.availableRep, 10),
       isMarketInValid: false,
       validations: {
         stake: false,
         selectedOutcome: null,
+        isDisputeActive: true,
       },
-      currentOutcome: {},
       scalarInputChoosen: false,
     }
 
@@ -69,9 +68,18 @@ export default class ReportingDisputeForm extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.availableRep !== this.props.availableRep) return true
-    return !isEqual(nextState, this.state)
+  componentWillReceiveProps(newProps) {
+    const { disputeInfo } = newProps.market
+    const updatedValidations = { ...this.state.validations }
+    if (disputeInfo.disputeRound !== this.state.currentDisputeRound) {
+      updatedValidations.isDisputeActive = disputeInfo.disputeRound === this.state.currentDisputeRound
+      this.setState({
+        validations: updatedValidations,
+      })
+      this.props.updateState({
+        validations: updatedValidations,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -98,7 +106,7 @@ export default class ReportingDisputeForm extends Component {
     if (stakeInfo && createBigNumber(stakeInfo.repValue).gt(ZERO)) {
       delete accountDisputeData.validations.stake
     }
-
+    delete accountDisputeData.validations.isDisputeActive
     this.setState({
       isMarketInValid: accountDisputeData.isMarketInValid ? accountDisputeData.isMarketInValid : null,
       selectedOutcome: accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : '',
@@ -121,9 +129,8 @@ export default class ReportingDisputeForm extends Component {
   updateDisptueInfoState() {
     const {
       accountDisputeData,
-      getDisputeInfo,
+      loadMarketsDisputeInfo,
       market,
-      forkThreshold,
       availableRep,
     } = this.props
 
@@ -131,20 +138,7 @@ export default class ReportingDisputeForm extends Component {
       bnAvailableRep: createBigNumber(availableRep),
     })
 
-    getDisputeInfo([market.id], (err, disputeInfos) => {
-      if (err) return console.error(err)
-      const disputeInfo = disputeInfos[0]
-      const { bondSizeOfNewStake } = disputeInfo
-      const disputeOutcomes = selectDisputeOutcomes(market, disputeInfo.stakes, bondSizeOfNewStake, forkThreshold)
-        .map(o => fillDisputeOutcomeProgress(bondSizeOfNewStake, o))
-
-      this.setState({
-        outcomes: disputeOutcomes.filter(item => !item.tentativeWinning) || [],
-        currentOutcome: disputeOutcomes.find(item => item.tentativeWinning) || {},
-        disputeBondValue: bondSizeOfNewStake,
-      })
-
-      // outcomes need to be populated before validating saved data
+    loadMarketsDisputeInfo([market.id], (err, disputeInfos) => {
       if (accountDisputeData) {
         this.validateSavedValues()
       }
@@ -152,11 +146,14 @@ export default class ReportingDisputeForm extends Component {
   }
 
   checkStake(stakeValue, updatedValidations, maxRepObject) {
-    const bnStake = createBigNumber(stakeValue)
 
-    if (stakeValue === '' || stakeValue == null || stakeValue === 0) {
+    if (stakeValue === '' || stakeValue == null || stakeValue === 0 || stakeValue === '0') {
       updatedValidations.stake = 'The stake field is required.'
-    } else if (stakeValue < 0) {
+      return updatedValidations
+    }
+
+    const bnStake = createBigNumber(stakeValue)
+    if (stakeValue < 0) {
       updatedValidations.stake = 'The stake field must be a positive value.'
     } else if (bnStake.gt(createBigNumber(maxRepObject.formatted.formattedValue, 10))) {
       updatedValidations.stake = `Max value is ${maxRepObject.formatted.full}`
@@ -169,9 +166,9 @@ export default class ReportingDisputeForm extends Component {
   }
 
   validateSavedValues() {
-    const { market } = this.props
+    const { market, outcomes } = this.props
     if (market.marketType === SCALAR) {
-      if (!this.state.outcomes.find(o => o.id === this.state.selectedOutcome)) {
+      if (!outcomes.find(o => o.id === this.state.selectedOutcome)) {
         this.validateScalar(this.state.selectedOutcome, 'outcome', market.minPrice, market.maxPrice, market.tickSize, this.state.isMarketInValid)
       }
     } else {
@@ -184,15 +181,17 @@ export default class ReportingDisputeForm extends Component {
     const { ETHER } = augur.rpc.constants
     const updatedValidations = { ...this.state.validations }
     let completeStakeObj = rawStakeObj
+    const maxInfo = this.calculateMaxRep(this.state.selectedOutcome)
 
     if (completeStakeObj.raw === '') {
-      delete updatedValidations.stake
+      this.checkStake('', updatedValidations, maxInfo)
       this.setState({
         inputStake: completeStakeObj.raw,
         validations: updatedValidations,
       })
       updateState({
         validations: updatedValidations,
+        stakeInfo: { displayValue: 0, repValue: '0' },
       })
       return
     }
@@ -204,7 +203,6 @@ export default class ReportingDisputeForm extends Component {
       completeStakeObj = ReportingDisputeForm.constructRepObject(attoRep)
     }
 
-    const maxInfo = this.calculateMaxRep(this.state.selectedOutcome)
     this.checkStake(completeStakeObj.formatted.formattedValue, updatedValidations, maxInfo)
 
     const newStake = { displayValue: completeStakeObj.formatted.formattedValue, repValue: completeStakeObj.fullAmount }
@@ -280,6 +278,7 @@ export default class ReportingDisputeForm extends Component {
       const valueValue = parseFloat(value)
       const bnValue = createBigNumber(value || 0)
       const bnTickSize = createBigNumber(tickSize)
+      const winner = this.props.outcomes.find(o => o.tentativeWinning)
 
       switch (true) {
         case value === '':
@@ -291,7 +290,7 @@ export default class ReportingDisputeForm extends Component {
         case (valueValue > maxValue || valueValue < minValue):
           updatedValidations.err = `Please enter a ${humanName} between ${min} and ${max}.`
           break
-        case value === this.state.currentOutcome.id:
+        case value === winner.id:
           updatedValidations.err = `Current tentative winning outcome.`
           break
         case bnValue.mod(bnTickSize).gt('0'):
@@ -324,7 +323,7 @@ export default class ReportingDisputeForm extends Component {
   }
 
   calculateMaxRep(selectedOutcome) {
-    const outcome = this.state.outcomes.find((o) => {
+    const outcome = this.props.outcomes.find((o) => {
       const result = o.id === selectedOutcome
       return result
     })
@@ -337,18 +336,23 @@ export default class ReportingDisputeForm extends Component {
     const {
       market,
       stakeInfo,
+      outcomes,
     } = this.props
     const s = this.state
-
+    const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {}
+    const { disputeRound } = market.disputeInfo
     return (
       <ul className={classNames(Styles.ReportingDisputeForm__fields, FormStyles.Form__fields)}>
         <li>
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{s.currentOutcome.isInvalid ? 'Invalid' : s.currentOutcome.name }
-            {market.marketType === SCALAR && !s.currentOutcome.isInvalid &&
+          <p>{winner.isInvalid ? 'Invalid' : winner.name }
+            {market.marketType === SCALAR && !winner.isInvalid &&
               <label>{market.scalarDenomination}</label>
+            }
+            { s.currentDisputeRound !== disputeRound &&
+              <label className={Styles.ReportingDisputeForm__tentative} >New tentative outcome</label>
             }
           </p>
         </li>
@@ -357,7 +361,7 @@ export default class ReportingDisputeForm extends Component {
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { s.outcomes.map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
               <li key={outcome.id}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
@@ -450,6 +454,13 @@ export default class ReportingDisputeForm extends Component {
                 </span>
               }
             </li>
+            { s.validations.hasOwnProperty('isDisputeActive') && !s.validations.isDisputeActive &&
+              <label>
+                <span className={Styles.ReportingDisputeForm__disputeEnded}>
+                  {InputErrorIcon}{`Dispute round has ended, wait for next round to dispute`}
+                </span>
+              </label>
+            }
           </ul>
         </li>
       </ul>
