@@ -71,10 +71,15 @@ export default class ReportingDisputeForm extends Component {
   componentWillReceiveProps(newProps) {
     const { disputeInfo } = newProps.market
     const updatedValidations = { ...this.state.validations }
-    updatedValidations.isDisputeActive = disputeInfo.disputeRound === this.state.currentDisputeRound
-    this.setState({
-      validations: updatedValidations,
-    })
+    if (disputeInfo.disputeRound !== this.state.currentDisputeRound) {
+      updatedValidations.isDisputeActive = disputeInfo.disputeRound === this.state.currentDisputeRound
+      this.setState({
+        validations: updatedValidations,
+      })
+      this.props.updateState({
+        validations: updatedValidations,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -101,7 +106,7 @@ export default class ReportingDisputeForm extends Component {
     if (stakeInfo && createBigNumber(stakeInfo.repValue).gt(ZERO)) {
       delete accountDisputeData.validations.stake
     }
-
+    delete accountDisputeData.validations.isDisputeActive
     this.setState({
       isMarketInValid: accountDisputeData.isMarketInValid ? accountDisputeData.isMarketInValid : null,
       selectedOutcome: accountDisputeData.selectedOutcome ? accountDisputeData.selectedOutcome : '',
