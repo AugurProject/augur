@@ -20,7 +20,7 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
   var isScalar = market.marketType === "scalar";
 
   if (invalid) {
-    var equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes);
+    var equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes).dp(0, BigNumber.ROUND_DOWN);
     return Array(market.numOutcomes).fill(equalValue);
 
   } else if (isScalar) {
