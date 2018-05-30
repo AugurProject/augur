@@ -78,10 +78,11 @@ export default class MarketView extends Component {
       (
         nextProps.isConnected &&
         nextProps.loadingState === null &&
-        !!nextProps.marketId
+        !!nextProps.marketId &&
+          nextProps.marketId !== marketId
       )
     ) {
-      nextProps.loadFullMarket(marketId)
+      nextProps.loadFullMarket(nextProps.marketId)
     }
   }
 
