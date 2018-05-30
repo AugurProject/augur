@@ -14,7 +14,7 @@ describe("blockchain/log-processors/market-created", () => {
       markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
       categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
       outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
-      tokens: next => db("tokens").where({marketId: params.log.market}).asCallback(next),
+      tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({marketId: params.log.market}).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -28,6 +28,7 @@ describe("blockchain/log-processors/market-created", () => {
                 assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });
@@ -97,10 +98,6 @@ describe("blockchain/log-processors/market-created", () => {
             getOrCacheReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
-            },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -258,10 +255,6 @@ describe("blockchain/log-processors/market-created", () => {
             getOrCacheReportingFeeDivisor: (p, callback) => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
-            },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
             },
           },
         },
@@ -441,10 +434,6 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
             },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
-            },
           },
         },
         constants,
@@ -597,10 +586,6 @@ describe("blockchain/log-processors/market-created", () => {
               assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
               callback(null, "1000");
             },
-            getOrCacheDesignatedReportStake: (p, callback) => {
-              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
-              callback(null, "16777216000000000000000000");
-            },
           },
         },
         constants,
@@ -644,6 +629,162 @@ describe("blockchain/log-processors/market-created", () => {
             designatedReporter: "0x000000000000000000000000000000000000b0b2",
             designatedReportStake: new BigNumber("16777216", 10),
             resolutionSource: null,
+            numTicks: new BigNumber("10000", 10),
+            consensusPayoutId: null,
+            isInvalid: null,
+            forking: 0,
+            needsMigration: 0,
+            needsDisavowal: 0,
+          }],
+          categories: [{
+            category: "TEST_CATEGORY",
+            popularity: 0,
+            universe: "0x000000000000000000000000000000000000000b",
+          }],
+          outcomes: [{
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 0,
+            price: new BigNumber("0.5", 10),
+            volume: new BigNumber("0", 10),
+            description: null,
+          }, {
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 1,
+            price: new BigNumber("0.5", 10),
+            volume: new BigNumber("0", 10),
+            description: null,
+          }],
+          tokens: [{
+            contractAddress: "SHARE_TOKEN_0",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 0,
+          }, {
+            contractAddress: "SHARE_TOKEN_1",
+            symbol: "shares",
+            marketId: "0x1111111111111111111111111111111111111111",
+            outcome: 1,
+          }],
+        });
+      },
+      onRemoved: (err, records) => {
+        assert.isNull(err);
+        assert.deepEqual(records, {
+          markets: [],
+          categories: [{
+            category: "TEST_CATEGORY",
+            popularity: 0,
+            universe: "0x000000000000000000000000000000000000000b",
+          }],
+          outcomes: [],
+          tokens: [],
+        });
+      },
+    },
+  });
+  test({
+    description: "binary market MarketCreated log and removal, with 0 creator fee rate",
+    params: {
+      log: {
+        blockNumber: 7,
+        universe: "0x000000000000000000000000000000000000000b",
+        market: "0x1111111111111111111111111111111111111111",
+        marketCreator: "0x0000000000000000000000000000000000000b0b",
+        marketCreationFee: "0",
+        topic: "TEST_CATEGORY",
+        marketType: "0",
+        minPrice: (new BigNumber("0", 10)).toFixed(),
+        maxPrice: "1",
+        description: "this is a test market",
+        extraInfo: {
+          tags: ["TEST_TAG_1", "TEST_TAG_2"],
+          longDescription: "this is the long description of a test market",
+          resolutionSource: "https://www.trusted-third-party-co.com",
+        },
+      },
+      augur: {
+        api: {
+          Market: {
+            getNumberOfOutcomes: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "2");
+            },
+            getFeeWindow: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0x1000000000000000000000000000000000000001");
+            },
+            getEndTime: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "4886718345");
+            },
+            getDesignatedReporter: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0x000000000000000000000000000000000000b0b2");
+            },
+            getNumTicks: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "10000");
+            },
+            getMarketCreatorSettlementFeeDivisor: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "100");
+            },
+            getMarketCreatorMailbox: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x1111111111111111111111111111111111111111");
+              callback(null, "0xbbb1111111111111111111111111111111111111");
+            },
+            getShareToken: (p, callback) => {
+              callback(null, `SHARE_TOKEN_${p._outcome}`);
+            },
+          },
+          Universe: {
+            getOrCacheReportingFeeDivisor: (p, callback) => {
+              assert.strictEqual(p.tx.to, "0x000000000000000000000000000000000000000b");
+              callback(null, "1000");
+            },
+          },
+        },
+        constants,
+      },
+    },
+    assertions: {
+      onAdded: (err, records) => {
+        assert.isNull(err);
+        assert.deepEqual(records, {
+          markets: [{
+            marketId: "0x1111111111111111111111111111111111111111",
+            universe: "0x000000000000000000000000000000000000000b",
+            marketType: "binary",
+            numOutcomes: 2,
+            minPrice: new BigNumber("0", 10),
+            maxPrice: new BigNumber("1", 10),
+            marketCreator: "0x0000000000000000000000000000000000000b0b",
+            creationBlockNumber: 7,
+            creationFee: new BigNumber("0", 10),
+            creationTime: 10000000,
+            reportingFeeRate: new BigNumber("0.001", 10),
+            disputeRounds: null,
+            marketCreatorFeeRate: new BigNumber("0.01", 10),
+            marketCreatorFeesBalance: new BigNumber("0", 10),
+            marketCreatorMailbox: "0xbbb1111111111111111111111111111111111111",
+            marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
+            initialReportSize: null,
+            category: "TEST_CATEGORY",
+            tag1: "TEST_TAG_1",
+            tag2: "TEST_TAG_2",
+            volume: new BigNumber("0", 10),
+            sharesOutstanding: new BigNumber("0", 10),
+            reportingState: "PRE_REPORTING",
+            feeWindow: "0x1000000000000000000000000000000000000001",
+            endTime: 4886718345,
+            finalizationBlockNumber: null,
+            marketStateId: 18,
+            shortDescription: "this is a test market",
+            longDescription: "this is the long description of a test market",
+            scalarDenomination: null,
+            designatedReporter: "0x000000000000000000000000000000000000b0b2",
+            designatedReportStake: new BigNumber("16777216", 10),
+            resolutionSource: "https://www.trusted-third-party-co.com",
             numTicks: new BigNumber("10000", 10),
             consensusPayoutId: null,
             isInvalid: null,

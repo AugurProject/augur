@@ -19,6 +19,7 @@ describe("blockchain/log-processors/universe-created", () => {
                 assert.isNull(err);
                 getUniverse(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });
@@ -53,6 +54,7 @@ describe("blockchain/log-processors/universe-created", () => {
         assert.equal(records.universe, "0x000000000000000000000000000000000000000c");
         assert.equal(records.parentUniverse, "0x000000000000000000000000000000000000000b");
         assert.equal(records.reputationToken, "0x0000000000000000000000000000000000000222");
+        assert.equal(records.forked, false);
         assert.isNumber(records.payoutId);
       },
       onRemoved: (err, records) => {

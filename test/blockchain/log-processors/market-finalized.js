@@ -29,6 +29,7 @@ describe("blockchain/log-processors/market-finalized", () => {
                 assert.isNull(err);
                 getMarketState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

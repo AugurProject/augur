@@ -28,6 +28,7 @@ describe("blockchain/log-processors/tokens-transferred", () => {
                       t.assertions.onRemoved(err, records);
                       getTokenBalances(trx, t.params, (err, balances) => {
                         t.assertions.onRemovedBalances(err, balances);
+                        db.destroy();
                         done();
                       });
                     });
@@ -139,6 +140,11 @@ describe("blockchain/log-processors/tokens-transferred", () => {
             callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
           },
           normalizePrice: p => p.price,
+        },
+        utils: {
+          convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
+            return onChainPrice.times(tickSize).plus(minDisplayPrice);
+          },
         },
       },
     },

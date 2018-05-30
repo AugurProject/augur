@@ -38,6 +38,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
                       t.assertions.onRemoved(err, records);
                       removeOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
                         assert.isNotNull(err);
+                        db.destroy();
                         done();
                       });
                     });

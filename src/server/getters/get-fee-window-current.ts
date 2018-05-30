@@ -4,13 +4,32 @@ import { parallel } from "async";
 import { BigNumber } from "bignumber.js";
 import { sumBy } from "./database";
 import { ZERO } from "../../constants";
+import { getCurrentTime } from "../../blockchain/process-block";
+import Augur from "augur.js";
 
 interface StakeRows {
-  totalDisputeStake: BigNumber|null|undefined;
-  totalInitialReportSize: BigNumber|null|undefined;
+  participantContributions: BigNumber;
+  participationTokens: BigNumber;
 }
 
-export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Address|null, callback: (err?: Error|null, result?: UIFeeWindowCurrent|null) => void): void {
+function fabricateFeeWindow(db: Knex, augur: Augur, universe: Address, callback: (err?: Error|null, result?: UIFeeWindowCurrent<string>|null) => void) {
+  db("universes").first("universe").where({ universe }).asCallback((err, universeRow) => {
+    if (err) return callback(err);
+    if (universeRow == null) return callback(null, null);
+    const feeWindowId = Math.floor(getCurrentTime() / augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS);
+    const startTime = feeWindowId * augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS;
+    const endTime = (feeWindowId + 1) * augur.constants.CONTRACT_INTERVAL.DISPUTE_ROUND_DURATION_SECONDS;
+    callback(null, {
+      feeWindow: null,
+      feeWindowId,
+      startTime,
+      endTime,
+      universe,
+    });
+  });
+}
+
+export function getFeeWindowCurrent(db: Knex, augur: Augur, universe: Address, reporter: Address|null, callback: (err?: Error|null, result?: UIFeeWindowCurrent<string>|null) => void): void {
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = db.select(
     [
@@ -22,48 +41,51 @@ export function getFeeWindowCurrent(db: Knex, universe: Address, reporter: Addre
     ]).first().from("fee_windows")
     .where("state", FeeWindowState.CURRENT)
     .where({ universe });
-
   query.asCallback((err: Error|null, feeWindowRow?: FeeWindowRow): void => {
     if (err) return callback(err);
-    if (!feeWindowRow) return callback(null, null);
+    if (!feeWindowRow) return fabricateFeeWindow(db, augur, universe, callback);
     if (reporter == null) {
       return callback(null, feeWindowRow);
     } else {
-      // populate account element
-      const initialReportQuery = db.select("markets.initialReportSize").from("initial_reports")
-        .join("markets", "markets.marketId", "initial_reports.marketId")
+      const participantQuery = db.select("reporterBalance as amountStaked").from("all_participants")
+        .join("markets", "markets.marketId", "all_participants.marketId")
         .where("markets.feeWindow", feeWindowRow.feeWindow)
-        .where("initial_reports.reporter", reporter);
+        .where("reporter", reporter);
 
-      const disputesQuery = db.select("disputes.amountStaked").from("disputes")
-        .join("crowdsourcers", "crowdsourcers.crowdsourcerId", "disputes.crowdsourcerId")
-        .join("markets", "markets.marketId", "crowdsourcers.marketId")
-        .where("markets.feeWindow", feeWindowRow.feeWindow)
-        .where("disputes.reporter", reporter);
+      const participationTokenQuery = db.first([
+        "participationToken.balance AS amountStaked",
+      ]).from("fee_windows")
+        .join("balances AS participationToken", function () {
+          this
+            .on("participationToken.token", db.raw("fee_windows.feeWindow"))
+            .andOn("participationToken.owner", db.raw("?", [reporter]));
+        })
+        .where("fee_windows.feeWindow", feeWindowRow.feeWindow);
 
       parallel({
-        totalInitialReportSize: (next: AsyncCallback) => {
-          initialReportQuery.asCallback((err: Error|null, results: Array<{initialReportSize: BigNumber}>) => {
-            if (err || results.length === 0) return next(err);
-
-            const pick = sumBy(results, "initialReportSize");
-            next(null, pick.initialReportSize);
+        participantContributions: (next: AsyncCallback) => {
+          participantQuery.asCallback((err: Error|null, results?: Array<{ amountStaked: BigNumber }>) => {
+            if (err || results == null || results.length === 0) return next(err, ZERO);
+            const pick = sumBy(results, "amountStaked");
+            next(null, pick.amountStaked || ZERO);
           });
         },
-        totalDisputeStake: (next: AsyncCallback) => {
-          disputesQuery.asCallback((err: Error|null, results: Array<{amountStaked: BigNumber}>) => {
-            if (err || results.length === 0) return next(err);
-
-            next(null, sumBy(results, "amountStaked").amountStaked);
+        participationTokens: (next: AsyncCallback) => {
+          participationTokenQuery.asCallback((err: Error|null, results?: { amountStaked: BigNumber }) => {
+            if (err || results == null) return next(err, ZERO);
+            next(null, results.amountStaked);
           });
         },
       }, (err: Error|null, stakes: StakeRows): void => {
         if (err) return callback(err);
-        const totalStake = ( stakes.totalInitialReportSize || ZERO ).plus((stakes.totalDisputeStake || ZERO));
+        const totalStake = (stakes.participantContributions).plus((stakes.participationTokens));
         callback(null, Object.assign(
-          {},
+          {
+            totalStake: totalStake.toFixed(),
+            participantContributions: stakes.participantContributions.toFixed(),
+            participationTokens: stakes.participationTokens.toFixed(),
+          },
           feeWindowRow,
-          { totalStake: totalStake.toFixed() },
         ));
       });
     }

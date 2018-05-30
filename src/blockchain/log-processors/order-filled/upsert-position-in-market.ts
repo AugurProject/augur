@@ -8,7 +8,7 @@ import { insertPositionInMarket } from "./insert-position-in-market";
 import { updatePositionInMarket } from "./update-position-in-market";
 import { fixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 
-export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address, marketId: Address, numTicks: BigNumber, positionInMarket: Array<string>, callback: ErrorCallback): void {
+export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address, marketId: Address, minPrice: BigNumber, tickSize: BigNumber, positionInMarket: Array<string>, callback: ErrorCallback): void {
   db.select("outcome").from("positions").where({ account, marketId }).asCallback((err: Error|null, positionsRows?: Array<PositionsRow<BigNumber>>): void => {
     if (err) return callback(err);
     const numOutcomes = positionInMarket.length;
@@ -19,7 +19,8 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address,
     forEachOf(positionInMarket, (numShares: string, outcome: number, nextOutcome: AsyncCallback): void => {
       augur.api.Orders.getLastOutcomePrice({ _market: marketId, _outcome: outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
         if (err) return callback(err);
-        const price = fixedPointToDecimal(new BigNumber(lastOutcomePrice, 10), numTicks).toFixed();
+        const lastPrice = new BigNumber(lastOutcomePrice, 10);
+        const price = augur.utils.convertOnChainPriceToDisplayPrice(lastPrice, minPrice, tickSize).toFixed();
         db("outcomes").where({ marketId, outcome }).update({ price }).asCallback((err: Error|null): void => {
           if (err) return callback(err);
           calculateProfitLossInOutcome(db, augur, account, marketId, outcome, (err: Error|null, profitLossInOutcome?: CalculatedProfitLoss): void => {

@@ -11,6 +11,7 @@ import { getUserTradingHistory } from "./getters/get-user-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
+import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { getFeeWindows } from "./getters/get-fee-windows";
 import { getFeeWindowCurrent } from "./getters/get-fee-window-current";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
@@ -19,6 +20,7 @@ import { getMarkets } from "./getters/get-markets";
 import { getMarketsClosingInDateRange } from "./getters/get-markets-closing-in-date-range";
 import { getMarketsInfo } from "./getters/get-markets-info";
 import { getOrders } from "./getters/get-orders";
+import { getAllOrders } from "./getters/get-all-orders";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getContractAddresses } from "./getters/get-contract-addresses";
 import { getDisputeInfo } from "./getters/get-dispute-info";
@@ -39,7 +41,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getMarketsInCategory":
       return getMarketsInCategory(db, request.params.universe, request.params.category, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getMarketsCreatedByUser":
-      return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+      return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingHistory":
       return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingSummary":
@@ -53,7 +55,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return getUserTradingPositions(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
-      return getFeeWindowCurrent(db, request.params.universe, request.params.reporter, callback);
+      return getFeeWindowCurrent(db, augur, request.params.universe, request.params.reporter, callback);
     case "getFeeWindows":
       return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
@@ -67,7 +69,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getInitialReporters":
       return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getReportingFees":
-      return getReportingFees(db, augur, request.params.reporter, request.params.universe, request.params.feeWindow, callback);
+      return getReportingFees(db, augur, request.params.reporter, request.params.universe, callback);
     case "getForkMigrationTotals":
       return getForkMigrationTotals(db, augur, request.params.parentUniverse, callback);
     case "getMarketsClosingInDateRange":
@@ -78,6 +80,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getMarketsInfo(db, request.params.marketIds, callback);
     case "getOrders":
       return getOrders(db, request.params.universe, request.params.marketId, request.params.outcome, request.params.orderType, request.params.creator, request.params.orderState, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
+    case "getAllOrders":
+      return getAllOrders(db, request.params.account, callback);
     case "getBetterWorseOrders":
       return getBetterWorseOrders(db, request.params.marketId, request.params.outcome, request.params.orderType, request.params.price, callback);
     case "getContractAddresses":
@@ -86,6 +90,8 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getUniversesInfo(db, augur, request.params.universe, request.params.account, callback);
     case "getProfitLoss":
       return getProfitLoss(db, augur, request.params.universe, request.params.account, request.params.startTime, request.params.endTime, request.params.periodInterval, callback);
+    case "getUserShareBalances":
+      return getUserShareBalances(db, augur, request.params.marketIds, request.params.account, callback);
     default:
       callback(new Error("unknown json rpc method"));
   }

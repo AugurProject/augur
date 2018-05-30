@@ -24,6 +24,7 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
                 assert.isNull(err);
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });

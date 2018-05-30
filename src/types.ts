@@ -144,14 +144,18 @@ export interface MarketsContractAddressRow {
   marketId: Address;
 }
 
-export interface MarketsRow<BigNumberType> {
+export interface MarketPricing<BigNumberType> {
+  minPrice: BigNumberType;
+  maxPrice: BigNumberType;
+  numTicks: BigNumberType;
+}
+
+export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> {
   marketId: Address;
   universe: Address;
   marketType: string;
-  numOutcomes: number;
-  minPrice: BigNumberType;
-  maxPrice: BigNumberType;
   marketCreator: Address;
+  numOutcomes: number;
   creationBlockNumber: number;
   creationFee: BigNumberType;
   reportingFeeRate: BigNumberType;
@@ -176,7 +180,6 @@ export interface MarketsRow<BigNumberType> {
   designatedReporter: Address;
   designatedReportStake: BigNumberType;
   resolutionSource?: string|null;
-  numTicks: BigNumberType;
   consensusPayoutId?: number|null;
   isInvalid?: boolean|null;
   forking: number;
@@ -211,6 +214,10 @@ export interface TokensRow {
 
 export interface CategoriesRow {
   popularity: string|number;
+}
+
+export interface CategoryRow {
+  category: string;
 }
 
 export interface BlocksRow {
@@ -286,14 +293,15 @@ export interface UIStakeInfo<BigNumberType> {
   stakes: Array<StakeDetails<BigNumberType>>;
 }
 
-export interface UIFeeWindowCurrent {
+export interface UIFeeWindowCurrent<BigNumberType> {
   endTime: number;
-  feeWindow: Address;
+  feeWindow: Address|null;
   feeWindowId: number;
-  state: FeeWindowState;
   startTime: number;
   universe: Address;
-  totalStake?: number;
+  totalStake?: BigNumberType;
+  participantContributions?: BigNumberType;
+  participationTokens?: BigNumberType;
 
 }
 
@@ -443,6 +451,15 @@ export interface TradingHistoryRow extends TradesRow<BigNumber> {
   timestamp: number;
 }
 
+export interface ProceedTradesRow<BigNumberType> {
+  timestamp: number;
+  marketId: Address;
+  outcome: number;
+  price: BigNumberType;
+  amount: BigNumberType;
+  type: "sell";
+  maker: false;
+}
 export interface TimestampedPriceAmount<BigNumberType> {
   price: BigNumberType;
   amount: BigNumberType;
@@ -570,4 +587,11 @@ export interface UIUniverseInfoRow<BigNumberType> extends NormalizedPayout<strin
 export interface ServersData {
   servers: Array<WebSocket.Server>;
   httpServers: Array<http.Server | https.Server>;
+}
+
+export interface AllOrdersRow<BigNumberType> {
+  orderId: Address;
+  tokensEscrowed: BigNumberType;
+  sharesEscrowed: BigNumberType;
+  marketId: Address;
 }

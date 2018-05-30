@@ -9,13 +9,12 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
   query.join("blocks as marketStateBlock", "marketStateBlock.blockNumber", "market_state.blockNumber");
   if (universe != null) query.where({ universe });
   if (creator != null) query.where({ marketCreator: creator });
-  if (category != null) query.where({ category });
+  if (category != null) query.whereRaw("LOWER(category) = ?", [category.toLowerCase()]);
   if (reportingState != null) query.where({ reportingState });
   if (feeWindow != null) query.where({ feeWindow });
   if (designatedReporter != null) query.where({ designatedReporter });
 
-  queryModifier(query, "volume", "desc", sortBy, isSortDescending, limit, offset);
-  query.asCallback((err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
+  queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err?: Error|null, marketsRows?: Array<MarketsContractAddressRow>): void => {
     if (err) return callback(err);
     if (!marketsRows) return callback(null);
     callback(null, marketsRows.map((marketsRow: MarketsContractAddressRow): Address => marketsRow.marketId));

@@ -11,6 +11,7 @@ describe("server/getters/get-orders", () => {
         assert.isNull(err);
         getOrders(db, t.params.universe, t.params.marketId, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
+          db.destroy();
           done();
         });
       });

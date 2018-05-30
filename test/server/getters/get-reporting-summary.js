@@ -11,6 +11,7 @@ describe("server/getters/get-reporting-summary", () => {
         assert.isNull(err);
         getReportingSummary(db, t.params.feeWindow, (err, reportingSummary) => {
           t.assertions(err, reportingSummary);
+          db.destroy();
           done();
         });
       });

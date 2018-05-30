@@ -11,6 +11,7 @@ describe("server/getters/get-user-trading-history", () => {
         assert.isNull(err);
         getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
+          db.destroy();
           done();
         });
       });
@@ -34,7 +35,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
-        type: "sell",
+        type: "buy",
         price: "5.5",
         amount: "0.2",
         maker: false,
@@ -79,7 +80,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474515,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           amount: "0.1",
@@ -95,7 +96,7 @@ describe("server/getters/get-user-trading-history", () => {
           timestamp: 1506474515,
           tradeGroupId: null,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C08",
-          type: "buy",
+          type: "sell",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
@@ -111,7 +112,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C01",
@@ -127,7 +128,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C02",
@@ -143,7 +144,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C03",
@@ -159,7 +160,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C05",
@@ -175,7 +176,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C06",
@@ -191,7 +192,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "buy",
+          type: "sell",
         },
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C07",
@@ -207,7 +208,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "buy",
+          type: "sell",
         },
       ]);
     },
@@ -242,7 +243,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474500,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
       ]);
     },
@@ -279,7 +280,7 @@ describe("server/getters/get-user-trading-history", () => {
           shareToken: "0x1000000000000000000000000000000000000000",
           timestamp: 1506474515,
           tradeGroupId: null,
-          type: "sell",
+          type: "buy",
         },
         {
           amount: "0.1",
@@ -295,7 +296,7 @@ describe("server/getters/get-user-trading-history", () => {
           timestamp: 1506474515,
           tradeGroupId: null,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C08",
-          type: "buy",
+          type: "sell",
         },
       ]);
     },

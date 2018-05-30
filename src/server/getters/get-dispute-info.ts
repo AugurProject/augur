@@ -2,7 +2,6 @@ import { parallel } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";

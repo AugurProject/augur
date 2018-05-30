@@ -12,6 +12,7 @@ describe("server/getters/get-markets-info", () => {
         if (err) assert.fail(err);
         getMarketsInfo(db, t.params.marketIds, (err, marketsInfo) => {
           t.assertions(err, marketsInfo);
+          db.destroy();
           done();
         });
       });
@@ -551,6 +552,16 @@ describe("server/getters/get-markets-info", () => {
             }],
         }]
       );
+    },
+  });
+  test({
+    description: "An array with a null value",
+    params: {
+      marketIds: [undefined],
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNull(err);
+      assert.deepEqual(marketInfo, [null]);
     },
   });
   test({

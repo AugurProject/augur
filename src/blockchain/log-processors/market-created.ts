@@ -26,9 +26,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     const universePayload: {} = { tx: { to: log.universe, send: false } };
     parallel({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
-      designatedReportStake: (next: AsyncCallback): void => augur.api.Universe.getOrCacheDesignatedReportStake(universePayload, next),
+      designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
+      if (onUniverseContractData.designatedReportStake == null) return callback(new Error("No REP balance on this market, fail"));
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketId: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
@@ -62,7 +63,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           feeWindow:                  onMarketContractData.feeWindow,
           endTime:                    parseInt(onMarketContractData.endTime!, 10),
           designatedReporter:         onMarketContractData.designatedReporter,
-          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake, WEI_PER_ETHER),
+          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake.balance, WEI_PER_ETHER),
           numTicks:                   onMarketContractData.numTicks,
           marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData.marketCreatorSettlementFeeDivisor!, 10),
           marketCreatorMailbox:       onMarketContractData.marketCreatorMailbox,
@@ -112,7 +113,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
               { creationTime: getCurrentTime() },
               log,
               marketsDataToInsert));
-            db.select("popularity").from("categories").where({ category: log.topic }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+            db.select("popularity").from("categories").where({ category: log.topic, universe: log.universe }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
               db.insert({ category: log.topic, universe: log.universe }).into("categories").asCallback(callback);

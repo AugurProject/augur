@@ -13,6 +13,7 @@ describe("server/getters/get-winning-balance", () => {
         if (err) assert.fail(err);
         getWinningBalance(db, t.params.augur, t.params.marketIds, t.params.account, (err, winningBalance) => {
           t.assertions(err, winningBalance);
+          db.destroy();
           done();
         });
       });

@@ -49,6 +49,10 @@ exports.seed = async (knex: Knex): Promise<any> => {
       owner: "0x2000000000000000000000000000000000000000",
       balance: "2000",
     }, {
+      token: "CASH",
+      owner: "0x3000000000000000000000000000000000000000",
+      balance: "200",
+    }, {
       token: "REP_TOKEN",
       owner: "0x0000000000000000000000000000000000abe123",
       balance: "2000",
@@ -58,20 +62,28 @@ exports.seed = async (knex: Knex): Promise<any> => {
       balance: "2000",
     }, {
       token: "FEE_TOKEN_1",
-      owner: "0x0000000000000000000000000000000000000b0b",
+      owner: "0x0000000000000000000000000000000000abe222",
       balance: "100",
     }, {
       token: "FEE_TOKEN_2",
-      owner: "0x0000000000000000000000000000000000000b0b",
+      owner: "0x0000000000000000001000000000000000000003",
       balance: "60",
     }, {
       token: "FEE_TOKEN_3",
-      owner: "0x0000000000000000000000000000000000000b0b", // TODO: these should be crowdsourcers
+      owner: "0x0000000000000000001000000000000000000003",
+      balance: "60",
+    }, {
+      token: "FEE_TOKEN_3",
+      owner: "0x0000000000000000000000000000000000abe123",
       balance: "60",
     }, {
       token: "0x2000000000000000000000000000000000000000",
       owner: "0x0000000000000000000000000000000000000b0b",
       balance: "30",
+    }, {
+      token: "0x1000000000000000000000000000000000000000",
+      owner: "0x0000000000000000000000000000000000000b0b",
+      balance: "60",
     }, {
       token: "REP_TOKEN",
       owner: "0x0000000000000000000000000000000000000021",
@@ -87,11 +99,35 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       token: "REP_TOKEN_SECOND_GRAND_CHILD",
       owner: "0x0000000000000000000000000000000000000021",
-      balance: "4",
+      balance: "0",
     }, {
       token: "0xe0e1900000000000000000000000000000000000",
       owner: "0x0000000000000000000000000000000000000b0b",
       balance: "10000000",
+    }, {
+      token: "REP_TOKEN",
+      owner: "0x0000000000000000000000000000000000abe111",
+      balance: "4000000",
+    }, {
+      token: "REP_TOKEN",
+      owner: "0x1111111111111111111111111111111111111111",
+      balance: "16777216000000000000000000",
+    }, {
+      token: "REP_TOKEN",
+      owner: "0x1111111111111111111111111111111111111112",
+      balance: "16777216000000000000000000",
+    }, {
+      token: "REP_TOKEN",
+      owner: "0x1111111111111111111111111111111111111113",
+      balance: "16777216000000000000000000",
+    }, {
+      token: "CASH",
+      owner: "0x0000000000000000000000000000000000abe111",
+      balance: "1000",
+    }, {
+      token: "CASH",
+      owner: "0x0000000000000000001000000000000000000004",
+      balance: "4700",
     }];
     return knex.batchInsert("balances", seedData, seedData.length);
   });

@@ -11,6 +11,7 @@ describe("server/getters/get-universes-info", () => {
         assert.isNull(err);
         getUniversesInfo(db, t.params.augur, t.params.universe, t.params.account, (err, universes) => {
           t.assertions(err, universes);
+          db.destroy();
           done();
         });
       });
@@ -91,8 +92,8 @@ describe("server/getters/get-universes-info", () => {
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
           parentUniverse: "CHILD_UNIVERSE",
-          balance: "4",
-          supply: "300",
+          balance: "0",
+          supply: "0",
           numMarkets: 0,
           payout: [],
           isInvalid: null,
@@ -133,8 +134,8 @@ describe("server/getters/get-universes-info", () => {
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
           parentUniverse: "CHILD_UNIVERSE",
-          balance: "4",
-          supply: "300",
+          balance: "0",
+          supply: "0",
           numMarkets: 0,
           payout: [],
           isInvalid: null,
@@ -154,7 +155,7 @@ describe("server/getters/get-universes-info", () => {
         {
           universe: "CHILD_UNIVERSE",
           parentUniverse: "0x000000000000000000000000000000000000000b",
-          balance: null,
+          balance: "0",
           supply: "2000",
           numMarkets: 1,
           isInvalid: 0,
@@ -166,7 +167,7 @@ describe("server/getters/get-universes-info", () => {
         {
           universe: "FIRST_GRAND_CHILD_UNIVERSE",
           parentUniverse: "CHILD_UNIVERSE",
-          balance: null,
+          balance: "0",
           supply: "200",
           numMarkets: 0,
           payout: [],
@@ -175,8 +176,8 @@ describe("server/getters/get-universes-info", () => {
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
           parentUniverse: "CHILD_UNIVERSE",
-          balance: null,
-          supply: "300",
+          balance: "0",
+          supply: "0",
           numMarkets: 0,
           payout: [],
           isInvalid: null,

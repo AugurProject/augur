@@ -2,11 +2,16 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval } = require("../../../build/blockchain/log-processors/fee-window-created");
+const {parallel} = require("async");
+const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require("../../../build/blockchain/log-processors/fee-window-created");
 
-const getFeeWindow = (db, params, callback) => {
-  db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(callback);
-};
+const getFeeWindow = (db, params, callback) => parallel({
+  fee_windows: next => db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(next),
+  tokens: next => db("tokens").select(["contractAddress", "symbol", "feeWindow"])
+    .where("contractAddress", params.log.feeWindow)
+    .orWhere("feeWindow", params.log.feeWindow)
+    .asCallback(next),
+}, callback);
 
 describe("blockchain/log-processors/fee-window-created", () => {
   const test = (t) => {
@@ -19,8 +24,10 @@ describe("blockchain/log-processors/fee-window-created", () => {
             getFeeWindow(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processFeeWindowCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getFeeWindow(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
+                  db.destroy();
                   done();
                 });
               });
@@ -55,14 +62,31 @@ describe("blockchain/log-processors/fee-window-created", () => {
       onAdded: (err, records) => {
         assert.isNull(err);
         assert.deepEqual(records, {
-          endTime: 1512657473,
-          feeWindow: "0xf000000000000000000000000000000000000000",
-          feeWindowId: 40304,
+          fee_windows: {
+            endTime: 1512657473,
+            feeWindow: "0xf000000000000000000000000000000000000000",
+            feeWindowId: 40304,
+          },
+          tokens: [
+            {
+              contractAddress: "0xf000000000000000000000000000000000000000",
+              symbol: "ParticipationToken",
+              feeWindow: null,
+            },
+            {
+              contractAddress: "FEE_TOKEN",
+              symbol: "FeeToken",
+              feeWindow: "0xf000000000000000000000000000000000000000",
+            },
+          ],
         });
       },
       onRemoved: (err, records) => {
         assert.isNull(err);
-        assert.isUndefined(records);
+        assert.deepEqual(records, {
+          fee_windows: undefined,
+          tokens: [],
+        });
       },
     },
   });

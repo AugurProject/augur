@@ -19,6 +19,7 @@ describe("blockchain/log-processors/completesets", () => {
               processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 getState(trx, t.params, (err, positions) => {
                   t.assertions.onUpdated(err, positions);
+                  db.destroy();
                   done();
                 });
               });
@@ -47,6 +48,11 @@ describe("blockchain/log-processors/completesets", () => {
                 callback(null, "1250");
               }
             },
+          },
+        },
+        utils: {
+          convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
+            return onChainPrice.times(tickSize).plus(minDisplayPrice);
           },
         },
         trading: {
