@@ -841,22 +841,22 @@ module.exports={
   "TradingEscapeHatch": "0xb69761b25046ba3fbdb38fbaa6dad8fbfd62cbd2"
  },
  "4": {
-  "Controller": "0x709ec8f26417c6c89e625688a8b407fd39375c2c",
-  "Universe": "0xd1ddb7f822b3f11f2744a63d7092883e982e9889",
-  "Augur": "0x9d8d3ab73d9d0ae5eea874a9746b095aa6c357a6",
-  "LegacyReputationToken": "0xbbd7d54465100afc75a85d14705710497c9dcd85",
-  "CancelOrder": "0xf69be81df41c3b200abba29d2d36d2b6d5c650ce",
-  "Cash": "0x3dda966405a850da489dafa5d0e1a7dbc80cfc0f",
-  "ClaimTradingProceeds": "0x5dee0191cfcfcb2bf665f95fd22a691644cf2a3c",
-  "CompleteSets": "0x53916bd9e5bbf95c75c894557b850ab450c7c096",
-  "CreateOrder": "0xe288b1882296dc7c6ed4ac6530507b68a4c8db07",
-  "FillOrder": "0x5b34e92b89ad329fa816aef2fa7e6450893f3655",
-  "Order": "0x69759fb006a6b93acc0388ec3f14b36cff7294ed",
-  "Orders": "0x8b237fd1f402902b8815f1def2191a444c42a79a",
-  "OrdersFetcher": "0x99adec657acfb77aced6ed59a1413504b212f9f1",
-  "ShareToken": "0xfbdc16df68030242ff3a1f32b5346e6f80617fda",
-  "Trade": "0x432c22582fe9616dc86313cd1da4daf8dde010aa",
-  "TradingEscapeHatch": "0xb9b9224caa6628384f4722b70fd61280ea47a59b"
+  "Controller": "0x2b78e749a21cac385508fdd4b9a65ea0f5023cd5",
+  "Universe": "0x9bed8e86cfbe6959388fe886f01f7aa836047424",
+  "Augur": "0x910ef9cf50c25dc119a4e006a3516ddf39993f3d",
+  "LegacyReputationToken": "0x5d39afb33251bbeee43be37fb2c7a3fb49d9a902",
+  "CancelOrder": "0x6e612632027ef712dc5742caac24c1d12a02a328",
+  "Cash": "0xbb0bd3799decca37d32534ff5164f60cebc76ee3",
+  "ClaimTradingProceeds": "0x9257cbec14e834739214650a9bfd34d5b20666a5",
+  "CompleteSets": "0x37ae60c9e105b799e4e8b08483cad5262ba6f1ba",
+  "CreateOrder": "0x4b73a6e8da817778947cac5214dbf9b52ad0e024",
+  "FillOrder": "0x3768d00f4f7c3fcbf31f5831e076156d172afc25",
+  "Order": "0x7d81c4e37a4b2a4db583751c529499f2b4cff286",
+  "Orders": "0xa76c3b04489ccb0b9db47fcd5243efdda61b592b",
+  "OrdersFetcher": "0xeadca941c2bfaee09c771918ca7d5c8065a7efbe",
+  "ShareToken": "0xc007881abf7f689d666edba8e037c1dee2f4631c",
+  "Trade": "0x65c938a9b84c2d2ebac7e65df8b4eb494c7cf1bf",
+  "TradingEscapeHatch": "0xa59c97efa8f00051d6c942c1b75dcd614286d605"
  },
  "8995": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
@@ -896,39 +896,39 @@ module.exports={
  },
  "22346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xd11e5db44465e868b8493ac1b5712d2a1b139433",
+  "Universe": "0xa0e4dc62cb7429825f6e1b49841a0445b37152bb",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d",
-  "CancelOrder": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
-  "Cash": "0x5f3341ea5989ad3129e325027b8d908b63709a00",
-  "ClaimTradingProceeds": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "CompleteSets": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "CreateOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "LegacyReputationToken": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "CancelOrder": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "Cash": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
+  "ClaimTradingProceeds": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "CompleteSets": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "CreateOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
   "FillOrder": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
-  "Order": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
+  "Order": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
   "Orders": "0x6749e370e7b1955ffa924f4f75f5f12653c7512c",
-  "OrdersFetcher": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
-  "ShareToken": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "Trade": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
-  "TradingEscapeHatch": "0x5890c2fee9c995ea3f4aaecc8bcc4a90ffba3a6e"
+  "OrdersFetcher": "0x0d676967088088546837accf52a72bbd5066ffee",
+  "ShareToken": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
+  "Trade": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
+  "TradingEscapeHatch": "0x56d32d583ee21e748103b029fd97621fde92248d"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x8963d800c1d48301444f4ceb2a13ebcfee9ae957",
+  "Universe": "0xa0e4dc62cb7429825f6e1b49841a0445b37152bb",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "Cash": "0xd28d97d4ea8968e90ec90ab0f43df4ade0c9f611",
-  "ClaimTradingProceeds": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "CompleteSets": "0x45a2897792afa20b95f7dcaf5c0fb45b84daf439",
-  "CreateOrder": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
-  "FillOrder": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "Order": "0x7a8f8e48d4cc990bbd8e088fb027e850486e8e0c",
-  "Orders": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "OrdersFetcher": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "ShareToken": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "Trade": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
-  "TradingEscapeHatch": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5"
+  "LegacyReputationToken": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
+  "CancelOrder": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
+  "Cash": "0x95e6d12a0ca50ead152d93f8b79beb23bc4a054b",
+  "ClaimTradingProceeds": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
+  "CompleteSets": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "CreateOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
+  "FillOrder": "0xd11222c7c12da25ed9b153234084ad02235297aa",
+  "Order": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "Orders": "0x00bee9d82da7036c9c660e7ae18c4f5e2f072967",
+  "OrdersFetcher": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
+  "ShareToken": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "Trade": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
+  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -1009,10 +1009,10 @@ module.exports.reloadAddresses = function (callback) {
 },{"../utils/read-json-file":149,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":153}],34:[function(require,module,exports){
 module.exports={
   "3": 2991871,
-  "4": 2347021,
+  "4": 2373048,
   "8995": 0,
   "12346": 113,
-  "22346": 11,
+  "22346": 12,
   "32346": 12
 }
 },{}],35:[function(require,module,exports){
@@ -4753,7 +4753,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.11.0-26';
+module.exports = '4.11.0-28';
 },{}],151:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -16909,6 +16909,29 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_amount",
+					"type": "uint256"
+				}
+			],
+			"name": "withdrawEtherToIfPossible",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 TAG=core-$(node scripts/core-version.js)
 
