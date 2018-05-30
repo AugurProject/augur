@@ -475,7 +475,10 @@ function drawTicks(options) {
 
   //  Offset Ticks
   const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
-    if (i === 0) return d + (drawParams.boundDiff / 4)
+    if (i === 0) {
+      const value = d + (drawParams.boundDiff / 4)
+      if (value < 0) return 0
+    }
     return d - (drawParams.boundDiff / 4)
   })
 
@@ -518,7 +521,7 @@ function drawTicks(options) {
       .attr('class', 'tick-value')
       .attr('x', 0)
       .attr('y', d => drawParams.yScale(orderBookKeys.min))
-      .attr('dx', 0)
+      .attr('dx', 50)
       .attr('dy', drawParams.chartDim.tickOffset)
       .text('min')
 
@@ -541,7 +544,7 @@ function drawTicks(options) {
       .attr('class', 'tick-value')
       .attr('x', 0)
       .attr('y', d => drawParams.yScale(orderBookKeys.max))
-      .attr('dx', 0)
+      .attr('dx', 50)
       .attr('dy', drawParams.chartDim.tickOffset)
       .text('max')
 
