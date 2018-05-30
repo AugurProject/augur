@@ -1,6 +1,6 @@
 
 import { SCALAR } from 'modules/markets/constants/market-types'
-import { createBigNumber } from 'utils/create-big-number'
+import { createBigNumber, BigNumber } from 'utils/create-big-number'
 
 export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
 
@@ -10,7 +10,7 @@ export const getPayoutNumerators = (market, selectedOutcome, invalid) => {
   const isScalar = market.marketType === SCALAR
 
   if (invalid) {
-    const equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes)
+    const equalValue = createBigNumber(numTicks).dividedBy(market.numOutcomes).dp(0, BigNumber.ROUND_DOWN)
     return Array(market.numOutcomes).fill(equalValue)
 
   } else if (isScalar) {
