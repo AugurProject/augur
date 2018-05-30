@@ -20,6 +20,9 @@ exports.seed = async (knex: Knex): Promise<any> => {
       token: "0x1000000000000000000000000000000000000000",
       supply: 200,
     }, {
+      token: "0x0100000000000000000000000000000000000000",
+      supply: 200000000000000,
+    }, {
       token: "FEE_TOKEN_2",
       supply: 100,
     }, {

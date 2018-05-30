@@ -35,7 +35,7 @@ describe("blockchain/log-processors/order-canceled", () => {
     params: {
       log: {
         universe: "0x000000000000000000000000000000000000000b",
-        shareToken: "0x1000000000000000000000000000000000000000",
+        shareToken: "0x0100000000000000000000000000000000000000",
         sender: "0x0000000000000000000000000000000000000b0b",
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         sharesRefund: "0",
@@ -56,7 +56,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "CANCELED",
@@ -79,7 +79,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "OPEN",
