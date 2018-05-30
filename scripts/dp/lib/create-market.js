@@ -3,6 +3,7 @@
 var chalk = require("chalk");
 var immutableDelete = require("immutable-delete");
 var printTransactionStatus = require("./print-transaction-status");
+var speedomatic = require("speedomatic");
 var debugOptions = require("../../debug-options");
 
 function createMarket(augur, market, designatedReporterAddress, auth, callback) {
@@ -21,7 +22,7 @@ function createMarket(augur, market, designatedReporterAddress, auth, callback) 
   var createMarketParams = Object.assign({}, immutableDelete(market, ["orderBook", "marketType"]), {
     meta: auth,
     universe: augur.contracts.addresses[augur.rpc.getNetworkID()].Universe,
-    _feePerEthInWei: "0x123456",
+    _feePerEthInWei: speedomatic.fix(0.01, "hex"),
     _denominationToken: augur.contracts.addresses[augur.rpc.getNetworkID()].Cash,
     _designatedReporterAddress: designatedReporterAddress,
     onSent: function (res) {
