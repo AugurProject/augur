@@ -24,7 +24,7 @@ export default class ReportingDisputeForm extends Component {
     forkThreshold: PropTypes.object.isRequired,
     accountDisputeData: PropTypes.object,
     availableRep: PropTypes.string.isRequired,
-    outcomes: PropTypes.array.isRequired,
+    outcomes: PropTypes.array,
   }
 
   static constructRepObject(raw) {
@@ -339,7 +339,7 @@ export default class ReportingDisputeForm extends Component {
       outcomes,
     } = this.props
     const s = this.state
-    const winner = outcomes.find(o => o.tentativeWinning)
+    const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {}
     const { disputeRound } = market.disputeInfo
     return (
       <ul className={classNames(Styles.ReportingDisputeForm__fields, FormStyles.Form__fields)}>
@@ -361,7 +361,7 @@ export default class ReportingDisputeForm extends Component {
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { outcomes.filter(o => !o.tentativeWinning).map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
               <li key={outcome.id}>
                 <button
                   className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
