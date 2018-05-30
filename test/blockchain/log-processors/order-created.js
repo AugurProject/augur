@@ -54,25 +54,9 @@ describe("blockchain/log-processors/order-created", () => {
       augur: {
         api: {
           Orders: {
-            getOrderType: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0");
-            },
-            getPrice: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "7500"); // = 0.75 * 10752
-            },
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "ORDER_ID" });
               callback(null, "3000000000000000000");
-            },
-            getOrderSharesEscrowed: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0");
-            },
-            getOrderMoneyEscrowed: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "2250000000000000000"); // = 0.75 * 3000000000000000000
             },
           },
         },

@@ -44,7 +44,6 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
       },
       augur: {
         constants: new Augur().constants,
-        api: {},
       },
     },
     assertions: {

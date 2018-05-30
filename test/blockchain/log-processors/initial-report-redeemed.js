@@ -48,7 +48,6 @@ describe("blockchain/log-processors/initial-report-redeemed", () => {
       },
       augur: {
         constants: new Augur().constants,
-        api: {},
       },
     },
     assertions: {
