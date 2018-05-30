@@ -2,6 +2,10 @@
 dist: trusty
 sudo: required
 language: node_js
+cache:
+  yarn: true
+  directories:
+    - node_modules
 services:
   - docker
 branches:
@@ -34,7 +38,7 @@ jobs:
     script: skip
     deploy:
       provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- stable
+      script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; npm run docker:release -- stable
       skip_cleanup: true
       on:
         all_branches: true
@@ -43,7 +47,7 @@ jobs:
     script: skip
     deploy:
       provider: script
-      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; npm run docker:release -- dev
+      script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; npm run docker:release -- dev
       skip_cleanup: true
       on:
         all_branches: true
