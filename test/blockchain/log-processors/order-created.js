@@ -39,7 +39,7 @@ describe("blockchain/log-processors/order-created", () => {
     params: {
       log: {
         orderType: "0",
-        shareToken: "0x1000000000000000000000000000000000000000",
+        shareToken: "0x0100000000000000000000000000000000000000",
         price: "7500",
         amount: augur.utils.convertDisplayAmountToOnChainAmount("3", new BigNumber(1), new BigNumber(10000)).toFixed(),
         sharesEscrowed: "0",
@@ -88,7 +88,7 @@ describe("blockchain/log-processors/order-created", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",
@@ -110,7 +110,7 @@ describe("blockchain/log-processors/order-created", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "CREATOR_ADDRESS",
           orderState: "OPEN",

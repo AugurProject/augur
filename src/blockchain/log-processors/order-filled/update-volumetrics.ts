@@ -2,13 +2,10 @@ import { Augur } from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { parallel } from "async";
+import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback, TokensRow } from "../../../types";
 
-import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
-import { calculateFillPrice } from "./calculate-fill-price";
-import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
-
-function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
-  db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
+function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber>) {
+  db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: { volume: BigNumber }) => {
     if (err) return callback(err);
 
     const volume = result.volume;
@@ -22,8 +19,8 @@ function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, c
   });
 }
 
-function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, amount: BigNumber, callback: GenericCallback<BigNumber> ) {
-  db("outcomes").first("volume").where({ marketId, outcome }).asCallback((err: Error|null, result: {volume: BigNumber}) => {
+function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, amount: BigNumber, callback: GenericCallback<BigNumber>) {
+  db("outcomes").first("volume").where({ marketId, outcome }).asCallback((err: Error|null, result: { volume: BigNumber }) => {
     if (err) return callback(err);
 
     const volume = result.volume;
@@ -42,27 +39,28 @@ function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumb
 }
 
 export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: BigNumber, minPrice: BigNumber, maxPrice: BigNumber, isIncrease: boolean, callback: ErrorCallback): void {
-  augur.api.Market.getShareToken({ _outcome: outcome, tx: { to: marketId } }, (err: Error|null, shareToken: Address): void => {
-    if (err) return callback(err);
-    const shareTokenPayload = { tx: { to: shareToken } };
-    augur.api.ShareToken.totalSupply(shareTokenPayload, (err: Error|null, sharesOutstanding: string): void => {
+  db.first("token_supply.supply").from("tokens").join("token_supply", "token_supply.token", "tokens.contractAddress").where({ outcome, marketId })
+    .asCallback((err: Error|null, shareTokenRow?: { supply: BigNumber }): void => {
       if (err) return callback(err);
-      db("markets").where({ marketId }).update({ sharesOutstanding: augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(sharesOutstanding, 10), tickSize).toFixed() }).asCallback((err: Error|null): void => {
-        if (err) return callback(err);
-        db.first("numCreatorShares", "numCreatorTokens", "price", "orderType", "amount").from("trades").where({ marketId, outcome, orderId, blockNumber }).asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
+      if (shareTokenRow == null) return callback(new Error(`No shareToken found for market: ${marketId} outcome: ${outcome}`));
+      const sharesOutstanding = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(shareTokenRow.supply, 10), tickSize).toFixed();
+      db("markets").where({ marketId }).update({ sharesOutstanding })
+        .asCallback((err: Error|null): void => {
           if (err) return callback(err);
-          if (!tradesRow) return callback(new Error("trade not found"));
-          const { numCreatorShares, numCreatorTokens, price, orderType } = tradesRow;
-          let amount = tradesRow.amount!;
-          if (!isIncrease) amount = amount.negated();
+          db.first("numCreatorShares", "numCreatorTokens", "price", "orderType", "amount").from("trades")
+            .where({ marketId, outcome, orderId, blockNumber })
+            .asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
+            if (err) return callback(err);
+            if (!tradesRow) return callback(new Error("trade not found"));
+            let amount = tradesRow.amount!;
+            if (!isIncrease) amount = amount.negated();
 
-          parallel({
-            market: (next) => incrementMarketVolume(db, marketId, amount, next),
-            outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
-            category: (next) => incrementCategoryPopularity(db, category, amount, next),
-          }, callback);
+            parallel({
+              market: (next) => incrementMarketVolume(db, marketId, amount, next),
+              outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
+              category: (next) => incrementCategoryPopularity(db, category, amount, next),
+            }, callback);
+          });
         });
-      });
     });
-  });
 }

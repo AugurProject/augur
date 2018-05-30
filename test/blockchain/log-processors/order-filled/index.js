@@ -29,6 +29,7 @@ describe("blockchain/log-processors/order-filled", () => {
             getState(trx, t.params, t.aux, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, t.aux, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -45,7 +46,7 @@ describe("blockchain/log-processors/order-filled", () => {
     description: "OrderFilled log and removal",
     params: {
       log: {
-        shareToken: "0x1000000000000000000000000000000000000000",
+        shareToken: "0x0100000000000000000000000000000000000000",
         filler: "FILLER_ADDRESS",
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         amountFilled: "142857142857142",
@@ -62,12 +63,6 @@ describe("blockchain/log-processors/order-filled", () => {
       },
       augur: {
         api: {
-          Market: {
-            getShareToken: (p, callback) => {
-              assert.deepEqual(p, { _outcome: 0, tx: { to: "0x0000000000000000000000000000000000000001" } });
-              callback(null, "0x1000000000000000000000000000000000000000");
-            },
-          },
           Orders: {
             getAmount: (p, callback) => {
               assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
@@ -80,16 +75,6 @@ describe("blockchain/log-processors/order-filled", () => {
               } else {
                 callback(null, "1250");
               }
-            },
-            getVolume: (p, callback) => {
-              assert.deepEqual(p, { _market: "0x0000000000000000000000000000000000000001" });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
-            },
-          },
-          ShareToken: {
-            totalSupply: (p, callback) => {
-              assert.deepEqual(p, { tx: { to: "0x1000000000000000000000000000000000000000" } });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
             },
           },
         },
@@ -129,7 +114,7 @@ describe("blockchain/log-processors/order-filled", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "OPEN",
@@ -149,7 +134,7 @@ describe("blockchain/log-processors/order-filled", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           creator: "0x0000000000000000000000000000000000000b0b",
           filler: "FILLER_ADDRESS",
@@ -279,7 +264,7 @@ describe("blockchain/log-processors/order-filled", () => {
           logIndex: 0,
           marketId: "0x0000000000000000000000000000000000000001",
           outcome: 0,
-          shareToken: "0x1000000000000000000000000000000000000000",
+          shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "OPEN",
