@@ -19,7 +19,7 @@ import { loadReporting } from 'src/modules/reporting/actions/load-reporting'
 import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 import loadCategories from 'modules/categories/actions/load-categories'
 import { MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
-
+import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -186,12 +186,15 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
   dispatch(loadReportingWindowBounds())
+  dispatch(getReportingFees())
 }
 
 export const handleFeeWindowOpenedLog = log => (dispatch) => {
   dispatch(loadReportingWindowBounds())
+  dispatch(getReportingFees())
 }
 
 export const handleFeeWindowRedeemedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
+  dispatch(getReportingFees())
 }
