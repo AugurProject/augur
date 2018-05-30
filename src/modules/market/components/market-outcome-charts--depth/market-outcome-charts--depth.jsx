@@ -264,7 +264,7 @@ export default class MarketOutcomeDepth extends Component {
         updateHoveredDepth([])
       } else {
         const nearestFillingOrder = nearestCompletelyFillingOrder(hoveredPrice, marketDepth)
-
+        console.log(nearestFillingOrder)
         if (nearestFillingOrder === null) return
 
         updateHoveredDepth(nearestFillingOrder)
@@ -334,8 +334,8 @@ export default class MarketOutcomeDepth extends Component {
 export function nearestCompletelyFillingOrder(price, { asks = [], bids = [] }) {
   const PRICE_INDEX = 1
   const items = [
-    ...asks.map(it => [...it, ASKS]),
-    ...bids.map(it => [...it, BIDS]),
+    ...asks.filter(it => it[3]).map(it => [...it, ASKS]),
+    ...bids.filter(it => it[3]).map(it => [...it, BIDS]),
   ]
 
   let closestIndex = -1

@@ -4,6 +4,7 @@ import { createBigNumber } from 'src/utils/create-big-number'
 
 describe('src/modules/market/helpers/order-for-market-depth.js', () => {
   let exampleOrderBook
+
   describe('when min asks depth is greater than bids', () => {
     beforeEach(() => {
       exampleOrderBook = {
@@ -35,14 +36,15 @@ describe('src/modules/market/helpers/order-for-market-depth.js', () => {
     })
 
     it('should add a starting point to asks', () => {
-      const result = orderForMarketDepth(exampleOrderBook)
+      const { asks, bids } = orderForMarketDepth(exampleOrderBook)
 
-      assert.lengthOf(result.asks, 3)
-      assert.lengthOf(result.bids, 2)
+      assert.lengthOf(asks, 3)
+      assert.lengthOf(bids, 2)
 
-      assert.equal('0.001', result.asks[0][0].toString())
-      assert.equal('0.35', result.asks[0][1])
-      assert.equal('0.002', result.asks[0][2])
+      assert.equal('0.001', asks[0][0].toString())
+      assert.equal('0.35', asks[0][1])
+      assert.equal('0.002', asks[0][2])
+      assert.isFalse(asks[0][3])
     })
   })
 
@@ -77,14 +79,15 @@ describe('src/modules/market/helpers/order-for-market-depth.js', () => {
     })
 
     it('should add a starting point to bids', () => {
-      const result = orderForMarketDepth(exampleOrderBook)
+      const { asks, bids } = orderForMarketDepth(exampleOrderBook)
 
-      assert.lengthOf(result.asks, 2)
-      assert.lengthOf(result.bids, 3)
+      assert.lengthOf(asks, 2)
+      assert.lengthOf(bids, 3)
 
-      assert.equal('0.001', result.bids[0][0].toString())
-      assert.equal('0.25', result.bids[0][1])
-      assert.equal('0.002', result.bids[0][2])
+      assert.equal('0.001', bids[0][0].toString())
+      assert.equal('0.25', bids[0][1])
+      assert.equal('0.002', bids[0][2])
+      assert.isFalse(bids[0][3])
     })
   })
 
@@ -119,10 +122,16 @@ describe('src/modules/market/helpers/order-for-market-depth.js', () => {
     })
 
     it('should not add data points', () => {
-      const result = orderForMarketDepth(exampleOrderBook)
+      const { asks, bids } = orderForMarketDepth(exampleOrderBook)
 
-      assert.lengthOf(result.asks, 2)
-      assert.lengthOf(result.bids, 2)
+      assert.lengthOf(asks, 2)
+      assert.lengthOf(bids, 2)
+    })
+
+    it('should return items that are all selectable', () => {
+      const { asks, bids } = orderForMarketDepth(exampleOrderBook);
+
+      [...asks, ...bids].forEach(it => assert.isTrue(it[3]))
     })
   })
 })
