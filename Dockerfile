@@ -1,20 +1,25 @@
-FROM node:8.10-stretch
+FROM node:8.11.2-alpine
 
 ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 
+RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn \
+  #&& touch ~/.bashrc \
+  #&& curl -o- -L https://yarnpkg.com/install.sh | bash \
+  && echo "daemon off;" >> /etc/nginx/nginx.conf
+
 # begin install yarn
 # libusb-dev required for node-hid, required for ledger support (ethereumjs-ledger)
-RUN curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
-  && echo 'deb http://nginx.org/packages/debian/ stretch nginx' > /etc/apt/sources.list.d/nginx.list \
-  && apt-get -y update \
-  && apt-get -y upgrade \
-  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
-  && /bin/bash \
-  && touch ~/.bashrc \
-  && curl -o- -L https://yarnpkg.com/install.sh | bash \
-  && echo "daemon off;" >> /etc/nginx/nginx.conf
+#RUN curl -s https://nginx.org/keys/nginx_signing.key | apt-key add - \
+#  && echo 'deb http://nginx.org/packages/debian/ stretch nginx' > /etc/apt/sources.list.d/nginx.list \
+#  && apt-get -y update \
+#  && apt-get -y upgrade \
+#  && apt-get -y install git python make g++ bash curl binutils tar libusb-1.0-0-dev cron nginx \
+#  && /bin/bash \
+#  && touch ~/.bashrc \
+#  && curl -o- -L https://yarnpkg.com/install.sh | bash \
+#  && echo "daemon off;" >> /etc/nginx/nginx.conf
 # end install yarn
 
 # Vhost to serve files
@@ -49,12 +54,5 @@ RUN git rev-parse HEAD > /augur/build/git-hash.txt \
   && cd /augur
 
 EXPOSE 80
-
-WORKDIR /augur
-# Add Tini
-ENV TINI_VERSION v0.16.1
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-ENTRYPOINT ["/tini", "--"]
 
 CMD ["bash", "/augur/local-run.sh"]
