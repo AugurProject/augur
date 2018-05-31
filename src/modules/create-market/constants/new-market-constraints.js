@@ -21,8 +21,8 @@ export const DESIGNATED_REPORTER_SPECIFIC = 'DESIGNATED_REPORTER_SPECIFIC'
 export const INITIAL_LIQUIDITY_DEFAULT = 500
 export const INITIAL_LIQUIDITY_MIN = 250
 
-export const SETTLEMENT_FEE_DEFAULT = 2
-export const SETTLEMENT_FEE_MIN = 1
+export const SETTLEMENT_FEE_DEFAULT = 0
+export const SETTLEMENT_FEE_MIN = 0
 export const SETTLEMENT_FEE_MAX = 12.5
 
 // Advanced Market Creation Defaults
