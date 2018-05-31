@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs'
 import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
-import { eachOf, each, groupBy } from 'async'
+import { eachOf, each } from 'async'
 import { unfix } from 'speedomatic'
 import { isNull } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
@@ -11,17 +11,7 @@ import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatShares } from 'utils/format-number'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
-function groupByMethod(values, prop) {
-  let grouped = {}
-  groupBy(values, (t, cb) => {
-    cb(null, t[prop])
-  }, (err, result) => {
-    if (!err && result) {
-      grouped = result
-    }
-  })
-  return grouped
-}
+import { groupBy } from 'lodash/fp'
 
 function formatTransactionMessage(sumBuy, sumSell, txType) {
   const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
@@ -33,7 +23,7 @@ export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     const transactions = {}
-    const sorted = groupByMethod(trades, 'tradeGroupId')
+    const sorted = groupBy('tradeGroupId', trades)
     // todo: need fallback if groupBy fails and groups aren't created
     each(sorted, (group) => {
       if (group[0].tradeGroupId === undefined) {
