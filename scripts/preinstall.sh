@@ -7,6 +7,3 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
 else
     sudo apt install -y libusb-dev
 fi
-
-npm install
-npm run make

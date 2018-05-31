@@ -18,8 +18,10 @@ matrix:
     dist: trusty
     sudo: required
   - os: osx
+pre_install:
+  - scripts/preinstall.sh
 script:
-- scripts/build.sh
+- npm run make
 after_success:
   - scripts/post_build.py
 before_deploy:
