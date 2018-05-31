@@ -1,6 +1,6 @@
 {
   "name": "augur-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -50,10 +50,10 @@
     }
   },
   "dependencies": {
-    "augur-ui": "3.33.0",
-    "augur.js": "4.11.0-16",
-    "augur-core": "1.0.0-4",
-    "augur-node": "0.2.5",
+    "augur-ui": "3.35.0",
+    "augur.js": "4.11.0-28",
+    "augur-core": "1.0.0-11",
+    "augur-node": "0.2.7",
     "node-pre-gyp": "~0.6.38",
     "knex": "0.14.6",
     "sqlite3": "3.1.13",
