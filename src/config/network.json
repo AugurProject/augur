@@ -53,6 +53,24 @@
       "broadcast": false
     }
   },
+  "srt": {
+    "augur-node": "wss://srt.augur.net/augur-node",
+    "ethereum-node": {
+      "http": "https://srt.augur.net/ethereum-http",
+      "ws": "wss://srt.augur.net/ethereum-ws",
+      "pollingIntervalMilliseconds": 10000,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "auto-login": true,
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
   "stable": {
     "augur-node": "wss://stable.augur.net/augur-node",
     "ethereum-node": {
