@@ -8,7 +8,7 @@ describe("server/getters/get-market-price-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getMarketPriceHistory(db, t.params.marketId, (err, marketPriceHistory) => {
           t.assertions(err, marketPriceHistory);
           db.destroy();
@@ -27,7 +27,7 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketPriceHistory, {
         0: [{
           price: "5.5",
@@ -47,7 +47,7 @@ describe("server/getters/get-market-price-history", () => {
       offset: null,
     },
     assertions: (err, marketPriceHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketPriceHistory, {});
     },
   });

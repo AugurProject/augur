@@ -26,7 +26,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       limit: 10,
     },
     assertions: (err, marketsClosingInDateRange) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000001",
       ]);
@@ -41,7 +41,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       limit: 3,
     },
     assertions: (err, marketsClosingInDateRange) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000002",
@@ -58,7 +58,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       limit: 2,
     },
     assertions: (err, marketsClosingInDateRange) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsClosingInDateRange, [
         "0x0000000000000000000000000000000000000003",
         "0x0000000000000000000000000000000000000002",
@@ -74,7 +74,7 @@ describe("server/getters/get-markets-closing-in-date-range", () => {
       limit: 10,
     },
     assertions: (err, marketsClosingInDateRange) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsClosingInDateRange, []);
     },
   });

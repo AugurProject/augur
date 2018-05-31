@@ -27,7 +27,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000001",
@@ -174,7 +174,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000001",
@@ -321,7 +321,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000002",
@@ -466,7 +466,7 @@ describe("server/getters/get-markets-info", () => {
       ],
     },
     assertions: (err, marketsInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         {
           id: "0x0000000000000000000000000000000000000019",
@@ -560,7 +560,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: [undefined],
     },
     assertions: (err, marketInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketInfo, [null]);
     },
   });
@@ -570,7 +570,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
     assertions: (err, marketInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketInfo, [null]);
     },
   });
@@ -580,7 +580,7 @@ describe("server/getters/get-markets-info", () => {
       marketIds: [],
     },
     assertions: (err, marketInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketInfo, []);
     },
   });

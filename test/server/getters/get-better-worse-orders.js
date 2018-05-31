@@ -8,7 +8,7 @@ describe("server/getters/get-better-worse-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getBetterWorseOrders(db, t.params.marketId, t.params.outcome, t.params.orderType, t.params.price, (err, betterWorseOrders) => {
           t.assertions(err, betterWorseOrders);
           db.destroy();
@@ -26,7 +26,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "2",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(betterWorseOrders, {
         betterOrderId: null,
         worseOrderId: null,
@@ -42,7 +42,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.4",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(betterWorseOrders, {
         betterOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: null,
@@ -58,7 +58,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.99",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(betterWorseOrders, {
         betterOrderId: null,
         worseOrderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
@@ -74,7 +74,7 @@ describe("server/getters/get-better-worse-orders", () => {
       price: "0.65",
     },
     assertions: (err, betterWorseOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(betterWorseOrders, {
         betterOrderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
         worseOrderId: "0x2000000000000000000000000000000000000000000000000000000000000000",

@@ -17,14 +17,14 @@ describe("blockchain/log-processors/universe-forked", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processUniverseForkedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getForkRows(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processUniverseForkedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getForkRows(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -56,7 +56,7 @@ describe("blockchain/log-processors/universe-forked", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(records.forkingMarket.length, 2);
         assert.equal(records.forkingMarket[0].universe, "0x000000000000000000000000000000000000000b");
         assert.equal(records.forkingMarket[0].marketId, "0x0000000000000000000000000000000000000211");
@@ -69,7 +69,7 @@ describe("blockchain/log-processors/universe-forked", () => {
         assert.equal(records.universe[0].forked, 1);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(records.forkingMarket.length, 1);
         assert.equal(records.forkingMarket[0].universe, "0x000000000000000000000000000000000000000b");
         assert.equal(records.forkingMarket[0].marketId, "0x00000000000000000000000000000000000000f1");

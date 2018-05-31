@@ -9,14 +9,14 @@ describe("blockchain/log-processors/market-participants-disavowed", () => {
     const getMarketCrowdsourcers = (db, params, callback) => db("crowdsourcers").where({ marketId: params.log.market }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processMarketParticipantsDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getMarketCrowdsourcers(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processMarketParticipantsDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getMarketCrowdsourcers(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -38,14 +38,14 @@ describe("blockchain/log-processors/market-participants-disavowed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(records.length, 3);
         assert.equal(records[0].disavowed, 1);
         assert.equal(records[1].disavowed, 1);
         assert.equal(records[2].disavowed, 1);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(records.length, 3);
         assert.equal(records[0].disavowed, 0);
         assert.equal(records[1].disavowed, 0);

@@ -16,14 +16,14 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processReportingParticipantDisavowedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getParticipantState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processReportingParticipantDisavowedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getParticipantState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -50,14 +50,14 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.initialReporter, {
           disavowed: 1,
           initialReporter: "0x0000000000000000000000000000000000abe123",
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.initialReporter, {
           disavowed: 0,
           initialReporter: "0x0000000000000000000000000000000000abe123",
@@ -79,14 +79,14 @@ describe("blockchain/log-processors/reporting-participant-disavowed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.crowdsourcer, {
           disavowed: 1,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.crowdsourcer, {
           disavowed: 0,
           crowdsourcerId: "0x0000000000000000001000000000000000000005",

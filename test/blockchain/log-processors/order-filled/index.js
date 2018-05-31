@@ -21,15 +21,15 @@ describe("blockchain/log-processors/order-filled", () => {
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           t.params.augur.utils = augur.utils;
           processOrderFilledLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, t.aux, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderFilledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, t.aux, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -109,7 +109,7 @@ describe("blockchain/log-processors/order-filled", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
@@ -259,7 +259,7 @@ describe("blockchain/log-processors/order-filled", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.orders, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,

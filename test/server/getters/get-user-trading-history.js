@@ -8,7 +8,7 @@ describe("server/getters/get-user-trading-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
           db.destroy();
@@ -31,7 +31,7 @@ describe("server/getters/get-user-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingHistory, [{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
@@ -64,7 +64,7 @@ describe("server/getters/get-user-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
@@ -227,7 +227,7 @@ describe("server/getters/get-user-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
@@ -264,7 +264,7 @@ describe("server/getters/get-user-trading-history", () => {
       latestCreationTime: 1506474516,
     },
     assertions: (err, userTradingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingHistory, [
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
@@ -315,7 +315,7 @@ describe("server/getters/get-user-trading-history", () => {
       offset: null,
     },
     assertions: (err, userTradingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingHistory, []);
     },
   });

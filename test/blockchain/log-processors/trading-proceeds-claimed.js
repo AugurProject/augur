@@ -10,14 +10,14 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
     const getTradingProceeds = (db, params, callback) => db.select(["marketId", "shareToken", "account", "numShares", "numPayoutTokens"]).from("trading_proceeds").asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processTradingProceedsClaimedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getTradingProceeds(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processTradingProceedsClaimedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getTradingProceeds(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -69,7 +69,7 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           account: "FROM_ADDRESS",
           marketId: "0x0000000000000000000000000000000000000001",
@@ -79,7 +79,7 @@ describe("blockchain/log-processors/trading-proceeds-claimed", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, []);
       },
     },

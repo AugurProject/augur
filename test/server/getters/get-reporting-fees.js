@@ -43,7 +43,7 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "1200",
@@ -110,7 +110,7 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "0",
@@ -151,7 +151,7 @@ describe("server/getters/get-reporting-fees", () => {
       },
     },
     assertions: (err, marketsMatched) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsMatched, {
         total: {
           "unclaimedEth": "0",

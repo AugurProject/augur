@@ -8,7 +8,7 @@ describe("server/getters/get-universes-info", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getUniversesInfo(db, t.params.augur, t.params.universe, t.params.account, (err, universes) => {
           t.assertions(err, universes);
           db.destroy();
@@ -24,7 +24,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(universes, [
         {
           universe: "0x000000000000000000000000000000000000000b",
@@ -57,7 +57,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(universes, [
         {
           universe: "0x000000000000000000000000000000000000000b",
@@ -108,7 +108,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, universes) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(universes, [
         {
           universe: "CHILD_UNIVERSE",
@@ -150,7 +150,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (err, universes) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(universes, [
         {
           universe: "CHILD_UNIVERSE",
@@ -192,7 +192,7 @@ describe("server/getters/get-universes-info", () => {
       account: "0x0000000000000000000000000000000000000abe",
     },
     assertions: (err, universes) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(universes, []);
     },
   });

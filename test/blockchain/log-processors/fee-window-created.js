@@ -17,14 +17,14 @@ describe("blockchain/log-processors/fee-window-created", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processFeeWindowCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getFeeWindow(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processFeeWindowCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getFeeWindow(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -60,7 +60,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           fee_windows: {
             endTime: 1512657473,
@@ -82,7 +82,7 @@ describe("blockchain/log-processors/fee-window-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           fee_windows: undefined,
           tokens: [],

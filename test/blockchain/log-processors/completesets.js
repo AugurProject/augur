@@ -13,14 +13,14 @@ describe("blockchain/log-processors/completesets", () => {
     }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processCompleteSetsPurchasedOrSoldLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, (err, positions) => {
               t.assertions.onUpdated(err, positions);
               processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, (err, positions) => {
                   t.assertions.onUpdated(err, positions);
                   db.destroy();
@@ -81,7 +81,7 @@ describe("blockchain/log-processors/completesets", () => {
     },
     assertions: {
       onUpdated: (err, positions) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(positions, [{
           positionId: 21,
           account: "0x0000000000000000000000000000000000000b0b",

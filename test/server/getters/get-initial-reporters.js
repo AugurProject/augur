@@ -8,7 +8,7 @@ describe("server/getters/get-initial-reporters", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getInitialReporters(db, t.params.augur, t.params.universe, t.params.reporter, t.params.redeemed, t.params.withRepBalance, (err, initialReporters) => {
           t.assertions(err, initialReporters);
           db.destroy();
@@ -24,7 +24,7 @@ describe("server/getters/get-initial-reporters", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, initialReporters) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(initialReporters, {
         "0x0000000000000000000000000000000000abe111": {
           amountStaked: "102",

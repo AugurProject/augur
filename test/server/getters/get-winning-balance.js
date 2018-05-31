@@ -26,7 +26,7 @@ describe("server/getters/get-winning-balance", () => {
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, winningBalance) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(winningBalance, [
         {
           marketId: "0x0000000000000000000000000000000000000019",
@@ -42,7 +42,7 @@ describe("server/getters/get-winning-balance", () => {
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, winningBalance) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(winningBalance, []);
     },
   });

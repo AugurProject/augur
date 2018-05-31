@@ -25,7 +25,7 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(accountTransferHistory, [{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -78,7 +78,7 @@ describe("server/getters/get-account-transfer-history", () => {
       latestCreationTime: 1506473474,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(accountTransferHistory, [{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -103,7 +103,7 @@ describe("server/getters/get-account-transfer-history", () => {
       isSortDescending: false,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(accountTransferHistory, [{
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         creationBlockNumber: 1400001,
@@ -127,7 +127,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: "0x000000000000000000000000000000000000000e",
     },
     assertions: (err, accountTransferHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(accountTransferHistory, []);
     },
   });
@@ -138,7 +138,7 @@ describe("server/getters/get-account-transfer-history", () => {
       token: null,
     },
     assertions: (err, accountTransferHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(accountTransferHistory, []);
     },
   });

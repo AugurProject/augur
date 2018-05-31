@@ -8,7 +8,7 @@ describe("server/getters/get-reporting-summary", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getReportingSummary(db, t.params.feeWindow, (err, reportingSummary) => {
           t.assertions(err, reportingSummary);
           db.destroy();
@@ -23,7 +23,7 @@ describe("server/getters/get-reporting-summary", () => {
       feeWindow: "0x1000000000000000000000000000000000000000",
     },
     assertions: (err, reportingSummary) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingSummary, {
         "AWAITING_FINALIZATION": 1,
         "DESIGNATED_REPORTING": 8,
@@ -39,7 +39,7 @@ describe("server/getters/get-reporting-summary", () => {
       feeWindow: "0xfffffffffffff000000000000000000000000000",
     },
     assertions: (err, reportingSummary) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingSummary, {});
     },
   });

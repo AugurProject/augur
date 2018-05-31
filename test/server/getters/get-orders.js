@@ -8,7 +8,7 @@ describe("server/getters/get-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getOrders(db, t.params.universe, t.params.marketId, t.params.outcome, t.params.orderType, t.params.creator, t.params.orderState, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, openOrders) => {
           t.assertions(err, openOrders);
           db.destroy();
@@ -28,7 +28,7 @@ describe("server/getters/get-orders", () => {
       orderState: "OPEN",
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
           0: {
@@ -118,7 +118,7 @@ describe("server/getters/get-orders", () => {
       orderState: "OPEN",
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -156,7 +156,7 @@ describe("server/getters/get-orders", () => {
       orderState: "CLOSED",
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -194,7 +194,7 @@ describe("server/getters/get-orders", () => {
       orderState: "CANCELED",
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
           1: {
@@ -231,7 +231,7 @@ describe("server/getters/get-orders", () => {
       creator: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000001": {
           0: {
@@ -352,7 +352,7 @@ describe("server/getters/get-orders", () => {
       latestCreationTime: 1506473515,
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {
         "0x0000000000000000000000000000000000000003": {
           1: {
@@ -433,7 +433,7 @@ describe("server/getters/get-orders", () => {
       creator: null,
     },
     assertions: (err, openOrders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(openOrders, {});
     },
   });

@@ -8,7 +8,7 @@ describe("server/getters/get-dispute-tokens", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getDisputeTokens(db, t.params.universe, t.params.account, t.params.stakeTokenState, (err, stakeTokens) => {
           t.assertions(err, stakeTokens);
           db.destroy();
@@ -25,7 +25,7 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNFINALIZED",
     },
     assertions: (err, stakeTokens) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",
@@ -56,7 +56,7 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000003": {
           disputeToken: "0x0000000000000000001000000000000000000003",
@@ -87,7 +87,7 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "UNCLAIMED",
     },
     assertions: (err, stakeTokens) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(stakeTokens, {});
     },
   });
@@ -98,8 +98,8 @@ describe("server/getters/get-dispute-tokens", () => {
       account: "0x0000000000000000000000000000000000000021",
       stakeTokenState: "FILLER_VALUE",
     },
-    assertions: (err, stakeTokens) => {
-      assert.isNotNull(err);
+    assertions: (err, stakeTokens) => { // assert stakeTokens
+      assert.ifError(err);
     },
   });
   test({
@@ -110,7 +110,7 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "ALL",
     },
     assertions: (err, stakeTokens) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(stakeTokens, {
         "0x0000000000000000001000000000000000000001": {
           disputeToken: "0x0000000000000000001000000000000000000001",

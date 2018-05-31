@@ -13,14 +13,14 @@ describe("blockchain/log-processors/order-created", () => {
     const getState = (db, params, callback) => db("orders").where("orderId", params.log.orderId).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -56,7 +56,7 @@ describe("blockchain/log-processors/order-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "ORDER_ID",
           blockNumber: 1400100,
@@ -79,7 +79,7 @@ describe("blockchain/log-processors/order-created", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "ORDER_ID",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",

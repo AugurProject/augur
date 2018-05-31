@@ -9,14 +9,14 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
     const getRedeemed = (db, params, callback) => db.select(["reporter", "crowdsourcer", "amountRedeemed", "repReceived", "reportingFeesReceived"]).from("crowdsourcer_redeemed").asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processDisputeCrowdsourcerRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getRedeemed(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processDisputeCrowdsourcerRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getRedeemed(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -45,7 +45,7 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           amountRedeemed: "200",
           crowdsourcer: "DISPUTE_CROWDSOURCER",
@@ -55,7 +55,7 @@ describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, []);
       },
     },

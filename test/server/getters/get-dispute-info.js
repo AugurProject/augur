@@ -28,7 +28,7 @@ describe("server/getters/get-dispute-info", () => {
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -129,7 +129,7 @@ describe("server/getters/get-dispute-info", () => {
       account: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -230,7 +230,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         null,
         {
@@ -297,7 +297,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -394,7 +394,7 @@ describe("server/getters/get-dispute-info", () => {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [null]);
     },
   });
@@ -404,7 +404,7 @@ describe("server/getters/get-dispute-info", () => {
       marketIds: [],
     },
     assertions: (err, disputeInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, []);
     },
   });

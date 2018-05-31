@@ -31,7 +31,7 @@ describe("server/getters/get-contract-addresses", () => {
       },
     },
     assertions: (err, contractAddresses) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(contractAddresses, {
         version: "the-version-string",
         net_version: 974,

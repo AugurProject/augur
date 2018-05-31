@@ -9,14 +9,14 @@ describe("blockchain/log-processors/universe-created", () => {
     const getUniverse = (db, params, callback) => db("universes").first().where({ universe: params.log.childUniverse }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processUniverseCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getUniverse(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processUniverseCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getUniverse(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -50,7 +50,7 @@ describe("blockchain/log-processors/universe-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.equal(records.universe, "0x000000000000000000000000000000000000000c");
         assert.equal(records.parentUniverse, "0x000000000000000000000000000000000000000b");
         assert.equal(records.reputationToken, "0x0000000000000000000000000000000000000222");
@@ -58,7 +58,7 @@ describe("blockchain/log-processors/universe-created", () => {
         assert.isNumber(records.payoutId);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.isUndefined(records);
       },
     },

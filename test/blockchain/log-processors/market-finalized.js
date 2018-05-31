@@ -19,14 +19,14 @@ describe("blockchain/log-processors/market-finalized", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processMarketFinalizedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getMarketState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processMarketFinalizedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getMarketState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -64,7 +64,7 @@ describe("blockchain/log-processors/market-finalized", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           market: {
             marketId: "0x0000000000000000000000000000000000000013",
@@ -89,7 +89,7 @@ describe("blockchain/log-processors/market-finalized", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           market: {
             marketId: "0x0000000000000000000000000000000000000013",

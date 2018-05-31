@@ -8,7 +8,7 @@ describe("server/getters/get-fork-migration-totals", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getForkMigrationTotals(db, t.params.augur, t.params.parentUniverse, (err, forkMigrationTotals) => {
           t.assertions(err, forkMigrationTotals);
           db.destroy();
@@ -24,7 +24,7 @@ describe("server/getters/get-fork-migration-totals", () => {
       augur: {},
     },
     assertions: (err, forkMigrationTotals) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(forkMigrationTotals, {
         "CHILD_UNIVERSE": {
           "isInvalid": 0,
