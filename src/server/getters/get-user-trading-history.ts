@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import * as Knex from "knex";
-import { Address, TradesRow, TradingHistoryRow, UITrade, GenericCallback } from "../../types";
-import { queryModifier, queryTradingHistory } from "./database";
+import { Address, TradingHistoryRow, UITrade, GenericCallback } from "../../types";
+import { queryTradingHistory } from "./database";
 
 // Look up a user's trading history. Should take market, outcome, and orderType as optional parameters.
 export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Address|null, account: Address, marketId: Address|null, outcome: number|null, orderType: string|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null, isSortDescending: boolean|null, limit: number|null, offset: number|null, callback: GenericCallback<Array<UITrade>>): void {

@@ -12,7 +12,7 @@ describe("server/getters/get-fee-window-current", () => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
         setOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
-          assert.isNull(err);
+          assert.ifError(err);
           getFeeWindowCurrent(db, t.params.augur, t.params.universe, t.params.reporter, (err, feeWindow) => {
             t.assertions(err, feeWindow);
             removeOverrideTimestamp(db, t.params.overrideTimestamp || 1, (err) => {
@@ -31,7 +31,7 @@ describe("server/getters/get-fee-window-current", () => {
       universe: "0x000000000000000000000000000000000000000b",
     },
     assertions: (err, feeWindow) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -48,7 +48,7 @@ describe("server/getters/get-fee-window-current", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, feeWindow) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -75,7 +75,7 @@ describe("server/getters/get-fee-window-current", () => {
       },
     },
     assertions: (err, feeWindow) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindow, {
         endTime: 1527120000,
         feeWindow: null,
@@ -92,7 +92,7 @@ describe("server/getters/get-fee-window-current", () => {
       reporter: "0x0000000000000000000000000000000000n0n0n0",
     },
     assertions: (err, feeWindow) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindow, {
         endTime: 1509670273,
         feeWindow: "0x2000000000000000000000000000000000000000",
@@ -111,7 +111,7 @@ describe("server/getters/get-fee-window-current", () => {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, feeWindow) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.isNull(feeWindow);
     },
   });

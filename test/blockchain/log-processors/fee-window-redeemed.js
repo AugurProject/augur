@@ -9,14 +9,14 @@ describe("blockchain/log-processors/fee-window-redeemed", () => {
     const getRedeemed = (db, params, callback) => db.select(["reporter", "feeWindow", "amountRedeemed", "reportingFeesReceived"]).from("participation_token_redeemed").asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processFeeWindowRedeemedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getRedeemed(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processFeeWindowRedeemedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getRedeemed(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -44,7 +44,7 @@ describe("blockchain/log-processors/fee-window-redeemed", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           amountRedeemed: "200",
           feeWindow: "FEE_WINDOW",
@@ -53,7 +53,7 @@ describe("blockchain/log-processors/fee-window-redeemed", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, []);
       },
     },

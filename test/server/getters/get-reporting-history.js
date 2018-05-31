@@ -8,7 +8,7 @@ describe("server/getters/get-reporting-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getReportingHistory(db, t.params.reporter, t.params.universe, t.params.marketId, t.params.feeWindow, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, reportingHistory) => {
           t.assertions(err, reportingHistory);
           db.destroy();
@@ -24,7 +24,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x0000000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingHistory, {
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
@@ -80,7 +80,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, reportingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingHistory, {
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000011": {
@@ -184,7 +184,7 @@ describe("server/getters/get-reporting-history", () => {
       latestCreationTime: 1506474515,
     },
     assertions: (err, reportingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingHistory, {
         "0x000000000000000000000000000000000000000b": {
           "0x0000000000000000000000000000000000000019": {
@@ -217,7 +217,7 @@ describe("server/getters/get-reporting-history", () => {
       reporter: "0x2100000000000000000000000000000000000021",
     },
     assertions: (err, reportingHistory) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(reportingHistory, {});
     },
   });

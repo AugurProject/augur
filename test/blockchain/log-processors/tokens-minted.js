@@ -10,14 +10,14 @@ describe("blockchain/log-processors/tokens-minted", () => {
     const getTokenBalances = (db, params, callback) => db.select(["balances.owner", "balances.token", "balances.balance", "token_supply.supply"]).from("balances").join("token_supply", "balances.token", "token_supply.token").where("balances.token", params.log.token).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processMintLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getTokenBalances(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processMintLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getTokenBalances(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -45,7 +45,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",
@@ -54,7 +54,7 @@ describe("blockchain/log-processors/tokens-minted", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           owner: "FROM_ADDRESS",
           token: "TOKEN_ADDRESS",

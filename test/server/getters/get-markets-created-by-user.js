@@ -51,7 +51,7 @@ describe("server/getters/get-markets-created-by-user", () => {
       earliestCreationTime: 1506474500,
     },
     assertions: (err, marketsCreatedByUser) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketsCreatedByUser, [
         "0x0000000000000000000000000000000000000002",
         "0x0000000000000000000000000000000000000211",

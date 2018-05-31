@@ -39,7 +39,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (err, marketFees) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketFees, [
         {
           marketId: "0x0000000000000000000000000000000000000001",
@@ -70,7 +70,7 @@ describe("server/getters/get-unclaimed-market-creator-fees", () => {
       },
     },
     assertions: (err, marketFees) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(marketFees, []);
     },
   });

@@ -14,14 +14,14 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processInitialReporterTransferredLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getInitialReport(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processInitialReporterTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getInitialReport(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -44,18 +44,17 @@ describe("blockchain/log-processors/initial-report-transferred", () => {
       },
       augur: {
         constants: new Augur().constants,
-        api: {},
       },
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           reporter: "0x0000000000000000000000000000000000000d0d",
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           reporter: "0x0000000000000000000000000000000000000b0b",
         });

@@ -8,7 +8,7 @@ describe("server/getters/get-user-trading-positions", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getUserTradingPositions(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
           t.assertions(err, userTradingPositions);
           db.destroy();
@@ -30,7 +30,7 @@ describe("server/getters/get-user-trading-positions", () => {
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
@@ -110,7 +110,7 @@ describe("server/getters/get-user-trading-positions", () => {
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 4,
@@ -134,7 +134,7 @@ describe("server/getters/get-user-trading-positions", () => {
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000002",
         "outcome": 1,
@@ -158,7 +158,7 @@ describe("server/getters/get-user-trading-positions", () => {
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000002",
         "outcome": 1,
@@ -182,7 +182,7 @@ describe("server/getters/get-user-trading-positions", () => {
       offset: null,
     },
     assertions: (err, userTradingPositions) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(userTradingPositions, []);
     },
   });

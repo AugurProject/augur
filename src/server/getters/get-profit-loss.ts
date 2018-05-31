@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import BigNumber from "bignumber.js";
 import { Augur } from "augur.js";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
-import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { getProceedTradeRows } from "./get-proceed-trade-rows";
 import {
   Address,
@@ -245,11 +245,10 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   return { aggregate, all};
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null, callback: GenericCallback<ProfitLossResults>) {
+export function getProfitLoss(db: Knex, augur: Augur, universe: Address|undefined, account: Address|undefined, startTime: number, endTime: number, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
+  if (typeof universe !== "string") return callback(new Error("Universe Address Required"));
+  if (typeof account !== "string") return callback(new Error("Account Address Required"));
   try {
-    if (typeof universe !== "string") throw new Error("Universe Address Required");
-    if (typeof account !== "string") throw new Error("Account Address Required");
-
     getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime, endTime, periodInterval)
       .then((results: ProfitLossResults) => callback(null, results));
   } catch (e) {

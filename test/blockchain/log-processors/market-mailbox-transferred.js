@@ -12,14 +12,14 @@ describe("blockchain/log-processors/market-mailbox-transferred", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processMarketMailboxTransferredLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getMarket(trx, t.params, (err, marketRow) => {
               t.assertions.onAdded(err, marketRow);
               processMarketMailboxTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getMarket(trx, t.params, (err, marketRow) => {
                   t.assertions.onRemoved(err, marketRow);
                   db.destroy();
@@ -46,7 +46,7 @@ describe("blockchain/log-processors/market-mailbox-transferred", () => {
     },
     assertions: {
       onAdded: (err, marketRow) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(marketRow, [
           {
             "marketId": "0x0000000000000000000000000000000000000211",
@@ -55,7 +55,7 @@ describe("blockchain/log-processors/market-mailbox-transferred", () => {
         ]);
       },
       onRemoved: (err, marketRow) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(marketRow, [
           {
             "marketId": "0x0000000000000000000000000000000000000211",

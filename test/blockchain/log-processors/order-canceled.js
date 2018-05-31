@@ -10,14 +10,14 @@ describe("blockchain/log-processors/order-canceled", () => {
     const getState = (db, params, callback) => db("orders").where("orderId", params.log.orderId).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processOrderCanceledLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderCanceledLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -48,7 +48,7 @@ describe("blockchain/log-processors/order-canceled", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
@@ -71,7 +71,7 @@ describe("blockchain/log-processors/order-canceled", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,

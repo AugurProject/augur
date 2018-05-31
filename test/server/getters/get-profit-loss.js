@@ -526,7 +526,7 @@ describe("server/getters/get-profit-loss", () => {
         },
         assertions: (err, profitLoss) => {
           assert.ifError(err);
-          assert.isNull(err);
+          assert.ifError(err);
           assert.equal(profitLoss.aggregate.length, 30);
           assert.deepEqual(profitLoss.all, {});
         },

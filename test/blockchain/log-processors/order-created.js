@@ -13,15 +13,14 @@ describe("blockchain/log-processors/order-created", () => {
     const getState = (db, params, callback) => db("orders").where("orderId", params.log.orderId).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
-          t.params.augur.utils = augur.utils;
           processOrderCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processOrderCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -52,35 +51,12 @@ describe("blockchain/log-processors/order-created", () => {
         logIndex: 0,
       },
       augur: {
-        api: {
-          Orders: {
-            getOrderType: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0");
-            },
-            getPrice: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "7500"); // = 0.75 * 10752
-            },
-            getAmount: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "3000000000000000000");
-            },
-            getOrderSharesEscrowed: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "0");
-            },
-            getOrderMoneyEscrowed: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "ORDER_ID" });
-              callback(null, "2250000000000000000"); // = 0.75 * 3000000000000000000
-            },
-          },
-        },
+        utils: augur.utils,
       },
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "ORDER_ID",
           blockNumber: 1400100,
@@ -103,7 +79,7 @@ describe("blockchain/log-processors/order-created", () => {
         }]);
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           orderId: "ORDER_ID",
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",

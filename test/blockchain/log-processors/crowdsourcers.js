@@ -48,15 +48,15 @@ describe("blockchain/log-processors/crowdsourcers", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         setOverrideTimestamp(db, t.params.overrideTimestamp, (err) => {
-          assert.isNull(err);
+          assert.ifError(err);
           db.transaction((trx) => {
             function verify(processor, getter, checker, callback) {
               processor(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getter(trx, t.params, (err, records) => {
-                  assert.isNull(err);
+                  assert.ifError(err);
                   checker(err, records);
                   callback();
                 });
@@ -122,7 +122,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
     },
     assertions: {
       onCreated: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
@@ -133,11 +133,11 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
       },
       onCreatedRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.isUndefined(records);
       },
       onContributed: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, [{
           blockNumber: 1400100,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
@@ -149,11 +149,11 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         }]);
       },
       onContributedRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, []);
       },
       onCompleted: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.crowdsourcer, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",
@@ -206,7 +206,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
       },
       onCompletedRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records.crowdsourcer, {
           crowdsourcerId: "0x0000000000000000002000000000000000000001",
           marketId: "0x0000000000000000000000000000000000000211",

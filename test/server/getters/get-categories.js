@@ -25,7 +25,7 @@ describe("server/getters/get-categories", () => {
       isSortDescending: true,
     },
     assertions: (err, categoriesInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(categoriesInfo, [
         { category: "finance", popularity: "12345" },
         { category: "politics", popularity: "5000" },
@@ -41,7 +41,7 @@ describe("server/getters/get-categories", () => {
       universe: "0x1010101010101010101010101010101010101010",
     },
     assertions: (err, categoriesInfo) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(categoriesInfo, []);
     },
   });

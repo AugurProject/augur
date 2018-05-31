@@ -18,14 +18,14 @@ describe("blockchain/log-processors/market-created", () => {
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           processMarketCreatedLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processMarketCreatedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();
@@ -106,7 +106,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -181,7 +181,7 @@ describe("blockchain/log-processors/market-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [],
           categories: [{
@@ -263,7 +263,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111112",
@@ -360,7 +360,7 @@ describe("blockchain/log-processors/market-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [],
           categories: [{
@@ -441,7 +441,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111113",
@@ -516,7 +516,7 @@ describe("blockchain/log-processors/market-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [],
           categories: [{
@@ -593,7 +593,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -668,7 +668,7 @@ describe("blockchain/log-processors/market-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [],
           categories: [{
@@ -749,7 +749,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
@@ -824,7 +824,7 @@ describe("blockchain/log-processors/market-created", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           markets: [],
           categories: [{

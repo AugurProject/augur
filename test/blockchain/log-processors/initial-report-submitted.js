@@ -20,20 +20,20 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         db.transaction((trx) => {
           setOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
-            assert.isNull(err);
+            assert.ifError(err);
             processInitialReportSubmittedLog(trx, t.params.augur, t.params.log, (err) => {
-              assert.isNull(err);
+              assert.ifError(err);
               getReportingState(trx, t.params, (err, records) => {
-                assert.isNull(err);
+                assert.ifError(err);
                 t.assertions.onAdded(err, records);
                 getInitialReport(trx, t.params, (err, records) => {
-                  assert.isNull(err);
+                  assert.ifError(err);
                   t.assertions.onAddedInitialReport(err, records);
                   processInitialReportSubmittedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                    assert.isNull(err);
+                    assert.ifError(err);
                     getReportingState(trx, t.params, (err, records) => {
                       t.assertions.onRemoved(err, records);
                       removeOverrideTimestamp(trx, t.params.overrideTimestamp, (err) => {
@@ -101,7 +101,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
     },
     assertions: {
       onAdded: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           initialReportSize: new BigNumber("2829", 10),
           reportingState: "AWAITING_NEXT_WINDOW",
@@ -109,7 +109,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         });
       },
       onAddedInitialReport: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           reporter: "0x0000000000000000000000000000000000000b0b",
           amountStaked: new BigNumber("2829", 10),
@@ -117,7 +117,7 @@ describe("blockchain/log-processors/initial-report-submitted", () => {
         });
       },
       onRemoved: (err, records) => {
-        assert.isNull(err);
+        assert.ifError(err);
         assert.deepEqual(records, {
           initialReportSize: null,
           reportingState: "DESIGNATED_REPORTING",

@@ -8,7 +8,7 @@ describe("server/getters/get-all-orders", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         getAllOrders(db, t.params.account, (err, orders) => {
           t.assertions(err, orders);
           db.destroy();
@@ -23,7 +23,7 @@ describe("server/getters/get-all-orders", () => {
       account: "0x000000000000000000000000000000000000d00d",
     },
     assertions: (err, orders) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(orders, {
         "0x2000000000000000000000000000000000000000000000000000000000000000": {
           "orderId": "0x2000000000000000000000000000000000000000000000000000000000000000",

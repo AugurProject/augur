@@ -10,9 +10,9 @@ describe("server/getters/get-fee-windows", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
-        assert.isNull(err);
+        assert.ifError(err);
         setOverrideTimestamp(db, 1509065471, (err) => {
-          assert.isNull(err);
+          assert.ifError(err);
           getFeeWindows(db, t.params.augur, t.params.universe, t.params.account, t.params.includeCurrent, (err, feeWindows) => {
             t.assertions(err, feeWindows);
             db.destroy();
@@ -44,7 +44,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindows, {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -83,7 +83,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindows, {
         "0x1000000000000000000000000000000000000000": {
           startTime: 1506473473,
@@ -116,7 +116,7 @@ describe("server/getters/get-fee-windows", () => {
       },
     },
     assertions: (err, feeWindows) => {
-      assert.isNull(err);
+      assert.ifError(err);
       assert.deepEqual(feeWindows, {});
     },
   });
