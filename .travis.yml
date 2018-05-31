@@ -19,9 +19,9 @@ matrix:
     sudo: required
   - os: osx
 install:
-- scripts/build.sh
+- npm install
 script:
-- npm make
+- scripts/build.sh
 after_success:
   - scripts/post_build.py
 before_deploy:
