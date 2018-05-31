@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks'
 import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
@@ -20,6 +19,8 @@ import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 import loadCategories from 'modules/categories/actions/load-categories'
 import { MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
 import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
+import { loadMarketsInfoIfNotLoaded } from 'src/modules/markets/actions/load-markets-info-if-not-loaded'
+import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -65,7 +66,7 @@ export const handleTokensBurnedLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderCreatedLog = log => (dispatch, getState) => {
-  dispatch(loadMarketsInfo([log.marketId]))
+  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
   const isStoredTransaction = log.orderCreator === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
@@ -76,7 +77,7 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
-  dispatch(loadMarketsInfo([log.marketId]))
+  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
   const isStoredTransaction = log.sender === getState().loginAccount.address
   const { modal } = getState()
   const escapeHatchModalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
@@ -91,7 +92,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderFilledLog = log => (dispatch, getState) => {
-  dispatch(loadMarketsInfo([log.marketId]))
+  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
   const { address } = getState().loginAccount
   const isStoredTransaction = log.filler === address || log.creator === address
   const popularity = log.removed ? new BigNumber(log.amount, 10).negated().toFixed() : log.amount
