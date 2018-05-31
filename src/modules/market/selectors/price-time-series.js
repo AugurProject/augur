@@ -1,5 +1,3 @@
-import memoize from 'memoizee'
-
 /**
  * Prepares price history data for charting
  *
@@ -7,7 +5,7 @@ import memoize from 'memoizee'
  * @param {Object} marketPriceHistory
  * @return {Array}
  */
-export const selectPriceTimeSeries = memoize((outcome, marketPriceHistory) => {
+export const selectPriceTimeSeries = (outcome, marketPriceHistory) => {
   if (
     outcome == null ||
     outcome.id == null ||
@@ -22,4 +20,4 @@ export const selectPriceTimeSeries = memoize((outcome, marketPriceHistory) => {
     amount: priceTimePoint.amount,
     timestamp: priceTimePoint.timestamp * 1000,
   }))
-})
+}
