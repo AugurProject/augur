@@ -174,14 +174,14 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           {
             owner: "FROM_ADDRESS",
             token: "TOKEN_ADDRESS",
-            balance: "8999",
+            balance: new BigNumber("8999"),
           },
           {
             owner: "TO_ADDRESS",
             token: "TOKEN_ADDRESS",
-            balance: "2",
-          }
-        ])
+            balance: new BigNumber("2"),
+          },
+        ]);
       },
       onRemovedBalances: (err, balances) => {
         assert.isNull(err);
