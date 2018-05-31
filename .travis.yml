@@ -16,6 +16,7 @@ matrix:
   include:
   - os: linux
     dist: trusty
+    sudo: required
   - os: osx
 install:
 - scripts/build.sh
