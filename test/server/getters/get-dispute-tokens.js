@@ -99,7 +99,7 @@ describe("server/getters/get-dispute-tokens", () => {
       stakeTokenState: "FILLER_VALUE",
     },
     assertions: (err, stakeTokens) => { // assert stakeTokens
-      assert.ifError(err);
+      assert.isNotNull(err);
     },
   });
   test({
