@@ -1,8 +1,7 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
-import { Address, MarketPriceHistory, TimestampedPriceAmount } from "../../types";
-import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { Address } from "../../types";
 import { ZERO } from "../../constants";
 
 interface MarketPriceHistoryRow {

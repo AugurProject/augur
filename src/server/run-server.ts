@@ -1,5 +1,4 @@
 import * as express from "express";
-import * as WebSocket from "ws";
 import * as Knex from "knex";
 import Augur from "augur.js";
 import { runWebsocketServer } from "./run-websocket-server";

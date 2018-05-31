@@ -2,9 +2,8 @@ import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, ReportingState, PayoutRow, ProceedTradesRow } from "../../types";
-import { getMarketsWithReportingState, groupByAndSum } from "./database";
-import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER } from "../../constants";
+import { getMarketsWithReportingState} from "./database";
+import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import Augur from "augur.js";
 
 interface WinningPayoutRow extends PayoutRow<BigNumber> {

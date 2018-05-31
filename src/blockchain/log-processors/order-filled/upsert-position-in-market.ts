@@ -6,7 +6,6 @@ import { Address, Int256, PositionsRow, AsyncCallback, ErrorCallback } from "../
 import { calculateProfitLossInOutcome } from "./calculate-profit-loss-in-outcome";
 import { insertPositionInMarket } from "./insert-position-in-market";
 import { updatePositionInMarket } from "./update-position-in-market";
-import { fixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 
 export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address, marketId: Address, minPrice: BigNumber, tickSize: BigNumber, positionInMarket: Array<string>, callback: ErrorCallback): void {
   db.select("outcome").from("positions").where({ account, marketId }).asCallback((err: Error|null, positionsRows?: Array<PositionsRow<BigNumber>>): void => {

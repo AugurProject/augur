@@ -7,7 +7,10 @@ const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSol
 
 describe("blockchain/log-processors/completesets", () => {
   const test = (t) => {
-    const getState = (db, params, callback) => db("positions").where({ account: params.log.account, marketId: params.log.market }).asCallback(callback);
+    const getState = (db, params, callback) => db("positions").where({
+      account: params.log.account,
+      marketId: params.log.market,
+    }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.isNull(err);
@@ -17,6 +20,7 @@ describe("blockchain/log-processors/completesets", () => {
             getState(trx, t.params, (err, positions) => {
               t.assertions.onUpdated(err, positions);
               processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, positions) => {
                   t.assertions.onUpdated(err, positions);
                   db.destroy();
@@ -56,13 +60,16 @@ describe("blockchain/log-processors/completesets", () => {
           },
         },
         trading: {
-          calculateProfitLoss: (p) => ({
-            position: "2",
-            realized: "0",
-            unrealized: "0",
-            meanOpenPrice: "0.75",
-            queued: "0",
-          }),
+          calculateProfitLoss: (p) => {
+            assert.isObject(p);
+            return {
+              position: "2",
+              realized: "0",
+              unrealized: "0",
+              meanOpenPrice: "0.75",
+              queued: "0",
+            };
+          },
           getPositionInMarket: (p, callback) => {
             assert.strictEqual(p.market, "0x0000000000000000000000000000000000000002");
             assert.strictEqual(p.address, "0x0000000000000000000000000000000000000b0b");
