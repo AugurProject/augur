@@ -6,4 +6,5 @@ else
     sudo apt install -y libusb-dev
 fi
 
+npm install
 npm run make
