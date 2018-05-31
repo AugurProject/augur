@@ -127,13 +127,16 @@ describe("blockchain/log-processors/tokens-transferred", () => {
           },
         },
         trading: {
-          calculateProfitLoss: (p) => ({
-            position: "2",
-            realized: "0",
-            unrealized: "0",
-            meanOpenPrice: "0.75",
-            queued: "0",
-          }),
+          calculateProfitLoss: (p) => {
+            assert.isObject(p);
+            return {
+              position: "2",
+              realized: "0",
+              unrealized: "0",
+              meanOpenPrice: "0.75",
+              queued: "0",
+            };
+          },
           getPositionInMarket: (p, callback) => {
             assert.strictEqual(p.market, "0x0000000000000000000000000000000000000002");
             assert.oneOf(p.address, ["FROM_ADDRESS", "TO_ADDRESS"]);
@@ -167,6 +170,18 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       },
       onInitialBalances: (err, balances) => {
         assert.isNull(err);
+        assert.deepEqual(balances, [
+          {
+            owner: "FROM_ADDRESS",
+            token: "TOKEN_ADDRESS",
+            balance: "8999",
+          },
+          {
+            owner: "TO_ADDRESS",
+            token: "TOKEN_ADDRESS",
+            balance: "2",
+          }
+        ])
       },
       onRemovedBalances: (err, balances) => {
         assert.isNull(err);

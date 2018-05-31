@@ -50,6 +50,7 @@ export function processMarketMigratedLog(db: Knex, augur: Augur, log: FormattedE
 
 export function processMarketMigratedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   rollbackMarketState(db, log.market, ReportingState.AWAITING_NEXT_WINDOW, (err) => {
+    if (err) return callback(err);
     db.update({
       universe: log.originalUniverse,
       needsMigration: db.raw("needsMigration + 1"),

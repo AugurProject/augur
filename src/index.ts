@@ -42,7 +42,7 @@ augur.events.nodes.ethereum.on("disconnect", (event) => {
   throw new Error("Disconnected from Ethereum node");
 });
 
-const { app, servers } = runServer(db, augur);
+const { servers } = runServer(db, augur);
 
 checkAugurDbSetup(db, (err?: Error|null): void => {
   if (err) {

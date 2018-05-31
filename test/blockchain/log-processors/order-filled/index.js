@@ -79,13 +79,16 @@ describe("blockchain/log-processors/order-filled", () => {
           },
         },
         trading: {
-          calculateProfitLoss: (p) => ({
-            position: "2",
-            realized: "0",
-            unrealized: "0",
-            meanOpenPrice: "0.75",
-            queued: "0",
-          }),
+          calculateProfitLoss: (p) => {
+            assert.isObject(p);
+            return {
+              position: "2",
+              realized: "0",
+              unrealized: "0",
+              meanOpenPrice: "0.75",
+              queued: "0",
+            };
+          },
           getPositionInMarket: (p, callback) => {
             assert.strictEqual(p.market, "0x0000000000000000000000000000000000000001");
             assert.oneOf(p.address, ["0x0000000000000000000000000000000000000b0b", "FILLER_ADDRESS"]);

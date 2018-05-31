@@ -16,6 +16,7 @@ describe("blockchain/log-processors/token/approval", () => {
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
               processApprovalLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                assert.isNull(err);
                 getState(trx, t.params, (err, records) => {
                   t.assertions.onRemoved(err, records);
                   db.destroy();

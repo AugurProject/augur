@@ -199,6 +199,7 @@ function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumbe
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
         updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, (err: Error|null) => {
+          if (err) return callback(err);
           augurEmitter.emit("MarketState", {
             eventName: "MarketState",
             universe: marketIdRow.universe,
