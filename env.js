@@ -1,31 +1,29 @@
 #!/usr/bin/env node
 
-var events = require("./src/events");
-var getBalances = require("./scripts/dp/lib/get-balances");
+global.BigNumber = require("bignumber.js");
 global.chalk = require("chalk");
 global.speedomatic = require("speedomatic");
 global.Augur = require("./src");
+global.getBalances = require("./scripts/dp/lib/get-balances");
+var events = require("./src/events");
 
 global.augur = new Augur();
 
 augur.rpc.setDebugOptions({ connect: true, broadcast: false });
 
-const nodes = {
+const ethereumNodes = {
   rinkeby: {
     http: "https://rinkeby.ethereum.nodes.augur.net",
     ws: "wss://websocket-rinkeby.ethereum.nodes.augur.net",
   },
   local: {
-    http: "http://127.0.0.1:8545",
-    ws: "ws://127.0.0.1:8546",
+    http: process.env.ETHEREUM_HTTP || "http://127.0.0.1:8545",
+    ws: process.env.ETHEREUM_WS || "ws://127.0.0.1:8546",
     ipc: process.env.ETHEREUM_IPC,
   }
 };
 
-const ethereumNode = nodes.local;
-const augurNode = "ws://127.0.0.1:9001";
-
-augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
+augur.connect({ ethereumNode: ethereumNodes.local, augurNode: "ws://127.0.0.1:9001" }, function (err, connectionInfo) {
   if (err) return console.error(err);
   augur.events.startBlockListeners({
     onAdded: function (block) {
@@ -38,10 +36,10 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   global.networkId = augur.rpc.getNetworkID();
   global.universe = augur.contracts.addresses[networkId].Universe;
   console.log(chalk.cyan("Network"), chalk.green(networkId));
-  const account = augur.rpc.getCoinbase();
-  if (account != null) {
-    console.log(chalk.cyan("Account"), chalk.green(account));
-    getBalances(augur, universe, account, function (err, balances) {
+  const coinbaseAddress = augur.rpc.getCoinbase();
+  if (coinbaseAddress != null) {
+    console.log(chalk.cyan("Account"), chalk.green(coinbaseAddress));
+    getBalances(augur, universe, coinbaseAddress, function (err, balances) {
       if (err) return console.error("getBalances failed:", err);
       console.log(chalk.cyan("Balances:"));
       console.log("Ether:      " + chalk.green(balances.ether));
@@ -50,15 +48,17 @@ augur.connect({ ethereumNode, augurNode }, (err, connectionInfo) => {
   }
 });
 
-events.nodes.augur.on("disconnect", function() {
+events.nodes.augur.on("disconnect", function (err) {
   console.log("Augur Node Disconnected");
+  if (err) console.error(err);
 });
-events.nodes.augur.on("reconnect", function() {
-  console.log("Augur Node Resconnected");
+events.nodes.augur.on("reconnect", function () {
+  console.log("Augur Node Reconnected");
 });
-events.nodes.ethereum.on("disconnect", function() {
+events.nodes.ethereum.on("disconnect", function (err) {
   console.log("Ethereum Node Disconnected");
+  if (err) console.error(err);
 });
-events.nodes.ethereum.on("reconnect", function() {
+events.nodes.ethereum.on("reconnect", function () {
   console.log("Ethereum Node Reconnected");
 });

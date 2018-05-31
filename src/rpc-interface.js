@@ -5,6 +5,7 @@ var createRpcInterface = function (ethrpc) {
     constants: ethrpc.constants,
     errors: ethrpc.errors,
     eth: ethrpc.eth,
+    net: ethrpc.net,
     clear: ethrpc.clear,
     startBlockStream: ethrpc.startBlockStream,
     getBlockStream: ethrpc.getBlockStream,

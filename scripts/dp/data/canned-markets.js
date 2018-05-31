@@ -216,7 +216,7 @@ module.exports = [{
     resolutionSource: "http://omnichest.info/lookupadd.aspx?address=3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL",
     tags: ["Tether", "trading"],
     longDescription: "The curious tale of Tethers: https://hackernoon.com/the-curious-tale-of-tethers-6b0031eead87",
-    _scalarDenomination: "Tether",
+    _scalarDenomination: "million Tethers",
   },
   orderBook: {
     buy: {

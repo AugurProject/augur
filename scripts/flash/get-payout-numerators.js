@@ -38,7 +38,7 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
     payoutNumerators[selectedOutcome] = numTicks;
   }
 
-  console.log("payout numerators", payoutNumerators);
+  console.log("payout numerators", JSON.stringify(payoutNumerators));
   return payoutNumerators;
 }
 
