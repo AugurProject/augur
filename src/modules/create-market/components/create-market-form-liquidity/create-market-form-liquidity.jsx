@@ -420,7 +420,7 @@ export default class CreateMarketLiquidity extends Component {
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
           <label htmlFor="cm__input--settlement" className={Styles.CreateMarketLiquidity__settlementLabel}>
-            <span>Settlement Fee</span>
+            <span>Market Creator Fee</span>
           </label>
           <div>
             <input
