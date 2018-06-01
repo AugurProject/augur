@@ -427,8 +427,8 @@ export default class CreateMarketLiquidity extends Component {
               id="cm__input--settlement"
               type="number"
               value={newMarket.settlementFee}
-              placeholder="0%"
-              onChange={e => validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 2)}
+              placeholder="0"
+              onChange={e => validateNumber('settlementFee', e.target.value, 'market creator fee', 0, 100, 2)}
               onKeyPress={e => keyPressed(e)}
             />
             <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
