@@ -133,7 +133,7 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>Market Creator Fee { newMarket.settlementFee ? '(' + newMarket.settlementFee + '%)' : ''} + Reporting Fee (1%)</span>
+                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + newMarket.settlementFee + '%)' : ''} + Reporting Fee (1%)</span>
               </li>
               <li>
                 <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>

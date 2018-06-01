@@ -10,6 +10,9 @@ import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
+import { Hint } from 'modules/common/components/icons'
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -21,6 +24,8 @@ export default class MarketHeader extends Component {
     marketType: PropTypes.string,
     resolutionSource: PropTypes.any,
     selectedOutcome: PropTypes.any,
+    reportingFeeRate: PropTypes.string.isRequired,
+    marketCreatorFeeRate: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -41,6 +46,8 @@ export default class MarketHeader extends Component {
       marketType,
       resolutionSource,
       selectedOutcome,
+      reportingFeeRate,
+      marketCreatorFeeRate,
     } = this.props
     const s = this.state
     const detailsPresent = details != null && details.length > 0
@@ -80,7 +87,31 @@ export default class MarketHeader extends Component {
                     },
                   )}
                 >
-                  <span>{property}</span>
+                  <span className={Styles[`MarketHeader__property-name`]}>
+                    <div>
+                      {property}
+                    </div>
+                    {property === 'fee' && 
+                      <div>
+                        <label 
+                          className={classNames(TooltipStyles.TooltipHint, Styles['MarketHeader__property-tooltip'])} 
+                          data-tip 
+                          data-for="tooltip--market-fees"
+                        >
+                          { Hint }
+                        </label>
+                        <ReactTooltip
+                          id="tooltip--market-fees"
+                          className={TooltipStyles.Tooltip}
+                          effect="solid"
+                          place="bottom"
+                          type="light"
+                        >
+                          <p>Market Creator Fee ({marketCreatorFeeRate}%) + Reporting Fee ({reportingFeeRate}%)</p>
+                        </ReactTooltip>
+                      </div>
+                    }
+                  </span>
                   <span>{coreProperties[property]}</span>
                 </div>
               ))

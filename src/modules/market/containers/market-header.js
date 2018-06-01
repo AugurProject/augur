@@ -16,6 +16,8 @@ const mapStateToProps = (state, ownProps) => {
     details: market.details || '',
     marketType: market.marketType,
     resolutionSource: market.resolutionSource,
+    reportingFeeRate: getValue(market, 'reportingFeeRate') * 100,
+    marketCreatorFeeRate: getValue(market, 'marketCreatorFeeRate') * 100,
     coreProperties: {
       volume: getValue(market, 'volume.full'),
       fee: getValue(market, 'settlementFeePercent.full'),
