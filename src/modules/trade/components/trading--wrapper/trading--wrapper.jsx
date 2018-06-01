@@ -40,7 +40,8 @@ class MarketTradingWrapper extends Component {
       orderType: LIMIT,
       orderPrice: '',
       orderQuantity: '',
-      orderEstimate: '',
+      orderEthEstimate: '',
+      orderShareEstimate: '',
       marketOrderTotal: '',
       marketQuantity: '',
       selectedNav: BUY,
@@ -52,7 +53,8 @@ class MarketTradingWrapper extends Component {
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
     this.clearOrderForm = this.clearOrderForm.bind(this)
-    this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
+    this.updateOrderEthEstimate = this.updateOrderEthEstimate.bind(this)
+    this.updateOrderShareEstimate = this.updateOrderShareEstimate.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,10 +65,24 @@ class MarketTradingWrapper extends Component {
       return this.clearOrderForm()
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
-    if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
-      const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
+
+    if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEthEstimate) {
+      const orderEthEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({
-        orderEstimate,
+        orderEthEstimate,
+      })
+    }
+    let orderShareEstimate = '0'
+    if (nextProps.selectedOutcome.trade.numShares && nextProps.selectedOutcome.trade.limitPrice) {
+      const numShares = createBigNumber(nextProps.selectedOutcome.trade.numShares)
+      const limitPrice = createBigNumber(nextProps.selectedOutcome.trade.limitPrice)
+      if (nextProps.selectedOutcome.trade.totalCost.formatted === '0') {
+        orderShareEstimate = numShares.abs().toString()
+      } else {
+        orderShareEstimate = (numShares.mul(limitPrice)).minus((nextTotalCost).div(limitPrice)).toString()
+      }
+      this.setState({
+        orderShareEstimate,
       })
     }
 
@@ -99,7 +115,8 @@ class MarketTradingWrapper extends Component {
     this.setState({
       orderPrice: '',
       orderQuantity: '',
-      orderEstimate: '',
+      orderEthEstimate: '',
+      orderShareEstimate: '',
       marketOrderTotal: '',
       marketQuantity: '',
       currentPage: 0,
@@ -107,9 +124,15 @@ class MarketTradingWrapper extends Component {
     })
   }
 
-  updateOrderEstimate(orderEstimate) {
+  updateOrderEthEstimate(orderEthEstimate) {
     this.setState({
-      orderEstimate,
+      orderEthEstimate,
+    })
+  }
+
+  updateOrderShareEstimate(orderShareEstimate) {
+    this.setState({
+      orderShareEstimate,
     })
   }
 
@@ -168,7 +191,8 @@ class MarketTradingWrapper extends Component {
                 orderType={s.orderType}
                 orderPrice={s.orderPrice}
                 orderQuantity={s.orderQuantity}
-                orderEstimate={s.orderEstimate}
+                orderEthEstimate={s.orderEthEstimate}
+                orderShareEstimate={s.orderShareEstimate}
                 marketOrderTotal={s.marketOrderTotal}
                 marketQuantity={s.marketQuantity}
                 doNotCreateOrders={s.doNotCreateOrders}
@@ -187,7 +211,8 @@ class MarketTradingWrapper extends Component {
             orderType={s.orderType}
             orderPrice={s.orderPrice}
             orderQuantity={s.orderQuantity}
-            orderEstimate={s.orderEstimate}
+            orderEthEstimate={s.orderEthEstimate}
+            orderShareEstimate={s.orderShareEstimate}
             marketOrderTotal={s.marketOrderTotal}
             marketQuantity={s.marketQuantity}
             doNotCreateOrders={s.doNotCreateOrders}

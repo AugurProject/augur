@@ -19,8 +19,8 @@ const MarketTradingConfirm = (p) => {
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
   const potentialLossPercent = getValue(p, 'trade.potentialLossPercent')
   const totalCost = getValue(p, 'trade.totalCost')
+  const orderShareEstimate = getValue(p, 'orderShareEstimate')
   const { doNotCreateOrders } = p
-
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
@@ -61,7 +61,10 @@ const MarketTradingConfirm = (p) => {
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Est. Cost</span>
+          </li>
+          <li>
             <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> <span>ETH</span></span>
+            <span><ValueDenomination formatted={orderShareEstimate} /> <span>Shares</span></span>
           </li>
         </ul>
       }
