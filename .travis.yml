@@ -7,9 +7,6 @@ branches:
   - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
 node_js:
 - '8'
-os:
-- linux
-- osx
 git:
   depth: 5
 matrix:
