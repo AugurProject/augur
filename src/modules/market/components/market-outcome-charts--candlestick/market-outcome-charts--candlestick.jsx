@@ -572,7 +572,7 @@ function attachHoverClickHandlers({
   priceTimeSeries,
   updateHoveredPeriod,
   updateHoveredPrice,
-  updateSeletedOrderProperties,
+  updateSelectedOrderProperties,
   yScale,
   xScale,
 }) {
@@ -590,7 +590,7 @@ function attachHoverClickHandlers({
         orderPrice > marketMin &&
         orderPrice < marketMax
       ) {
-        updateSeletedOrderProperties({
+        updateSelectedOrderProperties({
           selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
           orderPrice,
         })
