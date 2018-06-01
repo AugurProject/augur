@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
 import MarketHeader from 'modules/market/components/market-header/market-header'
 
@@ -19,6 +20,8 @@ const mapStateToProps = (state, ownProps) => {
       volume: getValue(market, 'volume.full'),
       fee: getValue(market, 'settlementFeePercent.full'),
       expires: getValue(market, 'endTime.formattedLocal'),
+      min: market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null,
+      max: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
     },
   }
 }

@@ -529,7 +529,7 @@ export default class CreateMarketLiquidity extends Component {
             <CreateMarketFormLiquidityCharts
               excludeCandlestick
               selectedOutcome={s.selectedOutcome}
-              updateSeletedOrderProperties={() => {}}
+              updateSelectedOrderProperties={() => {}}
             />
           </div>
         </li>

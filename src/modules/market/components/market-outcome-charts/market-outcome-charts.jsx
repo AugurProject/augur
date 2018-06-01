@@ -38,7 +38,7 @@ export default class MarketOutcomeCharts extends Component {
     priceTimeSeries: PropTypes.array,
     selectedOutcome: PropTypes.object.isRequired,
     updatePrecision: PropTypes.func,
-    updateSeletedOrderProperties: PropTypes.func.isRequired,
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -228,7 +228,7 @@ export default class MarketOutcomeCharts extends Component {
       orderBook,
       orderBookKeys,
       priceTimeSeries,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
       excludeCandlestick,
       isMobile,
       fixedPrecision,
@@ -269,7 +269,7 @@ export default class MarketOutcomeCharts extends Component {
                 updateHoveredPeriod={this.updateHoveredPeriod}
                 updateSelectedPeriod={this.updateSelectedPeriod}
                 updateSelectedRange={this.updateSelectedRange}
-                updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateSelectedOrderProperties={updateSelectedOrderProperties}
               />
             </div>
           }
@@ -294,7 +294,7 @@ export default class MarketOutcomeCharts extends Component {
                 hoveredDepth={s.hoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredDepth={this.updateHoveredDepth}
-                updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateSelectedOrderProperties={updateSelectedOrderProperties}
                 updateChartHeaderHeight={this.updateChartHeaderHeight}
               />
             </div>
@@ -309,7 +309,7 @@ export default class MarketOutcomeCharts extends Component {
                 hoveredPrice={s.hoveredPrice}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updatePrecision={updatePrecision}
-                updateSeletedOrderProperties={updateSeletedOrderProperties}
+                updateSelectedOrderProperties={updateSelectedOrderProperties}
               />
             </div>
           </div>
