@@ -5,8 +5,6 @@ branches:
   only:
   - master
   - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
-node_js:
-- '8'
 git:
   depth: 5
 matrix:
@@ -14,7 +12,9 @@ matrix:
   - os: linux
     dist: trusty
     sudo: required
+    node_js: '8'
   - os: osx
+    node_js: '8'
 before_install:
   - scripts/preinstall.sh
 script:
