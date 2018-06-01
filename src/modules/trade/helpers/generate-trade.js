@@ -71,7 +71,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
     totalFee: formatEther(totalFee, { blankZero: true }),
     totalFeePercent: formatEther(feePercent, { blankZero: true }),
     totalCost: formatEther(totalCost.abs().toFixed(), { blankZero: false }),
-    shareCost,
+    shareCost: formatEther(shareCost.abs().toFixed(), { blankZero: false }), // These are actually shares, but they can be formatted like ETH
 
     tradeTypeOptions: [
       { label: TRANSACTIONS_TYPES.BUY, value: TRANSACTIONS_TYPES.BUY },

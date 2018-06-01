@@ -65,7 +65,7 @@ class MarketTradingWrapper extends Component {
       return this.clearOrderForm()
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
-    const nextShareCost = nextProps.selectedOutcome.trade.shareCost
+    const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue)
 
     if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEthEstimate) {
       const orderEthEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '0 ETH' : `${nextTotalCost.abs().toString()} ETH`
@@ -75,7 +75,8 @@ class MarketTradingWrapper extends Component {
     }
 
     if (nextShareCost + ' ETH' !== this.state.orderShareEstimate) {
-      const orderShareEstimate = nextProps.selectedOutcome.trade.shareCost.toString() + ' Shares'
+      // const orderShareEstimate = nextProps.selectedOutcome.trade.shareCost.toString() + ' Shares'
+      const orderShareEstimate = (isNaN(nextShareCost) || nextShareCost.abs().eq(0)) ? '0 Shares' : `${nextShareCost.abs().toString()} Shares`
       this.setState({
         orderShareEstimate,
       })
