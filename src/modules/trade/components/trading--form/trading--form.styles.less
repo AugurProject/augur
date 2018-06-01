@@ -62,11 +62,12 @@
 
 .TradingForm__form-estimated-cost {
   border: solid @color-lightgray;
-  border-width: 1px 0px;
+  border-width: 1px 0;
+  display: flex;
   padding: 1.5rem 2rem;
 
   > li {
-    align-items: center;
+    align-items: stretch;
     display: flex;
 
     &:not(:first-child) {
@@ -91,15 +92,9 @@
     }
   }
 
-  display: flex;
-
-  > li {
-    align-items: stretch;
-  }
-
   > li:nth-child(2) {
     display: block;
-    margin-top: 0rem;
+    margin-top: 0;
   }
 
   > li:nth-child(2) > span:nth-child(1) {
