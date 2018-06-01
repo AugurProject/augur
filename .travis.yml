@@ -18,7 +18,7 @@ matrix:
     dist: trusty
     sudo: required
   - os: osx
-pre_install:
+before_install:
   - scripts/preinstall.sh
 script:
 - npm run make
