@@ -39,6 +39,10 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
               assert.deepEqual(p, { tx: { to: "UNIVERSE_ADDRESS", send: false } });
               callback(null, speedomatic.fix("3", "string"));
             },
+            getOrCacheReportingFeeDivisor: function (p, callback) {
+              assert.deepEqual(p, { tx: { to: "UNIVERSE_ADDRESS", send: false } });
+              callback(null, speedomatic.fix("1", "string"));
+            },
             getOrCacheMarketCreationCost: function (/*p*/) {
               assert.fail();
             },
@@ -50,6 +54,7 @@ describe("create-market/get-market-creation-cost-breakdown", function () {
       assert.isNull(err);
       assert.deepEqual(marketCreationCostBreakdown, {
         designatedReportNoShowReputationBond: "1",
+        reportingFeeDivisor: "1",
         targetReporterGasCosts: "1.2",
         validityBond: "3",
       });
