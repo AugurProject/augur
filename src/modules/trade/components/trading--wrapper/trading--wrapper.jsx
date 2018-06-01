@@ -79,7 +79,7 @@ class MarketTradingWrapper extends Component {
       if (nextProps.selectedOutcome.trade.totalCost.formatted === '0') {
         orderShareEstimate = numShares.abs().toString()
       } else {
-        orderShareEstimate = (numShares.mul(limitPrice)).minus((nextTotalCost).div(limitPrice)).toString()
+        orderShareEstimate = (numShares.times(limitPrice)).minus((nextTotalCost).div(limitPrice)).toString()
       }
       this.setState({
         orderShareEstimate,
