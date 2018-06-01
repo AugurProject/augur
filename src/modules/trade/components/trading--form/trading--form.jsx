@@ -115,7 +115,7 @@ class MarketTradingForm extends Component {
   testQuantity(value, errors, isOrderValid) {
     let errorCount = 0
     let passedTest = !!isOrderValid
-    if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
+    if (!BigNumber.isBigNumber(value)) return { isOrderValid: false, errors, errorCount }
     if (value && value.lte(0)) {
       errorCount += 1
       passedTest = false
@@ -133,7 +133,7 @@ class MarketTradingForm extends Component {
     const tickSize = createBigNumber(market.tickSize)
     let errorCount = 0
     let passedTest = !!isOrderValid
-    if (isNaN(value)) return { isOrderValid: false, errors, errorCount }
+    if (!BigNumber.isBigNumber(value)) return { isOrderValid: false, errors, errorCount }
     if (value && (value.lte(minPrice) || value.gte(maxPrice))) {
       errorCount += 1
       passedTest = false

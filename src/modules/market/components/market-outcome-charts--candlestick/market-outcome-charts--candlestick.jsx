@@ -34,7 +34,7 @@ class MarketOutcomeCandlestick extends React.Component {
     updateHoveredPrice: PropTypes.func.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
-    updateSeletedOrderProperties: PropTypes.func.isRequired,
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -153,7 +153,7 @@ class MarketOutcomeCandlestick extends React.Component {
       updateHoveredPrice,
       updateSelectedPeriod,
       updateSelectedRange,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
     } = this.props
 
 
@@ -275,7 +275,7 @@ class MarketOutcomeCandlestick extends React.Component {
         priceTimeSeries,
         updateHoveredPeriod,
         updateHoveredPrice,
-        updateSeletedOrderProperties,
+        updateSelectedOrderProperties,
         yScale,
         xScale,
       })
