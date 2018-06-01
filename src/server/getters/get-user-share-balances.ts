@@ -29,7 +29,8 @@ export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Ad
     .select("tokens.marketId", "tokens.outcome", "balances.balance", "markets.minPrice", "markets.maxPrice", "markets.numTicks")
     .join("markets", function() {
       this
-        .on("markets.marketId", "tokens.marketId");
+        .on("markets.marketId", "tokens.marketId")
+        .andOn("tokens.symbol", db.raw("?", "shares"));
     })
     .leftJoin("balances", function () {
       this
@@ -43,7 +44,6 @@ export function getUserShareBalances(db: Knex, augur: Augur, marketIds: Array<Ad
   query.asCallback(( err: Error|null, balances: Array<ShareTokenBalances>): void => {
     if (err != null) return callback(err);
 
-    console.log(balances);
     const balancesByMarket = _.chain(balances)
       .groupBy((row) => row.marketId)
       .mapValues((groupedBalances: Array<ShareTokenBalances>) => {
