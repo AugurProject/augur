@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
       },
       fee: {
         value: getValue(market, 'settlementFeePercent.full'),
-        tooltip: 'Market Creator Fee (' + getValue(market, 'reportingFeeRate') * 100 + '%) + Reporting Fee (' + getValue(market, 'marketCreatorFeeRate') * 100 + '%)'
+        tooltip: 'Market Creator Fee (' + (getValue(market, 'reportingFeeRate') * 100) + '%) + Reporting Fee (' + (getValue(market, 'marketCreatorFeeRate') * 100) + '%)',
       },
       expires: {
         value: getValue(market, 'endTime.formattedLocal'),
@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
       },
       max: {
         value: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
-      }
+      },
     },
   }
 }

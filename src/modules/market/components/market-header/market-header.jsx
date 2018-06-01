@@ -43,8 +43,6 @@ export default class MarketHeader extends Component {
       marketType,
       resolutionSource,
       selectedOutcome,
-      reportingFeeRate,
-      marketCreatorFeeRate,
     } = this.props
     const s = this.state
     const detailsPresent = details != null && details.length > 0
