@@ -10,7 +10,7 @@ node_js:
 addons:
   apt:
     packages:
-    - libusb-dev
+    - libusb-1.0-0-dev
 git:
   depth: 5
 matrix:
