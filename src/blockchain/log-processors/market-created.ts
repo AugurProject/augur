@@ -107,6 +107,9 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             (next: AsyncCallback): void => {
               db.batchInsert("tokens", shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({ contractAddress, outcome }, tokensDataToInsert)), numOutcomes).asCallback(next);
             },
+            (next: AsyncCallback): void => {
+              db.batchInsert("token_supply", shareTokens.map((contractAddress: Address, outcome: number): Partial<TokensRow> => Object.assign({ token: contractAddress, supply: 0 })), numOutcomes).asCallback(next);
+            },
           ], (err: Error|null): void => {
             if (err) return callback(err);
             augurEmitter.emit("MarketCreated", Object.assign(
