@@ -9,7 +9,7 @@ const { ACCOUNT_TYPES } = augur.rpc.constants
 // Use unlocked local account or MetaMask account
 export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
   if (unlockedAddress == null) return callback('no account address')
-  if (isGlobalWeb3()) {
+  if (isGlobalWeb3() || isMetaMask()) {
     dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK))
     return callback(null)
   }
