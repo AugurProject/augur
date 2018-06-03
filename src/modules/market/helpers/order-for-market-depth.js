@@ -1,6 +1,7 @@
 import memoize from 'memoizee'
 
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { createBigNumber } from 'src/utils/create-big-number'
 
 // The last entry in the order array is a boolean denoting whether the order is selectable or not.
 const orderForMarketDepth = (orderBook) => {
@@ -23,19 +24,8 @@ const orderForMarketDepth = (orderBook) => {
   const minAsksDepthOrder = asks.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), asks[0])
   const minBidDepthOrder = bids.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), bids[0])
 
-  // depth is the same.
-  switch (true) {
-    // need to add a starting bid order
-    case minAsksDepthOrder[0].lt(minBidDepthOrder[0]):
-      bids.unshift([minAsksDepthOrder[0], minBidDepthOrder[1], minBidDepthOrder[2], false])
-      break
-    // need to add a starting ask order
-    case minAsksDepthOrder[0].gt(minBidDepthOrder[0]):
-      asks.unshift([minBidDepthOrder[0], minAsksDepthOrder[1], minAsksDepthOrder[2], false])
-      break
-    default:
-      // do nothing
-  }
+  asks.unshift([createBigNumber(0), minAsksDepthOrder[1], minAsksDepthOrder[2], false])
+  bids.unshift([createBigNumber(0), minBidDepthOrder[1], minBidDepthOrder[2], false])
 
   return {
     [BIDS]: bids,
