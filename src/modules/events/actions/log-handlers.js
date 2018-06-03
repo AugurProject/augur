@@ -40,6 +40,16 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
   }
 }
 
+export const handleMarketMigratedLog = log => (dispatch, getState) => {
+  const universeId = getState().universe.id
+  if (log.originalUniverse === universeId) {
+    dispatch(removeMarket(log.market))
+  } else {
+    dispatch(loadMarketsInfo([log.market]))
+  }
+  dispatch(loadCategories())
+}
+
 export const handleTokensTransferredLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.from === address || log.to === address
