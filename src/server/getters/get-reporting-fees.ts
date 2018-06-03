@@ -218,8 +218,10 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .distinct("initial_reports.initialReporter")
     .select(["initial_reports.disavowed", "initial_reports.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration"])
     .join("markets", "initial_reports.marketId", "markets.marketId")
+    .join("fee_windows", "markets.feeWindow", "fee_windows.feeWindow")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR initial_reports.disavowed IN (?, ?) OR markets.forking)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
+    .whereRaw("(markets.forking OR market_state.reportingState IN (?, ?, ?) OR (initial_reports.disavowed != 0 OR markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? ) )",
+      [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION])
     .where("markets.universe", universe)
     .where("initial_reports.reporter", reporter)
     .where("initial_reports.redeemed", 0);
@@ -228,8 +230,10 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .select(["crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
+    .join("fee_windows", "markets.feeWindow", "fee_windows.feeWindow")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
-    .whereRaw("(market_state.reportingState IN (?, ?, ?) OR crowdsourcers.disavowed IN (?, ?) OR markets.needsDisavowal or markets.forking)", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, 1, 2])
+    .whereRaw("(markets.forking or (market_state.reportingState IN (?, ?, ?)) OR (crowdsourcers.disavowed != 0 OR markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? ) )",
+      [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION])
     .andWhere("markets.universe", universe)
     .andWhere("balances.owner", reporter)
     .andWhereNot("balances.balance", "0");
