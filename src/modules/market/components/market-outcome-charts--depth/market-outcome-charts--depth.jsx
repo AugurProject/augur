@@ -589,7 +589,7 @@ function drawLines(options) {
 
   // Depth Line
   const depthLine = d3.line()
-    .curve(d3.curveStepAfter)
+    .curve(d3.curveStepBefore)
     .x(d => drawParams.xScale(d[0]))
     .y(d => drawParams.yScale(d[1]))
 
@@ -601,7 +601,7 @@ function drawLines(options) {
   })
 
   const area = d3.area()
-    .curve(d3.curveStepAfter)
+    .curve(d3.curveStepBefore)
     .x0(d => (isMobile ? drawParams.xScale(d[0]) : 0))
     .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[0])))
     .y(d => drawParams.yScale(d[1]))
