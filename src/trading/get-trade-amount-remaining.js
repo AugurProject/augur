@@ -1,7 +1,6 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var calculateTotalFill = require("./calculate-total-fill");
 var eventsAbi = require("../contracts").abi.events;
 var ethrpc = require("../rpc-interface");
 var parseLogMessage = require("../events/parse-message/parse-log-message");
@@ -11,7 +10,6 @@ var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amo
  * @param {Object} p Parameters object.
  * @param {string} p.transactionHash Transaction hash to look up a receipt for.
  * @param {BigNumber} p.startingOnChainAmount Amount remaining in the trade prior to this transaction.
- * @param {BigNumber} p.onChainFillPrice On-chain fill price.
  * @param {BigNumber=} p.tickSize Tick size (for debug logging only).
  * @return {BigNumber} Number of shares remaining.
  */
@@ -30,12 +28,9 @@ function getTradeAmountRemaining(p, callback) {
     for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i].topics[0] === orderFilledEventSignature) {
         var orderFilledLog = parseLogMessage("Augur", "OrderFilled", logs[i], eventsAbi.Augur.OrderFilled.inputs);
-        console.log("OrderFilled log:", JSON.stringify(logs[i], null, 2));
-        console.log("parsed OrderFilled log:", JSON.stringify(orderFilledLog, null, 2));
-        console.log("onChainFillPrice:", p.onChainFillPrice.toFixed());
-        var totalFill = calculateTotalFill(orderFilledLog.numCreatorShares, orderFilledLog.numCreatorTokens, p.onChainFillPrice);
-        tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(totalFill);
-        console.log("single-log amount filled:", totalFill.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(totalFill, p.tickSize).toFixed(), "shares");
+        var onChainAmountFilled = new BigNumber(orderFilledLog.amountFilled, 10);
+        tradeOnChainAmountRemaining = tradeOnChainAmountRemaining.minus(onChainAmountFilled);
+        console.log("single-log amount filled:", onChainAmountFilled.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmountFilled, p.tickSize).toFixed(), "shares");
         console.log("amount remaining after this log:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, p.tickSize).toFixed(), "shares");
       } else if (logs[i].topics[0] === orderCreatedEventSignature) {
         tradeOnChainAmountRemaining = new BigNumber(0);
