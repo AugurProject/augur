@@ -28,6 +28,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const totalFee = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || '0', 10)
   const feePercent = (outcomeTradeInProgress && outcomeTradeInProgress.feePercent) || '0'
   const totalCost = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || '0', 10)
+  const shareCost = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.shareCost) || '0', 10)
   const marketType = (market && market.marketType) || null
   const minPrice = (market && ((typeof market.minPrice === 'number') || (BigNumber.isBigNumber(market.minPrice)))) ? market.minPrice : null
   const maxPrice = (market && ((typeof market.maxPrice === 'number') || (BigNumber.isBigNumber(market.maxPrice)))) ? market.maxPrice : null
@@ -70,6 +71,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
     totalFee: formatEther(totalFee, { blankZero: true }),
     totalFeePercent: formatEther(feePercent, { blankZero: true }),
     totalCost: formatEther(totalCost.abs().toFixed(), { blankZero: false }),
+    shareCost: formatEther(shareCost.abs().toFixed(), { blankZero: false }), // These are actually shares, but they can be formatted like ETH
 
     tradeTypeOptions: [
       { label: TRANSACTIONS_TYPES.BUY, value: TRANSACTIONS_TYPES.BUY },
