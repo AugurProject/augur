@@ -4,7 +4,8 @@ export const wrapLogHandler = (logHandler = defaultLogHandler) => (dispatch, get
   if (err) return console.error((log || {}).eventName, err, log)
   if (log) {
     // console.info(`${new Date().toISOString()} LOG ${log.removed ? 'REMOVED' : 'ADDED'} ${log.eventName} ${JSON.stringify(log)}`)
-    const isInCurrentUniverse = getState().universe.id === log.universe
+    const universeId = getState().universe.id
+    const isInCurrentUniverse = universeId === log.universe || universeId === log.originalUniverse
     if (isInCurrentUniverse) dispatch(logHandler(log))
   }
 }

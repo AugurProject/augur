@@ -40,6 +40,15 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
   }
 }
 
+export const handleMarketMigratedLog = log => (dispatch, getState) => {
+  if (log.removed) {
+    dispatch(loadMarketsInfo([log.market]))
+  } else {
+    dispatch(removeMarket(log.market))
+  }
+  dispatch(loadCategories())
+}
+
 export const handleTokensTransferredLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.from === address || log.to === address

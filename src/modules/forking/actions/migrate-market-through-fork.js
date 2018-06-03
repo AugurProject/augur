@@ -22,8 +22,6 @@ export const migrateMarketThroughFork = (marketId, estimateGas = false, callback
         const gasPrice = augur.rpc.getGasPrice()
         return callback(null, formatGasCostToEther(res, { decimalsRounded: 4 }, gasPrice))
       }
-      // if not a gas estimate, just return res and update markets.
-      dispatch(removeMarket(marketId))
       return callback(null, res)
     },
     onFailed: err => callback(err),
