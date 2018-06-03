@@ -284,7 +284,6 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     .join("market_state", "markets.marketStateId", "market_state.marketStateId")
     .join("fee_windows", "markets.feeWindow", "fee_windows.feeWindow")
     .where("markets.universe", universe)
-    .whereRaw("(fee_windows.state = ? OR reportingState = ?)", [FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION])
     .where(db.raw("(markets.forking or market_state.reportingState IN (?, ?) OR ( (initial_reports.disavowed or markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? )))",
       [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION]))
     .where("initial_reports.reporter", reporter)
@@ -374,7 +373,6 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
 function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
   const participantQuery = db.select([
     "participantAddress",
-    "fee_windows.state",
     "feeToken.feeWindow",
     "feeToken.token as feeToken",
     "reporterBalance",
