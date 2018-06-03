@@ -139,7 +139,7 @@ interface ParticipantEthFee {
 
 }
 
-interface ParticipationTokenEthFee  {
+interface ParticipationTokenEthFee {
   feeWindow: string;
   ethFees: BigNumber;
   participationTokens: BigNumber;
@@ -252,6 +252,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
 function getStakedRepResults(db: Knex, reporter: Address, universe: Address, callback: (err: Error|null, result?: { fees: RepStakeResults }) => void) {
   const crowdsourcerQuery = db.select([
     "fee_windows.feeWindow",
+    "fee_windows.state",
     "stakedRep.balance as amountStaked",
     "payouts.winning",
     "crowdsourcers.disavowed",
@@ -259,12 +260,13 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     "markets.forking",
     "markets.needsDisavowal",
     "markets.marketId",
-  ]).from("fee_windows");
-  crowdsourcerQuery.join("crowdsourcers", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
+  ]).from("crowdsourcers");
+  crowdsourcerQuery.join("fee_windows", "crowdsourcers.feeWindow", "fee_windows.feeWindow");
   crowdsourcerQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
   crowdsourcerQuery.join("markets", "markets.marketId", "crowdsourcers.marketId");
   crowdsourcerQuery.join("market_state", "markets.marketStateId", "market_state.marketStateId");
-  crowdsourcerQuery.where(db.raw("(markets.forking or crowdsourcers.disavowed or markets.needsDisavowal or market_state.reportingState IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED]));
+  crowdsourcerQuery.where(db.raw("(markets.forking or market_state.reportingState IN (?, ?) OR ( (crowdsourcers.disavowed or markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? )))",
+    [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION]));
   crowdsourcerQuery.leftJoin("balances AS stakedRep", function () {
     this
       .on("crowdsourcers.crowdsourcerId", db.raw("stakedRep.token"))
@@ -276,8 +278,11 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     .join("payouts", "initial_reports.payoutId", "payouts.payoutId")
     .join("markets", "markets.marketId", "initial_reports.marketId")
     .join("market_state", "markets.marketStateId", "market_state.marketStateId")
+    .join("fee_windows", "markets.feeWindow", "fee_windows.feeWindow")
     .where("markets.universe", universe)
-    .where(db.raw("(markets.forking or initial_reports.disavowed or market_state.reportingState IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED]))
+    .whereRaw("(fee_windows.state = ? OR reportingState = ?)", [FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION])
+    .where(db.raw("(markets.forking or market_state.reportingState IN (?, ?) OR ( (initial_reports.disavowed or markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? )))",
+      [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION]))
     .where("initial_reports.reporter", reporter)
     .whereNot("initial_reports.redeemed", 1);
 
@@ -365,6 +370,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
 function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, universe: Address, callback: (err: Error|null, result?: Array<ParticipantEthFee>) => void) {
   const participantQuery = db.select([
     "participantAddress",
+    "fee_windows.state",
     "feeToken.feeWindow",
     "feeToken.token as feeToken",
     "reporterBalance",
@@ -378,6 +384,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
     db.raw("IFNULL(cashParticipant.balance,0) as cashParticipant"),
     db.raw("IFNULL(participationTokenSupply.supply,0) as participationTokenSupply"),
     "disavowed"]).from("all_participants");
+  participantQuery.join("fee_windows", "all_participants.feeWindow", "fee_windows.feeWindow");
   participantQuery.leftJoin("balances_detail as feeToken", function () {
     this
       .on("feeToken.owner", db.raw("all_participants.participantAddress"))
@@ -398,7 +405,7 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.where("all_participants.reporter", reporter);
   participantQuery.whereNot("all_participants.participantSupply", "0");
   participantQuery.whereNot("all_participants.reporterBalance", "0");
-  participantQuery.whereRaw("(reportingState IN (?, ?) OR disavowed IN (?, ?))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, 1, 2]);
+  participantQuery.whereRaw("(reportingState IN (?, ?) OR ((disavowed != 0 or all_participants.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ?)))", [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION]);
   participantQuery.asCallback((err: Error|null, participantEthFeeRows: Array<ParticipantEthFeeRow>) => {
     if (err) return callback(err);
     const participantEthFeesOnWindow = _.map(participantEthFeeRows, (ethFeeRows): ParticipantEthFee => {
