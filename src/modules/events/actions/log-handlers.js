@@ -41,10 +41,11 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
 }
 
 export const handleMarketMigratedLog = log => (dispatch, getState) => {
-  if (log.removed) {
-    dispatch(loadMarketsInfo([log.market]))
-  } else {
+  const universeId = getState().universe.id
+  if (log.originalUniverse === universeId) {
     dispatch(removeMarket(log.market))
+  } else {
+    dispatch(loadMarketsInfo([log.market]))
   }
   dispatch(loadCategories())
 }
