@@ -54,7 +54,7 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
                         marketId: marketIdRow.marketId,
                         reportingState: ReportingState.AWAITING_FORK_MIGRATION,
                       });
-                      nextMarketId(null);
+                      db("payouts").where({ marketId: marketIdRow.marketId }).update("winning", db.raw("null")).asCallback(nextMarketId);
                     });
                   }, (err) => {
                     if (err) return callback(err);
