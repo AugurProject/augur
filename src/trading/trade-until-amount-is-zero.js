@@ -7,7 +7,6 @@ var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
 var calculateTradeGas = require("./calculate-trade-gas");
 var calculateTickSize = require("./calculate-tick-size");
-var calculateOnChainFillPrice = require("./calculate-on-chain-fill-price");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
 var convertOnChainAmountToDisplayAmount = require("../utils/convert-on-chain-amount-to-display-amount");
@@ -34,7 +33,7 @@ var constants = require("../constants");
  * @param {function} p.onFailed Called if any part of the trade fails.
  */
 function tradeUntilAmountIsZero(p) {
-  console.log("tradeUntilAmountIsZero:", JSON.stringify(immutableDelete(p, "meta"), null, 2));
+  console.log("tradeUntilAmountIsZero:", immutableDelete(p, ["meta", "onSent", "onSuccess", "onFailed"]));
   var displayAmount = p._fxpAmount;
   var displayPrice = p._price;
   var orderType = p._direction;
@@ -61,11 +60,9 @@ function tradeUntilAmountIsZero(p) {
     _price: convertBigNumberToHexString(onChainPrice),
     onSuccess: function (res) {
       var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
-      var onChainFillPrice = calculateOnChainFillPrice(orderType, onChainPrice, p.numTicks);
       getTradeAmountRemaining({
         transactionHash: res.hash,
         startingOnChainAmount: onChainAmount,
-        onChainFillPrice: onChainFillPrice,
         tickSize: tickSize,
       }, function (err, tradeOnChainAmountRemaining) {
         if (err) return p.onFailed(err);
