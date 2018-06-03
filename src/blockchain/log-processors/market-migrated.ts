@@ -5,12 +5,14 @@ import { rollbackMarketState, updateMarketFeeWindow, updateMarketState } from ".
 import { getMarketsWithReportingState } from "../../server/getters/database";
 
 function advanceToAwaitingNextWindow(db: Knex, marketId: Address, blockNumber: number, callback: ErrorCallback): void {
-  getMarketsWithReportingState(db, ["reportingState"]).first().where("markets.marketId", marketId)
-    .asCallback((err: Error|null, reportingStateRow?: {reportingState: ReportingState} ) => {
+  getMarketsWithReportingState(db, ["reportingState", "feeWindow"]).first().where("markets.marketId", marketId)
+    .asCallback((err: Error|null, reportingStateRow?: {reportingState: ReportingState, feeWindow: Address} ) => {
       if (err) return callback(err);
       if (reportingStateRow == null) return callback(new Error("Could not fetch prior reportingState"));
       if (reportingStateRow.reportingState === ReportingState.AWAITING_FORK_MIGRATION) {
-        updateMarketState(db, marketId, blockNumber, ReportingState.AWAITING_NEXT_WINDOW, callback);
+        const initialReportMade = reportingStateRow.feeWindow !== "0x0000000000000000000000000000000000000000";
+        const reportingState = initialReportMade ? ReportingState.AWAITING_NEXT_WINDOW : ReportingState.OPEN_REPORTING;
+        updateMarketState(db, marketId, blockNumber, reportingState, callback);
       } else {
         callback(null);
       }
