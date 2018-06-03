@@ -2,8 +2,6 @@ import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
-import { calculateFillPrice } from "./calculate-fill-price";
-import { calculateNumberOfSharesTraded } from "./calculate-number-of-shares-traded";
 import { updateOrdersAndPositions } from "./update-orders-and-positions";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
@@ -109,7 +107,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
       const numFillerShares = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.numFillerShares, 10), new BigNumber(tickSize, 10));
       const marketCreatorFees = fixedPointToDecimal(new BigNumber(log.marketCreatorFees), BN_WEI_PER_ETHER);
       const reporterFees = fixedPointToDecimal(new BigNumber(log.reporterFees), BN_WEI_PER_ETHER);
-      const amount = calculateNumberOfSharesTraded(numCreatorShares, numCreatorTokens, calculateFillPrice(augur, price, minPrice, maxPrice, orderType));
+      const amount = augur.utils.convertOnChainAmountToDisplayAmount(new BigNumber(log.amountFilled, 10), tickSize);
       updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, false, (err: Error|null): void => {
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
