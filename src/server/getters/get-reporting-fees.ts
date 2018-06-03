@@ -230,7 +230,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .select(["crowdsourcers.disavowed", "crowdsourcers.marketId", "markets.universe", "market_state.reportingState", "markets.forking", "markets.needsMigration", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .join("markets", "crowdsourcers.marketId", "markets.marketId")
-    .join("fee_windows", "markets.feeWindow", "fee_windows.feeWindow")
+    .join("fee_windows", "crowdsourcers.feeWindow", "fee_windows.feeWindow")
     .join("market_state", "market_state.marketStateId", "markets.marketStateId")
     .whereRaw("(markets.forking or (market_state.reportingState IN (?, ?, ?)) OR (crowdsourcers.disavowed != 0 OR markets.needsDisavowal) AND (fee_windows.state = ? OR reportingState = ? ) )",
       [ReportingState.AWAITING_FINALIZATION, ReportingState.FINALIZED, ReportingState.FORKING, FeeWindowState.PAST, ReportingState.AWAITING_FORK_MIGRATION])
