@@ -16,8 +16,8 @@ export default class MarketPositionsListPosition extends Component {
     openOrders: PropTypes.array.isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    outcome: PropTypes.object.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
+    outcome: PropTypes.object,
   }
 
   static calcAvgDiff(position, order) {
