@@ -16,6 +16,7 @@ export default class MarketPositionsListPosition extends Component {
     openOrders: PropTypes.array.isRequired,
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
+    outcome: PropTypes.object.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
   }
 
@@ -101,6 +102,7 @@ export default class MarketPositionsListPosition extends Component {
       outcomeName,
       openOrders,
       position,
+      outcome,
     } = this.props
     const s = this.state
 
@@ -139,7 +141,7 @@ export default class MarketPositionsListPosition extends Component {
         </li>
         { isExtendedDisplay && !isMobile &&
           <li>
-            {getValue(position, 'lastPrice.formatted') }
+            {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
         { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
