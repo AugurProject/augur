@@ -80,7 +80,7 @@ export default class CreateMarketDefine extends Component {
     const isUnique = uniq(Object.values(localValues).filter(x => !isEmpty(x))).length === localValuesLen
 
     switch (true) {
-      case typeof value === 'string' && !value.length && isRequired:
+      case typeof value === 'string' && !value.trim().length && isRequired:
         updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
         break
       case maxLength && value.length > maxLength:
