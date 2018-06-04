@@ -209,6 +209,8 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
+      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false })
+      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false })
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 

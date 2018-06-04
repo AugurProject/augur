@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => {
       },
       fee: {
         value: getValue(market, 'settlementFeePercent.full'),
-        tooltip: 'Market Creator Fee (' + (getValue(market, 'marketCreatorFeeRate') * 100) + '%) + Reporting Fee (' + (getValue(market, 'reportingFeeRate') * 100) + '%)',
+        tooltip: 'Market Creator Fee (' + getValue(market, 'marketCreatorFeeRatePercent.full') + ') + Reporting Fee (' + getValue(market, 'reportingFeeRatePercent.full') + ')',
       },
       expires: {
         value: getValue(market, 'endTime.formattedLocal'),
