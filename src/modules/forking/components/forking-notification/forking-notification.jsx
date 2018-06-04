@@ -37,12 +37,13 @@ class ForkingNotification extends Component {
       forkEndTime,
       forkingMarket,
       doesUserHaveRep,
+      marginLeft,
     } = this.props
     const forkWindowActive = Number(forkEndTime) > currentTime
 
     return (
       <section className={Styles.ForkingNotification__Container}>
-        <header className={Styles.ForkingNotification}>
+        <header className={Styles.ForkingNotification} style={{ marginLeft: marginLeft }}>
           <section className={Styles.ForkingNotification__SubContainer}>
             <img
               className={Styles.ForkingNotification__AlertIcon}
@@ -90,6 +91,7 @@ ForkingNotification.propTypes = {
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
+  marginLeft: PropTypes.string.isRequired,
 }
 
 export default ForkingNotification
