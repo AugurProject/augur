@@ -211,7 +211,7 @@ class MarketTradingWrapper extends Component {
             }
           </div>
         }
-        { s.currentPage === 1  && selectedOutcome &&
+        { s.currentPage === 1 && selectedOutcome &&
           <MarketTradingConfirm
             market={market}
             selectedNav={s.selectedNav}
