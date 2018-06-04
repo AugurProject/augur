@@ -16,7 +16,7 @@ import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   universe: state.universe,
-  availableEth: getValue(state, 'loginAccount.eth'),
+  availableEth: getValue(state, 'loginAccount.eth') || '0',
   availableRep: getValue(state, 'loginAccount.rep') || '0',
   meta: getValue(state, 'loginAccount.meta'),
   newMarket: state.newMarket,
