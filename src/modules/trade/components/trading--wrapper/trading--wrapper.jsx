@@ -31,6 +31,7 @@ class MarketTradingWrapper extends Component {
     showOrderPlaced: PropTypes.func.isRequired,
     clearTradeInProgress: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.object,
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -100,6 +101,13 @@ class MarketTradingWrapper extends Component {
 
   updateState(property, value) {
     this.setState({ [property]: value })
+    this.props.updateSelectedOrderProperties({
+      orderPrice: this.state.orderPrice,
+      orderQuantity: this.state.orderQuantity,
+      doNotCreateOrders: this.state.doNotCreateOrders,
+      selectedNav: this.state.selectedNav,
+      [property]: value,
+    })
   }
 
   clearOrderForm() {
