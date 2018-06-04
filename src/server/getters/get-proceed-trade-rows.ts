@@ -7,6 +7,8 @@ import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import Augur from "augur.js";
 
 interface WinningPayoutRow extends PayoutRow<BigNumber> {
+  blockNumber: number;
+  logIndex: number;
   timestamp: number;
   marketId: Address;
   numTicks: BigNumber;
@@ -22,6 +24,8 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
   if (account == null) throw new Error("must include account parameter");
 
   const marketsQuery: Knex.QueryBuilder = getMarketsWithReportingState(db, [
+    "trading_proceeds.blockNumber",
+    "trading_proceeds.logIndex",
     "proceeds_block.timestamp",
     "markets.marketId",
     "markets.numTicks",
@@ -72,6 +76,8 @@ export async function getProceedTradeRows (db: Knex, augur: Augur, marketIds: Ar
       const amount = row.balance.div(tickSize);
       const price = payout.times(tickSize).plus(row.minPrice);
       return {
+        blockNumber: row.blockNumber,
+        logIndex: row.logIndex,
         marketId: row.marketId,
         outcome: row.outcome,
         timestamp: row.timestamp,
