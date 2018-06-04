@@ -4,6 +4,7 @@ import { handleNewBlock } from 'modules/events/actions/handle-new-block'
 import {
   handleMarketStateLog,
   handleMarketCreatedLog,
+  handleMarketMigratedLog,
   handleTokensTransferredLog,
   handleOrderCreatedLog,
   handleOrderCanceledLog,
@@ -35,6 +36,7 @@ export const listenToUpdates = history => (dispatch, getState) => {
   augur.events.startAugurNodeEventListeners({
     MarketState: dispatch(wrapLogHandler(handleMarketStateLog)),
     MarketCreated: dispatch(wrapLogHandler(handleMarketCreatedLog)),
+    MarketMigrated: dispatch(wrapLogHandler(handleMarketMigratedLog)),
     TokensTransferred: dispatch(wrapLogHandler(handleTokensTransferredLog)),
     OrderCreated: dispatch(wrapLogHandler(handleOrderCreatedLog)),
     OrderCanceled: dispatch(wrapLogHandler(handleOrderCanceledLog)),

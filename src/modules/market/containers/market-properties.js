@@ -13,6 +13,7 @@ const mapStateToProps = (state, ownProps) => ({
   isMobile: state.isMobile,
   loginAccount: state.loginAccount,
   linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.id), state.loginAccount),
+  finalizationTime: selectMarket(ownProps.id).finalizationTime,
   isForking: state.universe.isForking,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
   forkingMarket: state.universe.forkingMarket,
