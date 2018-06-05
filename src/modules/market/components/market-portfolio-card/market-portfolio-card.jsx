@@ -121,7 +121,7 @@ export default class MarketPortfolioCard extends Component {
                   Realized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'realizedNet.formatted')}
+                  {getValue(myPositionsSummary, 'realizedNet.formatted') || 0}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -132,7 +132,7 @@ export default class MarketPortfolioCard extends Component {
                   Unrealized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'unrealizedNet.formatted')}
+                  {getValue(myPositionsSummary, 'unrealizedNet.formatted') || 0}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -143,7 +143,7 @@ export default class MarketPortfolioCard extends Component {
                   Total P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'totalNet.formatted')}
+                  {getValue(myPositionsSummary, 'totalNet.formatted') || 0}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
