@@ -25,7 +25,7 @@ export default class ReportingHeader extends Component {
     isForking: PropTypes.bool,
     forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
-    forkingDisputeThreshold: PropTypes.string,
+    forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
   }
 
@@ -46,7 +46,7 @@ export default class ReportingHeader extends Component {
       reportingWindowStats,
       updateModal,
       doesUserHaveRep,
-      forkingDisputeThreshold,
+      forkReputationGoal,
       finalizeMarket,
       isForkingMarketFinalized,
     } = this.props
@@ -72,7 +72,7 @@ export default class ReportingHeader extends Component {
                 currentTime={currentTime}
                 expanded={false}
                 doesUserHaveRep={doesUserHaveRep}
-                forkingDisputeThreshold={forkingDisputeThreshold}
+                forkReputationGoal={forkReputationGoal}
                 finalizeMarket={finalizeMarket}
                 isForkingMarketFinalized={isForkingMarketFinalized}
               />

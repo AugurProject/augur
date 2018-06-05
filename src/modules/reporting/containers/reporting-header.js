@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
   forkingMarket: state.universe.forkingMarket,
   currentTime: state.blockchain.currentAugurTimestamp,
   doesUserHaveRep: state.loginAccount.rep > 0,
-  forkingDisputeThreshold: state.universe.forkingDisputeThreshold,
+  forkReputationGoal: state.universe.forkReputationGoal,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
 })
 

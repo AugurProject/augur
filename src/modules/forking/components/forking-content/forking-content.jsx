@@ -13,7 +13,7 @@ const ForkingContent = (p) => {
   const unixFormattedDate = convertUnixToFormattedDate(p.forkEndTime)
   const forkWindowActive = Number(p.forkEndTime) > p.currentTime
 
-  const threshold = formatAttoRep(p.forkingDisputeThreshold)
+  const threshold = formatAttoRep(p.forkReputationGoal)
 
   return (
     <section className={classNames(Styles.ForkingContent, p.expanded ? Styles.expanded : '')}>
@@ -69,7 +69,7 @@ ForkingContent.propTypes = {
   currentTime: PropTypes.number.isRequired,
   expanded: PropTypes.bool.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
-  forkingDisputeThreshold: PropTypes.string.isRequired,
+  forkReputationGoal: PropTypes.string.isRequired,
   isForkingMarketFinalized: PropTypes.bool,
 }
 

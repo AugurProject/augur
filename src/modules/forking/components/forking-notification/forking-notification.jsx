@@ -43,7 +43,7 @@ class ForkingNotification extends Component {
       forkEndTime,
       forkingMarket,
       isForkingMarketFinalized,
-      forkingDisputeThreshold,
+      forkReputationGoal,
     } = universe
     const forkWindowActive = Number(forkEndTime) > currentTime
 
@@ -84,7 +84,7 @@ class ForkingNotification extends Component {
             currentTime={currentTime}
             expanded
             doesUserHaveRep={doesUserHaveRep}
-            forkingDisputeThreshold={forkingDisputeThreshold}
+            forkReputationGoal={forkReputationGoal}
             finalizeMarket={finalizeMarket}
             isForkingMarketFinalized={isForkingMarketFinalized}
           />

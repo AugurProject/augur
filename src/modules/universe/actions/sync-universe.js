@@ -37,10 +37,10 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
             next(null, isForkingMarketFinalized)
           })
         },
-        forkingDisputeThreshold: (next) => {
-          augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, forkingDisputeThreshold) => {
+        forkReputationGoal: (next) => {
+          augur.api.Universe.getForkReputationGoal(universePayload, (err, forkReputationGoal) => {
             if (err) return next(err)
-            next(null, forkingDisputeThreshold)
+            next(null, forkReputationGoal)
           })
         },
       }, (err, universeData) => {
