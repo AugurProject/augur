@@ -214,6 +214,8 @@ describe("server/getters/get-orders", () => {
                 fullPrecisionAmount: "2",
                 tokensEscrowed: "1.2",
                 sharesEscrowed: "0",
+                canceledBlockNumber: 1500000,
+                canceledTransactionHash: "0x000000000000000000000000000000000000000000000000000000000000AA05",
               },
             },
           },
