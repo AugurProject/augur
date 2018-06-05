@@ -91,7 +91,7 @@ ForkingNotification.propTypes = {
   forkEndTime: PropTypes.string.isRequired,
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
-  marginLeft: PropTypes.string.isRequired,
+  marginLeft: PropTypes.number.isRequired,
 }
 
 export default ForkingNotification
