@@ -382,6 +382,8 @@ export interface UIOrder<BigNumberType> {
   fullPrecisionAmount: BigNumberType;
   tokensEscrowed: BigNumberType;
   sharesEscrowed: BigNumberType;
+  canceledBlockNumber?: Bytes32;
+  canceledTransactionHash?: Bytes32;
 }
 
 export interface UIOrders<BigNumberType> {
