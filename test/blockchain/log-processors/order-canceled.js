@@ -2,12 +2,20 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { BigNumber } = require("bignumber.js");
-const { processOrderCanceledLog, processOrderCanceledLogRemoval } = require("../../../build/blockchain/log-processors/order-canceled");
+const {BigNumber} = require("bignumber.js");
+const {parallel} = require("async");
+const {processOrderCanceledLog, processOrderCanceledLogRemoval} = require("../../../build/blockchain/log-processors/order-canceled");
 
 describe("blockchain/log-processors/order-canceled", () => {
   const test = (t) => {
-    const getState = (db, params, callback) => db("orders").where("orderId", params.log.orderId).asCallback(callback);
+    const getState = (db, params, callback) => {
+
+      parallel({
+        order: (next) => db("orders").where("orderId", params.log.orderId).first().asCallback(next),
+        orderCanceled: (next) => db("orders_canceled").where("orderId", params.log.orderId).first().asCallback(next),
+      }, callback);
+
+    };
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
@@ -49,7 +57,7 @@ describe("blockchain/log-processors/order-canceled", () => {
     assertions: {
       onAdded: (err, records) => {
         assert.ifError(err);
-        assert.deepEqual(records, [{
+        assert.deepEqual(records.order, {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -68,11 +76,17 @@ describe("blockchain/log-processors/order-canceled", () => {
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
           isRemoved: null,
-        }]);
+        });
+        assert.deepEqual(records.orderCanceled, {
+          blockNumber: 1400101,
+          logIndex: 0,
+          orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
+        });
       },
       onRemoved: (err, records) => {
         assert.ifError(err);
-        assert.deepEqual(records, [{
+        assert.deepEqual(records.order, {
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
           blockNumber: 1400001,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A00",
@@ -91,7 +105,8 @@ describe("blockchain/log-processors/order-canceled", () => {
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
           isRemoved: null,
-        }]);
+        });
+        assert.isUndefined(records.orderCanceled);
       },
     },
   });

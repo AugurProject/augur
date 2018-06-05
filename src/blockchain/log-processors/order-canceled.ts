@@ -14,11 +14,14 @@ export function processOrderCanceledLog(db: Knex, augur: Augur, log: FormattedEv
   const orderTypeLabel = log.orderType === "0" ? "buy" : "sell";
   db.from("orders").where("orderId", log.orderId).update({ orderState: OrderState.CANCELED }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
+    db.into("orders_canceled").insert({ orderId: log.orderId, transactionHash: log.transactionHash, logIndex: log.logIndex, blockNumber: log.blockNumber }).asCallback((err: Error|null): void => {
       if (err) return callback(err);
-      if (ordersRow) ordersRow.orderType = orderTypeLabel;
-      augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
-      callback(null);
+      db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
+        if (err) return callback(err);
+        if (ordersRow) ordersRow.orderType = orderTypeLabel;
+        augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
+        callback(null);
+      });
     });
   });
 }
@@ -27,11 +30,14 @@ export function processOrderCanceledLogRemoval(db: Knex, augur: Augur, log: Form
   const orderTypeLabel = log.orderType === "0" ? "buy" : "sell";
   db.from("orders").where("orderId", log.orderId).update({ orderState: OrderState.OPEN }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
+    db.from("orders_canceled").where("orderId", log.orderId).delete().asCallback((err: Error|null): void => {
       if (err) return callback(err);
-      if (ordersRow) ordersRow.orderType = orderTypeLabel;
-      augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
-      callback(null);
+      db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
+        if (err) return callback(err);
+        if (ordersRow) ordersRow.orderType = orderTypeLabel;
+        augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
+        callback(null);
+      });
     });
   });
 }
