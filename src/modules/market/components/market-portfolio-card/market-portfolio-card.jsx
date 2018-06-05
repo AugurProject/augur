@@ -253,6 +253,7 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
+                      outcome={outcome}
                       closePositionStatus={closePositionStatus}
                     />
                   ))
