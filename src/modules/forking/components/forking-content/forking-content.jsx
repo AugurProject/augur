@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { formatAttoRep } from 'utils/format-number'
-import { convertUnixToFormattedDate } from 'utils/format-date'
+import { convertUnixToFormattedDate, dateHasPassed } from 'utils/format-date'
 import ForkingProgressBar from 'modules/forking/components/forking-progress-bar/forking-progress-bar'
 import { TYPE_MIGRATE_REP } from 'modules/market/constants/link-types'
 import MarketLink from 'modules/market/components/market-link/market-link'
@@ -11,7 +11,7 @@ import Styles from 'modules/forking/components/forking-content/forking-content.s
 
 const ForkingContent = (p) => {
   const unixFormattedDate = convertUnixToFormattedDate(p.forkEndTime)
-  const forkWindowActive = Number(p.forkEndTime) > p.currentTime
+  const forkWindowActive = !dateHasPassed(p.currentTime * 1000, Number(p.forkEndTime))
 
   const threshold = formatAttoRep(p.forkReputationGoal)
 

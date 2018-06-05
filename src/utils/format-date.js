@@ -78,7 +78,7 @@ export function getBeginDate(currentAugurTimestampInMilliseconds, periodString) 
 
 export function dateHasPassed(currentAugurTimestampInMilliseconds, unixTimestamp) {
   const date = moment(currentAugurTimestampInMilliseconds).utc()
-  return (date.unix() >= unixTimestamp)
+  return (date.unix() > unixTimestamp)
 }
 
 export function getDaysRemaining(endUnixTimestamp, startUnixTimestamp) {
