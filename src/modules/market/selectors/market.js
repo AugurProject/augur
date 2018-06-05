@@ -252,7 +252,10 @@ export function assembleMarket(
               zeroStyled: true,
             })
             // format-number thinks 0 is '-', need to correct
-            if (outcome.lastPrice.fullPrecision === '0') outcome.lastPricePercent.formatted = '0'
+            if (outcome.lastPrice.fullPrecision === '0') {
+              outcome.lastPricePercent.formatted = '0'
+              outcome.lastPricePercent.full = '0'
+            }
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
@@ -263,7 +266,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           }
-        } else if (outcome.lastPrice.value) {
+        } else if (createBigNumber(outcome.volume).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
