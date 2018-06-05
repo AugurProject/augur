@@ -74,6 +74,9 @@
       </div>
     </div>
 
+
+    <% if(htmlWebpackPlugin.options.environment === 'development') { %>
+
     <!-- Hotjar Analytics -->
     <script type="text/javascript">
       (function(h,o,t,j,a,r){
@@ -95,6 +98,8 @@
 
     <!-- Google Analytics -->
     <script src="//www.google-analytics.com/analytics.js" defer=""></script>
+
+    <% } %>
 
     <!-- NOTE: all relevant entry scripts are automatically appended here during build -->
   </body>
