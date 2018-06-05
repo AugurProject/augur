@@ -192,7 +192,12 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
       type: trade.orderType! === "buy" ? "sell" : "buy",
       maker: account === trade.creator!,
     });
-  }).concat(claimHistory).sort((a, b) => a.timestamp - b.timestamp);
+  }).concat(claimHistory).sort((a, b) => {
+    const blockDiff = a.blockNumber - b.blockNumber;
+    if (blockDiff !== 0) return blockDiff;
+
+    return a.logIndex - b.logIndex;
+  });
 
   if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime, periodInterval).slice(1), all: {} };
 

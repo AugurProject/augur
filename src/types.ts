@@ -455,6 +455,8 @@ export interface TradingHistoryRow extends TradesRow<BigNumber> {
 }
 
 export interface ProceedTradesRow<BigNumberType> {
+  logIndex: number;
+  blockNumber: number;
   timestamp: number;
   marketId: Address;
   outcome: number;
