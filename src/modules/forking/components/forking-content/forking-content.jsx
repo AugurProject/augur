@@ -19,7 +19,7 @@ const ForkingContent = (p) => {
     <section className={classNames(Styles.ForkingContent, p.expanded ? Styles.expanded : '')}>
       <div className={classNames(Styles.ForkingContent__container, p.expanded ? Styles.expanded : '')}>
         <h4>
-          Forking window ends {unixFormattedDate.formattedLocal}
+          Forking window {forkWindowActive ? `ends` : `ended`} {unixFormattedDate.formattedLocal}
         </h4>
         <ForkingProgressBar
           forkEndTime={p.forkEndTime}
