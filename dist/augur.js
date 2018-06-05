@@ -841,22 +841,22 @@ module.exports={
   "TradingEscapeHatch": "0xb69761b25046ba3fbdb38fbaa6dad8fbfd62cbd2"
  },
  "4": {
-  "Controller": "0x2b78e749a21cac385508fdd4b9a65ea0f5023cd5",
-  "Universe": "0x9bed8e86cfbe6959388fe886f01f7aa836047424",
-  "Augur": "0x910ef9cf50c25dc119a4e006a3516ddf39993f3d",
-  "LegacyReputationToken": "0x5d39afb33251bbeee43be37fb2c7a3fb49d9a902",
-  "CancelOrder": "0x6e612632027ef712dc5742caac24c1d12a02a328",
-  "Cash": "0xbb0bd3799decca37d32534ff5164f60cebc76ee3",
-  "ClaimTradingProceeds": "0x9257cbec14e834739214650a9bfd34d5b20666a5",
-  "CompleteSets": "0x37ae60c9e105b799e4e8b08483cad5262ba6f1ba",
-  "CreateOrder": "0x4b73a6e8da817778947cac5214dbf9b52ad0e024",
-  "FillOrder": "0x3768d00f4f7c3fcbf31f5831e076156d172afc25",
-  "Order": "0x7d81c4e37a4b2a4db583751c529499f2b4cff286",
-  "Orders": "0xa76c3b04489ccb0b9db47fcd5243efdda61b592b",
-  "OrdersFetcher": "0xeadca941c2bfaee09c771918ca7d5c8065a7efbe",
-  "ShareToken": "0xc007881abf7f689d666edba8e037c1dee2f4631c",
-  "Trade": "0x65c938a9b84c2d2ebac7e65df8b4eb494c7cf1bf",
-  "TradingEscapeHatch": "0xa59c97efa8f00051d6c942c1b75dcd614286d605"
+  "Controller": "0x0c64a0ec100dd93a2f1a7f1fa5c18e75a4637f6c",
+  "Universe": "0xee473c13d00206858d582b6bd1c8d37820ddaba1",
+  "Augur": "0x81f27dd13c14b8e778a530fbcd28d209298eb4b8",
+  "LegacyReputationToken": "0x3f92346eb644f80b80654bc37c129f0a55cfb8db",
+  "CancelOrder": "0x87acce45a67dcea65264c4c6534f944f81b315dc",
+  "Cash": "0x01cf5333654678c6fadb1e1044b6085439e56453",
+  "ClaimTradingProceeds": "0x1c6476d90a6831f183f4830200a299e80d7a1eaa",
+  "CompleteSets": "0xd5ebdd6aad98339d3a420223a83c3f44c89c07c0",
+  "CreateOrder": "0x010230e477980a03c98a3c1eb351798cc9a2be21",
+  "FillOrder": "0x8eacab1557383a0ff8c1e7f2299d5081d90d4aff",
+  "Order": "0x1b8782684a872312f3cec391d28a41f139ce9a75",
+  "Orders": "0x08bed610aab8fcea5319d03926d2cfd52ac7663b",
+  "OrdersFetcher": "0xee27e9ff395a7a5eb26f24b654c7138fb1a2b8bc",
+  "ShareToken": "0xe712f44f63503bb7d3188e9525c4f32268dcdbc6",
+  "Trade": "0x7accd7a272031108e198be20445347501e1b1b8a",
+  "TradingEscapeHatch": "0x7f56dfe6b327e80454ac0fabff1fd38e41949815"
  },
  "8995": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
@@ -898,37 +898,37 @@ module.exports={
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0xa0e4dc62cb7429825f6e1b49841a0445b37152bb",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "LegacyReputationToken": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
   "CancelOrder": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
-  "Cash": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
-  "ClaimTradingProceeds": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "Cash": "0x642e1eaed86d4075253c34c307d34362d2247d18",
+  "ClaimTradingProceeds": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
   "CompleteSets": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
   "CreateOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
-  "FillOrder": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
-  "Order": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "Orders": "0x6749e370e7b1955ffa924f4f75f5f12653c7512c",
-  "OrdersFetcher": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "ShareToken": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
+  "FillOrder": "0x0680f8580de983cd204aa909a4b1b366b29f58b6",
+  "Order": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
+  "Orders": "0x658655115e55fa3433b9686865f011874bd71083",
+  "OrdersFetcher": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "ShareToken": "0x7a8f8e48d4cc990bbd8e088fb027e850486e8e0c",
   "Trade": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
-  "TradingEscapeHatch": "0x56d32d583ee21e748103b029fd97621fde92248d"
+  "TradingEscapeHatch": "0xae0adf9e3f9603e019980c287d91fc83056d7235"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xa0e4dc62cb7429825f6e1b49841a0445b37152bb",
+  "Universe": "0x0ff6ee01f88145298761a29a0372ed24e16e73b1",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "CancelOrder": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "Cash": "0x95e6d12a0ca50ead152d93f8b79beb23bc4a054b",
-  "ClaimTradingProceeds": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "CompleteSets": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "CreateOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "FillOrder": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "Order": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
-  "Orders": "0x00bee9d82da7036c9c660e7ae18c4f5e2f072967",
-  "OrdersFetcher": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
-  "ShareToken": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
-  "Trade": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
-  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
+  "LegacyReputationToken": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
+  "CancelOrder": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
+  "Cash": "0xd1102fbe361acf2c54f572caca4b928350555f40",
+  "ClaimTradingProceeds": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
+  "CompleteSets": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
+  "CreateOrder": "0x07f175e786a57752b3d0d0f3250cebb4242e02ad",
+  "FillOrder": "0x0680f8580de983cd204aa909a4b1b366b29f58b6",
+  "Order": "0x4eda1aae707c777b55641b9758029c0eabec626c",
+  "Orders": "0x6cfc125df7ba27b26138cdbcd5804137dc3ba1a6",
+  "OrdersFetcher": "0x45a2897792afa20b95f7dcaf5c0fb45b84daf439",
+  "ShareToken": "0x0d676967088088546837accf52a72bbd5066ffee",
+  "Trade": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
+  "TradingEscapeHatch": "0x95e6d12a0ca50ead152d93f8b79beb23bc4a054b"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -1009,7 +1009,7 @@ module.exports.reloadAddresses = function (callback) {
 },{"../utils/read-json-file":147,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":151}],34:[function(require,module,exports){
 module.exports={
   "3": 2991871,
-  "4": 2373048,
+  "4": 2405363,
   "8995": 0,
   "12346": 113,
   "22346": 12,
@@ -4726,7 +4726,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.12.0-2';
+module.exports = '4.12.0-5';
 },{}],149:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -15497,6 +15497,20 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "getOrCreatePreviousPreviousFeeWindow",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -33673,7 +33687,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.I2zUEP1L/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -33699,7 +33713,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.I2zUEP1L/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
