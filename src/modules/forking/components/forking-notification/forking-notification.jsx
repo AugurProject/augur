@@ -34,11 +34,17 @@ class ForkingNotification extends Component {
   render() {
     const {
       currentTime,
-      forkEndTime,
-      forkingMarket,
       doesUserHaveRep,
       marginLeft,
+      universe,
+      finalizeMarket,
     } = this.props
+    const {
+      forkEndTime,
+      forkingMarket,
+      isForkingMarketFinalized,
+      forkingDisputeThreshold,
+    } = universe
     const forkWindowActive = Number(forkEndTime) > currentTime
 
     return (
@@ -78,6 +84,9 @@ class ForkingNotification extends Component {
             currentTime={currentTime}
             expanded
             doesUserHaveRep={doesUserHaveRep}
+            forkingDisputeThreshold={forkingDisputeThreshold}
+            finalizeMarket={finalizeMarket}
+            isForkingMarketFinalized={isForkingMarketFinalized}
           />
         }
       </section>
@@ -87,11 +96,11 @@ class ForkingNotification extends Component {
 
 ForkingNotification.propTypes = {
   location: PropTypes.object.isRequired,
-  forkingMarket: PropTypes.string.isRequired,
-  forkEndTime: PropTypes.string.isRequired,
+  universe: PropTypes.object.isRequired,
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
   marginLeft: PropTypes.number.isRequired,
+  finalizeMarket: PropTypes.func.isRequired,
 }
 
 export default ForkingNotification
