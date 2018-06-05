@@ -60,19 +60,23 @@ export default class AccountWithdraw extends Component {
     const updatedErrors = {}
 
     if (amount === '') {
-      updatedErrors.amount = `Quantity is required`
+      updatedErrors.amount = `Quantity is required.`
     }
 
     if (amount && isNaN(parseFloat(sanitizedAmount))) {
-      updatedErrors.amount = `Quantity isn't a number`
+      updatedErrors.amount = `Quantity isn't a number.`
     }
 
     if (amount && !isFinite(sanitizedAmount)) {
-      updatedErrors.amount = `Quantity isn't finite`
+      updatedErrors.amount = `Quantity isn't finite.`
     }
 
-    if (amount && (BNsanitizedAmount.gt(BNupperlimit) || BNsanitizedAmount.lte(ZERO))) {
-      updatedErrors.amount = `Is greater than balance ${this.state.upperBound}`
+    if (amount && BNsanitizedAmount.gt(BNupperlimit)) {
+      updatedErrors.amount = `Quantity is greater than available funds.`
+    }
+
+    if (amount && BNsanitizedAmount.lte(ZERO)) {
+      updatedErrors.amount = `Quantity must be greater than zero.`
     }
 
     callback(updatedErrors, sanitizedAmount)
@@ -166,7 +170,7 @@ export default class AccountWithdraw extends Component {
                   onChange={amount => this.validateForm(amount, s.address)}
                 />
                 { s.errors.hasOwnProperty('amount') && s.errors.amount.length &&
-                  <span className={FormStyles['Form__error--even']}>
+                  <span className={FormStyles['Form__error--even__space']}>
                     {InputErrorIcon}{ s.errors.amount }
                   </span>
                 }
@@ -182,7 +186,7 @@ export default class AccountWithdraw extends Component {
                   onChange={address => this.validateForm(s.amount, address)}
                 />
                 { s.errors.hasOwnProperty('address') && s.errors.address.length &&
-                  <span className={FormStyles['Form__error--even']}>
+                  <span className={FormStyles['Form__error--even__space']}>
                     {InputErrorIcon}{ s.errors.address }
                   </span>
                 }
