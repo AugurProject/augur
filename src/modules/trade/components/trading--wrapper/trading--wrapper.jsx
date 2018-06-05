@@ -60,7 +60,10 @@ class MarketTradingWrapper extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
-    if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
+    if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) {
+      this.setState({ currentPage: 0 })
+      return
+    }
     if (this.props.selectedOutcome === null) return this.clearOrderForm()
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
       return this.clearOrderForm()
@@ -208,7 +211,7 @@ class MarketTradingWrapper extends Component {
             }
           </div>
         }
-        { s.currentPage === 1 &&
+        { s.currentPage === 1 && selectedOutcome &&
           <MarketTradingConfirm
             market={market}
             selectedNav={s.selectedNav}
