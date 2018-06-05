@@ -515,6 +515,7 @@ export default class AppView extends Component {
                   forkEndTime={universe.forkEndTime}
                   currentTime={blockchain.currentAugurTimestamp}
                   doesUserHaveRep={loginAccount.rep > 0}
+                  marginLeft={tagsMargin}
                 />
               </section>
             }
