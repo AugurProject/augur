@@ -543,7 +543,7 @@ function drawXAxisLabels({
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${containerHeight - chartDim.bottom})`)
-    .call(d3.axisBottom(xScale).ticks(tickInterval))
+    .call(tickInterval(d3.axisBottom(xScale)))
     .select('path').remove()
 }
 
