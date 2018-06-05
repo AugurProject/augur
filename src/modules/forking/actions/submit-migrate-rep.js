@@ -11,7 +11,6 @@ export const submitMigrateREP = (estimateGas, marketId, selectedOutcome, invalid
   const universeID = universe.id || UNIVERSE_ID
 
   if (!marketId || (isNaN(outcome) && !invalid)) return callback(null)
-  if (!invalid && outcome < 0) return callback(null)
 
   const market = marketsData[marketId]
   if (!market) return callback('Market not found')

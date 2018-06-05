@@ -16,6 +16,7 @@ const CreateMarketView = p => (
       <CreateMarketPreview
         newMarket={p.newMarket}
         currentTimestamp={p.currentTimestamp}
+        universe={p.universe}
       />
       <CreateMarketForm
         newMarket={p.newMarket}

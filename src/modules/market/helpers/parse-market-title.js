@@ -13,5 +13,5 @@ export default function parseMarketTitle(description) {
 
   return title.length > 40 ?
     `${title.substring(0, 40).trim()}...` :
-    `${title.trim()}?`
+    `${title.trim()}`
 }

@@ -2,17 +2,15 @@
 
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { BigNumber } from 'utils/create-big-number'
 
+import { createBigNumber, BigNumber } from 'utils/create-big-number'
 import Input from 'modules/common/components/input/input'
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
-
-import { Withdraw } from 'modules/common/components/icons'
-
+import { ZERO } from 'modules/trade/constants/numbers'
 import { ETH, REP } from 'modules/account/constants/asset-types'
-
+import { ExclamationCircle as InputErrorIcon, Withdraw } from 'modules/common/components/icons'
 import isAddress from 'modules/auth/helpers/is-address'
-
+import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/account/components/account-withdraw/account-withdraw.styles'
 
 export default class AccountWithdraw extends Component {
@@ -23,82 +21,79 @@ export default class AccountWithdraw extends Component {
     transferFunds: PropTypes.func.isRequired,
   }
 
+  static validateAddress(address, callback) {
+    const sanitizedAddress = sanitizeArg(address)
+    const updatedErrors = {}
+
+    if (address && !isAddress(sanitizedAddress)) {
+      updatedErrors.address = `Address is invalid`
+    }
+
+    if (address === '') {
+      updatedErrors.address = `Address is required`
+    }
+
+
+    callback(updatedErrors, sanitizedAddress)
+  }
+
   constructor(props) {
     super(props)
 
     this.DEFAULT_STATE = {
-      animationSpeed: 0,
-      upperBound: props.eth.value,
+      upperBound: props.eth.fullPrecision,
       selectedAsset: ETH,
       amount: '',
       address: '',
       isValid: null,
-      isAmountValid: null,
-      isAddressValid: null,
     }
 
-    this.state = this.DEFAULT_STATE
-
-    this.validateAmount = this.validateAmount.bind(this)
-    this.validateAddress = this.validateAddress.bind(this)
+    this.state = Object.assign(this.DEFAULT_STATE, { errors: {} })
     this.validateForm = this.validateForm.bind(this)
     this.submitForm = this.submitForm.bind(this)
   }
 
-  validateAmount(amount) {
+  validateAmount(amount, callback) {
     const sanitizedAmount = sanitizeArg(amount)
+    const BNsanitizedAmount = createBigNumber(sanitizedAmount || 0)
+    const BNupperlimit = createBigNumber(this.state.upperBound)
+    const updatedErrors = {}
 
-    if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
-      this.setState({
-        amount: sanitizedAmount,
-        isAmountValid: false,
-      })
-
-      this.validateForm(false, this.state.isAddressValid)
-
-      return
+    if (amount === '') {
+      updatedErrors.amount = `Quantity is required.`
     }
 
-    this.setState({
-      amount: sanitizedAmount,
-      isAmountValid: true,
-    })
+    if (amount && isNaN(parseFloat(sanitizedAmount))) {
+      updatedErrors.amount = `Quantity isn't a number.`
+    }
 
-    this.validateForm(true, this.state.isAddressValid)
+    if (amount && !isFinite(sanitizedAmount)) {
+      updatedErrors.amount = `Quantity isn't finite.`
+    }
+
+    if (amount && BNsanitizedAmount.gt(BNupperlimit)) {
+      updatedErrors.amount = `Quantity is greater than available funds.`
+    }
+
+    if (amount && BNsanitizedAmount.lte(ZERO)) {
+      updatedErrors.amount = `Quantity must be greater than zero.`
+    }
+
+    callback(updatedErrors, sanitizedAmount)
   }
 
-  validateAddress(address) {
-    const sanitizedAddress = sanitizeArg(address)
-
-    if (!isAddress(sanitizedAddress)) {
-      this.setState({
-        address: sanitizedAddress,
-        isAddressValid: false,
+  validateForm(amountValue, addressValue) {
+    this.validateAmount(amountValue, (amountErrors, sanitizedAmount) => {
+      AccountWithdraw.validateAddress(addressValue, (addressErrors, sanitizedAddress) => {
+        const updatedErrors = Object.assign(amountErrors, addressErrors)
+        this.setState({
+          errors: updatedErrors,
+          isValid: !amountErrors.amount && !addressErrors.address,
+          address: sanitizedAddress,
+          amount: sanitizedAmount,
+        })
       })
-
-      this.validateForm(this.state.isAmountValid, false)
-
-      return
-    }
-
-    this.setState({
-      address: sanitizedAddress,
-      isAddressValid: true,
     })
-
-    this.validateForm(this.state.isAmountValid, true)
-  }
-
-  validateForm(isAmountValid, isAddressValid) {
-    if (isAmountValid && isAddressValid) {
-      this.setState({
-        isValid: true,
-      })
-    } else {
-      this.setState({
-        isValid: false,
-      })
-    }
   }
 
   submitForm() {
@@ -150,10 +145,12 @@ export default class AccountWithdraw extends Component {
                   isMobileSmall={isMobileSmall}
                   onChange={(type) => {
                     const selectedAsset = (type === 'ETH') ? ETH : REP
-                    const upperBound = (type === 'ETH') ? eth.value : rep.value
+                    const upperBound = (type === 'ETH') ? eth.fullPrecision : rep.fullPrecision
                     this.setState({
                       selectedAsset,
                       upperBound,
+                    }, () => {
+                      this.validateForm(s.amount, s.address)
                     })
                   }}
                 />
@@ -169,9 +166,14 @@ export default class AccountWithdraw extends Component {
                   max={s.upperBound}
                   min={0.1}
                   value={s.amount}
-                  updateValue={amount => this.validateAmount(amount)}
-                  onChange={amount => this.validateAmount(amount)}
+                  updateValue={amount => this.validateForm(amount, s.address)}
+                  onChange={amount => this.validateForm(amount, s.address)}
                 />
+                { s.errors.hasOwnProperty('amount') && s.errors.amount.length &&
+                  <span className={FormStyles['Form__error--even__space']}>
+                    {InputErrorIcon}{ s.errors.amount }
+                  </span>
+                }
               </div>
               <div className={Styles['AccountWithdraw__input-wrapper']}>
                 <label htmlFor="address">Recipient Account Address</label>
@@ -180,9 +182,14 @@ export default class AccountWithdraw extends Component {
                   label="Recipient Account Address"
                   type="text"
                   value={s.address}
-                  updateValue={address => this.validateAddress(address)}
-                  onChange={address => this.validateAddress(address)}
+                  updateValue={address => this.validateForm(s.amount, address)}
+                  onChange={address => this.validateForm(s.amount, address)}
                 />
+                { s.errors.hasOwnProperty('address') && s.errors.address.length &&
+                  <span className={FormStyles['Form__error--even__space']}>
+                    {InputErrorIcon}{ s.errors.address }
+                  </span>
+                }
               </div>
             </div>
             <button

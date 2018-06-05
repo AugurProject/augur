@@ -21,9 +21,12 @@ export default class ReportingHeader extends Component {
     updateModal: PropTypes.func.isRequired,
     currentTime: PropTypes.number.isRequired,
     doesUserHaveRep: PropTypes.bool.isRequired,
+    finalizeMarket: PropTypes.func.isRequired,
     isForking: PropTypes.bool,
     forkingMarket: PropTypes.string,
     forkEndTime: PropTypes.string,
+    forkReputationGoal: PropTypes.string,
+    isForkingMarketFinalized: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -43,6 +46,9 @@ export default class ReportingHeader extends Component {
       reportingWindowStats,
       updateModal,
       doesUserHaveRep,
+      forkReputationGoal,
+      finalizeMarket,
+      isForkingMarketFinalized,
     } = this.props
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
     const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
@@ -66,6 +72,9 @@ export default class ReportingHeader extends Component {
                 currentTime={currentTime}
                 expanded={false}
                 doesUserHaveRep={doesUserHaveRep}
+                forkReputationGoal={forkReputationGoal}
+                finalizeMarket={finalizeMarket}
+                isForkingMarketFinalized={isForkingMarketFinalized}
               />
             }
             { heading === 'Dispute' && !isForking &&

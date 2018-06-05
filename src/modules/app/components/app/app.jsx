@@ -95,6 +95,7 @@ export default class AppView extends Component {
     updateIsMobileSmall: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     updateIsAnimating: PropTypes.func.isRequired,
+    finalizeMarket: PropTypes.func.isRequired,
     url: PropTypes.string,
     isLoading: PropTypes.bool,
   }
@@ -413,6 +414,7 @@ export default class AppView extends Component {
       modal,
       universe,
       isLoading,
+      finalizeMarket,
     } = this.props
     const s = this.state
 
@@ -511,10 +513,11 @@ export default class AppView extends Component {
               <section className={Styles.TopBar}>
                 <ForkingNotification
                   location={location}
-                  forkingMarket={universe.forkingMarket}
-                  forkEndTime={universe.forkEndTime}
+                  universe={universe}
                   currentTime={blockchain.currentAugurTimestamp}
                   doesUserHaveRep={loginAccount.rep > 0}
+                  marginLeft={tagsMargin}
+                  finalizeMarket={finalizeMarket}
                 />
               </section>
             }

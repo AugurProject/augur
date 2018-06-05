@@ -209,6 +209,8 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
+      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false })
+      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false })
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
@@ -250,7 +252,10 @@ export function assembleMarket(
               zeroStyled: true,
             })
             // format-number thinks 0 is '-', need to correct
-            if (outcome.lastPrice.fullPrecision === '0') outcome.lastPricePercent.formatted = '0'
+            if (outcome.lastPrice.fullPrecision === '0') {
+              outcome.lastPricePercent.formatted = '0'
+              outcome.lastPricePercent.full = '0'
+            }
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
@@ -261,7 +266,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           }
-        } else if (outcome.lastPrice.value) {
+        } else if (createBigNumber(outcome.volume || 0).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
@@ -275,11 +280,8 @@ export function assembleMarket(
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeId])
-        // needed for my-position display
-        if (outcome.position) {
-          outcome.position.lastPrice = outcome.lastPrice
-          outcome.position.name = outcome.name
-        }
+        if (outcome.position) outcome.position.name = outcome.name
+
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
         outcome.userOpenOrders = selectUserOpenOrders(marketId, outcomeId, orderBooks, orderCancellation)

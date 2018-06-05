@@ -78,7 +78,7 @@ const MarketProperties = (p) => {
               Finalize
             </button>
           }
-          { p.isForking && p.isForkingMarketFinalized && p.forkingMarket !== p.id &&
+          { p.isForking && p.isForkingMarketFinalized && p.forkingMarket !== p.id && !p.finalizationTime &&
             <button
               className={Styles.MarketProperties__migrate}
               onClick={() => p.updateModal({
@@ -112,6 +112,7 @@ MarketProperties.propTypes = {
   currentTimestamp: PropTypes.number.isRequired,
   updateModal: PropTypes.func.isRequired,
   linkType: PropTypes.string,
+  finalizationTime: PropTypes.number,
   buttonText: PropTypes.string,
   showAdditionalDetailsToggle: PropTypes.bool,
   showingDetails: PropTypes.bool,

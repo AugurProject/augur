@@ -355,6 +355,9 @@ function determineDrawParams({
   const minDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.min).toPrecision(15)).absoluteValue()
   let boundDiff = maxDiff.gt(minDiff) ? maxDiff : minDiff
 
+  if (boundDiff.eq(0)) boundDiff = marketMax.minus(marketMin).dividedBy(2)
+
+
   const yDomain = [
     createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
     createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
@@ -509,7 +512,7 @@ function drawVolume({
 
 }) {
 
-  const yVolumeDomain = map('volume')(priceTimeSeries)
+  const yVolumeDomain = [0, ...map('volume')(priceTimeSeries)]
 
   const yVolumeScale = d3.scaleLinear()
     .domain(d3.extent(yVolumeDomain))
@@ -540,7 +543,7 @@ function drawXAxisLabels({
   candleChart.append('g')
     .attr('id', 'candlestick-x-axis')
     .attr('transform', `translate(0, ${containerHeight - chartDim.bottom})`)
-    .call(d3.axisBottom(xScale).ticks(tickInterval))
+    .call(tickInterval(d3.axisBottom(xScale)))
     .select('path').remove()
 }
 

@@ -202,6 +202,7 @@ export default class MarketPortfolioCard extends Component {
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
                   isMobile={isMobile}
+                  outcome={outcome}
                   closePositionStatus={closePositionStatus}
                 />
               ))}
@@ -252,6 +253,7 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
+                      outcome={outcome}
                       closePositionStatus={closePositionStatus}
                     />
                   ))

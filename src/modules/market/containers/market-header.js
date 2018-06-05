@@ -17,11 +17,22 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     resolutionSource: market.resolutionSource,
     coreProperties: {
-      volume: getValue(market, 'volume.full'),
-      fee: getValue(market, 'settlementFeePercent.full'),
-      expires: getValue(market, 'endTime.formattedLocal'),
-      min: market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null,
-      max: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
+      volume: {
+        value: getValue(market, 'volume.full'),
+      },
+      fee: {
+        value: getValue(market, 'settlementFeePercent.full'),
+        tooltip: 'Market Creator Fee (' + getValue(market, 'marketCreatorFeeRatePercent.full') + ') + Reporting Fee (' + getValue(market, 'reportingFeeRatePercent.full') + ')',
+      },
+      expires: {
+        value: getValue(market, 'endTime.formattedLocal'),
+      },
+      min: {
+        value: market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null,
+      },
+      max: {
+        value: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
+      },
     },
   }
 }

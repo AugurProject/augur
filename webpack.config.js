@@ -139,7 +139,8 @@ let config = {
       filename: 'assets/scripts/common.js'
     }),
     new HtmlWebpackPlugin({
-      template: path.resolve(PATHS.APP, 'index.html'),
+      template: path.resolve(PATHS.APP, 'index.ejs'),
+      environment: process.env.NODE_ENV,
       chunksSortMode: (a, b) => {
         const order = ['common', 'assets/scripts/vendor', 'assets/styles/styles', 'main'];
 

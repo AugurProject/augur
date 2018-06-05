@@ -84,8 +84,24 @@
 .TradingConfirm__total {
   &:extend(.TradingConfirm__details all);
 
+  display: flex;
+
+  > li {
+    align-items: stretch;
+  }
+
+  > li:nth-child(2) {
+    display: block;
+    margin-top: 0;
+  }
+
+  > li:nth-child(2) > span:nth-child(1) {
+    padding-bottom: 1rem;
+  }
+
   > li > span:first-child,
   > li > span:last-child {
+    display: block;
     font-size: @font-size-large;
     font-weight: 700;
     line-height: @font-size-large;
