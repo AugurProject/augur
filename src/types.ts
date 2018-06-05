@@ -384,6 +384,7 @@ export interface UIOrder<BigNumberType> {
   sharesEscrowed: BigNumberType;
   canceledBlockNumber?: Bytes32;
   canceledTransactionHash?: Bytes32;
+  canceledTime?: Bytes32;
 }
 
 export interface UIOrders<BigNumberType> {

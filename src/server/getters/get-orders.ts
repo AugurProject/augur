@@ -9,7 +9,7 @@ interface OrdersRowWithCreationTimeAndCanceled extends OrdersRow<BigNumber> {
   creationTime: number;
   canceledBlockNumber: Bytes32|null;
   canceledTransactionHash: Bytes32|null;
-
+  canceledTime: number;
 }
 
 // market, outcome, creator, orderType, limit, sort
@@ -28,10 +28,12 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
     "blocks.timestamp as creationTime",
     "orders_canceled.transactionHash as canceledTransactionHash",
     "orders_canceled.blockNumber as canceledBlockNumber",
+    "canceledBlock.timestamp as canceledTime",
   ]).from("orders");
   query.join("blocks", "orders.blockNumber", "blocks.blockNumber");
   query.join("markets", "orders.marketId", "markets.marketId");
   query.leftJoin("orders_canceled", "orders_canceled.orderId", "orders.orderId");
+  query.leftJoin("blocks as canceledBlock", "orders_canceled.blockNumber", "canceledBlock.blockNumber");
   query.where(queryData);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
@@ -65,6 +67,7 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
         row.orderState !== OrderState.CANCELED ? {} : {
           canceledTransactionHash: row.canceledTransactionHash,
           canceledBlockNumber: row.canceledBlockNumber,
+          canceledTime: row.canceledTime,
         },
       );
     });

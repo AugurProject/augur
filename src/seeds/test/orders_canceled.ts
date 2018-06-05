@@ -6,7 +6,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       orderId: "0x4200000000000000000000000000000000000000000000000000000000000000",
-      blockNumber: 1500000,
+      blockNumber: 1500001,
       transactionHash: "0x000000000000000000000000000000000000000000000000000000000000AA05",
       logIndex: 0,
     }];
