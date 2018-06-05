@@ -4,7 +4,7 @@ import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
 import { unfix } from 'speedomatic'
-import { isNull } from 'lodash'
+import { isNull, sortBy } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
@@ -23,7 +23,7 @@ export function addTradeTransactions(trades) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     const transactions = {}
-    const sorted = groupBy('tradeGroupId', trades)
+    const sorted = sortBy(groupBy('tradeGroupId', trades), 'timestamp')
     // todo: need fallback if groupBy fails and groups aren't created
     each(sorted, (group) => {
       if (group[0].tradeGroupId === undefined) {
