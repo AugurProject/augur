@@ -266,7 +266,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           }
-        } else if (createBigNumber(outcome.volume).gt(ZERO)) {
+        } else if (createBigNumber(outcome.volume || 0).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
