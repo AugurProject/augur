@@ -17,6 +17,7 @@ export default class MarketPositionsListPosition extends Component {
     isExtendedDisplay: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
+    outcome: PropTypes.object,
   }
 
   static calcAvgDiff(position, order) {
@@ -101,6 +102,7 @@ export default class MarketPositionsListPosition extends Component {
       outcomeName,
       openOrders,
       position,
+      outcome,
     } = this.props
     const s = this.state
 
@@ -139,7 +141,7 @@ export default class MarketPositionsListPosition extends Component {
         </li>
         { isExtendedDisplay && !isMobile &&
           <li>
-            {getValue(position, 'lastPrice.formatted') }
+            {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
         { !isMobile && <li>{ getValue(position, 'unrealizedNet.formatted') }</li>}
