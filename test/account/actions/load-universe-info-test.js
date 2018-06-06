@@ -2,12 +2,12 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
 import { BINARY } from 'modules/markets/constants/market-types'
-import getUniversesInfo, { __RewireAPI__ as ReWireModule } from 'modules/account/actions/get-universe-info'
+import { loadUniverseInfo, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-universe-info'
 
 describe('modules/account/actions/get-universe-info.js', () => {
   const test = t => it(t.description, () => t.assertions())
 
-  describe('getUniversesInfo', () => {
+  describe('loadUniverseInfo', () => {
     test({
       description: 'should return the expected object',
       assertions: () => {
@@ -98,7 +98,7 @@ describe('modules/account/actions/get-universe-info.js', () => {
           ],
         }
 
-        getUniversesInfo((actual) => {
+        loadUniverseInfo((actual) => {
           assert.deepEqual(actual, expected, `Didn't return the expected object`)
         })(null, getState)
       },

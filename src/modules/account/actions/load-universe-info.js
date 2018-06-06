@@ -1,13 +1,16 @@
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import logError from 'utils/log-error'
-
+import async from 'async'
+import { createBigNumber } from 'utils/create-big-number'
+import { updateUniverse } from 'modules/universe/actions/update-universe'
+import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { NULL_ADDRESS } from 'utils/constants'
 
-export default function (callback = logError) {
+export function loadUniverseInfo(callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount, marketsData } = getState()
     const universeId = universe.id || UNIVERSE_ID
@@ -17,6 +20,7 @@ export default function (callback = logError) {
       id: universeId,
       reportableOutcomes: null,
       winningChildUniverseId: null,
+      openInterest: universe.openInterest || '0',
     }
 
     if (universe.isForking) {
@@ -59,6 +63,7 @@ function getUniverseInfo(universeId, callback) {
     reportableOutcomes: null,
     winningChildUniverseId: null,
     market: null,
+    openInterest: '0',
   }
 
   augur.api.Universe.getForkingMarket({ tx: { to: universeId } }, (err, forkingMarket) => {
@@ -67,15 +72,19 @@ function getUniverseInfo(universeId, callback) {
       if (err) return callback(err)
       universeData.market = marketsDataArray[0]
       universeData.reportableOutcomes = selectReportableOutcomes(universeData.market.marketType, universeData.market.outcomes)
-      augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
+      augur.api.Universe.getOpenInterestInAttoEth({ tx: { to: universeId } }, (err, openInterest) => {
         if (err) return callback(err)
-        if (!isForkingMarketFinalized) {
-          return callback(null, universeData)
-        }
-        augur.api.Universe.getWinningChildUniverse({ tx: { to: universeId } }, (err, winningChildUniverse) => {
+        universeData.openInterest = openInterest
+        augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
           if (err) return callback(err)
-          universeData.winningChildUniverseId = winningChildUniverse
-          return callback(null, universeData)
+          if (!isForkingMarketFinalized) {
+            return callback(null, universeData)
+          }
+          augur.api.Universe.getWinningChildUniverse({ tx: { to: universeId } }, (err, winningChildUniverse) => {
+            if (err) return callback(err)
+            universeData.winningChildUniverseId = winningChildUniverse
+            return callback(null, universeData)
+          })
         })
       })
     })
@@ -95,6 +104,8 @@ function getUniversesInfoWithParentContext(account, currentUniverseData, parentU
         children: [],
         currentLevel: [],
       }
+      // add open interest to get universe info result
+      result[0] = Object.assign(currentUniverseData, result[0])
       callback(result.reduce((acc, universeData) => {
         if (universeData.parentUniverse === currentUniverseData.id) {
           universeData.description = getUniverseName(currentUniverseData, universeData)
@@ -132,4 +143,95 @@ function getUniverseName(parentUniverseData, universeData) {
   const outcome = parentUniverseData.reportableOutcomes[outcomeId]
   const outComeLabel = outcome && (outcome.description || outcome.name)
   return outComeLabel || 'Unidentified'
+}
+
+
+export function getForkingInfo(universe, callback) {
+  return (dispatch, getState) => {
+    const universePayload = { tx: { to: universe.id } }
+    // Getting current fork data
+    augur.api.Universe.getForkingMarket(universePayload, (err, forkingMarket) => {
+      if (err) return callback(err)
+      const isForking = forkingMarket !== '0x0000000000000000000000000000000000000000'
+      if (isForking) {
+        dispatch(loadMarketsInfoIfNotLoaded([forkingMarket]))
+        async.parallel({
+          forkEndTime: (next) => {
+            augur.api.Universe.getForkEndTime(universePayload, (err, forkEndTime) => {
+              if (err) return next(err)
+              next(null, forkEndTime)
+            })
+          },
+          isForkingMarketFinalized: (next) => {
+            augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
+              if (err) return next(err)
+              next(null, isForkingMarketFinalized)
+            })
+          },
+          forkReputationGoal: (next) => {
+            augur.api.Universe.getForkReputationGoal(universePayload, (err, forkReputationGoal) => {
+              if (err) return next(err)
+              next(null, forkReputationGoal)
+            })
+          },
+        }, (err, universeData) => {
+          if (err) return callback(err)
+          if (universeData.isForkingMarketFinalized) {
+            augur.api.Universe.getWinningChildUniverse(universePayload, (err, winningChildUniverse) => {
+              if (err) return callback(err)
+              updateUniverseIfForkingDataChanged(dispatch, universe, {
+                ...universeData,
+                forkingMarket,
+                winningChildUniverse,
+                isForking,
+              })
+            })
+          } else {
+            updateUniverseIfForkingDataChanged(dispatch, universe, { ...universeData, forkingMarket, isForking, winningChildUniverse: undefined })
+          }
+        })
+      } else {
+        updateUniverseIfForkingDataChanged(dispatch, universe, { isForking, forkingMarket, forkEndTime: undefined, isForkingMarketFinalized: undefined, winningChildUniverse: undefined })
+      }
+    })
+  }
+}
+
+function updateUniverseIfForkingDataChanged(dispatch, oldUniverseData, universeData) {
+  if (
+    oldUniverseData.id !== universeData.id ||
+    oldUniverseData.isForking !== universeData.isForking ||
+    oldUniverseData.forkingMarket !== universeData.forkingMarket ||
+    oldUniverseData.forkEndTime !== universeData.forkEndTime ||
+    oldUniverseData.isForkingMarketFinalized !== universeData.isForkingMarketFinalized ||
+    oldUniverseData.winningChildUniverse !== universeData.winningChildUniverse
+  ) {
+    dispatch(updateUniverse(universeData))
+  }
+}
+
+export function getUniverseProperties(universe, callback) {
+  return (dispatch, getState) => {
+    const universePayload = { tx: { to: universe.id } }
+
+    async.parallel({
+      forkThreshold: (next) => {
+        augur.api.Universe.getDisputeThresholdForFork(universePayload, (err, disputeThresholdForFork) => {
+          if (err) return callback(err)
+          const forkThreshold = createBigNumber(disputeThresholdForFork, 10)
+          if (forkThreshold !== universe.forkThreshold) {
+            next(null, forkThreshold)
+          }
+        })
+      },
+      openInterest: (next) => {
+        augur.api.Universe.getOpenInterestInAttoEth(universePayload, (err, openInterest) => {
+          if (err) return next(err)
+          next(null, openInterest)
+        })
+      },
+    }, (err, universeData) => {
+      dispatch(updateUniverse(universeData))
+    })
+  }
 }
