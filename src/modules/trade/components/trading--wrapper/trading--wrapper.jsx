@@ -56,6 +56,7 @@ class MarketTradingWrapper extends Component {
     this.clearOrderForm = this.clearOrderForm.bind(this)
     this.updateOrderEthEstimate = this.updateOrderEthEstimate.bind(this)
     this.updateOrderShareEstimate = this.updateOrderShareEstimate.bind(this)
+    this.showOrderPlacedWrapper = this.showOrderPlacedWrapper.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -131,6 +132,12 @@ class MarketTradingWrapper extends Component {
     })
   }
 
+  showOrderPlacedWrapper() {
+    // wrap so that we can clear trade on sent.
+    this.clearOrderForm()
+    this.props.showOrderPlaced()
+  }
+
   updateOrderEthEstimate(orderEthEstimate) {
     this.setState({
       orderEthEstimate,
@@ -151,7 +158,6 @@ class MarketTradingWrapper extends Component {
       isMobile,
       market,
       selectedOutcome,
-      showOrderPlaced,
       toggleForm,
     } = this.props
     const s = this.state
@@ -227,7 +233,7 @@ class MarketTradingWrapper extends Component {
             trade={selectedOutcome.trade}
             isMobile={isMobile}
             clearOrderForm={this.clearOrderForm}
-            showOrderPlaced={showOrderPlaced}
+            showOrderPlaced={this.showOrderPlacedWrapper}
           />
         }
       </section>
