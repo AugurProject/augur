@@ -72,19 +72,15 @@ function getUniverseInfo(universeId, callback) {
       if (err) return callback(err)
       universeData.market = marketsDataArray[0]
       universeData.reportableOutcomes = selectReportableOutcomes(universeData.market.marketType, universeData.market.outcomes)
-      augur.api.Universe.getOpenInterestInAttoEth({ tx: { to: universeId } }, (err, openInterest) => {
+      augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
         if (err) return callback(err)
-        universeData.openInterest = openInterest
-        augur.api.Market.isFinalized({ tx: { to: forkingMarket } }, (err, isForkingMarketFinalized) => {
+        if (!isForkingMarketFinalized) {
+          return callback(null, universeData)
+        }
+        augur.api.Universe.getWinningChildUniverse({ tx: { to: universeId } }, (err, winningChildUniverse) => {
           if (err) return callback(err)
-          if (!isForkingMarketFinalized) {
-            return callback(null, universeData)
-          }
-          augur.api.Universe.getWinningChildUniverse({ tx: { to: universeId } }, (err, winningChildUniverse) => {
-            if (err) return callback(err)
-            universeData.winningChildUniverseId = winningChildUniverse
-            return callback(null, universeData)
-          })
+          universeData.winningChildUniverseId = winningChildUniverse
+          return callback(null, universeData)
         })
       })
     })
@@ -104,28 +100,35 @@ function getUniversesInfoWithParentContext(account, currentUniverseData, parentU
         children: [],
         currentLevel: [],
       }
-      // add open interest to get universe info result
-      result[0] = Object.assign(currentUniverseData, result[0])
-      callback(result.reduce((acc, universeData) => {
-        if (universeData.parentUniverse === currentUniverseData.id) {
-          universeData.description = getUniverseName(currentUniverseData, universeData)
-          universeData.isWinningUniverse = currentUniverseData.winningChildUniverseId === universeData.universe
-          acc.children.push(universeData)
-        } else if (universeData.parentUniverse === parentUniverseData.id) {
-          universeData.description = getUniverseName(parentUniverseData, universeData)
-          universeData.isWinningUniverse = parentUniverseData.winningChildUniverseId === universeData.universe
-          if (universeData.universe === currentUniverseData.id) {
-            acc.currentLevel = [universeData].concat(acc.currentLevel)
+
+      async.forEachOf(result, (obj, key, callback) => {
+        augur.api.Universe.getOpenInterestInAttoEth({ tx: { to: obj.universe } }, (err, openInterest) => {
+          // give default value of 0, there might have been error
+          obj.openInterest = openInterest || 0
+          callback(err, obj)
+        })
+      }, (err) => {
+        callback(result.reduce((acc, universeData) => {
+          if (universeData.parentUniverse === currentUniverseData.id) {
+            universeData.description = getUniverseName(currentUniverseData, universeData)
+            universeData.isWinningUniverse = currentUniverseData.winningChildUniverseId === universeData.universe
+            acc.children.push(universeData)
+          } else if (universeData.parentUniverse === parentUniverseData.id) {
+            universeData.description = getUniverseName(parentUniverseData, universeData)
+            universeData.isWinningUniverse = parentUniverseData.winningChildUniverseId === universeData.universe
+            if (universeData.universe === currentUniverseData.id) {
+              acc.currentLevel = [universeData].concat(acc.currentLevel)
+            } else {
+              acc.currentLevel.push(universeData)
+            }
           } else {
-            acc.currentLevel.push(universeData)
+            universeData.description = getUniverseName(grandParentUniverseData, universeData)
+            universeData.isWinningUniverse = grandParentUniverseData.winningChildUniverseId === universeData.universe
+            acc.parent = universeData
           }
-        } else {
-          universeData.description = getUniverseName(grandParentUniverseData, universeData)
-          universeData.isWinningUniverse = grandParentUniverseData.winningChildUniverseId === universeData.universe
-          acc.parent = universeData
-        }
-        return acc
-      }, initialMapping))
+          return acc
+        }, initialMapping))
+      })
     },
   )
 }
