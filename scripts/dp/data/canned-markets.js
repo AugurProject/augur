@@ -1,6 +1,6 @@
 "use strict";
 
-var binaryOrderBook = require("./binary-order-book");
+var yesNoOrderBook = require("./yes-no-order-book");
 var singleOutcomeAsks = require("./single-outcome-asks");
 var singleOutcomeBids = require("./single-outcome-bids");
 
@@ -15,7 +15,7 @@ var thisYear = today.getUTCFullYear();
 var nextYear = thisYear + 1;
 
 module.exports = [{
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "space",
@@ -25,7 +25,7 @@ module.exports = [{
     longDescription: "",
   },
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will SpaceX successfully complete a manned flight beyond Earth orbit by the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "space",
@@ -35,7 +35,7 @@ module.exports = [{
     longDescription: "",
   },
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will SpaceX successfully complete a Mars landing (manned or unmanned) by the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "space",
@@ -44,9 +44,9 @@ module.exports = [{
     tags: ["SpaceX", "spaceflight"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will California secede from the United States before January 1, " + nextYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "politics",
@@ -55,9 +55,9 @@ module.exports = [{
     tags: ["California", "Calexit"],
     longDescription: "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will the Dow Jones Industrial Average close at a higher price on " + closingBellTomorrow.toDateString() + " than it closed at the previous day?",
   _endTime: parseInt(closingBellTomorrow.getTime() / 1000, 10),
   _topic: "finance",
@@ -66,9 +66,9 @@ module.exports = [{
     tags: ["stocks", "Dow Jones"],
     longDescription: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will Augur's live release happen by the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "Augur",
@@ -77,9 +77,9 @@ module.exports = [{
     tags: ["release date", "Ethereum"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will Jair Messias Bolsonaro be elected the president of Brazil in " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "politics",
@@ -88,9 +88,9 @@ module.exports = [{
     tags: ["elections", "Brazil"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will Ethereum trade at $2000 or higher at any time before the end of " + thisYear + "?",
   _endTime: parseInt(new Date("1/1/" + nextYear).getTime() / 1000, 10),
   _topic: "crypto",
@@ -99,9 +99,9 @@ module.exports = [{
     tags: ["Ethereum", "trading"],
     longDescription: "http://coinmarketcap.com/currencies/ethereum",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will the Larsen B ice shelf collapse by the end of November " + nextYear + "?",
   _endTime: parseInt(new Date("12-1-" + nextYear).getTime() / 1000, 10),
   _topic: "climate",
@@ -109,9 +109,9 @@ module.exports = [{
     resolutionSource: "",
     tags: ["Antarctica", "warming"],
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will the Golden State Warriors win the " + nextYear + " NBA Championship?",
   _endTime: parseInt(new Date("6-20-" + nextYear).getTime() / 1000, 10),
   _topic: "sports",
@@ -120,9 +120,9 @@ module.exports = [{
     tags: ["basketball", "Warriors"],
     longDescription: "",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
-  marketType: "binary",
+  marketType: "yesNo",
   _description: "Will antibiotics be outlawed for agricultural use in China by the end of " + nextYear + "?",
   _endTime: parseInt(new Date("1-1-" + (parseInt(nextYear, 10) + 1)).getTime() / 1000, 10),
   _topic: "agriculture",
@@ -130,7 +130,7 @@ module.exports = [{
     tags: ["antibiotics", "China"],
     longDescription: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   },
-  orderBook: binaryOrderBook,
+  orderBook: yesNoOrderBook,
 }, {
   marketType: "scalar",
   _description: "High temperature (in degrees Fahrenheit) on " + today.toDateString() + " at the San Francisco International Airport, as reported by Weather Underground",

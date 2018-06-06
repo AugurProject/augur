@@ -33,7 +33,7 @@ function getPayoutNumerators(market, selectedOutcome, invalid) {
     payoutNumerators[0] = shortPayout;
     payoutNumerators[1] = longPayout;
   } else {
-		// for binary and categorical the selected outcome is outcome.id
+		// for yesNo and categorical the selected outcome is outcome.id
 		// and must be a number
     payoutNumerators[selectedOutcome] = numTicks;
   }

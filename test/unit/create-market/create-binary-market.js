@@ -6,19 +6,19 @@ var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
 var constants = require("../../../src/constants");
 
-describe("create-market/create-binary-market", function () {
+describe("create-market/create-yes-no-market", function () {
   var extraInfo = {
     longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
     tags: ["Ancient evil", "Large flaming eyes"],
   };
   var test = function (t) {
     it(t.description, function (done) {
-      var createBinaryMarket = proxyquire("../../../src/create-market/create-binary-market", {
+      var createYesNoMarket = proxyquire("../../../src/create-market/create-yes-no-market", {
         "./get-market-creation-cost": t.stub.getMarketCreationCost,
         "./get-market-from-create-market-receipt": t.stub.getMarketFromCreateMarketReceipt,
         "../api": t.stub.api,
       });
-      createBinaryMarket(Object.assign({}, t.params, {
+      createYesNoMarket(Object.assign({}, t.params, {
         onSuccess: function (res) {
           t.params.onSuccess(res);
           done();
@@ -27,7 +27,7 @@ describe("create-market/create-binary-market", function () {
     });
   };
   test({
-    description: "create a binary market",
+    description: "create a yesNo market",
     params: {
       meta: { signer: Buffer.from("PRIVATE_KEY", "utf8"), accountType: "privateKey" },
       universe: "UNIVERSE_ADDRESS",
@@ -60,11 +60,11 @@ describe("create-market/create-binary-market", function () {
       api: function () {
         return {
           Universe: {
-            createBinaryMarket: function (p) {
+            createYesNoMarket: function (p) {
               assert.deepEqual(p.tx, {
                 to: "UNIVERSE_ADDRESS",
                 value: "0xf43fc2c04ee0000",
-                gas: constants.CREATE_BINARY_MARKET_GAS,
+                gas: constants.CREATE_YES_NO_MARKET_GAS,
               });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._feePerEthInWei, "0x4321");

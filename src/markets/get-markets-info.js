@@ -15,10 +15,10 @@
  * @typedef {Object} MarketInfo
  * @property {string} id Address of a market, as a hexadecimal string.
  * @property {string} universe Address of a universe, as a hexadecimal string.
- * @property {string} type Type of market ("binary", "categorical", or "scalar").
+ * @property {string} type Type of market ("yesNo", "categorical", or "scalar").
  * @property {number} numOutcomes Total possible outcomes for the market.
- * @property {number} minPrice Minimum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 0 ETH. For scalar markets, this is the bottom end of the range set by the market creator.
- * @property {number} maxPrice Maximum price allowed for a share on a market, in ETH. For binary & categorical markets, this is 1 ETH. For scalar markets, this is the top end of the range set by the market creator.
+ * @property {number} minPrice Minimum price allowed for a share on a market, in ETH. For yesNo & categorical markets, this is 0 ETH. For scalar markets, this is the bottom end of the range set by the market creator.
+ * @property {number} maxPrice Maximum price allowed for a share on a market, in ETH. For yesNo & categorical markets, this is 1 ETH. For scalar markets, this is the top end of the range set by the market creator.
  * @property {string} cumulativeScale Difference between maxPrice and minPrice.
  * @property {string} author Ethereum address of the creator of the market, as a hexadecimal string.
  * @property {number} creationTime Timestamp when the Ethereum block containing the market creation was created, in seconds.

@@ -15,9 +15,9 @@ function createMarket(augur, market, designatedReporterAddress, auth, callback) 
     case "scalar":
       createMarketOfType = augur.createMarket.createScalarMarket;
       break;
-    case "binary":
+    case "yesNo":
     default:
-      createMarketOfType = augur.createMarket.createBinaryMarket;
+      createMarketOfType = augur.createMarket.createYesNoMarket;
   }
   var createMarketParams = Object.assign({}, immutableDelete(market, ["orderBook", "marketType"]), {
     meta: auth,

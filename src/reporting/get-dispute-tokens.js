@@ -6,12 +6,12 @@
  * @property {string} marketId Ethereum address of the Market, as a hexadecimal string.
  * @property {number|null} payout0 Payout numerator 0 of the Dispute Token’s payout set.
  * @property {number|null} payout1 Payout numerator 1 of the Dispute Token’s payout set.
- * @property {number|null} payout2 Payout numerator 2 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
- * @property {number|null} payout3 Payout numerator 3 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
- * @property {number|null} payout4 Payout numerator 4 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
- * @property {number|null} payout5 Payout numerator 5 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
- * @property {number|null} payout6 Payout numerator 6 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
- * @property {number|null} payout7 Payout numerator 7 of the Dispute Token’s payout set. (Set to null for Binary and Scalar Markets.)
+ * @property {number|null} payout2 Payout numerator 2 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
+ * @property {number|null} payout3 Payout numerator 3 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
+ * @property {number|null} payout4 Payout numerator 4 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
+ * @property {number|null} payout5 Payout numerator 5 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
+ * @property {number|null} payout6 Payout numerator 6 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
+ * @property {number|null} payout7 Payout numerator 7 of the Dispute Token’s payout set. (Set to null for yesNo and Scalar Markets.)
  * @property {boolean|number} isInvalid Whether the Market was determined to be invalid.
  * @property {number} balance Dispute Token balance the owner has staked, in ETH.
  * @property {boolean|null} winningToken Index of the Payout Numerator that was determined to be the Market's Final Outcome.

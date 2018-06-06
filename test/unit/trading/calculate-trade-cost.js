@@ -44,7 +44,7 @@ describe("trading/calculate-trade-cost", function () {
     },
   });
   test({
-    description: "binary bid",
+    description: "yesNo bid",
     params: {
       displayPrice: "0.75",
       displayAmount: "0.1",
@@ -60,7 +60,7 @@ describe("trading/calculate-trade-cost", function () {
     },
   });
   test({
-    description: "binary ask",
+    description: "yesNo ask",
     params: {
       displayPrice: "0.75",
       displayAmount: "0.1",
