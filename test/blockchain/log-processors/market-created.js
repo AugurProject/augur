@@ -40,7 +40,7 @@ describe("blockchain/log-processors/market-created", () => {
   };
   const constants = new Augur().constants;
   test({
-    description: "binary market MarketCreated log and removal",
+    description: "yesNo market MarketCreated log and removal",
     params: {
       log: {
         blockNumber: 7,
@@ -111,7 +111,7 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
-            marketType: "binary",
+            marketType: "yesNo",
             numOutcomes: 2,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
@@ -531,7 +531,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
   });
   test({
-    description: "binary market MarketCreated log and removal, with NULL extraInfo",
+    description: "yesNo market MarketCreated log and removal, with NULL extraInfo",
     params: {
       log: {
         blockNumber: 7,
@@ -598,7 +598,7 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
-            marketType: "binary",
+            marketType: "yesNo",
             numOutcomes: 2,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),
@@ -683,7 +683,7 @@ describe("blockchain/log-processors/market-created", () => {
     },
   });
   test({
-    description: "binary market MarketCreated log and removal, with 0 creator fee rate",
+    description: "yesNo market MarketCreated log and removal, with 0 creator fee rate",
     params: {
       log: {
         blockNumber: 7,
@@ -754,7 +754,7 @@ describe("blockchain/log-processors/market-created", () => {
           markets: [{
             marketId: "0x1111111111111111111111111111111111111111",
             universe: "0x000000000000000000000000000000000000000b",
-            marketType: "binary",
+            marketType: "yesNo",
             numOutcomes: 2,
             minPrice: new BigNumber("0", 10),
             maxPrice: new BigNumber("1", 10),

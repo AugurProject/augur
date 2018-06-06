@@ -123,7 +123,7 @@ describe("server/getters/get-user-trading-positions", () => {
     },
   });
   test({
-    description: "get a user's position in one outcome of a binary market where the user is long",
+    description: "get a user's position in one outcome of a yesNo market where the user is long",
     params: {
       account: "0x0000000000000000000000000000000000000b1b",
       marketId: "0x0000000000000000000000000000000000000002",
@@ -147,7 +147,7 @@ describe("server/getters/get-user-trading-positions", () => {
     },
   });
   test({
-    description: "get a user's position in one outcome of a binary market where the user is short",
+    description: "get a user's position in one outcome of a yesNo market where the user is short",
     params: {
       account: "0x000000000000000000000000000000000000deed",
       marketId: "0x0000000000000000000000000000000000000002",
