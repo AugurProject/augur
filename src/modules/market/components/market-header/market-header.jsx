@@ -13,6 +13,10 @@ import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
 
+function createMarkup(tooltip) {
+  return { __html: tooltip }
+}
+
 export default class MarketHeader extends Component {
   static propTypes = {
     clearSelectedOutcome: PropTypes.func,
@@ -102,7 +106,8 @@ export default class MarketHeader extends Component {
                           place="bottom"
                           type="light"
                         >
-                          <p>{coreProperties[property].tooltip}</p>
+                          <h4>{coreProperties[property].tooltipHeader}</h4>
+                          <p dangerouslySetInnerHTML={createMarkup(coreProperties[property].tooltip)} />
                         </ReactTooltip>
                       </div>
                     }
