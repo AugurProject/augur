@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Styles from 'modules/portfolio/components/transaction-meta/transaction-meta.styles'
 
+import { convertUnixToFormattedDate } from 'utils/format-date'
+
 export default class TransactionMeta extends Component {
   static propTypes = {
     meta: PropTypes.object.isRequired,
@@ -22,6 +24,10 @@ export default class TransactionMeta extends Component {
       networkId,
     } = this.props
     const baseLink = networkId ? TransactionMeta.networkLink[networkId] : null
+
+    if (typeof meta.timestamp === 'number') {
+      meta.timestamp = convertUnixToFormattedDate(meta.timestamp).full
+    }
 
     return (
       <ul className={Styles.TransactionMeta}>
