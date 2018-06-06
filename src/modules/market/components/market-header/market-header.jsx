@@ -13,9 +13,9 @@ import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
 
-function createMarkup(tooltip) { 
-  return {__html: tooltip}; 
-};
+function createMarkup(tooltip) {
+  return { __html: tooltip }
+}
 
 export default class MarketHeader extends Component {
   static propTypes = {
