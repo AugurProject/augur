@@ -141,14 +141,32 @@ export function connectAugur(history, env, isInitialConnection = false, callback
           }))
         }
       }
-      dispatch(loadUniverse(universeId, history))
-      if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
-      if (isInitialConnection) {
-        pollForAccount(dispatch, getState)
-        pollForNetwork(dispatch, getState)
-        pollForEscapeHatch(dispatch, getState)
+
+      const doIt = () => {
+        dispatch(loadUniverse(universeId, history))
+        if (modal && modal.type === MODAL_NETWORK_DISCONNECTED) dispatch(closeModal())
+        if (isInitialConnection) {
+          pollForAccount(dispatch, getState)
+          pollForNetwork(dispatch, getState)
+          pollForEscapeHatch(dispatch, getState)
+        }
+        callback()
       }
-      callback()
+
+      if (process.env.NODE_ENV === 'development') {
+        AugurJS.augur.api.Augur.isKnownUniverse({
+          _universe: universeId,
+        }, (err, data) => {
+          if (data === false && windowRef.localStorage && windowRef.localStorage.removeItem) {
+            windowRef.localStorage.removeItem('selectedUniverse')
+            location.reload()
+          }
+
+          doIt()
+        })
+      } else {
+        doIt()
+      }
     })
   }
 }
