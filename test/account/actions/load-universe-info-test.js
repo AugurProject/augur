@@ -4,7 +4,7 @@ import { assert } from 'chai'
 import { BINARY } from 'modules/markets/constants/market-types'
 import { loadUniverseInfo, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-universe-info'
 
-describe('modules/account/actions/get-universe-info.js', () => {
+describe('modules/account/actions/load-universe-info.js', () => {
   const test = t => it(t.description, () => t.assertions())
 
   describe('loadUniverseInfo', () => {
@@ -58,6 +58,9 @@ describe('modules/account/actions/get-universe-info.js', () => {
                 })
                 return callback(null, '0x0000000000000000000000000000000000000000')
               },
+              getOpenInterestInAttoEth: (args, callback) => {
+                callback(null, '1000000')
+              },
             },
           },
           augurNode: {
@@ -80,6 +83,7 @@ describe('modules/account/actions/get-universe-info.js', () => {
               payout: [10000, 0],
               isInvalid: false,
               numMarkets: 400,
+              openInterest: '1000000',
               parentUniverse: '0xGENESIS',
               description: 'No',
               isWinningUniverse: true,
@@ -91,6 +95,7 @@ describe('modules/account/actions/get-universe-info.js', () => {
               payout: [],
               isInvalid: false,
               numMarkets: 15,
+              openInterest: '1000000',
               parentUniverse: '0x0000000000000000000000000000000000000000',
               description: 'GENESIS',
               isWinningUniverse: false,
