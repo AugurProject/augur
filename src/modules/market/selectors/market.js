@@ -202,7 +202,7 @@ export function assembleMarket(
       market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
       market.endTime = convertUnixToFormattedDate(marketData.endTime)
-      market.endTimeLabel = (market.endTime < now) ? 'ended' : 'ends'
+      market.endTimeLabel = (market.endTime < now) ? 'expired' : 'expires'
       market.creationTime = convertUnixToFormattedDate(marketData.creationTime)
 
       market.isOpen = isOpen
