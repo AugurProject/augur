@@ -102,6 +102,7 @@ export default class MarketHeader extends Component {
                           place="bottom"
                           type="light"
                         >
+                          <h4>{coreProperties[property].tooltipHeader}</h4>
                           <p>{coreProperties[property].tooltip}</p>
                         </ReactTooltip>
                       </div>
