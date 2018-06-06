@@ -6,6 +6,7 @@ const syncUniverse = (callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
   dispatch(getUniverseProperties(universe))
   dispatch(getForkingInfo(universe))
+  callback(null)
 }
 
 export default syncUniverse
