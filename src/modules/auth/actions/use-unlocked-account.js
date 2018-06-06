@@ -1,6 +1,6 @@
 import { augur } from 'services/augurjs'
 import { updateIsLoggedAndLoadAccountData } from 'modules/auth/actions/update-is-logged-and-load-account-data'
-import isMetaMask from 'modules/auth/helpers/is-meta-mask'
+import isGlobalWeb3 from 'modules/auth/helpers/is-global-web3'
 import logError from 'utils/log-error'
 
 const { ACCOUNT_TYPES } = augur.rpc.constants
@@ -8,7 +8,7 @@ const { ACCOUNT_TYPES } = augur.rpc.constants
 // Use unlocked local account or MetaMask account
 export const useUnlockedAccount = (unlockedAddress, callback = logError) => (dispatch) => {
   if (unlockedAddress == null) return callback('no account address')
-  if (isMetaMask()) {
+  if (isGlobalWeb3()) {
     dispatch(updateIsLoggedAndLoadAccountData(unlockedAddress, ACCOUNT_TYPES.META_MASK))
     return callback(null)
   }
