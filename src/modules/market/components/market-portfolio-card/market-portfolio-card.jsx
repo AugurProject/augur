@@ -210,54 +210,56 @@ export default class MarketPortfolioCard extends Component {
           </div>
         </section>
         <section className={Styles.MarketCard__tablesection}>
-          {(myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
-            <button
-              className={Styles.MarketCard__headingcontainer}
-              onClick={() => this.toggleTable('openOrders')}
-            >
-              <h1 className={Styles.MarketCard__tableheading}>
-                Open Orders
-              </h1>
-              <div
-                className={Styles.MarketCard__tabletoggle}
-              >
-                <ChevronFlip pointDown={!this.state.tableOpen.openOrders} />
-              </div>
-            </button>
-          }
           <div className={PositionStyles.MarketPositionsList__table}>
-            { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
-            <ul className={classNames(
-              PositionStyles['MarketPositionsList__table-header'],
-              Styles['MarketCard__table-header'],
-            )}
-            >
-              <li>Outcome</li>
-              { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
-              { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
-              { !isMobile && <li><span>Last Price</span></li> }
-              { !isMobile && <li/>}
-              { !isMobile && <li/>}
-              <li/>
-              <li><span>Action</span></li>
-            </ul>
+            {(myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
+              <button
+                className={Styles.MarketCard__headingcontainer}
+                onClick={() => this.toggleTable('openOrders')}
+              >
+                <h1 className={Styles.MarketCard__tableheading}>
+                  Open Orders
+                </h1>
+                <div
+                  className={Styles.MarketCard__tabletoggle}
+                >
+                  <ChevronFlip pointDown={!this.state.tableOpen.openOrders} />
+                </div>
+              </button>
             }
-            <div className={PositionStyles['MarketPositionsList__table-body']}>
-              { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
-                outcome.userOpenOrders.map((order, i) => (
-                  <MarketPositionsListOrder
-                    key={order.id}
-                    outcomeName={outcome.name}
-                    order={order}
-                    pending={order.pending}
-                    isExtendedDisplay
-                    isMobile={isMobile}
-                    outcome={outcome}
-                    closePositionStatus={closePositionStatus}
-                  />
-                ))
-              ))
+            <div className={PositionStyles.MarketPositionsList__table}>
+              { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
+              <ul className={classNames(
+                PositionStyles['MarketPositionsList__table-header'],
+                Styles['MarketCard__table-header'],
+              )}
+              >
+                <li>Outcome</li>
+                { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
+                { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
+                { !isMobile && <li><span>Last Price</span></li> }
+                { !isMobile && <li><span>Unrealized <span />P/L</span></li>}
+                { !isMobile && <li><span>Realized <span />P/L</span></li>}
+                <li><span>Total <span />P/L</span></li>
+                <li><span>Action</span></li>
+              </ul>
               }
+              <div className={PositionStyles['MarketPositionsList__table-body']}>
+                { this.state.tableOpen.openOrders && (myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders).map(outcome => (
+                  outcome.userOpenOrders.map((order, i) => (
+                    <MarketPositionsListOrder
+                      key={order.id}
+                      outcomeName={outcome.name}
+                      order={order}
+                      pending={order.pending}
+                      isExtendedDisplay
+                      isMobile={isMobile}
+                      outcome={outcome}
+                      closePositionStatus={closePositionStatus}
+                    />
+                  ))
+                ))
+                }
+              </div>
             </div>
           </div>
         </section>
