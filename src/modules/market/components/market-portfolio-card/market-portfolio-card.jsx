@@ -237,9 +237,9 @@ export default class MarketPortfolioCard extends Component {
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
-                { !isMobile && <li><span>Unrealized <span />P/L</span></li>}
-                { !isMobile && <li><span>Realized <span />P/L</span></li>}
-                <li><span>Total <span />P/L</span></li>
+                { !isMobile && <li className={Styles.MarketCard__hide}><span>Unrealized <span />P/L</span></li>}
+                { !isMobile && <li className={Styles.MarketCard__hide}><span>Realized <span />P/L</span></li>}
+                <li className={Styles.MarketCard__hide}><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
               }

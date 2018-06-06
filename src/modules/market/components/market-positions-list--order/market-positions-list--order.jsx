@@ -103,10 +103,10 @@ export default class Order extends Component {
             {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li> {isExtendedDisplay ? <span>&mdash;</span> : ''} </li> }
-        { !isMobile && <li> {isExtendedDisplay ? <span>&mdash;</span> : ''} </li> }
+        { !isMobile && <li/> }
+        { !isMobile && <li/> }
         { isExtendedDisplay &&
-          <li>&mdash;</li>
+          <li/>
         }
         <li>
           { pending ?
