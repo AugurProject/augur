@@ -41,7 +41,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         const marketStateId = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
         const numOutcomes = parseInt(onMarketContractData.numberOfOutcomes!, 10);
-        const marketType: string = ["binary", "categorical", "scalar"][log.marketType];
+        const marketType: string = ["yesNo", "categorical", "scalar"][log.marketType];
         const marketsDataToInsert: MarketsRow<string|number> = {
           marketType,
           marketId:                   log.market,

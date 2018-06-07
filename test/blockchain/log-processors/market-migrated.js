@@ -42,7 +42,7 @@ describe("blockchain/log-processors/market-migrated", () => {
     });
   };
   test({
-    description: "binary market MarketMigrated log and removal",
+    description: "yesNo market MarketMigrated log and removal",
     params: {
       log: {
         market: "0x0000000000000000000000000000000000000211",

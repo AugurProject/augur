@@ -41,7 +41,7 @@ describe("blockchain/log-processors/market-finalized", () => {
   };
   const constants = new Augur().constants;
   test({
-    description: "binary market MarketFinalized log and removal",
+    description: "yesNo market MarketFinalized log and removal",
     params: {
       log: {
         market: "0x0000000000000000000000000000000000000013",
