@@ -475,8 +475,7 @@ function drawTicks(options) {
   //  Offset Ticks
   const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
     if (i === 0) {
-      const value = d + (drawParams.boundDiff / 4)
-      if (value < 0) return 0
+      return d + (drawParams.boundDiff / 4)
     }
     return d - (drawParams.boundDiff / 4)
   })
