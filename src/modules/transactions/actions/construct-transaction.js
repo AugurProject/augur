@@ -1,5 +1,5 @@
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
-import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions } from 'modules/transactions/actions/add-transactions'
+import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions, getSortOrder } from 'modules/transactions/actions/add-transactions'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { formatEther } from 'utils/format-number'
@@ -14,6 +14,7 @@ export const constructBasicTransaction = (eventName, hash, blockNumber, timestam
   transaction.description = description || ''
   if (gasFees) transaction.gasFees = formatEther(gasFees)
   transaction.timestamp = convertUnixToFormattedDate(timestamp)
+  transaction.sortOrder = getSortOrder(transaction.type)
   return transaction
 }
 
