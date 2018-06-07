@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import { MARKET, LIMIT } from 'modules/transactions/constants/types'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { isEqual } from 'lodash'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
@@ -267,8 +267,8 @@ class MarketTradingForm extends Component {
               { errors.map(error => <p key={error}>{error}</p>) }
             </li>
           }
-          <li className={marketType === BINARY ? Styles['TradingForm__button__binary--review'] : Styles['TradingForm__button--review']}>
-            { marketType === BINARY &&
+          <li className={marketType === YES_NO ? Styles['TradingForm__button__yes_no--review'] : Styles['TradingForm__button--review']}>
+            { marketType === YES_NO &&
               <label className={TooltipStyles.TooltipHint} data-tip data-for="tooltip--participation-tokens">{ Hint }</label>
             }
             <ReactTooltip
@@ -343,8 +343,8 @@ class MarketTradingForm extends Component {
                 { errors.map(error => <p key={error}>{error}</p>) }
               </li>
             }
-            <li className={marketType === BINARY ? Styles['TradingForm__button__binary--review'] : Styles['TradingForm__button--review']}>
-              { marketType === BINARY &&
+            <li className={marketType === YES_NO ? Styles['TradingForm__button__yes_no--review'] : Styles['TradingForm__button--review']}>
+              { marketType === YES_NO &&
                 <label className={TooltipStyles.TooltipHint} data-tip data-for="tooltip--participation-tokens">{ Hint }</label>
               }
               <ReactTooltip

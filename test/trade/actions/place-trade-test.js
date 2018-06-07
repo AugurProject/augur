@@ -17,16 +17,16 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
       '../../market/selectors/market': SelectMarket,
     })
-    store.dispatch(action.placeTrade('testBinaryMarketId', null))
+    store.dispatch(action.placeTrade('testYesNoMarketId', null))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketId: 'testBinaryMarketId',
+      marketId: 'testYesNoMarketId',
     }], `Didn't produce the expected actions for passing a null outcomeId to place-trade`)
     store.clearActions()
-    store.dispatch(action.placeTrade('testBinaryMarketId', undefined))
+    store.dispatch(action.placeTrade('testYesNoMarketId', undefined))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketId: 'testBinaryMarketId',
+      marketId: 'testYesNoMarketId',
     }], `Didn't produce the expected actions for passing a undefined outcomeId to place-trade`)
   })
   it('should handle a null/undefined marketId', () => {
@@ -65,7 +65,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
       '../../market/selectors/market': SelectMarket,
       '../../auth/actions/approve-account': CheckAccountAllowance,
     })
-    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+    store.dispatch(action.placeTrade('testYesNoMarketId', '1', {
       totalCost: '10000000',
       sharesDepleted: '0',
       otherSharesDepleted: '0',
@@ -108,7 +108,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
       '../../auth/actions/approve-account': CheckAccountAllowance,
       '../../../services/augurjs': AugurJS,
     })
-    store.dispatch(action.placeTrade('testBinaryMarketId', '1', {
+    store.dispatch(action.placeTrade('testYesNoMarketId', '1', {
       totalCost: '10000000',
       sharesDepleted: '0',
       otherSharesDepleted: '0',
@@ -117,7 +117,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     assert.deepEqual(storeActions.length, 1, 'more actions dispatched then expected')
     const Expected = [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
-      marketId: 'testBinaryMarketId',
+      marketId: 'testYesNoMarketId',
     }]
     assert.deepEqual(storeActions, Expected, `Only Action should be to clear trade in progress`)
     store.clearActions()

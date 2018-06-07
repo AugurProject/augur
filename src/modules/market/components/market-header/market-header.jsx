@@ -51,6 +51,7 @@ export default class MarketHeader extends Component {
     const s = this.state
     const detailsPresent = details != null && details.length > 0
 
+    // eslint-disable-next-line react/no-danger
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
