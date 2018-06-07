@@ -23,8 +23,8 @@ const AccountUniverseDescription = p => (
       }
     </div>
     <div className={Styles.AccountUniverseDescription__description}>
-      <div>Your wallet:  {p.accountRep === '0' ? '0' : formatAttoRep(p.accountRep, { decimals: 2, roundUp: true }).formatted} REP</div>
-      <div>Total amount of REP:  {p.universeRep === '0' ? '0' : formatAttoRep(p.universeRep, { decimals: 2, roundUp: true }).formatted} REP</div>
+      <div>Your REP:  {p.accountRep === '0' ? '0' : formatAttoRep(p.accountRep, { decimals: 2, roundUp: true }).formatted} REP</div>
+      <div>Total REP Supply:  {p.universeRep === '0' ? '0' : formatAttoRep(p.universeRep, { decimals: 2, roundUp: true }).formatted} REP</div>
       <div>Total Open Interest:  {p.openInterest === '0' ? '0' : formatAttoEth(p.openInterest, { decimals: 2, roundUp: true }).formatted} ETH</div>
       <div>Number of markets created:  {p.numMarkets}</div>
     </div>
