@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 
 import AccountUniverses from 'modules/account/components/account-universes/account-universes'
 
-import getUniverses from 'modules/account/actions/get-universe-info'
+import { loadUniverseInfo } from 'modules/account/actions/load-universe-info'
 
 const mapStateToProps = state => ({
   address: state.loginAccount.address,
@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
 const windowRef = typeof window === 'undefined' ? {} : window
 
 const mapDispatchToProps = dispatch => ({
-  getUniverses: callback => dispatch(getUniverses(callback)),
+  getUniverses: callback => dispatch(loadUniverseInfo(callback)),
   switchUniverse: (universeId) => {
     if (windowRef.localStorage && windowRef.localStorage.setItem) {
       windowRef.localStorage.setItem('selectedUniverse', universeId)
