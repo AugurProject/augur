@@ -7,7 +7,7 @@ import { unfix } from 'speedomatic'
 import { isNull, orderBy } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
-import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatShares } from 'utils/format-number'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
@@ -303,7 +303,7 @@ function processReport(market, transaction) {
 function getOutcome(market, outcome) {
   let value = null
   if (!market || !outcome) return value
-  if (market.marketType === BINARY) {
+  if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
     value = market.outcomes[outcome].description

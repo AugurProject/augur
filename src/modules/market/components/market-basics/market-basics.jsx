@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import MarketOutcomesBinaryScalar
-  from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar'
+  from 'modules/market/components/market-outcomes-yes-no-scalar/market-outcomes-yes-no-scalar'
 import MarketOutcomesCategorical
   from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical'
 import MarketLink from 'modules/market/components/market-link/market-link'
@@ -14,7 +14,7 @@ import toggleTag from 'modules/routes/helpers/toggle-tag'
 import toggleCategory from 'modules/routes/helpers/toggle-category'
 import { formatDate } from 'utils/format-date'
 import getValue from 'utils/get-value'
-import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+import { YES_NO, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
@@ -78,7 +78,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
           </MarketLink>
         </h1>
 
-        {(marketType === BINARY || marketType === SCALAR) &&
+        {(marketType === YES_NO || marketType === SCALAR) &&
         <MarketOutcomesBinaryScalar
           outcomes={p.outcomes}
           min={p.minPrice}

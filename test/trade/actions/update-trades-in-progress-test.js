@@ -38,7 +38,7 @@ function updateTradesInProgressActionShapeAssertion(updateTradesInProgressAction
 }
 
 describe('modules/trade/actions/update-trades-in-progress.js', () => {
-  describe('should update a trade in progress for a binary market', () => {
+  describe('should update a trade in progress for a yes/no market', () => {
     proxyquire.noPreserveCache()
     const middlewares = [thunk]
     const mockStore = configureMockStore(middlewares)
@@ -48,7 +48,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockLoadUserShareBalances = {
       loadUsershareBalances: (options, callback) => dispatch => callback(null, []),
     }
-    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketId)
+    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testYesNoMarketId)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
@@ -65,16 +65,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should pass shape tests for buying 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '10.0', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, '10.0', undefined, undefined))
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
 
     it('should pass calculation tests for buying 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '10.0', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: 'buy',
@@ -98,16 +98,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should pass shape tests for Selling 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 1, SELL, '10.0', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 1, SELL, '10.0', undefined, undefined))
       updateTradesInProgressActionShapeAssertion(store.getActions()[0])
     })
 
     it('should pass calculation tests for selling 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 1, SELL, '10.0', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 1, SELL, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 1,
           details: {
             side: 'sell',
@@ -131,11 +131,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '0', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, '0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: BUY,
@@ -149,11 +149,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, undefined, '0.5', undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, undefined, '0.5', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: BUY,
@@ -169,7 +169,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
       // set the current Trade in Progress for BUY to a 10 share .5 limit buy order
       store.getState().tradesInProgress = {
-        testBinaryMarketId: {
+        testYesNoMarketId: {
           0: {
             side: BUY,
             numShares: '10',
@@ -181,11 +181,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
           },
         },
       }
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, undefined, '0.15', undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, undefined, '0.15', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: 'buy',
@@ -209,11 +209,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '25', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: 'buy',
@@ -237,11 +237,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketId', 0, BUY, '-25', undefined, undefined))
+      store.dispatch(action.updateTradesInProgress('testYesNoMarketId', 0, BUY, '-25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
-          marketId: 'testBinaryMarketId',
+          marketId: 'testYesNoMarketId',
           outcomeId: 0,
           details: {
             side: 'buy',

@@ -1,7 +1,7 @@
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 describe('modules/create-market/helpers/build-create-market', () => {
@@ -15,7 +15,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
   const mockAugur = {
     createMarket: {
       createCategoricalMarket: () => { },
-      createBinaryMarket: () => { },
+      createYesNoMarket: () => { },
       createScalarMarket: () => { },
     },
     constants: {
@@ -85,7 +85,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
   })
 
   test({
-    description: `should market object for binary market`,
+    description: `should market object for yes/no  market`,
     state: {
       universe: {
         id: '1010101',
@@ -112,7 +112,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
         detailsText: '',
         category: 'test category',
         tags: [],
-        type: BINARY,
+        type: YES_NO,
       },
     },
     assertions: (store) => {
@@ -135,7 +135,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
       }
 
       assert.deepEqual(actual.formattedNewMarket, expected, `Didn't form the formattedNewMarket object as expected`)
-      assert.deepEqual(actual.createMarket, mockAugur.createMarket.createBinaryMarket, `Didn't form the method object as expected`)
+      assert.deepEqual(actual.createMarket, mockAugur.createMarket.createYesNoMarket, `Didn't form the method object as expected`)
 
     },
   })
