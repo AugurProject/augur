@@ -6,6 +6,8 @@ import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 const CELL_MARGIN = 12
 const INITIAL_CELL_HEIGHT = 54
@@ -25,8 +27,24 @@ const Outcome = ({ className, outcome, marketId }) => {
     <div className={className || Styles.MarketReportingPayouts__outcome}>
       <div className={Styles['MarketReportingPayouts__outcome-name']}>
         { outcome.potentialFork &&
-          <span className={Styles.MarketReportingPayouts__alert_icon}>
-            {ExclamationCircle}
+          <span>
+            <span 
+              className={Styles.MarketReportingPayouts__alert_icon}
+              data-tip
+              data-for="tooltip--potential-fork"
+              >
+              {ExclamationCircle}
+            </span>
+            <ReactTooltip
+              id="tooltip--potential-fork"
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="bottom"
+              type="light"
+            >
+              <h4>Potential Fork</h4>
+              <p>A fork will be initiated if the dispute bond for this outcome is filled.</p>
+            </ReactTooltip>
           </span>
         }
         <span className={Styles['MarketReportingPayouts__outcome-name-text']}>
