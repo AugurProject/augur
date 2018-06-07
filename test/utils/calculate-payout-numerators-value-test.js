@@ -1,6 +1,6 @@
 
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () => {
@@ -32,7 +32,7 @@ describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () =>
     minPrice: 0,
     numTicks: 10000,
     numOutcomes: 2,
-    marketType: BINARY,
+    marketType: YES_NO,
   }
 
   const marketCategorical = {
@@ -131,7 +131,7 @@ describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () =>
     })
   })
 
-  describe('binary NO', () => {
+  describe('yes/no NO', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
@@ -142,7 +142,7 @@ describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () =>
     })
   })
 
-  describe('binary YES', () => {
+  describe('yes/no YES', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
@@ -153,7 +153,7 @@ describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () =>
     })
   })
 
-  describe('binary invalid', () => {
+  describe('yes/no invalid', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {

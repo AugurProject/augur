@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import { BINARY } from 'modules/markets/constants/market-types'
+import { YES_NO } from 'modules/markets/constants/market-types'
 import { loadUniverseInfo, __RewireAPI__ as ReWireModule } from 'modules/account/actions/load-universe-info'
 
 describe('modules/account/actions/load-universe-info.js', () => {
@@ -42,7 +42,7 @@ describe('modules/account/actions/load-universe-info.js', () => {
               maxPrice: 1,
               minPrice: 0,
               numTicks: 10000,
-              marketType: BINARY,
+              marketType: YES_NO,
             },
           },
         }

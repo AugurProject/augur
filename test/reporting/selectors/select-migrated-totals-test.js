@@ -1,5 +1,5 @@
 import immutableDelete from 'immutable-delete'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import selectMigratedTotals, { __RewireAPI__ as RewireAPI } from 'modules/reporting/selectors/select-migrated-totals'
 
 
@@ -20,7 +20,7 @@ describe(`modules/reporting/selectors/select-migrated-totals.js`, () => {
     minPrice: 0,
     numTicks: 10000,
     numOutcomes: 2,
-    marketType: BINARY,
+    marketType: YES_NO,
     reportableOutcomes: [{ id: '0', name: 'No' }, { id: '1', name: 'Yes' }, { id: '0.5', name: 'Indeterminate' }],
   }
 
@@ -208,7 +208,7 @@ describe(`modules/reporting/selectors/select-migrated-totals.js`, () => {
   })
 
   test({
-    description: `binary market with NO disputes`,
+    description: `yes/no  market with NO disputes`,
     assertions: () => {
       const actual = selectMigratedTotals(marketBinary.reportableOutcomes, {})
       const expected = [

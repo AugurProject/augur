@@ -2,7 +2,7 @@
 
 import proxyquire from 'proxyquire'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { getPayoutNumerators } from 'modules/reporting/selectors/get-payout-numerators'
 import { createBigNumber } from 'utils/create-big-number'
 
@@ -36,7 +36,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     minPrice: createBigNumber(0),
     numTicks: '10000',
     numOutcomes: 2,
-    marketType: BINARY,
+    marketType: YES_NO,
   }
 
   const marketCategorical = {
@@ -132,7 +132,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     })
   })
 
-  describe('binary NO', () => {
+  describe('yes/no NO', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
@@ -143,7 +143,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     })
   })
 
-  describe('binary YES', () => {
+  describe('yes/no YES', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
@@ -154,7 +154,7 @@ describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
     })
   })
 
-  describe('binary invalid', () => {
+  describe('yes/no invalid', () => {
     test({
       description: `should call the expected method`,
       assertions: () => {
