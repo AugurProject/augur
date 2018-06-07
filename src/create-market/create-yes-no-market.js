@@ -20,18 +20,18 @@ var constants = require("../constants");
  * @param {string} p._description Description of the market, as a UTF8 string.
  * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
  * @param {{signer: buffer|function, accountType: string}=} p.meta Authentication metadata for raw transactions.
- * @param {function} p.onSent Called if/when the createBinaryMarket transaction is broadcast to the network.
- * @param {function} p.onSuccess Called if/when the createBinaryMarket transaction is sealed and confirmed.
- * @param {function} p.onFailed Called if/when the createBinaryMarket transaction fails.
+ * @param {function} p.onSent Called if/when the createYesNoMarket transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the createYesNoMarket transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the createYesNoMarket transaction fails.
  */
-function createBinaryMarket(p) {
+function createYesNoMarket(p) {
   getMarketCreationCost({ universe: p.universe }, function (err, marketCreationCost) {
     if (err) return p.onFailed(err);
-    var createBinaryMarketParams = assign({}, immutableDelete(p, "universe"), {
+    var createYesNoMarketParams = assign({}, immutableDelete(p, "universe"), {
       tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_BINARY_MARKET_GAS,
+        gas: constants.CREATE_YES_NO_MARKET_GAS,
       }, p.tx),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
@@ -42,8 +42,8 @@ function createBinaryMarket(p) {
         });
       },
     });
-    api().Universe.createBinaryMarket(createBinaryMarketParams);
+    api().Universe.createYesNoMarket(createYesNoMarketParams);
   });
 }
 
-module.exports = createBinaryMarket;
+module.exports = createYesNoMarket;
