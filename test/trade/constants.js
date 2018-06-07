@@ -1,4 +1,4 @@
-export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+export { YES_NO, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 export { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const tradeTestState = {
@@ -10,16 +10,16 @@ export const tradeTestState = {
     ethTokens: '10000',
     rep: '50.0',
   },
-  selectedMarketId: 'testBinaryMarketId',
+  selectedMarketId: 'testYesNoMarketId',
   marketsData: {
-    testBinaryMarketId: {
+    testYesNoMarketId: {
       author: 'testAuthor1',
       universeId: '0x010101',
       creationFee: '22.5',
       creationTime: 1475951522,
       numTicks: '10000',
       tickSize: '0.0001',
-      description: 'test binary market?',
+      description: 'test yes/no  market?',
       endTime: 1495317600,
       consensus: null,
       isLoadedMarketInfo: true,
@@ -27,13 +27,13 @@ export const tradeTestState = {
       minPrice: '0',
       network: '2',
       numOutcomes: 2,
-      category: 'binary',
-      tags: ['binary', 'markets', null],
+      category: 'yes/no ',
+      tags: ['yes/no ', 'markets', null],
       settlementFee: '0.03',
       marketCreatorFeeRate: '0.02',
       reportingFeeRate: '0.01',
       tradingPeriod: 8653,
-      marketType: 'binary',
+      marketType: 'yes/no ',
       volume: '3030',
       isDisowned: false,
     },
@@ -92,7 +92,7 @@ export const tradeTestState = {
     },
   },
   outcomesData: {
-    testBinaryMarketId: {
+    testYesNoMarketId: {
       1: {
         id: 1,
         name: 'Yes',
@@ -152,7 +152,7 @@ export const tradeTestState = {
     },
   },
   orderBooks: {
-    testBinaryMarketId: {
+    testYesNoMarketId: {
       1: {
         buy: {
           orderId1: {
@@ -381,10 +381,10 @@ export const tradeTestState = {
   transactionsData: {
     trans1: {
       data: {
-        marketId: 'testBinaryMarketId',
+        marketId: 'testYesNoMarketId',
         outcomeId: 1,
-        marketType: 'binary',
-        marketDescription: 'test binary market',
+        marketType: 'yes/no ',
+        marketDescription: 'test yes/no  market',
         outcomeName: 'YES',
       },
       feePercent: {

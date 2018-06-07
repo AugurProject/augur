@@ -1,6 +1,6 @@
 import { augur } from 'services/augurjs'
 import speedomatic from 'speedomatic'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { DESIGNATED_REPORTER_SELF } from 'modules/create-market/constants/new-market-constraints'
 
 export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount, contractAddresses) => {
@@ -39,9 +39,9 @@ export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount,
       formattedNewMarket._extraInfo._scalarDenomination = newMarket.scalarDenomination
       createMarket = augur.createMarket.createScalarMarket
       break
-    case BINARY:
+    case YES_NO:
     default:
-      createMarket = augur.createMarket.createBinaryMarket
+      createMarket = augur.createMarket.createYesNoMarket
   }
 
   return { createMarket, formattedNewMarket }
