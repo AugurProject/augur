@@ -1,9 +1,11 @@
 import { createSelector } from 'reselect'
+import store from 'src/store'
 import { selectMarketReportState } from 'src/select-state'
 import { selectMarket } from 'src/modules/market/selectors/market'
 
 function filterForkedMarket(market) {
-	return !(state.universe.isForkingMarketFinalized && state.universe.isForking && state.universe.forkingMarket === market.id)
+  const { universe } = store.getState()
+  return !(universe.isForkingMarketFinalized && universe.isForking && universe.forkingMarket === market.id)
 }
 
 export const selectMarketsToReport = createSelector(
