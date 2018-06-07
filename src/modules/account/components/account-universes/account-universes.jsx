@@ -64,6 +64,7 @@ export default class AccountUniverses extends Component {
                 universeDescription={parent.description}
                 accountRep={parent.balance}
                 universeRep={parent.supply}
+                openInterest={parent.openInterest}
                 numMarkets={parent.numMarkets}
                 isWinningUniverse={parent.isWinningUniverse}
                 key={parent.universe}
@@ -81,6 +82,7 @@ export default class AccountUniverses extends Component {
                   universeDescription={universeInfo.description}
                   accountRep={universeInfo.balance}
                   universeRep={universeInfo.supply}
+                  openInterest={universeInfo.openInterest}
                   numMarkets={universeInfo.numMarkets}
                   isWinningUniverse={universeInfo.isWinningUniverse}
                   key={universeInfo.universe}
@@ -99,6 +101,7 @@ export default class AccountUniverses extends Component {
                   universeDescription={universeInfo.description}
                   accountRep={universeInfo.balance}
                   universeRep={universeInfo.supply}
+                  openInterest={universeInfo.openInterest}
                   numMarkets={universeInfo.numMarkets}
                   isWinningUniverse={universeInfo.isWinningUniverse}
                   key={universeInfo.universe}
