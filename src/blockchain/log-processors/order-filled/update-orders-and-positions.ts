@@ -12,11 +12,17 @@ interface OrderFilledOnContractData {
   amount: string;
 }
 
+function noop(db: Knex, augur: Augur, marketId: Address, account: Address, callback: (err: Error|null, positions?: Array<string>) => void) {
+  callback(null);
+}
+
 export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Address, orderId: Bytes32, creator: Address, filler: Address, tickSize: BigNumber, callback: ErrorCallback): void {
+  // If the user is taking their own order we don't refresh twice
+  const fillerRefresh = creator === filler ? noop : refreshPositionInMarket;
   parallel({
     amount: (next: AsyncCallback): void => augur.api.Orders.getAmount({ _orderId: orderId }, next),
     creatorPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, marketId, creator, next),
-    fillerPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, marketId, filler, next),
+    fillerPositionInMarket: (next: AsyncCallback): void => fillerRefresh(db, augur, marketId, filler, next),
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     const amount: BigNumber = new BigNumber(onContractData.amount, 10);
