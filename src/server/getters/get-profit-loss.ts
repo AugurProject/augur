@@ -184,7 +184,7 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
 async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<ProfitLossResults> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
-  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null, false);
+  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null, true);
   const marketIds = _.uniq(_.map(tradeHistory, "marketId"));
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account, endTime);
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
