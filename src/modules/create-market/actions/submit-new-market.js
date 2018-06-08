@@ -64,10 +64,11 @@ export function submitNewMarket(newMarket, history) {
                   },
                   onFailed: (err) => {
                     console.error('ERROR creating order in initial market liquidity: ', err)
+                    orderCB()
                   },
                 })
               }, (err) => {
-                if (err !== null) return console.error('ERROR: ', err)
+                if (err !== null) console.error('ERROR: ', err)
                 seriesCB()
               })
             }, (err) => {
