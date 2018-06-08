@@ -145,6 +145,7 @@ export default class CreateMarketResolution extends Component {
     const { utcLocalOffset } = formatDate(new Date(currentTimestamp))
 
     const designatedReporterError = newMarket.designatedReporterType === DESIGNATED_REPORTER_SPECIFIC && validations.designatedReporterAddress && !!validations.designatedReporterAddress.length
+
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li>
