@@ -103,39 +103,39 @@ export default class MarketOutcomesChart extends Component {
         .attr('width', drawParams.width)
         .attr('height', drawParams.height)
 
+      drawTicks({
+        drawParams,
+        chart,
+        fixedPrecision,
+      })
+
+      drawXAxisLabels({
+        drawParams,
+        chart,
+      })
+
+      drawSeries({
+        chart,
+        creationTime,
+        estimatedInitialPrice,
+        outcomes,
+        drawParams,
+      })
+
+      drawCrosshairs({
+        chart,
+      })
+
+      attachHoverHandler({
+        drawParams,
+        chart,
+        updateHoveredLocation: this.updateHoveredLocation,
+      })
+
       if (!hasPriceHistory) {
         drawNullState({
           drawParams,
           chart,
-        })
-      } else {
-        drawTicks({
-          drawParams,
-          chart,
-          fixedPrecision,
-        })
-
-        drawXAxisLabels({
-          drawParams,
-          chart,
-        })
-
-        drawSeries({
-          chart,
-          creationTime,
-          estimatedInitialPrice,
-          outcomes,
-          drawParams,
-        })
-
-        drawCrosshairs({
-          chart,
-        })
-
-        attachHoverHandler({
-          drawParams,
-          chart,
-          updateHoveredLocation: this.updateHoveredLocation,
         })
       }
 
