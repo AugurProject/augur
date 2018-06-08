@@ -37,7 +37,7 @@ const Outcome = ({ className, outcome, marketId }) => {
               id="tooltip--potential-fork"
               className={TooltipStyles.Tooltip}
               effect="solid"
-              place="bottom"
+              place="top"
               type="light"
             >
               <h4>Potential Fork</h4>
