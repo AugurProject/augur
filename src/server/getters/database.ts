@@ -221,7 +221,7 @@ export function queryTradingHistory(
   isSortDescending: boolean | null,
   limit: number | null,
   offset: number | null,
-  includeSelfTrades: boolean | null,
+  ignoreSelfTrades: boolean | null,
   callback: GenericCallback<Array<TradingHistoryRow>>,
 ): void {
   if (universe == null && marketId == null) throw new Error("Must provide reference to universe, specify universe or marketId");
@@ -253,7 +253,7 @@ export function queryTradingHistory(
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
-  if (includeSelfTrades === false) query.where("trades.creator", "!=", db.raw("trades.filler"));
+  if (ignoreSelfTrades) query.where("trades.creator", "!=", db.raw("trades.filler"));
 
   queryModifier(db, query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset, callback);
 }
