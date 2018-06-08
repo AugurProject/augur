@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import { BINARY } from 'modules/markets/constants/market-types'
+import { YES_NO } from 'modules/markets/constants/market-types'
 import { getForkMigrationTotals, __RewireAPI__ as ReWireModule } from 'modules/forking/actions/get-fork-migration-totals'
 
 describe('modules/forking/actions/get-fork-migration-totals.js', () => {
@@ -35,7 +35,7 @@ describe('modules/forking/actions/get-fork-migration-totals.js', () => {
               maxPrice: 1,
               minPrice: 0,
               numTicks: 10000,
-              marketType: BINARY,
+              marketType: YES_NO,
             },
           },
         }

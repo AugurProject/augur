@@ -61,12 +61,12 @@ export default class ModalMigrateMarket extends Component {
           {SigningPen} Migrate Market
         </h1>
         <div className={Styles.ModalMigrateMarket__details}>
-          <ul className={Styles.ModalMigrateMarket__labels}>
+          <ul className={Styles.ModalMigrateMarket__row}>
             <li>market</li>
-            <li>gas</li>
-          </ul>
-          <ul className={Styles.ModalMigrateMarket__values}>
             <li>{marketDescription}</li>
+          </ul>
+          <ul className={Styles.ModalMigrateMarket__row}>
+            <li>gas</li>
             <li>{formatEther(s.gasEstimate).full}</li>
           </ul>
         </div>

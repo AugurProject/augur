@@ -6,7 +6,7 @@ import moment from 'moment'
 import { augur } from 'services/augurjs'
 import { createBigNumber } from 'utils/create-big-number'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import { CreateMarketEdit } from 'modules/common/components/icons'
 
@@ -129,7 +129,7 @@ export default class CreateMarketPreview extends Component {
             </div>
             <h1 className={Styles.CreateMarketPreview__description}>{newMarket.description || 'New Market Question'}</h1>
             <div className={Styles.CreateMarketPreview__outcome}>
-              { (newMarket.type === BINARY || newMarket.type === SCALAR) &&
+              { (newMarket.type === YES_NO || newMarket.type === SCALAR) &&
                 <CreateMarketPreviewRange
                   newMarket={newMarket}
                 />

@@ -1,7 +1,7 @@
 import React from 'react'
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
-const BinaryIcon = () => (
+const YesNoIcon = () => (
   <svg viewBox="0 0 400 400">
     <g>
       <path d="M255.4,129.84a70.16,70.16,0,0,1,0,140.31H144.6a70.16,70.16,0,0,1,0-140.31H255.4m0-10H144.6A80.16,80.16,0,0,0,64.44,200h0a80.16,80.16,0,0,0,80.16,80.16H255.4A80.16,80.16,0,0,0,335.56,200h0a80.16,80.16,0,0,0-80.16-80.16Z" />
@@ -13,4 +13,4 @@ const BinaryIcon = () => (
   </svg>
 )
 
-export default BinaryIcon
+export default YesNoIcon
