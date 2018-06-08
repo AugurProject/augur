@@ -378,7 +378,7 @@ function determineDrawParams(options) {
   const containerHeight = depthChart.clientHeight
   const drawHeight = containerHeight - chartDim.top - chartDim.bottom
 
-  const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0].toNumber()], [])], [marketMin.toNumber()])
+  const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0].toNumber()], [])], [0])
 
   // Determine bounding diff
   const maxDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
@@ -475,8 +475,7 @@ function drawTicks(options) {
   //  Offset Ticks
   const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
     if (i === 0) {
-      const value = d + (drawParams.boundDiff / 4)
-      if (value < 0) return 0
+      return d + (drawParams.boundDiff / 4)
     }
     return d - (drawParams.boundDiff / 4)
   })
