@@ -176,7 +176,7 @@ export default class CreateMarketResolution extends Component {
                     onChange={e => validateField('expirySource', e.target.value)}
                     onKeyPress={e => keyPressed(e)}
                   />
-                  { typeof(newMarket.validations[newMarket.currentStep].expirySource) === 'string' &&
+                  { typeof (newMarket.validations[newMarket.currentStep].expirySource) === 'string' &&
                     <span className={StylesForm['CreateMarketForm__error--bottom']}>
                       {InputErrorIcon} {newMarket.validations[newMarket.currentStep].expirySource}
                     </span>
