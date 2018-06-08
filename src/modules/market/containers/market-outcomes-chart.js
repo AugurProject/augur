@@ -12,6 +12,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice = createBigNumber(1),
     minPrice = createBigNumber(0),
     outcomes = [],
+    volume = { formatted: '0' },
   } = selectMarket(ownProps.marketId)
 
 
@@ -26,6 +27,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: maxPrice.toNumber(),
     minPrice: minPrice.toNumber(),
     outcomes,
+    hasPriceHistory: volume.formatted !== '0',
   }
 }
 

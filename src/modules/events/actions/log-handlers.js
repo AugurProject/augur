@@ -102,7 +102,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
 }
 
 export const handleOrderFilledLog = log => (dispatch, getState) => {
-  dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
+  dispatch(loadMarketsInfo([log.marketId]))
   const { address } = getState().loginAccount
   const isStoredTransaction = log.filler === address || log.creator === address
   const popularity = log.removed ? new BigNumber(log.amount, 10).negated().toFixed() : log.amount
