@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import { BINARY } from 'modules/markets/constants/market-types'
+import { YES_NO } from 'modules/markets/constants/market-types'
 import { submitMigrateREP, __RewireAPI__ as ReWireModule } from 'modules/forking/actions/submit-migrate-rep'
 
 describe('modules/forking/actions/submit-migrate-rep.js', () => {
@@ -23,7 +23,7 @@ describe('modules/forking/actions/submit-migrate-rep.js', () => {
               maxPrice: 1,
               minPrice: 0,
               numTicks: 10000,
-              marketType: BINARY,
+              marketType: YES_NO,
             },
           },
         }

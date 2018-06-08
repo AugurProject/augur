@@ -5,7 +5,7 @@ import { createBigNumber } from 'utils/create-big-number'
 import calcProfits from 'modules/trade/helpers/calc-order-profit-loss-percents'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, SCALAR } from 'modules/markets/constants/market-types'
 
 describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   const test = t => it(t.description, () => t.assertions())
@@ -58,7 +58,7 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   })
 
   test({
-    description: `should return the expected profit and loss values for a BUY in a BINARY market`,
+    description: `should return the expected profit and loss values for a BUY in a yes/no  market`,
     assertions: () => {
       const actual = calcProfits(
         '10',
@@ -66,7 +66,7 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         BUY,
         '1',
         '2',
-        BINARY,
+        YES_NO,
         '10',
         '4',
       )
@@ -83,7 +83,7 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   })
 
   test({
-    description: `should return the expected profit and loss values for a SELL in a BINARY market`,
+    description: `should return the expected profit and loss values for a SELL in a yes/no  market`,
     assertions: () => {
       const actual = calcProfits(
         '10',
@@ -91,7 +91,7 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
         SELL,
         '1',
         '2',
-        BINARY,
+        YES_NO,
         '10',
         '6',
       )

@@ -2,11 +2,11 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { estimateSubmitNewMarket, __RewireAPI__ as estimateSubmitNewMarketReqireAPI } from 'modules/create-market/actions/estimate-submit-new-market'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
   const mockStore = configureMockStore([thunk])
-  const newBinaryMarket = { properties: 'value', type: BINARY }
+  const newBinaryMarket = { properties: 'value', type: YES_NO }
   const newScalarMarket = { properties: 'value', type: SCALAR }
   const newCatMarket = { properties: 'value', type: CATEGORICAL }
   const stateData = {
@@ -28,7 +28,7 @@ describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
     constants: {
       CREATE_CATEGORICAL_MARKET_GAS: 'oxygen',
       CREATE_SCALAR_MARKET_GAS: 'helium',
-      CREATE_BINARY_MARKET_GAS: 'methane',
+      CREATE_YES_NO_MARKET_GAS: 'methane',
     },
   }
 
