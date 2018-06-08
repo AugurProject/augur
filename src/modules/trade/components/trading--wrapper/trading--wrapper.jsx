@@ -39,15 +39,15 @@ class MarketTradingWrapper extends Component {
 
     this.state = {
       orderType: LIMIT,
-      orderPrice: '',
-      orderQuantity: '',
-      orderEthEstimate: '',
-      orderShareEstimate: '',
+      orderPrice: props.selectedOrderProperties.price,
+      orderQuantity: props.selectedOrderProperties.quantity,
+      orderEthEstimate: '0',
+      orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
-      selectedNav: BUY,
+      selectedNav: props.selectedOrderProperties.selectedNav,
       currentPage: 0,
-      doNotCreateOrders: false,
+      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -60,6 +60,7 @@ class MarketTradingWrapper extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
+
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) {
       this.setState({ currentPage: 0 })
       return
@@ -68,21 +69,18 @@ class MarketTradingWrapper extends Component {
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
       return this.clearOrderForm()
     }
-    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
-    const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue)
-
-    if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEthEstimate) {
-      const orderEthEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '0 ETH' : `${nextTotalCost.abs().toString()} ETH`
+    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue, 10)
+    const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue, 10)
+    // console.log('ests', nextTotalCost.toString(), nextShareCost.toString());
+    if (nextTotalCost.abs().toString() !== this.state.orderEthEstimate) {
       this.setState({
-        orderEthEstimate,
+        orderEthEstimate: nextTotalCost.abs().toString(),
       })
     }
 
-    if (nextShareCost + ' ETH' !== this.state.orderShareEstimate) {
-      // const orderShareEstimate = nextProps.selectedOutcome.trade.shareCost.toString() + ' Shares'
-      const orderShareEstimate = (isNaN(nextShareCost) || nextShareCost.abs().eq(0)) ? '0 Shares' : `${nextShareCost.abs().toString()} Shares`
+    if (nextShareCost !== this.state.orderShareEstimate) {
       this.setState({
-        orderShareEstimate,
+        orderShareEstimate: nextShareCost.abs().toString(),
       })
     }
 
@@ -92,9 +90,22 @@ class MarketTradingWrapper extends Component {
     }
   }
 
-  prevPage() {
+  prevPage(e, orderSent = false) {
     const newPage = this.state.currentPage <= 0 ? 0 : this.state.currentPage - 1
-    this.setState({ currentPage: newPage })
+    if (orderSent) {
+      this.setState({
+        currentPage: newPage,
+        orderPrice: '',
+        orderQuantity: '',
+        orderEthEstimate: '0',
+        orderShareEstimate: '0',
+        marketOrderTotal: '',
+        marketQuantity: '',
+        doNotCreateOrders: false,
+      })
+    } else {
+      this.setState({ currentPage: newPage })
+    }
   }
 
   nextPage() {
@@ -103,13 +114,13 @@ class MarketTradingWrapper extends Component {
   }
 
   updateState(property, value) {
-    this.setState({ [property]: value })
-    this.props.updateSelectedOrderProperties({
-      orderPrice: this.state.orderPrice,
-      orderQuantity: this.state.orderQuantity,
-      doNotCreateOrders: this.state.doNotCreateOrders,
-      selectedNav: this.state.selectedNav,
-      [property]: value,
+    this.setState({ [property]: value }, () => {
+      this.props.updateSelectedOrderProperties({
+        orderPrice: this.state.orderPrice,
+        orderQuantity: this.state.orderQuantity,
+        doNotCreateOrders: this.state.doNotCreateOrders,
+        selectedNav: this.state.selectedNav,
+      })
     })
   }
 
@@ -118,12 +129,12 @@ class MarketTradingWrapper extends Component {
       clearTradeInProgress,
       market,
     } = this.props
-    clearTradeInProgress(market.id)
+    if (market.id) clearTradeInProgress(market.id)
     this.setState({
       orderPrice: '',
       orderQuantity: '',
-      orderEthEstimate: '',
-      orderShareEstimate: '',
+      orderEthEstimate: '0',
+      orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
       currentPage: 0,
@@ -151,8 +162,8 @@ class MarketTradingWrapper extends Component {
       isMobile,
       market,
       selectedOutcome,
-      showOrderPlaced,
       toggleForm,
+      showOrderPlaced,
     } = this.props
     const s = this.state
 

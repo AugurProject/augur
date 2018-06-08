@@ -182,6 +182,7 @@ export default class MarketOutcomeOrderbook extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
+                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
@@ -192,6 +193,7 @@ export default class MarketOutcomeOrderbook extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
+                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
@@ -202,6 +204,7 @@ export default class MarketOutcomeOrderbook extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
+                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>

@@ -95,6 +95,7 @@ const MarketTradingConfirm = (p) => {
         <button
           className={Styles['TradingConfirmation__button--submit']}
           onClick={(e) => {
+            e.preventDefault()
             p.market.onSubmitPlaceTrade(p.selectedOutcome.id, (err, tradeGroupID) => {
               // onSent/onFailed CB
               if (!err) {
@@ -103,7 +104,7 @@ const MarketTradingConfirm = (p) => {
             }, (res) => {
               // onComplete CB
             }, doNotCreateOrders)
-            p.prevPage()
+            p.prevPage(e, true)
           }}
         >Confirm
         </button>
