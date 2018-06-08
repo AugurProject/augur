@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
@@ -327,7 +327,10 @@ function buildHeader(item, type, status) {
 }
 
 // TODO: this should be dynamic by user control
-function getSortOrder(type) {
+export function getSortOrder(type) {
+  if (type === PUBLIC_TRADE) {
+    return 5
+  }
   if (type === OPEN_ORDER) {
     return 10
   }
