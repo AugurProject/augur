@@ -253,7 +253,7 @@ export function queryTradingHistory(
   if (orderType != null) query.where("trades.orderType", orderType);
   if (earliestCreationTime != null) query.where("timestamp", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("timestamp", "<=", latestCreationTime);
-  if (includeSelfTrades === false) query.where("trades.creator", "!=", "trades.filler");
+  if (includeSelfTrades === false) query.where("trades.creator", "!=", db.raw("trades.filler"));
 
   queryModifier(db, query, "trades.blockNumber", "desc", sortBy, isSortDescending, limit, offset, callback);
 }
