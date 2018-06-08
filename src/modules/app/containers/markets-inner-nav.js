@@ -58,7 +58,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
   )(allCategories)
 
   const makeCategoryLink = (categoryClicked) => {
-    let link = {
+    const link = {
       pathname: makePath(MARKETS),
     }
     if (categoryClicked !== category || !isEmpty(tags)) {
