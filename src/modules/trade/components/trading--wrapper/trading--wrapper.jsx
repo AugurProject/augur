@@ -39,15 +39,15 @@ class MarketTradingWrapper extends Component {
 
     this.state = {
       orderType: LIMIT,
-      orderPrice: '',
-      orderQuantity: '',
+      orderPrice: props.selectedOrderProperties.price,
+      orderQuantity: props.selectedOrderProperties.quantity,
       orderEthEstimate: '0',
       orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
-      selectedNav: BUY,
+      selectedNav: props.selectedOrderProperties.selectedNav,
       currentPage: 0,
-      doNotCreateOrders: false,
+      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -56,12 +56,11 @@ class MarketTradingWrapper extends Component {
     this.clearOrderForm = this.clearOrderForm.bind(this)
     this.updateOrderEthEstimate = this.updateOrderEthEstimate.bind(this)
     this.updateOrderShareEstimate = this.updateOrderShareEstimate.bind(this)
-    this.showOrderPlacedWrapper = this.showOrderPlacedWrapper.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('nextProps', nextProps);
     const { selectedOrderProperties } = this.props
+
     if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) {
       this.setState({ currentPage: 0 })
       return
@@ -72,18 +71,14 @@ class MarketTradingWrapper extends Component {
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue, 10)
     const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue, 10)
-    // console.log(nextProps.selectedOutcome.trade);
+    // console.log('ests', nextTotalCost.toString(), nextShareCost.toString());
     if (nextTotalCost.abs().toString() !== this.state.orderEthEstimate) {
-      // const orderEthEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '0 ETH' : `${nextTotalCost.abs().toString()} ETH`
       this.setState({
         orderEthEstimate: nextTotalCost.abs().toString(),
       })
     }
 
-    // if (nextShareCost + ' ETH' !== this.state.orderShareEstimate) {
     if (nextShareCost !== this.state.orderShareEstimate) {
-      // const orderShareEstimate = nextProps.selectedOutcome.trade.shareCost.toString() + ' Shares'
-      // const orderShareEstimate = (isNaN(nextShareCost) || nextShareCost.abs().eq(0)) ? '0 Shares' : `${nextShareCost.abs().toString()} Shares`
       this.setState({
         orderShareEstimate: nextShareCost.abs().toString(),
       })
@@ -120,11 +115,10 @@ class MarketTradingWrapper extends Component {
 
   updateState(property, value) {
     this.setState({ [property]: value }, () => {
-      // by definition, if we have modified the form, we should set doNotCreateOrders to false
       this.props.updateSelectedOrderProperties({
         orderPrice: this.state.orderPrice,
         orderQuantity: this.state.orderQuantity,
-        doNotCreateOrders: false,
+        doNotCreateOrders: this.state.doNotCreateOrders,
         selectedNav: this.state.selectedNav,
       })
     })
@@ -148,12 +142,6 @@ class MarketTradingWrapper extends Component {
     })
   }
 
-  showOrderPlacedWrapper() {
-    // wrap so that we can clear trade on sent.
-    // this.clearOrderForm()
-    this.props.showOrderPlaced()
-  }
-
   updateOrderEthEstimate(orderEthEstimate) {
     this.setState({
       orderEthEstimate,
@@ -175,6 +163,7 @@ class MarketTradingWrapper extends Component {
       market,
       selectedOutcome,
       toggleForm,
+      showOrderPlaced,
     } = this.props
     const s = this.state
 
@@ -249,7 +238,7 @@ class MarketTradingWrapper extends Component {
             trade={selectedOutcome.trade}
             isMobile={isMobile}
             clearOrderForm={this.clearOrderForm}
-            showOrderPlaced={this.showOrderPlacedWrapper}
+            showOrderPlaced={showOrderPlaced}
           />
         }
       </section>

@@ -103,6 +103,9 @@ class MarketTradingForm extends Component {
     }
 
     if (!isEqual(newOrderInfo, currentOrderInfo)) {
+      // trade has changed, lets update trade.
+      this.updateTrade(newStateInfo, nextProps)
+
       const nextTradePrice = nextProps.selectedOutcome.trade.limitPrice
       const prevTradePrice = selectedOutcome.trade.limitPrice
       // limitPrice is being defaulted and we had no value in the input box
