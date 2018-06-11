@@ -47,7 +47,6 @@ export default class MarketHeader extends Component {
     const s = this.state
     const detailsPresent = details != null && details.length > 0
 
-    /* eslint-disable react/no-danger */
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
@@ -152,6 +151,5 @@ export default class MarketHeader extends Component {
         }
       </section>
     )
-  /* eslint-enable react/no-danger */
   }
 }
