@@ -3,34 +3,35 @@ import { augur } from 'services/augurjs'
 import { EDGE_WALLET_TYPE } from 'modules/auth/constants/auth-types'
 import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { updateIsLogged } from 'modules/auth/actions/update-is-logged'
+import logError from 'utils/log-error'
 
 export const loginWithEdgeEthereumWallet = (
   edgeUiAccount,
   ethereumWallet,
   history,
 ) => (dispatch) => {
-  const address = ethereumWallet.keys.ethereumAddress
-
+  const mixedCaseAddress = ethereumWallet.keys.ethereumAddress
+  const lowerCaseAddress = mixedCaseAddress.toLowerCase()
   dispatch(updateIsLogged(true))
   dispatch(loadAccountData({
-    address,
-    displayAddress: address,
+    address: lowerCaseAddress,
+    displayAddress: mixedCaseAddress,
     meta: {
-      address,
+      address: lowerCaseAddress,
       signer: (tx, callback) => {
         edgeUiAccount
           .signEthereumTransaction(ethereumWallet.id, tx)
           .then(signed => callback(null, prefixHex(signed)))
           .catch(e => callback(e))
       },
-      accountType: augur.rpc.constants.ACCOUNT_TYPES.LEDGER,
+      accountType: augur.rpc.constants.ACCOUNT_TYPES.EDGE,
     },
     name: edgeUiAccount.username,
     edgeUiAccount,
   }))
 }
 
-export const loginWithEdge = (edgeAccount, history) => (dispatch) => {
+export const loginWithEdge = (edgeAccount, history, callback = logError) => (dispatch) => {
   const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE)
   if (ethereumWallet != null) {
     return dispatch(loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet, history))
@@ -43,5 +44,5 @@ export const loginWithEdge = (edgeAccount, history) => (dispatch) => {
       const ethereumWallet = edgeAccount.getFirstWalletInfo(EDGE_WALLET_TYPE)
       dispatch(loginWithEdgeEthereumWallet(edgeAccount, ethereumWallet, history))
     })
-    .catch(e => console.error({ code: 0, message: 'could not create wallet' }))
+    .catch(() => logError({ code: 0, message: 'could not create wallet' }))
 }
