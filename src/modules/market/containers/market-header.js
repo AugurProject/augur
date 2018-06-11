@@ -23,7 +23,9 @@ const mapStateToProps = (state, ownProps) => {
       fee: {
         value: getValue(market, 'settlementFeePercent.full'),
         tooltipHeader: 'Trading Settlement Fee',
-        tooltip: 'The trading settlement fee is a combination of the Market Creator Fee (<b>' + getValue(market, 'marketCreatorFeeRatePercent.full') + '</b>) and the Reporting Fee (<b>' + getValue(market, 'reportingFeeRatePercent.full') + '</b>)',
+        marketCreatorFee: getValue(market, 'marketCreatorFeeRatePercent.full'),
+        reportingFee: getValue(market, 'reportingFeeRatePercent.full'),
+        tooltip: true,
       },
       expires: {
         value: getValue(market, 'endTime.formattedLocal'),
