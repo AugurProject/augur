@@ -40,6 +40,11 @@ export default class MarketView extends Component {
       selectedOutcome: props.marketType === CATEGORICAL ? null : '1',
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
       fixedPrecision: 4,
+      selectedOutcomeProperties: {
+        '1': {
+          ...this.DEFAULT_ORDER_PROPERTIES, 
+        }
+      },
     }
 
     this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
@@ -96,6 +101,16 @@ export default class MarketView extends Component {
         ...this.DEFAULT_ORDER_PROPERTIES,
       },
     })
+
+    let selectedOutcomeProperties = this.state.selectedOutcomeProperties
+    if (!selectedOutcomeProperties[selectedOutcome]) {
+      selectedOutcomeProperties[selectedOutcome] = {
+        ...this.DEFAULT_ORDER_PROPERTIES,
+      }
+      this.setState({selectedOutcomeProperties})
+    } else {
+      this.setState({ selectedOrderProperties: selectedOutcomeProperties[selectedOutcome] })
+    }
   }
 
   updateSelectedOrderProperties(selectedOrderProperties) {
@@ -105,6 +120,15 @@ export default class MarketView extends Component {
         ...selectedOrderProperties,
       },
     })
+
+    if (this.state.selectedOutcome) {
+      let selectedOutcomeProperties = this.state.selectedOutcomeProperties
+      selectedOutcomeProperties[this.state.selectedOutcome] = {
+        ...this.DEFAULT_ORDER_PROPERTIES,
+        ...selectedOrderProperties,
+      }
+      this.setState({selectedOutcomeProperties})
+    }
   }
 
   updatePrecision(isIncreasing) {

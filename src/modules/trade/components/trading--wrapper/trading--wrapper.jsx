@@ -66,9 +66,6 @@ class MarketTradingWrapper extends Component {
       return
     }
     if (this.props.selectedOutcome === null) return this.clearOrderForm()
-    if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
-      return this.clearOrderForm()
-    }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue, 10)
     const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue, 10)
     // console.log('ests', nextTotalCost.toString(), nextShareCost.toString());
