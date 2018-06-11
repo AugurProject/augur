@@ -15,13 +15,10 @@ const trezorSigner = async (connect, addressPath, dispatch, rawTxArgs) => {
 
   dispatch(updateModal({
     type: MODAL_TREZOR,
-    info: "Please sign transaction on Trezor",
+    info: 'Please sign transaction on Trezor',
   }))
 
   const tx = rawTxArgs[0]
-
-  console.log('trezor-signer: tx is ', tx)
-
   const callback = rawTxArgs[1]
 
   return new Promise((resolve, reject) => {
