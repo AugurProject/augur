@@ -206,7 +206,6 @@ describe("tests for test/profitloss.db", () => {
   var connection = null;
   var augur = new Augur();
 
-  console.log("CWD", process.cwd());
   beforeEach((done) => {
     sqlite3.verbose();
     connection = Knex({
