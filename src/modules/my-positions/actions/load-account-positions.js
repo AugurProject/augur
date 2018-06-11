@@ -22,6 +22,8 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
         outcomeIds.forEach((outcomeId) => {
           marketPositionData[marketId][outcomeId] = positions.filter(position => position.marketId === marketId && position.outcome === outcomeId)
         })
+        // make sure we have a timestamp
+        const timestamp = (blockchain.currentAugurTimestamp || getState().blockchain.currentAugurTimestamp || Math.round((new Date()).getTime() / 1000))
         // finally make sure we have most up to date PL values for our positions
         augur.augurNode.submitRequest(
           'getProfitLoss',
@@ -29,8 +31,8 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
             universe: universe.id,
             account: loginAccount.address,
             startTime: 0,
-            endTime: blockchain.currentAugurTimestamp,
-            periodInterval: blockchain.currentAugurTimestamp,
+            endTime: timestamp + 1,
+            periodInterval: timestamp,
           },
           (err, rawPerformanceData) => {
             const { all } = rawPerformanceData

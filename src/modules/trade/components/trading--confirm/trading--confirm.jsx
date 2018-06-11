@@ -19,8 +19,8 @@ const MarketTradingConfirm = (p) => {
   const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
   const potentialLossPercent = getValue(p, 'trade.potentialLossPercent')
   const totalCost = getValue(p, 'trade.totalCost')
+  const shareCost = getValue(p, 'trade.shareCost')
   const { doNotCreateOrders } = p
-
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
@@ -61,7 +61,10 @@ const MarketTradingConfirm = (p) => {
         <ul className={Styles.TradingConfirm__total}>
           <li>
             <span>Est. Cost</span>
+          </li>
+          <li>
             <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> <span>ETH</span></span>
+            <span><ValueDenomination formatted={shareCost ? shareCost.formatted : '0'} /> <span>Shares</span></span>
           </li>
         </ul>
       }
@@ -92,6 +95,7 @@ const MarketTradingConfirm = (p) => {
         <button
           className={Styles['TradingConfirmation__button--submit']}
           onClick={(e) => {
+            e.preventDefault()
             p.market.onSubmitPlaceTrade(p.selectedOutcome.id, (err, tradeGroupID) => {
               // onSent/onFailed CB
               if (!err) {
@@ -100,7 +104,7 @@ const MarketTradingConfirm = (p) => {
             }, (res) => {
               // onComplete CB
             }, doNotCreateOrders)
-            p.prevPage()
+            p.prevPage(e, true)
           }}
         >Confirm
         </button>

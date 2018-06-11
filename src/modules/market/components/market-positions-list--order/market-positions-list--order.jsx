@@ -16,6 +16,7 @@ export default class Order extends Component {
     outcomeName: PropTypes.string,
     order: PropTypes.object,
     pending: PropTypes.bool,
+    outcome: PropTypes.object,
   }
 
   constructor(props) {
@@ -64,6 +65,7 @@ export default class Order extends Component {
       outcomeName,
       order,
       pending,
+      outcome,
     } = this.props
     const { orderCancellationStatus } = order
     const s = this.state
@@ -96,8 +98,10 @@ export default class Order extends Component {
         <li>
           { orderPrice }
         </li>
-        { isExtendedDisplay && !isMobile &&
-          <li />
+        { isExtendedDisplay && !isMobile && outcome &&
+          <li>
+            {getValue(outcome, 'lastPrice.formatted') }
+          </li>
         }
         { !isMobile && <li /> }
         { !isMobile && <li /> }

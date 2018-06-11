@@ -60,6 +60,56 @@
   }
 }
 
+.TradingForm__form-estimated-cost {
+  border: solid @color-lightgray;
+  border-width: 1px 0;
+  display: flex;
+  padding: 1.5rem 2rem;
+
+  > li {
+    align-items: stretch;
+    display: flex;
+
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+
+    > span {
+      font-size: @font-size-large;
+      line-height: @font-size-large;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-darkpurple;
+        font-weight: 500;
+        margin: 0 1.5rem 0 0;
+        width: 7rem;
+      }
+    }
+  }
+
+  > li:nth-child(2) {
+    display: block;
+    margin-top: 0;
+  }
+
+  > li:nth-child(2) > span:nth-child(1) {
+    padding-bottom: 1rem;
+  }
+
+  > li > span:first-child,
+  > li > span:last-child {
+    display: block;
+    font-size: @font-size-large;
+    font-weight: 700;
+    line-height: @font-size-large;
+  }
+}
+
 .TradingForm__form-body > li.TradingForm__button--review {
   justify-content: flex-end;
 
@@ -68,7 +118,7 @@
   }
 }
 
-.TradingForm__form-body > li.TradingForm__button__binary--review {
+.TradingForm__form-body > li.TradingForm__button__yes_no--review {
   > label {
     justify-content: flex-start;
   }

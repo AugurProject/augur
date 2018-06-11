@@ -1,4 +1,5 @@
 // for add-transactions.js
+export const PUBLIC_TRADE = 'publicTrade'
 export const TRANSFER = 'Transfer'
 export const OPEN_ORDER = 'OpenOrder'
 export const MARKET_CREATION = 'MarketCreation'

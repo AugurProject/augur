@@ -1,7 +1,7 @@
 
 
 import sinon from 'sinon'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import selectDisputeOutcomes, { __RewireAPI__ as RewireAPI } from 'modules/reporting/selectors/select-dispute-outcomes'
 
 describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
@@ -35,7 +35,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
     minPrice: 0,
     numTicks: 10000,
     numOutcomes: 2,
-    marketType: BINARY,
+    marketType: YES_NO,
     reportableOutcomes: [{ id: '0', name: 'No' }, { id: '1', name: 'Yes' }, { id: '0.5', name: 'Indeterminate' }],
   }
 
@@ -497,7 +497,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
   })
 
   test({
-    description: `binary market with two disputes`,
+    description: `yes/no  market with two disputes`,
     assertions: () => {
       const stakes = [
         {
@@ -540,7 +540,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
 
 
   test({
-    description: `binary market with invalid disputes`,
+    description: `yes/no  market with invalid disputes`,
     assertions: () => {
       const stakes = [
         {
@@ -569,7 +569,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
   })
 
   test({
-    description: `binary market with one dispute`,
+    description: `yes/no  market with one dispute`,
     assertions: () => {
       const stakes = [
         {
@@ -597,7 +597,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
   })
 
   test({
-    description: `binary market with NO disputes`,
+    description: `yes/no  market with NO disputes`,
     assertions: () => {
       const actual = selectDisputeOutcomes(marketBinary, [])
       const expected = marketBinary.reportableOutcomes

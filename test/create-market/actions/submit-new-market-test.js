@@ -222,20 +222,28 @@ describe('modules/create-market/actions/submit-new-market', () => {
     },
     buildCreateMarket: buildCreateMarketSuccess,
     assertions: (store) => {
-      __RewireAPI__.__Rewire__('updateTradesInProgress', (callReturn, outcomeId, type, quantity, price, nogo, cb) => {
-        cb({})
-        return {
-          type: 'updateTradesInProgress',
-          outcomeId,
-        }
-      })
-
-      __RewireAPI__.__Rewire__('placeTrade', (callReturn, outcomeId, tradeToExecute, nogo, cb) => {
-        cb()
-        return {
-          type: 'placeTrade',
-          outcomeId,
-        }
+      let ordersCreated = 0
+      __RewireAPI__.__Rewire__('augur', {
+        utils: {
+          convertBigNumberToHexString: data => '',
+        },
+        trading: {
+          calculateTradeCost: data => ({}),
+          generateTradeGroupId: () => '',
+        },
+        constants: {
+          DEFAULT_NUM_TICKS: {
+            2: 10000,
+          },
+        },
+        api: {
+          CreateOrder: {
+            publicCreateOrder: (data) => {
+              data.onSuccess()
+              ordersCreated += 1
+            },
+          },
+        },
       })
 
       store.dispatch(submitNewMarket(store.getState().newMarket, history))
@@ -245,106 +253,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const expected = [
         pendingTransaction,
         clearNewMarket,
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-        {
-          outcomeId: 1,
-          type: 'placeTrade',
-        },
-        {
-          outcomeId: 1,
-          type: 'updateTradesInProgress',
-        },
-
       ]
       assert.isTrue(history.push.calledOnce, `didn't push a new path to history`)
       assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
+      assert.deepEqual(ordersCreated, 12, `Didn't create the correct number of orders`)
     },
   })
 

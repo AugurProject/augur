@@ -1,7 +1,7 @@
 import logError from 'utils/log-error'
 // import noop from 'utils/noop'
 import { augur } from 'services/augurjs'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 // import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
 
 export const estimateSubmitNewMarket = (newMarket, callback = logError) => (dispatch, getState) => {
@@ -16,9 +16,9 @@ export const estimateSubmitNewMarket = (newMarket, callback = logError) => (disp
     case SCALAR:
       gasPrice = augur.constants.CREATE_SCALAR_MARKET_GAS
       break
-    case BINARY:
+    case YES_NO:
     default:
-      gasPrice = augur.constants.CREATE_BINARY_MARKET_GAS
+      gasPrice = augur.constants.CREATE_YES_NO_MARKET_GAS
   }
 
   callback(null, gasPrice)

@@ -1,20 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { BINARY } from 'modules/markets/constants/market-types'
+import { YES_NO } from 'modules/markets/constants/market-types'
 
 import getValue from 'utils/get-value'
 import CustomPropTypes from 'utils/custom-prop-types'
 import { createBigNumber } from 'utils/create-big-number'
 
-import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
+import Styles from 'modules/market/components/market-outcomes-yes-no-scalar/market-outcomes-yes-no-scalar.styles'
 
 const MarketOutcomes = (p) => {
   const scalarDenomination = !p.scalarDenomination ? '' : p.scalarDenomination
   const calculatePosition = () => {
     const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.fullPrecision') || 0
 
-    if (p.type === BINARY) {
+    if (p.type === YES_NO) {
       return lastPrice
     }
 
@@ -26,10 +26,10 @@ const MarketOutcomes = (p) => {
     left: calculatePosition() + '%',
   }
 
-  const minValue = !isNaN(p.min) && p.type !== BINARY ? `${p.min} ${scalarDenomination}` : '0 %'
-  const maxValue = !isNaN(p.max) && p.type !== BINARY ? `${p.max} ${scalarDenomination}` : '100 %'
+  const minValue = !isNaN(p.min) && p.type !== YES_NO ? `${p.min} ${scalarDenomination}` : '0 %'
+  const maxValue = !isNaN(p.max) && p.type !== YES_NO ? `${p.max} ${scalarDenomination}` : '100 %'
 
-  const lastPriceDenomination = p.type !== BINARY ? '' : getValue(p.outcomes[0], 'lastPricePercent.denomination')
+  const lastPriceDenomination = p.type !== YES_NO ? '' : getValue(p.outcomes[0], 'lastPricePercent.denomination')
 
   return (
     <div className={Styles.MarketOutcomes}>

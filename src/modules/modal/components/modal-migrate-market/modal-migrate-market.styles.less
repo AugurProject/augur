@@ -2,7 +2,7 @@
 
 .ModalMigrateMarket__form {
   color: @color-white;
-  max-width: 35rem;
+  max-width: 40rem;
   width: 100%;
 }
 
@@ -18,24 +18,29 @@
   .border(true, @border-bottom, @color-white);
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-direction: column;
   justify-content: flex-start;
   margin: 1rem 0;
   padding: 1rem 0;
 }
 
-.ModalMigrateMarket__labels {
-  flex: 0 1;
-  white-space: nowrap;
+.ModalMigrateMarket__row {
+  display: flex;
+  flex-direction: row;
   word-break: keep-all;
 
   > li {
     padding: 0.5rem 0;
-    text-transform: uppercase;
+
+    &:first-child {
+      min-width: 120px;
+      padding-right: 1rem;
+      text-transform: uppercase;
+    }
   }
 }
 
-.ModalMigrateMarket__values {
+.ModalMigrateMarket__gas {
   flex: 1 100%;
   margin-left: 5rem;
   white-space: nowrap;
@@ -75,6 +80,7 @@
   .ModalMigrateMarket__actions {
     bottom: 0;
     flex-flow: column nowrap;
+    max-width: 40rem;
     position: fixed;
     width: 100%;
 

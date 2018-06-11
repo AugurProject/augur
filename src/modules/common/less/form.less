@@ -36,8 +36,16 @@
   white-space: nowrap;
 }
 
+.Form__error--even__space {
+  &:extend(.Form__error--even);
+
+  margin-top: 0.5rem;
+  position: relative;
+}
+
 .Form__error__space > svg,
 .Form__error--even > svg,
+.Form__error--even__space > svg,
 .Form__error--field-50 > svg {
   margin: 0 0.2rem;
   max-height: 1rem;

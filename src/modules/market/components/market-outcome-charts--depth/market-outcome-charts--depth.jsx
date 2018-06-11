@@ -23,7 +23,7 @@ export default class MarketOutcomeDepth extends Component {
     updateChartHeaderHeight: PropTypes.func.isRequired,
     updateHoveredPrice: PropTypes.func.isRequired,
     updateHoveredDepth: PropTypes.func.isRequired,
-    updateSeletedOrderProperties: PropTypes.func.isRequired,
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
     marketMin: CustomPropTypes.bigNumber, /* required */
     marketMax: CustomPropTypes.bigNumber, /* required */
     hoveredDepth: PropTypes.array.isRequired,
@@ -57,7 +57,7 @@ export default class MarketOutcomeDepth extends Component {
       orderBookKeys,
       sharedChartMargins,
       updateHoveredPrice,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
       isMobile,
     } = this.props
     this.drawDepth({
@@ -68,7 +68,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMin,
       marketMax,
       updateHoveredPrice,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
       isMobile,
     })
 
@@ -85,7 +85,7 @@ export default class MarketOutcomeDepth extends Component {
       orderBookKeys,
       sharedChartMargins,
       updateHoveredPrice,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
       isMobile,
     } = this.props
     if (
@@ -93,7 +93,7 @@ export default class MarketOutcomeDepth extends Component {
       !isEqual(orderBookKeys, nextProps.orderBookKeys) ||
       !isEqual(sharedChartMargins, nextProps.sharedChartMargins) ||
       !isEqual(updateHoveredPrice, nextProps.updateHoveredPrice) ||
-      !isEqual(updateSeletedOrderProperties, nextProps.updateSeletedOrderProperties) ||
+      !isEqual(updateSelectedOrderProperties, nextProps.updateSelectedOrderProperties) ||
       fixedPrecision !== nextProps.fixedPrecision ||
       marketMin !== nextProps.marketMin ||
       marketMax !== nextProps.marketMax ||
@@ -107,7 +107,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMin: nextProps.marketMin,
         marketMax: nextProps.marketMax,
         updateHoveredPrice: nextProps.updateHoveredPrice,
-        updateSeletedOrderProperties: nextProps.updateSeletedOrderProperties,
+        updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
         isMobile: nextProps.isMobile,
       })
     }
@@ -150,7 +150,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMin,
         marketMax,
         updateHoveredPrice,
-        updateSeletedOrderProperties,
+        updateSelectedOrderProperties,
         isMobile,
       } = options
 
@@ -207,7 +207,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMin,
         marketMax,
         updateHoveredPrice,
-        updateSeletedOrderProperties,
+        updateSelectedOrderProperties,
       })
 
       this.setState({
@@ -229,7 +229,7 @@ export default class MarketOutcomeDepth extends Component {
       orderBookKeys,
       sharedChartMargins,
       updateHoveredPrice,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
     } = this.props
     this.drawDepth({
       marketDepth,
@@ -239,7 +239,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMin,
       marketMax,
       updateHoveredPrice,
-      updateSeletedOrderProperties,
+      updateSelectedOrderProperties,
     })
   }
 
@@ -649,7 +649,7 @@ function attachHoverClickHandlers(options) {
     marketMin,
     marketMax,
     updateHoveredPrice,
-    updateSeletedOrderProperties,
+    updateSelectedOrderProperties,
   } = options
 
   depthChart.append('rect')
@@ -676,7 +676,7 @@ function attachHoverClickHandlers(options) {
         orderPrice > marketMin &&
         orderPrice < marketMax
       ) {
-        updateSeletedOrderProperties({
+        updateSelectedOrderProperties({
           selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
           orderPrice: nearestFillingOrder[1],
           orderQuantity: nearestFillingOrder[0],

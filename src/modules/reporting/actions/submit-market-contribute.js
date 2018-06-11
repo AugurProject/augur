@@ -18,7 +18,7 @@ export const submitMarketContribute = (estimateGas, marketId, selectedOutcome, i
   augur.api.Market.contribute({
     meta: loginAccount.meta,
     tx: { to: marketId, estimateGas },
-    _invalid: invalid,
+    _invalid: !!invalid,
     _payoutNumerators: payoutNumerators,
     _amount: amount,
     onSent: () => {

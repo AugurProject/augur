@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
+import ModalTrezor from 'modules/modal/components/modal-trezor/modal-trezor'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
 import ModalNetworkDisabled from 'modules/modal/components/modal-network-disabled/modal-network-disabled'
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
@@ -87,6 +88,13 @@ export default class ModalView extends Component {
           }
           {modal.type === TYPES.MODAL_UPORT &&
             <ModalUport
+              {...modal}
+              modalWidth={s.modalWidth}
+              modalHeight={s.modalHeight}
+            />
+          }
+          {modal.type === TYPES.MODAL_TREZOR &&
+            <ModalTrezor
               {...modal}
               modalWidth={s.modalWidth}
               modalHeight={s.modalHeight}

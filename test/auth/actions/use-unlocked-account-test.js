@@ -26,11 +26,11 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       },
     }
     const UpdateIsLoggedAndLoadAccountData = { updateIsLoggedAndLoadAccountData: () => {} }
-    const IsMetaMask = { default: () => {} }
+    const IsGlobalWeb3 = { default: () => {} }
     const action = proxyquire('../../../src/modules/auth/actions/use-unlocked-account.js', {
       '../../../services/augurjs': AugurJS,
       './update-is-logged-and-load-account-data': UpdateIsLoggedAndLoadAccountData,
-      '../helpers/is-meta-mask': IsMetaMask,
+      '../helpers/is-global-web3': IsGlobalWeb3,
     })
     sinon.stub(AugurJS.augur.rpc, 'isUnlocked').callsFake((address, callback) => {
       t.stub.augur.rpc.isUnlocked(address, (err, isUnlocked) => {
@@ -43,10 +43,10 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       type: 'UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA',
       data: { unlockedAccount, accountType },
     }))
-    sinon.stub(IsMetaMask, 'default').callsFake(() => {
-      const isMetaMask = t.stub.isMetaMask()
-      store.dispatch({ type: 'IS_META_MASK', data: { isMetaMask } })
-      return isMetaMask
+    sinon.stub(IsGlobalWeb3, 'default').callsFake(() => {
+      const isGlobalWeb3 = t.stub.isGlobalWeb3()
+      store.dispatch({ type: 'IS_GLOBAL_WEB3', data: { isGlobalWeb3 } })
+      return isGlobalWeb3
     })
     store.dispatch(action.useUnlockedAccount(t.params.unlockedAddress, (err) => {
       t.assertions(err, store.getActions())
@@ -61,7 +61,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(null, null) } },
-      isMetaMask: () => assert.fail(),
+      isGlobalWeb3: () => assert.fail(),
     },
     assertions: (err, actions) => {
       assert.strictEqual(err, 'no account address')
@@ -75,13 +75,13 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(MOCK_ERROR) } },
-      isMetaMask: () => false,
+      isGlobalWeb3: () => false,
     },
     assertions: (err, actions) => {
       assert.deepEqual(err, MOCK_ERROR)
       assert.deepEqual(actions, [{
-        type: 'IS_META_MASK',
-        data: { isMetaMask: false },
+        type: 'IS_GLOBAL_WEB3',
+        data: { isGlobalWeb3: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
         data: { isUnlocked: MOCK_ERROR },
@@ -95,13 +95,13 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(null, false) } },
-      isMetaMask: () => false,
+      isGlobalWeb3: () => false,
     },
     assertions: (err, actions) => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
-        type: 'IS_META_MASK',
-        data: { isMetaMask: false },
+        type: 'IS_GLOBAL_WEB3',
+        data: { isGlobalWeb3: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
         data: { isUnlocked: false },
@@ -115,13 +115,13 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => assert.fail() } },
-      isMetaMask: () => true,
+      isGlobalWeb3: () => true,
     },
     assertions: (err, actions) => {
       assert.isNull(err)
       assert.deepEqual(actions, [{
-        type: 'IS_META_MASK',
-        data: { isMetaMask: true },
+        type: 'IS_GLOBAL_WEB3',
+        data: { isGlobalWeb3: true },
       }, {
         type: 'UPDATE_IS_LOGGED_AND_LOAD_ACCOUNT_DATA',
         data: {
@@ -138,12 +138,12 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
     stub: {
       augur: { rpc: { isUnlocked: (address, callback) => callback(null, true) } },
-      isMetaMask: () => false,
+      isGlobalWeb3: () => false,
     },
     assertions: (err, actions) => {
       assert.deepEqual(actions, [{
-        type: 'IS_META_MASK',
-        data: { isMetaMask: false },
+        type: 'IS_GLOBAL_WEB3',
+        data: { isGlobalWeb3: false },
       }, {
         type: 'AUGURJS_RPC_IS_UNLOCKED',
         data: { isUnlocked: true },

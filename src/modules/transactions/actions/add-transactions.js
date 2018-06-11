@@ -1,13 +1,13 @@
 import { augur } from 'services/augurjs'
-import { MARKET_CREATION, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
 import { unfix } from 'speedomatic'
-import { isNull } from 'lodash'
+import { isNull, orderBy } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
-import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatShares } from 'utils/format-number'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
@@ -78,6 +78,7 @@ function buildTradeTransaction(trade, marketsData) {
   meta.price = transaction.price
   meta.fee = transaction.settlementFees
   meta.txhash = transaction.transactionHash
+  meta.timestamp = transaction.timestamp
   transaction.meta = meta
   header.status = SUCCESS
   if (transaction.market) {
@@ -216,7 +217,8 @@ export function addOpenOrderTransactions(openOrders) {
       const marketTradeTransactions = []
       eachOf(value, (value2, outcome) => {
         eachOf(value2, (value3, type) => {
-          eachOf(value3, (value4, hash) => {
+          const sorted = orderBy(value3, ['creationTime'], ['desc'])
+          eachOf(sorted, (value4, hash) => {
             const transaction = { marketId, type, hash, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
             transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
@@ -301,7 +303,7 @@ function processReport(market, transaction) {
 function getOutcome(market, outcome) {
   let value = null
   if (!market || !outcome) return value
-  if (market.marketType === BINARY) {
+  if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
     value = market.outcomes[outcome].description
@@ -325,7 +327,10 @@ function buildHeader(item, type, status) {
 }
 
 // TODO: this should be dynamic by user control
-function getSortOrder(type) {
+export function getSortOrder(type) {
+  if (type === PUBLIC_TRADE) {
+    return 5
+  }
   if (type === OPEN_ORDER) {
     return 10
   }

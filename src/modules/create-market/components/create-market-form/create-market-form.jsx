@@ -99,7 +99,7 @@ export default class CreateMarketForm extends Component {
     const updatedMarket = { ...newMarket }
 
     switch (true) {
-      case typeof value === 'string' && !value.length:
+      case typeof value === 'string' && !value.trim().length:
         updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
         break
       case maxLength && value.length > maxLength:

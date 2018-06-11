@@ -121,7 +121,7 @@ export default class MarketPortfolioCard extends Component {
                   Realized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'realizedNet.formatted')}
+                  {getValue(myPositionsSummary, 'realizedNet.formatted') || '0'}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -132,7 +132,7 @@ export default class MarketPortfolioCard extends Component {
                   Unrealized P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'unrealizedNet.formatted')}
+                  {getValue(myPositionsSummary, 'unrealizedNet.formatted') || '0'}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -143,7 +143,7 @@ export default class MarketPortfolioCard extends Component {
                   Total P/L
                 </span>
                 <span className={Styles.MarketCard__statvalue}>
-                  {getValue(myPositionsSummary, 'totalNet.formatted')}
+                  {getValue(myPositionsSummary, 'totalNet.formatted') || '0'}
                 </span>
                 <span className={Styles.MarketCard__statunit}>
                   ETH
@@ -202,6 +202,7 @@ export default class MarketPortfolioCard extends Component {
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
                   isMobile={isMobile}
+                  outcome={outcome}
                   closePositionStatus={closePositionStatus}
                 />
               ))}
@@ -236,9 +237,9 @@ export default class MarketPortfolioCard extends Component {
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
-                { !isMobile && <li><span>Unrealized <span />P/L</span></li>}
-                { !isMobile && <li><span>Realized <span />P/L</span></li>}
-                <li><span>Total <span />P/L</span></li>
+                { !isMobile && <li className={Styles.MarketCard__hide}><span>Unrealized <span />P/L</span></li>}
+                { !isMobile && <li className={Styles.MarketCard__hide}><span>Realized <span />P/L</span></li>}
+                <li className={Styles.MarketCard__hide}><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
               }
@@ -252,6 +253,7 @@ export default class MarketPortfolioCard extends Component {
                       pending={order.pending}
                       isExtendedDisplay
                       isMobile={isMobile}
+                      outcome={outcome}
                       closePositionStatus={closePositionStatus}
                     />
                   ))

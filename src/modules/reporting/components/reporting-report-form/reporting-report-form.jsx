@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { createBigNumber } from 'utils/create-big-number'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-report-form/reporting-report-form.styles'
@@ -43,7 +43,7 @@ export default class ReportingReportForm extends Component {
     }
 
     this.state.outcomes = this.props.market ? this.props.market.outcomes.slice() : []
-    if (this.props.market && this.props.market.marketType === BINARY && this.props.market.outcomes.length === 1) {
+    if (this.props.market && this.props.market.marketType === YES_NO && this.props.market.outcomes.length === 1) {
       this.state.outcomes.push({ id: 0, name: 'No' })
     }
     this.state.outcomes.sort((a, b) => a.name - b.name)
@@ -156,7 +156,7 @@ export default class ReportingReportForm extends Component {
           <label>
             <span>Outcome</span>
           </label>
-          { (market.marketType === BINARY || market.marketType === CATEGORICAL) &&
+          { (market.marketType === YES_NO || market.marketType === CATEGORICAL) &&
             <ul className={FormStyles['Form__radio-buttons--per-line']}>
               { s.outcomes.map(outcome => (
                 <li key={outcome.id}>

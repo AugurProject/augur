@@ -8,7 +8,7 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import speedomatic from 'speedomatic'
 import { uniq, isEmpty } from 'lodash'
 import { formatNumber } from 'utils/format-number'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { ZERO } from 'modules/trade/constants/numbers'
 import {
   CATEGORICAL_OUTCOMES_MIN_NUM,
@@ -280,8 +280,8 @@ export default class CreateMarketOutcome extends Component {
           <ul className={StylesForm['CreateMarketForm__radio-buttons']}>
             <li>
               <button
-                className={classNames({ [`${StylesForm.active}`]: newMarket.type === BINARY })}
-                onClick={() => this.validateType(BINARY)}
+                className={classNames({ [`${StylesForm.active}`]: newMarket.type === YES_NO })}
+                onClick={() => this.validateType(YES_NO)}
                 onKeyPress={e => keyPressed(e)}
               >Yes/No
               </button>

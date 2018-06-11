@@ -30,6 +30,7 @@ describe('modules/trade/helpers/generate-trade.js', () => {
       potentialProfitPercent: formatPercent(100),
       potentialLossPercent: formatPercent(100),
       side: 'buy',
+      shareCost: formatEther(0),
       sharesFilled: 5000,
       totalCost: formatEther(2500),
       totalFee: {
