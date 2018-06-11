@@ -9,6 +9,7 @@ import { NetworkConfiguration } from "augur-core";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let monitorEthereumNodeHealthId: NodeJS.Timer;
+let syncFinished = false;
 
 interface HighestBlockNumberRow {
   highestBlockNumber: number;
@@ -17,6 +18,10 @@ interface HighestBlockNumberRow {
 interface NetworkIdRow {
   networkId: string;
   overrideTimestamp: number|null;
+}
+
+export function isSyncFinished() {
+  return syncFinished;
 }
 
 function getNetworkID(db: Knex, augur: Augur, callback: (err?: Error|null, networkId?: string|null) => void) {
@@ -87,6 +92,7 @@ export function syncAugurNodeWithBlockchain(db: Knex, augur: Augur, network: Net
         }
         downloadAugurLogs(db, augur, fromBlock, handoffBlockNumber, (err?: Error|null): void => {
           if (err) return callback(err);
+          syncFinished = true;
           db.insert({ highestBlockNumber }).into("blockchain_sync_history").asCallback((err: Error|null) => {
             if (err) return callback(err);
             console.log(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);
