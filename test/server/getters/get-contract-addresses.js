@@ -35,6 +35,8 @@ describe("server/getters/get-contract-addresses", () => {
       assert.deepEqual(contractAddresses, {
         version: "the-version-string",
         net_version: 974,
+        netId: 974,
+        isSyncFinished: false,
         addresses: {
           universe: "the-universe-address",
           controller: "the-controller-address",
