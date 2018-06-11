@@ -22,7 +22,7 @@ jobs:
     script:
     - npm run lint
     - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
-      ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
+      ./build ./node_modules/mocha/bin/_mocha test/unit --report lcovonly && cat ./coverage/lcov.info
       | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
@@ -35,7 +35,7 @@ jobs:
     script:
     - npm run lint
     - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
-      ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
+      ./build ./node_modules/mocha/bin/_mocha test/unit --report lcovonly && cat ./coverage/lcov.info
       | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
@@ -48,7 +48,7 @@ jobs:
     script:
     - npm run lint
     - istanbul cover -x "**/seeds/**" -x "**/migrations/**" --include-all-sources --root
-      ./build ./node_modules/mocha/bin/_mocha test --report lcovonly && cat ./coverage/lcov.info
+      ./build ./node_modules/mocha/bin/_mocha test/unit --report lcovonly && cat ./coverage/lcov.info
       | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
     deploy:
       provider: script
