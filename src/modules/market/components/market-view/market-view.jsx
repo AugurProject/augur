@@ -41,9 +41,9 @@ export default class MarketView extends Component {
       selectedOrderProperties: this.DEFAULT_ORDER_PROPERTIES,
       fixedPrecision: 4,
       selectedOutcomeProperties: {
-        '1': {
-          ...this.DEFAULT_ORDER_PROPERTIES, 
-        }
+        1: {
+          ...this.DEFAULT_ORDER_PROPERTIES,
+        },
       },
     }
 
@@ -102,12 +102,12 @@ export default class MarketView extends Component {
       },
     })
 
-    let selectedOutcomeProperties = this.state.selectedOutcomeProperties
+    const selectedOutcomeProperties = this.state.selectedOutcomeProperties
     if (!selectedOutcomeProperties[selectedOutcome]) {
       selectedOutcomeProperties[selectedOutcome] = {
         ...this.DEFAULT_ORDER_PROPERTIES,
       }
-      this.setState({selectedOutcomeProperties})
+      this.setState({ selectedOutcomeProperties })
     } else {
       this.setState({ selectedOrderProperties: selectedOutcomeProperties[selectedOutcome] })
     }
@@ -122,12 +122,12 @@ export default class MarketView extends Component {
     })
 
     if (this.state.selectedOutcome) {
-      let selectedOutcomeProperties = this.state.selectedOutcomeProperties
+      const selectedOutcomeProperties = this.state.selectedOutcomeProperties
       selectedOutcomeProperties[this.state.selectedOutcome] = {
         ...this.DEFAULT_ORDER_PROPERTIES,
         ...selectedOrderProperties,
       }
-      this.setState({selectedOutcomeProperties})
+      this.setState({ selectedOutcomeProperties })
     }
   }
 
