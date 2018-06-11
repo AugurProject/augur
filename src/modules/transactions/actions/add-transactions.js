@@ -201,7 +201,7 @@ export function addOpenOrderTransactions(openOrders) {
     let index = 100
     eachOf(openOrders, (value, marketId) => {
       const market = marketsData[marketId]
-      // TODO: remove index when I figure a comprehensive uique id strategy
+      // TODO: remove index when I figure a comprehensive unique id strategy
       index += 1
       let sumBuy = 0
       let sumSell = 0
@@ -221,8 +221,15 @@ export function addOpenOrderTransactions(openOrders) {
           eachOf(sorted, (value4, hash) => {
             const transaction = { marketId, type, hash, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
-            transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             const meta = {}
+            if (transaction.canceledTransactionHash && transaction.canceledTime) {
+              transaction.message = `${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
+              const cancelationTime = convertUnixToFormattedDate(transaction.canceledTime)
+              meta.canceledTransactionHash = transaction.canceledTransactionHash
+              meta.canceledTime = cancelationTime.full
+            } else {
+              transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
+            }
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
@@ -242,7 +249,7 @@ export function addOpenOrderTransactions(openOrders) {
           })
         })
       })
-      // TODO: last order creation time will be in header, eariest activite
+      // TODO: last order creation time will be in header, earliest activite
       marketHeader.timestamp = creationTime
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
