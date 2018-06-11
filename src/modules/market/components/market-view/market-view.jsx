@@ -102,7 +102,7 @@ export default class MarketView extends Component {
       },
     })
 
-    const selectedOutcomeProperties = this.state.selectedOutcomeProperties
+    const { selectedOutcomeProperties } = this.state
     if (!selectedOutcomeProperties[selectedOutcome]) {
       selectedOutcomeProperties[selectedOutcome] = {
         ...this.DEFAULT_ORDER_PROPERTIES,
@@ -122,7 +122,7 @@ export default class MarketView extends Component {
     })
 
     if (this.state.selectedOutcome) {
-      const selectedOutcomeProperties = this.state.selectedOutcomeProperties
+      const { selectedOutcomeProperties } = this.state
       selectedOutcomeProperties[this.state.selectedOutcome] = {
         ...this.DEFAULT_ORDER_PROPERTIES,
         ...selectedOrderProperties,
