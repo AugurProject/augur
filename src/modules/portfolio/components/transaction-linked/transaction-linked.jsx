@@ -39,8 +39,8 @@ export default class LinkedTransaction extends Component {
             }
             <span className={Styles['LinkedTransaction__message-text']}>
               { transaction.message }
-              { transaction.meta.canceledTransactionHash &&
-                <span className={Styles['LinkedTransaction__message-cancelled']}>Cancelled</span>
+              { transaction.meta && transaction.meta.canceledTransactionHash &&
+                <span className={Styles['LinkedTransaction__message-canceled']}>Canceled</span>
               }
             </span>
           </div>
