@@ -11,6 +11,7 @@ export function getUserTradingHistory(db: Knex|Knex.Transaction, universe: Addre
     callback(null, userTradingHistory.map((trade: TradingHistoryRow): UITrade => ({
       transactionHash: trade.transactionHash,
       logIndex: trade.logIndex,
+      orderId: trade.orderId,
       type: trade.orderType! === "buy" ? "sell" : "buy",
       price: trade.price!.toFixed(),
       amount: trade.amount!.toFixed(),
