@@ -12,6 +12,7 @@ branches:
   only:
     - master
     - stable
+    - mvp
     - petong/travis-ci
     - "/^v\\d+\\.\\d+\\.\\d+(-\\d+)?$/"
 node_js:
