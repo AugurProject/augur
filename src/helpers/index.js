@@ -17,11 +17,14 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
 			        	return callback(market.id)
 			    	}
 				}
+				return callback(null)
 			}))
 	  	}))
-	  	return callback(null)
-  	} 
-  	return callback(market.id)
+  	} else {
+  		return callback(market.id)
+  	}
+
+  	callback(null)
 }
 
 export const helpers = (store) => {
