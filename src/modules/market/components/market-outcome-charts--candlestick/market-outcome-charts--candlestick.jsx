@@ -354,13 +354,16 @@ function determineDrawParams({
   const max = highValues.length ? highValues[highValues.length - 1].high : marketMax.toNumber()
   const min = lowValues.length ? lowValues[0].low : marketMin.toNumber()
 
+  const maxPrice = createBigNumber(max).times('1.02').toNumber()
+  const minPrice = createBigNumber(min).times('0.97').toNumber()
+
   const yDomain = [
-    max,
-    min,
+    maxPrice > marketMax ? max : maxPrice,
+    minPrice < marketMin ? min: minPrice,
   ]
 
   // sigment y into 10 to show prices
-  const boundDiff = createBigNumber(max).minus(createBigNumber(min)).dividedBy(2)
+  const boundDiff = createBigNumber(yDomain[0]).minus(createBigNumber(yDomain[1])).dividedBy(2)
 
   // Scale
   const xScale = d3.scaleTime()

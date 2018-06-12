@@ -85,13 +85,13 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   componentDidMount() {
-    this.updateChartWidths()
-
     this.snapScrollHandler()
 
     if (this.props.selectedOutcome && !this.props.excludeCandlestick && this.props.currentTimeInSeconds) {
       this.getData()
     }
+
+    this.updateChartWidths()
 
     window.addEventListener('resize', this.debouncedUpdateChartWidths)
   }
@@ -107,6 +107,8 @@ export default class MarketOutcomeCharts extends Component {
     if ((prevState.selectedPeriod !== this.state.selectedPeriod || prevState.selectedRange !== this.state.selectedRange || prevProps.selectedOutcome.id !== this.props.selectedOutcome.id || prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) && !this.props.excludeCandlestick) {
       this.getData()
     }
+
+    this.updateChartWidths()
   }
 
   componentWillUnmount() {
@@ -172,12 +174,17 @@ export default class MarketOutcomeCharts extends Component {
   }
 
   updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
-    this.setState({
-      chartWidths: {
-        candle: this.candlestickContainer ? this.candlestickContainer.clientWidth : 0,
-        orders: this.ordersContainer ? this.ordersContainer.clientWidth : 0,
-      },
-    })
+    const candle = this.candlestickContainer ? this.candlestickContainer.clientWidth : 0
+    const orders = this.ordersContainer ? this.ordersContainer.clientWidth : 0
+
+    if (this.state.chartWidths.candle !== candle || this.state.chartWidths.orders !== orders) {
+      this.setState({
+        chartWidths: {
+          candle,
+          orders,
+        },
+      })
+    }
   }
 
   updateChartHeaderHeight(headerHeight) {
@@ -312,18 +319,18 @@ export default class MarketOutcomeCharts extends Component {
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
               />
             </div>
+            <MarketOutcomeMidpoint
+              isMobile={isMobile}
+              excludeCandlestick
+              hasPriceHistory={s.hasPriceHistory}
+              hasOrders={hasOrders}
+              chartWidths={s.chartWidths}
+              headerHeight={s.headerHeight}
+              orderBookKeys={orderBookKeys}
+              sharedChartMargins={s.sharedChartMargins}
+              fixedPrecision={fixedPrecision}
+            />
           </div>
-          <MarketOutcomeMidpoint
-            isMobile={isMobile}
-            excludeCandlestick
-            hasPriceHistory={s.hasPriceHistory}
-            hasOrders={hasOrders}
-            chartWidths={s.chartWidths}
-            headerHeight={s.headerHeight}
-            orderBookKeys={orderBookKeys}
-            sharedChartMargins={s.sharedChartMargins}
-            fixedPrecision={fixedPrecision}
-          />
         </div>
         {isMobile &&
           <div className={Styles.MarketOutcomeCharts__indicator}>
