@@ -3,3 +3,10 @@ services:
   augur-node:
     build: .
     image: augurproject/augur-node:dev
+    links:
+      - geth
+    environment:
+      - ETHEREUM_HTTP=http://geth:8545
+      - ETHEREUM_WS=ws://geth:8546
+  geth:
+    image: augurproject/dev-pop-geth:core-1.0.0-13
