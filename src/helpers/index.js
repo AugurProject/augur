@@ -3,28 +3,29 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import loadMarkets from 'modules/markets/actions/load-markets'
+import store from 'src/store'
 
 const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) => {
-	const marketsData = selectMarkets(state)
-  	const market = marketsData.find(market => market.description === marketDescription)
-  	if (!market) {
-  		dispatch(loadMarkets((err, marketIds) => {
-	    	if (err) return callback(err)
-	    	dispatch(loadMarketsInfo(marketIds, (err, markets) => {
-		      	if (err) return callback(err)
-		      	for (const market in markets) {
-			    	if (market.description === marketDescription) {
-			        	return callback(market.id)
-			    	}
-				}
-				return callback(null)
-			}))
-	  	}))
-  	} else {
-  		return callback(market.id)
-  	}
+  const marketsData = selectMarkets(store.getState())
+  const market = marketsData.find(market => market.description === marketDescription)
+  if (!market) {
+    dispatch(loadMarkets((err, marketIds) => {
+      if (err) return callback(err)
+      dispatch(loadMarketsInfo(marketIds, (err, markets) => {
+        if (err) return callback(err)
+		Object.keys(markets).forEach(function(market) {
+          if (market.description === marketDescription) {
+            return callback(market.id)
+          }
+        })
+        return callback(null)
+      }))
+    }))
+  } else {
+    return callback(market.id)
+  }
 
-  	callback(null)
+  callback(null)
 }
 
 export const helpers = (store) => {
