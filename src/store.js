@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 import { helpers } from 'src/helpers'
@@ -40,7 +40,11 @@ let middleware
 if (process.env.NODE_ENV === 'production') {
   middleware = applyMiddleware(thunk, localStorageMiddleware)
 } else {
-  middleware = composeWithDevTools({})(applyMiddleware(consoleLog, thunk, localStorageMiddleware))
+  const whenever = require('redux-whenever')
+  middleware = compose(
+    whenever,
+    composeWithDevTools({})(applyMiddleware(consoleLog, thunk, localStorageMiddleware)),
+  )
 }
 
 // middleware
@@ -50,7 +54,7 @@ const store = createStore(combineReducers({
 
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
-  window.integrationHelpers = helpers(store.dispatch, store.getState)
+  window.integrationHelpers = helpers(store)
 }
 
 if (module.hot) {
