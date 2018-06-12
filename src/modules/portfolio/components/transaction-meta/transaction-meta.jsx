@@ -29,7 +29,7 @@ export default class TransactionMeta extends Component {
       meta.timestamp = convertUnixToFormattedDate(meta.timestamp).full
     }
 
-    if (meta.canceledTransactionHash) {
+    if (meta.status === 'Open' || meta.status === 'Canceled') {
       return (
         <div className={Styles.TransactionMetaContainer}>
           <ul className={Styles.TransactionMeta}>
@@ -61,30 +61,32 @@ export default class TransactionMeta extends Component {
               </ul>
             </div>
           </div>
-          <div className={Styles.TransactionMetaSubsectionContainer}>
-            <div className={Styles.TransactionMetaSubsectionHeader}>CANCELED</div>
-            <div className={Styles.TransactionMetaSubsection}>
-              <ul className={Styles.TransactionMeta}>
-                <li>
-                  <span>Txhash</span>
-                  <span>
-                    { baseLink &&
-                      <a
-                        href={baseLink + meta.canceledTransactionHash}
-                        target="blank"
-                      >
-                        {meta.canceledTransactionHash}
-                      </a>
-                    }
-                    { !baseLink &&
-                      <span>{ meta.canceledTransactionHash }</span>
-                    }
-                  </span>
-                </li>
-                <li><span>Timestamp</span><span><span>{ meta.canceledTime }</span></span></li>
-              </ul>
+          { meta.canceledTransactionHash &&
+            <div className={Styles.TransactionMetaSubsectionContainer}>
+              <div className={Styles.TransactionMetaSubsectionHeader}>CANCELED</div>
+              <div className={Styles.TransactionMetaSubsection}>
+                <ul className={Styles.TransactionMeta}>
+                  <li>
+                    <span>Txhash</span>
+                    <span>
+                      { baseLink &&
+                        <a
+                          href={baseLink + meta.canceledTransactionHash}
+                          target="blank"
+                        >
+                          {meta.canceledTransactionHash}
+                        </a>
+                      }
+                      { !baseLink &&
+                        <span>{ meta.canceledTransactionHash }</span>
+                      }
+                    </span>
+                  </li>
+                  <li><span>Timestamp</span><span><span>{ meta.canceledTime }</span></span></li>
+                </ul>
+              </div>
             </div>
-          </div>
+          }
         </div>
       )
     }

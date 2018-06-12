@@ -223,20 +223,18 @@ export function addOpenOrderTransactions(openOrders) {
             transaction.id = transaction.transactionHash + transaction.logIndex
             const meta = {}
             if (transaction.canceledTransactionHash && transaction.canceledTime) {
-              transaction.message = `${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
               const cancelationTime = convertUnixToFormattedDate(transaction.canceledTime)
               meta.canceledTransactionHash = transaction.canceledTransactionHash
               meta.canceledTime = cancelationTime.full
-            } else {
-              transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             }
+            transaction.message = `${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
             const outcomeName = getOutcome(market, outcome)
             if (outcomeName) meta.outcome = outcomeName
             meta.status = transaction.orderState.toLowerCase()
-            meta.status = meta.status.charAt(0).toUpperCase() + meta.status.slice(1);
+            meta.status = meta.status.charAt(0).toUpperCase() + meta.status.slice(1)
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
             transaction.meta = meta
