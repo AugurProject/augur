@@ -201,7 +201,7 @@ export function addOpenOrderTransactions(openOrders) {
     let index = 100
     eachOf(openOrders, (value, marketId) => {
       const market = marketsData[marketId]
-      // TODO: remove index when I figure a comprehensive uique id strategy
+      // TODO: remove index when I figure a comprehensive unique id strategy
       index += 1
       let sumBuy = 0
       let sumSell = 0
@@ -221,14 +221,20 @@ export function addOpenOrderTransactions(openOrders) {
           eachOf(sorted, (value4, hash) => {
             const transaction = { marketId, type, hash, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
-            transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             const meta = {}
+            if (transaction.canceledTransactionHash && transaction.canceledTime) {
+              const cancelationTime = convertUnixToFormattedDate(transaction.canceledTime)
+              meta.canceledTransactionHash = transaction.canceledTransactionHash
+              meta.canceledTime = cancelationTime.full
+            }
+            transaction.message = `${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
             const outcomeName = getOutcome(market, outcome)
             if (outcomeName) meta.outcome = outcomeName
-            meta.status = transaction.orderState
+            meta.status = transaction.orderState.toLowerCase()
+            meta.status = meta.status.charAt(0).toUpperCase() + meta.status.slice(1)
             meta.amount = transaction.fullPrecisionAmount
             meta.price = transaction.fullPrecisionPrice
             transaction.meta = meta
@@ -242,7 +248,7 @@ export function addOpenOrderTransactions(openOrders) {
           })
         })
       })
-      // TODO: last order creation time will be in header, eariest activite
+      // TODO: last order creation time will be in header, earliest activite
       marketHeader.timestamp = creationTime
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
