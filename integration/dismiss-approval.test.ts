@@ -1,8 +1,9 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
 
-const url =
-  `${process.env.AUGUR_URL}/#/market?id=0x8c915bd2c0df8ba79a7d28538500a97bd15ea985`;
+const url = `${process.env.AUGUR_URL}/#/market?id=0x8c915bd2c0df8ba79a7d28538500a97bd15ea985`;
+
+jest.setTimeout(20000);
 
 describe("Trading", () => {
   beforeAll(async () => {
