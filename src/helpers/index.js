@@ -24,8 +24,6 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
   } else {
     return callback(market.id)
   }
-
-  callback(null)
 }
 
 export const helpers = (store) => {
