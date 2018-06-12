@@ -417,7 +417,7 @@ export interface OrdersRow<BigNumberType> extends BaseTransactionRow {
 export interface UITrade {
   transactionHash: string;
   logIndex: number;
-  orderId: string,
+  orderId: string;
   type: string;
   price: string;
   amount: string;
