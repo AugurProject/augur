@@ -6,6 +6,7 @@ import MarketTradingWrapper from 'modules/trade/components/trading--wrapper/trad
 import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
+import classNames from 'classnames'
 
 import { BigNumber } from 'utils/create-big-number'
 
@@ -106,7 +107,7 @@ class MarketTrading extends Component {
     }
 
     return (
-      <section className={Styles.Trading}>
+      <section className={classNames(Styles.Trading, 'market-trading-wrapper')}>
         { (!isMobile || s.showForm) &&
           <MarketTradingWrapper
             market={market}
