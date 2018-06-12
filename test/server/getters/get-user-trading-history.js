@@ -35,6 +35,7 @@ describe("server/getters/get-user-trading-history", () => {
       assert.deepEqual(userTradingHistory, [{
         transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
         logIndex: 0,
+        orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
         type: "buy",
         price: "5.5",
         amount: "0.2",
@@ -69,6 +70,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
+          orderId: "0x1500000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000012",
@@ -85,6 +87,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           amount: "0.1",
           logIndex: 0,
+          orderId: "0x1900000000000000000000000000000000000000000000000000000000000000",
           maker: false,
           marketCreatorFees: "0",
           marketId: "0x0000000000000000000000000000000000000015",
@@ -101,6 +104,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
+          orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000001",
@@ -117,6 +121,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C01",
           logIndex: 0,
+          orderId: "0x1200000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000002",
@@ -133,6 +138,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C02",
           logIndex: 0,
+          orderId: "0x1300000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000003",
@@ -149,6 +155,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C03",
           logIndex: 0,
+          orderId: "0x1400000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000011",
@@ -165,6 +172,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C05",
           logIndex: 0,
+          orderId: "0x1600000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000013",
@@ -181,6 +189,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C06",
           logIndex: 0,
+          orderId: "0x1700000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000014",
@@ -197,6 +206,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C07",
           logIndex: 0,
+          orderId: "0x1800000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000015",
@@ -232,6 +242,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C00",
           logIndex: 0,
+          orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000001",
@@ -269,6 +280,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
+          orderId: "0x1500000000000000000000000000000000000000000000000000000000000000",
           amount: "0.2",
           maker: true,
           marketId: "0x0000000000000000000000000000000000000012",
@@ -285,6 +297,7 @@ describe("server/getters/get-user-trading-history", () => {
         {
           amount: "0.1",
           logIndex: 0,
+          orderId: "0x1900000000000000000000000000000000000000000000000000000000000000",
           maker: false,
           marketCreatorFees: "0",
           marketId: "0x0000000000000000000000000000000000000015",

@@ -228,6 +228,7 @@ export function queryTradingHistory(
   const query = db
     .select([
       "trades.transactionHash",
+      "trades.orderId",
       "trades.logIndex",
       "trades.marketId",
       "trades.outcome",
