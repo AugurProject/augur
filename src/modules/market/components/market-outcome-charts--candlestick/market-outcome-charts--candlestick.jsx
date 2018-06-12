@@ -5,6 +5,7 @@ import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
 import { map } from 'lodash/fp'
+import { sortBy } from 'lodash'
 
 import findPeriodSeriesBounds from 'modules/market/helpers/find-period-series-bounds'
 import MarketOutcomeChartsHeaderCandlestick from 'modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick'
@@ -345,25 +346,21 @@ function determineDrawParams({
     new Date(currentTimeInSeconds * 1000),
   ]
 
-
   const drawableWidth = containerWidth
 
   //  Y
-  // Determine bounding diff
-  // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  const maxDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
-  const minDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.min).toPrecision(15)).absoluteValue()
-  let boundDiff = maxDiff.gt(minDiff) ? maxDiff : minDiff
-
-  if (boundDiff.eq(0)) boundDiff = marketMax.minus(marketMin).dividedBy(2)
-
+  const highValues = sortBy(priceTimeSeries, ['high'])
+  const lowValues = sortBy(priceTimeSeries, ['low'])
+  const max = highValues.length ? highValues[highValues.length - 1].high : marketMax.toNumber()
+  const min = lowValues.length ? lowValues[0].low : marketMin.toNumber()
 
   const yDomain = [
-    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+    max,
+    min,
   ]
 
-  boundDiff = boundDiff.toNumber()
+  // sigment y into 10 to show prices
+  const boundDiff = createBigNumber(max).minus(createBigNumber(min)).dividedBy(2)
 
   // Scale
   const xScale = d3.scaleTime()
@@ -412,6 +409,7 @@ function drawTicks({
     .attr('x2', containerWidth)
     .attr('y1', 0)
     .attr('y2', 0)
+
   //    Bottom
   candleTicks.append('line')
     .attr('class', 'bounding-line')
@@ -421,22 +419,14 @@ function drawTicks({
     .attr('y2', containerHeight - chartDim.bottom)
 
   //  Midpoint
-  //    Conditional Tick Line
-  // candleTicks.append('line')
-  //   .attr('class', 'tick-line tick-line--midpoint')
-  //   .attr('x1', chartDim.tickOffset)
-  //   .attr('x2', containerWidth)
-  //   .attr('y1', () => yScale(orderBookKeys.mid))
-  //   .attr('y2', () => yScale(orderBookKeys.mid))
-
-  //    Label
-  candleTicks.append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', yScale(orderBookKeys.mid))
-    .attr('dx', 0)
-    .attr('dy', chartDim.tickOffset)
-    .text(orderBookKeys.mid.toFixed(fixedPrecision))
+  const midPrice = (createBigNumber(yDomain[0]).plus(createBigNumber(yDomain[1]))).dividedBy(2).toFixed(fixedPrecision)
+  candleTicks.append('line')
+    .attr('class', 'tick-line tick-line--midpoint')
+    .attr('x1', 0)
+    .attr('x2', containerWidth)
+    .attr('y1', (containerHeight - chartDim.bottom) / 2)
+    .attr('y2', (containerHeight - chartDim.bottom) / 2)
+    .text(midPrice) // currently doesn't show up, TODO: fix this
 
   //  Ticks
   const offsetTicks = yDomain.map((d, i) => { // Assumes yDomain is [max, min]
@@ -456,6 +446,8 @@ function drawTicks({
     .attr('x2', containerWidth)
     .attr('y1', d => yScale(d))
     .attr('y2', d => yScale(d))
+    .text(d => d.toFixed(fixedPrecision))
+
   yTicks.selectAll('text')
     .data(offsetTicks)
     .enter()
