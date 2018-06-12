@@ -13,7 +13,7 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
       if (err) return callback(err)
       dispatch(loadMarketsInfo(marketIds, (err, markets) => {
         if (err) return callback(err)
-        Object.keys(markets).forEach((market) => {
+        Object.values(markets).forEach((market) => {
           if (market.description === marketDescription) {
             return callback(market.id)
           }
