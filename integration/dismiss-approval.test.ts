@@ -9,13 +9,9 @@ describe("Trading", () => {
   beforeAll(async () => {
     await page.goto(url);
 
-    
     const marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
-    console.log(marketId)
 
-    marketId = marketId ? marketId : '0x7c096c060afdf53e653a61985c18d25fbdad2ea4'
     await page.goto(url.concat('/#/market?id=' + marketId));
-
 
     // No idea what a 'typical' desktop resolution would be for our users.
     await page.setViewport({
@@ -47,7 +43,7 @@ describe("Trading", () => {
 
     page.on('console', msg => console.log('PAGE LOG:', msg.text()));
 
-    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     await expect(page).toClick("button", {
       text: "Buy",
       timeout: 2000
