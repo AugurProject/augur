@@ -39,15 +39,15 @@ class MarketTradingWrapper extends Component {
 
     this.state = {
       orderType: LIMIT,
-      orderPrice: props.selectedOrderProperties.price,
-      orderQuantity: props.selectedOrderProperties.quantity,
+      orderPrice: props.selectedOrderProperties.price || '',
+      orderQuantity: props.selectedOrderProperties.quantity || '',
       orderEthEstimate: '0',
       orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
-      selectedNav: props.selectedOrderProperties.selectedNav,
+      selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       currentPage: 0,
-      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders,
+      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders || false,
     }
 
     this.prevPage = this.prevPage.bind(this)
