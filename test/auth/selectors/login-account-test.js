@@ -158,36 +158,36 @@ describe(`modules/auth/selectors/login-account.js`, () => {
       },
     })
 
-    // test({
-    //   description: `should return the expected object when user is logged via airbitz`,
-    //   assertions: (done) => {
-    //     const loginAccount = {
-    //       airbitzAccount: {},
-    //       address: '0xAccountAddress',
-    //       loginId: '123ThisIsALoginId',
-    //       eth: '10',
-    //       rep: '12',
-    //       isUnlocked: true,
-    //     }
-    //     const accountName = 'testing'
+    test({
+      description: `should return the expected object when user is logged via Edge`,
+      assertions: (done) => {
+        const loginAccount = {
+          edgeAccount: {},
+          address: '0xAccountAddress',
+          loginId: '123ThisIsALoginId',
+          eth: '10',
+          rep: '12',
+          isUnlocked: true,
+        }
+        const accountName = 'testing'
 
-    //     const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
-    //     const expected = {
-    //       airbitzAccount: {},
-    //       address: '0xAccountAddress',
-    //       loginId: '123ThisIsALoginId',
-    //       accountName: 'testing',
-    //       isUnlocked: true,
-    //       rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
-    //       eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
-    //     }
+        const expected = {
+          edgeAccount: {},
+          address: '0xAccountAddress',
+          loginId: '123ThisIsALoginId',
+          accountName: 'testing',
+          isUnlocked: true,
+          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
+          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
+        }
 
-    //     assert.deepEqual(actual, expected, `didn't return the expected object`)
-    //     assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-    //     done()
-    //   },
-    // })
+        done()
+      },
+    })
   })
 })
