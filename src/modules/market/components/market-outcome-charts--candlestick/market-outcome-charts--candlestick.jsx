@@ -449,26 +449,30 @@ function drawCandles({
   yScale,
 
 }) {
-  candleChart.selectAll('rect.candle')
-    .data(priceTimeSeries)
-    .enter().append('rect')
-    .attr('x', d => xScale(d.period))
-    .attr('y', d => yScale(d3.max([d.open, d.close])))
-    .attr('height', d => Math.max(Math.abs(yScale(d.open) - yScale(d.close)), 1))
-    .attr('width', candleDim.width)
-    .attr('class', d => (d.close > d.open) ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
-  candleChart.selectAll('line.stem')
-    .data(priceTimeSeries)
-    .enter().append('line')
-    .attr('class', 'stem')
-    .attr('x1', d => xScale(d.period) + (candleDim.width / 2))
-    .attr('x2', d => xScale(d.period) + (candleDim.width / 2))
-    .attr('y1', d => yScale(d.high))
-    .attr('y2', d => yScale(d.low))
-    .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  if (priceTimeSeries.length === 0) {
+    drawNullState({ candleChart, containerWidth, containerHeight })
+  } else {
+    candleChart.selectAll('rect.candle')
+      .data(priceTimeSeries)
+      .enter().append('rect')
+      .attr('x', d => xScale(d.period))
+      .attr('y', d => yScale(d3.max([d.open, d.close])))
+      .attr('height', d => Math.max(Math.abs(yScale(d.open) - yScale(d.close)), 1))
+      .attr('width', candleDim.width)
+      .attr('class', d => (d.close > d.open) ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+
+    candleChart.selectAll('line.stem')
+      .data(priceTimeSeries)
+      .enter().append('line')
+      .attr('class', 'stem')
+      .attr('x1', d => xScale(d.period) + (candleDim.width / 2))
+      .attr('x2', d => xScale(d.period) + (candleDim.width / 2))
+      .attr('y1', d => yScale(d.high))
+      .attr('y2', d => yScale(d.low))
+      .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  }
 }
-
 function drawVolume({
   priceTimeSeries,
   candleChart,
@@ -607,5 +611,22 @@ function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrec
       .text(clampedHoveredPrice.toFixed(fixedPrecision))
   }
 }
+
+function drawNullState(options) {
+  const {
+    containerWidth,
+    containerHeight,
+    candleChart,
+  } = options
+
+  candleChart.append('text')
+    .attr('class', Styles['MarketOutcomeCandlestick__null-message'])
+    .attr('x', containerWidth / 2)
+    .attr('y', containerHeight / 2)
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .text('No Completed Trades')
+}
+
 
 export default MarketOutcomeCandlestick
