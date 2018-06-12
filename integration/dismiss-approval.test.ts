@@ -1,7 +1,7 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
 
-const url = `${process.env.AUGUR_URL}/#/market?id=0x6a30746a49e781016ddd4ef883d8b762dc492c04`;
+const url = `${process.env.AUGUR_URL}/#/market?id=0x8c915bd2c0df8ba79a7d28538500a97bd15ea985`;
 
 jest.setTimeout(100000);
 
