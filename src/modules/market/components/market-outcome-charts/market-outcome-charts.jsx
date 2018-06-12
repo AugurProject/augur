@@ -315,7 +315,7 @@ export default class MarketOutcomeCharts extends Component {
           </div>
           <MarketOutcomeMidpoint
             isMobile={isMobile}
-            excludeCandlestick={excludeCandlestick}
+            excludeCandlestick
             hasPriceHistory={s.hasPriceHistory}
             hasOrders={hasOrders}
             chartWidths={s.chartWidths}

@@ -228,7 +228,7 @@ function drawMidpointLine(options) {
   if (excludeCandlestick) {
     if (hasOrders) {
       drawSegments.push({
-        start: drawParams.chartDim.left,
+        start: chartWidths.candle + drawParams.chartDim.left,
         end: drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right,
       })
     }
