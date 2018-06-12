@@ -47,7 +47,7 @@ describe("Trading", () => {
 
     page.on('console', msg => console.log('PAGE LOG:', msg.text()));
 
-    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     await expect(page).toClick("button", {
       text: "Buy",
       timeout: 2000
