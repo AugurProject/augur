@@ -1,6 +1,8 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
+import * as helpers from 'src/helpers'
+
 import thunk from 'redux-thunk'
 
 import { createReducer } from 'src/reducers'
@@ -48,6 +50,7 @@ const store = createStore(combineReducers({
 
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
+  window.integrationHelpers = helpers
 }
 
 if (module.hot) {
