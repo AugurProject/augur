@@ -1,2 +1,2 @@
 --recursive
---require ./test/test.bootstrap
+--require ./test/unit/test.bootstrap
