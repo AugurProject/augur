@@ -6,6 +6,7 @@ import TransactionSingle from 'modules/portfolio/components/transaction-single/t
 import TransactionMultiple from 'modules/portfolio/components/transaction-multiple/transaction-multiple'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import Paginator from 'modules/common/components/paginator/paginator'
+import { DAY, WEEK, MONTH, ALL } from 'modules/portfolio/constants/transaction-periods'
 
 import { getBeginDate } from 'src/utils/format-date'
 
@@ -19,7 +20,8 @@ export default class Transactions extends Component {
     currentTimestamp: PropTypes.number.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
-    transactionPeriod: PropTypes.string,
+    transactionPeriod: PropTypes.string.isRequired,
+    updateTransactionPeriod: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -29,12 +31,13 @@ export default class Transactions extends Component {
       lowerBound: null,
       boundedLength: null,
       transactionPeriodOptions: [
-        { label: 'Past 24hrs', value: 'day' },
-        { label: 'Past Week', value: 'week' },
-        { label: 'Past Month', value: 'month' },
-        { label: 'All', value: 'all' },
+        { label: 'Past 24hrs', value: DAY },
+        { label: 'Past Week', value: WEEK },
+        { label: 'Past Month', value: MONTH },
+        { label: 'All', value: ALL },
       ],
-      transactionPeriodDefault: 'day',
+      transactionPeriodDefault: props.transactionPeriod,
+      transactionPeriod: props.transactionPeriod,
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -74,6 +77,7 @@ export default class Transactions extends Component {
     })
 
     this.setState({ transactionPeriod: newPeriod })
+    this.props.updateTransactionPeriod(newPeriod)
   }
 
   render() {
