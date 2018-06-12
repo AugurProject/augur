@@ -2,7 +2,7 @@ FROM node:8 as builder
 
 WORKDIR /app/
 
-COPY wait-for-geth.sh wait-for-geth.sh
+COPY wait-for-url.sh wait-for-url.sh
 COPY config.json config.json
 COPY tsconfig.json tsconfig.json
 COPY certs certs
@@ -11,6 +11,7 @@ COPY package.json package.json
 RUN git init && npm install && rm -rf .git
 
 COPY src src
+COPY test test
 RUN npm run build
 RUN npm pack
 

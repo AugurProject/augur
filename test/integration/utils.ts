@@ -1,8 +1,10 @@
 import * as WebSocket from "ws";
 
+const AUGUR_NODE_WS = process.env.AUGUR_NODE_WS || "ws://localhost:9001";
+
 export async function augurNodeRequest(method: string, params: {}): Promise<any> {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket("ws://localhost:9001");
+    const ws = new WebSocket(AUGUR_NODE_WS);
     const jsonId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     ws.on("open", () => {
       ws.send(JSON.stringify({

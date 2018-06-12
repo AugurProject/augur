@@ -6,10 +6,10 @@ shift
 cmd="$@"
 
 until curl -sSf $host; do
-  >&2 echo "Gethnode is unavailable - sleeping"
+  >&2 echo "$host is unavailable - sleeping"
   sleep 1
 done
 
 sleep 4;
->&2 echo "Gethnode is up - executing command"
+>&2 echo "$host is up - executing command"
 exec $cmd
