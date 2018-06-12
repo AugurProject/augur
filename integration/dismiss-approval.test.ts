@@ -41,7 +41,8 @@ describe("Trading", () => {
 
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
     await expect(page).toClick("button", {
-      text: "Buy"
+      text: "Buy",
+      timeout: 2000
     });
 
     await expect(page).toFill("input#tr__input--quantity", "0.0001");
