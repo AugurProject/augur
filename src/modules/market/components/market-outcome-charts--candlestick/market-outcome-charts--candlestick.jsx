@@ -400,39 +400,14 @@ function drawTicks({
   yScale,
 }) {
 
-  // Y axis
-  //  Bounds
-  //    Top
-  candleTicks.append('line')
-    .attr('class', 'bounding-line')
-    .attr('x1', 0)
-    .attr('x2', containerWidth)
-    .attr('y1', 0)
-    .attr('y2', 0)
-
-  //    Bottom
-  candleTicks.append('line')
-    .attr('class', 'bounding-line')
-    .attr('x1', 0)
-    .attr('x2', containerWidth)
-    .attr('y1', containerHeight - chartDim.bottom)
-    .attr('y2', containerHeight - chartDim.bottom)
-
-  //  Midpoint
-  const midPrice = (createBigNumber(yDomain[0]).plus(createBigNumber(yDomain[1]))).dividedBy(2).toFixed(fixedPrecision)
-  candleTicks.append('line')
-    .attr('class', 'tick-line tick-line--midpoint')
-    .attr('x1', 0)
-    .attr('x2', containerWidth)
-    .attr('y1', (containerHeight - chartDim.bottom) / 2)
-    .attr('y2', (containerHeight - chartDim.bottom) / 2)
-    .text(midPrice) // currently doesn't show up, TODO: fix this
-
   //  Ticks
-  const offsetTicks = yDomain.map((d, i) => { // Assumes yDomain is [max, min]
-    if (i === 0) return d - (boundDiff / 2)
-    return d + (boundDiff / 2)
-  })
+  const offsetTicks = [
+    yDomain[0],
+    yDomain[1],
+    createBigNumber(yDomain[1]).plus(boundDiff).toNumber(),
+    createBigNumber(yDomain[0]).minus(boundDiff.dividedBy(2)).toNumber(),
+    createBigNumber(yDomain[1]).plus(boundDiff.dividedBy(2)).toNumber(),
+  ]
 
   const yTicks = candleTicks.append('g')
     .attr('id', 'depth_y_ticks')
