@@ -20,6 +20,7 @@ export default class MarketOutcomesChart extends Component {
     outcomes: PropTypes.array.isRequired,
     updateSelectedOutcome: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
+    hasPriceHistory: PropTypes.bool.isRequired,
     selectedOutcome: PropTypes.any, // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
   }
 
@@ -83,6 +84,7 @@ export default class MarketOutcomesChart extends Component {
     maxPrice,
     minPrice,
     outcomes,
+    hasPriceHistory,
   }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
@@ -93,47 +95,47 @@ export default class MarketOutcomesChart extends Component {
         maxPrice,
         minPrice,
         outcomes,
+        hasPriceHistory,
       })
-
       const fauxDiv = new ReactFauxDOM.Element('div')
       const chart = d3.select(fauxDiv).append('svg')
         .attr('id', 'priceTimeSeries_chart')
         .attr('width', drawParams.width)
         .attr('height', drawParams.height)
 
-      if (drawParams.yDomain.length === 0) {
+      drawTicks({
+        drawParams,
+        chart,
+        fixedPrecision,
+      })
+
+      drawXAxisLabels({
+        drawParams,
+        chart,
+      })
+
+      drawSeries({
+        chart,
+        creationTime,
+        estimatedInitialPrice,
+        outcomes,
+        drawParams,
+      })
+
+      drawCrosshairs({
+        chart,
+      })
+
+      attachHoverHandler({
+        drawParams,
+        chart,
+        updateHoveredLocation: this.updateHoveredLocation,
+      })
+
+      if (!hasPriceHistory) {
         drawNullState({
           drawParams,
           chart,
-        })
-      } else {
-        drawTicks({
-          drawParams,
-          chart,
-          fixedPrecision,
-        })
-
-        drawXAxisLabels({
-          drawParams,
-          chart,
-        })
-
-        drawSeries({
-          chart,
-          creationTime,
-          estimatedInitialPrice,
-          outcomes,
-          drawParams,
-        })
-
-        drawCrosshairs({
-          chart,
-        })
-
-        attachHoverHandler({
-          drawParams,
-          chart,
-          updateHoveredLocation: this.updateHoveredLocation,
         })
       }
 
@@ -305,7 +307,6 @@ function drawXAxisLabels(options) {
 
 function drawSeries(options) {
   const {
-
     creationTime,
     drawParams,
     estimatedInitialPrice,
@@ -412,5 +413,5 @@ function drawNullState(options) {
     .attr('y', drawParams.containerHeight / 2)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'central')
-    .text('No Price History')
+    .text('No Completed Trades')
 }

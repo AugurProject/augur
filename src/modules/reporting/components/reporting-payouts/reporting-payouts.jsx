@@ -25,8 +25,24 @@ const Outcome = ({ className, outcome, marketId }) => {
     <div className={className || Styles.MarketReportingPayouts__outcome}>
       <div className={Styles['MarketReportingPayouts__outcome-name']}>
         { outcome.potentialFork &&
-          <span className={Styles.MarketReportingPayouts__alert_icon}>
-            {ExclamationCircle}
+          <span className={Styles['MarketReportingPayouts__tooltip-container']}>
+            <div
+              className={classNames(Styles.MarketReportingPayouts__alert_icon)}
+              data-tip
+              data-for="tooltip--potential-fork"
+            >
+              {ExclamationCircle}
+            </div>
+            <ReactTooltip
+              id="tooltip--potential-fork"
+              className={TooltipStyles.Tooltip}
+              effect="solid"
+              place="top"
+              type="light"
+            >
+              <h4>Potential Fork</h4>
+              <p>A fork will be initiated if the dispute bond for this outcome is filled.</p>
+            </ReactTooltip>
           </span>
         }
         <span className={Styles['MarketReportingPayouts__outcome-name-text']}>

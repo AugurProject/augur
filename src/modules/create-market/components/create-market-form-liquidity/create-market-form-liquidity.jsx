@@ -420,15 +420,15 @@ export default class CreateMarketLiquidity extends Component {
       <ul className={StylesForm.CreateMarketForm__fields}>
         <li className={Styles.CreateMarketLiquidity__settlement}>
           <label htmlFor="cm__input--settlement" className={Styles.CreateMarketLiquidity__settlementLabel}>
-            <span>Settlement Fee</span>
+            <span>Market Creator Fee</span>
           </label>
           <div>
             <input
               id="cm__input--settlement"
               type="number"
               value={newMarket.settlementFee}
-              placeholder="0%"
-              onChange={e => validateNumber('settlementFee', e.target.value, 'settlement fee', 0, 100, 2)}
+              placeholder="0"
+              onChange={e => validateNumber('settlementFee', e.target.value, 'market creator fee', 0, 100, 2)}
               onKeyPress={e => keyPressed(e)}
             />
             <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>
@@ -475,7 +475,7 @@ export default class CreateMarketLiquidity extends Component {
                     default={s.selectedOutcome || ''}
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={(value) => {
-                      this.setState({ selectedOutcome: value }, () => {
+                      this.setState({ selectedOutcome: value, orderPrice: '', orderQuantity: '' }, () => {
                         this.validateForm()
                       })
                     }}
@@ -529,7 +529,7 @@ export default class CreateMarketLiquidity extends Component {
             <CreateMarketFormLiquidityCharts
               excludeCandlestick
               selectedOutcome={s.selectedOutcome}
-              updateSeletedOrderProperties={() => {}}
+              updateSelectedOrderProperties={() => {}}
             />
           </div>
         </li>

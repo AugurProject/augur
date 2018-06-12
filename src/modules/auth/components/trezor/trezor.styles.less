@@ -1,0 +1,43 @@
+@import (reference) "~assets/styles/shared";
+
+.TrezorConnect {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+
+  @media @breakpoint-small-desktop {
+    flex-flow: column;
+  }
+}
+
+.TrezorConnect__action {
+  align-items: center;
+  display: flex;
+  flex: 3 1 auto;
+  justify-content: center;
+
+  @media @breakpoint-small-desktop {
+    flex: 1 auto;
+    margin-bottom: 2rem;
+  }
+}
+
+.TrezorConnect__button {
+  &:extend(.button--purple all);
+
+  padding: 0 2rem;
+}
+
+@media @breakpoint-mobile-small {
+  .TrezorConnect {
+    flex-wrap: wrap;
+  }
+
+  .TrezorConnect__action {
+    flex: auto;
+    margin-bottom: 2rem;
+  }
+}

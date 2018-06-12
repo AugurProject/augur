@@ -141,7 +141,6 @@ export default class CreateMarketResolution extends Component {
       keyPressed,
     } = this.props
     const s = this.state
-    // console.log(s.date)
     const validations = newMarket.validations[newMarket.currentStep]
     const { utcLocalOffset } = formatDate(new Date(currentTimestamp))
 
@@ -178,11 +177,9 @@ export default class CreateMarketResolution extends Component {
                     onChange={e => validateField('expirySource', e.target.value)}
                     onKeyPress={e => keyPressed(e)}
                   />
-                  { newMarket.validations[newMarket.currentStep].expirySource &&
+                  { typeof (newMarket.validations[newMarket.currentStep].expirySource) === 'string' &&
                     <span className={StylesForm['CreateMarketForm__error--bottom']}>
-                      {InputErrorIcon}{
-                        newMarket.validations[newMarket.currentStep].expirySource
-                      }
+                      {InputErrorIcon} {newMarket.validations[newMarket.currentStep].expirySource}
                     </span>
                   }
                 </div>

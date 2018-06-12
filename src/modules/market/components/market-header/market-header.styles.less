@@ -35,11 +35,13 @@
 
 .MarketHeader__description {
   color: @color-white;
+  flex-grow: 1;
   max-width: 700px;
 }
 
 .MarketHeader__properties {
   display: flex;
+  flex-wrap: wrap;
   margin-left: 75px;
 }
 
@@ -59,6 +61,33 @@
 
   span:last-of-type {
     color: @color-white;
+  }
+}
+
+.MarketHeader__property-name {
+  display: flex;
+  flex-direction: row;
+  max-height: 12px;
+}
+
+.MarketHeader__property-tooltip {
+  margin-bottom: 0;
+  margin-left: 0.25rem;
+  margin-top: -0.375rem;
+  width: 0.75rem;
+}
+
+.MarketHeader__scalar-property {
+  margin-bottom: 1rem;
+  min-width: 130px;
+
+  &:not(:last-of-type) {
+    margin-right: 0;
+  }
+
+  &:nth-child(3n) {
+    flex-basis: 50%;
+    margin-right: 1rem;
   }
 }
 
@@ -137,5 +166,9 @@
   .MarketHeader__properties {
     margin-bottom: 1.25rem;
     margin-left: 0;
+  }
+
+  .MarketHeader__property {
+    margin-bottom: 1rem;
   }
 }

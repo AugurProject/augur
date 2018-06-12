@@ -66,6 +66,8 @@
         window.location = "http://augur.strikingly.com" + window.location.pathname;
       }
     </script>
+
+    <script src="https://connect.trezor.io/4/connect.js"></script>
   </head>
   <body>
     <div id="app"> <!-- attachment point for the app -->
@@ -73,6 +75,9 @@
         <span id="splash-text"></span>
       </div>
     </div>
+
+
+    <% if(htmlWebpackPlugin.options.environment === 'development') { %>
 
     <!-- Hotjar Analytics -->
     <script type="text/javascript">
@@ -95,6 +100,8 @@
 
     <!-- Google Analytics -->
     <script src="//www.google-analytics.com/analytics.js" defer=""></script>
+
+    <% } %>
 
     <!-- NOTE: all relevant entry scripts are automatically appended here during build -->
   </body>

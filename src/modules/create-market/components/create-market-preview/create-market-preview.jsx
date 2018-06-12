@@ -3,9 +3,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import { augur } from 'services/augurjs'
 import { createBigNumber } from 'utils/create-big-number'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 import { CreateMarketEdit } from 'modules/common/components/icons'
 
@@ -22,6 +23,13 @@ export default class CreateMarketPreview extends Component {
   static propTypes = {
     currentTimestamp: PropTypes.number.isRequired,
     newMarket: PropTypes.object.isRequired,
+    universe: PropTypes.object.isRequired,
+  }
+
+  static formatReporterFee(value) {
+    if (!value || value === 0 || isNaN(value)) return 0
+    const { ETHER } = augur.rpc.constants
+    return createBigNumber(value.toString()).times(ETHER).dividedBy(createBigNumber(100)).toNumber()
   }
 
   static getExpirationDate(p) {
@@ -63,10 +71,15 @@ export default class CreateMarketPreview extends Component {
     this.state = {
       expirationDate: CreateMarketPreview.getExpirationDate(props),
       shares: CreateMarketPreview.calculateShares(this.props.newMarket.orderBook),
+      reporterFeePercentage: 1,
     }
 
     CreateMarketPreview.getExpirationDate = CreateMarketPreview.getExpirationDate.bind(this)
     CreateMarketPreview.calculateShares = CreateMarketPreview.calculateShares.bind(this)
+  }
+
+  componentWillMount() {
+    this.getReportingFeePercentage()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,6 +95,15 @@ export default class CreateMarketPreview extends Component {
     }
   }
 
+  getReportingFeePercentage() {
+    const { universe } = this.props
+    augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err)
+      this.setState({
+        reporterFeePercentage: CreateMarketPreview.formatReporterFee(marketCreationCostBreakdown.reportingFeeDivisor),
+      })
+    })
+  }
   render() {
     const {
       currentTimestamp,
@@ -107,7 +129,7 @@ export default class CreateMarketPreview extends Component {
             </div>
             <h1 className={Styles.CreateMarketPreview__description}>{newMarket.description || 'New Market Question'}</h1>
             <div className={Styles.CreateMarketPreview__outcome}>
-              { (newMarket.type === BINARY || newMarket.type === SCALAR) &&
+              { (newMarket.type === YES_NO || newMarket.type === SCALAR) &&
                 <CreateMarketPreviewRange
                   newMarket={newMarket}
                 />
@@ -133,7 +155,7 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>{ newMarket.settlementFee ? newMarket.settlementFee : '0.0'}%</span>
+                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + newMarket.settlementFee + '%)' : ''} + Reporting Fee ({s.reporterFeePercentage}%)</span>
               </li>
               <li>
                 <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>

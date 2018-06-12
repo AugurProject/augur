@@ -31,6 +31,7 @@ class MarketTradingWrapper extends Component {
     showOrderPlaced: PropTypes.func.isRequired,
     clearTradeInProgress: PropTypes.func.isRequired,
     selectedOutcome: PropTypes.object,
+    updateSelectedOrderProperties: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -38,35 +39,48 @@ class MarketTradingWrapper extends Component {
 
     this.state = {
       orderType: LIMIT,
-      orderPrice: '',
-      orderQuantity: '',
-      orderEstimate: '',
+      orderPrice: props.selectedOrderProperties.price,
+      orderQuantity: props.selectedOrderProperties.quantity,
+      orderEthEstimate: '0',
+      orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
-      selectedNav: BUY,
+      selectedNav: props.selectedOrderProperties.selectedNav,
       currentPage: 0,
-      doNotCreateOrders: false,
+      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders,
     }
 
     this.prevPage = this.prevPage.bind(this)
     this.nextPage = this.nextPage.bind(this)
     this.updateState = this.updateState.bind(this)
     this.clearOrderForm = this.clearOrderForm.bind(this)
-    this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
+    this.updateOrderEthEstimate = this.updateOrderEthEstimate.bind(this)
+    this.updateOrderShareEstimate = this.updateOrderShareEstimate.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     const { selectedOrderProperties } = this.props
-    if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) return
+
+    if (!nextProps.selectedOutcome || !nextProps.selectedOutcome.trade) {
+      this.setState({ currentPage: 0 })
+      return
+    }
     if (this.props.selectedOutcome === null) return this.clearOrderForm()
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
       return this.clearOrderForm()
     }
-    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue)
-    if (`${nextTotalCost.abs().toString()} ETH` !== this.state.orderEstimate) {
-      const orderEstimate = (isNaN(nextTotalCost) || nextTotalCost.abs().eq(0)) ? '' : `${nextTotalCost.abs().toString()} ETH`
+    const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue, 10)
+    const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue, 10)
+    // console.log('ests', nextTotalCost.toString(), nextShareCost.toString());
+    if (nextTotalCost.abs().toString() !== this.state.orderEthEstimate) {
       this.setState({
-        orderEstimate,
+        orderEthEstimate: nextTotalCost.abs().toString(),
+      })
+    }
+
+    if (nextShareCost !== this.state.orderShareEstimate) {
+      this.setState({
+        orderShareEstimate: nextShareCost.abs().toString(),
       })
     }
 
@@ -76,9 +90,22 @@ class MarketTradingWrapper extends Component {
     }
   }
 
-  prevPage() {
+  prevPage(e, orderSent = false) {
     const newPage = this.state.currentPage <= 0 ? 0 : this.state.currentPage - 1
-    this.setState({ currentPage: newPage })
+    if (orderSent) {
+      this.setState({
+        currentPage: newPage,
+        orderPrice: '',
+        orderQuantity: '',
+        orderEthEstimate: '0',
+        orderShareEstimate: '0',
+        marketOrderTotal: '',
+        marketQuantity: '',
+        doNotCreateOrders: false,
+      })
+    } else {
+      this.setState({ currentPage: newPage })
+    }
   }
 
   nextPage() {
@@ -87,7 +114,14 @@ class MarketTradingWrapper extends Component {
   }
 
   updateState(property, value) {
-    this.setState({ [property]: value })
+    this.setState({ [property]: value }, () => {
+      this.props.updateSelectedOrderProperties({
+        orderPrice: this.state.orderPrice,
+        orderQuantity: this.state.orderQuantity,
+        doNotCreateOrders: this.state.doNotCreateOrders,
+        selectedNav: this.state.selectedNav,
+      })
+    })
   }
 
   clearOrderForm() {
@@ -95,11 +129,12 @@ class MarketTradingWrapper extends Component {
       clearTradeInProgress,
       market,
     } = this.props
-    clearTradeInProgress(market.id)
+    if (market.id) clearTradeInProgress(market.id)
     this.setState({
       orderPrice: '',
       orderQuantity: '',
-      orderEstimate: '',
+      orderEthEstimate: '0',
+      orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
       currentPage: 0,
@@ -107,9 +142,15 @@ class MarketTradingWrapper extends Component {
     })
   }
 
-  updateOrderEstimate(orderEstimate) {
+  updateOrderEthEstimate(orderEthEstimate) {
     this.setState({
-      orderEstimate,
+      orderEthEstimate,
+    })
+  }
+
+  updateOrderShareEstimate(orderShareEstimate) {
+    this.setState({
+      orderShareEstimate,
     })
   }
 
@@ -121,8 +162,8 @@ class MarketTradingWrapper extends Component {
       isMobile,
       market,
       selectedOutcome,
-      showOrderPlaced,
       toggleForm,
+      showOrderPlaced,
     } = this.props
     const s = this.state
 
@@ -168,7 +209,8 @@ class MarketTradingWrapper extends Component {
                 orderType={s.orderType}
                 orderPrice={s.orderPrice}
                 orderQuantity={s.orderQuantity}
-                orderEstimate={s.orderEstimate}
+                orderEthEstimate={s.orderEthEstimate}
+                orderShareEstimate={s.orderShareEstimate}
                 marketOrderTotal={s.marketOrderTotal}
                 marketQuantity={s.marketQuantity}
                 doNotCreateOrders={s.doNotCreateOrders}
@@ -180,14 +222,14 @@ class MarketTradingWrapper extends Component {
             }
           </div>
         }
-        { s.currentPage === 1 &&
+        { s.currentPage === 1 && selectedOutcome &&
           <MarketTradingConfirm
             market={market}
             selectedNav={s.selectedNav}
             orderType={s.orderType}
             orderPrice={s.orderPrice}
             orderQuantity={s.orderQuantity}
-            orderEstimate={s.orderEstimate}
+            orderEthEstimate={s.orderEthEstimate}
             marketOrderTotal={s.marketOrderTotal}
             marketQuantity={s.marketQuantity}
             doNotCreateOrders={s.doNotCreateOrders}

@@ -28,8 +28,8 @@ import { selectCurrentTimestamp, selectCurrentTimestampInSeconds } from 'src/sel
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
+import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { YES_NO_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes'
 
 import { placeTrade } from 'modules/trade/actions/place-trade'
 import { submitReport } from 'modules/reports/actions/submit-report'
@@ -180,18 +180,18 @@ export function assembleMarket(
       const now = new Date(selectCurrentTimestamp(store.getState()))
 
       switch (market.marketType) {
-        case BINARY:
-          market.isBinary = true
+        case YES_NO:
+          market.isYesNo = true
           market.isCategorical = false
           market.isScalar = false
           break
         case CATEGORICAL:
-          market.isBinary = false
+          market.isYesNo = false
           market.isCategorical = true
           market.isScalar = false
           break
         case SCALAR:
-          market.isBinary = false
+          market.isYesNo = false
           market.isCategorical = false
           market.isScalar = true
           break
@@ -202,13 +202,15 @@ export function assembleMarket(
       market.loadingState = marketLoading !== null ? marketLoading.state : marketLoading
 
       market.endTime = convertUnixToFormattedDate(marketData.endTime)
-      market.endTimeLabel = (market.endTime < now) ? 'ended' : 'ends'
+      market.endTimeLabel = (market.endTime < now) ? 'expired' : 'expires'
       market.creationTime = convertUnixToFormattedDate(marketData.creationTime)
 
       market.isOpen = isOpen
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
+      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false })
+      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false })
       market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
@@ -250,7 +252,10 @@ export function assembleMarket(
               zeroStyled: true,
             })
             // format-number thinks 0 is '-', need to correct
-            if (outcome.lastPrice.fullPrecision === '0') outcome.lastPricePercent.formatted = '0'
+            if (outcome.lastPrice.fullPrecision === '0') {
+              outcome.lastPricePercent.formatted = '0'
+              outcome.lastPricePercent.full = '0'
+            }
           } else {
             const midPoint = (createBigNumber(market.minPrice, 10).plus(createBigNumber(market.maxPrice, 10))).dividedBy(2)
             outcome.lastPricePercent = formatNumber(midPoint, {
@@ -261,7 +266,7 @@ export function assembleMarket(
               zeroStyled: true,
             })
           }
-        } else if (outcome.lastPrice.value) {
+        } else if (createBigNumber(outcome.volume || 0).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
         } else {
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false })
@@ -275,11 +280,8 @@ export function assembleMarket(
         outcome.topBid = selectTopBid(orderBook, false)
         outcome.topAsk = selectTopAsk(orderBook, false)
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeId])
-        // needed for my-position display
-        if (outcome.position) {
-          outcome.position.lastPrice = outcome.lastPrice
-          outcome.position.name = outcome.name
-        }
+        if (outcome.position) outcome.position.name = outcome.name
+
         marketTradeOrders = marketTradeOrders.concat(outcome.trade.tradeSummary.tradeOrders)
 
         outcome.userOpenOrders = selectUserOpenOrders(marketId, outcomeId, orderBooks, orderCancellation)
@@ -297,7 +299,7 @@ export function assembleMarket(
       market.marketCreatorFeesCollected = formatEther(marketData.marketCreatorFeesCollected || 0)
 
       market.reportableOutcomes = selectReportableOutcomes(market.marketType, market.outcomes)
-      const indeterminateOutcomeId = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
+      const indeterminateOutcomeId = market.type === YES_NO ? YES_NO_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID
       market.reportableOutcomes.push({ id: indeterminateOutcomeId, name: INDETERMINATE_OUTCOME_NAME })
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes)

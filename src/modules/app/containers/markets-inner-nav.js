@@ -57,6 +57,18 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
     getOr([], category),
   )(allCategories)
 
+  const makeCategoryLink = (categoryClicked) => {
+    const link = {
+      pathname: makePath(MARKETS),
+    }
+    if (categoryClicked !== category || !isEmpty(tags)) {
+      link.search = makeQuery({
+        [CATEGORY_PARAM_NAME]: categoryClicked,
+      })
+    }
+    return link
+  }
+
   const menuItems = categories.map(item => ({
     label: item.category,
     isSelected: item.category === category,
@@ -64,12 +76,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
     onClick: () => {
       if (isMobile) openSubMenu()
     },
-    link: {
-      pathname: makePath(MARKETS),
-      search: makeQuery({
-        [CATEGORY_PARAM_NAME]: item.category,
-      }),
-    },
+    link: makeCategoryLink(item.category),
   }))
 
   return {

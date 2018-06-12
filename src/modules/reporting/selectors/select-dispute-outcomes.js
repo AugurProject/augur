@@ -56,10 +56,11 @@ const getInvalidOutcome = (filteredOutcomes, addDefaultStakeOutcomes, invalidMar
 }
 
 const sortOutcomes = (a, b) => {
-  const first = createBigNumber(a.stakeRemaining)
-  const second = createBigNumber(b.stakeRemaining)
+  const first = createBigNumber(a.stakeRemaining || 0, 10)
+  const second = createBigNumber(b.stakeRemaining || 0, 10)
   return first.minus(second)
 }
+
 const fillInOutcomes = (collection, outcome) => {
   const index = collection.map(e => e.id).indexOf(outcome.id.toString())
   if (index === -1) {

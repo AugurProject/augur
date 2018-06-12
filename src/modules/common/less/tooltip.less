@@ -11,6 +11,7 @@
   line-height: 0.9375rem;
   max-width: 13.7rem;
   padding: 1rem 1.5rem !important;
+  text-transform: none;
 
   > h4 {
     font-weight: 500;
@@ -40,8 +41,34 @@
     }
 
     &.place-top {
-      &.type-light::after {
+      box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.2);
+      margin-bottom: -14px;
+
+      &::after {
         border-top-color: @color-lightergray !important;
+        bottom: -10px !important;
+      }
+
+      &.type-light::after {
+        border-left-width: 10px;
+        border-right-width: 10px;
+        border-top-width: 10px !important;
+      }
+    }
+
+    &.place-bottom {
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+      margin-top: -14px;
+
+      &::after {
+        border-bottom-color: @color-lightergray !important;
+        top: -10px !important;
+      }
+
+      &.type-light::after {
+        border-bottom-width: 10px !important;
+        border-left-width: 10px;
+        border-right-width: 10px;
       }
     }
 
