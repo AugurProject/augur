@@ -1,4 +1,5 @@
 import "jest-environment-puppeteer";
+import {UnlockedAccounts} from "./constants/accounts";
 
 const url =
   `${process.env.AUGUR_URL}/#/market?id=0x8c915bd2c0df8ba79a7d28538500a97bd15ea985`;
@@ -34,5 +35,9 @@ describe("Trading", () => {
     await expect(page).toClick("button", {
       text: "Confirm"
     });
+
+    await page.evaluate((account) => {
+      window.integrationHelpers.updateAccountAddress(account);
+    }, UnlockedAccounts.SECONDARY_ACCOUNT)
   });
 });
