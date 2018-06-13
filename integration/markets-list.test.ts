@@ -5,6 +5,24 @@ const url = `${process.env.AUGUR_URL}`;
 
 jest.setTimeout(100000);
 
+const checkMarketsNum = async (num) => {
+  const markets = await page.$$(".market-common-styles_MarketCommon__container")
+  expect(markets.length).toEqual(num);
+}
+
+const checkMarketCategoriesTagsNum = async (num) => {
+  const marketCategories = await page.$$(".inner-nav-styles_InnerNav__menu-item--visible")
+  expect(marketCategories.length).toEqual(num);
+}
+
+const checkMarketNames = async (expectedMarketTitles) => {
+  const markets = await page.$$(".market-common-styles_MarketCommon__container")
+
+  for (let i = 0; i < markets.length; i++) {
+    expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
+  });
+}
+
 describe("Markets List", () => {
   let markets;
   let yesNoMarket;
@@ -27,7 +45,6 @@ describe("Markets List", () => {
       text: "I have read and understand the above"
     });
     await page.waitForSelector("aside.side-nav-styles_SideNav")
-
     await expect(page).toClick("a[href$='#/markets")
   });
 
@@ -35,14 +52,12 @@ describe("Markets List", () => {
 
     it("should paginate in chunks of 10", async () => {
       await page.waitForSelector(".markets-list")
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(10);
+      checkMarketsNum(10)
     });
 
     it("should display all categories for every loaded market in the sidebar", async () => {
       await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
-      const marketCategories = await page.$$(".inner-nav-styles_InnerNav__menu-item--visible")
-      expect(marketCategories.length).toEqual(12);
+      checkMarketCategoriesTagsNum(12)
     });
 
     describe("Market Cards", () => {
@@ -125,27 +140,23 @@ describe("Markets List", () => {
       expect(await headerWrapper.$eval('h1', node => node.innerText)).toBe('POLITICS');
 
       // check that number of markets listed is as expected
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(3);
+      checkMarketsNum(3)
     });
     
     it("should populate submenu bar with the tag values for the markets displayed", async () => {
       // check that tag submenu has right number of tags displayed
-      const tags = await page.$$(".inner-nav-styles_InnerNav__menu-item--visible")
-      expect(tags.length).toEqual(17); // total of submenu and submenu items
+      checkMarketCategoriesTagsNum(17)
     });
 
     it("should filter out markets that don't match the selected tags when clicking on tags", async () => {
       // when clicking on elections check that only two markets are displayed
       await expect(page).toClick("button.elections")
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(2);
+      checkMarketsNum(2)
     });
 
     it("should show all markets after clicking the market button", async () => {
       await expect(page).toClick("a[href$='#/markets")
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(10);
+      checkMarketsNum(10)
     });
   });
 
@@ -159,44 +170,36 @@ describe("Markets List", () => {
     it("should filter markets to show only ones with searched keyword", async () => {
       // enter in a search keyword
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "jair");
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      // check that expected number of markets show up
-      expect(markets.length).toEqual(1);
+      checkMarketsNum(1)
 
       // check that market that shows up is correct one
-      expect(await markets[0].$eval('a', node => node.innerText)).toBe('Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?');
+      checkMarketNames(['Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?'])
     });
 
     it("should clear search and show all markets after clearing the search", async () => {
       await expect(page).toClick(".input-styles_close")
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(10);
+      checkMarketsNum(10)
     });
 
     it("should not have case sensitive search", async () => {
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "JAIR");
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(1);
+      checkMarketsNum(1)
     });
 
     it("should have markets be searchable by title, tag, or category", async () => {
       // search for a category
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "crypto");
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(2);
+      checkMarketsNum(2)
 
       // check that expected titles are present
       const expectedMarketTitles = ['Will Ethereum trade at $2000 or higher at any time before the end of 2018?', 'Millions of Tether tokens issued on Thu Jun 07 2018 (round down)']
-      for (let i = 0; i < markets.length; i++) { // eslint-disable-line
-        expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
-      }
+      checkMarketNames(expectedMarketTitles)
 
       await expect(page).toClick(".input-styles_close")
 
       // search for a tag
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      expect(markets.length).toEqual(1);
+      checkMarketsNum(1)
     });
   });
 });
