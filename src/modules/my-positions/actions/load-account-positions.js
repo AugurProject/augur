@@ -37,11 +37,14 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
           (err, rawPerformanceData) => {
             const { all } = rawPerformanceData
             Object.keys(marketPositionData[marketId]).reduce((acc, outcome) => {
-              acc[marketId][outcome] = marketPositionData[marketId][outcome]
+              const outcomePosition = marketPositionData[marketId][outcome]
+              outcomePosition[0].realizedProfitLoss = '0'
+              outcomePosition[0].unrealizedProfitLoss = '0'
               if (all && all[marketId] && all[marketId][outcome] && all[marketId][outcome].length && all[marketId][outcome][0].profitLoss) {
-                acc[marketId][outcome][0].realizedProfitLoss = all[marketId][outcome][0].profitLoss.realized
-                acc[marketId][outcome][0].unrealizedProfitLoss = all[marketId][outcome][0].profitLoss.unrealized
+                outcomePosition[0].realizedProfitLoss = all[marketId][outcome][0].profitLoss.realized
+                outcomePosition[0].unrealizedProfitLoss = all[marketId][outcome][0].profitLoss.unrealized
               }
+              acc[marketId][outcome] = outcomePosition
               return acc
             }, { [marketId]: {} })
             dispatch(updateAccountPositionsData(marketPositionData, marketId))
