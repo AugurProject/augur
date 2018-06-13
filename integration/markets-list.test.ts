@@ -5,8 +5,6 @@ const url = `${process.env.AUGUR_URL}`;
 
 jest.setTimeout(100000);
 
-
-
 describe("Markets List", () => {
   let markets;
   let yesNoMarket;
@@ -152,6 +150,7 @@ describe("Markets List", () => {
   });
 
   describe("Search", () => {
+     
      beforeAll(async () => {
       await page.goto(url + '#/markets');
       await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
@@ -185,6 +184,12 @@ describe("Markets List", () => {
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "crypto");
       markets = await page.$$(".market-common-styles_MarketCommon__container")
       expect(markets.length).toEqual(2);
+
+      // check that expected titles are present
+      const expectedMarketTitles = ['Will Ethereum trade at $2000 or higher at any time before the end of 2018?', 'Millions of Tether tokens issued on Thu Jun 07 2018 (round down)']
+      for (let i = 0; i < markets.length; i++) { // eslint-disable-line
+        expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
+      }
 
       await expect(page).toClick(".input-styles_close")
 
