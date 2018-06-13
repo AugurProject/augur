@@ -15,12 +15,13 @@ const ValueDenomination = p => (
       <span
         data-tip={p.fullPrecision}
         data-event="click focus"
+        className={'value_' + p.valueClassname}
       >
         {p.formatted}
       </span>
     }
     {p.formatted && !p.fullPrecision &&
-      <span>{p.formatted}</span>
+      <span className={'value_' + p.valueClassname}>{p.formatted}</span>
     }
     {p.denomination && !p.hideDenomination &&
       <span className={Styles.ValueDenomination__denomination}>{p.denomination}</span>
@@ -35,6 +36,7 @@ const ValueDenomination = p => (
 )
 
 ValueDenomination.propTypes = {
+  valueClassname: PropTypes.string,
   className: PropTypes.string,
   value: PropTypes.number,
   formattedValue: PropTypes.number,
