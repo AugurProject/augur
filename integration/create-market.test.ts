@@ -19,9 +19,7 @@ describe("Create market page", () => {
 
   it("should allow user to create a new binary market", async () => {
     // Dismiss welcome to beta popup
-    await expect(page).toClick("button", {
-      text: "I have read and understand the above"
-    });
+    await expect(page).toClick("button", { text: "I have read and understand the above" });
 
     await page.goto(url.concat("#/create-market"), {waitUntil: "networkidle0"});
 
