@@ -46,6 +46,7 @@ import participationTokens from 'modules/my-participation-tokens/reducers/partic
 import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
 import disputeCrowdsourcerTokens from 'modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data'
 import allOrders from 'modules/escape-hatch/reducers/all-orders-data'
+import transactionPeriod from 'modules/portfolio/reducers/transaction-period'
 
 export function createReducer() {
   return {
@@ -96,5 +97,6 @@ export function createReducer() {
     disputeCrowdsourcerTokens,
     accountDisputes,
     allOrders,
+    transactionPeriod,
   }
 }
