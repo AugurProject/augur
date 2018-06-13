@@ -87,7 +87,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       shareToken: "0x2000000000000000000000000000000000000000",
       orderType: "sell",
       orderCreator: "0x000000000000000000000000000000000000d00d",
-      orderState: "CLOSED",
+      orderState: "FILLED",
       blockNumber: 1400002,
       transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A04",
       logIndex: 0,
