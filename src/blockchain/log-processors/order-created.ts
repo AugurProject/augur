@@ -43,8 +43,10 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
         orderType: orderTypeLabel,
         price: formatOrderPrice(orderTypeLabel, minPrice, maxPrice, fullPrecisionPrice),
         amount: formatOrderAmount(fullPrecisionAmount),
+        originalAmount: formatOrderAmount(fullPrecisionAmount),
         fullPrecisionPrice: fullPrecisionPrice.toFixed(),
         fullPrecisionAmount: fullPrecisionAmount.toFixed(),
+        originalFullPrecisionAmount: fullPrecisionAmount.toFixed(),
         tokensEscrowed: fixedPointToDecimal(moneyEscrowed, BN_WEI_PER_ETHER).toFixed(),
         sharesEscrowed: augur.utils.convertOnChainAmountToDisplayAmount(sharesEscrowed, tickSize).toFixed(),
       };
