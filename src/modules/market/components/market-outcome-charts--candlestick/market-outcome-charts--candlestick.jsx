@@ -354,8 +354,8 @@ function determineDrawParams({
   const max = highValues.length ? highValues[highValues.length - 1].high : marketMax.toNumber()
   const min = lowValues.length ? lowValues[0].low : marketMin.toNumber()
 
-  const maxPrice = createBigNumber(max).times('1.02').toNumber()
-  const minPrice = createBigNumber(min).times('0.97').toNumber()
+  const maxPrice = createBigNumber(max).times('1.0025').toNumber()
+  const minPrice = createBigNumber(min).times('0.9925').toNumber()
 
   const yDomain = [
     maxPrice > marketMax ? max : maxPrice,
