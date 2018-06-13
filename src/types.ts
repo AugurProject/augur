@@ -378,8 +378,10 @@ export interface UIOrder<BigNumberType> {
   orderState: OrderState;
   price: BigNumberType;
   amount: BigNumberType;
+  originalAmount: BigNumberType;
   fullPrecisionPrice: BigNumberType;
   fullPrecisionAmount: BigNumberType;
+  originalFullPrecisionAmount: BigNumberType;
   tokensEscrowed: BigNumberType;
   sharesEscrowed: BigNumberType;
   canceledBlockNumber?: Bytes32;
