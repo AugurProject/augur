@@ -475,7 +475,7 @@ export default class CreateMarketLiquidity extends Component {
                     default={s.selectedOutcome || ''}
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={(value) => {
-                      this.setState({ selectedOutcome: value }, () => {
+                      this.setState({ selectedOutcome: value, orderPrice: '', orderQuantity: '' }, () => {
                         this.validateForm()
                       })
                     }}
