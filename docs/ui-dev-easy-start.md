@@ -26,7 +26,7 @@ This command will download the needed docker files and start them up. (This migh
 
 
 
-When the command shell output looks like this your good to move on:
+When the command shell output looks like this, you're good to move on:
 
 ```
 ...
