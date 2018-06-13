@@ -9,7 +9,7 @@ services:
       - AUGUR_NODE_WS=ws://augur-node-server:9001
     depends_on:
       - augur-node-server
-    entrypoint: /app/wait-for-url.sh http://augur-node-server:9001/status/sync npx mocha -r ts-node/register --inline-diffs test/integration/getContractAddresses.ts
+    entrypoint: /app/wait-for-url.sh http://augur-node-server:9001/status/sync npx mocha -r ts-node/register --inline-diffs "test/integration/**/*.ts"
   augur-node-server:
     build: .
     image: augurproject/augur-node:dev

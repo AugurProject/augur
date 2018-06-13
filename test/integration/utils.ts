@@ -1,8 +1,11 @@
 import * as WebSocket from "ws";
+import Augur from "augur.js";
 
 const AUGUR_NODE_WS = process.env.AUGUR_NODE_WS || "ws://localhost:9001";
 
-export async function augurNodeRequest(method: string, params: {}): Promise<any> {
+export const augur = new Augur();
+
+export async function augurNodeRequest(method: string, params?: {}): Promise<any> {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(AUGUR_NODE_WS);
     const jsonId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
@@ -19,9 +22,13 @@ export async function augurNodeRequest(method: string, params: {}): Promise<any>
       if (responseParsed.id !== jsonId) {
         return reject("Bad ID");
       }
-      console.log(responseParsed.result);
       resolve(responseParsed.result);
       ws.close();
     });
   });
+}
+
+export async function getContractAddresses() {
+  const netId = (await augurNodeRequest("getContractAddresses", {})).netId;
+  return augur.contracts.addresses[netId];
 }

@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { augurNodeRequest } from "./utils";
-import Augur from "augur.js";
-
+import { augur, augurNodeRequest } from "./utils";
 
 describe("getContractAddresses", () => {
   let result: any;
@@ -13,9 +11,6 @@ describe("getContractAddresses", () => {
     expect(result.isSyncFinished).to.equal(true);
   });
   it("contract addresses match", () => {
-    const augur = new Augur();
     expect(result.addresses).to.deep.equal(augur.contracts.addresses[result.netId]);
   });
 });
-
-
