@@ -4,6 +4,9 @@ import logError from 'utils/log-error'
 import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import loadMarkets from 'modules/markets/actions/load-markets'
 import store from 'src/store'
+import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
+
+const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
 const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) => {
   const marketsData = selectMarkets(store.getState())
@@ -38,5 +41,6 @@ export const helpers = (store) => {
       }))
     }),
     findMarketId: marketDescription => new Promise(resolve => dispatch(findMarketByDesc(marketDescription, resolve))),
+    hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
   }
 }

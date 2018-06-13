@@ -1,6 +1,5 @@
 import "jest-environment-puppeteer";
-const puppeteer = require('puppeteer');
-import {UnlockedAccounts} from "./constants/accounts";
+import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
 
@@ -10,6 +9,7 @@ describe("Create market page", () => {
   beforeAll(async () => {
     await page.goto(url, {waitUntil: "networkidle0"});
 
+
     // TODO: Determine what a 'typical' desktop resolution would be for our users
     await page.setViewport({
       height: 1200,
@@ -18,8 +18,7 @@ describe("Create market page", () => {
   });
 
   it("should allow user to create a new binary market", async () => {
-    // Dismiss welcome to beta popup
-    await expect(page).toClick("button", { text: "I have read and understand the above" });
+    await dismissDisclaimerModal(page);
 
     await page.goto(url.concat("#/create-market"), {waitUntil: "networkidle0"});
 
