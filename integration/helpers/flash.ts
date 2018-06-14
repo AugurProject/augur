@@ -8,28 +8,21 @@ import pushTimestamp from 'augur.js/scripts/flash/push-timestamp'
 import setAugurTimestamp from 'augur.js/scripts/flash/set-timestamp-cmd'
 import { getPrivateKeyFromString } from 'augur.js/scripts/dp/lib/get-private-key'
 
-interface IAugur {
-  connect(endpoints: object, callback: Function): void
-  markets: {
-    getMarketsInfo(markets: object, callback: Function): void
-  }
-}
-
 export default class Flash implements IFlash {
-  augur: IAugur
+  augur: Augur
   auth: object
 
   constructor() {
-    this.augur = new Augur() as IAugur;
+    this.augur = new Augur();
     this.auth = getPrivateKeyFromString(UnlockedAccounts.CONTRACT_OWNER_PRIV);
   }
 
   setMarketEndTime(marketId: string): Promise<Boolean> {
     const oThis = this
     return new Promise<Boolean>((resolve, reject) => {
-      this.augur.connect(connectionEndpoints, (err: object) => {
+      this.augur.connect(connectionEndpoints, (err: any) => {
         if (err) reject()
-        this.augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err: object, marketInfos: Array<IMarket>) {
+        this.augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err: any, marketInfos: any ) => {
           if (err) reject()
           if (!marketInfos || marketInfos.length === 0) reject()
           const market = marketInfos[0]
@@ -82,7 +75,7 @@ export default class Flash implements IFlash {
 
   command(args: object, func: Function) {
     return new Promise<Boolean>((resolve, reject) => {
-      this.augur.connect(connectionEndpoints, (err: object) => {
+      this.augur.connect(connectionEndpoints, (err: any) => {
         if (err) return reject()
         func(this.augur, args, this.auth, (err: object) => {
           if (err) return reject()
