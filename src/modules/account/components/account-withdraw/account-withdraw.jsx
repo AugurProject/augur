@@ -136,6 +136,7 @@ export default class AccountWithdraw extends Component {
               <div className={Styles['AccountWithdraw__input-wrapper']}>
                 <label htmlFor="currency">Select Currency</label>
                 <InputDropdown
+                  id="currency"
                   name="currency"
                   className={Styles.AccountWithdraw__dropdown}
                   label="Select Currency"
@@ -158,6 +159,7 @@ export default class AccountWithdraw extends Component {
               <div className={Styles['AccountWithdraw__input-wrapper']}>
                 <label htmlFor="quantity">Quantity</label>
                 <Input
+                  id="quantity"
                   name="quantity"
                   label="Quantity"
                   type="number"
@@ -178,6 +180,7 @@ export default class AccountWithdraw extends Component {
               <div className={Styles['AccountWithdraw__input-wrapper']}>
                 <label htmlFor="address">Recipient Account Address</label>
                 <Input
+                  id="address"
                   name="address"
                   label="Recipient Account Address"
                   type="text"
@@ -196,6 +199,7 @@ export default class AccountWithdraw extends Component {
               className={Styles.AccountWithdraw__submitButton}
               disabled={!s.isValid}
               onClick={this.submitForm}
+              id="withdraw-button"
             >
               Withdraw
             </button>
