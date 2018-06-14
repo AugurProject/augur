@@ -24,7 +24,7 @@ function setTimestampCmd(augur, args, auth, callback) {
       return callback(err);
     }
     displayTime("current time:", timeResult.timestamp);
-    setTimestamp(augur, parseInt(args.opt.timestamp, 10), timeResult.timeAddress, auth, callback);
+    return setTimestamp(augur, parseInt(args.opt.timestamp, 10), timeResult.timeAddress, auth, callback);
   });
 }
 

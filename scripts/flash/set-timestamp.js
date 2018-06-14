@@ -11,7 +11,7 @@ function setTimestamp(augur, newTimestamp, address, auth, callback) {
   getTime(augur, auth, function (err, timeResult) {
     if (parseInt(timeResult.timestamp, 10) === parseInt(newTimestamp, 10)) {
       console.log(chalk.yellow.dim("Time already set"));
-      callback(null);
+      return callback(null);
     }
 
     augur.api.TimeControlled.setTimestamp({
@@ -30,12 +30,12 @@ function setTimestamp(augur, newTimestamp, address, auth, callback) {
           }
           console.log(chalk.green.dim("Success"), chalk.green(JSON.stringify(result)));
           displayTime("result of time change", timestamp);
-          callback(null);
+          return callback(null);
         });
       },
       onFailed: function (result) {
         console.log(chalk.red.dim("Failed:"), chalk.red(JSON.stringify(result)));
-        callback(result);
+        return callback(result);
       },
     });
   });
