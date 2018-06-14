@@ -13,7 +13,7 @@ const checkNumElements = async (isMarkets, num) => {
 
 const checkMarketNames = async (expectedMarketTitles) => {
   for (let i = 0; i < expectedMarketTitles.length; i++) {
-    await expect(page).toMatchElement("a", { text: expectedMarketTitles})
+    await expect(page).toMatchElement("a", { text: expectedMarketTitles[i]})
   }
 }
 
