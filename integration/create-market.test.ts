@@ -21,7 +21,7 @@ describe("Create market page", () => {
     await dismissDisclaimerModal(page);
 
     // Go to create-market page & wait for it to load
-    await expect(page).toClick("a[href$='#/create-market']");
+    await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});
     await page.waitForSelector("#cm__input--desc");
 
     // Fill out Define page
@@ -64,6 +64,8 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Add Order" });
 
     // Place sell orders
+    await expect(page).toClick("button", { text: "Sell" });
+
     await expect(page).toFill("#cm__input--quantity", "1");
     await expect(page).toFill("#cm__input--limit-price", "0.43");
     await expect(page).toClick("button", { text: "Add Order" });
@@ -83,16 +85,19 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Submit" });
 
     // Make sure user is redirected to Transactions page
-    // await page.waitForSelector(".transactions-styles_Transaction__item");
+    await page.waitForSelector(".transactions-styles_Transaction__item");
 
-    // TODO: Add check to ensure market was created successfully with correct liquidity
+    // Go to new market trading page
+    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
+    await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a");
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a");
+
+    // TODO: Verify settlement fee is correct & liquidity got created
   });
 
   it("should allow user to create a new categorical market", async () => {
     // Go to create-market page & wait for it to load
-    // await page.waitForSelector(".side-nav-styles_SideNav__item--selected", { timeout: 10000 });
-    // await expect(page).toClick("a[href$='#/create-market']");
-    await page.goto(url.concat("#/create-market"))
+    await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});
     await page.waitForSelector("#cm__input--desc");
 
     // Fill out Define page
@@ -143,6 +148,8 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Add Order" });
 
     // Place sell orders
+    await expect(page).toClick("button", { text: "Sell" });
+
     await expect(page).toFill("#cm__input--quantity", "1");
     await expect(page).toFill("#cm__input--limit-price", "0.43");
     await expect(page).toClick("button", { text: "Add Order" });
@@ -164,12 +171,17 @@ describe("Create market page", () => {
     // Make sure user is redirected to Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item");
 
-    // TODO: Add check to ensure market was created successfully with correct liquidity
+    // Go to new market trading page
+    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
+    await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a");
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a");
+
+    // TODO: Verify settlement fee is correct & liquidity got created
   });
 
   it("should allow user to create a new scalar market", async () => {
     // Go to create-market page & wait for it to load
-    await expect(page).toClick("a[href$='#/create-market']");
+    await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});
     await page.waitForSelector("#cm__input--desc");
 
     // Fill out Define page
@@ -182,7 +194,7 @@ describe("Create market page", () => {
     // Fill out Outcome page
     await expect(page).toClick("button", { text: "Numerical Range" });
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(1) input", "0");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(2) input", "100");
+    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(2) input", "30");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(3) input", "0.5");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(4) input", "0.0001");
     await expect(page).toFill("#cm__input--details", "Here is some additional information.");
@@ -199,11 +211,38 @@ describe("Create market page", () => {
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "AM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
-    // Fill out Liquidity page
+    // Fill out market creator settlement fee
     await expect(page).toFill("#cm__input--settlement", "1");
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "0.5");
+
+    // Place buy orders
+    await expect(page).toFill("#cm__input--quantity", "12");
+    await expect(page).toFill("#cm__input--limit-price", "1");
     await expect(page).toClick("button", { text: "Add Order" });
+
+    await expect(page).toFill("#cm__input--quantity", "10");
+    await expect(page).toFill("#cm__input--limit-price", "2");
+    await expect(page).toClick("button", { text: "Add Order" });
+
+    await expect(page).toFill("#cm__input--quantity", "7");
+    await expect(page).toFill("#cm__input--limit-price", "3");
+    await expect(page).toClick("button", { text: "Add Order" });
+
+    // Place sell orders
+    await expect(page).toClick("button", { text: "Sell" });
+
+    await expect(page).toFill("#cm__input--quantity", "2");
+    await expect(page).toFill("#cm__input--limit-price", "15");
+    await expect(page).toClick("button", { text: "Add Order" });
+
+    await expect(page).toFill("#cm__input--quantity", "1");
+    await expect(page).toFill("#cm__input--limit-price", "17.5");
+    await expect(page).toClick("button", { text: "Add Order" });
+
+    await expect(page).toFill("#cm__input--quantity", "2");
+    await expect(page).toFill("#cm__input--limit-price", "20");
+    await expect(page).toClick("button", { text: "Add Order" });
+
+    // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
 
     // Submit new market
@@ -212,6 +251,11 @@ describe("Create market page", () => {
     // Make sure user is redirected to Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item");
 
-    // TODO: Add check to ensure market was created successfully with correct liquidity
+    // Go to new market trading page
+    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
+    await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a");
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a");
+
+    // TODO: Verify settlement fee is correct & liquidity got created
   });
 });
