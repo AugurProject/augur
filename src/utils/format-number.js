@@ -106,7 +106,7 @@ export function formatShares(num, opts) {
     {
       decimals: SHARES_NUMBER_OF_DECIMALS,
       decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-      denomination: ` share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
+      denomination: ` Share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
       minimized: false,
       zeroStyled: false,
       blankZero: false,
@@ -117,7 +117,7 @@ export function formatShares(num, opts) {
   )
 
   if (formattedShares.formattedValue === 1) {
-    formattedShares.full = makeFull(formattedShares.formatted, ' share')
+    formattedShares.full = makeFull(formattedShares.formatted, ' Share')
   }
 
   return formattedShares
