@@ -19,7 +19,7 @@ const checkMarketNames = async (expectedMarketTitles) => {
   try {
     const markets = await page.$$(MARKETS_SELECTOR)
     for (let i = 0; i < markets.length; i++) {
-      expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
+      await expect(markets[i]).toMatchElement("a", { text: expectedMarketTitles[i]})
     }
     return
   } catch (error) {
@@ -31,7 +31,7 @@ describe("Markets List", () => {
   let markets;
   let yesNoMarket;
   let yesNoMarketId;
-  const yesNoMarketDesc = 'Will antibiotics be outlawed for agricultural use in China by the end of 2019?'
+  const yesNoMarketDesc = "Will antibiotics be outlawed for agricultural use in China by the end of 2019?"
 
   beforeAll(async () => {
     await page.goto(url);
@@ -81,9 +81,7 @@ describe("Markets List", () => {
 
     it("should filter market cards", async () => {
       // check that header is correct
-      await page.waitForSelector("div.markets-header-styles_MarketsHeader__wrapper")
-      const headerWrapper = await page.$("div.markets-header-styles_MarketsHeader__wrapper");
-      expect(await headerWrapper.$eval("h1", node => node.innerText)).toBe("POLITICS");
+      await expect(page).toMatchElement("h1", { text: "politics"})
 
       // check that number of markets listed is as expected
       checkNumElements(true, 3)
@@ -114,7 +112,7 @@ describe("Markets List", () => {
       checkNumElements(true, 1)
 
       // check that market that shows up is correct one
-      checkMarketNames(['Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?'])
+      checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
     });
 
     it("should clear search and show all markets after clearing the search", async () => {
@@ -133,7 +131,7 @@ describe("Markets List", () => {
       checkNumElements(true, 2)
 
       // check that expected titles are present
-      const expectedMarketTitles = ['Will Ethereum trade at $2000 or higher at any time before the end of 2018?', 'Millions of Tether tokens issued on Thu Jun 07 2018 (round down)']
+      const expectedMarketTitles = ["Will Ethereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (round down)"]
       checkMarketNames(expectedMarketTitles)
 
       await expect(page).toClick(".input-styles_close")
@@ -146,24 +144,23 @@ describe("Markets List", () => {
 
   describe("Market Cards", () => {
     beforeAll(async () => {
-      await page.goto(url + '#/markets?category=agriculture');
-      markets = await page.$$(MARKETS_SELECTOR)
-      yesNoMarket = markets[0] // this has to be the "Will antibiotics" market
+      await page.goto(url + "#/markets?category=agriculture");
+      yesNoMarket = await expect(page).toMatchElement("article", { text: yesNoMarketDesc})
     });
 
     it("should display market title", async () => {
-      expect(await yesNoMarket.$eval('a', node => node.innerText)).toBe(yesNoMarketDesc);
+      await expect(yesNoMarket).toMatchElement("a", { text: yesNoMarketDesc})
     });
 
     it("display the min and max values accurately on either ends of the scale", async () => {
-      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__min', node => node.innerText)).toBe('0 %');
-      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__max', node => node.innerText)).toBe('100 %');
+      await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__min", { text: "0 %"})
+      await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__max", { text: "100 %"})
     });
 
     it("should display stats about volume, settlement Fee, and Expiration Date", async () => {
-      expect(await yesNoMarket.$eval('.value_volume', node => node.innerText)).toBe('0');
-      expect(await yesNoMarket.$eval('.value_fee', node => node.innerText)).toBe('2.00');
-      expect(await yesNoMarket.$eval('.value_expires', node => node.innerText)).toBe('DEC 31, 2019 4:00 PM (UTC -8)');
+      await expect(yesNoMarket).toMatchElement(".value_volume", { text: "0"})
+      await expect(yesNoMarket).toMatchElement(".value_fee", { text: "2.00"})
+      await expect(yesNoMarket).toMatchElement(".value_expires", { text: "Dec 31, 2019 4:00 PM (UTC -8)"})
     });
 
     it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
@@ -178,19 +175,18 @@ describe("Markets List", () => {
     });
 
     it("should bring you to the trade view for that market when clicking on market title", async () => {
-      await page.goto(url + '#/markets?category=agriculture');
+      await page.goto(url + "#/markets?category=agriculture");
       await expect(page).toClick("a.market-link")
       const pageUrl = await page.evaluate(() => location.href);
       expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
     });
 
     it("should display categorical market outcomes correctly", async () => {
-      await page.goto(url + '#/markets?category=science&tags=mortality');
-      markets = await page.$$(MARKETS_SELECTOR)
-      const categoricalMarket = markets[0]
+      await page.goto(url + "#/markets?category=science&tags=mortality");
+      const categoricalMarket = await expect(page).toMatchElement("article", { text: "What will be the number one killer in the United States by January 1, 2019?"})
 
       // display the top 3 outcomes for a Categorical Market, with a "+ N More" where N is the number of remaining outcomes
-      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('+ 3 MORE');
+      await expect(categoricalMarket).toMatchElement(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more", { text: "+ 3 more"})
       const outcomes = await page.$$(".market-outcomes-categorical-styles_MarketOutcomesCategorical__outcome")
       expect(outcomes.length).toEqual(6)
 
@@ -198,7 +194,7 @@ describe("Markets List", () => {
       await expect(categoricalMarket).toClick(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more")
 
       // "+ N More" should change to "- N More" when expanded, should collapse again on click.
-      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('- 3 LESS');
+      await expect(categoricalMarket).toMatchElement(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more", { text: "- 3 less"})
     });
   });
 });
