@@ -2,6 +2,8 @@ interface IntegrationHelpers {
   updateAccountAddress(address: string): void;
   findMarketId(marketDescription: string): void;
   hasDisclaimerModalBeenDismissed(): boolean;
+  logout(): void;
+  getAccountData(): void;
 }
 
 declare namespace window {

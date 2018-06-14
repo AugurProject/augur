@@ -5,6 +5,8 @@ import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import loadMarkets from 'modules/markets/actions/load-markets'
 import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
+import { logout } from 'modules/auth/actions/logout'
+import { selectLoginAccountState } from 'src/select-state'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -29,6 +31,10 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
   }
 }
 
+const getLoggedInAccountData = (callback = logError) => (dispatch) => {
+  return callback(selectLoginAccountState(store.getState()))
+}
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -42,5 +48,7 @@ export const helpers = (store) => {
     }),
     findMarketId: marketDescription => new Promise(resolve => dispatch(findMarketByDesc(marketDescription, resolve))),
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
+    logout: () => dispatch(logout()),
+    getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
   }
 }
