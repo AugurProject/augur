@@ -1,6 +1,6 @@
 "use strict";
 
-import { IFlash, IMarket } from "../types/types"
+import { IFlash } from "../types/types"
 import { UnlockedAccounts } from "../constants/accounts";
 import Augur from "augur.js"
 import connectionEndpoints from 'augur.js/scripts/connection-endpoints'
