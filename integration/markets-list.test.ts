@@ -47,7 +47,7 @@ describe("Markets List", () => {
     await expect(page).toClick("button", {
       text: "I have read and understand the above"
     });
-    await expect(page).toClick("a[href$='#/markets")
+    await expect(page).toClick("a[href$='#/markets']")
   });
 
   describe("General View", () => {
@@ -123,7 +123,7 @@ describe("Markets List", () => {
 
   describe("Filtering", () => {
     beforeAll(async () => {
-      await page.goto(url + '#/markets?category=politics');
+      await expect(page).toClick("a[href$='#/markets?category=politics']")
     });
 
     it("should display both submenu bars", async () => {
@@ -158,18 +158,13 @@ describe("Markets List", () => {
     });
 
     it("should show all markets after clicking the market button", async () => {
-      await expect(page).toClick("a[href$='#/markets")
+      await expect(page).toClick("a[href$='#/markets']")
       checkNumElements(true, 10)
     });
   });
 
   describe("Search", () => {
      
-     beforeAll(async () => {
-      await page.goto(url + '#/markets');
-      await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
-    });
-
     it("should filter markets to show only ones with searched keyword", async () => {
       // enter in a search keyword
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "jair");
