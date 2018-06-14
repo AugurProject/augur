@@ -1,3 +1,5 @@
+"use strict";
+
 import "jest-environment-puppeteer";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
