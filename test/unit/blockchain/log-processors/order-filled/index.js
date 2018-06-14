@@ -49,7 +49,7 @@ describe("blockchain/log-processors/order-filled", () => {
         shareToken: "0x0100000000000000000000000000000000000000",
         filler: "FILLER_ADDRESS",
         orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
-        amountFilled: "142857142857142",
+        amountFilled: "100000000000000",
         numCreatorShares: "0",
         numCreatorTokens: fix("1", "string"),
         numFillerShares: augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed(),
@@ -64,10 +64,6 @@ describe("blockchain/log-processors/order-filled", () => {
       augur: {
         api: {
           Orders: {
-            getAmount: (p, callback) => {
-              assert.deepEqual(p, { _orderId: "0x1000000000000000000000000000000000000000000000000000000000000000" });
-              callback(null, augur.utils.convertDisplayAmountToOnChainAmount("2", new BigNumber(1), new BigNumber(10000)).toFixed());
-            },
             getLastOutcomePrice: (p, callback) => {
               assert.strictEqual(p._market, "0x0000000000000000000000000000000000000001");
               if (p._outcome === 0) {
@@ -120,12 +116,12 @@ describe("blockchain/log-processors/order-filled", () => {
           shareToken: "0x0100000000000000000000000000000000000000",
           orderType: "buy",
           orderCreator: "0x0000000000000000000000000000000000000b0b",
-          orderState: "OPEN",
+          orderState: "FILLED",
           fullPrecisionPrice: new BigNumber("0.7", 10),
           originalFullPrecisionAmount: new BigNumber("1", 10),
-          fullPrecisionAmount: new BigNumber("2", 10),
+          fullPrecisionAmount: new BigNumber("0", 10),
           price: new BigNumber("0.7", 10),
-          amount: new BigNumber("2", 10),
+          amount: new BigNumber("0", 10),
           originalAmount: new BigNumber("1", 10),
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
@@ -150,15 +146,15 @@ describe("blockchain/log-processors/order-filled", () => {
           marketCreatorFees: new BigNumber("0", 10),
           reporterFees: new BigNumber("0", 10),
           price: new BigNumber("0.7", 10),
-          amount: new BigNumber("1.42857142857142", 10),
+          amount: new BigNumber("1", 10),
           tradeGroupId: "TRADE_GROUP_ID",
         }]);
         assert.deepEqual(records.markets, {
-          volume: new BigNumber("1.42857142857142", 10),
+          volume: new BigNumber("1", 10),
           sharesOutstanding: new BigNumber("2", 10),
         });
         assert.deepEqual(records.outcomes, [
-          { price: new BigNumber("0.7", 10), volume: new BigNumber("101.42857142857142", 10) },
+          { price: new BigNumber("0.7", 10), volume: new BigNumber("101", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
@@ -168,7 +164,7 @@ describe("blockchain/log-processors/order-filled", () => {
           { price: new BigNumber("0.125", 10), volume: new BigNumber("100", 10) },
         ]);
         assert.deepEqual(records.categories, {
-          popularity: 1.42857142857142,
+          popularity: 1,
         });
         assert.deepEqual(records.positions, [{
           positionId: 21,
@@ -274,10 +270,10 @@ describe("blockchain/log-processors/order-filled", () => {
           orderCreator: "0x0000000000000000000000000000000000000b0b",
           orderState: "OPEN",
           fullPrecisionPrice: new BigNumber("0.7", 10),
-          fullPrecisionAmount: new BigNumber("2", 10),
+          fullPrecisionAmount: new BigNumber("1", 10),
           originalFullPrecisionAmount: new BigNumber("1", 10),
           price: new BigNumber("0.7", 10),
-          amount: new BigNumber("2", 10),
+          amount: new BigNumber("1", 10),
           originalAmount: new BigNumber("1", 10),
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
