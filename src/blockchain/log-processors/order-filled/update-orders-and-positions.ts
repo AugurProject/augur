@@ -3,7 +3,7 @@ import { parallel } from "async";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { ZERO } from "../../../constants";
-import { Address, Bytes32, AsyncCallback, ErrorCallback } from "../../../types";
+import { Address, Bytes32, AsyncCallback, ErrorCallback, OrderState } from "../../../types";
 import { formatOrderAmount } from "../../../utils/format-order";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { refreshPositionInMarket } from "./refresh-position-in-market";
@@ -29,7 +29,7 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Addre
     const fullPrecisionAmountRemainingInOrder = augur.utils.convertOnChainAmountToDisplayAmount(amount, tickSize);
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
-    const updateParams = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? Object.assign({}, updateAmountsParams, { isRemoved: 1 }) : updateAmountsParams;
+    const updateParams = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? Object.assign({ orderState: OrderState.FILLED }, updateAmountsParams) : updateAmountsParams;
     db("orders").where({ orderId }).update(formatBigNumberAsFixed(updateParams)).asCallback(callback);
   });
 }

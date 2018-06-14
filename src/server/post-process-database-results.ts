@@ -33,7 +33,9 @@ const whitelist: TableWhitelist = {
   orders: {
     price: true,
     amount: true,
+    originalAmount: true,
     fullPrecisionAmount: true,
+    originalFullPrecisionAmount: true,
     fullPrecisionPrice: true,
     tokensEscrowed: true,
     sharesEscrowed: true,
