@@ -69,6 +69,24 @@ describe("server/getters/get-user-trading-history", () => {
       assert.ifError(err);
       assert.deepEqual(userTradingHistory, [
         {
+          amount: "0.1",
+          logIndex: 0,
+          maker: true,
+          marketCreatorFees: "0",
+          marketId: "0x0000000000000000000000000000000000000011",
+          orderId: "0x7000000000000000000000000000000000000000000000000000000000000000",
+          outcome: 0,
+          price: "4.2",
+          reporterFees: "0",
+          selfFilled: true,
+          settlementFees: "0",
+          shareToken: "0x0100000000000000000000000000000000000000",
+          timestamp: 1509065474,
+          tradeGroupId: null,
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C09",
+          type: "sell",
+        },
+        {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
           orderId: "0x1500000000000000000000000000000000000000000000000000000000000000",
@@ -271,7 +289,7 @@ describe("server/getters/get-user-trading-history", () => {
     },
   });
   test({
-    description: "user was creator in many markets and outcomes, filter to one market by timestamp",
+    description: "user was creator in many markets and outcomes, filter by timestamp",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       account: "0x0000000000000000000000000000000000000b0b",
