@@ -6,24 +6,14 @@ const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
 jest.setTimeout(100000);
 
 const checkNumElements = async (isMarkets, num) => {
-  try {
-    const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
-    const markets = await page.$$(selector)
-    return expect(markets.length).toEqual(num);
-  } catch (error) {
-    return error
-  }
+  const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
+  const elements = await page.$$(selector)
+  return expect(elements.length).toEqual(num);
 }
 
 const checkMarketNames = async (expectedMarketTitles) => {
-  try {
-    const markets = await page.$$(MARKETS_SELECTOR)
-    for (let i = 0; i < expectedMarketTitles.length; i++) {
-      await expect(markets).toMatchElement("a", { text: expectedMarketTitles})
-    }
-    return
-  } catch (error) {
-    return error
+  for (let i = 0; i < expectedMarketTitles.length; i++) {
+    await expect(page).toMatchElement("a", { text: expectedMarketTitles})
   }
 }
 
@@ -112,7 +102,7 @@ describe("Markets List", () => {
       checkNumElements(true, 1)
 
       // check that market that shows up is correct one
-      checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
+      checkMarketNames(["Will dsdJair dsdjshjdMessias Bolsonaro be elected the president of Brazil in 2018?"])
     });
 
     it("should clear search and show all markets after clearing the search", async () => {
@@ -131,14 +121,14 @@ describe("Markets List", () => {
       checkNumElements(true, 2)
 
       // check that expected titles are present
-      const expectedMarketTitles = ["Will Ethereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (round down)"]
+      const expectedMarketTitles = ["Will ddEthereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (roddund down)"]
       checkMarketNames(expectedMarketTitles)
 
       await expect(page).toClick(".input-styles_close")
 
       // search for a tag
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
-      checkNumElements(true, 1)
+      checkNumElements(true, 3)
     });
   });
 
