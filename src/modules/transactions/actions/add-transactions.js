@@ -205,7 +205,6 @@ export function addOpenOrderTransactions(openOrders) {
     const { marketsData } = getState()
     // flatten open orders
     const transactions = {}
-    let index = 100
     eachOf(openOrders, (value, marketId) => {
       const market = marketsData[marketId]
       let sumBuy = 0
