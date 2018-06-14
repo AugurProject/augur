@@ -2,12 +2,12 @@ import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
 
 const url = `${process.env.AUGUR_URL}`;
-
+const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
 jest.setTimeout(100000);
 
 const checkNumElements = async (isMarkets, num) => {
   try {
-    const selector = (isMarkets ? ".market-common-styles_MarketCommon__container" : ".inner-nav-styles_InnerNav__menu-item--visible")
+    const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
     const markets = await page.$$(selector)
     return expect(markets.length).toEqual(num);
   } catch (error) {
@@ -17,7 +17,7 @@ const checkNumElements = async (isMarkets, num) => {
 
 const checkMarketNames = async (expectedMarketTitles) => {
   try {
-    const markets = await page.$$(".market-common-styles_MarketCommon__container")
+    const markets = await page.$$(MARKETS_SELECTOR)
     for (let i = 0; i < markets.length; i++) {
       expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
     }
@@ -63,64 +63,6 @@ describe("Markets List", () => {
     });
   });
 
-  describe("Market Cards", () => {
-    beforeAll(async () => {
-      await expect(page).toClick("a[href$='#/markets?category=agriculture']")
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      yesNoMarket = markets[0] // this has to be the "Will antibiotics" market
-    });
-
-    it("should display market title", async () => {
-      expect(await yesNoMarket.$eval('a', node => node.innerText)).toBe(yesNoMarketDesc);
-    });
-
-    it("display the min and max values accurately on either ends of the scale", async () => {
-      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__min', node => node.innerText)).toBe('0 %');
-      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__max', node => node.innerText)).toBe('100 %');
-    });
-
-    it("should display stats about volume, settlement Fee, and Expiration Date", async () => {
-      expect(await yesNoMarket.$eval('.value_volume', node => node.innerText)).toBe('0');
-      expect(await yesNoMarket.$eval('.value_fee', node => node.innerText)).toBe('2.00');
-      expect(await yesNoMarket.$eval('.value_expires', node => node.innerText)).toBe('DEC 31, 2019 4:00 PM (UTC -8)');
-    });
-
-    it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
-      await expect(yesNoMarket).toClick("button.market-properties-styles_MarketProperties__favorite")
-      await page.waitForSelector(".fa-star")
-    });
-
-    it("should display an action button that reads 'trade' which when clicked brings you to the trade view for that market", async () => {
-      await expect(page).toClick("a.market-properties-styles_MarketProperties__trade")
-      const pageUrl = await page.evaluate(() => location.href);
-      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
-    });
-
-    it("should bring you to the trade view for that market when clicking on market title", async () => {
-      await page.goto(url + '#/markets?category=agriculture');
-      await expect(page).toClick("a.market-link")
-      const pageUrl = await page.evaluate(() => location.href);
-      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
-    });
-
-    it("should display categorical market outcomes correctly", async () => {
-      await page.goto(url + '#/markets?category=science&tags=mortality');
-      markets = await page.$$(".market-common-styles_MarketCommon__container")
-      const categoricalMarket = markets[0]
-
-      // display the top 3 outcomes for a Categorical Market, with a "+ N More" where N is the number of remaining outcomes
-      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('+ 3 MORE');
-      const outcomes = await page.$$(".market-outcomes-categorical-styles_MarketOutcomesCategorical__outcome")
-      expect(outcomes.length).toEqual(6)
-
-      // click show more button
-      await expect(categoricalMarket).toClick(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more")
-
-      // "+ N More" should change to "- N More" when expanded, should collapse again on click.
-      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('- 3 LESS');
-    });
-  });
-
   describe("Filtering", () => {
     beforeAll(async () => {
       await expect(page).toClick("a[href$='#/markets?category=politics']")
@@ -139,8 +81,9 @@ describe("Markets List", () => {
 
     it("should filter market cards", async () => {
       // check that header is correct
-      const headerWrapper = await page.$('div.markets-header-styles_MarketsHeader__wrapper');
-      expect(await headerWrapper.$eval('h1', node => node.innerText)).toBe('POLITICS');
+      await page.waitForSelector("div.markets-header-styles_MarketsHeader__wrapper")
+      const headerWrapper = await page.$("div.markets-header-styles_MarketsHeader__wrapper");
+      expect(await headerWrapper.$eval("h1", node => node.innerText)).toBe("POLITICS");
 
       // check that number of markets listed is as expected
       checkNumElements(true, 3)
@@ -198,6 +141,64 @@ describe("Markets List", () => {
       // search for a tag
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
       checkNumElements(true, 1)
+    });
+  });
+
+  describe("Market Cards", () => {
+    beforeAll(async () => {
+      await page.goto(url + '#/markets?category=agriculture');
+      markets = await page.$$(MARKETS_SELECTOR)
+      yesNoMarket = markets[0] // this has to be the "Will antibiotics" market
+    });
+
+    it("should display market title", async () => {
+      expect(await yesNoMarket.$eval('a', node => node.innerText)).toBe(yesNoMarketDesc);
+    });
+
+    it("display the min and max values accurately on either ends of the scale", async () => {
+      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__min', node => node.innerText)).toBe('0 %');
+      expect(await yesNoMarket.$eval('.market-outcomes-yes-no-scalar-styles_MarketOutcomes__max', node => node.innerText)).toBe('100 %');
+    });
+
+    it("should display stats about volume, settlement Fee, and Expiration Date", async () => {
+      expect(await yesNoMarket.$eval('.value_volume', node => node.innerText)).toBe('0');
+      expect(await yesNoMarket.$eval('.value_fee', node => node.innerText)).toBe('2.00');
+      expect(await yesNoMarket.$eval('.value_expires', node => node.innerText)).toBe('DEC 31, 2019 4:00 PM (UTC -8)');
+    });
+
+    it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
+      await expect(yesNoMarket).toClick("button.market-properties-styles_MarketProperties__favorite")
+      await page.waitForSelector(".fa-star")
+    });
+
+    it("should display an action button that reads 'trade' which when clicked brings you to the trade view for that market", async () => {
+      await expect(page).toClick("a.market-properties-styles_MarketProperties__trade")
+      const pageUrl = await page.evaluate(() => location.href);
+      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
+    });
+
+    it("should bring you to the trade view for that market when clicking on market title", async () => {
+      await page.goto(url + '#/markets?category=agriculture');
+      await expect(page).toClick("a.market-link")
+      const pageUrl = await page.evaluate(() => location.href);
+      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
+    });
+
+    it("should display categorical market outcomes correctly", async () => {
+      await page.goto(url + '#/markets?category=science&tags=mortality');
+      markets = await page.$$(MARKETS_SELECTOR)
+      const categoricalMarket = markets[0]
+
+      // display the top 3 outcomes for a Categorical Market, with a "+ N More" where N is the number of remaining outcomes
+      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('+ 3 MORE');
+      const outcomes = await page.$$(".market-outcomes-categorical-styles_MarketOutcomesCategorical__outcome")
+      expect(outcomes.length).toEqual(6)
+
+      // click show more button
+      await expect(categoricalMarket).toClick(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more")
+
+      // "+ N More" should change to "- N More" when expanded, should collapse again on click.
+      expect(await categoricalMarket.$eval('.market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more', node => node.innerText)).toBe('- 3 LESS');
     });
   });
 });
