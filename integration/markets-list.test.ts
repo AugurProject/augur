@@ -55,7 +55,7 @@ describe("Markets List", () => {
 
   describe("Filtering", () => {
     beforeAll(async () => {
-      await expect(page).toClick("a[href$='#/markets?category=politics']")
+      await page.goto(url + "#/markets?category=politics"); // click sometimes fails because of page rerenders
     });
 
     it("should display both submenu bars", async () => {
