@@ -8,12 +8,19 @@ import pushTimestamp from 'augur.js/scripts/flash/push-timestamp'
 import setAugurTimestamp from 'augur.js/scripts/flash/set-timestamp-cmd'
 import { getPrivateKeyFromString } from 'augur.js/scripts/dp/lib/get-private-key'
 
+interface IAugur {
+  connect(endpoints: object, callback: Function): void
+  markets: {
+    getMarketsInfo(markets: object, callback: Function): void
+  }
+}
+
 export default class Flash implements IFlash {
-  augur: object
+  augur: IAugur
   auth: object
 
   constructor() {
-    this.augur = new Augur();
+    this.augur = new Augur() as IAugur;
     this.auth = getPrivateKeyFromString(UnlockedAccounts.CONTRACT_OWNER_PRIV);
   }
 

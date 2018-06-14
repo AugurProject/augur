@@ -2,10 +2,11 @@
 
 import "jest-environment-puppeteer";
 import Flash from "./helpers/flash";
-import { IMarket, IFlash } from "./types/types"
+import { IFlash } from "./types/types"
+import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
-let marketId: string
+
 const marketDesc = 'Will Ethereum trade at $2000 or higher at any time before the end of 2018?'
 jest.setTimeout(100000);
 
@@ -28,6 +29,7 @@ describe.only("Initial Report", () => {
   });
 
   it("report on yes", async () => {
+    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "Yes"
     });
@@ -42,6 +44,7 @@ describe.only("Initial Report", () => {
   })
 
   it("report on no", async () => {
+    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "No"
     });
@@ -56,6 +59,7 @@ describe.only("Initial Report", () => {
   })
 
   it("report on Invalid", async () => {
+    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "Market Is Invalid"
     });
