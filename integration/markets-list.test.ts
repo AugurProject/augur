@@ -8,7 +8,7 @@ jest.setTimeout(100000);
 const checkNumElements = async (isMarkets, num) => {
   const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
   const elements = await page.$$(selector)
-  return expect(elements.length).toEqual(num);
+  return await expect(elements.length).toEqual(num);
 }
 
 const checkMarketNames = async (expectedMarketTitles) => {
