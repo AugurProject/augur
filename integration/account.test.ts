@@ -96,10 +96,12 @@ describe("Account", () => {
       const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), eth);
 
       // correct account ETH and REP should be shown in deposit page
-      await expect(page).toMatchElement("span.rep_value", { text: formatRep.formatted}) // need commas
+      await expect(page).toMatchElement("span.rep_value", { text: formatRep.formatted})
       await expect(page).toMatchElement("span.eth_value", { text: formatEth.formatted})
 
       // correct account ETH and REP should be shown in core stats bar
+       await expect(page).toMatchElement("span#core-bar-rep", { text: formatRep.formatted})
+      await expect(page).toMatchElement("span#core-bar-eth", { text: formatEth.formatted})
 
       // correct account address should be shown in deposit page
       const displayAddress = accountData.displayAddress

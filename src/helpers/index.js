@@ -32,17 +32,11 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
   }
 }
 
-const getLoggedInAccountData = (callback = logError) => (dispatch) => {
-  return callback(selectLoginAccountState(store.getState()))
-}
+const getLoggedInAccountData = (callback = logError) => dispatch => callback(selectLoginAccountState(store.getState()))
 
-const formatRepValue = (value, callback = logError) => (dispatch) => {
-  return callback(formatRep(value, { zeroStyled: false }))
-}
+const formatRepValue = (value, callback = logError) => dispatch => callback(formatRep(value, { zeroStyled: false }))
 
-const formatEthValue = (value, callback = logError) => (dispatch) => {
-  return callback(formatEther(value, { zeroStyled: false }))
-}
+const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value, { zeroStyled: false }))
 
 export const helpers = (store) => {
   const { dispatch, whenever } = store
