@@ -236,6 +236,7 @@ export function queryTradingHistory(
       "trades.price",
       "trades.amount",
       "trades.creator",
+      "trades.filler",
       "trades.shareToken",
       "trades.blockNumber",
       "trades.marketCreatorFees",
