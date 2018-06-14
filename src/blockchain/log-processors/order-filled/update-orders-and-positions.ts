@@ -9,7 +9,7 @@ import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixe
 import { refreshPositionInMarket } from "./refresh-position-in-market";
 
 interface OrderFilledOnContractData {
-  amount: { fullPrecisionAmount: BigNumber };
+  amount: { fullPrecisionAmount?: BigNumber };
 }
 
 function noop(db: Knex, augur: Augur, marketId: Address, account: Address, callback: (err: Error|null, positions?: Array<string>) => void) {
@@ -25,7 +25,8 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Addre
     fillerPositionInMarket: (next: AsyncCallback): void => fillerRefresh(db, augur, marketId, filler, next),
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
-\    const fullPrecisionAmountRemainingInOrder = onContractData.amount.fullPrecisionAmount.minus(amount);
+    if (onContractData.amount.fullPrecisionAmount == null) return callback(new Error(`Could not fetch order amount for order ${orderId}`));
+    const fullPrecisionAmountRemainingInOrder = onContractData.amount.fullPrecisionAmount.minus(amount);
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
     const orderState = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? OrderState.FILLED : OrderState.OPEN;
