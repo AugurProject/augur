@@ -15,6 +15,7 @@ const checkMarketNames = async (expectedMarketTitles) => {
   for (let i = 0; i < expectedMarketTitles.length; i++) {
     await expect(page).toMatchElement("a", { text: expectedMarketTitles[i]})
   }
+  return 
 }
 
 describe("Markets List", () => {
@@ -32,12 +33,11 @@ describe("Markets List", () => {
       width: 1200
     });
 
-    yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
-
     await expect(page).toClick("button", {
       text: "I have read and understand the above"
     });
     await expect(page).toClick("a[href$='#/markets']")
+    yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
   });
 
   describe("General View", () => {
@@ -102,7 +102,7 @@ describe("Markets List", () => {
       checkNumElements(true, 1)
 
       // check that market that shows up is correct one
-      checkMarketNames(["Will dsdJair dsdjshjdMessias Bolsonaro be elected the president of Brazil in 2018?"])
+      checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
     });
 
     it("should clear search and show all markets after clearing the search", async () => {
@@ -121,14 +121,14 @@ describe("Markets List", () => {
       checkNumElements(true, 2)
 
       // check that expected titles are present
-      const expectedMarketTitles = ["Will ddEthereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (roddund down)"]
+      const expectedMarketTitles = ["Will Ethereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (round down)"]
       checkMarketNames(expectedMarketTitles)
 
       await expect(page).toClick(".input-styles_close")
 
       // search for a tag
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
-      checkNumElements(true, 3)
+      checkNumElements(true, 1)
     });
   });
 
