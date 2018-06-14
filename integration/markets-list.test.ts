@@ -18,8 +18,8 @@ const checkNumElements = async (isMarkets, num) => {
 const checkMarketNames = async (expectedMarketTitles) => {
   try {
     const markets = await page.$$(MARKETS_SELECTOR)
-    for (let i = 0; i < markets.length; i++) {
-      await expect(markets[i]).toMatchElement("a", { text: expectedMarketTitles[i]})
+    for (let i = 0; i < expectedMarketTitles.length; i++) {
+      await expect(markets).toMatchElement("a", { text: expectedMarketTitles})
     }
     return
   } catch (error) {
