@@ -7,6 +7,7 @@ import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
 import { logout } from 'modules/auth/actions/logout'
 import { selectLoginAccountState } from 'src/select-state'
+import { formatRep, formatEther } from 'utils/format-number'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -35,6 +36,14 @@ const getLoggedInAccountData = (callback = logError) => (dispatch) => {
   return callback(selectLoginAccountState(store.getState()))
 }
 
+const formatRepValue = (value, callback = logError) => (dispatch) => {
+  return callback(formatRep(value, { zeroStyled: false }))
+}
+
+const formatEthValue = (value, callback = logError) => (dispatch) => {
+  return callback(formatEther(value, { zeroStyled: false }))
+}
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -50,5 +59,7 @@ export const helpers = (store) => {
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
     logout: () => dispatch(logout()),
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
+    formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
+    formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
   }
 }
