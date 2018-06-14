@@ -20,7 +20,7 @@ const checkMarketNames = async (expectedMarketTitles) => {
     const markets = await page.$$(".market-common-styles_MarketCommon__container")
     for (let i = 0; i < markets.length; i++) {
       expect(await markets[i].$eval('a', node => node.innerText)).toBe(expectedMarketTitles[i]);
-    });
+    }
     return
   } catch (error) {
     return error
