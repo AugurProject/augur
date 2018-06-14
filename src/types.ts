@@ -422,6 +422,7 @@ export interface UITrade {
   price: string;
   amount: string;
   maker: boolean;
+  selfFilled: boolean;
   marketCreatorFees: string;
   reporterFees: string;
   settlementFees: string;
