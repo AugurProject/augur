@@ -26,17 +26,20 @@ export default class Flash implements IFlash {
 
   setMarketEndTime(marketId: string): Promise<Boolean> {
     const oThis = this
-    return new Promise<Boolean>((resolve => {
+    return new Promise<Boolean>((resolve, reject) => {
       this.augur.connect(connectionEndpoints, (err: object) => {
-        if (err) resolve(false)
+        if (err) reject()
         this.augur.markets.getMarketsInfo({ marketIds: [marketId] }, function (err: object, marketInfos: Array<IMarket>) {
-          if (err) resolve(false)
-          if (!marketInfos || marketInfos.length === 0) resolve(false)
+          if (err) reject()
+          if (!marketInfos || marketInfos.length === 0) reject()
           const market = marketInfos[0]
-          return oThis.setTimestamp(market.endTime)
+          oThis.setTimestamp(market.endTime).then((result)=> {
+            if (!result) return reject()
+            return resolve(result)
+          })
         })
       })
-    }))
+    })
   }
 
   setTimestamp(timestamp: number): Promise<Boolean> {
@@ -45,7 +48,6 @@ export default class Flash implements IFlash {
         timestamp:timestamp,
       }
     }
-    console.log(args)
     return this.command(args, setAugurTimestamp)
   }
 
@@ -79,15 +81,15 @@ export default class Flash implements IFlash {
   }
 
   command(args: object, func: Function) {
-    return new Promise<Boolean>((resolve => {
+    return new Promise<Boolean>((resolve, reject) => {
       this.augur.connect(connectionEndpoints, (err: object) => {
-        if (err) resolve(false)
+        if (err) return reject()
         func(this.augur, args, this.auth, (err: object) => {
-          if (err) resolve(false)
+          if (err) return reject()
           resolve(true)
         })
       })
-    }))
+    })
   }
 }
 

@@ -13,13 +13,17 @@ jest.setTimeout(100000);
 describe.only("Initial Report", () => {
   beforeAll(async () => {
     await page.goto(url);
+    await dismissDisclaimerModal(page);
     const marketId =  await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), marketDesc);
 
     const flash: IFlash = new Flash();
     await flash.setMarketEndTime(marketId)
+    console.log('pushing 100 seconds')
     await flash.pushSeconds(100) // get in market in designated reporting state
 
-    await page.goto(url.concat('/#/report?id=' + marketId));
+    const reportingUrl = url.concat('/#/report?id=' + marketId)
+    console.log('url', reportingUrl)
+    await page.goto(reportingUrl);
 
     // No idea what a 'typical' desktop resolution would be for our users.
     await page.setViewport({
@@ -29,7 +33,6 @@ describe.only("Initial Report", () => {
   });
 
   it("report on yes", async () => {
-    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "Yes"
     });
@@ -44,7 +47,6 @@ describe.only("Initial Report", () => {
   })
 
   it("report on no", async () => {
-    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "No"
     });
@@ -59,7 +61,6 @@ describe.only("Initial Report", () => {
   })
 
   it("report on Invalid", async () => {
-    await dismissDisclaimerModal(page);
     await expect(page).toClick("button", {
       text: "Market Is Invalid"
     });
