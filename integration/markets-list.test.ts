@@ -1,5 +1,6 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
+import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
 const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
@@ -33,9 +34,8 @@ describe("Markets List", () => {
       width: 1200
     });
 
-    await expect(page).toClick("button", {
-      text: "I have read and understand the above"
-    });
+    await dismissDisclaimerModal(page);
+
     await expect(page).toClick("a[href$='#/markets']")
     yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
   });
@@ -105,18 +105,16 @@ describe("Markets List", () => {
       checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
     });
 
-    it("should clear search and show all markets after clearing the search", async () => {
-      await expect(page).toClick(".input-styles_close")
-      checkNumElements(true, 10)
-    });
-
     it("should not have case sensitive search", async () => {
+      // make sure clearing search works
+      await expect(page).toClick(".input-styles_close")
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "JAIR");
       checkNumElements(true, 1)
     });
 
     it("should have markets be searchable by title, tag, or category", async () => {
       // search for a category
+      await expect(page).toClick(".input-styles_close")
       await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "crypto");
       checkNumElements(true, 2)
 
