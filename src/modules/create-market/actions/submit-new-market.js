@@ -7,6 +7,7 @@ import { ZERO } from 'modules/trade/constants/numbers'
 import { MODAL_ACCOUNT_APPROVAL } from 'modules/modal/constants/modal-types'
 import makePath from 'modules/routes/helpers/make-path'
 import noop from 'utils/noop'
+import logError from 'utils/log-error'
 import { createBigNumber } from 'utils/create-big-number'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { BID } from 'modules/transactions/constants/types'
@@ -14,7 +15,7 @@ import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
 import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
 
-export function submitNewMarket(newMarket, history) {
+export function submitNewMarket(newMarket, history, callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount, contractAddresses } = getState()
     const { createMarket, formattedNewMarket } = buildCreateMarket(newMarket, false, universe, loginAccount, contractAddresses)
@@ -32,6 +33,8 @@ export function submitNewMarket(newMarket, history) {
         },
         onSuccess: (res) => {
           const marketId = res.callReturn
+
+          if (callback) callback(null, marketId)
 
           if (hasOrders) {
             eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {

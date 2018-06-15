@@ -7,7 +7,9 @@ export interface IFlash {
   setMarketEndTime(marketId: string): Promise<Boolean>;
 }
 
-export interface IMarket {
+export interface IMarket extends Object {
+  id: string
   endTime: number
   reportingState: string
+  description: string
 }

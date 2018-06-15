@@ -15,21 +15,21 @@ export default class Flash implements IFlash {
   constructor() {
     this.augur = new Augur();
     this.auth = getPrivateKeyFromString(UnlockedAccounts.CONTRACT_OWNER_PRIV);
+    this.augur.connect(connectionEndpoints, (err: any) => {
+      if (err) console.error("Augur could not connect")
+    })
   }
 
   setMarketEndTime(marketId: string): Promise<Boolean> {
     const oThis = this
     return new Promise<Boolean>((resolve, reject) => {
-      this.augur.connect(connectionEndpoints, (err: any) => {
+      this.augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err: any, marketInfos: any ) => {
         if (err) reject()
-        this.augur.markets.getMarketsInfo({ marketIds: [marketId] }, (err: any, marketInfos: any ) => {
-          if (err) reject()
-          if (!marketInfos || marketInfos.length === 0) reject()
-          const market = marketInfos[0]
-          oThis.setTimestamp(market.endTime).then((result)=> {
-            if (!result) return reject()
-            return resolve(result)
-          })
+        if (!marketInfos || marketInfos.length === 0) reject()
+        const market = marketInfos[0]
+        oThis.setTimestamp(market.endTime).then((result)=> {
+          if (!result) return reject()
+          return resolve(result)
         })
       })
     })
@@ -75,12 +75,9 @@ export default class Flash implements IFlash {
 
   command(args: object, func: Function) {
     return new Promise<Boolean>((resolve, reject) => {
-      this.augur.connect(connectionEndpoints, (err: any) => {
+      func(this.augur, args, this.auth, (err: object) => {
         if (err) return reject()
-        func(this.augur, args, this.auth, (err: object) => {
-          if (err) return reject()
-          resolve(true)
-        })
+        resolve(true)
       })
     })
   }

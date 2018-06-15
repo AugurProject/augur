@@ -1,3 +1,10 @@
+import { dismissDisclaimerModal } from "../helpers/dismiss-disclaimer-modal";
+
+export const toDefaultView = async () => {
+  const url = `${process.env.AUGUR_URL}`;
+  await page.goto(url);
+  await dismissDisclaimerModal(page);
+};
 
 export const toMarketListView = async () => {
   const url = `${process.env.AUGUR_URL}`;
@@ -16,7 +23,7 @@ export const toPortfolio = async () => {
 
 export const toReporting = async () => {
   const url = `${process.env.AUGUR_URL}`;
-  await page.goto(url.concat("#/reporting-report-markets"), {waitUntil: "networkidle0"});
+  await page.goto(url.concat("#/reporting-report-markets"));
 };
 
 export const toAccount = async () => {
@@ -25,12 +32,9 @@ export const toAccount = async () => {
 };
 
 export const toInitialReporting = async (marketDesc: string) => {
-  await toReporting()
-
-  const card = await expect(page).toMatchElement(".market-common-styles_MarketCommon__container", { text: marketDesc })
-
+  const card = await expect(page).toMatchElement(".market-common-styles_MarketCommon__container", { text: marketDesc, timeout: 8000 })
   await expect(card).toClick("a", {
-    text: "report"
+    text: "report",
+    timeout: 1000,
   })
-
 };

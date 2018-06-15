@@ -2,10 +2,11 @@ import { useUnlockedAccount } from 'src/modules/auth/actions/use-unlocked-accoun
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import logError from 'utils/log-error'
 import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
-import { selectMarket } from 'modules/market/selectors/market'
 import loadMarkets from 'modules/markets/actions/load-markets'
 import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
+import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
+import { selectCurrentTimestamp, selectBlockchainState } from 'src/select-state'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -29,15 +30,12 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
     return callback({ err: null, marketId: market.id })
   }
 }
-const getMarketData = (marketId, callback = logError) => (dispatch) => {
-  let market = selectMarket(store.getState())
-  if (market && market.id) callback({ err: null, market })
-  dispatch(loadMarketsInfo([marketId], (err, markets) => {
+
+const createMarket = (marketData, callback = logError) => (dispatch) => {
+  dispatch(submitNewMarket(marketData, [], (err, marketId) => {
     if (err) return callback({ err })
-    if (!markets || markets.length === 0) return callback({ err: 'no markets found' })
-    market = selectMarket(store.getState())
-    if (market && market.id) callback({ err: null, market })
-    return callback({ err: 'no market found' })
+    marketData.id = marketId
+    return callback({ err: null, market: marketData })
   }))
 }
 
@@ -57,9 +55,11 @@ export const helpers = (store) => {
       if (result.err) return reject()
       resolve(result.marketId)
     }))),
-    getMarketData: marketId => new Promise((resolve, reject) => dispatch(getMarketData(marketId, (result) => {
+    createMarket: market => new Promise((resolve, reject) => dispatch(createMarket(market, (result) => {
       if (result.err) return reject()
       resolve(result.market)
     }))),
+    getCurrentTimestamp: () => new Promise(resolve => resolve(selectCurrentTimestamp(store.getState()))),
+    getCurrentBlock: () => new Promise(resolve => resolve(selectBlockchainState(store.getState()))),
   }
 }

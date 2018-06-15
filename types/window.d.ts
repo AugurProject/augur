@@ -3,7 +3,9 @@ interface IntegrationHelpers {
   updateAccountAddress(address: string): void;
   findMarketId(marketDescription: string): void;
   hasDisclaimerModalBeenDismissed(): boolean;
-  getMarketData(marketId: string): object;
+  createMarket(market: object): object;
+  getCurrentTimestamp(): number;
+  getCurrentBlock(): object;
 }
 
 declare namespace window {

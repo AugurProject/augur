@@ -2,38 +2,71 @@
 
 import "jest-environment-puppeteer";
 import Flash from "./helpers/flash";
-import { IFlash } from "./types/types"
-import { dismissDisclaimerModal } from "./helpers/dismiss-disclaimer-modal";
-import { toInitialReporting } from "./helpers/navigation-helper";
+import { IFlash, IMarket } from "./types/types"
+import { toDefaultView, toReporting, toInitialReporting } from "./helpers/navigation-helper";
+import { createYesNoMarket } from './helpers/create-markets'
+import { waitNextBlock } from './helpers/wait-new-block'
 
-const url = `${process.env.AUGUR_URL}`;
-const marketDesc = 'Will Ethereum trade at $2000 or higher at any time before the end of 2018?'
 jest.setTimeout(100000);
+
+let flash: IFlash = new Flash();
 
 describe("Initial Report -- Yes", () => {
   beforeAll(async () => {
-
-    // No idea what a 'typical' desktop resolution would be for our users.
     await page.setViewport({
       height: 1200,
       width: 1200
     });
 
-    await page.goto(url);
-    await dismissDisclaimerModal(page);
-    const marketId =  await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), marketDesc);
+    await toDefaultView()
+  });
 
-    const flash: IFlash = new Flash();
-    await flash.setMarketEndTime(marketId)
-    await flash.pushSeconds(100) // get in market in designated reporting state
+  beforeEach(async () => {
+    await toReporting()
 
-    await toInitialReporting(marketDesc)
+    const market: IMarket = await createYesNoMarket()
 
+    await flash.setMarketEndTime(market.id)
+    await flash.pushDays(1) // put market in designated reporting state
+
+    await waitNextBlock()
+    await toInitialReporting(market.description)
   });
 
   it("report on yes", async () => {
     await expect(page).toClick("button", {
-      text: "Yes"
+      text: "Yes",
+      timeout: 1000,
+    });
+
+    await expect(page).toClick("button", {
+      text: "Review"
+    });
+
+    await expect(page).toClick("button", {
+      text: "Submit"
+    });
+  })
+
+  it("report on No", async () => {
+    await expect(page).toClick("button", {
+      text: "No",
+      timeout: 1000,
+    });
+
+    await expect(page).toClick("button", {
+      text: "Review"
+    });
+
+    await expect(page).toClick("button", {
+      text: "Submit"
+    });
+  })
+
+  it("report on Invalid", async () => {
+    await expect(page).toClick("button", {
+      text: "Market is invalid",
+      timeout: 1000,
     });
 
     await expect(page).toClick("button", {
