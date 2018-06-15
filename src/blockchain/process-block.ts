@@ -46,7 +46,7 @@ export function clearOverrideTimestamp(): void {
 }
 
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  processQueue.push((next) => _processBlock(db, augur, block, (err: Error|null): void => {
+  processQueue.push((next) => processBlockByBlockDetails(db, augur, block, (err: Error|null): void => {
     if (err) return callback(err);
     return next();
   }));
@@ -62,7 +62,7 @@ export function processBlockRemoval(db: Knex, block: BlockDetail, callback: Erro
 export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number, callback: ErrorCallback): void {
   augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
     if (err) return callback(err);
-    _processBlock(db, augur, block, callback);
+    processBlockByBlockDetails(db, augur, block, callback);
   });
 }
 
@@ -82,7 +82,7 @@ function insertBlockRow(trx: Knex.Transaction, blockNumber: number, blockHash: s
   });
 }
 
-function _processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
+export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
   if (!block || !block.timestamp) return callback(new Error(JSON.stringify(block)));
   const blockNumber = parseInt(block.number, 16);
   const blockHash = block.hash;
