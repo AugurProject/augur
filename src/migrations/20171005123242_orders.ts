@@ -12,11 +12,13 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("shareToken", 42).notNullable();
       table.specificType("orderType", "varchar(4) NOT NULL CONSTRAINT enumOrderTypes CHECK (\"orderType\" = 'buy' OR \"orderType\" = 'sell')");
       table.string("orderCreator", 42).notNullable();
-      table.specificType("orderState", "varchar(9) NOT NULL CONSTRAINT enumOrderStates CHECK (\"orderState\" = 'OPEN' OR \"orderState\" = 'CLOSED' OR \"orderState\" = 'CANCELED')");
+      table.specificType("orderState", "varchar(9) NOT NULL CONSTRAINT enumOrderStates CHECK (\"orderState\" = 'OPEN' OR \"orderState\" = 'FILLED' OR \"orderState\" = 'CANCELED')");
       table.string("fullPrecisionPrice", 255).notNullable();
       table.string("fullPrecisionAmount", 255).notNullable();
+      table.string("originalFullPrecisionAmount", 255).notNullable();
       table.string("price", 255).notNullable();
       table.specificType("amount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
+      table.specificType("originalAmount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
       table.specificType("tokensEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (ltrim(\"tokensEscrowed\", '-') = \"tokensEscrowed\")");
       table.specificType("sharesEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (ltrim(\"sharesEscrowed\", '-') = \"sharesEscrowed\")");
       table.string("tradeGroupId", 42);
