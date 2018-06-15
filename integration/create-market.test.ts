@@ -4,7 +4,7 @@ import "jest-environment-puppeteer";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
-const timeoutMilliseconds = 9000;
+const timeoutMilliseconds = 9000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
 jest.setTimeout(1000000);
 
