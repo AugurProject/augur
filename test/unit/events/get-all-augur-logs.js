@@ -8,9 +8,13 @@ var proxyquire = require("proxyquire").noPreserveCache();
 describe("events/get-all-augur-logs", function () {
   var test = function (t) {
     it(t.description, function (done) {
+      var chunkBlocks = proxyquire("../../../src/utils/chunk-blocks.js", {
+        "../constants": t.mock.constants,
+      });
       var getAllAugurLogs = proxyquire("../../../src/events/get-all-augur-logs", {
         "../contracts": t.mock.contracts,
         "../rpc-interface": t.stub.rpcInterface,
+        "../utils/chunk-blocks": chunkBlocks,
       });
       getAllAugurLogs(t.params, function (err, allAugurLogs) {
         t.assertions(err, allAugurLogs);
@@ -25,6 +29,9 @@ describe("events/get-all-augur-logs", function () {
       toBlock: 21,
     },
     mock: {
+      constants: {
+        BLOCKS_PER_CHUNK: 10,
+      },
       contracts: {
         addresses: {
           4: {
