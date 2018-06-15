@@ -53,7 +53,7 @@ export const helpers = (store) => {
     }),
     findMarketId: marketDescription => new Promise(resolve => dispatch(findMarketByDesc(marketDescription, resolve))),
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
-    logout: () => new Promise(resolve => dispatch(logoutAccount(resolve)))
+    logout: () => new Promise(resolve => dispatch(logoutAccount(resolve))),
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
