@@ -40,6 +40,11 @@ export function getOverrideTimestamp(): number|null {
   return overrideTimestamps[overrideTimestamps.length - 1];
 }
 
+export function clearOverrideTimestamp(): void {
+  overrideTimestamps.splice(0, overrideTimestamps.length);
+  blockHeadTimestamp = 0;
+}
+
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
   processQueue.push((next) => processBlockByBlockDetails(db, augur, block, (err: Error|null): void => {
     if (err) return callback(err);
