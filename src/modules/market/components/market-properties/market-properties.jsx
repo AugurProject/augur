@@ -31,15 +31,15 @@ const MarketProperties = (p) => {
         <ul className={Styles.MarketProperties__meta}>
           <li>
             <span>Volume</span>
-            <ValueDenomination formatted={shareVolumeFormatted} denomination={shareDenomination} />
+            <ValueDenomination valueClassname="volume" formatted={shareVolumeFormatted} denomination={shareDenomination} />
           </li>
           <li>
             <span>Fee</span>
-            <ValueDenomination {...p.settlementFeePercent} />
+            <ValueDenomination valueClassname="fee" {...p.settlementFeePercent} />
           </li>
           <li>
             <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
-            <span>{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
+            <span className="value_expires">{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
           </li>
           {consensus &&
           <li>

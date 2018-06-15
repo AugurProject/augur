@@ -31,7 +31,7 @@ const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScal
       </Link>
       }
       {!item.link &&
-      <button onClick={item.onClick}>
+      <button onClick={item.onClick} className={item.label}>
         {item.label}
       </button>
       }
