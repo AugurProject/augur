@@ -4,6 +4,7 @@ notifications:
 branches:
   only:
   - master
+  - travis-fixes
   - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
 node_js:
 - '8'
@@ -11,6 +12,7 @@ addons:
   apt:
     packages:
     - libusb-1.0-0-dev
+    - fakeroot
 git:
   depth: 5
 matrix:
@@ -22,7 +24,7 @@ matrix:
 before_install:
   - scripts/preinstall.sh
 script:
-- npm run make
+- travis_wait 60 npm run make
 after_success:
   - scripts/post_build.py
 before_deploy:
