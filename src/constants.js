@@ -8,6 +8,10 @@ var multiple = ten.exponentiatedBy(18);
 
 var SECONDS_PER_DAY = 3600 * 24;
 
+// Used to calculate how large a WebSocket frame we need to allow. This is a theoretical limit based on a block
+// being completely filled with Transfer transactions
+var MAX_LOG_BYTES_PER_BLOCK = 160000;
+
 module.exports = {
   REPORTING_STATE: {
     PRE_REPORTING: "PRE_REPORTING",
@@ -88,7 +92,8 @@ module.exports = {
   TRADE_GAS_LOWER_BOUND_MULTIPLIER: new BigNumber("0.4", 10),
   TRADE_GAS_UPPER_BOUND_MULTIPLIER: new BigNumber("0.8", 10),
 
-  BLOCKS_PER_CHUNK: 10,
+  BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
+  MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
 
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
 
