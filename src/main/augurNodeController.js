@@ -10,7 +10,6 @@ const fs = require('fs');
 const path = require('path');
 const { ipcMain } = require('electron');
 const appData = require('app-data-folder');
-const async = require("async");
 
 const { uploadBlockNumbers } = require("augur-node/config");
 
