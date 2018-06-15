@@ -5,6 +5,7 @@ const { postProcessDatabaseResults } = require("augur-node/build/server/post-pro
 const { checkAugurDbSetup } = require("augur-node/build/setup/check-augur-db-setup");
 const { syncAugurNodeWithBlockchain } = require("augur-node/build/blockchain/sync-augur-node-with-blockchain");
 const { processQueue } = require("augur-node/build/blockchain/process-queue");
+const { clearOverrideTimestamp } = require("augur-node/build/blockchain/process-block"); 
 const { runServer } = require("augur-node/build/server/run-server");
 const fs = require('fs');
 const path = require('path');
@@ -70,7 +71,7 @@ AugurNodeController.prototype.initializeDatabaseAndStartServer = function () {
     try {
         this.augur.connect({ ethereumNode: { http: this.networkConfig.http, ws: this.networkConfig.ws }, startBlockStreamOnConnect: false }, function () {
             const networkId = this.augur.rpc.getNetworkID();
-            this.augurDbPath = path.join(this.appDataPath, `${networkId}-augur.db`)
+            this.augurDbPath = path.join(this.appDataPath, `augur-${networkId}.db`)
             this.uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()]
             this.deleteDatabaseOnContractUpdate();
             this.config.networks[this.config.network]["uploadBlockNumber"] = this.uploadBlockNumber;
@@ -220,6 +221,7 @@ AugurNodeController.prototype.shutDownServer = function () {
         server.close(() => this.servers[index].close());
     }.bind(this));
     this.db.destroy();
+    clearOverrideTimestamp();
     this.augur = new Augur();
 }
 
