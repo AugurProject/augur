@@ -11,7 +11,7 @@ jest.setTimeout(100000);
 
 let flash: IFlash = new Flash();
 
-describe("Initial Report -- Yes", () => {
+describe("YesNo Initial Report", () => {
   beforeAll(async () => {
     await page.setViewport({
       height: 1200,

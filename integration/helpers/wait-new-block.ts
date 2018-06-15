@@ -6,6 +6,6 @@ export const waitNextBlock = async () => {
   let stillWaiting = true
   while (stillWaiting) {
     const nextblockchainInfo = await page.evaluate(() => window.integrationHelpers.getCurrentBlock());
-    stillWaiting = nextblockchainInfo.currentBlockNumber > blockNumber + 2
+    stillWaiting = nextblockchainInfo.currentBlockNumber > blockNumber + 1
   }
 };

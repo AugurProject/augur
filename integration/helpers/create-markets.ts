@@ -8,7 +8,7 @@ export const createYesNoMarket = async () => {
   const now = new Date(currentTimestamp)
   const marketDate = new Date(now.valueOf() + (daysToAdjust))
   const endTime = marketDate.getTime() / 1000
-  const marketDesc = 'New YesNo Market ' + endTime
+  const marketDesc = 'New YesNo Testing Market ' + endTime
   const marketEndTime = { timestamp: endTime}
   const newMarket =
   {
