@@ -31,6 +31,7 @@ function connect(connectOptions, callback) {
     httpAddresses: [],
     wsAddresses: [],
     ipcAddresses: [],
+    websocketClientConfig: { maxReceivedFrameSize: constants.MAX_WEBSOCKET_FRAME_SIZE },
   });
   if (isObject(connectOptions.ethereumNode)) {
     if (connectOptions.ethereumNode.http) {
