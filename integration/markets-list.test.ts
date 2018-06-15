@@ -1,18 +1,21 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
+import { ElementHandle } from "puppeteer";
 
 const url = `${process.env.AUGUR_URL}`;
 const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
+const TIMEOUT = 5000;
+
 jest.setTimeout(100000);
 
-const checkNumElements = async (isMarkets, num) => {
+const checkNumElements = async (isMarkets: boolean, num: number) => {
   const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
   const elements = await page.$$(selector)
   return await expect(elements.length).toEqual(num);
 }
 
-const checkMarketNames = async (expectedMarketTitles) => {
+const checkMarketNames = async (expectedMarketTitles: string[]) => {
   for (let i = 0; i < expectedMarketTitles.length; i++) {
     await expect(page).toMatchElement("a", { text: expectedMarketTitles[i]})
   }
@@ -20,9 +23,8 @@ const checkMarketNames = async (expectedMarketTitles) => {
 }
 
 describe("Markets List", () => {
-  let markets;
-  let yesNoMarket;
-  let yesNoMarketId;
+  let yesNoMarket:ElementHandle | void;
+  let yesNoMarketId:string;
   const yesNoMarketDesc = "Will antibiotics be outlawed for agricultural use in China by the end of 2019?"
 
   beforeAll(async () => {
@@ -61,12 +63,6 @@ describe("Markets List", () => {
     it("should display both submenu bars", async () => {
       await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
       await page.waitForSelector(".inner-nav-styles_InnerNav__menu--submenu")
-    });
-
-    it("should correctly redirect after category click", async () => {
-      // check that url is correct
-      const pageUrl = await page.evaluate(() => location.href);
-      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/markets?category=politics`)
     });
 
     it("should filter market cards", async () => {
@@ -158,14 +154,16 @@ describe("Markets List", () => {
 
     it("should display an action button that reads 'trade' which when clicked brings you to the trade view for that market", async () => {
       await expect(page).toClick("a.market-properties-styles_MarketProperties__trade")
-      const pageUrl = await page.evaluate(() => location.href);
+      await page.waitForSelector(".market-header-styles_MarketHeader__back-button", {timeout: TIMEOUT}) // wait to be on right page
+      const pageUrl = await page.url();
       expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
     });
 
     it("should bring you to the trade view for that market when clicking on market title", async () => {
-      await page.goto(url + "#/markets?category=agriculture");
-      await expect(page).toClick("a.market-link")
-      const pageUrl = await page.evaluate(() => location.href);
+      await expect(page).toClick("span", {text: "back", timeout: TIMEOUT})
+      await expect(page).toClick("a", { text: yesNoMarketDesc, timeout: TIMEOUT })
+      await page.waitForSelector(".market-header-styles_MarketHeader__back-button", {timeout: TIMEOUT}) // wait to be on right page
+      const pageUrl = await page.url();
       expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
     });
 
