@@ -6,7 +6,7 @@ import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 const url = `${process.env.AUGUR_URL}`;
 const timeoutMilliseconds = 9000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
-jest.setTimeout(10000000);
+jest.setTimeout(100000);
 
 describe("Create market page", () => {
   beforeAll(async () => {
