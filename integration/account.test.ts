@@ -81,6 +81,8 @@ describe("Account", () => {
 
   describe("Withdraw Page", () => {
     it("should be able to send funds to another account using the form", async () => {
+      // send eth from a second account to first account and check that the amount is right
+
       // keep track of original account data
       const originalAccountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
 
@@ -102,9 +104,7 @@ describe("Account", () => {
       await page.goto(url + '#/deposit-funds');
 
       // compare old and new account balances
-      const newAccountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
-
-      const eth = await newAccountData.eth // sometimes null
+      const eth = await originalAccountData.eth // sometimes null for newAccountData
       const newEth = await new BigNumber(eth).plus(100)
       const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), newEth);
       await expect(page).toMatch(formatEth.formatted.split(".")[0], { timeout: 10000 }) // decimals are not equal

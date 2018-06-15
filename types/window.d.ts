@@ -4,8 +4,8 @@ interface IntegrationHelpers {
   hasDisclaimerModalBeenDismissed(): boolean;
   logout(): void;
   getAccountData(): void;
-  formatRep(value: string): void;
-  formatEth(value: string): void;
+  formatRep(value: string): object;
+  formatEth(value: string): object;
 }
 
 declare namespace window {
