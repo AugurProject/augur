@@ -23,45 +23,32 @@ describe("Account", () => {
       height: 1200,
       width: 1200
     });
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
     await dismissDisclaimerModal(page);
   });
 
-  describe("Authentication", () => {
+  describe("Deposit Page", () => {
+    it("should show correct stats in deposit page", async () => {
+      await page.goto(url + '#/deposit-funds');
+      const accountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
+      const rep = await accountData.rep
+      const eth = await accountData.eth
 
-    it("should correctly display 'Account' page", async () => {
-      // logout
-      await page.evaluate(() => window.integrationHelpers.logout());
+      const formatRep = await page.evaluate((value) => window.integrationHelpers.formatRep(value), rep);
+      const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), eth);
 
-      await expect(page).toMatch("Bet on", { timeout: TIMEOUT }) 
+      // correct account ETH and REP should be shown in deposit page
+      await expect(page).toMatchElement("span.rep_value", { text: formatRep.formatted})
+      await expect(page).toMatchElement("span.eth_value", { text: formatEth.formatted})
 
-      // go to account page
-      await expect(page).toClick("span", { text: "Account", timeout: TIMEOUT })
+      // correct account ETH and REP should be shown in core stats bar
+      await expect(page).toMatchElement("span#core-bar-rep", { text: formatRep.formatted})
+      await expect(page).toMatchElement("span#core-bar-eth", { text: formatEth.formatted})
 
-      await expect(page).toMatch("Link an ethereum account", { timeout: TIMEOUT }) 
-
-      // expect to be on authentication page 
-      const pageUrl = await page.url();
-      await expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/authentication`)
-    });
-
-    it("should only display two options in the sidebar when not logged in", async () => {
-      // options available should be "Markets" and "Account"
-      await page.waitForSelector("a[href$='#/markets']")
-      await page.waitForSelector("a[href='#/deposit-funds']")
-
-      // check that only those two options show up
-      const sidebarElements = await page.$$("li#side-nav-items")
-      await expect(sidebarElements.length).toEqual(2);
-    });
-    
-
-    it("should display full sidebar when logged in", async () => {
-      // log in
-      await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
-
-      // check that all sidebar options show up
-      const sidebarElements = await page.$$("li#side-nav-items")
-      await expect(sidebarElements.length).toEqual(5);
+      // correct account address should be shown in deposit page
+      const displayAddress = accountData.displayAddress
+      await expect(displayAddress.toLowerCase()).toEqual(UnlockedAccounts.CONTRACT_OWNER)
+      await expect(page).toMatch(displayAddress)
     });
   });
 
@@ -131,39 +118,41 @@ describe("Account", () => {
 
       // compare old and new account balances
       const eth = await originalAccountData.eth // sometimes null for newAccountData
-      const newEth = await new BigNumber(eth || '').plus(100)
+      const newEth = await new BigNumber(eth || 0).plus(100)
       const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), newEth);
       await expect(page).toMatch(formatEth.formatted.split(".")[0], { timeout: TIMEOUT }) // decimals may not equal be sometimes cause of rounding
 
       const rep = await originalAccountData.rep // sometimes null for newAccountData
-      const newRep = await new BigNumber(rep || '').plus(10)
+      const newRep = await new BigNumber(rep || 0).plus(10)
       const formatRep = await page.evaluate((value) => window.integrationHelpers.formatRep(value), newRep);
       await expect(page).toMatch(formatRep.formatted.split(".")[0], { timeout: TIMEOUT }) // decimals may not equal be sometimes cause of rounding
     });
   });
 
-  describe("Deposit Page", () => {
-    it("should show correct stats in deposit page", async () => {
-      await page.goto(url + '#/deposit-funds');
-      const accountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
-      const rep = accountData.rep
-      const eth = accountData.eth
+  describe("Authentication", () => {
 
-      const formatRep = await page.evaluate((value) => window.integrationHelpers.formatRep(value), rep);
-      const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), eth);
+    it("should correctly display 'Account' page", async () => {
+      // logout
+      await page.evaluate(() => window.integrationHelpers.logout());
 
-      // correct account ETH and REP should be shown in deposit page
-      await expect(page).toMatchElement("span.rep_value", { text: formatRep.formatted})
-      await expect(page).toMatchElement("span.eth_value", { text: formatEth.formatted})
+      // go to account page
+      await expect(page).toClick("span", { text: "Account", timeout: TIMEOUT })
 
-      // correct account ETH and REP should be shown in core stats bar
-      await expect(page).toMatchElement("span#core-bar-rep", { text: formatRep.formatted})
-      await expect(page).toMatchElement("span#core-bar-eth", { text: formatEth.formatted})
+      await expect(page).toMatch("Link an ethereum account", { timeout: TIMEOUT }) 
 
-      // correct account address should be shown in deposit page
-      const displayAddress = accountData.displayAddress
-      await expect(displayAddress.toLowerCase()).toEqual(UnlockedAccounts.CONTRACT_OWNER)
-      await expect(page).toMatch(displayAddress)
+      // expect to be on authentication page 
+      const pageUrl = await page.url();
+      await expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/authentication`)
+    });
+
+    it("should only display two options in the sidebar when not logged in", async () => {
+      // options available should be "Markets" and "Account"
+      await page.waitForSelector("a[href$='#/markets']")
+      await page.waitForSelector("a[href='#/deposit-funds']")
+
+      // check that only those two options show up
+      const sidebarElements = await page.$$("li#side-nav-items")
+      await expect(sidebarElements.length).toEqual(2);
     });
   });
 });

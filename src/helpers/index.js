@@ -38,6 +38,8 @@ const formatRepValue = (value, callback = logError) => dispatch => callback(form
 
 const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
 
+const logoutAccount = (callback = logError) => dispatch => callback(logout())
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -51,7 +53,7 @@ export const helpers = (store) => {
     }),
     findMarketId: marketDescription => new Promise(resolve => dispatch(findMarketByDesc(marketDescription, resolve))),
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
-    logout: () => dispatch(logout()),
+    logout: () => new Promise(resolve => dispatch(logoutAccount(resolve)))
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
