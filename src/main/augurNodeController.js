@@ -4,6 +4,8 @@ const sqlite3 = require("sqlite3");
 const { postProcessDatabaseResults } = require("augur-node/build/server/post-process-database-results");
 const { checkAugurDbSetup } = require("augur-node/build/setup/check-augur-db-setup");
 const { syncAugurNodeWithBlockchain } = require("augur-node/build/blockchain/sync-augur-node-with-blockchain");
+const { processQueue } = require("augur-node/build/blockchain/process-queue");
+const { clearOverrideTimestamp } = require("augur-node/build/blockchain/process-block"); 
 const { runServer } = require("augur-node/build/server/run-server");
 const fs = require('fs');
 const path = require('path');
@@ -34,12 +36,11 @@ const defaultConfig = {
 }
 
 function AugurNodeController() {
-    let appDataPath = appData("augur");
-    if (!fs.existsSync(appDataPath)){
-        fs.mkdirSync(appDataPath);
+    this.appDataPath = appData("augur");
+    if (!fs.existsSync(this.appDataPath)){
+        fs.mkdirSync(this.appDataPath);
     }
-    this.configPath = path.join(appDataPath, 'config.json')
-    this.augurDbPath = path.join(appDataPath, 'augur.db')
+    this.configPath = path.join(this.appDataPath, 'config.json')
     if (!fs.existsSync(this.configPath)) {
         this.config = defaultConfig;
         fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4));
@@ -67,33 +68,49 @@ AugurNodeController.prototype.setWindow = function (window) {
 }
 
 AugurNodeController.prototype.initializeDatabaseAndStartServer = function () {
-    // Eventually it would be nice to keep these around
     try {
-        if (fs.existsSync(this.augurDbPath)) {
-            fs.unlinkSync(this.augurDbPath);
-        }
-        this.db = Knex({
-            client: "sqlite3",
-            connection: {
-                filename: this.augurDbPath,
-            },
-            acquireConnectionTimeout: 5 * 60 * 1000,
-            useNullAsDefault: true,
-            postProcessResponse: postProcessDatabaseResults,
-        });
-        this.db.migrate.latest({directory: path.join(__dirname, '../../node_modules/augur-node/build/migrations')}).then(function() {
-            try {
-                this.startServer();
-                this.startSyncProcess();
-                this.running = true;
-            } catch (err) {
-                console.error(err);
-                this.window.webContents.send("error", { error: err.toString() });
-            }
+        this.augur.connect({ ethereumNode: { http: this.networkConfig.http, ws: this.networkConfig.ws }, startBlockStreamOnConnect: false }, function () {
+            const networkId = this.augur.rpc.getNetworkID();
+            this.augurDbPath = path.join(this.appDataPath, `augur-${networkId}.db`)
+            this.uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()]
+            this.deleteDatabaseOnContractUpdate();
+            this.config.networks[this.config.network]["uploadBlockNumber"] = this.uploadBlockNumber;
+            fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4));
+            this.db = Knex({
+                client: "sqlite3",
+                connection: {
+                    filename: this.augurDbPath,
+                },
+                acquireConnectionTimeout: 5 * 60 * 1000,
+                useNullAsDefault: true,
+                postProcessResponse: postProcessDatabaseResults,
+            });
+            this.db.migrate.latest({directory: path.join(__dirname, '../../node_modules/augur-node/build/migrations')}).then(function() {
+                try {
+                    processQueue.kill();
+                    this.startServer();
+                    this.startSyncProcess();
+                    processQueue.resume();
+                    this.running = true;
+                } catch (err) {
+                    console.error(err);
+                    this.window.webContents.send("error", { error: err.toString() });
+                }
+            }.bind(this));
         }.bind(this));
     } catch (err) {
         console.error(err);
         this.window.webContents.send("error", { error: err.toString() });
+    }
+}
+
+AugurNodeController.prototype.deleteDatabaseOnContractUpdate = function () {
+    const oldUploadBlockNumber = this.config.networks[this.config.network]["uploadBlockNumber"];
+    if (oldUploadBlockNumber !== this.uploadBlockNumber) {
+        console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${this.uploadBlockNumber}`);
+        if (fs.existsSync(this.augurDbPath)) {
+            fs.unlinkSync(this.augurDbPath);
+        }
     }
 }
 
@@ -109,6 +126,7 @@ AugurNodeController.prototype.onRequestConfig = function (event, data) {
 AugurNodeController.prototype.onSaveNetworkConfig = function (event, data) {
     const curNetworkConfig = this.config.networks[data.network];
     this.networkConfig = data.networkConfig;
+    this.networkConfig["uploadBlockNumber"] = this.config.networks[data.network]["uploadBlockNumber"];
     this.config.networks[data.network] = this.networkConfig;
     if (data.network === this.config.network) {
         if (curNetworkConfig.http !== data.networkConfig.http ||
@@ -122,6 +140,7 @@ AugurNodeController.prototype.onSaveNetworkConfig = function (event, data) {
 
 AugurNodeController.prototype.onSwitchNetwork = function (event, data) {
     this.config.network = data.network;
+    data.networkConfig["uploadBlockNumber"] = this.config.networks[data.network]["uploadBlockNumber"];
     this.config.networks[data.network] = data.networkConfig;
     this.networkConfig = this.config.networks[this.config.network];
     this.restart();
@@ -136,14 +155,18 @@ AugurNodeController.prototype.requestLatestSyncedBlock = function (event, data) 
             console.error(err);
             return;
         }
-        const lastSyncBlockNumber = row.highestBlockNumber;
-        const uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()] || 0;
-        const currentBlock = this.augur.rpc.getCurrentBlock();
-        if (currentBlock === null) {
-            return;
+        try {
+            const lastSyncBlockNumber = row.highestBlockNumber;
+            const currentBlock = this.augur.rpc.getCurrentBlock();
+            if (currentBlock === null) {
+                return;
+            }
+            const highestBlockNumber = parseInt(this.augur.rpc.getCurrentBlock().number, 16);
+            event.sender.send('latestSyncedBlock', { lastSyncBlockNumber , uploadBlockNumber: this.uploadBlockNumber, highestBlockNumber });
+        } catch (err) {
+            console.error(err);
+            this.window.webContents.send("error", { error: err.toString() });
         }
-        const highestBlockNumber = parseInt(this.augur.rpc.getCurrentBlock().number, 16);
-        event.sender.send('latestSyncedBlock', { lastSyncBlockNumber , uploadBlockNumber, highestBlockNumber });
     });
 }
 
@@ -191,12 +214,15 @@ AugurNodeController.prototype.startSyncProcess = function () {
 }
 
 AugurNodeController.prototype.shutDownServer = function () {
-    console.log("Stopping Augur Node Server");
     this.running = false;
+    console.log("Stopping Augur Node Server");
+    processQueue.pause();
     this.httpServers.forEach(function (server, index) {
         server.close(() => this.servers[index].close());
     }.bind(this));
     this.db.destroy();
+    clearOverrideTimestamp();
+    this.augur = new Augur();
 }
 
 module.exports = AugurNodeController;
