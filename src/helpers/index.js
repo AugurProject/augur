@@ -7,6 +7,9 @@ import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
 import { selectCurrentTimestamp, selectBlockchainState } from 'src/select-state'
+import { logout } from 'modules/auth/actions/logout'
+import { selectLoginAccountState } from 'src/select-state'
+import { formatRep, formatEther } from 'utils/format-number'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -39,6 +42,12 @@ const createMarket = (marketData, callback = logError) => (dispatch) => {
   }))
 }
 
+const getLoggedInAccountData = (callback = logError) => dispatch => callback(selectLoginAccountState(store.getState()))
+
+const formatRepValue = (value, callback = logError) => dispatch => callback(formatRep(value))
+
+const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -61,5 +70,9 @@ export const helpers = (store) => {
     }))),
     getCurrentTimestamp: () => new Promise(resolve => resolve(selectCurrentTimestamp(store.getState()))),
     getCurrentBlock: () => new Promise(resolve => resolve(selectBlockchainState(store.getState()))),
+    logout: () => dispatch(logout()),
+    getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
+    formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
+    formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
   }
 }

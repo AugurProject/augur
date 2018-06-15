@@ -6,6 +6,10 @@ interface IntegrationHelpers {
   createMarket(market: object): object;
   getCurrentTimestamp(): number;
   getCurrentBlock(): object;
+  logout(): void;
+  getAccountData(): void;
+  formatRep(value: string): object;
+  formatEth(value: string): object;
 }
 
 declare namespace window {
