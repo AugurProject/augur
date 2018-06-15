@@ -5,6 +5,9 @@ import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import loadMarkets from 'modules/markets/actions/load-markets'
 import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
+import { logout } from 'modules/auth/actions/logout'
+import { selectLoginAccountState } from 'src/select-state'
+import { formatRep, formatEther } from 'utils/format-number'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -29,6 +32,12 @@ const findMarketByDesc = (marketDescription, callback = logError) => (dispatch) 
   }
 }
 
+const getLoggedInAccountData = (callback = logError) => dispatch => callback(selectLoginAccountState(store.getState()))
+
+const formatRepValue = (value, callback = logError) => dispatch => callback(formatRep(value))
+
+const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -42,5 +51,9 @@ export const helpers = (store) => {
     }),
     findMarketId: marketDescription => new Promise(resolve => dispatch(findMarketByDesc(marketDescription, resolve))),
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
+    logout: () => dispatch(logout()),
+    getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
+    formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
+    formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
   }
 }

@@ -18,7 +18,7 @@ const AccountHeader = (p) => {
           title={p.stats[0].totalRealEth.title}
           className={Styles.AccountHeader__Currency}
         >
-          {ethValue}
+          <span className="eth_value"> {ethValue} </span>
           <span className={Styles['AccountHeader__Currency-label']}>
             {p.stats[0].totalRealEth.label}
           </span>
@@ -27,7 +27,7 @@ const AccountHeader = (p) => {
           title={p.stats[0].totalRep.title}
           className={Styles.AccountHeader__Currency}
         >
-          {repValue}
+          <span className="rep_value"> {repValue} </span>
           <span className={Styles['AccountHeader__Currency-label']}>
             {p.stats[0].totalRep.label}
           </span>

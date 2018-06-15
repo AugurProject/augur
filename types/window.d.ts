@@ -2,6 +2,10 @@ interface IntegrationHelpers {
   updateAccountAddress(address: string): void;
   findMarketId(marketDescription: string): void;
   hasDisclaimerModalBeenDismissed(): boolean;
+  logout(): void;
+  getAccountData(): void;
+  formatRep(value: string): object;
+  formatEth(value: string): object;
 }
 
 declare namespace window {
