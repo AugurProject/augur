@@ -63,7 +63,7 @@ describe("Account", () => {
 
       // get account data
       const accountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
-      const initialREP = accountData.rep;
+      const initialRep = await accountData.rep;
 
       // click 'Get REP' button 
       await expect(page).toClick("button.account-rep-faucet-styles_AccountRepFaucet__button", {timeout: 50000})
@@ -72,10 +72,10 @@ describe("Account", () => {
       await expect(page).toClick("button.top-bar-styles_TopBar__notification-icon")
       await expect(page).toMatch("faucet - confirmed", {timeout: 50000})
 
-      // your balance should now have 47.00 more REP
-      const accountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
-      const newREP = accountData.rep;
-      await expect(newREP - initialREP).toEqual(47, {timeout: 50000}) // sometimes fails
+      // balance should now have 47.00 more REP - compare old and new account balances
+      const newRepPlus = await new BigNumber(initialRep).plus(47)
+      const formatRep = await page.evaluate((value) => window.integrationHelpers.formatEth(value), newRepPlus);
+      await expect(page).toMatch(formatRep.formatted.split(".")[0], { timeout: 10000 }) // decimals may not equal be sometimes cause of rounding
     });
   });
 
@@ -107,10 +107,7 @@ describe("Account", () => {
       const eth = await originalAccountData.eth // sometimes null for newAccountData
       const newEth = await new BigNumber(eth).plus(100)
       const formatEth = await page.evaluate((value) => window.integrationHelpers.formatEth(value), newEth);
-      await expect(page).toMatch(formatEth.formatted.split(".")[0], { timeout: 10000 }) // decimals are not equal sometimes cause of rounding
-
-      // const ethDiff = parseFloat(eth) - parseFloat(originalAccountData.eth);
-      // expect(ethDiff).toEqual(100, {timeout: 10000});
+      await expect(page).toMatch(formatEth.formatted.split(".")[0], { timeout: 10000 }) // decimals may not equal be sometimes cause of rounding
     });
   });
 
