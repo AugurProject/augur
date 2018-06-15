@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js'
 const url = `${process.env.AUGUR_URL}`;
 
 jest.setTimeout(100000);
-//await page.waitForSelector('.fdfjdf', {timeout: 1200000})
 
 describe("Account", () => {
   beforeAll(async () => {
