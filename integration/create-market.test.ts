@@ -4,6 +4,7 @@ import "jest-environment-puppeteer";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
+const timeoutMilliseconds = 9000;
 
 jest.setTimeout(1000000);
 
@@ -92,7 +93,7 @@ describe("Create market page", () => {
     // Go to new market trading page
     await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
-    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: 9000 });
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
     // TODO: Verify settlement fee is correct & liquidity got created
   });
@@ -103,7 +104,7 @@ describe("Create market page", () => {
     await page.waitForSelector("#cm__input--desc", { visible: true });
 
     // Fill out Define page
-    await expect(page).toFill("#cm__input--desc", "Will this categorical market be created successfully?", { timeout: 9000 });
+    await expect(page).toFill("#cm__input--desc", "Will this categorical market be created successfully?", { timeout: timeoutMilliseconds });
     await expect(page).toFill("#cm__input--cat", "Integration Test");
     await expect(page).toFill("#cm__input--tag1", "Categorical");
     await expect(page).toFill("#cm__input--tag2", "Test");
@@ -176,7 +177,7 @@ describe("Create market page", () => {
     // Go to new market trading page
     await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Categorical"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
-    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: 9000 });
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
     // TODO: Verify settlement fee is correct & liquidity got created
   });
@@ -187,7 +188,7 @@ describe("Create market page", () => {
     await page.waitForSelector("#cm__input--desc", { visible: true });
 
     // Fill out Define page
-    await expect(page).toFill("#cm__input--desc", "Will this scalar market be created successfully?", { timeout: 9000 });
+    await expect(page).toFill("#cm__input--desc", "Will this scalar market be created successfully?", { timeout: timeoutMilliseconds });
     await expect(page).toFill("#cm__input--cat", "Integration Test");
     await expect(page).toFill("#cm__input--tag1", "Scalar");
     await expect(page).toFill("#cm__input--tag2", "Test");
@@ -256,7 +257,7 @@ describe("Create market page", () => {
     // Go to new market trading page
     await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Scalar"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
-    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: 9000 });
+    await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
     // TODO: Verify settlement fee is correct & liquidity got created
   });
