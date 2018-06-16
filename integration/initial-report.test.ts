@@ -13,11 +13,6 @@ let flash: IFlash = new Flash();
 
 describe("YesNo Initial Report", () => {
   beforeAll(async () => {
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
-
     await toDefaultView()
   });
 
@@ -30,7 +25,7 @@ describe("YesNo Initial Report", () => {
     await flash.pushDays(1) // put market in designated reporting state
 
     await waitNextBlock()
-    await toInitialReporting(market.description)
+    await toInitialReporting(market.id)
   });
 
   it("report on yes", async () => {

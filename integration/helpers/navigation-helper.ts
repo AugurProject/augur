@@ -1,6 +1,11 @@
 import { dismissDisclaimerModal } from "../helpers/dismiss-disclaimer-modal";
 
 export const toDefaultView = async () => {
+  await page.setViewport({
+    height: 1200,
+    width: 1200
+  });
+
   const url = `${process.env.AUGUR_URL}`;
   await page.goto(url);
   await dismissDisclaimerModal(page);
@@ -31,10 +36,7 @@ export const toAccount = async () => {
   await page.goto(url.concat("#/deposit-funds"), {waitUntil: "networkidle0"});
 };
 
-export const toInitialReporting = async (marketDesc: string) => {
-  const card = await expect(page).toMatchElement(".market-common-styles_MarketCommon__container", { text: marketDesc, timeout: 8000 })
-  await expect(card).toClick("a", {
-    text: "report",
-    timeout: 1000,
-  })
+export const toInitialReporting = async (id: string) => {
+  const url = `${process.env.AUGUR_URL}`;
+  await page.goto(url.concat("#/report?id=" + id));
 };

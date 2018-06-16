@@ -33,8 +33,6 @@ export function submitNewMarket(newMarket, history, callback) {
         onSuccess: (res) => {
           const marketId = res.callReturn
 
-          if (callback) callback(null, marketId)
-
           if (hasOrders) {
             eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
               eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
@@ -77,6 +75,7 @@ export function submitNewMarket(newMarket, history, callback) {
               if (err !== null) console.error('ERROR: ', err)
             })
           }
+          if (callback) callback(null, marketId)
         },
         onFailed: (err) => {
           console.error('ERROR create market failed:', err)
