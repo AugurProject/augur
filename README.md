@@ -44,6 +44,14 @@ npm start
 
 Once the application is running, wait for the Sync progress to reach 100%, then the "Open Augur UI" button will light up and you can click on it to open the Augur UI. Note that the Augur App must remain open while using the UI, or it will stop functioning.
 
+If the instructions above don't work try:
+
+```git clone https://github.com/AugurProject/augur-app
+yarn
+yarn start
+```
+
+
 ### To build the binary
 
 Do: `npm run make`
