@@ -6,9 +6,8 @@ import loadMarkets from 'modules/markets/actions/load-markets'
 import store from 'src/store'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market'
-import { selectCurrentTimestamp, selectBlockchainState } from 'src/select-state'
+import { selectCurrentTimestamp, selectBlockchainState, selectLoginAccountState } from 'src/select-state'
 import { logout } from 'modules/auth/actions/logout'
-import { selectLoginAccountState } from 'src/select-state'
 import { formatRep, formatEther } from 'utils/format-number'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
