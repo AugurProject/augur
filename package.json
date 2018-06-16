@@ -18,7 +18,7 @@
     "build": "node scripts/build.js",
     "start": "node server.js",
     "__": "",
-    "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand",
+    "integration:headless": "AUGUR_URL='http://localhost:8080/' jest --runInBand --detectOpenHandles --forceExit",
     "integration": "HEADLESS=false npm run integration:headless",
     "lint": "node scripts/lint.js",
     "lit": "echo 'so lit'",

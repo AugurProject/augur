@@ -1,3 +1,5 @@
+"use strict";
+
 // TODO: Add more tests to make this test suite match the create-market walkthrough
 
 import "jest-environment-puppeteer";
