@@ -15,10 +15,10 @@ This project uses typescript and can be safely built via: `npm run build` or dir
 
 ### Configuration
 
-By default, Augur Node is configured to connect to a locally-running Ethereum node at http://localhost:8545 and ws://localhost:8546. To connect to a hosted Ethereum node, set the ENDPOINT_HTTP and ENDPOINT_WS environment variables, as follows:
+By default, Augur Node is configured to connect to a locally-running Ethereum node at http://localhost:8545 and ws://localhost:8546. To connect to a hosted Ethereum node, set the ETHEREUM_HTTP and ETHEREUM_WS environment variables, as follows:
 
-    $ export ENDPOINT_HTTP=https://rinkeby.ethereum.nodes.augur.net 
-    $ export ENDPOINT_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
+    $ export ETHEREUM_HTTP=https://rinkeby.ethereum.nodes.augur.net 
+    $ export ETHEREUM_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
 
 ### Starting
 
@@ -40,8 +40,8 @@ $ npm run start
 Augur Node has a Dockerfile and publish docker image which is capable of running augur-node connected to an ethereum node. This will only work out-of-the-box for networks which have been deployed as part of our development deployment process (right now, only Rinkeby).
 
 ```
-$ export ENDPOINT_HTTP=https://rinkeby.ethereum.nodes.augur.net 
-$ export ENDPOINT_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
+$ export ETHEREUM_HTTP=https://rinkeby.ethereum.nodes.augur.net 
+$ export ETHEREUM_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
 $ scripts/docker/run.sh
 ```
     
