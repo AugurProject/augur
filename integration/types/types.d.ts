@@ -5,6 +5,7 @@ export interface IFlash {
   pushWeeks(numberOfWeeks: number): Promise<Boolean>;
   setTimestamp(timestamp: number): Promise<Boolean>;
   setMarketEndTime(marketId: string): Promise<Boolean>;
+  dispose(): void;
 }
 
 export interface IMarket extends Object {

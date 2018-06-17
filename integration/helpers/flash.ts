@@ -20,6 +20,11 @@ export default class Flash implements IFlash {
     })
   }
 
+  dispose(): void {
+    this.augur.destroy()
+    this.augur = new Augur()
+  }
+
   setMarketEndTime(marketId: string): Promise<Boolean> {
     const oThis = this
     return new Promise<Boolean>((resolve, reject) => {

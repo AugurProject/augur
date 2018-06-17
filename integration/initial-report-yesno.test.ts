@@ -16,6 +16,10 @@ describe("YesNo Initial Report", () => {
     await toDefaultView()
   });
 
+  afterAll(async () => {
+    flash.dispose()
+  })
+
   beforeEach(async () => {
     await toReporting()
 
