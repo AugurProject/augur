@@ -16,6 +16,7 @@ var constants = require("../constants");
  * @param {Object} p Parameters object.
  * @param {number=} p.fromBlock Block number to start looking up logs (default: constants.AUGUR_UPLOAD_BLOCK_NUMBER).
  * @param {number=} p.toBlock Block number where the log lookup should stop (default: current block number).
+ * @param {number=} p.blocksPerChunk Number of blocks per getLogs RPC request (default: constants.BLOCKS_PER_CHUNK).
  * @param {function} callback Called when all data has been received and parsed.
  * @return { contractName => { eventName => [parsed event logs] } }
  */
@@ -35,6 +36,7 @@ function getAllAugurLogs(p, batchCallback, finalCallback) {
   }
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (err, logs) {
+      console.log("got", logs.length, "logs in blocks", chunkOfBlocks);
       if (err) return nextChunkOfBlocks(err);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
       var batchAugurLogs = logs.map(function (log) {
