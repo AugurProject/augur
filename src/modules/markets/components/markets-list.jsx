@@ -11,6 +11,7 @@ import debounce from 'utils/debounce'
 
 export default class MarketsList extends Component {
   static propTypes = {
+    testid: PropTypes.string,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
@@ -97,13 +98,14 @@ export default class MarketsList extends Component {
       paginationPageParam,
       showPagination,
       toggleFavorite,
+      testid,
     } = this.props
     const s = this.state
 
     const marketsLength = filteredMarkets.length
 
     return (
-      <article className="markets-list">
+      <article className="markets-list" data-testid={testid}>
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[(s.lowerBound - 1) + i]
@@ -121,6 +123,7 @@ export default class MarketsList extends Component {
                   collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
                   linkType={TYPE_TRADE}
+                  testid={testid + "-" + market.id}
                 />
               )
             }

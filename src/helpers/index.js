@@ -10,6 +10,7 @@ import { selectCurrentTimestamp, selectBlockchainState, selectLoginAccountState 
 import { logout } from 'modules/auth/actions/logout'
 import { formatRep, formatEther } from 'utils/format-number'
 import getRep from 'modules/account/actions/get-rep'
+import { placeTrade } from 'modules/trade/actions/place-trade'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -48,7 +49,21 @@ const formatRepValue = (value, callback = logError) => dispatch => callback(form
 
 const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
 
-const getRepTokens = (callback = logError) => dispatch => callback(getRep())
+const getRepTokens = (callback = logError) => (dispatch) => {
+  dispatch(getRep((err) => {
+    if (err) return callback({ err })
+    return callback({ err: null })
+  }))
+}
+
+const placeTradeOnMarket = (marketId, outcomeId, callback = logError) => (dispatch) => {
+  const { tradesInProgress } = getState()
+  dispatch(placeTrade(marketId, outcomeId, tradesInProgress[marketId][outcomeId], true, (err) => {
+    if (err) return callback({ err })
+    return callback()
+  }))
+}
+
 
 export const helpers = (store) => {
   const { dispatch, whenever } = store
@@ -76,6 +91,13 @@ export const helpers = (store) => {
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
-    getRep: () => new Promise(resolve => dispatch(getRepTokens(resolve))),
+    getRep: () => new Promise((resolve, reject) => dispatch(getRepTokens((result) => {
+      if (result.err) return reject()
+      resolve()
+    }))),
+    placeTrade: (marketId, outcomeId) => new Promise((resolve, reject) => dispatch(placeTradeOnMarket(marketId, outcomeId, (result) => {
+      if (result.err) return reject()
+      resolve()
+    }))),
   }
 }

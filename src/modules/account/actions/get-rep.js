@@ -18,6 +18,7 @@ export default function (callback = logError) {
         onSent: noop,
         onSuccess: (res) => {
           dispatch(updateAssets())
+          callback() // attention!!! not sure about this
         },
         onFailed: callback,
       })
