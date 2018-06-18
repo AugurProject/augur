@@ -73,5 +73,6 @@ export const helpers = (store) => {
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
+    getRep: () => dispatch(logout()),
   }
 }
