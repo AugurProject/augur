@@ -57,7 +57,7 @@ const getRepTokens = (callback = logError) => (dispatch) => {
 }
 
 const placeTradeOnMarket = (marketId, outcomeId, callback = logError) => (dispatch) => {
-  const { tradesInProgress } = getState()
+  const { tradesInProgress } = store.getState()
   dispatch(placeTrade(marketId, outcomeId, tradesInProgress[marketId][outcomeId], true, (err) => {
     if (err) return callback({ err })
     return callback()

@@ -129,7 +129,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
-            testid='open'
+            testid="open"
             isLogged={isLogged}
             markets={s.openMarkets}
             filteredMarkets={s.filteredMarketsOpen}
@@ -158,7 +158,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
-            testid='inReporting'
+            testid="inReporting"
             isLogged={isLogged}
             markets={s.reportingMarkets}
             filteredMarkets={s.filteredMarketsReporting}
@@ -187,7 +187,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
-            testid='resolved'
+            testid="resolved"
             isLogged={isLogged}
             markets={s.finalMarkets}
             filteredMarkets={s.filteredMarketsFinal}

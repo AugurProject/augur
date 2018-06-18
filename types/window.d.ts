@@ -11,7 +11,7 @@ interface IntegrationHelpers {
   formatRep(value: string): object;
   formatEth(value: string): object;
   getRep(): void;
-  placeTrade(marketId: string, outcomeId: string): void;
+  placeTrade(marketId: string, outcomeId: number): void;
 }
 
 declare namespace window {

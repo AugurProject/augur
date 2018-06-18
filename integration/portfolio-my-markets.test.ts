@@ -79,9 +79,9 @@ describe("My Markets", () => {
   // });
 
   it("should update market's volume correctly when trades occur", async () => {
-    yesNoMarket = await createYesNoMarket()
+   // yesNoMarket = await createYesNoMarket()
 
-    await page.evaluate((marketId, outcomeId) => window.integrationHelpers.placeTrade(marketId, outcomeId), yesNoMarket.marketId, 0);
+    await page.evaluate((marketId, outcomeId) => window.integrationHelpers.placeTrade(marketId, outcomeId), '0x489e0ffd6f1ccbf0a57910cdd07daa3e057ef222', 0);
   });
 
   it("should have outstanding returns become available to the market creator when complete sets settle, and that the amount that becomes available is correct", async () => {
