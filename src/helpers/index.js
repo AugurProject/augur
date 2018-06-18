@@ -9,6 +9,7 @@ import { submitNewMarket } from 'modules/create-market/actions/submit-new-market
 import { selectCurrentTimestamp, selectBlockchainState, selectLoginAccountState } from 'src/select-state'
 import { logout } from 'modules/auth/actions/logout'
 import { formatRep, formatEther } from 'utils/format-number'
+import getRep from 'modules/account/actions/get-rep'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -47,6 +48,8 @@ const formatRepValue = (value, callback = logError) => dispatch => callback(form
 
 const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
 
+const getRepTokens = (callback = logError) => dispatch => callback(getRep())
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -73,6 +76,6 @@ export const helpers = (store) => {
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
-    getRep: () => dispatch(logout()),
+    getRep: () => new Promise(resolve => dispatch(getRepTokens(resolve))),
   }
 }

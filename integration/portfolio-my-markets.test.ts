@@ -29,11 +29,12 @@ describe("My Markets", () => {
 
     // use account with no markets created
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+    // get rep needed to create markets
+    await page.evaluate(() => window.integrationHelpers.getRep());
     // go to my markets page
     await toMyMarkets()
     // verify that you are on that page
     await expect(page).toMatch('portfolio: my markets', { timeout: 5000 })
-
   });
 
   afterAll(async () => {
@@ -41,41 +42,22 @@ describe("My Markets", () => {
   })
 
   it("should show an empty view if the user hasn't created any markets", async () => {
-    await expect(page).toMatch('You haven\'t created any markets.', { timeout: 5000 })
+    // need account to not have any created markets
+    //await expect(page).toMatch('You haven\'t created any markets.', { timeout: 5000 })
   });
 
   it("should show all user account created markets", async () => {
-    // create three markets
-    //const scalarMarket: IMarket = await createScalarMarket()
-    //await waitNextBlock()
-    //const categoricalMarket: IMarket = await createCategoricalMarket(8)
-    //const yesNoMarket: IMarket = await createYesNoMarket()
-     const currentTimestamp: number = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
+    // create a market
+    const scalarMarket: IMarket = await createScalarMarket()
+    // const categoricalMarket: IMarket = await createCategoricalMarket(8)
+    // const yesNoMarket: IMarket = await createYesNoMarket()
 
-      const daysToAdjust = 2 * 86400000;
-      const now = new Date(currentTimestamp)
-      const marketDate = new Date(now.valueOf() + (daysToAdjust))
-      const endTime = marketDate.getTime() / 1000
-      const marketDesc = 'New YesNo Testing Market ' + endTime
-      const marketEndTime = { timestamp: endTime}
-      const newMarket =
-      {
-        category: "space",
-        description: marketDesc,
-        designatedReporterAddress: "",
-        designatedReporterType: "DESIGNATED_REPORTER_SELF",
-        endTime: marketEndTime,
-        expirySourceType: "EXPIRY_SOURCE_GENERIC",
-        orderBook: {},
-        orderBookSeries: {},
-        orderBookSorted: {},
-        settlementFee: 0,
-        tag1: "",
-        tag2: "",
-        tickSize: "0.0001",
-        type: "yesNo",
-      }
-      const market = await page.evaluate((market) => window.integrationHelpers.createMarket(market), newMarket);
+    // expect them to be present
+    await expect(page).toMatch(scalarMarket.description, { timeout: 5000 })
+    // await expect(page).toMatch(categoricalMarket.description, { timeout: 5000 })
+    // await expect(page).toMatch(yesNoMarket.description, { timeout: 5000 })
+
+    //await waitNextBlock()
   });
 
   it("should have markets move through 'Open', 'In Reporting', and 'Resolved' sections appropriately", async () => {
