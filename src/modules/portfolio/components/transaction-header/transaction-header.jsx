@@ -13,7 +13,7 @@ const TransactionHeader = ({ transaction }) => {
       <h5 className={Styles.TransactionHeader__status}>{ transaction.status }</h5>
       <h3 className={Styles.TransactionHeader__message}>
         { transaction.message || transaction.type }
-        { transaction.transactions.length === 1 && transaction.transactions[0].meta && transaction.transactions[0].meta.canceledTransactionHash &&
+        { transaction.transactions && transaction.transactions.length === 1 && transaction.transactions[0].meta && transaction.transactions[0].meta.canceledTransactionHash &&
           <span className={Styles['TransactionHeader__message-canceled']}>Canceled</span>
         }
       </h3>

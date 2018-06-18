@@ -52,7 +52,7 @@ describe('utils/format-number.js', () => {
     },
     {
       func: 'formatShares',
-      denom: 'shares',
+      denom: 'Shares',
       out: {
         value: 1000.1,
         formattedValue: 1000.1,
@@ -60,14 +60,14 @@ describe('utils/format-number.js', () => {
         formatted: '1,000.1000',
         rounded: '1,000.1000',
         minimized: '1,000.1',
-        denomination: ' shares',
-        full: '1,000.1000 shares',
+        denomination: ' Shares',
+        full: '1,000.1000 Shares',
         fullPrecision: '1000.1',
       },
     },
     {
       func: 'formatShares',
-      denom: 'shares',
+      denom: 'Shares',
       num: 1,
       out: {
         value: 1,
@@ -76,8 +76,8 @@ describe('utils/format-number.js', () => {
         formatted: '1.0000',
         rounded: '1.0000',
         minimized: '1',
-        denomination: ' share',
-        full: '1.0000 share',
+        denomination: ' Share',
+        full: '1.0000 Share',
         fullPrecision: '1',
       },
     },

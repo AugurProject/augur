@@ -8,14 +8,17 @@ import { isNull, orderBy } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { YES_NO, CATEGORICAL } from 'modules/markets/constants/market-types'
-import { formatAttoRep, formatShares } from 'utils/format-number'
+import { formatAttoRep, formatShares, formatEther } from 'utils/format-number'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 import { groupBy } from 'lodash/fp'
 
-function formatTransactionMessage(sumBuy, sumSell, txType) {
+function formatTransactionMessage(sumBuy, sumSell, txType, isFill) {
   const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
   const sells = (sumSell !== 0 ? `${sumSell} ${SELL}` : '')
+  if (isFill) {
+    return `${sumBuy + sumSell} ${txType}${(sumBuy + sumSell > 1) ? 's' : ''} Filled`
+  }
   return buys + (sumBuy !== 0 && sumSell !== 0 ? ' & ' : ' ') + sells + ' ' + (sumBuy + sumSell > 1 ? txType + 's' : txType)
 }
 
@@ -58,8 +61,12 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
-
-  header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
+  if (header.transactions && header.transactions.length === 1 && header.transactions[0].maker) {
+    // own order filled
+    header.message = formatTransactionMessage(sumBuy, sumSell, 'Order', true)
+  } else {
+    header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
+  }
   return header
 }
 
@@ -68,7 +75,7 @@ function buildTradeTransaction(trade, marketsData) {
   const transaction = { ...trade, market }
   transaction.status = SUCCESS
   transaction.id = `${transaction.transactionHash}-${transaction.orderId}`
-  const header = buildHeader(transaction, TRADE)
+  const header = buildHeader(transaction, TRADE, SUCCESS)
   const meta = {}
   meta.type = TRADE
   const outcomeName = getOutcome(market, transaction.outcome)
@@ -198,16 +205,13 @@ export function addOpenOrderTransactions(openOrders) {
     const { marketsData } = getState()
     // flatten open orders
     const transactions = {}
-    let index = 100
     eachOf(openOrders, (value, marketId) => {
       const market = marketsData[marketId]
-      // TODO: remove index when I figure a comprehensive unique id strategy
-      index += 1
       let sumBuy = 0
       let sumSell = 0
       const marketHeader = {
         status: 'Market Outcome Trade',
-        hash: marketId + index,
+        marketId,
         sortOrder: getSortOrder(OPEN_ORDER),
       }
       if (market !== undefined) {
@@ -227,7 +231,7 @@ export function addOpenOrderTransactions(openOrders) {
               meta.canceledTransactionHash = transaction.canceledTransactionHash
               meta.canceledTime = cancelationTime.full
             }
-            transaction.message = `${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
+            transaction.message = `${type} ${transaction.originalFullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
@@ -235,8 +239,9 @@ export function addOpenOrderTransactions(openOrders) {
             if (outcomeName) meta.outcome = outcomeName
             meta.status = transaction.orderState.toLowerCase()
             meta.status = meta.status.charAt(0).toUpperCase() + meta.status.slice(1)
-            meta.amount = transaction.fullPrecisionAmount
-            meta.price = transaction.fullPrecisionPrice
+            meta.amount = formatShares(transaction.originalFullPrecisionAmount).full
+            meta.filled = formatShares(createBigNumber(transaction.originalFullPrecisionAmount, 10).minus(transaction.fullPrecisionAmount, 10)).full
+            meta.price = formatEther(transaction.fullPrecisionPrice).full
             transaction.meta = meta
             marketTradeTransactions.push(transaction)
             if (type === BUY) {
@@ -252,6 +257,7 @@ export function addOpenOrderTransactions(openOrders) {
       marketHeader.timestamp = creationTime
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
+      marketHeader.hash = `${marketTradeTransactions[0].orderId}`
       transactions[marketHeader.hash] = marketHeader
     })
     dispatch(updateTransactionsData(transactions))

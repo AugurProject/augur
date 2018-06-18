@@ -1,5 +1,6 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
+import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
 const url = `${process.env.AUGUR_URL}`;
 
@@ -21,10 +22,7 @@ describe("Trading", () => {
   });
 
   it("should display a modal", async () => {
-    // dismiss welcome to beta popup.
-    await expect(page).toClick("button", {
-      text: "I have read and understand the above"
-    });
+    await dismissDisclaimerModal(page);
 
     await expect(page).toClick("button", {
       text: "Sell"

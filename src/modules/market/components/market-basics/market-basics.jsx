@@ -73,6 +73,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
           <MarketLink
             id={p.id}
             formattedDescription={p.formattedDescription}
+            className="market-link"
           >
             {p.description}
           </MarketLink>
