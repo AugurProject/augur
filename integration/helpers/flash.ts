@@ -111,7 +111,7 @@ export default class Flash implements IFlash {
     return this.command(args, designateReport)
   }
 
- fillMarketOrders(marketId: string, outcome: string, orderType: string) {
+  fillMarketOrders(marketId: string, outcome: string, orderType: string) {
     const args = {
       opt: {
         marketId:marketId,

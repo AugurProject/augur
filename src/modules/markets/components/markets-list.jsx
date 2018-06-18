@@ -123,7 +123,8 @@ export default class MarketsList extends Component {
                   collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
                   linkType={TYPE_TRADE}
-                  testid={testid + '-' + market.id}
+                  id={market.id}
+                  testid={testid}
                 />
               )
             }
