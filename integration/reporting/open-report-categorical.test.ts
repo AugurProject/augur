@@ -1,17 +1,18 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import Flash from "./helpers/flash";
-import { IFlash, IMarket } from "./types/types"
-import { toDefaultView, toReporting, toInitialReporting } from "./helpers/navigation-helper";
-import { createCategoricalMarket } from './helpers/create-markets'
-import { waitNextBlock } from './helpers/wait-new-block'
+import Flash from "../helpers/flash";
+import { IFlash, IMarket } from "../types/types"
+import { toDefaultView, toReporting, toInitialReporting } from "../helpers/navigation-helper";
+import { createCategoricalMarket } from '../helpers/create-markets'
+import {UnlockedAccounts} from "../constants/accounts";
+import { waitNextBlock } from '../helpers/wait-new-block'
 
-jest.setTimeout(100000);
+jest.setTimeout(30000);
 
 let flash: IFlash = new Flash();
 
-describe("YesNo Initial Report", () => {
+describe("Categorical Open Report", () => {
   beforeAll(async () => {
     await toDefaultView()
   });
@@ -21,14 +22,17 @@ describe("YesNo Initial Report", () => {
   })
 
   beforeEach(async () => {
-    await toReporting()
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
 
     const market: IMarket = await createCategoricalMarket(8)
+    console.log('market created', market.id)
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+    console.log('user switched')
+    await toReporting()
 
     await flash.setMarketEndTime(market.id)
-    await flash.pushDays(1) // put market in designated reporting state
-
-    await waitNextBlock()
+    await flash.pushDays(5) // put market in open reporting state
+    await waitNextBlock(2)
     await toInitialReporting(market.id)
   });
 

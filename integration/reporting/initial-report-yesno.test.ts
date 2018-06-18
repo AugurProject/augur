@@ -1,13 +1,13 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import Flash from "./helpers/flash";
-import { IFlash, IMarket } from "./types/types"
-import { toDefaultView, toReporting, toInitialReporting } from "./helpers/navigation-helper";
-import { createYesNoMarket } from './helpers/create-markets'
-import { waitNextBlock } from './helpers/wait-new-block'
+import Flash from "../helpers/flash";
+import { IFlash, IMarket } from "../types/types"
+import { toDefaultView, toReporting, toInitialReporting } from "../helpers/navigation-helper";
+import { createYesNoMarket } from '../helpers/create-markets'
+import { waitNextBlock } from '../helpers/wait-new-block'
 
-jest.setTimeout(100000);
+jest.setTimeout(10000);
 
 let flash: IFlash = new Flash();
 

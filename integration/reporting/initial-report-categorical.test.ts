@@ -1,17 +1,17 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import Flash from "./helpers/flash";
-import { IFlash, IMarket } from "./types/types"
-import { toDefaultView, toReporting, toInitialReporting } from "./helpers/navigation-helper";
-import { createCategoricalMarket } from './helpers/create-markets'
-import { waitNextBlock } from './helpers/wait-new-block'
+import Flash from "../helpers/flash";
+import { IFlash, IMarket } from "../types/types"
+import { toDefaultView, toReporting, toInitialReporting } from "../helpers/navigation-helper";
+import { createCategoricalMarket } from '../helpers/create-markets'
+import { waitNextBlock } from '../helpers/wait-new-block'
 
-jest.setTimeout(100000);
+jest.setTimeout(10000);
 
 let flash: IFlash = new Flash();
 
-describe("Categorical Open Report", () => {
+describe("YesNo Initial Report", () => {
   beforeAll(async () => {
     await toDefaultView()
   });
@@ -26,7 +26,7 @@ describe("Categorical Open Report", () => {
     const market: IMarket = await createCategoricalMarket(8)
 
     await flash.setMarketEndTime(market.id)
-    await flash.pushDays(4) // put market in designated reporting state
+    await flash.pushDays(1) // put market in designated reporting state
 
     await waitNextBlock()
     await toInitialReporting(market.id)
