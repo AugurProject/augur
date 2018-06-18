@@ -16,10 +16,10 @@ describe('modules/trade/helpers/generate-trade.js', () => {
       limitPrice: '0.50',
       numShares: 5000,
       maxNumShares: {
-        denomination: ' shares',
+        denomination: ' Shares',
         formatted: '0',
         formattedValue: 0,
-        full: '0 shares',
+        full: '0 Shares',
         minimized: '0',
         rounded: '0',
         roundedValue: 0,
