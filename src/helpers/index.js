@@ -78,11 +78,11 @@ export const helpers = (store) => {
     }),
     hasDisclaimerModalBeenDismissed: () => localStorageRef.getItem(DISCLAIMER_SEEN),
     findMarketId: marketDescription => new Promise((resolve, reject) => dispatch(findMarketByDesc(marketDescription, (result) => {
-      if (result.err) return reject()
+      if (result.err) return reject(result.err)
       resolve(result.marketId)
     }))),
     createMarket: market => new Promise((resolve, reject) => dispatch(createMarket(market, (result) => {
-      if (result.err) return reject()
+      if (result.err) return reject(result.err)
       resolve(result.market)
     }))),
     getCurrentTimestamp: () => new Promise(resolve => resolve(selectCurrentTimestamp(store.getState()))),

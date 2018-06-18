@@ -25,9 +25,7 @@ describe("Categorical Open Report", () => {
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
 
     const market: IMarket = await createCategoricalMarket(8)
-    console.log('market created', market.id)
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
-    console.log('user switched')
     await toReporting()
 
     await flash.setMarketEndTime(market.id)
