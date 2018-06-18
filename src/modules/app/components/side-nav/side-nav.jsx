@@ -106,6 +106,7 @@ export default class SideNav extends Component {
               <li
                 className={classNames({ [Styles['SideNav__item--selected']]: selected }, item.disabled ? Styles.disabled : '')}
                 key={item.title}
+                id="side-nav-items"
               >
                 <Link
                   to={item.route ? makePath(item.route) : null}
