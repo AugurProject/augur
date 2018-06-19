@@ -5,6 +5,7 @@ set -x
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     rm -rf node_modules/*
     brew install yarn --without-node
+    mkdir -p $HOME/.nvm
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -19,6 +20,7 @@ else
     id
     env
     export NVM_DIR="$HOME/.nvm"
+    mkdir -p $HOME/.nvm
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm install v9.11.2
