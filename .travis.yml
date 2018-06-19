@@ -11,6 +11,7 @@ matrix:
   include:
   - os: linux
     services: docker
+    sudo: required
     language: generic
 
   - os: osx
