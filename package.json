@@ -34,7 +34,7 @@
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
       "provider": "s3",
-      "bucket-name": "augur-app-releases"
+      "bucket": "augur-app-releases"
     }
   },
   "config": {
