@@ -43,104 +43,99 @@ describe("My Markets", () => {
   });
 
   afterAll(async () => {
-    flash.dispose()
-  })
-
+    flash.dispose();
+  });
 
   it("should update market's volume correctly when trades occur", async () => {
     // check that market has 0 volume
-    const market = await page.$("[id='" + marketId + "']");
-    expect(market).toMatchElement(".value_volume", { text: '0' })
+    const market = await page.$("[id='id-" + marketId + "']");
+    await expect(market).toMatchElement(".value_volume", { text: '0', timeout: 100000 });
 
     // fill market order
-    await flash.fillMarketOrders(marketId, "1", "buy")
+    await flash.fillMarketOrders(marketId, "1", "buy");
 
     // check that volume updates correctly
-    market = await page.$("[id='" + marketId + "']");
-    expect(market).toMatchElement("span.value-volume", { text: '0.0030', timeout: 10000 })
+    market = await page.$("[id='id-" + marketId + "']");
+    await expect(page).toMatchElement("span.value-volume", { text: '0.0030', timeout: 100000 });
   });
 
   it("should show an empty view if the user hasn't created any markets", async () => {
     // use account with no markets created
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     // go to my markets page
-    await toMyMarkets()
+    await toMyMarkets();
     // verify that you are on that page
-    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 })
+    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 });
     //need account to not have any created markets
-    await expect(page).toMatch('You haven\'t created any markets.', { timeout: 5000 })
+    await expect(page).toMatch('You haven\'t created any markets.', { timeout: 5000 });
   });
 
   it("should show user account created markets", async () => {
-    // // use secondary account
-    // await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
-    // go to my markets page
-    await toMyMarkets()
     //get rep needed to create markets
     await page.evaluate(() => window.integrationHelpers.getRep());
     // create a market
-    scalarMarket = await createScalarMarket()
+    scalarMarket = await createScalarMarket();
 
     // expect market to be present
-    await expect(page).toMatch(scalarMarket.description, { timeout: 5000 })
+    await expect(page).toMatch(scalarMarket.description, { timeout: 5000 });
   });
 
   it("should have markets move through 'Open', 'In Reporting', and 'Resolved' sections appropriately", async () => {
     // expect market to be in 'Open' section
-    await expect(page).toMatchElement("[data-testid='open-" + scalarMarket.id + "']", { timeout: 5000 })
+    await expect(page).toMatchElement("[data-testid='open-" + scalarMarket.id + "']", { timeout: 5000 });
 
     // put market in reporting state
-    await flash.setMarketEndTime(scalarMarket.id)
-    await flash.pushDays(1) 
-    await waitNextBlock(2)
+    await flash.setMarketEndTime(scalarMarket.id);
+    await flash.pushDays(1);
+    await waitNextBlock(2);
 
     // expect market to be in reporting section
-    await expect(page).toMatchElement("[data-testid='inReporting-" + scalarMarket.id + "']", { timeout: 5000 })
+    await expect(page).toMatchElement("[data-testid='inReporting-" + scalarMarket.id + "']", { timeout: 5000 });
 
     // finalize market
-    await flash.forceFinalize(scalarMarket.id)
+    await flash.forceFinalize(scalarMarket.id);
 
     // expect market to be in finalized section
-    await expect(page).toMatchElement("[data-testid='resolved-" + scalarMarket.id + "']", { timeout: 10000 })
+    await expect(page).toMatchElement("[data-testid='resolved-" + scalarMarket.id + "']", { timeout: 10000 });
   });
 
   it("should the market be resolved to something other than 'Market is Invalid' (and the reporter claims their REP which triggers market finalization), then the Validity bond becomes available in 'Outstanding Returns', is claimable, and the Collected Returns balance updates properly", async () => {
     // need to refresh page 
-    await waitNextBlock(2)
-    await toPortfolio()
+    await waitNextBlock(2);
+    await toPortfolio();
     // go to my markets page
-    await toMyMarkets()
+    await toMyMarkets();
     // verify that you are on that page
-    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 })
+    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 });
 
     // check for validity bond
-    await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "'", { timeout: 100000 })
+    await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "']", { timeout: 100000 });
     // claim reporter gas bond
-    await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + scalarMarket.id + "'", { timeout: 10000 })
-    // check that outstanding returns go away
-    await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "'", { timeout: 10000 })
+    await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + scalarMarket.id + "']", { timeout: 10000 });
+    // check that outstanding returns go away;
+    await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "']", { timeout: 100000 });
   });
 
   it("should verify that, when a market is reported on by the Designated Reporter, the reporter gas bond becomes available in 'Outstanding Returns', is claimable, and the Collected Returns balance updates properly.", async () => {
     // create market with designated reporter
-    const assignedReporterMarket = await createAssignedReporterMarket(UnlockedAccounts.CONTRACT_OWNER)
+    const assignedReporterMarket = await createAssignedReporterMarket(UnlockedAccounts.CONTRACT_OWNER);
     // make designated report
-    await flash.designateReport(assignedReporterMarket.id, "0")
+    await flash.designateReport(assignedReporterMarket.id, "0");
 
     // need to refresh page 
-    await waitNextBlock(2)
-    await toPortfolio()
+    await waitNextBlock(2);
+    await toPortfolio();
     // go to my markets page
-    await toMyMarkets()
+    await toMyMarkets();
     // verify that you are on that page
-    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 })
+    await expect(page).toMatch('portfolio: my markets', { timeout: 5000 });
 
     // check for reporter gas bond
-    await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "'", { timeout: 100000 }) // ned to find creationFee
+    await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "']", { timeout: 100000 }); // need to find creationFee
     // claim reporter gas bond
-    await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + assignedReporterMarket.id + "'", { timeout: 10000 })
+    await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + assignedReporterMarket.id + "']", { timeout: 10000 });
     // check that outstanding returns go away
-    await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "'", { timeout: 10000 })
+    await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "']", { timeout: 100000 });
   });
 
 

@@ -10,7 +10,7 @@ import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-preview/market-preview.styles'
 
 const MarketPreview = p => (
-  <article className={classNames(CommonStyles.MarketCommon__container, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })} id={p.id} data-testid={p.testid + '-' + p.id}>
+  <article className={classNames(CommonStyles.MarketCommon__container, { [`${CommonStyles['single-card']}`]: p.cardStyle === 'single-card' })} id={'id-' + p.id} data-testid={p.testid + '-' + p.id}>
     <MarketBasics {...p} />
     <div className={classNames(Styles.MarketPreview__footer, { [`${Styles['single-card']}`]: p.cardStyle === 'single-card' })}>
       <MarketProperties {...p} />
