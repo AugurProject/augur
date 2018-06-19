@@ -1,48 +1,38 @@
-language: node_js
 notifications:
   email: false
 branches:
   only:
   - master
-  - travis-fixes
+  - electron-build
   - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
-node_js:
-- '8'
-addons:
-  apt:
-    packages:
-    - libusb-1.0-0-dev
-    - fakeroot
-git:
-  depth: 5
+
+
 matrix:
   include:
   - os: linux
-    dist: trusty
-    sudo: required
-  - os: osx
-before_install:
-  - scripts/preinstall.sh
-script:
-- travis_wait 60 npm run make
-after_success:
-  - scripts/post_build.py
-before_deploy:
-- git config --global user.email "builds@travis-ci.com"
-- git config --global user.name "Travis CI"
+    services: docker
+    language: generic
 
-  #jobs:
-  #  include:
-  #    - stage: Github Release
-  #      script: skip
-  #      deploy:
-  #        provider: releases
-  #        api_key:
-  #          secure: P3j+xuXwAMMrLPkPQB7PA9Lqq7YM7nZlqoXiU8KFAcKNeRu+JGKI9Av9LSYKmhaoTsPnlEkeqzXSrfGskCRXuqjd8///niwqij3FguM9xZ1edfmjQbssa4adLQFQvG0v0QCbwdfDCnnahBxD3bwucccoApTpOxzRtXpwyHH36zpCcDfKi5WZJlvPE8Pc5e4wg9KsHoJFmOmzUecHvTSy1cxsCheSgCM5AUlGlD21YGSwkgYSu2a/h/XtUC4WWOrtJY38zQKS6wb8iUWOsj6+2tp50Eis9vb0+Adb1LyCWiwPBzV5k9+f529VsRNYYGxO0jwF+zEYXOh1clGkRyBh2VdV8Cwo+yT0LR0z5PmoNqDTptOXJofIeHYvAUh9Cjz/f3t49sh/kCYtDEGamBCmaGxuaVBr2rNfDhtuKSoPEw+2jb4es5/8+WLRcaUF1O2W+QoIjK9PJDT7jRzo7jJZGbAWM2fepFYLOGRSgfrQ//VOhDFWAIs2Ii0labUHJdkagHa/gq5qcPyO/fXzomrNb4ljY10HOEOPkZLf4LwD/0rtyJXq5QPZuY2r8bDf6v3+3k6/fDDt6qyNAlUYRhnDOvuKIEirkb9VQdGc9uSed/lLAXqdwb19oce0woM6nVj/VErWNSI4PMkK9NOEysMlevPJd+IgBZ9PVyvMmxlcRV0=
-  #        file_glob: true
-  #        file: out/make/*
-  #        skip_cleanup: true
-  #        prerelease: true
-  #        on:
-  #          repo: AugurProject/augur-app
-  #          tags: true
+  - os: osx
+    osx_image: xcode9.3
+    language: node_js
+    node_js: "9"
+    env:
+      - ELECTRON_CACHE=$HOME/.cache/electron
+      - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+script:
+ - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+        docker run --rm -ti \
+          --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+          --env ELECTRON_CACHE="/root/.cache/electron" \
+          --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+          -v ${PWD}:/project \
+          -v ${PWD##*/}-node-modules:/project/node_modules \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          /bin/bash -c "scripts/electron-build.sh"
+    else
+        scripts/electron-build.sh
