@@ -62,7 +62,7 @@ describe("My Markets", () => {
 
   it("should show an empty view if the user hasn't created any markets", async () => {
     // use account with no markets created
-    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.THIRD_ACCOUNT);
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     // go to my markets page
     await toMyMarkets()
     // verify that you are on that page
@@ -72,8 +72,8 @@ describe("My Markets", () => {
   });
 
   it("should show user account created markets", async () => {
-    // use secondary account
-    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+    // // use secondary account
+    // await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     // go to my markets page
     await toMyMarkets()
     //get rep needed to create markets
