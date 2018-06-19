@@ -47,7 +47,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
               const eventName = log.eventName;
               if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
                 console.log("Log processor does not exist:", contractName, eventName);
-                nextLog();
+                nextLog(null);
               } else {
                 processLog(trx, augur, log, logProcessors[contractName][eventName], nextLog);
               }
@@ -57,7 +57,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
                 return nextBlock(err);
               } else {
                 trx.commit();
-                return nextBlock();
+                return nextBlock(null);
               }
             });
           });
