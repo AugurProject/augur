@@ -10,6 +10,8 @@ import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
+    const { loginAccount } = getState()
+    if (!loginAccount.address) return callback(null)
     parallel([
       next => dispatch(loadUserTradingHistory(options, next)),
       next => dispatch(loadAccountPositions(options, next)),
