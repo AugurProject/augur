@@ -33,7 +33,7 @@ describe("My Markets", () => {
       width: 1200
     });
     await dismissDisclaimerModal(page);
-    marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
+    marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Dow Jones Industrial Average close at a higher price on Fri Jun 08 2018 than it closed at the previous day?');
 
     // go to my markets page
     await toMyMarkets()
@@ -47,19 +47,23 @@ describe("My Markets", () => {
   });
 
   it("should update market's volume correctly when trades occur", async () => {
+    // needs the Will Dow Jones market to not have any volume
+
     // check that market has 0 volume
     const market = await page.$("[id='id-" + marketId + "']");
-    await expect(market).toMatchElement(".value_volume", { text: '0', timeout: 100000 });
+    await expect(market).toMatchElement(".value_volume", { text: '0', timeout: 10000 });
 
     // fill market order
     await flash.fillMarketOrders(marketId, "1", "buy");
 
     // check that volume updates correctly
     market = await page.$("[id='id-" + marketId + "']");
-    await expect(page).toMatchElement("span.value-volume", { text: '0.0030', timeout: 100000 });
+    await expect(page).toMatchElement("span.value_volume", { text: '0.0030', timeout: 10000 });
   });
 
   it("should show an empty view if the user hasn't created any markets", async () => {
+    // needs secondary account to not have any previously created markets
+
     // use account with no markets created
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     // go to my markets page
@@ -82,7 +86,7 @@ describe("My Markets", () => {
 
   it("should have markets move through 'Open', 'In Reporting', and 'Resolved' sections appropriately", async () => {
     // expect market to be in 'Open' section
-    await expect(page).toMatchElement("[data-testid='open-" + scalarMarket.id + "']", { timeout: 5000 });
+    await expect(page).toMatchElement("[data-testid='open-" + scalarMarket.id + "']", { timeout: 10000 });
 
     // put market in reporting state
     await flash.setMarketEndTime(scalarMarket.id);
@@ -90,7 +94,7 @@ describe("My Markets", () => {
     await waitNextBlock(2);
 
     // expect market to be in reporting section
-    await expect(page).toMatchElement("[data-testid='inReporting-" + scalarMarket.id + "']", { timeout: 5000 });
+    await expect(page).toMatchElement("[data-testid='inReporting-" + scalarMarket.id + "']", { timeout: 10000 });
 
     // finalize market
     await flash.forceFinalize(scalarMarket.id);
@@ -138,7 +142,6 @@ describe("My Markets", () => {
     await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "']", { timeout: 100000 });
   });
 
-
   it("should have outstanding returns become available to the market creator when complete sets settle, and that the amount that becomes available is correct", async () => {
   });
 
@@ -146,5 +149,21 @@ describe("My Markets", () => {
   });
 
   it("should show most recently resolved markets at the top of the Resolved list", async () => {
+    // can't have any other created markets that are also resolved
+
+    const newMarket = await createScalarMarket();
+    // put market in reporting state
+    await flash.setMarketEndTime(newMarket.id);
+    await flash.pushDays(1);
+    await waitNextBlock(2);
+    // finalize market
+    await flash.forceFinalize(newMarket.id);
+
+    await expect(page).toMatchElement("[orderid='resolved-0-" + scalarMarket.id + "']", { timeout: 10000 });
+    await expect(page).toMatchElement("[orderid='resolved-1-" + newMarket.id + "']", { timeout: 50000 });
   });
 });
+
+
+// 1. need to get market creator fees 
+

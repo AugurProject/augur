@@ -95,7 +95,7 @@ export default class Flash implements IFlash {
     const args = {
       opt: {
         marketId:marketId,
-        amount:10,
+        amount:100000000000000000,
       }
     }
     return this.command(args, tradeCompleteSets)
@@ -119,7 +119,7 @@ export default class Flash implements IFlash {
         orderType:orderType,
       }
     }
-    return this.command(args, designateReport)
+    return this.command(args, fillMarketOrders)
   }
 
   command(args: object, func: Function) {

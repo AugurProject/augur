@@ -11,6 +11,7 @@ import { logout } from 'modules/auth/actions/logout'
 import { formatRep, formatEther } from 'utils/format-number'
 import getRep from 'modules/account/actions/get-rep'
 import { placeTrade } from 'modules/trade/actions/place-trade'
+import { augur } from 'services/augurjs'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
