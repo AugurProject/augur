@@ -18,3 +18,10 @@ export interface IMarket extends Object {
   reportingState: string
   description: string
 }
+
+export interface MarketCosts extends Object {
+  targetReporterGasCosts: string
+  reportingFeeDivisor: string
+  designatedReportNoShowReputationBond: string
+  validityBond: string
+}

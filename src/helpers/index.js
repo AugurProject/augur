@@ -57,20 +57,13 @@ const getRepTokens = (callback = logError) => (dispatch) => {
   }))
 }
 
-const placeTradeOnMarket = (marketId, outcomeId, callback = logError) => (dispatch) => { // untested
-  dispatch(placeTrade(marketId, outcomeId, false, true, (err) => {
-    if (err) return callback({ err })
-    return callback()
-  }))
-}
-
 const getMarketCosts = (callback = logError) => (dispatch) => {
   const { universe } = store.getState()
 
-  dispatch(augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id }, (err, marketCreationCostBreakdown) => {
+  augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id }, (err, marketCreationCostBreakdown) => {
     if (err) return callback({ err })
     return callback({ err: null, data: marketCreationCostBreakdown })
-  }))
+  })
 }
 
 export const helpers = (store) => {
@@ -100,10 +93,6 @@ export const helpers = (store) => {
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
     getRep: () => new Promise((resolve, reject) => dispatch(getRepTokens((result) => {
-      if (result.err) return reject()
-      resolve()
-    }))),
-    placeTrade: (marketId, outcomeId) => new Promise((resolve, reject) => dispatch(placeTradeOnMarket(marketId, outcomeId, (result) => {
       if (result.err) return reject()
       resolve()
     }))),
