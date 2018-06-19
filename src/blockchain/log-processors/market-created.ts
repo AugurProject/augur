@@ -92,7 +92,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           augur.api.Market.getShareToken(Object.assign({ _outcome: outcome }, marketPayload), (err: Error|null, shareToken?: Address): void => {
             if (err) return nextOutcome(err);
             shareTokens[outcome] = shareToken;
-            nextOutcome();
+            nextOutcome(null);
           });
         }, (err: Error|null): void => {
           if (err) return callback(err);

@@ -48,14 +48,14 @@ export function clearOverrideTimestamp(): void {
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
   processQueue.push((next) => processBlockByBlockDetails(db, augur, block, (err: Error|null): void => {
     if (err) return callback(err);
-    return next();
+    return next(null);
   }));
 }
 
 export function processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
   processQueue.push((next) => _processBlockRemoval(db, block, (err: Error|null): void => {
     if (err) return callback(err);
-    return next();
+    return next(null);
   }));
 }
 
@@ -164,7 +164,7 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
         });
-        nextMarketId();
+        nextMarketId(null);
       });
     }, callback);
   });
@@ -187,13 +187,13 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.OPEN_REPORTING,
         });
-        nextMarketIdRow();
+        nextMarketIdRow(null);
       });
     }, callback);
   });
 }
 
-function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: (err: (Error|null)) => void) {
+function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumber: number, expiredFeeWindows: Array<Address>, callback: ErrorCallback) {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe"])
     .join("universes", "markets.universe", "universes.universe")
     .where("universes.forked", 0)

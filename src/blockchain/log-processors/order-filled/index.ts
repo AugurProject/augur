@@ -112,7 +112,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrdersAndPositions(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, (err?: Error|null) => {
+          updateOrdersAndPositions(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, (err: Error|null) => {
             if (err) return callback(err);
             augurEmitter.emit("OrderFilled", Object.assign({}, log, {
               marketId,

@@ -88,11 +88,11 @@ export interface MarketCreatedOnContractInfo {
   numTicks: string;
 }
 
-export type ErrorCallback = (err?: Error|null) => void;
+export type ErrorCallback = (err: Error|null) => void;
 
-export type GenericCallback<ResultType> = (err?: Error|null, result?: ResultType) => void;
+export type GenericCallback<ResultType> = (err: Error|null, result?: ResultType) => void;
 
-export type AsyncCallback = (err?: Error|null, result?: any) => void;
+export type AsyncCallback = (err: Error|null, result?: any) => void;
 
 export type LogProcessor = (db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) => void;
 

@@ -29,7 +29,7 @@ export function upsertPositionInMarket(db: Knex, augur: Augur, account: Address,
             unrealizedProfitLoss[outcome] = unrealized;
             positionInMarketAdjustedForUserIntention[outcome] = position;
             averagePrice[outcome] = meanOpenPrice;
-            nextOutcome();
+            nextOutcome(null);
           });
         });
       });
