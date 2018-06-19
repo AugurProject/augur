@@ -36,3 +36,4 @@ script:
           /bin/bash -c "scripts/electron-build.sh"
     else
         scripts/electron-build.sh
+    fi
