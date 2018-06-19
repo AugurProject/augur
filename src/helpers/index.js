@@ -9,6 +9,8 @@ import { submitNewMarket } from 'modules/create-market/actions/submit-new-market
 import { selectCurrentTimestamp, selectBlockchainState, selectLoginAccountState } from 'src/select-state'
 import { logout } from 'modules/auth/actions/logout'
 import { formatRep, formatEther } from 'utils/format-number'
+import getRep from 'modules/account/actions/get-rep'
+import { augur } from 'services/augurjs'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -47,6 +49,22 @@ const formatRepValue = (value, callback = logError) => dispatch => callback(form
 
 const formatEthValue = (value, callback = logError) => dispatch => callback(formatEther(value))
 
+const getRepTokens = (callback = logError) => (dispatch) => {
+  dispatch(getRep((err) => {
+    if (err) return callback({ err })
+    return callback({ err: null })
+  }))
+}
+
+const getMarketCosts = (callback = logError) => (dispatch) => {
+  const { universe } = store.getState()
+
+  augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id }, (err, marketCreationCostBreakdown) => {
+    if (err) return callback({ err })
+    return callback({ err: null, data: marketCreationCostBreakdown })
+  })
+}
+
 export const helpers = (store) => {
   const { dispatch, whenever } = store
   return {
@@ -73,5 +91,13 @@ export const helpers = (store) => {
     getAccountData: () => new Promise(resolve => dispatch(getLoggedInAccountData(resolve))),
     formatRep: value => new Promise(resolve => dispatch(formatRepValue(value, resolve))),
     formatEth: value => new Promise(resolve => dispatch(formatEthValue(value, resolve))),
+    getRep: () => new Promise((resolve, reject) => dispatch(getRepTokens((result) => {
+      if (result.err) return reject()
+      resolve()
+    }))),
+    getMarketCreationCostBreakdown: () => new Promise((resolve, reject) => dispatch(getMarketCosts((result) => {
+      if (result.err) return reject()
+      resolve(result.data)
+    }))),
   }
 }
