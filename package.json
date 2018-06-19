@@ -31,7 +31,11 @@
         "snap"
       ]
     },
-    "artifactName": "${os}-${productName}-${version}.${ext}"
+    "artifactName": "${os}-${productName}-${version}.${ext}",
+    "publish": {
+      "provider": "s3",
+      "bucket-name": "augur-app-releases"
+    }
   },
   "config": {
     "forge": {
@@ -79,6 +83,7 @@
     "electron": "2.0.0",
     "electron-builder": "^20.15.1",
     "electron-forge": "5.2.0",
-    "electron-prebuilt-compile": "2.0.0"
+    "electron-prebuilt-compile": "2.0.0",
+    "electron-publisher-s3": "^20.15.0"
   }
 }
