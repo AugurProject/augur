@@ -1,5 +1,4 @@
 {
-  "augurDbPath": "./augur.db",
   "websocketConfigs": {
     "pingMs": 12000,
     "ws": {

@@ -1,5 +1,5 @@
 import Augur from "augur.js";
-import { isSyncFinished } from "../../blockchain/sync-augur-node-with-blockchain";
+import { isSyncFinished } from "../../blockchain/bulk-sync-augur-node-with-blockchain";
 
 export function getContractAddresses(augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   callback(null, {

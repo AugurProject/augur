@@ -1,10 +1,10 @@
 import * as express from "express";
 import * as Knex from "knex";
 import Augur from "augur.js";
+import { Address, ErrorCallback, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets } from "./getters/get-markets";
-import { Address, ServersData } from "../types";
-import { isSyncFinished } from "../blockchain/sync-augur-node-with-blockchain";
+import { isSyncFinished } from "../blockchain/bulk-sync-augur-node-with-blockchain";
 
 // tslint:disable-next-line:no-var-requires
 const { websocketConfigs } = require("../../config");
@@ -71,4 +71,14 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
   });
 
   return { app, servers };
+}
+
+export function shutdownServersCallback(servers: ServersData): ErrorCallback {
+  return (err: Error|null) => {
+    if (err) {
+      console.error("Fatal Error, shutting down servers", err);
+      servers.servers.forEach((websocketServer) => websocketServer.close());
+      process.exit(1);
+    }
+  };
 }
