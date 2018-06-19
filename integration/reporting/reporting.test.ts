@@ -141,7 +141,7 @@ describe("Categorical Open Report", () => {
   it("report on outcome_1", async () => {
     await expect(page).toClick("button", {
       text: "outcome_1",
-      timeout: 1000,
+      timeout: 10000,
     });
 
     await expect(page).toClick("button", {
@@ -312,7 +312,7 @@ describe("YesNo Open Report", () => {
   it("report on yes", async () => {
     await expect(page).toClick("button", {
       text: "Yes",
-      timeout: 1000,
+      timeout: 10000,
     });
 
     await expect(page).toClick("button", {
@@ -377,7 +377,7 @@ describe("Scalar Initial Report", () => {
   });
 
   it("report on 10", async () => {
-    await expect(page).toFill("#sr__input--outcome-scalar", "10");
+    await expect(page).toFill("#sr__input--outcome-scalar", "10", { timeout: 10000 });
     await expect(page).toClick("button", {
       text: "Review"
     });
