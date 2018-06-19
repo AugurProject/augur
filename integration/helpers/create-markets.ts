@@ -1,7 +1,7 @@
 "use strict";
 import BigNumber from 'bignumber.js'
 
-export const createAssignedReporterMarket = async (address) => {
+export const createAssignedReporterMarket = async (address) => { // Attention !!! fix this bitch
   const currentTimestamp: number = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
 
   const daysToAdjust = 2 * 86400000;
