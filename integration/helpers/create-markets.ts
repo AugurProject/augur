@@ -1,7 +1,7 @@
 "use strict";
 import BigNumber from 'bignumber.js'
 
-export const createYesNoMarket = async (address?: string) => {
+export const createYesNoMarket = async (address: string = "") => {
   // page.on('console', msg => console.log('PAGE LOG:', msg.text()));
   const currentTimestamp: number = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
 
@@ -15,8 +15,8 @@ export const createYesNoMarket = async (address?: string) => {
   {
     category: "space",
     description: marketDesc,
-    designatedReporterAddress: (address ? address : ""),
-    designatedReporterType: (address ? "DESIGNATED_REPORTER_SPECIFIC" : "DESIGNATED_REPORTER_SELF"),
+    designatedReporterAddress: address,
+    designatedReporterType: (address !== "" ? "DESIGNATED_REPORTER_SPECIFIC" : "DESIGNATED_REPORTER_SELF"),
     endTime: marketEndTime,
     expirySourceType: "EXPIRY_SOURCE_GENERIC",
     orderBook: {},
