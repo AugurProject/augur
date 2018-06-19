@@ -34,7 +34,7 @@ describe("Scalar Initial Report", () => {
   });
 
   it("report on 10", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "10");
+    await expect(page).toFill("#sr__input--outcome-scalar", "10");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -45,7 +45,7 @@ describe("Scalar Initial Report", () => {
   })
 
   it("report on 0", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "0");
+    await expect(page).toFill("#sr__input--outcome-scalar", "0");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -56,7 +56,7 @@ describe("Scalar Initial Report", () => {
   })
 
   it("report on -10", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "-10");
+    await expect(page).toFill("#sr__input--outcome-scalar", "-10");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -67,7 +67,7 @@ describe("Scalar Initial Report", () => {
   })
 
   it("report on 5.01", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "5.01");
+    await expect(page).toFill("#sr__input--outcome-scalar", "5.01");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -78,7 +78,7 @@ describe("Scalar Initial Report", () => {
   })
 
   it("report on -5.01", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "-5.01");
+    await expect(page).toFill("#sr__input--outcome-scalar", "-5.01");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -127,7 +127,7 @@ describe("Scalar Open Report", () => {
   });
 
   it("report on 10", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "10");
+    await expect(page).toFill("#sr__input--outcome-scalar", "10");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -138,7 +138,7 @@ describe("Scalar Open Report", () => {
   })
 
   it("report on 0", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "0");
+    await expect(page).toFill("#sr__input--outcome-scalar", "0");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -149,7 +149,7 @@ describe("Scalar Open Report", () => {
   })
 
   it("report on -10", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "-10");
+    await expect(page).toFill("#sr__input--outcome-scalar", "-10");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -160,7 +160,7 @@ describe("Scalar Open Report", () => {
   })
 
   it("report on 5.01", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "5.01");
+    await expect(page).toFill("#sr__input--outcome-scalar", "5.01");
     await expect(page).toClick("button", {
       text: "Review"
     });
@@ -171,7 +171,7 @@ describe("Scalar Open Report", () => {
   })
 
   it("report on -5.01", async () => {
-    await expect(page).toFill(" #sr__input--outcome-scalar", "-5.01");
+    await expect(page).toFill("#sr__input--outcome-scalar", "-5.01");
     await expect(page).toClick("button", {
       text: "Review"
     });
