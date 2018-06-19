@@ -24,7 +24,7 @@ describe("Categorical Initial Report", () => {
   beforeEach(async () => {
     await toReporting()
 
-    const market: IMarket = await createCategoricalMarket(8)
+    const market: IMarket = await createCategoricalMarket(4)
 
     await flash.setMarketEndTime(market.id)
     await flash.pushDays(1) // put market in designated reporting state
@@ -97,70 +97,6 @@ describe("Categorical Initial Report", () => {
     });
   })
 
-  it("report on outcome_5", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_5",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_6", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_6",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_7", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_7",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_8", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_8",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
   it("report on Invalid", async () => {
     await expect(page).toClick("button", {
       text: "Market is invalid",
@@ -181,6 +117,7 @@ describe("Categorical Initial Report", () => {
 describe("Categorical Open Report", () => {
   beforeAll(async () => {
     await toDefaultView()
+    await waitNextBlock(2)
   });
 
   afterAll(async () => {
@@ -189,8 +126,9 @@ describe("Categorical Open Report", () => {
 
   beforeEach(async () => {
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
+    await waitNextBlock(2)
 
-    const market: IMarket = await createCategoricalMarket(8)
+    const market: IMarket = await createCategoricalMarket(4)
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     await toReporting()
 
@@ -251,70 +189,6 @@ describe("Categorical Open Report", () => {
   it("report on outcome_4", async () => {
     await expect(page).toClick("button", {
       text: "outcome_4",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_5", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_5",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_6", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_6",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_7", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_7",
-      timeout: 1000,
-    });
-
-    await expect(page).toClick("button", {
-      text: "Review"
-    });
-
-    await expect(page).toClick("button", {
-      text: "Submit",
-      timeout: 1000,
-    });
-  })
-
-  it("report on outcome_8", async () => {
-    await expect(page).toClick("button", {
-      text: "outcome_8",
       timeout: 1000,
     });
 
@@ -423,6 +297,7 @@ describe("YesNo Open Report", () => {
 
   beforeEach(async () => {
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
+    await waitNextBlock(2)
 
     const market: IMarket = await createYesNoMarket()
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
@@ -583,6 +458,7 @@ describe("Scalar Open Report", () => {
 
   beforeEach(async () => {
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
+    await waitNextBlock(2)
 
     const market: IMarket = await createScalarMarket()
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
@@ -663,5 +539,5 @@ describe("Scalar Open Report", () => {
       text: "Submit"
     });
   })
-
 })
+
