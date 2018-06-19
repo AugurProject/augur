@@ -64,6 +64,14 @@ const placeTradeOnMarket = (marketId, outcomeId, callback = logError) => (dispat
   }))
 }
 
+const getMarketCosts = (callback = logError) => (dispatch) => {
+  const { universe } = store.getState()
+
+  dispatch(augur.createMarket.getMarketCreationCostBreakdown({ universe: universe.id }, (err, marketCreationCostBreakdown) => {
+    if (err) return callback({ err })
+    return callback({ err: null, data: marketCreationCostBreakdown })
+  }))
+}
 
 export const helpers = (store) => {
   const { dispatch, whenever } = store
@@ -98,6 +106,10 @@ export const helpers = (store) => {
     placeTrade: (marketId, outcomeId) => new Promise((resolve, reject) => dispatch(placeTradeOnMarket(marketId, outcomeId, (result) => {
       if (result.err) return reject()
       resolve()
+    }))),
+    getMarketCreationCostBreakdown: () => new Promise((resolve, reject) => dispatch(getMarketCosts((result) => {
+      if (result.err) return reject()
+      resolve(result.data)
     }))),
   }
 }
