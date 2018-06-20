@@ -4,6 +4,7 @@ import { loadAccountTrades } from 'modules/my-positions/actions/load-account-tra
 import { loadPriceHistory } from 'modules/market/actions/load-price-history'
 import { updateMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading'
 import logError from 'utils/log-error'
+import { augur } from 'services/augurjs'
 
 import { MARKET_FULLY_LOADING, MARKET_FULLY_LOADED } from 'modules/market/constants/market-loading-states'
 
@@ -26,7 +27,7 @@ export const loadFullMarket = (marketId, callback = logError) => (dispatch, getS
 export const loadMarketDetails = (marketId, callback = logError) => dispatch => (
   dispatch(loadBidsAsks(marketId, (err) => {
     if (err) return loadingError(dispatch, callback, err, marketId)
-    dispatch(loadAccountTrades({ marketId }, (err) => {
+    dispatch(loadAccountTrades({ marketId, orderType: augur.constants.ORDER_STATE.OPEN }, (err) => {
       if (err) return loadingError(dispatch, callback, err, marketId)
       dispatch(loadPriceHistory({ marketId }, (err) => {
         if (err) return loadingError(dispatch, callback, err, marketId)
