@@ -7,13 +7,14 @@ const OutstandingReturns = p => (
   <div className={Styles.MarketOutstandingReturns}>
     <div className={Styles.MarketOutstandingReturns__text}>
       Outstanding Returns
-      <span className={Styles.MarketOutstandingReturns__value}>
+      <span className={Styles.MarketOutstandingReturns__value} data-testid={'unclaimedCreatorFees-' + p.id}>
         {p.unclaimedCreatorFees.full}
       </span>
     </div>
     <div className={Styles.MarketOutstandingReturns__actions}>
       <button
         className={Styles.MarketOutstandingReturns__collect}
+        data-testid={'collectMarketCreatorFees-' + p.id}
         onClick={() => {
           p.collectMarketCreatorFees(false, p.id)
         }}

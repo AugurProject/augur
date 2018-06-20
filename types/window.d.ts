@@ -10,6 +10,8 @@ interface IntegrationHelpers {
   getAccountData(): void;
   formatRep(value: string): object;
   formatEth(value: string): object;
+  getRep(): void;
+  getMarketCreationCostBreakdown(): object;
 }
 
 declare namespace window {

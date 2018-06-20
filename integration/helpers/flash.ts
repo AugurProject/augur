@@ -6,6 +6,10 @@ import Augur from "augur.js"
 import connectionEndpoints from 'augur.js/scripts/connection-endpoints'
 import pushTimestamp from 'augur.js/scripts/flash/push-timestamp'
 import setAugurTimestamp from 'augur.js/scripts/flash/set-timestamp-cmd'
+import forceFinalize from 'augur.js/scripts/flash/force-finalize'
+import tradeCompleteSets from 'augur.js/scripts/flash/trade-complete-sets'
+import designateReport from 'augur.js/scripts/flash/designated-report'
+import fillMarketOrders from 'augur.js/scripts/flash/fill-market-orders'
 import { getPrivateKeyFromString } from 'augur.js/scripts/dp/lib/get-private-key'
 
 export default class Flash implements IFlash {
@@ -76,6 +80,46 @@ export default class Flash implements IFlash {
       }
     }
     return this.command(args, pushTimestamp)
+  }
+
+  forceFinalize(marketId: string) {
+    const args = {
+      opt: {
+        marketId:marketId,
+      }
+    }
+    return this.command(args, forceFinalize)
+  }
+
+  tradeCompleteSets(marketId: string) {
+    const args = {
+      opt: {
+        marketId:marketId,
+        amount:100000000000000000,
+      }
+    }
+    return this.command(args, tradeCompleteSets)
+  }
+
+ designateReport(marketId: string, outcome: string) {
+    const args = {
+      opt: {
+        marketId:marketId,
+        outcome:outcome,
+      }
+    }
+    return this.command(args, designateReport)
+  }
+
+  fillMarketOrders(marketId: string, outcome: string, orderType: string) {
+    const args = {
+      opt: {
+        marketId:marketId,
+        outcome:outcome,
+        orderType:orderType,
+      }
+    }
+    return this.command(args, fillMarketOrders)
   }
 
   command(args: object, func: Function) {

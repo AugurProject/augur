@@ -1,11 +1,13 @@
 "use strict";
 
-export const waitNextBlock = async () => {
+export const waitNextBlock = async (numBlocks: number = 1) => {
   const blockchainInfo = await page.evaluate(() => window.integrationHelpers.getCurrentBlock());
-  const blockNumber = blockchainInfo.currentBlockNumber
-  let stillWaiting = true
-  while (stillWaiting) {
+  const blockNumber: number = blockchainInfo.currentBlockNumber
+  const blockNumberPlus: number = blockNumber + numBlocks
+  let newBlockNumber: number = blockNumber
+
+  while (newBlockNumber < blockNumberPlus) {
     const nextblockchainInfo = await page.evaluate(() => window.integrationHelpers.getCurrentBlock());
-    stillWaiting = nextblockchainInfo.currentBlockNumber > blockNumber + 1
+    newBlockNumber = nextblockchainInfo.currentBlockNumber
   }
 };
