@@ -35,9 +35,9 @@ export function getAccountTransferHistory(db: Knex, account: Address, token: Add
     "tokens.marketId",
     db.raw("CASE WHEN transfers.transactionHash IN (SELECT transactionHash FROM trades) THEN 1 ELSE 0 END as isTrade"),
   ]).where((db: Knex): Knex.QueryBuilder => db.where("sender", account).orWhere("recipient", account));
-  query.join("blocks", "blocks.blockNumber", "transfers.blockNumber" );
+  query.join("blocks", "blocks.blockNumber", "transfers.blockNumber");
   query.join("tokens", "tokens.contractAddress", "transfers.token");
-  if (isTrade != null) query.where({isTrade});
+  if (isTrade != null) query.where({ isTrade });
   if (token != null) query.andWhere({ token });
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
