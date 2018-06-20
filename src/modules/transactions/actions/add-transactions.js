@@ -97,14 +97,9 @@ function buildTradeTransaction(trade, marketsData) {
 }
 
 export function addTransferTransactions(transfers) {
-  const FillOrderContractAddress = augur.contracts.addresses[augur.rpc.getNetworkID()].FillOrder
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const transactions = {}
     each(transfers, (transfer) => {
-      // filter out market trade transfers from FillOrder contract
-      if (transfer.sender && transfer.sender.toLowerCase() === FillOrderContractAddress.toLowerCase()) return
-      // filter out trade shares transfer to market
-      if (transfer.recipient && transfer.marketId && transfer.recipient.toLowerCase() === transfer.marketId.toLowerCase()) return
       const transaction = { ...transfer }
       transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
