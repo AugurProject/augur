@@ -1,31 +1,23 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketOutcomeMidpoint {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.MarketOutcomeMidpointValue {
   color: @color-white;
-  width: 100%;
-  > span {
-    padding: 0 10px;
-  }
+  display: flex;
+  flex-direction: column;
+  font-size: @font-size-large;
+  font-weight: bold;
 }
 
-.MarketOutcomeMidpoint__line {
-  stroke: @color-gray;
-  stroke-width: 2px;
+.MarketOutcomeMidpointLine {
+  border-top: 2px solid@color-gray;
+  flex-grow: 1;
+  height: 0px;
+  margin-right: 10px;
 }
-
-.MarketOutcomeMidpoint__label {
-  &:extend(.caps--heavy);
-
-  fill: @color-white;
-  letter-spacing: 1.6px;
-  stroke: @color-white;
-}
-
-.MarketOutcomeMidpoint__null-message {
-  &:extend(.caps--small);
-  &:extend(.caps--heavy);
-
-  fill: @color-gray;
-  stroke: @color-gray;
-}
-

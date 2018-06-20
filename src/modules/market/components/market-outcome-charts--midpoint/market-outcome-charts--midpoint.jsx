@@ -1,35 +1,34 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-
 import Styles from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint.styles'
 
-export default class MarketOutcomeMidpoint extends Component {
-  static propTypes = {
-    isMobile: PropTypes.bool.isRequired,
-    chartWidths: PropTypes.object.isRequired,
-    headerHeight: PropTypes.number.isRequired,
-    orderBookKeys: PropTypes.object.isRequired,
-    sharedChartMargins: PropTypes.object.isRequired,
-    hasOrders: PropTypes.bool.isRequired,
-    fixedPrecision: PropTypes.number.isRequired,
-    hasPriceHistory: PropTypes.bool,
-  }
+const Midpoint = (props) => {
 
-  render() {
-    const {
-      orderBookKeys,
-      fixedPrecision,
-    } = this.props
-    return (
-      <section>
-        <div
-          ref={(drawContainer) => { this.drawContainer = drawContainer }}
-          className={Styles.MarketOutcomeMidpoint}
-        >
-          <span>{`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`}</span>
-        </div>
-      </section>
-    )
-  }
+  const {
+    orderBookKeys,
+    fixedPrecision,
+  } = props
+
+  return (
+    <div className={Styles.MarketOutcomeMidpoint}>
+      <div className={Styles.MarketOutcomeMidpointLine} />
+      <div className={Styles.MarketOutcomeMidpointValue}>
+        {`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`}
+      </div>
+    </div>
+  )
 }
 
+
+Midpoint.propTypes = {
+  isMobile: PropTypes.bool.isRequired,
+  chartWidths: PropTypes.object.isRequired,
+  headerHeight: PropTypes.number.isRequired,
+  orderBookKeys: PropTypes.object.isRequired,
+  sharedChartMargins: PropTypes.object.isRequired,
+  hasOrders: PropTypes.bool.isRequired,
+  fixedPrecision: PropTypes.number.isRequired,
+  hasPriceHistory: PropTypes.bool,
+}
+
+export default Midpoint
