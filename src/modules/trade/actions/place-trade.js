@@ -17,9 +17,9 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     console.error(`trade-in-progress not found for market ${marketId} outcome ${outcomeId}`)
     return dispatch(clearTradeInProgress(marketId))
   }
-  const bnAllowance = createBigNumber(loginAccount.allowance, 10)
-  const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted, 10)
-  const otherSharesDepleted = createBigNumber(tradeInProgress.otherSharesDepleted, 10)
+  const bnAllowance = createBigNumber(loginAccount.allowance || '0', 10)
+  const sharesDepleted = createBigNumber(tradeInProgress.sharesDepleted || '0', 10)
+  const otherSharesDepleted = createBigNumber(tradeInProgress.otherSharesDepleted || '0', 10)
   const sharesProvided = sharesDepleted.eq(ZERO) ? otherSharesDepleted.toFixed() : sharesDepleted.toFixed()
   // make sure that we actually have an updated allowance.
   const placeTradeParams = {
@@ -63,7 +63,7 @@ export const placeTrade = (marketId, outcomeId, tradeInProgress, doNotCreateOrde
     }))
   }
 
-  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(tradeInProgress.totalCost))) {
+  if (bnAllowance.lte(0) || bnAllowance.lte(createBigNumber(tradeInProgress.totalCost || '0'))) {
     dispatch(checkAccountAllowance((err, allowance) => {
       if (allowance === '0') {
         promptApprovalandSend()
