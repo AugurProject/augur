@@ -1,4 +1,3 @@
-import { augur } from 'services/augurjs'
 import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
