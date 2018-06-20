@@ -1,48 +1,44 @@
-language: node_js
+env:
+  global:
+    - secure: "B0vgd3/83+GeQXtpNKAfVpNh+PQ2zV8Xa6uNevBF8cTFc5lPLtE7dOxLl5i5gkXgpcWCeoG7dN8vaplePYgxciJUOb8amFe6dOE/qtX+dUiv08kmu7XTYFuQlLX3kFzRgfvNN/gEslJrVLFTUJuxP+FdGJzFdceN9ytkJsfCDds+a0npMi5QsgHQ4IWemTQ+9mF78sL0OkTeV5sZMACFA8Bm7bb3o8Xo679nkdS0+BiAKA4CoZuQ/E/5ivmpUi3d2M9vk7Y74fKus5slNeM8jax1z6n3C/mJN9s7pGFph3jUWd0UhssGvbp/X2O5Wnh2nnVaPYWMhyyE4bsQWpj9xE/URZYYOEX+YAc/E3+SYfOh0zU6E+DuI6aZQ/Z9LhGvmNBq5OCd0PUw4VXZrXAQqSIYfFLeTMgkW7fa7rJRxn+TF7GU9Yeuqv07eT/2fIgfvNKtj6hJsXdqpcU/IAsavkZ4+0Pf9CpJwmTemBLzZyaP/nDHBwz/c5OWJx2W6KFjdI/1+orI9Y/0DGbSpNK1wcUFEMk9+Qm1crE7lmxzSP0dQ3FpsRpq2uSrq/EwYMxTsYyfa7uhlExXYFcTYilmSdMyGII2mSNzkw0LHcjYb8mNpfW0ZHV3Y5xe0mXz7Zg407bLN29KQnTemDvw2/aX5xTOsQFzwacdLtlNkKJ3K64="
+    - secure: "yY8Ky8QVFsJtMlBhmNOqmuSAKddRZWeFA62FvkzF4PEAWLKGAQy5cOjzEicCQdhTiOC/oM3LWkLVH85OcQIaE7Z8IGmXzEJPlFs7w4DjU2vaSwWOt3n2IbgxuBKBRolEUByZHGai9oqe1WcM61fVh2GEuaAk/8JbBHslT8C6A47Uzsja0gHTZZQq90JRpOX6O+joe+ZBH7z0MV/oY2E6GGa75bVBFiZptuqcB1rWFdT5b6tHEMDJ1Of2A4yNfF52j5Lk+HWNVARFSO0IPxpcX763vaeiYQ/OLuzlBtN7K7aQizONw8pg/1ukQYAmOu+eQtQj3pTXCL0H3f8msNql4ksJlHXkHWJr1eYO+vpZr9xjCLs29fHTJQYl+QHqG/pOJKIMoCDQruUZwFcS8Yu3ZY8evugM0Sz9BHkKgaUVAxpyuurkDuUaHA4IQu05IbBbj5VwP4QHDwpvI/VMM4mrFmUIeW73GDFfvsAs6U635XzVEvE7IleN5nmkxTBh1vxH436xhmMPYWAoRwpI/LTA5/pNut4H2EyFNybotpPzy1oloAH/u7uw57oNbA/UKtxwaUtEp7n95Aqba+cr9xYJ48kY8Ro/GmIeXOW1GJC7r4qCbnmUr5tPlqtaGwDClzKpLJ9D6rc6GC5aO1iUnhbL+pHCbGBA8L7a4Q4zZihD3HA="
 notifications:
   email: false
 branches:
   only:
   - master
-  - travis-fixes
+  - electron-build
   - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
-node_js:
-- '8'
-addons:
-  apt:
-    packages:
-    - libusb-1.0-0-dev
-    - fakeroot
-git:
-  depth: 5
+
+
 matrix:
   include:
   - os: linux
-    dist: trusty
+    services: docker
     sudo: required
-  - os: osx
-before_install:
-  - scripts/preinstall.sh
-script:
-- travis_wait 60 npm run make
-after_success:
-  - scripts/post_build.py
-before_deploy:
-- git config --global user.email "builds@travis-ci.com"
-- git config --global user.name "Travis CI"
+    language: generic
 
-  #jobs:
-  #  include:
-  #    - stage: Github Release
-  #      script: skip
-  #      deploy:
-  #        provider: releases
-  #        api_key:
-  #          secure: P3j+xuXwAMMrLPkPQB7PA9Lqq7YM7nZlqoXiU8KFAcKNeRu+JGKI9Av9LSYKmhaoTsPnlEkeqzXSrfGskCRXuqjd8///niwqij3FguM9xZ1edfmjQbssa4adLQFQvG0v0QCbwdfDCnnahBxD3bwucccoApTpOxzRtXpwyHH36zpCcDfKi5WZJlvPE8Pc5e4wg9KsHoJFmOmzUecHvTSy1cxsCheSgCM5AUlGlD21YGSwkgYSu2a/h/XtUC4WWOrtJY38zQKS6wb8iUWOsj6+2tp50Eis9vb0+Adb1LyCWiwPBzV5k9+f529VsRNYYGxO0jwF+zEYXOh1clGkRyBh2VdV8Cwo+yT0LR0z5PmoNqDTptOXJofIeHYvAUh9Cjz/f3t49sh/kCYtDEGamBCmaGxuaVBr2rNfDhtuKSoPEw+2jb4es5/8+WLRcaUF1O2W+QoIjK9PJDT7jRzo7jJZGbAWM2fepFYLOGRSgfrQ//VOhDFWAIs2Ii0labUHJdkagHa/gq5qcPyO/fXzomrNb4ljY10HOEOPkZLf4LwD/0rtyJXq5QPZuY2r8bDf6v3+3k6/fDDt6qyNAlUYRhnDOvuKIEirkb9VQdGc9uSed/lLAXqdwb19oce0woM6nVj/VErWNSI4PMkK9NOEysMlevPJd+IgBZ9PVyvMmxlcRV0=
-  #        file_glob: true
-  #        file: out/make/*
-  #        skip_cleanup: true
-  #        prerelease: true
-  #        on:
-  #          repo: AugurProject/augur-app
-  #          tags: true
+  - os: osx
+    osx_image: xcode9.3
+    language: node_js
+    node_js: "9"
+    env:
+      - ELECTRON_CACHE=$HOME/.cache/electron
+      - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+script:
+ - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+        docker run --rm -ti \
+          --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+          --env ELECTRON_CACHE="/root/.cache/electron" \
+          --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+          -v ${PWD}:/project \
+          -v ${PWD##*/}-node-modules:/project/node_modules \
+          -v ~/.cache/electron:/root/.cache/electron \
+          -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+          electronuserland/builder:wine \
+          /bin/bash -c "scripts/electron-build.sh"
+    else
+        travis_wait scripts/electron-build.sh
+    fi
