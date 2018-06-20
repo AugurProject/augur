@@ -79,6 +79,8 @@ function buildTradeTransaction(trade, marketsData) {
   const meta = {}
   meta.type = TRADE
   const outcomeName = getOutcome(market, transaction.outcome)
+  console.log(transaction)
+  console.log(market)
   if (outcomeName) meta.outcome = outcomeName
   const formattedShares = formatShares(transaction.amount)
   meta.shares = formattedShares.formatted
