@@ -9,7 +9,7 @@ describe("server/getters/get-account-transfer-history", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.isTrade, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
+        getAccountTransferHistory(db, t.params.account, t.params.token, t.params.isInternalTransfer, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, accountTransferHistory) => {
           t.assertions(err, accountTransferHistory);
           db.destroy();
           done();
@@ -39,7 +39,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "shares",
         marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
         logIndex: 0,
@@ -53,7 +53,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "shares",
         marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
-        isTrade: 1,
+        isInternalTransfer: 1,
       }, {
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
         logIndex: 1,
@@ -67,7 +67,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "REP",
         marketId: null,
         outcome: null,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }]);
     },
   });
@@ -75,7 +75,7 @@ describe("server/getters/get-account-transfer-history", () => {
     description: "get account transfer history for all tokens, excluding trades",
     params: {
       account: "0x0000000000000000000000000000000000000b0b",
-      isTrade: false,
+      isInternalTransfer: false,
       token: null,
       isSortDescending: false,
     },
@@ -94,7 +94,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "shares",
         marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }, {
 
         transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadb33f",
@@ -109,7 +109,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "REP",
         marketId: null,
         outcome: null,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }]);
     },
   });
@@ -137,7 +137,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "shares",
         marketId: "0x0000000000000000000000000000000000000001",
         outcome: 0,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }]);
     },
   });
@@ -163,7 +163,7 @@ describe("server/getters/get-account-transfer-history", () => {
         symbol: "REP",
         marketId: null,
         outcome: null,
-        isTrade: 0,
+        isInternalTransfer: 0,
       }]);
     },
   });
