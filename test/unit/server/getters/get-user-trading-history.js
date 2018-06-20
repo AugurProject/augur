@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUserTradingHistory } = require("../../../../build/server/getters/get-user-trading-history");
+const {getUserTradingHistory} = require("../../../../build/server/getters/get-user-trading-history");
 
 describe("server/getters/get-user-trading-history", () => {
   const test = (t) => {
@@ -25,7 +25,7 @@ describe("server/getters/get-user-trading-history", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: null,
-      sortBy: null,
+      sortBy: "price",
       isSortDescending: null,
       limit: null,
       offset: null,
@@ -49,6 +49,23 @@ describe("server/getters/get-user-trading-history", () => {
         shareToken: "0x0100000000000000000000000000000000000000",
         timestamp: 1506474500,
         tradeGroupId: null,
+      }, {
+        amount: "2",
+        logIndex: 0,
+        maker: false,
+        marketCreatorFees: "0",
+        marketId: "0x0000000000000000000000000000000000000001",
+        orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
+        outcome: 0,
+        price: "4.2",
+        reporterFees: "0",
+        selfFilled: false,
+        settlementFees: "0",
+        shareToken: "0x0100000000000000000000000000000000000000",
+        timestamp: 1509065474,
+        tradeGroupId: null,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
+        type: "sell",
       }]);
     },
   });
@@ -85,8 +102,24 @@ describe("server/getters/get-user-trading-history", () => {
           tradeGroupId: null,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C09",
           type: "sell",
-        },
-        {
+        }, {
+          amount: "2",
+          logIndex: 0,
+          maker: true,
+          marketCreatorFees: "0",
+          marketId: "0x0000000000000000000000000000000000000001",
+          orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
+          outcome: 0,
+          price: "4.2",
+          reporterFees: "0",
+          selfFilled: false,
+          settlementFees: "0",
+          shareToken: "0x0100000000000000000000000000000000000000",
+          timestamp: 1509065474,
+          tradeGroupId: null,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
+          type: "sell",
+        }, {
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
           logIndex: 0,
           orderId: "0x1500000000000000000000000000000000000000000000000000000000000000",
@@ -259,8 +292,8 @@ describe("server/getters/get-user-trading-history", () => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
       orderType: null,
-      sortBy: null,
-      isSortDescending: null,
+      sortBy: "amount",
+      isSortDescending: false,
       limit: null,
       offset: null,
     },
@@ -284,6 +317,23 @@ describe("server/getters/get-user-trading-history", () => {
           timestamp: 1506474500,
           tradeGroupId: null,
           type: "buy",
+        }, {
+          amount: "2",
+          logIndex: 0,
+          maker: true,
+          marketCreatorFees: "0",
+          marketId: "0x0000000000000000000000000000000000000001",
+          orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
+          outcome: 0,
+          price: "4.2",
+          reporterFees: "0",
+          selfFilled: false,
+          settlementFees: "0",
+          shareToken: "0x0100000000000000000000000000000000000000",
+          timestamp: 1509065474,
+          tradeGroupId: null,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000d3adb33f",
+          type: "sell",
         },
       ]);
     },
