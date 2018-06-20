@@ -30,7 +30,7 @@ export function closePosition(marketId, outcomeId, callback = logError) {
         dispatch(addClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_NO_ORDERS))
       } else {
         dispatch(updateTradesInProgress(marketId, outcomeId, positionShares.gt(ZERO) ? SELL : BUY, bestFill.amountOfShares.toFixed(), bestFill.price.toNumber(), null, (err, tradesInProgress) => {
-          dispatch(placeTrade(marketId, outcomeId, { ...tradesInProgress }, true, (err, tradeGroupId) => {
+          dispatch(placeTrade(marketId, outcomeId, tradesInProgress, true, (err, tradeGroupId) => {
             if (err) {
               console.error('placeTrade err -- ', err)
               dispatch(addClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_FAILED))
