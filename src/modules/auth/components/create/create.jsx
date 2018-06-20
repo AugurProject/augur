@@ -4,12 +4,11 @@ import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Edge from 'modules/auth/containers/edge-create'
-import UportCreate from 'modules/auth/containers/uport-create'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
 import { CREATE_NAV } from 'modules/routes/constants/param-names'
-import { ITEMS, PARAMS } from 'modules/auth/constants/create-nav'
+import { ITEMS } from 'modules/auth/constants/create-nav'
 import { TITLE_SUFFIX } from 'modules/app/constants/title-suffix'
 
 import Styles from 'modules/auth/components/auth/auth.styles'
@@ -35,12 +34,7 @@ export default function AuthCreate(p) {
             selectedNav={selectedNav}
           />
           <div className={Styles.Auth__connections}>
-            {selectedNav == null &&
-              <Edge />
-            }
-            {selectedNav === PARAMS.UPORT &&
-              <UportCreate />
-            }
+            <Edge />
           </div>
         </div>
       </div>

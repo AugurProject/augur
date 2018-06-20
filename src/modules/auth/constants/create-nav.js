@@ -1,4 +1,4 @@
-import { Edge, uPort } from 'modules/common/components/icons'
+import { Edge } from 'modules/common/components/icons'
 
 export const PARAMS = {
   EDGE: 'edge',
@@ -12,10 +12,5 @@ export const ITEMS = [
     title: 'Edge',
     icon: Edge,
     default: true,
-  },
-  {
-    param: PARAMS.UPORT,
-    title: 'uPort',
-    icon: uPort,
   },
 ]
