@@ -14,7 +14,6 @@ describe("Create market page", () => {
   beforeAll(async () => {
     await page.goto(url);
 
-
     // TODO: Determine what a 'typical' desktop resolution would be for our users
     await page.setViewport({
       height: 1200,
@@ -221,7 +220,36 @@ describe("Create market page", () => {
     // Verify settlement fee is correct
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
 
-    // TODO: Verify liquidity got created
+    // Verify liquidity got created
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(3)", { text: "0.5000", timeout: timeoutMilliseconds });
+
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(3)", { text: "0.4700", timeout: timeoutMilliseconds });
+
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(3)", { text: "0.4300", timeout: timeoutMilliseconds });
+
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(3)", { text: "0.4000", timeout: timeoutMilliseconds });
+
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(3)", { text: "0.3700", timeout: timeoutMilliseconds });
+
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2)", { text: "3.0000", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(3)", { text: "0.3400", timeout: timeoutMilliseconds });
   });
 
   it("should allow user to create a new scalar market", async () => {
@@ -288,7 +316,7 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Add Order" });
 
     // Go to the Review page
-  await expect(page).toClick("button", { text: "Next: Review" });
+    await expect(page).toClick("button", { text: "Next: Review" });
 
     // Submit new market
     await expect(page).toClick("button", { text: "Submit" });
