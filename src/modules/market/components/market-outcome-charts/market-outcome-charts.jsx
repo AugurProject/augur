@@ -11,8 +11,6 @@ import MarketOutcomeCandlestick
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
 import MarketOutcomeOrderBook
   from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
-import MarketOutcomeMidpoint
-  from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 import { loadCandleStickData } from 'modules/market/actions/load-candlestick-data'
@@ -142,7 +140,6 @@ export default class MarketOutcomeCharts extends Component {
       const priceTimeSeriesCandleStick = data[selectedOutcome.id] || []
       this.setState({
         priceTimeSeriesCandleStick,
-        hasPriceHistory: priceTimeSeriesCandleStick.length !== 0,
       })
     })
   }
@@ -240,6 +237,7 @@ export default class MarketOutcomeCharts extends Component {
       isMobile,
       fixedPrecision,
       updatePrecision,
+      hasPriceHistory,
     } = this.props
     const s = this.state
 
@@ -281,7 +279,6 @@ export default class MarketOutcomeCharts extends Component {
             </div>
           }
           <div
-            ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
             className={classNames(Styles.MarketOutcomeCharts__orders, {
               [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
             })}
@@ -305,7 +302,10 @@ export default class MarketOutcomeCharts extends Component {
                 updateChartHeaderHeight={this.updateChartHeaderHeight}
               />
             </div>
-            <div className={Styles.MarketOutcomeCharts__orderbook}>
+            <div
+              ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
+              className={Styles.MarketOutcomeCharts__orderbook}
+            >
               <MarketOutcomeOrderBook
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
@@ -317,18 +317,12 @@ export default class MarketOutcomeCharts extends Component {
                 updateHoveredPrice={this.updateHoveredPrice}
                 updatePrecision={updatePrecision}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
+                hasOrders={hasOrders}
+                orderBookKeys={orderBookKeys}
+                chartWidths={s.chartWidths}
+                hasPriceHistory={hasPriceHistory}
               />
             </div>
-            <MarketOutcomeMidpoint
-              isMobile={isMobile}
-              hasPriceHistory={s.hasPriceHistory}
-              hasOrders={hasOrders}
-              chartWidths={s.chartWidths}
-              headerHeight={s.headerHeight}
-              orderBookKeys={orderBookKeys}
-              sharedChartMargins={s.sharedChartMargins}
-              fixedPrecision={fixedPrecision}
-            />
           </div>
         </div>
         {isMobile &&

@@ -126,7 +126,7 @@ export default class MarketOutcomeMidpoint extends Component {
       const midpointChart = d3.select(midpointContainer)
         .append('svg')
         .attr('width', drawParams.containerWidth)
-        .attr('height', drawParams.containerHeight)
+        .attr('height', 40)
 
       drawMidpointLine({
         drawParams,
@@ -178,7 +178,7 @@ function determineDrawParams(options) {
     isMobile,
   } = options
 
-  const containerWidth = isMobile ? chartWidths.candle + chartWidths.orders : drawContainer.clientWidth
+  const containerWidth = isMobile ? chartWidths.orders : drawContainer.clientWidth
   const containerHeight = drawContainer.clientHeight + headerHeight
 
   const chartDim = {
@@ -218,7 +218,7 @@ function drawMidpointLine(options) {
 
   if (hasOrders) {
     drawSegments.push({
-      start: chartWidths.candle + drawParams.chartDim.left,
+      start: 0,
       end: drawParams.containerWidth - midpointLabelWidth - drawParams.chartDim.right,
     })
   }
@@ -254,7 +254,7 @@ function drawMidpointLabel(options) {
   midpointChart.append('text')
     .attr('id', 'midpoint_label')
     .attr('class', `${Styles.MarketOutcomeMidpoint__label}`)
-    .attr('x', isMobile ? drawParams.chartWidths.candle : drawParams.containerWidth)
+    .attr('x', isMobile ? drawParams.chartWidths.orders : drawParams.containerWidth)
     .attr('y', drawParams.yScale(0.5))
     .attr('text-anchor', isMobile ? 'start' : 'end')
     .attr('dominant-baseline', 'central')
@@ -271,7 +271,7 @@ function drawOrdersNullMessage(options) {
   midpointChart.append('text')
     .attr('id', 'midpoint_null_candle_label')
     .attr('class', `${Styles['MarketOutcomeMidpoint__null-message']}`)
-    .attr('x', chartWidths.candle + (chartWidths.orders / 2))
+    .attr('x', chartWidths.orders / 2)
     .attr('y', drawParams.yScale(0.5))
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'central')

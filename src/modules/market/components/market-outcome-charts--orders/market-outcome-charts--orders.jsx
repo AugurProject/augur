@@ -6,6 +6,8 @@ import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-out
 
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
+import MarketOutcomeMidpoint
+  from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
@@ -21,9 +23,13 @@ export default class MarketOutcomeOrderbook extends Component {
     updatePrecision: PropTypes.func,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
+    chartWidths: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
+    hasPriceHistory: PropTypes.bool,
   }
 
   constructor(props) {
@@ -60,6 +66,10 @@ export default class MarketOutcomeOrderbook extends Component {
       updateSelectedOrderProperties,
       isMobile,
       headerHeight,
+      hasOrders,
+      orderBookKeys,
+      chartWidths,
+      hasPriceHistory,
     } = this.props
     const s = this.state
 
@@ -145,7 +155,18 @@ export default class MarketOutcomeOrderbook extends Component {
             ))}
           </div>
         </div>
-        <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket} >
+          <MarketOutcomeMidpoint
+            isMobile={isMobile}
+            hasPriceHistory={hasPriceHistory}
+            hasOrders={hasOrders}
+            chartWidths={chartWidths}
+            headerHeight={headerHeight}
+            orderBookKeys={orderBookKeys}
+            sharedChartMargins={sharedChartMargins}
+            fixedPrecision={fixedPrecision}
+          />
+        </div>
         <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
           <div className={Styles.MarketOutcomeOrderBook__container} ref={(bids) => { this.bids = bids }} >
             {(orderBook.bids || []).map((order, i) => (
