@@ -7,28 +7,33 @@ const Midpoint = (props) => {
   const {
     orderBookKeys,
     fixedPrecision,
+    hasOrders,
   } = props
 
   return (
-    <div className={Styles.MarketOutcomeMidpoint}>
-      <div className={Styles.MarketOutcomeMidpointLine} />
-      <div className={Styles.MarketOutcomeMidpointValue}>
-        {`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`}
-      </div>
-    </div>
+    <section>
+      { hasOrders &&
+        <div className={Styles.MarketOutcomeMidpoint}>
+          <div className={Styles.MarketOutcomeMidpointLine} />
+          <div className={Styles.MarketOutcomeMidpointValue}>
+            {`${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`}
+          </div>
+        </div>
+      }
+      { !hasOrders &&
+        <div className={Styles.MarketOutcomeMidpointNullState}>
+          No Open Orders
+        </div>
+      }
+    </section>
   )
 }
 
 
 Midpoint.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
-  chartWidths: PropTypes.object.isRequired,
-  headerHeight: PropTypes.number.isRequired,
   orderBookKeys: PropTypes.object.isRequired,
-  sharedChartMargins: PropTypes.object.isRequired,
   hasOrders: PropTypes.bool.isRequired,
   fixedPrecision: PropTypes.number.isRequired,
-  hasPriceHistory: PropTypes.bool,
 }
 
 export default Midpoint
