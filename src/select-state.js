@@ -12,6 +12,7 @@ export const selectClosePositionTradeGroupsState = state => state.closePositionT
 export const selectConnectionState = state => state.connection
 export const selectDisputeCrowdsourcerTokens = state => state.disputeCrowdsourcerTokens
 export const selectEdgeContextState = state => state.edgeContext
+export const selectEdgeLoadingState = state => state.edgeLoading
 export const selectEnvState = state => state.env
 export const selectFavoritesState = state => state.favorites
 export const selectHasLoadedCategoryState = state => state.hasLoadedCategory

@@ -7,6 +7,7 @@ import isMobileSmall from 'modules/app/reducers/is-mobile-small'
 import isAnimating from 'modules/app/reducers/is-animating'
 import loginAccount from 'modules/auth/reducers/login-account'
 import edgeContext from 'modules/auth/reducers/edge-context'
+import edgeLoading from 'modules/auth/reducers/edge-loading'
 import isLogged from 'modules/auth/reducers/is-logged'
 import ledgerStatus from 'modules/auth/reducers/ledger-status'
 import newMarket from 'modules/create-market/reducers/new-market'
@@ -58,6 +59,7 @@ export function createReducer() {
     isMobileSmall,
     isAnimating,
     edgeContext,
+    edgeLoading,
     loginAccount,
     isLogged,
     ledgerStatus,

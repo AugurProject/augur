@@ -1,4 +1,4 @@
-import { UPDATE_EDGE_CONTEXT } from 'modules/auth/actions/prepare-edge-context'
+import { UPDATE_EDGE_CONTEXT } from 'modules/auth/actions/show-edge-login'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = null
