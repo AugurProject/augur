@@ -79,8 +79,6 @@ function buildTradeTransaction(trade, marketsData) {
   const meta = {}
   meta.type = TRADE
   const outcomeName = getOutcome(market, transaction.outcome)
-  console.log(transaction)
-  console.log(market)
   if (outcomeName) meta.outcome = outcomeName
   const formattedShares = formatShares(transaction.amount)
   meta.shares = formattedShares.formatted
@@ -316,7 +314,7 @@ function processReport(market, transaction) {
 
 function getOutcome(market, outcome) {
   let value = null
-  if (!market || !outcome) return value
+  if (!market || isNaN(outcome)) return value
   if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
