@@ -52,7 +52,7 @@ describe("server/getters/get-user-trading-history", () => {
       }, {
         amount: "2",
         logIndex: 0,
-        maker: true,
+        maker: false,
         marketCreatorFees: "0",
         marketId: "0x0000000000000000000000000000000000000001",
         orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
@@ -105,7 +105,7 @@ describe("server/getters/get-user-trading-history", () => {
         }, {
           amount: "2",
           logIndex: 0,
-          maker: false,
+          maker: true,
           marketCreatorFees: "0",
           marketId: "0x0000000000000000000000000000000000000001",
           orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
@@ -320,7 +320,7 @@ describe("server/getters/get-user-trading-history", () => {
         }, {
           amount: "2",
           logIndex: 0,
-          maker: false,
+          maker: true,
           marketCreatorFees: "0",
           marketId: "0x0000000000000000000000000000000000000001",
           orderId: "0x1990000000000000000000000000000000000000000000000000000000000000",
