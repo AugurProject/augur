@@ -8,6 +8,7 @@ import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outc
 import { isEqual } from 'lodash'
 import CustomPropTypes from 'utils/custom-prop-types'
 import { createBigNumber } from 'utils/create-big-number'
+import { ZERO } from 'modules/trade/constants/numbers'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
@@ -355,9 +356,6 @@ function determineDrawParams(options) {
     sharedChartMargins,
     depthChart,
     marketDepth,
-    orderBookKeys,
-    fixedPrecision,
-    isMobile,
     marketMax,
     marketMin,
   } = options
@@ -371,30 +369,20 @@ function determineDrawParams(options) {
   }
 
 
-  // If spread is zero we default to market min/max.
-  const marketMinMax = (orderBookKeys.max.isEqualTo(orderBookKeys.min)) ? { ...orderBookKeys, min: marketMin, max: marketMax } : orderBookKeys
-
   const containerWidth = depthChart.clientWidth
   const containerHeight = depthChart.clientHeight
   const drawHeight = containerHeight - chartDim.top - chartDim.bottom
 
-  const xDomain = Object.keys(marketDepth).reduce((p, side) => [...p, ...marketDepth[side].reduce((p, item) => [...p, item[0].toNumber()], [])], [0])
-
-  // Determine bounding diff
-  const maxDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
-  const minDiff = createBigNumber(marketMinMax.mid.minus(marketMinMax.min).toPrecision(15)).absoluteValue()
-
-  let boundDiff = (maxDiff > minDiff ? maxDiff : minDiff)
-
-  const yDomain = [
-    createBigNumber(marketMinMax.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-    createBigNumber(marketMinMax.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-  ]
-
-  boundDiff = boundDiff.toNumber()
+  const xDomain = [marketMin.toNumber(), marketMax.toNumber()]
+  const yDomain = [0, Object.keys(marketDepth)
+    .reduce((p, side) => {
+      const result = (marketDepth[side].reduce((p, item) => p.plus(item[0]), ZERO)).toNumber()
+      if (result > p) return result
+      return p
+    }, 0)]
 
   const xScale = d3.scaleLinear()
-    .domain(isMobile ? d3.extent(xDomain).sort((a, b) => b - a) : d3.extent(xDomain))
+    .domain(d3.extent(xDomain))
     .range([chartDim.left, containerWidth - chartDim.right - 1])
 
   const yScale = d3.scaleLinear()
@@ -430,7 +418,6 @@ function determineDrawParams(options) {
     newMarketDepth,
     xDomain,
     yDomain,
-    boundDiff,
     xScale,
     yScale,
   }
@@ -472,13 +459,21 @@ function drawTicks(options) {
       .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
   }
 
+  //  Min/Max Boundary Lines
+  const rangeBounds = depthChart.append('g')
+    .attr('id', 'depth_range_bounds')
+
+
+  const boundDiff = drawParams.yDomain[1] / 2
   //  Offset Ticks
-  const offsetTicks = drawParams.yDomain.map((d, i) => { // Assumes yDomain is [min, max]
+  const offsetTicks = drawParams.yDomain.map((d, i) => {
     if (i === 0) {
-      return d + (drawParams.boundDiff / 4)
+      return d + (boundDiff / 2)
     }
-    return d - (drawParams.boundDiff / 4)
+    return d - (boundDiff / 2)
   })
+  offsetTicks.push(boundDiff)
+  offsetTicks.push(drawParams.yDomain[1])
 
   const yTicks = depthChart.append('g')
     .attr('id', 'depth_y_ticks')
@@ -502,57 +497,6 @@ function drawTicks(options) {
     .attr('dx', 0)
     .attr('dy', drawParams.chartDim.tickOffset)
     .text(d => d.toFixed(fixedPrecision))
-
-  //  Min/Max Boundary Lines
-  const rangeBounds = depthChart.append('g')
-    .attr('id', 'depth_range_bounds')
-
-  if (drawParams.yDomain[0] < marketMin) {
-    rangeBounds.append('line')
-      .attr('class', 'tick-line')
-      .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth)
-      .attr('y1', () => drawParams.yScale(orderBookKeys.min))
-      .attr('y2', () => drawParams.yScale(orderBookKeys.min))
-
-    rangeBounds.append('text')
-      .attr('class', 'tick-value')
-      .attr('x', 0)
-      .attr('y', d => drawParams.yScale(orderBookKeys.min))
-      .attr('dx', 50)
-      .attr('dy', drawParams.chartDim.tickOffset)
-      .text('min')
-
-    rangeBounds.append('rect')
-      .attr('class', 'bounding-box')
-      .attr('x', 0)
-      .attr('y', () => drawParams.yScale(orderBookKeys.min))
-      .attr('height', drawParams.drawHeight - drawParams.yScale(orderBookKeys.min))
-      .attr('width', drawParams.containerWidth)
-
-  } else if (drawParams.yDomain[drawParams.yDomain.length - 1] > marketMax) {
-    rangeBounds.append('line')
-      .attr('class', 'tick-line')
-      .attr('x1', 0)
-      .attr('x2', drawParams.containerWidth)
-      .attr('y1', () => drawParams.yScale(orderBookKeys.max))
-      .attr('y2', () => drawParams.yScale(orderBookKeys.max))
-
-    rangeBounds.append('text')
-      .attr('class', 'tick-value')
-      .attr('x', 0)
-      .attr('y', d => drawParams.yScale(orderBookKeys.max))
-      .attr('dx', 50)
-      .attr('dy', drawParams.chartDim.tickOffset)
-      .text('max')
-
-    rangeBounds.append('rect')
-      .attr('class', 'bounding-box')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('height', drawParams.yScale(orderBookKeys.max))
-      .attr('width', drawParams.containerWidth)
-  }
 
   // X Axis
   depthChart.append('g')
@@ -589,8 +533,8 @@ function drawLines(options) {
   // Depth Line
   const depthLine = d3.line()
     .curve(d3.curveStepBefore)
-    .x(d => drawParams.xScale(d[0]))
-    .y(d => drawParams.yScale(d[1]))
+    .x(d => drawParams.xScale(d[1]))
+    .y(d => drawParams.yScale(d[0]))
 
   Object.keys(marketDepth).forEach((side) => {
     depthChart.append('path')
