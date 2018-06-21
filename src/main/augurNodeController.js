@@ -18,9 +18,9 @@ const defaultConfig = {
     "network":"rinkeby",
     "networks": {
         "rinkeby": {
-            "http":"http://rinkeby.ethereum.nodes.augur.net",
+            "http":"https://rinkeby.augur.net/ethereum-http",
             "name":"Rinkeby",
-            "ws":"wss://websocket-rinkeby.ethereum.nodes.augur.net"
+            "ws":"wss://rinkeby.augur.net/ethereum-ws"
         },
         "local": {
             "http":"http://localhost:8545",
