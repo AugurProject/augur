@@ -4,7 +4,6 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 
-
 import getValue from 'utils/get-value'
 import logError from 'utils/log-error'
 
