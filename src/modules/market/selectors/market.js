@@ -290,7 +290,7 @@ export function assembleMarket(
         outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)
 
         return outcome
-      }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))
+      }).sort((a, b) => (a.name < b.name ? -1 : 1))
 
       market.tags = (market.tags || []).filter(tag => !!tag)
 
