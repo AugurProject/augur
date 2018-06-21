@@ -1,7 +1,5 @@
 "use strict";
 
-// TODO: Add more tests to make this test suite match the create-market walkthrough
-
 import "jest-environment-puppeteer";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 
@@ -105,7 +103,12 @@ describe("Create market page", () => {
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
-    // Fill out market creator settlement fee
+    // TODO: Verify Settlement Fee is required and must be a number between 0 and 100
+    // TODO: Verify that orders must be priced between min and max value for the market
+    // TOOD: Verify that adding an order should update the charts
+    // TODO: Verify that the orders added to the market are listed on the market's Trading page after market creation
+
+    // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
     // Place buy orders
@@ -139,12 +142,13 @@ describe("Create market page", () => {
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
 
-    // TODO: Verify market information
+    // TODO: Verify that the broken-down stats appear to be accurate
+    // TODO: Verify that the ETH and gas required to place liquidity orders is included in the totals
 
     // Submit new market
     await expect(page).toClick("button", { text: "Submit" });
 
-    // Make sure user is redirected to Transactions page
+    // Make sure user is redirected to Portfolio: Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item", { visible: true });
 
     // Go to new market trading page
@@ -202,6 +206,11 @@ describe("Create market page", () => {
     await expect(page).toFill("#cm__input--tag2", "Test");
     await expect(page).toClick("button", { text: "Next: Outcome" });
 
+    // TODO: Verify there are 8 inputs under the "Potential Outcomes" label and the first 2 are required
+    // TODO: Verify that Outcome names must be unique
+    // TODO: Verify that Additional Information field is optional
+    // TODO: Confirm that when a with two or more outcomes is created, those outcomes are properly listed as the market's outcomes
+
     // Fill out Outcome page
     await expect(page).toClick("button", { text: "Multiple Choice" });
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(1) input", "Outcome 1");
@@ -226,7 +235,7 @@ describe("Create market page", () => {
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
-    // Fill out market creator settlement fee
+    // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
     // Place buy orders
@@ -323,6 +332,16 @@ describe("Create market page", () => {
     await expect(page).toFill("#cm__input--tag2", "Test");
     await expect(page).toClick("button", { text: "Next: Outcome" });
 
+    // TODO: You should see 3 input boxes under the "Range Values" header, and an additional input under the "precision" header
+    // TODO: Min Value is required, must be less than Max Value
+    // TODO: Max Value is required, must be greater than Min Value
+    // TODO: Denomination is an optional field to indicate the denomination of the range
+    // TODO: Precision should be defaulted to 0.0001
+    // TODO: Precision is required
+    // TODO: Additional Information field is optional
+    // TODO: Create a scalar market and verify that precision is set based on your entered precision value
+    // TODO: Create a scalar market and verify that Min, Max, and Denomination are properly displayed on the Markets List market card
+
     // Fill out Outcome page
     await expect(page).toClick("button", { text: "Numerical Range" });
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__scalar div:nth-child(1) input", "0");
@@ -343,7 +362,7 @@ describe("Create market page", () => {
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
-    // Fill out market creator settlement fee
+    // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
     // Place buy orders
