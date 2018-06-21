@@ -18,7 +18,14 @@ export const loadAccountOrders = (options = {}, callback = logError) => (dispatc
       forEach(marketIds, (marketId) => {
         forEach(orders[marketId], (outcomeOrder, outcome) => {
           forEach(outcomeOrder, (orderBook, orderTypeLabel) => {
-            dispatch(updateOrderBook(marketId, outcome, orderTypeLabel, orderBook))
+            const openOrders = Object.keys(orderBook)
+              .reduce((p, key) => {
+                if (orderBook[key].orderState === augur.constants.ORDER_STATE.OPEN) {
+                  p[key] = orderBook[key]
+                }
+                return p
+              }, {})
+            dispatch(updateOrderBook(marketId, outcome, orderTypeLabel, openOrders))
           })
         })
       })
