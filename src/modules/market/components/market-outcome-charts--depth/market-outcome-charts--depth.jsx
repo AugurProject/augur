@@ -513,7 +513,6 @@ function drawLines(options) {
     drawParams,
     depthChart,
     marketDepth,
-    isMobile,
   } = options
 
   // Defs
@@ -525,22 +524,22 @@ function drawLines(options) {
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-left-bid')
-    .attr('offset', '0')
+    .attr('offset', '0%')
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-right-bid')
-    .attr('offset', '1')
+    .attr('offset', '100%')
 
   const subtleGradientAsk = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientAsk')
 
   subtleGradientAsk.append('stop')
     .attr('class', 'stop-left-ask')
-    .attr('offset', '1')
+    .attr('offset', '0%')
 
   subtleGradientAsk.append('stop')
     .attr('class', 'stop-right-ask')
-    .attr('offset', '0')
+    .attr('offset', '100%')
 
 
     // Depth Line
@@ -558,14 +557,14 @@ function drawLines(options) {
 
   const areaBid = d3.area()
     .curve(d3.curveStepBefore)
-    .x0(d => (isMobile ? drawParams.xScale(d[1]) : 0))
-    .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[1])))
+    .x0(d => drawParams.xScale(d[1]))
+    .x1(d => d3.extent(drawParams.xDomain)[0])
     .y(d => drawParams.yScale(d[0]))
 
   const areaAsk = d3.area()
     .curve(d3.curveStepBefore)
-    .x0(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[1])))
-    .x1(d => (isMobile ? drawParams.xScale(d[1]) : 0))
+    .x0(d => drawParams.xScale(d[1]))
+    .x1(d => d3.extent(drawParams.xDomain)[1])
     .y(d => drawParams.yScale(d[0]))
 
   Object.keys(marketDepth).forEach((side) => {
