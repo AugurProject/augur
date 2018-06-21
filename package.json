@@ -31,9 +31,9 @@
       ]
     },
     "win": {
-        "target": [
-            "squirrel"
-        ]
+      "target": [
+        "squirrel"
+      ]
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
