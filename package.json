@@ -1,6 +1,6 @@
 {
   "name": "augur-app",
-  "version": "1.0.5",
+  "version": "1.0.0-alpha.6",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
