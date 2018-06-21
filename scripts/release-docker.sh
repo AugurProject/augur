@@ -19,11 +19,15 @@ aws_deploy () {
     aws --region=us-east-1 ecs update-service  --service "$augur_service" --cluster "${cluster}" --force-new-deployment
 }
 
+
+push_core_tag=false
+
 case ${augur_env} in
     dev)
         network="rinkeby"
         cluster="dev-augur-net"
         augur_service="dev-augur-node"
+        push_core_tag=true
         ;;
     stable)
         network="stable"
@@ -35,10 +39,17 @@ case ${augur_env} in
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network} --tag augurproject/${augur_repo}:${augur_env} --tag augurproject/${augur_repo}:$version
+docker build . --build-arg ethereum_network=${network}
+    --tag augurproject/${augur_repo}:${augur_env} \
+    --tag augurproject/${augur_repo}:$version \
+    --tag augurproject/${augur_repo}:$(npm explore augur.js -- npm run --silent core:version)
 
 docker push augurproject/${augur_repo}:${version}
 docker push augurproject/${augur_repo}:${augur_env}
+
+if [[ $push_core_tag ]]; then
+    docker push augurproject/${augur_repo}:$(npm explore augur.js -- npm run --silent core:version)
+fi
 
 # install packages needed to deploy to aws, then deploy
 aws_preconfigure
