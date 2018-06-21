@@ -127,6 +127,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
 
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]))
+  dispatch(loadMarketsDisputeInfo([log.market])) // need this in here for now because of that bug
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(loadReporting())

@@ -11,6 +11,7 @@ import { logout } from 'modules/auth/actions/logout'
 import { formatRep, formatEther } from 'utils/format-number'
 import getRep from 'modules/account/actions/get-rep'
 import { augur } from 'services/augurjs'
+import getMarketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -99,5 +100,6 @@ export const helpers = (store) => {
       if (result.err) return reject()
       resolve(result.data)
     }))),
+    getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
   }
 }
