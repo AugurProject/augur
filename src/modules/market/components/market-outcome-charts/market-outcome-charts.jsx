@@ -9,7 +9,7 @@ import debounce from 'utils/debounce'
 import MarketOutcomeCandlestick
   from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
-import MarketOutcomeOrderBook
+import MarketOutcomeChartsOrders
   from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
@@ -63,10 +63,6 @@ export default class MarketOutcomeCharts extends Component {
         top: 0,
         bottom: 30,
       },
-      chartWidths: {
-        candle: 0,
-        orders: 0,
-      },
     }
 
     this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
@@ -74,11 +70,8 @@ export default class MarketOutcomeCharts extends Component {
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateSelectedRange = this.updateSelectedRange.bind(this)
-    this.updateChartWidths = this.updateChartWidths.bind(this)
-    this.debouncedUpdateChartWidths = debounce(this.updateChartWidths, 500)
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
-    this.updateChartsWidth = this.updateChartWidths.bind(this)
     this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(this)
   }
 
@@ -88,10 +81,6 @@ export default class MarketOutcomeCharts extends Component {
     if (this.props.selectedOutcome && !this.props.excludeCandlestick && this.props.currentTimeInSeconds) {
       this.getData()
     }
-
-    this.updateChartWidths()
-
-    window.addEventListener('resize', this.debouncedUpdateChartWidths)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -106,11 +95,6 @@ export default class MarketOutcomeCharts extends Component {
       this.getData()
     }
 
-    this.updateChartWidths()
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.debouncedUpdateChartWidths)
   }
 
   getData() {
@@ -168,20 +152,6 @@ export default class MarketOutcomeCharts extends Component {
       selectedPeriod,
       selectedRange,
     })
-  }
-
-  updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
-    const candle = this.candlestickContainer ? this.candlestickContainer.clientWidth : 0
-    const orders = this.ordersContainer ? this.ordersContainer.clientWidth : 0
-
-    if (this.state.chartWidths.candle !== candle || this.state.chartWidths.orders !== orders) {
-      this.setState({
-        chartWidths: {
-          candle,
-          orders,
-        },
-      })
-    }
   }
 
   updateChartHeaderHeight(headerHeight) {
@@ -306,7 +276,7 @@ export default class MarketOutcomeCharts extends Component {
               ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
               className={Styles.MarketOutcomeCharts__orderbook}
             >
-              <MarketOutcomeOrderBook
+              <MarketOutcomeChartsOrders
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
@@ -319,7 +289,6 @@ export default class MarketOutcomeCharts extends Component {
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 hasOrders={hasOrders}
                 orderBookKeys={orderBookKeys}
-                chartWidths={s.chartWidths}
                 hasPriceHistory={hasPriceHistory}
               />
             </div>
