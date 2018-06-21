@@ -25,6 +25,7 @@ matrix:
     env:
       - ELECTRON_CACHE=$HOME/.cache/electron
       - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+      - CSC_IDENTITY_AUTO_DISCOVERY=false
 
 script:
  - |

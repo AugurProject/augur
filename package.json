@@ -27,15 +27,19 @@
     "linux": {
       "target": [
         "deb",
-        "rpm",
         "snap"
       ]
+    },
+    "win": {
+        "target": [
+            "squirrel"
+        ]
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
       "provider": "s3",
       "bucket": "augur-app-releases",
-      "path": "/${version}/"
+      "path": "${version}"
     }
   },
   "config": {
@@ -74,7 +78,6 @@
     "augur-node": "0.2.11",
     "augur-ui": "3.36.0",
     "augur.js": "4.12.0-8",
-    "electron-compile": "6.4.2",
     "knex": "0.14.6",
     "node-pre-gyp": "~0.6.38",
     "opn": "5.3.0",
@@ -83,6 +86,8 @@
   "devDependencies": {
     "electron": "2.0.0",
     "electron-builder": "^20.15.1",
+    "electron-builder-squirrel-windows": "^20.15.0",
+    "electron-compile": "6.4.2",
     "electron-forge": "5.2.0",
     "electron-prebuilt-compile": "2.0.0",
     "electron-publisher-s3": "^20.15.0"
