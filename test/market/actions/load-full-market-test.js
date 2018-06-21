@@ -250,7 +250,6 @@ describe('modules/market/actions/load-full-market.js', () => {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
               marketId: '0xMARKETID',
-              orderType: 'OPEN',
             },
           },
           {
@@ -336,7 +335,6 @@ describe('modules/market/actions/load-full-market.js', () => {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
               marketId: '0xMARKETID',
-              orderType: 'OPEN',
             },
           },
           {
@@ -405,7 +403,6 @@ describe('modules/market/actions/load-full-market.js', () => {
             type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
             data: {
               marketId: '0xMARKETID',
-              orderType: 'OPEN',
             },
           },
           {
