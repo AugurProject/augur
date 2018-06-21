@@ -7,9 +7,7 @@ import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outc
 
 import { isEqual } from 'lodash'
 import CustomPropTypes from 'utils/custom-prop-types'
-import { createBigNumber } from 'utils/create-big-number'
 import { ZERO } from 'modules/trade/constants/numbers'
-
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 
@@ -376,10 +374,13 @@ function determineDrawParams(options) {
   const xDomain = [marketMin.toNumber(), marketMax.toNumber()]
   const yDomain = [0, Object.keys(marketDepth)
     .reduce((p, side) => {
-      const result = (marketDepth[side].reduce((p, item) => p.plus(item[0]), ZERO)).toNumber()
-      if (result > p) return result
+      if (marketDepth[side].length > 0) {
+        const result = marketDepth[side][marketDepth[side].length -1][0]
+        if (result.gt(p)) return result
+      }
       return p
-    }, 0)]
+    // '1.05' gives a 5% buffer on the top
+    }, ZERO).times(1.05).toNumber()]
 
   const xScale = d3.scaleLinear()
     .domain(d3.extent(xDomain))
@@ -429,8 +430,6 @@ function drawTicks(options) {
     depthChart,
     orderBookKeys,
     fixedPrecision,
-    marketMin,
-    marketMax,
     isMobile,
   } = options
 
@@ -452,17 +451,12 @@ function drawTicks(options) {
   if (!isMobile) {
     depthChart.append('text')
       .attr('class', 'tick-value')
-      .attr('x', 0)
-      .attr('y', drawParams.yScale(orderBookKeys.mid))
-      .attr('dx', 0)
-      .attr('dy', drawParams.chartDim.tickOffset)
+      .attr('x', drawParams.yScale(orderBookKeys.mid))
+      .attr('y', drawParams.containerHeight - 10)
+      .attr('dx', drawParams.chartDim.tickOffset)
+      .attr('dy', 0)
       .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
   }
-
-  //  Min/Max Boundary Lines
-  const rangeBounds = depthChart.append('g')
-    .attr('id', 'depth_range_bounds')
-
 
   const boundDiff = drawParams.yDomain[1] / 2
   //  Offset Ticks
