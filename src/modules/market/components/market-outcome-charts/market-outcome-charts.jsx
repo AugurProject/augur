@@ -4,8 +4,6 @@ import classNames from 'classnames'
 import ScrollSnap from 'scroll-snap'
 import logError from 'utils/log-error'
 
-import debounce from 'utils/debounce'
-
 import MarketOutcomeCandlestick
   from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'

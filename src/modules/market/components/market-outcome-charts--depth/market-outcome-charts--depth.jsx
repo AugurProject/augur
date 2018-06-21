@@ -449,11 +449,18 @@ function drawTicks(options) {
 
   //  Midpoint Label
   if (!isMobile) {
+    const quarter = drawParams.yDomain[1] * 0.87
+    depthChart.append('line')
+      .attr('class', 'tick-line--midpoint')
+      .attr('x1', drawParams.xScale(orderBookKeys.mid.toNumber()))
+      .attr('y1', 0)
+      .attr('x2', drawParams.xScale(orderBookKeys.mid.toNumber()))
+      .attr('y2', drawParams.containerHeight - drawParams.chartDim.bottom)
     depthChart.append('text')
-      .attr('class', 'tick-value')
-      .attr('x', drawParams.yScale(orderBookKeys.mid))
-      .attr('y', drawParams.containerHeight - 10)
-      .attr('dx', drawParams.chartDim.tickOffset)
+      .attr('class', 'tick-value-midpoint')
+      .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
+      .attr('y', drawParams.yScale(quarter))
+      .attr('dx', 5)
       .attr('dy', 0)
       .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
   }
@@ -513,18 +520,30 @@ function drawLines(options) {
   const chartDefs = depthChart.append('defs')
 
   //  Fills
-  const subtleGradient = chartDefs.append('linearGradient')
-    .attr('id', 'subtleGradient')
+  const subtleGradientBid = chartDefs.append('linearGradient')
+    .attr('id', 'subtleGradientBid')
 
-  subtleGradient.append('stop')
-    .attr('class', 'stop-left')
+  subtleGradientBid.append('stop')
+    .attr('class', 'stop-left-bid')
     .attr('offset', '0')
 
-  subtleGradient.append('stop')
-    .attr('class', 'stop-right')
+  subtleGradientBid.append('stop')
+    .attr('class', 'stop-right-bid')
     .attr('offset', '1')
 
-  // Depth Line
+  const subtleGradientAsk = chartDefs.append('linearGradient')
+    .attr('id', 'subtleGradientAsk')
+
+  subtleGradientAsk.append('stop')
+    .attr('class', 'stop-left-ask')
+    .attr('offset', '1')
+
+  subtleGradientAsk.append('stop')
+    .attr('class', 'stop-right-ask')
+    .attr('offset', '0')
+
+
+    // Depth Line
   const depthLine = d3.line()
     .curve(d3.curveStepBefore)
     .x(d => drawParams.xScale(d[1]))
@@ -533,21 +552,29 @@ function drawLines(options) {
   Object.keys(marketDepth).forEach((side) => {
     depthChart.append('path')
       .data([marketDepth[side]])
-      .attr('class', `depth-line outcome-line-${side}`)
+      .attr('class', `depth-line-${side} outcome-line-${side}`)
       .attr('d', depthLine)
   })
 
-  const area = d3.area()
+  const areaBid = d3.area()
     .curve(d3.curveStepBefore)
-    .x0(d => (isMobile ? drawParams.xScale(d[0]) : 0))
-    .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[0])))
-    .y(d => drawParams.yScale(d[1]))
+    .x0(d => (isMobile ? drawParams.xScale(d[1]) : 0))
+    .x1(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[1])))
+    .y(d => drawParams.yScale(d[0]))
+
+  const areaAsk = d3.area()
+    .curve(d3.curveStepBefore)
+    .x0(d => (isMobile ? d3.extent(drawParams.xDomain)[1] : drawParams.xScale(d[1])))
+    .x1(d => (isMobile ? drawParams.xScale(d[1]) : 0))
+    .y(d => drawParams.yScale(d[0]))
 
   Object.keys(marketDepth).forEach((side) => {
+    let func = areaAsk
+    if (side === 'bids') func = areaBid
     depthChart.append('path')
       .data([marketDepth[side]])
-      .classed('filled-subtle', true)
-      .attr('d', area)
+      .classed(`filled-subtle-${side}`, true)
+      .attr('d', func)
   })
 }
 
