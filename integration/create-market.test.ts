@@ -24,21 +24,75 @@ describe("Create market page", () => {
   it("should allow user to create a new yes/no market", async () => {
     await dismissDisclaimerModal(page);
 
-    // Go to create-market page & wait for it to load
+    // Go to create-market page and wait for it to load
     await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});
     await page.waitForSelector("#cm__input--desc", { visible: true });
+
+    // Verify that a market must have a Market Question and a Category, but Tags are optional
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toFill("#cm__input--desc", "Will this yes/no market be created successfully?");
+
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await page.$eval("#cm__input--desc", input => input.value = "");
+    await expect(page).toFill("#cm__input--cat", "climate");
+
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(false);
+
+    // Verify that Tags and Category must be unique
+    await expect(page).toFill("#cm__input--tag1", "climate");
+
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await page.$eval("#cm__input--cat", input => input.value = "");
+    await page.$eval("#cm__input--tag1", input => input.value = "");
+
+    // Verify suggested category is populated as Category name is typed and that it can be clicked to auto-fill the Category field
+    await expect(page).toFill("#cm__input--cat", "cli");
+    await expect(page).toMatchElement(".create-market-form-define-styles_CreateMarketDefine__suggested-categories li button:nth-child(1)", { text: "climate" });
+    await expect(page).toClick(".create-market-form-define-styles_CreateMarketDefine__suggested-categories li button:nth-child(1)");
+    let categoryValue = await page.$eval("#cm__input--cat", el => el.value);
+    expect(categoryValue).toEqual("climate");
+
+    await page.$eval("#cm__input--cat", input => input.value = "");
 
     // Fill out Define page
     await expect(page).toFill("#cm__input--desc", "Will this yes/no market be created successfully?");
     await expect(page).toFill("#cm__input--cat", "Integration Test");
     await expect(page).toFill("#cm__input--tag1", "Yes/No");
     await expect(page).toFill("#cm__input--tag2", "Test");
+
+    // Verify that the white market card above the form updates for each field
+    await expect(page).toMatchElement(".create-market-preview-styles_CreateMarketPreview__description", { text: "Will this yes/no market be created successfully?" });
+    await expect(page).toMatchElement(".category-tag-trail-styles_CategoryTagTrail .word-trail-styles_WordTrail:nth-child(1) .tag-trail-button", { text: "Integration Test" });
+    await expect(page).toMatchElement(".tag-trail-button", { text: "Yes/No" });
+    await expect(page).toMatchElement(".tag-trail-button", { text: "Test" });
+
     await expect(page).toClick("button", { text: "Next: Outcome" });
 
     // Fill out Outcome page
     await expect(page).toClick("li button", { text: "Yes/No" });
+
+    // Verify that Additional Information field is optional
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(false);
+
     await expect(page).toFill("#cm__input--details", "Here is some additional information.");
     await expect(page).toClick("button", { text: "Next: Resolution" });
+
+    // TODO: Each section is required
+    // TODO: If you select "Outcome will be detailed on a public website" you should see a text input appear to allow website to be entered. This input should be required if shown
+    // TODO: If you select "Someone Else" in the "Designated Reporter" section, then you should see a text input appear and you should be required to enter an ethereum address if this input is shown
+    // TODO: Confirm that the Datepicker doesn't allow you to choose a day in the past
+    // TODO: Create a market with Resolution Source set to "Outcome will be detailed on a public website" and enter a website value. Confirm that this website is displayed as the resolution source on the market's Trading page
+    // TODO: Create a market with yourself set as the Designated Reporter. Verify that you are the only user that sees the market when its in the Designated Reporting phase
+    // TODO: Create a market with someone else as the Designated Reporter. Verify that that user is the only user that see the market when its in the Designated Reporting phase
+    // TODO: Verify that your selected end date and time is displayed as the end date and time on the Markets List market card
 
     // Fill out Resolution page
     await expect(page).toClick("button", { text: "Outcome will be detailed on a public website" });
@@ -85,6 +139,8 @@ describe("Create market page", () => {
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
 
+    // TODO: Verify market information
+
     // Submit new market
     await expect(page).toClick("button", { text: "Submit" });
 
@@ -95,6 +151,9 @@ describe("Create market page", () => {
     await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
+
+    // Verify that Additional Information is displayed
+    await expect(page).toMatchElement(".market-header-styles_MarketHeader__details span", { text: "Here is some additional information.", timeout: timeoutMilliseconds });
 
     // Verify settlement fee is correct
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
