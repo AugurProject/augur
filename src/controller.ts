@@ -31,7 +31,7 @@ export class AugurNodeController {
       const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(db, this.augur);
       console.log("Bulk sync with blockchain complete.");
       this.serverResult = runServer(db, this.augur);
-      startAugurListeners(db, this.augur, handoffBlockNumber + 1, this.shutdownCallback(this.serverResult.servers));
+      startAugurListeners(db, this.augur, handoffBlockNumber + 1, this.shutdownCallback);
     });
   }
 
@@ -54,14 +54,12 @@ export class AugurNodeController {
     }
   }
 
-  private shutdownCallback(servers: ServersData): ErrorCallback {
-    return (err: Error|null) => {
-      if (err) {
-        console.error("Fatal Error, shutting down servers", err);
-        if (this.errorCallback) this.errorCallback(err);
-        shutdownServers(servers);
-        process.exit(1);
-      }
-    };
-  }
+  private shutdownCallback(err: Error|null) {
+    if (err) {
+      console.error("Fatal Error, shutting down servers", err);
+      if (this.errorCallback) this.errorCallback(err);
+      if (this.serverResult !== undefined) shutdownServers(this.serverResult.servers);
+      process.exit(1);
+    }
+  };
 }
