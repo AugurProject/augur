@@ -42,7 +42,7 @@ esac
 docker build . --build-arg ethereum_network=${network} \
     --tag augurproject/${augur_repo}:${augur_env} \
     --tag augurproject/${augur_repo}:$version \
-    --tag augurproject/${augur_repo}:$(npm explore augur.js -- npm run --silent core:version)
+    --tag augurproject/${augur_repo}:core-$(npm explore augur.js -- npm run --silent core:version)
 
 docker push augurproject/${augur_repo}:${version}
 docker push augurproject/${augur_repo}:${augur_env}
