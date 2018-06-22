@@ -23,17 +23,6 @@ export class AugurNodeController {
     this.running = false;
   }
 
-  private shutdownCallback(servers: ServersData): ErrorCallback {
-    return (err: Error|null) => {
-      if (err) {
-        console.error("Fatal Error, shutting down servers", err);
-        if (this.errorCallback) this.errorCallback(err);
-        shutdownServers(servers);
-        process.exit(1);
-      }
-    };
-  }
-
   public async start(errorCallback: ErrorCallback|undefined) {
     this.running = true;
     this.errorCallback = errorCallback;
@@ -63,5 +52,16 @@ export class AugurNodeController {
       clearOverrideTimestamp();
       this.augur = new Augur();
     }
+  }
+
+  private shutdownCallback(servers: ServersData): ErrorCallback {
+    return (err: Error|null) => {
+      if (err) {
+        console.error("Fatal Error, shutting down servers", err);
+        if (this.errorCallback) this.errorCallback(err);
+        shutdownServers(servers);
+        process.exit(1);
+      }
+    };
   }
 }

@@ -19,6 +19,6 @@ augur.events.nodes.ethereum.on("disconnect", (event) => {
 const errorCallback = (err: any) => {
   console.error("Fatal Error:", err);
   process.exit(1);
-}
+};
 
 augurNodeController.start(errorCallback).catch(errorCallback);
