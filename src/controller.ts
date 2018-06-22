@@ -61,5 +61,5 @@ export class AugurNodeController {
       if (this.serverResult !== undefined) shutdownServers(this.serverResult.servers);
       process.exit(1);
     }
-  };
+  }
 }
