@@ -1,11 +1,11 @@
 import "jest-environment-puppeteer";
-import Flash from "./helpers/flash";
-import { IFlash, IMarket, Outcome } from "./types/types"
-import {UnlockedAccounts} from "./constants/accounts";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
-import { toMyMarkets, toDisputing } from "./helpers/navigation-helper";
-import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from './helpers/create-markets'
-import { waitNextBlock } from './helpers/wait-new-block'
+import Flash from "../helpers/flash";
+import { IFlash, IMarket, Outcome } from "../types/types"
+import {UnlockedAccounts} from "../constants/accounts";
+import {dismissDisclaimerModal} from "../helpers/dismiss-disclaimer-modal";
+import { toDisputing } from "../helpers/navigation-helper";
+import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from '../helpers/create-markets'
+import { waitNextBlock } from '../helpers/wait-new-block'
 
 const url = `${process.env.AUGUR_URL}`;
 const SMALL_TIMEOUT = 80000
@@ -84,7 +84,7 @@ describe("Disputing", () => {
       // check that button is disabled
       await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
     });
-  });    
+  });
 
   describe("Disputing Mechanisms", () => {
     let yesNoMarket: IMarket;
@@ -101,7 +101,7 @@ describe("Disputing", () => {
       beforeAll(async () => {
         yesNoMarket = await createYesNoMarket()
         await flash.initialReport(yesNoMarket.id, "0", false, false)
-        await flash.pushWeeks(1) 
+        await flash.pushWeeks(1)
         await waitNextBlock(2)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
@@ -115,7 +115,7 @@ describe("Disputing", () => {
        beforeAll(async () => {
         categoricalMarket = await createCategoricalMarket(4)
         await flash.initialReport(categoricalMarket.id, "0", false, false)
-        await flash.pushWeeks(1) 
+        await flash.pushWeeks(1)
         await waitNextBlock(2)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
@@ -128,7 +128,7 @@ describe("Disputing", () => {
       beforeAll(async () => {
         scalarMarket = await createScalarMarket()
         await flash.initialReport(scalarMarket.id, "0", false, false)
-        await flash.pushWeeks(1) 
+        await flash.pushWeeks(1)
         await waitNextBlock(2)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
@@ -161,8 +161,8 @@ describe("Disputing", () => {
       });
 
       it("should have dispute bonds be equal to twice the amount placed by the initial reporter in the first dispute round", async () => {
-         // With markets reported on by the Designated Reporter, this is twice the stake placed by the Designated Reporter. 
-         // With markets reported on in Open Reporting, this is twice the no-show bond. 
+         // With markets reported on by the Designated Reporter, this is twice the stake placed by the Designated Reporter.
+         // With markets reported on in Open Reporting, this is twice the no-show bond.
          // Test both.
       });
 
@@ -214,7 +214,7 @@ describe("Disputing", () => {
 
         it("should have all market's outcomes be present, as well as 'Market is Invalid'", async () => {
         });
-        
+
         it("should have a tentative winning outcome and all other outcomes will have an associated dispute bond", async () => {
         });
       });
