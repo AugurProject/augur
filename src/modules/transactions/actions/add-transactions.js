@@ -314,7 +314,7 @@ function getOutcome(market, outcome) {
   if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
-    value = market.outcomes[outcome].description
+    value = market.outcomes[outcome] && market.outcomes[outcome].description
   } else {
     value = outcome
   }

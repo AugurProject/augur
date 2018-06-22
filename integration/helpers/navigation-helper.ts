@@ -45,3 +45,8 @@ export const toInitialReporting = async (id: string) => {
   const url = `${process.env.AUGUR_URL}`;
   await page.goto(url.concat("#/report?id=" + id));
 };
+
+export const toDisputing = async () => {
+  const url = `${process.env.AUGUR_URL}`;
+  await page.goto(url.concat("#/reporting-dispute-markets"));
+};
