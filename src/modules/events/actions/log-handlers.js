@@ -21,6 +21,7 @@ import { MODAL_ESCAPE_HATCH } from 'modules/modal/constants/modal-types'
 import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
 import { loadMarketsInfoIfNotLoaded } from 'src/modules/markets/actions/load-markets-info-if-not-loaded'
 import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
+import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -128,6 +129,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]))
   dispatch(loadMarketsDisputeInfo([log.market]))
+  dispatch(loadUnclaimedFees([log.market]))
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(loadReporting())
@@ -138,6 +140,7 @@ export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
 
 export const handleInitialReporterRedeemedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfo([log.market]))
+  dispatch(loadUnclaimedFees([log.market]))
   const isStoredTransaction = log.reporter === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(loadReporting())
