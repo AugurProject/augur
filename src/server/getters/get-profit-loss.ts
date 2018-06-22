@@ -181,7 +181,7 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
   };
 }
 
-async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number, periodInterval: number | null): Promise<ProfitLossResults> {
+async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number|null, periodInterval: number | null): Promise<ProfitLossResults> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
   const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null, true);
@@ -199,9 +199,10 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     return a.logIndex - b.logIndex;
   });
 
-  if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime, periodInterval).slice(1), all: {} };
+  const now = Date.now();
+  if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime || now, periodInterval).slice(1), all: {} };
 
-  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime, periodInterval);
+  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime || Math.max(trades[trades.length - 1].timestamp, now) + 1, periodInterval);
 
   // group these trades by their market & outcome, so we can process each
   // separately
@@ -250,11 +251,11 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
   return { aggregate, all};
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address|undefined, account: Address|undefined, startTime: number, endTime: number, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
+export function getProfitLoss(db: Knex, augur: Augur, universe: Address|undefined, account: Address|undefined, startTime: number|null, endTime: number|null, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
   if (typeof universe !== "string") return callback(new Error("Universe Address Required"));
   if (typeof account !== "string") return callback(new Error("Account Address Required"));
   try {
-    getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime, endTime, periodInterval)
+    getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime || 0, endTime, periodInterval)
       .then((results: ProfitLossResults) => callback(null, results));
   } catch (e) {
     callback(e);
