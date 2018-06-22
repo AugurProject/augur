@@ -322,7 +322,7 @@ export default class CreateMarketLiquidity extends Component {
     let isOrderValid
 
     // Validate Quantity
-   if (orderQuantity !== '' && orderQuantity.lte(createBigNumber(0))) {
+    if (orderQuantity !== '' && orderQuantity.lte(createBigNumber(0))) {
       errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
       const bids = getValue(newMarket.orderBookSorted[this.state.selectedOutcome], `${BID}`)
@@ -388,7 +388,7 @@ export default class CreateMarketLiquidity extends Component {
         errors.quantity.push('Insufficient funds')
         errors.price.push('Insufficient funds')
         isOrderValid = false
-      }  
+      }
       orderEstimate = `${action.tokensDepleted} ETH`
     }
 
