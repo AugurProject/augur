@@ -537,22 +537,22 @@ function drawLines(options) {
     .attr('id', 'subtleGradientBid')
 
   subtleGradientBid.append('stop')
-    .attr('class', 'stop-left-bid')
+    .attr('class', 'stop-bottom')
     .attr('offset', '0%')
 
   subtleGradientBid.append('stop')
-    .attr('class', 'stop-right-bid')
+    .attr('class', 'stop-top-bid')
     .attr('offset', '100%')
 
   const subtleGradientAsk = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientAsk')
 
   subtleGradientAsk.append('stop')
-    .attr('class', 'stop-left-ask')
+    .attr('class', 'stop-bottom-ask')
     .attr('offset', '0%')
 
   subtleGradientAsk.append('stop')
-    .attr('class', 'stop-right-ask')
+    .attr('class', 'stop-top-ask')
     .attr('offset', '100%')
 
   if (!hasOrders) return
@@ -578,9 +578,10 @@ function drawLines(options) {
 
   const areaAsk = d3.area()
     .curve(d3.curveStepBefore)
-    .x0(d => drawParams.xScale(d[1]))
-    .x1(d => d3.extent(drawParams.xDomain)[1])
-    .y(d => drawParams.yScale(d[0]))
+    .y0(d => drawParams.yScale(drawParams.yDomain[0]))
+    .y1(d => drawParams.yScale(d[0]))
+    .x(d => drawParams.xScale(d[1]))
+
 
   Object.keys(marketDepth).forEach((side) => {
     let func = areaAsk
