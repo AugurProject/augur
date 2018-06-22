@@ -631,7 +631,7 @@ function attachHoverClickHandlers(options) {
       const mouse = d3.mouse(d3.select('#depth_chart').node())
 
       // Determine closest order
-      const hoveredPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
+      const hoveredPrice = drawParams.xScale.invert(mouse[0]).toFixed(fixedPrecision)
 
       updateHoveredPrice(hoveredPrice)
     })
