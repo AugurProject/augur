@@ -23,9 +23,9 @@ const disputeOnAllOutcomes = async (marketId: string, outcomes: Outcome[], isSca
   }
 
   if (isScalar) {
-    let values: string[] = ["-2", ".2", "-.2", "10", "-10"]
-    for (let i = 0; i < values.length; i++) {
-      await disputeOnScalarOutcome(marketId, values[i])
+    const values: string[] = ["-2", ".2", "-.2", "10", "-10"]
+    for (const value of values) {
+      await disputeOnScalarOutcome(marketId, value)
     }
   }
   return
@@ -77,12 +77,12 @@ describe("Disputing", () => {
     it("should be shown the 'No-REP' message if your account has no REP", async () => {
       await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
       await toDisputing()
-      //await expect(page).toMatch('You have 0 REP available. Add funds to dispute markets or purchase participation tokens.', { timeout: SMALL_TIMEOUT })
+      await expect(page).toMatch('You have 0 REP available. Add funds to dispute markets or purchase participation tokens.', { timeout: SMALL_TIMEOUT })
     });
 
     it("should not be able to submit a dispute without REP", async () => {
       // check that button is disabled
-      //await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
+      await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
     });
   });
 
@@ -111,31 +111,31 @@ describe("Disputing", () => {
       });
     });
 
-    // describe("Categorical Market", () => {
-    //    beforeAll(async () => {
-    //     categoricalMarket = await createCategoricalMarket(4)
-    //     await flash.initialReport(categoricalMarket.id, "0", false, false)
-    //     await flash.pushWeeks(1)
-    //     await waitNextBlock(2)
-    //     outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
-    //   });
-    //   it("should be able to dispute on all outcomes", async () => {
-    //     await disputeOnAllOutcomes(categoricalMarket.id, outcomes[categoricalMarket.id], false)
-    //   });
-    // });
+    describe("Categorical Market", () => {
+       beforeAll(async () => {
+        categoricalMarket = await createCategoricalMarket(4)
+        await flash.initialReport(categoricalMarket.id, "0", false, false)
+        await flash.pushWeeks(1)
+        await waitNextBlock(2)
+        outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
+      });
+      it("should be able to dispute on all outcomes", async () => {
+        await disputeOnAllOutcomes(categoricalMarket.id, outcomes[categoricalMarket.id], false)
+      });
+    });
 
-    // describe("Scalar Market", () => {
-    //   beforeAll(async () => {
-    //     scalarMarket = await createScalarMarket()
-    //     await flash.initialReport(scalarMarket.id, "0", false, false)
-    //     await flash.pushWeeks(1)
-    //     await waitNextBlock(2)
-    //     outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
-    //   });
-    //   it("should be able to dispute on all outcomes", async () => {
-    //     await disputeOnAllOutcomes(scalarMarket.id, outcomes[scalarMarket.id], true)
-    //   });
-    // });
+    describe("Scalar Market", () => {
+      beforeAll(async () => {
+        scalarMarket = await createScalarMarket()
+        await flash.initialReport(scalarMarket.id, "0", false, false)
+        await flash.pushWeeks(1)
+        await waitNextBlock(2)
+        outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
+      });
+      it("should be able to dispute on all outcomes", async () => {
+        await disputeOnAllOutcomes(scalarMarket.id, outcomes[scalarMarket.id], true)
+      });
+    });
   });
 
   describe("Dispute Window", () => {
