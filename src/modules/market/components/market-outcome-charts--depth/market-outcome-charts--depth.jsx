@@ -243,7 +243,7 @@ export default class MarketOutcomeDepth extends Component {
   }
 
   drawCrosshairs(options) {
-    const { updateHoveredDepth } = this.props
+    const { updateHoveredDepth, sharedChartMargins } = this.props
     if (this.depthChart) {
       const {
         hoveredPrice,
@@ -274,10 +274,10 @@ export default class MarketOutcomeDepth extends Component {
           hoveredPrice < marketMax
         ) {
           d3.select('#crosshairX')
-            .attr('x1', xScale(nearestFillingOrder[0]))
+            .attr('x1', xScale(nearestFillingOrder[1]))
             .attr('y1', 0)
-            .attr('x2', xScale(nearestFillingOrder[0]))
-            .attr('y2', containerHeight)
+            .attr('x2', xScale(nearestFillingOrder[1]))
+            .attr('y2', containerHeight - sharedChartMargins.bottom)
             .style('display', null)
         } else {
           d3.select('#crosshairX')
@@ -288,14 +288,19 @@ export default class MarketOutcomeDepth extends Component {
 
         d3.select('#crosshairY')
           .attr('x1', 0)
-          .attr('y1', yScale(hoveredPrice))
+          .attr('y1', yScale(nearestFillingOrder[0]))
           .attr('x2', containerWidth)
-          .attr('y2', yScale(hoveredPrice))
+          .attr('y2', yScale(nearestFillingOrder[0]))
 
+        let labelOffset = 5
+        if (nearestFillingOrder && nearestFillingOrder[4] === ASKS) {
+          labelOffset = -40
+        }
         d3.select('#hovered_price_label')
-          .attr('x', 0)
-          .attr('y', yScale(hoveredPrice) + 12)
+          .attr('x', xScale(hoveredPrice) + labelOffset)
+          .attr('y', containerHeight - sharedChartMargins.bottom - 12)
           .text(clampedHoveredPrice.toFixed(fixedPrecision))
+
       }
     }
   }
