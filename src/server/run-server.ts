@@ -73,12 +73,8 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
   return { app, servers };
 }
 
-export function shutdownServersCallback(servers: ServersData): ErrorCallback {
-  return (err: Error|null) => {
-    if (err) {
-      console.error("Fatal Error, shutting down servers", err);
-      servers.servers.forEach((websocketServer) => websocketServer.close());
-      process.exit(1);
-    }
-  };
+export function shutdownServers(servers: ServersData) {
+  servers.httpServers.forEach((server, index) => {
+    server.close(() => servers.servers[index].close());
+  });
 }
