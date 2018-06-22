@@ -18,7 +18,6 @@ export interface IMarket extends Object {
   endTime: number
   reportingState: string
   description: string
-  type: string
 }
 
 export interface MarketCosts extends Object {
