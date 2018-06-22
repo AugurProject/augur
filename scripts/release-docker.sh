@@ -39,7 +39,7 @@ case ${augur_env} in
         ;;
 esac
 
-docker build . --build-arg ethereum_network=${network}
+docker build . --build-arg ethereum_network=${network} \
     --tag augurproject/${augur_repo}:${augur_env} \
     --tag augurproject/${augur_repo}:$version \
     --tag augurproject/${augur_repo}:$(npm explore augur.js -- npm run --silent core:version)
