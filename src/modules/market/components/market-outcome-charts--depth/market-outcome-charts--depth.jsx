@@ -28,6 +28,7 @@ export default class MarketOutcomeDepth extends Component {
     hoveredDepth: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
     hoveredPrice: PropTypes.any,
   }
 
@@ -58,6 +59,7 @@ export default class MarketOutcomeDepth extends Component {
       updateHoveredPrice,
       updateSelectedOrderProperties,
       isMobile,
+      hasOrders,
     } = this.props
     this.drawDepth({
       marketDepth,
@@ -69,6 +71,7 @@ export default class MarketOutcomeDepth extends Component {
       updateHoveredPrice,
       updateSelectedOrderProperties,
       isMobile,
+      hasOrders,
     })
 
     window.addEventListener('resize', this.drawDepthOnResize)
@@ -108,6 +111,7 @@ export default class MarketOutcomeDepth extends Component {
         updateHoveredPrice: nextProps.updateHoveredPrice,
         updateSelectedOrderProperties: nextProps.updateSelectedOrderProperties,
         isMobile: nextProps.isMobile,
+        hasOrders: nextProps.hasOrders,
       })
     }
 
@@ -151,6 +155,7 @@ export default class MarketOutcomeDepth extends Component {
         updateHoveredPrice,
         updateSelectedOrderProperties,
         isMobile,
+        hasOrders,
       } = options
 
       const drawParams = determineDrawParams({
@@ -183,6 +188,7 @@ export default class MarketOutcomeDepth extends Component {
         marketMax,
         marketMin,
         isMobile,
+        hasOrders,
       })
 
       drawLines({
@@ -190,6 +196,7 @@ export default class MarketOutcomeDepth extends Component {
         depthChart,
         marketDepth: drawParams.newMarketDepth,
         isMobile,
+        hasOrders,
       })
 
       setupCrosshairs({
@@ -229,6 +236,7 @@ export default class MarketOutcomeDepth extends Component {
       sharedChartMargins,
       updateHoveredPrice,
       updateSelectedOrderProperties,
+      hasOrders,
     } = this.props
     this.drawDepth({
       marketDepth,
@@ -239,6 +247,7 @@ export default class MarketOutcomeDepth extends Component {
       marketMax,
       updateHoveredPrice,
       updateSelectedOrderProperties,
+      hasOrders,
     })
   }
 
@@ -436,6 +445,9 @@ function drawTicks(options) {
     orderBookKeys,
     fixedPrecision,
     isMobile,
+    marketMax,
+    marketMin,
+    hasOrders,
   } = options
 
   // Y Axis
@@ -453,8 +465,13 @@ function drawTicks(options) {
     .attr('y2', (d, i) => ((drawParams.containerHeight - drawParams.chartDim.bottom)) * i)
 
   //  Midpoint Label
-  if (!isMobile) {
-    const quarter = drawParams.yDomain[1] * 0.87
+  if (!isMobile && hasOrders) {
+    let midOffset = 5
+    const marketRangeMid = marketMax.minus(marketMin).dividedBy(2)
+    if (orderBookKeys.mid.gt(marketRangeMid)) {
+      midOffset = -70
+    }
+    const quarter = drawParams.yDomain[1] * 0.80
     depthChart.append('line')
       .attr('class', 'tick-line--midpoint')
       .attr('x1', drawParams.xScale(orderBookKeys.mid.toNumber()))
@@ -464,27 +481,36 @@ function drawTicks(options) {
     depthChart.append('text')
       .attr('class', 'tick-value-midpoint')
       .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
-      .attr('y', drawParams.yScale(quarter))
-      .attr('dx', 5)
+      .attr('y', drawParams.yScale(quarter) - 15)
+      .attr('dx', midOffset)
       .attr('dy', 0)
-      .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
+      .text(orderBookKeys.mid && 'Mid Price')
+    depthChart.append('text')
+      .attr('class', 'tick-value-midpoint')
+      .attr('x', drawParams.xScale(orderBookKeys.mid.toNumber()))
+      .attr('y', drawParams.yScale(quarter))
+      .attr('dx', midOffset)
+      .attr('dy', 0)
+      .text(orderBookKeys.mid && `${orderBookKeys.mid.toFixed(fixedPrecision)} ETH`)
+
   }
+  if (hasOrders) {
+    const offsetTicks = Array.from(new Array(11), (val, index) => createBigNumber(drawParams.yDomain[1]).times(0.1).times(index).toNumber()).slice(1, 11)
 
-  const offsetTicks = Array.from(new Array(11), (val, index) => createBigNumber(drawParams.yDomain[1]).times(0.1).times(index).toNumber()).slice(1, 11)
+    const yTicks = depthChart.append('g')
+      .attr('id', 'depth_y_ticks')
 
-  const yTicks = depthChart.append('g')
-    .attr('id', 'depth_y_ticks')
-
-  yTicks.selectAll('text')
-    .data(offsetTicks)
-    .enter()
-    .append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', d => drawParams.yScale(d))
-    .attr('dx', 0)
-    .attr('dy', drawParams.chartDim.tickOffset)
-    .text(d => d.toFixed(fixedPrecision))
+    yTicks.selectAll('text')
+      .data(offsetTicks)
+      .enter()
+      .append('text')
+      .attr('class', 'tick-value')
+      .attr('x', 0)
+      .attr('y', d => drawParams.yScale(d))
+      .attr('dx', 0)
+      .attr('dy', drawParams.chartDim.tickOffset)
+      .text(d => d.toFixed(fixedPrecision))
+  }
 
   // X Axis
   depthChart.append('g')
@@ -500,6 +526,7 @@ function drawLines(options) {
     drawParams,
     depthChart,
     marketDepth,
+    hasOrders,
   } = options
 
   // Defs
@@ -528,8 +555,9 @@ function drawLines(options) {
     .attr('class', 'stop-right-ask')
     .attr('offset', '100%')
 
+  if (!hasOrders) return
 
-    // Depth Line
+  // Depth Line
   const depthLine = d3.line()
     .curve(d3.curveStepBefore)
     .x(d => drawParams.xScale(d[1]))

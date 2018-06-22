@@ -262,6 +262,7 @@ export default class MarketOutcomeCharts extends Component {
                 marketDepth={marketDepth}
                 marketMax={maxPrice}
                 marketMin={minPrice}
+                hasOrders={hasOrders}
                 hoveredPrice={s.hoveredPrice}
                 hoveredDepth={s.hoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
