@@ -48,7 +48,7 @@ docker push augurproject/${augur_repo}:${version}
 docker push augurproject/${augur_repo}:${augur_env}
 
 if [[ $push_core_tag ]]; then
-    docker push augurproject/${augur_repo}:$(npm explore augur.js -- npm run --silent core:version)
+    docker push augurproject/${augur_repo}:core-$(npm explore augur.js -- npm run --silent core:version)
 fi
 
 # install packages needed to deploy to aws, then deploy
