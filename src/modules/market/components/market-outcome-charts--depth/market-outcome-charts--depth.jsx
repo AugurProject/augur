@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
 import MarketOutcomeChartHeaderDepth from 'modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth'
-
+import { createBigNumber } from 'utils/create-big-number'
 import { isEqual } from 'lodash'
 import CustomPropTypes from 'utils/custom-prop-types'
 import { ZERO } from 'modules/trade/constants/numbers'
@@ -470,29 +470,11 @@ function drawTicks(options) {
       .text(orderBookKeys.mid && orderBookKeys.mid.toFixed(fixedPrecision))
   }
 
-  const boundDiff = drawParams.yDomain[1] / 2
-  //  Offset Ticks
-  const offsetTicks = drawParams.yDomain.map((d, i) => {
-    if (i === 0) {
-      return d + (boundDiff / 2)
-    }
-    return d - (boundDiff / 2)
-  })
-  offsetTicks.push(boundDiff)
-  offsetTicks.push(drawParams.yDomain[1])
+  const offsetTicks = Array.from(new Array(11), (val, index) => createBigNumber(drawParams.yDomain[1]).times(0.1).times(index).toNumber()).slice(1, 11)
 
   const yTicks = depthChart.append('g')
     .attr('id', 'depth_y_ticks')
 
-  yTicks.selectAll('line')
-    .data(offsetTicks)
-    .enter()
-    .append('line')
-    .attr('class', 'tick-line')
-    .attr('x1', 0)
-    .attr('x2', drawParams.containerWidth)
-    .attr('y1', d => drawParams.yScale(d))
-    .attr('y2', d => drawParams.yScale(d))
   yTicks.selectAll('text')
     .data(offsetTicks)
     .enter()
@@ -509,7 +491,7 @@ function drawTicks(options) {
     .attr('id', 'depth-x-axis')
     .attr('transform', `translate(0, ${drawParams.containerHeight - drawParams.chartDim.bottom})`)
     .call(d3.axisBottom(drawParams.xScale)
-      .ticks(3))
+      .ticks(5))
     .select('path').remove()
 }
 
