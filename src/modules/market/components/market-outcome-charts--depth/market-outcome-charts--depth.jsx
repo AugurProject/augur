@@ -535,6 +535,7 @@ function drawLines(options) {
   //  Fills
   const subtleGradientBid = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientBid')
+    .attr('gradientTransform', 'rotate(90)')
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-bottom')
@@ -546,6 +547,7 @@ function drawLines(options) {
 
   const subtleGradientAsk = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientAsk')
+    .attr('gradientTransform', 'rotate(90)')
 
   subtleGradientAsk.append('stop')
     .attr('class', 'stop-bottom-ask')

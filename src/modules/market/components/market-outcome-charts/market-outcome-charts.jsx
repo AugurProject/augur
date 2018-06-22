@@ -236,9 +236,7 @@ export default class MarketOutcomeCharts extends Component {
                 orderBookKeys={orderBookKeys}
                 marketMax={maxPrice}
                 marketMin={minPrice}
-                hoveredPrice={s.hoveredPrice}
                 hoveredPeriod={s.hoveredPeriod}
-                updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredPeriod={this.updateHoveredPeriod}
                 updateSelectedPeriod={this.updateSelectedPeriod}
                 updateSelectedRange={this.updateSelectedRange}
