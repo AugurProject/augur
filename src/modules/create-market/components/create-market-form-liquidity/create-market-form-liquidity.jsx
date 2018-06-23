@@ -378,10 +378,6 @@ export default class CreateMarketLiquidity extends Component {
         singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
       }
       const action = augur.trading.simulateTrade(orderInfo)
-      if (createBigNumber(action.tokensDepleted, 10).lt(0.0001)) {
-        errors.price.push('Est. Cost of trade must be at least 0.0001')
-        isOrderValid = false
-      }
 
       if (orderQuantity !== '' && orderPrice !== '' && createBigNumber(action.tokensDepleted, 10).gt(createBigNumber(availableEth))) {
         // Done this way so both inputs are in err
