@@ -1,6 +1,6 @@
 # Augur | Non-Linking Local Node Configuration
 
-This is for developers already familiar with the code repositories and want to run everything local without linking to augur.js.  This is the easist and fastest way to spin up augur client using local augur-node on populated docker image.
+This is for developers already familiar with the code repositories and want to run everything local without linking to augur.js.  This is the easiest and fastest way to spin up augur client using local augur-node on populated docker image.
 
 ## Requirements
 
