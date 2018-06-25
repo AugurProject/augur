@@ -21,6 +21,7 @@ describe("events/get-all-augur-logs", function () {
         t.assertions(batchAugurLogs, processBatchLogs.callCount);
       });
       getAllAugurLogs(t.params, processBatchLogs, function (err) {
+        assert.equal(processBatchLogs.callCount, 2);
         assert.ifError(err);
         done();
       });
