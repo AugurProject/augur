@@ -18,7 +18,6 @@ describe("events/get-all-augur-logs", function () {
         "../utils/chunk-blocks": chunkBlocks,
       });
       var processBatchLogs = sinon.spy(function (batchAugurLogs) {
-        console.log("HHHH", processBatchLogs);
         t.assertions(batchAugurLogs, processBatchLogs.callCount);
       });
       getAllAugurLogs(t.params, processBatchLogs, function (err) {
