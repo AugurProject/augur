@@ -9,15 +9,15 @@ export const PARAMS = {
 
 export const ITEMS = [
   {
-    param: PARAMS.METAMASK,
-    title: 'MetaMask',
-    icon: MetaMask,
-    default: true,
-  },
-  {
     param: PARAMS.EDGE,
     title: 'Edge',
     icon: Edge,
+    default: true,
+  },
+  {
+    param: PARAMS.METAMASK,
+    title: 'MetaMask',
+    icon: MetaMask,
   },
   {
     param: PARAMS.LEDGER,
