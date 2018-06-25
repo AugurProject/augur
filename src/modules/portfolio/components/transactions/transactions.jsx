@@ -21,6 +21,7 @@ export default class Transactions extends Component {
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
     transactionPeriod: PropTypes.string.isRequired,
+    transactionsLoading: PropTypes.bool,
     updateTransactionPeriod: PropTypes.func.isRequired,
   }
 
@@ -85,6 +86,7 @@ export default class Transactions extends Component {
       history,
       location,
       transactions,
+      transactionsLoading,
     } = this.props
     const s = this.state
 
@@ -105,13 +107,19 @@ export default class Transactions extends Component {
             <Dropdown default={s.transactionPeriodDefault} options={s.transactionPeriodOptions} onChange={this.changeTransactionDropdown} />
           </div>
         </div>
-        { transactions.length === 0 &&
+
+        { transactionsLoading === true &&
+        <div className={PortfolioStyles.Loading__container} >
+          <span>Loading...</span>
+        </div>
+        }
+        { transactionsLoading === false && transactions.length === 0 &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You don&apos;t have any transactions.</span>
           </div>
         }
         <div className={Styles.Transactions__list}>
-          { transactions.length > 0 && s.boundedLength &&
+          { transactionsLoading === false && transactions.length > 0 && s.boundedLength &&
             [...Array(s.boundedLength)].map((unused, i) => {
               const transaction = transactions[(s.lowerBound - 1) + i]
               if (transaction) {
@@ -124,7 +132,7 @@ export default class Transactions extends Component {
             })
           }
         </div>
-        { transactions.length > 0 &&
+        { transactionsLoading === false && transactions.length > 0 &&
           <Paginator
             itemsLength={transactions.length}
             itemsPerPage={10}
