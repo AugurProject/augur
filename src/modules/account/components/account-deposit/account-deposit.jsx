@@ -68,7 +68,6 @@ export default class AccountDeposit extends Component {
         <div className={Styles.AccountDeposit__shapeShiftButton}>
           <button
             onClick={e => airSwapOnClick(e)}
-            value={'https://shapeshift.io/shifty.html?destination=' + address + '&output=REP'}
           >
             AirSwap to REP <span style={noFeeTextStyle}>(no fees)</span>
           </button>
