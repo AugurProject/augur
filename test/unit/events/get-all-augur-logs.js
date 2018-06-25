@@ -4,6 +4,7 @@
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
+var sinon = require("sinon");
 
 describe("events/get-all-augur-logs", function () {
   var test = function (t) {
@@ -16,8 +17,12 @@ describe("events/get-all-augur-logs", function () {
         "../rpc-interface": t.stub.rpcInterface,
         "../utils/chunk-blocks": chunkBlocks,
       });
-      getAllAugurLogs(t.params, function (batchAugurLogs) {
-        t.assertions(batchAugurLogs);
+      var processBatchLogs = sinon.spy(function (batchAugurLogs) {
+        console.log("HHHH", processBatchLogs);
+        t.assertions(batchAugurLogs, processBatchLogs.callCount);
+      });
+      getAllAugurLogs(t.params, processBatchLogs, function (err) {
+        assert.ifError(err);
         done();
       });
     });
@@ -119,47 +124,54 @@ describe("events/get-all-augur-logs", function () {
         },
       },
     },
-    assertions: function (batchAugurLogs) {
-      // assert.isNull(err);
-      assert.deepEqual(batchAugurLogs, [
-        {
-          address: "0x000000000000000000000000000000000000000c",
-          testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
-          testEventInputData: "0x0000000000000000000000000000000000000001",
-          blockNumber: 14,
-          blockHash: "0x000000000000000000000000000000000000000000000000000000000000000b",
-          transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
-          transactionIndex: 0,
-          logIndex: 0,
-          removed: false,
-          contractName: "TestContractName",
-          eventName: "TestEventName",
-        }, {
-          address: "0x000000000000000000000000000000000000000c",
-          testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-          testEventInputData: "0x0000000000000000000000000000000000000002",
-          blockNumber: 150,
-          blockHash: "0x00000000000000000000000000000000000000000000000000000000000000bb",
-          transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
-          transactionIndex: 0,
-          logIndex: 0,
-          removed: false,
-          contractName: "TestContractName",
-          eventName: "TestEventName",
-        }, {
-          address: "0x000000000000000000000000000000000000000c",
-          testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
-          testEventInputData: "0x0000000000000000000000000000000000000003",
-          blockNumber: 151,
-          blockHash: "0x0000000000000000000000000000000000000000000000000000000000000bbb",
-          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
-          transactionIndex: 0,
-          logIndex: 0,
-          removed: false,
-          contractName: "TestContractName",
-          eventName: "TestEventName",
-        },
-      ]);
+    assertions: function (batchAugurLogs, callCount) {
+      switch (callCount) {
+        case 1:
+          assert.deepEqual(batchAugurLogs, [
+            {
+              address: "0x000000000000000000000000000000000000000c",
+              testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",
+              testEventInputData: "0x0000000000000000000000000000000000000001",
+              blockNumber: 14,
+              blockHash: "0x000000000000000000000000000000000000000000000000000000000000000b",
+              transactionHash: "0x000000000000000000000000000000000000000000000000000000000000000a",
+              transactionIndex: 0,
+              logIndex: 0,
+              removed: false,
+              contractName: "TestContractName",
+              eventName: "TestEventName",
+            }]);
+          break;
+        case 2:
+          assert.deepEqual(batchAugurLogs, [{
+            address: "0x000000000000000000000000000000000000000c",
+            testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
+            testEventInputData: "0x0000000000000000000000000000000000000002",
+            blockNumber: 150,
+            blockHash: "0x00000000000000000000000000000000000000000000000000000000000000bb",
+            transactionHash: "0x00000000000000000000000000000000000000000000000000000000000000aa",
+            transactionIndex: 0,
+            logIndex: 0,
+            removed: false,
+            contractName: "TestContractName",
+            eventName: "TestEventName",
+          }, {
+            address: "0x000000000000000000000000000000000000000c",
+            testEventInputIndexed: "0x3000000000000000000000000000000000000000000000000000000000000000",
+            testEventInputData: "0x0000000000000000000000000000000000000003",
+            blockNumber: 151,
+            blockHash: "0x0000000000000000000000000000000000000000000000000000000000000bbb",
+            transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000aaa",
+            transactionIndex: 0,
+            logIndex: 0,
+            removed: false,
+            contractName: "TestContractName",
+            eventName: "TestEventName",
+          }]);
+          break;
+        default:
+          assert.fail();
+      }
     },
   });
 });
