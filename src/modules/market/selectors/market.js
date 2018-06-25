@@ -241,12 +241,12 @@ export function assembleMarket(
           marketId,
           lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
-        if (!volume.gt(ZERO)) {
+        if (volume && !volume.gt(ZERO)) {
           outcome.lastPrice.formatted = '—'
         }
         if (market.isScalar) {
           // note: not actually a percent
-          if (volume.gt(ZERO)) {
+          if (volume && volume.gt(ZERO)) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
