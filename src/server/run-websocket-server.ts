@@ -15,6 +15,8 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 import * as path from "path";
+import { EventEmitter } from "events";
+import { ControlMessageType } from "../constants";
 
 function safeSend( websocket: WebSocket, payload: string) {
   if (websocket.readyState !== WebSocket.OPEN ) {
@@ -24,7 +26,7 @@ function safeSend( websocket: WebSocket, payload: string) {
   websocket.send(payload);
 }
 
-export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs): ServersData {
+export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs, controlEmitter: EventEmitter = new EventEmitter()): ServersData {
 
   const servers: Array<WebSocket.Server> = [];
   const httpServers: Array<http.Server | https.Server> = [];
@@ -48,6 +50,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
     server.listen(webSocketConfigs.ws.port);
     servers.push( new WebSocket.Server({ server }) );
   }
+  controlEmitter.emit("serverStart");
 
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
@@ -97,18 +100,21 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
       websocket.on("close", () => {
         clearInterval(pingInterval);
         subscriptions.removeAllListeners();
+        controlEmitter.emit(ControlMessageType.WebsocketClose);
       });
 
       websocket.on("error", (err) => {
         console.error(err);
+        controlEmitter.emit(ControlMessageType.WebsocketError, err);
       });
     });
 
     server.on("error", (err: Error): void => {
       console.log("websocket error:", err);
+      controlEmitter.emit(ControlMessageType.ServerError, err);
       // TODO reconnect
     });
   });
 
-  return { servers, httpServers };
+  return { servers, httpServers, controlEmitter };
 }

@@ -15,8 +15,8 @@
   },
   "scripts": {
     "go": "scripts/go.sh",
-    "start": "node ./build",
-    "debug": "node --inspect-brk ./build",
+    "start": "node ./build/runServer",
+    "debug": "node --inspect-brk ./build/runServer",
     "test": "mocha test/unit",
     "test:integration": "mocha -r ts-node/register 'test/integration/**/*.ts'",
     "test:integration:docker": "docker-compose up --force-recreate --abort-on-container-exit",

@@ -14,7 +14,7 @@ process.argv.slice(2).map(function(json_file) {
   const payload = fs.readFileSync(json_file, "utf8");
 
   // var ws = new WebSocket("ws://localhost:9001");
-  var ws = new WebSocket("wss://localhost:9002", requestOptions);
+  var ws = new WebSocket("wss://rinkeby.augur.nodes.augur.net/", requestOptions);
   ws.on("open", function () {
     ws.send(JSON.stringify(JSON.parse(payload)));
   });

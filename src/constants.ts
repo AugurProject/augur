@@ -33,3 +33,12 @@ export enum TokenType {
   FeeWindow,
   FeeToken,
 }
+
+export enum ControlMessageType {
+  ServerStart = "ServerStart",
+  ServerError = "ServerError",
+  WebsocketError = "WebsocketError",
+  WebsocketClose = "WebsocketClose",
+  BulkSyncStarted = "BulkSyncStarted",
+  BulkSyncFinished = "BulkSyncFinished",
+}
