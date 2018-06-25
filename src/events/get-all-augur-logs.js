@@ -37,8 +37,7 @@ function getAllAugurLogs(p, batchCallback, finalCallback) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (err, logs) {
       if (err) return nextChunkOfBlocks(err);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
-      var batchAugurLogs = [];
-      logs.forEach(function (log) {
+      var batchAugurLogs = logs.map(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
           var eventName = eventSignatureToNameMap[contractName][log.topics[0]];
@@ -48,8 +47,7 @@ function getAllAugurLogs(p, batchCallback, finalCallback) {
             return;
           }
           try {
-            var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-            batchAugurLogs.push(parsedLog);
+            return parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
           } catch (exc) {
             console.error("parseLogMessage error", exc);
             console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
