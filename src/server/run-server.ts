@@ -1,10 +1,11 @@
 import * as express from "express";
 import * as Knex from "knex";
 import Augur from "augur.js";
+import { Address, ErrorCallback, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
 import { getMarkets } from "./getters/get-markets";
-import { Address, ServersData } from "../types";
-import { isSyncFinished } from "../blockchain/sync-augur-node-with-blockchain";
+import { isSyncFinished } from "../blockchain/bulk-sync-augur-node-with-blockchain";
+import { EventEmitter } from "events";
 
 // tslint:disable-next-line:no-var-requires
 const { websocketConfigs } = require("../../config");
@@ -14,10 +15,10 @@ export interface RunServerResult {
   servers: ServersData;
 }
 
-export function runServer(db: Knex, augur: Augur): RunServerResult {
+export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter = new EventEmitter()): RunServerResult {
   const app: express.Application = express();
 
-  const servers: ServersData = runWebsocketServer(db, app, augur, websocketConfigs);
+  const servers: ServersData = runWebsocketServer(db, app, augur, websocketConfigs, controlEmitter);
 
   app.get("/", (req, res) => {
     res.send("Hello World");
@@ -71,4 +72,10 @@ export function runServer(db: Knex, augur: Augur): RunServerResult {
   });
 
   return { app, servers };
+}
+
+export function shutdownServers(servers: ServersData) {
+  servers.httpServers.forEach((server, index) => {
+    server.close(() => servers.servers[index].close());
+  });
 }

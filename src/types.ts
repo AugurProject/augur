@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import { Augur, FormattedEventLog } from "augur.js";
+import { EventEmitter } from "events";
 import * as Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
@@ -598,6 +599,7 @@ export interface UIUniverseInfoRow<BigNumberType> extends NormalizedPayout<strin
 export interface ServersData {
   servers: Array<WebSocket.Server>;
   httpServers: Array<http.Server | https.Server>;
+  controlEmitter: EventEmitter;
 }
 
 export interface AllOrdersRow<BigNumberType> {

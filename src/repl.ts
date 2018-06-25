@@ -1,6 +1,6 @@
 import * as repl from "repl";
 import { augurEmitter } from "./events";
-import "./index";
+import "./runServer";
 
 const replServer = repl.start();
 replServer.context.augurEmitter = augurEmitter;
