@@ -40,10 +40,10 @@ export default function AuthConnect(p) {
           />
           <div className={Styles.Auth__connections}>
             {selectedNav == null &&
-              <MetaMaskConnect />
-            }
-            {selectedNav === PARAMS.EDGE &&
               <Edge />
+            }
+            {selectedNav === PARAMS.METAMASK &&
+              <MetaMaskConnect />
             }
             {selectedNav === PARAMS.LEDGER &&
               <LedgerConnect />
