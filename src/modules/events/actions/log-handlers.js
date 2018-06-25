@@ -80,7 +80,6 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
   const isStoredTransaction = log.orderCreator === getState().loginAccount.address
   if (isStoredTransaction) {
-    dispatch(updateLoggedTransactions(log))
     dispatch(updateOrder(log, true))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
@@ -95,7 +94,6 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
   if (escapeHatchModalShowing) return
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
-    dispatch(updateLoggedTransactions(log))
     dispatch(updateOrder(log, false))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
@@ -108,7 +106,6 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.filler === address || log.creator === address
   const popularity = log.removed ? new BigNumber(log.amount, 10).negated().toFixed() : log.amount
   if (isStoredTransaction) {
-    dispatch(updateLoggedTransactions(log))
     dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
     dispatch(updateMarketCategoryPopularity(log.market, popularity))
     dispatch(updateOrder(log, false))
