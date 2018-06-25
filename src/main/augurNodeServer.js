@@ -67,7 +67,6 @@ AugurNodeServer.prototype.startServer = function () {
 };
 
 AugurNodeServer.prototype.restart = function () {
-  console.log("SD1");
     this.shutDownServer();
     setTimeout(this.startServer.bind(this), 2000);
 };
@@ -84,7 +83,7 @@ AugurNodeServer.prototype.onError = function(err) {
 
 AugurNodeServer.prototype.onBulkSyncFinished = function () {
     console.log("Sync with blockchain complete.");
-}
+};
 
 AugurNodeServer.prototype.onRequestConfig = function (event, data) {
     event.sender.send('config', this.config);
