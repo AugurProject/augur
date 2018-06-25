@@ -233,6 +233,7 @@ export function assembleMarket(
       market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeId) => {
         const outcomeData = marketOutcomesData[outcomeId]
         const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeId]
+        const volume = createBigNumber(outcomeData.volume)
 
         const outcome = {
           ...outcomeData,
@@ -240,10 +241,12 @@ export function assembleMarket(
           marketId,
           lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
-
+        if (!volume.gt(ZERO)) {
+          outcome.lastPrice.formatted = '—'
+        }
         if (market.isScalar) {
           // note: not actually a percent
-          if (createBigNumber(outcome.volume).gt(ZERO)) {
+          if (volume.gt(ZERO)) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
@@ -265,6 +268,11 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
+          }
+          // format-number thinks 0 is '-', need to correct
+          if (outcome.lastPrice.fullPrecision === '0') {
+            outcome.lastPricePercent.formatted = '0'
+            outcome.lastPricePercent.full = '0'
           }
         } else if (createBigNumber(outcome.volume || 0).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
