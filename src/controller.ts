@@ -73,8 +73,8 @@ export class AugurNodeController {
       throw new Error("No Current Block");
     }
     const highestBlockNumber = parseInt(this.augur.rpc.getCurrentBlock().number, 16);
-    const uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()]
-    return ({ lastSyncBlockNumber, uploadBlockNumber: uploadBlockNumber, highestBlockNumber });
+    const uploadBlockNumber = this.augur.contracts.uploadBlockNumbers[this.augur.rpc.getNetworkID()];
+    return ({ lastSyncBlockNumber, uploadBlockNumber, highestBlockNumber });
   }
 
   private shutdownCallback(err: Error|null) {

@@ -6,7 +6,6 @@ import * as WebSocket from "ws";
 import * as https from "https";
 import * as http from "http";
 
-
 export { BlockDetail, FormattedEventLog } from "augur.js";
 
 export enum ReportingState {
