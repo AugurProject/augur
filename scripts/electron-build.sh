@@ -15,6 +15,6 @@ else
     nvm install v9.11.2
     nvm use v9.11.2
     npm install
-    npm run make -- --win --linux
+    npm run make -- --linux
 fi
 
