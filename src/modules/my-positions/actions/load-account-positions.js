@@ -37,6 +37,7 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
               if (all && all[marketId] && all[marketId][outcome] && all[marketId][outcome].length && all[marketId][outcome][0].profitLoss) {
                 outcomePosition[0].realizedProfitLoss = all[marketId][outcome][0].profitLoss.realized
                 outcomePosition[0].unrealizedProfitLoss = all[marketId][outcome][0].profitLoss.unrealized
+                outcomePosition[0].averagePrice = all[marketId][outcome][0].profitLoss.meanOpenPrice
               }
               acc[marketId][outcome] = outcomePosition
               return acc
