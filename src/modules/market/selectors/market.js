@@ -241,7 +241,7 @@ export function assembleMarket(
           marketId,
           lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
-        if (volume && !volume.gt(ZERO)) {
+        if (volume && volume.eq(ZERO)) {
           outcome.lastPrice.formatted = '—'
         }
         if (market.isScalar) {
