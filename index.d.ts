@@ -225,7 +225,7 @@ export class Augur {
     [functionName: string]: ApiFunction,
   };
   public events: {
-    getAllAugurLogs: ApiFunction;
+    getAllAugurLogs: (p: ApiParams, batchCallback: ApiCallback, finalCallback: (err: Error|null) => void) => any;
     startBlockListeners(blockCallbacks: BlockSubscriptionCallbacks): boolean;
     stopBlockListeners(): boolean;
     startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, startingBlockNumber: number, onSetupComplete?: (err: Error|null) => void): void;

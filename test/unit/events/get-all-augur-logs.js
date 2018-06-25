@@ -16,8 +16,8 @@ describe("events/get-all-augur-logs", function () {
         "../rpc-interface": t.stub.rpcInterface,
         "../utils/chunk-blocks": chunkBlocks,
       });
-      getAllAugurLogs(t.params, function (err, allAugurLogs) {
-        t.assertions(err, allAugurLogs);
+      getAllAugurLogs(t.params, function (batchAugurLogs) {
+        t.assertions(batchAugurLogs);
         done();
       });
     });
@@ -119,9 +119,9 @@ describe("events/get-all-augur-logs", function () {
         },
       },
     },
-    assertions: function (err, allAugurLogs) {
-      assert.isNull(err);
-      assert.deepEqual(allAugurLogs, [
+    assertions: function (batchAugurLogs) {
+      // assert.isNull(err);
+      assert.deepEqual(batchAugurLogs, [
         {
           address: "0x000000000000000000000000000000000000000c",
           testEventInputIndexed: "0x2000000000000000000000000000000000000000000000000000000000000000",

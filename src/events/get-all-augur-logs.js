@@ -19,11 +19,10 @@ var constants = require("../constants");
  * @param {function} callback Called when all data has been received and parsed.
  * @return { contractName => { eventName => [parsed event logs] } }
  */
-function getAllAugurLogs(p, callback) {
-  var allAugurLogs = [];
+function getAllAugurLogs(p, batchCallback, finalCallback) {
   var networkId = ethrpc.getNetworkID();
   var contractNameToAddressMap = contracts.addresses[networkId];
-  if (contractNameToAddressMap == null) return callback(new Error("No contract address map for networkId: " + networkId));
+  if (contractNameToAddressMap == null) return finalCallback(new Error("No contract address map for networkId: " + networkId));
   var eventsAbi = contracts.abi.events;
   var contractAddressToNameMap = mapContractAddressesToNames(contractNameToAddressMap);
   var eventSignatureToNameMap = mapEventSignaturesToNames(eventsAbi);
@@ -32,12 +31,13 @@ function getAllAugurLogs(p, callback) {
   var currentBlock = parseInt(ethrpc.getCurrentBlock().number, 16);
   var toBlock = p.toBlock ? encodeNumberAsJSNumber(p.toBlock) : currentBlock;
   if (fromBlock > currentBlock || toBlock > currentBlock) {
-    return callback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
+    return finalCallback(new Error("Block range " + fromBlock + " to " + toBlock + " exceeds currentBlock " + currentBlock));
   }
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (err, logs) {
       if (err) return nextChunkOfBlocks(err);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
+      var batchAugurLogs = [];
       logs.forEach(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
@@ -49,18 +49,19 @@ function getAllAugurLogs(p, callback) {
           }
           try {
             var parsedLog = parseLogMessage(contractName, eventName, log, eventsAbi[contractName][eventName].inputs);
-            allAugurLogs.push(parsedLog);
+            batchAugurLogs.push(parsedLog);
           } catch (exc) {
             console.error("parseLogMessage error", exc);
             console.log(contractName, eventName, log, eventsAbi[contractName], chunkOfBlocks);
           }
         }
       });
+      batchCallback(batchAugurLogs);
       nextChunkOfBlocks(null);
     });
   }, function (err) {
-    if (err) return callback(err);
-    callback(null, allAugurLogs);
+    if (err) return finalCallback(err);
+    finalCallback(null);
   });
 }
 
