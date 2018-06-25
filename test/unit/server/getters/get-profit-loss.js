@@ -384,6 +384,7 @@ describe("server/getters/get-profit-loss", () => {
     );
   });
 
+
   it("buckets datapoints from the first trade the user made", (done) => {
     testWithDatabase(
       {
@@ -428,6 +429,54 @@ describe("server/getters/get-profit-loss", () => {
               timestamp: 1506485300,
             },
           ]);
+        },
+      },
+      done
+    );
+  });
+
+  it("buckets datapoints from the first trade the user to now, producing 30 buckets", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account: "0x0000000000000000000000000000000000000b0b",
+        },
+        assertions: (err, profitLoss) => {
+          assert.ifError(err);
+          assert.equal(profitLoss.aggregate.length, 30);
+          assert.deepEqual(profitLoss.aggregate[0].profitLoss, {
+            meanOpenPrice: "3.37272727272727272727",
+            position: "1.1",
+            realized: "0.13",
+            total: "0",
+            unrealized: "-0.13",
+          });
+
+          // The last bucket end time should be really quite near out current time
+          assert.isAtMost(Date.now() - profitLoss.aggregate[29].timestamp, 250);
+        },
+      },
+      done
+    );
+  });
+
+  it("makes 30 empty profit-loss buckets spaced from time time of first trade to now", (done) => {
+    testWithDatabase(
+      {
+        params: {
+          universe: "0x000000000000000000000000000000000000000b",
+          account:  "0x0badbadbadbadbadbadbadbadbadbadbadbadbad",
+        },
+        assertions: (err, profitLoss) => {
+          assert.ifError(err);
+          assert.equal(profitLoss.aggregate.length, 30);
+          profitLoss.aggregate.forEach((bucket) => {
+            assert.isNull(bucket.profitLoss);
+          });
+
+          // The last bucket end time should be really quite near out current time
+          assert.isAtMost(Date.now() - profitLoss.aggregate[29].timestamp, 250);
         },
       },
       done
