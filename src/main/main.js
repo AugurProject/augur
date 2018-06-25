@@ -1,7 +1,7 @@
 const electron = require('electron');
 const AugurUIServer = require('./augurUIServer');
-const AugurNodeController = require('./augurNodeController');
-const {app, BrowserWindow, ipcMain} = electron;  
+const AugurNodeController = require('./augurNodeServer');
+const {app, BrowserWindow} = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

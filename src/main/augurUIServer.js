@@ -40,7 +40,7 @@ AugurUIServer.prototype.setWindow = function (window) {
 }
 
 AugurUIServer.prototype.stopServer = function () {
-    console.log("Stoping Augur UI Server");
+    console.log("Stopping Augur UI Server");
     this.server.close();
 }
 
