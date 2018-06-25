@@ -117,7 +117,7 @@ async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: nu
   return { timestamp: payout.timestamp, price };
 }
 
-async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
+async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number | null, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null, true);
   const outcomeFinalized = await getFinalizedOutcomePrice(db, marketId, outcome);
 
