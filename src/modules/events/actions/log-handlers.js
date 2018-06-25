@@ -22,6 +22,7 @@ import { getReportingFees } from 'modules/portfolio/actions/get-reporting-fees'
 import { loadMarketsInfoIfNotLoaded } from 'src/modules/markets/actions/load-markets-info-if-not-loaded'
 import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
+import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -56,7 +57,7 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.from === address || log.to === address
   if (isStoredTransaction) {
-    dispatch(updateLoggedTransactions(log))
+    dispatch(loadFundingHistory())
   }
 }
 
