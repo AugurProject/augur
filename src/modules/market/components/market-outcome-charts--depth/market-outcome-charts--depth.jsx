@@ -414,14 +414,14 @@ function determineDrawParams(options) {
   if (newMarketDepth.asks.length > 0 && marketMax) {
     const askToCopy = newMarketDepth.asks[newMarketDepth.asks.length - 1]
     if (askToCopy[1] !== marketMax.toNumber()) {
-      newMarketDepth.asks.push([askToCopy[0], marketMax, askToCopy[2], false])
+      newMarketDepth.asks.push([askToCopy[0], marketMax.toNumber(), askToCopy[2], false])
     }
   }
 
   if (newMarketDepth.bids.length > 0 && marketMin) {
     const bidToCopy = newMarketDepth.bids[newMarketDepth.bids.length - 1]
     if (bidToCopy[1] !== marketMin.toNumber()) {
-      newMarketDepth.bids.push([bidToCopy[0], marketMin, bidToCopy[2], false])
+      newMarketDepth.bids.push([bidToCopy[0], marketMin.toNumber(), bidToCopy[2], false])
     }
   }
 

@@ -52,7 +52,6 @@ export default class MarketOutcomeCharts extends Component {
       candleScrolled: true,
       selectedPeriod: period,
       selectedRange: range,
-      hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
       headerHeight: 0,
@@ -63,7 +62,6 @@ export default class MarketOutcomeCharts extends Component {
       },
     }
 
-    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
@@ -155,12 +153,6 @@ export default class MarketOutcomeCharts extends Component {
   updateChartHeaderHeight(headerHeight) {
     this.setState({
       headerHeight,
-    })
-  }
-
-  updateHoveredPeriod(hoveredPeriod) {
-    this.setState({
-      hoveredPeriod,
     })
   }
 
