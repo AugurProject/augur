@@ -20,7 +20,6 @@ class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
-    hoveredPeriod: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
     marketMax: CustomPropTypes.bigNumber,
     marketMin: CustomPropTypes.bigNumber,
@@ -30,7 +29,6 @@ class MarketOutcomeCandlestick extends React.Component {
     selectedPeriod: PropTypes.number.isRequired,
     selectedRange: PropTypes.number.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
-    updateHoveredPeriod: PropTypes.func.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
@@ -99,11 +97,13 @@ class MarketOutcomeCandlestick extends React.Component {
       containerWidth: 0,
       yScale: null,
       hoveredPrice: null,
+      hoveredPeriod: {},
     })
 
     this.getContainerWidths = this.getContainerWidths.bind(this)
     this.updateContainerWidths = this.updateContainerWidths.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
+    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.clearCrosshairs = this.clearCrosshairs.bind(this)
   }
 
@@ -148,8 +148,15 @@ class MarketOutcomeCandlestick extends React.Component {
     })
   }
 
+  updateHoveredPeriod(hoveredPeriod) {
+    this.setState({
+      hoveredPeriod,
+    })
+  }
+
   clearCrosshairs() {
     this.updateHoveredPrice(null)
+    this.updateHoveredPeriod({})
     updateHoveredPriceCrosshair(null)
   }
 
@@ -157,14 +164,12 @@ class MarketOutcomeCandlestick extends React.Component {
     const {
       currentTimeInSeconds,
       fixedPrecision,
-      hoveredPeriod,
       isMobile,
       orderBookKeys,
       outcomeName,
       priceTimeSeries,
       selectedPeriod,
       selectedRange,
-      updateHoveredPeriod,
       updateSelectedPeriod,
       updateSelectedRange,
       updateSelectedOrderProperties,
@@ -184,6 +189,7 @@ class MarketOutcomeCandlestick extends React.Component {
       yDomain,
       yScale,
       hoveredPrice,
+      hoveredPeriod,
     } = this.state
 
     const candleChartContainer = ReactFauxDOM.createElement('div')
@@ -288,7 +294,7 @@ class MarketOutcomeCandlestick extends React.Component {
         marketMin,
         orderBookKeys,
         priceTimeSeries,
-        updateHoveredPeriod,
+        updateHoveredPeriod: this.updateHoveredPeriod,
         updateHoveredPrice: this.updateHoveredPrice,
         updateSelectedOrderProperties,
         yScale,
