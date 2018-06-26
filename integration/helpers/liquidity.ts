@@ -17,6 +17,9 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
     } else {
       await expect(page).toClick("button", { text: "Sell" });
     }
+    if (await page.$(".input-dropdown-styles_InputDropdown__select") !== null) {
+      await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", order.outcome);
+    }
     await expect(page).toFill("#cm__input--quantity", order.quantity);
     await expect(page).toFill("#cm__input--limit-price", order.price);
     await expect(page).toClick("button", { text: "Add Order" });
