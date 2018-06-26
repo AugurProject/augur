@@ -54,7 +54,7 @@ export default class MarketOutcomeCharts extends Component {
       selectedRange: range,
       hoveredDepth: [],
       hoveredPrice: null,
-      headerHeight: 0,
+      headerHeight: props.isMobile ? 20 : 0,
       priceTimeSeriesCandleStick: [],
       sharedChartMargins: {
         top: 0,
