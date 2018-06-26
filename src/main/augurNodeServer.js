@@ -14,6 +14,11 @@ const defaultConfig = {
             "name":"Rinkeby",
             "ws":"wss://websocket-rinkeby.ethereum.nodes.augur.net"
         },
+        "ropsten": {
+            "http":"https://ropsten.augur.net/ethereum-http",
+            "name":"Ropsten",
+            "ws":"wss://ropsten.augur.net/ethereum-ws"
+        },
         "local": {
             "http":"http://localhost:8545",
             "name":"Local",
