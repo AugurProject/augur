@@ -426,7 +426,7 @@ export default class CreateMarketOutcome extends Component {
                 onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&
-              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+              <span className={StylesForm.CreateMarketForm__error_tick}>
                 {InputErrorIcon}{validation.tickSize}
               </span>
               }

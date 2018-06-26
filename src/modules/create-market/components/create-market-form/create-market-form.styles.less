@@ -32,6 +32,7 @@
   position: absolute;
 }
 
+.CreateMarketForm__error_tick,
 .CreateMarketForm__error--bottom {
   &:extend(.CreateMarketForm__error);
 
@@ -39,6 +40,14 @@
   position: absolute;
 }
 
+.CreateMarketForm__error_tick {
+  white-space: pre-wrap;
+  text-align: left;
+  text-indent: -1.5rem;
+  padding-left: 1.5rem;
+}
+
+.CreateMarketForm__error_tick > svg,
 .CreateMarketForm__error > svg,
 .CreateMarketForm__error--abs > svg,
 .CreateMarketForm__error--bottom > svg,
