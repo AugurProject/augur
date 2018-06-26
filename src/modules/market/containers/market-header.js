@@ -15,6 +15,9 @@ const mapStateToProps = (state, ownProps) => {
     description: market.description || '',
     details: market.details || '',
     marketType: market.marketType,
+    maxPrice: market.maxPrice,
+    minPrice: market.minPrice,
+    scalarDenomination: market.scalarDenomination,
     resolutionSource: market.resolutionSource,
     coreProperties: {
       volume: {
