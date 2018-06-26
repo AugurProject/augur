@@ -1,7 +1,8 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
+import { dismissDisclaimerModal } from "./helpers/dismiss-disclaimer-modal";
+import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity"
 
 const url = `${process.env.AUGUR_URL}`;
 const timeoutMilliseconds = 9000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
@@ -111,33 +112,45 @@ describe("Create market page", () => {
     // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
-    // Place buy orders
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.4");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "0.37");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "3");
-    await expect(page).toFill("#cm__input--limit-price", "0.34");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    // Place sell orders
-    await expect(page).toClick("button", { text: "Sell" });
-
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "0.43");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.47");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.5");
-    await expect(page).toClick("button", { text: "Add Order" });
+    const orders = [
+      {
+        type: OrderType.Ask,
+        outcome: "Yes",
+        quantity: "2",
+        price: "0.5",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "Yes",
+        quantity: "2",
+        price: "0.47",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "Yes",
+        quantity: "1",
+        price: "0.43",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Yes",
+        quantity: "2",
+        price: "0.4",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Yes",
+        quantity: "1",
+        price: "0.37",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Yes",
+        quantity: "3",
+        price: "0.34",
+      },
+    ];
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -163,35 +176,7 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(3)", { text: "0.5000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(3)", { text: "0.4700", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(3)", { text: "0.4300", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(3)", { text: "0.4000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(3)", { text: "0.3700", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(1)", { text: "Yes", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2)", { text: "3.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(3)", { text: "0.3400", timeout: timeoutMilliseconds });
+    await verifyLiquidity(orders);
   });
 
   it("should allow user to create a new categorical market", async () => {
@@ -238,38 +223,45 @@ describe("Create market page", () => {
     // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
-    // Place buy orders
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.4");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "0.37");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "3");
-    await expect(page).toFill("#cm__input--limit-price", "0.34");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    // Place sell orders
-    await expect(page).toClick("button", { text: "Sell" });
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "0.43");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.47");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", "Outcome 1");
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "0.5");
-    await expect(page).toClick("button", { text: "Add Order" });
+    const orders = [
+      {
+        type: OrderType.Ask,
+        outcome: "Outcome 1",
+        quantity: "2",
+        price: "0.5",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "Outcome 1",
+        quantity: "2",
+        price: "0.47",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "Outcome 1",
+        quantity: "1",
+        price: "0.43",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Outcome 1",
+        quantity: "2",
+        price: "0.4",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Outcome 1",
+        quantity: "1",
+        price: "0.37",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Outcome 1",
+        quantity: "3",
+        price: "0.34",
+      },
+    ];
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -289,35 +281,7 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(3)", { text: "0.5000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(3)", { text: "0.4700", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(3)", { text: "0.4300", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(3)", { text: "0.4000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(3)", { text: "0.3700", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2)", { text: "3.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(3)", { text: "0.3400", timeout: timeoutMilliseconds });
+    await verifyLiquidity(orders);
   });
 
   it("should allow user to create a new scalar market", async () => {
@@ -365,33 +329,45 @@ describe("Create market page", () => {
     // Fill out Liquidity page
     await expect(page).toFill("#cm__input--settlement", "1");
 
-    // Place buy orders
-    await expect(page).toFill("#cm__input--quantity", "12");
-    await expect(page).toFill("#cm__input--limit-price", "1");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "10");
-    await expect(page).toFill("#cm__input--limit-price", "2");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "7");
-    await expect(page).toFill("#cm__input--limit-price", "3");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    // Place sell orders
-    await expect(page).toClick("button", { text: "Sell" });
-
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "15");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "1");
-    await expect(page).toFill("#cm__input--limit-price", "17.5");
-    await expect(page).toClick("button", { text: "Add Order" });
-
-    await expect(page).toFill("#cm__input--quantity", "2");
-    await expect(page).toFill("#cm__input--limit-price", "20");
-    await expect(page).toClick("button", { text: "Add Order" });
+    const orders = [
+      {
+        type: OrderType.Ask,
+        outcome: "20.0000",
+        quantity: "2.0000",
+        price: "20.0000",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "17.5000",
+        quantity: "1.0000",
+        price: "17.5000",
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "15.0000",
+        quantity: "2.0000",
+        price: "15.0000",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "3.0000",
+        quantity: "7.0000",
+        price: "3.0000",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "2.0000",
+        quantity: "10.0000",
+        price: "2.0000",
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "1.0000",
+        quantity: "12.0000",
+        price: "1.0000",
+      },
+    ];
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -411,34 +387,6 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(1)", { text: "20.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(1) li:nth-child(3)", { text: "20.0000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(1)", { text: "17.5000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(2)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(2) li:nth-child(3)", { text: "17.5000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(1)", { text: "15.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2) span", { text: "-", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(2)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(3) li:nth-child(3)", { text: "15.0000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(1)", { text: "3.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(2)", { text: "7.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(4) li:nth-child(3)", { text: "3.0000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(1)", { text: "2.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(2)", { text: "10.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(5) li:nth-child(3)", { text: "2.0000", timeout: timeoutMilliseconds });
-
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(1)", { text: "1.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2) span", { text: "+", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(2)", { text: "12.0000", timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(6) li:nth-child(3)", { text: "1.0000", timeout: timeoutMilliseconds });
+    await verifyLiquidity(orders);
   });
 });
