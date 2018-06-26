@@ -146,7 +146,7 @@ export default class CreateMarketOutcome extends Component {
       scalarBigNum = createBigNumber(scalarBigNum)
     }
 
-    if (numTicksBigNum !== '') {
+    if (!(BigNumber.isBigNumber(numTicksBigNum)) && numTicksBigNum !== '') {
       numTicksBigNum = createBigNumber(numTicksBigNum)
     }
 
@@ -193,22 +193,20 @@ export default class CreateMarketOutcome extends Component {
     }
     updatedMarket.scalarBigNum = scalarBigNum
 
-    if (type === scalarType.TICK_SIZE) {
-      switch (true) {
-        case !value:
-          updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
-          break
-        case numTicksBigNum.lt(ZERO):
-          updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
-          break
-        case numTicksBigNum.gt(this.state.scalarMax):
-          updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
-          break
-        default:
-          updatedMarket.validations[currentStep].tickSize = true
-      }
-      updatedMarket.tickSize = value
+    switch (true) {
+      case numTicksBigNum === '':
+        updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
+        break
+      case numTicksBigNum.lt(ZERO):
+        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
+        break
+      case numTicksBigNum.gt(this.state.scalarMax):
+        updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
+        break
+      default:
+        updatedMarket.validations[currentStep].tickSize = true
     }
+    updatedMarket.tickSize = numTicksBigNum
 
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
     if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum)) {
