@@ -22,7 +22,7 @@ const MarketOutcomesAndPositions = p => (
         closePositionStatus={p.closePositionStatus}
       />
     }
-    { p.isMobile && p.selectedOutcome &&
+    { p.isMobile && p.selectedOutcome && p.outcomes.length > 0 &&
       <MarketPositionsListMobile
         outcome={p.outcomes.filter(outcome => outcome.id === p.selectedOutcome)[0]}
         positions={p.positions.filter(position => parseInt(position.outcomeId, 10) === parseInt(p.selectedOutcome, 10))}
