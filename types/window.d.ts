@@ -13,6 +13,9 @@ interface IntegrationHelpers {
   getRep(): void;
   getMarketCreationCostBreakdown(): object;
   getMarketDisputeOutcomes(): void;
+  getReportingWindowStats(): void;
+  getDaysRemaining(endTime: number, startTime: number): string;
+  convertUnixToFormattedDateTime(value: number): string;
 }
 
 declare namespace window {
