@@ -26,7 +26,7 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
   }
 }
 
-export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMilliseconds = 9000) {
+export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMilliseconds = 10000) {
   for (let i = 0; i < orders.length; i++) {
     let row = i + 1;
     await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(1)", { text: orders[i].outcome, timeout: timeoutMilliseconds });

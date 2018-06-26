@@ -5,7 +5,7 @@ import { dismissDisclaimerModal } from "./helpers/dismiss-disclaimer-modal";
 import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity"
 
 const url = `${process.env.AUGUR_URL}`;
-const timeoutMilliseconds = 9000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
+const timeoutMilliseconds = 10000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
 jest.setTimeout(100000);
 
