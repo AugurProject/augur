@@ -21,9 +21,10 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
     await expect(page).toFill("#cm__input--limit-price", order.price);
     await expect(page).toClick("button", { text: "Add Order" });
   }
+  return
 }
 
-export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMilliseconds = 9000) {
+export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMilliseconds = 15000) {
   for (let i = 0; i < orders.length; i++) {
     let row = i + 1;
     await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(1)", { text: orders[i].outcome, timeout: timeoutMilliseconds });
@@ -37,4 +38,5 @@ export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMill
     await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(2)", { text: orders[i].quantity, timeout: timeoutMilliseconds });
     await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(3)", { text: orders[i].price, timeout: timeoutMilliseconds });
   }
+  return
 }
