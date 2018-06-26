@@ -1,5 +1,5 @@
 import { Augur } from "augur.js";
-import { eachSeries, mapLimit } from "async";
+import { eachSeries, mapLimit, queue } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
@@ -26,43 +26,55 @@ function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>, callbac
   });
 }
 
-export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toBlock: number, callback: ErrorCallback): void {
-  console.log("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
-  augur.events.getAllAugurLogs({ fromBlock, toBlock }, (err?: string|object|null, allAugurLogs?: Array<FormattedEventLog>): void => {
-    if (err) return callback(err instanceof Error ? err : new Error(JSON.stringify(err)));
-    if (!allAugurLogs) return callback(null);
-    const blockNumbers = _.uniq(allAugurLogs.map((augurLog) => augurLog.blockNumber));
-    fetchAllBlockDetails(augur, blockNumbers, (err, blockDetailsByBlock) => {
-      if (err || blockDetailsByBlock == null) return callback(err);
-      const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
-      eachSeries(blockNumbers, (blockNumber: number, nextBlock: ErrorCallback) => {
-        const logs = logsByBlock[blockNumber];
-        db.transaction((trx: Knex.Transaction): void => {
-          processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], (err: Error|null) => {
-            if (err) {
-              return nextBlock(err);
+function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, callback: ErrorCallback) {
+  const blockNumbers = _.uniq(allAugurLogs.map((augurLog) => augurLog.blockNumber));
+  fetchAllBlockDetails(augur, blockNumbers, (err, blockDetailsByBlock) => {
+    if (err || blockDetailsByBlock == null) return callback(err);
+    const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
+    eachSeries(blockNumbers, (blockNumber: number, nextBlock: ErrorCallback) => {
+      const logs = logsByBlock[blockNumber];
+      db.transaction((trx: Knex.Transaction): void => {
+        processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], (err: Error|null) => {
+          if (err) {
+            return nextBlock(err);
+          }
+          eachSeries(logs, (log: FormattedEventLog, nextLog: ErrorCallback) => {
+            const contractName = log.contractName;
+            const eventName = log.eventName;
+            if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
+              console.log("Log processor does not exist:", contractName, eventName);
+              nextLog(null);
+            } else {
+              processLog(trx, augur, log, logProcessors[contractName][eventName], nextLog);
             }
-            eachSeries(logs, (log: FormattedEventLog, nextLog: ErrorCallback) => {
-              const contractName = log.contractName;
-              const eventName = log.eventName;
-              if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
-                console.log("Log processor does not exist:", contractName, eventName);
-                nextLog(null);
-              } else {
-                processLog(trx, augur, log, logProcessors[contractName][eventName], nextLog);
-              }
-            }, (err: Error|null) => {
-              if (err) {
-                trx.rollback(err);
-                return nextBlock(err);
-              } else {
-                trx.commit();
-                return nextBlock(null);
-              }
-            });
+          }, (err: Error|null) => {
+            if (err) {
+              trx.rollback(err);
+              return nextBlock(err);
+            } else {
+              trx.commit();
+              return nextBlock(null);
+            }
           });
         });
-      }, callback);
+      });
+    }, callback);
+  });
+}
+
+export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toBlock: number, callback: ErrorCallback): void {
+  const batchLogProcessQueue = queue((processFunction: (callback: ErrorCallback) => void, nextFunction: ErrorCallback): void => {
+    processFunction(nextFunction);
+  }, 1);
+
+  console.log("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
+  augur.events.getAllAugurLogs({ fromBlock, toBlock }, (batchOfAugurLogs?: Array<FormattedEventLog>): void => {
+    if (!batchOfAugurLogs) return ;
+    batchLogProcessQueue.push( (nextBatch) => processBatchOfLogs(db, augur, batchOfAugurLogs, nextBatch ));
+  }, (err) => {
+    batchLogProcessQueue.push(() => {
+      callback(err);
+      batchLogProcessQueue.kill();
     });
   });
 }
