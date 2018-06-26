@@ -10,10 +10,15 @@ import { Deposit as DepositIcon, Copy as CopyIcon } from 'modules/common/compone
 import Styles from 'modules/account/components/account-deposit/account-deposit.styles'
 
 function airSwapOnClick(e) {
+  const env = parseInt(augur.rpc.getNetworkID(), 10) === 1 ? 'mainnet' : 'sandbox'
   e.preventDefault()
+
+  // The widget will offer swaps for REP <-> ETH on mainnet
+  // It can still be tested on rinkeby, but only AST <-> ETH is offered
   window.AirSwap.Trader.render({
+    env,
     mode: 'buy',
-    token: '0xe94327d07fc17907b4db788e5adf2ed424addff6',
+    token: env === 'mainnet' ? '0xe94327d07fc17907b4db788e5adf2ed424addff6' : '0xcc1cbd4f67cceb7c001bd4adf98451237a193ff8',
     onCancel() {
       console.info('AirSwap trade cancelled')
     },
