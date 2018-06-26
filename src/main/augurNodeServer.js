@@ -60,7 +60,6 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig);
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this));
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this));
-    this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketClose, this.onError.bind(this));
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished);
 
     this.augurNodeController.start().catch(this.onError.bind(this));
