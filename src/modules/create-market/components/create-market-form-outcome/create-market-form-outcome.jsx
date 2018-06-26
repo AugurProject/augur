@@ -194,7 +194,7 @@ export default class CreateMarketOutcome extends Component {
     updatedMarket.scalarBigNum = scalarBigNum
 
     switch (true) {
-      case numTicksBigNum === '':
+      case numTicksBigNum === '' || numTicksBigNum.eq(ZERO):
         updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
         break
       case numTicksBigNum.lt(ZERO):
@@ -209,7 +209,7 @@ export default class CreateMarketOutcome extends Component {
     updatedMarket.tickSize = numTicksBigNum
 
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
-    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum)) {
+    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum) && !numTicksBigNum.eq(ZERO)) {
       // Always check if (maxPrice - minPrice) / precision is an even number
       if ((scalarBigNum.minus(scalarSmallNum).div(numTicksBigNum)).mod(2).toString() !== '0') {
         updatedMarket.validations[currentStep].tickSize =`Increase range or precision.`
