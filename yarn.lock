@@ -42,6 +42,10 @@
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.4.tgz#fe86315d9a66827feeb16f73bc954688ec950e18"
 
+"@types/chai@^4.1.3":
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.4.tgz#5ca073b330d90b4066d6ce18f60d57f2084ce8ca"
+
 "@types/connect@*":
   version "3.4.32"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
@@ -99,13 +103,17 @@
   dependencies:
     "@types/node" "*"
 
+"@types/mocha@^5.2.2":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.3.tgz#11f3a5629d67cd444fa6c94536576244e6a52ea9"
+
 "@types/node@*":
   version "10.0.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.6.tgz#c0bce8e539bf34c1b850c13ff46bead2fecc2e58"
 
-"@types/node@8.0.31":
-  version "8.0.31"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.31.tgz#d9af61093cf4bfc9f066ca34de0175012cfb0ce9"
+"@types/node@8.10.20":
+  version "8.10.20"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.20.tgz#fe674ea52e13950ab10954433a7824438aabbcac"
 
 "@types/node@9.6.7":
   version "9.6.7"
@@ -576,9 +584,9 @@ augur-core@1.0.0-13:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@4.12.0-6:
-  version "4.12.0-6"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-6.tgz#724b1610e97e3e149774f83f0cc927cb590ba677"
+augur.js@4.12.0-9:
+  version "4.12.0-9"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-9.tgz#2055db857418d352b6fcb5f63ddc253ed236a088"
   dependencies:
     async "1.5.2"
     augur-core "1.0.0-13"
@@ -586,7 +594,7 @@ augur.js@4.12.0-6:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.3.6"
+    ethrpc "5.3.8"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -1447,6 +1455,10 @@ buffer-from@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.0.0.tgz#4cb8832d23612589b0406e9e2956c17f06fdf531"
 
+buffer-from@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.0.tgz#87fcaa3a298358e0ade6e442cfce840740d1ad04"
+
 buffer-writer@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-writer/-/buffer-writer-1.0.1.tgz#22a936901e3029afcd7547eb4487ceb697a3bf08"
@@ -2178,7 +2190,7 @@ diff@3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.1.tgz#aa8567a6eed03c531fc89d3f711cd0e5259dec75"
 
-diff@3.5.0, diff@^3.2.0, diff@^3.3.1, diff@^3.5.0:
+diff@3.5.0, diff@^3.1.0, diff@^3.2.0, diff@^3.3.1, diff@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
 
@@ -2674,9 +2686,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.3.6:
-  version "5.3.6"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.3.6.tgz#d41343aa8e277ffcece13a9fc1a0cdd0bdf41808"
+ethrpc@5.3.8:
+  version "5.3.8"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.3.8.tgz#fa1727be0403676d77bc55bed89189df1c844ad8"
   dependencies:
     async "2.6.0"
     bignumber.js "6.0.0"
@@ -4421,6 +4433,10 @@ make-dir@^1.0.0, make-dir@^1.1.0:
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.2.0.tgz#6d6a49eead4aae296c53bbf3a1a008bd6c89469b"
   dependencies:
     pify "^3.0.0"
+
+make-error@^1.1.1:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.4.tgz#19978ed575f9e9545d2ff8c13e33b5d18a67d535"
 
 make-iterator@^1.0.0:
   version "1.0.1"
@@ -6351,6 +6367,13 @@ source-map-support@^0.5.3:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
 
+source-map-support@^0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.6.tgz#4435cee46b1aab62b8e8610ce60f788091c51c13"
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
 source-map-url@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
@@ -6802,6 +6825,19 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
+ts-node@^6.1.1:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-6.2.0.tgz#65a0ae2acce319ea4fd7ac8d7c9f1f90c5da6baf"
+  dependencies:
+    arrify "^1.0.0"
+    buffer-from "^1.1.0"
+    diff "^3.1.0"
+    make-error "^1.1.1"
+    minimist "^1.2.0"
+    mkdirp "^0.5.1"
+    source-map-support "^0.5.6"
+    yn "^2.0.0"
+
 tslib@^1.0.0, tslib@^1.7.1, tslib@^1.8.1:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
@@ -6888,9 +6924,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typescript@2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.5.2.tgz#038a95f7d9bbb420b1bf35ba31d4c5c1dd3ffe34"
+typescript@2.9.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
 uglify-es@^3.3.4:
   version "3.3.9"
@@ -7568,3 +7604,7 @@ yeoman-generator@^2.0.4:
     text-table "^0.2.0"
     through2 "^2.0.0"
     yeoman-environment "^2.0.5"
+
+yn@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
