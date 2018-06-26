@@ -45,7 +45,7 @@ export default class MarketHeader extends Component {
       selectedOutcome,
     } = this.props
     const s = this.state
-    const detailsPresent = details != null && details.length > 0
+    const detailsPresent = (details != null && details.length > 0) || (marketType === SCALAR)
 
     return (
       <section className={Styles.MarketHeader}>
@@ -127,28 +127,34 @@ export default class MarketHeader extends Component {
           <h4>Resolution Source:</h4>
           <span>{resolutionSource || 'Outcome will be determined by news media'}</span>
         </div>
-        {detailsPresent &&
-          <div className={Styles[`MarketHeader__details-wrapper`]}>
+        <div className={Styles[`MarketHeader__details-wrapper`]}>
+          { detailsPresent &&
             <button
               className={Styles[`MarketHeader__details-button`]}
               onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
             >
               additional details {s.areMarketDetailsVisible ? <ChevronUp /> : <ChevronDown />}
             </button>
+          }
+          <div
+            ref={(marketDetails) => { this.marketDetails = marketDetails }}
+            className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
+          >
             <div
-              ref={(marketDetails) => { this.marketDetails = marketDetails }}
-              className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
+              className={details ? Styles.MarketHeader__details : Styles.MarketHeader__no_details}
             >
-              <div
-                className={Styles.MarketHeader__details}
-              >
-                <span>
-                  {details}
-                </span>
-              </div>
+              { details &&
+                <span>{details}</span>
+              }
+              { marketType === SCALAR &&
+              <p>
+                If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ([MAX_VALUE] [DENOMINATION]) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ([MIN_VALUE] [DENOMINATION]) should be reported.
+              </p>
+              }
             </div>
           </div>
-        }
+        </div>
+
       </section>
     )
   }
