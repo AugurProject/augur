@@ -294,7 +294,6 @@ export default class MarketOutcomeCharts extends Component {
                 hasOrders={hasOrders}
                 orderBookKeys={orderBookKeys}
                 hasPriceHistory={hasPriceHistory}
-                ordersWidth={s.ordersWidth}
               />
             </div>
           </div>
