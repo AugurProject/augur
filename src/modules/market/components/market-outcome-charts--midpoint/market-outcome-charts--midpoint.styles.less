@@ -1,31 +1,29 @@
 @import (reference) "~assets/styles/shared";
 
 .MarketOutcomeMidpoint {
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: @default-behind;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
 }
 
-.MarketOutcomeMidpoint__line {
-  stroke: @color-gray;
-  stroke-width: 2px;
+.MarketOutcomeMidpointValue {
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
+  font-size: @font-size-large;
+  font-weight: bold;
 }
 
-.MarketOutcomeMidpoint__label {
-  &:extend(.caps--heavy);
-
-  fill: @color-white;
-  letter-spacing: 1.6px;
-  stroke: @color-white;
+.MarketOutcomeMidpointLine {
+  border-top: 2px solid @color-gray;
+  flex-grow: 1;
+  height: 0;
+  margin-right: 10px;
 }
 
-.MarketOutcomeMidpoint__null-message {
-  &:extend(.caps--small);
-  &:extend(.caps--heavy);
-
-  fill: @color-gray;
-  stroke: @color-gray;
+.MarketOutcomeMidpointNullState {
+  color: @color-lightgray;
+  font-size: @font-size-normal;
+  text-align: center;
 }

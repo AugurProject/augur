@@ -20,8 +20,6 @@ class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
-    hoveredPeriod: PropTypes.object.isRequired,
-    hoveredPrice: PropTypes.any,
     isMobile: PropTypes.bool.isRequired,
     marketMax: CustomPropTypes.bigNumber,
     marketMin: CustomPropTypes.bigNumber,
@@ -31,8 +29,6 @@ class MarketOutcomeCandlestick extends React.Component {
     selectedPeriod: PropTypes.number.isRequired,
     selectedRange: PropTypes.number.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
-    updateHoveredPeriod: PropTypes.func.isRequired,
-    updateHoveredPrice: PropTypes.func.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
@@ -100,14 +96,21 @@ class MarketOutcomeCandlestick extends React.Component {
       containerHeight: 0,
       containerWidth: 0,
       yScale: null,
+      hoveredPrice: null,
+      hoveredPeriod: {},
     })
 
     this.getContainerWidths = this.getContainerWidths.bind(this)
     this.updateContainerWidths = this.updateContainerWidths.bind(this)
+    this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
+    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
+    this.clearCrosshairs = this.clearCrosshairs.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.updateContainerWidths)
+
+    this.drawContainer.addEventListener('mouseout', this.clearCrosshairs)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -125,6 +128,7 @@ class MarketOutcomeCandlestick extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateContainerWidths)
+    this.drawContainer.removeEventListener('mouseout', this.clearCrosshairs)
   }
 
   getContainerWidths() {
@@ -138,20 +142,34 @@ class MarketOutcomeCandlestick extends React.Component {
     this.setState(this.getContainerWidths())
   }
 
+  updateHoveredPrice(hoveredPrice) {
+    this.setState({
+      hoveredPrice,
+    })
+  }
+
+  updateHoveredPeriod(hoveredPeriod) {
+    this.setState({
+      hoveredPeriod,
+    })
+  }
+
+  clearCrosshairs() {
+    this.updateHoveredPrice(null)
+    this.updateHoveredPeriod({})
+    updateHoveredPriceCrosshair(null)
+  }
+
   render() {
     const {
       currentTimeInSeconds,
       fixedPrecision,
-      hoveredPeriod,
-      hoveredPrice,
       isMobile,
       orderBookKeys,
       outcomeName,
       priceTimeSeries,
       selectedPeriod,
       selectedRange,
-      updateHoveredPeriod,
-      updateHoveredPrice,
       updateSelectedPeriod,
       updateSelectedRange,
       updateSelectedOrderProperties,
@@ -170,6 +188,8 @@ class MarketOutcomeCandlestick extends React.Component {
       xScale,
       yDomain,
       yScale,
+      hoveredPrice,
+      hoveredPeriod,
     } = this.state
 
     const candleChartContainer = ReactFauxDOM.createElement('div')
@@ -274,11 +294,12 @@ class MarketOutcomeCandlestick extends React.Component {
         marketMin,
         orderBookKeys,
         priceTimeSeries,
-        updateHoveredPeriod,
-        updateHoveredPrice,
+        updateHoveredPeriod: this.updateHoveredPeriod,
+        updateHoveredPrice: this.updateHoveredPrice,
         updateSelectedOrderProperties,
         yScale,
         xScale,
+        clearCrosshairs: this.clearCrosshairs,
       })
 
       updateHoveredPriceCrosshair(hoveredPrice, yScale, containerWidth, fixedPrecision)
@@ -314,18 +335,12 @@ class MarketOutcomeCandlestick extends React.Component {
 }
 
 function determineDrawParams({
-  candleDim,
   containerHeight,
   containerWidth,
   currentTimeInSeconds,
-  drawContainer,
-  fixedPrecision,
   marketMax,
   marketMin,
-  orderBookKeys,
-  outcomeBounds,
   priceTimeSeries,
-  selectedPeriod,
   selectedRange,
   sharedChartMargins,
 }) {
@@ -387,18 +402,10 @@ function determineDrawParams({
 
 function drawTicks({
   boundDiff,
-  candleChart,
-  candleDim,
   candleTicks,
   chartDim,
-  containerHeight,
   containerWidth,
   fixedPrecision,
-  marketMax,
-  marketMin,
-  orderBookKeys,
-  priceTimeSeries,
-  xScale,
   yDomain,
   yScale,
 }) {
@@ -443,7 +450,6 @@ function drawCandles({
   candleChart,
   containerWidth,
   containerHeight,
-  chartDim,
   candleDim,
   xScale,
   yScale,
@@ -476,12 +482,9 @@ function drawCandles({
 function drawVolume({
   priceTimeSeries,
   candleChart,
-  containerWidth,
   containerHeight,
   chartDim,
   candleDim,
-  boundDiff,
-  yDomain,
   xScale,
 
 }) {
@@ -503,15 +506,10 @@ function drawVolume({
 }
 
 function drawXAxisLabels({
-  priceTimeSeries,
   candleChart,
-  containerWidth,
   containerHeight,
   chartDim,
-  candleDim,
-  boundDiff,
   tickInterval,
-  yDomain,
   xScale,
 }) {
   candleChart.append('g')
@@ -540,7 +538,6 @@ function attachHoverClickHandlers({
   candleDim,
   chartDim,
   containerHeight,
-  containerWidth,
   drawableWidth,
   fixedPrecision,
   marketMax,
@@ -552,13 +549,14 @@ function attachHoverClickHandlers({
   updateSelectedOrderProperties,
   yScale,
   xScale,
+  clearCrosshairs,
 }) {
   candleChart.append('rect')
     .attr('class', 'overlay')
     .attr('width', drawableWidth)
     .attr('height', containerHeight)
     .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => updateHoveredPrice(null))
+    .on('mouseout', clearCrosshairs)
     .on('click', () => {
       const mouse = d3.mouse(d3.select('#candlestick_chart').node())
       const orderPrice = yScale.invert(mouse[1]).toFixed(fixedPrecision)
@@ -585,10 +583,10 @@ function attachHoverClickHandlers({
     .attr('class', 'period-hover')
     .on('mouseover', d => updateHoveredPeriod(d))
     .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => {
-      updateHoveredPeriod({})
-      updateHoveredPrice(null)
-    })
+    .on('mouseout', clearCrosshairs)
+
+  candleChart.on('mouseout', clearCrosshairs)
+
 }
 
 function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrecision) {
@@ -598,7 +596,6 @@ function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrec
   } else {
     const yPosition = yScale(hoveredPrice)
     const clampedHoveredPrice = yScale.invert(yPosition)
-
     d3.select('#candlestick_crosshairs').style('display', null)
     d3.select('#candlestick_crosshairY')
       .attr('x1', 0)
