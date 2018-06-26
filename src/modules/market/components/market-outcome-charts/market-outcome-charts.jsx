@@ -54,12 +54,13 @@ export default class MarketOutcomeCharts extends Component {
       selectedRange: range,
       hoveredDepth: [],
       hoveredPrice: null,
-      headerHeight: 0,
+      headerHeight: props.isMobile ? 20 : 0,
       priceTimeSeriesCandleStick: [],
       sharedChartMargins: {
         top: 0,
         bottom: 30,
       },
+      ordersWidth: 0,
     }
 
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
@@ -69,6 +70,7 @@ export default class MarketOutcomeCharts extends Component {
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
     this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(this)
+    this.updateOrdersWidth = this.updateOrdersWidth.bind(this)
   }
 
   componentDidMount() {
@@ -77,6 +79,7 @@ export default class MarketOutcomeCharts extends Component {
     if (this.props.selectedOutcome && !this.props.excludeCandlestick && this.props.currentTimeInSeconds) {
       this.getData()
     }
+    this.calculateOrdersWidth()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -90,7 +93,7 @@ export default class MarketOutcomeCharts extends Component {
     if ((prevState.selectedPeriod !== this.state.selectedPeriod || prevState.selectedRange !== this.state.selectedRange || prevProps.selectedOutcome.id !== this.props.selectedOutcome.id || prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) && !this.props.excludeCandlestick) {
       this.getData()
     }
-
+    this.calculateOrdersWidth()
   }
 
   getData() {
@@ -124,6 +127,13 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
+  calculateOrdersWidth() {
+    const width = this.ordersContainer.clientWidth
+    if (width !== this.state.ordersWidth) {
+      this.updateOrdersWidth(width)
+    }
+  }
+
   updateHoveredDepth(hoveredDepth) {
     this.setState({
       hoveredDepth,
@@ -153,6 +163,12 @@ export default class MarketOutcomeCharts extends Component {
   updateChartHeaderHeight(headerHeight) {
     this.setState({
       headerHeight,
+    })
+  }
+
+  updateOrdersWidth(ordersWidth) {
+    this.setState({
+      ordersWidth,
     })
   }
 
@@ -235,6 +251,7 @@ export default class MarketOutcomeCharts extends Component {
             </div>
           }
           <div
+            ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
             className={classNames(Styles.MarketOutcomeCharts__orders, {
               [Styles['MarketOutcomeCharts__orders--mobile']]: isMobile,
             })}
@@ -257,10 +274,10 @@ export default class MarketOutcomeCharts extends Component {
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 updateChartHeaderHeight={this.updateChartHeaderHeight}
+                ordersWidth={s.ordersWidth}
               />
             </div>
             <div
-              ref={(ordersContainer) => { this.ordersContainer = ordersContainer }}
               className={Styles.MarketOutcomeCharts__orderbook}
             >
               <MarketOutcomeChartsOrders

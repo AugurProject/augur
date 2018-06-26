@@ -28,6 +28,7 @@ export default class MarketOutcomeDepth extends Component {
     hoveredDepth: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
+    ordersWidth: PropTypes.number.isRequired,
     hasOrders: PropTypes.bool.isRequired,
     hoveredPrice: PropTypes.any,
   }
@@ -89,6 +90,7 @@ export default class MarketOutcomeDepth extends Component {
       updateHoveredPrice,
       updateSelectedOrderProperties,
       isMobile,
+      ordersWidth,
     } = this.props
     if (
       !isEqual(marketDepth, nextProps.marketDepth) ||
@@ -99,7 +101,8 @@ export default class MarketOutcomeDepth extends Component {
       fixedPrecision !== nextProps.fixedPrecision ||
       marketMin !== nextProps.marketMin ||
       marketMax !== nextProps.marketMax ||
-      isMobile !== nextProps.isMobile
+      isMobile !== nextProps.isMobile ||
+      ordersWidth !== nextProps.ordersWidth
     ) {
       this.drawDepth({
         marketDepth: nextProps.marketDepth,
