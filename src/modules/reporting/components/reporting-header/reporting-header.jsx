@@ -116,7 +116,7 @@ export default class ReportingHeader extends Component {
                   <div className={Styles.ReportingHeader__graph}>
                     <div className={currentPercentage <= 90 && !(isMobile && currentPercentage > 70) ? Styles['ReportingHeader__graph-current'] : Styles['ReportingHeader__graph-current-90']}>
                       <div style={currentPeriodStyle}>
-                        <span data-testid={'daysLeft'}>{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
+                        <span data-testid="daysLeft">{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
                       </div>
                     </div>
                   </div>
