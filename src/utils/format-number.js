@@ -127,7 +127,7 @@ export function formatRep(num, opts) {
   return formatNumber(
     num,
     {
-      decimals: 2,
+      decimals: 4,
       decimalsRounded: 0,
       denomination: ' REP',
       positiveSign: false,
