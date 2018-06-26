@@ -22,6 +22,8 @@
     "integration": "HEADLESS=false npm run integration:headless",
     "lint": "node scripts/lint.js",
     "lit": "echo 'so lit'",
+    "prettier": "prettier --write **/*.ts",
+
     "test": "node scripts/test.js",
     "kickoff": "./scripts/setup-local-dev.sh",
     "___": "",
@@ -143,6 +145,7 @@
     "nyc": "11.0.2",
     "onchange": "3.2.1",
     "postcss-loader": "2.0.9",
+    "prettier": "1.13.5",
     "proxyquire": "1.8.0",
     "puppeteer": "^1.5.0",
     "redux-mock-store": "1.3.0",
