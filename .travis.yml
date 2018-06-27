@@ -16,10 +16,7 @@ addons:
     - gcc-4.8
     - g++-4.8
 
-before_install:
-  - npm install -g typescript
-
-install:
+before_script:
   - npm install
 
 script:
