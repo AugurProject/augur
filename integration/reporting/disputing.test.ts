@@ -55,7 +55,9 @@ const disputeOnScalarOutcome = async (marketId: string, outcomeValue: string, am
 }
 
 const verifyDisputedOutcome = async (marketId: string, outcomeId: string, amount: string) => {
-  if
+  if (await page.$("[data-testid='showMoreButton']") !== null) {
+    await expect(page).toClick("[data-testid='showMoreButton']");
+  }
   await expect(page).toMatchElement("[data-testid='disputeBond-" + marketId + "-" + outcomeId + "']", 
     {
       text: amount,
