@@ -54,6 +54,7 @@
   border-bottom: 1px solid @color-lightgray;
   display: flex;
   padding: 1rem 2rem 1rem 0;
+  white-space: nowrap;
 
   > h2 {
     &:extend(.caps--large);
@@ -61,20 +62,28 @@
     font-weight: 700;
   }
 
-  > button > svg {
-    height: 1.5rem;
-    width: 1.5rem;
+  > span {
+    width: 100%;
+
+    > button {
+      float: right;
+
+      > svg {
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+    }
   }
 }
 
 .TradingConfirm_arrow_buy,
 .TradingConfirm_arrow_sell,
 .TradingConfirm_arrow {
-  width: 0;
-  height: 0;
-  border-top: 14px solid transparent;
   border-bottom: 14px solid transparent;
-  padding-right: .75rem;
+  border-top: 14px solid transparent;
+  height: 0;
+  padding-right: 0.75rem;
+  width: 0;
 }
 
 .TradingConfirm_arrow_buy {

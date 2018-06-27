@@ -26,7 +26,9 @@ const MarketTradingConfirm = (p) => {
       <div className={Styles.TradingConfirm__header}>
         <div className={p.selectedNav === BUY ? Styles.TradingConfirm_arrow_buy : Styles.TradingConfirm_arrow_sell } />
         <h2>Confirm { p.selectedNav } order?</h2>
-        <button onClick={p.prevPage}>{ CreateMarketEdit }</button>
+        <span>
+          <button onClick={p.prevPage}>{ CreateMarketEdit }</button>
+        </span>
       </div>
       <ul className={Styles.TradingConfirm__details}>
         { !p.isMobile && p.market.marketType === CATEGORICAL &&
