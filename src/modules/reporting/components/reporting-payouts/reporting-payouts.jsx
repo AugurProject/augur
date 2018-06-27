@@ -50,7 +50,7 @@ const Outcome = ({ className, outcome, marketId }) => {
         </span>
       </div>
       { outcome.tentativeWinning &&
-        <div className={Styles['MarketReportingPayouts__winning-outcome-message']}>
+        <div data-testid={'winning-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__winning-outcome-message']}>
           tentative winning outcome
         </div>
       }

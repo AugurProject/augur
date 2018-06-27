@@ -54,6 +54,7 @@ const disputeOnScalarOutcome = async (marketId: string, outcomeValue: string, am
 }
 
 const verifyDisputedOutcome = async (marketId: string, outcomeId: string, amount: string) => {
+  // TODO: need to be aware of "+ more" button
   await expect(page).toMatchElement("[data-testid='disputeBond-" + marketId + "-" + outcomeId + "']", 
     {
       text: amount,
@@ -90,117 +91,117 @@ describe("Disputing", () => {
     it("should be shown the 'No-REP' message if your account has no REP", async () => {
       await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
       await toDisputing()
-     // await expect(page).toMatch('You have 0 REP available. Add funds to dispute markets or purchase participation tokens.', { timeout: SMALL_TIMEOUT })
+      await expect(page).toMatch('You have 0 REP available. Add funds to dispute markets or purchase participation tokens.', { timeout: SMALL_TIMEOUT })
     });
 
     it("should not be able to submit a dispute without REP", async () => {
-      // check that button is disabled
-     // await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
+     // check that button is disabled
+     await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
     });
   });
 
-  // describe("Disputing Mechanisms", () => {
-  //   let yesNoMarket: IMarket;
-  //   let categoricalMarket: IMarket;
-  //   let scalarMarket: IMarket;
-  //   let outcomes: {[key: string]: Outcome[]};
+  describe("Disputing Mechanisms", () => {
+    let yesNoMarket: IMarket;
+    let categoricalMarket: IMarket;
+    let scalarMarket: IMarket;
+    let outcomes: {[key: string]: Outcome[]};
 
-  //   beforeAll(async () => {
-  //     await page.evaluate(() => window.integrationHelpers.getRep());
-  //     await waitNextBlock(2)
-  //   })
+    beforeAll(async () => {
+      await page.evaluate(() => window.integrationHelpers.getRep());
+      await waitNextBlock(2)
+    })
 
-  //   describe("Yes/No Market", () => {
-  //     beforeAll(async () => {
-  //       yesNoMarket = await createYesNoMarket()
-  //       await flash.initialReport(yesNoMarket.id, "0", false, false)
-  //       await flash.pushWeeks(1)
-  //       await waitNextBlock(2)
-  //       outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
-  //     });
+    describe("Yes/No Market", () => {
+      beforeAll(async () => {
+        yesNoMarket = await createYesNoMarket()
+        await flash.initialReport(yesNoMarket.id, "0", false, false)
+        await flash.pushWeeks(1)
+        await waitNextBlock(2)
+        outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
+      });
 
-  //     it("should be able to dispute on all outcomes", async () => {
-  //       await disputeOnAllOutcomes(yesNoMarket.id, outcomes[yesNoMarket.id], false)
-  //     });
-  //   });
+      it("should be able to dispute on all outcomes", async () => {
+        await disputeOnAllOutcomes(yesNoMarket.id, outcomes[yesNoMarket.id], false)
+      });
+    });
 
-  //   describe("Categorical Market", () => {
-  //      beforeAll(async () => {
-  //       categoricalMarket = await createCategoricalMarket(4)
-  //       await flash.initialReport(categoricalMarket.id, "0", false, false)
-  //       await flash.pushWeeks(1)
-  //       await waitNextBlock(2)
-  //       outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
-  //     });
-  //     it("should be able to dispute on all outcomes", async () => {
-  //       await disputeOnAllOutcomes(categoricalMarket.id, outcomes[categoricalMarket.id], false)
-  //     });
-  //   });
+    describe("Categorical Market", () => {
+       beforeAll(async () => {
+        categoricalMarket = await createCategoricalMarket(4)
+        await flash.initialReport(categoricalMarket.id, "0", false, false)
+        await flash.pushWeeks(1)
+        await waitNextBlock(2)
+        outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
+      });
+      it("should be able to dispute on all outcomes", async () => {
+        await disputeOnAllOutcomes(categoricalMarket.id, outcomes[categoricalMarket.id], false)
+      });
+    });
 
-  //   describe("Scalar Market", () => {
-  //     beforeAll(async () => {
-  //       scalarMarket = await createScalarMarket()
-  //       await flash.initialReport(scalarMarket.id, "0", false, false)
-  //       await flash.pushWeeks(1)
-  //       await waitNextBlock(2)
-  //       outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
-  //     });
-  //     it("should be able to dispute on all outcomes", async () => {
-  //       await disputeOnAllOutcomes(scalarMarket.id, outcomes[scalarMarket.id], true)
-  //     });
-  //   });
-  // });
+    describe("Scalar Market", () => {
+      beforeAll(async () => {
+        scalarMarket = await createScalarMarket()
+        await flash.initialReport(scalarMarket.id, "0", false, false)
+        await flash.pushWeeks(1)
+        await waitNextBlock(2)
+        outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
+      });
+      it("should be able to dispute on all outcomes", async () => {
+        await disputeOnAllOutcomes(scalarMarket.id, outcomes[scalarMarket.id], true)
+      });
+    });
+  });
 
-  // describe("Dispute Window", () => {
-  //   let daysLeft: number;
-  //   let reportingWindowStats;
+  describe("Dispute Window", () => {
+    let daysLeft: number;
+    let reportingWindowStats;
 
-  //   it("should have days remaining be correct", async () => {
-  //     await toDisputing()
-  //     reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
-  //     let currentTimestamp = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
-  //     currentTimestamp = currentTimestamp / 1000
-  //     daysLeft = await page.evaluate((endTime, startTime) => window.integrationHelpers.getDaysRemaining(endTime, startTime), reportingWindowStats.endTime, currentTimestamp);
-  //     const denomination = daysLeft === 1 ? ' day' : ' days'
+    it("should have days remaining be correct", async () => {
+      await toDisputing()
+      reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
+      let currentTimestamp = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
+      currentTimestamp = currentTimestamp / 1000
+      daysLeft = await page.evaluate((endTime, startTime) => window.integrationHelpers.getDaysRemaining(endTime, startTime), reportingWindowStats.endTime, currentTimestamp);
+      const denomination = daysLeft === 1 ? ' day' : ' days'
 
-  //     // check that days left is expected number
-  //     await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeft + denomination + ' left', timeout: BIG_TIMEOUT});
-  //   });
+      // check that days left is expected number
+      await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeft + denomination + ' left', timeout: BIG_TIMEOUT});
+    });
 
-  //   it("should have days remaining increment properly", async () => {
-  //     // push time
-  //     await flash.pushDays(1)
-  //     const daysLeftIncr = daysLeft === 0 ? 6 : daysLeft - 1;
-  //     const denomination = daysLeftIncr === 1 ? ' day' : ' days'
+    it("should have days remaining increment properly", async () => {
+      // push time
+      await flash.pushDays(1)
+      const daysLeftIncr = daysLeft === 0 ? 6 : daysLeft - 1;
+      const denomination = daysLeftIncr === 1 ? ' day' : ' days'
 
-  //     // check that days left is previous calculation - time pushed
-  //     await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeftIncr + denomination + ' left', timeout: BIG_TIMEOUT});
-  //   });
+      // check that days left is previous calculation - time pushed
+      await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeftIncr + denomination + ' left', timeout: BIG_TIMEOUT});
+    });
 
-  //   it("should have correct end date", async () => {
-  //     // get new stats because endTime could be different because of time push
-  //     reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
-  //     const formattedDate =  await page.evaluate((date) => window.integrationHelpers.convertUnixToFormattedDate(date), reportingWindowStats.endTime);
+    it("should have correct end date", async () => {
+      // get new stats because endTime could be different because of time push
+      reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
+      const formattedDate =  await page.evaluate((date) => window.integrationHelpers.convertUnixToFormattedDate(date), reportingWindowStats.endTime);
 
-  //     // check that dispute window ends is displayed correctly
-  //     await expect(page).toMatchElement("[data-testid='endTime']", {text: "Dispute Window ends " + formattedDate.formattedLocal, timeout: BIG_TIMEOUT});
-  //   });
+      // check that dispute window ends is displayed correctly
+      await expect(page).toMatchElement("[data-testid='endTime']", {text: "Dispute Window ends " + formattedDate.formattedLocal, timeout: BIG_TIMEOUT});
+    });
 
-  //   it("should update correctly when time is pushed and a new dispute window starts", async () => {
-  //     // push into new dispute window
-  //     await flash.pushDays(7)
+    it("should update correctly when time is pushed and a new dispute window starts", async () => {
+      // push into new dispute window
+      await flash.pushDays(7)
 
-  //     // get new stats
-  //     reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
-  //     const formattedDate =  await page.evaluate((date) => window.integrationHelpers.convertUnixToFormattedDate(date), reportingWindowStats.endTime);
+      // get new stats
+      reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
+      const formattedDate =  await page.evaluate((date) => window.integrationHelpers.convertUnixToFormattedDate(date), reportingWindowStats.endTime);
       
-  //     // check that dispute window ends is displayed correctly
-  //     await expect(page).toMatchElement("[data-testid='endTime']", {text: "Dispute Window ends " + formattedDate.formattedLocal, timeout: BIG_TIMEOUT});
-  //   });
+      // check that dispute window ends is displayed correctly
+      await expect(page).toMatchElement("[data-testid='endTime']", {text: "Dispute Window ends " + formattedDate.formattedLocal, timeout: BIG_TIMEOUT});
+    });
 
-  //   it("should create a new dispute window properly even when no markets were reported on or disputed in the previous dispute window", async () => {
-  //   });
-  // });
+    it("should create a new dispute window properly even when no markets were reported on or disputed in the previous dispute window", async () => {
+    });
+  });
 
   describe("Market Card", () => {
     let market: IMarket;
@@ -212,7 +213,6 @@ describe("Disputing", () => {
 
         // put yes/no market into disputing
         await flash.initialReport(market.id, "0", false, false)
-        await flash.pushWeeks(1)
         await waitNextBlock(2)
 
         // check that dispute bonds for outcomes yes and market is invalid are expected
@@ -233,6 +233,7 @@ describe("Disputing", () => {
       });
 
       it("should have dispute bonds be equal to twice the amount placed by the initial reporter in the first dispute round", async () => {
+         // TODO:
          // With markets reported on by the Designated Reporter, this is twice the stake placed by the Designated Reporter.
          // With markets reported on in Open Reporting, this is twice the no-show bond.
          // Test both.
@@ -250,47 +251,65 @@ describe("Disputing", () => {
       });
 
       it("should have round number increase if a dispute is successful and a market is waiting for or is in its next dispute window", async () => {
+         await flash.disputeContribute(market.id, "1", false, false)
+         await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']", 
+          {
+            text: "2",
+            timeout: SMALL_TIMEOUT
+          }
+        );
       });
    });
 
     describe("Listed Outcomes", () => {
       describe("Yes/No Market", () => {
+        let yesNoMarket: IMarket;
+
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
-          // should be listed as the tentative winning outcome
-          // should not have an associated dispute bond
+          yesNoMarket = await createYesNoMarket()
+          await flash.initialReport(yesNoMarket.id, "0", false, false)
+          await flash.pushWeeks(1)
+          await waitNextBlock(2)
+          // expect not to have a dispute bond for winning outcome
+          await expect(page).not.toMatchElement("[data-testid='disputeBondTarget-"+yesNoMarket.id+"-0']")
         });
-
-        it("should have no other outcomes listed when the tentative winning outcome is 'Market is Invalid'", async () => {
-        });
-
-        it("should have an associated dispute bond on 'Market is Invalid' when that is not the tentative winning outcome", async () => {
-        });
-
-        it("should have an associated dispute bond listed with each successfuly disputed outcome", async () => {
+        it("should have 'Yes', 'No', and 'Market is Invalid' outcomes be present", async () => {
+          await expect(page).toMatch("Yes")
+          await expect(page).toMatch("Invalid")
+          await expect(page).toMatch("No")
         });
       });
       describe("Categorical Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
-          // should be listed as the tentative winning outcome
-          // should not have an associated dispute bond
-        });
-
-        it("should have 'Yes', 'No', and 'Market is Invalid' outcomes be present", async () => {
-        });
-
-        it("should have a tentative winning outcome, and the other two have associated dispute bonds", async () => {
+          const categoricalMarket = await createCategoricalMarket(4)
+          await flash.initialReport(categoricalMarket.id, "0", false, false)
+          await flash.pushWeeks(1)
+          await waitNextBlock(2)
+          // expect not to have a dispute bond for winning outcome
+          await expect(page).not.toMatchElement("[data-testid='disputeBondTarget-"+categoricalMarket.id+"-0']")
         });
       });
       describe("Scalar Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
-          // should be listed as the tentative winning outcome
-          // should not have an associated dispute bond
+          const scalarMarket = await createScalarMarket()
+          await flash.initialReport(scalarMarket.id, "1", false, false)
+          await waitNextBlock(2)
+          await flash.pushWeeks(1)
+
+          await expect(page).toMatch("Invalid")
+          // expect not to have a dispute bond for winning outcome
+          await expect(page).toMatchElement("[data-testid='winning-"+scalarMarket.id+"-1']")
         });
 
-        it("should have all market's outcomes be present, as well as 'Market is Invalid'", async () => {
-        });
+        it("should have no other outcomes listed when the tentative winning outcome is 'Market is Invalid'", async () => {
+          const scalarMarket = await createScalarMarket()
+          await flash.initialReport(scalarMarket.id, "0", true, false)
+          await waitNextBlock(2)
+          await flash.pushWeeks(1)
 
-        it("should have a tentative winning outcome and all other outcomes will have an associated dispute bond", async () => {
+          await expect(page).toMatch("Invalid")
+          // expect not to have a dispute bond for winning outcome
+          await expect(page).not.toMatchElement("[data-testid='disputeBondTarget-"+scalarMarket.id+"-0']")
         });
       });
     });
