@@ -195,6 +195,10 @@ class MarketTradingForm extends Component {
       shares = '0'
       limitPrice = null
     }
+    if (limitPrice === null || limitPrice === undefined || limitPrice === '') {
+      shares = null
+      limitPrice = '0'
+    }
     props.selectedOutcome.trade.updateTradeOrder(shares, limitPrice, side, null)
   }
 
