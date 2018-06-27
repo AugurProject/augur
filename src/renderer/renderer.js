@@ -1,6 +1,13 @@
 const {ipcRenderer, remote} = require('electron');
-var opn = require('opn');
-const augurjs = remote.require("augur.js");
+const opn = require('opn');
+
+
+function clearClassList(classList) {
+  for(let i = classList.length; i > 0; i--) {
+    classList.remove(classList[0]);
+  }
+  return classList
+}
 
 function Renderer() {
     this.progressDots = 0;
@@ -25,7 +32,7 @@ function Renderer() {
 Renderer.prototype.onServerError = function (event, data) {
     this.showNotice(data.error, "failure");
     const syncProgress = document.getElementById("sync_progress_amount");
-    syncProgress.classList = [];
+    clearClassList(syncProgress.classList);
     syncProgress.classList.add("failure");
     syncProgress.innerHTML = "Failed to startup";
 }
@@ -70,7 +77,7 @@ Renderer.prototype.onSwitchNetworkResponse = function (event, data) {
     this.showNotice("Switched network to " + this.config.networks[data.network].name, "success");
     this.config.network = data.network;
     const syncProgress = document.getElementById("sync_progress_amount");
-    syncProgress.classList = [];
+    clearClassList(syncProgress.classList);
     syncProgress.innerHTML = "LOADING";
     this.renderNetworkConfigForm(data.network, this.config.networks[data.network]);
 }
@@ -123,7 +130,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
         this.progressDots %= 4;
     }
     const syncProgress = document.getElementById("sync_progress_amount");
-    syncProgress.classList = [];
+    clearClassList(syncProgress.classList);
     if (this.isSynced) {
         syncProgress.classList.add("success");
     }
@@ -138,7 +145,7 @@ Renderer.prototype.onConsoleLog = function (event, message) {
 Renderer.prototype.showNotice = function (message, className) {
     console.log(message);
     const notice = document.getElementById("notice");
-    notice.classList = [];
+    clearClassList(notice.classList);
     notice.innerHTML = "";
     setTimeout(() => {
         notice.classList.add(className);

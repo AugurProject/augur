@@ -76,7 +76,8 @@
     "knex": "0.14.6",
     "node-pre-gyp": "~0.6.38",
     "opn": "5.3.0",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^3.1.13",
+    "express": "4.16.2"
   },
   "devDependencies": {
     "electron": "2.0.0",
