@@ -62,7 +62,7 @@ AugurNodeServer.prototype.setWindow = function (window) {
 };
 
 AugurNodeServer.prototype.startServer = function () {
-    this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig);
+    this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath);
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this));
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this));
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished);
