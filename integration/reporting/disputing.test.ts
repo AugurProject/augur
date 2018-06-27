@@ -203,11 +203,12 @@ describe("Disputing", () => {
   // });
 
   describe("Market Card", () => {
+    let market: IMarket;
 
     describe("Dispute Bonds", () => {
       it("should have all of the dispute bonds on a market be equal to one another in the first dispute round", async () => {
         // create new yes/no market
-        const market: IMarket = await createYesNoMarket()
+        market = await createYesNoMarket()
 
         // put yes/no market into disputing
         await flash.initialReport(market.id, "0", false, false)
@@ -240,6 +241,12 @@ describe("Disputing", () => {
 
     describe("Round Numbers", () => {
       it("should have round number be 1 while a market is waiting for its first Dispute window and while in its first round number", async () => {
+        await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']", 
+          {
+            text: "1",
+            timeout: SMALL_TIMEOUT
+          }
+        );
       });
 
       it("should have round number increase if a dispute is successful and a market is waiting for or is in its next dispute window", async () => {
