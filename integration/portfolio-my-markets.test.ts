@@ -61,7 +61,7 @@ describe("My Markets", () => {
 
     // check that volume updates correctly
     market = await page.$("[id='id-" + marketId + "']");
-    //await expect(page).toMatchElement("span.value_volume", { text: '0.0030', timeout: SMALL_TIMEOUT });
+    await expect(page).toMatchElement("span.value_volume", { text: '0.0030', timeout: SMALL_TIMEOUT });
   });
 
   it("should show an empty view if the user hasn't created any markets", async () => {
@@ -74,7 +74,7 @@ describe("My Markets", () => {
     // verify that you are on that page
     await expect(page).toMatch('portfolio: my markets', { timeout: SMALL_TIMEOUT });
     //need account to not have any created markets
-    //await expect(page).toMatch('You haven\'t created any markets.', { timeout: SMALL_TIMEOUT });
+    await expect(page).toMatch('You haven\'t created any markets.', { timeout: SMALL_TIMEOUT });
   });
 
   it("should show user account created markets", async () => {
@@ -110,9 +110,9 @@ describe("My Markets", () => {
     // need to refresh page because forceFinalize was used
     await waitNextBlock(5);
     await toPortfolio();
-    // // go to my markets page
+    // go to my markets page
     await toMyMarkets();
-    // // verify that you are on that page
+    // verify that you are on that page
     await expect(page).toMatch('portfolio: my markets', { timeout: SMALL_TIMEOUT });
 
     const validityBond = await page.evaluate((value) => window.integrationHelpers.formatEth(value), marketCosts.validityBond);
