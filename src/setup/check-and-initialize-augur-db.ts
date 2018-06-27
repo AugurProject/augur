@@ -14,12 +14,12 @@ interface NetworkIdRow {
   overrideTimestamp: number|null;
 }
 
-function getDatabasePathFromNetworkId(networkId: string) {
-  return path.join(__dirname, `../../augur-${networkId}.db`);
+function getDatabasePathFromNetworkId(networkId: string, databaseDir?: string) {
+  return path.join(databaseDir || path.join(__dirname, "../../"), `augur-${networkId}.db`);
 }
 
-function createKnex(networkId: string): Knex {
-  const augurDbPath = getDatabasePathFromNetworkId(networkId);
+function createKnex(networkId: string, databaseDir?: string): Knex {
+  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
   console.log(augurDbPath);
   if (process.env.DATABASE_URL) {
     // Be careful about non-serializable transactions. We expect database writes to be processed from the blockchain, serially, in block order.
@@ -41,7 +41,7 @@ function createKnex(networkId: string): Knex {
   }
 }
 
-export async function createDbAndConnect(augur: Augur, network: NetworkConfiguration): Promise<Knex> {
+export async function createDbAndConnect(augur: Augur, network: NetworkConfiguration, databaseDir?: string): Promise<Knex> {
   return new Promise<Knex>((resolve, reject) => {
     augur.connect({ ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false }, async (err) => {
       if (err) return reject(new Error(`Could not connect via augur.connect ${JSON.stringify(err)}`));
@@ -49,7 +49,7 @@ export async function createDbAndConnect(augur: Augur, network: NetworkConfigura
       if (networkId == null) return reject(new Error("could not get networkId"));
       try {
         monitorEthereumNodeHealth(augur);
-        const db = await checkAndInitializeAugurDb(augur, networkId);
+        const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
         resolve(db);
       } catch (err) {
         reject(err);
@@ -85,19 +85,19 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
   }
 }
 
-async function moveDatabase(db: Knex, networkId: string): Promise<Knex> {
+async function moveDatabase(db: Knex, networkId: string, databaseDir?: string): Promise<Knex> {
   db.destroy();
-  const augurDbPath = getDatabasePathFromNetworkId(networkId);
+  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
   const backupDbPath = path.join(__dirname, `../../backup-augur-${networkId}-${new Date().getTime()}.db`);
   console.log("move", augurDbPath, backupDbPath);
   await promisify(rename)(augurDbPath, backupDbPath);
   return createKnex(networkId);
 }
 
-export async function checkAndInitializeAugurDb(augur: Augur, networkId: string): Promise<Knex> {
-  let db: Knex = createKnex(networkId);
+export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
+  let db: Knex = createKnex(networkId, databaseDir);
   const databaseDamaged = await isDatabaseDamaged(db);
-  if (databaseDamaged) db = await moveDatabase(db, networkId);
+  if (databaseDamaged) db = await moveDatabase(db, networkId, databaseDir);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
   return db;

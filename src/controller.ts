@@ -20,15 +20,17 @@ export interface SyncedBlockInfo {
 export class AugurNodeController {
   private augur: Augur;
   private networkConfig: NetworkConfiguration;
+  private databaseDir: string|undefined;
   private running: boolean;
   private controlEmitter: EventEmitter;
   private db: Knex|undefined;
   private serverResult: RunServerResult|undefined;
   private errorCallback: ErrorCallback|undefined;
 
-  constructor(augur: Augur, networkConfig: NetworkConfiguration) {
+  constructor(augur: Augur, networkConfig: NetworkConfiguration, databaseDir?: string) {
     this.augur = augur;
     this.networkConfig = networkConfig;
+    this.databaseDir = databaseDir;
     this.running = false;
     this.controlEmitter = new EventEmitter();
   }
@@ -36,7 +38,7 @@ export class AugurNodeController {
   public async start(errorCallback: ErrorCallback|undefined) {
     this.running = true;
     this.errorCallback = errorCallback;
-    this.db = await createDbAndConnect(this.augur, this.networkConfig);
+    this.db = await createDbAndConnect(this.augur, this.networkConfig, this.databaseDir);
     this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
     const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
     this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
