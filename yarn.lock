@@ -28,20 +28,6 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/chai-as-promised@7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@types/chai-as-promised/-/chai-as-promised-7.1.0.tgz#010b04cde78eacfb6e72bfddb3e58fe23c2e78b9"
-  dependencies:
-    "@types/chai" "*"
-
-"@types/chai@*":
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.3.tgz#b8a74352977a23b604c01aa784f5b793443fb7dc"
-
-"@types/chai@4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.0.4.tgz#fe86315d9a66827feeb16f73bc954688ec950e18"
-
 "@types/chai@^4.1.3":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.4.tgz#5ca073b330d90b4066d6ce18f60d57f2084ce8ca"
@@ -94,12 +80,6 @@
 "@types/mkdirp@0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@types/mkdirp/-/mkdirp-0.5.1.tgz#ea887cd024f691c1ca67cce20b7606b053e43b0f"
-  dependencies:
-    "@types/node" "*"
-
-"@types/mocha@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.1.0.tgz#591f158012ec30de978b00065239a84fb1ce4380"
   dependencies:
     "@types/node" "*"
 
@@ -547,23 +527,18 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-augur-core@1.0.0-13:
-  version "1.0.0-13"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-13.tgz#d936f8195e5372778e74ecae355cb046903055c2"
+augur-core@1.0.0-16:
+  version "1.0.0-16"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-16.tgz#1ccb62115de88be8a8384ef88bd87446be606b90"
   dependencies:
-    "@types/chai" "4.0.4"
-    "@types/chai-as-promised" "7.1.0"
     "@types/get-port" "^3.2.0"
     "@types/mkdirp" "0.5.1"
-    "@types/mocha" "5.1.0"
     "@types/node" "9.6.7"
     "@types/yargs" "11.0.0"
     async-file "2.0.2"
     async-mkdirp "1.2.0"
     binascii "0.0.1"
     bn.js "4.11.8"
-    chai "4.1.2"
-    chai-as-promised "7.1.1"
     copy-dir "0.3.0"
     crypto-promise "^2.0.0"
     ethereumjs-testrpc "6.0.3"
@@ -576,7 +551,6 @@ augur-core@1.0.0-13:
     ethjs-signer "0.1.1"
     fs-readfile-promise "3.0.0"
     get-port "3.2.0"
-    mocha "5.1.1"
     path "0.12.7"
     recursive-readdir "2.2.1"
     replace "1.0.0"
@@ -584,12 +558,12 @@ augur-core@1.0.0-13:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@4.12.0-9:
-  version "4.12.0-9"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-9.tgz#2055db857418d352b6fcb5f63ddc253ed236a088"
+augur.js@4.12.0-13:
+  version "4.12.0-13"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-13.tgz#6963435db69de95b24ad64c3d9f0bd2acd5fcf71"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-13"
+    augur-core "1.0.0-16"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
@@ -1568,12 +1542,6 @@ center-align@^0.1.1:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
 
-chai-as-promised@7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/chai-as-promised/-/chai-as-promised-7.1.1.tgz#08645d825deb8696ee61725dbf590c012eb00ca0"
-  dependencies:
-    check-error "^1.0.2"
-
 chai@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-3.5.0.tgz#4d02637b067fe958bdbfdd3a40ec56fef7373247"
@@ -1581,17 +1549,6 @@ chai@3.5.0:
     assertion-error "^1.0.1"
     deep-eql "^0.1.3"
     type-detect "^1.0.0"
-
-chai@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
-  dependencies:
-    assertion-error "^1.0.1"
-    check-error "^1.0.1"
-    deep-eql "^3.0.0"
-    get-func-name "^2.0.0"
-    pathval "^1.0.0"
-    type-detect "^4.0.0"
 
 chalk@2.3.0:
   version "2.3.0"
@@ -1638,10 +1595,6 @@ chalk@~0.4.0:
 chardet@^0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
-
-check-error@^1.0.1, check-error@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
 
 chokidar@^2.0.2:
   version "2.0.3"
@@ -2089,12 +2042,6 @@ deep-eql@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-0.1.3.tgz#ef558acab8de25206cd713906d74e56930eb69f2"
   dependencies:
     type-detect "0.1.1"
-
-deep-eql@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-3.0.1.tgz#dfc9404400ad1c8fe023e7da1df1c147c4b444df"
-  dependencies:
-    type-detect "^4.0.0"
 
 deep-extend@^0.5.1:
   version "0.5.1"
@@ -3154,10 +3101,6 @@ generate-object-property@^1.1.0:
 get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
-
-get-func-name@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/get-func-name/-/get-func-name-2.0.0.tgz#ead774abee72e20409433a066366023dd6887a41"
 
 get-port@3.2.0:
   version "3.2.0"
@@ -5330,10 +5273,6 @@ path@0.12.7:
     process "^0.11.1"
     util "^0.10.3"
 
-pathval@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
-
 pbkdf2@^3.0.3:
   version "3.0.16"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.16.tgz#7404208ec6b01b62d85bf83853a8064f8d9c2a5c"
@@ -6902,10 +6841,6 @@ type-detect@0.1.1:
 type-detect@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-1.0.0.tgz#762217cc06db258ec48908a1298e8b95121e8ea2"
-
-type-detect@^4.0.0:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
 
 type-is@~1.6.15:
   version "1.6.16"
