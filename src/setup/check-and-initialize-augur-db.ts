@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import * as path from "path";
 import * as sqlite3 from "sqlite3";
-import { promisify } from "util";
+import { promisify, format } from "util";
 import { rename } from "fs";
 import { NetworkConfiguration } from "augur-core";
 import { setOverrideTimestamp } from "../blockchain/process-block";
@@ -14,8 +14,8 @@ interface NetworkIdRow {
   overrideTimestamp: number|null;
 }
 
-function getDatabasePathFromNetworkId(networkId: string, databaseDir?: string) {
-  return path.join(databaseDir || path.join(__dirname, "../../"), `augur-${networkId}.db`);
+function getDatabasePathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = "augur-%s.db") {
+  return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId));
 }
 
 function createKnex(networkId: string, databaseDir?: string): Knex {
@@ -88,7 +88,7 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 async function moveDatabase(db: Knex, networkId: string, databaseDir?: string): Promise<Knex> {
   db.destroy();
   const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
-  const backupDbPath = path.join(__dirname, `../../backup-augur-${networkId}-${new Date().getTime()}.db`);
+  const backupDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, `backup-augur-%s-${new Date().getTime()}.db`);
   console.log("move", augurDbPath, backupDbPath);
   await promisify(rename)(augurDbPath, backupDbPath);
   return createKnex(networkId);
