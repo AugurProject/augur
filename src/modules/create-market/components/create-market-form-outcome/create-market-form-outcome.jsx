@@ -92,10 +92,10 @@ export default class CreateMarketOutcome extends Component {
     const updatedMarket = { ...newMarket }
     const validations = updatedMarket.validations[newMarket.currentStep]
 
-    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
-      ...p,
-      [key]: true,
-    } : p), {})
+    const updatedValidations = Object.keys(validations)
+      .reduce((p, key) => (validations[key] === true
+        ? { ...p, [key]: true }
+        : { ...p, [key]: validations[key] || false }), {})
 
     // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.
     delete updatedMarket.tickSize
@@ -107,8 +107,7 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
-        // tickSize is pre-populated
-        // updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
+        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
