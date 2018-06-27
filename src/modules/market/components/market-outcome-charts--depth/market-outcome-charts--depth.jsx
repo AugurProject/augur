@@ -282,8 +282,8 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#crosshairs').style('display', null)
 
         if (
-          hoveredPrice > marketMin &&
-          hoveredPrice < marketMax
+          createBigNumber(hoveredPrice).gte(marketMin) &&
+          createBigNumber(hoveredPrice).lte(marketMax)
         ) {
           d3.select('#crosshairX')
             .attr('x1', xScale(nearestFillingOrder[1]))
@@ -653,13 +653,13 @@ function attachHoverClickHandlers(options) {
     })
     .on('click', () => {
       const mouse = d3.mouse(d3.select('#depth_chart').node())
-      const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
+      const orderPrice = drawParams.xScale.invert(mouse[1]).toFixed(fixedPrecision)
       const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
       if (
         nearestFillingOrder != null &&
-        orderPrice > marketMin &&
-        orderPrice < marketMax
+        createBigNumber(orderPrice).gte(marketMin) &&
+        createBigNumber(orderPrice).lte(marketMax)
       ) {
         updateSelectedOrderProperties({
           selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
