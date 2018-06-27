@@ -113,6 +113,6 @@ export const helpers = (store) => {
     getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime) => new Promise(resolve => dispatch(getDaysRemainingTime(endTime, startTime, resolve))),
-    convertUnixToFormattedDateTime: date => new Promise(resolve => dispatch(convertUnixToFormattedDateTime(date, resolve))),
+    convertUnixToFormattedDate: date => new Promise(resolve => dispatch(convertUnixToFormattedDateTime(date, resolve))),
   }
 }

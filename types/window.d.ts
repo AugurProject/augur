@@ -15,7 +15,7 @@ interface IntegrationHelpers {
   getMarketDisputeOutcomes(): void;
   getReportingWindowStats(): void;
   getDaysRemaining(endTime: number, startTime: number): string;
-  convertUnixToFormattedDateTime(value: number): string;
+  convertUnixToFormattedDate(date: number): string;
 }
 
 declare namespace window {
