@@ -109,7 +109,7 @@ const MarketTradingConfirm = (p) => {
             }, doNotCreateOrders)
             p.prevPage(e, true)
           }}
-        >Confirm
+        >Confirm { p.selectedNav }
         </button>
       </div>
     </section>
