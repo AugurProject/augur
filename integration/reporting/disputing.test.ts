@@ -29,7 +29,6 @@ const disputeOnAllOutcomes = async (marketId: string, outcomes: Outcome[], isSca
     const values: string[] = ["-2", ".2", "-.2", "10", "-10"]
     for (const value of values) {
       await disputeOnScalarOutcome(marketId, value, amount)
-      await verifyDisputedOutcome(marketId, value, amount)
     }
   }
   return
@@ -55,9 +54,6 @@ const disputeOnScalarOutcome = async (marketId: string, outcomeValue: string, am
 }
 
 const verifyDisputedOutcome = async (marketId: string, outcomeId: string, amount: string) => {
-  if (await page.$("[data-testid='showMoreButton']") !== null) {
-    await expect(page).toClick("[data-testid='showMoreButton']");
-  }
   await expect(page).toMatchElement("[data-testid='disputeBond-" + marketId + "-" + outcomeId + "']", 
     {
       text: amount,
