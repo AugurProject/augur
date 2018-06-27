@@ -193,6 +193,7 @@ class MarketReportingPayouts extends Component {
           { displayShowMore &&
             <button
               className={Styles['MarketReportingPayouts__show-more']}
+              data-testid='showMoreButton'
               onClick={this.showMore}
             >
               { showMoreText }
