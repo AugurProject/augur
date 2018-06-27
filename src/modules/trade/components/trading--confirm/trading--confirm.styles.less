@@ -53,8 +53,8 @@
   align-items: center;
   border-bottom: 1px solid @color-lightgray;
   display: flex;
-  justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 1rem 2rem 1rem 0;
+  white-space: nowrap;
 
   > h2 {
     &:extend(.caps--large);
@@ -62,10 +62,36 @@
     font-weight: 700;
   }
 
-  > button > svg {
-    height: 1.5rem;
-    width: 1.5rem;
+  > span {
+    width: 100%;
+
+    > button {
+      float: right;
+
+      > svg {
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+    }
   }
+}
+
+.TradingConfirm_arrow_buy,
+.TradingConfirm_arrow_sell,
+.TradingConfirm_arrow {
+  border-bottom: 14px solid transparent;
+  border-top: 14px solid transparent;
+  height: 0;
+  padding-right: 1rem;
+  width: 0;
+}
+
+.TradingConfirm_arrow_buy {
+  border-left: 14px solid @color-positive;
+}
+
+.TradingConfirm_arrow_sell {
+  border-left: 14px solid @color-negative;
 }
 
 .TradingConfirm__potential {

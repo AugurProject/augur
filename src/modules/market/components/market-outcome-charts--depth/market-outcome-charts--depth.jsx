@@ -282,8 +282,8 @@ export default class MarketOutcomeDepth extends Component {
         d3.select('#crosshairs').style('display', null)
 
         if (
-          hoveredPrice > marketMin &&
-          hoveredPrice < marketMax
+          createBigNumber(hoveredPrice).gte(marketMin) &&
+          createBigNumber(hoveredPrice).lte(marketMax)
         ) {
           d3.select('#crosshairX')
             .attr('x1', xScale(nearestFillingOrder[1]))
@@ -575,26 +575,17 @@ function drawLines(options) {
       .attr('d', depthLine)
   })
 
-  const areaBid = d3.area()
-    .curve(d3.curveStepBefore)
-    .x0(d => drawParams.xScale(d[1]))
-    .x1(d => d3.extent(drawParams.xDomain)[0])
-    .y(d => drawParams.yScale(d[0]))
-
-  const areaAsk = d3.area()
+  const area = d3.area()
     .curve(d3.curveStepBefore)
     .y0(d => drawParams.yScale(drawParams.yDomain[0]))
     .y1(d => drawParams.yScale(d[0]))
     .x(d => drawParams.xScale(d[1]))
 
-
   Object.keys(marketDepth).forEach((side) => {
-    let func = areaAsk
-    if (side === 'bids') func = areaBid
     depthChart.append('path')
       .data([marketDepth[side]])
       .classed(`filled-subtle-${side}`, true)
-      .attr('d', func)
+      .attr('d', area)
   })
 }
 
@@ -653,16 +644,16 @@ function attachHoverClickHandlers(options) {
     })
     .on('click', () => {
       const mouse = d3.mouse(d3.select('#depth_chart').node())
-      const orderPrice = drawParams.yScale.invert(mouse[1]).toFixed(fixedPrecision)
+      const orderPrice = drawParams.xScale.invert(mouse[1]).toFixed(fixedPrecision)
       const nearestFillingOrder = nearestCompletelyFillingOrder(orderPrice, marketDepth)
 
       if (
         nearestFillingOrder != null &&
-        orderPrice > marketMin &&
-        orderPrice < marketMax
+        createBigNumber(orderPrice).gte(marketMin) &&
+        createBigNumber(orderPrice).lte(marketMax)
       ) {
         updateSelectedOrderProperties({
-          selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
+          selectedNav: createBigNumber(orderPrice).gt(orderBookKeys.mid) ? BUY : SELL,
           orderPrice: nearestFillingOrder[1],
           orderQuantity: nearestFillingOrder[0],
         })

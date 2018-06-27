@@ -5,7 +5,6 @@ import { collectMarketCreatorFees } from 'modules/portfolio/actions/collect-mark
 
 export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispatch, getState) => {
   if (marketIds == null || marketIds.length === 0) return callback(null, [])
-  const { marketsData } = getState()
   const unclaimedFees = {}
   async.eachSeries(marketIds, (marketId, nextMarket) => {
     dispatch(collectMarketCreatorFees(true, marketId, (err, balance) => {
@@ -19,7 +18,7 @@ export const loadUnclaimedFees = (marketIds = [], callback = logError) => (dispa
     const updatedMarketsData = marketIds.reduce((p, marketId, index) => ({
       ...p,
       [marketId]: {
-        ...marketsData[marketId],
+        id: marketId,
         unclaimedCreatorFees: unclaimedFees[marketId] || '0',
       },
     }), {})
