@@ -215,7 +215,7 @@ describe("Disputing", () => {
         await waitNextBlock(2)
 
         // check that dispute bonds for outcomes yes and market is invalid are expected
-        // todo: make .6994 not hard coded, and make this reusable for different market types -- use outcomes selector
+        // TODO: make .6994 not hard coded, and make this reusable for different market types -- use outcomes selector
         await expect(page).toMatchElement("[data-testid='disputeBondTarget-"+market.id+"-1']", 
           {
             text: "0.6994 REP",
@@ -235,10 +235,6 @@ describe("Disputing", () => {
          // With markets reported on by the Designated Reporter, this is twice the stake placed by the Designated Reporter.
          // With markets reported on in Open Reporting, this is twice the no-show bond.
          // Test both.
-      });
-
-      it("should have the two numbers to the right of the progress bars be 'total staked so far in dispute bond / dispute bond target'", async () => {
-         // tested previously
       });
     });
 
