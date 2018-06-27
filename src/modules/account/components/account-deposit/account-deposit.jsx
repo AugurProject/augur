@@ -9,6 +9,25 @@ import { Deposit as DepositIcon, Copy as CopyIcon } from 'modules/common/compone
 
 import Styles from 'modules/account/components/account-deposit/account-deposit.styles'
 
+function airSwapOnClick(e) {
+  const env = parseInt(augur.rpc.getNetworkID(), 10) === 1 ? 'production' : 'sandbox'
+  e.preventDefault()
+
+  // The widget will offer swaps for REP <-> ETH on mainnet
+  // It can still be tested on rinkeby, but only AST <-> ETH is offered
+  window.AirSwap.Trader.render({
+    env,
+    mode: 'buy',
+    token: env === 'production' ? '0xe94327d07fc17907b4db788e5adf2ed424addff6' : '0xcc1cbd4f67cceb7c001bd4adf98451237a193ff8',
+    onCancel() {
+      console.info('AirSwap trade cancelled')
+    },
+    onComplete(txid) {
+      console.info('AirSwap complete', txid)
+    },
+  }, document.getElementById('app'))
+}
+
 function shapeShiftOnClick(e) {
   e.preventDefault()
   const link=e.target.value
@@ -26,11 +45,13 @@ export default class AccountDeposit extends Component {
 
   render() {
     const { address } = this.props
+    const noFeeTextStyle = { 'font-weight': '400' }
     const styleQR = {
       height: 'auto',
       width: '100%',
     }
-    let shapeShiftConverter = <a href="https://shapeshift.io">Use Shapeshift</a>
+    let airSwapConverter = <a href="" onClick={e => airSwapOnClick(e)}> Use AirSwap <span style={noFeeTextStyle}>(no fees)</span> </a>
+    let shapeShiftConverter = <a href="https://shapeshift.io" rel="noopener noreferrer" target="_blank">Use Shapeshift</a>
     if (parseInt(augur.rpc.getNetworkID(), 10) === 1) {
       shapeShiftConverter = (
         <div className={Styles.AccountDeposit__shapeShiftButton}>
@@ -48,6 +69,15 @@ export default class AccountDeposit extends Component {
           </button>
         </div>
       )
+      airSwapConverter = (
+        <div className={Styles.AccountDeposit__shapeShiftButton}>
+          <button
+            onClick={e => airSwapOnClick(e)}
+          >
+            AirSwap to REP <span style={noFeeTextStyle}>(no fees)</span>
+          </button>
+        </div>
+      )
     }
 
     return (
@@ -61,6 +91,8 @@ export default class AccountDeposit extends Component {
             <p>
               DO NOT send real ETH or REP to this account. Augur is currently on Ethereum&#39;s Rinkeby testnet.
             </p>
+            {airSwapConverter}
+            <div />
             {shapeShiftConverter}
           </div>
           <div className={Styles.AccountDeposit__address}>
