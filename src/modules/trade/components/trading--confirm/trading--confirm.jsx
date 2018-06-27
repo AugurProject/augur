@@ -24,7 +24,7 @@ const MarketTradingConfirm = (p) => {
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
-        <div className={p.selectedNav === BUY ? Styles.TradingConfirm_arrow_buy : Styles.TradingConfirm_arrow_sell } />
+        <div className={p.selectedNav === BUY ? Styles.TradingConfirm_arrow_buy : Styles.TradingConfirm_arrow_sell} />
         <h2>Confirm { p.selectedNav } order?</h2>
         <span>
           <button onClick={p.prevPage}>{ CreateMarketEdit }</button>
