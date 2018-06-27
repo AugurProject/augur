@@ -10,7 +10,7 @@ const defaultConfig = {
     "network":"rinkeby",
     "networks": {
         "rinkeby": {
-            "http":"http://rinkeby.ethereum.nodes.augur.net",
+            "http":"https://rinkeby.ethereum.nodes.augur.net",
             "name":"Rinkeby",
             "ws":"wss://websocket-rinkeby.ethereum.nodes.augur.net"
         },
