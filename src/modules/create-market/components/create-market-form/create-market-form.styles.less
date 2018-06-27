@@ -32,6 +32,7 @@
   position: absolute;
 }
 
+.CreateMarketForm__error_tick,
 .CreateMarketForm__error--bottom {
   &:extend(.CreateMarketForm__error);
 
@@ -39,6 +40,20 @@
   position: absolute;
 }
 
+.CreateMarketForm__error_tick {
+  line-height: 1.2em;
+  padding-left: 1.5rem;
+  text-align: left;
+  text-indent: -1.3rem;
+  white-space: pre-wrap;
+  width: 210px;
+
+  > svg {
+    margin-top: 1.5px !important;
+  }
+}
+
+.CreateMarketForm__error_tick > svg,
 .CreateMarketForm__error > svg,
 .CreateMarketForm__error--abs > svg,
 .CreateMarketForm__error--bottom > svg,
@@ -126,6 +141,14 @@
       height: 3.5rem;
       padding-top: 1rem;
     }
+    
+    input[type=number]::-webkit-inner-spin-button, 
+	  input[type=number]::-webkit-outer-spin-button { 
+		  -webkit-appearance: none;
+		  -moz-appearance: none;
+		  appearance: none;
+		  margin: 0; 
+	  }
   }
 }
 

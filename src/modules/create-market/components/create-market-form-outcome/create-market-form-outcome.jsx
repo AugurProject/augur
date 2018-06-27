@@ -92,10 +92,10 @@ export default class CreateMarketOutcome extends Component {
     const updatedMarket = { ...newMarket }
     const validations = updatedMarket.validations[newMarket.currentStep]
 
-    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
-      ...p,
-      [key]: true,
-    } : p), {})
+    const updatedValidations = Object.keys(validations)
+      .reduce((p, key) => (validations[key] === true
+        ? { ...p, [key]: true }
+        : { ...p, [key]: validations[key] || false }), {})
 
     // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.
     delete updatedMarket.tickSize
@@ -107,8 +107,7 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
-        // tickSize is pre-populated
-        // updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
+        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
@@ -146,7 +145,7 @@ export default class CreateMarketOutcome extends Component {
       scalarBigNum = createBigNumber(scalarBigNum)
     }
 
-    if (numTicksBigNum !== '') {
+    if (!(BigNumber.isBigNumber(numTicksBigNum)) && numTicksBigNum !== '') {
       numTicksBigNum = createBigNumber(numTicksBigNum)
     }
 
@@ -193,28 +192,26 @@ export default class CreateMarketOutcome extends Component {
     }
     updatedMarket.scalarBigNum = scalarBigNum
 
-    if (type === scalarType.TICK_SIZE) {
-      switch (true) {
-        case !value:
-          updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
-          break
-        case numTicksBigNum.lt(ZERO):
-          updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
-          break
-        case numTicksBigNum.gt(this.state.scalarMax):
-          updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
-          break
-        default:
-          updatedMarket.validations[currentStep].tickSize = true
-      }
-      updatedMarket.tickSize = value
+    switch (true) {
+      case numTicksBigNum === '' || numTicksBigNum.eq(ZERO):
+        updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
+        break
+      case numTicksBigNum.lt(ZERO):
+        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
+        break
+      case numTicksBigNum.gt(this.state.scalarMax):
+        updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
+        break
+      default:
+        updatedMarket.validations[currentStep].tickSize = true
     }
+    updatedMarket.tickSize = numTicksBigNum
 
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
-    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum)) {
+    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum) && !numTicksBigNum.eq(ZERO)) {
       // Always check if (maxPrice - minPrice) / precision is an even number
       if ((scalarBigNum.minus(scalarSmallNum).div(numTicksBigNum)).mod(2).toString() !== '0') {
-        updatedMarket.validations[currentStep].tickSize =`Increase range or precision.`
+        updatedMarket.validations[currentStep].tickSize =`Range must be evenly divisible by the precision.`
       }
     }
 
@@ -426,7 +423,7 @@ export default class CreateMarketOutcome extends Component {
                 onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&
-              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+              <span className={StylesForm.CreateMarketForm__error_tick}>
                 {InputErrorIcon}{validation.tickSize}
               </span>
               }
