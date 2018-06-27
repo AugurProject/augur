@@ -17,6 +17,7 @@ addons:
     - g++-4.8
 
 before_script:
+  - npm install -g typescript
   - npm install
 
 script:
