@@ -191,11 +191,13 @@ class MarketTradingForm extends Component {
     const side = props.selectedNav
     let limitPrice = updatedState[this.INPUT_TYPES.PRICE]
     let shares = updatedState[this.INPUT_TYPES.QUANTITY]
+    let oldShares = this.state[this.INPUT_TYPES.QUANTITY]
     if (shares === null || shares === undefined || shares === '') {
       shares = '0'
       limitPrice = null
     }
-    if (limitPrice === null || limitPrice === undefined || limitPrice === '') {
+    // keep auto-filling functionality 
+    if (oldShares !== '' && (limitPrice === null || limitPrice === undefined || limitPrice === '')) {
       shares = null
       limitPrice = '0'
     }
