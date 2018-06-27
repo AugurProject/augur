@@ -662,7 +662,7 @@ function attachHoverClickHandlers(options) {
         createBigNumber(orderPrice).lte(marketMax)
       ) {
         updateSelectedOrderProperties({
-          selectedNav: orderPrice > orderBookKeys.mid ? BUY : SELL,
+          selectedNav: createBigNumber(orderPrice).gt(orderBookKeys.mid) ? BUY : SELL,
           orderPrice: nearestFillingOrder[1],
           orderQuantity: nearestFillingOrder[0],
         })
