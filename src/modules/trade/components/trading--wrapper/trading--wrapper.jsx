@@ -184,11 +184,11 @@ class MarketTradingWrapper extends Component {
         }
         { s.currentPage === 0 &&
           <div>
-            <ul className={Styles.TradingWrapper__header}>
-              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BUY })}>
+            <ul className={s.selectedNav === BUY ? Styles.TradingWrapper__header_buy : Styles.TradingWrapper__header_sell}>
+              <li className={classNames({ [`${Styles.active_buy}`]: s.selectedNav === BUY })}>
                 <button onClick={() => this.setState({ selectedNav: BUY })}>Buy</button>
               </li>
-              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === SELL })}>
+              <li className={classNames({ [`${Styles.active_sell}`]: s.selectedNav === SELL })}>
                 <button onClick={() => this.setState({ selectedNav: SELL })}>Sell</button>
               </li>
             </ul>
