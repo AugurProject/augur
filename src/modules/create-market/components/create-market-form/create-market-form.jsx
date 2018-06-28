@@ -11,6 +11,7 @@ import CreateMarketLiquidity from 'modules/create-market/components/create-marke
 import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
 
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
 export default class CreateMarketForm extends Component {
 
@@ -38,6 +39,7 @@ export default class CreateMarketForm extends Component {
     this.state = {
       pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
       liquidityState: {},
+      awaitingSignature: false,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -280,14 +282,27 @@ export default class CreateMarketForm extends Component {
                 { newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
-                    disabled={isBugBounty}
-                    onClick={e => submitNewMarket(newMarket, history)}
+                    disabled={isBugBounty || s.awaitingSignature}
+                    onClick={(e) => {
+                      this.setState({ awaitingSignature: true }, () => {
+                        submitNewMarket(newMarket, history, (err, market) => {
+                          if (err) this.setState({ awaitingSignature: false })
+                        })
+                      })
+                    }}
                   >Submit
                   </button>
                 }
               </div>
             </div>
           </div>
+          { newMarket.currentStep === 4 && s.awaitingSignature &&
+            <div className={Styles['CreateMarketForm__submit-wrapper']}>
+              <div className={Styles.CreateMarketForm__submitWarning}>
+                {InputErrorIcon} please sign transaction(s) to complete market creation.
+              </div>
+            </div>
+          }
         </div>
       </article>
     )

@@ -10,12 +10,18 @@
 }
 
 .CreateMarketForm__button-inner-wrapper,
-.CreateMarketForm__form-inner-wrapper {
+.CreateMarketForm__form-inner-wrapper,
+.CreateMarketForm__submit-wrapper {
   margin: auto;
   max-width: 65.75rem;
   padding: 0 2rem;
 }
 
+.CreateMarketForm__submit-wrapper {
+  display: flex;
+}
+
+.CreateMarketForm__submitWarning,
 .CreateMarketForm__error {
   color: @color-negative;
   display: inline-block;
@@ -24,6 +30,14 @@
   margin-right: 1.5rem;
   text-transform: none;
   white-space: nowrap;
+}
+
+.CreateMarketForm__submitWarning {
+  margin-left: auto;
+  margin-right: 0;
+  max-width: 10rem;
+  padding: 1rem;
+  white-space: normal;
 }
 
 .CreateMarketForm__error--abs {
@@ -55,6 +69,7 @@
 
 .CreateMarketForm__error_tick > svg,
 .CreateMarketForm__error > svg,
+.CreateMarketForm__submitWarning > svg,
 .CreateMarketForm__error--abs > svg,
 .CreateMarketForm__error--bottom > svg,
 .CreateMarketForm__error--field-50 > svg,
@@ -270,12 +285,12 @@
 }
 
 @media @breakpoint-mobile-medium {
-  .CreateMarketForm__button-inner-wrapper,
   .CreateMarketForm__form-inner-wrapper {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
+  .CreateMarketForm__submit-wrapper,
   .CreateMarketForm__button-inner-wrapper {
     padding-left: 0;
     padding-right: 0;
@@ -314,6 +329,12 @@
   // }
   .CreateMarketForm__fields > li.field--50 {
     width: 100%;
+  }
+
+  .CreateMarketForm__submitWarning {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
   }
 }
 

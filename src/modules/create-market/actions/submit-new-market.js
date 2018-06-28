@@ -79,7 +79,7 @@ export function submitNewMarket(newMarket, history, callback) {
         },
         onFailed: (err) => {
           console.error('ERROR create market failed:', err)
-
+          callback(err)
           dispatch(invalidateMarketCreation(err.message))
         },
       })

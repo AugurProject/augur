@@ -45,7 +45,7 @@ export default class AccountDeposit extends Component {
 
   render() {
     const { address } = this.props
-    const noFeeTextStyle = { 'font-weight': '400' }
+    const noFeeTextStyle = { fontWeight: '400' }
     const styleQR = {
       height: 'auto',
       width: '100%',

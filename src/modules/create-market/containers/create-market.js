@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
-  submitNewMarket: (data, history) => dispatch(submitNewMarket(data, history)),
+  submitNewMarket: (data, history, cb) => dispatch(submitNewMarket(data, history, cb)),
   estimateSubmitNewMarket: (data, callback) => dispatch(estimateSubmitNewMarket(data, callback)),
 })
 
