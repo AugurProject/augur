@@ -35,6 +35,10 @@ export default class MarketOutcomeDepthHeader extends Component {
         <section style={{ minHeight: headerHeight }} />
       )
     }
+    let type = ''
+    if (hoveredDepth.length > 0) {
+      type = hoveredDepth[4] === ASKS ? 'ask ' : 'bid '
+    }
 
     return (
       <section
@@ -47,7 +51,7 @@ export default class MarketOutcomeDepthHeader extends Component {
         <div className={Styles.MarketOutcomeChartsHeader__stats}>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>
             <span className={Styles['MarketOutcomeChartsHeader__stat-title']}>
-              {(hoveredDepth.length === 0 || hoveredDepth[3] === ASKS) ? 'ask' : 'bid'} price
+              {type}price
             </span>
             <span className={Styles['MarketOutcomeChartsHeader__stat-value']}>
               {isNumber(hoveredDepth[1]) ? hoveredDepth[1].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
