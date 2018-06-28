@@ -81,7 +81,7 @@ export default class ReportingHeader extends Component {
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
-                    <span className={Styles.ReportingHeader__endTime}>Dispute Window ends { formattedDate.formattedLocal }</span>
+                    <span data-testid="endTime" className={Styles.ReportingHeader__endTime}>Dispute Window ends { formattedDate.formattedLocal }</span>
                     <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ disputeRep } REP Staked</span>
                   </div>
                   <button
@@ -116,7 +116,7 @@ export default class ReportingHeader extends Component {
                   <div className={Styles.ReportingHeader__graph}>
                     <div className={currentPercentage <= 90 && !(isMobile && currentPercentage > 70) ? Styles['ReportingHeader__graph-current'] : Styles['ReportingHeader__graph-current-90']}>
                       <div style={currentPeriodStyle}>
-                        <span>{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
+                        <span data-testid="daysLeft">{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
                       </div>
                     </div>
                   </div>

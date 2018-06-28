@@ -50,7 +50,7 @@ const Outcome = ({ className, outcome, marketId }) => {
         </span>
       </div>
       { outcome.tentativeWinning &&
-        <div className={Styles['MarketReportingPayouts__winning-outcome-message']}>
+        <div data-testid={'winning-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__winning-outcome-message']}>
           tentative winning outcome
         </div>
       }
@@ -71,9 +71,9 @@ const Outcome = ({ className, outcome, marketId }) => {
                 style={{ width: String(outcome.percentageComplete) + '%' }}
               />
             </div>
-            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
+            <span data-testid={'disputeBond-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
             <span className={Styles['MarketReportingPayouts__progress-bar-break']}> / </span>
-            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}>{totalBondSizeCurrent} REP</span>
+            <span data-testid={'disputeBondTarget-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__progress-bar-goal-text']}>{totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
             id={'tooltip--rep-progress-'+outcome.id+marketId}
@@ -193,6 +193,7 @@ class MarketReportingPayouts extends Component {
           { displayShowMore &&
             <button
               className={Styles['MarketReportingPayouts__show-more']}
+              data-testid="showMoreButton"
               onClick={this.showMore}
             >
               { showMoreText }

@@ -56,7 +56,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
             {!isForkingMarket &&
             <span>
               <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-              <span className={Styles['DisptueMarket__round-text']}>{market && market.disputeInfo &&
+              <span data-testid={'roundNumber-' + market.id} className={Styles['DisptueMarket__round-text']}>{market && market.disputeInfo &&
                 market.disputeInfo.disputeRound
               }
               </span>

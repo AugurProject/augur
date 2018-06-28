@@ -11,6 +11,7 @@ import tradeCompleteSets from 'augur.js/scripts/flash/trade-complete-sets'
 import designateReport from 'augur.js/scripts/flash/designated-report'
 import fillMarketOrders from 'augur.js/scripts/flash/fill-market-orders'
 import initialReport from 'augur.js/scripts/flash/initial-report'
+import disputeContribute from 'augur.js/scripts/flash/dispute-contribute'
 import { getPrivateKeyFromString } from 'augur.js/scripts/dp/lib/get-private-key'
 
 export default class Flash implements IFlash {
@@ -127,13 +128,30 @@ export default class Flash implements IFlash {
     const args = {
      opt: {
         marketId:marketId,
-       outcome:outcome,
+        outcome:outcome,
         invalid: invalid,
         noPush: noPush,
       }
     }
     return this.command(args, initialReport)
   }
+
+  disputeContribute(marketId: string, outcome: string, invalid: boolean = false, noPush: boolean = false, amount?: string) {
+    const args = {
+     opt: {
+        marketId:marketId,
+        outcome:outcome,
+        invalid: invalid,
+        noPush: noPush,
+      }
+    }
+
+    if (amount) {
+      args.opt.amount = amount;
+    }
+    return this.command(args, disputeContribute)
+  }
+
 
   command(args: object, func: Function) {
     return new Promise<Boolean>((resolve, reject) => {
