@@ -1,4 +1,6 @@
-const { augurDbPath } = require("./config.json");
+const path = require("path");
+
+const augurDbPath = path.join(__dirname, "augur-test.db");
 
 module.exports = {
   development: {
@@ -14,7 +16,7 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
-  build: {
+  test_file: {
     client: "sqlite3",
     connection: {
       filename: augurDbPath,
@@ -26,16 +28,6 @@ module.exports = {
       directory: "./build/migrations",
     },
     useNullAsDefault: true,
-  },
-  build_postgres: {
-    client: "postgresql",
-    connection: process.env.DATABASE_URL,
-    seeds: {
-      directory: "./build/seeds/test",
-    },
-    migrations: {
-      directory: "./build/migrations",
-    },
   },
   test: {
     client: "sqlite3",
