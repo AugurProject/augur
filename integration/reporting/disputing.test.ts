@@ -96,7 +96,7 @@ describe("Disputing", () => {
 
     it("should not be able to submit a dispute without REP", async () => {
      // check that button is disabled
-     await expect(page).toMatchElement("[data-testid='marketId-"+market.id+"'] a.market-properties-styles_disabled", { timeout: SMALL_TIMEOUT })
+     await expect(page).toMatchElement("[data-testid='link-"+market.id+"']", { text: "dispute", timeout: SMALL_TIMEOUT })
     });
   });
 
