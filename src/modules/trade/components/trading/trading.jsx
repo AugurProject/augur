@@ -62,6 +62,14 @@ class MarketTrading extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const {
+      clearTradeInProgress,
+      market,
+    } = this.props
+    clearTradeInProgress(market.id)
+  }
+
   toggleForm() {
     this.setState({ showForm: !this.state.showForm })
   }
