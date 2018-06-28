@@ -71,6 +71,11 @@
   &:extend(.caps--small);
 
   display: flex;
+  margin-right: 0.2em;
+}
+
+.MarketOutcomeChartsHeader__stat:last-of-type {
+  margin-right: 0;
 }
 
 .MarketOutcomeChartsHeader__stat--right {
@@ -89,4 +94,7 @@
   color: @color-gray;
   flex: 1 0 50%;
   margin-left: 0.4em;
+  max-width: 60px;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
 }
