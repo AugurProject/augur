@@ -45,12 +45,11 @@ export default class AccountDeposit extends Component {
 
   render() {
     const { address } = this.props
-    const noFeeTextStyle = { fontWeight: '400' }
     const styleQR = {
       height: 'auto',
       width: '100%',
     }
-    let airSwapConverter = <a href="" onClick={e => airSwapOnClick(e)}> Use AirSwap <span style={noFeeTextStyle}>(no fees)</span> </a>
+    let airSwapConverter = <a href="" onClick={e => airSwapOnClick(e)}> Use AirSwap <span className={Styles.AccountDeposit__noFeeTextStyle}>(no fees)</span> </a>
     let shapeShiftConverter = <a href="https://shapeshift.io" rel="noopener noreferrer" target="_blank">Use Shapeshift</a>
     if (parseInt(augur.rpc.getNetworkID(), 10) === 1) {
       shapeShiftConverter = (
@@ -74,7 +73,7 @@ export default class AccountDeposit extends Component {
           <button
             onClick={e => airSwapOnClick(e)}
           >
-            AirSwap to REP <span style={noFeeTextStyle}>(no fees)</span>
+            AirSwap to REP <span className={Styles.AccountDeposit__noFeeTextStyle}>(no fees)</span>
           </button>
         </div>
       )
