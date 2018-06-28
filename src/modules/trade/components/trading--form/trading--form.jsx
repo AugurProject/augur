@@ -199,7 +199,7 @@ class MarketTradingForm extends Component {
     // keep auto-filling functionality
     if (oldShares !== '' && (limitPrice === null || limitPrice === undefined || limitPrice === '')) {
       shares = null
-      limitPrice = '0'
+      limitPrice = SCALAR ? '' : '0'
     }
     props.selectedOutcome.trade.updateTradeOrder(shares, limitPrice, side, null)
   }
