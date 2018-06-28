@@ -299,7 +299,7 @@ export default class CreateMarketForm extends Component {
           { newMarket.currentStep === 4 && s.awaitingSignature &&
             <div className={Styles['CreateMarketForm__submit-wrapper']}>
               <div className={Styles.CreateMarketForm__submitWarning}>
-                {InputErrorIcon} please sign transaction(s) to complete market creation.
+                {InputErrorIcon} Please sign transaction(s) to complete market creation.
               </div>
             </div>
           }

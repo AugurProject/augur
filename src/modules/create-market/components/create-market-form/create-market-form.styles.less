@@ -33,11 +33,18 @@
 }
 
 .CreateMarketForm__submitWarning {
+  line-height: 1.2em;
   margin-left: auto;
   margin-right: 0;
-  max-width: 10rem;
-  padding: 1rem;
-  white-space: normal;
+  max-width: 13.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+  text-align: left;
+  text-indent: -1.75rem;
+  white-space: pre-wrap;
+
+  > svg {
+    margin-top: 1.5px !important;
+  }
 }
 
 .CreateMarketForm__error--abs {
@@ -174,6 +181,8 @@
 .CreateMarketForm__prev,
 .CreateMarketForm__submit {
   &:extend(.button--white all);
+
+  min-width: 13.5rem;
 
   &.hide-button {
     opacity: 0;
