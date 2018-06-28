@@ -52,6 +52,8 @@ describe("Markets List", () => {
     it("should display all categories for every loaded market in the sidebar", async () => {
       await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
       checkNumElements(false, 12)
+
+      // TODO: check which categories are present
     });
   });
 
@@ -136,15 +138,37 @@ describe("Markets List", () => {
       await expect(yesNoMarket).toMatchElement("a", { text: yesNoMarketDesc})
     });
 
+    it("should display category and tags in the top left corner of each card", async () => {
+      //TODO
+    });
+
+    it("should display a scale with the current mid-price for the market", async () => {
+      //TODO
+    });
+
     it("display the min and max values accurately on either ends of the scale", async () => {
+      // (0% - 100% for binary markets, min - max for scalar markets)
       await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__min", { text: "0 %"})
       await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__max", { text: "100 %"})
+    });
+
+    it("should verify that the midprice moves along the scale appropriately", async () => {
+      // TODO
+      // Test this for binary and scalar markets, and with something other than the default value (place some trades)
     });
 
     it("should display stats about volume, settlement Fee, and Expiration Date", async () => {
       await expect(yesNoMarket).toMatchElement(".value_volume", { text: "0"})
       await expect(yesNoMarket).toMatchElement(".value_fee", { text: "2.00"})
       await expect(yesNoMarket).toMatchElement(".value_expires", { text: "Dec 31, 2019 4:00 PM (UTC -8)"})
+    });
+
+    it("should have accurate volume stat", async () => {
+      //TODO
+    });
+
+    it("should have the settlement fee be the market creator fee + the current reporter fee", async () => {
+      //TODO
     });
 
     it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
