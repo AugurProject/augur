@@ -51,7 +51,7 @@ export default class MarketOutcomeDepthHeader extends Component {
         <div className={Styles.MarketOutcomeChartsHeader__stats}>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>
             <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
-            {type}qty
+              {type}qty
             </span>
             <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
               {hoveredDepth[0] ? hoveredDepth[2].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
