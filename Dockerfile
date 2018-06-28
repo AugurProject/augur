@@ -16,7 +16,6 @@ RUN npm run build
 RUN npm pack
 
 COPY knexfile.js knexfile.js
-RUN npm run migrate
 
 FROM node:8
 EXPOSE 9001
