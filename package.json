@@ -70,9 +70,9 @@
   "dependencies": {
     "app-data-folder": "1.0.0",
     "augur-core": "1.0.0-16",
-    "augur-node": "0.2.14",
-    "augur-ui": "3.37.0",
-    "augur.js": "4.12.0-14",
+    "augur-node": "0.2.15",
+    "augur-ui": "3.38.0",
+    "augur.js": "4.12.0-15",
     "knex": "0.14.6",
     "node-pre-gyp": "~0.6.38",
     "opn": "5.3.0",
