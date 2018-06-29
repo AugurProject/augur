@@ -35,6 +35,7 @@ body {
     font-size: 18px;
     font-style: normal;
     font-weight: 400;
+    margin: 0;
 }
 
 input[type=submit],
@@ -87,6 +88,8 @@ input {
     border: none;
     font-family: inherit;
     width: 100%;
+    height: 2rem;
+    padding-top: 0;
 }
 
 .success {
@@ -100,16 +103,101 @@ input {
 .notice {
     font-size: 0.8rem;
     font-weight: 500;
-    justify-content: center;
     display: flex;
     letter-spacing: 0.3px;
     line-height: 1.125rem;
     padding: 0.5em 0.5em;
     text-transform: uppercase;
-    border-radius: 3px;
-    background-color: rgba(113, 85, 152, 0.51);
-    -webkit-animation: fadeinout 6s linear forwards;
-    animation: fadeinout 6s linear forwards;
+    cursor: pointer;
+}
+
+.networkForm {
+    padding-left: 10%;
+    padding-top: 2rem;
+    width: 60%;
+    text-transform: uppercase;
+}
+
+.label {
+    font-size: .75rem;
+    font-weight: bold;
+    padding: 1rem 0 .2rem 0;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 2rem;
+    min-height: 6rem;
+}
+
+.formFooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.header {
+    background-color: white;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    padding: 30px 0;
+    justify-content: space-between;
+    min-height: 20%;
+}
+
+.networkName {
+    padding-left: 10%;
+    white-space: nowrap;
+}
+
+.connected,
+.notConnected,
+.networkConnected {
+    min-height: 24px;
+    min-width: 24px;
+    padding-left: 2rem;
+    padding-top: 0.1rem;
+}
+
+.notConnected {
+    background: url(notConnected.svg) no-repeat center center;
+}
+
+.connected {
+    background: url(connected.svg) no-repeat center center;
+}
+
+.synced {
+    padding-right: 10%;
+    white-space: nowrap;
+}
+
+.status {
+    font-weight: bolder;
+}
+
+.networks {
+    display: inline-block;
+}
+
+.networkSelect {
+    display: block;
+    height: 2rem;
+    width: 27rem;
+}
+
+.padThis {
+    padding-right: 1rem;
+}
+
+.openAugur {
+    display: flex;
+    justify-content: end;
+    float: right;
 }
 
 @-webkit-keyframes fadeinout {

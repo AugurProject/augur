@@ -31,10 +31,10 @@ function Renderer() {
 
 Renderer.prototype.onServerError = function (event, data) {
     this.showNotice(data.error, "failure");
-    const syncProgress = document.getElementById("sync_progress_amount");
+    const syncProgress = document.getElementById("sync_progress_label");
     clearClassList(syncProgress.classList);
     syncProgress.classList.add("failure");
-    syncProgress.innerHTML = "Failed to startup";
+    this.showNotice("Failed to startup", "failure");
 }
 
 Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
@@ -77,8 +77,11 @@ Renderer.prototype.onSwitchNetworkResponse = function (event, data) {
     this.showNotice("Switched network to " + this.config.networks[data.network].name, "success");
     this.config.network = data.network;
     const syncProgress = document.getElementById("sync_progress_amount");
+    const networkStatus = document.getElementById("network_status");
     clearClassList(syncProgress.classList);
-    syncProgress.innerHTML = "LOADING";
+    clearClassList(networkStatus.classList);
+    syncProgress.innerHTML = "0";
+    networkStatus.classList.add("notConnected");
     this.renderNetworkConfigForm(data.network, this.config.networks[data.network]);
 }
 
@@ -94,7 +97,7 @@ Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkC
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
     document.getElementById("switch_network_button").disabled = this.config.network === selectedNetwork;
-    document.getElementById("current_network").innerHTML = "("+this.config.networks[this.config.network].name+")";
+    document.getElementById("current_network").innerHTML = this.config.networks[this.config.network].name;
 }
 
 Renderer.prototype.onReceiveConfig = function (event, data) {
@@ -122,24 +125,32 @@ Renderer.prototype.renderNetworkOptions = function () {
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let progress = "Downloading Augur Logs" + ".".repeat(this.progressDots);
     if (data.lastSyncBlockNumber !== null) {
-        progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0) + "%";
+        progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
         this.isSynced = data.lastSyncBlockNumber === data.highestBlockNumber;
     } else {
         this.isSynced = false;
         this.progressDots += 1;
         this.progressDots %= 4;
     }
-    const syncProgress = document.getElementById("sync_progress_amount");
-    clearClassList(syncProgress.classList);
+    const syncProgressLbl = document.getElementById("sync_progress_label");
+    const syncProgressAmt = document.getElementById("sync_progress_amount");
+    const networkStatus = document.getElementById("network_status");
+    clearClassList(syncProgressLbl.classList);
+    clearClassList(networkStatus.classList);
+    networkStatus.classList.add("connected")
     if (this.isSynced) {
-        syncProgress.classList.add("success");
+        syncProgressLbl.classList.add("success");
     }
-    syncProgress.innerHTML = progress;
+    syncProgressAmt.innerHTML = progress;
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
 Renderer.prototype.onConsoleLog = function (event, message) {
     console.log(message);
+}
+
+Renderer.prototype.clearNotice = function () {
+    this.showNotice("", "success");
 }
 
 Renderer.prototype.showNotice = function (message, className) {
