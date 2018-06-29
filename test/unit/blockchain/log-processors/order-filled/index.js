@@ -126,7 +126,6 @@ describe("blockchain/log-processors/order-filled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
-          isRemoved: null,
         }]);
         assert.deepEqual(records.trades, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -278,7 +277,6 @@ describe("blockchain/log-processors/order-filled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
-          isRemoved: null,
         }]);
         assert.deepEqual(records.trades, []);
         assert.deepEqual(records.markets, {
@@ -474,7 +472,6 @@ describe("blockchain/log-processors/order-filled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
-          isRemoved: null,
         }]);
         assert.deepEqual(records.trades, [{
           orderId: "0x1000000000000000000000000000000000000000000000000000000000000000",
@@ -626,7 +623,6 @@ describe("blockchain/log-processors/order-filled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
-          isRemoved: null,
         }]);
         assert.deepEqual(records.trades, []);
         assert.deepEqual(records.markets, {

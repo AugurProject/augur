@@ -70,7 +70,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
 }
 
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  db.from("orders").where("orderId", log.orderId).update({ isRemoved: 1 }).asCallback((err: Error|null): void => {
+  db.from("orders").where("orderId", log.orderId).delete().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     augurEmitter.emit("OrderCreated", log);
     callback(null);

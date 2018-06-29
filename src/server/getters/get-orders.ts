@@ -37,7 +37,6 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
   query.where(queryData);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
-  query.whereNull("isRemoved");
   if (orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);
   queryModifier(db, query, "volume", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, ordersRows?: Array<OrdersRowWithCreationTimeAndCanceled>): void => {
     if (err) return callback(err);

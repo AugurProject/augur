@@ -77,33 +77,11 @@ describe("blockchain/log-processors/order-created", () => {
           tokensEscrowed: new BigNumber("2.25", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: "TRADE_GROUP_ID",
-          isRemoved: null,
         }]);
       },
       onRemoved: (err, records) => {
         assert.ifError(err);
-        assert.deepEqual(records, [{
-          orderId: "ORDER_ID",
-          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000B00",
-          logIndex: 0,
-          marketId: "0x0000000000000000000000000000000000000001",
-          outcome: 0,
-          shareToken: "0x0100000000000000000000000000000000000000",
-          orderType: "buy",
-          orderCreator: "CREATOR_ADDRESS",
-          orderState: "OPEN",
-          blockNumber: 1400100,
-          fullPrecisionPrice: new BigNumber("0.75", 10),
-          fullPrecisionAmount: new BigNumber("3", 10),
-          originalFullPrecisionAmount: new BigNumber("3", 10),
-          price: new BigNumber("0.75", 10),
-          amount: new BigNumber("3", 10),
-          originalAmount: new BigNumber("3", 10),
-          tokensEscrowed: new BigNumber("2.25", 10),
-          sharesEscrowed: new BigNumber("0", 10),
-          tradeGroupId: "TRADE_GROUP_ID",
-          isRemoved: 1,
-        }]);
+        assert.deepEqual(records, []);
       },
     },
   });
