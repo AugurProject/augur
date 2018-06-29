@@ -19,10 +19,20 @@ const defaultConfig = {
             "name":"Ropsten",
             "ws":"wss://ropsten.augur.net/ethereum-ws"
         },
+        "kovan": {
+            "http":"https://kovan.augur.net/ethereum-http",
+            "name":"Kovan",
+            "ws":"wss://kovan.augur.net/ethereum-ws"
+        },
         "local": {
             "http":"http://localhost:8545",
             "name":"Local",
             "ws":"ws://localhost:8546"
+        },
+        "mainnet": {
+            "http":"",
+            "name":"Mainnet",
+            "ws":""
         },
         "custom": {
             "http":"http://localhost:8545",
