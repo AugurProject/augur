@@ -123,14 +123,17 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
-    let progress = "Downloading Augur Logs" + ".".repeat(this.progressDots);
+    let progress = 0;
+    let progressMsg = "Downloading Augur Logs" + ".".repeat(this.progressDots);
     if (data.lastSyncBlockNumber !== null) {
         progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
         this.isSynced = data.lastSyncBlockNumber === data.highestBlockNumber;
+        this.clearNotice();
     } else {
         this.isSynced = false;
         this.progressDots += 1;
         this.progressDots %= 4;
+        this.showNotice(progressMsg, "success");
     }
     const syncProgressLbl = document.getElementById("sync_progress_label");
     const syncProgressAmt = document.getElementById("sync_progress_amount");
