@@ -15,7 +15,7 @@ const url = require('url');
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 800, icon: path.join(__dirname, '../augur.ico')});
+  mainWindow = new BrowserWindow({minWidth: 800, width: 800, minHeight: 800, height: 800, icon: path.join(__dirname, '../augur.ico')});
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
