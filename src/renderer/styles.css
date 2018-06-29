@@ -140,7 +140,7 @@ input {
     flex-direction: column;
     justify-content: space-between;
     margin-top: 2rem;
-    min-height: 6rem;
+    min-height: 10rem;
 }
 
 .formFooter {
