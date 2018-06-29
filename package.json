@@ -5,6 +5,7 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron-forge start .src/main/main.js",
+    "debug": "electron-forge start  --inspect-electron .src/main/main.js",
     "package": "electron-forge package",
     "publish": "electron-forge publish",
     "make": "electron-builder make --publish always",
