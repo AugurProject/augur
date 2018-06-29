@@ -57,76 +57,76 @@ describe("Markets List", () => {
     });
   });
 
-  describe("Filtering", () => {
-    beforeAll(async () => {
-      await page.goto(url + "#/markets?category=politics"); // click sometimes fails because of page rerenders
-    });
+  // describe("Filtering", () => {
+  //   beforeAll(async () => {
+  //     await page.goto(url + "#/markets?category=politics"); // click sometimes fails because of page rerenders
+  //   });
 
-    it("should display both submenu bars", async () => {
-      await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
-      await page.waitForSelector(".inner-nav-styles_InnerNav__menu--submenu")
-    });
+  //   it("should display both submenu bars", async () => {
+  //     await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
+  //     await page.waitForSelector(".inner-nav-styles_InnerNav__menu--submenu")
+  //   });
 
-    it("should filter market cards", async () => {
-      // check that header is correct
-      await expect(page).toMatchElement("h1", { text: "politics"})
+  //   it("should filter market cards", async () => {
+  //     // check that header is correct
+  //     await expect(page).toMatchElement("h1", { text: "politics"})
 
-      // check that number of markets listed is as expected
-      checkNumElements(true, 3)
-    });
+  //     // check that number of markets listed is as expected
+  //     checkNumElements(true, 3)
+  //   });
     
-    it("should populate submenu bar with the tag values for the markets displayed", async () => {
-      // check that tag submenu has right number of tags displayed
-      checkNumElements(false, 17)
-    });
+  //   it("should populate submenu bar with the tag values for the markets displayed", async () => {
+  //     // check that tag submenu has right number of tags displayed
+  //     checkNumElements(false, 17)
+  //   });
 
-    it("should filter out markets that don't match the selected tags when clicking on tags", async () => {
-      // when clicking on elections check that only two markets are displayed
-      await expect(page).toClick("button.elections")
-      checkNumElements(true, 2)
-    });
+  //   it("should filter out markets that don't match the selected tags when clicking on tags", async () => {
+  //     // when clicking on elections check that only two markets are displayed
+  //     await expect(page).toClick("button.elections")
+  //     checkNumElements(true, 2)
+  //   });
 
-    it("should show all markets after clicking the market button", async () => {
-      await expect(page).toClick("a[href$='#/markets']")
-      checkNumElements(true, 10)
-    });
-  });
+  //   it("should show all markets after clicking the market button", async () => {
+  //     await expect(page).toClick("a[href$='#/markets']")
+  //     checkNumElements(true, 10)
+  //   });
+  // });
 
-  describe("Search", () => {
+  // describe("Search", () => {
      
-    it("should filter markets to show only ones with searched keyword", async () => {
-      // enter in a search keyword
-      await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "jair");
-      checkNumElements(true, 1)
+  //   it("should filter markets to show only ones with searched keyword", async () => {
+  //     // enter in a search keyword
+  //     await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "jair");
+  //     checkNumElements(true, 1)
 
-      // check that market that shows up is correct one
-      checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
-    });
+  //     // check that market that shows up is correct one
+  //     checkMarketNames(["Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?"])
+  //   });
 
-    it("should not have case sensitive search", async () => {
-      // make sure clearing search works
-      await expect(page).toClick(".input-styles_close")
-      await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "JAIR");
-      checkNumElements(true, 1)
-    });
+  //   it("should not have case sensitive search", async () => {
+  //     // make sure clearing search works
+  //     await expect(page).toClick(".input-styles_close")
+  //     await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "JAIR");
+  //     checkNumElements(true, 1)
+  //   });
 
-    it("should have markets be searchable by title, tag, or category", async () => {
-      // search for a category
-      await expect(page).toClick(".input-styles_close")
-      await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "crypto");
-      checkNumElements(true, 2)
+  //   it("should have markets be searchable by title, tag, or category", async () => {
+  //     // search for a category
+  //     await expect(page).toClick(".input-styles_close")
+  //     await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "crypto");
+  //     checkNumElements(true, 2)
 
-      // check that expected titles are present
-      const expectedMarketTitles = ["Will Ethereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (round down)"]
-      checkMarketNames(expectedMarketTitles)
+  //     // check that expected titles are present
+  //     const expectedMarketTitles = ["Will Ethereum trade at $2000 or higher at any time before the end of 2018?", "Millions of Tether tokens issued on Thu Jun 07 2018 (round down)"]
+  //     checkMarketNames(expectedMarketTitles)
 
-      await expect(page).toClick(".input-styles_close")
+  //     await expect(page).toClick(".input-styles_close")
 
-      // search for a tag
-      await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
-      checkNumElements(true, 1)
-    });
-  });
+  //     // search for a tag
+  //     await expect(page).toFill("input.filter-search-styles_FilterSearch__input", "sfo");
+  //     checkNumElements(true, 1)
+  //   });
+  // });
 
   describe("Market Cards", () => {
     beforeAll(async () => {
@@ -139,7 +139,9 @@ describe("Markets List", () => {
     });
 
     it("should display category and tags in the top left corner of each card", async () => {
-      //TODO
+      await expect(yesNoMarket).toMatchElement("[data-testid='Categories-0'", { text: 'agriculture'})
+      await expect(yesNoMarket).toMatchElement("[data-testid='Tags-0'", { text: 'antibiotics'})
+      await expect(yesNoMarket).toMatchElement("[data-testid='Tags-1'", { text: 'China'})
     });
 
     it("should display a scale with the current mid-price for the market", async () => {
