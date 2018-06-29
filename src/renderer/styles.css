@@ -135,14 +135,6 @@ input {
     padding: 1rem 0 .2rem 0;
 }
 
-.footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: 2rem;
-    min-height: 10rem;
-}
-
 .formFooter {
     display: flex;
     flex-direction: row;
@@ -205,10 +197,33 @@ input {
     padding-right: 1rem;
 }
 
+.footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 2rem;
+    min-height: 10rem;
+}
+
+.tail {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
 .openAugur {
     display: flex;
     justify-content: end;
     float: right;
+}
+
+.versionNumber {
+    font-size: 12px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    align-self: flex-end;
+    text-transform: none;
 }
 
 @-webkit-keyframes fadeinout {

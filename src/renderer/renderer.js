@@ -1,4 +1,5 @@
 const {ipcRenderer, remote} = require('electron');
+const {app} = require('electron').remote
 const opn = require('opn');
 
 
@@ -27,6 +28,7 @@ function Renderer() {
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
     ipcRenderer.on('error', this.onServerError.bind(this));
     window.onerror = this.onWindowError.bind(this);
+    document.getElementById("version").innerHTML = app.getVersion()
 }
 
 Renderer.prototype.onServerError = function (event, data) {
