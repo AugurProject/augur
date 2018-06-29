@@ -1,13 +1,19 @@
 import "jest-environment-puppeteer";
+import Flash from "./helpers/flash";
 import {UnlockedAccounts} from "./constants/accounts";
 import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 import { ElementHandle } from "puppeteer";
+import { createYesNoMarket, createScalarMarket } from './helpers/create-markets'
+import { IFlash, IMarket } from "./types/types"
+import { waitNextBlock } from './helpers/wait-new-block'
 
 const url = `${process.env.AUGUR_URL}`;
 const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
 const TIMEOUT = 5000;
 
 jest.setTimeout(100000);
+
+let flash: IFlash = new Flash();
 
 const checkNumElements = async (isMarkets: boolean, num: number) => {
   const selector = (isMarkets ? MARKETS_SELECTOR : ".inner-nav-styles_InnerNav__menu-item--visible")
@@ -42,20 +48,24 @@ describe("Markets List", () => {
     yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
   });
 
-  describe("General View", () => {
-
-    it("should paginate in chunks of 10", async () => {
-      await page.waitForSelector(".markets-list")
-      checkNumElements(true, 10)
-    });
-
-    it("should display all categories for every loaded market in the sidebar", async () => {
-      await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
-      checkNumElements(false, 12)
-
-      // TODO: check which categories are present
-    });
+  afterAll(async () => {
+    flash.dispose();
   });
+
+  // describe("General View", () => {
+
+  //   it("should paginate in chunks of 10", async () => {
+  //     await page.waitForSelector(".markets-list")
+  //     checkNumElements(true, 10)
+  //   });
+
+  //   it("should display all categories for every loaded market in the sidebar", async () => {
+  //     await page.waitForSelector(".inner-nav-styles_InnerNav__menu--main")
+  //     checkNumElements(false, 12)
+
+  //     // TODO: check which categories are present
+  //   });
+  // });
 
   // describe("Filtering", () => {
   //   beforeAll(async () => {
@@ -129,9 +139,12 @@ describe("Markets List", () => {
   // });
 
   describe("Market Cards", () => {
+    let newMarket: IMarket;
+
     beforeAll(async () => {
       await page.goto(url + "#/markets?category=agriculture");
       yesNoMarket = await expect(page).toMatchElement("article", { text: yesNoMarketDesc})
+      newMarket = await createYesNoMarket();
     });
 
     it("should display market title", async () => {
@@ -144,34 +157,17 @@ describe("Markets List", () => {
       await expect(yesNoMarket).toMatchElement("[data-testid='Tags-1'", { text: 'China'})
     });
 
-    it("should display a scale with the current mid-price for the market", async () => {
-      //TODO
-    });
-
     it("display the min and max values accurately on either ends of the scale", async () => {
       // (0% - 100% for binary markets, min - max for scalar markets)
       await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__min", { text: "0 %"})
       await expect(yesNoMarket).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__max", { text: "100 %"})
     });
 
-    it("should verify that the midprice moves along the scale appropriately", async () => {
-      // TODO
-      // Test this for binary and scalar markets, and with something other than the default value (place some trades)
-    });
-
     it("should display stats about volume, settlement Fee, and Expiration Date", async () => {
       await expect(yesNoMarket).toMatchElement(".value_volume", { text: "0"})
       await expect(yesNoMarket).toMatchElement(".value_fee", { text: "2.00"})
       await expect(yesNoMarket).toMatchElement(".value_expires", { text: "Dec 31, 2019 4:00 PM (UTC -8)"})
-    });
-
-    it("should have accurate volume stat", async () => {
-      //TODO
-    });
-
-    it("should have the settlement fee be the market creator fee + the current reporter fee", async () => {
-      //TODO
-    });
+    }); 
 
     it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
       await expect(yesNoMarket).toClick("button.market-properties-styles_MarketProperties__favorite")
@@ -207,6 +203,45 @@ describe("Markets List", () => {
 
       // "+ N More" should change to "- N More" when expanded, should collapse again on click.
       await expect(categoricalMarket).toMatchElement(".market-outcomes-categorical-styles_MarketOutcomesCategorical__show-more", { text: "- 3 less"})
+    });
+
+    it("should display a scale with the current mid-price for the market", async () => {
+      // go to new markets page
+      await page.goto(url + "#/markets?category=space");
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] [data-testid='midpoint']", {
+        text: '50.00',
+        timeout: TIMEOUT
+      });
+    });
+
+    it("should have the settlement fee be the market creator fee + the current reporter fee", async () => {
+    });
+
+    it("should have accurate volume stat", async () => {
+      // expect volume to start at zero
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", { 
+        text: '0', 
+        timeout: TIMEOUT 
+      });
+
+      // create and fill order
+      await flash.createMarketOrder(newMarket.id, "1", "sell", ".1", "2");
+      await waitNextBlock(4);
+      await flash.fillMarketOrders(newMarket.id, "1", "buy");
+
+      // expect volume increase
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", { 
+        text: '2.0000', 
+        timeout: TIMEOUT 
+      });
+    });
+
+    it("should verify that the midprice moves along the scale appropriately", async () => {
+      // Test this for binary and scalar markets, and with something other than the default value (place some trades)
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] [data-testid='midpoint']", {
+        text: '10.00',
+        timeout: TIMEOUT
+      });
     });
   });
 });
