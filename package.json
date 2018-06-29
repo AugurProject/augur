@@ -1,6 +1,6 @@
 {
   "name": "augur-ui",
-  "version": "3.37.0",
+  "version": "3.38.0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "4.12.0-14",
+    "augur.js": "4.12.0-15",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
