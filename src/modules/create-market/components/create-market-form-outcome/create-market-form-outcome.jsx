@@ -205,7 +205,10 @@ export default class CreateMarketOutcome extends Component {
       default:
         updatedMarket.validations[currentStep].tickSize = true
     }
-    updatedMarket.tickSize = numTicksBigNum
+
+    if (type === scalarType.TICK_SIZE) {
+      updatedMarket.tickSize = value
+    }
 
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
     if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum) && !numTicksBigNum.eq(ZERO)) {
