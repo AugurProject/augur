@@ -164,10 +164,6 @@ export default class Flash implements IFlash {
         useShares: false,
       }
     }
-
-    if (amount) {
-      args.opt.amount = amount;
-    }
     return this.command(args, createMarketOrder)
   }
 
