@@ -847,40 +847,40 @@ module.exports={
   "TradingEscapeHatch": "0x83eba103bf4a450900e4462724f5003a299b2f2e"
  },
  "4": {
-  "Controller": "0xd5e3f611facdc2504864eb6d9041e58c135d9a0c",
-  "Universe": "0x3c4c97306f2555ba0c06ba6197be9e2f052df7a3",
-  "Augur": "0x9e68fff99baa2b6a8559ef602f0aa8b0f174b8d8",
-  "LegacyReputationToken": "0x897b9a469a3f65ad867e85af97fe63cdfc473fcb",
-  "CancelOrder": "0x59dc5df858d8c4f7195c1d443352821de5a0c74a",
-  "Cash": "0xfdbfe67e98b9fa7dabeea4c95fb8f613c10a08e9",
-  "ClaimTradingProceeds": "0xb62af91a6162830919a0f2bb9ae5a82163626581",
-  "CompleteSets": "0x9d70e82233f1dab3e0537edcdfb3f6413d33f884",
-  "CreateOrder": "0xfbb82907a0c3f71e7a24db153416ad92dd0ffc82",
-  "FillOrder": "0xcb88f97244a2900e88698d386ffc4f6ced01617d",
-  "Order": "0xbc777ff4edb92dec923915e8ac6b4bc2c7a1b529",
-  "Orders": "0xbeaadf45bbf72481323cd0a767ac4986ae57ddfd",
-  "OrdersFetcher": "0x9297962ced7631a00a2b76eaea64206d10b3c3ad",
-  "ShareToken": "0x345c649bdfce6c04d837653e214a5fe7417bf5b9",
-  "Trade": "0x5919222f9c298506d42b7baf944f80a4ea0f7303",
-  "TradingEscapeHatch": "0xa597af7c7c1667599f8b34534e937d8822e311e6"
+  "Controller": "0x549b59b2d581d0dd9a4f1c356c142e2a94638d13",
+  "Universe": "0x5a4fbd0027a61f1d88ddcc289f1c12e86cb01521",
+  "Augur": "0xeafb000ab90ca1d46d8c35b154621bebb9d21978",
+  "LegacyReputationToken": "0x32feffb3e20f01efeb953127a20281b9243e4a21",
+  "CancelOrder": "0xf8c5238087c9d3a972bdc46c4c58351ca367c88a",
+  "Cash": "0xa3bd5e136beb7745157767e09297c0e1da8a663a",
+  "ClaimTradingProceeds": "0x3f4df242af7b959f2760d9f1c3f1b543fb8989b8",
+  "CompleteSets": "0xb3022b82fbaedbb2d901910fcc46ccaac256c95a",
+  "CreateOrder": "0xcb302f0c6a9d1406253e38b1ebd349bb8baac2ed",
+  "FillOrder": "0xfa90964ad8ecb9986880834fe087586cbb4df382",
+  "Order": "0xcaafaa1dae21b072804e1f6febac461057ec4aa9",
+  "Orders": "0xdf9738062dc558ea783a318df37c39235253a7f1",
+  "OrdersFetcher": "0x948db66a8e2caa8783f6a13563203c709c22fe50",
+  "ShareToken": "0x7e75b97ee5a719edb2e213200378f75b31d1c64c",
+  "Trade": "0xff24598d84667f1817bb3336f49c25f4ee8791a8",
+  "TradingEscapeHatch": "0x57e9191b874fb7c128068ab1f84fad75188cf654"
  },
  "42": {
-  "Controller": "0xccd8b99260168e266ac62388db3cb9a9019ac898",
-  "Universe": "0xcdb2b2734b1d1342a883b6d6b651a4fd061aabd2",
-  "Augur": "0x1e0675ac37f466cece9ab0f11ff4130f29ec26a4",
-  "LegacyReputationToken": "0x212b51ae4122de6c6331711a4f36087d274ceac6",
-  "CancelOrder": "0xbb4974e1f99fd2fe45c55a996ae7a2e0bdbcb08c",
-  "Cash": "0xee7907b1433c8d0c29003752193fc5848933d15c",
-  "ClaimTradingProceeds": "0xced6cb80fd9f0e45757115dc5494144dce09fa8b",
-  "CompleteSets": "0x2b570ae63a84da2cd1942cec62e6da15e29a3efa",
-  "CreateOrder": "0x3d98a4c41b202bbf5ba19d977a2918b2abd78903",
-  "FillOrder": "0x40c686ca3677bc0f9023690d46c0724ebf2e9922",
-  "Order": "0xdc3bdd145523b1498de22477b7af9a24cfeeda61",
-  "Orders": "0x4bc89ff438ff2cbc202a21e81c0d39effdc0d2a5",
-  "OrdersFetcher": "0xf4fff22884c827a95c2ede5e6691ddca02692ce8",
-  "ShareToken": "0xb222bd7be820035d6cfc57ed0f8d8c1ab27422df",
-  "Trade": "0xa2b068e819f0f2ee14627c22be23193f561ffc1b",
-  "TradingEscapeHatch": "0x7e62106fd311bdc977b5b2ea001045b27a1b1eac"
+  "Controller": "0xfc85164e43cace2e8abd5f9d85dce8d9ef42e2d9",
+  "Universe": "0xe7e93d38f71700a2a7bc8eae97487384b20bc413",
+  "Augur": "0x615dfd5a66de31fdd1d826dd64176072dfe3bfe9",
+  "LegacyReputationToken": "0xdd113a8bb79ddd2daeee3a3978852ee525edbba9",
+  "CancelOrder": "0x3e2b253e6a55fad839968081b819e5a357fd64d3",
+  "Cash": "0xd05970873835666b0fbabe653638adcda152d0f0",
+  "ClaimTradingProceeds": "0xc75f95adab8b32d0a58a890531ae3990a8ea32ff",
+  "CompleteSets": "0xd3f9bf5aa359cb40d7669ecad00514a23042db38",
+  "CreateOrder": "0xc1539da6830ee5bacfc50f5e7b7f64f89b89df2e",
+  "FillOrder": "0x794a62e085c6d588fa4bbfcfa0ca1316c0bf785c",
+  "Order": "0x5f1d58725998f408b0a7310baa2140e9c24e5bb9",
+  "Orders": "0x940abf528577bdb438ec11bfae4ead9453b44406",
+  "OrdersFetcher": "0x4bec7aec631e8644871cd69aa0f18a4646f23655",
+  "ShareToken": "0xbf9b16f76df84122534ffb08a853133e3014f55a",
+  "Trade": "0xce1ad95cef41e0226050c28dae6a119644826175",
+  "TradingEscapeHatch": "0x7ff27424828d3fb376d8d6e15828c03a646250ba"
  },
  "8995": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
@@ -920,39 +920,39 @@ module.exports={
  },
  "22346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x8e9d71cb6e9080bc04f6fd562f5dd68af0163baf",
+  "Universe": "0x77d8f6aef45e591481fe0bebfd0f7c60fa41e160",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "Cash": "0x56d32d583ee21e748103b029fd97621fde92248d",
-  "ClaimTradingProceeds": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "CompleteSets": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
-  "CreateOrder": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "FillOrder": "0xb03cf72bc5a9a344aac43534d664917927367487",
-  "Order": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "Orders": "0xd28d97d4ea8968e90ec90ab0f43df4ade0c9f611",
-  "OrdersFetcher": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "ShareToken": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
-  "Trade": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "TradingEscapeHatch": "0x021076fb9adafcf83869435f9d72a5873869b4ad"
+  "LegacyReputationToken": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
+  "CancelOrder": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
+  "Cash": "0x95e6d12a0ca50ead152d93f8b79beb23bc4a054b",
+  "ClaimTradingProceeds": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
+  "CompleteSets": "0xd11222c7c12da25ed9b153234084ad02235297aa",
+  "CreateOrder": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
+  "FillOrder": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "Order": "0x7a8f8e48d4cc990bbd8e088fb027e850486e8e0c",
+  "Orders": "0x658655115e55fa3433b9686865f011874bd71083",
+  "OrdersFetcher": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
+  "ShareToken": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "Trade": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "TradingEscapeHatch": "0x642e1eaed86d4075253c34c307d34362d2247d18"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xcd8569bb29493f01cffc394e050d2533aa5ea824",
+  "Universe": "0xfc261e7cf01a96b091bfcdbf8e8b91ec181a7489",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
-  "Cash": "0x5f3341ea5989ad3129e325027b8d908b63709a00",
-  "ClaimTradingProceeds": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
-  "CompleteSets": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "CreateOrder": "0x45a2897792afa20b95f7dcaf5c0fb45b84daf439",
-  "FillOrder": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
-  "Order": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "LegacyReputationToken": "0x6e968fe21894a35ba59ee8ec6f60ea0ddc3a59e5",
+  "CancelOrder": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
+  "Cash": "0xa2a073790ec3ed745afc374f76b73c3178f5536c",
+  "ClaimTradingProceeds": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
+  "CompleteSets": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "CreateOrder": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "FillOrder": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "Order": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
   "Orders": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a",
-  "OrdersFetcher": "0x4eda1aae707c777b55641b9758029c0eabec626c",
-  "ShareToken": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
-  "Trade": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
-  "TradingEscapeHatch": "0x7036dd45d80badf5c70e70bbc12d1dd67befbf94"
+  "OrdersFetcher": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
+  "ShareToken": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
+  "Trade": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
+  "TradingEscapeHatch": "0x897516718140a2bbb9730904823f9db6d9ae28c0"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -1033,12 +1033,12 @@ module.exports.reloadAddresses = function (callback) {
 },{"../utils/read-json-file":147,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":151}],34:[function(require,module,exports){
 module.exports={
   "3": 3532165,
-  "4": 2532357,
-  "42": 7812108,
+  "4": 2549424,
+  "42": 7822453,
   "8995": 0,
   "12346": 113,
-  "22346": 11,
-  "32346": 11
+  "22346": 9,
+  "32346": 10
 }
 },{}],35:[function(require,module,exports){
 "use strict";
@@ -4750,7 +4750,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.12.0-15';
+module.exports = '4.12.0-16';
 },{}],149:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -6177,29 +6177,6 @@ module.exports={
 				}
 			],
 			"name": "logOrderCreated",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -8462,29 +8439,6 @@ module.exports={
 	],
 	"Controlled": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -8715,20 +8669,6 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [],
-			"name": "release",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -9325,29 +9265,6 @@ module.exports={
 				}
 			],
 			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -10111,29 +10028,6 @@ module.exports={
 	],
 	"Time": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTimestamp",
@@ -10196,29 +10090,6 @@ module.exports={
 		}
 	],
 	"TimeControlled": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": true,
 			"inputs": [],
@@ -10674,29 +10545,6 @@ module.exports={
 	],
 	"Delegator": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -10765,29 +10613,6 @@ module.exports={
 		}
 	],
 	"Map": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": true,
 			"inputs": [
@@ -11104,29 +10929,6 @@ module.exports={
 				}
 			],
 			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -11732,29 +11534,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -12195,29 +11974,6 @@ module.exports={
 				}
 			],
 			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -12934,29 +12690,6 @@ module.exports={
 		},
 		{
 			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
 			"inputs": [],
 			"name": "forkAndRedeem",
 			"outputs": [
@@ -13382,29 +13115,6 @@ module.exports={
 	],
 	"Mailbox": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -13588,29 +13298,6 @@ module.exports={
 			"constant": false,
 			"inputs": [],
 			"name": "migrateThroughOneFork",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -14563,29 +14250,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -15339,29 +15003,6 @@ module.exports={
 				{
 					"name": "",
 					"type": "address"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -16456,29 +16097,6 @@ module.exports={
 	],
 	"CancelOrder": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -16559,29 +16177,6 @@ module.exports={
 				}
 			],
 			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -17049,29 +16644,6 @@ module.exports={
 			"type": "function"
 		},
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -17218,29 +16790,6 @@ module.exports={
 		}
 	],
 	"CompleteSets": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": false,
 			"inputs": [
@@ -17427,29 +16976,6 @@ module.exports={
 	],
 	"CreateOrder": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -17586,29 +17112,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_filler",
 					"type": "address"
 				},
@@ -17699,29 +17202,6 @@ module.exports={
 	],
 	"Order": [],
 	"Orders": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": true,
 			"inputs": [
@@ -18395,29 +17875,6 @@ module.exports={
 	],
 	"OrdersFetcher": [
 		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
 			"constant": true,
 			"inputs": [
 				{
@@ -18584,29 +18041,6 @@ module.exports={
 				}
 			],
 			"name": "approve",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -19195,29 +18629,6 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"constant": false,
-			"inputs": [
-				{
 					"name": "_direction",
 					"type": "uint8"
 				},
@@ -19562,29 +18973,6 @@ module.exports={
 		}
 	],
 	"TradingEscapeHatch": [
-		{
-			"constant": false,
-			"inputs": [
-				{
-					"name": "_target",
-					"type": "address"
-				},
-				{
-					"name": "_tokens",
-					"type": "address[]"
-				}
-			],
-			"name": "suicideFunds",
-			"outputs": [
-				{
-					"name": "",
-					"type": "bool"
-				}
-			],
-			"payable": false,
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
 		{
 			"constant": true,
 			"inputs": [],
@@ -33757,7 +33145,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.lNT3obfq/augur.js"
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.NrPSVh4y/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -33783,7 +33171,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.lNT3obfq/augur.js",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.NrPSVh4y/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
