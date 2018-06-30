@@ -44,7 +44,7 @@ const MarketOutcomes = (p) => {
         className={Styles.MarketOutcomes__current}
         style={currentValuePosition}
       >
-        <span className={Styles['MarketOutcomes__current-value']}>
+        <span className={Styles['MarketOutcomes__current-value']} data-testid="midpoint">
           {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
         <span className={Styles['MarketOutcomes__current-denomination']}>

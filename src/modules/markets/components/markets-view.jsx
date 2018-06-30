@@ -99,6 +99,7 @@ export default class MarketsView extends Component {
           markets={markets}
         />
         <MarketsList
+          testid="markets"
           isLogged={isLogged}
           markets={markets}
           filteredMarkets={filteredMarkets}
