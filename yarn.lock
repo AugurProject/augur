@@ -57,7 +57,7 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/get-port@^3.2.0":
+"@types/get-port@3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@types/get-port/-/get-port-3.2.0.tgz#f9e0a11443cc21336470185eae3dfba4495d29bc"
 
@@ -527,11 +527,11 @@ atob@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-augur-core@1.0.0-16:
-  version "1.0.0-16"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-16.tgz#1ccb62115de88be8a8384ef88bd87446be606b90"
+augur-core@1.0.0-17:
+  version "1.0.0-17"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-17.tgz#41794db6d5f7217c6f9edf23d6c7fd92cb085ec8"
   dependencies:
-    "@types/get-port" "^3.2.0"
+    "@types/get-port" "3.2.0"
     "@types/mkdirp" "0.5.1"
     "@types/node" "9.6.7"
     "@types/yargs" "11.0.0"
@@ -540,7 +540,7 @@ augur-core@1.0.0-16:
     binascii "0.0.1"
     bn.js "4.11.8"
     copy-dir "0.3.0"
-    crypto-promise "^2.0.0"
+    crypto-promise "2.0.0"
     ethereumjs-testrpc "6.0.3"
     ethjs-abi "0.2.1"
     ethjs-account "0.1.4"
@@ -558,12 +558,12 @@ augur-core@1.0.0-16:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@4.12.0-15:
-  version "4.12.0-15"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-15.tgz#03f028b366a3afdb23d26e10ddde12bbc0b5345b"
+augur.js@4.12.0-16:
+  version "4.12.0-16"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.12.0-16.tgz#7574829577090686cce9df0b4fc5a3981ea7142d"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-16"
+    augur-core "1.0.0-17"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"
@@ -1968,7 +1968,7 @@ crypto-js@^3.1.4:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.8.tgz#715f070bf6014f2ae992a98b3929258b713f08d5"
 
-crypto-promise@^2.0.0:
+crypto-promise@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-promise/-/crypto-promise-2.0.0.tgz#1cbc474651bbbe1387db5065a83ffa1d7e074c74"
   dependencies:
