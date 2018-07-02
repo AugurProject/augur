@@ -1,6 +1,8 @@
 const express = require('express');
-const http = require('http');
+const https = require('https');
 const path = require('path');
+const fs = require("fs");
+const helmet = require("helmet");
 
 function AugurUIServer() {
     this.app = express();
@@ -10,11 +12,18 @@ function AugurUIServer() {
 AugurUIServer.prototype.startServer = function () {
     console.log("Starting Augur UI Server");
     try {
+
+        const options = {
+            key: fs.readFileSync("/tmp/certs/notaugur.key", "utf8"),
+            cert: fs.readFileSync("/tmp/certs/notaugur.crt", "utf8")
+        };
+
         const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build');
         this.app.use(express.static(serverBuildPath));
+        this.app.use(helmet())
         const self = this;
         this.app.listen = function () {
-            const server = http.createServer(this)
+            const server = https.createServer(options, this)
             server.on('error', (e) => {
                 console.error(e);
                 if (e.code === 'EADDRINUSE') {
