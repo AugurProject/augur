@@ -8,7 +8,7 @@ branches:
   only:
   - master
   - electron-build
-  - "/\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
+  - "/v\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
 
 
 matrix:
