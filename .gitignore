@@ -3,5 +3,5 @@ node_modules/
 coverage/
 build/
 definitions/
-augur.db
+augur*.db
 tags
