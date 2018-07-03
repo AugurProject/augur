@@ -63,7 +63,7 @@ The Augur Rinkeby node configuration and a "Local" configuration are provided by
 
 ## Ledger support
 
-Ledger needs SSL support. To use Ledger and support SSL in augur-app, follow these instructions:
+Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these instructions:
 
 ### On Mac
 In a command line, run:
@@ -73,12 +73,13 @@ In a command line, run:
     openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 
   This will result with two files named localhost.key and localhost.crt
-  Move these files to augur application data directory.
-  `~/Library/Application Support/augur` directory
 
-  After doing so, then start up your augur-app.
+  Move these files to your Augur application data directory: 
+  `~/Library/Application Support/augur`
 
-  When you open augur in your web broswer, you will have to tell web browser to trust the site.
+  After doing so, then start up your Augur application.
+
+  When you open Augur in your web broswer, you will have to tell web browser to trust the site.
   
 ### On Windows
 
