@@ -30,6 +30,12 @@
       ],
       "icon": "build/augur.ico"
     },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/augur.ico"
+    },
     "linux": {
       "target": [
         "deb",
