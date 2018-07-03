@@ -51,8 +51,9 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 }
 
 Renderer.prototype.openAugurUI = function () {
-    const url = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
-    opn(url);
+    const root = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
+    const networkConfig = this.config.networks[this.config.network];
+    opn(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
@@ -135,9 +136,12 @@ Renderer.prototype.renderNetworkOptions = function () {
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let progress = 0;
     let progressMsg = "Downloading Augur Logs" + ".".repeat(this.progressDots);
-    if (data.lastSyncBlockNumber !== null) {
+    if (data.lastSyncBlockNumber !== null && data.lastSyncBlockNumber !== 0) {
         progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
-        this.isSynced = data.lastSyncBlockNumber === data.highestBlockNumber;
+        this.isSynced = data.lastSyncBlockNumber >= data.highestBlockNumber - 3;
+        if (!this.isSynced && progress === "100") {
+            progress = "99";
+        }
         this.clearNotice();
     } else {
         this.isSynced = false;
