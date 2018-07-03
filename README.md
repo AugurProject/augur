@@ -19,7 +19,7 @@ ledger needs SSL support, augur app supports ssl,
 
   Start augur-app 
 
-  When you are able to open web broswer, you will have to tell web browser to trust the site.
+  When you open augur in web broswer, you will have to tell web browser to trust the site.
   
 ## windows
 
