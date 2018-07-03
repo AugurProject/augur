@@ -50,7 +50,7 @@
             "linux"
           ],
           "config": {
-              "icon": "build/"
+              "icon": "build/icon.png"
           }
         }
       ]
