@@ -60,6 +60,31 @@ Do: `npm run make`
 
 The Augur Rinkeby node configuration and a "Local" configuration are provided by default, specifying HTTP and WebSocket endpoints for a full Ethereum node. To connect to mainnet, you must either run your own full node and use the "Local" configuration, or provide the connection details for a hosted node that you trust. The "Custom" configuration is intended for this purpose, but will, by default, also just point to localhost.
 
+
+## Ledger support
+
+Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these instructions:
+
+### On Mac
+The following commands need openssl, use brew or other package manager to install openssl. 
+Then in a command line, run:
+
+    openssl req -nodes -newkey rsa:4096 -sha256 -keyout notaugur.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
+    
+    openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+
+  This will make two files, `localhost.key` and `localhost.crt`. Move these files to your Augur application data directory: `~/Library/Application Support/augur`
+
+  Then start up your Augur application. When you open Augur in your web broswer, you will have to tell web browser to trust the site.
+  
+### On Windows
+
+    <to be added>
+
+### On Linux
+
+    <to be added>
+
 ## Gotchas
 
 - If you are doing active development on other Augur repos, make sure to close out any running Augur Node or Augur UI instances and any clients that may be connected to them before running. We use hardcoded ports, and if they can't be used, the App will not run properly.
