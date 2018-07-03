@@ -6,6 +6,7 @@ import { BlockDetail, ErrorCallback, FormattedEventLog } from "../types";
 import { processLog } from "./process-logs";
 import { logProcessors } from "./log-processors";
 import { processBlockByBlockDetails } from "./process-block";
+import { logger } from "../utils/logger";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
 
@@ -42,7 +43,7 @@ function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Formatte
             const contractName = log.contractName;
             const eventName = log.eventName;
             if (logProcessors[contractName] == null || logProcessors[contractName][eventName] == null) {
-              console.log("Log processor does not exist:", contractName, eventName);
+              logger.info("Log processor does not exist:", contractName, eventName);
               nextLog(null);
             } else {
               processLog(trx, augur, log, logProcessors[contractName][eventName], nextLog);
@@ -67,7 +68,7 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
     processFunction(nextFunction);
   }, 1);
 
-  console.log("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
+  logger.info("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
   augur.events.getAllAugurLogs({ fromBlock, toBlock }, (batchOfAugurLogs?: Array<FormattedEventLog>): void => {
     if (!batchOfAugurLogs) return ;
     batchLogProcessQueue.push( (nextBatch) => processBatchOfLogs(db, augur, batchOfAugurLogs, nextBatch ));

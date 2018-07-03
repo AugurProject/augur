@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { promisify } from "util";
 import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
+import { logger } from "../utils/logger";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let syncFinished = false;
@@ -27,7 +28,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
   const highestBlockNumber: number = parseInt(augur.rpc.getCurrentBlock().number, 16);
   let fromBlock: number;
   if (uploadBlockNumber > highestBlockNumber) {
-    console.log(`Synchronization started at (${uploadBlockNumber}), which exceeds the current block from the ethereum node (${highestBlockNumber}), starting from 0 instead`);
+    logger.info(`Synchronization started at (${uploadBlockNumber}), which exceeds the current block from the ethereum node (${highestBlockNumber}), starting from 0 instead`);
     fromBlock = 0;
   } else {
     fromBlock = lastSyncBlockNumber == null ? uploadBlockNumber : lastSyncBlockNumber + 1;
@@ -38,11 +39,11 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
     if (handoffBlockNumber > highestBlockNumber) {
       throw new Error(`Not enough blocks to start blockstream reliably, wait at least ${BLOCKSTREAM_HANDOFF_BLOCKS} from ${fromBlock}. Current Block: ${highestBlockNumber}`);
     }
-    console.warn(`Not leaving at least ${BLOCKSTREAM_HANDOFF_BLOCKS} between batch download and blockstream hand off during re-org can cause data quality issues`);
+    logger.warn(`Not leaving at least ${BLOCKSTREAM_HANDOFF_BLOCKS} between batch download and blockstream hand off during re-org can cause data quality issues`);
   }
   await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
   setSyncFinished();
   await db.insert({ highestBlockNumber }).into("blockchain_sync_history");
-  console.log(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);
+  logger.info(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);
   return handoffBlockNumber;
 }

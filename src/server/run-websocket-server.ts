@@ -17,22 +17,22 @@ import * as http from "http";
 import * as path from "path";
 import { EventEmitter } from "events";
 import { ControlMessageType } from "../constants";
+import { logger } from "../utils/logger";
 
 function safeSend( websocket: WebSocket, payload: string) {
   if (websocket.readyState !== WebSocket.OPEN ) {
-    console.warn("Client disconnected during request, ignoring response");
+    logger.warn("Client disconnected during request, ignoring response");
     return;
   }
   websocket.send(payload);
 }
 
 export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs, controlEmitter: EventEmitter = new EventEmitter()): ServersData {
-
   const servers: Array<WebSocket.Server> = [];
   const httpServers: Array<http.Server | https.Server> = [];
 
   if ( webSocketConfigs.wss != null ) {
-    console.log("Starting websocket secure server on port", webSocketConfigs.wss.port);
+    logger.info("Starting websocket secure server on port", webSocketConfigs.wss.port);
     const httpsOptions: https.ServerOptions = {
       cert: fs.readFileSync(path.join(__dirname, "..", "..", webSocketConfigs.wss.certificateFile)),
       key: fs.readFileSync(path.join(__dirname, "..", "..", webSocketConfigs.wss.certificateKeyFile)),
@@ -44,7 +44,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
   }
 
   if ( webSocketConfigs.ws != null ) {
-    console.log("Starting websocket server on port", webSocketConfigs.ws.port);
+    logger.info("Starting websocket server on port", webSocketConfigs.ws.port);
     const server = http.createServer(app);
     httpServers.push(server);
     server.listen(webSocketConfigs.ws.port);
@@ -61,7 +61,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
         let message: any;
         try {
           message = JSON.parse(data as string, addressFormatReviver);
-          if (!isJsonRpcRequest(message)) return console.error("bad json rpc message received:", message);
+          if (!isJsonRpcRequest(message)) return logger.error("bad json rpc message received:", message);
         } catch (exc) {
           return safeSend(websocket, makeJsonRpcError("-1", JsonRpcErrorCode.ParseError, "Bad JSON RPC Message Received", { originalText: data as string }));
         }
@@ -85,7 +85,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
           } else {
             dispatchJsonRpcRequest(db, message as JsonRpcRequest, augur, (err: Error|null, result?: any): void => {
               if (err) {
-                console.error("getter error: ", err);
+                logger.error("getter error: ", err);
                 safeSend(websocket, makeJsonRpcError(message.id, JsonRpcErrorCode.InvalidParams, err.message, false));
               } else {
                 safeSend(websocket, makeJsonRpcResponse(message.id, result || null));
@@ -104,13 +104,13 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
       });
 
       websocket.on("error", (err) => {
-        console.error(err);
+        logger.error(err);
         controlEmitter.emit(ControlMessageType.WebsocketError, err);
       });
     });
 
     server.on("error", (err: Error): void => {
-      console.log("websocket error:", err);
+      logger.error("websocket error:", err);
       controlEmitter.emit(ControlMessageType.ServerError, err);
       // TODO reconnect
     });

@@ -30,9 +30,10 @@ import { getReportingFees } from "./getters/get-reporting-fees";
 import { getUniversesInfo } from "./getters/get-universes-info";
 import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance } from "./getters/get-winning-balance";
+import { logger } from "../utils/logger";
 
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
-  console.log(request);
+  logger.info(JSON.stringify(request));
   switch (request.method) {
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);

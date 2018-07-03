@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 export function logError(err?: Error|null): void {
-  if (err != null) console.error(err);
+  if (err != null) logger.error(err);
 }

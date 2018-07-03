@@ -8,6 +8,7 @@ import { NetworkConfiguration } from "augur-core";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
+import { logger } from "../utils/logger";
 
 interface NetworkIdRow {
   networkId: string;
@@ -20,7 +21,7 @@ function getDatabasePathFromNetworkId(networkId: string, databaseDir: string|und
 
 function createKnex(networkId: string, databaseDir?: string): Knex {
   const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
-  console.log(augurDbPath);
+  logger.info(augurDbPath);
   if (process.env.DATABASE_URL) {
     // Be careful about non-serializable transactions. We expect database writes to be processed from the blockchain, serially, in block order.
     return Knex({
@@ -89,7 +90,7 @@ async function moveDatabase(db: Knex, networkId: string, databaseDir?: string): 
   db.destroy();
   const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
   const backupDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, `backup-augur-%s-${new Date().getTime()}.db`);
-  console.log("move", augurDbPath, backupDbPath);
+  logger.info("move", augurDbPath, backupDbPath);
   await promisify(rename)(augurDbPath, backupDbPath);
   return createKnex(networkId);
 }

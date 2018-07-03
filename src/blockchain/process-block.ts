@@ -8,6 +8,7 @@ import { BlockDetail, BlocksRow, AsyncCallback, ErrorCallback, MarketsContractAd
 import { updateActiveFeeWindows, updateMarketState } from "./log-processors/database";
 import { processQueue, logQueueProcess } from "./process-queue";
 import { getMarketsWithReportingState } from "../server/getters/database";
+import { logger } from "../utils/logger";
 
 interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
   universe: Address;
@@ -88,7 +89,7 @@ export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockD
   const blockHash = block.hash;
   blockHeadTimestamp = parseInt(block.timestamp, 16);
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
-  console.log("new block:", blockNumber, timestamp);
+  logger.info("new block:", `${blockNumber}`, `${timestamp}`);
   db.transaction((trx: Knex.Transaction): void => {
     insertBlockRow(trx, blockNumber, blockHash, timestamp, (err: Error|null) => {
       if (err) {
@@ -117,7 +118,7 @@ export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockD
 
 function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallback): void {
   const blockNumber = parseInt(block.number, 16);
-  console.log("block removed:", blockNumber);
+  logger.info("block removed:", `${blockNumber}`);
   db.transaction((trx: Knex.Transaction): void => {
     const blockHash = block.hash;
     logQueueProcess(trx, blockHash, (err: Error|null) => {
@@ -125,7 +126,8 @@ function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallb
         trx.rollback(err);
         return callback(err);
       }
-      // TODO: un-advance time
+      // TODO: un-advan
+      // ce time
       db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
         if (err) {
           trx.rollback(err);

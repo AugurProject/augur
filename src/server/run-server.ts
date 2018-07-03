@@ -29,7 +29,7 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
       const networkId: string = augur.rpc.getNetworkID();
       const universe: Address = augur.contracts.addresses[networkId].Universe;
 
-      getMarkets(db, universe, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, (err: Error|null, result?: any): void => {
+      getMarkets(db, universe, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, (err: Error | null, result?: any): void => {
         if (err || result.length === 0) {
           res.send({ status: "down", reason: err || "No markets found", universe });
         } else {
@@ -47,7 +47,11 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
       res.status(422).send({ error: "Bad value for max_pending_transactions, must be an integer in base 10" });
     } else {
       const waitingClientsCount = db.client.pool.pendingAcquires.length;
-      res.send({ status: (maxPendingTransactions > waitingClientsCount) ? "up" : "down", maxPendingTransactions, pendingTransactions: waitingClientsCount });
+      res.send({
+        status: (maxPendingTransactions > waitingClientsCount) ? "up" : "down",
+        maxPendingTransactions,
+        pendingTransactions: waitingClientsCount,
+      });
     }
   });
 
