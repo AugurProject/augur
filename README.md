@@ -15,7 +15,7 @@ ledger needs SSL support, augur app supports ssl,
 
   This will result with two files named localhost.key and localhost.crt
   Move these files to augur application data directory.
-  `/Library/Application Support/augur` directory
+  `~/Library/Application Support/augur` directory
 
 ## windows
 
