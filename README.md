@@ -72,14 +72,9 @@ In a command line, run:
     
     openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 
-  This will result with two files named localhost.key and localhost.crt
+  This will make two files, `localhost.key` and `localhost.crt`. Move these files to your Augur application data directory: `~/Library/Application Support/augur`
 
-  Move these files to your Augur application data directory: 
-  `~/Library/Application Support/augur`
-
-  After doing so, then start up your Augur application.
-
-  When you open Augur in your web broswer, you will have to tell web browser to trust the site.
+  Then start up your Augur application. When you open Augur in your web broswer, you will have to tell web browser to trust the site.
   
 ### On Windows
 
