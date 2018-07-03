@@ -5,31 +5,6 @@
 
 Augur App is a small electron application that packages [Augur Node](https://github.com/AugurProject/augur-node) and the [Augur UI](https://github.com/AugurProject/augur), so you can use Augur locally with an Ethereum node of your choosing.
 
-## Ledger support
-
-ledger needs SSL support, augur app supports ssl, 
-
-### mac
-    openssl req -nodes -newkey rsa:4096 -sha256 -keyout notaugur.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
-    
-    openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
-
-  This will result with two files named localhost.key and localhost.crt
-  Move these files to augur application data directory.
-  `~/Library/Application Support/augur` directory
-
-  Start augur-app 
-
-  When you open augur in web broswer, you will have to tell web browser to trust the site.
-  
-## windows
-
-    <to be added>
-
-## linux
-
-    <to be added>
-
 ## To Use
 
 The easiest way to get started is to simply download one of the OS specific installers [here](https://github.com/AugurProject/augur-app/releases).
@@ -84,6 +59,34 @@ Do: `npm run make`
 ## Augur Node Network Configuration
 
 The Augur Rinkeby node configuration and a "Local" configuration are provided by default, specifying HTTP and WebSocket endpoints for a full Ethereum node. To connect to mainnet, you must either run your own full node and use the "Local" configuration, or provide the connection details for a hosted node that you trust. The "Custom" configuration is intended for this purpose, but will, by default, also just point to localhost.
+
+
+## Ledger support
+
+Ledger needs SSL support. To use Ledger and support SSL in augur-app, follow these instructions:
+
+### On Mac
+In a command line, run:
+
+    openssl req -nodes -newkey rsa:4096 -sha256 -keyout notaugur.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
+    
+    openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+
+  This will result with two files named localhost.key and localhost.crt
+  Move these files to augur application data directory.
+  `~/Library/Application Support/augur` directory
+
+  After doing so, then start up your augur-app.
+
+  When you open augur in your web broswer, you will have to tell web browser to trust the site.
+  
+### On Windows
+
+    <to be added>
+
+### On Linux
+
+    <to be added>
 
 ## Gotchas
 
