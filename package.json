@@ -24,11 +24,18 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "build": {
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/augur.ico"
+    },
     "linux": {
       "target": [
         "deb",
         "snap"
-      ]
+      ],
+      "icon": "build/augur.ico"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
