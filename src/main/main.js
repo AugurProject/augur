@@ -1,4 +1,8 @@
 const electron = require('electron');
+const log = require('electron-log');
+// LOG ALL THE THINGS!!!!
+log.transports.file.level = 'debug';
+
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
 const {app, BrowserWindow, Menu} = electron;
