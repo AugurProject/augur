@@ -1,4 +1,5 @@
 const {ipcRenderer, remote} = require('electron');
+const log = require('electron-log');
 const {app} = require('electron').remote
 const opn = require('opn');
 
@@ -13,6 +14,7 @@ function clearClassList(classList) {
 function Renderer() {
     this.progressDots = 0;
     this.isSynced = false;
+    this.isSsl = false;
     this.config = {};
     this.selectedNetwork = "";
     ipcRenderer.send('requestConfig');
@@ -27,8 +29,14 @@ function Renderer() {
     ipcRenderer.on('onSwitchNetworkResponse', this.onSwitchNetworkResponse.bind(this));
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
     ipcRenderer.on('error', this.onServerError.bind(this));
+    ipcRenderer.on('ssl', this.onSsl.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onSsl = function (value) {
+    log.info("SSL is " + value);
+    this.isSsl = value
 }
 
 Renderer.prototype.onServerError = function (event, data) {
@@ -44,7 +52,9 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 }
 
 Renderer.prototype.openAugurUI = function () {
-    opn('http://localhost:8080');
+    const root = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
+    const networkConfig = this.config.networks[this.config.network];
+    opn(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
@@ -127,9 +137,12 @@ Renderer.prototype.renderNetworkOptions = function () {
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let progress = 0;
     let progressMsg = "Downloading Augur Logs" + ".".repeat(this.progressDots);
-    if (data.lastSyncBlockNumber !== null) {
+    if (data.lastSyncBlockNumber !== null && data.lastSyncBlockNumber !== 0) {
         progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
-        this.isSynced = data.lastSyncBlockNumber === data.highestBlockNumber;
+        this.isSynced = data.lastSyncBlockNumber >= data.highestBlockNumber - 3;
+        if (!this.isSynced && progress === "100") {
+            progress = "99";
+        }
         this.clearNotice();
     } else {
         this.isSynced = false;
@@ -151,7 +164,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
 }
 
 Renderer.prototype.onConsoleLog = function (event, message) {
-    console.log(message);
+    log.info(message);
 }
 
 Renderer.prototype.clearNotice = function () {
@@ -159,7 +172,7 @@ Renderer.prototype.clearNotice = function () {
 }
 
 Renderer.prototype.showNotice = function (message, className) {
-    console.log(message);
+    log.info(message);
     const notice = document.getElementById("notice");
     clearClassList(notice.classList);
     notice.innerHTML = "";
