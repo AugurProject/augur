@@ -13,6 +13,7 @@ function clearClassList(classList) {
 function Renderer() {
     this.progressDots = 0;
     this.isSynced = false;
+    this.isSsl = false;
     this.config = {};
     this.selectedNetwork = "";
     ipcRenderer.send('requestConfig');
@@ -27,8 +28,14 @@ function Renderer() {
     ipcRenderer.on('onSwitchNetworkResponse', this.onSwitchNetworkResponse.bind(this));
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
     ipcRenderer.on('error', this.onServerError.bind(this));
+    ipcRenderer.on('ssl', this.onSsl.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onSsl = function (value) {
+    console.log("SSL is " + value);
+    this.isSsl = value
 }
 
 Renderer.prototype.onServerError = function (event, data) {
@@ -44,8 +51,9 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 }
 
 Renderer.prototype.openAugurUI = function () {
+    const root = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
     const networkConfig = this.config.networks[this.config.network];
-    opn(`http://localhost:8080?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
+    opn(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
