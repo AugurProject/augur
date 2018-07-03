@@ -28,20 +28,20 @@
       "target": [
         "dmg"
       ],
-      "icon": "build/augur.ico"
+      "icon": "build/icon.png"
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "build/augur.ico"
+      "icon": "build/icon.png"
     },
     "linux": {
       "target": [
         "deb",
         "snap"
       ],
-      "icon": "build/augur.ico"
+      "icon": "build/icon.png"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
