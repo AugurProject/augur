@@ -46,11 +46,6 @@
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
-      "provider": "s3",
-      "bucket": "augur-app-releases",
-      "path": "${version}"
-    },
-    "publish": {
       "provider": "github"
     }
   },
@@ -64,7 +59,7 @@
             "linux"
           ],
           "config": {
-              "icon": "build/icon.png"
+            "icon": "build/icon.png"
           }
         }
       ]
@@ -72,10 +67,10 @@
   },
   "dependencies": {
     "app-data-folder": "1.0.0",
-    "augur-core": "1.0.0-16",
-    "augur-node": "0.2.16",
-    "augur-ui": "3.39.1",
-    "augur.js": "4.12.0-15",
+    "augur-core": "1.0.0-19",
+    "augur-node": "0.2.17",
+    "augur-ui": "3.39.2",
+    "augur.js": "4.12.0-17",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
     "express": "4.16.2",
