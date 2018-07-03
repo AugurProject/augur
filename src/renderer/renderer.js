@@ -1,4 +1,5 @@
 const {ipcRenderer, remote} = require('electron');
+const log = require('electron-log');
 const {app} = require('electron').remote
 const opn = require('opn');
 
@@ -34,7 +35,7 @@ function Renderer() {
 }
 
 Renderer.prototype.onSsl = function (value) {
-    console.log("SSL is " + value);
+    log.info("SSL is " + value);
     this.isSsl = value
 }
 
@@ -163,7 +164,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
 }
 
 Renderer.prototype.onConsoleLog = function (event, message) {
-    console.log(message);
+    log.info(message);
 }
 
 Renderer.prototype.clearNotice = function () {
@@ -171,7 +172,7 @@ Renderer.prototype.clearNotice = function () {
 }
 
 Renderer.prototype.showNotice = function (message, className) {
-    console.log(message);
+    log.info(message);
     const notice = document.getElementById("notice");
     clearClassList(notice.classList);
     notice.innerHTML = "";
