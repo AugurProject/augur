@@ -66,8 +66,8 @@ The Augur Rinkeby node configuration and a "Local" configuration are provided by
 Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these instructions:
 
 ### On Mac
-The following commands need openssl, use brew or other package manager to install openssl
-In a command line, run:
+The following commands need openssl, use brew or other package manager to install openssl. 
+Then in a command line, run:
 
     openssl req -nodes -newkey rsa:4096 -sha256 -keyout notaugur.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
     
