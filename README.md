@@ -17,6 +17,10 @@ ledger needs SSL support, augur app supports ssl,
   Move these files to augur application data directory.
   `~/Library/Application Support/augur` directory
 
+  Start augur-app 
+
+  When you are able to open web broswer, you will have to tell web browser to trust the site.
+  
 ## windows
 
     <to be added>
