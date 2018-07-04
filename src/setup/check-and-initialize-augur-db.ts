@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as path from "path";
 import * as sqlite3 from "sqlite3";
 import { promisify, format } from "util";
-import { rename } from "fs";
+import { rename, fstat, existsSync, unlinkSync, readFileSync, writeFileSync } from "fs";
 import { NetworkConfiguration } from "augur-core";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
@@ -16,6 +16,10 @@ interface NetworkIdRow {
 }
 
 function getDatabasePathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = "augur-%s.db") {
+  return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId));
+}
+
+function getUploadBlockPathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = "upload-block-%s") {
   return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId));
 }
 
@@ -50,6 +54,7 @@ export async function createDbAndConnect(augur: Augur, network: NetworkConfigura
       if (networkId == null) return reject(new Error("could not get networkId"));
       try {
         monitorEthereumNodeHealth(augur);
+        await checkAndUpdateContractUploadBlock(augur, networkId);
         const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
         resolve(db);
       } catch (err) {
@@ -57,6 +62,23 @@ export async function createDbAndConnect(augur: Augur, network: NetworkConfigura
       }
     });
   });
+}
+
+async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
+  const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
+  let oldUploadBlockNumber = 0;
+  if (existsSync(oldUploadBlockNumberFile)) {
+    oldUploadBlockNumber = Number(readFileSync(oldUploadBlockNumberFile));
+  }
+  const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
+  if (currentUploadBlockNumber != oldUploadBlockNumber) {
+    console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
+    const dbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
+    if (existsSync(dbPath)) {
+      unlinkSync(dbPath);
+    }
+    writeFileSync(oldUploadBlockNumberFile, currentUploadBlockNumber);
+  }
 }
 
 async function isDatabaseDamaged(db: Knex): Promise<boolean> {
