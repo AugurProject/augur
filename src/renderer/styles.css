@@ -190,6 +190,7 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-content: center;
 }
 
 .networkSelect {
@@ -199,6 +200,10 @@ input {
 
 .center {
   text-align: center;
+}
+
+.config {
+  padding: 0;
 }
 
 .footer {
