@@ -13,6 +13,7 @@ import { BID } from 'modules/transactions/constants/types'
 import { CATEGORICAL } from 'modules/markets/constants/market-types'
 import { TRANSACTIONS } from 'modules/routes/constants/views'
 import { buildCreateMarket } from 'modules/create-market/helpers/build-create-market'
+import { sortOrders } from 'modules/create-market/helpers/liquidity'
 
 export function submitNewMarket(newMarket, history, callback = noop) {
   return (dispatch, getState) => {
@@ -20,6 +21,8 @@ export function submitNewMarket(newMarket, history, callback = noop) {
     const { createMarket, formattedNewMarket } = buildCreateMarket(newMarket, false, universe, loginAccount, contractAddresses)
     const hasOrders = Object.keys(newMarket.orderBook).length
     console.log('first entrance to submit new market order')
+    newMarket.orderBook = sortOrders(newMarket.orderBook)
+
     dispatch(getHasApproval(hasOrders, (err) => {
       if (err) return console.error('ERROR: ', err)
       createMarket({
