@@ -48,8 +48,7 @@
     "publish": {
       "provider": "github"
     },
-    "files": ["!certs/*.{key,pem"],
-    "extraFiles": ["certs"]
+    "files": ["!certs/*.{key,pem"]
   },
   "config": {
     "forge": {
