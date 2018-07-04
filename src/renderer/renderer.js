@@ -51,9 +51,9 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 }
 
 Renderer.prototype.openAugurUI = function () {
-    const root = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
+    const protocol = this.isSsl ? 'https' : 'http'
     const networkConfig = this.config.networks[this.config.network];
-    shell.openExternal(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
+    shell.openExternal(`${protocol}://localhost:8080/#/categories?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
