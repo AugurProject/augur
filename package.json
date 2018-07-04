@@ -37,7 +37,8 @@
     "docker:spin-up": "npm run docker:pull && npm run docker:start",
     "docker:start": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
     "docker:pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
-    "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down"
+    "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
+    "version": "npm run build"
   },
   "dependencies": {
     "async": "2.6.0",
