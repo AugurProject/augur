@@ -131,7 +131,7 @@ input {
 
 .notice {
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   letter-spacing: 0.3px;
   line-height: 1.125rem;
@@ -188,6 +188,12 @@ input {
   min-width: 24px;
   padding-left: 2rem;
   padding-top: 0.1rem;
+}
+
+.errorIcon {
+  width: 24px;
+  height: 20px;
+  background: url(alert-icon.svg) no-repeat center center;
 }
 
 .notConnected {

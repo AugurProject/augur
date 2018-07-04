@@ -42,13 +42,16 @@ Renderer.prototype.backToNetworkConfig = function (event) {
 }
 
 Renderer.prototype.goToOpenApp = function (event) {
+    // find selected network and config options
     const selectedNetwork = document.getElementById("current_network").innerHTML.toLowerCase();
     this.selectedNetwork = selectedNetwork;
     const networkConfig = this.config.networks[selectedNetwork];
 
+    // hide config form and show open network screen
     document.getElementById("network_config_screen").style.display = "none";
     document.getElementById("open_app_screen").style.display = "block";
 
+    // render and fill in details on open network screen
     this.renderOpenNetworkPage(selectedNetwork, networkConfig);
 }
 
@@ -196,6 +199,11 @@ Renderer.prototype.showNotice = function (message, className) {
     clearClassList(notice.classList);
     notice.innerHTML = "";
     setTimeout(() => {
+        if (className === 'failure') {
+            document.getElementById("error_notice").style.display = 'block'
+        } else {
+            document.getElementById("error_notice").style.display = 'none'
+        }
         notice.classList.add(className);
         notice.classList.add("notice");
         notice.innerHTML = message;
