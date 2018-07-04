@@ -69,11 +69,11 @@ The location of the log file is operating system specific.
 
 ### On Linux
 
-  <to be added>
+    <to be added>
 
 ### On Windows
 
-  <to be added>
+    <to be added>
 
 ## Ledger support
 
