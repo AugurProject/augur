@@ -1,6 +1,6 @@
 {
   "name": "augur",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -48,7 +48,9 @@
     "publish": {
       "provider": "github"
     },
-    "files": ["!certs/*.{key,pem"]
+    "files": [
+      "!certs/*.{key,pem"
+    ]
   },
   "config": {
     "forge": {
