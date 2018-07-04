@@ -30,17 +30,24 @@ html {
 
 body {
   color: white;
-  background-color: #372e4b;
+  background-color: #231A3A;
   font-family: 'DINPro', sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
 }
 
 input[type=submit],
 button {
-  border: 1px solid white;
   align-items: center;
   border-radius: 3px;
   cursor: pointer;
@@ -55,21 +62,27 @@ button {
   padding: 0 0.4em 0.166em;
   text-transform: uppercase;
   transition: background-color 0.15s ease, color 0.15s ease;
-  background-color: #412468;
-  color: #ffffff;
+  background-color: #f0eff6;
+  color: #412468;
+}
+
+.outlineButton {
+  border: 1px solid white;
+  background-color: #231A3A !important;
+  color: white !important;
 }
 
 input[type=submit]:disabled,
 button:disabled {
-  background-color: #dfdfdf;
-  color: #79797b;
+  background-color: #A7A2B2;
+  color: #DBDAE1;
   cursor: default;
 }
 
 input[type=submit]:hover,
 button:hover {
-  background-color: #553580;
-}
+/*  background-color: #553580;
+*/}
 
 input[type=submit]:disabled:hover,
 button:disabled:hover {
@@ -117,9 +130,9 @@ input {
   display: flex;
   letter-spacing: 0.3px;
   line-height: 1.125rem;
-  padding: 0.5em 0.5em;
-  text-transform: uppercase;
+  text-transform: none;
   cursor: pointer;
+  justify-content: flex-end;
 }
 
 .networkForm {
@@ -127,6 +140,9 @@ input {
   padding-top: 2rem;
   width: 60%;
   text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .label {
@@ -142,7 +158,7 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: 40px;
 }
 
 .header {
@@ -152,7 +168,7 @@ input {
   flex-direction: row;
   padding: 30px 0;
   justify-content: space-between;
-  min-height: 20%;
+  max-height: 20%;
 }
 
 .networkName {
@@ -215,16 +231,21 @@ input {
 .footer {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin-top: 2rem;
-  min-height: 10rem;
+  margin-top: 1.5rem;
+  flex-grow: 1;
 }
 
 .tail {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.error {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .openAugur {
@@ -241,6 +262,17 @@ input {
   text-transform: none;
 }
 
+.borderTop {
+  border-top: 0.5px solid #dbdae1;
+  padding-top: 40px
+}
+
+#open_app_screen > .networkName {
+  padding-left: 0;
+  text-transform: none;
+  margin: 30px 0;
+}
+
 .instructions {
   padding: .5rem 0 1.5rem 0;
 }
@@ -252,6 +284,14 @@ input {
 
 .instruction-bold {
   font-weight: bolder;
+}
+
+.networkInfo {
+  text-transform: none;
+}
+
+.networkInfoBlock {
+  margin-bottom: 20px;
 }
 
 @-webkit-keyframes fadeinout {

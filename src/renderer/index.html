@@ -9,7 +9,7 @@
 <body>
   <section class="header">
     <div class="networkName">
-      Ethereum Network:
+      Connected to:
       <span id="current_network" class="status"></span>
       <span id="network_status" class="notConnected" />
     </div>
@@ -22,46 +22,63 @@
     </div>
   </section>
   <section class="networkForm">
-    <div class="instructions">
-      <div class="instruction-bold">Please select an Ethereum node to connect to.</div>
-      <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
-    </div>
-    <div class="networks">
-      <span class="label center config">Configuration</span>
-      <select id="network_id_select" class="networkSelect" onchange="renderer.switchNetworkConfigForm()"></select>
-    </div>
-    <div>
-      <div class="label">Configuration Name:</div>
-      <div>
-        <input id="network_name" name="name" type="text">
+    <section id="network_config_screen" style="display:block;">
+      <div class="instructions">
+        <div class="instruction">Please select an Ethereum node to connect to.</div>
+        <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
       </div>
-    </div>
-    <div>
-      <div class="label">HTTP Endpoint:</div>
-      <div>
-        <input id="network_http_endpoint" name="http" type="text">
+      <div class="networks">
+        <span class="label center config">Configuration</span>
+        <select id="network_id_select" class="networkSelect" onchange="renderer.switchNetworkConfigForm()"></select>
       </div>
-    </div>
-    <div>
-      <div class="label">Websocket Endpoint:</div>
       <div>
-        <input id="network_ws_endpoint" name="ws" type="text">
+        <div class="label">Configuration Name:</div>
+        <div>
+          <input id="network_name" name="name" type="text">
+        </div>
       </div>
-    </div>
-    <div class="formFooter">
-      <input id="save_network_config_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Save Network Config">
-      <input id="switch_network_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Save And Switch">
-    </div>
+      <div>
+        <div class="label">HTTP Endpoint:</div>
+        <div>
+          <input id="network_http_endpoint" name="http" type="text">
+        </div>
+      </div>
+      <div>
+        <div class="label">Websocket Endpoint:</div>
+        <div>
+          <input id="network_ws_endpoint" name="ws" type="text">
+        </div>
+      </div>
+      <div class="formFooter">
+        <input id="switch_network_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Save Configuration" class="outlineButton">
+        <input id="go_to_open_app_screen_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Connect">
+      </div>
+    </section>
+    <section id="open_app_screen" style="display:none;">
+      <div class="networkName networkInfoBlock">
+        Connected to:
+        <span id="open_network_name" class="status"></span>
+      </div>
+      <div class="networkInfoBlock">
+        <div class="label">HTTP Endpoint:</div>
+        <div id="open_network_http_endpoint" class="networkInfo"></div>
+      </div>
+      <div class="networkInfoBlock">
+        <div class="label">Websocket Endpoint:</div>
+        <div id="open_network_ws_endpoint" class="networkInfo"></div>
+      </div>
+      <div class="formFooter borderTop">
+        <input id="back_to_network_config_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Switch Network" class="outlineButton">
+        <input id="augur_ui_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Open Augur App">
+      </div>
+    </section>
     <section class="footer">
-      <div>
+      <div class="error">
         <span id="notice" class="notice"></span>
       </div>
       <div class="tail">
         <div class="versionNumber">Augur App
           <span id="version"></span>
-        </div>
-        <div class="openAugur">
-          <button id="augur_ui_button" disabled onclick="renderer.openAugurUI()">Open Augur UI</button>
         </div>
       </div>
     </section>

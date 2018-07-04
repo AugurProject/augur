@@ -20,8 +20,11 @@ function Renderer() {
     setInterval(() => {
         ipcRenderer.send('requestLatestSyncedBlock');
     }, 1000)
-    document.getElementById("save_network_config_button").addEventListener("click", this.saveNetworkConfig.bind(this));
     document.getElementById("switch_network_button").addEventListener("click", this.switchNetwork.bind(this));
+    document.getElementById("back_to_network_config_button").addEventListener("click", this.backToNetworkConfig.bind(this));
+    document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.goToOpenApp.bind(this));
+    document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
+
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
     ipcRenderer.on('saveNetworkConfigResponse', this.onSaveNetworkConfigResponse.bind(this));
@@ -31,6 +34,28 @@ function Renderer() {
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.backToNetworkConfig = function (event) {
+    document.getElementById("network_config_screen").style.display = "block";
+    document.getElementById("open_app_screen").style.display = "none";
+}
+
+Renderer.prototype.goToOpenApp = function (event) {
+    const selectedNetwork = document.getElementById("current_network").innerHTML.toLowerCase();
+    this.selectedNetwork = selectedNetwork;
+    const networkConfig = this.config.networks[selectedNetwork];
+
+    document.getElementById("network_config_screen").style.display = "none";
+    document.getElementById("open_app_screen").style.display = "block";
+
+    this.renderOpenNetworkPage(selectedNetwork, networkConfig);
+}
+
+Renderer.prototype.renderOpenNetworkPage = function (selectedNetwork, networkConfig) {
+    document.getElementById("open_network_name").innerHTML = this.config.networks[selectedNetwork].name;
+    document.getElementById("open_network_http_endpoint").innerHTML = networkConfig.http;
+    document.getElementById("open_network_ws_endpoint").innerHTML = networkConfig.ws;
 }
 
 Renderer.prototype.onSsl = function (value) {
