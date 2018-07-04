@@ -27,7 +27,8 @@
   "build": {
     "mac": {
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "icon": "build/icon.png"
     },
