@@ -48,7 +48,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, cb) => dispatch(initAugur(history, cb)),
+  initAugur: (history, overrides, cb) => dispatch(initAugur(history, overrides, cb)),
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
   updateIsAnimating: isAnimating => dispatch(updateIsAnimating(isAnimating)),

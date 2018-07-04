@@ -47,6 +47,7 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 import MarketsInnerNavContainer from 'src/modules/app/containers/markets-inner-nav'
+import * as qs from 'query-string'
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -169,7 +170,8 @@ export default class AppView extends Component {
       location,
       updateModal,
     } = this.props
-    initAugur(history, (err, res) => {
+    const queryArgs = qs.parse(location.search)
+    initAugur(history, queryArgs, (err, res) => {
       if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
         updateModal({
           type: MODAL_NETWORK_CONNECT,

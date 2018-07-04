@@ -172,9 +172,13 @@ export function connectAugur(history, env, isInitialConnection = false, callback
   }
 }
 
-export function initAugur(history, callback = logError) {
+export function initAugur(history, overrides, callback = logError) {
   return (dispatch, getState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`]
+
+    env['augur-node'] = overrides.augur_node === undefined ? env['augur-node'] : overrides.augur_node
+    env['ethereum-node'].http = overrides.ethereum_node_http === undefined ? env['ethereum-node'].http : overrides.ethereum_node_http
+    env['ethereum-node'].ws = overrides.ethereum_node_ws === undefined ? env['ethereum-node'].ws : overrides.ethereum_node_ws
 
     dispatch(updateEnv(env))
     connectAugur(history, env, true, callback)(dispatch, getState)

@@ -52,8 +52,12 @@ const store = createStore(combineReducers({
   ...createReducer(),
 }), middleware)
 
-if (process.env.NODE_ENV === 'development') {
+// Keep a copy of the state on the window object for debugging.
+if (process.env.NODE_ENV !== 'test') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true })
+}
+
+if (process.env.NODE_ENV === 'development') {
   window.integrationHelpers = helpers(store)
 }
 
