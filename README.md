@@ -84,7 +84,7 @@ Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these i
 The following commands need openssl, use brew or other package manager to install openssl.
 Then in a command line, run:
 
-    openssl req -nodes -newkey rsa:4096 -sha256 -keyout notaugur.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
+    openssl req -nodes -newkey rsa:4096 -sha256 -keyout localhost.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
 
     openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 
