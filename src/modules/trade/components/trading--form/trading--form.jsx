@@ -349,8 +349,8 @@ class MarketTradingForm extends Component {
               <span>Est. Cost</span>
             </li>
             <li>
-              <span>{ orderEthEstimate && formatEther(orderEthEstimate).full }</span>
-              <span>{ orderShareEstimate && formatShares(orderShareEstimate).full }</span>
+              <span>{ orderEthEstimate && `${formatEther(orderEthEstimate).fullPrecision}${formatEther(orderEthEstimate).denomination}` }</span>
+              <span>{ orderShareEstimate && `${formatShares(orderShareEstimate).fullPrecision}${formatShares(orderShareEstimate).denomination}` }</span>
             </li>
           </ul>
           <ul className={Styles['TradingForm__form-body']}>

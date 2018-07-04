@@ -66,8 +66,8 @@ const MarketTradingConfirm = (p) => {
             <span>Est. Cost</span>
           </li>
           <li>
-            <span><ValueDenomination formatted={totalCost ? totalCost.formatted : '0'} /> <span>ETH</span></span>
-            <span><ValueDenomination formatted={shareCost ? shareCost.formatted : '0'} /> <span>Shares</span></span>
+            <span><ValueDenomination formatted={totalCost ? totalCost.fullPrecision : '0'} /> <span>ETH</span></span>
+            <span><ValueDenomination formatted={shareCost ? shareCost.fullPrecision : '0'} /> <span>Shares</span></span>
           </li>
         </ul>
       }
