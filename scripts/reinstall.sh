@@ -25,7 +25,6 @@ npm run build
 npm run lint
 npm test
 
-npm run migrate
 npm start
 
 cd "$PWD"
