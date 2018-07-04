@@ -73,14 +73,19 @@ AugurNodeServer.prototype.setWindow = function (window) {
 }
 
 AugurNodeServer.prototype.startServer = function () {
-  this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
-  this.augurNodeController.addLogger(log);
+  try {
+    this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
+    this.augurNodeController.addLogger(log);
 
-  this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
-  this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
-  this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished)
+    this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
+    this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
+    this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished)
 
-  this.augurNodeController.start().catch(this.onError.bind(this))
+    this.augurNodeController.start()
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: message})
+  }
 }
 
 AugurNodeServer.prototype.restart = function () {
@@ -107,40 +112,59 @@ AugurNodeServer.prototype.onRequestConfig = function (event, data) {
 }
 
 AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
-  const curNetworkConfig = this.config.networks[data.network]
-  this.networkConfig = data.networkConfig
-  this.config.networks[data.network] = this.networkConfig
-  if (data.network === this.config.network) {
-    if (curNetworkConfig.http !== data.networkConfig.http ||
-      curNetworkConfig.ws !== data.networkConfig.ws) {
-      this.restart()
+  try {
+    const curNetworkConfig = this.config.networks[data.network]
+    this.networkConfig = data.networkConfig
+    this.config.networks[data.network] = this.networkConfig
+    if (data.network === this.config.network) {
+      if (curNetworkConfig.http !== data.networkConfig.http ||
+        curNetworkConfig.ws !== data.networkConfig.ws) {
+        this.restart()
+      }
     }
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
+    event.sender.send('saveNetworkConfigResponse', data)
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
   }
-  fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-  event.sender.send('saveNetworkConfigResponse', data)
 }
 
 AugurNodeServer.prototype.onSwitchNetwork = function (event, data) {
-  this.config.network = data.network
-  this.config.networks[data.network] = data.networkConfig
-  this.networkConfig = this.config.networks[this.config.network]
-  this.restart()
-  fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-  event.sender.send('onSwitchNetworkResponse', data)
+  try {
+    this.config.network = data.network
+    this.config.networks[data.network] = data.networkConfig
+    this.networkConfig = this.config.networks[this.config.network]
+    this.restart()
+
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
+    event.sender.send('onSwitchNetworkResponse', data)
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
+  }
 }
 
 AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
   if (this.augurNodeController == null) return
   this.augurNodeController.requestLatestSyncedBlock().then((syncedBlockInfo) => {
     event.sender.send('latestSyncedBlock', syncedBlockInfo)
-  }).catch(log.error)
+  }).catch((err) => {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
+  })
 }
 
 AugurNodeServer.prototype.shutDownServer = function () {
-  if (this.augurNodeController == null) return
-  log.info('Stopping Augur Node Server')
-  this.augurNodeController.shutdown()
-  this.augurNodeController = undefined
+  try {
+    if (this.augurNodeController == null) return
+      log.info('Stopping Augur Node Server')
+      this.augurNodeController.shutdown()
+      this.augurNodeController = undefined
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
+  }
 }
 
 module.exports = AugurNodeServer
