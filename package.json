@@ -47,7 +47,9 @@
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
       "provider": "github"
-    }
+    },
+    "files": ["!certs/*.{key,pem"],
+    "extraFiles": ["certs"]
   },
   "config": {
     "forge": {
