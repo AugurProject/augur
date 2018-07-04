@@ -26,6 +26,7 @@
   "license": "MIT",
   "build": {
     "mac": {
+      "asar": "false",
       "target": [
         "dmg",
         "zip"
