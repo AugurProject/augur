@@ -1,7 +1,6 @@
-const {ipcRenderer, remote} = require('electron');
+const {ipcRenderer, remote, shell} = require('electron');
 const log = require('electron-log');
 const {app} = require('electron').remote
-const opn = require('opn');
 
 
 function clearClassList(classList) {
@@ -54,7 +53,7 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 Renderer.prototype.openAugurUI = function () {
     const root = this.isSsl ? 'https://localhost:8080' : 'http://localhost:8080'
     const networkConfig = this.config.networks[this.config.network];
-    opn(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
+    shell.openExternal(`${root}?augur_node=ws://localhost:9001&ethereum_node_http=${networkConfig.http}&ethereum_node_ws=${networkConfig.ws}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
