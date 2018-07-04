@@ -34,6 +34,7 @@ class MarketTradingForm extends Component {
     selectedNav: PropTypes.string.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
+    doNotCreateOrders: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -43,6 +44,7 @@ class MarketTradingForm extends Component {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       MARKET_ORDER_SIZE: 'marketOrderTotal',
+      DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
     }
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000)
     this.orderValidation = this.orderValidation.bind(this)
@@ -53,6 +55,7 @@ class MarketTradingForm extends Component {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: props.marketOrderTotal,
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
@@ -83,11 +86,13 @@ class MarketTradingForm extends Component {
       [this.INPUT_TYPES.QUANTITY]: nextProps[this.INPUT_TYPES.QUANTITY],
       [this.INPUT_TYPES.PRICE]: nextProps[this.INPUT_TYPES.PRICE],
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: nextProps[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
     }
     const currentStateInfo = {
       [this.INPUT_TYPES.QUANTITY]: this.state[this.INPUT_TYPES.QUANTITY],
       [this.INPUT_TYPES.PRICE]: this.state[this.INPUT_TYPES.PRICE],
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: this.state[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
     }
     const newOrderInfo = {
       orderEthEstimate: nextProps.orderEthEstimate,
@@ -207,9 +212,9 @@ class MarketTradingForm extends Component {
   validateForm(property, rawValue) {
     const { updateState } = this.props
     // since the order changed by user action, make sure we can place orders.
-    updateState('doNotCreateOrders', false)
+    // updateState('doNotCreateOrders', false)
     let value = rawValue
-    if (!(BigNumber.isBigNumber(value)) && value !== '') value = createBigNumber(value, 10)
+    if (!(property === this.INPUT_TYPES.DO_NOT_CREATE_ORDERS) && !(BigNumber.isBigNumber(value)) && value !== '') value = createBigNumber(value, 10)
     const updatedState = {
       ...this.state,
       [property]: value,
@@ -245,6 +250,7 @@ class MarketTradingForm extends Component {
       selectedOutcome,
       maxPrice,
       minPrice,
+      updateState,
     } = this.props
     const s = this.state
 
@@ -341,6 +347,17 @@ class MarketTradingForm extends Component {
                 placeholder={`${marketType === SCALAR ? tickSize : '0.0001'} ETH`}
                 value={BigNumber.isBigNumber(s[this.INPUT_TYPES.PRICE]) ? s[this.INPUT_TYPES.PRICE].toNumber() : s[this.INPUT_TYPES.PRICE]}
                 onChange={e => this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)}
+              />
+            </li>
+            <li className={Styles['TradingForm__do-no-create-orders']}>
+              <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
+              <input
+                id="tr__input--do-no-create-orders"
+                type="checkbox"
+                checked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                onChange={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])
+                }
               />
             </li>
           </ul>
