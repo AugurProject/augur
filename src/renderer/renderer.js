@@ -142,7 +142,6 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
         if (!this.isSynced && progress === "100") {
             progress = "99";
         }
-        this.clearNotice();
     } else {
         this.isSynced = false;
         this.progressDots += 1;
@@ -164,10 +163,6 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
 
 Renderer.prototype.onConsoleLog = function (event, message) {
     log.info(message);
-}
-
-Renderer.prototype.clearNotice = function () {
-    this.showNotice("", "success");
 }
 
 Renderer.prototype.showNotice = function (message, className) {
