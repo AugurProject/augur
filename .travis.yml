@@ -24,8 +24,6 @@ matrix:
     language: node_js
     node_js: "9"
     env:
-      - ELECTRON_CACHE=$HOME/.cache/electron
-      - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       - CSC_IDENTITY_AUTO_DISCOVERY=false
       - DEBUG=electron-builder
 
