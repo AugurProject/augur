@@ -71,7 +71,7 @@ async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string
     oldUploadBlockNumber = Number(readFileSync(oldUploadBlockNumberFile));
   }
   const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
-  if (currentUploadBlockNumber != oldUploadBlockNumber) {
+  if (currentUploadBlockNumber !== oldUploadBlockNumber) {
     console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
     const dbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
     if (existsSync(dbPath)) {
