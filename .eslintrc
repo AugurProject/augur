@@ -1,0 +1,91 @@
+{
+  "env": {
+    "browser": true,
+    "mocha": true,
+  },
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
+  "plugins": ["react", "import"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "extensions": [".js", ".jsx", ".less"]
+      }
+    }
+  },
+  "globals": {
+    "assert": true,
+  },
+  "rules": { # 0 = disabled, 1 = warn, 2 = error
+    # Disabled
+    "object-curly-newline": 0,
+    "no-eq-null": 0,
+    "no-console": 0,
+    "no-tabs": 0,
+    "consistent-return": 0,
+    "global-require": 0,
+    "no-use-before-define": 0,
+    "max-len": 0,
+    "no-shadow": 0,
+    "padded-blocks": 0,
+    "prefer-template": 0,
+    "space-infix-ops": 0,
+    "import/prefer-default-export": 0,
+    "no-underscore-dangle": 0,
+    "react/require-default-props": 0,
+    "no-prototype-builtins": 0, # This one should possibly be bumped up to 2 at some point, unsure at this point
+    "newline-per-chained-call": 0,
+    "no-restricted-globals": [0, { name: "isNaN" }],
+    "jsx-a11y/anchor-is-valid": [0, {
+      "components": [ "Link" ],
+      "aspects": [ "noHref" ]
+    }],
+    "jsx-a11y/label-has-for": [ 2, {
+      "components": [ "Label" ],
+      "required": {
+        "every": [ "nesting", "id" ]
+      },
+      "allowChildren": true
+    }],
+    # Errors
+    "comma-dangle": 2,
+    "import/extensions": [
+      2,
+      "never",
+      {
+        "styles": "always"
+      }
+    ],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*[-.]test.js?(x)", "test/**/*.js?(x)"]}],
+    "semi": [2, "never"],
+    "no-useless-rename": 2,
+    "prefer-arrow-callback": 2,
+    "eqeqeq": [2, "allow-null"],
+    "indent": [2, 2, { "SwitchCase": 1, "MemberExpression": 1, "ObjectExpression": 1 }],
+    "no-unused-expressions": [2, { "allowShortCircuit": true }],
+    "no-unused-vars": [2, { "vars": "all", "args": "none" }],
+    "no-param-reassign": [2, { "props": false }],
+    "react/jsx-indent": [2, 2],
+    "react/jsx-indent-props": [2, 2],
+    "no-plusplus": [2, { "allowForLoopAfterthoughts": true }],
+    "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true}],
+    "prefer-destructuring": [2, {
+        "array": false,
+        "object": true
+      }
+    ],
+    # NOTE -- Temporarily disabled -- should probably do, just low priority
+    "jsx-a11y/click-events-have-key-events": 0,
+    # NOTE -- Temporarily disabled -- utilization of string refs should be refactored to utilize state
+    "react/no-string-refs": 0,
+    # NOTE -- Temporarily disabled -- all passed props should be specific, utilized, and verified
+    "react/no-unused-prop-types": 0,
+    # NOTE -- Temporarily disabled -- all props need to be specific + valid + will remove the necessity for separate 'shape' tests once merged into Augur
+    "react/forbid-prop-types": 0
+  }
+}
