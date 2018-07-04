@@ -72,6 +72,11 @@ button {
   color: white !important;
 }
 
+.outlineButton:disabled {
+  border: 1px solid #9c9c9c;
+  color: #9c9c9c !important;  
+}
+
 input[type=submit]:disabled,
 button:disabled {
   background-color: #A7A2B2;
@@ -81,8 +86,8 @@ button:disabled {
 
 input[type=submit]:hover,
 button:hover {
-/*  background-color: #553580;
-*/}
+  filter: brightness(90%);
+}
 
 input[type=submit]:disabled:hover,
 button:disabled:hover {
