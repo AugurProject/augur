@@ -56,3 +56,4 @@ src/newrelic.js
 # ssl certs
 augur-local.key
 augur-local.crt
+augur-local.csr
