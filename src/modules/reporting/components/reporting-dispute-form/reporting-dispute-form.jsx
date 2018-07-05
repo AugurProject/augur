@@ -331,7 +331,6 @@ export default class ReportingDisputeForm extends Component {
     return ReportingDisputeForm.constructRepObject(outcome ? outcome.stakeRemaining : this.state.disputeBondValue)
   }
 
-
   render() {
     const {
       market,
@@ -341,6 +340,20 @@ export default class ReportingDisputeForm extends Component {
     const s = this.state
     const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {}
     const { disputeRound } = market.disputeInfo
+
+    // need to check if selectedOutcome has already been disputed on
+    let selectedOutcome = outcomes && outcomes.find(outcome => outcome.name === s.inputSelectedOutcome)
+    if (!selectedOutcome) {
+      selectedOutcome = {
+        percentageComplete: 0,
+        percentageAccount: 0,
+        bondSizeCurrent: s.disputeBondValue,
+        stakeRemaining: s.disputeBondValue,
+        stakeCurrent: '0',
+        accountStakeCurrent: '0',
+      }
+    }
+
     return (
       <ul className={classNames(Styles.ReportingDisputeForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -402,14 +415,9 @@ export default class ReportingDisputeForm extends Component {
                     />
                     <ReportingDisputeProgress
                       key="scalar_input_progress"
+                      {...selectedOutcome}
                       isSelected={s.scalarInputChoosen}
                       tentativeStake={stakeInfo.displayValue}
-                      percentageComplete={0}
-                      percentageAccount={0}
-                      bondSizeCurrent={s.disputeBondValue}
-                      stakeRemaining={s.disputeBondValue}
-                      stakeCurrent="0"
-                      accountStakeCurrent="0"
                     />
                   </li>
                   <li>
