@@ -6,7 +6,7 @@ log.transports.file.level = 'debug';
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
 const {app, BrowserWindow, Menu} = electron;
-
+var ipc = require('electron').ipcRenderer;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -70,6 +70,11 @@ function createWindow () {
     augurUIServer.stopServer();
     mainWindow = null;
   })
+
+  mainWindow.on('error', function(error) {
+    ipc.send('error', error);
+  })
+
 }
 
 // This method will be called when Electron has finished
