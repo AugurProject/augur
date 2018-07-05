@@ -27,12 +27,14 @@
         <div class="instruction-bold">Please select an Ethereum node to connect to.</div>
         <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
       </div>
-      <div class="networks">
-        <span class="label center config">Configuration</span>
-        <select id="network_id_select" class="networkSelect" onchange="renderer.switchNetworkConfigForm()"></select>
+      <div style="padding-bottom:40px">
+        <div class="label">Select Configuration:</div>
+        <div>
+          <select id="network_id_select" class="networkSelect" onchange="renderer.switchNetworkConfigForm()"></select>
+        </div>
       </div>
-      <div>
-        <div class="label">Configuration Name:</div>
+      <div class="borderTop">
+        <div class="label" style="padding-top:0px">Configuration Name:</div>
         <div>
           <input id="network_name" name="name" type="text">
         </div>

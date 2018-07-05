@@ -215,7 +215,7 @@ input {
 }
 
 .status {
-  font-weight: bolder;
+  text-transform: uppercase;
 }
 
 .networks {
