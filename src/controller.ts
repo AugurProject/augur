@@ -46,8 +46,10 @@ export class AugurNodeController {
     const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
     this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
     this.logger.info("Bulk sync with blockchain complete.");
+    processQueue.kill();
     this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
     startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this.shutdownCallback);
+    processQueue.resume();
   }
 
   public shutdown() {
@@ -67,6 +69,11 @@ export class AugurNodeController {
     clearOverrideTimestamp();
     // When we have real shutdown feature in augur.js and ethrpc, implement here.
     this.augur = new Augur();
+    this.logger.clear();
+  }
+
+  public isRunning() {
+    return this.running && this.db != null;
   }
 
   public async requestLatestSyncedBlock(): Promise<SyncedBlockInfo> {

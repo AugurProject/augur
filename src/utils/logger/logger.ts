@@ -32,4 +32,8 @@ export class Logger {
   public debug(...msg: Array<string>): void {
     this.loggers.forEach((logger) => logger.debug(...msg));
   }
+
+  public clear(): void {
+    this.loggers = [];
+  }
 }
