@@ -4,7 +4,7 @@ ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 
-RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn \
+RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn linux-headers eudev-dev \
   #&& touch ~/.bashrc \
   #&& curl -o- -L https://yarnpkg.com/install.sh | bash \
   && echo "daemon off;" >> /etc/nginx/nginx.conf

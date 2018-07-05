@@ -114,6 +114,7 @@
 
   > li {
     align-items: stretch;
+    max-width: 15rem;
   }
 
   > li:nth-child(2) {
@@ -131,6 +132,7 @@
     font-size: @font-size-large;
     font-weight: 700;
     line-height: @font-size-large;
+    width: auto;
   }
 }
 
@@ -187,5 +189,10 @@
 
   .TradingConfirm__details > li {
     justify-content: space-between;
+  }
+
+  .TradingConfirm__details > li > span,
+  .TradingConfirm__details > li > span:first-child {
+    color: @color-lightgray;
   }
 }

@@ -1,5 +1,5 @@
 import { eachOfSeries, eachLimit } from 'async'
-import { augur, constants } from 'services/augurjs'
+import { augur } from 'services/augurjs'
 
 import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market'
 import { addNewMarketCreationTransactions } from 'modules/transactions/actions/add-transactions'
@@ -38,7 +38,10 @@ export function submitNewMarket(newMarket, history, callback = noop) {
 
           if (hasOrders) {
             eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
-              eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
+              // Set the limit for simultaneous async calls to 1 so orders will have to be signed in order, one at a time.
+              // (This is done so the gas cost doesn't increase as orders are created, due to having to traverse the
+              // order book and insert each order in the appropriate spot.)
+              eachLimit(newMarket.orderBook[outcome], 1, (order, orderCB) => {
                 const outcomeId = newMarket.type === CATEGORICAL ? index : 1 // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
                 const orderType = order.type === BID ? 0 : 1
                 const numTicks = formattedNewMarket.tickSize ? (newMarket.scalarBigNum - newMarket.scalarSmallNum) / newMarket.tickSize : augur.constants.DEFAULT_NUM_TICKS[2]
@@ -61,10 +64,10 @@ export function submitNewMarket(newMarket, history, callback = noop) {
                   _market: marketId,
                   _outcome: outcomeId,
                   _tradeGroupId: augur.trading.generateTradeGroupId(),
-                  onSent: noop,
-                  onSuccess: (res) => {
+                  onSent: (res) => {
                     orderCB()
                   },
+                  onSuccess: noop,
                   onFailed: (err) => {
                     console.error('ERROR creating order in initial market liquidity: ', err)
                     orderCB()
