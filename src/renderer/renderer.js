@@ -79,10 +79,10 @@ Renderer.prototype.onSsl = function (event, value) {
 }
 
 Renderer.prototype.onServerError = function (event, data) {
-    const syncProgress = document.getElementById("sync_progress_label");
-    clearClassList(syncProgress.classList);
-    syncProgress.classList.add("failure");
-    this.showNotice("Failed to startup, see log file", "failure");
+  this.showNotice("Failed to startup: " + data.error, "failure");
+  const syncProgress = document.getElementById("sync_progress_label");
+  clearClassList(syncProgress.classList);
+  syncProgress.classList.add("failure");
 }
 
 Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
@@ -153,7 +153,6 @@ Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkC
     document.getElementById("network_name").value = networkName
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
-    document.getElementById("switch_network_button").disabled = this.config.network === selectedNetwork;
   } catch (err) {
     log.error(err)
   }

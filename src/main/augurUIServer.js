@@ -38,7 +38,7 @@ AugurUIServer.prototype.startServer = function () {
         log.error(e);
         if (e.code === 'EADDRINUSE') {
           self.window.webContents.send("error", {
-            error: "Port 8080 is in use. Please close and restart this app."
+            error: "Port 8080 is in use. Please free up port and close and restart this app."
           });
         } else {
           self.window.webContents.send("error", {
