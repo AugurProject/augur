@@ -70,7 +70,7 @@ export default class CreateMarketDefine extends Component {
     const { localValues } = this.state
     const updatedMarket = { ...newMarket }
 
-    localValues[fieldName] = value.toUpperCase()
+    localValues[fieldName] = value
     this.setState({
       localValues,
     })
