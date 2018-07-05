@@ -52,7 +52,7 @@ Renderer.prototype.goToOpenApp = function (event) {
     const selectedNetwork = document.getElementById("current_network").innerHTML.toLowerCase();
     this.selectedNetwork = selectedNetwork;
     const networkConfig = this.config.networks[selectedNetwork];
-
+    ipcRenderer.send("switchNetwork", {network: selectedNetwork});
     // hide config form and show open network screen
     document.getElementById("network_config_screen").style.display = "none";
     document.getElementById("open_app_screen").style.display = "block";
@@ -134,6 +134,7 @@ Renderer.prototype.switchNetworkConfigForm = function () {
     const selectedNetwork = document.getElementById("network_id_select").value;
     this.selectedNetwork = selectedNetwork;
     const networkConfig = this.config.networks[selectedNetwork];
+    document.getElementById("current_network").innerHTML = networkConfig.name;
     this.renderNetworkConfigForm(selectedNetwork, networkConfig);
 }
 
@@ -142,7 +143,6 @@ Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkC
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
     document.getElementById("switch_network_button").disabled = this.config.network === selectedNetwork;
-    document.getElementById("current_network").innerHTML = this.config.networks[this.config.network].name;
 }
 
 Renderer.prototype.onReceiveConfig = function (event, data) {

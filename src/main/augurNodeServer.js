@@ -64,12 +64,13 @@ function AugurNodeServer () {
   ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
   ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
   ipcMain.on('switchNetwork', this.onSwitchNetwork.bind(this))
+  ipcMain.on('start', this.onStartNetwork.bind(this))
+  ipcMain.on('onSaveConfiguration', this.onStartNetwork.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
 AugurNodeServer.prototype.setWindow = function (window) {
   this.window = window
-  this.startServer()
 }
 
 AugurNodeServer.prototype.startServer = function () {
@@ -124,6 +125,28 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
     }
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('saveNetworkConfigResponse', data)
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
+  }
+}
+
+AugurNodeServer.prototype.onStartNetwork = function (event, data) {
+  try {
+    this.config.network = data.network
+    this.config.networks[data.network] = data.networkConfig
+    this.networkConfig = this.config.networks[this.config.network]
+    this.restart()
+    event.sender.send('onSwitchNetworkResponse', data)
+  } catch(err) {
+    log.error(err)
+    this.window.webContents.send('error', {error: err})
+  }
+}
+
+AugurNodeServer.prototype.onSaveConfiguration = function (event, data) {
+  try {
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
   } catch(err) {
     log.error(err)
     this.window.webContents.send('error', {error: err})
