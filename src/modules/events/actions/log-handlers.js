@@ -112,7 +112,11 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     dispatch(updateOrder(log, false))
     dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
+  if (isCurrentMarket(log.marketId)) {
+    // if the user isn't involved in the trade, but we are looking at this market, reload their account trades to update PL.
+    if (!isStoredTransaction) dispatch(loadAccountTrades({ marketId: log.marketId }))
+    dispatch(loadBidsAsks(log.marketId))
+  }
 }
 
 export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
