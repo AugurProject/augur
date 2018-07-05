@@ -52,7 +52,7 @@ function loadAccount(dispatch, existing, env, callback) {
     let account = existing
     if (existing !== accounts[0]) {
       account = accounts[0]
-      if (account && env['auto-login']) {
+      if (account && env.useWeb3Transport) {
         dispatch(useUnlockedAccount(account))
       } else {
         dispatch(logout())
@@ -176,6 +176,7 @@ export function initAugur(history, overrides, callback = logError) {
   return (dispatch, getState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`]
 
+    env.useWeb3Transport = overrides.useWeb3Transport
     env['augur-node'] = overrides.augur_node === undefined ? env['augur-node'] : overrides.augur_node
     env['ethereum-node'].http = overrides.ethereum_node_http === undefined ? env['ethereum-node'].http : overrides.ethereum_node_http
     env['ethereum-node'].ws = overrides.ethereum_node_ws === undefined ? env['ethereum-node'].ws : overrides.ethereum_node_ws

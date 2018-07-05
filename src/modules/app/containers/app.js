@@ -17,6 +17,7 @@ import { updateIsAnimating } from 'modules/app/actions/update-is-animating'
 import {
   selectBlockchainState,
   selectConnectionState,
+  selectEnvState,
   selectIsLogged,
   selectIsMobile,
   selectIsMobileSmall,
@@ -33,6 +34,7 @@ const mapStateToProps = state => ({
   connection: selectConnectionState(state),
   coreStats: selectCoreStats(state),
   isLoading: isLoading(state.marketLoading),
+  env: selectEnvState(state),
   isLogged: selectIsLogged(state),
   isMobile: selectIsMobile(state),
   isMobileSmall: selectIsMobileSmall(state),

@@ -1,7 +1,7 @@
 import { UPDATE_ENV } from 'modules/app/actions/update-env'
 
 const DEFAULT_STATE = {
-  'auto-login': false,
+  useWeb3Transport: false,
 }
 
 export default function (env = DEFAULT_STATE, action) {

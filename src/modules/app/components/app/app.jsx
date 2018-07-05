@@ -81,6 +81,7 @@ export default class AppView extends Component {
     categories: PropTypes.any,
     connection: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
+    env: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
@@ -165,13 +166,17 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const {
+      env,
       history,
       initAugur,
       location,
       updateModal,
     } = this.props
     const queryArgs = qs.parse(location.search)
-    initAugur(history, queryArgs, (err, res) => {
+    initAugur(history, {
+      ...env,
+      ...queryArgs,
+    }, (err, res) => {
       if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
         updateModal({
           type: MODAL_NETWORK_CONNECT,
