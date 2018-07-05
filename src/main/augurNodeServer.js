@@ -146,7 +146,7 @@ AugurNodeServer.prototype.onSwitchNetwork = function (event, data) {
 }
 
 AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
-  if (this.augurNodeController == null) return
+  if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
   this.augurNodeController.requestLatestSyncedBlock().then((syncedBlockInfo) => {
     event.sender.send('latestSyncedBlock', syncedBlockInfo)
   }).catch((err) => {
@@ -157,7 +157,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
 
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
-    if (this.augurNodeController == null) return
+    if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
       log.info('Stopping Augur Node Server')
       this.augurNodeController.shutdown()
       this.augurNodeController = undefined
