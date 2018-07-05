@@ -2,7 +2,7 @@ import React from 'react'
 
 import Styles from 'modules/auth/components/metamask/metamask.styles'
 
-export default function Trezor() {
+export default function Metamask() {
   return (
     <section className={Styles.MetaMask__connect}>
       <div className={Styles.MetaMask__content}>
