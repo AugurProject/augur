@@ -378,7 +378,7 @@ export default class ReportingDisputeForm extends Component {
               <li key={outcome.id}>
                 <button
                   data-testid={'button-' + outcome.id}
-                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
+                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id  && !s.scalarInputChoosen })}
                   onClick={(e) => { this.validateOutcome(s.validations, outcome.id, outcome.name, false) }}
                 >
                   { outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name }
