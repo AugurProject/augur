@@ -46,6 +46,10 @@ body, html {
   height: 100%;
 }
 
+input[type=text] {
+  background-color: #DBDAE1;
+}
+
 input[type=submit],
 button {
   align-items: center;
@@ -230,6 +234,7 @@ input {
   background-position: 98% 50%;
   background-repeat: no-repeat;
   padding-left: 5px;
+  background-color: #DBDAE1;
 }
 
 .center {
