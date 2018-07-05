@@ -64,10 +64,10 @@ export function submitNewMarket(newMarket, history, callback = noop) {
                   _market: marketId,
                   _outcome: outcomeId,
                   _tradeGroupId: augur.trading.generateTradeGroupId(),
-                  onSent: noop,
-                  onSuccess: (res) => {
+                  onSent: (res) => {
                     orderCB()
                   },
+                  onSuccess: noop,
                   onFailed: (err) => {
                     console.error('ERROR creating order in initial market liquidity: ', err)
                     orderCB()
