@@ -498,7 +498,7 @@ function drawTicks(options) {
 
   }
   if (hasOrders) {
-    const offsetTicks = Array.from(new Array(11), (val, index) => createBigNumber(drawParams.yDomain[1]).times(0.1).times(index).toNumber()).slice(1, 11)
+    const offsetTicks = Array.from(new Array(11), (val, index) => createBigNumber(drawParams.yDomain[1].toString()).times(0.1).times(index).toNumber()).slice(1, 11)
 
     const yTicks = depthChart.append('g')
       .attr('id', 'depth_y_ticks')
