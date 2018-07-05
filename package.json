@@ -1,6 +1,6 @@
 {
   "name": "augur",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-alpha.21",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -26,8 +26,10 @@
   "license": "MIT",
   "build": {
     "mac": {
+      "asar": "false",
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "icon": "build/icon.png"
     },
@@ -42,15 +44,13 @@
         "deb",
         "snap"
       ],
+      "category": "Office",
       "icon": "build/icon.png"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
       "provider": "github"
-    },
-    "files": [
-      "!certs/*.{key,pem"
-    ]
+    }
   },
   "config": {
     "forge": {
@@ -83,8 +83,8 @@
   },
   "devDependencies": {
     "electron": "2.0.0",
-    "electron-builder": "^20.15.1",
-    "electron-builder-squirrel-windows": "^20.15.0",
+    "electron-builder": "^20.19.1",
+    "electron-builder-squirrel-windows": "^20.19.0",
     "electron-forge": "5.2.0",
     "electron-prebuilt-compile": "2.0.0",
     "electron-publisher-s3": "^20.15.0",
