@@ -10,7 +10,7 @@
   <section class="header">
     <div class="networkName">
       Connected to:
-      <span id="current_network" class="status"></span>
+      <span id="current_network" class="status">None</span>
       <span id="network_status" class="notConnected" />
     </div>
     <div class="synced">
@@ -24,7 +24,7 @@
   <section class="networkForm">
     <section id="network_config_screen" style="display:block;">
       <div class="instructions">
-        <div class="instruction">Please select an Ethereum node to connect to.</div>
+        <div class="instruction-bold">Please select an Ethereum node to connect to.</div>
         <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
       </div>
       <div class="networks">
@@ -51,7 +51,7 @@
       </div>
       <div class="formFooter">
         <input id="switch_network_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Save Configuration" class="outlineButton">
-        <input id="go_to_open_app_screen_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Connect" disabled>
+        <input id="go_to_open_app_screen_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Connect">
       </div>
       <div id="cancel_switch_button" class="cancelButton">
         Cancel
