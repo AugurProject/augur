@@ -16,6 +16,8 @@ function Renderer() {
     this.isSsl = false;
     this.config = {};
     this.selectedNetwork = "";
+    this.haveHitBack = false;
+
     ipcRenderer.send('requestConfig');
     setInterval(() => {
         ipcRenderer.send('requestLatestSyncedBlock');
@@ -24,6 +26,7 @@ function Renderer() {
     document.getElementById("back_to_network_config_button").addEventListener("click", this.backToNetworkConfig.bind(this));
     document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.goToOpenApp.bind(this));
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
+    document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
 
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
@@ -39,6 +42,9 @@ function Renderer() {
 Renderer.prototype.backToNetworkConfig = function (event) {
     document.getElementById("network_config_screen").style.display = "block";
     document.getElementById("open_app_screen").style.display = "none";
+
+    document.getElementById("go_to_open_app_screen_button").value = "Update Connection";
+    document.getElementById("cancel_switch_button").style.display = "block";
 }
 
 Renderer.prototype.goToOpenApp = function (event) {
@@ -186,6 +192,8 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
         syncProgressLbl.classList.add("success");
     }
     syncProgressAmt.innerHTML = progress;
+
+    document.getElementById("go_to_open_app_screen_button").disabled = !this.isSynced;
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 

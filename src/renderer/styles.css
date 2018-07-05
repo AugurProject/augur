@@ -94,6 +94,7 @@ button:disabled:hover {
   background-color: #a7a2b2;
   color: #dbdae1;
   cursor: default;
+  filter: none;
 }
 
 select {
@@ -303,6 +304,17 @@ input {
 
 .networkInfoBlock {
   margin-bottom: 20px;
+}
+
+.cancelButton {
+  margin-top: 20px; 
+  display: none; 
+  font-size: 16px; 
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  filter: brightness(90%);
 }
 
 @-webkit-keyframes fadeinout {
