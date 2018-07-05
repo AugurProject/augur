@@ -5,8 +5,8 @@ import { DESIGNATED_REPORTER_SELF } from 'modules/create-market/constants/new-ma
 
 export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount, contractAddresses) => {
   const tags = []
-  if (newMarket.tag1) tags.push(newMarket.tag1)
-  if (newMarket.tag2) tags.push(newMarket.tag2)
+  if (newMarket.tag1) tags.push(newMarket.tag1.toUpperCase())
+  if (newMarket.tag2) tags.push(newMarket.tag2.toUpperCase())
 
   const formattedNewMarket = {
     universe: universe.id,
@@ -15,7 +15,7 @@ export const buildCreateMarket = (newMarket, isEstimate, universe, loginAccount,
     _denominationToken: contractAddresses.Cash,
     _description: newMarket.description,
     _designatedReporterAddress: newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF ? loginAccount.address : newMarket.designatedReporterAddress,
-    _topic: newMarket.category,
+    _topic: newMarket.category.toUpperCase(),
     _extraInfo: {
       longDescription: newMarket.detailsText,
       resolutionSource: newMarket.expirySource,
