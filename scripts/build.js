@@ -10,6 +10,9 @@ const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 
 process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
+process.env.AUGUR_HOSTED = FLAGS.indexOf('--augur-hosted') !== -1;
+console.log("AUGUR_HOSTED", process.env.AUGUR_HOSTED);
+
 process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;
 
 let network = ""
