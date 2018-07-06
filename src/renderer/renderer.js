@@ -28,6 +28,8 @@ function Renderer() {
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
     document.getElementById("cancel_switch_button").addEventListener("click", this.showOpenApp.bind(this));
 
+    document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
+
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
     ipcRenderer.on('saveNetworkConfigResponse', this.onSaveNetworkConfigResponse.bind(this));
@@ -37,6 +39,18 @@ function Renderer() {
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.checkConnectValidity = function(event) {
+    const name = document.getElementById("network_name").value;
+    const http = document.getElementById("network_http_endpoint").value;
+    const ws = document.getElementById("network_ws_endpoint").value;
+
+    if (name.length === 0 || http.length === 0 && ws.length === 0) {
+      document.getElementById("go_to_open_app_screen_button").disabled = true;
+    } else {
+      document.getElementById("go_to_open_app_screen_button").disabled = false;
+    }
 }
 
 Renderer.prototype.backToNetworkConfig = function (event) {
@@ -154,6 +168,7 @@ Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkC
     document.getElementById("network_name").value = networkName
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
+    this.checkConnectValidity();
   } catch (err) {
     log.error(err)
   }
