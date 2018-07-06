@@ -1,3 +1,5 @@
+@import (reference) "~assets/styles/shared";
+
 .MetaMask__connect {
   align-items: center;
   display: flex;
@@ -18,4 +20,10 @@
   hr {
     margin-bottom: 1em;
   }
+}
+
+.MetaMask__button {
+  &:extend(.button--purple all);
+
+  padding: 0 2rem;
 }

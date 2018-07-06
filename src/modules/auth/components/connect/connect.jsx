@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
 import Edge from 'modules/auth/containers/edge-connect'
 import LedgerConnect from 'modules/auth/containers/ledger-connect'
-import MetaMaskConnect from 'modules/auth/components/metamask/metamask'
+import MetaMaskConnect from 'modules/auth/containers/metamask-connect'
 import TrezorConnect from 'modules/auth/containers/trezor'
 
 import parseQuery from 'modules/routes/helpers/parse-query'

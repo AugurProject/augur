@@ -36,7 +36,7 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
     ]),
   })
   test({
-    description: 'metamask',
+    description: 'metamask-connect',
     params: {
       unlockedAddress: '0xb0b',
       accountType: 'metaMask',
