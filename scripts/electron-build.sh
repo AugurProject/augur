@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
-set -x
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    npm install
     npm run make -- --mac
 else
     rm -rf node_modules/*
