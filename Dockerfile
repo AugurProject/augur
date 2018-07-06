@@ -45,7 +45,7 @@ COPY support/local-run.sh /augur/local-run.sh
 # workaround a bug when running inside an alpine docker image
 RUN rm -f /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev
+RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev --augur-hosted
 
 # need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \
