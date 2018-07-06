@@ -1,239 +1,348 @@
 html {
-    font-size: 18px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
-    font-family: 'DINPro';
-    font-weight: 300;
-    src: url('assets/fonts/3449FB_0_0.woff2') format('woff2');
+  font-family: 'DINPro';
+  font-weight: 300;
+  src: url('assets/fonts/3449FB_0_0.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'DINPro';
-    font-weight: 400;
-    src: url('assets/fonts/3449FB_1_0.woff2') format('woff2');
+  font-family: 'DINPro';
+  font-weight: 400;
+  src: url('assets/fonts/3449FB_1_0.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'DINPro';
-    font-weight: 500;
-    src: url('assets/fonts/3449FB_2_0.woff2') format('woff2');
+  font-family: 'DINPro';
+  font-weight: 500;
+  src: url('assets/fonts/3449FB_2_0.woff2') format('woff2');
 }
 
 @font-face {
-    font-family: 'DINPro';
-    font-weight: 600;
-    src: url('assets/fonts/3449FB_3_0.woff2') format('woff2');
+  font-family: 'DINPro';
+  font-weight: 600;
+  src: url('assets/fonts/3449FB_3_0.woff2') format('woff2');
 }
 
 body {
-    color: white;
-    background-color: #372e4b;
-    font-family: 'DINPro', sans-serif;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 400;
-    margin: 0;
+  color: white;
+  background-color: #231A3A;
+  font-family: 'DINPro', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
+}
+
+input[type=text] {
+  background-color: #DBDAE1;
 }
 
 input[type=submit],
 button {
-    border: 1px solid white;
-    align-items: center;
-    border-radius: 3px;
-    cursor: pointer;
-    display: flex;
-    font-size: 0.8rem;
-    font-weight: 500;
-    justify-content: center;
-    letter-spacing: 0.3px;
-    line-height: 1.125rem;
-    min-height: 2.5rem;
-    min-width: 9.75rem;
-    padding: 0 0.4em 0.166em;
-    text-transform: uppercase;
-    transition: background-color 0.15s ease, color 0.15s ease;
-    background-color: #412468;
-    color: #ffffff;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  justify-content: center;
+  letter-spacing: 0.3px;
+  line-height: 1.125rem;
+  min-height: 2.5rem;
+  min-width: 9.75rem;
+  padding: 0 0.4em 0.166em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  background-color: #f0eff6;
+  color: #412468;
 }
+
+.outlineButton {
+  border: 1px solid white;
+  background-color: #231A3A !important;
+  color: white !important;
+}
+
+.outlineButton:disabled {
+  border: 1px solid #9c9c9c;
+  color: #9c9c9c !important;
+}
+
 input[type=submit]:disabled,
 button:disabled {
-    background-color: #dfdfdf;
-    color: #79797b;
-    cursor: default;
+  background-color: #A7A2B2;
+  color: #DBDAE1;
+  cursor: default;
 }
+
 input[type=submit]:hover,
 button:hover {
-    background-color: #553580;
+  filter: brightness(90%);
 }
+
 input[type=submit]:disabled:hover,
 button:disabled:hover {
-    background-color: #a7a2b2;
-    color: #dbdae1;
-    cursor: default;
+  background-color: #a7a2b2;
+  color: #dbdae1;
+  cursor: default;
+  filter: none;
 }
 
 select {
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 18px;
-    color: #372E4B;
-    letter-spacing: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 18px;
+  color: #372E4B;
+  letter-spacing: 0;
 }
 
 tbody tr td:first-child {
-    width: 30%;
+  width: 30%;
 }
 
 input {
-    border: none;
-    font-family: inherit;
-    font-size: 1rem;
-    width: 100%;
-    height: 2rem;
-    padding-top: 0;
-    padding-left: 5px;
-    font-size: 18px;
-    color: #372E4B;
-    letter-spacing: 0;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  width: 100%;
+  height: 2rem;
+  padding-top: 0;
+  padding-left: 5px;
+  font-size: 18px;
+  color: #372E4B;
+  letter-spacing: 0;
 }
 
 .success {
-    color: #00f1c4
+  color: #00f1c4
 }
 
 .failure {
-    color: #ff0068;
+  color: #ff0068;
 }
 
 .notice {
-    font-size: 0.8rem;
-    font-weight: 500;
-    display: flex;
-    letter-spacing: 0.3px;
-    line-height: 1.125rem;
-    padding: 0.5em 0.5em;
-    text-transform: uppercase;
-    cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 400;
+  display: flex;
+  letter-spacing: 0.3px;
+  line-height: 1.125rem;
+  text-transform: none;
+  cursor: pointer;
+  justify-content: flex-end;
 }
 
 .networkForm {
-    padding-left: 10%;
-    padding-top: 2rem;
-    width: 60%;
-    text-transform: uppercase;
+  padding-left: 10%;
+  padding-top: 2rem;
+  width: 60%;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .label {
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 0.3px;
-    line-height: 17px;
-    padding: 1rem 0 .2rem 0;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  line-height: 17px;
+  padding: 1rem 0 .3rem 0;
 }
 
 .formFooter {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 40px;
 }
 
 .header {
-    background-color: white;
-    color: black;
-    display: flex;
-    flex-direction: row;
-    padding: 30px 0;
-    justify-content: space-between;
-    min-height: 20%;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: row;
+  padding: 30px 0;
+  justify-content: space-between;
+  max-height: 20%;
 }
 
 .networkName {
-    padding-left: 10%;
-    white-space: nowrap;
+  padding-left: 10%;
+  white-space: nowrap;
 }
 
 .connected,
 .notConnected,
 .networkConnected {
-    min-height: 24px;
-    min-width: 24px;
-    padding-left: 2rem;
-    padding-top: 0.1rem;
+  min-height: 24px;
+  min-width: 24px;
+  padding-left: 2rem;
+  padding-top: 0.1rem;
+}
+
+.errorIcon {
+  width: 24px;
+  height: 20px;
+  background: url(alert-icon.svg) no-repeat center center;
 }
 
 .notConnected {
-    background: url(notConnected.svg) no-repeat center center;
+  background: url(notConnected.svg) no-repeat center center;
 }
 
 .connected {
-    background: url(connected.svg) no-repeat center center;
+  background: url(connected.svg) no-repeat center center;
 }
 
 .synced {
-    padding-right: 10%;
-    white-space: nowrap;
+  padding-right: 10%;
+  white-space: nowrap;
 }
 
 .status {
-    font-weight: bolder;
+  text-transform: uppercase;
 }
 
 .networks {
-    display: inline-block;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .networkSelect {
-    display: block;
-    height: 2rem;
-    width: 27rem;
+  height: 2rem;
+  width: 20rem;
+  -webkit-appearance: none;
+  border-radius: 0px;
+  background-image: url(arrow.svg);
+  background-position: 98% 50%;
+  background-repeat: no-repeat;
+  padding-left: 5px;
+  background-color: #DBDAE1;
 }
 
-.padThis {
-    padding-right: 1rem;
+.center {
+  text-align: center;
+}
+
+.config {
+  padding: 0;
 }
 
 .footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: 2rem;
-    min-height: 10rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+  flex-grow: 1;
 }
 
 .tail {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.error {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .openAugur {
-    display: flex;
-    justify-content: end;
-    float: right;
+  display: flex;
+  justify-content: end;
+  float: right;
 }
 
 .versionNumber {
-    font-size: 12px;
-    color: #FFFFFF;
-    letter-spacing: 0;
-    align-self: flex-end;
-    text-transform: none;
+  font-size: 12px;
+  color: #FFFFFF;
+  letter-spacing: 0;
+  align-self: flex-end;
+  text-transform: none;
+}
+
+.borderTop {
+  border-top: 1px solid #dbdae1;
+  padding-top: 40px
+}
+
+#open_app_screen > .networkName {
+  padding-left: 0;
+  text-transform: none;
+}
+
+.instructions {
+  padding: .5rem 0 1.5rem 0;
+}
+
+.instruction-bold,
+.instruction {
+  text-transform: none;
+}
+
+.instruction-bold {
+  font-weight: bolder;
+}
+
+.networkInfo {
+  text-transform: none;
+}
+
+.networkInfoBlock {
+  margin-bottom: 20px;
+}
+
+.cancelButton {
+  margin-top: 20px;
+  display: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  filter: brightness(90%);
 }
 
 @-webkit-keyframes fadeinout {
-  0%,100% { opacity: 0; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeinout {
-  0%,100% { opacity: 0; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
 }

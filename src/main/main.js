@@ -6,7 +6,7 @@ log.transports.file.level = 'debug';
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
 const {app, BrowserWindow, Menu} = electron;
-
+var ipc = require('electron').ipcRenderer;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -19,7 +19,7 @@ const url = require('url');
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 800, width: 800, minHeight: 800, height: 800, icon: path.join(__dirname, '../augur.ico')});
+  mainWindow = new BrowserWindow({minWidth: 900, width: 900, minHeight: 870, height: 870, icon: path.join(__dirname, '../augur.ico')});
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -63,13 +63,22 @@ function createWindow () {
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    augurNodeController.shutDownServer();
-    augurUIServer.stopServer();
-    mainWindow = null;
+    try {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      augurNodeController.shutDownServer();
+      augurUIServer.stopServer();
+      mainWindow = null;
+    } catch (err) {
+      ipc.send('error', { error: err });
+    }
   })
+
+  mainWindow.on('error', function(error) {
+    ipc.send('error', { error });
+  })
+
 }
 
 // This method will be called when Electron has finished
@@ -93,3 +102,4 @@ app.on('activate', function () {
     createWindow();
   }
 });
+
