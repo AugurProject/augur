@@ -12,7 +12,8 @@
     "make-win": "electron-builder make --win",
     "make-mac": "electron-builder make --mac",
     "make-linux": "electron-builder make --linux",
-    "make-all": "electron-builder make -mwl"
+    "make-all": "electron-builder make -mwl",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules"
   },
   "repository": "https://github.com/AugurProject/augur-app",
   "keywords": [
@@ -70,10 +71,10 @@
   },
   "dependencies": {
     "app-data-folder": "1.0.0",
-    "augur-core": "1.0.0-19",
+    "augur-core": "1.0.0-20",
     "augur-node": "0.2.20",
     "augur-ui": "3.39.5",
-    "augur.js": "4.12.0-17",
+    "augur.js": "4.12.0-19",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
     "express": "4.16.2",
