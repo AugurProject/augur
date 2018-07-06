@@ -33,7 +33,11 @@ function approveAugur(p) {
 }
 
 module.exports = approveAugur;
+<<<<<<< HEAD
+},{"../api":7,"../augur-node":16,"../constants":30,"bignumber.js":153,"immutable-delete":377}],2:[function(require,module,exports){
+=======
 },{"../api":7,"../augur-node":16,"../constants":30,"bignumber.js":153,"immutable-delete":222}],2:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 /**
@@ -125,7 +129,11 @@ function bindContractFunction(functionAbi) {
 }
 
 module.exports = bindContractFunction;
+<<<<<<< HEAD
+},{"../rpc-interface":87,"../utils/is-function":140,"../utils/is-object":141,"./encode-transaction-inputs":5,"lodash":420}],5:[function(require,module,exports){
+=======
 },{"../rpc-interface":87,"../utils/is-function":140,"../utils/is-object":141,"./encode-transaction-inputs":5,"lodash":233}],5:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var transactionInputEncoders = require("./transaction-input-encoders");
@@ -199,7 +207,11 @@ module.exports = {
   "uint256[]": speedomatic.formatInt256.bind(speedomatic),
   "bytes32[]": speedomatic.formatInt256.bind(speedomatic)
 };
+<<<<<<< HEAD
+},{"speedomatic":492}],9:[function(require,module,exports){
+=======
 },{"speedomatic":292}],9:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -221,7 +233,11 @@ function depositEther(p) {
 }
 
 module.exports = depositEther;
+<<<<<<< HEAD
+},{"../api":7,"lodash":420,"speedomatic":492}],10:[function(require,module,exports){
+=======
 },{"../api":7,"lodash":233,"speedomatic":292}],10:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = {
@@ -255,7 +271,11 @@ function sendEther(p) {
 }
 
 module.exports = sendEther;
+<<<<<<< HEAD
+},{"../rpc-interface":87,"speedomatic":492}],12:[function(require,module,exports){
+=======
 },{"../rpc-interface":87,"speedomatic":292}],12:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -284,7 +304,11 @@ function sendReputation(p) {
 }
 
 module.exports = sendReputation;
+<<<<<<< HEAD
+},{"../api":7,"lodash":420,"speedomatic":492}],13:[function(require,module,exports){
+=======
 },{"../api":7,"lodash":233,"speedomatic":292}],13:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var augurNodeState = require("./state");
@@ -524,7 +548,11 @@ function createConfiguration(options) {
 }
 
 module.exports = createConfiguration;
+<<<<<<< HEAD
+},{"lodash":420}],24:[function(require,module,exports){
+=======
 },{"lodash":233}],24:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -540,7 +568,11 @@ function createEthrpcConfiguration(configuration) {
 }
 
 module.exports = createEthrpcConfiguration;
+<<<<<<< HEAD
+},{"lodash":420}],25:[function(require,module,exports){
+=======
 },{"lodash":233}],25:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -649,7 +681,11 @@ function connect(connectOptions, callback) {
 }
 
 module.exports = connect;
+<<<<<<< HEAD
+},{"../api":7,"../augur-node":16,"../constants":30,"../contracts":33,"../events":48,"../rpc-interface":87,"../utils/is-function":140,"../utils/is-object":141,"../utils/noop":146,"./connect-to-ethereum":22,"async":150,"ethrpc":272,"lodash":420}],26:[function(require,module,exports){
+=======
 },{"../api":7,"../augur-node":16,"../constants":30,"../contracts":33,"../events":48,"../rpc-interface":87,"../utils/is-function":140,"../utils/is-object":141,"../utils/noop":146,"./connect-to-ethereum":22,"async":150,"ethrpc":521,"lodash":233}],26:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function setContracts(networkId, allContracts) {
@@ -848,22 +884,22 @@ module.exports={
   "TradingEscapeHatch": "0x83eba103bf4a450900e4462724f5003a299b2f2e"
  },
  "4": {
-  "Controller": "0xb813b7e1dbcaf44cbfebd0242913d928f285dc15",
-  "Universe": "0x50f1d9dd5e30ca5d97fde5b166aeb3d37ffe7873",
-  "Augur": "0x832cc9e8c839108cdf6199f41dac24a6efa054ae",
-  "LegacyReputationToken": "0x8da7ea2f358cd7311f7b16b8f14ca520c6e1925f",
-  "CancelOrder": "0xe7ae57d961a79c449a597e23effea6642f980852",
-  "Cash": "0xdf5f0af2b0fa08b4f74c2788ba562d129c0a587b",
-  "ClaimTradingProceeds": "0xb599d3032a2ce953abc02be76b242ec4f317205c",
-  "CompleteSets": "0x680dafe1c638fffd5245f7033a6f12a00b5aed30",
-  "CreateOrder": "0xbbcfdb6b24fdccb4a32a393491caaeda66420f9f",
-  "FillOrder": "0x240afc29dddd960e1fd530064650681091d9aca9",
-  "Order": "0x992f1ed27e3075273d069ce0a2bbe6a1d8b9ecc1",
-  "Orders": "0x7014d04751baf34d1512d79083c483dfaf8b733a",
-  "OrdersFetcher": "0x44a5ba845f59531b452c49fa54a7f6301e4a3ef1",
-  "ShareToken": "0xed3b74f553e5e29023a1ce765c51c547a4e3596e",
-  "Trade": "0x32c810b2b8997770a80213b5fd67872f72d18660",
-  "TradingEscapeHatch": "0x8ecd95c5c5f7b2d5abd51c1cf182edc055a0e3fc"
+  "Controller": "0xde17455000ff0bdc4559f26fe15f668981f8b83a",
+  "Universe": "0x5ea2cc9df573e943c8b3ab2ce6daa218d17c9242",
+  "Augur": "0x0c4f2349228f4e0c4d12db2c6479278ffdd2317d",
+  "LegacyReputationToken": "0xb71cbbc3b330b2db35eda034e40c3f40d33e966c",
+  "CancelOrder": "0xc0e9d42c2a057fd9aa139f54e7b5ca03c6745e2c",
+  "Cash": "0x48835472e59e165838306f8bcfa01f98415f2028",
+  "ClaimTradingProceeds": "0x4cc92c34f55f67b6e297027e280dc0d0ceb7346b",
+  "CompleteSets": "0x0c5fffd258967e37aa3435288785748c0ba0684a",
+  "CreateOrder": "0xe643e98f5bfa5ae0e5821f8614ca9944f1aedb58",
+  "FillOrder": "0x9d22bdaedc0693c5d33ec1774d471218d1f5c599",
+  "Order": "0x8d3b8c561eeb8a95b45b536276bcbaf6675918fb",
+  "Orders": "0xe33b807048fea2f50648f7acc30246fc36a482d9",
+  "OrdersFetcher": "0xc4e5ad8be0722f8e7f0f337d4f9e15e166ba4f62",
+  "ShareToken": "0xcdb39a40614a9174d3baca6966bac6046deaca9e",
+  "Trade": "0x4cb2820a19df2d5b26571024964065f515380d6f",
+  "TradingEscapeHatch": "0xe9092f81427eba44f90855b68002a95d010e791d"
  },
  "42": {
   "Controller": "0xfc85164e43cace2e8abd5f9d85dce8d9ef42e2d9",
@@ -921,39 +957,39 @@ module.exports={
  },
  "22346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x6a424c1bd008c82191db24ba1528e60ca92314ca",
+  "Universe": "0x69c95d801ba3890c7090bdedeb7e5cc8f2058586",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0xb03cf72bc5a9a344aac43534d664917927367487",
-  "Cash": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
-  "ClaimTradingProceeds": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c",
-  "CompleteSets": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "CreateOrder": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "FillOrder": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
-  "Order": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
-  "Orders": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "OrdersFetcher": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
-  "ShareToken": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
-  "Trade": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "TradingEscapeHatch": "0xd28d97d4ea8968e90ec90ab0f43df4ade0c9f611"
+  "LegacyReputationToken": "0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d",
+  "CancelOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
+  "Cash": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
+  "ClaimTradingProceeds": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "CompleteSets": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c",
+  "CreateOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
+  "FillOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "Order": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "Orders": "0x56d32d583ee21e748103b029fd97621fde92248d",
+  "OrdersFetcher": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "ShareToken": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
+  "Trade": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
+  "TradingEscapeHatch": "0x6749e370e7b1955ffa924f4f75f5f12653c7512c"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0xf7a6dff0f7777cdbf2d1c3b99e0ed08f09d49818",
+  "Universe": "0x8963d800c1d48301444f4ceb2a13ebcfee9ae957",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
   "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c",
-  "Cash": "0xd3a7c274e3e7b1990a9c23bec98adc2b7c448ac5",
-  "ClaimTradingProceeds": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
-  "CompleteSets": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "CreateOrder": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
-  "FillOrder": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
-  "Order": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "Orders": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "OrdersFetcher": "0x0d676967088088546837accf52a72bbd5066ffee",
-  "ShareToken": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
-  "Trade": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
-  "TradingEscapeHatch": "0xee7ec8baf44d90535adecfc652ef05925404e6ea"
+  "CancelOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
+  "Cash": "0xd28d97d4ea8968e90ec90ab0f43df4ade0c9f611",
+  "ClaimTradingProceeds": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
+  "CompleteSets": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "CreateOrder": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
+  "FillOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
+  "Order": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
+  "Orders": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a",
+  "OrdersFetcher": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
+  "ShareToken": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
+  "Trade": "0xd11222c7c12da25ed9b153234084ad02235297aa",
+  "TradingEscapeHatch": "0xecaaca82cdf97f53f478609a98c3d36a5f0ef955"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -1034,13 +1070,14 @@ module.exports.reloadAddresses = function (callback) {
 },{"../utils/read-json-file":147,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":151}],34:[function(require,module,exports){
 module.exports={
   "3": 3532165,
-  "4": 2572086,
+  "4": 2585809,
   "42": 7822453,
   "8995": 0,
   "12346": 113,
   "22346": 10,
   "32346": 10
 }
+
 },{}],35:[function(require,module,exports){
 "use strict";
 
@@ -1106,7 +1143,11 @@ function createCategoricalMarket(p) {
 }
 
 module.exports = createCategoricalMarket;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":377,"lodash":420,"speedomatic":492}],37:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":222,"lodash":233,"speedomatic":292}],37:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -1164,7 +1205,11 @@ function createScalarMarket(p) {
 }
 
 module.exports = createScalarMarket;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./calculate-num-ticks":35,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":377,"lodash":420,"speedomatic":492}],38:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./calculate-num-ticks":35,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":222,"lodash":233,"speedomatic":292}],38:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -1214,7 +1259,11 @@ function createYesNoMarket(p) {
 }
 
 module.exports = createYesNoMarket;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":377,"lodash":420,"speedomatic":492}],39:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":222,"lodash":233,"speedomatic":292}],39:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 /** Type definition for MarketCreationCostBreakdown.
@@ -1266,7 +1315,11 @@ function getMarketCreationCostBreakdown(p, callback) {
 }
 
 module.exports = getMarketCreationCostBreakdown;
+<<<<<<< HEAD
+},{"../api":7,"async":150,"speedomatic":492}],40:[function(require,module,exports){
+=======
 },{"../api":7,"async":150,"speedomatic":292}],40:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 /** Type definition for MarketCreationCost.
@@ -1307,7 +1360,11 @@ function getMarketCreationCost(p, callback) {
 }
 
 module.exports = getMarketCreationCost;
+<<<<<<< HEAD
+},{"../api":7,"async":150,"immutable-delete":377,"lodash":420,"speedomatic":492}],41:[function(require,module,exports){
+=======
 },{"../api":7,"async":150,"immutable-delete":222,"lodash":233,"speedomatic":292}],41:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var ethrpc = require("../rpc-interface");
@@ -1398,7 +1455,11 @@ function findEventLogsInLogArray(contractName, eventName, logs) {
 }
 
 module.exports = findEventLogsInLogArray;
+<<<<<<< HEAD
+},{"../contracts":33,"./parse-message/parse-log-message":50,"speedomatic":492}],45:[function(require,module,exports){
+=======
 },{"../contracts":33,"./parse-message/parse-log-message":50,"speedomatic":292}],45:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -1464,7 +1525,11 @@ function getAllAugurLogs(p, batchCallback, finalCallback) {
 }
 
 module.exports = getAllAugurLogs;
+<<<<<<< HEAD
+},{"../constants":30,"../contracts":33,"../rpc-interface":87,"../utils/chunk-blocks":132,"../utils/list-contracts":143,"../utils/map-contract-addresses-to-names":144,"../utils/map-event-signatures-to-names":145,"./parse-message/parse-log-message":50,"async":150,"lodash":420,"speedomatic":492}],46:[function(require,module,exports){
+=======
 },{"../constants":30,"../contracts":33,"../rpc-interface":87,"../utils/chunk-blocks":132,"../utils/list-contracts":143,"../utils/map-contract-addresses-to-names":144,"../utils/map-event-signatures-to-names":145,"./parse-message/parse-log-message":50,"async":150,"lodash":233,"speedomatic":292}],46:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var hashEventSignature = require("./hash-event-signature");
@@ -1489,7 +1554,11 @@ function hashEventSignature(eventName) {
 
 module.exports = hashEventSignature;
 }).call(this,require("buffer").Buffer)
+<<<<<<< HEAD
+},{"../utils/keccak256":142,"buffer":167,"speedomatic":492}],48:[function(require,module,exports){
+=======
 },{"../utils/keccak256":142,"buffer":163,"speedomatic":292}],48:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var EventEmitter = require("event-emitter");
@@ -1508,7 +1577,11 @@ module.exports = {
     ethereum: EventEmitter()
   }
 };
+<<<<<<< HEAD
+},{"./get-all-augur-logs":45,"./hash-event-abi":46,"./start-augur-node-event-listeners":51,"./start-block-listeners":52,"./start-blockchain-event-listeners":53,"./stop-augur-node-event-listeners":54,"./stop-block-listeners":55,"./stop-blockchain-event-listeners":56,"event-emitter":360}],49:[function(require,module,exports){
+=======
 },{"./get-all-augur-logs":45,"./hash-event-abi":46,"./start-augur-node-event-listeners":51,"./start-block-listeners":52,"./start-blockchain-event-listeners":53,"./stop-augur-node-event-listeners":54,"./stop-block-listeners":55,"./stop-blockchain-event-listeners":56,"event-emitter":205}],49:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function parseBlockMessage(message, onMessage) {
@@ -1562,7 +1635,11 @@ function parseLogMessage(contractName, eventName, message, abiEventInputs, onMes
 }
 
 module.exports = parseLogMessage;
+<<<<<<< HEAD
+},{"../../format/log/format-log-message":58,"../../format/log/format-logged-event-inputs":59,"../../utils/is-function":140,"../../utils/is-object":141,"lodash":420}],51:[function(require,module,exports){
+=======
 },{"../../format/log/format-log-message":58,"../../format/log/format-logged-event-inputs":59,"../../utils/is-function":140,"../../utils/is-object":141,"lodash":233}],51:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var async = require("async");
@@ -1791,7 +1868,11 @@ module.exports.removeOnBlockRemovedSubscription = function () {
 module.exports.resetState = function () {
   subscriptions = assign({}, initialState);
 };
+<<<<<<< HEAD
+},{"lodash":420}],58:[function(require,module,exports){
+=======
 },{"lodash":233}],58:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -1837,7 +1918,11 @@ function formatLogMessage(contractName, eventName, message) {
 }
 
 module.exports = formatLogMessage;
+<<<<<<< HEAD
+},{"../tag/decode-tag":61,"immutable-delete":377,"lodash":420,"speedomatic":492}],59:[function(require,module,exports){
+=======
 },{"../tag/decode-tag":61,"immutable-delete":222,"lodash":233,"speedomatic":292}],59:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1860,7 +1945,11 @@ function formatLoggedEventInputs(loggedTopics, loggedData, abiEventInputs) {
 }
 
 module.exports = formatLoggedEventInputs;
+<<<<<<< HEAD
+},{"./format-logged-event-topic":60,"speedomatic":492}],60:[function(require,module,exports){
+=======
 },{"./format-logged-event-topic":60,"speedomatic":292}],60:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -1889,7 +1978,11 @@ function formatLoggedEventTopic(unformattedValue, inputType) {
 }
 
 module.exports = formatLoggedEventTopic;
+<<<<<<< HEAD
+},{"bignumber.js":153,"speedomatic":492}],61:[function(require,module,exports){
+=======
 },{"bignumber.js":153,"speedomatic":292}],61:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1904,7 +1997,11 @@ var decodeTag = function decodeTag(tag) {
 };
 
 module.exports = decodeTag;
+<<<<<<< HEAD
+},{"speedomatic":492}],62:[function(require,module,exports){
+=======
 },{"speedomatic":292}],62:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -1915,7 +2012,11 @@ var encodeTag = function encodeTag(tag) {
 };
 
 module.exports = encodeTag;
+<<<<<<< HEAD
+},{"speedomatic":492}],63:[function(require,module,exports){
+=======
 },{"speedomatic":292}],63:[function(require,module,exports){
+>>>>>>> master
 /**
  * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
@@ -2445,7 +2546,11 @@ function claimReportingFeesForkedMarket(p) {
 }
 
 module.exports = claimReportingFeesForkedMarket;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"async":150,"bignumber.js":153,"immutable-delete":377,"lodash":420}],74:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"async":150,"bignumber.js":153,"immutable-delete":222,"lodash":233}],74:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var async = require("async");
@@ -2721,7 +2826,11 @@ function claimReportingFeesNonforkedMarkets(p) {
 }
 
 module.exports = claimReportingFeesNonforkedMarkets;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"async":150,"bignumber.js":153,"immutable-delete":377,"lodash":420}],75:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"async":150,"bignumber.js":153,"immutable-delete":222,"lodash":233}],75:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -2750,7 +2859,11 @@ function finalizeMarket(p) {
 }
 
 module.exports = finalizeMarket;
+<<<<<<< HEAD
+},{"../api":7,"immutable-delete":377,"lodash":420}],76:[function(require,module,exports){
+=======
 },{"../api":7,"immutable-delete":222,"lodash":233}],76:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp) {
@@ -3018,7 +3131,11 @@ function getStakeRequiredForDesignatedReporter(p, callback) {
 }
 
 module.exports = getStakeRequiredForDesignatedReporter;
+<<<<<<< HEAD
+},{"../api":7,"immutable-delete":377,"lodash":420,"speedomatic":492}],86:[function(require,module,exports){
+=======
 },{"../api":7,"immutable-delete":222,"lodash":233,"speedomatic":292}],86:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = {
@@ -3071,7 +3188,11 @@ var ethrpc = createRpcInterface(require("ethrpc"));
 ethrpc.createRpcInterface = createRpcInterface;
 
 module.exports = ethrpc;
+<<<<<<< HEAD
+},{"ethrpc":272}],88:[function(require,module,exports){
+=======
 },{"ethrpc":521}],88:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function calculateAskCost(onChainPrice, onChainAmount, numTicks) {
@@ -3216,7 +3337,11 @@ function claimMarketsTradingProceeds(p) {
 }
 
 module.exports = claimMarketsTradingProceeds;
+<<<<<<< HEAD
+},{"../constants":30,"./claim-trading-proceeds":94,"async":150,"immutable-delete":377,"lodash":420}],94:[function(require,module,exports){
+=======
 },{"../constants":30,"./claim-trading-proceeds":94,"async":150,"immutable-delete":222,"lodash":233}],94:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var api = require("../api");
@@ -3323,7 +3448,11 @@ function generateTradeGroupId(tradeGroupIdNumBytes) {
 
 module.exports = generateTradeGroupId;
 }).call(this,require("buffer").Buffer)
+<<<<<<< HEAD
+},{"../constants":30,"buffer":167,"secure-random":461}],98:[function(require,module,exports){
+=======
 },{"../constants":30,"buffer":163,"secure-random":261}],98:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 /**
@@ -3448,7 +3577,11 @@ function getPositionInMarket(p, callback) {
 }
 
 module.exports = getPositionInMarket;
+<<<<<<< HEAD
+},{"../api":7,"../utils/convert-fixed-point-to-decimal":136,"async":150,"lodash":420,"speedomatic":492}],101:[function(require,module,exports){
+=======
 },{"../api":7,"../utils/convert-fixed-point-to-decimal":136,"async":150,"lodash":233,"speedomatic":292}],101:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -3667,7 +3800,11 @@ function placeTrade(p) {
 }
 
 module.exports = placeTrade;
+<<<<<<< HEAD
+},{"./get-better-worse-orders":98,"./trade-until-amount-is-zero":131,"immutable-delete":377,"lodash":420}],107:[function(require,module,exports){
+=======
 },{"./get-better-worse-orders":98,"./trade-until-amount-is-zero":131,"immutable-delete":222,"lodash":233}],107:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -3754,7 +3891,11 @@ function calculateProfitLoss(p) {
 }
 
 module.exports = calculateProfitLoss;
+<<<<<<< HEAD
+},{"../../constants":30,"./calculate-trades-pl":111,"./calculate-unrealized-pl":112,"./update-realized-pl":118,"bignumber.js":153,"immutable-delete":377}],109:[function(require,module,exports){
+=======
 },{"../../constants":30,"./calculate-trades-pl":111,"./calculate-unrealized-pl":112,"./update-realized-pl":118,"bignumber.js":153,"immutable-delete":222}],109:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -4569,7 +4710,11 @@ function tradeUntilAmountIsZero(p) {
 }
 
 module.exports = tradeUntilAmountIsZero;
+<<<<<<< HEAD
+},{"../api":7,"../constants":30,"../utils/convert-big-number-to-hex-string":133,"../utils/convert-on-chain-amount-to-display-amount":137,"../utils/noop":146,"./calculate-tick-size":90,"./calculate-trade-cost":91,"./calculate-trade-gas":92,"./get-trade-amount-remaining":101,"bignumber.js":153,"immutable-delete":377,"lodash":420,"speedomatic":492}],132:[function(require,module,exports){
+=======
 },{"../api":7,"../constants":30,"../utils/convert-big-number-to-hex-string":133,"../utils/convert-on-chain-amount-to-display-amount":137,"../utils/noop":146,"./calculate-tick-size":90,"./calculate-trade-cost":91,"./calculate-trade-gas":92,"./get-trade-amount-remaining":101,"bignumber.js":153,"immutable-delete":222,"lodash":233,"speedomatic":292}],132:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var BLOCKS_PER_CHUNK = require("../constants").BLOCKS_PER_CHUNK;
@@ -4606,7 +4751,11 @@ function convertBigNumberToHexString(bigNumber) {
 }
 
 module.exports = convertBigNumberToHexString;
+<<<<<<< HEAD
+},{"speedomatic":492}],134:[function(require,module,exports){
+=======
 },{"speedomatic":292}],134:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -4617,7 +4766,11 @@ function convertDisplayAmountToOnChainAmount(displayAmount, displayRange, numTic
 }
 
 module.exports = convertDisplayAmountToOnChainAmount;
+<<<<<<< HEAD
+},{"speedomatic":492}],135:[function(require,module,exports){
+=======
 },{"speedomatic":292}],135:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function convertDisplayPriceToOnChainPrice(displayPrice, minDisplayPrice, tickSize) {
@@ -4650,7 +4803,11 @@ function convertOnChainAmountToDisplayAmount(onChainAmount, tickSize) {
 }
 
 module.exports = convertOnChainAmountToDisplayAmount;
+<<<<<<< HEAD
+},{"speedomatic":492}],138:[function(require,module,exports){
+=======
 },{"speedomatic":292}],138:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function convertOnChainPriceToDisplayPrice(onChainPrice, minDisplayPrice, tickSize) {
@@ -4694,7 +4851,11 @@ function keccak256(buffer) {
 }
 
 module.exports = keccak256;
+<<<<<<< HEAD
+},{"keccak/js":383}],143:[function(require,module,exports){
+=======
 },{"keccak/js":226}],143:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = function (contracts) {
@@ -4751,7 +4912,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '4.12.0-17';
+module.exports = '4.12.0-18';
 },{}],149:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -6027,7 +6188,11 @@ global.augur = augur;
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+<<<<<<< HEAD
+},{"_process":428,"timers":170}],151:[function(require,module,exports){
+=======
 },{"_process":238,"timers":166}],151:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.abi = require('./contracts/abi');
@@ -6178,6 +6343,29 @@ module.exports={
 				}
 			],
 			"name": "logOrderCreated",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -8440,6 +8628,29 @@ module.exports={
 	],
 	"Controlled": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -8670,6 +8881,20 @@ module.exports={
 			],
 			"payable": false,
 			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "release",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
 			"type": "function"
 		},
 		{
@@ -9266,6 +9491,29 @@ module.exports={
 				}
 			],
 			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -10029,6 +10277,29 @@ module.exports={
 	],
 	"Time": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getTimestamp",
@@ -10091,6 +10362,29 @@ module.exports={
 		}
 	],
 	"TimeControlled": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": true,
 			"inputs": [],
@@ -10546,6 +10840,29 @@ module.exports={
 	],
 	"Delegator": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -10614,6 +10931,29 @@ module.exports={
 		}
 	],
 	"Map": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": true,
 			"inputs": [
@@ -10930,6 +11270,29 @@ module.exports={
 				}
 			],
 			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -11535,6 +11898,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -11975,6 +12361,29 @@ module.exports={
 				}
 			],
 			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -12691,6 +13100,29 @@ module.exports={
 		},
 		{
 			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
 			"inputs": [],
 			"name": "forkAndRedeem",
 			"outputs": [
@@ -13116,6 +13548,29 @@ module.exports={
 	],
 	"Mailbox": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -13299,6 +13754,29 @@ module.exports={
 			"constant": false,
 			"inputs": [],
 			"name": "migrateThroughOneFork",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -14251,6 +14729,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "totalSupply",
@@ -15004,6 +15505,29 @@ module.exports={
 				{
 					"name": "",
 					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"payable": false,
@@ -16098,6 +16622,29 @@ module.exports={
 	],
 	"CancelOrder": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -16178,6 +16725,29 @@ module.exports={
 				}
 			],
 			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -16645,6 +17215,29 @@ module.exports={
 			"type": "function"
 		},
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -16791,6 +17384,29 @@ module.exports={
 		}
 	],
 	"CompleteSets": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": false,
 			"inputs": [
@@ -16977,6 +17593,29 @@ module.exports={
 	],
 	"CreateOrder": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [],
 			"name": "getController",
@@ -17113,6 +17752,29 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_filler",
 					"type": "address"
 				},
@@ -17203,6 +17865,29 @@ module.exports={
 	],
 	"Order": [],
 	"Orders": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": true,
 			"inputs": [
@@ -17876,6 +18561,29 @@ module.exports={
 	],
 	"OrdersFetcher": [
 		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
 			"constant": true,
 			"inputs": [
 				{
@@ -18042,6 +18750,29 @@ module.exports={
 				}
 			],
 			"name": "approve",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
 			"outputs": [
 				{
 					"name": "",
@@ -18630,6 +19361,29 @@ module.exports={
 			"constant": false,
 			"inputs": [
 				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
 					"name": "_direction",
 					"type": "uint8"
 				},
@@ -18974,6 +19728,29 @@ module.exports={
 		}
 	],
 	"TradingEscapeHatch": [
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_target",
+					"type": "address"
+				},
+				{
+					"name": "_tokens",
+					"type": "address[]"
+				}
+			],
+			"name": "suicideFunds",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
 		{
 			"constant": true,
 			"inputs": [],
@@ -21903,7 +22680,11 @@ module.exports = {
   encode: encode
 }
 
+<<<<<<< HEAD
+},{"safe-buffer":454}],155:[function(require,module,exports){
+=======
 },{"safe-buffer":254}],155:[function(require,module,exports){
+>>>>>>> master
 (function (module, exports) {
   'use strict';
 
@@ -25439,7 +26220,11 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
+<<<<<<< HEAD
+},{"buffer":167,"js-sha3":160}],160:[function(require,module,exports){
+=======
 },{"buffer":163,"js-sha3":159}],159:[function(require,module,exports){
+>>>>>>> master
 (function (global){
 /*
  * js-sha3 v0.3.1
@@ -26238,7 +27023,646 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
+<<<<<<< HEAD
+},{"util/":165}],163:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+=======
 },{"util/":310}],162:[function(require,module,exports){
+var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+>>>>>>> master
+
+},{}],164:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],165:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+<<<<<<< HEAD
+function arrayToHash(array) {
+  var hash = {};
+=======
+},{}],163:[function(require,module,exports){
+(function (global){
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+/* eslint-disable no-proto */
+>>>>>>> master
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":164,"_process":428,"inherits":163}],166:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -26364,7 +27788,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],163:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -27916,14 +29340,22 @@ function blitBuffer (src, dst, offset, length) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+<<<<<<< HEAD
+},{"base64-js":166,"ieee754":376,"isarray":168}],168:[function(require,module,exports){
+=======
 },{"base64-js":162,"ieee754":221,"isarray":164}],164:[function(require,module,exports){
+>>>>>>> master
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
+<<<<<<< HEAD
+},{}],169:[function(require,module,exports){
+=======
 },{}],165:[function(require,module,exports){
+>>>>>>> master
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -28146,7 +29578,11 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
+<<<<<<< HEAD
+},{"buffer":167}],170:[function(require,module,exports){
+=======
 },{"buffer":163}],166:[function(require,module,exports){
+>>>>>>> master
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -28225,7 +29661,11 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+<<<<<<< HEAD
+},{"process/browser.js":428,"timers":170}],171:[function(require,module,exports){
+=======
 },{"process/browser.js":238,"timers":166}],167:[function(require,module,exports){
+>>>>>>> master
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -28326,7 +29766,266 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
+<<<<<<< HEAD
+},{"inherits":379,"safe-buffer":454,"stream":505,"string_decoder":169}],172:[function(require,module,exports){
+(function (Buffer){
+var clone = (function() {
+'use strict';
+
+function _instanceof(obj, type) {
+  return type != null && obj instanceof type;
+}
+
+var nativeMap;
+try {
+  nativeMap = Map;
+} catch(_) {
+  // maybe a reference error because no `Map`. Give it a dummy value that no
+  // value will ever be an instanceof.
+  nativeMap = function() {};
+}
+
+var nativeSet;
+try {
+  nativeSet = Set;
+} catch(_) {
+  nativeSet = function() {};
+}
+
+var nativePromise;
+try {
+  nativePromise = Promise;
+} catch(_) {
+  nativePromise = function() {};
+}
+
+/**
+ * Clones (copies) an Object using deep copying.
+ *
+ * This function supports circular references by default, but if you are certain
+ * there are no circular references in your object, you can save some CPU time
+ * by calling clone(obj, false).
+ *
+ * Caution: if `circular` is false and `parent` contains circular references,
+ * your program may enter an infinite loop and crash.
+ *
+ * @param `parent` - the object to be cloned
+ * @param `circular` - set to true if the object to be cloned may contain
+ *    circular references. (optional - true by default)
+ * @param `depth` - set to a number if the object is only to be cloned to
+ *    a particular depth. (optional - defaults to Infinity)
+ * @param `prototype` - sets the prototype to be used when cloning an object.
+ *    (optional - defaults to parent prototype).
+ * @param `includeNonEnumerable` - set to true if the non-enumerable properties
+ *    should be cloned as well. Non-enumerable properties on the prototype
+ *    chain will be ignored. (optional - false by default)
+*/
+function clone(parent, circular, depth, prototype, includeNonEnumerable) {
+  if (typeof circular === 'object') {
+    depth = circular.depth;
+    prototype = circular.prototype;
+    includeNonEnumerable = circular.includeNonEnumerable;
+    circular = circular.circular;
+  }
+  // maintain two arrays for circular references, where corresponding parents
+  // and children have the same index
+  var allParents = [];
+  var allChildren = [];
+
+  var useBuffer = typeof Buffer != 'undefined';
+
+  if (typeof circular == 'undefined')
+    circular = true;
+
+  if (typeof depth == 'undefined')
+    depth = Infinity;
+
+  // recurse this function so we don't reset allParents and allChildren
+  function _clone(parent, depth) {
+    // cloning null always returns null
+    if (parent === null)
+      return null;
+
+    if (depth === 0)
+      return parent;
+
+    var child;
+    var proto;
+    if (typeof parent != 'object') {
+      return parent;
+    }
+
+    if (_instanceof(parent, nativeMap)) {
+      child = new nativeMap();
+    } else if (_instanceof(parent, nativeSet)) {
+      child = new nativeSet();
+    } else if (_instanceof(parent, nativePromise)) {
+      child = new nativePromise(function (resolve, reject) {
+        parent.then(function(value) {
+          resolve(_clone(value, depth - 1));
+        }, function(err) {
+          reject(_clone(err, depth - 1));
+        });
+      });
+    } else if (clone.__isArray(parent)) {
+      child = [];
+    } else if (clone.__isRegExp(parent)) {
+      child = new RegExp(parent.source, __getRegExpFlags(parent));
+      if (parent.lastIndex) child.lastIndex = parent.lastIndex;
+    } else if (clone.__isDate(parent)) {
+      child = new Date(parent.getTime());
+    } else if (useBuffer && Buffer.isBuffer(parent)) {
+      child = new Buffer(parent.length);
+      parent.copy(child);
+      return child;
+    } else if (_instanceof(parent, Error)) {
+      child = Object.create(parent);
+    } else {
+      if (typeof prototype == 'undefined') {
+        proto = Object.getPrototypeOf(parent);
+        child = Object.create(proto);
+      }
+      else {
+        child = Object.create(prototype);
+        proto = prototype;
+      }
+    }
+
+    if (circular) {
+      var index = allParents.indexOf(parent);
+
+      if (index != -1) {
+        return allChildren[index];
+      }
+      allParents.push(parent);
+      allChildren.push(child);
+    }
+
+    if (_instanceof(parent, nativeMap)) {
+      parent.forEach(function(value, key) {
+        var keyChild = _clone(key, depth - 1);
+        var valueChild = _clone(value, depth - 1);
+        child.set(keyChild, valueChild);
+      });
+    }
+    if (_instanceof(parent, nativeSet)) {
+      parent.forEach(function(value) {
+        var entryChild = _clone(value, depth - 1);
+        child.add(entryChild);
+      });
+    }
+
+    for (var i in parent) {
+      var attrs;
+      if (proto) {
+        attrs = Object.getOwnPropertyDescriptor(proto, i);
+      }
+
+      if (attrs && attrs.set == null) {
+        continue;
+      }
+      child[i] = _clone(parent[i], depth - 1);
+    }
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(parent);
+      for (var i = 0; i < symbols.length; i++) {
+        // Don't need to worry about cloning a symbol because it is a primitive,
+        // like a number or string.
+        var symbol = symbols[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, symbol);
+        if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+          continue;
+        }
+        child[symbol] = _clone(parent[symbol], depth - 1);
+        if (!descriptor.enumerable) {
+          Object.defineProperty(child, symbol, {
+            enumerable: false
+          });
+        }
+      }
+    }
+
+    if (includeNonEnumerable) {
+      var allPropertyNames = Object.getOwnPropertyNames(parent);
+      for (var i = 0; i < allPropertyNames.length; i++) {
+        var propertyName = allPropertyNames[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, propertyName);
+        if (descriptor && descriptor.enumerable) {
+          continue;
+        }
+        child[propertyName] = _clone(parent[propertyName], depth - 1);
+        Object.defineProperty(child, propertyName, {
+          enumerable: false
+        });
+      }
+    }
+
+    return child;
+  }
+
+  return _clone(parent, depth);
+}
+
+/**
+ * Simple flat clone using prototype, accepts only objects, usefull for property
+ * override on FLAT configuration object (no nested props).
+ *
+ * USE WITH CAUTION! This may not behave as you wish if you do not know how this
+ * works.
+ */
+clone.clonePrototype = function clonePrototype(parent) {
+  if (parent === null)
+    return null;
+
+  var c = function () {};
+  c.prototype = parent;
+  return new c();
+};
+
+// private utility functions
+
+function __objToStr(o) {
+  return Object.prototype.toString.call(o);
+}
+clone.__objToStr = __objToStr;
+
+function __isDate(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Date]';
+}
+clone.__isDate = __isDate;
+
+function __isArray(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Array]';
+}
+clone.__isArray = __isArray;
+
+function __isRegExp(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object RegExp]';
+}
+clone.__isRegExp = __isRegExp;
+
+function __getRegExpFlags(re) {
+  var flags = '';
+  if (re.global) flags += 'g';
+  if (re.ignoreCase) flags += 'i';
+  if (re.multiline) flags += 'm';
+  return flags;
+}
+clone.__getRegExpFlags = __getRegExpFlags;
+
+return clone;
+})();
+
+if (typeof module === 'object' && module.exports) {
+  module.exports = clone;
+}
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":167}],173:[function(require,module,exports){
+=======
 },{"inherits":223,"safe-buffer":254,"stream":305,"string_decoder":165}],168:[function(require,module,exports){
+>>>>>>> master
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -28437,7 +30136,11 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+<<<<<<< HEAD
+},{"../../is-buffer/index.js":380}],174:[function(require,module,exports){
+=======
 },{"../../is-buffer/index.js":224}],169:[function(require,module,exports){
+>>>>>>> master
 'use strict'
 var inherits = require('inherits')
 var MD5 = require('md5.js')
@@ -28469,7 +30172,11 @@ module.exports = function createHash (alg) {
   return new Hash(sha(alg))
 }
 
+<<<<<<< HEAD
+},{"cipher-base":171,"inherits":379,"md5.js":423,"ripemd160":452,"sha.js":463}],175:[function(require,module,exports){
+=======
 },{"cipher-base":167,"inherits":223,"md5.js":234,"ripemd160":252,"sha.js":263}],170:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var assign        = require('es5-ext/object/assign')
@@ -28534,7 +30241,11 @@ d.gs = function (dscr, get, set/*, options*/) {
 	return !options ? desc : assign(normalizeOpts(options), desc);
 };
 
+<<<<<<< HEAD
+},{"es5-ext/object/assign":193,"es5-ext/object/is-callable":196,"es5-ext/object/normalize-options":201,"es5-ext/string/#/contains":204}],176:[function(require,module,exports){
+=======
 },{"es5-ext/object/assign":188,"es5-ext/object/is-callable":191,"es5-ext/object/normalize-options":196,"es5-ext/string/#/contains":199}],171:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var elliptic = exports;
@@ -28549,7 +30260,11 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
+<<<<<<< HEAD
+},{"../package.json":191,"./elliptic/curve":179,"./elliptic/curves":182,"./elliptic/ec":183,"./elliptic/eddsa":186,"./elliptic/utils":190,"brorand":156}],177:[function(require,module,exports){
+=======
 },{"../package.json":186,"./elliptic/curve":174,"./elliptic/curves":177,"./elliptic/ec":178,"./elliptic/eddsa":181,"./elliptic/utils":185,"brorand":156}],172:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var BN = require('bn.js');
@@ -28926,7 +30641,11 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"bn.js":155}],178:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"bn.js":155}],173:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var curve = require('../curve');
@@ -29361,7 +31080,11 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"../curve":179,"bn.js":155,"inherits":379}],179:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"../curve":174,"bn.js":155,"inherits":223}],174:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var curve = exports;
@@ -29371,7 +31094,11 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
+<<<<<<< HEAD
+},{"./base":177,"./edwards":178,"./mont":180,"./short":181}],180:[function(require,module,exports){
+=======
 },{"./base":172,"./edwards":173,"./mont":175,"./short":176}],175:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var curve = require('../curve');
@@ -29553,7 +31280,11 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"../curve":179,"bn.js":155,"inherits":379}],181:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"../curve":174,"bn.js":155,"inherits":223}],176:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var curve = require('../curve');
@@ -30493,7 +32224,11 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"../curve":179,"bn.js":155,"inherits":379}],182:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"../curve":174,"bn.js":155,"inherits":223}],177:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var curves = exports;
@@ -30700,7 +32435,11 @@ defineCurve('secp256k1', {
   ]
 });
 
+<<<<<<< HEAD
+},{"../elliptic":176,"./precomputed/secp256k1":189,"hash.js":363}],183:[function(require,module,exports){
+=======
 },{"../elliptic":171,"./precomputed/secp256k1":184,"hash.js":208}],178:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var BN = require('bn.js');
@@ -30942,7 +32681,11 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"./key":184,"./signature":185,"bn.js":155,"hmac-drbg":375}],184:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"./key":179,"./signature":180,"bn.js":155,"hmac-drbg":220}],179:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var BN = require('bn.js');
@@ -31063,7 +32806,11 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"bn.js":155}],185:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"bn.js":155}],180:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var BN = require('bn.js');
@@ -31200,7 +32947,11 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"bn.js":155}],186:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"bn.js":155}],181:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var hash = require('hash.js');
@@ -31320,7 +33071,11 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"./key":187,"./signature":188,"hash.js":363}],187:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"./key":182,"./signature":183,"hash.js":208}],182:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -31418,7 +33173,11 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
+<<<<<<< HEAD
+},{"../../elliptic":176}],188:[function(require,module,exports){
+=======
 },{"../../elliptic":171}],183:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var BN = require('bn.js');
@@ -31486,7 +33245,11 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
+<<<<<<< HEAD
+},{"../../elliptic":176,"bn.js":155}],189:[function(require,module,exports){
+=======
 },{"../../elliptic":171,"bn.js":155}],184:[function(require,module,exports){
+>>>>>>> master
 module.exports = {
   doubles: {
     step: 4,
@@ -32268,7 +34031,11 @@ module.exports = {
   }
 };
 
+<<<<<<< HEAD
+},{}],190:[function(require,module,exports){
+=======
 },{}],185:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 var utils = exports;
@@ -32390,6 +34157,11 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
+<<<<<<< HEAD
+},{"bn.js":155,"minimalistic-assert":424,"minimalistic-crypto-utils":425}],191:[function(require,module,exports){
+module.exports={
+  "_from": "elliptic@^6.0.0",
+=======
 },{"bn.js":155,"minimalistic-assert":235,"minimalistic-crypto-utils":236}],186:[function(require,module,exports){
 module.exports={
   "_args": [
@@ -32399,20 +34171,21 @@ module.exports={
     ]
   ],
   "_from": "elliptic@6.4.0",
+>>>>>>> master
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "elliptic@6.4.0",
+    "raw": "elliptic@^6.0.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.4.0",
+    "rawSpec": "^6.0.0",
     "saveSpec": null,
-    "fetchSpec": "6.4.0"
+    "fetchSpec": "^6.0.0"
   },
   "_requiredBy": [
     "/browserify-sign",
@@ -32420,8 +34193,14 @@ module.exports={
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
+<<<<<<< HEAD
+  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
+  "_spec": "elliptic@^6.0.0",
+  "_where": "/Users/bthaile/gitrepos/augur.js/node_modules/browserify-sign",
+=======
   "_spec": "6.4.0",
   "_where": "/Users/justin/WebstormProjects/augur.js",
+>>>>>>> master
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -32429,6 +34208,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -32438,6 +34218,7 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
+  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -32483,20 +34264,32 @@ module.exports={
   "version": "6.4.0"
 }
 
+<<<<<<< HEAD
+},{}],192:[function(require,module,exports){
+=======
 },{}],187:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 // eslint-disable-next-line no-empty-function
 module.exports = function () {};
 
+<<<<<<< HEAD
+},{}],193:[function(require,module,exports){
+=======
 },{}],188:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = require("./is-implemented")()
 	? Object.assign
 	: require("./shim");
 
+<<<<<<< HEAD
+},{"./is-implemented":194,"./shim":195}],194:[function(require,module,exports){
+=======
 },{"./is-implemented":189,"./shim":190}],189:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = function () {
@@ -32507,7 +34300,11 @@ module.exports = function () {
 	return (obj.foo + obj.bar + obj.trzy) === "razdwatrzy";
 };
 
+<<<<<<< HEAD
+},{}],195:[function(require,module,exports){
+=======
 },{}],190:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var keys  = require("../keys")
@@ -32532,7 +34329,11 @@ module.exports = function (dest, src /*, …srcn*/) {
 	return dest;
 };
 
+<<<<<<< HEAD
+},{"../keys":198,"../valid-value":203}],196:[function(require,module,exports){
+=======
 },{"../keys":193,"../valid-value":198}],191:[function(require,module,exports){
+>>>>>>> master
 // Deprecated
 
 "use strict";
@@ -32541,7 +34342,11 @@ module.exports = function (obj) {
  return typeof obj === "function";
 };
 
+<<<<<<< HEAD
+},{}],197:[function(require,module,exports){
+=======
 },{}],192:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var _undefined = require("../function/noop")(); // Support ES3 engines
@@ -32550,14 +34355,20 @@ module.exports = function (val) {
  return (val !== _undefined) && (val !== null);
 };
 
+<<<<<<< HEAD
+},{"../function/noop":192}],198:[function(require,module,exports){
+=======
 },{"../function/noop":187}],193:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
-module.exports = require("./is-implemented")()
-	? Object.keys
-	: require("./shim");
+module.exports = require("./is-implemented")() ? Object.keys : require("./shim");
 
+<<<<<<< HEAD
+},{"./is-implemented":199,"./shim":200}],199:[function(require,module,exports){
+=======
 },{"./is-implemented":194,"./shim":195}],194:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = function () {
@@ -32565,22 +34376,28 @@ module.exports = function () {
 		Object.keys("primitive");
 		return true;
 	} catch (e) {
- return false;
-}
+		return false;
+	}
 };
 
+<<<<<<< HEAD
+},{}],200:[function(require,module,exports){
+=======
 },{}],195:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var isValue = require("../is-value");
 
 var keys = Object.keys;
 
-module.exports = function (object) {
-	return keys(isValue(object) ? Object(object) : object);
-};
+module.exports = function (object) { return keys(isValue(object) ? Object(object) : object); };
 
+<<<<<<< HEAD
+},{"../is-value":197}],201:[function(require,module,exports){
+=======
 },{"../is-value":192}],196:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var isValue = require("./is-value");
@@ -32602,7 +34419,11 @@ module.exports = function (opts1 /*, …options*/) {
 	return result;
 };
 
+<<<<<<< HEAD
+},{"./is-value":197}],202:[function(require,module,exports){
+=======
 },{"./is-value":192}],197:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = function (fn) {
@@ -32610,7 +34431,11 @@ module.exports = function (fn) {
 	return fn;
 };
 
+<<<<<<< HEAD
+},{}],203:[function(require,module,exports){
+=======
 },{}],198:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var isValue = require("./is-value");
@@ -32620,14 +34445,22 @@ module.exports = function (value) {
 	return value;
 };
 
+<<<<<<< HEAD
+},{"./is-value":197}],204:[function(require,module,exports){
+=======
 },{"./is-value":192}],199:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 module.exports = require("./is-implemented")()
 	? String.prototype.contains
 	: require("./shim");
 
+<<<<<<< HEAD
+},{"./is-implemented":205,"./shim":206}],205:[function(require,module,exports){
+=======
 },{"./is-implemented":200,"./shim":201}],200:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var str = "razdwatrzy";
@@ -32637,7 +34470,11 @@ module.exports = function () {
 	return (str.contains("dwa") === true) && (str.contains("foo") === false);
 };
 
+<<<<<<< HEAD
+},{}],206:[function(require,module,exports){
+=======
 },{}],201:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var indexOf = String.prototype.indexOf;
@@ -32646,8 +34483,20 @@ module.exports = function (searchString/*, position*/) {
 	return indexOf.call(this, searchString, arguments[1]) > -1;
 };
 
+<<<<<<< HEAD
+},{}],207:[function(require,module,exports){
+(function (process,global){
+/*!
+ * @overview es6-promise - a tiny implementation of Promises/A+.
+ * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
+ * @license   Licensed under MIT license
+ *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
+ * @version   v4.2.4+314e4831
+ */
+=======
 },{}],202:[function(require,module,exports){
 module.exports = require('./lib/index.js')
+>>>>>>> master
 
 },{"./lib/index.js":203}],203:[function(require,module,exports){
 (function (Buffer){
@@ -34080,8 +35929,74 @@ module.exports = EventEmitter;
 // Backwards-compat with node 0.10.x
 EventEmitter.EventEmitter = EventEmitter;
 
+<<<<<<< HEAD
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":428}],208:[function(require,module,exports){
+module.exports={
+  "genesisGasLimit": {
+    "v": 5000,
+    "d": "Gas limit of the Genesis block."
+  },
+  "genesisDifficulty": {
+    "v": 17179869184,
+    "d": "Difficulty of the Genesis block."
+  },
+  "genesisNonce": {
+    "v": "0x0000000000000042",
+    "d": "the geneis nonce"
+  },
+  "genesisExtraData": {
+    "v": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
+    "d": "extra data "
+  },
+  "genesisHash": {
+    "v": "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3",
+    "d": "genesis hash"
+  },
+  "genesisStateRoot": {
+    "v": "0xd7f8974fb5ac78d9ac099b9ad5018bedc2ce0a72dad1827a1709da30580f0544",
+    "d": "the genesis state root"
+  },
+  "minGasLimit": {
+    "v": 5000,
+    "d": "Minimum the gas limit may ever be."
+  },
+  "gasLimitBoundDivisor": {
+    "v": 1024,
+    "d": "The bound divisor of the gas limit, used in update calculations."
+  },
+  "minimumDifficulty": {
+    "v": 131072,
+    "d": "The minimum that the difficulty may ever be."
+  },
+  "difficultyBoundDivisor": {
+    "v": 2048,
+    "d": "The bound divisor of the difficulty, used in the update calculations."
+  },
+  "durationLimit": {
+    "v": 13,
+    "d": "The decision boundary on the blocktime duration used to determine whether difficulty should go up or not."
+  },
+  "maximumExtraDataSize": {
+    "v": 32,
+    "d": "Maximum size extra data may be after Genesis."
+  },
+  "epochDuration": {
+    "v": 30000,
+    "d": "Duration between proof-of-work epochs."
+  },
+  "stackLimit": {
+    "v": 1024,
+    "d": "Maximum size of VM stack allowed."
+  },
+  "callCreateDepth": {
+    "v": 1024,
+    "d": "Maximum depth of call/create stack."
+  },
+=======
 EventEmitter.prototype._events = undefined;
 EventEmitter.prototype._maxListeners = undefined;
+>>>>>>> master
 
 // By default EventEmitters will print a warning if more than 10 listeners are
 // added to it. This is a useful default which helps finding memory leaks.
@@ -34154,11 +36069,21 @@ EventEmitter.prototype.emit = function(type) {
 EventEmitter.prototype.addListener = function(type, listener) {
   var m;
 
+<<<<<<< HEAD
+},{}],209:[function(require,module,exports){
+module.exports = require('./lib/index.js')
+
+},{"./lib/index.js":210}],210:[function(require,module,exports){
+(function (Buffer){
+const utils = require('ethereumjs-util')
+const BN = require('bn.js')
+=======
   if (!isFunction(listener))
     throw TypeError('listener must be a function');
 
   if (!this._events)
     this._events = {};
+>>>>>>> master
 
   // To avoid recursion in the case that type === "newListener"! Before
   // adding it to the listeners, first emit "newListener".
@@ -34564,8 +36489,20 @@ BlockHash.prototype._pad = function pad() {
 },{"./utils":219,"minimalistic-assert":235}],210:[function(require,module,exports){
 'use strict';
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"bn.js":155,"buffer":167,"ethereumjs-util":211}],211:[function(require,module,exports){
+(function (Buffer){
+const SHA3 = require('keccakjs')
+const secp256k1 = require('secp256k1')
+const assert = require('assert')
+const rlp = require('rlp')
+const BN = require('bn.js')
+const createHash = require('create-hash')
+=======
 var utils = require('./utils');
 var assert = require('minimalistic-assert');
+>>>>>>> master
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -35026,6 +36963,12 @@ var utils = require('../utils');
 var common = require('../common');
 var assert = require('minimalistic-assert');
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"assert":162,"bn.js":155,"buffer":167,"create-hash":174,"keccakjs":389,"rlp":453,"secp256k1":455}],212:[function(require,module,exports){
+var v1 = require('./v1');
+var v4 = require('./v4');
+=======
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
 var shr64_hi = utils.shr64_hi;
@@ -35037,6 +36980,7 @@ var sum64_4_hi = utils.sum64_4_hi;
 var sum64_4_lo = utils.sum64_4_lo;
 var sum64_5_hi = utils.sum64_5_hi;
 var sum64_5_lo = utils.sum64_5_lo;
+>>>>>>> master
 
 var BlockHash = common.BlockHash;
 
@@ -35083,9 +37027,21 @@ var sha512_K = [
   0x5fcb6fab, 0x3ad6faec, 0x6c44198c, 0x4a475817
 ];
 
+<<<<<<< HEAD
+},{"./v1":215,"./v4":216}],213:[function(require,module,exports){
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+=======
 function SHA512() {
   if (!(this instanceof SHA512))
     return new SHA512();
+>>>>>>> master
 
   BlockHash.call(this);
   this.h = [
@@ -35103,10 +37059,32 @@ function SHA512() {
 utils.inherits(SHA512, BlockHash);
 module.exports = SHA512;
 
+<<<<<<< HEAD
+module.exports = bytesToUuid;
+
+},{}],214:[function(require,module,exports){
+(function (global){
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+var rng;
+
+var crypto = global.crypto || global.msCrypto; // for IE 11
+if (crypto && crypto.getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16);
+  rng = function whatwgRNG() {
+    crypto.getRandomValues(rnds8);
+    return rnds8;
+  };
+}
+=======
 SHA512.blockSize = 1024;
 SHA512.outSize = 512;
 SHA512.hmacStrength = 192;
 SHA512.padLength = 128;
+>>>>>>> master
 
 SHA512.prototype._prepareBlock = function _prepareBlock(msg, start) {
   var W = this.W;
@@ -35137,8 +37115,18 @@ SHA512.prototype._prepareBlock = function _prepareBlock(msg, start) {
   }
 };
 
+<<<<<<< HEAD
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],215:[function(require,module,exports){
+// Unique ID creation requires a high quality random # generator.  We feature
+// detect to determine the best RNG source, normalizing to a function that
+// returns 128-bits of randomness, since that's what's usually required
+var rng = require('./lib/rng');
+var bytesToUuid = require('./lib/bytesToUuid');
+=======
 SHA512.prototype._update = function _update(msg, start) {
   this._prepareBlock(msg, start);
+>>>>>>> master
 
   var W = this.W;
 
@@ -35274,10 +37262,18 @@ function s0_512_hi(xh, xl) {
   return r;
 }
 
+<<<<<<< HEAD
+module.exports = v1;
+
+},{"./lib/bytesToUuid":213,"./lib/rng":214}],216:[function(require,module,exports){
+var rng = require('./lib/rng');
+var bytesToUuid = require('./lib/bytesToUuid');
+=======
 function s0_512_lo(xh, xl) {
   var c0_lo = rotr64_lo(xh, xl, 28);
   var c1_lo = rotr64_lo(xl, xh, 2);  // 34
   var c2_lo = rotr64_lo(xl, xh, 7);  // 39
+>>>>>>> master
 
   var r = c0_lo ^ c1_lo ^ c2_lo;
   if (r < 0)
@@ -35545,6 +37541,587 @@ function rotl32(w, b) {
 }
 exports.rotl32 = rotl32;
 
+<<<<<<< HEAD
+},{"./lib/bytesToUuid":213,"./lib/rng":214}],217:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var block_reconciler_1 = require("./block-reconciler");
+var log_reconciler_1 = require("./log-reconciler");
+var immutable_1 = require("immutable");
+var createUuid = require("uuid");
+var BlockAndLogStreamer = /** @class */ (function () {
+    function BlockAndLogStreamer(getBlockByHash, getLogs, configuration) {
+        var _this = this;
+        this.blockHistory = Promise.resolve(immutable_1.List());
+        this.logHistory = Promise.resolve(immutable_1.List());
+        this.latestBlock = null;
+        this.logFilters = {};
+        this.onBlockAddedSubscribers = {};
+        this.onBlockRemovedSubscribers = {};
+        this.onLogAddedSubscribers = {};
+        this.onLogRemovedSubscribers = {};
+        this.reconcileNewBlock = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var blockHistory;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.blockHistory = block_reconciler_1.reconcileBlockHistory(this.getBlockByHash, this.blockHistory, block, this.onBlockAdded, this.onBlockRemoved, this.blockRetention);
+                        return [4 /*yield*/, this.blockHistory];
+                    case 1:
+                        blockHistory = _a.sent();
+                        this.latestBlock = blockHistory.last();
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.reconcileNewBlockCallbackStyle = function (block, callback) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.warn("Deprecation Warning: The callback interface for ethereumjs-blockstream is deprecated and will be removed in a future version of this library.  Use BlockAndLogStreamer.reconcileNewBlock instead.");
+                this.reconcileNewBlock(block)
+                    .then(function () { return callback(undefined); })
+                    .catch(function (error) { return callback(error); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.onBlockAdded = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            var logFilters;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        logFilters = Object.keys(this.logFilters).map(function (key) { return _this.logFilters[key]; });
+                        this.logHistory = log_reconciler_1.reconcileLogHistoryWithAddedBlock(this.getLogs, this.logHistory, block, this.onLogAdded, logFilters, this.blockRetention);
+                        return [4 /*yield*/, this.logHistory];
+                    case 1:
+                        _a.sent();
+                        Object.keys(this.onBlockAddedSubscribers)
+                            .map(function (key) { return _this.onBlockAddedSubscribers[key]; })
+                            .map(function (callback) { return logAndSwallowWrapper(callback); })
+                            .forEach(function (callback) { return callback(block); });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.onBlockRemoved = function (block) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.logHistory = log_reconciler_1.reconcileLogHistoryWithRemovedBlock(this.logHistory, block, this.onLogRemoved);
+                        return [4 /*yield*/, this.logHistory];
+                    case 1:
+                        _a.sent();
+                        Object.keys(this.onBlockRemovedSubscribers)
+                            .map(function (key) { return _this.onBlockRemovedSubscribers[key]; })
+                            .map(function (callback) { return logAndSwallowWrapper(callback); })
+                            .forEach(function (callback) { return callback(block); });
+                        return [2 /*return*/];
+                }
+            });
+        }); };
+        this.onLogAdded = function (log) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                Object.keys(this.onLogAddedSubscribers)
+                    .map(function (key) { return _this.onLogAddedSubscribers[key]; })
+                    .map(function (callback) { return logAndSwallowWrapper(callback); })
+                    .forEach(function (callback) { return callback(log); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.onLogRemoved = function (log) { return __awaiter(_this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                Object.keys(this.onLogRemovedSubscribers)
+                    .map(function (key) { return _this.onLogRemovedSubscribers[key]; })
+                    .map(function (callback) { return logAndSwallowWrapper(callback); })
+                    .forEach(function (callback) { return callback(log); });
+                return [2 /*return*/];
+            });
+        }); };
+        this.getLatestReconciledBlock = function () {
+            return _this.latestBlock;
+        };
+        this.addLogFilter = function (filter) {
+            var uuid = "log filter token " + createUuid();
+            _this.logFilters[uuid] = filter;
+            return uuid;
+        };
+        this.removeLogFilter = function (token) {
+            if (!token.startsWith("log filter token "))
+                throw new Error("Expected a log filter token.  Actual: " + token);
+            delete _this.logFilters[token];
+        };
+        this.subscribeToOnBlockAdded = function (onBlockAdded) {
+            var uuid = "on block added token " + createUuid();
+            _this.onBlockAddedSubscribers[uuid] = onBlockAdded;
+            return uuid;
+        };
+        this.unsubscribeFromOnBlockAdded = function (token) {
+            if (!token.startsWith("on block added token "))
+                throw new Error("Expected a block added subscription token.  Actual: " + token);
+            delete _this.onBlockAddedSubscribers[token];
+        };
+        this.subscribeToOnBlockRemoved = function (onBlockRemoved) {
+            var uuid = "on block removed token " + createUuid();
+            _this.onBlockRemovedSubscribers[uuid] = onBlockRemoved;
+            return uuid;
+        };
+        this.unsubscribeFromOnBlockRemoved = function (token) {
+            if (!token.startsWith("on block removed token "))
+                throw new Error("Expected a block added subscription token.  Actual: " + token);
+            delete _this.onBlockRemovedSubscribers[token];
+        };
+        this.subscribeToOnLogAdded = function (onLogAdded) {
+            var uuid = "on log added token " + createUuid();
+            _this.onLogAddedSubscribers[uuid] = onLogAdded;
+            return uuid;
+        };
+        this.unsubscribeFromOnLogAdded = function (token) {
+            if (!token.startsWith("on log added token "))
+                throw new Error("Expected a log added subscription token.  Actual: " + token);
+            delete _this.onLogAddedSubscribers[token];
+        };
+        this.subscribeToOnLogRemoved = function (onLogRemoved) {
+            var uuid = "on log removed token " + createUuid();
+            _this.onLogRemovedSubscribers[uuid] = onLogRemoved;
+            return uuid;
+        };
+        this.unsubscribeFromOnLogRemoved = function (token) {
+            if (!token.startsWith("on log removed token "))
+                throw new Error("Expected a log added subscription token.  Actual: " + token);
+            delete _this.onLogRemovedSubscribers[token];
+        };
+        this.getBlockByHash = getBlockByHash;
+        this.getLogs = getLogs;
+        this.blockRetention = (configuration && configuration.blockRetention) ? configuration.blockRetention : 100;
+    }
+    BlockAndLogStreamer.createCallbackStyle = function (getBlockByHash, getLogs, configuration) {
+        console.warn("Deprecation Warning: The callback interface for ethereumjs-blockstream is deprecated and will be removed in a future version of this library.  Use BlockAndLogStreamer constructor instead.");
+        var wrappedGetBlockByHash = function (hash) {
+            return new Promise(function (resolve, reject) {
+                getBlockByHash(hash, function (error, block) {
+                    if (error)
+                        throw error;
+                    else
+                        resolve(block);
+                });
+            });
+        };
+        var wrappedGetLogs = function (filterOptions) { return new Promise(function (resolve, reject) {
+            getLogs(filterOptions, function (error, logs) {
+                if (error)
+                    throw error;
+                if (!logs)
+                    throw new Error("Received null/undefined logs and no error.");
+                resolve(logs);
+            });
+        }); };
+        return new BlockAndLogStreamer(wrappedGetBlockByHash, wrappedGetLogs, configuration);
+    };
+    return BlockAndLogStreamer;
+}());
+exports.BlockAndLogStreamer = BlockAndLogStreamer;
+function logAndSwallowWrapper(callback) {
+    return function (parameter) {
+        try {
+            callback(parameter);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+}
+
+},{"./block-reconciler":218,"./log-reconciler":220,"immutable":378,"uuid":212}],218:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reconcileBlockHistory = function (getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention) {
+    if (blockRetention === void 0) { blockRetention = 100; }
+    return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, blockHistory];
+                case 1:
+                    blockHistory = _a.sent();
+                    if (!isFirstBlock(blockHistory)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 2: return [2 /*return*/, _a.sent()];
+                case 3:
+                    if (!isOlderThanOldestBlock(blockHistory, newBlock)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, rollback(blockHistory, onBlockRemoved)];
+                case 4:
+                    blockHistory = _a.sent();
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 5: return [2 /*return*/, _a.sent()];
+                case 6:
+                    if (isAlreadyInHistory(blockHistory, newBlock))
+                        return [2 /*return*/, blockHistory];
+                    if (!isNewHeadBlock(blockHistory, newBlock)) return [3 /*break*/, 8];
+                    return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 7: return [2 /*return*/, _a.sent()];
+                case 8:
+                    if (!parentHashIsInHistory(blockHistory, newBlock)) return [3 /*break*/, 13];
+                    _a.label = 9;
+                case 9:
+                    if (!(blockHistory.last().hash !== newBlock.parentHash)) return [3 /*break*/, 11];
+                    return [4 /*yield*/, removeHeadBlock(blockHistory, onBlockRemoved)];
+                case 10:
+                    blockHistory = _a.sent();
+                    return [3 /*break*/, 9];
+                case 11: return [4 /*yield*/, addNewHeadBlock(blockHistory, newBlock, onBlockAdded, blockRetention)];
+                case 12: return [2 /*return*/, _a.sent()];
+                case 13: return [4 /*yield*/, backfill(getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+                case 14: return [2 /*return*/, _a.sent()];
+            }
+        });
+    });
+};
+var rollback = function (blockHistory, onBlockRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!!blockHistory.isEmpty()) return [3 /*break*/, 2];
+                return [4 /*yield*/, removeHeadBlock(blockHistory, onBlockRemoved)];
+            case 1:
+                // CONSIDER: if this throws an exception, removals may have been announced that are actually still in history since throwing will result in no history update. we can't catch errors here because there isn't a clear way to recover from them, the failure may be a downstream system telling us that the block removal isn't possible because they are in a bad state. we could try re-announcing the successfully added blocks, but there would still be a problem with the failed block (should it be re-announced?) and the addition announcements may also fail
+                blockHistory = _a.sent();
+                return [3 /*break*/, 0];
+            case 2: return [2 /*return*/, blockHistory];
+        }
+    });
+}); };
+var backfill = function (getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention) { return __awaiter(_this, void 0, void 0, function () {
+    var parentBlock;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (newBlock.parentHash === "0x0000000000000000000000000000000000000000000000000000000000000000")
+                    return [2 /*return*/, rollback(blockHistory, onBlockRemoved)];
+                return [4 /*yield*/, getBlockByHash(newBlock.parentHash)];
+            case 1:
+                parentBlock = _a.sent();
+                if (parentBlock === null)
+                    throw new Error("Failed to fetch parent block.");
+                if (parseInt(parentBlock.number, 16) + blockRetention < parseInt(blockHistory.last().number, 16))
+                    return [2 /*return*/, rollback(blockHistory, onBlockRemoved)];
+                return [4 /*yield*/, exports.reconcileBlockHistory(getBlockByHash, blockHistory, parentBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+            case 2:
+                blockHistory = _a.sent();
+                return [4 /*yield*/, exports.reconcileBlockHistory(getBlockByHash, blockHistory, newBlock, onBlockAdded, onBlockRemoved, blockRetention)];
+            case 3: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+var addNewHeadBlock = function (blockHistory, newBlock, onBlockAdded, blockRetention) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                // this is here as a final sanity check, in case we somehow got into an unexpected state, there are no known (and should never be) ways to reach this exception
+                if (!blockHistory.isEmpty() && blockHistory.last().hash !== newBlock.parentHash)
+                    throw new Error("New head block's parent isn't our current head.");
+                // CONSIDER: the user getting this notification won't have any visibility into the updated block history yet. should we announce new blocks in a `setTimeout`? should we provide block history with new logs? an announcement failure will result in unwinding the stack and returning the original blockHistory, if we are in the process of backfilling we may have already announced previous blocks that won't actually end up in history (they won't get removed if a re-org occurs and may be re-announced). we can't catch errors thrown by the callback because it may be trying to signal to use that the block has become invalid and is un-processable
+                return [4 /*yield*/, onBlockAdded(newBlock)];
+            case 1:
+                // CONSIDER: the user getting this notification won't have any visibility into the updated block history yet. should we announce new blocks in a `setTimeout`? should we provide block history with new logs? an announcement failure will result in unwinding the stack and returning the original blockHistory, if we are in the process of backfilling we may have already announced previous blocks that won't actually end up in history (they won't get removed if a re-org occurs and may be re-announced). we can't catch errors thrown by the callback because it may be trying to signal to use that the block has become invalid and is un-processable
+                _a.sent();
+                blockHistory = blockHistory.push(newBlock);
+                return [2 /*return*/, blockHistory.takeLast(blockRetention).toList()];
+        }
+    });
+}); };
+var removeHeadBlock = function (blockHistory, onBlockRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    var removedBlock;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                removedBlock = blockHistory.last();
+                blockHistory = blockHistory.pop();
+                return [4 /*yield*/, onBlockRemoved(removedBlock)];
+            case 1:
+                _a.sent();
+                return [2 /*return*/, blockHistory];
+        }
+    });
+}); };
+var isFirstBlock = function (blockHistory) {
+    return blockHistory.isEmpty();
+};
+var isOlderThanOldestBlock = function (blockHistory, newBlock) {
+    return parseInt(blockHistory.first().number, 16) > parseInt(newBlock.number, 16);
+};
+var isAlreadyInHistory = function (blockHistory, newBlock) {
+    // `block!` is required until the next version of `immutable` is published to NPM (current version 3.8.1) which improves the type definitions
+    return blockHistory.some(function (block) { return block.hash === newBlock.hash; });
+};
+var isNewHeadBlock = function (blockHistory, newBlock) {
+    return blockHistory.last().hash === newBlock.parentHash;
+};
+var parentHashIsInHistory = function (blockHistory, newBlock) {
+    // `block!` is required until the next version of `immutable` is published to NPM (current version 3.8.1) which improves the type definitions
+    return blockHistory.some(function (block) { return block.hash === newBlock.parentHash; });
+};
+
+},{}],219:[function(require,module,exports){
+"use strict";
+// NOTE -- 	
+//  Commented out to avoid cross origin error produced when running again webpack
+//  More research is necessary to resolve, as it may simply be a configuration issue.
+//  Repro Steps: Checkout augur `new-contracts` branch + run `yarn dev` to start the dev server.  
+//  When accessing within a browser, attempts to get files via XHR produces cross origin errors due the proto being `webpack-internal`
+// import * as sourceMapSupport from "source-map-support";
+// sourceMapSupport.install();
+Object.defineProperty(exports, "__esModule", { value: true });
+var block_and_log_streamer_1 = require("./block-and-log-streamer");
+exports.BlockAndLogStreamer = block_and_log_streamer_1.BlockAndLogStreamer;
+
+},{"./block-and-log-streamer":217}],220:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reconcileLogHistoryWithAddedBlock = function (getLogs, logHistory, newBlock, onLogAdded, filters, historyBlockLength) {
+    if (filters === void 0) { filters = []; }
+    if (historyBlockLength === void 0) { historyBlockLength = 100; }
+    return __awaiter(_this, void 0, void 0, function () {
+        var logs;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, logHistory];
+                case 1:
+                    logHistory = _a.sent();
+                    return [4 /*yield*/, getFilteredLogs(getLogs, newBlock, filters)];
+                case 2:
+                    logs = _a.sent();
+                    return [4 /*yield*/, addNewLogsToHead(logHistory, logs, onLogAdded)];
+                case 3:
+                    logHistory = _a.sent();
+                    return [4 /*yield*/, pruneOldLogs(logHistory, newBlock, historyBlockLength)];
+                case 4:
+                    logHistory = _a.sent();
+                    return [2 /*return*/, logHistory];
+            }
+        });
+    });
+};
+var getFilteredLogs = function (getLogs, newBlock, filters) { return __awaiter(_this, void 0, void 0, function () {
+    var logPromises, nestedLogs;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                logPromises = filters
+                    .map(function (filter) { return ({ fromBlock: newBlock.number, toBlock: newBlock.number, address: filter.address, topics: filter.topics, }); })
+                    .map(function (filter) { return getLogs(filter); });
+                return [4 /*yield*/, Promise.all(logPromises)];
+            case 1:
+                nestedLogs = _a.sent();
+                return [2 /*return*/, nestedLogs.reduce(function (allLogs, logs) { return allLogs.concat(logs); }, [])];
+        }
+    });
+}); };
+var addNewLogsToHead = function (logHistory, newLogs, onLogAdded) { return __awaiter(_this, void 0, void 0, function () {
+    var sortedLogs, _loop_1, _i, sortedLogs_1, logToAdd;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                sortedLogs = newLogs.sort(function (logA, logB) { return parseInt(logA.logIndex, 16) - parseInt(logB.logIndex, 16); });
+                _loop_1 = function (logToAdd) {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                // we may already have this log because two filters can return the same log
+                                if (logHistory.some(function (logInHistory) { return logInHistory.blockHash === logToAdd.blockHash && logInHistory.logIndex === logToAdd.logIndex; }))
+                                    return [2 /*return*/, "continue"];
+                                ensureOrder(logHistory.last(), logToAdd);
+                                return [4 /*yield*/, addNewLogToHead(logHistory, logToAdd, onLogAdded)];
+                            case 1:
+                                logHistory = _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                };
+                _i = 0, sortedLogs_1 = sortedLogs;
+                _a.label = 1;
+            case 1:
+                if (!(_i < sortedLogs_1.length)) return [3 /*break*/, 4];
+                logToAdd = sortedLogs_1[_i];
+                return [5 /*yield**/, _loop_1(logToAdd)];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+var pruneOldLogs = function (logHistory, newBlock, historyBlockLength) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        // `log!` is required until the next major version of `immutable` is published to NPM (current version 3.8.2) which improves the type definitions
+        return [2 /*return*/, logHistory.skipUntil(function (log) { return parseInt(newBlock.number, 16) - parseInt(log.blockNumber, 16) < historyBlockLength; }).toList()];
+    });
+}); };
+var addNewLogToHead = function (logHistory, newLog, onLogAdded) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                logHistory = logHistory.push(newLog);
+                // CONSIDER: the user getting this notification won't have any visibility into the updated log history yet. should we announce new logs in a `setTimeout`? should we provide log history with new logs?
+                return [4 /*yield*/, onLogAdded(newLog)];
+            case 1:
+                // CONSIDER: the user getting this notification won't have any visibility into the updated log history yet. should we announce new logs in a `setTimeout`? should we provide log history with new logs?
+                _a.sent();
+                return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+var ensureOrder = function (headLog, newLog) {
+    if (headLog === undefined)
+        return;
+    var headBlockNumber = parseInt(headLog.blockNumber, 16);
+    var newLogBlockNumber = parseInt(newLog.blockNumber, 16);
+    if (headBlockNumber > newLogBlockNumber)
+        throw new Error("received log for a block (" + newLogBlockNumber + ") older than current head log's block (" + headBlockNumber + ")");
+    if (headBlockNumber !== newLogBlockNumber)
+        return;
+    var headLogIndex = parseInt(headLog.logIndex, 16);
+    var newLogIndex = parseInt(newLog.logIndex, 16);
+    if (headLogIndex >= newLogIndex)
+        throw new Error("received log with same block number (" + newLogBlockNumber + ") but index (" + newLogIndex + ") is the same or older than previous index (" + headLogIndex + ")");
+};
+exports.reconcileLogHistoryWithRemovedBlock = function (logHistory, removedBlock, onLogRemoved) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, logHistory];
+            case 1:
+                logHistory = _a.sent();
+                _a.label = 2;
+            case 2:
+                if (!(!logHistory.isEmpty() && logHistory.last().blockHash === removedBlock.hash)) return [3 /*break*/, 4];
+                return [4 /*yield*/, onLogRemoved(logHistory.last())];
+            case 3:
+                _a.sent();
+                logHistory = logHistory.pop();
+                return [3 /*break*/, 2];
+            case 4:
+                // sanity check, no known way to trigger the error
+                if (logHistory.some(function (log) { return log.blockHash === removedBlock.hash; }))
+                    throw new Error("found logs for removed block not at head of log history");
+                return [2 /*return*/, logHistory];
+        }
+    });
+}); };
+
+},{}],221:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+=======
 function sum32(a, b) {
   return (a + b) >>> 0;
 }
@@ -35568,6 +38145,7 @@ exports.sum32_5 = sum32_5;
 function sum64(buf, pos, ah, al) {
   var bh = buf[pos];
   var bl = buf[pos + 1];
+>>>>>>> master
 
   var lo = (al + bl) >>> 0;
   var hi = (lo < al ? 1 : 0) + ah + bh;
@@ -35837,6 +38415,11 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       c /= 2
     }
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"buffer":167,"ethereum-common/params.json":208,"ethereumjs-util":222}],222:[function(require,module,exports){
+'use strict';
+=======
     if (e + eBias >= eMax) {
       m = 0
       e = eMax
@@ -35848,6 +38431,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       e = 0
     }
   }
+>>>>>>> master
 
   for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
@@ -36414,9 +38998,30 @@ module.exports = require('browserify-sha3').SHA3Hash
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
+<<<<<<< HEAD
+      // make sure all the items are buffers
+      data.forEach(function (d, i) {
+        self[self._fields[i]] = exports.toBuffer(d);
+      });
+    } else if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+      var keys = Object.keys(data);
+      fields.forEach(function (field) {
+        if (keys.indexOf(field.name) !== -1) self[field.name] = data[field.name];
+        if (keys.indexOf(field.alias) !== -1) self[field.alias] = data[field.alias];
+      });
+    } else {
+      throw new Error('invalid data');
+    }
+  }
+};
+},{"assert":162,"bn.js":155,"create-hash":174,"ethjs-util":223,"keccak":383,"rlp":453,"safe-buffer":454,"secp256k1":455}],223:[function(require,module,exports){
+(function (Buffer){
+'use strict';
+=======
   /** Error message constants. */
   var CORE_ERROR_TEXT = 'Unsupported core-js use. Try https://npms.io/search?q=ponyfill.',
       FUNC_ERROR_TEXT = 'Expected a function';
+>>>>>>> master
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -36586,8 +39191,29 @@ module.exports = require('browserify-sha3').SHA3Hash
   /** Used to detect octal string values. */
   var reIsOctal = /^0o[0-7]+$/i;
 
+<<<<<<< HEAD
+module.exports = {
+  arrayContainsArray: arrayContainsArray,
+  intToBuffer: intToBuffer,
+  getBinarySize: getBinarySize,
+  isHexPrefixed: isHexPrefixed,
+  stripHexPrefix: stripHexPrefix,
+  padToEven: padToEven,
+  intToHex: intToHex,
+  fromAscii: fromAscii,
+  fromUtf8: fromUtf8,
+  toAscii: toAscii,
+  toUtf8: toUtf8,
+  getKeys: getKeys,
+  isHexString: isHexString
+};
+}).call(this,require("buffer").Buffer)
+},{"buffer":167,"is-hex-prefixed":381,"strip-hex-prefix":507}],224:[function(require,module,exports){
+'use strict';
+=======
   /** Used to detect unsigned integer values. */
   var reIsUint = /^(?:0|[1-9]\d*)$/;
+>>>>>>> master
 
   /** Used to match Latin Unicode letters (excluding mathematical operators). */
   var reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
@@ -36669,8 +39295,22 @@ module.exports = require('browserify-sha3').SHA3Hash
     rsEmoji
   ].join('|'), 'g');
 
+<<<<<<< HEAD
+function rethrow(error) {
+    throw error;
+}
+module.exports = exports['default'];
+},{"./internal/initialParams":232,"./internal/setImmediate":236,"lodash/isObject":415}],225:[function(require,module,exports){
+(function (process,global,setImmediate){
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (factory((global.async = global.async || {})));
+}(this, (function (exports) { 'use strict';
+=======
   /** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
   var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
+>>>>>>> master
 
   /** Used to detect strings that need a more robust regexp to match words. */
   var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2,}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
@@ -40861,6 +43501,299 @@ module.exports = require('browserify-sha3').SHA3Hash
       return typeof value == 'function' ? value : identity;
     }
 
+<<<<<<< HEAD
+var index = {
+    apply: apply,
+    applyEach: applyEach,
+    applyEachSeries: applyEachSeries,
+    asyncify: asyncify,
+    auto: auto,
+    autoInject: autoInject,
+    cargo: cargo,
+    compose: compose,
+    concat: concat,
+    concatLimit: concatLimit,
+    concatSeries: concatSeries,
+    constant: constant,
+    detect: detect,
+    detectLimit: detectLimit,
+    detectSeries: detectSeries,
+    dir: dir,
+    doDuring: doDuring,
+    doUntil: doUntil,
+    doWhilst: doWhilst,
+    during: during,
+    each: eachLimit,
+    eachLimit: eachLimit$1,
+    eachOf: eachOf,
+    eachOfLimit: eachOfLimit,
+    eachOfSeries: eachOfSeries,
+    eachSeries: eachSeries,
+    ensureAsync: ensureAsync,
+    every: every,
+    everyLimit: everyLimit,
+    everySeries: everySeries,
+    filter: filter,
+    filterLimit: filterLimit,
+    filterSeries: filterSeries,
+    forever: forever,
+    groupBy: groupBy,
+    groupByLimit: groupByLimit,
+    groupBySeries: groupBySeries,
+    log: log,
+    map: map,
+    mapLimit: mapLimit,
+    mapSeries: mapSeries,
+    mapValues: mapValues,
+    mapValuesLimit: mapValuesLimit,
+    mapValuesSeries: mapValuesSeries,
+    memoize: memoize,
+    nextTick: nextTick,
+    parallel: parallelLimit,
+    parallelLimit: parallelLimit$1,
+    priorityQueue: priorityQueue,
+    queue: queue$1,
+    race: race,
+    reduce: reduce,
+    reduceRight: reduceRight,
+    reflect: reflect,
+    reflectAll: reflectAll,
+    reject: reject,
+    rejectLimit: rejectLimit,
+    rejectSeries: rejectSeries,
+    retry: retry,
+    retryable: retryable,
+    seq: seq,
+    series: series,
+    setImmediate: setImmediate$1,
+    some: some,
+    someLimit: someLimit,
+    someSeries: someSeries,
+    sortBy: sortBy,
+    timeout: timeout,
+    times: times,
+    timesLimit: timeLimit,
+    timesSeries: timesSeries,
+    transform: transform,
+    tryEach: tryEach,
+    unmemoize: unmemoize,
+    until: until,
+    waterfall: waterfall,
+    whilst: whilst,
+
+    // aliases
+    all: every,
+    allLimit: everyLimit,
+    allSeries: everySeries,
+    any: some,
+    anyLimit: someLimit,
+    anySeries: someSeries,
+    find: detect,
+    findLimit: detectLimit,
+    findSeries: detectSeries,
+    forEach: eachLimit,
+    forEachSeries: eachSeries,
+    forEachLimit: eachLimit$1,
+    forEachOf: eachOf,
+    forEachOfSeries: eachOfSeries,
+    forEachOfLimit: eachOfLimit,
+    inject: reduce,
+    foldl: reduce,
+    foldr: reduceRight,
+    select: filter,
+    selectLimit: filterLimit,
+    selectSeries: filterSeries,
+    wrapSync: asyncify
+};
+
+exports['default'] = index;
+exports.apply = apply;
+exports.applyEach = applyEach;
+exports.applyEachSeries = applyEachSeries;
+exports.asyncify = asyncify;
+exports.auto = auto;
+exports.autoInject = autoInject;
+exports.cargo = cargo;
+exports.compose = compose;
+exports.concat = concat;
+exports.concatLimit = concatLimit;
+exports.concatSeries = concatSeries;
+exports.constant = constant;
+exports.detect = detect;
+exports.detectLimit = detectLimit;
+exports.detectSeries = detectSeries;
+exports.dir = dir;
+exports.doDuring = doDuring;
+exports.doUntil = doUntil;
+exports.doWhilst = doWhilst;
+exports.during = during;
+exports.each = eachLimit;
+exports.eachLimit = eachLimit$1;
+exports.eachOf = eachOf;
+exports.eachOfLimit = eachOfLimit;
+exports.eachOfSeries = eachOfSeries;
+exports.eachSeries = eachSeries;
+exports.ensureAsync = ensureAsync;
+exports.every = every;
+exports.everyLimit = everyLimit;
+exports.everySeries = everySeries;
+exports.filter = filter;
+exports.filterLimit = filterLimit;
+exports.filterSeries = filterSeries;
+exports.forever = forever;
+exports.groupBy = groupBy;
+exports.groupByLimit = groupByLimit;
+exports.groupBySeries = groupBySeries;
+exports.log = log;
+exports.map = map;
+exports.mapLimit = mapLimit;
+exports.mapSeries = mapSeries;
+exports.mapValues = mapValues;
+exports.mapValuesLimit = mapValuesLimit;
+exports.mapValuesSeries = mapValuesSeries;
+exports.memoize = memoize;
+exports.nextTick = nextTick;
+exports.parallel = parallelLimit;
+exports.parallelLimit = parallelLimit$1;
+exports.priorityQueue = priorityQueue;
+exports.queue = queue$1;
+exports.race = race;
+exports.reduce = reduce;
+exports.reduceRight = reduceRight;
+exports.reflect = reflect;
+exports.reflectAll = reflectAll;
+exports.reject = reject;
+exports.rejectLimit = rejectLimit;
+exports.rejectSeries = rejectSeries;
+exports.retry = retry;
+exports.retryable = retryable;
+exports.seq = seq;
+exports.series = series;
+exports.setImmediate = setImmediate$1;
+exports.some = some;
+exports.someLimit = someLimit;
+exports.someSeries = someSeries;
+exports.sortBy = sortBy;
+exports.timeout = timeout;
+exports.times = times;
+exports.timesLimit = timeLimit;
+exports.timesSeries = timesSeries;
+exports.transform = transform;
+exports.tryEach = tryEach;
+exports.unmemoize = unmemoize;
+exports.until = until;
+exports.waterfall = waterfall;
+exports.whilst = whilst;
+exports.all = every;
+exports.allLimit = everyLimit;
+exports.allSeries = everySeries;
+exports.any = some;
+exports.anyLimit = someLimit;
+exports.anySeries = someSeries;
+exports.find = detect;
+exports.findLimit = detectLimit;
+exports.findSeries = detectSeries;
+exports.forEach = eachLimit;
+exports.forEachSeries = eachSeries;
+exports.forEachLimit = eachLimit$1;
+exports.forEachOf = eachOf;
+exports.forEachOfSeries = eachOfSeries;
+exports.forEachOfLimit = eachOfLimit;
+exports.inject = reduce;
+exports.foldl = reduce;
+exports.foldr = reduceRight;
+exports.select = filter;
+exports.selectLimit = filterLimit;
+exports.selectSeries = filterSeries;
+exports.wrapSync = asyncify;
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+},{"_process":428,"timers":170}],226:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// A temporary value used to identify if the loop should be broken.
+// See #1064, #1293
+exports.default = {};
+module.exports = exports["default"];
+},{}],227:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = _createTester;
+
+var _noop = require('lodash/noop');
+
+var _noop2 = _interopRequireDefault(_noop);
+
+var _breakLoop = require('./breakLoop');
+
+var _breakLoop2 = _interopRequireDefault(_breakLoop);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _createTester(check, getResult) {
+    return function (eachfn, arr, iteratee, cb) {
+        cb = cb || _noop2.default;
+        var testPassed = false;
+        var testResult;
+        eachfn(arr, function (value, _, callback) {
+            iteratee(value, function (err, result) {
+                if (err) {
+                    callback(err);
+                } else if (check(result) && !testResult) {
+                    testPassed = true;
+                    testResult = getResult(true, value);
+                    callback(null, _breakLoop2.default);
+                } else {
+                    callback();
+                }
+            });
+        }, function (err) {
+            if (err) {
+                cb(err);
+            } else {
+                cb(null, testPassed ? testResult : getResult(false));
+            }
+        });
+    };
+}
+module.exports = exports['default'];
+},{"./breakLoop":226,"lodash/noop":421}],228:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = doLimit;
+function doLimit(fn, limit) {
+    return function (iterable, iteratee, callback) {
+        return fn(iterable, limit, iteratee, callback);
+    };
+}
+module.exports = exports["default"];
+},{}],229:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = doParallelLimit;
+
+var _eachOfLimit = require('./eachOfLimit');
+
+var _eachOfLimit2 = _interopRequireDefault(_eachOfLimit);
+
+var _wrapAsync = require('./wrapAsync');
+=======
     /**
      * Casts `value` to a path array if it's not one.
      *
@@ -40875,6 +43808,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return isKey(value, object) ? [value] : stringToPath(toString(value));
     }
+>>>>>>> master
 
     /**
      * A `baseRest` alias which can be replaced with `identity` by module
@@ -40911,6 +43845,18 @@ module.exports = require('browserify-sha3').SHA3Hash
     var clearTimeout = ctxClearTimeout || function(id) {
       return root.clearTimeout(id);
     };
+<<<<<<< HEAD
+}
+module.exports = exports['default'];
+},{"./eachOfLimit":230,"./wrapAsync":238}],230:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = _eachOfLimit;
+=======
+>>>>>>> master
 
     /**
      * Creates a clone of  `buffer`.
@@ -41108,6 +44054,18 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+        replenish();
+    };
+}
+module.exports = exports['default'];
+},{"./breakLoop":226,"./iterator":233,"./once":234,"./onlyOnce":235,"lodash/noop":421}],231:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+=======
     /**
      * This function is like `composeArgs` except that the arguments composition
      * is tailored for `_.partialRight`.
@@ -41129,6 +44087,7 @@ module.exports = require('browserify-sha3').SHA3Hash
           rangeLength = nativeMax(argsLength - holdersLength, 0),
           result = Array(rangeLength + rightLength),
           isUncurried = !isCurried;
+>>>>>>> master
 
       while (++argsIndex < rangeLength) {
         result[argsIndex] = args[argsIndex];
@@ -41157,12 +44116,18 @@ module.exports = require('browserify-sha3').SHA3Hash
       var index = -1,
           length = source.length;
 
+<<<<<<< HEAD
+module.exports = exports['default'];
+},{}],232:[function(require,module,exports){
+'use strict';
+=======
       array || (array = Array(length));
       while (++index < length) {
         array[index] = source[index];
       }
       return array;
     }
+>>>>>>> master
 
     /**
      * Copies properties of `source` to `object`.
@@ -41200,6 +44165,11 @@ module.exports = require('browserify-sha3').SHA3Hash
       return object;
     }
 
+<<<<<<< HEAD
+module.exports = exports['default'];
+},{"./slice":237}],233:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Copies own symbols of `source` to `object`.
      *
@@ -41211,6 +44181,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function copySymbols(source, object) {
       return copyObject(source, getSymbols(source), object);
     }
+>>>>>>> master
 
     /**
      * Copies own and inherited symbols of `source` to `object`.
@@ -41348,6 +44319,47 @@ module.exports = require('browserify-sha3').SHA3Hash
       return wrapper;
     }
 
+<<<<<<< HEAD
+    var iterator = (0, _getIterator2.default)(coll);
+    return iterator ? createES2015Iterator(iterator) : createObjectIterator(coll);
+}
+module.exports = exports['default'];
+},{"./getIterator":231,"lodash/isArrayLike":411,"lodash/keys":419}],234:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = once;
+function once(fn) {
+    return function () {
+        if (fn === null) return;
+        var callFn = fn;
+        fn = null;
+        callFn.apply(this, arguments);
+    };
+}
+module.exports = exports["default"];
+},{}],235:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = onlyOnce;
+function onlyOnce(fn) {
+    return function () {
+        if (fn === null) throw new Error("Callback was already called.");
+        var callFn = fn;
+        fn = null;
+        callFn.apply(this, arguments);
+    };
+}
+module.exports = exports["default"];
+},{}],236:[function(require,module,exports){
+(function (process,setImmediate){
+'use strict';
+=======
     /**
      * Creates a function like `_.lowerFirst`.
      *
@@ -41362,6 +44374,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         var strSymbols = hasUnicode(string)
           ? stringToArray(string)
           : undefined;
+>>>>>>> master
 
         var chr = strSymbols
           ? strSymbols[0]
@@ -41446,6 +44459,12 @@ module.exports = require('browserify-sha3').SHA3Hash
           ? []
           : replaceHolders(args, placeholder);
 
+<<<<<<< HEAD
+exports.default = wrap(_defer);
+}).call(this,require('_process'),require("timers").setImmediate)
+},{"./slice":237,"_process":428,"timers":170}],237:[function(require,module,exports){
+"use strict";
+=======
         length -= holders.length;
         if (length < arity) {
           return createRecurry(
@@ -41457,6 +44476,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return wrapper;
     }
+>>>>>>> master
 
     /**
      * Creates a `_.find` or `_.findLast` function.
@@ -41477,6 +44497,25 @@ module.exports = require('browserify-sha3').SHA3Hash
         return index > -1 ? iterable[iteratee ? collection[index] : index] : undefined;
       };
     }
+<<<<<<< HEAD
+    return newArr;
+}
+module.exports = exports["default"];
+},{}],238:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.isAsync = undefined;
+
+var _asyncify = require('../asyncify');
+
+var _asyncify2 = _interopRequireDefault(_asyncify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+=======
+>>>>>>> master
 
     /**
      * Creates a `_.flow` or `_.flowRight` function.
@@ -41510,6 +44549,12 @@ module.exports = require('browserify-sha3').SHA3Hash
           var funcName = getFuncName(func),
               data = funcName == 'wrapper' ? getData(func) : undefined;
 
+<<<<<<< HEAD
+exports.default = wrapAsync;
+exports.isAsync = isAsync;
+},{"../asyncify":224}],239:[function(require,module,exports){
+'use strict';
+=======
           if (data && isLaziable(data[0]) &&
                 data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) &&
                 !data[4].length && data[9] == 1
@@ -41524,6 +44569,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         return function() {
           var args = arguments,
               value = args[0];
+>>>>>>> master
 
           if (wrapper && args.length == 1 && isArray(value)) {
             return wrapper.plant(value).value();
@@ -41660,6 +44706,33 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+/**
+ * The same as [`some`]{@link module:Collections.some} but runs a maximum of `limit` async operations at a time.
+ *
+ * @name someLimit
+ * @static
+ * @memberOf module:Collections
+ * @method
+ * @see [async.some]{@link module:Collections.some}
+ * @alias anyLimit
+ * @category Collection
+ * @param {Array|Iterable|Object} coll - A collection to iterate over.
+ * @param {number} limit - The maximum number of async operations at a time.
+ * @param {AsyncFunction} iteratee - An async truth test to apply to each item
+ * in the collections in parallel.
+ * The iteratee should complete with a boolean `result` value.
+ * Invoked with (item, callback).
+ * @param {Function} [callback] - A callback which is called as soon as any
+ * iteratee returns `true`, or after all the iteratee functions have finished.
+ * Result will be either `true` or `false` depending on the values of the async
+ * tests. Invoked with (err, result).
+ */
+exports.default = (0, _doParallelLimit2.default)((0, _createTester2.default)(Boolean, _identity2.default));
+module.exports = exports['default'];
+},{"./internal/createTester":227,"./internal/doParallelLimit":229,"lodash/identity":408}],240:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Creates a function like `_.over`.
      *
@@ -41678,6 +44751,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         });
       });
     }
+>>>>>>> master
 
     /**
      * Creates the padding for `string` based on `length`. The `chars` string
@@ -41761,6 +44835,32 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+/**
+ * The same as [`some`]{@link module:Collections.some} but runs only a single async operation at a time.
+ *
+ * @name someSeries
+ * @static
+ * @memberOf module:Collections
+ * @method
+ * @see [async.some]{@link module:Collections.some}
+ * @alias anySeries
+ * @category Collection
+ * @param {Array|Iterable|Object} coll - A collection to iterate over.
+ * @param {AsyncFunction} iteratee - An async truth test to apply to each item
+ * in the collections in series.
+ * The iteratee should complete with a boolean `result` value.
+ * Invoked with (item, callback).
+ * @param {Function} [callback] - A callback which is called as soon as any
+ * iteratee returns `true`, or after all the iteratee functions have finished.
+ * Result will be either `true` or `false` depending on the values of the async
+ * tests. Invoked with (err, result).
+ */
+exports.default = (0, _doLimit2.default)(_someLimit2.default, 1);
+module.exports = exports['default'];
+},{"./internal/doLimit":228,"./someLimit":239}],241:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a function that performs a relational operation on two values.
      *
@@ -41777,6 +44877,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         return operator(value, other);
       };
     }
+>>>>>>> master
 
     /**
      * Creates a function that wraps `func` to continue currying.
@@ -41802,8 +44903,23 @@ module.exports = require('browserify-sha3').SHA3Hash
           newPartials = isCurry ? partials : undefined,
           newPartialsRight = isCurry ? undefined : partials;
 
+<<<<<<< HEAD
+},{}],242:[function(require,module,exports){
+arguments[4][212][0].apply(exports,arguments)
+},{"./v1":245,"./v4":246,"dup":212}],243:[function(require,module,exports){
+arguments[4][213][0].apply(exports,arguments)
+},{"dup":213}],244:[function(require,module,exports){
+arguments[4][214][0].apply(exports,arguments)
+},{"dup":214}],245:[function(require,module,exports){
+arguments[4][215][0].apply(exports,arguments)
+},{"./lib/bytesToUuid":243,"./lib/rng":244,"dup":215}],246:[function(require,module,exports){
+arguments[4][216][0].apply(exports,arguments)
+},{"./lib/bytesToUuid":243,"./lib/rng":244,"dup":216}],247:[function(require,module,exports){
+"use strict";
+=======
       bitmask |= (isCurry ? WRAP_PARTIAL_FLAG : WRAP_PARTIAL_RIGHT_FLAG);
       bitmask &= ~(isCurry ? WRAP_PARTIAL_RIGHT_FLAG : WRAP_PARTIAL_FLAG);
+>>>>>>> master
 
       if (!(bitmask & WRAP_CURRY_BOUND_FLAG)) {
         bitmask &= ~(WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG);
@@ -41839,12 +44955,17 @@ module.exports = require('browserify-sha3').SHA3Hash
           var pair = (toString(number) + 'e').split('e'),
               value = func(pair[0] + 'e' + (+pair[1] + precision));
 
+<<<<<<< HEAD
+},{"../internal-state":273,"../wrappers/eth":346,"es6-promise":207,"ethereumjs-blockstream":219}],248:[function(require,module,exports){
+"use strict";
+=======
           pair = (toString(value) + 'e').split('e');
           return +(pair[0] + 'e' + (+pair[1] - precision));
         }
         return func(number);
       };
     }
+>>>>>>> master
 
     /**
      * Creates a set object of `values`.
@@ -41857,6 +44978,42 @@ module.exports = require('browserify-sha3').SHA3Hash
       return new Set(values);
     };
 
+<<<<<<< HEAD
+/**
+ * Ensures that we have the latest block.
+ */
+function ensureLatestBlock(callback) {
+  return function (dispatch) {
+    dispatch(eth_getBlockByNumber(["latest", false], function (err, block) {
+      if (err) return callback(err);
+      if (block == null) return callback(new RPCError("BLOCK_NOT_FOUND"));
+      dispatch({ type: "SET_CURRENT_BLOCK", data: block });
+      callback(null, block);
+    }));
+  };
+}
+
+module.exports = ensureLatestBlock;
+
+},{"../errors/rpc-error":271,"../wrappers/eth":346}],249:[function(require,module,exports){
+"use strict";
+
+var startPollingForBlocks = require("./start-polling-for-blocks");
+var subscribeToNewBlockNotifications = require("./subscribe-to-new-block-notifications");
+var unsubscribeFromNewBlockNotifications = require("./unsubscribe-from-new-block-notifications");
+var isMetaMask = require("../utils/is-meta-mask");
+
+function listenForNewBlocks() {
+  return function (dispatch) {
+    if (isMetaMask()) { // MetaMask doesn't throw an error on eth_subscribe, but doesn't actually send block notifications, so we need to poll instead...
+      dispatch(startPollingForBlocks());
+    } else {
+      dispatch(subscribeToNewBlockNotifications(function (err) {
+        console.info("[ethrpc] eth_subscribe request failed, fall back to polling for blocks:", err.message);
+        dispatch(unsubscribeFromNewBlockNotifications());
+        dispatch(startPollingForBlocks());
+      }));
+=======
     /**
      * Creates a `_.toPairs` or `_.toPairsIn` function.
      *
@@ -41875,6 +45032,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         }
         return baseToPairs(object, keysFunc(object));
       };
+>>>>>>> master
     }
 
     /**
@@ -41916,9 +45074,14 @@ module.exports = require('browserify-sha3').SHA3Hash
       arity = arity === undefined ? arity : toInteger(arity);
       length -= holders ? holders.length : 0;
 
+<<<<<<< HEAD
+},{"../utils/is-meta-mask":333,"./start-polling-for-blocks":252,"./subscribe-to-new-block-notifications":254,"./unsubscribe-from-new-block-notifications":255}],250:[function(require,module,exports){
+"use strict";
+=======
       if (bitmask & WRAP_PARTIAL_RIGHT_FLAG) {
         var partialsRight = partials,
             holdersRight = holders;
+>>>>>>> master
 
         partials = holders = undefined;
       }
@@ -41941,6 +45104,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? (isBindKey ? 0 : func.length)
         : nativeMax(newData[9] - length, 0);
 
+<<<<<<< HEAD
+},{"../internal-state":273,"../transact/reprocess-transactions":310,"../utils/log-error":335}],251:[function(require,module,exports){
+"use strict";
+=======
       if (!arity && bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG)) {
         bitmask &= ~(WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG);
       }
@@ -41956,6 +45123,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var setter = data ? baseSetData : setData;
       return setWrapToString(setter(result, newData), func, bitmask);
     }
+>>>>>>> master
 
     /**
      * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
@@ -42014,6 +45182,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isPlainObject(value) ? undefined : value;
     }
 
+<<<<<<< HEAD
+},{"../internal-state":273,"../utils/log-error":335,"../wrappers/eth":346,"./create-block-and-log-streamer":247,"./listen-for-new-blocks":249}],252:[function(require,module,exports){
+"use strict";
+=======
     /**
      * A specialized version of `baseIsEqualDeep` for arrays with support for
      * partial deep comparisons.
@@ -42031,6 +45203,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
           arrLength = array.length,
           othLength = other.length;
+>>>>>>> master
 
       if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
         return false;
@@ -42052,6 +45225,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         var arrValue = array[index],
             othValue = other[index];
 
+<<<<<<< HEAD
+},{"../store-observers/current-block":304,"../wrappers/eth":346,"./on-new-block":250}],253:[function(require,module,exports){
+"use strict";
+=======
         if (customizer) {
           var compared = isPartial
             ? customizer(othValue, arrValue, index, other, array, stack)
@@ -42087,6 +45264,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       stack['delete'](other);
       return result;
     }
+>>>>>>> master
 
     /**
      * A specialized version of `baseIsEqualDeep` for comparing objects of
@@ -42122,12 +45300,17 @@ module.exports = require('browserify-sha3').SHA3Hash
           }
           return true;
 
+<<<<<<< HEAD
+},{}],254:[function(require,module,exports){
+"use strict";
+=======
         case boolTag:
         case dateTag:
         case numberTag:
           // Coerce booleans to `1` or `0` and dates to milliseconds.
           // Invalid dates are coerced to `NaN`.
           return eq(+object, +other);
+>>>>>>> master
 
         case errorTag:
           return object.name == other.name && object.message == other.message;
@@ -42146,6 +45329,10 @@ module.exports = require('browserify-sha3').SHA3Hash
           var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
           convert || (convert = setToArray);
 
+<<<<<<< HEAD
+},{"../internal-state":273,"../store-observers/current-block":304,"../utils/log-error":335,"../wrappers/eth":346,"./on-new-block":250}],255:[function(require,module,exports){
+"use strict";
+=======
           if (object.size != other.size && !isPartial) {
             return false;
           }
@@ -42155,6 +45342,7 @@ module.exports = require('browserify-sha3').SHA3Hash
             return stacked == other;
           }
           bitmask |= COMPARE_UNORDERED_FLAG;
+>>>>>>> master
 
           // Recursively compare objects (susceptible to call stack limits).
           stack.set(object, other);
@@ -42190,6 +45378,10 @@ module.exports = require('browserify-sha3').SHA3Hash
           othProps = getAllKeys(other),
           othLength = othProps.length;
 
+<<<<<<< HEAD
+},{"../internal-state":273,"../store-observers":305,"../utils/log-error":335,"../wrappers/eth":346}],256:[function(require,module,exports){
+"use strict";
+=======
       if (objLength != othLength && !isPartial) {
         return false;
       }
@@ -42208,6 +45400,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var result = true;
       stack.set(object, other);
       stack.set(other, object);
+>>>>>>> master
 
       var skipCtor = isPartial;
       while (++index < objLength) {
@@ -42228,11 +45421,27 @@ module.exports = require('browserify-sha3').SHA3Hash
           result = false;
           break;
         }
+<<<<<<< HEAD
+      }));
+    }
+    if (!callback && isFunction(mine)) {
+      callback = mine;
+      mine = null;
+    }
+    if (!mine) return waitForNextBlocks(null);
+    dispatch(miner.start(null, waitForNextBlocks));
+  };
+};
+
+},{"../constants":259,"../errors/rpc-error":271,"../utils/is-function":330,"../wrappers/eth":346,"../wrappers/miner":349}],257:[function(require,module,exports){
+"use strict";
+=======
         skipCtor || (skipCtor = key == 'constructor');
       }
       if (result && !skipCtor) {
         var objCtor = object.constructor,
             othCtor = other.constructor;
+>>>>>>> master
 
         // Non `Object` object instances with different constructors are not equal.
         if (objCtor != othCtor &&
@@ -42269,6 +45478,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseGetAllKeys(object, keys, getSymbols);
     }
 
+<<<<<<< HEAD
+},{"./internal-state":273,"./utils/is-object":334}],258:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an array of own and inherited enumerable property names and
      * symbols of `object`.
@@ -42280,6 +45493,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function getAllKeysIn(object) {
       return baseGetAllKeys(object, keysIn, getSymbolsIn);
     }
+>>>>>>> master
 
     /**
      * Gets metadata for `func`.
@@ -42378,6 +45592,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+},{"./block-management/ensure-latest-block":248,"./block-management/start-block-stream":251,"./errors/rpc-error":271,"./internal-state":273,"./reset-state":301,"./transport/transporter":327,"./utils/is-function":330,"./utils/log-error":335,"./validate/validate-configuration":340,"./wrappers/net":350,"./wrappers/set-coinbase":356,"./wrappers/set-gas-price":357,"async":225}],259:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Gets the native function at `key` of `object`.
      *
@@ -42390,6 +45608,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var value = getValue(object, key);
       return baseIsNative(value) ? value : undefined;
     }
+>>>>>>> master
 
     /**
      * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
@@ -42536,9 +45755,14 @@ module.exports = require('browserify-sha3').SHA3Hash
     function hasPath(object, path, hasFunc) {
       path = castPath(path, object);
 
+<<<<<<< HEAD
+},{"bignumber.js":153}],260:[function(require,module,exports){
+"use strict";
+=======
       var index = -1,
           length = path.length,
           result = false;
+>>>>>>> master
 
       while (++index < length) {
         var key = toKey(path[index]);
@@ -42776,6 +46000,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return !!maskSrcKey && (maskSrcKey in func);
     }
 
+<<<<<<< HEAD
+},{"./block-management/ensure-latest-block":248,"./block-management/start-block-stream.js":251,"./block-management/wait-for-next-blocks":256,"./clear-transactions":257,"./connect":258,"./constants":259,"./debug/set-debug-options":261,"./encode-request/package-request":267,"./errors/codes":270,"./internal-state":273,"./raw-transactions/package-and-sign-raw-transaction":278,"./raw-transactions/package-and-submit-raw-transaction":279,"./raw-transactions/package-raw-transaction":280,"./raw-transactions/sign-raw-transaction":284,"./raw-transactions/sign-raw-transaction-with-key":283,"./reset-state":301,"./transact/call-contract-function":307,"./transact/call-or-send-transaction":308,"./transact/transact":312,"./transaction-relay/exclude-from-transaction-relay":318,"./transaction-relay/include-in-transaction-relay":319,"./transaction-relay/register-transaction-relay":320,"./transaction-relay/unregister-transaction-relay":321,"./transport/ws-transport":329,"./utils/is-function":330,"./utils/sha3":336,"./validate/validate-and-default-block-number":338,"./validate/validate-transaction":342,"./wrappers/bind-dispatch":345,"./wrappers/eth":346,"./wrappers/is-unlocked":347,"./wrappers/miner":349,"./wrappers/net":350,"./wrappers/personal":351,"./wrappers/publish":352,"./wrappers/raw":353,"./wrappers/resend-raw-transaction":354,"./wrappers/resend-transaction":355,"./wrappers/shh":358,"./wrappers/web3":359,"redux":448,"redux-thunk-subscribe":442}],261:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `func` is capable of being masked.
      *
@@ -42784,6 +46012,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      * @returns {boolean} Returns `true` if `func` is maskable, else `false`.
      */
     var isMaskable = coreJsData ? isFunction : stubFalse;
+>>>>>>> master
 
     /**
      * Checks if `value` is likely a prototype object.
@@ -42796,8 +46025,13 @@ module.exports = require('browserify-sha3').SHA3Hash
       var Ctor = value && value.constructor,
           proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
 
+<<<<<<< HEAD
+},{}],262:[function(require,module,exports){
+"use strict";
+=======
       return value === proto;
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -42846,9 +46080,14 @@ module.exports = require('browserify-sha3').SHA3Hash
         return key;
       });
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"../utils/is-object":334}],263:[function(require,module,exports){
+"use strict";
+=======
       var cache = result.cache;
       return result;
     }
+>>>>>>> master
 
     /**
      * Merges the function metadata of `source` into `data`.
@@ -42951,6 +46190,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return nativeObjectToString.call(value);
     }
 
+<<<<<<< HEAD
+},{"../utils/is-function":330}],264:[function(require,module,exports){
+"use strict";
+=======
     /**
      * A specialized version of `baseRest` which transforms the rest array.
      *
@@ -42967,6 +46210,7 @@ module.exports = require('browserify-sha3').SHA3Hash
             index = -1,
             length = nativeMax(args.length - start, 0),
             array = Array(length);
+>>>>>>> master
 
         while (++index < length) {
           array[index] = args[start + index];
@@ -43008,12 +46252,17 @@ module.exports = require('browserify-sha3').SHA3Hash
           length = nativeMin(indexes.length, arrLength),
           oldArray = copyArray(array);
 
+<<<<<<< HEAD
+},{"../constants":259,"bignumber.js":153}],265:[function(require,module,exports){
+"use strict";
+=======
       while (length--) {
         var index = indexes[length];
         array[length] = isIndex(index, arrLength) ? oldArray[index] : undefined;
       }
       return array;
     }
+>>>>>>> master
 
     /**
      * Sets metadata for `func`.
@@ -43053,6 +46302,10 @@ module.exports = require('browserify-sha3').SHA3Hash
      */
     var setToString = shortOut(baseSetToString);
 
+<<<<<<< HEAD
+},{"../wrappers/eth":346,"./calculate-estimated-gas-with-buffer":264}],266:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Sets the `toString` method of `wrapper` to mimic the source of `reference`
      * with wrapper details in a comment at the top of the source body.
@@ -43067,6 +46320,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var source = (reference + '');
       return setToString(wrapper, insertWrapDetails(source, updateWrapDetails(getWrapDetails(source), bitmask)));
     }
+>>>>>>> master
 
     /**
      * Creates a function that'll short out and invoke `identity` instead
@@ -43110,10 +46364,15 @@ module.exports = require('browserify-sha3').SHA3Hash
           length = array.length,
           lastIndex = length - 1;
 
+<<<<<<< HEAD
+},{"./abi-encode":263,"lodash":420}],267:[function(require,module,exports){
+"use strict";
+=======
       size = size === undefined ? length : size;
       while (++index < size) {
         var rand = baseRandom(index, lastIndex),
             value = array[rand];
+>>>>>>> master
 
         array[rand] = array[index];
         array[index] = value;
@@ -43247,11 +46506,16 @@ module.exports = require('browserify-sha3').SHA3Hash
           resIndex = 0,
           result = Array(nativeCeil(length / size));
 
+<<<<<<< HEAD
+},{"../constants":259,"./get-estimated-gas-with-buffer":265,"./process-request-parameters":268,"bignumber.js":153,"lodash":420,"speedomatic":492}],268:[function(require,module,exports){
+"use strict";
+=======
       while (index < length) {
         result[resIndex++] = baseSlice(array, index, (index += size));
       }
       return result;
     }
+>>>>>>> master
 
     /**
      * Creates an array with all falsey values removed. The values `false`, `null`,
@@ -43283,6 +46547,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"speedomatic":492}],269:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a new array concatenating `array` with any additional arrays
      * and/or values.
@@ -43313,6 +46581,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var args = Array(length - 1),
           array = arguments[0],
           index = length;
+>>>>>>> master
 
       while (index--) {
         args[index - 1] = arguments[index];
@@ -43320,6 +46589,91 @@ module.exports = require('browserify-sha3').SHA3Hash
       return arrayPush(isArray(array) ? copyArray(array) : [array], baseFlatten(args, 1));
     }
 
+<<<<<<< HEAD
+module.exports = stripReturnsTypeAndInvocation;
+
+},{}],270:[function(require,module,exports){
+module.exports={
+  "INVALID_TRANSPORT_MESSAGE": {
+    "message": "Unexpectedly received a message from the transport that was not an object"
+  },
+  "UNSUPPORTED_RPC_REQUEST": {
+    "message": "Received an RPC request that was not an eth_subscription"
+  },
+  "NO_SUBSCRIPTION_ID": {
+    "message": "Received an eth_subscription request without a subscription id"
+  },
+  "NO_SUBSCRIPTION_RESULT": {
+    "message": "Received an eth_subscription request without a result"
+  },
+  "INVALID_MESSAGE_ID": {
+    "message": "Received a message from the blockchain that did not have a valid id"
+  },
+  "JSON_RPC_REQUEST_NOT_FOUND": {
+    "message": "Unable to locate original request for blockchain response"
+  },
+  "INVALID_JSON_RPC_MESSAGE": {
+    "message": "Received an invalid JSON-RPC message"
+  },
+  "INVALID_BLOCK": {
+    "message": "Expected a block, found not a block"
+  },
+  "UNKNOWN_ACCOUNT_TYPE": {
+    "message": "Unknown account type"
+  },
+  "NOT_LOGGED_IN": {
+    "message": "Not logged in"
+  },
+  "PARAMETER_NUMBER_ERROR": {
+    "message": "Wrong number of parameters"
+  },
+  "TRANSACTION_NOT_FOUND": {
+    "message": "Transaction not found"
+  },
+  "BLOCK_NOT_FOUND": {
+    "message": "Block not found"
+  },
+  "NULL_CALL_RETURN": {
+    "message": "Expected contract call to return value, received null"
+  },
+  "NULL_TRANSACTION_HASH": {
+    "message": "Expected transaction hash from Ethereum node, received null"
+  },
+  "NO_RESPONSE": {
+    "message": "No response"
+  },
+  "TRANSACTION_PAYLOAD_INVALID": {
+    "message": "Transaction payload invalid"
+  },
+  "TRANSACTION_INVALID": {
+    "message": "Transaction validation failed"
+  },
+  "TRANSACTION_RETRY_MAX_EXCEEDED": {
+    "message": "Maximum number of transaction retry attempts exceeded"
+  },
+  "TRANSACTION_FAILED": {
+    "message": "Transaction failed"
+  },
+  "TRANSACTION_NOT_CONFIRMED": {
+    "message": "Polled network but could not confirm transaction"
+  },
+  "DUPLICATE_TRANSACTION": {
+    "message": "Duplicate transaction"
+  },
+  "RAW_TRANSACTION_ERROR": {
+    "message": "Error sending client-side transaction"
+  },
+  "TRANSACTION_RECEIPT_NOT_FOUND": {
+    "message": "Transaction receipt not found"
+  },
+  "COINBASE_NOT_SET": {
+    "message": "Coinbase account not set"
+  }
+}
+
+},{}],271:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an array of `array` values not included in the other given arrays
      * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -43382,6 +46736,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? baseDifference(array, baseFlatten(values, 1, isArrayLikeObject, true), getIteratee(iteratee, 2))
         : [];
     });
+>>>>>>> master
 
     /**
      * This method is like `_.difference` except that it accepts `comparator`
@@ -43449,6 +46804,35 @@ module.exports = require('browserify-sha3').SHA3Hash
       n = (guard || n === undefined) ? 1 : toInteger(n);
       return baseSlice(array, n < 0 ? 0 : n, length);
     }
+<<<<<<< HEAD
+  }
+  if (data != null) assign(instance, data);
+  Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
+  if (Error.captureStackTrace) Error.captureStackTrace(instance, RPCError);
+  return instance;
+}
+
+RPCError.prototype = Object.create(Error.prototype, {
+  constructor: {
+    value: Error,
+    enumerable: false,
+    writable: true,
+    configurable: true,
+  },
+});
+
+if (Object.setPrototypeOf) {
+  Object.setPrototypeOf(RPCError, Error);
+} else {
+  RPCError.__proto__ = Error;
+}
+
+module.exports = RPCError;
+
+},{"../utils/is-object":334,"./codes":270,"lodash":420}],272:[function(require,module,exports){
+"use strict";
+=======
+>>>>>>> master
 
     /**
      * Creates a slice of `array` with `n` elements dropped from the end.
@@ -43526,6 +46910,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     }
 
+<<<<<<< HEAD
+},{"./create-ethrpc":260,"./reducers":293,"./reducers/compose-reducers":287,"./version":343}],273:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a slice of `array` excluding elements dropped from the beginning.
      * Elements are dropped until `predicate` returns falsey. The predicate is
@@ -43566,6 +46954,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? baseWhile(array, getIteratee(predicate, 3), true)
         : [];
     }
+>>>>>>> master
 
     /**
      * Fills elements of `array` with `value` from `start` up to, but not
@@ -43705,6 +47094,19 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseFindIndex(array, getIteratee(predicate, 3), index, true);
     }
 
+<<<<<<< HEAD
+},{"lodash":420}],274:[function(require,module,exports){
+(function (process){
+"use strict";
+
+module.exports = (typeof module !== "undefined") && process && !process.browser;
+
+}).call(this,require('_process'))
+},{"_process":428}],275:[function(require,module,exports){
+"use strict";
+
+var isNodeJs = require("./is-node-js");
+=======
     /**
      * Flattens `array` a single level deep.
      *
@@ -43742,6 +47144,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var length = array == null ? 0 : array.length;
       return length ? baseFlatten(array, INFINITY) : [];
     }
+>>>>>>> master
 
     /**
      * Recursively flatten `array` up to `depth` times.
@@ -43772,6 +47175,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseFlatten(array, depth);
     }
 
+<<<<<<< HEAD
+},{"./is-node-js":274,"browser-request":157,"request":158}],276:[function(require,module,exports){
+"use strict";
+=======
     /**
      * The inverse of `_.toPairs`; this method returns an object composed
      * from key-value `pairs`.
@@ -43791,6 +47198,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var index = -1,
           length = pairs == null ? 0 : pairs.length,
           result = {};
+>>>>>>> master
 
       while (++index < length) {
         var pair = pairs[index];
@@ -43799,6 +47207,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+},{"./is-node-js.js":274,"websocket":158}],277:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Gets the first element of `array`.
      *
@@ -43820,6 +47232,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function head(array) {
       return (array && array.length) ? array[0] : undefined;
     }
+>>>>>>> master
 
     /**
      * Gets the index at which the first occurrence of `value` is found in `array`
@@ -43899,6 +47312,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     });
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271}],278:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.intersection` except that it accepts `iteratee`
      * which is invoked for each element of each `arrays` to generate the criterion
@@ -43925,6 +47342,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var intersectionBy = baseRest(function(arrays) {
       var iteratee = last(arrays),
           mapped = arrayMap(arrays, castArrayLikeObject);
+>>>>>>> master
 
       if (iteratee === last(mapped)) {
         iteratee = undefined;
@@ -43970,6 +47388,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     });
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"../utils/is-object":334,"./package-raw-transaction":280,"./set-raw-transaction-gas-price":281,"./set-raw-transaction-nonce":282,"./sign-raw-transaction":284,"immutable-delete":241}],279:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Converts all elements in `array` into a string separated by `separator`.
      *
@@ -43988,6 +47410,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function join(array, separator) {
       return array == null ? '' : nativeJoin.call(array, separator);
     }
+>>>>>>> master
 
     /**
      * Gets the last element of `array`.
@@ -44069,6 +47492,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return (array && array.length) ? baseNth(array, toInteger(n)) : undefined;
     }
 
+<<<<<<< HEAD
+},{"../constants":259,"../errors/rpc-error":271,"../utils/sha3":336,"../wrappers/eth":346,"./handle-raw-transaction-error":277,"./package-and-sign-raw-transaction":278,"speedomatic":492}],280:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Removes all given values from `array` using
      * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -44093,6 +47520,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      * // => ['b', 'b']
      */
     var pull = baseRest(pullAll);
+>>>>>>> master
 
     /**
      * This method is like `_.pull` except that it accepts an array of values to remove.
@@ -44120,6 +47548,82 @@ module.exports = require('browserify-sha3').SHA3Hash
         : array;
     }
 
+<<<<<<< HEAD
+/**
+ * Package a raw transaction.
+ * @param {Object} payload Static API data with "params" and "from" set.
+ * @param {string} address The sender's Ethereum address.
+ * @param {number} networkID The network (chain) ID to which the transaction will be submitted.
+ * @param {function} callback Callback function.
+ * @return {Object} Packaged transaction.
+ */
+function packageRawTransaction(payload, address, networkID, callback) {
+  return function (dispatch, getState) {
+    dispatch(packageRequest(assign({}, payload, { from: address }), function (err, packaged) {
+      if (err) return callback(err);
+      packaged.nonce = payload.nonce || 0;
+      if (networkID && speedomatic.encodeNumberAsJSNumber(networkID) > 0 && speedomatic.encodeNumberAsJSNumber(networkID) < 109) {
+        packaged.chainId = speedomatic.encodeNumberAsJSNumber(networkID);
+      }
+      if (getState().debug.tx) console.log("[ethrpc] packaged raw transaction", JSON.stringify(packaged, null, 2));
+      callback(null, packaged);
+    }));
+  };
+}
+
+module.exports = packageRawTransaction;
+
+},{"../encode-request/package-request":267,"lodash":420,"speedomatic":492}],281:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var eth_gasPrice = require("../wrappers/eth").gasPrice;
+
+/**
+ * Set the gas price for a raw transaction.
+ * @param {Object} packaged Packaged transaction.
+ * @param {function} callback Callback function.
+ * @return {Object|void} Packaged transaction with gasPrice set.
+ */
+var setRawTransactionGasPrice = function (packaged, callback) {
+  return function (dispatch) {
+    if (packaged.gasPrice != null) return callback(null, packaged);
+    dispatch(eth_gasPrice(null, function (err, gasPrice) {
+      if (err) return callback(err);
+      callback(null, assign({}, packaged, { gasPrice: gasPrice }));
+    }));
+  };
+};
+
+module.exports = setRawTransactionGasPrice;
+
+},{"../wrappers/eth":346,"lodash":420}],282:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var eth_getTransactionCount = require("../wrappers/eth").getTransactionCount;
+var verifyRawTransactionNonce = require("./verify-raw-transaction-nonce");
+var RPCError = require("../errors/rpc-error");
+
+
+/**
+ * Use the number of transactions from this account to set the nonce.
+ * @param {Object} packaged Packaged transaction.
+ * @param {string} address The sender's Ethereum address.
+ * @param {function} callback Callback function.
+ * @return {Object} Packaged transaction with nonce set.
+ */
+function setRawTransactionNonce(packaged, address, callback) {
+  return function (dispatch, getState) {
+    dispatch(eth_getTransactionCount([address, "pending"], function (err, transactionCount) {
+      if (getState().debug.tx) console.log("transaction count:", address, transactionCount, parseInt(transactionCount, 16));
+      if (err) return callback(err);
+      if (transactionCount == null) return callback(new RPCError("NO_RESPONSE"));
+      callback(null, assign({}, packaged, { nonce: dispatch(verifyRawTransactionNonce(parseInt(transactionCount, 16))) }));
+    }));
+  };
+}
+=======
     /**
      * This method is like `_.pullAll` except that it accepts `iteratee` which is
      * invoked for each element of `array` and `values` to generate the criterion
@@ -44148,6 +47652,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? basePullAll(array, values, getIteratee(iteratee, 2))
         : array;
     }
+>>>>>>> master
 
     /**
      * This method is like `_.pullAll` except that it accepts `comparator` which
@@ -44178,6 +47683,11 @@ module.exports = require('browserify-sha3').SHA3Hash
         : array;
     }
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"../wrappers/eth":346,"./verify-raw-transaction-nonce":285,"lodash":420}],283:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+=======
     /**
      * Removes elements from `array` corresponding to `indexes` and returns an
      * array of removed elements.
@@ -44205,6 +47715,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var pullAt = flatRest(function(array, indexes) {
       var length = array == null ? 0 : array.length,
           result = baseAt(array, indexes);
+>>>>>>> master
 
       basePullAt(array, arrayMap(indexes, function(index) {
         return isIndex(index, length) ? +index : index;
@@ -44250,6 +47761,11 @@ module.exports = require('browserify-sha3').SHA3Hash
           indexes = [],
           length = array.length;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"../errors/rpc-error":271,"../utils/sha3":336,"buffer":167,"ethereumjs-tx":221,"speedomatic":492}],284:[function(require,module,exports){
+"use strict";
+=======
       predicate = getIteratee(predicate, 3);
       while (++index < length) {
         var value = array[index];
@@ -44261,6 +47777,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       basePullAt(array, indexes);
       return result;
     }
+>>>>>>> master
 
     /**
      * Reverses `array` so that the first element becomes the last, the second
@@ -44342,6 +47859,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseSortedIndex(array, value);
     }
 
+<<<<<<< HEAD
+},{"../constants":259,"../errors/rpc-error":271,"./sign-raw-transaction-with-key":283}],285:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.sortedIndex` except that it accepts `iteratee`
      * which is invoked for `value` and each element of `array` to compute their
@@ -44370,6 +47891,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function sortedIndexBy(array, value, iteratee) {
       return baseSortedIndexBy(array, value, getIteratee(iteratee, 2));
     }
+>>>>>>> master
 
     /**
      * This method is like `_.indexOf` except that it performs a binary
@@ -44449,6 +47971,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseSortedIndexBy(array, value, getIteratee(iteratee, 2), true);
     }
 
+<<<<<<< HEAD
+},{"speedomatic":492}],286:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.lastIndexOf` except that it performs a binary
      * search on a sorted `array`.
@@ -44475,6 +48001,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return -1;
     }
+>>>>>>> master
 
     /**
      * This method is like `_.uniq` except that it's designed and optimized
@@ -44497,6 +48024,36 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     }
 
+<<<<<<< HEAD
+module.exports = function (coinbase, action) {
+  if (typeof coinbase === "undefined") {
+    return initialState;
+  }
+  switch (action.type) {
+    case "SET_COINBASE":
+      return action.address;
+    case "CLEAR_COINBASE":
+      return initialState;
+    default:
+      return coinbase;
+  }
+};
+
+},{"./initial-state":294}],287:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+
+/**
+ * @param {function} customReducer External (user-specified) reducer.
+ * @param {function} reducer Default ethrpc reducer.
+ */
+function composeReducers(customReducer, reducer) {
+  return function (state, action) {
+    return assign({}, customReducer(state, action), { ethrpc: reducer(state.ethrpc, action) });
+  };
+}
+=======
     /**
      * This method is like `_.uniqBy` except that it's designed and optimized
      * for sorted arrays.
@@ -44518,6 +48075,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? baseSortedUniq(array, getIteratee(iteratee, 2))
         : [];
     }
+>>>>>>> master
 
     /**
      * Gets all but the first element of `array`.
@@ -44538,6 +48096,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return length ? baseSlice(array, 1, length) : [];
     }
 
+<<<<<<< HEAD
+},{"lodash":420}],288:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a slice of `array` with `n` elements taken from the beginning.
      *
@@ -44570,6 +48132,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       n = (guard || n === undefined) ? 1 : toInteger(n);
       return baseSlice(array, 0, n < 0 ? 0 : n);
     }
+>>>>>>> master
 
     /**
      * Creates a slice of `array` with `n` elements taken from the end.
@@ -44647,6 +48210,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     }
 
+<<<<<<< HEAD
+},{"../utils/is-function":330,"./initial-state":294}],289:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a slice of `array` with elements taken from the beginning. Elements
      * are taken until `predicate` returns falsey. The predicate is invoked with
@@ -44687,6 +48254,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? baseWhile(array, getIteratee(predicate, 3))
         : [];
     }
+>>>>>>> master
 
     /**
      * Creates an array of unique values, in order, from all given arrays using
@@ -44736,8 +48304,24 @@ module.exports = require('browserify-sha3').SHA3Hash
       if (isArrayLikeObject(iteratee)) {
         iteratee = undefined;
       }
+<<<<<<< HEAD
+      return currentBlock;
+    case "CLEAR_CURRENT_BLOCK":
+      return initialState;
+    default:
+      return currentBlock;
+  }
+};
+
+},{"../validate/validate-block":339,"./initial-state":294,"lodash":420}],290:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var initialState = require("./initial-state").debug;
+=======
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), getIteratee(iteratee, 2));
     });
+>>>>>>> master
 
     /**
      * This method is like `_.union` except that it accepts `comparator` which
@@ -44766,6 +48350,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseUniq(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined, comparator);
     });
 
+<<<<<<< HEAD
+},{"./initial-state":294,"lodash":420}],291:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a duplicate-free version of an array, using
      * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -44787,6 +48375,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function uniq(array) {
       return (array && array.length) ? baseUniq(array) : [];
     }
+>>>>>>> master
 
     /**
      * This method is like `_.uniq` except that it accepts `iteratee` which is
@@ -44840,6 +48429,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return (array && array.length) ? baseUniq(array, undefined, comparator) : [];
     }
 
+<<<<<<< HEAD
+},{"./initial-state":294}],292:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.zip` except that it accepts an array of grouped
      * elements and creates an array regrouping the elements to their pre-zip
@@ -44874,6 +48467,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         return arrayMap(array, baseProperty(index));
       });
     }
+>>>>>>> master
 
     /**
      * This method is like `_.unzip` except that it accepts `iteratee` to specify
@@ -44935,6 +48529,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : [];
     });
 
+<<<<<<< HEAD
+},{"./initial-state":294}],293:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an array of unique values that is the
      * [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
@@ -44956,6 +48554,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var xor = baseRest(function(arrays) {
       return baseXor(arrayFilter(arrays, isArrayLikeObject));
     });
+>>>>>>> master
 
     /**
      * This method is like `_.xor` except that it accepts `iteratee` which is
@@ -45033,6 +48632,10 @@ module.exports = require('browserify-sha3').SHA3Hash
      */
     var zip = baseRest(unzip);
 
+<<<<<<< HEAD
+},{"./coinbase":286,"./configuration":288,"./current-block":289,"./debug":290,"./gas-price":291,"./highest-nonce":292,"./network-id":295,"./new-block-polling-interval":296,"./new-heads-subscription":297,"./no-relay":298,"./store-observers":299,"./transactions":300}],294:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.fromPairs` except that it accepts two arrays,
      * one of property identifiers and one of corresponding values.
@@ -45052,6 +48655,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function zipObject(props, values) {
       return baseZipObject(props || [], values || [], assignValue);
     }
+>>>>>>> master
 
     /**
      * This method is like `_.zipObject` except that it supports property paths.
@@ -45072,6 +48676,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseZipObject(props || [], values || [], baseSet);
     }
 
+<<<<<<< HEAD
+},{}],295:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.zip` except that it accepts `iteratee` to specify
      * how grouped values should be combined. The iteratee is invoked with the
@@ -45095,6 +48703,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var zipWith = baseRest(function(arrays) {
       var length = arrays.length,
           iteratee = length > 1 ? arrays[length - 1] : undefined;
+>>>>>>> master
 
       iteratee = typeof iteratee == 'function' ? (arrays.pop(), iteratee) : undefined;
       return unzipWith(arrays, iteratee);
@@ -45102,6 +48711,10 @@ module.exports = require('browserify-sha3').SHA3Hash
 
     /*------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+},{"./initial-state":294}],296:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a `lodash` wrapper instance that wraps `value` with explicit method
      * chain sequences enabled. The result of such sequences must be unwrapped
@@ -45136,6 +48749,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       result.__chain__ = true;
       return result;
     }
+>>>>>>> master
 
     /**
      * This method invokes `interceptor` and returns `value`. The interceptor
@@ -45192,6 +48806,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return interceptor(value);
     }
 
+<<<<<<< HEAD
+},{"./initial-state":294}],297:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is the wrapper version of `_.at`.
      *
@@ -45213,6 +48831,7 @@ module.exports = require('browserify-sha3').SHA3Hash
           start = length ? paths[0] : 0,
           value = this.__wrapped__,
           interceptor = function(object) { return baseAt(object, paths); };
+>>>>>>> master
 
       if (length > 1 || this.__actions__.length ||
           !(value instanceof LazyWrapper) || !isIndex(start)) {
@@ -45263,6 +48882,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return chain(this);
     }
 
+<<<<<<< HEAD
+},{"./initial-state":294,"lodash":420}],298:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Executes the chain sequence and returns the wrapped result.
      *
@@ -45292,6 +48915,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function wrapperCommit() {
       return new LodashWrapper(this.value(), this.__chain__);
     }
+>>>>>>> master
 
     /**
      * Gets the next value on a wrapped object following the
@@ -45322,6 +48946,60 @@ module.exports = require('browserify-sha3').SHA3Hash
       var done = this.__index__ >= this.__values__.length,
           value = done ? undefined : this.__values__[this.__index__++];
 
+<<<<<<< HEAD
+module.exports = function (noRelay, action) {
+  var newNoRelay;
+  if (typeof noRelay === "undefined") {
+    return initialState;
+  }
+  switch (action.type) {
+    case "EXCLUDE_METHOD_FROM_TRANSACTION_RELAY":
+      newNoRelay = {};
+      newNoRelay[action.method] = true;
+      return assign({}, noRelay, newNoRelay);
+    case "INCLUDE_METHOD_IN_TRANSACTION_RELAY":
+      newNoRelay = {};
+      newNoRelay[action.method] = false;
+      return assign({}, noRelay, newNoRelay);
+    case "CLEAR_NO_RELAY":
+      return initialState;
+    default:
+      return noRelay;
+  }
+};
+
+},{"./initial-state":294,"lodash":420}],299:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var immutableDelete = require("immutable-delete");
+var initialState = require("./initial-state").storeObservers;
+
+module.exports = function (storeObservers, action) {
+  var newStoreObserver;
+  if (typeof storeObservers === "undefined") {
+    return initialState;
+  }
+  switch (action.type) {
+    case "ADD_STORE_OBSERVER":
+      newStoreObserver = {};
+      newStoreObserver[action.id] = {
+        reaction: action.reaction,
+        unsubscribeToken: action.unsubscribeToken,
+      };
+      return assign({}, storeObservers, newStoreObserver);
+    case "REMOVE_STORE_OBSERVER":
+      return immutableDelete(storeObservers, action.id);
+    case "REMOVE_ALL_STORE_OBSERVERS":
+      return initialState;
+    default:
+      return storeObservers;
+  }
+};
+
+},{"./initial-state":294,"immutable-delete":241,"lodash":420}],300:[function(require,module,exports){
+"use strict";
+=======
       return { 'done': done, 'value': value };
     }
 
@@ -45346,6 +49024,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function wrapperToIterator() {
       return this;
     }
+>>>>>>> master
 
     /**
      * Creates a clone of the chain sequence planting `value` as the wrapped value.
@@ -45384,6 +49063,151 @@ module.exports = require('browserify-sha3').SHA3Hash
         } else {
           result = clone;
         }
+<<<<<<< HEAD
+        return p;
+      }, {}));
+      return assign({}, transactions, newTransaction);
+    case "UPDATE_ON_CHAIN_TRANSACTION":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], {
+        tx: assign({}, transactions[action.hash].tx || {}, action.data || {}),
+      });
+      return assign({}, transactions, newTransaction);
+    case "SET_TRANSACTION_CONFIRMATIONS":
+      if (transactions[action.hash] == null) return transactions;
+      if (transactions[action.hash].tx.blockNumber == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], {
+        confirmations: action.currentBlockNumber - parseInt(transactions[action.hash].tx.blockNumber, 16),
+      });
+      return assign({}, transactions, newTransaction);
+    case "TRANSACTION_PENDING":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { status: "pending", confirmations: 0 });
+      return assign({}, transactions, newTransaction);
+    case "TRANSACTION_FAILED":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { status: "failed" });
+      return assign({}, transactions, newTransaction);
+    case "TRANSACTION_SEALED":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { status: "sealed" });
+      return assign({}, transactions, newTransaction);
+    case "TRANSACTION_RESUBMITTED":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { status: "resubmitted" });
+      return assign({}, transactions, newTransaction);
+    case "TRANSACTION_CONFIRMED":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { status: "confirmed" });
+      return assign({}, transactions, newTransaction);
+    case "LOCK_TRANSACTION":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { isLocked: true });
+      return assign({}, transactions, newTransaction);
+    case "UNLOCK_TRANSACTION":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], { isLocked: false });
+      return assign({}, transactions, newTransaction);
+    case "INCREMENT_TRANSACTION_COUNT":
+      if (transactions[action.hash] == null) return transactions;
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], {
+        count: (transactions[action.hash].count) ? transactions[action.hash].count + 1 : 1,
+      });
+      return assign({}, transactions, newTransaction);
+    case "INCREMENT_TRANSACTION_PAYLOAD_TRIES":
+      if (transactions[action.hash] == null) return transactions;
+      var payload = transactions[action.hash].payload || {};
+      newTransaction = {};
+      newTransaction[action.hash] = assign({}, transactions[action.hash], {
+        payload: assign({}, payload, { tries: (payload.tries) ? payload.tries + 1 : 1 }),
+      });
+      return assign({}, transactions, newTransaction);
+    case "REMOVE_TRANSACTION":
+      return immutableDelete(transactions, action.hash);
+    case "REMOVE_ALL_TRANSACTIONS":
+      return initialState;
+    default:
+      return transactions;
+  }
+};
+
+},{"../utils/is-object":334,"./initial-state":294,"immutable-delete":241,"lodash":420}],301:[function(require,module,exports){
+"use strict";
+
+var blockchainMessageHandler = require("./rpc/blockchain-message-handler");
+var storeObservers = require("./store-observers");
+var clearTransactions = require("./clear-transactions");
+var isObject = require("./utils/is-object");
+var internalState = require("./internal-state");
+var unsubscribeFromNewBlockNotifications = require("./block-management/unsubscribe-from-new-block-notifications");
+var stopPollingForBlocks = require("./block-management/stop-polling-for-blocks");
+
+function resetState() {
+  return function (dispatch, getState) {
+    dispatch(clearTransactions());
+
+    if (getState().newHeadsSubscription.id != null) dispatch(unsubscribeFromNewBlockNotifications());
+    if (getState().newBlockPollingInterval != null) dispatch(stopPollingForBlocks());
+
+    var notifications = internalState.get("notifications");
+    if (isObject(notifications)) {
+      Object.keys(notifications).map(function (hash) {
+        if (notifications[hash]) clearTimeout(notifications[hash]);
+      });
+    }
+
+    dispatch(storeObservers.removeAll());
+
+    // redirect any not-yet-received responses to /dev/null
+    internalState.set("shimMessageHandlerObject.realMessageHandler", function () { return dispatch({ type: "DEV_NULL" }); });
+    var transporter = internalState.get("transporter");
+    if (transporter != null) transporter.resetState();
+
+    var messageHandlerObject = { realMessageHandler: blockchainMessageHandler };
+
+    // reset state to defaults
+    internalState.setState({
+      transporter: null,
+      blockAndLogStreamer: null,
+      outstandingRequests: {},
+      subscriptions: {},
+      outOfBandErrorHandler: null,
+      shimMessageHandlerObject: messageHandlerObject,
+      // by binding this function to `shimMessageHandlerObject`, its `this` value will
+      // be a pointer to an object that we can mutate before replacing when reset
+      shimMessageHandler: function (error, jso) {
+        dispatch(this.realMessageHandler(error, jso));
+      }.bind(messageHandlerObject),
+    });
+
+    // reset redux store to initial state
+    dispatch({ type: "RESET_STATE" });
+
+    // restore debugging options
+    dispatch({ type: "SET_DEBUG_OPTIONS", options: getState().debug });
+  };
+}
+
+module.exports = resetState;
+
+},{"./block-management/stop-polling-for-blocks":253,"./block-management/unsubscribe-from-new-block-notifications":255,"./clear-transactions":257,"./internal-state":273,"./rpc/blockchain-message-handler":302,"./store-observers":305,"./utils/is-object":334}],302:[function(require,module,exports){
+"use strict";
+
+var parseEthereumResponse = require("../decode-response/parse-ethereum-response");
+var isObject = require("../utils/is-object");
+var RPCError = require("../errors/rpc-error");
+var internalState = require("../internal-state");
+=======
         var previous = clone;
         parent = parent.__wrapped__;
       }
@@ -45428,6 +49252,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return this.thru(reverse);
     }
+>>>>>>> master
 
     /**
      * Executes the chain sequence to resolve the unwrapped value.
@@ -45527,6 +49352,20 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return func(collection, getIteratee(predicate, 3));
     }
+<<<<<<< HEAD
+  };
+}
+
+module.exports = blockchainMessageHandler;
+
+},{"../decode-response/parse-ethereum-response":262,"../errors/rpc-error":271,"../internal-state":273,"../utils/is-object":334}],303:[function(require,module,exports){
+"use strict";
+
+var stripReturnsTypeAndInvocation = require("../encode-request/strip-returns-type-and-invocation");
+var isFunction = require("../utils/is-function");
+var internalState = require("../internal-state");
+=======
+>>>>>>> master
 
     /**
      * Iterates over elements of `collection`, returning an array of all elements
@@ -45570,6 +49409,43 @@ module.exports = require('browserify-sha3').SHA3Hash
       return func(collection, getIteratee(predicate, 3));
     }
 
+<<<<<<< HEAD
+    var expectedReturnTypes = stripReturnsTypeAndInvocation(jso); // FIXME: return types shouldn't be embedded into the RPC JSO
+    internalState.set("outstandingRequests." + jso.id, {
+      jso: jso,
+      expectedReturnTypes: expectedReturnTypes,
+      callback: callback,
+    });
+    internalState.get("transporter").blockchainRpc(jso, debug.broadcast);
+  };
+}
+
+module.exports = submitRequestToBlockchain;
+
+},{"../encode-request/strip-returns-type-and-invocation":269,"../internal-state":273,"../utils/is-function":330}],304:[function(require,module,exports){
+"use strict";
+
+var storeObservers = require("./");
+
+function selectCurrentBlock(state) {
+  return state.currentBlock;
+}
+
+module.exports = function (id, onStateChange) {
+  return function (dispatch) {
+    dispatch(storeObservers.add(id, "SET_CURRENT_BLOCK", selectCurrentBlock, onStateChange));
+  };
+};
+
+},{"./":305}],305:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var immutableDelete = require("immutable-delete");
+var isFunction = require("../utils/is-function");
+
+var initialCount = 1;
+=======
     /**
      * Iterates over elements of `collection`, returning the first element
      * `predicate` returns truthy for. The predicate is invoked with three
@@ -45607,6 +49483,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      * // => object for 'barney'
      */
     var find = createFind(findIndex);
+>>>>>>> master
 
     /**
      * This method is like `_.find` except that it iterates over elements of
@@ -45677,6 +49554,63 @@ module.exports = require('browserify-sha3').SHA3Hash
     function flatMapDeep(collection, iteratee) {
       return baseFlatten(map(collection, iteratee), INFINITY);
     }
+<<<<<<< HEAD
+    dispatch({ type: "REMOVE_STORE_OBSERVER", id: id });
+  };
+};
+
+module.exports.removeAll = function () {
+  return function (dispatch) {
+    unsubscribeFromAllStateChanges();
+    dispatch({ type: "REMOVE_ALL_STORE_OBSERVERS" });
+  };
+};
+
+},{"../utils/is-function":330,"immutable-delete":241,"lodash":420}],306:[function(require,module,exports){
+"use strict";
+
+var storeObservers = require("./");
+
+function selectTransactions(state) {
+  return state.transactions;
+}
+
+// subscribe to all transactions
+module.exports = function (onStateChange) {
+  return function (dispatch) {
+    dispatch(storeObservers.add("transactions", null, selectTransactions, onStateChange));
+  };
+};
+
+},{"./":305}],307:[function(require,module,exports){
+"use strict";
+
+var assign = require("lodash").assign;
+var speedomatic = require("speedomatic");
+var callOrSendTransaction = require("../transact/call-or-send-transaction");
+
+/**
+ * Invoke a function from a contract on the blockchain.
+ * @typedef FirePayload
+ * @type {object}
+ * @property {!string} returns
+ * @property {!string} from
+ * @property {!string} to
+ * @property {?string[]} params
+ *
+ * @param {FirePayload} payload
+ * @param {function(object):void} callback - called with the result.
+ */
+function callContractFunction(payload, callback) {
+  return function (dispatch) {
+    dispatch(callOrSendTransaction(assign({}, payload), function (err, result) {
+      if (err) return callback(err);
+      callback(null, speedomatic.abiDecodeRpcResponse(payload.returns, result));
+    }));
+  };
+}
+=======
+>>>>>>> master
 
     /**
      * This method is like `_.flatMap` except that it recursively flattens the
@@ -45704,6 +49638,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseFlatten(map(collection, iteratee), depth);
     }
 
+<<<<<<< HEAD
+},{"../transact/call-or-send-transaction":308,"lodash":420,"speedomatic":492}],308:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Iterates over elements of `collection` and invokes `iteratee` for each element.
      * The iteratee is invoked with three arguments: (value, index|key, collection).
@@ -45738,6 +49676,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var func = isArray(collection) ? arrayEach : baseEach;
       return func(collection, getIteratee(iteratee, 3));
     }
+>>>>>>> master
 
     /**
      * This method is like `_.forEach` except that it iterates over elements of
@@ -45793,7 +49732,18 @@ module.exports = require('browserify-sha3').SHA3Hash
       } else {
         baseAssignValue(result, key, [value]);
       }
+<<<<<<< HEAD
+    }));
+  };
+}
+
+module.exports = callOrSendTransaction;
+
+},{"../encode-request/package-request":267,"../errors/rpc-error":271,"../utils/is-object":334,"../wrappers/eth":346}],309:[function(require,module,exports){
+"use strict";
+=======
     });
+>>>>>>> master
 
     /**
      * Checks if `value` is in `collection`. If `collection` is a string, it's
@@ -45833,10 +49783,24 @@ module.exports = require('browserify-sha3').SHA3Hash
       if (fromIndex < 0) {
         fromIndex = nativeMax(length + fromIndex, 0);
       }
+<<<<<<< HEAD
+      var updatedOnChainTransactionData = { timestamp: parseInt(block.timestamp, 16), callReturn: onChainTransaction.callReturn };
+      dispatch({ type: "UPDATE_ON_CHAIN_TRANSACTION", hash: onChainTransaction.hash, data: updatedOnChainTransactionData });
+      callback(null, true);
+    }));
+  };
+}
+
+module.exports = recheckSealedBlock;
+
+},{"../wrappers/eth":346}],310:[function(require,module,exports){
+"use strict";
+=======
       return isString(collection)
         ? (fromIndex <= length && collection.indexOf(value, fromIndex) > -1)
         : (!!length && baseIndexOf(collection, value, fromIndex) > -1);
     }
+>>>>>>> master
 
     /**
      * Invokes the method at `path` of each element in `collection`, returning
@@ -45872,6 +49836,17 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     });
 
+<<<<<<< HEAD
+},{"./update-transaction":315}],311:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+var immutableDelete = require("immutable-delete");
+var packageAndSubmitRawTransaction = require("../raw-transactions/package-and-submit-raw-transaction");
+var callOrSendTransaction = require("../transact/call-or-send-transaction");
+var verifyTxSubmitted = require("../transact/verify-tx-submitted");
+var RPCError = require("../errors/rpc-error");
+=======
     /**
      * Creates an object composed of keys generated from the results of running
      * each element of `collection` thru `iteratee`. The corresponding value of
@@ -45903,6 +49878,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var keyBy = createAggregator(function(result, value, key) {
       baseAssignValue(result, key, value);
     });
+>>>>>>> master
 
     /**
      * Creates an array of values by running each element in `collection` thru
@@ -45994,6 +49970,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseOrderBy(collection, iteratees, orders);
     }
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"../raw-transactions/package-and-submit-raw-transaction":279,"../transact/call-or-send-transaction":308,"../transact/verify-tx-submitted":316,"immutable-delete":241,"speedomatic":492}],312:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an array of elements split into two groups, the first of which
      * contains elements `predicate` returns truthy for, the second of which
@@ -46033,6 +50013,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var partition = createAggregator(function(result, value, key) {
       result[key ? 0 : 1].push(value);
     }, function() { return [[], []]; });
+>>>>>>> master
 
     /**
      * Reduces `collection` to a value which is the accumulated result of running
@@ -46078,6 +50059,18 @@ module.exports = require('browserify-sha3').SHA3Hash
       return func(collection, getIteratee(iteratee, 4), accumulator, initAccum, baseEach);
     }
 
+<<<<<<< HEAD
+module.exports.default = transact;
+
+},{"../errors/rpc-error":271,"../utils/is-function":330,"../utils/is-object":334,"./call-contract-function":307,"./call-or-send-transaction":308,"./transact-async":311,"./wrap-on-failed-callback":317,"uuid":242}],313:[function(require,module,exports){
+"use strict";
+
+var eth_getTransactionByHash = require("../wrappers/eth").getTransactionByHash;
+var updateSealedTransaction = require("../transact/update-sealed-transaction");
+var transact = require("../transact/transact");
+var RPCError = require("../errors/rpc-error");
+var constants = require("../constants");
+=======
     /**
      * This method is like `_.reduce` except that it iterates over elements of
      * `collection` from right to left.
@@ -46103,6 +50096,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function reduceRight(collection, iteratee, accumulator) {
       var func = isArray(collection) ? arrayReduceRight : baseReduce,
           initAccum = arguments.length < 3;
+>>>>>>> master
 
       return func(collection, getIteratee(iteratee, 4), accumulator, initAccum, baseEachRight);
     }
@@ -46191,9 +50185,63 @@ module.exports = require('browserify-sha3').SHA3Hash
       } else {
         n = toInteger(n);
       }
+<<<<<<< HEAD
+    }));
+  };
+}
+
+module.exports.default = updatePendingTransaction;
+
+},{"../constants":259,"../errors/rpc-error":271,"../transact/transact":312,"../transact/update-sealed-transaction":314,"../wrappers/eth":346}],314:[function(require,module,exports){
+"use strict";
+
+var speedomatic = require("speedomatic");
+var BigNumber = require("bignumber.js");
+var recheckSealedBlock = require("./recheck-sealed-block");
+var eth_getTransactionReceipt = require("../wrappers/eth").getTransactionReceipt;
+var constants = require("../constants");
+
+function updateSealedTransaction(transactionHash, callback) {
+  return function (dispatch, getState) {
+    dispatch({ type: "SET_TRANSACTION_CONFIRMATIONS", hash: transactionHash, currentBlockNumber: parseInt(getState().currentBlock.number, 16) });
+    var transaction = getState().transactions[transactionHash];
+    if (transaction.confirmations < constants.REQUIRED_CONFIRMATIONS) {
+      return dispatch(recheckSealedBlock(transaction.tx, callback));
+    }
+    dispatch({ type: "TRANSACTION_CONFIRMED", hash: transactionHash });
+    dispatch(recheckSealedBlock(transaction.tx, function (err, isBlockIncluded) {
+      if (err) return callback(err);
+      if (!isBlockIncluded) return callback(null);
+      dispatch(eth_getTransactionReceipt(transactionHash, function (err, receipt) {
+        if (getState().debug.tx) console.log("eth_getTransactionReceipt", transactionHash, err, receipt);
+        if (err) return callback(err);
+        if (receipt == null) {
+          console.warn("[ethrpc] Transaction receipt not found for", transactionHash, err, receipt);
+          return dispatch(recheckSealedBlock(transaction.tx, callback));
+        }
+        var gasFees = speedomatic.unfix(new BigNumber(receipt.gasUsed, 16).times(new BigNumber(transaction.tx.gasPrice, 16)), "string");
+        dispatch({ type: "UPDATE_ON_CHAIN_TRANSACTION", hash: transactionHash, data: { gasFees: gasFees } });
+        var status = parseInt(receipt.status, 16);
+        if (status === 0) { // status 0x0: failure
+          callback(getState().transactions[transactionHash].tx);
+        } else if (status === 1) { // status 0x1: success
+          transaction.onSuccess(getState().transactions[transactionHash].tx);
+          callback(null);
+        }
+      }));
+    }));
+  };
+}
+
+module.exports = updateSealedTransaction;
+
+},{"../constants":259,"../wrappers/eth":346,"./recheck-sealed-block":309,"bignumber.js":153,"speedomatic":492}],315:[function(require,module,exports){
+"use strict";
+=======
       var func = isArray(collection) ? arraySampleSize : baseSampleSize;
       return func(collection, n);
     }
+>>>>>>> master
 
     /**
      * Creates an array of shuffled values, using a version of the
@@ -46249,6 +50297,18 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return baseKeys(collection).length;
     }
+<<<<<<< HEAD
+  };
+}
+
+module.exports.default = updateTransaction;
+
+},{"../transact/update-pending-transaction":313,"../transact/update-sealed-transaction":314,"lodash":420}],316:[function(require,module,exports){
+"use strict";
+
+var updateTransaction = require("../transact/update-transaction");
+=======
+>>>>>>> master
 
     /**
      * Checks if `predicate` returns truthy for **any** element of `collection`.
@@ -46336,7 +50396,12 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseOrderBy(collection, baseFlatten(iteratees, 1), []);
     });
 
+<<<<<<< HEAD
+},{"../transact/update-transaction":315}],317:[function(require,module,exports){
+"use strict";
+=======
     /*------------------------------------------------------------------------*/
+>>>>>>> master
 
     /**
      * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -46396,6 +50461,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"../utils/sha3":336,"lodash":420}],318:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a function that invokes `func`, with up to `n` arguments,
      * ignoring any additional arguments.
@@ -46418,6 +50487,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       n = (func && n == null) ? func.length : n;
       return createWrap(func, WRAP_ARY_FLAG, undefined, undefined, undefined, undefined, n);
     }
+>>>>>>> master
 
     /**
      * Creates a function that invokes `func`, with the `this` binding and arguments
@@ -46453,6 +50523,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+},{}],319:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a function that invokes `func` with the `this` binding of `thisArg`
      * and `partials` prepended to the arguments it receives.
@@ -46496,6 +50570,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return createWrap(func, bitmask, thisArg, partials, holders);
     });
+>>>>>>> master
 
     /**
      * Creates a function that invokes the method at `object[key]` with `partials`
@@ -46644,6 +50719,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+},{}],320:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a debounced function that delays invoking `func` until after `wait`
      * milliseconds have elapsed since the last time the debounced function was
@@ -46709,6 +50788,7 @@ module.exports = require('browserify-sha3').SHA3Hash
           leading = false,
           maxing = false,
           trailing = true;
+>>>>>>> master
 
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
@@ -46721,9 +50801,74 @@ module.exports = require('browserify-sha3').SHA3Hash
         trailing = 'trailing' in options ? !!options.trailing : trailing;
       }
 
+<<<<<<< HEAD
+function registerTransactionRelay(transactionRelay) {
+  return function (dispatch, getState) {
+    dispatch(observeTransactionsStateChanges(function (transactions, oldTransactions) {
+      var noRelay = getState().noRelay;
+      Object.keys(transactions).forEach(function (hash) {
+        if (transactions[hash] !== oldTransactions[hash]) {
+          if (getState().debug.tx) {
+            console.log("+++++++++++ Detected change in transaction", hash);
+            console.log("new:", transactions[hash]);
+            console.log("old:", oldTransactions[hash]);
+          }
+          var payload = transactions[hash].payload;
+          if (payload && payload.name && !noRelay[payload.name]) {
+            transactionRelay({
+              hash: hash,
+              type: payload.label || payload.name,
+              status: transactions[hash].status,
+              data: payload,
+              response: transactions[hash].tx,
+            });
+          }
+        }
+      });
+    }));
+  };
+}
+
+module.exports = registerTransactionRelay;
+
+},{"../store-observers/transactions":306}],321:[function(require,module,exports){
+"use strict";
+
+var storeObservers = require("../store-observers");
+
+function unregisterTransactionRelay() {
+  return function (dispatch) {
+    dispatch(storeObservers.remove("transactions"));
+  };
+}
+
+module.exports = unregisterTransactionRelay;
+
+},{"../store-observers":305}],322:[function(require,module,exports){
+"use strict";
+
+/**
+ * Constructs an AbstractTransporter.  Should not be called directly, used by derived prototypes.
+ *
+ * @param {!string} address
+ * @param {!number} timeout
+ * @param {function(?Error, !object):void} messageHandler
+ */
+function AbstractTransport(address, timeout, messageHandler) {
+  if (typeof address !== "string") {
+    throw new Error("address must be a string");
+  }
+  if (typeof timeout !== "number") {
+    throw new Error("timeout must be a number");
+  }
+  if (typeof messageHandler !== "function") {
+    throw new Error("messageHandler must be a function");
+  }
+=======
       function invokeFunc(time) {
         var args = lastArgs,
             thisArg = lastThis;
+>>>>>>> master
 
         lastArgs = lastThis = undefined;
         lastInvokeTime = time;
@@ -46992,6 +51137,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+},{}],323:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates a function that is restricted to invoking `func` once. Repeat calls
      * to the function return the value of the first invocation. The `func` is
@@ -47013,6 +51162,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function once(func) {
       return before(2, func);
     }
+>>>>>>> master
 
     /**
      * Creates a function that invokes `func` with its arguments transformed.
@@ -47050,10 +51200,15 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? arrayMap(transforms[0], baseUnary(getIteratee()))
         : arrayMap(baseFlatten(transforms, 1), baseUnary(getIteratee()));
 
+<<<<<<< HEAD
+},{}],324:[function(require,module,exports){
+"use strict";
+=======
       var funcsLength = transforms.length;
       return baseRest(function(args) {
         var index = -1,
             length = nativeMin(args.length, funcsLength);
+>>>>>>> master
 
         while (++index < length) {
           args[index] = transforms[index].call(this, args[index]);
@@ -47061,6 +51216,22 @@ module.exports = require('browserify-sha3').SHA3Hash
         return apply(func, this, args);
       });
     });
+<<<<<<< HEAD
+  });
+}
+
+module.exports = storeTransport;
+
+},{}],325:[function(require,module,exports){
+"use strict";
+
+var AbstractTransport = require("./abstract-transport.js");
+var request = require("../platform/request.js");
+
+function HttpTransport(address, timeout, messageHandler, initialConnectCallback) {
+  AbstractTransport.call(this, address, timeout, messageHandler);
+=======
+>>>>>>> master
 
     /**
      * Creates a function that invokes `func` with `partials` prepended to the
@@ -47294,6 +51465,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       var leading = true,
           trailing = true;
 
+<<<<<<< HEAD
+},{"../platform/request.js":275,"./abstract-transport.js":322}],326:[function(require,module,exports){
+"use strict";
+=======
       if (typeof func != 'function') {
         throw new TypeError(FUNC_ERROR_TEXT);
       }
@@ -47307,6 +51482,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         'trailing': trailing
       });
     }
+>>>>>>> master
 
     /**
      * Creates a function that accepts up to one argument, ignoring any
@@ -47426,6 +51602,104 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseClone(value, CLONE_SYMBOLS_FLAG);
     }
 
+<<<<<<< HEAD
+IpcTransport.prototype.connect = function (initialCallback) {
+  var self = this;
+  var initialCallbackCalled = false;
+  var callback = function (err) {
+    initialCallbackCalled = true;
+    initialCallback(err);
+  };
+  this.ipcClient = net.connect({ path: this.address });
+  this.ipcClient.on("connect", function () {
+    console.log("IPC socket connected", self.address);
+    if (!initialCallbackCalled) callback(null);
+    // FIXME: UTF surrogates that cross buffer boundaries will break oboe (https://github.com/jimhigson/oboe.js/issues/133)
+    oboe(self.ipcClient).done(function (jso) {
+      // FIXME: oboe sometimes gives an empty object for no apparent reason, ignore it
+      if (Object.keys(jso).length === 0 && typeof jso === "object") { return; }
+      self.messageHandler(null, jso);
+    });
+  });
+  this.ipcClient.on("data", function (/*message*/) {
+    // handled by oboe
+  });
+  this.ipcClient.on("error", function (error) {
+    // CONSIDER: can we capture unhandled errors somehow?  in at least one code path, the same error comes in via an errorCallback passed to `write` where we handle it correctly.  i'm not certain that all sources of errors come from calls to `.write` though, but I'm not sure how to dedupe without monkey patching the IPC client.
+    // if `callback` hasn't been called yet, fire the callback to let the system know the connect failed.
+    Object.keys(self.disconnectListeners).forEach(function (key) { self.disconnectListeners[key](error); });
+    if (!initialCallbackCalled) callback(error);
+  });
+  this.ipcClient.on("end", function () {
+    console.info("IPC socket closed", self.address);
+    Object.keys(self.disconnectListeners).forEach(function (key) { self.disconnectListeners[key](); });
+    if (!initialCallbackCalled) callback(new Error("IPC socket closed without opening, likely means failed connection."));
+  });
+};
+
+IpcTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) {
+  try {
+    this.ipcClient.write(JSON.stringify(rpcJso), null, function (error) {
+      if (!error) return;
+      if (error.code === "EPIPE") error.retryable = true;
+      if (error.message === "This socket is closed") error.retryable = true;
+      errorCallback(error);
+    });
+  } catch (error) {
+    if (error.code === "EPIPE") error.retryable = true;
+    setTimeout(function () { errorCallback(error); }, 0);
+  }
+};
+
+module.exports = IpcTransport;
+
+},{"./abstract-transport.js":322,"net":161,"oboe":426}],327:[function(require,module,exports){
+"use strict";
+
+var HttpTransport = require("./http-transport");
+var IpcTransport = require("./ipc-transport");
+var Web3Transport = require("./web3-transport");
+var WsTransport = require("./ws-transport");
+var storeTransport = require("./helpers/store-transport");
+var chooseTransport = require("./helpers/choose-transport");
+var someSeries = require("async/someSeries");
+
+/**
+ * Attempts to connect to all provided addresses and then picks the "best" of each transport type to return to you in the callback.
+ *
+ * @typedef Configuration
+ * @type {object}
+ * @property {!string[]} httpAddresses
+ * @property {!string[]} wsAddresses
+ * @property {!string[]} ipcAddresses
+ * @property {!number} connectionTimeout
+ *
+ * @param {!Configuration} configuration
+ * @param {!function(?Error,?object):void} messageHandler - Function to call when a message from the blockchain is received or an unrecoverable error occurs while attempting to talk to the blockchain.  The error will, if possible, contain the original request.
+ * @param {!boolean} debugLogging - Whether to log debug information to the console as part of the connect process.
+ * @param {!function(?Error, ?Transporter):void} callback - Called when the transporter is ready to be used or an error occurs while hooking it up.
+ * @returns {void}
+ */
+function Transporter(configuration, messageHandler, debugLogging, callback) {
+  // validate configuration
+  if (typeof configuration !== "object") {
+    return callback(new Error("configuration must be an object."));
+  } else if (!Array.isArray(configuration.httpAddresses)) {
+    return callback(new Error("configuration.httpAddresses must be an array."));
+  } else if (configuration.httpAddresses.some(function (x) { return typeof x !== "string"; })) {
+    return callback(new Error("configuration.httpAddresses must contain only strings."));
+  } else if (!Array.isArray(configuration.wsAddresses)) {
+    return callback(new Error("configuration.wsAddresses must be an array."));
+  } else if (configuration.wsAddresses.some(function (x) { return typeof x !== "string"; })) {
+    return callback(new Error("configuration.wsAddresses must contain only strings."));
+  } else if (!Array.isArray(configuration.ipcAddresses)) {
+    return callback(new Error("configuration.ipcAddresses must be an array."));
+  } else if (configuration.ipcAddresses.some(function (x) { return typeof x !== "string"; })) {
+    return callback(new Error("configuration.ipcAddresses must contain only strings."));
+  } else if (typeof configuration.connectionTimeout !== "number") {
+    return callback(new Error("configuration.connectionTimeout must be a number."));
+  }
+=======
     /**
      * This method is like `_.clone` except that it accepts `customizer` which
      * is invoked to produce the cloned value. If `customizer` returns `undefined`,
@@ -47461,6 +51735,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       customizer = typeof customizer == 'function' ? customizer : undefined;
       return baseClone(value, CLONE_SYMBOLS_FLAG, customizer);
     }
+>>>>>>> master
 
     /**
      * This method is like `_.clone` except that it recursively clones `value`.
@@ -47633,6 +51908,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return value >= other;
     });
 
+<<<<<<< HEAD
+},{"./helpers/choose-transport":323,"./helpers/store-transport":324,"./http-transport":325,"./ipc-transport":326,"./web3-transport":328,"./ws-transport":329,"async/someSeries":240}],328:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is likely an `arguments` object.
      *
@@ -47655,6 +51934,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
         !propertyIsEnumerable.call(value, 'callee');
     };
+>>>>>>> master
 
     /**
      * Checks if `value` is classified as an `Array` object.
@@ -47758,6 +52038,37 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isObjectLike(value) && isArrayLike(value);
     }
 
+<<<<<<< HEAD
+Web3Transport.prototype.connect = function (callback) {
+  if (isGlobalWeb3()) {
+    setTimeout(function () { callback(null); }, 1);
+  } else {
+    setTimeout(function () { callback(new Error("Nothing found at window.web3.currentProvider.")); }, 1);
+  }
+};
+
+Web3Transport.prototype.submitRpcRequest = function (rpcObject, errorCallback) {
+  var web3Provider;
+  if (typeof window === "undefined") return errorCallback("attempted to access 'window' outside of a browser, this shouldn't happen");
+  web3Provider = ((window || {}).web3 || {}).currentProvider;
+  if (!web3Provider) return errorCallback("window.web3.currentProvider no longer available.");
+  web3Provider.sendAsync(rpcObject, this.messageHandler.bind(this));
+};
+
+module.exports = Web3Transport;
+
+},{"../utils/is-global-web3":331,"./abstract-transport.js":322}],329:[function(require,module,exports){
+"use strict";
+
+var AbstractTransport = require("./abstract-transport");
+var WebSocketClient = require("../platform/web-socket-client");
+
+function WsTransport(address, timeout, websocketClientConfig, messageHandler, initialConnectCallback) {
+  AbstractTransport.call(this, address, timeout, messageHandler);
+  this.websocketClientConfig = websocketClientConfig;
+  this.initialConnect(initialConnectCallback);
+}
+=======
     /**
      * Checks if `value` is classified as a boolean primitive or object.
      *
@@ -47779,6 +52090,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       return value === true || value === false ||
         (isObjectLike(value) && baseGetTag(value) == boolTag);
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is a buffer.
@@ -47928,6 +52240,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseIsEqual(value, other);
     }
 
+<<<<<<< HEAD
+},{"../platform/web-socket-client":276,"./abstract-transport":322}],330:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.isEqual` except that it accepts `customizer` which
      * is invoked to compare values. If `customizer` returns `undefined`, comparisons
@@ -47965,6 +52281,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var result = customizer ? customizer(value, other) : undefined;
       return result === undefined ? baseIsEqual(value, other, undefined, customizer) : !!result;
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is an `Error`, `EvalError`, `RangeError`, `ReferenceError`,
@@ -48023,6 +52340,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return typeof value == 'number' && nativeIsFinite(value);
     }
 
+<<<<<<< HEAD
+},{}],331:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is classified as a `Function` object.
      *
@@ -48049,6 +52370,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var tag = baseGetTag(value);
       return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is an integer.
@@ -48111,6 +52433,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
     }
 
+<<<<<<< HEAD
+},{}],332:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is the
      * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -48140,6 +52466,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       var type = typeof value;
       return value != null && (type == 'object' || type == 'function');
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is object-like. A value is object-like if it's not `null`
@@ -48188,6 +52515,23 @@ module.exports = require('browserify-sha3').SHA3Hash
      */
     var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
 
+<<<<<<< HEAD
+},{"speedomatic":492}],333:[function(require,module,exports){
+"use strict";
+
+var isGlobalWeb3 = require("./is-global-web3");
+
+function isMetaMask() {
+  if (!isGlobalWeb3()) return false;
+  if (!window.web3.currentProvider.isMetaMask) return false;
+  return true;
+}
+
+module.exports = isMetaMask;
+
+},{"./is-global-web3":331}],334:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Performs a partial deep comparison between `object` and `source` to
      * determine if `object` contains equivalent property values.
@@ -48219,6 +52563,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function isMatch(object, source) {
       return object === source || baseIsMatch(object, source, getMatchData(source));
     }
+>>>>>>> master
 
     /**
      * This method is like `_.isMatch` except that it accepts `customizer` which
@@ -48292,6 +52637,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isNumber(value) && value != +value;
     }
 
+<<<<<<< HEAD
+},{}],335:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is a pristine native function.
      *
@@ -48324,6 +52673,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return baseIsNative(value);
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is `null`.
@@ -48370,6 +52720,11 @@ module.exports = require('browserify-sha3').SHA3Hash
       return value == null;
     }
 
+<<<<<<< HEAD
+},{}],336:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+=======
     /**
      * Checks if `value` is classified as a `Number` primitive or object.
      *
@@ -48400,6 +52755,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       return typeof value == 'number' ||
         (isObjectLike(value) && baseGetTag(value) == numberTag);
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is a plain object, that is, an object created by the
@@ -48461,6 +52817,12 @@ module.exports = require('browserify-sha3').SHA3Hash
      */
     var isRegExp = nodeIsRegExp ? baseUnary(nodeIsRegExp) : baseIsRegExp;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"../utils/is-function":330,"buffer":167,"keccak/js":383,"speedomatic":492}],337:[function(require,module,exports){
+"use strict";
+var sha3 = require("../utils/sha3");
+=======
     /**
      * Checks if `value` is a safe integer. An integer is safe if it's an IEEE-754
      * double precision number which isn't the result of a rounded unsafe integer.
@@ -48491,6 +52853,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function isSafeInteger(value) {
       return isInteger(value) && value >= -MAX_SAFE_INTEGER && value <= MAX_SAFE_INTEGER;
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is classified as a `Set` object.
@@ -48595,6 +52958,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return value === undefined;
     }
 
+<<<<<<< HEAD
+},{"../utils/sha3":336}],338:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is classified as a `WeakMap` object.
      *
@@ -48615,6 +52982,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function isWeakMap(value) {
       return isObjectLike(value) && getTag(value) == weakMapTag;
     }
+>>>>>>> master
 
     /**
      * Checks if `value` is classified as a `WeakSet` object.
@@ -48637,6 +53005,43 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isObjectLike(value) && baseGetTag(value) == weakSetTag;
     }
 
+<<<<<<< HEAD
+var validateAndDefaultBlockNumber = function (blockNumber) {
+  if (blockNumber === undefined) return "latest";
+  if (blockNumber === null) return "latest";
+  if (blockNumber === "latest") return blockNumber;
+  if (blockNumber === "earliest") return blockNumber;
+  if (blockNumber === "pending") return blockNumber;
+  try {
+    return validateNumber(blockNumber, "block");
+  } catch (error) {
+    throw new Error("block must be a number, a 0x prefixed hex string, or 'latest' or 'earliest' or 'pending'");
+  }
+};
+
+module.exports = validateAndDefaultBlockNumber;
+
+},{"./validate-number":341}],339:[function(require,module,exports){
+"use strict";
+
+var RPCError = require("../errors/rpc-error");
+
+// validate that the parameter looks like a block
+function validateBlock(block) {
+  if (block === null
+    || block === undefined
+    || block instanceof Error
+    || block.error
+    || !block.hash
+    || !block.parentHash
+    || !block.number) throw new RPCError("INVALID_BLOCK", { data: block });
+}
+
+module.exports = validateBlock;
+
+},{"../errors/rpc-error":271}],340:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `value` is less than `other`.
      *
@@ -48661,6 +53066,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      * // => false
      */
     var lt = createRelationalOperation(baseLt);
+>>>>>>> master
 
     /**
      * Checks if `value` is less than or equal to `other`.
@@ -48725,8 +53131,13 @@ module.exports = require('browserify-sha3').SHA3Hash
       var tag = getTag(value),
           func = tag == mapTag ? mapToArray : (tag == setTag ? setToArray : values);
 
+<<<<<<< HEAD
+},{}],341:[function(require,module,exports){
+"use strict";
+=======
       return func(value);
     }
+>>>>>>> master
 
     /**
      * Converts `value` to a finite number.
@@ -48793,8 +53204,13 @@ module.exports = require('browserify-sha3').SHA3Hash
       var result = toFinite(value),
           remainder = result % 1;
 
+<<<<<<< HEAD
+},{}],342:[function(require,module,exports){
+"use strict";
+=======
       return result === result ? (remainder ? result - remainder : result) : 0;
     }
+>>>>>>> master
 
     /**
      * Converts `value` to an integer suitable for use as the length of an
@@ -48899,6 +53315,14 @@ module.exports = require('browserify-sha3').SHA3Hash
       return copyObject(value, keysIn(value));
     }
 
+<<<<<<< HEAD
+},{"./validate-address":337,"./validate-number":341}],343:[function(require,module,exports){
+// generated by genversion
+module.exports = '5.3.8'
+
+},{}],344:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Converts `value` to a safe integer. A safe integer can be compared and
      * represented correctly.
@@ -48953,6 +53377,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function toString(value) {
       return value == null ? '' : baseToString(value);
     }
+>>>>>>> master
 
     /*------------------------------------------------------------------------*/
 
@@ -49000,6 +53425,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
     });
 
+<<<<<<< HEAD
+},{}],345:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.assign` except that it iterates over own and
      * inherited source properties.
@@ -49034,6 +53463,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var assignIn = createAssigner(function(object, source) {
       copyObject(source, keysIn(source), object);
     });
+>>>>>>> master
 
     /**
      * This method is like `_.assignIn` except that it accepts `customizer`
@@ -49068,6 +53498,19 @@ module.exports = require('browserify-sha3').SHA3Hash
       copyObject(source, keysIn(source), object, customizer);
     });
 
+<<<<<<< HEAD
+function bindDispatch(dispatch, namespace) {
+  return Object.keys(namespace).reduce(function (p, method) {
+    p[method] = bindDispatchToMethod(dispatch, namespace[method]);
+    return p;
+  }, {});
+}
+
+module.exports = bindDispatch;
+
+},{"./bind-dispatch-to-method":344}],346:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.assign` except that it accepts `customizer`
      * which is invoked to produce the assigned values. If `customizer` returns
@@ -49099,6 +53542,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var assignWith = createAssigner(function(object, source, srcIndex, customizer) {
       copyObject(source, keys(source), object, customizer);
     });
+>>>>>>> master
 
     /**
      * Creates an array of values corresponding to `paths` of `object`.
@@ -49158,6 +53602,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return properties == null ? result : baseAssign(result, properties);
     }
 
+<<<<<<< HEAD
+},{"./make-wrapper":348}],347:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Assigns own and inherited enumerable string keyed properties of source
      * objects to the destination object for all destination properties that
@@ -49181,6 +53629,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      */
     var defaults = baseRest(function(object, sources) {
       object = Object(object);
+>>>>>>> master
 
       var index = -1;
       var length = sources.length;
@@ -49190,11 +53639,18 @@ module.exports = require('browserify-sha3').SHA3Hash
         length = 1;
       }
 
+<<<<<<< HEAD
+module.exports = isUnlocked;
+
+},{"../wrappers/eth":346}],348:[function(require,module,exports){
+"use strict";
+=======
       while (++index < length) {
         var source = sources[index];
         var props = keysIn(source);
         var propsIndex = -1;
         var propsLength = props.length;
+>>>>>>> master
 
         while (++propsIndex < propsLength) {
           var key = props[propsIndex];
@@ -49207,8 +53663,13 @@ module.exports = require('browserify-sha3').SHA3Hash
         }
       }
 
+<<<<<<< HEAD
+},{"../utils/is-function":330,"./raw":353}],349:[function(require,module,exports){
+"use strict";
+=======
       return object;
     });
+>>>>>>> master
 
     /**
      * This method is like `_.defaults` except that it recursively assigns
@@ -49273,6 +53734,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseFindKey(object, getIteratee(predicate, 3), baseForOwn);
     }
 
+<<<<<<< HEAD
+},{"./make-wrapper":348}],350:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.findKey` except that it iterates over elements of
      * a collection in the opposite order.
@@ -49311,6 +53776,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function findLastKey(object, predicate) {
       return baseFindKey(object, getIteratee(predicate, 3), baseForOwnRight);
     }
+>>>>>>> master
 
     /**
      * Iterates over own and inherited enumerable string keyed properties of an
@@ -49378,6 +53844,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         : baseForRight(object, getIteratee(iteratee, 3), keysIn);
     }
 
+<<<<<<< HEAD
+},{"./make-wrapper":348}],351:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Iterates over own enumerable string keyed properties of an object and
      * invokes `iteratee` for each property. The iteratee is invoked with three
@@ -49409,6 +53879,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function forOwn(object, iteratee) {
       return object && baseForOwn(object, getIteratee(iteratee, 3));
     }
+>>>>>>> master
 
     /**
      * This method is like `_.forOwn` except that it iterates over properties of
@@ -49467,6 +53938,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return object == null ? [] : baseFunctions(object, keys(object));
     }
 
+<<<<<<< HEAD
+},{"./make-wrapper":348}],352:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an array of function property names from own and inherited
      * enumerable properties of `object`.
@@ -49493,6 +53968,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function functionsIn(object) {
       return object == null ? [] : baseFunctions(object, keysIn(object));
     }
+>>>>>>> master
 
     /**
      * Gets the value at `path` of `object`. If the resolved value is
@@ -49555,6 +54031,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return object != null && hasPath(object, path, baseHas);
     }
 
+<<<<<<< HEAD
+},{"../errors/rpc-error":271,"./eth":346}],353:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Checks if `path` is a direct or inherited property of `object`.
      *
@@ -49584,6 +54064,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function hasIn(object, path) {
       return object != null && hasPath(object, path, baseHasIn);
     }
+>>>>>>> master
 
     /**
      * Creates an object composed of the inverted keys and values of `object`.
@@ -49644,12 +54125,17 @@ module.exports = require('browserify-sha3').SHA3Hash
         value = nativeObjectToString.call(value);
       }
 
+<<<<<<< HEAD
+},{"../encode-request/make-request-payload":266,"../rpc/submit-request-to-blockchain":303}],354:[function(require,module,exports){
+"use strict";
+=======
       if (hasOwnProperty.call(result, value)) {
         result[value].push(key);
       } else {
         result[value] = [key];
       }
     }, getIteratee);
+>>>>>>> master
 
     /**
      * Invokes the method at `path` of `object`.
@@ -49730,6 +54216,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
     }
 
+<<<<<<< HEAD
+},{"../raw-transactions/sign-raw-transaction-with-key":283,"../wrappers/eth":346,"clone":172,"speedomatic":492}],355:[function(require,module,exports){
+"use strict";
+=======
     /**
      * The opposite of `_.mapValues`; this method creates an object with the
      * same values as `object` and keys generated by running each own enumerable
@@ -49754,6 +54244,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function mapKeys(object, iteratee) {
       var result = {};
       iteratee = getIteratee(iteratee, 3);
+>>>>>>> master
 
       baseForOwn(object, function(value, key, object) {
         baseAssignValue(result, iteratee(value, key, object), value);
@@ -49799,6 +54290,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return result;
     }
 
+<<<<<<< HEAD
+},{"../wrappers/eth":346,"clone":172,"speedomatic":492}],356:[function(require,module,exports){
+"use strict";
+=======
     /**
      * This method is like `_.assign` except that it recursively merges own and
      * inherited enumerable string keyed properties of source objects into the
@@ -49833,6 +54328,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var merge = createAssigner(function(object, source, srcIndex) {
       baseMerge(object, source, srcIndex);
     });
+>>>>>>> master
 
     /**
      * This method is like `_.merge` except that it accepts `customizer` which
@@ -49894,6 +54390,37 @@ module.exports = require('browserify-sha3').SHA3Hash
       if (object == null) {
         return result;
       }
+<<<<<<< HEAD
+      callback(null);
+    }));
+  };
+}
+
+module.exports = setCoinbase;
+
+},{"./eth":346,"speedomatic":492}],357:[function(require,module,exports){
+"use strict";
+
+var eth_gasPrice = require("./eth").gasPrice;
+var isHex = require("../utils/is-hex");
+
+function setGasPrice(callback) {
+  return function (dispatch) {
+    dispatch(eth_gasPrice(null, function (err, gasPrice) {
+      if (err) return callback(err);
+      if (gasPrice != null && isHex(gasPrice)) {
+        dispatch({ type: "SET_GAS_PRICE", gasPrice: parseInt(gasPrice, 16) });
+      }
+      callback(null);
+    }));
+  };
+}
+
+module.exports = setGasPrice;
+
+},{"../utils/is-hex":332,"./eth":346}],358:[function(require,module,exports){
+"use strict";
+=======
       var isDeep = false;
       paths = arrayMap(paths, function(path) {
         path = castPath(path, object);
@@ -49910,6 +54437,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       return result;
     });
+>>>>>>> master
 
     /**
      * The opposite of `_.pickBy`; this method creates an object composed of
@@ -49935,6 +54463,23 @@ module.exports = require('browserify-sha3').SHA3Hash
       return pickBy(object, negate(getIteratee(predicate)));
     }
 
+<<<<<<< HEAD
+module.exports = {
+  post: makeWrapper("shh_post"),
+  version: makeWrapper("shh_version"),
+  newIdentity: makeWrapper("shh_newIdentity"),
+  hasIdentity: makeWrapper("shh_hasIdentity"),
+  newGroup: makeWrapper("shh_newGroup"),
+  addToGroup: makeWrapper("shh_addToGroup"),
+  newFilter: makeWrapper("shh_newFilter"),
+  uninstallFilter: makeWrapper("shh_uninstallFilter"),
+  getFilterChanges: makeWrapper("shh_getFilterChanges"),
+  getMessages: makeWrapper("shh_getMessages"),
+};
+
+},{"./make-wrapper":348}],359:[function(require,module,exports){
+"use strict";
+=======
     /**
      * Creates an object composed of the picked `object` properties.
      *
@@ -49955,6 +54500,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     var pick = flatRest(function(object, paths) {
       return object == null ? {} : basePick(object, paths);
     });
+>>>>>>> master
 
     /**
      * Creates an object composed of the `object` properties `predicate` returns
@@ -50019,8 +54565,13 @@ module.exports = require('browserify-sha3').SHA3Hash
     function result(object, path, defaultValue) {
       path = castPath(path, object);
 
+<<<<<<< HEAD
+},{"../utils/sha3":336,"./make-wrapper":348}],360:[function(require,module,exports){
+'use strict';
+=======
       var index = -1,
           length = path.length;
+>>>>>>> master
 
       // Ensure the loop is entered when path is empty.
       if (!length) {
@@ -50390,6 +54941,130 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseClamp(toNumber(number), lower, upper);
     }
 
+<<<<<<< HEAD
+	return this;
+};
+
+emit = function (type) {
+	var i, l, listener, listeners, args;
+
+	if (!hasOwnProperty.call(this, '__ee__')) return;
+	listeners = this.__ee__[type];
+	if (!listeners) return;
+
+	if (typeof listeners === 'object') {
+		l = arguments.length;
+		args = new Array(l - 1);
+		for (i = 1; i < l; ++i) args[i - 1] = arguments[i];
+
+		listeners = listeners.slice();
+		for (i = 0; (listener = listeners[i]); ++i) {
+			apply.call(listener, this, args);
+		}
+	} else {
+		switch (arguments.length) {
+		case 1:
+			call.call(listeners, this);
+			break;
+		case 2:
+			call.call(listeners, this, arguments[1]);
+			break;
+		case 3:
+			call.call(listeners, this, arguments[1], arguments[2]);
+			break;
+		default:
+			l = arguments.length;
+			args = new Array(l - 1);
+			for (i = 1; i < l; ++i) {
+				args[i - 1] = arguments[i];
+			}
+			apply.call(listeners, this, args);
+		}
+	}
+};
+
+methods = {
+	on: on,
+	once: once,
+	off: off,
+	emit: emit
+};
+
+descriptors = {
+	on: d(on),
+	once: d(once),
+	off: d(off),
+	emit: d(emit)
+};
+
+base = defineProperties({}, descriptors);
+
+module.exports = exports = function (o) {
+	return (o == null) ? create(base) : defineProperties(Object(o), descriptors);
+};
+exports.methods = methods;
+
+},{"d":175,"es5-ext/object/valid-callable":202}],361:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+=======
     /**
      * Checks if `n` is between `start` and up to, but not including, `end`. If
      * `end` is not specified, it's set to `start` with `start` then set to `0`.
@@ -50433,6 +55108,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       if (end === undefined) {
         end = start;
         start = 0;
+>>>>>>> master
       } else {
         end = toFinite(end);
       }
@@ -50807,11 +55483,19 @@ module.exports = require('browserify-sha3').SHA3Hash
       string = toString(string);
       length = toInteger(length);
 
+<<<<<<< HEAD
+},{}],362:[function(require,module,exports){
+'use strict'
+var Buffer = require('safe-buffer').Buffer
+var Transform = require('stream').Transform
+var inherits = require('inherits')
+=======
       var strLength = length ? stringSize(string) : 0;
       return (length && strLength < length)
         ? (string + createPadding(length - strLength, chars))
         : string;
     }
+>>>>>>> master
 
     /**
      * Pads `string` on the left side if it's shorter than `length`. Padding
@@ -51220,10 +55904,15 @@ module.exports = require('browserify-sha3').SHA3Hash
         }
         index = offset + match.length;
 
+<<<<<<< HEAD
+},{"inherits":379,"safe-buffer":454,"stream":505}],363:[function(require,module,exports){
+var hash = exports;
+=======
         // The JS engine embedded in Adobe products needs `match` returned in
         // order to produce the correct `offset` value.
         return match;
       });
+>>>>>>> master
 
       source += "';\n";
 
@@ -51238,6 +55927,10 @@ module.exports = require('browserify-sha3').SHA3Hash
         .replace(reEmptyStringMiddle, '$1')
         .replace(reEmptyStringTrailing, '$1;');
 
+<<<<<<< HEAD
+},{"./hash/common":364,"./hash/hmac":365,"./hash/ripemd":366,"./hash/sha":367,"./hash/utils":374}],364:[function(require,module,exports){
+'use strict';
+=======
       // Frame code as the function body.
       source = 'function(' + (variable || 'obj') + ') {\n' +
         (variable
@@ -51256,6 +55949,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         ) +
         source +
         'return __p\n}';
+>>>>>>> master
 
       var result = attempt(function() {
         return Function(importsKeys, sourceURL + 'return ' + source)
@@ -51489,6 +56183,29 @@ module.exports = require('browserify-sha3').SHA3Hash
         ? castSlice(strSymbols, 0, end).join('')
         : string.slice(0, end);
 
+<<<<<<< HEAD
+    for (t = 8; t < this.padLength; t++)
+      res[i++] = 0;
+  }
+
+  return res;
+};
+
+},{"./utils":374,"minimalistic-assert":424}],365:[function(require,module,exports){
+'use strict';
+
+var utils = require('./utils');
+var assert = require('minimalistic-assert');
+
+function Hmac(hash, key, enc) {
+  if (!(this instanceof Hmac))
+    return new Hmac(hash, key, enc);
+  this.Hash = hash;
+  this.blockSize = hash.blockSize / 8;
+  this.outSize = hash.outSize / 8;
+  this.inner = null;
+  this.outer = null;
+=======
       if (separator === undefined) {
         return result + omission;
       }
@@ -51499,6 +56216,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         if (string.slice(end).search(separator)) {
           var match,
               substring = result;
+>>>>>>> master
 
           if (!separator.global) {
             separator = RegExp(separator.source, toString(reFlags.exec(separator)) + 'g');
@@ -51618,6 +56336,10 @@ module.exports = require('browserify-sha3').SHA3Hash
 
     /*------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+},{"./utils":374,"minimalistic-assert":424}],366:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Attempts to invoke `func`, returning either the result or the caught error
      * object. Any additional arguments are provided to `func` when it's invoked.
@@ -51647,6 +56369,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         return isError(e) ? e : new Error(e);
       }
     });
+>>>>>>> master
 
     /**
      * Binds methods of an object to the object itself, overwriting the existing
@@ -51923,6 +56646,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG));
     }
 
+<<<<<<< HEAD
+},{"./common":364,"./utils":374}],367:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Creates a function that performs a partial deep comparison between a given
      * object and `source`, returning `true` if the given object has equivalent
@@ -51954,6 +56681,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function matches(source) {
       return baseMatches(baseClone(source, CLONE_DEEP_FLAG));
     }
+>>>>>>> master
 
     /**
      * Creates a function that performs a partial deep comparison between the
@@ -51985,6 +56713,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseMatchesProperty(path, baseClone(srcValue, CLONE_DEEP_FLAG));
     }
 
+<<<<<<< HEAD
+},{"./sha/1":368,"./sha/224":369,"./sha/256":370,"./sha/384":371,"./sha/512":372}],368:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Creates a function that invokes the method at `path` of a given object.
      * Any additional arguments are provided to the invoked method.
@@ -52014,6 +56746,7 @@ module.exports = require('browserify-sha3').SHA3Hash
         return baseInvoke(object, path, args);
       };
     });
+>>>>>>> master
 
     /**
      * The opposite of `_.method`; this method creates a function that invokes
@@ -52304,6 +57037,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       };
     }
 
+<<<<<<< HEAD
+},{"../common":364,"../utils":374,"./common":373}],369:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Creates an array of numbers (positive and/or negative) progressing from
      * `start` up to, but not including, `end`. A step of `-1` is used if a negative
@@ -52346,6 +57083,7 @@ module.exports = require('browserify-sha3').SHA3Hash
      * // => []
      */
     var range = createRange();
+>>>>>>> master
 
     /**
      * This method is like `_.range` except that it populates values in
@@ -52480,6 +57218,10 @@ module.exports = require('browserify-sha3').SHA3Hash
       return true;
     }
 
+<<<<<<< HEAD
+},{"../utils":374,"./256":370}],370:[function(require,module,exports){
+'use strict';
+=======
     /**
      * Invokes the iteratee `n` times, returning an array of the results of
      * each invocation. The iteratee is invoked with one argument; (index).
@@ -52506,6 +57248,7 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
       var index = MAX_ARRAY_LENGTH,
           length = nativeMin(n, MAX_ARRAY_LENGTH);
+>>>>>>> master
 
       iteratee = getIteratee(iteratee);
       n -= MAX_ARRAY_LENGTH;
@@ -52720,6 +57463,58 @@ module.exports = require('browserify-sha3').SHA3Hash
       return baseMean(array, identity);
     }
 
+<<<<<<< HEAD
+SHA256.prototype._digest = function digest(enc) {
+  if (enc === 'hex')
+    return utils.toHex32(this.h, 'big');
+  else
+    return utils.split32(this.h, 'big');
+};
+
+},{"../common":364,"../utils":374,"./common":373,"minimalistic-assert":424}],371:[function(require,module,exports){
+'use strict';
+
+var utils = require('../utils');
+
+var SHA512 = require('./512');
+
+function SHA384() {
+  if (!(this instanceof SHA384))
+    return new SHA384();
+
+  SHA512.call(this);
+  this.h = [
+    0xcbbb9d5d, 0xc1059ed8,
+    0x629a292a, 0x367cd507,
+    0x9159015a, 0x3070dd17,
+    0x152fecd8, 0xf70e5939,
+    0x67332667, 0xffc00b31,
+    0x8eb44a87, 0x68581511,
+    0xdb0c2e0d, 0x64f98fa7,
+    0x47b5481d, 0xbefa4fa4 ];
+}
+utils.inherits(SHA384, SHA512);
+module.exports = SHA384;
+
+SHA384.blockSize = 1024;
+SHA384.outSize = 384;
+SHA384.hmacStrength = 192;
+SHA384.padLength = 128;
+
+SHA384.prototype._digest = function digest(enc) {
+  if (enc === 'hex')
+    return utils.toHex32(this.h.slice(0, 12), 'big');
+  else
+    return utils.split32(this.h.slice(0, 12), 'big');
+};
+
+},{"../utils":374,"./512":372}],372:[function(require,module,exports){
+'use strict';
+
+var utils = require('../utils');
+var common = require('../common');
+var assert = require('minimalistic-assert');
+=======
     /**
      * This method is like `_.mean` except that it accepts `iteratee` which is
      * invoked for each element in `array` to generate the value to be averaged.
@@ -52746,6 +57541,7 @@ module.exports = require('browserify-sha3').SHA3Hash
     function meanBy(array, iteratee) {
       return baseMean(array, getIteratee(iteratee, 2));
     }
+>>>>>>> master
 
     /**
      * Computes the minimum value of `array`. If `array` is empty or falsey,
@@ -53441,10 +58237,15 @@ module.exports = require('browserify-sha3').SHA3Hash
       }
     });
 
+<<<<<<< HEAD
+},{"../common":364,"../utils":374,"minimalistic-assert":424}],373:[function(require,module,exports){
+'use strict';
+=======
     realNames[createHybrid(undefined, WRAP_BIND_KEY_FLAG).name] = [{
       'name': 'wrapper',
       'func': undefined
     }];
+>>>>>>> master
 
     // Add methods to `LazyWrapper`.
     LazyWrapper.prototype.clone = lazyClone;
@@ -53644,9 +58445,14 @@ function fnH (a, b, c, d, m, k, s) {
   return (rotl((a + (b ^ c ^ d) + m + k) | 0, s) + b) | 0
 }
 
+<<<<<<< HEAD
+},{"../utils":374}],374:[function(require,module,exports){
+'use strict';
+=======
 function fnI (a, b, c, d, m, k, s) {
   return (rotl((a + ((c ^ (b | (~d)))) + m + k) | 0, s) + b) | 0
 }
+>>>>>>> master
 
 module.exports = MD5
 
@@ -53948,9 +58754,14 @@ process.prependOnceListener = noop;
 
 process.listeners = function (name) { return [] }
 
+<<<<<<< HEAD
+},{"inherits":379,"minimalistic-assert":424}],375:[function(require,module,exports){
+'use strict';
+=======
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
+>>>>>>> master
 
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
@@ -54051,11 +58862,42 @@ Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
   }
 });
 
+<<<<<<< HEAD
+  var res = temp.slice(0, len);
+  this._update(add);
+  this._reseed++;
+  return utils.encode(res, enc);
+};
+
+},{"hash.js":363,"minimalistic-assert":424,"minimalistic-crypto-utils":425}],376:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+=======
 // the no-half-open enforcer
 function onend() {
   // if we allow half-open state, or if the writable side ended,
   // then we're ok.
   if (this.allowHalfOpen || this._writableState.ended) return;
+>>>>>>> master
 
   // no more data can be written.
   // But allow more writes to happen in this tick.
@@ -54087,9 +58929,23 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
   }
 });
 
+<<<<<<< HEAD
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],377:[function(require,module,exports){
+"use strict";
+=======
 Duplex.prototype._destroy = function (err, cb) {
   this.push(null);
   this.end();
+>>>>>>> master
 
   pna.nextTick(cb, err);
 };
@@ -54115,9 +58971,19 @@ Duplex.prototype._destroy = function (err, cb) {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+<<<<<<< HEAD
+},{}],378:[function(require,module,exports){
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+=======
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
+>>>>>>> master
 
 'use strict';
 
@@ -58480,6 +63346,18 @@ module.exports = abiEncodeBytes;
 
 var ethereumjsAbi = require("ethereumjs-abi");
 
+<<<<<<< HEAD
+}));
+},{}],379:[function(require,module,exports){
+arguments[4][163][0].apply(exports,arguments)
+},{"dup":163}],380:[function(require,module,exports){
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+=======
 // ABI-encode the 'data' field in a transaction payload
 function abiEncodeData(payload, format) {
   var abiEncodedData = ethereumjsAbi.rawEncode(payload.signature || [], payload.params);
@@ -58488,6 +63366,7 @@ function abiEncodeData(payload, format) {
 }
 
 module.exports = abiEncodeData;
+>>>>>>> master
 
 },{"ethereumjs-abi":202}],276:[function(require,module,exports){
 "use strict";
@@ -58498,6 +63377,33 @@ function abiEncodeInt256(value) {
   return rawEncode(["int256"], [value]).toString("hex");
 }
 
+<<<<<<< HEAD
+},{}],381:[function(require,module,exports){
+/**
+ * Returns a `Boolean` on whether or not the a `String` starts with '0x'
+ * @param {String} str the string input value
+ * @return {Boolean} a boolean if it is or is not hex prefixed
+ * @throws if the str input is not a string
+ */
+module.exports = function isHexPrefixed(str) {
+  if (typeof str !== 'string') {
+    throw new Error("[is-hex-prefixed] value must be type 'string', is currently type " + (typeof str) + ", while checking isHexPrefixed.");
+  }
+
+  return str.slice(0, 2) === '0x';
+}
+
+},{}],382:[function(require,module,exports){
+arguments[4][168][0].apply(exports,arguments)
+},{"dup":168}],383:[function(require,module,exports){
+'use strict'
+module.exports = require('./lib/api')(require('./lib/keccak'))
+
+},{"./lib/api":384,"./lib/keccak":388}],384:[function(require,module,exports){
+'use strict'
+var createKeccak = require('./keccak')
+var createShake = require('./shake')
+=======
 module.exports = abiEncodeInt256;
 
 },{"ethereumjs-abi":202}],277:[function(require,module,exports){
@@ -58506,6 +63412,7 @@ module.exports = abiEncodeInt256;
 
 var padRight = require("./pad-right");
 var prefixHex = require("./prefix-hex");
+>>>>>>> master
 
 function abiEncodeShortStringAsInt256(shortString) {
   var encoded = shortString;
@@ -58530,7 +63437,19 @@ function abiEncodeTransactionPayload(payload) {
   return prefixHex(Buffer.concat([ethereumjsAbi.methodID(payload.name, payload.signature), abiEncodeData(payload)]).toString("hex"));
 }
 
+<<<<<<< HEAD
+},{"./keccak":385,"./shake":386}],385:[function(require,module,exports){
+(function (Buffer){
+'use strict'
+var Transform = require('stream').Transform
+var inherits = require('inherits')
+
+module.exports = function (KeccakState) {
+  function Keccak (rate, capacity, delimitedSuffix, hashBitLength, options) {
+    Transform.call(this, options)
+=======
 module.exports = abiEncodeTransactionPayload;
+>>>>>>> master
 
 }).call(this,require("buffer").Buffer)
 },{"./abi-encode-data":275,"./prefix-hex":296,"buffer":163,"ethereumjs-abi":202}],279:[function(require,module,exports){
@@ -58660,8 +63579,16 @@ function byteArrayToUtf8String(byteArray) {
 module.exports = byteArrayToUtf8String;
 
 }).call(this,require("buffer").Buffer)
+<<<<<<< HEAD
+},{"buffer":167,"inherits":379,"stream":505}],386:[function(require,module,exports){
+(function (Buffer){
+'use strict'
+var Transform = require('stream').Transform
+var inherits = require('inherits')
+=======
 },{"./strip-0x-prefix":299,"bignumber.js":153,"buffer":163}],282:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 function chunk(totalLength, chunkLength) {
   chunkLength = chunkLength || 64;
@@ -58751,7 +63678,14 @@ function fix(n, encoding, isWrapped) {
   return n;
 }
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"buffer":167,"inherits":379,"stream":505}],387:[function(require,module,exports){
+'use strict'
+var P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
+=======
 module.exports = fix;
+>>>>>>> master
 
 },{"./bignum":279,"./constants":283,"./prefix-hex":296,"./wrap":304,"bignumber.js":153}],287:[function(require,module,exports){
 "use strict";
@@ -58793,7 +63727,14 @@ function formatAbiRawDecodedData(inputType, decodedData) {
   return decodedData.toString();
 }
 
+<<<<<<< HEAD
+},{}],388:[function(require,module,exports){
+(function (Buffer){
+'use strict'
+var keccakState = require('./keccak-state-unroll')
+=======
 module.exports = formatAbiRawDecodedData;
+>>>>>>> master
 
 },{"./format-ethereum-address":289,"./format-int256":290,"./hex":291,"./prefix-hex":296}],289:[function(require,module,exports){
 "use strict";
@@ -58821,7 +63762,18 @@ function formatEthereumAddress(addr) {
   }
 }
 
+<<<<<<< HEAD
+module.exports = Keccak
+
+}).call(this,require("buffer").Buffer)
+},{"./keccak-state-unroll":387,"buffer":167}],389:[function(require,module,exports){
+module.exports = require('browserify-sha3').SHA3Hash
+
+},{"browserify-sha3":159}],390:[function(require,module,exports){
+var root = require('./_root');
+=======
 module.exports = formatEthereumAddress;
+>>>>>>> master
 
 },{"./prefix-hex":296,"./strip-0x-prefix":299}],290:[function(require,module,exports){
 (function (Buffer){
@@ -58832,6 +63784,15 @@ var prefixHex = require("./prefix-hex");
 var strip0xPrefix = require("./strip-0x-prefix");
 var unfork = require("./unfork");
 
+<<<<<<< HEAD
+},{"./_root":407}],391:[function(require,module,exports){
+var baseTimes = require('./_baseTimes'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isIndex = require('./_isIndex'),
+    isTypedArray = require('./isTypedArray');
+=======
 function formatInt256(s) {
   if (s === undefined || s === null || s === "0x") return s;
   if (Array.isArray(s)) return s.map(formatInt256);
@@ -58842,6 +63803,7 @@ function formatInt256(s) {
   if (s.length > 64) s = s.slice(0, 64);
   return prefixHex(padLeft(s));
 }
+>>>>>>> master
 
 module.exports = formatInt256;
 
@@ -58903,9 +63865,16 @@ function hex(n, isWrapped) {
 
 module.exports = hex;
 
+<<<<<<< HEAD
+},{"./_baseTimes":396,"./_isIndex":401,"./isArguments":409,"./isArray":410,"./isBuffer":412,"./isTypedArray":418}],392:[function(require,module,exports){
+var Symbol = require('./_Symbol'),
+    getRawTag = require('./_getRawTag'),
+    objectToString = require('./_objectToString');
+=======
 }).call(this,require("buffer").Buffer)
 },{"./abi-encode-bytes":274,"./bignum":279,"./prefix-hex":296,"./wrap":304,"bignumber.js":153,"buffer":163}],292:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var BigNumber = require("bignumber.js");
 
@@ -58961,8 +63930,14 @@ function isHex(str) {
 
 module.exports = isHex;
 
+<<<<<<< HEAD
+},{"./_Symbol":390,"./_getRawTag":400,"./_objectToString":405}],393:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+=======
 },{}],294:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var chunk = require("./chunk");
 var prefixHex = require("./prefix-hex");
@@ -58979,7 +63954,31 @@ function padLeft(s, chunkLength, hasPrefix) {
   return s;
 }
 
+<<<<<<< HEAD
+module.exports = baseIsArguments;
+
+},{"./_baseGetTag":392,"./isObjectLike":416}],394:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isLength = require('./isLength'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+=======
 module.exports = padLeft;
+>>>>>>> master
 
 },{"./chunk":282,"./prefix-hex":296,"./strip-0x-prefix":299}],295:[function(require,module,exports){
 "use strict";
@@ -58999,7 +63998,15 @@ function padRight(s, chunkLength, hasPrefix) {
   return s;
 }
 
+<<<<<<< HEAD
+module.exports = baseIsTypedArray;
+
+},{"./_baseGetTag":392,"./isLength":414,"./isObjectLike":416}],395:[function(require,module,exports){
+var isPrototype = require('./_isPrototype'),
+    nativeKeys = require('./_nativeKeys');
+=======
 module.exports = padRight;
+>>>>>>> master
 
 },{"./chunk":282,"./prefix-hex":296,"./strip-0x-prefix":299}],296:[function(require,module,exports){
 "use strict";
@@ -59023,8 +64030,24 @@ function prefixHex(n) {
 
 module.exports = prefixHex;
 
+<<<<<<< HEAD
+},{"./_isPrototype":402,"./_nativeKeys":403}],396:[function(require,module,exports){
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+=======
 },{"bignumber.js":153}],297:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 function removeTrailingZeros(h, isUtf8) {
   var hex = h.toString();
@@ -59037,18 +64060,60 @@ function removeTrailingZeros(h, isUtf8) {
       hex = hex.slice(0, -2);
     }
   }
+<<<<<<< HEAD
+  return result;
+}
+
+module.exports = baseTimes;
+
+},{}],397:[function(require,module,exports){
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+},{}],398:[function(require,module,exports){
+(function (global){
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],399:[function(require,module,exports){
+var overArg = require('./_overArg');
+
+/** Built-in value references. */
+var getPrototype = overArg(Object.getPrototypeOf, Object);
+=======
   return hex;
 }
 
 module.exports = removeTrailingZeros;
+>>>>>>> master
 
 },{}],298:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
+<<<<<<< HEAD
+},{"./_overArg":406}],400:[function(require,module,exports){
+var Symbol = require('./_Symbol');
+=======
 var BigNumber = require("bignumber.js");
 var abiEncodeInt256 = require("./abi-encode-int256");
 var padLeft = require("./pad-left");
+>>>>>>> master
 
 function serialize(x) {
   var serialized;
@@ -59089,9 +64154,15 @@ function serialize(x) {
 
 module.exports = serialize;
 
+<<<<<<< HEAD
+},{"./_Symbol":390}],401:[function(require,module,exports){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+=======
 }).call(this,require("buffer").Buffer)
 },{"./abi-encode-int256":276,"./pad-left":294,"bignumber.js":153,"buffer":163}],299:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var isHex = require("./is-hex");
 
@@ -59113,8 +64184,14 @@ function strip0xPrefix(str) {
 
 module.exports = strip0xPrefix;
 
+<<<<<<< HEAD
+},{}],402:[function(require,module,exports){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+=======
 },{"./is-hex":293}],300:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var hex = require("./hex");
 var unfix = require("./unfix");
@@ -59125,8 +64202,13 @@ function unfixSigned(n, encoding) {
 
 module.exports = unfixSigned;
 
+<<<<<<< HEAD
+},{}],403:[function(require,module,exports){
+var overArg = require('./_overArg');
+=======
 },{"./hex":291,"./unfix":301}],301:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var BigNumber = require("bignumber.js");
 var bignum = require("./bignum");
@@ -59164,7 +64246,12 @@ function unfix(n, encoding) {
   return n;
 }
 
+<<<<<<< HEAD
+},{"./_overArg":406}],404:[function(require,module,exports){
+var freeGlobal = require('./_freeGlobal');
+=======
 module.exports = unfix;
+>>>>>>> master
 
 },{"./bignum":279,"./constants":283,"./prefix-hex":296,"bignumber.js":153}],302:[function(require,module,exports){
 "use strict";
@@ -59232,8 +64319,14 @@ function unrollArray(string, returns, stride, init) {
 
 module.exports = unrollArray;
 
+<<<<<<< HEAD
+},{"./_freeGlobal":398}],405:[function(require,module,exports){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+=======
 },{"./encode-number-as-base10-string":284,"./prefix-hex":296,"./unfix-signed":300}],304:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var BigNumber = require("bignumber.js");
 var bignum = require("./bignum");
@@ -59250,7 +64343,26 @@ function wrap(bn) {
   return bn;
 }
 
+<<<<<<< HEAD
+module.exports = objectToString;
+
+},{}],406:[function(require,module,exports){
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+=======
 module.exports = wrap;
+>>>>>>> master
 
 },{"./bignum":279,"./constants":283,"bignumber.js":153}],305:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -59274,7 +64386,12 @@ module.exports = wrap;
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+<<<<<<< HEAD
+},{}],407:[function(require,module,exports){
+var freeGlobal = require('./_freeGlobal');
+=======
 module.exports = Stream;
+>>>>>>> master
 
 var EE = require('events').EventEmitter;
 var inherits = require('inherits');
@@ -59289,10 +64406,39 @@ Stream.PassThrough = require('readable-stream/passthrough.js');
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
 
+<<<<<<< HEAD
+},{"./_freeGlobal":398}],408:[function(require,module,exports){
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+=======
+>>>>>>> master
 
 
+<<<<<<< HEAD
+},{}],409:[function(require,module,exports){
+var baseIsArguments = require('./_baseIsArguments'),
+    isObjectLike = require('./isObjectLike');
+=======
 // old-style streams.  Note that the pipe method (the only relevant
 // part of this class) is overridden in the Readable class.
+>>>>>>> master
 
 function Stream() {
   EE.call(this);
@@ -59317,7 +64463,35 @@ Stream.prototype.pipe = function(dest, options) {
     }
   }
 
+<<<<<<< HEAD
+},{"./_baseIsArguments":393,"./isObjectLike":416}],410:[function(require,module,exports){
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+=======
   dest.on('drain', ondrain);
+>>>>>>> master
 
   // If the 'end' option is not supplied, dest.end() will be called when
   // source gets the 'end' or 'close' events.  Only dest.end() once.
@@ -59326,18 +64500,30 @@ Stream.prototype.pipe = function(dest, options) {
     source.on('close', onclose);
   }
 
+<<<<<<< HEAD
+},{}],411:[function(require,module,exports){
+var isFunction = require('./isFunction'),
+    isLength = require('./isLength');
+=======
   var didOnEnd = false;
   function onend() {
     if (didOnEnd) return;
     didOnEnd = true;
+>>>>>>> master
 
     dest.end();
   }
 
 
+<<<<<<< HEAD
+},{"./isFunction":413,"./isLength":414}],412:[function(require,module,exports){
+var root = require('./_root'),
+    stubFalse = require('./stubFalse');
+=======
   function onclose() {
     if (didOnEnd) return;
     didOnEnd = true;
+>>>>>>> master
 
     if (typeof dest.destroy === 'function') dest.destroy();
   }
@@ -59367,8 +64553,14 @@ Stream.prototype.pipe = function(dest, options) {
     source.removeListener('end', cleanup);
     source.removeListener('close', cleanup);
 
+<<<<<<< HEAD
+},{"./_root":407,"./stubFalse":422}],413:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isObject = require('./isObject');
+=======
     dest.removeListener('close', cleanup);
   }
+>>>>>>> master
 
   source.on('end', cleanup);
   source.on('close', cleanup);
@@ -59377,9 +64569,15 @@ Stream.prototype.pipe = function(dest, options) {
 
   dest.emit('pipe', source);
 
+<<<<<<< HEAD
+},{"./_baseGetTag":392,"./isObject":415}],414:[function(require,module,exports){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+=======
   // Allow for unix-like usage: A.pipe(B).pipe(C)
   return dest;
 };
+>>>>>>> master
 
 },{"events":206,"inherits":223,"readable-stream/duplex.js":239,"readable-stream/passthrough.js":248,"readable-stream/readable.js":249,"readable-stream/transform.js":250,"readable-stream/writable.js":251}],306:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -59405,11 +64603,73 @@ Stream.prototype.pipe = function(dest, options) {
 
 'use strict';
 
+<<<<<<< HEAD
+},{}],415:[function(require,module,exports){
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+=======
 /*<replacement>*/
+>>>>>>> master
 
 var Buffer = require('safe-buffer').Buffer;
 /*</replacement>*/
 
+<<<<<<< HEAD
+},{}],416:[function(require,module,exports){
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+=======
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
   switch (encoding && encoding.toLowerCase()) {
@@ -59454,6 +64714,7 @@ function normalizeEncoding(enc) {
   var nenc = _normalizeEncoding(enc);
   if (typeof nenc !== 'string' && (Buffer.isEncoding === isEncoding || !isEncoding(enc))) throw new Error('Unknown encoding: ' + enc);
   return nenc || enc;
+>>>>>>> master
 }
 
 // StringDecoder provides an interface for efficiently splitting a series of
@@ -59488,6 +64749,12 @@ function StringDecoder(encoding) {
   this.lastChar = Buffer.allocUnsafe(nb);
 }
 
+<<<<<<< HEAD
+},{}],417:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    getPrototype = require('./_getPrototype'),
+    isObjectLike = require('./isObjectLike');
+=======
 StringDecoder.prototype.write = function (buf) {
   if (buf.length === 0) return '';
   var r;
@@ -59503,6 +64770,7 @@ StringDecoder.prototype.write = function (buf) {
   if (i < buf.length) return r ? r + this.text(buf, i) : this.text(buf, i);
   return r || '';
 };
+>>>>>>> master
 
 StringDecoder.prototype.end = utf8End;
 
@@ -59594,6 +64862,12 @@ function utf8FillLast(buf) {
   this.lastNeed -= buf.length;
 }
 
+<<<<<<< HEAD
+},{"./_baseGetTag":392,"./_getPrototype":399,"./isObjectLike":416}],418:[function(require,module,exports){
+var baseIsTypedArray = require('./_baseIsTypedArray'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+=======
 // Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
 // partial character, the character's bytes are buffered until the required
 // number of bytes are available.
@@ -59605,6 +64879,7 @@ function utf8Text(buf, i) {
   buf.copy(this.lastChar, 0, end);
   return buf.toString('utf8', i, end);
 }
+>>>>>>> master
 
 // For UTF-8, a replacement character is added when ending on a partial
 // character.
@@ -59685,7 +64960,14 @@ function simpleEnd(buf) {
  * Module exports.
  */
 
+<<<<<<< HEAD
+},{"./_baseIsTypedArray":394,"./_baseUnary":397,"./_nodeUtil":404}],419:[function(require,module,exports){
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeys = require('./_baseKeys'),
+    isArrayLike = require('./isArrayLike');
+=======
 module.exports = deprecate;
+>>>>>>> master
 
 /**
  * Mark that a method should not be used.
@@ -59728,6 +65010,11 @@ function deprecate (fn, msg) {
   return deprecated;
 }
 
+<<<<<<< HEAD
+},{"./_arrayLikeKeys":391,"./_baseKeys":395,"./isArrayLike":411}],420:[function(require,module,exports){
+(function (global){
+=======
+>>>>>>> master
 /**
  * Checks `localStorage` for boolean values for the given `name`.
  *
@@ -73113,6 +78400,25 @@ module.exports = function (originalObject, excludeKey) {
     }
   }
 
+<<<<<<< HEAD
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],421:[function(require,module,exports){
+/**
+ * This method returns `undefined`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.3.0
+ * @category Util
+ * @example
+ *
+ * _.times(2, _.noop);
+ * // => [undefined, undefined]
+ */
+function noop() {
+  // No operation performed.
+}
+=======
   function makeList(origin, capacity, level, root, tail, ownerID, hash) {
     var list = Object.create(ListPrototype);
     list.size = capacity - origin;
@@ -73126,19 +78432,47 @@ module.exports = function (originalObject, excludeKey) {
     list.__altered = false;
     return list;
   }
+>>>>>>> master
 
   var EMPTY_LIST;
   function emptyList() {
     return EMPTY_LIST || (EMPTY_LIST = makeList(0, 0, SHIFT));
   }
 
+<<<<<<< HEAD
+},{}],422:[function(require,module,exports){
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+=======
   function updateList(list, index, value) {
     index = wrapIndex(list, index);
+>>>>>>> master
 
     if (index !== index) {
       return list;
     }
 
+<<<<<<< HEAD
+},{}],423:[function(require,module,exports){
+(function (Buffer){
+'use strict'
+var inherits = require('inherits')
+var HashBase = require('hash-base')
+=======
     if (index >= list.size || index < 0) {
       return list.withMutations(function(list ) {
         index < 0 ?
@@ -73146,6 +78480,7 @@ module.exports = function (originalObject, excludeKey) {
           setListBounds(list, 0, index + 1).set(index, value)
       });
     }
+>>>>>>> master
 
     index += list._origin;
 
@@ -73295,10 +78630,16 @@ module.exports = function (originalObject, excludeKey) {
       node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
     }
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"buffer":167,"hash-base":362,"inherits":379}],424:[function(require,module,exports){
+module.exports = assert;
+=======
     // If the size has been reduced, there's a chance the tail needs to be trimmed.
     if (newCapacity < oldCapacity) {
       newTail = newTail && newTail.removeAfter(owner, 0, newCapacity);
     }
+>>>>>>> master
 
     // If the new origin is within the tail, then we do not need a root.
     if (newOrigin >= newTailOffset) {
@@ -73312,6 +78653,10 @@ module.exports = function (originalObject, excludeKey) {
     } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
       offsetShift = 0;
 
+<<<<<<< HEAD
+},{}],425:[function(require,module,exports){
+'use strict';
+=======
       // Identify the new top root node of the subtree of the old root.
       while (newRoot) {
         var beginIndex = (newOrigin >>> newLevel) & MASK;
@@ -73324,6 +78669,7 @@ module.exports = function (originalObject, excludeKey) {
         newLevel -= SHIFT;
         newRoot = newRoot.array[beginIndex];
       }
+>>>>>>> master
 
       // Trim the new sides of the new root.
       if (newRoot && newOrigin > oldOrigin) {
@@ -73380,6 +78726,11 @@ module.exports = function (originalObject, excludeKey) {
 
     // @pragma Construction
 
+<<<<<<< HEAD
+},{}],426:[function(require,module,exports){
+// This file is the concatenation of many js files.
+// See http://github.com/jimhigson/oboe.js for the raw source
+=======
     function OrderedMap(value) {
       return value === null || value === undefined ? emptyOrderedMap() :
         isOrderedMap(value) ? value :
@@ -73389,6 +78740,7 @@ module.exports = function (originalObject, excludeKey) {
           iter.forEach(function(v, k)  {return map.set(k, v)});
         });
     }
+>>>>>>> master
 
     OrderedMap.of = function(/*...values*/) {
       return this(arguments);
@@ -75481,9 +80833,15 @@ module.exports = function (originalObject, excludeKey) {
       return key === undefined ? -1 : key;
     },
 
+<<<<<<< HEAD
+},{}],427:[function(require,module,exports){
+(function (process){
+'use strict';
+=======
     reverse: function() {
       return reify(this, reverseFactory(this, false));
     },
+>>>>>>> master
 
     slice: function(begin, end) {
       return reify(this, sliceFactory(this, begin, end, false));
@@ -75509,7 +80867,14 @@ module.exports = function (originalObject, excludeKey) {
     },
 
 
+<<<<<<< HEAD
+}).call(this,require('_process'))
+},{"_process":428}],428:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+=======
     // ### More collection methods
+>>>>>>> master
 
     findLastIndex: function(predicate, context) {
       var entry = this.findLastEntry(predicate, context);
@@ -75588,6 +80953,32 @@ module.exports = function (originalObject, excludeKey) {
 
     // ### ES6 Collection methods (ES6 Array and Map)
 
+<<<<<<< HEAD
+},{}],429:[function(require,module,exports){
+module.exports = require('./lib/_stream_duplex.js');
+
+},{"./lib/_stream_duplex.js":430}],430:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
     get: function(value, notSetValue) {
       return this.has(value) ? value : notSetValue;
     },
@@ -75595,6 +80986,7 @@ module.exports = function (originalObject, excludeKey) {
     includes: function(value) {
       return this.has(value);
     },
+>>>>>>> master
 
 
     // ### More sequential methods
@@ -75705,8 +81097,34 @@ module.exports = function (originalObject, excludeKey) {
     Range: Range,
     Repeat: Repeat,
 
+<<<<<<< HEAD
+  pna.nextTick(cb, err);
+};
+},{"./_stream_readable":432,"./_stream_writable":434,"core-util-is":173,"inherits":379,"process-nextick-args":427}],431:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
     is: is,
     fromJS: fromJS
+>>>>>>> master
 
   };
 
@@ -75803,7 +81221,35 @@ function arrayLikeKeys(value, inherited) {
   return result;
 }
 
+<<<<<<< HEAD
+PassThrough.prototype._transform = function (chunk, encoding, cb) {
+  cb(null, chunk);
+};
+},{"./_stream_transform":433,"core-util-is":173,"inherits":379}],432:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
 module.exports = arrayLikeKeys;
+>>>>>>> master
 
 },{"./_baseTimes":397,"./_isIndex":402,"./isArguments":410,"./isArray":411,"./isBuffer":413,"./isTypedArray":419}],393:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
@@ -76937,6 +82383,31 @@ function lazyIntersection(fn1, fn2) {
       return fn1(param) && fn2(param);
    };   
 }
+<<<<<<< HEAD
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./_stream_duplex":430,"./internal/streams/BufferList":435,"./internal/streams/destroy":436,"./internal/streams/stream":437,"_process":428,"core-util-is":173,"events":361,"inherits":379,"isarray":382,"process-nextick-args":427,"safe-buffer":454,"string_decoder/":506,"util":158}],433:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
+>>>>>>> master
 
 /**
  * A function which does nothing
@@ -77222,6 +82693,32 @@ function first(test, list) {
       FAIL_EVENT      
  */
 
+<<<<<<< HEAD
+  return stream.push(null);
+}
+},{"./_stream_duplex":430,"core-util-is":173,"inherits":379}],434:[function(require,module,exports){
+(function (process,global,setImmediate){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+=======
 function clarinet(eventBus) {
   "use strict";
    
@@ -77258,6 +82755,7 @@ function clarinet(eventBus) {
   ,   NULL3                = _n++ // l
   ,   NUMBER_DECIMAL_POINT = _n++ // .
   ,   NUMBER_DIGIT         = _n   // [0-9]
+>>>>>>> master
 
       // setup initial parser values
   ,   bufferCheckPosition  = MAX_BUFFER_LENGTH
@@ -78653,6 +84151,35 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
 
 });
 
+<<<<<<< HEAD
+Writable.prototype.destroy = destroyImpl.destroy;
+Writable.prototype._undestroy = destroyImpl.undestroy;
+Writable.prototype._destroy = function (err, cb) {
+  this.end();
+  cb(err);
+};
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+},{"./_stream_duplex":430,"./internal/streams/destroy":436,"./internal/streams/stream":437,"_process":428,"core-util-is":173,"inherits":379,"process-nextick-args":427,"safe-buffer":454,"timers":170,"util-deprecate":508}],435:[function(require,module,exports){
+'use strict';
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Buffer = require('safe-buffer').Buffer;
+var util = require('util');
+
+function copyBuffer(src, target, offset) {
+  src.copy(target, offset);
+}
+
+module.exports = function () {
+  function BufferList() {
+    _classCallCheck(this, BufferList);
+
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+=======
 /** 
  * A pub/sub which is responsible for a single event type. A 
  * multi-event type event bus is created by pubSub by collecting
@@ -78666,6 +84193,7 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
  *    place to notify of when listeners are removed
  */
 function singleEventPubSub(eventType, newListener, removeListener){
+>>>>>>> master
 
    /** we are optimised for emitting events over firing them.
     *  As well as the tuple list which stores event ids and
@@ -78810,6 +84338,13 @@ function pubSub(){
          
    return pubSubInstance;
 }
+<<<<<<< HEAD
+},{"safe-buffer":454,"util":158}],436:[function(require,module,exports){
+'use strict';
+
+/*<replacement>*/
+=======
+>>>>>>> master
 
 /**
  * This file declares some constants to use as names for event types.
@@ -78910,6 +84445,35 @@ function patternAdapter(oboeBus, jsonPathCompiler) {
    
       predicateEvent.on( function (ascent) {
 
+<<<<<<< HEAD
+module.exports = {
+  destroy: destroy,
+  undestroy: undestroy
+};
+},{"process-nextick-args":427}],437:[function(require,module,exports){
+module.exports = require('events').EventEmitter;
+
+},{"events":361}],438:[function(require,module,exports){
+module.exports = require('./readable').PassThrough
+
+},{"./readable":439}],439:[function(require,module,exports){
+exports = module.exports = require('./lib/_stream_readable.js');
+exports.Stream = exports;
+exports.Readable = exports;
+exports.Writable = require('./lib/_stream_writable.js');
+exports.Duplex = require('./lib/_stream_duplex.js');
+exports.Transform = require('./lib/_stream_transform.js');
+exports.PassThrough = require('./lib/_stream_passthrough.js');
+
+},{"./lib/_stream_duplex.js":430,"./lib/_stream_passthrough.js":431,"./lib/_stream_readable.js":432,"./lib/_stream_transform.js":433,"./lib/_stream_writable.js":434}],440:[function(require,module,exports){
+module.exports = require('./readable').Transform
+
+},{"./readable":439}],441:[function(require,module,exports){
+module.exports = require('./lib/_stream_writable.js');
+
+},{"./lib/_stream_writable.js":434}],442:[function(require,module,exports){
+"use strict";
+=======
          var maybeMatchingMapping = compiledJsonPath(ascent);
 
          /* Possible values for maybeMatchingMapping are now:
@@ -78937,6 +84501,7 @@ function patternAdapter(oboeBus, jsonPathCompiler) {
       }, fullEventName);
      
       oboeBus('removeListener').on( function(removedEventName){
+>>>>>>> master
 
          // if the fully qualified match event listener is later removed, clean up 
          // by removing the underlying listener if it was the last using that pattern:
@@ -78968,7 +84533,12 @@ function patternAdapter(oboeBus, jsonPathCompiler) {
       }    
    })
 
+<<<<<<< HEAD
+},{}],443:[function(require,module,exports){
+'use strict';
+=======
 }
+>>>>>>> master
 
 /**
  * The instance API is the thing that is returned when oboe() is called.
@@ -79016,8 +84586,19 @@ function instanceApi(oboeBus, contentSource){
                }
             }
 
+<<<<<<< HEAD
+      return _extends({}, store, {
+        dispatch: _dispatch
+      });
+    };
+  };
+}
+},{"./compose":446}],444:[function(require,module,exports){
+'use strict';
+=======
             return oboeApi; // chaining
        }),
+>>>>>>> master
 
        /**
         * Remove any kind of listener that the instance api exposes
@@ -79028,7 +84609,24 @@ function instanceApi(oboeBus, contentSource){
 
                rootNodeFinishedEvent.un(p2);
 
+<<<<<<< HEAD
+  var keys = Object.keys(actionCreators);
+  var boundActionCreators = {};
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var actionCreator = actionCreators[key];
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+  return boundActionCreators;
+}
+},{}],445:[function(require,module,exports){
+(function (process){
+'use strict';
+=======
             } else if( eventId == 'node' || eventId == 'path' ) {
+>>>>>>> master
 
                // allow removal of node and path
                oboeBus.un(eventId + ':' + p2, p3);
@@ -79170,6 +84768,18 @@ function instanceApi(oboeBus, contentSource){
       } else {
          addMultipleNodeOrPathListeners(eventId, jsonPathOrListenerMap);
       }
+<<<<<<< HEAD
+      nextState[key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+    return hasChanged ? nextState : state;
+  };
+}
+}).call(this,require('_process'))
+},{"./createStore":447,"./utils/warning":449,"_process":428,"lodash/isPlainObject":417}],446:[function(require,module,exports){
+"use strict";
+=======
+>>>>>>> master
 
       return oboeApi; // chaining
    }
@@ -79187,12 +84797,25 @@ function instanceApi(oboeBus, contentSource){
     */
    oboeBus(HTTP_START).on( function(_statusCode, headers) {
 
+<<<<<<< HEAD
+  var last = funcs[funcs.length - 1];
+  var rest = funcs.slice(0, -1);
+  return function () {
+    return rest.reduceRight(function (composed, f) {
+      return f(composed);
+    }, last.apply(undefined, arguments));
+  };
+}
+},{}],447:[function(require,module,exports){
+'use strict';
+=======
       oboeApi.header =  function(name) {
                            return name ? headers[name]
                                        : headers
                                        ;
                         }
    });
+>>>>>>> master
 
    /**
     * Construct and return the public API of the Oboe instance to be
@@ -79359,6 +84982,19 @@ oboe.drop = function() {
    return oboe.drop;
 };
 
+<<<<<<< HEAD
+  return _ref2 = {
+    dispatch: dispatch,
+    subscribe: subscribe,
+    getState: getState,
+    replaceReducer: replaceReducer
+  }, _ref2[_symbolObservable2['default']] = observable, _ref2;
+}
+},{"lodash/isPlainObject":417,"symbol-observable":450}],448:[function(require,module,exports){
+(function (process){
+'use strict';
+=======
+>>>>>>> master
 
    if ( typeof define === "function" && define.amd ) {
       define( "oboe", [], function () { return oboe; } );
@@ -79460,7 +85096,18 @@ function applyMiddleware() {
     };
   };
 }
+<<<<<<< HEAD
+
+exports.createStore = _createStore2['default'];
+exports.combineReducers = _combineReducers2['default'];
+exports.bindActionCreators = _bindActionCreators2['default'];
+exports.applyMiddleware = _applyMiddleware2['default'];
+exports.compose = _compose2['default'];
+}).call(this,require('_process'))
+},{"./applyMiddleware":443,"./bindActionCreators":444,"./combineReducers":445,"./compose":446,"./createStore":447,"./utils/warning":449,"_process":428}],449:[function(require,module,exports){
+=======
 },{"./compose":432}],430:[function(require,module,exports){
+>>>>>>> master
 'use strict';
 
 exports.__esModule = true;
@@ -79512,8 +85159,13 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
+<<<<<<< HEAD
+},{}],450:[function(require,module,exports){
+(function (global){
+=======
 },{}],431:[function(require,module,exports){
 (function (process){
+>>>>>>> master
 'use strict';
 
 exports.__esModule = true;
@@ -79529,7 +85181,15 @@ var _warning = require('./utils/warning');
 
 var _warning2 = _interopRequireDefault(_warning);
 
+<<<<<<< HEAD
+var result = (0, _ponyfill2['default'])(root);
+exports['default'] = result;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./ponyfill.js":451}],451:[function(require,module,exports){
+'use strict';
+=======
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+>>>>>>> master
 
 function getUndefinedStateErrorMessage(key, action) {
   var actionType = action && action.type;
@@ -79538,9 +85198,19 @@ function getUndefinedStateErrorMessage(key, action) {
   return 'Given action ' + actionName + ', reducer "' + key + '" returned undefined. ' + 'To ignore an action, you must explicitly return the previous state.';
 }
 
+<<<<<<< HEAD
+	return result;
+};
+},{}],452:[function(require,module,exports){
+'use strict'
+var Buffer = require('buffer').Buffer
+var inherits = require('inherits')
+var HashBase = require('hash-base')
+=======
 function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
   var reducerKeys = Object.keys(reducers);
   var argumentName = action && action.type === _createStore.ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+>>>>>>> master
 
   if (reducerKeys.length === 0) {
     return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
@@ -79713,6 +85383,12 @@ var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+<<<<<<< HEAD
+},{"buffer":167,"hash-base":362,"inherits":379}],453:[function(require,module,exports){
+(function (Buffer){
+const assert = require('assert')
+=======
+>>>>>>> master
 /**
  * These are private action types reserved by Redux.
  * For any unknown actions, you must return the current state.
@@ -79967,7 +85643,15 @@ exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports
 
 var _createStore = require('./createStore');
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"assert":162,"buffer":167}],454:[function(require,module,exports){
+/* eslint-disable node/no-deprecated-api */
+var buffer = require('buffer')
+var Buffer = buffer.Buffer
+=======
 var _createStore2 = _interopRequireDefault(_createStore);
+>>>>>>> master
 
 var _combineReducers = require('./combineReducers');
 
@@ -80001,6 +85685,13 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
   (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
 }
 
+<<<<<<< HEAD
+},{"buffer":167}],455:[function(require,module,exports){
+'use strict'
+module.exports = require('./lib')(require('./lib/elliptic'))
+
+},{"./lib":459,"./lib/elliptic":458}],456:[function(require,module,exports){
+=======
 exports.createStore = _createStore2['default'];
 exports.combineReducers = _combineReducers2['default'];
 exports.bindActionCreators = _bindActionCreators2['default'];
@@ -80042,6 +85733,7 @@ arguments[4][254][0].apply(exports,arguments)
 },{"buffer":163,"dup":254}],439:[function(require,module,exports){
 arguments[4][255][0].apply(exports,arguments)
 },{"./lib":443,"./lib/elliptic":442,"dup":255}],440:[function(require,module,exports){
+>>>>>>> master
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -80088,6 +85780,222 @@ exports.isNumberInInterval = function (number, x, y, message) {
   if (number <= x || number >= y) throw RangeError(message)
 }
 
+<<<<<<< HEAD
+}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+},{"../../is-buffer/index.js":380}],457:[function(require,module,exports){
+'use strict'
+var Buffer = require('safe-buffer').Buffer
+var bip66 = require('bip66')
+
+var EC_PRIVKEY_EXPORT_DER_COMPRESSED = Buffer.from([
+  // begin
+  0x30, 0x81, 0xd3, 0x02, 0x01, 0x01, 0x04, 0x20,
+  // private key
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  // middle
+  0xa0, 0x81, 0x85, 0x30, 0x81, 0x82, 0x02, 0x01, 0x01, 0x30, 0x2c, 0x06, 0x07, 0x2a, 0x86, 0x48,
+  0xcE, 0x3d, 0x01, 0x01, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xfE, 0xff, 0xff, 0xfc, 0x2f, 0x30, 0x06, 0x04, 0x01, 0x00, 0x04, 0x01, 0x07, 0x04,
+  0x21, 0x02, 0x79, 0xbE, 0x66, 0x7E, 0xf9, 0xdc, 0xbb, 0xac, 0x55, 0xa0, 0x62, 0x95, 0xcE, 0x87,
+  0x0b, 0x07, 0x02, 0x9b, 0xfc, 0xdb, 0x2d, 0xcE, 0x28, 0xd9, 0x59, 0xf2, 0x81, 0x5b, 0x16, 0xf8,
+  0x17, 0x98, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xfE, 0xba, 0xaE, 0xdc, 0xE6, 0xaf, 0x48, 0xa0, 0x3b, 0xbf, 0xd2, 0x5E,
+  0x8c, 0xd0, 0x36, 0x41, 0x41, 0x02, 0x01, 0x01, 0xa1, 0x24, 0x03, 0x22, 0x00,
+  // public key
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00
+])
+
+var EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED = Buffer.from([
+  // begin
+  0x30, 0x82, 0x01, 0x13, 0x02, 0x01, 0x01, 0x04, 0x20,
+  // private key
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  // middle
+  0xa0, 0x81, 0xa5, 0x30, 0x81, 0xa2, 0x02, 0x01, 0x01, 0x30, 0x2c, 0x06, 0x07, 0x2a, 0x86, 0x48,
+  0xcE, 0x3d, 0x01, 0x01, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xfE, 0xff, 0xff, 0xfc, 0x2f, 0x30, 0x06, 0x04, 0x01, 0x00, 0x04, 0x01, 0x07, 0x04,
+  0x41, 0x04, 0x79, 0xbE, 0x66, 0x7E, 0xf9, 0xdc, 0xbb, 0xac, 0x55, 0xa0, 0x62, 0x95, 0xcE, 0x87,
+  0x0b, 0x07, 0x02, 0x9b, 0xfc, 0xdb, 0x2d, 0xcE, 0x28, 0xd9, 0x59, 0xf2, 0x81, 0x5b, 0x16, 0xf8,
+  0x17, 0x98, 0x48, 0x3a, 0xda, 0x77, 0x26, 0xa3, 0xc4, 0x65, 0x5d, 0xa4, 0xfb, 0xfc, 0x0E, 0x11,
+  0x08, 0xa8, 0xfd, 0x17, 0xb4, 0x48, 0xa6, 0x85, 0x54, 0x19, 0x9c, 0x47, 0xd0, 0x8f, 0xfb, 0x10,
+  0xd4, 0xb8, 0x02, 0x21, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xfE, 0xba, 0xaE, 0xdc, 0xE6, 0xaf, 0x48, 0xa0, 0x3b, 0xbf, 0xd2, 0x5E,
+  0x8c, 0xd0, 0x36, 0x41, 0x41, 0x02, 0x01, 0x01, 0xa1, 0x44, 0x03, 0x42, 0x00,
+  // public key
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  0x00
+])
+
+exports.privateKeyExport = function (privateKey, publicKey, compressed) {
+  var result = Buffer.from(compressed ? EC_PRIVKEY_EXPORT_DER_COMPRESSED : EC_PRIVKEY_EXPORT_DER_UNCOMPRESSED)
+  privateKey.copy(result, compressed ? 8 : 9)
+  publicKey.copy(result, compressed ? 181 : 214)
+  return result
+}
+
+exports.privateKeyImport = function (privateKey) {
+  var length = privateKey.length
+
+  // sequence header
+  var index = 0
+  if (length < index + 1 || privateKey[index] !== 0x30) return
+  index += 1
+
+  // sequence length constructor
+  if (length < index + 1 || !(privateKey[index] & 0x80)) return
+
+  var lenb = privateKey[index] & 0x7f
+  index += 1
+  if (lenb < 1 || lenb > 2) return
+  if (length < index + lenb) return
+
+  // sequence length
+  var len = privateKey[index + lenb - 1] | (lenb > 1 ? privateKey[index + lenb - 2] << 8 : 0)
+  index += lenb
+  if (length < index + len) return
+
+  // sequence element 0: version number (=1)
+  if (length < index + 3 ||
+      privateKey[index] !== 0x02 ||
+      privateKey[index + 1] !== 0x01 ||
+      privateKey[index + 2] !== 0x01) {
+    return
+  }
+  index += 3
+
+  // sequence element 1: octet string, up to 32 bytes
+  if (length < index + 2 ||
+      privateKey[index] !== 0x04 ||
+      privateKey[index + 1] > 0x20 ||
+      length < index + 2 + privateKey[index + 1]) {
+    return
+  }
+
+  return privateKey.slice(index + 2, index + 2 + privateKey[index + 1])
+}
+
+exports.signatureExport = function (sigObj) {
+  var r = Buffer.concat([Buffer.from([0]), sigObj.r])
+  for (var lenR = 33, posR = 0; lenR > 1 && r[posR] === 0x00 && !(r[posR + 1] & 0x80); --lenR, ++posR);
+
+  var s = Buffer.concat([Buffer.from([0]), sigObj.s])
+  for (var lenS = 33, posS = 0; lenS > 1 && s[posS] === 0x00 && !(s[posS + 1] & 0x80); --lenS, ++posS);
+
+  return bip66.encode(r.slice(posR), s.slice(posS))
+}
+
+exports.signatureImport = function (sig) {
+  var r = Buffer.alloc(32, 0)
+  var s = Buffer.alloc(32, 0)
+
+  try {
+    var sigObj = bip66.decode(sig)
+    if (sigObj.r.length === 33 && sigObj.r[0] === 0x00) sigObj.r = sigObj.r.slice(1)
+    if (sigObj.r.length > 32) throw new Error('R length is too long')
+    if (sigObj.s.length === 33 && sigObj.s[0] === 0x00) sigObj.s = sigObj.s.slice(1)
+    if (sigObj.s.length > 32) throw new Error('S length is too long')
+  } catch (err) {
+    return
+  }
+
+  sigObj.r.copy(r, 32 - sigObj.r.length)
+  sigObj.s.copy(s, 32 - sigObj.s.length)
+
+  return { r: r, s: s }
+}
+
+exports.signatureImportLax = function (sig) {
+  var r = Buffer.alloc(32, 0)
+  var s = Buffer.alloc(32, 0)
+
+  var length = sig.length
+  var index = 0
+
+  // sequence tag byte
+  if (sig[index++] !== 0x30) return
+
+  // sequence length byte
+  var lenbyte = sig[index++]
+  if (lenbyte & 0x80) {
+    index += lenbyte - 0x80
+    if (index > length) return
+  }
+
+  // sequence tag byte for r
+  if (sig[index++] !== 0x02) return
+
+  // length for r
+  var rlen = sig[index++]
+  if (rlen & 0x80) {
+    lenbyte = rlen - 0x80
+    if (index + lenbyte > length) return
+    for (; lenbyte > 0 && sig[index] === 0x00; index += 1, lenbyte -= 1);
+    for (rlen = 0; lenbyte > 0; index += 1, lenbyte -= 1) rlen = (rlen << 8) + sig[index]
+  }
+  if (rlen > length - index) return
+  var rindex = index
+  index += rlen
+
+  // sequence tag byte for s
+  if (sig[index++] !== 0x02) return
+
+  // length for s
+  var slen = sig[index++]
+  if (slen & 0x80) {
+    lenbyte = slen - 0x80
+    if (index + lenbyte > length) return
+    for (; lenbyte > 0 && sig[index] === 0x00; index += 1, lenbyte -= 1);
+    for (slen = 0; lenbyte > 0; index += 1, lenbyte -= 1) slen = (slen << 8) + sig[index]
+  }
+  if (slen > length - index) return
+  var sindex = index
+  index += slen
+
+  // ignore leading zeros in r
+  for (; rlen > 0 && sig[rindex] === 0x00; rlen -= 1, rindex += 1);
+  // copy r value
+  if (rlen > 32) return
+  var rvalue = sig.slice(rindex, rindex + rlen)
+  rvalue.copy(r, 32 - rvalue.length)
+
+  // ignore leading zeros in s
+  for (; slen > 0 && sig[sindex] === 0x00; slen -= 1, sindex += 1);
+  // copy s value
+  if (slen > 32) return
+  var svalue = sig.slice(sindex, sindex + slen)
+  svalue.copy(s, 32 - svalue.length)
+
+  return { r: r, s: s }
+}
+
+},{"bip66":154,"safe-buffer":454}],458:[function(require,module,exports){
+'use strict'
+var Buffer = require('safe-buffer').Buffer
+var createHash = require('create-hash')
+var BN = require('bn.js')
+var EC = require('elliptic').ec
+
+var messages = require('../messages.json')
+
+var ec = new EC('secp256k1')
+var ecparams = ec.curve
+
+function loadCompressedPublicKey (first, xBuffer) {
+  var x = new BN(xBuffer)
+
+  // overflow
+  if (x.cmp(ecparams.p) >= 0) return null
+  x = x.toRed(ecparams.red)
+=======
 }).call(this,{"isBuffer":require("../../../../augur.js/node_modules/is-buffer/index.js")})
 },{"../../../../augur.js/node_modules/is-buffer/index.js":224}],441:[function(require,module,exports){
 arguments[4][257][0].apply(exports,arguments)
@@ -80156,6 +86064,7 @@ arguments[4][289][0].apply(exports,arguments)
 },{"./prefix-hex":479,"./strip-0x-prefix":482,"dup":289}],473:[function(require,module,exports){
 (function (Buffer){
 "use strict";
+>>>>>>> master
 
 var padLeft = require("./pad-left");
 var prefixHex = require("./prefix-hex");
@@ -80394,8 +86303,16 @@ function v1(options, buf, offset) {
   // cycle to simulate higher resolution clock
   var nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1;
 
+<<<<<<< HEAD
+},{"../messages.json":460,"bn.js":155,"create-hash":174,"elliptic":176,"safe-buffer":454}],459:[function(require,module,exports){
+'use strict'
+var assert = require('./assert')
+var der = require('./der')
+var messages = require('./messages.json')
+=======
   // Time since last uuid creation (in msecs)
   var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+>>>>>>> master
 
   // Per 4.2.1.2, Bump clockseq on clock regression
   if (dt < 0 && options.clockseq === undefined) {
@@ -80808,6 +86725,51 @@ function connect(configuration, initialConnectCallback) {
     internalState.set("outOfBandErrorHandler", configuration.errorHandler);
     dispatch({ type: "SET_CONFIGURATION", configuration: validateConfiguration(configuration) });
 
+<<<<<<< HEAD
+},{"./assert":456,"./der":457,"./messages.json":460}],460:[function(require,module,exports){
+module.exports={
+  "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
+  "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
+  "EC_PRIVATE_KEY_LENGTH_INVALID": "private key length is invalid",
+  "EC_PRIVATE_KEY_RANGE_INVALID": "private key range is invalid",
+  "EC_PRIVATE_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting private key is invalid",
+  "EC_PRIVATE_KEY_TWEAK_MUL_FAIL": "tweak out of range",
+  "EC_PRIVATE_KEY_EXPORT_DER_FAIL": "couldn't export to DER format",
+  "EC_PRIVATE_KEY_IMPORT_DER_FAIL": "couldn't import from DER format",
+  "EC_PUBLIC_KEYS_TYPE_INVALID": "public keys should be an Array",
+  "EC_PUBLIC_KEYS_LENGTH_INVALID": "public keys Array should have at least 1 element",
+  "EC_PUBLIC_KEY_TYPE_INVALID": "public key should be a Buffer",
+  "EC_PUBLIC_KEY_LENGTH_INVALID": "public key length is invalid",
+  "EC_PUBLIC_KEY_PARSE_FAIL": "the public key could not be parsed or is invalid",
+  "EC_PUBLIC_KEY_CREATE_FAIL": "private was invalid, try again",
+  "EC_PUBLIC_KEY_TWEAK_ADD_FAIL": "tweak out of range or resulting public key is invalid",
+  "EC_PUBLIC_KEY_TWEAK_MUL_FAIL": "tweak out of range",
+  "EC_PUBLIC_KEY_COMBINE_FAIL": "the sum of the public keys is not valid",
+  "ECDH_FAIL": "scalar was invalid (zero or overflow)",
+  "ECDSA_SIGNATURE_TYPE_INVALID": "signature should be a Buffer",
+  "ECDSA_SIGNATURE_LENGTH_INVALID": "signature length is invalid",
+  "ECDSA_SIGNATURE_PARSE_FAIL": "couldn't parse signature",
+  "ECDSA_SIGNATURE_PARSE_DER_FAIL": "couldn't parse DER signature",
+  "ECDSA_SIGNATURE_SERIALIZE_DER_FAIL": "couldn't serialize signature to DER format",
+  "ECDSA_SIGN_FAIL": "nonce generation function failed or private key is invalid",
+  "ECDSA_RECOVER_FAIL": "couldn't recover public key from signature",
+  "MSG32_TYPE_INVALID": "message should be a Buffer",
+  "MSG32_LENGTH_INVALID": "message length is invalid",
+  "OPTIONS_TYPE_INVALID": "options should be an Object",
+  "OPTIONS_DATA_TYPE_INVALID": "options.data should be a Buffer",
+  "OPTIONS_DATA_LENGTH_INVALID": "options.data length is invalid",
+  "OPTIONS_NONCEFN_TYPE_INVALID": "options.noncefn should be a Function",
+  "RECOVERY_ID_TYPE_INVALID": "recovery should be a Number",
+  "RECOVERY_ID_VALUE_INVALID": "recovery should have value between -1 and 4",
+  "TWEAK_TYPE_INVALID": "tweak should be a Buffer",
+  "TWEAK_LENGTH_INVALID": "tweak length is invalid"
+}
+
+},{}],461:[function(require,module,exports){
+(function (process,Buffer){
+!function(globals){
+'use strict'
+=======
     // initialize the transporter, this will be how we send to and receive from the blockchain
     var storedConfiguration = getState().configuration;
     new Transporter(storedConfiguration, internalState.get("shimMessageHandler"), getState().debug.connect, function (err, transporter) {
@@ -80818,6 +86780,7 @@ function connect(configuration, initialConnectCallback) {
       dispatch(net_version(null, function (err, networkID) {
         if (err) return initialConnectCallback(err);
         if (networkID == null) return initialConnectCallback(new RPCError("NO_RESPONSE"));
+>>>>>>> master
 
         // If configuration.networkID is provided, verify that we're actually on that network
         if (configuration.networkID && parseInt(networkID, 10) !== parseInt(configuration.networkID, 10)) {
@@ -80865,8 +86828,14 @@ module.exports = {
   // Maximum number of retry attempts for dropped transactions
   TX_RETRY_MAX: 5,
 
+<<<<<<< HEAD
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"_process":428,"buffer":167,"crypto":158}],462:[function(require,module,exports){
+var Buffer = require('safe-buffer').Buffer
+=======
   // Maximum number of transaction verification attempts
   TX_POLL_MAX: 1000,
+>>>>>>> master
 
   // Transaction polling interval
   TX_POLL_INTERVAL: 10000,
@@ -80977,9 +86946,15 @@ var createEthrpc = function (reducer) {
     miner: bindDispatch(dispatch, miner),
     personal: bindDispatch(dispatch, personal),
 
+<<<<<<< HEAD
+},{"safe-buffer":454}],463:[function(require,module,exports){
+var exports = module.exports = function SHA (algorithm) {
+  algorithm = algorithm.toLowerCase()
+=======
     // web3_
     sha3: sha3,
     clientVersion: function (callback) { return dispatch(web3.clientVersion(null, callback)); },
+>>>>>>> master
 
     // net_
     listening: function (callback) { return dispatch(net_.listening(null, callback)); },
@@ -81097,9 +87072,20 @@ var createEthrpc = function (reducer) {
 
     WsTransport: require("./transport/ws-transport"),
 
+<<<<<<< HEAD
+},{"./sha":464,"./sha1":465,"./sha224":466,"./sha256":467,"./sha384":468,"./sha512":469}],464:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
+ * in FIPS PUB 180-1
+ * This source code is derived from sha1.js of the same repository.
+ * The difference between SHA-0 and SHA-1 is just a bitwise rotate left
+ * operation was added.
+ */
+=======
     /************************
      * Convenience wrappers *
      ************************/
+>>>>>>> master
 
     signRawTransaction: signRawTransaction,
     signRawTransactionWithKey: signRawTransactionWithKey,
@@ -81208,7 +87194,21 @@ function calculateEstimatedGasWithBuffer(estimatedGas) {
   return new BigNumber(estimatedGas, 16).times(GAS_ESTIMATE_MULTIPLIER).integerValue(BigNumber.ROUND_FLOOR);
 }
 
+<<<<<<< HEAD
+module.exports = Sha
+
+},{"./hash":462,"inherits":379,"safe-buffer":454}],465:[function(require,module,exports){
+/*
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+ * in FIPS PUB 180-1
+ * Version 2.1a Copyright Paul Johnston 2000 - 2002.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for details.
+ */
+=======
 module.exports = calculateEstimatedGasWithBuffer;
+>>>>>>> master
 
 },{"../constants":508,"bignumber.js":328}],514:[function(require,module,exports){
 "use strict";
@@ -81377,6 +87377,16 @@ var stripReturnsTypeAndInvocation = function (tx) {
 
 module.exports = stripReturnsTypeAndInvocation;
 
+<<<<<<< HEAD
+},{"./hash":462,"inherits":379,"safe-buffer":454}],466:[function(require,module,exports){
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+=======
 },{}],519:[function(require,module,exports){
 module.exports={
   "INVALID_TRANSPORT_MESSAGE": {
@@ -81455,6 +87465,7 @@ module.exports={
     "message": "Coinbase account not set"
   }
 }
+>>>>>>> master
 
 },{}],520:[function(require,module,exports){
 "use strict";
@@ -81522,11 +87533,22 @@ var lodash = require("lodash");
 
 var state = {};
 
+<<<<<<< HEAD
+},{"./hash":462,"./sha256":467,"inherits":379,"safe-buffer":454}],467:[function(require,module,exports){
+/**
+ * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+ * in FIPS 180-2
+ * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ *
+ */
+=======
 module.exports.getState = function () { return state; };
 module.exports.get = function (path) { return lodash.get(state, path); };
 module.exports.setState = function (newState) { lodash.assign(state, newState); };
 module.exports.set = function (path, newState) { lodash.set(state, path, newState); };
 module.exports.unset = function (path) { lodash.unset(state, path); };
+>>>>>>> master
 
 },{"lodash":421}],523:[function(require,module,exports){
 (function (process){
@@ -81732,7 +87754,15 @@ var setRawTransactionGasPrice = function (packaged, callback) {
   };
 };
 
+<<<<<<< HEAD
+},{"./hash":462,"inherits":379,"safe-buffer":454}],468:[function(require,module,exports){
+var inherits = require('inherits')
+var SHA512 = require('./sha512')
+var Hash = require('./hash')
+var Buffer = require('safe-buffer').Buffer
+=======
 module.exports = setRawTransactionGasPrice;
+>>>>>>> master
 
 },{"../wrappers/eth":595,"lodash":421}],531:[function(require,module,exports){
 "use strict";
@@ -81830,8 +87860,15 @@ function signRawTransaction(packaged, privateKeyOrSigner, accountType, callback)
 
 module.exports = signRawTransaction;
 
+<<<<<<< HEAD
+},{"./hash":462,"./sha512":469,"inherits":379,"safe-buffer":454}],469:[function(require,module,exports){
+var inherits = require('inherits')
+var Hash = require('./hash')
+var Buffer = require('safe-buffer').Buffer
+=======
 },{"../constants":508,"../errors/rpc-error":520,"./sign-raw-transaction-with-key":532}],534:[function(require,module,exports){
 "use strict";
+>>>>>>> master
 
 var speedomatic = require("speedomatic");
 
@@ -82193,7 +88230,11 @@ module.exports = function (storeObservers, action) {
   }
 };
 
+<<<<<<< HEAD
+},{"./hash":462,"inherits":379,"safe-buffer":454}],470:[function(require,module,exports){
+=======
 },{"./initial-state":543,"immutable-delete":379,"lodash":421}],549:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -82297,7 +88338,12 @@ module.exports = function (transactions, action) {
   }
 };
 
+<<<<<<< HEAD
+},{"./byte-array-to-utf8-string":481,"./remove-trailing-zeros":497}],471:[function(require,module,exports){
+(function (Buffer){
+=======
 },{"../utils/is-object":583,"./initial-state":543,"immutable-delete":379,"lodash":421}],550:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var blockchainMessageHandler = require("./rpc/blockchain-message-handler");
@@ -82315,12 +88361,18 @@ function resetState() {
     if (getState().newHeadsSubscription.id != null) dispatch(unsubscribeFromNewBlockNotifications());
     if (getState().newBlockPollingInterval != null) dispatch(stopPollingForBlocks());
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"./format-abi-raw-decoded-data-array":487,"./strip-0x-prefix":499,"buffer":167,"ethereumjs-abi":209}],472:[function(require,module,exports){
+"use strict";
+=======
     var notifications = internalState.get("notifications");
     if (isObject(notifications)) {
       Object.keys(notifications).map(function (hash) {
         if (notifications[hash]) clearTimeout(notifications[hash]);
       });
     }
+>>>>>>> master
 
     dispatch(storeObservers.removeAll());
 
@@ -82331,6 +88383,11 @@ function resetState() {
 
     var messageHandlerObject = { realMessageHandler: blockchainMessageHandler };
 
+<<<<<<< HEAD
+},{"./abi-decode-data":471}],473:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+=======
     // reset state to defaults
     internalState.setState({
       transporter: null,
@@ -82345,6 +88402,7 @@ function resetState() {
         dispatch(this.realMessageHandler(error, jso));
       }.bind(messageHandlerObject),
     });
+>>>>>>> master
 
     // reset redux store to initial state
     dispatch({ type: "RESET_STATE" });
@@ -82356,6 +88414,26 @@ function resetState() {
 
 module.exports = resetState;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"./remove-trailing-zeros":497,"./strip-0x-prefix":499,"buffer":167}],474:[function(require,module,exports){
+"use strict";
+
+var rawEncode = require("ethereumjs-abi").rawEncode;
+var removeTrailingZeros = require("./remove-trailing-zeros");
+
+// convert bytes to ABI format
+function abiEncodeBytes(bytesToEncode, isPadded) {
+  var abiEncodedBytes = rawEncode(["bytes"], [bytesToEncode]).toString("hex");
+  if (isPadded) return abiEncodedBytes;
+  return removeTrailingZeros(abiEncodedBytes).slice(128);
+}
+
+module.exports = abiEncodeBytes;
+
+},{"./remove-trailing-zeros":497,"ethereumjs-abi":209}],475:[function(require,module,exports){
+"use strict";
+=======
 },{"./block-management/stop-polling-for-blocks":502,"./block-management/unsubscribe-from-new-block-notifications":504,"./clear-transactions":506,"./internal-state":522,"./rpc/blockchain-message-handler":551,"./store-observers":554,"./utils/is-object":583}],551:[function(require,module,exports){
 "use strict";
 
@@ -82363,6 +88441,7 @@ var parseEthereumResponse = require("../decode-response/parse-ethereum-response"
 var isObject = require("../utils/is-object");
 var RPCError = require("../errors/rpc-error");
 var internalState = require("../internal-state");
+>>>>>>> master
 
 /**
  * Used internally.  Processes a response from the blockchain by looking up the
@@ -82387,6 +88466,10 @@ function blockchainMessageHandler(error, jso) {
       }
     };
 
+<<<<<<< HEAD
+},{"ethereumjs-abi":209}],476:[function(require,module,exports){
+"use strict";
+=======
     var responseHandler = function () {
       if (typeof jso.id !== "number") return errorHandler(new RPCError("INVALID_MESSAGE_ID", jso));
       var outstandingRequest = internalState.get("outstandingRequests." + jso.id);
@@ -82394,6 +88477,7 @@ function blockchainMessageHandler(error, jso) {
       if (!isObject(outstandingRequest)) return outOfBandErrorHandler(new RPCError("JSON_RPC_REQUEST_NOT_FOUND", jso));
       parseEthereumResponse(jso, outstandingRequest.callback);
     };
+>>>>>>> master
 
     var errorHandler = function () {
       // errors with IDs can go through the normal result process
@@ -82419,12 +88503,34 @@ function blockchainMessageHandler(error, jso) {
 
 module.exports = blockchainMessageHandler;
 
+<<<<<<< HEAD
+},{"ethereumjs-abi":209}],477:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+
+var padRight = require("./pad-right");
+var prefixHex = require("./prefix-hex");
+
+function abiEncodeShortStringAsInt256(shortString) {
+  var encoded = shortString;
+  if (encoded.length > 32) encoded = encoded.slice(0, 32);
+  return prefixHex(padRight(Buffer.from(encoded, "utf8").toString("hex")));
+}
+
+module.exports = abiEncodeShortStringAsInt256;
+
+}).call(this,require("buffer").Buffer)
+},{"./pad-right":495,"./prefix-hex":496,"buffer":167}],478:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+=======
 },{"../decode-response/parse-ethereum-response":511,"../errors/rpc-error":520,"../internal-state":522,"../utils/is-object":583}],552:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = require("../encode-request/strip-returns-type-and-invocation");
 var isFunction = require("../utils/is-function");
 var internalState = require("../internal-state");
+>>>>>>> master
 
 /**
  * Used internally.  Submits a remote procedure call to the blockchain.
@@ -82455,7 +88561,12 @@ function submitRequestToBlockchain(jso, callback) {
 
 module.exports = submitRequestToBlockchain;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"./abi-encode-data":475,"./prefix-hex":496,"buffer":167,"ethereumjs-abi":209}],479:[function(require,module,exports){
+=======
 },{"../encode-request/strip-returns-type-and-invocation":518,"../internal-state":522,"../utils/is-function":579}],553:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var storeObservers = require("./");
@@ -82470,14 +88581,24 @@ module.exports = function (id, onStateChange) {
   };
 };
 
+<<<<<<< HEAD
+},{"./is-hex":493,"./prefix-hex":496,"./wrap":504,"bignumber.js":153}],480:[function(require,module,exports){
+=======
 },{"./":554}],554:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
 var isFunction = require("../utils/is-function");
 
+<<<<<<< HEAD
+},{"./strip-0x-prefix":499}],481:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+=======
 var initialCount = 1;
+>>>>>>> master
 
 var count = initialCount;
 var unsubscribeFunctions = {};
@@ -82501,6 +88622,23 @@ function subscribeToStateChanges(select, onStateChange) {
   };
 }
 
+<<<<<<< HEAD
+module.exports = byteArrayToUtf8String;
+
+}).call(this,require("buffer").Buffer)
+},{"./strip-0x-prefix":499,"bignumber.js":153,"buffer":167}],482:[function(require,module,exports){
+"use strict";
+
+function chunk(totalLength, chunkLength) {
+  chunkLength = chunkLength || 64;
+  return Math.ceil(totalLength / chunkLength);
+}
+
+module.exports = chunk;
+
+},{}],483:[function(require,module,exports){
+"use strict";
+=======
 function unsubscribeFromStateChanges(id) {
   if (isFunction(unsubscribeFunctions[id])) unsubscribeFunctions[id]();
   unsubscribeFunctions = immutableDelete(unsubscribeFunctions, id);
@@ -82511,6 +88649,7 @@ function unsubscribeFromAllStateChanges() {
   Object.keys(unsubscribeFunctions).map(unsubscribeFromStateChanges);
   count = initialCount;
 }
+>>>>>>> master
 
 module.exports.add = function (id, reaction, select, onStateChange) {
   return function (dispatch) {
@@ -82540,7 +88679,11 @@ module.exports.removeAll = function () {
   };
 };
 
+<<<<<<< HEAD
+},{"bignumber.js":153}],484:[function(require,module,exports){
+=======
 },{"../utils/is-function":579,"immutable-delete":379,"lodash":421}],555:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var storeObservers = require("./");
@@ -82556,7 +88699,11 @@ module.exports = function (onStateChange) {
   };
 };
 
+<<<<<<< HEAD
+},{"./bignum":479}],485:[function(require,module,exports){
+=======
 },{"./":554}],556:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -82586,7 +88733,11 @@ function callContractFunction(payload, callback) {
 
 module.exports = callContractFunction;
 
+<<<<<<< HEAD
+},{"./bignum":479}],486:[function(require,module,exports){
+=======
 },{"../transact/call-or-send-transaction":557,"lodash":421,"speedomatic":475}],557:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -82613,7 +88764,11 @@ function callOrSendTransaction(payload, callback) {
 
 module.exports = callOrSendTransaction;
 
+<<<<<<< HEAD
+},{"./bignum":479,"./constants":483,"./prefix-hex":496,"./wrap":504,"bignumber.js":153}],487:[function(require,module,exports){
+=======
 },{"../encode-request/package-request":516,"../errors/rpc-error":520,"../utils/is-object":583,"../wrappers/eth":595}],558:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var eth_getBlockByHash = require("../wrappers/eth").getBlockByHash;
@@ -82636,7 +88791,11 @@ function recheckSealedBlock(onChainTransaction, callback) {
 
 module.exports = recheckSealedBlock;
 
+<<<<<<< HEAD
+},{"./format-abi-raw-decoded-data":488}],488:[function(require,module,exports){
+=======
 },{"../wrappers/eth":595}],559:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var updateTransaction = require("./update-transaction");
@@ -82652,7 +88811,11 @@ function reprocessTransactions() {
 
 module.exports = reprocessTransactions;
 
+<<<<<<< HEAD
+},{"./format-ethereum-address":489,"./format-int256":490,"./hex":491,"./prefix-hex":496}],489:[function(require,module,exports){
+=======
 },{"./update-transaction":564}],560:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -82691,7 +88854,12 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, accountType, onS
 
 module.exports.default = transactAsync;
 
+<<<<<<< HEAD
+},{"./prefix-hex":496,"./strip-0x-prefix":499}],490:[function(require,module,exports){
+(function (Buffer){
+=======
 },{"../errors/rpc-error":520,"../raw-transactions/package-and-submit-raw-transaction":528,"../transact/call-or-send-transaction":557,"../transact/verify-tx-submitted":565,"immutable-delete":379,"speedomatic":475}],561:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var uuid = require("uuid");
@@ -82742,7 +88910,13 @@ function transact(payload, privateKeyOrSigner, accountType, onSent, onSuccess, o
 
 module.exports.default = transact;
 
+<<<<<<< HEAD
+}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+},{"../../is-buffer/index.js":380,"./pad-left":494,"./prefix-hex":496,"./strip-0x-prefix":499,"./unfork":502}],491:[function(require,module,exports){
+(function (Buffer){
+=======
 },{"../errors/rpc-error":520,"../utils/is-function":579,"../utils/is-object":583,"./call-contract-function":556,"./call-or-send-transaction":557,"./transact-async":560,"./wrap-on-failed-callback":566,"uuid":491}],562:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var eth_getTransactionByHash = require("../wrappers/eth").getTransactionByHash;
@@ -82789,7 +88963,12 @@ function updatePendingTransaction(transactionHash, callback) {
 
 module.exports.default = updatePendingTransaction;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"./abi-encode-bytes":474,"./bignum":479,"./prefix-hex":496,"./wrap":504,"bignumber.js":153,"buffer":167}],492:[function(require,module,exports){
+=======
 },{"../constants":508,"../errors/rpc-error":520,"../transact/transact":561,"../transact/update-sealed-transaction":563,"../wrappers/eth":595}],563:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var speedomatic = require("speedomatic");
@@ -82832,7 +89011,11 @@ function updateSealedTransaction(transactionHash, callback) {
 
 module.exports = updateSealedTransaction;
 
+<<<<<<< HEAD
+},{"./abi-decode-bytes":470,"./abi-decode-data":471,"./abi-decode-rpc-response":472,"./abi-decode-short-string-as-int256":473,"./abi-encode-bytes":474,"./abi-encode-data":475,"./abi-encode-int256":476,"./abi-encode-short-string-as-int256":477,"./abi-encode-transaction-payload":478,"./bignum":479,"./byte-array-to-hex-string":480,"./byte-array-to-utf8-string":481,"./constants":483,"./encode-number-as-base10-string":484,"./encode-number-as-js-number":485,"./fix":486,"./format-abi-raw-decoded-data":488,"./format-abi-raw-decoded-data-array":487,"./format-ethereum-address":489,"./format-int256":490,"./hex":491,"./is-hex":493,"./pad-left":494,"./pad-right":495,"./prefix-hex":496,"./serialize":498,"./strip-0x-prefix":499,"./unfix":501,"./unfix-signed":500,"./unfork":502,"./unroll-array":503,"bignumber.js":153}],493:[function(require,module,exports){
+=======
 },{"../constants":508,"../wrappers/eth":595,"./recheck-sealed-block":558,"bignumber.js":328,"speedomatic":475}],564:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -82863,7 +89046,11 @@ function updateTransaction(transactionHash) {
 
 module.exports.default = updateTransaction;
 
+<<<<<<< HEAD
+},{}],494:[function(require,module,exports){
+=======
 },{"../transact/update-pending-transaction":562,"../transact/update-sealed-transaction":563,"lodash":421}],565:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var updateTransaction = require("../transact/update-transaction");
@@ -82893,7 +89080,11 @@ function verifyTxSubmitted(payload, transactionHash, callReturn, privateKeyOrSig
 
 module.exports.default = verifyTxSubmitted;
 
+<<<<<<< HEAD
+},{"./chunk":482,"./prefix-hex":496,"./strip-0x-prefix":499}],495:[function(require,module,exports){
+=======
 },{"../transact/update-transaction":564}],566:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 var assign = require("lodash").assign;
@@ -82913,7 +89104,11 @@ function wrapOnFailedCallback(payload, onFailedCallback, dispatch) {
 
 module.exports = wrapOnFailedCallback;
 
+<<<<<<< HEAD
+},{"./chunk":482,"./prefix-hex":496,"./strip-0x-prefix":499}],496:[function(require,module,exports){
+=======
 },{"../errors/rpc-error":520,"../utils/sha3":585,"lodash":421}],567:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function excludeFromTransactionRelay(method) {
@@ -82932,7 +89127,11 @@ function excludeFromTransactionRelay(method) {
 
 module.exports = excludeFromTransactionRelay;
 
+<<<<<<< HEAD
+},{"bignumber.js":153}],497:[function(require,module,exports){
+=======
 },{}],568:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 function includeInTransactionRelay(method) {
@@ -82999,7 +89198,12 @@ function unregisterTransactionRelay() {
 
 module.exports = unregisterTransactionRelay;
 
+<<<<<<< HEAD
+},{}],498:[function(require,module,exports){
+(function (Buffer){
+=======
 },{"../store-observers":554}],571:[function(require,module,exports){
+>>>>>>> master
 "use strict";
 
 /**
@@ -83051,10 +89255,16 @@ AbstractTransport.prototype.submitWork = function (rpcObject) {
   // if we already have a pump queued up, then we can just get in with that batch
   if (this.awaitingPump) return;
 
+<<<<<<< HEAD
+}).call(this,require("buffer").Buffer)
+},{"./abi-encode-int256":476,"./pad-left":494,"bignumber.js":153,"buffer":167}],499:[function(require,module,exports){
+"use strict";
+=======
   // force into an async context so behavior doesn't differ depending on whether or not this is first-in-queue
   this.awaitingPump = true;
   setTimeout(pumpQueue.bind(null, this));
 };
+>>>>>>> master
 
 /**
  * Register to be notified when a disconnect occurs for this transport.
@@ -83087,6 +89297,10 @@ AbstractTransport.prototype.addReconnectListener = function (callback) {
   return token;
 };
 
+<<<<<<< HEAD
+},{"./is-hex":493}],500:[function(require,module,exports){
+"use strict";
+=======
 /**
  * Unregister a previously registered reconnect listener.
  *
@@ -83095,6 +89309,7 @@ AbstractTransport.prototype.addReconnectListener = function (callback) {
 AbstractTransport.prototype.removeReconnectListener = function (token) {
   delete this.reconnectListeners[token];
 };
+>>>>>>> master
 
 /**
  * Used internally by derived prototypes to attempt to establish an initial connection.  Should be called from constructor.
@@ -83121,6 +89336,10 @@ AbstractTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) 
   errorCallback(new Error("Must be implemented by derived prototype."));
 };
 
+<<<<<<< HEAD
+},{"./hex":491,"./unfix":501}],501:[function(require,module,exports){
+"use strict";
+=======
 /**
  * Implemented by derived prototypes.  Should establish a connection or otherwise validate that the remote host is accessible.
  *
@@ -83129,6 +89348,7 @@ AbstractTransport.prototype.submitRpcRequest = function (rpcJso, errorCallback) 
 AbstractTransport.prototype.connect = function (callback) {
   callback(new Error("Must be implemented by derived prototype."));
 };
+>>>>>>> master
 
 AbstractTransport.prototype.resetState = function () {
   this.workQueue = [];
@@ -83140,6 +89360,207 @@ AbstractTransport.prototype.resetState = function () {
   this.disconnectListeners = {};
 };
 
+<<<<<<< HEAD
+function unfix(n, encoding) {
+  var unfixed;
+  if (n && n !== "0x" && !n.error && !n.message) {
+    if (encoding) encoding = encoding.toLowerCase();
+    if (Array.isArray(n)) {
+      var len = n.length;
+      unfixed = new Array(len);
+      for (var i = 0; i < len; ++i) {
+        unfixed[i] = unfix(n[i], encoding);
+      }
+    } else {
+      if (BigNumber.isBigNumber(n)) {
+        unfixed = n.dividedBy(FXP_ONE);
+      } else {
+        unfixed = bignum(n).dividedBy(FXP_ONE);
+      }
+      if (unfixed && encoding) {
+        if (encoding === "hex") {
+          unfixed = prefixHex(unfixed.integerValue());
+        } else if (encoding === "string") {
+          unfixed = unfixed.toFixed();
+        } else if (encoding === "number") {
+          unfixed = unfixed.toNumber();
+        }
+      }
+    }
+    return unfixed;
+  }
+  return n;
+}
+
+module.exports = unfix;
+
+},{"./bignum":479,"./constants":483,"./prefix-hex":496,"bignumber.js":153}],502:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var bignum = require("./bignum");
+var padLeft = require("./pad-left");
+var prefixHex = require("./prefix-hex");
+var constants = require("./constants");
+
+function unfork(forked, prefix) {
+  if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+    var unforked = bignum(forked);
+    if (BigNumber.isBigNumber(unforked)) {
+      var superforked = unforked.plus(constants.UINT256_MAX_VALUE);
+      if (superforked.gte(constants.BYTES_32) && superforked.lt(constants.UINT256_MAX_VALUE)) {
+        unforked = superforked;
+      }
+      if (BigNumber.isBigNumber(forked)) return unforked;
+      unforked = padLeft(unforked.toString(16));
+      if (prefix) unforked = prefixHex(unforked);
+      return unforked;
+    }
+    throw new Error("speedomatic.unfork failed (bad input): " + JSON.stringify(forked));
+  }
+  throw new Error("speedomatic.unfork failed (bad input): " + JSON.stringify(forked));
+}
+
+module.exports = unfork;
+
+},{"./bignum":479,"./constants":483,"./pad-left":494,"./prefix-hex":496,"bignumber.js":153}],503:[function(require,module,exports){
+"use strict";
+
+var encodeNumberAsBase10String = require("./encode-number-as-base10-string");
+var prefixHex = require("./prefix-hex");
+var unfixSigned = require("./unfix-signed");
+
+// Unroll an abi-encoded string into an array
+function unrollArray(string, returns, stride, init) {
+  if (string && string.length >= 66) {
+    stride = stride || 64;
+    var elements = Math.ceil((string.length - 2) / stride);
+    var array = new Array(elements);
+    var position = init || 2;
+    for (var i = 0; i < elements; ++i) {
+      array[i] = prefixHex(string.slice(position, position + stride));
+      position += stride;
+    }
+    if (array.length) {
+      if (parseInt(array[1], 16) === array.length - 2 || parseInt(array[1], 16) / 32 === array.length - 2) {
+        array.splice(0, 2);
+      }
+    }
+    for (i = 0; i < array.length; ++i) {
+      if (returns === "number[]") {
+        array[i] = encodeNumberAsBase10String(array[i]);
+      } else if (returns === "unfix[]") {
+        array[i] = unfixSigned(array[i], "string");
+      }
+    }
+    return array;
+  }
+  return string;
+}
+
+module.exports = unrollArray;
+
+},{"./encode-number-as-base10-string":484,"./prefix-hex":496,"./unfix-signed":500}],504:[function(require,module,exports){
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var bignum = require("./bignum");
+var constants = require("./constants");
+
+function wrap(bn) {
+  if (bn === undefined || bn === null) return bn;
+  if (bn.constructor !== BigNumber) bn = bignum(bn);
+  if (bn.gt(constants.INT256_MAX_VALUE)) {
+    return bn.minus(constants.UINT256_MAX_VALUE);
+  } else if (bn.lt(constants.INT256_MIN_VALUE)) {
+    return bn.plus(constants.UINT256_MAX_VALUE);
+  }
+  return bn;
+}
+
+module.exports = wrap;
+
+},{"./bignum":479,"./constants":483,"bignumber.js":153}],505:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+module.exports = Stream;
+
+var EE = require('events').EventEmitter;
+var inherits = require('inherits');
+
+inherits(Stream, EE);
+Stream.Readable = require('readable-stream/readable.js');
+Stream.Writable = require('readable-stream/writable.js');
+Stream.Duplex = require('readable-stream/duplex.js');
+Stream.Transform = require('readable-stream/transform.js');
+Stream.PassThrough = require('readable-stream/passthrough.js');
+
+// Backwards-compat with node 0.4.x
+Stream.Stream = Stream;
+
+
+
+// old-style streams.  Note that the pipe method (the only relevant
+// part of this class) is overridden in the Readable class.
+
+function Stream() {
+  EE.call(this);
+}
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
+  }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+=======
 /**
  * Pumps the current work queue.
  */
@@ -83901,10 +90322,445 @@ var validateTransaction = function (transaction) {
   }
   if (!/^0x[0-9a-zA-Z]*$/.test(transaction.data)) {
     throw new Error("data must be a hex encoded string with a leader '0x'");
+>>>>>>> master
   }
   transaction.nonce = validateNumber(transaction.nonce, "nonce");
 };
 
+<<<<<<< HEAD
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    if (typeof dest.destroy === 'function') dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (EE.listenerCount(this, 'error') === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
+};
+
+},{"events":361,"inherits":379,"readable-stream/duplex.js":429,"readable-stream/passthrough.js":438,"readable-stream/readable.js":439,"readable-stream/transform.js":440,"readable-stream/writable.js":441}],506:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+/*<replacement>*/
+
+var Buffer = require('safe-buffer').Buffer;
+/*</replacement>*/
+
+var isEncoding = Buffer.isEncoding || function (encoding) {
+  encoding = '' + encoding;
+  switch (encoding && encoding.toLowerCase()) {
+    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':
+      return true;
+    default:
+      return false;
+  }
+};
+
+function _normalizeEncoding(enc) {
+  if (!enc) return 'utf8';
+  var retried;
+  while (true) {
+    switch (enc) {
+      case 'utf8':
+      case 'utf-8':
+        return 'utf8';
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return 'utf16le';
+      case 'latin1':
+      case 'binary':
+        return 'latin1';
+      case 'base64':
+      case 'ascii':
+      case 'hex':
+        return enc;
+      default:
+        if (retried) return; // undefined
+        enc = ('' + enc).toLowerCase();
+        retried = true;
+    }
+  }
+};
+
+// Do not cache `Buffer.isEncoding` when checking encoding names as some
+// modules monkey-patch it to support additional encodings
+function normalizeEncoding(enc) {
+  var nenc = _normalizeEncoding(enc);
+  if (typeof nenc !== 'string' && (Buffer.isEncoding === isEncoding || !isEncoding(enc))) throw new Error('Unknown encoding: ' + enc);
+  return nenc || enc;
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters.
+exports.StringDecoder = StringDecoder;
+function StringDecoder(encoding) {
+  this.encoding = normalizeEncoding(encoding);
+  var nb;
+  switch (this.encoding) {
+    case 'utf16le':
+      this.text = utf16Text;
+      this.end = utf16End;
+      nb = 4;
+      break;
+    case 'utf8':
+      this.fillLast = utf8FillLast;
+      nb = 4;
+      break;
+    case 'base64':
+      this.text = base64Text;
+      this.end = base64End;
+      nb = 3;
+      break;
+    default:
+      this.write = simpleWrite;
+      this.end = simpleEnd;
+      return;
+  }
+  this.lastNeed = 0;
+  this.lastTotal = 0;
+  this.lastChar = Buffer.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write = function (buf) {
+  if (buf.length === 0) return '';
+  var r;
+  var i;
+  if (this.lastNeed) {
+    r = this.fillLast(buf);
+    if (r === undefined) return '';
+    i = this.lastNeed;
+    this.lastNeed = 0;
+  } else {
+    i = 0;
+  }
+  if (i < buf.length) return r ? r + this.text(buf, i) : this.text(buf, i);
+  return r || '';
+};
+
+StringDecoder.prototype.end = utf8End;
+
+// Returns only complete characters in a Buffer
+StringDecoder.prototype.text = utf8Text;
+
+// Attempts to complete a partial non-UTF-8 character using bytes from a Buffer
+StringDecoder.prototype.fillLast = function (buf) {
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, buf.length);
+  this.lastNeed -= buf.length;
+};
+
+// Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
+// continuation byte. If an invalid byte is detected, -2 is returned.
+function utf8CheckByte(byte) {
+  if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
+  return byte >> 6 === 0x02 ? -1 : -2;
+}
+
+// Checks at most 3 bytes at the end of a Buffer in order to detect an
+// incomplete multi-byte UTF-8 character. The total number of bytes (2, 3, or 4)
+// needed to complete the UTF-8 character (if applicable) are returned.
+function utf8CheckIncomplete(self, buf, i) {
+  var j = buf.length - 1;
+  if (j < i) return 0;
+  var nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 1;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 2;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) {
+      if (nb === 2) nb = 0;else self.lastNeed = nb - 3;
+    }
+    return nb;
+  }
+  return 0;
+}
+
+// Validates as many continuation bytes for a multi-byte UTF-8 character as
+// needed or are available. If we see a non-continuation byte where we expect
+// one, we "replace" the validated continuation bytes we've seen so far with
+// a single UTF-8 replacement character ('\ufffd'), to match v8's UTF-8 decoding
+// behavior. The continuation byte check is included three times in the case
+// where all of the continuation bytes for a character exist in the same buffer.
+// It is also done this way as a slight performance increase instead of using a
+// loop.
+function utf8CheckExtraBytes(self, buf, p) {
+  if ((buf[0] & 0xC0) !== 0x80) {
+    self.lastNeed = 0;
+    return '\ufffd';
+  }
+  if (self.lastNeed > 1 && buf.length > 1) {
+    if ((buf[1] & 0xC0) !== 0x80) {
+      self.lastNeed = 1;
+      return '\ufffd';
+    }
+    if (self.lastNeed > 2 && buf.length > 2) {
+      if ((buf[2] & 0xC0) !== 0x80) {
+        self.lastNeed = 2;
+        return '\ufffd';
+      }
+    }
+  }
+}
+
+// Attempts to complete a multi-byte UTF-8 character using bytes from a Buffer.
+function utf8FillLast(buf) {
+  var p = this.lastTotal - this.lastNeed;
+  var r = utf8CheckExtraBytes(this, buf, p);
+  if (r !== undefined) return r;
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, p, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, p, 0, buf.length);
+  this.lastNeed -= buf.length;
+}
+
+// Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
+// partial character, the character's bytes are buffered until the required
+// number of bytes are available.
+function utf8Text(buf, i) {
+  var total = utf8CheckIncomplete(this, buf, i);
+  if (!this.lastNeed) return buf.toString('utf8', i);
+  this.lastTotal = total;
+  var end = buf.length - (total - this.lastNeed);
+  buf.copy(this.lastChar, 0, end);
+  return buf.toString('utf8', i, end);
+}
+
+// For UTF-8, a replacement character is added when ending on a partial
+// character.
+function utf8End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + '\ufffd';
+  return r;
+}
+
+// UTF-16LE typically needs two bytes per character, but even if we have an even
+// number of bytes available, we need to check if we end on a leading/high
+// surrogate. In that case, we need to wait for the next two bytes in order to
+// decode the last character properly.
+function utf16Text(buf, i) {
+  if ((buf.length - i) % 2 === 0) {
+    var r = buf.toString('utf16le', i);
+    if (r) {
+      var c = r.charCodeAt(r.length - 1);
+      if (c >= 0xD800 && c <= 0xDBFF) {
+        this.lastNeed = 2;
+        this.lastTotal = 4;
+        this.lastChar[0] = buf[buf.length - 2];
+        this.lastChar[1] = buf[buf.length - 1];
+        return r.slice(0, -1);
+      }
+    }
+    return r;
+  }
+  this.lastNeed = 1;
+  this.lastTotal = 2;
+  this.lastChar[0] = buf[buf.length - 1];
+  return buf.toString('utf16le', i, buf.length - 1);
+}
+
+// For UTF-16LE we do not explicitly append special replacement characters if we
+// end on a partial character, we simply let v8 handle that.
+function utf16End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) {
+    var end = this.lastTotal - this.lastNeed;
+    return r + this.lastChar.toString('utf16le', 0, end);
+  }
+  return r;
+}
+
+function base64Text(buf, i) {
+  var n = (buf.length - i) % 3;
+  if (n === 0) return buf.toString('base64', i);
+  this.lastNeed = 3 - n;
+  this.lastTotal = 3;
+  if (n === 1) {
+    this.lastChar[0] = buf[buf.length - 1];
+  } else {
+    this.lastChar[0] = buf[buf.length - 2];
+    this.lastChar[1] = buf[buf.length - 1];
+  }
+  return buf.toString('base64', i, buf.length - n);
+}
+
+function base64End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + this.lastChar.toString('base64', 0, 3 - this.lastNeed);
+  return r;
+}
+
+// Pass bytes on through for single-byte encodings (e.g. ascii, latin1, hex)
+function simpleWrite(buf) {
+  return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf) {
+  return buf && buf.length ? this.write(buf) : '';
+}
+},{"safe-buffer":454}],507:[function(require,module,exports){
+var isHexPrefixed = require('is-hex-prefixed');
+
+/**
+ * Removes '0x' from a given `String` is present
+ * @param {String} str the string value
+ * @return {String|Optional} a string by pass if necessary
+ */
+module.exports = function stripHexPrefix(str) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  return isHexPrefixed(str) ? str.slice(2) : str;
+}
+
+},{"is-hex-prefixed":381}],508:[function(require,module,exports){
+(function (global){
+
+/**
+ * Module exports.
+ */
+
+module.exports = deprecate;
+
+/**
+ * Mark that a method should not be used.
+ * Returns a modified function which warns once by default.
+ *
+ * If `localStorage.noDeprecation = true` is set, then it is a no-op.
+ *
+ * If `localStorage.throwDeprecation = true` is set, then deprecated functions
+ * will throw an Error when invoked.
+ *
+ * If `localStorage.traceDeprecation = true` is set, then deprecated functions
+ * will invoke `console.trace()` instead of `console.error()`.
+ *
+ * @param {Function} fn - the function to deprecate
+ * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @returns {Function} a new "deprecated" version of `fn`
+ * @api public
+ */
+
+function deprecate (fn, msg) {
+  if (config('noDeprecation')) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (config('throwDeprecation')) {
+        throw new Error(msg);
+      } else if (config('traceDeprecation')) {
+        console.trace(msg);
+      } else {
+        console.warn(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+}
+
+/**
+ * Checks `localStorage` for boolean values for the given `name`.
+ *
+ * @param {String} name
+ * @returns {Boolean}
+ * @api private
+ */
+
+function config (name) {
+  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
+  try {
+    if (!global.localStorage) return false;
+  } catch (_) {
+    return false;
+  }
+  var val = global.localStorage[name];
+  if (null == val) return false;
+  return String(val).toLowerCase() === 'true';
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[149]);
+=======
 module.exports = validateTransaction;
 
 },{"./validate-address":586,"./validate-number":590}],592:[function(require,module,exports){
@@ -84208,3 +91064,4 @@ module.exports = {
 };
 
 },{"../utils/sha3":585,"./make-wrapper":597}]},{},[149]);
+>>>>>>> master
