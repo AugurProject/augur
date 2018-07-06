@@ -34,15 +34,6 @@ const hasOpenOrdersInMarket = (market) => {
   return false
 }
 
-
-function getHighestPrice(outcome) {
-  return outcome.userOpenOrders.reduce((p, order) => comparePrice(p, order), 0)
-}
-
-function comparePrice(p, order) {
-  return p > order.avgPrice.value ? p : order.avgPrice.value
-}
-
 export function sortOpenOrders(market) {
   if (!market) return market
   const numOutcomes = market.outcomes.length
@@ -50,7 +41,7 @@ export function sortOpenOrders(market) {
   const outcomes = market.outcomes.filter(outcome => outcome.userOpenOrders && outcome.userOpenOrders.length > 0)
   if (outcomes.length < 2) return market
 
-  market.outcomes = market.outcomes.sort((o1, o2) => getHighestPrice(o2) - getHighestPrice(o1))
+  market.outcomes = market.outcomes.sort((o1, o2) => (parseInt(o1.id, 10) - parseInt(o2.id, 10)))
   return market
 }
 

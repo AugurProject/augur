@@ -298,7 +298,7 @@ export function assembleMarket(
         outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)
 
         return outcome
-      })
+      }).sort((a, b) => (parseInt(a.id, 10) - parseInt(b.id, 10)))
 
       market.tags = (market.tags || []).filter(tag => !!tag)
 
