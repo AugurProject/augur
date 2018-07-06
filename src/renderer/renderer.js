@@ -24,9 +24,9 @@ function Renderer() {
     }, 1000)
     document.getElementById("save_configuration").addEventListener("click", this.saveNetworkConfig.bind(this));
     document.getElementById("back_to_network_config_button").addEventListener("click", this.backToNetworkConfig.bind(this));
-    document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.goToOpenApp.bind(this));
+    document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.connectToServer.bind(this));
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
-    document.getElementById("cancel_switch_button").addEventListener("click", this.showOpenApp.bind(this));
+    document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
 
@@ -37,6 +37,7 @@ function Renderer() {
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
     ipcRenderer.on('error', this.onServerError.bind(this));
     ipcRenderer.on('ssl', this.onSsl.bind(this))
+    ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
 }
@@ -62,26 +63,29 @@ Renderer.prototype.backToNetworkConfig = function (event) {
     document.getElementById("augur_ui_button").disabled = true
 }
 
-Renderer.prototype.showOpenApp = function (event) {
+Renderer.prototype.onServerConnected = function (event) {
+  this.clearNotice()
+  const data = this.getNetworkConfigFormData();
+  this.renderOpenNetworkPage(data)
   // hide config form and show open network screen
   document.getElementById("network_config_screen").style.display = "none";
   document.getElementById("open_app_screen").style.display = "block";
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
-Renderer.prototype.goToOpenApp = function (event) {
+Renderer.prototype.connectToServer = function (event) {
+  this.showNotice("Connecting...", "success")
   const data = this.getNetworkConfigFormData();
-  ipcRenderer.send("switchNetwork", data);
+  ipcRenderer.send("start", data);
+}
+
+Renderer.prototype.goToOpenApp = function (event) {
   // hide config form and show open network screen
   document.getElementById("network_config_screen").style.display = "none";
   document.getElementById("open_app_screen").style.display = "block";
-
-  // render and fill in details on open network screen
-  this.renderOpenNetworkPage();
 }
 
-Renderer.prototype.renderOpenNetworkPage = function () {
-  const data = this.getNetworkConfigFormData();
+Renderer.prototype.renderOpenNetworkPage = function (data) {
   document.getElementById("current_network").innerHTML = data.network;
   document.getElementById("open_network_name").innerHTML = data.network;
   document.getElementById("open_network_http_endpoint").innerHTML = data.networkConfig.http;
@@ -122,12 +126,6 @@ Renderer.prototype.onSaveNetworkConfigResponse = function (event, data) {
     this.renderNetworkOptions();
 }
 
-Renderer.prototype.switchNetwork = function (event) {
-    event.preventDefault();
-    const data = this.getNetworkConfigFormData();
-    ipcRenderer.send("switchNetwork", data);
-}
-
 Renderer.prototype.getNetworkConfigFormData = function () {
     const network = document.getElementById("network_id_select").value;
     const networkConfig = {
@@ -154,9 +152,8 @@ Renderer.prototype.switchNetworkConfigForm = function () {
     const selectedNetwork = document.getElementById("network_id_select").value;
     this.selectedNetwork = selectedNetwork;
     const networkConfig = this.config.networks[selectedNetwork];
-    document.getElementById("open_network_http_endpoint").innerHTML = networkConfig.http;
-    document.getElementById("open_network_ws_endpoint").innerHTML = networkConfig.ws;
     this.renderNetworkConfigForm(selectedNetwork, networkConfig);
+    this.clearNotice()
   } catch(err) {
     log.error(err)
   }
