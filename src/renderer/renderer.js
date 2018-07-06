@@ -86,8 +86,8 @@ Renderer.prototype.goToOpenApp = function (event) {
 }
 
 Renderer.prototype.renderOpenNetworkPage = function (data) {
-  document.getElementById("current_network").innerHTML = data.network;
-  document.getElementById("open_network_name").innerHTML = data.network;
+  document.getElementById("current_network").innerHTML = data.networkConfig.name;
+  document.getElementById("open_network_name").innerHTML = data.networkConfig.name;
   document.getElementById("open_network_http_endpoint").innerHTML = data.networkConfig.http;
   document.getElementById("open_network_ws_endpoint").innerHTML = data.networkConfig.ws;
 }
@@ -162,6 +162,7 @@ Renderer.prototype.switchNetworkConfigForm = function () {
 Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkConfig) {
   try {
     const networkName = this.config.networks[selectedNetwork].name;
+    log.info('network name ' + networkName)
     document.getElementById("network_name").value = networkName
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
