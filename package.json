@@ -29,6 +29,7 @@
     "migrate": "node ./node_modules/knex/bin/cli.js migrate:latest --env build",
     "migrate_pg": "node ./node_modules/knex/bin/cli.js migrate:latest --env pg",
     "seed": "node ./node_modules/knex/bin/cli.js seed:run --env build",
+    "seed_pg": "node ./node_modules/knex/bin/cli.js seed:run --env pg",
     "migrate:make": "node ./node_modules/knex/bin/cli.js migrate:make -x ts $1",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test/unit",
     "postinstall": "postinstall-build build",
