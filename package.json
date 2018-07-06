@@ -26,6 +26,7 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "build": {
+    "files": ["!certs/*"],
     "mac": {
       "asar": "false",
       "target": [
