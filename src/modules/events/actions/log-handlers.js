@@ -110,8 +110,9 @@ export const handleOrderFilledLog = log => (dispatch, getState) => {
     dispatch(updateOutcomePrice(log.marketId, log.outcome, new BigNumber(log.price, 10)))
     dispatch(updateMarketCategoryPopularity(log.market, popularity))
     dispatch(updateOrder(log, false))
-    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
+  // always reload account positions on trade so we get up to date PL data.
+  dispatch(loadAccountTrades({ marketId: log.marketId }))
   if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
 }
 
