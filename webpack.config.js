@@ -152,7 +152,11 @@ let config = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || 'dev'),
-        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
+        CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+
+        // Set this var to remove code that is problematic for us to host.
+        // Will need to be negated in the relevant conditionals.
+        AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
       }
     }),
     new GitRevisionPlugin({

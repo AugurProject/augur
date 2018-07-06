@@ -3,21 +3,18 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-import Edge from 'modules/auth/containers/edge-connect'
-import LedgerConnect from 'modules/auth/containers/ledger-connect'
-import MetaMaskConnect from 'modules/auth/containers/metamask-connect'
-import TrezorConnect from 'modules/auth/containers/trezor'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
 import { CONNECT_NAV } from 'modules/routes/constants/param-names'
-import { ITEMS, PARAMS } from 'modules/auth/constants/connect-nav'
+import { ITEMS, getView } from 'modules/auth/constants/connect-nav'
 import { TITLE_SUFFIX } from 'modules/app/constants/title-suffix'
 
 import Styles from 'modules/auth/components/auth/auth.styles'
 
 export default function AuthConnect(p) {
   const selectedNav = parseQuery(p.location.search)[CONNECT_NAV] || null
+  const CurrentView = getView(selectedNav)
 
   return (
     <div className={Styles.Auth}>
@@ -39,18 +36,7 @@ export default function AuthConnect(p) {
             selectedNav={selectedNav}
           />
           <div className={Styles.Auth__connections}>
-            {selectedNav == null &&
-              <Edge />
-            }
-            {selectedNav === PARAMS.METAMASK &&
-              <MetaMaskConnect />
-            }
-            {selectedNav === PARAMS.LEDGER &&
-              <LedgerConnect />
-            }
-            {selectedNav === PARAMS.TREZOR &&
-              <TrezorConnect />
-            }
+            <CurrentView />
           </div>
         </div>
       </div>
