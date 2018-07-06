@@ -1,16 +1,10 @@
 const Augur = require('augur.js')
 const log = require('electron-log')
-const {
-  AugurNodeController
-} = require('augur-node/build/controller')
-const {
-  ControlMessageType
-} = require('augur-node/build/constants')
+const { AugurNodeController } = require('augur-node/build/controller')
+const { ControlMessageType } = require('augur-node/build/constants')
 const fs = require('fs')
 const path = require('path')
-const {
-  ipcMain
-} = require('electron')
+const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 
 const defaultConfig = {
@@ -86,7 +80,12 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished)
 
-    this.augurNodeController.start()
+    this.augurNodeController.start(function (err) {
+      log.error(err)
+      this.window.webContents.send('error', {
+        error: err.message
+      })
+    }.bind(this))
   } catch (err) {
     log.error(err)
     this.window.webContents.send('error', {
