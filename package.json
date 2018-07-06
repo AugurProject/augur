@@ -30,8 +30,7 @@
     "mac": {
       "asar": "false",
       "target": [
-        "dmg",
-        "zip"
+        "dmg"
       ],
       "icon": "build/icon.png"
     },
