@@ -44,7 +44,7 @@ module.exports = {
   },
   pg: {
     client: "pg",
-    connection: "postgres://jonnyburger:postgres@127.0.0.1:5432/postgres",
+    connection: process.env.DATABASE_URL,
     seeds: {
       directory: "./build/seeds/test",
     },
