@@ -1,6 +1,6 @@
 {
   "name": "augur",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.23",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -26,7 +26,9 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
   "build": {
-    "files": ["!certs/*"],
+    "files": [
+      "!certs/*"
+    ],
     "mac": {
       "asar": "false",
       "target": [
