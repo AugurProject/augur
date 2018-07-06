@@ -1,1 +1,1 @@
-web: npm run migrate && npm run seed && npm start
+web: npm run migrate && npm run seed && npm start -- rinkeby
