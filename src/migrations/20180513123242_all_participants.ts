@@ -5,8 +5,8 @@ exports.up = async (knex: Knex): Promise<any> => {
     return knex.raw(`CREATE VIEW all_participants AS
       SELECT
         markets.universe,
-        markets.marketId,
-        markets.feeWindow,
+        markets."marketId",
+        markets."feeWindow",
         'initial_report' as type,
         "initialReporter" as participantAddress,
         initial_reports.reporter,
@@ -23,17 +23,17 @@ exports.up = async (knex: Knex): Promise<any> => {
         "reportingState",
         markets.forking,
         ${knex.client.config.client === "sqlite3" ? "disavowed" : "cast(disavowed AS BOOLEAN) as disavowed"},
-        markets.needsDisavowal
+        markets."needsDisavowal"
       FROM initial_reports
-        JOIN markets ON markets.marketId = initial_reports."marketId"
+        JOIN markets ON markets."marketId" = initial_reports."marketId"
         JOIN universes ON markets.universe = universes.universe
         JOIN balances as contractBalances ON (contractBalances.owner = initial_reports."initialReporter" AND contractBalances.token = universes."reputationToken")
-        JOIN market_state ON markets.marketStateId = market_state."marketStateId"
+        JOIN market_state ON markets."marketStateId" = market_state."marketStateId"
       union
       SELECT
         markets.universe,
         crowdsourcers."marketId",
-        markets.feeWindow,
+        markets."feeWindow",
         'crowdsourcer' as type,
         crowdsourcers."crowdsourcerId" as participantAddress,
         accountBalances.owner as reporter,
@@ -48,13 +48,13 @@ exports.up = async (knex: Knex): Promise<any> => {
         "reportingState",
         markets.forking,
         ${knex.client.config.client === "sqlite3" ? "crowdsourcers.disavowed" : "cast(crowdsourcers.disavowed AS BOOLEAN) as disavowed"},
-        markets.needsDisavowal from crowdsourcers
-        JOIN markets ON markets.marketId = crowdsourcers."marketId"
+        markets."needsDisavowal" from crowdsourcers
+        JOIN markets ON markets."marketId" = crowdsourcers."marketId"
         JOIN universes ON markets.universe = universes.universe
         JOIN balances as accountBalances ON (accountBalances.token = crowdsourcers."crowdsourcerId")
         JOIN balances as contractBalances ON (contractBalances.owner = crowdsourcers."crowdsourcerId" AND contractBalances.token = universes."reputationToken")
         JOIN token_supply as participantSupply ON participantSupply.token = crowdsourcers."crowdsourcerId"
-        JOIN market_state ON markets.marketStateId = market_state."marketStateId"`);
+        JOIN market_state ON markets."marketStateId" = market_state."marketStateId"`);
   });
 };
 
