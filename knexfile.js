@@ -42,4 +42,14 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
+  pg: {
+    client: "pg",
+    connection: "postgres://jonnyburger:postgres@127.0.0.1:5432/postgres",
+    seeds: {
+      directory: "./build/seeds/test",
+    },
+    migrations: {
+      directory: "./build/migrations",
+    },
+  },
 };
