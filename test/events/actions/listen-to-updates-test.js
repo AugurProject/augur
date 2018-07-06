@@ -127,7 +127,7 @@ describe('events/actions/listen-to-updates', () => {
           },
         },
       },
-      assertions: actions => assert.deepEqual(actions, [{ type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] }, { type: 'UPDATE_UNCLAIMED_DATA', marketIds: ['MARKET_ADDRESS'] }]),
+      assertions: actions => assert.deepEqual(actions, [{ type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] }, { type: 'UPDATE_UNCLAIMED_DATA', marketIds: ['MARKET_ADDRESS'] }, { type: 'LOAD_REPORTING' }]),
     })
     test({
       description: 'it should handle calling initial report IS designated reporter',
