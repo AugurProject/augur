@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
-// import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 
@@ -20,6 +20,7 @@ export default class CreateMarketReview extends Component {
     meta: PropTypes.object,
     availableEth: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
+    updateStateValue: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -32,6 +33,7 @@ export default class CreateMarketReview extends Component {
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
+      insufficientFundsString: '',
       // initialLiquidity: {
       // gas: null,
       // },
@@ -57,6 +59,9 @@ export default class CreateMarketReview extends Component {
       meta,
       universe,
       newMarket,
+      availableEth,
+      availableRep,
+      updateStateValue,
     } = this.props
     this.props.estimateSubmitNewMarket(newMarket, (err, gasEstimateValue) => {
       if (err) console.error(err)
@@ -69,6 +74,21 @@ export default class CreateMarketReview extends Component {
           gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
+        }, () => {
+          const s = this.state
+
+          let insufficientFundsString = ''
+
+          if (s.validityBond) {
+            const validityBond = getValue(s, 'validityBond.formattedValue')
+            const gasCost = getValue(s, 'gasCost.formattedValue')
+            const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
+            insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
+          }
+
+          updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
+
+          this.setState({ insufficientFundsString })
         })
       })
     })
@@ -76,20 +96,10 @@ export default class CreateMarketReview extends Component {
 
   render() {
     const {
-      availableEth,
-      availableRep,
       newMarket,
     } = this.props
     const s = this.state
 
-    let insufficientFundsString = ''
-    if (s.validityBond) {
-      const validityBond = getValue(s, 'validityBond.formattedValue')
-      const gasCost = getValue(s, 'gasCost.formattedValue')
-      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
-
-      insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, availableEth, availableRep)
-    }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
@@ -120,15 +130,15 @@ export default class CreateMarketReview extends Component {
                   <span>{s.formattedInitialLiquidityEth.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Gas</span>
+                  <span>Est. Gas</span>
                   <span>{s.formattedInitialLiquidityGas.rounded} ETH</span>
                 </li>
               </ul>
             </div>
           </div>
-          {insufficientFundsString !== '' &&
+          {s.insufficientFundsString !== '' &&
           <span className={StylesForm['CreateMarketForm__error--insufficient-funds']}>
-            {InputErrorIcon}You have insufficient {insufficientFundsString} to create this market.
+            {InputErrorIcon}You have insufficient {s.insufficientFundsString} to create this market.
           </span>
           }
           <div className={Styles.CreateMarketReview__resolution}>

@@ -40,6 +40,7 @@ export default class CreateMarketForm extends Component {
       pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
       liquidityState: {},
       awaitingSignature: false,
+      insufficientFunds: false,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -49,6 +50,7 @@ export default class CreateMarketForm extends Component {
     this.isValid = this.isValid.bind(this)
     this.keyPressed = this.keyPressed.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.updateStateValue = this.updateStateValue.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -89,6 +91,10 @@ export default class CreateMarketForm extends Component {
 
   updateState(newState) {
     this.setState(newState)
+  }
+
+  updateStateValue(property, value) {
+    this.setState({ [property]: value })
   }
 
   validateField(fieldName, value, maxLength) {
@@ -259,6 +265,7 @@ export default class CreateMarketForm extends Component {
                 availableEth={availableEth}
                 availableRep={availableRep}
                 universe={universe}
+                updateStateValue={this.updateStateValue}
                 keyPressed={this.keyPressed}
               />
             }
@@ -282,7 +289,7 @@ export default class CreateMarketForm extends Component {
                 { newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
-                    disabled={isBugBounty || s.awaitingSignature}
+                    disabled={isBugBounty || s.insufficientFunds || s.awaitingSignature}
                     onClick={(e) => {
                       this.setState({ awaitingSignature: true }, () => {
                         submitNewMarket(newMarket, history, (err, market) => {
