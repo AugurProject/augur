@@ -8,33 +8,53 @@ exports.up = async (knex: Knex): Promise<any> => {
         markets.marketId,
         markets.feeWindow,
         'initial_report' as type,
-        ${knex.client.config.client === "sqlite3" ? "initialReporter" : "\"initialReporter\""} as participantAddress,
+        "initialReporter" as participantAddress,
         initial_reports.reporter,
-        initial_reports.${knex.client.config.client === "sqlite3" ? "blockNumber" : "\"blockNumber\""},
-        ${knex.client.config.client === "sqlite3" ? "amountStaked" : "\"amountStaked\""} as size,
-        ${knex.client.config.client === "sqlite3" ? "amountStaked" : "\"amountStaked\""} as participantSupply,
-        CASE WHEN redeemed = false THEN initial_reports.${knex.client.config.client === "sqlite3" ? "amountStaked" : "\"amountStaked\""} ELSE '0' END as reporterBalance,
+        initial_reports."blockNumber",
+        "amountStaked" as size,
+        "amountStaked" as participantSupply,
+        ${knex.client.config.client === "sqlite3" ?
+        `CASE WHEN redeemed = 0 THEN initial_reports.amountStaked ELSE 0 END as reporterBalance,` : 
+        `CASE WHEN redeemed = false THEN initial_reports."amountStaked" ELSE '0' END as reporterBalance,`}
         contractBalances.token as reputationToken,
         contractBalances.balance as reputationTokenBalance,
-        initial_reports.${knex.client.config.client === "sqlite3" ? "payoutId" : "\"payoutId\""},
+        initial_reports."payoutId",
         1 as completed,
-        ${knex.client.config.client === "sqlite3" ? "reportingState" : "\"reportingState\""},
+        "reportingState",
         markets.forking,
-        cast(disavowed AS BOOLEAN) as disavowed,
+        ${knex.client.config.client === 'sqlite3' ? 'disavowed' : 'cast(disavowed AS BOOLEAN) as disavowed'},
         markets.needsDisavowal
       FROM initial_reports
-        JOIN markets ON markets.marketId = initial_reports.${knex.client.config.client === "sqlite3" ? "marketId" : "\"marketId\""}
+        JOIN markets ON markets.marketId = initial_reports."marketId"
         JOIN universes ON markets.universe = universes.universe
-        JOIN balances as contractBalances ON (contractBalances.owner = initial_reports.${knex.client.config.client === "sqlite3" ? "initialReporter" : "\"initialReporter\""} AND contractBalances.token = universes.${knex.client.config.client === "sqlite3" ? "reputationToken" : "\"reputationToken\""})
-        JOIN market_state ON markets.marketStateId = market_state.${knex.client.config.client === "sqlite3" ? "marketStateId" : "\"marketStateId\""}
+        JOIN balances as contractBalances ON (contractBalances.owner = initial_reports."initialReporter" AND contractBalances.token = universes."reputationToken")
+        JOIN market_state ON markets.marketStateId = market_state."marketStateId"
       union
-      SELECT markets.universe, crowdsourcers.${knex.client.config.client === "sqlite3" ? "marketId" : "\"marketId\""}, markets.feeWindow, 'crowdsourcer' as type, crowdsourcers.${knex.client.config.client === "sqlite3" ? "crowdsourcerId" : "\"amountStaked\""} as participantAddress, accountBalances.owner as reporter, crowdsourcers.${knex.client.config.client === "sqlite3" ? "blockNumber" : "\"blockNumber\""}, crowdsourcers.size, participantSupply.supply as participantSupply, accountBalances.balance as reporterBalance, contractBalances.token as reputationToken, contractBalances.balance as reputationTokenBalance, crowdsourcers.${knex.client.config.client === "sqlite3" ? "payoutId" : "\"payoutId\""}, crowdsourcers.completed, ${knex.client.config.client === "sqlite3" ? "reportingState" : "\"reportingState\""}, markets.forking, crowdsourcers.disavowed, markets.needsDisavowal from crowdsourcers
-        JOIN markets ON markets.marketId = crowdsourcers.${knex.client.config.client === "sqlite3" ? "marketId" : "\"marketId\""}
+      SELECT
+        markets.universe,
+        crowdsourcers."marketId",
+        markets.feeWindow,
+        'crowdsourcer' as type,
+        crowdsourcers."crowdsourcerId" as participantAddress,
+        accountBalances.owner as reporter,
+        crowdsourcers."blockNumber",
+        crowdsourcers.size,
+        participantSupply.supply as participantSupply,
+        accountBalances.balance as reporterBalance,
+        contractBalances.token as reputationToken,
+        contractBalances.balance as reputationTokenBalance,
+        crowdsourcers."payoutId",
+        crowdsourcers.completed,
+        "reportingState",
+        markets.forking,
+        ${knex.client.config.client === 'sqlite3' ? 'crowdsourcers.disavowed' : 'cast(crowdsourcers.disavowed AS BOOLEAN) as disavowed'},
+        markets.needsDisavowal from crowdsourcers
+        JOIN markets ON markets.marketId = crowdsourcers."marketId"
         JOIN universes ON markets.universe = universes.universe
-        JOIN balances as accountBalances ON (accountBalances.token = crowdsourcers.${knex.client.config.client === "sqlite3" ? "crowdsourcerId" : "\"amountStaked\""})
-        JOIN balances as contractBalances ON (contractBalances.owner = crowdsourcers.${knex.client.config.client === "sqlite3" ? "crowdsourcerId" : "\"amountStaked\""} AND contractBalances.token = universes.${knex.client.config.client === "sqlite3" ? "reputationToken" : "\"reputationToken\""})
-        JOIN token_supply as participantSupply ON participantSupply.token = crowdsourcers.${knex.client.config.client === "sqlite3" ? "crowdsourcerId" : "\"crowdsourcerId\""}
-        JOIN market_state ON markets.marketStateId = market_state.${knex.client.config.client === "sqlite3" ? "marketStateId" : "\"marketStateId\""}`);
+        JOIN balances as accountBalances ON (accountBalances.token = crowdsourcers."crowdsourcerId")
+        JOIN balances as contractBalances ON (contractBalances.owner = crowdsourcers."crowdsourcerId" AND contractBalances.token = universes."reputationToken")
+        JOIN token_supply as participantSupply ON participantSupply.token = crowdsourcers."crowdsourcerId"
+        JOIN market_state ON markets.marketStateId = market_state."marketStateId"`);
   });
 };
 
