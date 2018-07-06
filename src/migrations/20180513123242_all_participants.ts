@@ -14,7 +14,7 @@ exports.up = async (knex: Knex): Promise<any> => {
         "amountStaked" as size,
         "amountStaked" as participantSupply,
         ${knex.client.config.client === "sqlite3" ?
-        `CASE WHEN redeemed = 0 THEN initial_reports.amountStaked ELSE 0 END as reporterBalance,` : 
+        `CASE WHEN redeemed = 0 THEN initial_reports.amountStaked ELSE 0 END as reporterBalance,` :
         `CASE WHEN redeemed = false THEN initial_reports."amountStaked" ELSE '0' END as reporterBalance,`}
         contractBalances.token as reputationToken,
         contractBalances.balance as reputationTokenBalance,
@@ -22,7 +22,7 @@ exports.up = async (knex: Knex): Promise<any> => {
         1 as completed,
         "reportingState",
         markets.forking,
-        ${knex.client.config.client === 'sqlite3' ? 'disavowed' : 'cast(disavowed AS BOOLEAN) as disavowed'},
+        ${knex.client.config.client === "sqlite3" ? "disavowed" : "cast(disavowed AS BOOLEAN) as disavowed"},
         markets.needsDisavowal
       FROM initial_reports
         JOIN markets ON markets.marketId = initial_reports."marketId"
@@ -47,7 +47,7 @@ exports.up = async (knex: Knex): Promise<any> => {
         crowdsourcers.completed,
         "reportingState",
         markets.forking,
-        ${knex.client.config.client === 'sqlite3' ? 'crowdsourcers.disavowed' : 'cast(crowdsourcers.disavowed AS BOOLEAN) as disavowed'},
+        ${knex.client.config.client === "sqlite3" ? "crowdsourcers.disavowed" : "cast(crowdsourcers.disavowed AS BOOLEAN) as disavowed"},
         markets.needsDisavowal from crowdsourcers
         JOIN markets ON markets.marketId = crowdsourcers."marketId"
         JOIN universes ON markets.universe = universes.universe
