@@ -76,7 +76,6 @@ export default class CreateMarketReview extends Component {
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
         }, () => {
           const s = this.state
-
           let insufficientFundsString = ''
 
           if (s.validityBond) {
@@ -84,11 +83,10 @@ export default class CreateMarketReview extends Component {
             const gasCost = getValue(s, 'gasCost.formattedValue')
             const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
             insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
+            updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
+
+            this.setState({ insufficientFundsString })
           }
-
-          updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
-
-          this.setState({ insufficientFundsString })
         })
       })
     })
@@ -97,8 +95,24 @@ export default class CreateMarketReview extends Component {
   render() {
     const {
       newMarket,
+      availableEth,
+      availableRep,
+      updateStateValue,
     } = this.props
     const s = this.state
+
+    if (s.validityBond) {
+      const validityBond = getValue(s, 'validityBond.formattedValue')
+      const gasCost = getValue(s, 'gasCost.formattedValue')
+      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
+      const insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
+
+      if (s.insufficientFundsString !== insufficientFundsString) {
+        updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
+        this.setState({ insufficientFundsString })
+      }
+    }
+
 
     return (
       <article className={StylesForm.CreateMarketForm__fields}>

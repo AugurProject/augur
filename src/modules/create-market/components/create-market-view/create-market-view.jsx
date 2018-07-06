@@ -31,7 +31,6 @@ const CreateMarketView = p => (
         isMobileSmall={p.isMobileSmall}
         history={p.history}
         universe={p.universe}
-        isBugBounty={p.isBugBounty}
         currentTimestamp={p.currentTimestamp}
         estimateSubmitNewMarket={p.estimateSubmitNewMarket}
       />

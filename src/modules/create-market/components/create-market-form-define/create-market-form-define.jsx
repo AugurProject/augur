@@ -16,7 +16,6 @@ export default class CreateMarketDefine extends Component {
 
   static propTypes = {
     categories: PropTypes.array.isRequired,
-    isBugBounty: PropTypes.bool.isRequired,
     isValid: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
@@ -112,7 +111,6 @@ export default class CreateMarketDefine extends Component {
 
   render() {
     const {
-      isBugBounty,
       newMarket,
       validateField,
       keyPressed,
@@ -128,11 +126,6 @@ export default class CreateMarketDefine extends Component {
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
-        {isBugBounty &&
-        <div className={Styles.CreateMarketDefine_bugBountyDisclaimer}>
-          Augur is currently in the bug bounty phase. Market creation is disabled, but this page is available for users to test out up until the final step.
-        </div>
-        }
         <li className={Styles.CreateMarketDefine__question}>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>

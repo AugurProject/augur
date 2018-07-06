@@ -22,7 +22,6 @@ export default class CreateMarketForm extends Component {
     categories: PropTypes.array.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
     history: PropTypes.object.isRequired,
-    isBugBounty: PropTypes.bool.isRequired,
     isMobileSmall: PropTypes.bool.isRequired,
     meta: PropTypes.object,
     newMarket: PropTypes.object.isRequired,
@@ -40,7 +39,7 @@ export default class CreateMarketForm extends Component {
       pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
       liquidityState: {},
       awaitingSignature: false,
-      insufficientFunds: false,
+      insufficientFunds: true,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -191,7 +190,6 @@ export default class CreateMarketForm extends Component {
       categories,
       currentTimestamp,
       history,
-      isBugBounty,
       isMobileSmall,
       meta,
       newMarket,
@@ -217,7 +215,6 @@ export default class CreateMarketForm extends Component {
                 validateField={this.validateField}
                 categories={categories}
                 isValid={this.isValid}
-                isBugBounty={isBugBounty}
                 keyPressed={this.keyPressed}
               />
             }
@@ -289,7 +286,7 @@ export default class CreateMarketForm extends Component {
                 { newMarket.currentStep === 4 &&
                   <button
                     className={Styles.CreateMarketForm__submit}
-                    disabled={isBugBounty || s.insufficientFunds || s.awaitingSignature}
+                    disabled={s.insufficientFunds || s.awaitingSignature}
                     onClick={(e) => {
                       this.setState({ awaitingSignature: true }, () => {
                         submitNewMarket(newMarket, history, (err, market) => {
