@@ -63,23 +63,15 @@ The Augur Rinkeby node configuration and a "Local" configuration are provided by
 
 The location of the log file is operating system specific.
 
-### On Mac
-
-~/Library/Logs/augur
-
-### On Linux
-
-    <to be added>
-
-### On Windows
-
-    <to be added>
+    on Linux: ~/.config/augur/log.log
+    on OS X: ~/Library/Logs/augur/log.log
+    on Windows: %USERPROFILE%\AppData\Roaming\augur\log.log
 
 ## Ledger support
 
 Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these instructions:
 
-### On Mac
+### On Mac and Linux
 
 The following commands need openssl, use brew or other package manager to install openssl.
 Then in a command line, run:
@@ -88,17 +80,18 @@ Then in a command line, run:
 
     openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 
-This will make two files, `localhost.key` and `localhost.crt`. Move these files to your Augur application data directory: `~/Library/Application Support/augur`
+This will make two files, `localhost.key` and `localhost.crt`. Move these files to your Augur application data directory: 
+  
+    on OS X: ~/Library/Application Support/augur
+    on Linux: /home/<User Name>/.augur
 
 Then start up your Augur application. When you open Augur in your web broswer, you will have to tell web browser to trust the site.
 
 ### On Windows
 
-    <to be added>
+    Download openssl for windows, in command shell, use the above commands to generate localhost.key and localhost.crt, put these files in the following directory:
 
-### On Linux
-
-    <to be added>
+    on Windows: %AppData%\augur
 
 ## Gotchas
 
