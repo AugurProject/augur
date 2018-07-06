@@ -24,7 +24,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       volume varchar(255) NOT NULL CONSTRAINT nonnegativeVolume CHECK (ltrim(volume, '-') = volume),
       "sharesOutstanding" varchar(255) NOT NULL CONSTRAINT nonnegativeSharesOutstanding CHECK (ltrim("sharesOutstanding", '-') = "sharesOutstanding"),
       "feeWindow" varchar(66),
-      "endTime" integer NOT NULL CONSTRAINT positiveEndTime CHECK ("endTime" > 0),
+      "endTime" ${knex.client.config.client === "sqlite3" ? "int" : "bigint"} NOT NULL CONSTRAINT positiveEndTime CHECK ("endTime" > 0),
       "finalizationBlockNumber" integer,
       "forking" boolean DEFAULT false,
       "needsMigration" boolean DEFAULT false,
