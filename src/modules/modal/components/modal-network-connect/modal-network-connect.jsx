@@ -163,7 +163,7 @@ export default class ModalNetworkConnect extends Component {
           value={s.augurNode}
           placeholder="Enter the augurNode address you would like to connect to."
           onChange={value => this.validateField('augurNode', value)}
-          isRequired
+          required
         />
         <div className={Styles.ModalNetworkConnect__formErrors}>
           {AugurNodeInValid && s.formErrors.augurNode.map((error, index) =>
@@ -195,7 +195,7 @@ export default class ModalNetworkConnect extends Component {
             value={s.ethereumNode}
             placeholder="Enter the Ethereum Node address you would like to connect to."
             onChange={value => this.validateField('ethereumNode', value)}
-            isRequired
+            required
           />
         }
         {!s.isWeb3Available &&
