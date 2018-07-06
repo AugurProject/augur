@@ -63,7 +63,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
     "crowdsourcers.marketId",
     "participant.crowdsourcerId",
     db.raw("'crowdsourcer' as participantType"),
-  ]).from("disputes as participant").where({reporter}));
+  ]).from("disputes as participant").where({reporter: Number(reporter)}));
   crowdsourcersQuery.join("crowdsourcers", "participant.crowdsourcerId", "crowdsourcers.crowdsourcerId");
   crowdsourcersQuery.join("markets", "markets.marketId", "crowdsourcers.marketId");
   crowdsourcersQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
