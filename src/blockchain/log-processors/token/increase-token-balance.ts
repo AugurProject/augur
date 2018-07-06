@@ -13,7 +13,7 @@ export function increaseTokenBalance(db: Knex, augur: Augur, token: Address, own
     if (oldBalance == null) {
       db.insert({ owner, token, balance: amount.toFixed() }).into("balances").asCallback(callback);
     } else {
-      const balance = oldBalance.balance.plus(amount);
+      const balance = new BigNumber(oldBalance.balance).plus(amount);
       db.update({ balance: balance.toFixed() }).into("balances").where({ token, owner }).asCallback(callback);
     }
   });
