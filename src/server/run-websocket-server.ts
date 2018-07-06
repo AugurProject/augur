@@ -1,23 +1,23 @@
-import Augur from "augur.js";
-import { EventEmitter } from "events";
 import * as express from "express";
-import * as fs from "fs";
-import * as http from "http";
-import * as https from "https";
-import * as Knex from "knex";
-import * as path from "path";
-import { clearInterval, setInterval } from "timers";
 import * as WebSocket from "ws";
-import { ControlMessageType } from "../constants";
+import * as Knex from "knex";
+import Augur from "augur.js";
+import { clearInterval, setInterval } from "timers";
 import { augurEmitter } from "../events";
-import { JsonRpcRequest, ServersData, WebSocketConfigs } from "../types";
-import { logger } from "../utils/logger";
+import { JsonRpcRequest, WebSocketConfigs, ServersData } from "../types";
 import { addressFormatReviver } from "./address-format-reviver";
-import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { isJsonRpcRequest } from "./is-json-rpc-request";
-import { JsonRpcErrorCode, makeJsonRpcError } from "./make-json-rpc-error";
+import { dispatchJsonRpcRequest } from "./dispatch-json-rpc-request";
 import { makeJsonRpcResponse } from "./make-json-rpc-response";
+import { makeJsonRpcError, JsonRpcErrorCode } from "./make-json-rpc-error";
 import { Subscriptions } from "./subscriptions";
+import * as fs from "fs";
+import * as https from "https";
+import * as http from "http";
+import * as path from "path";
+import { EventEmitter } from "events";
+import { ControlMessageType } from "../constants";
+import { logger } from "../utils/logger";
 
 function safeSend( websocket: WebSocket, payload: string) {
   if (websocket.readyState !== WebSocket.OPEN ) {
