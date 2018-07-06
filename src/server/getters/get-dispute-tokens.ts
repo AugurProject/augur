@@ -10,7 +10,7 @@ export function getDisputeTokens(db: Knex, universe: Address, account: Address, 
     query.join("crowdsourcers", "crowdsourcers.crowdsourcerId", "disputes.crowdsourcerId");
     query.join("payouts", "payouts.payoutId", "crowdsourcers.payoutId");
     query.join("balances", "crowdsourcers.crowdsourcerId", "balances.token");
-    query.where("universe", universe).where("disputes.reporter", account).where("balances.balance", ">", 0).where("balances.owner", account);
+    query.where("universe", universe).where("disputes.reporter", Number(account)).where("balances.balance", ">", 0).where("balances.owner", account);
     if ( disputeTokenState == null || disputeTokenState === DisputeTokenState.ALL ) {
       // currently, do nothing, leaving this in case we want to flavor how we group or present response
     } else if ( disputeTokenState === DisputeTokenState.UNFINALIZED ) {
