@@ -82,7 +82,6 @@ const testState = {
       details: 'some extra info',
       settlementFee: '0.000100000001193046',
       reportingFeeRate: 0.0001,
-      creationFee: 0.025,
       marketCreatorFeeRate: 0.00000000001193046,
     },
     testMarketId2: {
@@ -105,7 +104,6 @@ const testState = {
       numOutcomes: 2,
       settlementFee: '0.000100000001193046',
       reportingFeeRate: 0.0001,
-      creationFee: 0.025,
       marketCreatorFeeRate: 0.00000000001193046,
     },
   },

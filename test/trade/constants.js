@@ -15,7 +15,6 @@ export const tradeTestState = {
     testYesNoMarketId: {
       author: 'testAuthor1',
       universeId: '0x010101',
-      creationFee: '22.5',
       creationTime: 1475951522,
       numTicks: '10000',
       tickSize: '0.0001',
@@ -40,7 +39,6 @@ export const tradeTestState = {
     testCategoricalMarketId: {
       author: 'testAuthor2',
       universeId: '0x010101',
-      creationFee: '12.857142857142857142',
       creationTime: 1476694751,
       numTicks: '10000',
       tickSize: '0.0001',
@@ -67,7 +65,6 @@ export const tradeTestState = {
     testScalarMarketId: {
       author: 'testAuthor3',
       universeId: '0x010101',
-      creationFee: '9',
       creationTime: 1476486515,
       tickSize: '0.1',
       numTicks: '1200',

@@ -18,8 +18,6 @@ jest.setTimeout(200000);
 
 let flash: IFlash = new Flash();
 
-// NEED EXTREMELY FRESH DOCKER IMAGE
-
 describe("My Markets", () => {
   let scalarMarket: IMarket;
   let categoricalMarket: IMarket;
@@ -36,7 +34,7 @@ describe("My Markets", () => {
       width: 1200
     });
     await dismissDisclaimerModal(page);
-    marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Dow Jones Industrial Average close at a higher price on Fri Jun 08 2018 than it closed at the previous day?');
+    marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
     marketCosts = await page.evaluate(() => window.integrationHelpers.getMarketCreationCostBreakdown());
 
     // go to my markets page
@@ -50,8 +48,7 @@ describe("My Markets", () => {
   });
 
   it("should update market's volume correctly when trades occur", async () => {
-    //needs the Will Dow Jones market to not have any volume
-
+    //needs the market to not have any volume
     //check that market has 0 volume
     let market = await page.$("[id='id-" + marketId + "']");
     await expect(market).toMatchElement(".value_volume", { text: '0', timeout: SMALL_TIMEOUT });
@@ -66,14 +63,13 @@ describe("My Markets", () => {
 
   it("should show an empty view if the user hasn't created any markets", async () => {
     // needs secondary account to not have any previously created markets
-
     // use account with no markets created
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
     // go to my markets page
     await toMyMarkets();
     // verify that you are on that page
     await expect(page).toMatch('portfolio: my markets', { timeout: SMALL_TIMEOUT });
-    //need account to not have any created markets
+    // need account to not have any created markets
     await expect(page).toMatch('You haven\'t created any markets.', { timeout: SMALL_TIMEOUT });
   });
 
@@ -118,28 +114,10 @@ describe("My Markets", () => {
     const validityBond = await page.evaluate((value) => window.integrationHelpers.formatEth(value), marketCosts.validityBond);
     // check for validity bond
     await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "']", { text: validityBond, timeout: BIG_TIMEOUT });
-    // claim reporter gas bond
+    // claim validity bond
     await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + scalarMarket.id + "']", { timeout: SMALL_TIMEOUT });
     // check that outstanding returns go away;
     await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + scalarMarket.id + "']", { text: validityBond, timeout: BIG_TIMEOUT });
-  });
-
-  it("should verify that, when a market is reported on by the Designated Reporter, the reporter gas bond becomes available in 'Outstanding Returns', is claimable, and the Collected Returns balance updates properly.", async () => {
-    // create market with designated reporter
-    const assignedReporterMarket = await createYesNoMarket(UnlockedAccounts.CONTRACT_OWNER);
-    // make designated report
-    await flash.designateReport(assignedReporterMarket.id, "0");
-
-    await waitNextBlock(4);
-
-    const reporterGasBond = await page.evaluate((value) => window.integrationHelpers.formatEth(value), marketCosts.targetReporterGasCosts);
-
-    // check for reporter gas bond
-    await expect(page).toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "']", { text: reporterGasBond, timeout: BIG_TIMEOUT }); // need to find creationFee
-    // claim reporter gas bond
-    await expect(page).toClick("[data-testid='collectMarketCreatorFees-" + assignedReporterMarket.id + "']", { timeout: SMALL_TIMEOUT });
-    // check that outstanding returns go away
-    await expect(page).not.toMatchElement("[data-testid='unclaimedCreatorFees-" + assignedReporterMarket.id + "']", { text: reporterGasBond, timeout: BIG_TIMEOUT });
   });
 
   it("should have outstanding returns become available to the market creator when complete sets settle, and that the amount that becomes available is correct", async () => {

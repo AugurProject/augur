@@ -29,7 +29,6 @@ export default class CreateMarketReview extends Component {
 
     this.state = {
       gasPrice,
-      creationFee: null,
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
@@ -69,7 +68,6 @@ export default class CreateMarketReview extends Component {
           gasPrice,
           gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
-          creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
         })
       })
@@ -88,10 +86,9 @@ export default class CreateMarketReview extends Component {
     if (s.validityBond) {
       const validityBond = getValue(s, 'validityBond.formattedValue')
       const gasCost = getValue(s, 'gasCost.formattedValue')
-      const creationFee = getValue(s, 'creationFee.formattedValue')
       const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
 
-      insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, availableEth, availableRep)
+      insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, availableEth, availableRep)
     }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
@@ -112,10 +109,6 @@ export default class CreateMarketReview extends Component {
                 <li>
                   <span>Est. Gas</span>
                   <span>{s.gasCost && s.gasCost.rounded} ETH</span>
-                </li>
-                <li>
-                  <span>Reporter Gas Bond</span>
-                  <span>{s.creationFee && s.creationFee.rounded} ETH</span>
                 </li>
               </ul>
             </div>

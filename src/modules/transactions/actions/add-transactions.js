@@ -179,7 +179,6 @@ export function addMarketCreationTransactions(marketsCreated) {
       })
       transaction.meta = {
         market: transaction.marketId,
-        'creation fee': market.creationFee,
         'market type': market.marketType,
         category: market.category,
         'end time': convertUnixToFormattedDate(market.endTime).formattedLocal,

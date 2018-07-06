@@ -27,9 +27,9 @@ const ReportingReportConfirm = p => (
         </ul>
       </div>
     </div>
-    { p.isOpenReporting && p.designatedReportNoShowReputationBond && p.reporterGasCost &&
+    { p.isOpenReporting && p.designatedReportNoShowReputationBond &&
       <div className={ConfirmStyles.Confirm__note_text}>
-      If your report is accepted as the winning outcome, you will receive at least {p.designatedReportNoShowReputationBond.formatted} REP and {p.reporterGasCost.formatted} ETH
+      If your report is accepted as the winning outcome, you will receive at least {p.designatedReportNoShowReputationBond.formatted} REP
       </div>
     }
   </article>
@@ -43,7 +43,6 @@ ReportingReportConfirm.propTypes = {
   isMarketInValid: PropTypes.bool,
   isOpenReporting: PropTypes.bool.isRequired,
   designatedReportNoShowReputationBond: PropTypes.object,
-  reporterGasCost: PropTypes.object,
 }
 
 export default ReportingReportConfirm
