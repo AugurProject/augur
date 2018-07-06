@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "4.12.0-18",
+    "augur.js": "4.12.0-19",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
