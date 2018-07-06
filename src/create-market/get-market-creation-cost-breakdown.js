@@ -3,7 +3,6 @@
 /** Type definition for MarketCreationCostBreakdown.
  * @typedef {Object} MarketCreationCostBreakdown
  * @property {string} designatedReportNoShowReputationBond Amount of Reputation required to incentivize the designated reporter to show up and report, as a base-10 string.
- * @property {string} targetReporterGasCosts Amount of Ether required to pay for the gas to Report on this market, as a base-10 string.
  * @property {string} validityBond Amount of Ether to be held on-contract and repaid when the market is resolved with a non-Invalid outcome, as a base-10 string.
  */
 
@@ -25,12 +24,6 @@ function getMarketCreationCostBreakdown(p, callback) {
       api().Universe.getOrCacheDesignatedReportNoShowBond(universePayload, function (err, designatedReportNoShowBond) {
         if (err) return next(err);
         next(null, speedomatic.unfix(designatedReportNoShowBond, "string"));
-      });
-    },
-    targetReporterGasCosts: function (next) {
-      api().Universe.getOrCacheTargetReporterGasCosts(universePayload, function (err, targetReporterGasCosts) {
-        if (err) return next(err);
-        next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
       });
     },
     validityBond: function (next) {
