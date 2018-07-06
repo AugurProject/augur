@@ -48,7 +48,7 @@ export class AugurNodeController {
     this.logger.info("Bulk sync with blockchain complete.");
     processQueue.kill();
     this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
-    startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this.shutdownCallback);
+    startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this.shutdownCallback.bind(this));
     processQueue.resume();
   }
 
