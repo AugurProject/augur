@@ -4,7 +4,6 @@
   margin: 0 2rem;
   max-width: 30rem;
   position: relative;
-  display: flex;
 
   > * {
     width: 100%;
@@ -14,7 +13,7 @@
     .caps--extra-large();
 
     color: @color-white;
-    padding: 1rem;
+    margin-bottom: 2rem;
   }
 
   > p {
@@ -29,27 +28,26 @@
 }
 
 .ModalDisclaimer__TextBox {
-  margin: 0 0 1rem;
+  margin-bottom: 1rem;
   max-height: 25rem;
   overflow: auto;
-  padding: 0 1rem;
+  padding-right: 1rem;
 
   > p {
-    margin-top: 0;
     margin-bottom: 1rem;
+    margin-top: 0;
   }
 }
 
 .ModalDisclaimer__ActionButtons {
   display: flex;
-  justify-content: space-between;
   flex-flow: column;
-  padding: 1rem;
+  justify-content: space-between;
 
   > label {
-    align-items: flex-end;    
+    align-items: flex-end;
     display: flex;
-    margin: 0 0 2rem;
+    margin: 1rem 0 2rem;
 
     > input {
       height: 1rem;
@@ -73,6 +71,10 @@
     flex-wrap: wrap;
     position: fixed;
 
+    > label {
+      margin: 2rem;
+    }
+
     > button {
       border-radius: 0;
       width: 100%;
@@ -85,6 +87,12 @@
         background-color: @color-lightpurple;
         color: @color-white;
         order: 1;
+      }
+
+      &:disabled {
+        background-color: @color-lightgray;
+        color: @color-lightergray;
+        cursor: default;
       }
     }
   }

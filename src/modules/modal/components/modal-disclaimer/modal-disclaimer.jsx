@@ -28,7 +28,7 @@ export default class ModalDisclaimer extends Component {
   render() {
     const p = this.props
     const s = this.state
-   
+
     return (
       <section className={Styles.ModalDisclaimer}>
         <h1>Attention</h1>
