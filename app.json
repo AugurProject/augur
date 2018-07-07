@@ -4,9 +4,22 @@
   "repository": "https://github.com/JonnyBurger/augur-node",
   "keywords": ["augur", "ethereum"],
   "env": {
-    "ENDPOINT_HTTP": "https://rinkeby.ethereum.nodes.augur.net",
-    "ENDPOINT_WS": "wss://websocket-rinkeby.ethereum.nodes.augur.net",
-    "RINKEBY_PRIVATE_KEY": "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
-
-  }
+    "ENDPOINT_HTTP": {
+      "description": "The Ethereum node HTTP endpoint.",
+      "value": "https://rinkeby.ethereum.nodes.augur.net"
+    },
+    "ENDPOINT_WS": {
+      "description": "The Ethereum node WSS endpoint.",
+      "value": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
+    },
+    "NETWORK": {
+      "description": "The Ethereum network to connect to. Possible values: `ropsten`, `kovan`, `rinkeby`, `clique`, `aura`",
+      "value": "rinkeby"
+    },
+    "RINKEBY_PRIVATE_KEY": {
+      "description": "The private key for Ethereum. This is the public Augur test key. If you use a different network, change the name of the environment variable accordingly.",
+      "value": "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
+    }
+  },
+  "addons": ["heroku-postgresql:hobby-dev"]
 }
