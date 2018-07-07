@@ -21,6 +21,10 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({minWidth: 900, width: 900, minHeight: 870, height: 870, icon: path.join(__dirname, '../augur.ico')});
 
+  mainWindow.webContents.on('will-navigate', ev => {
+    ev.preventDefault()
+  })
+
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, '../renderer/index.html'),
@@ -102,4 +106,3 @@ app.on('activate', function () {
     createWindow();
   }
 });
-
