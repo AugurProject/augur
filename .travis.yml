@@ -30,7 +30,10 @@ matrix:
       - DEBUG=electron-builder
 
 before_install:
+  - which openssl
+  - openssl version
   - openssl aes-256-cbc -K $encrypted_77e0d3261394_key -iv $encrypted_77e0d3261394_iv -in certs/mac.crt.enc -out certs/mac.crt -d
+  - ls -l certs
 
 script:
  - |
