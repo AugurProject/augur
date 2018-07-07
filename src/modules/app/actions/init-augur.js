@@ -46,7 +46,7 @@ function pollForAccount(dispatch, getState) {
   })
 }
 
-export function loadAccount(dispatch, existing, env, callback) {
+function loadAccount(dispatch, existing, env, callback) {
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
     if (err) return callback(err)
     let account = existing

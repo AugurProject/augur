@@ -1,12 +1,9 @@
 import logError from 'utils/log-error'
-import { loadAccount } from 'src/modules/app/actions/init-augur'
-import { updateEnv } from 'src/modules/app/actions/update-env'
+import { initAugur } from 'src/modules/app/actions/init-augur'
 
-export const loginWithMetaMask = (callback = logError) => (dispatch, getState) => {
-  dispatch(updateEnv({
+export const loginWithMetaMask = (history, callback = logError) => (dispatch) => {
+  dispatch(initAugur(history, {
     useWeb3Transport: true,
-  }))
+  }, callback))
 
-  const { env } = getState()
-  loadAccount(dispatch, null, env, callback)
 }
