@@ -4,6 +4,7 @@
   margin: 0 2rem;
   max-width: 30rem;
   position: relative;
+  display: flex;
 
   > * {
     width: 100%;
@@ -13,6 +14,7 @@
     .caps--extra-large();
 
     color: @color-white;
+    padding: 1rem;
   }
 
   > p {
@@ -26,9 +28,35 @@
   }
 }
 
+.ModalDisclaimer__TextBox {
+  margin: 0 0 1rem;
+  max-height: 25rem;
+  overflow: auto;
+  padding: 0 1rem;
+
+  > p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+}
+
 .ModalDisclaimer__ActionButtons {
   display: flex;
   justify-content: space-between;
+  flex-flow: column;
+  padding: 1rem;
+
+  > label {
+    align-items: flex-end;    
+    display: flex;
+    margin: 0 0 2rem;
+
+    > input {
+      height: 1rem;
+      margin-left: 1rem;
+      width: 1rem;
+    }
+  }
 
   > button {
     .button--white();
