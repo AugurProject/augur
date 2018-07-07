@@ -42,6 +42,8 @@ export default class CreateMarketReview extends Component {
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
+    this.getFundsString = this.getFundsString.bind(this)
+    this.updateFunds = this.updateFunds.bind(this)
   }
 
   componentWillMount() {
@@ -54,14 +56,35 @@ export default class CreateMarketReview extends Component {
     if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(nextProps.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, this.state.gasPrice)) })
   }
 
+  getFundsString() {
+    const {
+      availableEth,
+      availableRep,
+    } = this.props
+    const s = this.state
+    let insufficientFundsString = ''
+
+    if (s.validityBond) {
+      const validityBond = getValue(s, 'validityBond.formattedValue')
+      const gasCost = getValue(s, 'gasCost.formattedValue')
+      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
+      insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
+    }
+
+    return insufficientFundsString
+  }
+
+  updateFunds(insufficientFundsString) {
+    const { updateStateValue } = this.props
+    updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
+    this.setState({ insufficientFundsString })
+  }
+
   calculateMarketCreationCosts() {
     const {
       meta,
       universe,
       newMarket,
-      availableEth,
-      availableRep,
-      updateStateValue,
     } = this.props
     this.props.estimateSubmitNewMarket(newMarket, (err, gasEstimateValue) => {
       if (err) console.error(err)
@@ -74,45 +97,21 @@ export default class CreateMarketReview extends Component {
           gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
-        }, () => {
-          const s = this.state
-          let insufficientFundsString = ''
-
-          if (s.validityBond) {
-            const validityBond = getValue(s, 'validityBond.formattedValue')
-            const gasCost = getValue(s, 'gasCost.formattedValue')
-            const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
-            insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
-            updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
-
-            this.setState({ insufficientFundsString })
-          }
-        })
+        }, this.updateFunds(this.getFundsString()))
       })
     })
   }
 
   render() {
-    const {
-      newMarket,
-      availableEth,
-      availableRep,
-      updateStateValue,
-    } = this.props
+    const { newMarket } = this.props
     const s = this.state
 
     if (s.validityBond) {
-      const validityBond = getValue(s, 'validityBond.formattedValue')
-      const gasCost = getValue(s, 'gasCost.formattedValue')
-      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
-      const insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
-
+      const insufficientFundsString = this.getFundsString()
       if (s.insufficientFundsString !== insufficientFundsString) {
-        updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
-        this.setState({ insufficientFundsString })
+        this.updateFunds(insufficientFundsString)
       }
     }
-
 
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
