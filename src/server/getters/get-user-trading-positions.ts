@@ -34,7 +34,7 @@ export function getUserTradingPositions(db: Knex, universe: Address|null, accoun
         } else if ( otherOutcomeNumShares === null) {
           numSharesAdjusted = positionsRow.numShares;
         } else {
-          numSharesAdjusted = positionsRow.numShares.minus(otherOutcomeNumShares);
+          numSharesAdjusted = new BigNumber(positionsRow.numShares, 10).minus(otherOutcomeNumShares);
         }
       }
       delete positionsRow.marketType;

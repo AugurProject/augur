@@ -21,7 +21,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("marketCreatorFees", "varchar(255) NOT NULL CONSTRAINT \"nonnegativeSettlementFees\" CHECK (ltrim(\"marketCreatorFees\", '-') = \"marketCreatorFees\")");
       table.specificType("price", "varchar(255)");
       table.specificType("amount", "varchar(255) CONSTRAINT \"nonnegativeAmount\" CHECK (ltrim(\"amount\", '-') = \"amount\")");
-      table.integer("tradeGroupId");
+      table.string("tradeGroupId", 66);
 
       table.unique(["transactionHash", "logIndex"]);
     });

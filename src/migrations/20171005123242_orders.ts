@@ -24,7 +24,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("originalAmount", `varchar(255) NOT NULL CONSTRAINT ${knex.client.config.client === "sqlite3" ? "nonnegativeAmount" : "nonnegativeOriginalAmount"} CHECK (ltrim(\"amount\", '-') = \"amount\")`);
       table.specificType("tokensEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (ltrim(\"tokensEscrowed\", '-') = \"tokensEscrowed\")");
       table.specificType("sharesEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (ltrim(\"sharesEscrowed\", '-') = \"sharesEscrowed\")");
-      table.string("tradeGroupId", 42);
+      table.string("tradeGroupId", 66);
     });
   });
 };

@@ -26,7 +26,7 @@ export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Addre
   }, (err: Error|null, onContractData: OrderFilledOnContractData): void => {
     if (err) return callback(err);
     if (onContractData.amount.fullPrecisionAmount == null) return callback(new Error(`Could not fetch order amount for order ${orderId}`));
-    const fullPrecisionAmountRemainingInOrder = onContractData.amount.fullPrecisionAmount.minus(amount);
+    const fullPrecisionAmountRemainingInOrder = new BigNumber(onContractData.amount.fullPrecisionAmount, 10).minus(amount);
     const amountRemainingInOrder = formatOrderAmount(fullPrecisionAmountRemainingInOrder);
     const updateAmountsParams = { fullPrecisionAmount: fullPrecisionAmountRemainingInOrder, amount: amountRemainingInOrder };
     const orderState = fullPrecisionAmountRemainingInOrder.eq(ZERO) ? OrderState.FILLED : OrderState.OPEN;
