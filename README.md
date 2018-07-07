@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.com/AugurProject/augur-node.svg)](https://travis-ci.com/AugurProject/augur-node)
 [![Coverage Status](https://coveralls.io/repos/AugurProject/augur-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/AugurProject/augur-node?branch=master)
 [![npm version](https://badge.fury.io/js/augur-node.svg)](http://badge.fury.io/js/augur-node)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 Augur Node is designed to be a standalone application, including a local
 database setup that supports sqlite as well as postgresql. We use knex to
