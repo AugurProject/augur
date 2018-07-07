@@ -7,7 +7,6 @@ PRODUCTION=${PRODUCTION:-false}
 GAS_PRICE_IN_NANOETH=${GAS_PRICE_IN_NANOETH:-20}
 
 NETWORKS_TO_DEPLOY=${NETWORKS_TO_DEPLOY:-"ROPSTEN RINKEBY KOVAN"}
-# NETWORKS_TO_DEPLOY="ROPSTEN RINKEBY KOVAN ETHEREUM"
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
@@ -121,7 +120,7 @@ function deployContracts()
 		fi
 		echo Deploying $NETWORK
 		export ${NETWORK}_PRIVATE_KEY
-		if [ $NETWORK == "FOUNDATION" ]; then
+		if [ $NETWORK == "ETHEREUM" ]; then
 			NPM_TARGET=upload:environment
 		else
 			NPM_TARGET=deploy:environment
