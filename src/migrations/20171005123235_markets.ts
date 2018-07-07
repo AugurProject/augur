@@ -4,9 +4,9 @@ exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("markets").then((): PromiseLike<any> => {
     return knex.schema.raw(`CREATE TABLE markets (
       "marketId" varchar(66) PRIMARY KEY NOT NULL,
-      "universe" varchar(66) NOT NULL,
-      "marketType" varchar(11) NOT NULL CONSTRAINT enumMarketTypes CHECK ("marketType" = 'yesNo' OR "marketType" = 'categorical' OR "marketType" = 'scalar'),
-      "numOutcomes" integer NOT NULL CONSTRAINT positiveNumOutcomes CHECK ("numOutcomes" > 0),
+      universe varchar(66) NOT NULL,
+      "marketType" varchar(11) NOT NULL CONSTRAINT "enumMarketTypes" CHECK ("marketType" = 'yesNo' OR "marketType" = 'categorical' OR "marketType" = 'scalar'),
+      "numOutcomes" integer NOT NULL CONSTRAINT "positiveNumOutcomes" CHECK ("numOutcomes" > 0),
       "minPrice" VARCHAR(255) NOT NULL,
       "maxPrice" VARCHAR(255) NOT NULL,
       "marketCreator" varchar(66) NOT NULL,

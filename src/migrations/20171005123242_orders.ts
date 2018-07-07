@@ -20,7 +20,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.specificType("amount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
       // Originally this constraint was called nonnegativeAmount,
       // but it is not allowed in Postgres to have two constraints with the same name.
-      // So the constraint is renamed but for SQLite3 is is the same to keep compatibility.
+      // So the constraint is renamed but for SQLite3 it is the same to keep compatibility.
       table.specificType("originalAmount", `varchar(255) NOT NULL CONSTRAINT ${knex.client.config.client === "sqlite3" ? "nonnegativeAmount" : "nonnegativeOriginalAmount"} CHECK (ltrim(\"amount\", '-') = \"amount\")`);
       table.specificType("tokensEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (ltrim(\"tokensEscrowed\", '-') = \"tokensEscrowed\")");
       table.specificType("sharesEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (ltrim(\"sharesEscrowed\", '-') = \"sharesEscrowed\")");
