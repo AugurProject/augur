@@ -1,7 +1,7 @@
 {
   "name": "Augur Node",
   "description": "A middleware node suitable for aggregating data for Augur from the Ethereum blockchain",
-  "repository": "https://github.com/JonnyBurger/augur-node",
+  "repository": "https://github.com/AugurProject/augur-node",
   "keywords": ["augur", "ethereum"],
   "env": {
     "ENDPOINT_HTTP": {
