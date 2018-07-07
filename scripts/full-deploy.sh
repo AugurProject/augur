@@ -1,6 +1,11 @@
 #!/bin/bash
 set -ex
 
+NPM_VERSION=${NPM_VERSION:-prerelease}
+NPM_TAG=${NPM_TAG:-dev}
+PRODUCTION=${PRODUCTION:-false}
+GAS_PRICE_IN_NANOETH=${GAS_PRICE_IN_NANOETH:-20}
+
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 TMP_DIR=$(mktemp -d)
@@ -11,8 +16,11 @@ cd $TMP_DIR
 
 function checkSolidityVersion()
 {
-	solc --version | grep "^Version: $1"
-	if [ $? -ne 0 ]; then
+	if [ -z "$1" ]; then
+		echo "Please specify version of solc to check"
+		exit 1
+	fi
+	if ! solc --version | grep "^Version: $1"; then
 		echo "Error: solc version $1 not found";
 		exit 1
 	fi
@@ -27,17 +35,19 @@ function deployAugurCore()
 	git add package*
 	git commit -m "Updated dependencies" || true
 	git checkout -b version-bump
-	npm version prerelease
+	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur-core/package.json)
-	git push origin v$VERSION
 	git push
-	npm publish
+	git push origin v$VERSION
+	npm publish --tag $NPM_TAG
 	)
 }
 
 function deployAugurJs()
 {
 	(
+	export PRODUCTION
+	export GAS_PRICE_IN_NANOETH
 	AUGUR_CORE_VERSION=$($GET_VERSION $TMP_DIR/augur-core/package.json)
 	rm -rf augur.js
 	git clone git@github.com:AugurProject/augur.js
@@ -51,11 +61,13 @@ function deployAugurJs()
 	git commit src/ -m 'geth-pop containers'
 	ETHEREUM_PRIVATE_KEY=$(cat ~/augur/keys/deploy_keys/rinkeby.prv ) npm run deploy:environment
 	git commit src/ -m 'rinkeby contracts'
+	npm version $NPM_VERSION
+	VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	git push
-	npm run release:dev
+	git push origin v$VERSION
+	npm publish --tag $NPM_TAG
 	)
 }
-
 
 function deployAugurUi()
 {
@@ -70,7 +82,11 @@ function deployAugurUi()
 	yarn
 	git commit package.json package-lock.json yarn.lock -m augur.js@$AUGUR_JS_VERSION
 	git push
-	// TODO: publish for augur-app?
+	npm version $NPM_VERSION
+	VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
+	git push
+	git push origin v$VERSION
+	npm publish --tag $NPM_TAG
 	)
 }
 
@@ -86,11 +102,13 @@ function deployAugurNode()
 	npm install --save-exact augur.js@$AUGUR_JS_VERSION
 	yarn
 	git commit package.json package-lock.json yarn.lock -m augur.js@$AUGUR_JS_VERSION
+	npm version $NPM_VERSION
+	VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
 	git push
-	// TODO: publish for augur-app?
+	git push origin v$VERSION
+	npm publish --tag $NPM_TAG
 	)
 }
-
 
 checkSolidityVersion 0.4.20
 deployAugurCore
