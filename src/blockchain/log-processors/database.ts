@@ -32,7 +32,7 @@ export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address,
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
   let query = db.insert(marketStateDataToInsert).into("market_state");
-  if (db.client.config.client === 'sqlite3') {
+  if (db.client.config.client !== 'sqlite3') {
     query = query.returning("marketStateId")
   }
   query.asCallback((err: Error|null, marketStateId?: Array<number>): void => {
@@ -120,7 +120,7 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
         { tentativeWinning: Number(tentativeWinning) },
       );
       let query = db.insert(payoutRowWithTentativeWinning).into("payouts");
-      if (db.client.config.client === 'sqlite3') {
+      if (db.client.config.client !== 'sqlite3') {
         query = query.returning("payoutId");
       }
       query.asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
