@@ -81,7 +81,6 @@ function deployAugurUi()
 	npm install --save-exact augur.js@$AUGUR_JS_VERSION
 	yarn
 	git commit package.json package-lock.json yarn.lock -m augur.js@$AUGUR_JS_VERSION
-	git push
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
 	git push
