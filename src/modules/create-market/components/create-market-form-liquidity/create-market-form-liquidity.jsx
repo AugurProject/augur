@@ -444,8 +444,8 @@ export default class CreateMarketLiquidity extends Component {
         </li>
         <li className={Styles.CreateMarketLiquidity__order}>
           <div className={Styles['CreateMarketLiquidity__order-form']}>
-            <ul className={Styles['CreateMarketLiquidity__order-form-header']}>
-              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID })}>
+            <ul className={classNames(Styles['CreateMarketLiquidity__order-form-header'], { [`${Styles.headerPositive}`]: s.selectedNav === BID })}>
+              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID, [`${Styles.activePositive}`]: s.selectedNav === BID })}>
                 <button
                   onClick={() => {
                     this.setState({ selectedNav: BID }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))

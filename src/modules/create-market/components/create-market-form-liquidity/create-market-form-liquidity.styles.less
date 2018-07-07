@@ -74,19 +74,27 @@ li.CreateMarketLiquidity__order-add {
 }
 
 .CreateMarketLiquidity__order-form-header {
-  border-bottom: 1px solid @color-lightgray;
+  border-bottom: 1px solid @color-negative;
   display: flex;
   padding: 0.625rem 1.875rem 0;
 
+  &.headerPositive {
+    border-bottom-color: @color-positive;
+  }
+
   > li {
-    border-bottom: 3px solid transparent;
+    border-bottom: 8px solid transparent;
     color: @color-lightgray;
     text-align: center;
     width: 50%;
 
     &.active {
-      border-bottom-color: @color-darkpurple;
+      border-bottom-color: @color-negative;
       color: @color-darkpurple;
+    }
+
+    &.activePositive {
+      border-bottom-color: @color-positive;
     }
 
     > button {
