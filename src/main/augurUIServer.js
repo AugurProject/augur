@@ -20,6 +20,7 @@ AugurUIServer.prototype.startServer = function () {
     const cert = path.join(this.appDataPath, 'localhost.crt')
 
     let options = null;
+    log.info("Looking for certificate files in " + this.appDataPath)
     if (fs.existsSync(key) && fs.existsSync(cert)) {
       log.info("Found localhost certificate and key");
       options = {

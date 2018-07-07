@@ -15,7 +15,8 @@ function Renderer() {
     this.isSynced = false;
     this.isSsl = false;
     this.config = {};
-    this.selectedNetwork = "";
+    this.selectedNetworkForm = "";
+    this.connectedServer = "";
     this.haveHitBack = false;
 
     ipcRenderer.send('requestConfig');
@@ -65,7 +66,7 @@ Renderer.prototype.backToNetworkConfig = function (event) {
 
 Renderer.prototype.onServerConnected = function (event) {
   this.clearNotice()
-  const data = this.getNetworkConfigFormData();
+  const data = this.connectedServer;
   this.renderOpenNetworkPage(data)
   // hide config form and show open network screen
   document.getElementById("network_config_screen").style.display = "none";
@@ -76,6 +77,7 @@ Renderer.prototype.onServerConnected = function (event) {
 Renderer.prototype.connectToServer = function (event) {
   this.showNotice("Connecting...", "success")
   const data = this.getNetworkConfigFormData();
+  this.connectedServer = data;
   ipcRenderer.send("start", data);
 }
 
@@ -110,7 +112,7 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 
 Renderer.prototype.openAugurUI = function () {
     const protocol = this.isSsl ? 'https' : 'http'
-    const networkConfig = this.config.networks[this.config.network];
+    const networkConfig = this.connectedServer.networkConfig;
     const queryString = `augur_node=${encodeURIComponent("ws://localhost:9001")}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`;
     shell.openExternal(`${protocol}://localhost:8080/#/categories?${queryString}`);
 }
@@ -149,19 +151,17 @@ Renderer.prototype.onSwitchNetworkResponse = function (event, data) {
 
 Renderer.prototype.switchNetworkConfigForm = function () {
   try {
-    const selectedNetwork = document.getElementById("network_id_select").value;
-    this.selectedNetwork = selectedNetwork;
-    const networkConfig = this.config.networks[selectedNetwork];
-    this.renderNetworkConfigForm(selectedNetwork, networkConfig);
+    this.selectedNetworkForm = document.getElementById("network_id_select").value;
+    const networkConfig = this.config.networks[this.selectedNetworkForm];
+    this.renderNetworkConfigForm(this.selectedNetworkForm, networkConfig);
     this.clearNotice()
   } catch(err) {
     log.error(err)
   }
 }
-
-Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkConfig) {
+Renderer.prototype.renderNetworkConfigForm = function (network, networkConfig) {
   try {
-    const networkName = this.config.networks[selectedNetwork].name;
+    const networkName = this.config.networks[network].name;
     log.info('network name ' + networkName)
     document.getElementById("network_name").value = networkName
     document.getElementById("network_http_endpoint").value = networkConfig.http;
@@ -175,7 +175,7 @@ Renderer.prototype.renderNetworkConfigForm = function (selectedNetwork, networkC
 Renderer.prototype.onReceiveConfig = function (event, data) {
   try {
     this.config = data;
-    this.selectedNetwork = this.config.network;
+    this.selectedNetworkForm = this.config.network;
     this.renderNetworkOptions();
     this.renderNetworkConfigForm(this.config.network, this.config.networks[this.config.network]);
   } catch (err) {
@@ -193,7 +193,7 @@ Renderer.prototype.renderNetworkOptions = function () {
         const networkOption = document.createElement("option");
         networkOption.value = networkConfigKey;
         networkOption.innerHTML = networkConfig.name;
-        networkOption.selected = this.selectedNetwork === networkConfigKey;
+        networkOption.selected = this.selectedNetworkForm === networkConfigKey;
         networkIdSelect.appendChild(networkOption);
     });
 }
