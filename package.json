@@ -60,7 +60,7 @@
     "@types/uuid": "3.4.3",
     "@types/ws": "3.0.2",
     "async": "2.6.0",
-    "augur.js": "4.12.0-19",
+    "augur.js": "4.12.0-20",
     "bignumber.js": "6.0.0",
     "chalk": "2.3.2",
     "express": "4.16.2",
