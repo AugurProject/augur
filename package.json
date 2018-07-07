@@ -8,7 +8,7 @@
     "debug": "electron-forge start  --inspect-electron .src/main/main.js",
     "package": "electron-forge package",
     "publish": "electron-forge publish",
-    "make": "electron-builder make --publish always -c.releaseInfo.releaseNotes=\"Automated build for commit: $(git rev-parse --verify HEAD)\"",
+    "make": "electron-builder make --publish always",
     "make-win": "electron-builder make --win",
     "make-mac": "electron-builder make --mac",
     "make-linux": "electron-builder make --linux",
