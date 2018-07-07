@@ -30,7 +30,7 @@ export function getForkMigrationTotals(db: Knex, augur: Augur, parentUniverse: A
       const universeTotals = formatBigNumberAsFixed<Partial<UIForkMigrationTotalsRow<BigNumber>>, Partial<UIForkMigrationTotalsRow<string>>>({
         universe: cur.universe,
         repTotal: cur.repTotal,
-        isInvalid: cur.isInvalid,
+        isInvalid: Boolean(cur.isInvalid),
       });
       acc[cur.universe] = Object.assign({ payout }, universeTotals) as UIForkMigrationTotalsRow<string>;
       return acc;
