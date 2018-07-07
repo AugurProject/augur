@@ -1,6 +1,6 @@
 {
   "name": "augur",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.21",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "make-win": "electron-builder make --win",
     "make-mac": "electron-builder make --mac",
     "make-linux": "electron-builder make --linux",
-    "make-all": "electron-builder make -mwl"
+    "make-all": "electron-builder make -mwl",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules"
   },
   "repository": "https://github.com/AugurProject/augur-app",
   "keywords": [
@@ -26,8 +27,10 @@
   "license": "MIT",
   "build": {
     "mac": {
+      "asar": "false",
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "icon": "build/icon.png"
     },
@@ -42,14 +45,10 @@
         "deb",
         "snap"
       ],
+      "category": "Office",
       "icon": "build/icon.png"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
-    "publish": {
-      "provider": "s3",
-      "bucket": "augur-app-releases",
-      "path": "${version}"
-    },
     "publish": {
       "provider": "github"
     }
@@ -64,7 +63,7 @@
             "linux"
           ],
           "config": {
-              "icon": "build/icon.png"
+            "icon": "build/icon.png"
           }
         }
       ]
@@ -72,24 +71,25 @@
   },
   "dependencies": {
     "app-data-folder": "1.0.0",
-    "augur-core": "1.0.0-16",
-    "augur-node": "0.2.16",
-    "augur-ui": "3.39.1",
-    "augur.js": "4.12.0-15",
+    "augur-core": "1.0.0-20",
+    "augur-node": "0.2.20",
+    "augur-ui": "3.39.5",
+    "augur.js": "4.12.0-19",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
     "express": "4.16.2",
     "knex": "0.14.6",
     "node-pre-gyp": "~0.6.38",
-    "opn": "5.3.0",
     "sqlite3": "^3.1.13"
   },
   "devDependencies": {
     "electron": "2.0.0",
-    "electron-builder": "^20.15.1",
-    "electron-builder-squirrel-windows": "^20.15.0",
+    "electron-builder": "^20.19.1",
+    "electron-builder-squirrel-windows": "^20.19.0",
     "electron-forge": "5.2.0",
     "electron-prebuilt-compile": "2.0.0",
-    "electron-publisher-s3": "^20.15.0"
+    "electron-publisher-s3": "^20.15.0",
+    "eslint": "^5.0.1",
+    "prettier": "^1.13.7"
   }
 }
