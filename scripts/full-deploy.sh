@@ -6,6 +6,9 @@ NPM_TAG=${NPM_TAG:-dev}
 PRODUCTION=${PRODUCTION:-false}
 GAS_PRICE_IN_NANOETH=${GAS_PRICE_IN_NANOETH:-20}
 
+NETWORKS_TO_DEPLOY=${NETWORKS_TO_DEPLOY:-"ROPSTEN RINKEBY KOVAN"}
+# NETWORKS_TO_DEPLOY="ROPSTEN RINKEBY KOVAN ETHEREUM"
+
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 TMP_DIR=$(mktemp -d)
@@ -43,7 +46,7 @@ function deployAugurCore()
 	)
 }
 
-function deployAugurJs()
+function deployAugurJsAndUploadContracts()
 {
 	(
 	export PRODUCTION
@@ -59,8 +62,7 @@ function deployAugurJs()
 	git commit -m augur-core@$AUGUR_CORE_VERSION
 	npm run docker:build-and-push
 	git commit src/ -m 'geth-pop containers'
-	ETHEREUM_PRIVATE_KEY=$(cat ~/augur/keys/deploy_keys/rinkeby.prv ) npm run deploy:environment
-	git commit src/ -m 'rinkeby contracts'
+	deployContracts
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	git push
@@ -109,8 +111,29 @@ function deployAugurNode()
 	)
 }
 
+# This happens within the subshell of the augur.js deploy
+function deployContracts()
+{
+	for NETWORK in $NETWORKS_TO_DEPLOY; do
+		if [ -z ${NETWORK}_PRIVATE_KEY ]; then
+			echo "Skipping $NETWORK"
+			continue
+		fi
+		echo Deploying $NETWORK
+		export ${NETWORK}_PRIVATE_KEY
+		if [ $NETWORK == "FOUNDATION" ]; then
+			NPM_TARGET=upload:environment
+		else
+			NPM_TARGET=deploy:environment
+		fi
+		ETHEREUM_HTTP=http://$NETWORK.augur.net/ethereum-http \
+			npm run $NPM_TARGET
+		git commit src/ -m '$NETWORK contracts'
+	done
+}
+
 checkSolidityVersion 0.4.20
 deployAugurCore
-deployAugurJs
+deployAugurJsAndUploadContracts
 deployAugurUi
 deployAugurNode
