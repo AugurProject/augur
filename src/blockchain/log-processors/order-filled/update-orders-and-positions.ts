@@ -1,5 +1,5 @@
 import { Augur } from "augur.js";
-import { parallel } from "async";
+import { parallel, series } from "async";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { ZERO } from "../../../constants";
@@ -19,7 +19,8 @@ function noop(db: Knex, augur: Augur, marketId: Address, account: Address, callb
 export function updateOrdersAndPositions(db: Knex, augur: Augur, marketId: Address, orderId: Bytes32, amount: BigNumber, creator: Address, filler: Address, tickSize: BigNumber, callback: ErrorCallback): void {
   // If the user is taking their own order we don't refresh twice
   const fillerRefresh = creator === filler ? noop : refreshPositionInMarket;
-  parallel({
+  const flow = db.client.config.client === "sqlite3" ? parallel : series;
+  flow({
     amount: (next: AsyncCallback) => db("orders").first("fullPrecisionAmount").where({orderId}).asCallback(next),
     creatorPositionInMarket: (next: AsyncCallback): void => refreshPositionInMarket(db, augur, marketId, creator, next),
     fillerPositionInMarket: (next: AsyncCallback): void => fillerRefresh(db, augur, marketId, filler, next),
