@@ -41,15 +41,6 @@ export class AugurNodeController {
   public async start(errorCallback: ErrorCallback | undefined) {
     this.running = true;
     this.errorCallback = errorCallback;
-    this.db = await createDbAndConnect(this.augur, this.networkConfig, this.databaseDir);
-    this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
-    this.serverResult = runServer(this.db, this.augur, this.controlEmitter);
-    const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
-    this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
-    this.logger.info("Bulk sync with blockchain complete.");
-    processQueue.kill();
-    startAugurListeners(this.db, this.augur, handoffBlockNumber + 1, this.shutdownCallback);
-    processQueue.resume();
     try {
       this.db = await createDbAndConnect(this.augur, this.networkConfig, this.databaseDir);
       this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
