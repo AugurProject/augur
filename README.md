@@ -89,9 +89,18 @@ Then start up your Augur application. When you open Augur in your web broswer, y
 
 ### On Windows
 
-    Download openssl for windows, in command shell, use the above commands to generate localhost.key and localhost.crt, put these files in the following directory:
+  Download openssl for windows, 
+  In a command shell goto the default install location is c:\OpenSSL-Win32\bin
+  type openssl to get in the openssl shell
+  To generate localhost.key and localhost.crt run these two commands:
 
-    on Windows: %AppData%\augur
+    req -nodes -newkey rsa:4096 -sha256 -keyout localhost.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
+
+    x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+
+  Put localhost.key and localhost.crt files in the following directory:
+
+  on Windows: %AppData%\augur
 
 ## Gotchas
 
