@@ -13,6 +13,7 @@
     .caps--extra-large();
 
     color: @color-white;
+    margin-bottom: 2rem;
   }
 
   > p {
@@ -26,9 +27,34 @@
   }
 }
 
+.ModalDisclaimer__TextBox {
+  margin-bottom: 1rem;
+  max-height: 25rem;
+  overflow: auto;
+  padding-right: 1rem;
+
+  > p {
+    margin-bottom: 1rem;
+    margin-top: 0;
+  }
+}
+
 .ModalDisclaimer__ActionButtons {
   display: flex;
+  flex-flow: column;
   justify-content: space-between;
+
+  > label {
+    align-items: flex-end;
+    display: flex;
+    margin: 1rem 0 2rem;
+
+    > input {
+      height: 1rem;
+      margin-left: 1rem;
+      width: 1rem;
+    }
+  }
 
   > button {
     .button--white();
@@ -45,6 +71,10 @@
     flex-wrap: wrap;
     position: fixed;
 
+    > label {
+      margin: 2rem;
+    }
+
     > button {
       border-radius: 0;
       width: 100%;
@@ -57,6 +87,12 @@
         background-color: @color-lightpurple;
         color: @color-white;
         order: 1;
+      }
+
+      &:disabled {
+        background-color: @color-lightgray;
+        color: @color-lightergray;
+        cursor: default;
       }
     }
   }
