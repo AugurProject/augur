@@ -70,12 +70,6 @@ button {
   color: #412468;
 }
 
-input[type=checkbox], input[type=radio]  {
-  vertical-align: middle;
-  position: relative;
-  bottom: 1px;
-}
-
 .outlineButton {
   border: 1px solid white;
   background-color: #231A3A !important;
