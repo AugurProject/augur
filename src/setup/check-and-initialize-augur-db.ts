@@ -54,7 +54,7 @@ export async function createDbAndConnect(augur: Augur, network: NetworkConfigura
       if (networkId == null) return reject(new Error("could not get networkId"));
       try {
         monitorEthereumNodeHealth(augur);
-        await checkAndUpdateContractUploadBlock(augur, networkId);
+        await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
         const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
         resolve(db);
       } catch (err) {
