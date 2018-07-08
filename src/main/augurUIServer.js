@@ -11,13 +11,13 @@ const KeyGen = require('selfsigned.js');
 function AugurUIServer() {
   this.app = express();
   this.window = null;
-  this.port = 8080;
   this.appDataPath = appData("augur");
   ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
 }
 
 AugurUIServer.prototype.startServer = function () {
   log.info("Starting Augur UI Server");
+  const port = 8080;
   try {
     const self = this;
     let options = null;
@@ -44,7 +44,7 @@ AugurUIServer.prototype.startServer = function () {
         log.error(e);
         if (e.code === 'EADDRINUSE') {
           self.window.webContents.send("error", {
-            error: `Port ${this.port} is in use. Please free up port and close and restart this app.`
+            error: `Port ${port} is in use. Please free up port and close and restart this app.`
           });
         } else {
           self.window.webContents.send("error", {
@@ -54,7 +54,7 @@ AugurUIServer.prototype.startServer = function () {
       });
       return server.listen.apply(server, arguments);
     }
-    this.server = this.app.listen(this.port);
+    this.server = this.app.listen(port);
   } catch (err) {
     log.error(err);
     this.window.webContents.send("error", {
