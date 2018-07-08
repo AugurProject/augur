@@ -53,6 +53,7 @@ export default class MarketPositionsList extends Component {
             { positions.length > 0 &&
               <ul className={Styles['MarketPositionsList__table-header']}>
                 <li>Position</li>
+                <li><span>Net Position</span></li>
                 <li><span>Quantity</span></li>
                 <li><span>Price</span></li>
                 <li><span>Unrealized <span />P/L</span></li>

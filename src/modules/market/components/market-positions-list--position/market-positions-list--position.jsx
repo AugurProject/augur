@@ -110,6 +110,7 @@ export default class MarketPositionsListPosition extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
+    const netPositionShares = getValue(position, 'netPosition.formatted')
     const positionShares = getValue(position, 'qtyShares.formatted')
     const isClosable = getValue(position, 'isClosable')
 
@@ -119,7 +120,7 @@ export default class MarketPositionsListPosition extends Component {
       message = 'Positions cannot be closed while orders are pending.'
     } else if (!message && s.showConfirm && isClosable && s.closeOutcomeName === position.name) {
       cancelOnly = false
-      message = `Close position by ${getValue(position, 'qtyShares.value') > 0 ? 'selling' : 'buying back'} ${positionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
+      message = `Close position by ${getValue(position, 'netPosition.value') > 0 ? 'selling' : 'buying back'} ${netPositionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
     }
 
     return (
@@ -132,6 +133,9 @@ export default class MarketPositionsListPosition extends Component {
       >
         <li>
           { outcomeName || getValue(position, 'purchasePrice.formatted')}
+        </li>
+        <li>
+          { netPositionShares }
         </li>
         <li>
           { positionShares }
@@ -152,7 +156,7 @@ export default class MarketPositionsListPosition extends Component {
           </li>
         }
         <li>
-          {positionShares !== '0' ?
+          {positionShares !== '0' || netPositionShares !== '0' ?
             <button onClick={this.toggleConfirm}>Close</button> :
             <span className={Styles.NotActive}>Close</span>
           }

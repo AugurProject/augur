@@ -44,6 +44,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false,
           }),
+          netPosition: formatShares(0),
           qtyShares: formatShares(0),
           purchasePrice: formatEther(0),
           realizedNet: formatEther(0),
@@ -54,6 +55,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 
         // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
         assert.deepEqual(actual.numPositions, expected.numPositions, `numPositions Didn't return the expected object`)
+        assert.deepEqual(actual.netPosition, expected.netPosition, `netPosition Didn't return the expected object`)
         assert.deepEqual(actual.qtyShares, expected.qtyShares, `qtyShares Didn't return the expected object`)
         assert.deepEqual(actual.purchasePrice, expected.purchasePrice, `purchasePrice Didn't return the expected object`)
         assert.deepEqual(actual.realizedNet, expected.realizedNet, `realizedNet Didn't return the expected object`)
@@ -71,8 +73,8 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const actual = generateOutcomePositionSummary([{
           averagePrice: 0.2,
           marketId: 'marketId',
-          numShares: 8,
-          numSharesAdjusted: 10,
+          numSharesAdjustedForUserIntention: 8,
+          numShares: 10,
           outcome: 3,
           realizedProfitLoss: 0.1,
           unrealizedProfitLoss: 0.5,
@@ -86,6 +88,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false,
           }),
+          netPosition: formatShares(8),
           qtyShares: formatShares(10),
           purchasePrice: formatEther(0.2),
           realizedNet: formatEther(0.1),
@@ -96,6 +99,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
 
         // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
         assert.deepEqual(actual.numPositions, expected.numPositions, `numPositions Didn't return the expected object`)
+        assert.deepEqual(actual.netPosition, expected.netPosition, `netPosition Didn't return the expected object`)
         assert.deepEqual(actual.qtyShares, expected.qtyShares, `qtyShares Didn't return the expected object`)
         assert.deepEqual(actual.purchasePrice, expected.purchasePrice, `purchasePrice Didn't return the expected object`)
         assert.deepEqual(actual.realizedNet, expected.realizedNet, `realizedNet Didn't return the expected object`)
@@ -139,6 +143,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 positiveSign: false,
                 zeroStyled: false,
               }),
+              netPosition: formatShares(0),
               qtyShares: formatShares(1),
               purchasePrice: formatEther(0.2),
               realizedNet: formatEther(0),
@@ -157,6 +162,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false,
           }),
+          netPosition: formatShares(0),
           qtyShares: formatShares(0),
           purchasePrice: formatEther(0),
           realizedNet: formatEther(0),
@@ -183,6 +189,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                 positiveSign: false,
                 zeroStyled: false,
               }),
+              netPosition: formatShares(0),
               qtyShares: formatShares(1),
               purchasePrice: formatEther(0.2),
               realizedNet: formatEther(0),
@@ -199,6 +206,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                     positiveSign: false,
                     zeroStyled: false,
                   }),
+                  netPosition: formatShares(0),
                   qtyShares: formatShares(1),
                   purchasePrice: formatEther(0.2),
                   realizedNet: formatEther(10),
@@ -219,6 +227,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false,
           }),
+          netPosition: formatShares(0),
           qtyShares: formatShares(1),
           purchasePrice: formatEther(0),
           realizedNet: formatEther(10),
@@ -234,6 +243,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
                   positiveSign: false,
                   zeroStyled: false,
                 }),
+                netPosition: formatShares(0),
                 qtyShares: formatShares(1),
                 purchasePrice: formatEther(0.2),
                 realizedNet: formatEther(10),
@@ -260,7 +270,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
     test({
       description: `should return the expected object`,
       assertions: () => {
-        const actual = generatePositionsSummary(10, 2, 0.2, 10, -1)
+        const actual = generatePositionsSummary(10, -2, 2, 0.2, 10, -1)
 
         const expected = {
           numPositions: formatNumber(10, {
@@ -270,6 +280,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false,
           }),
+          netPosition: formatShares(-2),
           qtyShares: formatShares(2),
           purchasePrice: formatEther(0.2),
           realizedNet: formatEther(10),

@@ -5,5 +5,4 @@ export const loginWithMetaMask = (history, callback = logError) => (dispatch) =>
   dispatch(initAugur(history, {
     useWeb3Transport: true,
   }, callback))
-
 }
