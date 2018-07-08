@@ -181,7 +181,7 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: start;
-  margin-top: 40px;
+  margin-top: 80px;
 }
 
 .header {

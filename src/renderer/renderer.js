@@ -45,8 +45,8 @@ function Renderer() {
 }
 
 Renderer.prototype.toggleSSL = function() {
-  const value = document.getElementById("generateCert").checked;
-  ipcRenderer.send("toggleSslAndRestart", value);
+  document.getElementById("generateCert").value = this.isSsl ? "removing support ..." : "adding support ...";
+  ipcRenderer.send("toggleSslAndRestart", !this.isSsl);
 }
 
 Renderer.prototype.checkConnectValidity = function(event) {
@@ -103,6 +103,7 @@ Renderer.prototype.renderOpenNetworkPage = function (data) {
 Renderer.prototype.onSsl = function (event, value) {
     log.info("SSL is enabled: " + value);
     this.isSsl = value
+    document.getElementById("generateCert").value = this.isSsl ? "disable ssl for ledger" : "enable ssl for ledger";
 }
 
 Renderer.prototype.onServerError = function (event, data) {

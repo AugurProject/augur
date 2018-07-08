@@ -6,13 +6,12 @@ const path = require('path');
 const fs = require("fs");
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder');
-const myca = require('myca')
+const KeyGen = require('selfsigned.js');
 
 function AugurUIServer() {
   this.app = express();
   this.window = null;
   this.port = 8080;
-  this.sslEnabled = false;
   this.appDataPath = appData("augur");
   ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
 }
@@ -23,20 +22,19 @@ AugurUIServer.prototype.startServer = function () {
     const self = this;
     let options = null;
 
-    if (this.sslEnabled) {
-      const key = path.join(this.appDataPath, 'localhost.key')
-      const cert = path.join(this.appDataPath, 'localhost.crt')
+    const key = path.join(this.appDataPath, 'localhost.key')
+    const cert = path.join(this.appDataPath, 'localhost.crt')
 
-      log.info("Looking for certificate files in " + this.appDataPath)
-      if (fs.existsSync(key) && fs.existsSync(cert)) {
-        log.info("Found localhost certificate and key");
-        options = {
-          key: fs.readFileSync(key, "utf8"),
-          cert: fs.readFileSync(cert, "utf8")
-        };
-        ipcRenderer.send("ssl", this.sslEnabled);
-      }
+    log.info("Looking for certificate files in " + this.appDataPath)
+    if (fs.existsSync(key) && fs.existsSync(cert)) {
+      log.info("Found localhost certificate and key");
+      options = {
+        key: fs.readFileSync(key, "utf8"),
+        cert: fs.readFileSync(cert, "utf8")
+      };
     }
+
+    self.window.webContents.send("ssl", options !== null);
 
     const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build');
     this.app.use(express.static(serverBuildPath));
@@ -82,49 +80,47 @@ AugurUIServer.prototype.restart = function () {
 }
 
 AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
-  this.sslEnabled = enabled;
 
   const certPath = path.join(this.appDataPath, 'localhost.crt');
   const keyPath = path.join(this.appDataPath, 'localhost.key');
 
-  if (!this.sslEnabled) {
+  if (!enabled) {
+    fs.unlinkSync(certPath);
+    fs.unlinkSync(keyPath);
     return this.restart();
   }
 
-  if (this.sslEnabled && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-    return this.restart();
-  }
-  myca.initDefaultCenter().catch(console.error)
-  log.info("Generating local signed certificates")
-  myca.genCert({
-    caKeyPass: 'mycapass',
-    kind: 'server',   // server cert
-    days: 730,
-    pass: 'p$ssw$rd123',   // at least 4 letters
-    CN: 'localhost',    // Common Name
-    OU: 'crypto',   // Organizational Unit Name
-    O: 'self',   // Organization Name
-    L: 'local',    // Locality Name (eg, city)
-    ST: 'IL',   // State or Province Name
-    C: 'CN',   // Country Name (2 letter code)
-    emailAddress: '',
-  })
-  .then((ret) => {
-    console.log(ret.cert)
-    console.log(ret.crtFile)
-    console.log(ret.privateUnsecureKey)
+  const kg = new KeyGen();
+  log.info("start generating self signed certifiate files");
+  kg.getPrime(1024, (err, p) => {
+    if (err) {
+      log.error(err)
+      this.window.webContents.send('error', { error: err })
+      return;
+    }
+    log.info("finalize key and cert files");
+    kg.getPrime(1024, (err, q) => {
+      if (err) {
+        log.error(err)
+        this.window.webContents.send('error', { error: err })
+        return;
+      }
 
-    fs.writeFileSync(certPath, ret.cert)
-    fs.writeFileSync(keyPath, ret.privateUnsecureKey)
+      const keyData = kg.getKeyData(p, q);
+      const key = kg.getPrivate(keyData, 'pem');
+      fs.writeFileSync(keyPath, key)
 
-  }).then(() => {
-    return this.restart();
-  })
-  .catch((err) => {
-    log.error(err)
-    this.window.webContents.send('error', {
-      error: err
-    })
+      const certData = kg.getCertData({
+        commonName: 'localhost',
+        keyData
+      });
+
+      const cert = kg.getCert(certData, 'pem');
+      fs.writeFileSync(certPath, cert)
+
+      log.info("self signed certificate files generated")
+      return this.restart();
+    });
   });
 }
 
