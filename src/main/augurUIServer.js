@@ -4,22 +4,27 @@ const https = require('https');
 const http = require('http');
 const path = require('path');
 const fs = require("fs");
+const { ipcMain } = require('electron')
 const appData = require('app-data-folder');
+const KeyGen = require('selfsigned.js');
 
 function AugurUIServer() {
   this.app = express();
   this.window = null;
+  this.appDataPath = appData("augur");
+  ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
 }
 
 AugurUIServer.prototype.startServer = function () {
   log.info("Starting Augur UI Server");
+  const port = 8080;
   try {
     const self = this;
-    this.appDataPath = appData("augur");
+    let options = null;
+
     const key = path.join(this.appDataPath, 'localhost.key')
     const cert = path.join(this.appDataPath, 'localhost.crt')
 
-    let options = null;
     log.info("Looking for certificate files in " + this.appDataPath)
     if (fs.existsSync(key) && fs.existsSync(cert)) {
       log.info("Found localhost certificate and key");
@@ -27,9 +32,9 @@ AugurUIServer.prototype.startServer = function () {
         key: fs.readFileSync(key, "utf8"),
         cert: fs.readFileSync(cert, "utf8")
       };
-      // inform renderer that ssl is enabled
-      self.window.webContents.send("ssl", true);
     }
+
+    self.window.webContents.send("ssl", options !== null);
 
     const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build');
     this.app.use(express.static(serverBuildPath));
@@ -39,7 +44,7 @@ AugurUIServer.prototype.startServer = function () {
         log.error(e);
         if (e.code === 'EADDRINUSE') {
           self.window.webContents.send("error", {
-            error: "Port 8080 is in use. Please free up port and close and restart this app."
+            error: `Port ${port} is in use. Please free up port and close and restart this app.`
           });
         } else {
           self.window.webContents.send("error", {
@@ -49,7 +54,7 @@ AugurUIServer.prototype.startServer = function () {
       });
       return server.listen.apply(server, arguments);
     }
-    this.server = this.app.listen(8080);
+    this.server = this.app.listen(port);
   } catch (err) {
     log.error(err);
     this.window.webContents.send("error", {
@@ -67,6 +72,56 @@ AugurUIServer.prototype.setWindow = function (window) {
 AugurUIServer.prototype.stopServer = function () {
   log.info("Stopping Augur UI Server");
   this.server.close();
+}
+
+AugurUIServer.prototype.restart = function () {
+  this.server.close();
+  this.startServer();
+}
+
+AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
+
+  const certPath = path.join(this.appDataPath, 'localhost.crt');
+  const keyPath = path.join(this.appDataPath, 'localhost.key');
+
+  if (!enabled) {
+    fs.unlinkSync(certPath);
+    fs.unlinkSync(keyPath);
+    return this.restart();
+  }
+
+  const kg = new KeyGen();
+  log.info("start generating self signed certifiate files");
+  kg.getPrime(1024, (err, p) => {
+    if (err) {
+      log.error(err)
+      this.window.webContents.send('error', { error: err })
+      return;
+    }
+    log.info("finalize key and cert files");
+    kg.getPrime(1024, (err, q) => {
+      if (err) {
+        log.error(err)
+        this.window.webContents.send('error', { error: err })
+        return;
+      }
+
+      const keyData = kg.getKeyData(p, q);
+      const key = kg.getPrivate(keyData, 'pem');
+      fs.writeFileSync(keyPath, key)
+
+      const certData = kg.getCertData({
+        commonName: 'localhost',
+        keyData
+      });
+
+      const cert = kg.getCert(certData, 'pem');
+      fs.writeFileSync(certPath, cert)
+
+      log.info("self signed certificate files generated")
+      return this.restart();
+    });
+  });
 }
 
 module.exports = AugurUIServer;

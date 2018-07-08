@@ -82,6 +82,7 @@
     "express": "4.16.2",
     "knex": "0.14.6",
     "node-pre-gyp": "~0.6.38",
+    "selfsigned.js": "^3.0.2",
     "sqlite3": "^3.1.13"
   },
   "devDependencies": {
