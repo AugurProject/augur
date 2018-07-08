@@ -179,7 +179,7 @@ input {
 
 .ledgerSupport {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: start;
   margin-top: 80px;
 }
@@ -332,6 +332,17 @@ input {
 
 .cancelButton:hover {
   filter: brightness(90%);
+}
+
+.ledgerSupportText { 
+  margin-top:  16px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  display: flex;
+  letter-spacing: 0.3px;
+  line-height: 1.125rem;
+  text-transform: none;
+  cursor: pointer;
 }
 
 @-webkit-keyframes fadeinout {
