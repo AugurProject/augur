@@ -114,12 +114,13 @@ function deployAugurNode()
 function deployContracts()
 {
 	for NETWORK in $NETWORKS_TO_DEPLOY; do
-		if [ -z ${NETWORK}_PRIVATE_KEY ]; then
+		PRIVATE_KEY_ENV_NAME=${NETWORK}_PRIVATE_KEY
+		if [ -z "${!PRIVATE_KEY_ENV_NAME}" ]; then
 			echo "Skipping $NETWORK"
 			continue
 		fi
 		echo Deploying $NETWORK
-		export ${NETWORK}_PRIVATE_KEY
+		export $PRIVATE_KEY_ENV_NAME
 		if [ $NETWORK == "ETHEREUM" ]; then
 			NPM_TARGET=upload:environment
 		else
