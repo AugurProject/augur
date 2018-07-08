@@ -33,7 +33,7 @@ function createWindow () {
   }));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
   setTimeout(function() {

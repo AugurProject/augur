@@ -28,6 +28,7 @@ function Renderer() {
     document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.connectToServer.bind(this));
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
     document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
+    document.getElementById("generateCert").addEventListener("click", this.toggleSSL.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
 
@@ -41,6 +42,11 @@ function Renderer() {
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.toggleSSL = function() {
+  const value = document.getElementById("generateCert").checked;
+  ipcRenderer.send("toggleSslAndRestart", value);
 }
 
 Renderer.prototype.checkConnectValidity = function(event) {
