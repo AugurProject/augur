@@ -7,7 +7,12 @@ interface BalanceResult {
   balance: BigNumber;
 }
 
+function isLegacyReputationToken(augur: Augur, token: Address) {
+  return token === augur.contracts.addresses[augur.rpc.getNetworkID()].LegacyReputationToken;
+}
+
 export function decreaseTokenBalance(db: Knex, augur: Augur, token: Address, owner: Address, amount: BigNumber, callback: ErrorCallback): void {
+  if (isLegacyReputationToken(augur, token)) return callback(null);
   db.first("balance").from("balances").where({ token, owner }).asCallback((err: Error|null, oldBalance?: BalanceResult): void => {
     if (err) return callback(err);
     if (amount.isZero()) return callback(null);
