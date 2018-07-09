@@ -70,10 +70,10 @@ describe("Account", () => {
       const accountData = await page.evaluate(() => window.integrationHelpers.getAccountData());
       const initialRep = await accountData.rep;
 
-      // click 'Get REP' button 
+      // click 'Get REP' button
       await expect(page).toClick("button.account-rep-faucet-styles_AccountRepFaucet__button", {timeout: TIMEOUT})
 
-      // verify you receieved a confirmed notification 
+      // verify you receieved a confirmed notification
       await expect(page).toClick("button.top-bar-styles_TopBar__notification-icon")
       await expect(page).toMatch("faucet - confirmed", {timeout: TIMEOUT})
 
@@ -89,7 +89,7 @@ describe("Account", () => {
       // send eth from a second account to first account and check that the amount is right
       // navigate to withdraw page
       await page.goto(url + '#/withdraw-funds');
-      
+
       // withdraw eth
       await expect(page).toFill("input#quantity", "100", {timeout: TIMEOUT});
       await expect(page).toFill("input#address", UnlockedAccounts.CONTRACT_OWNER);
@@ -135,12 +135,9 @@ describe("Account", () => {
       // logout
       await page.evaluate(() => window.integrationHelpers.logout());
 
-      // go to account page
-      await expect(page).toClick("span", { text: "Account", timeout: TIMEOUT })
+      await expect(page).toMatch("CONNECT AN ACCOUNT", { timeout: TIMEOUT })
 
-      await expect(page).toMatch("Link an ethereum account", { timeout: TIMEOUT }) 
-
-      // expect to be on authentication page 
+      // expect to be on authentication page
       const pageUrl = await page.url();
       await expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/authentication`)
     });
