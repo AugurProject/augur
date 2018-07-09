@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import Styles from 'modules/modal/components/modal-disclaimer/modal-disclaimer.styles'
 
-const EST_HEIGHT_PERCENT = .98
+const EST_HEIGHT_PERCENT = 0.98
 
 export default class ModalDisclaimer extends Component {
   constructor(props) {
