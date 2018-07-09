@@ -96,6 +96,7 @@
     "mocha": "5.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.7.11",
+    "readline-sync": "1.4.9",
     "shared-git-hooks": "1.2.1",
     "sinon": "2.0.0",
     "uglify-js": "2.6.1"

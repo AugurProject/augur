@@ -4,6 +4,7 @@ var fs = require("fs");
 var chalk = require("chalk");
 var keythereum = require("keythereum");
 var speedomatic = require("speedomatic");
+var readlineSync = require("readline-sync");
 var debugOptions = require("../../debug-options");
 
 function getPrivateKeyFromString(privateKey) {
@@ -23,11 +24,10 @@ function getPrivateKeyFromKeystoreFile(keystoreFilePath, callback) {
     var keystore = JSON.parse(keystoreJson);
     var address = speedomatic.formatEthereumAddress(keystore.address);
     if (debugOptions.cannedMarkets) console.log(chalk.green.dim("sender:"), chalk.green(address));
-    keythereum.recover(process.env.ETHEREUM_PASSWORD, keystore, function (privateKey) {
+    keythereum.recover(process.env.ETHEREUM_PASSWORD || readlineSync.question("Password: ", { hideEchoBack: true }), keystore, function (privateKey) {
       if (privateKey == null || privateKey.error) {
         return callback(new Error("private key decryption failed"));
       }
-      console.log("private key:", privateKey.toString("hex"));
       callback(null, { accountType: "privateKey", signer: privateKey, address: address });
     });
   });
