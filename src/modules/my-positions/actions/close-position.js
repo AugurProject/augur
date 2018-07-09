@@ -22,9 +22,7 @@ export function closePosition(marketId, outcomeId, callback = logError) {
       const { orderBooks, loginAccount } = getState()
       const market = selectMarket(marketId)
       const positionOutcome = market ? (market.outcomes || []).find(outcome => parseInt(outcome.id, 10) === parseInt(outcomeId, 10)) : null
-      const qtyShares = createBigNumber(getValue(positionOutcome, 'position.qtyShares.fullPrecision') || '0')
-      const netShares = createBigNumber(getValue(positionOutcome, 'position.netPosition.fullPrecision') || '0')
-      const positionShares = (!qtyShares.eq(0) && qtyShares.gte(netShares)) ? qtyShares : netShares
+      const positionShares = createBigNumber(getValue(positionOutcome, 'position.netPosition.fullPrecision') || '0')
       const userAddress = loginAccount.address
       const bestFill = getBestFill((orderBooks[marketId] || {})[outcomeId] || {}, positionShares.gt(ZERO) ? BUY : SELL, positionShares.absoluteValue(), marketId, outcomeId, userAddress)
       if (bestFill.amountOfShares.isEqualTo(ZERO)) {

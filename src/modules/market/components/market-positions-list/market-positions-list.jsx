@@ -18,6 +18,9 @@ export default class MarketPositionsList extends Component {
     openOrders: PropTypes.array,
     positions: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
+    numCompleteSets: PropTypes.object,
+    sellCompleteSets: PropTypes.func.isRequired,
+    marketId: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -33,6 +36,9 @@ export default class MarketPositionsList extends Component {
       openOrders,
       positions,
       closePositionStatus,
+      numCompleteSets,
+      sellCompleteSets,
+      marketId,
     } = this.props
     const s = this.state
 
@@ -103,6 +109,12 @@ export default class MarketPositionsList extends Component {
           </div>
           { positions.length === 0 && openOrders.length === 0 &&
             <NullStateMessage className={Styles['MarketPositionsList__null-state']} message="No positions or open orders" />
+          }
+          { numCompleteSets && numCompleteSets.value > 0 &&
+            <div className={Styles.MarketPositionsList__completeSets}>
+              <span>{`You currently have ${numCompleteSets.full} of all outcomes.`}</span>
+              <button onClick={e => sellCompleteSets(marketId, numCompleteSets)}>Sell Complete Sets</button>
+            </div>
           }
         </div>
       </section>
