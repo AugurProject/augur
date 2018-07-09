@@ -2,13 +2,10 @@ import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, ErrorCallback } from "../../../types";
+import { isLegacyReputationToken } from "./is-legacy-reputation-token";
 
 interface BalanceResult {
   balance: BigNumber;
-}
-
-function isLegacyReputationToken(augur: Augur, token: Address) {
-  return token === augur.contracts.addresses[augur.rpc.getNetworkID()].LegacyReputationToken;
 }
 
 export function decreaseTokenBalance(db: Knex, augur: Augur, token: Address, owner: Address, amount: BigNumber, callback: ErrorCallback): void {
