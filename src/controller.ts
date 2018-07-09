@@ -42,7 +42,7 @@ export class AugurNodeController {
     this.running = true;
     this.errorCallback = errorCallback;
     try {
-      this.db = await createDbAndConnect(this.augur, this.networkConfig, this.databaseDir);
+      this.db = await createDbAndConnect(this.augur, this.networkConfig, errorCallback, this.databaseDir);
       this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
       const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
