@@ -8,7 +8,7 @@ const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 
 const defaultConfig = {
-  'network': 'rinkeby',
+  'network': 'mainnet',
   'networks': {
     'rinkeby': {
       'http': 'https://rinkeby.augur.net/ethereum-http',
