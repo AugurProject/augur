@@ -75,7 +75,7 @@
     "app-data-folder": "1.0.0",
     "augur-core": "1.0.0-20",
     "augur-node": "5.0.0-2",
-    "augur-ui": "5.0.0-3",
+    "augur-ui": "5.0.0-4",
     "augur.js": "5.0.0-6",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
