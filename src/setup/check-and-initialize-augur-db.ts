@@ -47,14 +47,14 @@ function createKnex(networkId: string, databaseDir?: string): Knex {
   }
 }
 
-export async function createDbAndConnect(augur: Augur, network: NetworkConfiguration, errorCallback: ErrorCallback | undefined, databaseDir?: string): Promise<Knex> {
+export async function createDbAndConnect(errorCallback: ErrorCallback | undefined, augur: Augur, network: NetworkConfiguration, databaseDir?: string): Promise<Knex> {
   return new Promise<Knex>((resolve, reject) => {
     augur.connect({ ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false }, async (err) => {
       if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
       const networkId: string = augur.rpc.getNetworkID();
       if (networkId == null) return reject(new Error("could not get networkId"));
       try {
-        monitorEthereumNodeHealth(augur, errorCallback);
+        monitorEthereumNodeHealth(errorCallback, augur);
         await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
         const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
         resolve(db);

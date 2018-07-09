@@ -3,7 +3,7 @@ import { ErrorCallback } from "../types";
 
 let monitorEthereumNodeHealthId: NodeJS.Timer;
 
-export function monitorEthereumNodeHealth(augur: Augur, errorCallback: ErrorCallback | undefined) {
+export function monitorEthereumNodeHealth(errorCallback: ErrorCallback | undefined, augur: Augur) {
   const networkId: string = augur.rpc.getNetworkID();
   const universe: string = augur.contracts.addresses[networkId].Universe;
   const controller: string = augur.contracts.addresses[networkId].Controller;
