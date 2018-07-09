@@ -40,6 +40,7 @@ module.exports.removeEventCallback = function (id) {
 };
 
 module.exports.setTransport = function (transport) {
+  if (state.transport) state.transport.close();
   state.transport = transport;
 };
 
