@@ -53,7 +53,18 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         value: "9000",
         blockNumber: 1400101,
       },
-      augur: {},
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              LegacyReputationToken: "OTHER_ADDRESS",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {
@@ -72,7 +83,8 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         assert.ifError(err);
         assert.deepEqual(records, []);
       },
-      onUpdatedPositions: (err, records) => {},
+      onUpdatedPositions: (err, records) => {
+      },
       onInitialBalances: (err, balances) => {
         assert.ifError(err);
         assert.deepEqual(balances, [{
@@ -100,6 +112,60 @@ describe("blockchain/log-processors/tokens-transferred", () => {
     },
   });
   test({
+    description: "TokensTransferred log and removal, LegacyReputationToken",
+    params: {
+      log: {
+        transactionHash: "TRANSACTION_HASH",
+        logIndex: 0,
+        from: "FROM_ADDRESS",
+        to: "TO_ADDRESS",
+        token: "LEGACY_REPUTATION_ADDRESS",
+        value: "9000",
+        blockNumber: 1400101,
+      },
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              LegacyReputationToken: "LEGACY_REPUTATION_ADDRESS",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
+    },
+    assertions: {
+      onAdded: (err, records) => {
+        assert.ifError(err);
+        assert.deepEqual(records, [{
+          transactionHash: "TRANSACTION_HASH",
+          logIndex: 0,
+          sender: "FROM_ADDRESS",
+          recipient: "TO_ADDRESS",
+          token: "LEGACY_REPUTATION_ADDRESS",
+          value: new BigNumber("9000", 10),
+          blockNumber: 1400101,
+        }]);
+      },
+      onRemoved: (err, records) => {
+        assert.ifError(err);
+        assert.deepEqual(records, []);
+      },
+      onUpdatedPositions: (err, records) => {
+      },
+      onInitialBalances: (err, balances) => {
+        assert.ifError(err);
+        assert.deepEqual(balances, []);
+      },
+      onRemovedBalances: (err, balances) => {
+        assert.ifError(err);
+        assert.deepEqual(balances, []);
+      },
+    },
+  });
+  test({
     description: "TokensTransferred for ShareToken log and removal",
     params: {
       log: {
@@ -114,6 +180,16 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         blockNumber: 1400101,
       },
       augur: {
+        contracts: {
+          addresses: {
+            974: {
+              LegacyReputationToken: "OTHER_ADDRESS",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
         api: {
           Orders: {
             getLastOutcomePrice: (p, callback) => {
