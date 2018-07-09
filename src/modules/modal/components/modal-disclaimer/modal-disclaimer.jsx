@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import Styles from 'modules/modal/components/modal-disclaimer/modal-disclaimer.styles'
 
+const EST_HEIGHT_PERCENT = 0.98
+
 export default class ModalDisclaimer extends Component {
   constructor(props) {
     super(props)
@@ -17,7 +19,7 @@ export default class ModalDisclaimer extends Component {
 
   checkScroll(e) {
     this.setState({
-      didScroll: this.refs.containerText.scrollTop + this.refs.containerText.clientHeight === this.refs.containerText.scrollHeight,
+      didScroll: (this.refs.containerText.scrollTop + this.refs.containerText.clientHeight) >= (this.refs.containerText.scrollHeight * EST_HEIGHT_PERCENT),
     })
   }
 
