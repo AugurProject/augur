@@ -300,6 +300,21 @@ export function assembleMarket(
         return outcome
       }).sort((a, b) => (parseInt(a.id, 10) - parseInt(b.id, 10)))
 
+      let numCompleteSets = createBigNumber(0)
+      if (marketAccountPositions) {
+        numCompleteSets = Object.keys(marketAccountPositions).reduce((num, outcomePositionId) => {
+          const outcomePosition = marketAccountPositions[outcomePositionId][0]
+          const numShares = createBigNumber(outcomePosition.numShares)
+          if (numShares.eq(0)) {
+            return createBigNumber(0)
+          }
+          if (numShares.lt(num)) {
+            return numShares
+          }
+          return num
+        }, createBigNumber(marketAccountPositions[0][0].numShares))
+      }
+
       market.tags = (market.tags || []).filter(tag => !!tag)
 
       market.unclaimedCreatorFees = formatEther(marketData.unclaimedCreatorFees)
@@ -320,6 +335,8 @@ export function assembleMarket(
         if (market.myPositionsSummary) {
           market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes
           delete market.myPositionsSummary.positionOutcomes
+
+          market.myPositionsSummary.numCompleteSets = formatShares(numCompleteSets)
         }
       }
 
