@@ -69,38 +69,19 @@ The location of the log file is operating system specific.
 
 ## Ledger support
 
-Ledger needs SSL support. To use Ledger and support SSL in Augur, follow these instructions:
+Ledger needs SSL support. Currently we are having issues with FireFox SSL support, we are currently trying to find a solution.
+To use Ledger with Chrome we added local SSL support, follow these instructions:
 
-### On Mac and Linux
+On the second screen, Open Augur app view, Clicking on `enable ssl for ledger` button will generate the files below. Clicking on `disable ssl for ledger` will simply delete the files.
 
-The following commands need openssl, use brew or other package manager to install openssl.
-Then in a command line, run:
-
-    openssl req -nodes -newkey rsa:4096 -sha256 -keyout localhost.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
-
-    openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
-
-This will make two files, `localhost.key` and `localhost.crt`. Move these files to your Augur application data directory: 
+The two files generated, `localhost.key` and `localhost.crt`. They will live in this directory depending on your OS.
   
     on OS X: ~/Library/Application Support/augur
     on Linux: /home/<User Name>/.augur
+    on Windows: %AppData%\augur
 
-Then start up your Augur application. When you open Augur in your web broswer, you will have to tell web browser to trust the site.
+If the self signed local certificates exist in the directory, the app will automatically host augur UI on https. This is required for Ledger to connect and work. When you open Augur in your web broswer, you will need to tell your browser to accept the security and trust localhost site.
 
-### On Windows
-
-  Download openssl for windows, 
-  In a command shell goto the default install location is c:\OpenSSL-Win32\bin
-  type openssl to get in the openssl shell
-  To generate localhost.key and localhost.crt run these two commands:
-
-    req -nodes -newkey rsa:4096 -sha256 -keyout localhost.key -out localhost.csr -subj "/C=US/ST=California/L=San Francisco/O=localhost/OU=local/CN=localhost"
-
-    x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
-
-  Put localhost.key and localhost.crt files in the following directory:
-
-  on Windows: %AppData%\augur
 
 ## Gotchas
 
