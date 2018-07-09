@@ -10,20 +10,17 @@ export function monitorEthereumNodeHealth(augur: Augur, errorCallback: ErrorCall
   if (monitorEthereumNodeHealthId) {
     clearInterval(monitorEthereumNodeHealthId);
   }
-  try {
-    monitorEthereumNodeHealthId = setInterval(() => {
-      augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
-        if (err) {
-          clearInterval(monitorEthereumNodeHealthId);
-          if (errorCallback) errorCallback(err);
-        }
-        if (universeController !== controller) {
-          clearInterval(monitorEthereumNodeHealthId);
-          if (errorCallback) errorCallback(new Error(`Controller mismatch. Configured: ${controller} Found: ${universeController}`));
-        }
-      });
-    }, 5000);
-  } catch (err) {
-    console.log(err);
-  }
+
+  monitorEthereumNodeHealthId = setInterval(() => {
+    augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
+      if (err) {
+        clearInterval(monitorEthereumNodeHealthId);
+        if (errorCallback) errorCallback(err);
+      }
+      if (universeController !== controller) {
+        clearInterval(monitorEthereumNodeHealthId);
+        if (errorCallback) errorCallback(new Error(`Controller mismatch. Configured: ${controller} Found: ${universeController}`));
+      }
+    });
+  }, 5000);
 }
