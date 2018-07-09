@@ -37,7 +37,7 @@ describe("artifacts", function () {
     expect(file).to.exist;
 
     var parsed = JSON.parse(file);
-    expect(parsed).to.be.an("object").that.has.all.keys(["3", "4", "42", "8995", "12346", "22346", "32346"]);
+    expect(parsed).to.be.an("object").that.has.all.keys(["1", "3", "4", "42", "8995", "12346", "22346", "32346"]);
 
     for (var networkId in parsed) {
       if (parsed.hasOwnProperty(networkId)) {
