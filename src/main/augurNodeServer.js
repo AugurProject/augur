@@ -151,7 +151,7 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
 
 AugurNodeServer.prototype.onReset = function (event) {
   try {
-    fs.writeFileSync(this.configPath, JSON.stringify(this.defaultConfig, null, 4))
+    fs.writeFileSync(this.configPath, JSON.stringify(defaultConfig, null, 4))
     this.config = defaultConfig
     event.sender.send('config', this.config)
     if (this.augurNodeController && this.augurNodeController.isRunning()) {
