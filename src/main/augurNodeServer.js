@@ -9,6 +9,7 @@ const appData = require('app-data-folder')
 
 const defaultConfig = {
   'network': 'mainnet',
+  'version': '1.0.0',
   'networks': {
     'rinkeby': {
       'http': 'https://rinkeby.augur.net/ethereum-http',
