@@ -31,7 +31,10 @@ function connect(connectOptions, callback) {
     httpAddresses: [],
     wsAddresses: [],
     ipcAddresses: [],
-    websocketClientConfig: { maxReceivedFrameSize: constants.MAX_WEBSOCKET_FRAME_SIZE },
+    websocketClientConfig: {
+      maxReceivedFrameSize: constants.MAX_WEBSOCKET_FRAME_SIZE,
+      maxReceivedMessageSize: constants.MAX_WEBSOCKET_FRAME_SIZE,
+    },
     useWeb3Transport: connectOptions.useWeb3Transport || false,
   });
   if (isObject(connectOptions.ethereumNode)) {
