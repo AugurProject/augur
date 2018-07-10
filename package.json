@@ -1,6 +1,6 @@
 {
   "name": "augur-ui",
-  "version": "5.0.0-3",
+  "version": "5.0.0-5",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -38,7 +38,7 @@
     "docker:start": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
     "docker:pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
-    "version": "npm run build --enableMainnet"
+    "version": "npm run build -- --enableMainnet"
   },
   "dependencies": {
     "async": "2.6.0",
