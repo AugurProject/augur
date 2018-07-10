@@ -6,7 +6,7 @@ import { updateReportingWindowStats } from 'modules/reporting/actions/update-rep
 
 export const getReportingFees = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
-  if (loginAccount.address === undefined) return callback(null);
+  if (loginAccount.address === undefined) return callback(null)
   augur.augurNode.submitRequest(
     'getReportingFees',
     {
