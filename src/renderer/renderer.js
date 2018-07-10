@@ -210,8 +210,8 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     if (data.lastSyncBlockNumber !== null && data.lastSyncBlockNumber !== 0) {
         progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
         this.isSynced = data.lastSyncBlockNumber >= data.highestBlockNumber - 3;
-        if (!this.isSynced && progress === "100") {
-            progress = "99";
+        if (!this.isSynced && parseInt(progress, 10) >= 99) {
+          this.isSynced = true;
         }
     } else {
         this.isSynced = false;
