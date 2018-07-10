@@ -49,10 +49,18 @@ function Renderer() {
 
 Renderer.prototype.reset = function() {
   event.preventDefault();
+  document.getElementById("reset_button").value = "RESETTING...";
+  document.getElementById("reset_button").setAttribute('style', 'padding-left:15px !important');
+  document.getElementById("reset_button").disabled = true;
   ipcRenderer.send("reset");
 }
 
 Renderer.prototype.onResetResponse = function(justClearConfig) {
+  setTimeout(() => {
+    document.getElementById("reset_button").value = "RESET";
+    document.getElementById("reset_button").disabled = false;
+    document.getElementById("reset_button").setAttribute('style', 'padding-left:30px !important');
+  }, 3000);
 }
 
 Renderer.prototype.toggleSSL = function() {
