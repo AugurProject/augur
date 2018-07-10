@@ -84,6 +84,7 @@ Renderer.prototype.connectToServer = function (event) {
   const data = this.getNetworkConfigFormData();
   this.isSynced = false;
   this.connectedServer = data;
+  this.isSynced = false;
   ipcRenderer.send("start", data);
 }
 
