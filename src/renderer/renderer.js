@@ -11,7 +11,6 @@ function clearClassList(classList) {
 }
 
 function Renderer() {
-    this.progressDots = 0;
     this.isSynced = false;
     this.isSsl = false;
     this.config = {};
@@ -83,6 +82,7 @@ Renderer.prototype.onServerConnected = function (event) {
 Renderer.prototype.connectToServer = function (event) {
   this.showNotice("Connecting...", "success")
   const data = this.getNetworkConfigFormData();
+  this.isSynced = false;
   this.connectedServer = data;
   ipcRenderer.send("start", data);
 }
@@ -206,28 +206,27 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
-    let progress = 0;
-    if (data.lastSyncBlockNumber !== null && data.lastSyncBlockNumber !== 0) {
-        progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
-        if (!this.isSynced && parseInt(progress, 10) >= 99) {
-          this.isSynced = true;
-        }
-    } else {
-        this.isSynced = false;
-        this.progressDots += 1;
-        this.progressDots %= 4;
+    let blocksRemaining = 0;
+    const lastSyncBlockNumber = data.lastSyncBlockNumber;
+    const highestBlockNumber = data.highestBlockNumber;
+
+    if (lastSyncBlockNumber !== null && lastSyncBlockNumber !== 0) {
+      blocksRemaining = parseInt(highestBlockNumber, 10) - parseInt(lastSyncBlockNumber, 10)
+      if (blocksRemaining <= 5) {
+        this.isSynced = true;
+      }
     }
-    const syncProgressLbl = document.getElementById("sync_progress_label");
-    const syncProgressAmt = document.getElementById("sync_progress_amount");
     const networkStatus = document.getElementById("network_status");
-    clearClassList(syncProgressLbl.classList);
+    const blocksRemainingLbl = document.getElementById("blocks_remaining");
+    const currentBlock = document.getElementById("current_block");
+
     clearClassList(networkStatus.classList);
     networkStatus.classList.add("connected")
     if (this.isSynced) {
-        syncProgressLbl.classList.add("success");
-        this.clearNotice();
+      this.clearNotice();
     }
-    syncProgressAmt.innerHTML = progress;
+    blocksRemainingLbl.innerHTML = blocksRemaining;
+    currentBlock.innerHTML = highestBlockNumber;
 
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
