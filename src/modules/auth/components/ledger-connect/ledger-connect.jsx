@@ -84,7 +84,7 @@ export default class Ledger extends Component {
     const address = await ledgerEthereum.getAddressByBip44Index()
 
     if (address) {
-      return loginWithLedger(address, ledgerEthereum)
+      return loginWithLedger(address.toLowerCase(), ledgerEthereum)
     }
 
     this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE)
