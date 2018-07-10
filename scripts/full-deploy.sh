@@ -65,7 +65,7 @@ function deployAugurJsAndUploadContracts()
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	git push
-	git push origin v$VERSION
+	git push origin v$VERSION --no-verify
 	npm publish --tag $NPM_TAG
 	)
 }
@@ -85,7 +85,7 @@ function deployAugurNode()
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
 	git push
-	git push origin v$VERSION
+	git push origin v$VERSION --no-verify
 	npm publish --tag $NPM_TAG
 	)
 }
@@ -105,7 +105,7 @@ function deployAugurUi()
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
 	git push
-	git push origin v$VERSION
+	git push origin v$VERSION --no-verify
 	npm publish --tag $NPM_TAG
 	)
 }
