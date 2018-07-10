@@ -29,7 +29,6 @@ function Renderer() {
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
     document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
     document.getElementById("generateCert").addEventListener("click", this.toggleSSL.bind(this));
-    document.getElementById("generateCert").addEventListener("click", this.toggleSSL.bind(this));
     document.getElementById("reset_button").addEventListener("click", this.reset.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
