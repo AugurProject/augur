@@ -157,7 +157,7 @@ let config = {
         // Set this var to remove code that is problematic for us to host.
         // Will need to be negated in the relevant conditionals.
         AUGUR_HOSTED: process.env.AUGUR_HOSTED || false,
-        ENABLE_MAINNET: process.env.ENABLE_MAINNET || 'false',
+        ENABLE_MAINNET: process.env.ENABLE_MAINNET || false,
       }
     }),
     new GitRevisionPlugin({
