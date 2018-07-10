@@ -76,7 +76,7 @@ function pollForNetwork(dispatch, getState) {
         dispatch(closeModal())
       }
     }))
-    if (!windowRef.enableMainnet) {
+    if (!window.enableMainnet) {
       dispatch(checkIfMainnet((err, isMainnet) => {
         if (err) return console.error('pollForNetwork failed', err)
         if (isMainnet && isEmpty(modal)) {
