@@ -152,12 +152,14 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
 AugurNodeServer.prototype.onReset = function (event) {
   try {
     this.augurNodeController.resetDatabase()
+    fs.writeFileSync(this.configPath, JSON.stringify(this.defaultConfig, null, 4))
   } catch (err) {
     log.error(err)
     this.window.webContents.send('error', {
       error: err
     })
   }
+  event.sender.send('resetResponse', data)
 }
 
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
