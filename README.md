@@ -95,6 +95,7 @@ Directory locations per OS:
     on Linux: /home/<User Name>/.augur
     on Windows: %AppData%\augur
 
+- If your app is stuck at 99% for awhile, try restarting.
 
 
 
