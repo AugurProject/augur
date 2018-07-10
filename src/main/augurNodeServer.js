@@ -64,7 +64,7 @@ function AugurNodeServer() {
   ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
   ipcMain.on('start', this.onStartNetwork.bind(this))
   ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
-  ipcMain.on('reset', this.onSaveNetworkConfig.bind(this))
+  ipcMain.on('reset', this.onReset.bind(this))
 
 }
 
