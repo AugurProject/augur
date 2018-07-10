@@ -84,6 +84,10 @@ Renderer.prototype.connectToServer = function (event) {
   const data = this.getNetworkConfigFormData();
   this.isSynced = false;
   this.connectedServer = data;
+  const blocksRemainingLbl = document.getElementById("blocks_remaining");
+  const currentBlock = document.getElementById("current_block");
+  blocksRemainingLbl.innerHTML = "-";
+  currentBlock.innerHTML = "-";
   ipcRenderer.send("start", data);
 }
 
