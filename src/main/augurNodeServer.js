@@ -33,7 +33,7 @@ const defaultConfig = {
     'mainnet': {
       'http': 'https://mainnet.infura.io/augur',
       'name': 'Mainnet',
-      'ws': ''
+      'ws': 'wss://mainnet.infura.io/ws'
     },
     'custom': {
       'http': 'http://localhost:8545',
