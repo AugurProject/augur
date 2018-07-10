@@ -81,6 +81,15 @@ button {
   color: #9c9c9c !important;
 }
 
+.resetButton {
+  background: url(reset.svg) no-repeat 85%;
+  border: 1px solid #ff0068;
+  background-color: transparent !important;
+  color: #ff0068 !important;
+  min-width: 150px !important;
+  font-weight: 500 !important;
+}
+
 input[type=submit]:disabled,
 button:disabled {
   background-color: #A7A2B2;
@@ -146,7 +155,7 @@ input {
 }
 
 .networkForm {
-  padding-left: 10%;
+  padding-left: 4rem;
   padding-top: 2rem;
   width: 60%;
   text-transform: uppercase;
@@ -186,10 +195,11 @@ input {
   padding: 30px 0;
   justify-content: space-between;
   max-height: 20%;
+  align-items: center;
 }
 
 .networkName {
-  padding-left: 10%;
+  padding-left: 4rem;
   white-space: nowrap;
 }
 
@@ -217,8 +227,8 @@ input {
 }
 
 .synced {
-  padding-right: 10%;
   white-space: nowrap;
+  margin-left: 1rem;
 }
 
 .status {
@@ -228,7 +238,6 @@ input {
 .networks {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -337,6 +346,23 @@ input {
   line-height: 1.125rem;
   text-transform: none;
   cursor: pointer;
+}
+
+.resetText {
+  display: flex;
+  align-items: center;
+  max-width: 160px;
+  color: #ff0068 !important;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+
+.reset{
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  margin-right: 4rem;
 }
 
 @-webkit-keyframes fadeinout {
