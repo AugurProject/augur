@@ -50,7 +50,7 @@ function AugurNodeServer() {
   }
   this.configPath = path.join(this.appDataPath, 'config.json')
   if (!fs.existsSync(this.configPath)) {
-    this.config = defaultConfig
+    this.config = JSON.parse(JSON.stringify(defaultConfig));
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
   } else {
     this.config = JSON.parse(fs.readFileSync(this.configPath))
@@ -151,8 +151,8 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
 
 AugurNodeServer.prototype.onReset = function (event) {
   try {
-    fs.writeFileSync(this.configPath, JSON.stringify(defaultConfig, null, 4))
-    this.config = defaultConfig
+    this.config = JSON.parse(JSON.stringify(defaultConfig));
+    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('config', this.config)
     if (this.augurNodeController && this.augurNodeController.isRunning()) {
       this.augurNodeController.resetDatabase()
