@@ -604,6 +604,14 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
+augur-blockstream@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/augur-blockstream/-/augur-blockstream-5.0.0.tgz#c27606fdcac5540b0cc26705fccd7ecc6ed28a29"
+  dependencies:
+    immutable "3.8.2"
+    source-map-support "0.5.6"
+    uuid "3.2.1"
+
 augur-core@1.0.0-20:
   version "1.0.0-20"
   resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-20.tgz#5f592dd939e2a334c18f288a6e28f149f6477000"
@@ -636,9 +644,9 @@ augur-core@1.0.0-20:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.0.0-8:
-  version "5.0.0-8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0-8.tgz#c1244f02cdb5c887dbca32a59b6e9aaf37181fcd"
+augur.js@5.0.0-9:
+  version "5.0.0-9"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0-9.tgz#595250cef2deab60b8bd0874403ffbacbde55377"
   dependencies:
     async "1.5.2"
     augur-core "1.0.0-20"
@@ -646,7 +654,7 @@ augur.js@5.0.0-8:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.3.11"
+    ethrpc "5.4.0"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -4415,16 +4423,16 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.3.11:
-  version "5.3.11"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.3.11.tgz#74d18b96864911d183c89ad2d1597b4e5b71ca98"
+ethrpc@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.4.0.tgz#20fba0d077583f20d38a2a4e9ff9ea34a960160b"
   dependencies:
     async "2.6.0"
+    augur-blockstream "5.0.0"
     bignumber.js "6.0.0"
     browser-request "0.3.3"
     clone "2.1.1"
     es6-promise "4.2.4"
-    ethereumjs-blockstream "4.0.1"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
     keccak "1.2.0"
@@ -11305,18 +11313,18 @@ source-map-support@0.4.14:
   dependencies:
     source-map "^0.5.6"
 
-source-map-support@^0.4.15:
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
-  dependencies:
-    source-map "^0.5.6"
-
-source-map-support@^0.5.0, source-map-support@^0.5.3, source-map-support@^0.5.5, source-map-support@^0.5.6:
+source-map-support@0.5.6, source-map-support@^0.5.0, source-map-support@^0.5.3, source-map-support@^0.5.5, source-map-support@^0.5.6:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.6.tgz#4435cee46b1aab62b8e8610ce60f788091c51c13"
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
+
+source-map-support@^0.4.15:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
+  dependencies:
+    source-map "^0.5.6"
 
 source-map-url@^0.4.0:
   version "0.4.0"
@@ -12541,6 +12549,10 @@ uuid@3.0.0:
 uuid@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
+
+uuid@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
 uuid@^3.0.0, uuid@^3.1.0:
   version "3.3.2"
