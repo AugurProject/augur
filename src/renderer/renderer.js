@@ -52,8 +52,7 @@ Renderer.prototype.reset = function() {
   ipcRenderer.send("reset");
 }
 
-Renderer.prototype.onResetResponse = function() {
-
+Renderer.prototype.onResetResponse = function(justClearConfig) {
 }
 
 Renderer.prototype.toggleSSL = function() {
