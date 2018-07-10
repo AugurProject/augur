@@ -17,12 +17,12 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
   const shareToken: Address = log.shareToken;
   db.first("marketId", "outcome").from("tokens").where({ contractAddress: shareToken }).asCallback((err: Error|null, tokensRow?: TokensRow): void => {
     if (err) return callback(err);
-    if (!tokensRow) return callback(new Error("market and outcome not found"));
+    if (!tokensRow) return callback(new Error(`market and outcome not found for shareToken ${shareToken} (${log.transactionHash}`));
     const marketId = tokensRow.marketId!;
     const outcome = tokensRow.outcome!;
     db.first("minPrice", "maxPrice", "numTicks").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: MarketsRow<BigNumber>): void => {
       if (err) return callback(err);
-      if (!marketsRow) return callback(new Error("market min price, max price, and/or num ticks not found"));
+      if (!marketsRow) return callback(new Error(`market min price, max price, and/or num ticks not found for market: ${marketId} (${log.transactionHash}`));
       const minPrice = marketsRow.minPrice!;
       const maxPrice = marketsRow.maxPrice!;
       const numTicks = marketsRow.numTicks!;

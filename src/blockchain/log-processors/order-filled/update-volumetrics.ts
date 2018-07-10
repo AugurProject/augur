@@ -51,7 +51,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
             .where({ marketId, outcome, orderId, blockNumber })
             .asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
             if (err) return callback(err);
-            if (!tradesRow) return callback(new Error("trade not found"));
+            if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
             let amount = tradesRow.amount!;
             if (!isIncrease) amount = amount.negated();
 
