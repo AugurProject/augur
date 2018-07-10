@@ -87,9 +87,9 @@ export default class AccountDeposit extends Component {
         </div>
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
-            {airSwapConverter}
-            <div />
             {shapeShiftConverter}
+            <div />
+            {airSwapConverter}
           </div>
           <div className={Styles.AccountDeposit__address}>
             <h3 className={Styles.AccountDeposit__addressLabel}>
