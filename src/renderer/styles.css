@@ -82,12 +82,14 @@ button {
 }
 
 .resetButton {
-  background: url(reset.svg) no-repeat 85%;
+  background: url(reset.svg) no-repeat 80%;
   border: 1px solid #ff0068;
   background-color: transparent !important;
   color: #ff0068 !important;
   min-width: 150px !important;
   font-weight: 500 !important;
+  padding-left: 40px !important;
+  justify-content: flex-start !important;
 }
 
 input[type=submit]:disabled,
@@ -229,6 +231,7 @@ input {
 .synced {
   white-space: nowrap;
   margin-left: 1rem;
+  padding-right: 4rem;
 }
 
 .status {
@@ -355,12 +358,13 @@ input {
   color: #ff0068 !important;
   margin-right: 5px;
   font-size: 14px;
+  text-transform: none;
 }
 
 
-.reset{
+.reset {
+  align-items: center;
   display: flex;
-  justify-content: flex-end;
   flex-grow: 1;
   margin-right: 4rem;
 }

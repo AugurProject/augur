@@ -150,7 +150,6 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
 }
 
 AugurNodeServer.prototype.onReset = function (event) {
-  let justClearConfig = true;
   try {
     this.config = JSON.parse(JSON.stringify(defaultConfig));
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
@@ -158,7 +157,6 @@ AugurNodeServer.prototype.onReset = function (event) {
     if (this.augurNodeController && this.augurNodeController.isRunning()) {
       this.augurNodeController.resetDatabase()
       this.restart()
-      justClearConfig = false;
     }
   } catch (err) {
     log.error(err)
@@ -166,7 +164,7 @@ AugurNodeServer.prototype.onReset = function (event) {
       error: err
     })
   }
-  event.sender.send('resetResponse', justClearConfig)
+  event.sender.send('resetResponse', {})
 }
 
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {

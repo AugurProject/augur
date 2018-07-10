@@ -49,14 +49,10 @@ function Renderer() {
 
 Renderer.prototype.reset = function() {
   event.preventDefault();
-  //document.getElementById("reset_button").value = "RESETING...";
   ipcRenderer.send("reset");
 }
 
 Renderer.prototype.onResetResponse = function(justClearConfig) {
-  // if (justClearConfig) {
-  //   document.getElementById("reset_button").value = "RESET";
-  // }
 }
 
 Renderer.prototype.toggleSSL = function() {
@@ -244,9 +240,6 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     }
     syncProgressAmt.innerHTML = progress;
 
-    // if (this.isSynced) {
-    //   document.getElementById("reset_button").value = "RESET";
-    // }
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
