@@ -366,7 +366,7 @@ input {
   align-items: center;
   display: flex;
   flex-grow: 1;
-  margin-right: 4rem;
+  justify-content: flex-end;
 }
 
 @-webkit-keyframes fadeinout {
