@@ -4,7 +4,7 @@ import { NetworkConfiguration } from "augur-core";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
-import { createDbAndConnect } from "./setup/check-and-initialize-augur-db";
+import { createDbAndConnect, renameDatabaseFile } from "./setup/check-and-initialize-augur-db";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
 import { processQueue } from "./blockchain/process-queue";
 import { ErrorCallback } from "./types";
@@ -93,11 +93,25 @@ export class AugurNodeController {
     return ({ lastSyncBlockNumber, uploadBlockNumber, highestBlockNumber });
   }
 
+  public async resetDatabase() {
+    let networkId = "1";
+    if (this.augur != null) {
+      const fetchedNetworkId = this.augur.rpc.getNetworkID();
+      if (fetchedNetworkId) {
+        networkId = fetchedNetworkId;
+      }
+    }
+    if (this.isRunning()) {
+      this.shutdown();
+    }
+    await renameDatabaseFile(networkId, this.databaseDir);
+  }
+
   public addLogger(logger: LoggerInterface) {
     this.logger.addLogger(logger);
   }
 
-  private shutdownCallback(err: Error | null) {
+  private shutdownCallback(err: Error|null) {
     if (err == null) return;
     this.logger.error("Fatal Error, shutting down servers", err);
     if (this.errorCallback) this.errorCallback(err);
