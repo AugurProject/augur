@@ -11,7 +11,6 @@ function clearClassList(classList) {
 }
 
 function Renderer() {
-    this.progressDots = 0;
     this.isSynced = false;
     this.isSsl = false;
     this.config = {};
@@ -84,6 +83,7 @@ Renderer.prototype.connectToServer = function (event) {
   this.showNotice("Connecting...", "success")
   const data = this.getNetworkConfigFormData();
   this.connectedServer = data;
+  this.isSynced = false;
   ipcRenderer.send("start", data);
 }
 
@@ -206,16 +206,15 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
-    let progress = 0;
-    if (data.lastSyncBlockNumber !== null && data.lastSyncBlockNumber !== 0) {
-        progress = (100 * (data.lastSyncBlockNumber - data.uploadBlockNumber) / (data.highestBlockNumber - data.uploadBlockNumber)).toFixed(0);
-        if (!this.isSynced && parseInt(progress, 10) >= 99) {
-          this.isSynced = true;
-        }
-    } else {
-        this.isSynced = false;
-        this.progressDots += 1;
-        this.progressDots %= 4;
+    let progress = -1;
+    const lastSyncBlockNumber = data.lastSyncBlockNumber;
+    const highestBlockNumber = data.highestBlockNumber;
+
+    if (lastSyncBlockNumber !== null && lastSyncBlockNumber !== 0) {
+      progress = parseInt(highestBlockNumber, 10) - parseInt(lastSyncBlockNumber, 10);
+      if (parseInt(progress, 10) <= 5) {
+        this.isSynced = true;
+      }
     }
     const syncProgressLbl = document.getElementById("sync_progress_label");
     const syncProgressAmt = document.getElementById("sync_progress_amount");
