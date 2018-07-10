@@ -109,19 +109,23 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
   }
 }
 
-async function moveDatabase(db: Knex, networkId: string, databaseDir?: string): Promise<Knex> {
-  db.destroy();
+export async function renameDatabaseFile(networkId: string, databaseDir?: string) {
   const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
   const backupDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, `backup-augur-%s-${new Date().getTime()}.db`);
   logger.info("move", augurDbPath, backupDbPath);
   await promisify(rename)(augurDbPath, backupDbPath);
+}
+
+async function getFreshDatabase(db: Knex|null, networkId: string, databaseDir?: string): Promise<Knex> {
+  if (db != null) db.destroy();
+  await renameDatabaseFile(networkId, databaseDir);
   return createKnex(networkId);
 }
 
 export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
   let db: Knex = createKnex(networkId, databaseDir);
   const databaseDamaged = await isDatabaseDamaged(db);
-  if (databaseDamaged) db = await moveDatabase(db, networkId, databaseDir);
+  if (databaseDamaged) db = await getFreshDatabase(db, networkId, databaseDir);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
   return db;
