@@ -73,7 +73,7 @@ export default class AccountDeposit extends Component {
           <button
             onClick={e => airSwapOnClick(e)}
           >
-            AirSwap to REP <span className={Styles.AccountDeposit__noFeeTextStyle}>(no fees)</span>
+            AirSwap to REP
           </button>
         </div>
       )
@@ -87,9 +87,6 @@ export default class AccountDeposit extends Component {
         </div>
         <div className={Styles.AccountDeposit__main}>
           <div className={Styles.AccountDeposit__description}>
-            <p>
-              DO NOT send real ETH or REP to this account. Augur is currently on Ethereum&#39;s Rinkeby testnet.
-            </p>
             {airSwapConverter}
             <div />
             {shapeShiftConverter}
