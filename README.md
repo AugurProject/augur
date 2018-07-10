@@ -87,7 +87,7 @@ If the self signed local certificates exist in the directory, the app will autom
 
 - If you are doing active development on other Augur repos, make sure to close out any running Augur Node or Augur UI instances and any clients that may be connected to them before running. We use hardcoded ports, and if they can't be used, the App will not run properly.
 - Make sure whatever you are using to connect to an Ethereum node on the UI is looking at the same network as your Augur Node configuration. For example, if you are using MetaMask, and you are running Augur App with a Rinkeby configuration, make sure that MetaMask is also connected to Rinkeby!
-- `Mainnet` isn't in the Select Configuration dropdown. The installer doesn't overwrite the config.json file. If an alpha release was installed mainnet might have not been in the config.json file. Delete the config.js file and restart augur-app. 
+- `Mainnet` isn't in the `Select Configuration` dropdown. The installer doesn't overwrite the config.json file. If an alpha release was installed mainnet might have not been in the config.json file. Delete the config.json file and restart the Augur application. 
 
 Directory locations per OS.
   
