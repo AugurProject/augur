@@ -134,9 +134,6 @@ Renderer.prototype.onSsl = function (event, value) {
 
 Renderer.prototype.onServerError = function (event, data) {
   this.showNotice("Failed to startup: " + data.error, "failure");
-  const syncProgress = document.getElementById("sync_progress_label");
-  clearClassList(syncProgress.classList);
-  syncProgress.classList.add("failure");
 }
 
 Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
