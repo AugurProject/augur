@@ -49,7 +49,7 @@ function Renderer() {
 Renderer.prototype.reset = function() {
   event.preventDefault();
   document.getElementById("reset_button").value = "RESETTING...";
-  document.getElementById("reset_button").setAttribute('style', 'padding-left:8px !important');
+  document.getElementById("reset_button").setAttribute('style', 'padding-left:20px !important');
   document.getElementById("reset_button").disabled = true;
   ipcRenderer.send("reset");
 }
