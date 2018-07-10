@@ -14,28 +14,26 @@ import { augur } from 'services/augurjs'
 // require('core-js/fn/array/find')
 // require('core-js/fn/string/starts-with')
 
-// NOTE --  These are attached for convenience when built for development or debug
-if (process.env.NODE_ENV === 'development') {
-  window.augur = augur
+window.augur = augur
+window.enableMainnet = process.env.ENABLE_MAINNET
 
-  console.log(`
-  *******************************************
-              DEVELOPMENT MODE
-  *******************************************
-  BUILD INFORMATION
+console.log(`
+*******************************************
+            DEVELOPMENT MODE
+*******************************************
+BUILD INFORMATION
 
-    branch            -- ${process.env.CURRENT_BRANCH}
-    network           -- ${process.env.ETHEREUM_NETWORK}
-    augur.js          -- v${augur.version}
-  -------------------------------------------
-  ATTACHED PROPERTIES
+  branch            -- ${process.env.CURRENT_BRANCH}
+  network           -- ${process.env.ETHEREUM_NETWORK}
+  augur.js          -- v${augur.version}
+-------------------------------------------
+ATTACHED PROPERTIES
 
-    app element       -- window.app
-    state data        -- window.state
-    augur.js API      -- window.augur
-  *******************************************
-  `)
-}
+  app element       -- window.app
+  state data        -- window.state
+  augur.js API      -- window.augur
+*******************************************
+`)
 
 function render(Root) {
   ReactDOM.render(
