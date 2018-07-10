@@ -367,6 +367,7 @@ input {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
+  margin-top: 5px;
 }
 
 @-webkit-keyframes fadeinout {
