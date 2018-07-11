@@ -230,6 +230,11 @@ Renderer.prototype.renderNetworkOptions = function () {
 
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let blocksRemaining = 0;
+
+    const networkStatus = document.getElementById("network_status");
+    const blocksRemainingLbl = document.getElementById("blocks_remaining");
+    const currentBlock = document.getElementById("current_block");
+
     const lastSyncBlockNumber = data.lastSyncBlockNumber;
     const highestBlockNumber = data.highestBlockNumber;
 
@@ -238,17 +243,14 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       if (blocksRemaining <= 5) {
         this.isSynced = true;
       }
+      blocksRemainingLbl.innerHTML = blocksRemaining;
     }
-    const networkStatus = document.getElementById("network_status");
-    const blocksRemainingLbl = document.getElementById("blocks_remaining");
-    const currentBlock = document.getElementById("current_block");
 
     clearClassList(networkStatus.classList);
     networkStatus.classList.add("connected")
     if (this.isSynced) {
       this.clearNotice();
     }
-    blocksRemainingLbl.innerHTML = blocksRemaining;
     currentBlock.innerHTML = highestBlockNumber;
 
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
