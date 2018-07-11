@@ -2,6 +2,7 @@ import * as async from "async";
 import { ErrorCallback } from "../types";
 import * as Knex from "knex";
 import { logger } from "../utils/logger";
+import * as _ from "lodash";
 
 interface LogQueue {
   [blockHash: string]: Array<LogProcessCallback>;
@@ -35,6 +36,8 @@ export function logQueuePop(blockHash: string): Array<LogProcessCallback> {
 
 export function logQueueProcess(db: Knex, blockHash: string, callback: ErrorCallback): void {
   const logCallbacks = logQueuePop(blockHash);
+  const remainingCallbacksByBlock = _.mapValues(logQueue, (callbacks) => callbacks.length);
+  if (!_.isEmpty(remainingCallbacksByBlock)) console.log("Future Callbacks", remainingCallbacksByBlock);
   if (logCallbacks.length > 0) logger.info(`Processing ${logCallbacks.length} logs`);
   async.eachSeries(logCallbacks,
     (logCallback: LogProcessCallback, next: ErrorCallback) => logCallback(db, (err) => next(err)),
