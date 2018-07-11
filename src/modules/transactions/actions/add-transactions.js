@@ -200,7 +200,7 @@ export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
     const { marketsData } = getState()
     const completeSetsData = {}
     each(completeSetsSoldLogs, (completeSetLog) => {
-      const marketId = completeSetLog.market
+      const { marketId } = completeSetLog
       const market = marketsData[marketId]
       const transaction = Object.assign({ marketId, ...completeSetLog }, {
         id: completeSetLog.transactionHash,
