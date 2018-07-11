@@ -28,7 +28,6 @@ export default class TransactionMeta extends Component {
     if (typeof meta.timestamp === 'number') {
       meta.timestamp = convertUnixToFormattedDate(meta.timestamp).full
     }
-
     if (meta.status === 'Open' || meta.status === 'Canceled') {
       return (
         <div className={Styles.TransactionMetaContainer}>

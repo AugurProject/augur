@@ -212,3 +212,10 @@ export const handleFeeWindowRedeemedLog = log => (dispatch) => {
   dispatch(defaultLogHandler(log))
   dispatch(getReportingFees())
 }
+
+export const handleCompleteSetsSoldLog = log => (dispatch, getState) => {
+  const isStoredTransaction = log.account === getState().loginAccount.address
+  if (isStoredTransaction) {
+    dispatch(updateLoggedTransactions(log))
+  }
+}

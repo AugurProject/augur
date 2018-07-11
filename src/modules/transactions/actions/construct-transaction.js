@@ -1,5 +1,5 @@
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
-import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions, getSortOrder } from 'modules/transactions/actions/add-transactions'
+import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions, getSortOrder, addCompleteSetsSoldLogs } from 'modules/transactions/actions/add-transactions'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { formatEther } from 'utils/format-number'
@@ -28,6 +28,8 @@ export const constructTransaction = (log, callback = logError) => (dispatch, get
       return dispatch(addTransferTransactions([log]))
     case 'MarketCreated':
       return dispatch(addMarketCreationTransactions([log]))
+    case 'CompleteSetsSold':
+      return dispatch(addCompleteSetsSoldLogs([log]))
     case 'MarketFinalized':
     case 'InitialReportSubmitted':
     case 'DesignatedReportSubmitted':

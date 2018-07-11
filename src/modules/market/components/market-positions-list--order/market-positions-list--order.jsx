@@ -92,6 +92,7 @@ export default class Order extends Component {
             </span>
           }
         </li>
+        <li />
         <li>
           { order.type === SELL ? <span>-</span> : <span>+</span> } { orderShares }
         </li>

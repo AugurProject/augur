@@ -23,6 +23,7 @@ export default class Transactions extends Component {
     transactionPeriod: PropTypes.string.isRequired,
     transactionsLoading: PropTypes.bool,
     updateTransactionPeriod: PropTypes.func.isRequired,
+    loadAccountCompleteSets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -47,6 +48,7 @@ export default class Transactions extends Component {
 
   componentWillMount() {
     this.loadTransactions(this.state.transactionPeriodDefault)
+    this.props.loadAccountCompleteSets()
   }
 
   componentDidUpdate(prevProps, prevState) {
