@@ -1,106 +1,70 @@
 # Augur App
 
-[![Build Status](https://travis-ci.com/AugurProject/augur-app.svg?branch=master)](https://travis-ci.com/AugurProject/augur-app)
-[![npm version](https://badge.fury.io/js/augur-app.svg)](https://badge.fury.io/js/augur-app)
+Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur) and [Augur Node](https://github.com/AugurProject/augur-node) together and deploys them locally to your machine. The Augur UI is a reference client used to interact with the Augur protocols core smart contracts on the Ethereum blockchain. Augur Node is a locally ran database that parses the Ethereum blockchain for logs relevant to Augur, and serves the respective data to the Augur UI. 
 
-Augur App is a small electron application that packages [Augur Node](https://github.com/AugurProject/augur-node) and the [Augur UI](https://github.com/AugurProject/augur), so you can use Augur locally with an Ethereum node of your choosing.
+## Install 
 
-## To Use
+### Executable Installer:
 
-The easiest way to get started is to simply download one of the OS specific installers [here](https://github.com/AugurProject/augur-app/releases).
+Download the executable for your respective operating system:
 
-### On Windows
+**Mac OSX** : ```mac-augur-1.0.0.dmg```
+**Windows** : ```win-augur-1.0.0.exe```
+**Linux** : ```linux-augur-1.0.0.deb```
 
-After installing on Windows, a shortcut on your desktop will be created to avoid slow startup times. The installed executable can be found at `%LocalAppData%\Local\Programs\augur\augur.exe`
+## Running
 
-### On Ubuntu
+1. Download the executable for your respective operating system, double click to install.
+2. Select your configuration: Mainnet, Local, Rinkeby, Ropsten, or Kovan. 
+3. Point Augur App to an Ethereum node (Either via HTTP or WS endpoints, or both). By default, it's configured to use (https://infura.io/).  
+5. Select "Connect", and Augur App will begin to sync Augur Node in the background. 
+6. Once synced to 100%, click "Open Augur App" to deploy the UI locally in your browser. 
+7. Authenticate using [MetaMask](https://metamask.io/), [Edge](https://edge.app/), [Ledger](https://www.ledgerwallet.com/) or [Trezor](https://trezor.io/). 
 
-First, install dependencies:
+## Selecting An Ethereum Node
 
-```bash
-$ apt-get install libgconf2-4
-```
+You have two options for connecting to an Ethereum node: local or remote.
 
-Then, install the `.deb` package with `sudo dpkg -i linux-augur-1.0.1.deb`. Once installed, run the app from the command line:
+- Run a synced [Geth](https://github.com/ethereum/go-ethereum) or [Parity](https://www.parity.io) client locally.
 
-```bash
-augur
-```
+    or
 
-### From source
+- Use a remote node, such as [Infura](https://infura.io/). Not all remote nodes support Websockets or RPC, so your mileage may vary.
 
-If you want to run Augur App from source, you will need git and npm installed on your machine. Follow these steps:
+## Using Ledger Hardware Wallet
 
-```bash
-# Clone this repository
-git clone https://github.com/AugurProject/augur-app
-# Go into the repository
-cd augur-app
-# Install dependencies
-npm install
-# Run the app. NOTE: This will have to install native dependencies which may take a long time depending on your environment.
-npm start
-```
+### Key Derivation Path
 
-Once the application is running, wait for the Sync progress to reach 100%, then the "Open Augur UI" button will light up and you can click on it to open the Augur UI. Note that the Augur App must remain open while using the UI, or it will stop functioning.
+Augur derives Ledger account addresses using the [BIP0044 standard](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki), or the `m/44'/60'/0'/0` key derivation path. Commonly used client-side wallets such as MyCrypto and MyEtherWallet, and the Ledger ETH App, use the "non-standard" key derivation path `m/44'/60'/0'`. To access the address Augur derives for you on MyCrypto, MyEtherWallet, and the Ledger ETH App, you must change your key derivation path to `m/44'/60'/0'/0` (BIP0044).
 
-If the instructions above don't work try:
+### Local SSL Cert
 
-```git clone https://github.com/AugurProject/augur-app
-yarn
-yarn start
-```
+Ledger requires SSL, which isn't available by default while running software on localhost. If you plan to use a Ledger hardware wallet with Augur, you must first select **"Enable SSL For Ledger"** before clicking "Open Augur App". Selecting "Enable SSL For Ledger" generates a self-signed SSL certificate locally, allowing you to interact with your Ledger hardware wallet. Other available authentication methods do not require this. [Reference](https://github.com/ethereum/EIPs/issues/84#issuecomment-292324521). 
 
-### To build the binary
+### Firefox Not Supported
 
-Do: `npm run make`
+Due to the current architecture of this implementation, the use of self-signed SSL certificates, and Firefox's security model, using a Ledger with Firefox is **not currently supported**. We will be working to fix this issue. In the meantime, it is recommended to use Chrome with Ledger.
 
-## Augur Node Network Configuration
+##  Clearing Configuration File
 
-The Augur Rinkeby node configuration and a "Local" configuration are provided by default, specifying HTTP and WebSocket endpoints for a full Ethereum node. To connect to mainnet, you must either run your own full node and use the "Local" configuration, or provide the connection details for a hosted node that you trust. The "Custom" configuration is intended for this purpose, but will, by default, also just point to localhost.
+If you’ve installed a previous pre-release of Augur App locally on your machine prior to the main Ethereum network deployment, **you will need to clear your local Augur App configuration file in order to properly run this Augur App release and connect to the Ethereum main network.** 
 
-## Logging
+Please delete the ```augur``` directory (or, just the ```config.json``` file) in the following location:
 
-The location of the log file is operating system specific.
+**Mac OSX** : ```~/Library/Application\ Support/augur```
+**Windows** : ```%AppData%\augur```
+**Linux** : ``` ~/.augur```
 
-    on Linux: ~/.config/augur/log.log
-    on OS X: ~/Library/Logs/augur/log.log
-    on Windows: %USERPROFILE%\AppData\Roaming\augur\log.log
+## Questions, Bugs and Issues
 
-## Ledger support
+Please file any bugs or issues related to Augur App as a GitHub issue in the [Augur App](https://github.com/AugurProject/augur-app) repository. If your issue is related to Augur Node, use the [Augur Node](https://github.com/AugurProject/augur-app) repository. If you have a UI bug or issue to report, use the [Augur Client](https://github.com/AugurProject/augur)  repository. 
 
-Ledger needs SSL support. Currently we are having issues with FireFox SSL support, we are currently trying to find a solution.
-To use Ledger with Chrome we added local SSL support, follow these instructions:
-
-On the second screen, Open Augur app view, Clicking on `enable ssl for ledger` button will generate the files below. Clicking on `disable ssl for ledger` will simply delete the files.
-
-The two files generated, `localhost.key` and `localhost.crt`. They will live in this directory depending on your OS.
-
-    on OS X: ~/Library/Application Support/augur
-    on Linux: /home/<User Name>/.augur
-    on Windows: %AppData%\augur
-
-If the self signed local certificates exist in the directory, the app will automatically host augur UI on https. This is required for Ledger to connect and work. When you open Augur in your web broswer, you will need to tell your browser to accept the security and trust localhost site.
-
-
-## Gotchas
-
-- If you are doing active development on other Augur repos, make sure to close out any running Augur Node or Augur UI instances and any clients that may be connected to them before running. We use hardcoded ports, and if they can't be used, the App will not run properly.
-- Make sure whatever you are using to connect to an Ethereum node on the UI is looking at the same network as your Augur Node configuration. For example, if you are using MetaMask, and you are running Augur App with a Rinkeby configuration, make sure that MetaMask is also connected to Rinkeby!
-- If `Mainnet` isn't in the `Select Configuration` dropdown, or the http and ws endpoints are blank, this is probably because an alpha release was previously installed and the installer does not overwrite the config.json file. Delete the config.json file and restart the Augur application.
-
-Directory locations per OS:
-
-    on OS X: ~/Library/Application Support/augur
-    on Linux: /home/<User Name>/.augur
-    on Windows: %AppData%\augur
-
-- If your app is stuck at 99% for awhile, try restarting.
-
-
-
-
+Alternatively, you can share feedback or seek help from community members in the [Augur Discord](https://discordapp.com/invite/faud6Fx). 
 
 ## License
 
 [MIT](LICENSE.md)
+
+# FAQ & Disclaimer
+
+It is **highly encouraged and recommended** that users read the [FAQ](https://augur.net/faq) and [disclaimer](https://augur.net/disclaimer) prior to interacting with the Augur protocol on the main Ethereum network.
