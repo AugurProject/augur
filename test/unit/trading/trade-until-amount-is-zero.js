@@ -73,6 +73,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -88,7 +94,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.times(100).times(constants.TRADE_GAS_LOWER_BOUND_MULTIPLIER).toString(16));
+              assert.strictEqual(p.tx.gas, "0x42");
               p.onSent({ hash: "TRANSACTION_HASH" });
               p.onSuccess({ hash: "TRANSACTION_HASH", value: speedomatic.fix("5", "hex") });
             },
@@ -139,6 +145,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -151,7 +163,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.times(2).times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER).toString(16));
+              assert.strictEqual(p.tx.gas, "0x42");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
@@ -205,6 +217,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -217,7 +235,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.toString(16));
+              assert.strictEqual(p.tx.gas, "0x42");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
@@ -271,6 +289,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -336,6 +360,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -406,6 +436,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -480,6 +516,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -545,6 +587,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -610,6 +658,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function (p) {
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
@@ -675,6 +729,12 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
+            publicFillBestOrderWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
+            publicTradeWithLimit: function (p) {
+              p.onSuccess("0x42");
+            },
             publicFillBestOrder: function () {
               assert.fail();
             },
@@ -687,7 +747,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.strictEqual(p.tx.gas, "0x" + constants.MINIMUM_TRADE_GAS.times(2).times(constants.TRADE_GAS_UPPER_BOUND_MULTIPLIER).toString(16));
+              assert.strictEqual(p.tx.gas, "0x42");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
