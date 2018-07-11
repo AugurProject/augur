@@ -214,7 +214,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
     })
 }
 
-AugurNodeServer.prototype.shutDownServer = function (event) {
+AugurNodeServer.prototype.shutDownServer = function () {
   try {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Stopping Augur Node Server')
