@@ -25,3 +25,5 @@ else
     npm run make -- --linux
 fi
 
+# create checksum files
+scripts/post_build.py
