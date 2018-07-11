@@ -199,7 +199,12 @@ Renderer.prototype.renderNetworkConfigForm = function (network, networkConfig) {
 Renderer.prototype.onReceiveConfig = function (event, data) {
   try {
     this.config = data;
+
     this.selectedNetworkForm = (this.selectedNetworkForm === "" ? this.config.network : this.selectedNetworkForm);
+    if (!this.config.networks[this.selectedNetworkForm]) {
+      this.selectedNetworkForm = this.config.network
+    }
+
     this.renderNetworkOptions();
     this.renderNetworkConfigForm(this.selectedNetworkForm, this.config.networks[this.selectedNetworkForm]);
   } catch (err) {
