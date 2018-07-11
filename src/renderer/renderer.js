@@ -55,10 +55,10 @@ Renderer.prototype.reset = function() {
   ipcRenderer.send("reset");
 }
 
-Renderer.prototype.onResetResponse = function(justClearConfig) {
+Renderer.prototype.onResetResponse = function() {
   setTimeout(() => {
     document.getElementById("reset_button").value = "RESET";
-    document.getElementById("reset_button").disabled = false;
+    document.getElementById("reset_button").disabled = (this.connectedServer !== "");
     document.getElementById("reset_button").setAttribute('style', 'padding-left:30px !important');
   }, 3000);
 }
