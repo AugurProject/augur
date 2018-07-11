@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as path from "path";
 import * as sqlite3 from "sqlite3";
 import { promisify, format } from "util";
-import { rename, copyFile, exists, unlink, readFile, writeFile} from "fs";
+import { rename, copyFile, existsSync, unlinkSync, readFile, writeFile} from "fs";
 import { NetworkConfiguration } from "augur-core";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
@@ -74,15 +74,15 @@ export async function createDbAndConnect(errorCallback: ErrorCallback | undefine
 async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
   const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
   let oldUploadBlockNumber = 0;
-  if (await promisify(exists)(oldUploadBlockNumberFile)) {
+  if (existsSync(oldUploadBlockNumberFile)) {
     oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
   }
   const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
   if (currentUploadBlockNumber !== oldUploadBlockNumber) {
     console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
     const dbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
-    if (await promisify(exists)(dbPath)) {
-      await promisify(unlink)(dbPath);
+    if (existsSync(dbPath)) {
+      unlinkSync(dbPath);
     }
     await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
   }
@@ -137,12 +137,12 @@ export async function saveBulkSyncDatabase(networkId: string, databaseDir?: stri
 
 export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
   const databasePathSyncing = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_SYNCING);
-  if (await promisify(exists)(databasePathSyncing)) {
+  if (existsSync(databasePathSyncing)) {
     logger.info(`Removing sync-only database: ${databasePathSyncing}`);
-    await promisify(unlink)(databasePathSyncing);
+    unlinkSync(databasePathSyncing);
   }
   const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
-  if (await promisify(exists)(databasePathBulkSync)) {
+  if (existsSync(databasePathBulkSync)) {
     logger.info(`Found prior bulk-sync database: ${databasePathBulkSync}`);
     await promisify(copyFile)(databasePathBulkSync, getDatabasePathFromNetworkId(networkId, databaseDir));
   }
