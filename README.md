@@ -9,14 +9,16 @@ Augur App is a lightweight Electron app that bundles the [Augur UI](https://gith
 Download the executable for your respective operating system:
 
 **Mac OSX** : ```mac-augur-1.0.0.dmg```
+
 **Windows** : ```win-augur-1.0.0.exe```
+
 **Linux** : ```linux-augur-1.0.0.deb```
 
 ## Running
 
 1. Download the executable for your respective operating system, double click to install.
 2. Select your configuration: Mainnet, Local, Rinkeby, Ropsten, or Kovan. 
-3. Point Augur App to an Ethereum node (Either via HTTP or WS endpoints, or both). By default, it's configured to use (https://infura.io/).  
+3. Augur App is pointed to Infura by default - however, you can configure the endpoints to any Ethereum node of your choice.
 5. Select "Connect", and Augur App will begin to sync Augur Node in the background. 
 6. Once synced to 100%, click "Open Augur App" to deploy the UI locally in your browser. 
 7. Authenticate using [MetaMask](https://metamask.io/), [Edge](https://edge.app/), [Ledger](https://www.ledgerwallet.com/) or [Trezor](https://trezor.io/). 
@@ -52,7 +54,9 @@ If you’ve installed a previous pre-release of Augur App locally on your machin
 Please delete the ```augur``` directory (or, just the ```config.json``` file) in the following location:
 
 **Mac OSX** : ```~/Library/Application\ Support/augur```
+
 **Windows** : ```%AppData%\augur```
+
 **Linux** : ``` ~/.augur```
 
 ## Questions, Bugs and Issues
