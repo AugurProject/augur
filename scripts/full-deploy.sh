@@ -5,6 +5,7 @@ NPM_VERSION=${NPM_VERSION:-prerelease}
 NPM_TAG=${NPM_TAG:-dev}
 PRODUCTION=${PRODUCTION:-false}
 GAS_PRICE_IN_NANOETH=${GAS_PRICE_IN_NANOETH:-20}
+BUMP_AUGUR_CORE=false
 
 NETWORKS_TO_DEPLOY=${NETWORKS_TO_DEPLOY:-"ROPSTEN RINKEBY KOVAN"}
 
@@ -50,18 +51,22 @@ function deployAugurJsAndUploadContracts()
 	(
 	export PRODUCTION
 	export GAS_PRICE_IN_NANOETH
-	AUGUR_CORE_VERSION=$($GET_VERSION $TMP_DIR/augur-core/package.json)
 	rm -rf augur.js
 	git clone git@github.com:AugurProject/augur.js
 	cd augur.js
-	git checkout -b augur-core@$AUGUR_CORE_VERSION
 	npm install
-	npm install --save-exact augur-core@$AUGUR_CORE_VERSION
 	git add package.json package-lock.json
-	git commit -m augur-core@$AUGUR_CORE_VERSION
-	npm run docker:build-and-push
-	git commit src/ -m 'geth-pop containers'
-	deployContracts
+	git commit -m "Updated dependencies" || true
+	if [ "$BUMP_AUGUR_CORE" == true ]; then
+		AUGUR_CORE_VERSION=$($GET_VERSION $TMP_DIR/augur-core/package.json)
+		git checkout -b augur-core@$AUGUR_CORE_VERSION
+		npm install --save-exact augur-core@$AUGUR_CORE_VERSION
+		git add package.json package-lock.json
+		git commit -m augur-core@$AUGUR_CORE_VERSION
+		npm run docker:build-and-push
+		git commit src/ -m 'geth-pop containers'
+		deployContracts
+	fi
 	npm version $NPM_VERSION
 	VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	git push
@@ -93,6 +98,7 @@ function deployAugurNode()
 function deployAugurUi()
 {
 	(
+	export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	rm -rf augur
 	git clone git@github.com:AugurProject/augur
@@ -132,8 +138,10 @@ function deployContracts()
 	done
 }
 
-checkSolidityVersion 0.4.20
-deployAugurCore
+if [ "$BUMP_AUGUR_CORE" == true ]; then
+	checkSolidityVersion 0.4.20
+	deployAugurCore
+fi
 deployAugurJsAndUploadContracts
 deployAugurUi
 deployAugurNode
