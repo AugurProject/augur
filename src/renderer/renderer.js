@@ -28,6 +28,7 @@ function Renderer() {
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
     document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
     document.getElementById("generateCert").addEventListener("click", this.toggleSSL.bind(this));
+    document.getElementById("reset_button").addEventListener("click", this.reset.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
 
@@ -39,8 +40,26 @@ function Renderer() {
     ipcRenderer.on('error', this.onServerError.bind(this));
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
+    ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
+
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.reset = function() {
+  event.preventDefault();
+  document.getElementById("reset_button").value = "RESETTING...";
+  document.getElementById("reset_button").setAttribute('style', 'padding-left:20px !important');
+  document.getElementById("reset_button").disabled = true;
+  ipcRenderer.send("reset");
+}
+
+Renderer.prototype.onResetResponse = function(justClearConfig) {
+  setTimeout(() => {
+    document.getElementById("reset_button").value = "RESET";
+    document.getElementById("reset_button").disabled = false;
+    document.getElementById("reset_button").setAttribute('style', 'padding-left:30px !important');
+  }, 3000);
 }
 
 Renderer.prototype.toggleSSL = function() {
@@ -115,9 +134,6 @@ Renderer.prototype.onSsl = function (event, value) {
 
 Renderer.prototype.onServerError = function (event, data) {
   this.showNotice("Failed to startup: " + data.error, "failure");
-  const syncProgress = document.getElementById("sync_progress_label");
-  clearClassList(syncProgress.classList);
-  syncProgress.classList.add("failure");
 }
 
 Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
