@@ -21,7 +21,7 @@ First, install dependencies:
 $ apt-get install libgconf2-4
 ```
 
-Then, install the `.deb` package with `sudo dpkg -i augur-app_1.0.0_amd64.deb`. Once installed, run the app from the command line:
+Then, install the `.deb` package with `sudo dpkg -i linux-augur-1.0.1.deb`. Once installed, run the app from the command line:
 
 ```bash
 augur-app
