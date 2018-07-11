@@ -236,10 +236,8 @@ input {
 }
 
 #blocks_remaining {
-  min-width: 32px;
-  padding-right: 5px;
+  padding: 0 5px;
   display: inline-block;
-  text-align: right;
 }
 
 .status {

@@ -18,7 +18,7 @@ function Renderer() {
     this.connectedServer = "";
     this.haveHitBack = false;
     this.spinnerCount = 0
-    this.spinner = ["...", "..", "."]
+    this.spinner = [".", "..", "..."]
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
@@ -110,6 +110,8 @@ Renderer.prototype.connectToServer = function (event) {
   const currentBlock = document.getElementById("current_block");
   blocksRemainingLbl.innerHTML = "-";
   currentBlock.innerHTML = "-";
+  blocksRemainingLbl.style.minWidth = 'unset';
+
 
   this.isSynced = false;
   this.spinnerCount = 0;
@@ -259,7 +261,8 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
 
     currentBlock.innerHTML = highestBlockNumber;
     blocksRemainingLbl.innerHTML = blocksRemaining || spinner;
-
+    blocksRemainingLbl.style.minWidth = '15px';
+ 
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
