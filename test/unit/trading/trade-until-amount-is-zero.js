@@ -73,16 +73,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -145,16 +142,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -217,16 +211,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -289,16 +280,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -360,16 +348,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -436,16 +421,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
             publicFillBestOrder: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);
@@ -516,16 +498,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 1);
@@ -587,16 +566,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 1);
@@ -659,12 +635,9 @@ describe("trading/trade-until-amount-is-zero", function () {
         return {
           Trade: {
             publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 1);
@@ -729,16 +702,13 @@ describe("trading/trade-until-amount-is-zero", function () {
       api: function () {
         return {
           Trade: {
-            publicFillBestOrderWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicTradeWithLimit: function (p) {
-              p.onSuccess("0x42");
-            },
-            publicFillBestOrder: function () {
+            publicFillBestOrderWithLimit: function () {
               assert.fail();
             },
-            publicTrade: function (p) {
+            publicTradeWithLimit: function (p) {
+              if (p.tx.estimateGas) {
+                return p.onSuccess("0x42");
+              }
               assert.strictEqual(p.meta.signer.toString("utf8"), "PRIVATE_KEY");
               assert.strictEqual(p.meta.accountType, "privateKey");
               assert.strictEqual(p._direction, 0);

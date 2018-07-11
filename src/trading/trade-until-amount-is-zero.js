@@ -5,7 +5,6 @@ var speedomatic = require("speedomatic");
 var BigNumber = require("bignumber.js");
 var immutableDelete = require("immutable-delete");
 var calculateTradeCost = require("./calculate-trade-cost");
-var calculateTradeGas = require("./calculate-trade-gas");
 var calculateTickSize = require("./calculate-tick-size");
 var getTradeAmountRemaining = require("./get-trade-amount-remaining");
 var convertBigNumberToHexString = require("../utils/convert-big-number-to-hex-string");
@@ -57,6 +56,7 @@ function tradeUntilAmountIsZero(p) {
 
   var payloadArgs = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
     tx: assign({ value: convertBigNumberToHexString(cost) }, p.tx),
+    _loopLimit: convertBigNumberToHexString(3),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
   });
@@ -87,26 +87,19 @@ function tradeUntilAmountIsZero(p) {
   };
 
   var tradePayload = assign({}, payloadArgs, {onSuccess: tradeOnSuccess});
-  var tradeFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrder : api().Trade.publicTrade;
+  var tradeFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrderWithLimit : api().Trade.publicTradeWithLimit;
 
   var estimateGasOnSuccess = function (gasEstimate) {
     var tradePayloadOnSuccess = assign({}, tradePayload, {tx: assign({}, tradePayload.tx, {gas: gasEstimate})});
     tradeFunction(tradePayloadOnSuccess);
   };
-  var estimateGasOnFailed = function () {
-    var tradePayloadOnFailure = assign({}, tradePayload, {tx: assign({}, tradePayload.tx, {gas: speedomatic.prefixHex(calculateTradeGas().toString(16))})});
-    tradeFunction(tradePayloadOnFailure);
-  };
 
   var estimateGasPayload = assign({}, payloadArgs, {
-    _loopLimit: convertBigNumberToHexString(100),
     onSent: noop,
     onSuccess: estimateGasOnSuccess,
-    onFailed: estimateGasOnFailed,
     tx: assign({}, payloadArgs.tx, { estimateGas: true })});
-  var estimateGasFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrderWithLimit : api().Trade.publicTradeWithLimit;
 
-  estimateGasFunction(estimateGasPayload);
+  tradeFunction(estimateGasPayload);
 }
 
 module.exports = tradeUntilAmountIsZero;
