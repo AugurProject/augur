@@ -37,11 +37,11 @@ function Renderer() {
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
     ipcRenderer.on('saveNetworkConfigResponse', this.onSaveNetworkConfigResponse.bind(this));
-    ipcRenderer.on('onSwitchNetworkResponse', this.onSwitchNetworkResponse.bind(this));
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
     ipcRenderer.on('error', this.onServerError.bind(this));
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
+    ipcRenderer.on('onServerUnconnected', this.onServerUnconnected.bind(this))
     ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
@@ -98,6 +98,11 @@ Renderer.prototype.onServerConnected = function (event) {
   document.getElementById("network_config_screen").style.display = "none";
   document.getElementById("open_app_screen").style.display = "block";
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
+  document.getElementById("reset_button").disabled = true;
+}
+
+Renderer.prototype.onServerUnconnected = function (event) {
+  document.getElementById("reset_button").disabled = false;
 }
 
 Renderer.prototype.connectToServer = function (event) {
@@ -171,17 +176,6 @@ Renderer.prototype.getNetworkConfigFormData = function () {
         "ws": document.getElementById("network_ws_endpoint").value
     }
     return { network, networkConfig };
-}
-
-Renderer.prototype.onSwitchNetworkResponse = function (event, data) {
-    this.config.network = data.network;
-    const syncProgress = document.getElementById("sync_progress_amount");
-    const networkStatus = document.getElementById("network_status");
-    clearClassList(syncProgress.classList);
-    clearClassList(networkStatus.classList);
-    syncProgress.innerHTML = "0";
-    networkStatus.classList.add("notConnected");
-    this.renderNetworkConfigForm(data.network, this.config.networks[data.network]);
 }
 
 Renderer.prototype.switchNetworkConfigForm = function () {
