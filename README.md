@@ -11,7 +11,7 @@ The easiest way to get started is to simply download one of the OS specific inst
 
 ### On Windows
 
-After installing on Windows, you will need to manually create a shortcut to the executable to avoid slow startup times. The installed executable can be found at `%LocalAppData%\augur-app\augur-app.exe`
+After installing on Windows, a shortcut on your desktop will be created to avoid slow startup times. The installed executable can be found at `%LocalAppData%\Local\Programs\augur\augur.exe`
 
 ### On Ubuntu
 
@@ -24,7 +24,7 @@ $ apt-get install libgconf2-4
 Then, install the `.deb` package with `sudo dpkg -i linux-augur-1.0.1.deb`. Once installed, run the app from the command line:
 
 ```bash
-augur-app
+augur
 ```
 
 ### From source
@@ -75,7 +75,7 @@ To use Ledger with Chrome we added local SSL support, follow these instructions:
 On the second screen, Open Augur app view, Clicking on `enable ssl for ledger` button will generate the files below. Clicking on `disable ssl for ledger` will simply delete the files.
 
 The two files generated, `localhost.key` and `localhost.crt`. They will live in this directory depending on your OS.
-  
+
     on OS X: ~/Library/Application Support/augur
     on Linux: /home/<User Name>/.augur
     on Windows: %AppData%\augur
@@ -87,10 +87,10 @@ If the self signed local certificates exist in the directory, the app will autom
 
 - If you are doing active development on other Augur repos, make sure to close out any running Augur Node or Augur UI instances and any clients that may be connected to them before running. We use hardcoded ports, and if they can't be used, the App will not run properly.
 - Make sure whatever you are using to connect to an Ethereum node on the UI is looking at the same network as your Augur Node configuration. For example, if you are using MetaMask, and you are running Augur App with a Rinkeby configuration, make sure that MetaMask is also connected to Rinkeby!
-- If `Mainnet` isn't in the `Select Configuration` dropdown, or the http and ws endpoints are blank, this is probably because an alpha release was previously installed and the installer does not overwrite the config.json file. Delete the config.json file and restart the Augur application. 
+- If `Mainnet` isn't in the `Select Configuration` dropdown, or the http and ws endpoints are blank, this is probably because an alpha release was previously installed and the installer does not overwrite the config.json file. Delete the config.json file and restart the Augur application.
 
 Directory locations per OS:
-  
+
     on OS X: ~/Library/Application Support/augur
     on Linux: /home/<User Name>/.augur
     on Windows: %AppData%\augur
