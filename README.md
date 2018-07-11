@@ -6,7 +6,7 @@ Augur App is a lightweight Electron app that bundles the [Augur UI](https://gith
 
 ### Executable Installer:
 
-Download the executable for your respective operating system:
+Download the executable of the [latest release](https://github.com/AugurProject/augur-app/releases) for your respective operating system:
 
 **Mac OSX** : ```mac-augur-1.0.0.dmg```
 
