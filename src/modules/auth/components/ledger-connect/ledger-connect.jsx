@@ -72,7 +72,7 @@ export default class Ledger extends Component {
     } = this.props
     this.props.updateLedgerStatus(LEDGER_STATES.ATTEMPTING_CONNECTION)
 
-    if (location.protocol != 'https:' && !process.env.AUGUR_HOSTED) {
+    if (location.protocol !== 'https:' && !process.env.AUGUR_HOSTED) {
       this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE)
     }
 
