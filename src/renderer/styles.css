@@ -237,8 +237,9 @@ input {
 
 #blocks_remaining {
   min-width: 32px;
-  padding-left: 5px;
+  padding-right: 5px;
   display: inline-block;
+  text-align: right;
 }
 
 .status {
