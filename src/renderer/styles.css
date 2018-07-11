@@ -196,7 +196,6 @@ input {
   display: flex;
   flex-direction: row;
   padding: 30px 0;
-  justify-content: space-between;
   max-height: 20%;
   align-items: center;
 }
@@ -204,6 +203,7 @@ input {
 .networkName {
   padding-left: 4rem;
   white-space: nowrap;
+  flex-grow: 1;
 }
 
 .connected,
@@ -231,8 +231,14 @@ input {
 
 .synced {
   white-space: nowrap;
-  margin-left: 1rem;
   padding-right: 4rem;
+  min-width: 281px;
+}
+
+#blocks_remaining {
+  min-width: 32px;
+  padding-left: 5px;
+  display: inline-block;
 }
 
 .status {
