@@ -16,11 +16,14 @@ interface NetworkIdRow {
   overrideTimestamp: number|null;
 }
 
-const DB_FILE_SYNCING = "augur-%s-syncing.db";
-const DB_FILE_BULK_SYNC = "augur-%s.db";
+// WARNING: Update this only if this release requires destroying all existing Augur Node Databases
+const DB_VERSION = 1;
+
+const DB_FILE_SYNCING = "augur-%s-syncing-%s.db";
+const DB_FILE_BULK_SYNC = "augur-%s-%s.db";
 
 function getDatabasePathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = DB_FILE_SYNCING) {
-  return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId));
+  return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId, DB_VERSION));
 }
 
 function getUploadBlockPathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = "upload-block-%s") {
