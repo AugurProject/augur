@@ -18,7 +18,7 @@ Download the executable for your respective operating system:
 
 1. Download the executable for your respective operating system, double click to install.
 2. Select your configuration: Mainnet, Local, Rinkeby, Ropsten, or Kovan. 
-3. Augur App is pointed to Infura by default - however, you can configure the endpoints to any Ethereum node of your choice.
+3. It's pre-configured with Infura endpoints, but you can use any Ethereum node of your choice.
 5. Select "Connect", and Augur App will begin to sync Augur Node in the background. 
 6. Once synced to 100%, click "Open Augur App" to deploy the UI locally in your browser. 
 7. Authenticate using [MetaMask](https://metamask.io/), [Edge](https://edge.app/), [Ledger](https://www.ledgerwallet.com/) or [Trezor](https://trezor.io/). 
