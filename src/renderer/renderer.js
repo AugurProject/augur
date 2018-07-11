@@ -18,7 +18,7 @@ function Renderer() {
     this.connectedServer = "";
     this.haveHitBack = false;
     this.spinnerCount = 0
-    this.spinner = ["-", "\\", "|", "/"]
+    this.spinner = [".", "..", "..."]
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
