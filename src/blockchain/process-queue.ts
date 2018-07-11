@@ -4,7 +4,6 @@ import * as Knex from "knex";
 import { logger } from "../utils/logger";
 import * as _ from "lodash";
 
-
 interface LogQueue {
   [blockHash: string]: Array<LogProcessCallback>;
 }
