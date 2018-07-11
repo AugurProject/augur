@@ -58,7 +58,7 @@ function AugurNodeServer() {
   }
   this.networkConfig = this.config.networks[this.config.network]
   this.augur = new Augur()
-  this.augurNodeController = null
+  this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
   this.window = null
   ipcMain.on('requestLatestSyncedBlock', this.requestLatestSyncedBlock.bind(this))
   ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
@@ -155,9 +155,8 @@ AugurNodeServer.prototype.onReset = function (event) {
     this.config = JSON.parse(JSON.stringify(defaultConfig));
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('config', this.config)
-    if (this.augurNodeController && this.augurNodeController.isRunning()) {
+    if (this.augurNodeController) {
       this.augurNodeController.resetDatabase()
-      this.restart()
     }
   } catch (err) {
     log.error(err)
@@ -220,7 +219,6 @@ AugurNodeServer.prototype.shutDownServer = function () {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Stopping Augur Node Server')
     this.augurNodeController.shutdown()
-    this.augurNodeController = undefined
   } catch (err) {
     log.error(err)
     this.window.webContents.send('error', {
