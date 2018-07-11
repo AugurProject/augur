@@ -22,14 +22,14 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
   }, (err: Error|null, onMarketContractData?: any): void => {
     if (err) return callback(err);
-    if (!onMarketContractData) return callback(new Error("Could not fetch market details"));
+    if (!onMarketContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
     const universePayload: {} = { tx: { to: log.universe, send: false } };
     parallel({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
       designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
-      if (onUniverseContractData.designatedReportStake == null) return callback(new Error("No REP balance on this market, fail"));
+      if (onUniverseContractData.designatedReportStake == null) return callback(new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`));
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketId: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,

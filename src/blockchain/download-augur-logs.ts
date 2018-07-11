@@ -39,6 +39,7 @@ function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Formatte
           if (err) {
             return nextBlock(err);
           }
+          if (logs.length > 0) logger.info(`Processing ${logs.length} logs`);
           eachSeries(logs, (log: FormattedEventLog, nextLog: ErrorCallback) => {
             const contractName = log.contractName;
             const eventName = log.eventName;
