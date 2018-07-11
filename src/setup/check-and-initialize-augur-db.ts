@@ -135,7 +135,7 @@ export async function saveBulkSyncDatabase(networkId: string, databaseDir?: stri
 export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
   const databasePathSyncing = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_SYNCING);
   if (await promisify(exists)(databasePathSyncing)) {
-    logger.info(`Cleaning ond sync-only database: ${databasePathSyncing}`);
+    logger.info(`Removing sync-only database: ${databasePathSyncing}`);
     await promisify(unlink)(databasePathSyncing);
   }
   const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
