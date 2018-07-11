@@ -20,28 +20,19 @@ import { SCALAR } from 'modules/markets/constants/market-types'
  *    potentialLossPercent:   number, the max percentage loss that can be lost with current numShares and limit price; for SELLs loss is always 100%
  */
 
-export default function (numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost) {
+export default function (numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost, sharesDepleted, tokensDepleted) {
   if (!numShares || !sharesFilled || !side|| !type || (!limitPrice && tradeTotalCost == null)) return null
-  let calculatedShares = numShares
-  let calculatedPrice = limitPrice
-  if (!limitPrice && tradeTotalCost) {
-    // market order
-    calculatedPrice = createBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
-    calculatedShares = sharesFilled
-  }
-  if (type === SCALAR && (!minPrice || (isNaN(minPrice) && !BigNumber.isBigNumber(minPrice)) || !maxPrice || (isNaN(maxPrice) && !BigNumber.isBigNumber(maxPrice)))) return null
-  const max = createBigNumber(type === SCALAR ? maxPrice : 1)
-  const min = createBigNumber(type === SCALAR ? minPrice : 0)
-  const limit = createBigNumber(calculatedPrice, 10)
-  const totalCost = type === SCALAR ? min.minus(limit).abs().times(calculatedShares) : limit.times(calculatedShares)
 
-  const potentialEthProfit = side === BUY ?
-    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
-    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
+  if (type === SCALAR && (!minPrice || (!BigNumber.isBigNumber(minPrice) && isNaN(minPrice)) || !maxPrice || (!BigNumber.isBigNumber(maxPrice) && isNaN(maxPrice)))) return null
 
-  const potentialEthLoss = side === BUY ?
-    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
-    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
+  const max = createBigNumber(maxPrice, 10)
+  const min = createBigNumber(minPrice, 10)
+  const limit = side === BUY ? createBigNumber(limitPrice, 10) : max.minus(min).abs().minus(limitPrice)
+  const totalCost = type === SCALAR ? min.minus(limit).abs().times(numShares) : limit.times(numShares)
+
+  const potentialEthProfit = createBigNumber(max.minus(limit).abs(), 10).times(numShares)
+
+  const potentialEthLoss = createBigNumber(limit.minus(min).abs(), 10).times(numShares)
 
   const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
   const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)
