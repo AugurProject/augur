@@ -4,6 +4,7 @@ import { promisify } from "util";
 import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
+import { saveBulkSyncDatabase } from "../setup/check-and-initialize-augur-db";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let syncFinished = false;
@@ -44,6 +45,7 @@ export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): P
   await promisify(downloadAugurLogs)(db, augur, fromBlock, handoffBlockNumber);
   setSyncFinished();
   await db.insert({ highestBlockNumber }).into("blockchain_sync_history");
+  await saveBulkSyncDatabase(augur.rpc.getNetworkID());
   logger.info(`Finished batch load from ${fromBlock} to ${handoffBlockNumber}`);
   return handoffBlockNumber;
 }
