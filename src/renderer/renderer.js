@@ -41,7 +41,6 @@ function Renderer() {
     ipcRenderer.on('error', this.onServerError.bind(this));
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
-    ipcRenderer.on('onServerUnconnected', this.onServerUnconnected.bind(this))
     ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
@@ -99,10 +98,6 @@ Renderer.prototype.onServerConnected = function (event) {
   document.getElementById("open_app_screen").style.display = "block";
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
   document.getElementById("reset_button").disabled = true;
-}
-
-Renderer.prototype.onServerUnconnected = function (event) {
-  document.getElementById("reset_button").disabled = false;
 }
 
 Renderer.prototype.connectToServer = function (event) {

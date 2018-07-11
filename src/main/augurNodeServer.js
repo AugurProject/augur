@@ -214,12 +214,11 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
     })
 }
 
-AugurNodeServer.prototype.shutDownServer = function () {
+AugurNodeServer.prototype.shutDownServer = function (event) {
   try {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Stopping Augur Node Server')
     this.augurNodeController.shutdown()
-    event.sender.send('onServerUnconnected', {})
   } catch (err) {
     log.error(err)
     this.window.webContents.send('error', {
