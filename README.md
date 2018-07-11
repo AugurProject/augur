@@ -36,11 +36,11 @@ You have two options for connecting to an Ethereum node: local or remote.
 
 ### Key Derivation Path
 
-Augur derives Ledger account addresses using the [BIP0044 standard](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki), or the `m/44'/60'/0'/0` key derivation path. Commonly used client-side wallets such as MyCrypto and MyEtherWallet, and the Ledger ETH App, use the "non-standard" key derivation path `m/44'/60'/0'`. To access the address Augur derives for you on MyCrypto, MyEtherWallet, and the Ledger ETH App, you must change your key derivation path to `m/44'/60'/0'/0` (BIP0044).
+Augur derives Ledger account addresses using the [BIP0044 standard](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki), or the `m/44'/60'/0'/0` key derivation path. Commonly used client-side wallets such as MyCrypto and MyEtherWallet, and the Ledger ETH App, use the "non-standard" key derivation path `m/44'/60'/0'`. To access the address Augur derives for you on MyCrypto, MyEtherWallet, and the Ledger ETH App, you must change your key derivation path to `m/44'/60'/0'/0` (BIP0044). [Reference](https://github.com/ethereum/EIPs/issues/84#issuecomment-292324521). 
 
 ### Local SSL Cert
 
-Ledger requires SSL, which isn't available by default while running software on localhost. If you plan to use a Ledger hardware wallet with Augur, you must first select **"Enable SSL For Ledger"** before clicking "Open Augur App". Selecting "Enable SSL For Ledger" generates a self-signed SSL certificate locally, allowing you to interact with your Ledger hardware wallet. Other available authentication methods do not require this. [Reference](https://github.com/ethereum/EIPs/issues/84#issuecomment-292324521). 
+Ledger requires SSL, which isn't available by default while running software on localhost. If you plan to use a Ledger hardware wallet with Augur, you must first select **"Enable SSL For Ledger"** before clicking "Open Augur App". Selecting "Enable SSL For Ledger" generates a self-signed SSL certificate locally, allowing you to interact with your Ledger hardware wallet. Other available authentication methods do not require this.
 
 ### Firefox Not Supported
 
