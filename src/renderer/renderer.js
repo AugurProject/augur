@@ -17,6 +17,8 @@ function Renderer() {
     this.selectedNetworkForm = "";
     this.connectedServer = "";
     this.haveHitBack = false;
+    this.spinnerCount = 0
+    this.spinner = ["-", "\\", "|", "/"]
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
@@ -110,6 +112,7 @@ Renderer.prototype.connectToServer = function (event) {
   currentBlock.innerHTML = "-";
 
   this.isSynced = false;
+  this.spinnerCount = 0;
   ipcRenderer.send("start", data);
 }
 
@@ -229,7 +232,8 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
-    let blocksRemaining = 0;
+    let blocksRemaining = null;
+    let spinner = null;
 
     const networkStatus = document.getElementById("network_status");
     const blocksRemainingLbl = document.getElementById("blocks_remaining");
@@ -243,7 +247,8 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       if (blocksRemaining <= 5) {
         this.isSynced = true;
       }
-      blocksRemainingLbl.innerHTML = blocksRemaining;
+    } else {
+      spinner = this.spinner[this.spinnerCount++ % this.spinner.length]
     }
 
     clearClassList(networkStatus.classList);
@@ -251,7 +256,9 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     if (this.isSynced) {
       this.clearNotice();
     }
+
     currentBlock.innerHTML = highestBlockNumber;
+    blocksRemainingLbl.innerHTML = blocksRemaining || spinner;
 
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
