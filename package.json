@@ -61,7 +61,7 @@
     "clone": "2.1.1",
     "columnify": "1.5.4",
     "ethereumjs-blockstream": "4.0.1",
-    "ethrpc": "5.3.13",
+    "ethrpc": "5.3.14",
     "event-emitter": "0.3.5",
     "immutable-delete": "1.1.0",
     "keccak": "1.2.0",
