@@ -165,6 +165,9 @@ input {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-height: 700px;
+  height: 700px;
+  margin-top: 70px;
 }
 
 .label {
@@ -196,7 +199,9 @@ input {
   display: flex;
   flex-direction: row;
   padding: 30px 0;
-  max-height: 20%;
+  height: 20px;
+  position: fixed;
+  width: 100%;
   align-items: center;
 }
 
