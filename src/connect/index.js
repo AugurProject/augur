@@ -35,7 +35,7 @@ function connect(connectOptions, callback) {
       maxReceivedFrameSize: constants.MAX_WEBSOCKET_FRAME_SIZE,
       maxReceivedMessageSize: constants.MAX_WEBSOCKET_FRAME_SIZE,
     },
-    propogationDelayWaitMillis: connectOptions.propogationDelayWaitMillis,
+    propagationDelayWaitMillis: connectOptions.propagationDelayWaitMillis,
     useWeb3Transport: connectOptions.useWeb3Transport || false,
   });
   if (isObject(connectOptions.ethereumNode)) {
