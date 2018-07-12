@@ -14,7 +14,7 @@
     "test": "test"
   },
   "scripts": {
-    "version": "npm build",
+    "version": "npm run rebuild",
     "go": "scripts/go.sh",
     "start": "node ./build/runServer",
     "debug": "node --inspect-brk ./build/runServer",
