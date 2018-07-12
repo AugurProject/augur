@@ -19,7 +19,7 @@ const url = require('url');
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 900, width: 900, minHeight: 600, height: 870, icon: path.join(__dirname, '../augur.ico')});
+  mainWindow = new BrowserWindow({minWidth: 650, width: 900, minHeight: 400, height: 870, icon: path.join(__dirname, '../augur.ico')});
 
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()

@@ -39,6 +39,8 @@ body {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-width: 900px;
+  overflow-x: scroll;
 }
 
 body, html {
