@@ -4,6 +4,8 @@ const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
 const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("../../../../build/blockchain/log-processors/completesets");
+const Augur = require("augur.js");
+const augur = new Augur();
 
 describe("blockchain/log-processors/completesets", () => {
   const test = (t) => {
@@ -37,9 +39,15 @@ describe("blockchain/log-processors/completesets", () => {
     description: "CompleteSetsPurchased log and removal",
     params: {
       log: {
+        universe: "0x0000000000000000000000000000000000000001",
         market: "0x0000000000000000000000000000000000000002",
         account: "0x0000000000000000000000000000000000000b0b",
-        numCompleteSets: "2",
+        numCompleteSets: "200000000000000",
+        numPurchasedOrSold: "200000000000000",
+        blockNumber: 437,
+        transactionHash: "0x00000000000000000000000000000000deadbeef",
+        logIndex: 0,
+        tradeGroupId: 12,
       },
       augur: {
         api: {
@@ -54,11 +62,7 @@ describe("blockchain/log-processors/completesets", () => {
             },
           },
         },
-        utils: {
-          convertOnChainPriceToDisplayPrice: (onChainPrice, minDisplayPrice, tickSize) => {
-            return onChainPrice.times(tickSize).plus(minDisplayPrice);
-          },
-        },
+        utils: augur.utils,
         trading: {
           calculateProfitLoss: (p) => {
             assert.isObject(p);

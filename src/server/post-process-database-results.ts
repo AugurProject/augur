@@ -46,6 +46,9 @@ const whitelist: TableWhitelist = {
   approvals: {
     value: true,
   },
+  completeSets: {
+    value: true,
+  },
   transfers: {
     value: true,
   },
