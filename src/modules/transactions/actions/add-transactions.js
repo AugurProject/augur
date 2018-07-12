@@ -1,4 +1,4 @@
-import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL, COMPLETE_SETS_SOLD } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
@@ -127,7 +127,7 @@ export function addTransferTransactions(transfers) {
         txhash: transaction.transactionHash,
         recipient: transaction.recipient,
       })
-      transactions[transaction.id] = header
+      if (transaction.meta.recipient !== null) transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
   }
@@ -192,6 +192,33 @@ export function addMarketCreationTransactions(marketsCreated) {
       marketCreationData[transaction.id] = header
     })
     dispatch(updateTransactionsData(marketCreationData))
+  }
+}
+
+export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
+  return (dispatch, getState) => {
+    const { marketsData } = getState()
+    const completeSetsData = {}
+    each(completeSetsSoldLogs, (completeSetLog) => {
+      const { marketId } = completeSetLog
+      const market = marketsData[marketId]
+      const transaction = Object.assign({ marketId, ...completeSetLog }, {
+        id: completeSetLog.transactionHash,
+      })
+      transaction.meta = {
+        market: transaction.marketId,
+        amount: formatShares(transaction.numCompleteSets).full,
+        block: completeSetLog.blockNumber,
+        sender: completeSetLog.account,
+      }
+      const header = Object.assign(buildHeader(transaction, COMPLETE_SETS_SOLD, SUCCESS), {
+        message: 'Complete Sets Sold',
+        description: `${transaction.meta.amount} sold on Market: ${market.description}`,
+        transactions: [transaction],
+      })
+      completeSetsData[transaction.id] = header
+    })
+    dispatch(updateTransactionsData(completeSetsData))
   }
 }
 
@@ -343,6 +370,9 @@ export function getSortOrder(type) {
   }
   if (type === TRADE) {
     return 20
+  }
+  if (type === COMPLETE_SETS_SOLD) {
+    return 40
   }
   if (type === TRANSFER) {
     return 50

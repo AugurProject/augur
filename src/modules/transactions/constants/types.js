@@ -6,6 +6,7 @@ export const MARKET_CREATION = 'MarketCreation'
 export const TRADE = 'Trade'
 export const POSITION = 'Position'
 export const REPORTING = 'Reporting'
+export const COMPLETE_SETS_SOLD = 'CompleteSetsSold'
 
 // Other
 export const TRANSFER_FUNDS = 'transfer_funds'
