@@ -1,6 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import { Augur, FormattedEventLog } from "augur.js";
 import { EventEmitter } from "events";
+import { NetworkConfiguration } from "augur-core";
 import * as Knex from "knex";
 import * as WebSocket from "ws";
 import * as https from "https";
@@ -38,6 +39,10 @@ export enum OrderState {
   OPEN = "OPEN",
   FILLED = "FILLED",
   CANCELED = "CANCELED",
+}
+
+export interface ConnectOptions extends NetworkConfiguration {
+  propagationDelayWaitMillis?: number;
 }
 
 export interface BaseTransactionRow {
