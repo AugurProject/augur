@@ -167,10 +167,11 @@ export function assembleMarket(
       dispatch,
     ) => {
 
+      const desc = listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_')
       const market = {
         ...marketData,
         description: marketData.description || '',
-        formattedDescription: listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_'),
+        formattedDescription: desc.length === 0 ? 'description' : desc,
         id: marketId,
       }
 
