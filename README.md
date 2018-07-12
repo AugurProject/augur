@@ -67,7 +67,9 @@ Alternatively, you can share feedback or seek help from community members in the
 When filing a bug, it may helpful to include the log file generated Augur App:
 
 **MacOS** : ~/Library/Logs/augur/log.log
+
 **Windows** : %USERPROFILE%\AppData\Roaming\augur\log.log
+
 **Linux** : ~/.config/augur/log.log
 
 ## License
