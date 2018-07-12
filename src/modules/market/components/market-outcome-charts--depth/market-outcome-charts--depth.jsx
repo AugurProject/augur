@@ -570,7 +570,7 @@ function drawLines(options) {
 
   Object.keys(marketDepth).forEach((side) => {
     depthChart.append('path')
-      .data([marketDepth[side]])
+      .data([marketDepth[side].reverse()])
       .attr('class', `depth-line-${side} outcome-line-${side}`)
       .attr('d', depthLine)
   })

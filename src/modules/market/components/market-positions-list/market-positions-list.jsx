@@ -85,6 +85,7 @@ export default class MarketPositionsList extends Component {
             { openOrders.length > 0 &&
               <ul className={Styles['MarketPositionsList__table-header']}>
                 <li>Open Orders</li>
+                <li />
                 <li><span>Quantity</span></li>
                 <li><span>Average <span />Price</span></li>
                 <li />

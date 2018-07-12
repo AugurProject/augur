@@ -184,6 +184,7 @@ export default class MarketPortfolioCard extends Component {
               )}
               >
                 <li>Outcome</li>
+                { isMobile ? <li><span>Net Qty</span></li> : <li><span>Net Quantity</span></li>}
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
@@ -234,6 +235,7 @@ export default class MarketPortfolioCard extends Component {
               )}
               >
                 <li>Outcome</li>
+                <li />
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
