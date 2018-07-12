@@ -25,7 +25,6 @@ const MarketProperties = (p) => {
   if (getValue(p, 'consensus.isInvalid')) {
     consensus = 'Invalid'
   }
-  console.log(p)
   return (
     <article>
       <section className={Styles.MarketProperties}>

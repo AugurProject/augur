@@ -108,7 +108,6 @@ MarketBasics.propTypes = {
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,
   tags: PropTypes.arrayOf(PropTypes.string),
-  description: PropTypes.string,
 }
 
 export default MarketBasics
