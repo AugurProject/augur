@@ -11,6 +11,7 @@ describe("trading/place-trade", function () {
       var placeTrade = proxyquire("../../../src/trading/place-trade", {
         "./get-better-worse-orders": t.mock.getBetterWorseOrders,
         "./trade-until-amount-is-zero": t.mock.tradeUntilAmountIsZero,
+        "../api": t.mock.api,
       });
       placeTrade(Object.assign({}, t.params, {
         onSuccess: function (res) {
@@ -46,6 +47,15 @@ describe("trading/place-trade", function () {
       },
     },
     mock: {
+      api: function () {
+        return {
+          Market: {
+            getNumberOfOutcomes: function (p, callback) {
+              callback(null, 2);
+            },
+          },
+        };
+      },
       getBetterWorseOrders: function (p, callback) {
         assert.deepEqual(p, {
           marketId: "MARKET_ADDRESS",
@@ -100,6 +110,15 @@ describe("trading/place-trade", function () {
       },
     },
     mock: {
+      api: function () {
+        return {
+          Market: {
+            getNumberOfOutcomes: function (p, callback) {
+              callback(null, 2);
+            },
+          },
+        };
+      },
       getBetterWorseOrders: function (p, callback) {
         assert.deepEqual(p, {
           marketId: "MARKET_ADDRESS",
