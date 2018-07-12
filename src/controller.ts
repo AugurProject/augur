@@ -4,7 +4,7 @@ import { NetworkConfiguration } from "augur-core";
 import { runServer, RunServerResult, shutdownServers } from "./server/run-server";
 import { bulkSyncAugurNodeWithBlockchain } from "./blockchain/bulk-sync-augur-node-with-blockchain";
 import { startAugurListeners } from "./blockchain/start-augur-listeners";
-import { createDbAndConnect, renameDatabaseFile } from "./setup/check-and-initialize-augur-db";
+import { createDbAndConnect, renameDatabaseFile, saveBulkSyncDatabase } from "./setup/check-and-initialize-augur-db";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
 import { processQueue } from "./blockchain/process-queue";
 import { ErrorCallback } from "./types";
@@ -45,6 +45,7 @@ export class AugurNodeController {
       this.db = await createDbAndConnect(errorCallback, this.augur, this.networkConfig, this.databaseDir);
       this.controlEmitter.emit(ControlMessageType.BulkSyncStarted);
       const handoffBlockNumber = await bulkSyncAugurNodeWithBlockchain(this.db, this.augur);
+      await saveBulkSyncDatabase(this.augur.rpc.getNetworkID(), this.databaseDir);
       this.controlEmitter.emit(ControlMessageType.BulkSyncFinished);
       this.logger.info("Bulk sync with blockchain complete.");
       processQueue.kill();
