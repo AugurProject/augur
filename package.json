@@ -74,9 +74,9 @@
   "dependencies": {
     "app-data-folder": "1.0.0",
     "augur-core": "1.0.0-20",
-    "augur-node": "5.0.0-13",
-    "augur-ui": "5.0.0-11",
-    "augur.js": "5.0.0-13",
+    "augur-node": "5.0.0-14",
+    "augur-ui": "5.0.0-12",
+    "augur.js": "5.0.0-15",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
     "express": "4.16.2",
