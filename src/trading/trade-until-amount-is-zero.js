@@ -90,7 +90,9 @@ function tradeUntilAmountIsZero(p) {
   var tradeFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrderWithLimit : api().Trade.publicTradeWithLimit;
 
   var estimateGasOnSuccess = function (gasEstimate) {
-    var tradePayloadOnSuccess = assign({}, tradePayload, {tx: assign({}, tradePayload.tx, {gas: gasEstimate})});
+    var gasEstimateNumber = new BigNumber(gasEstimate, 16);
+    var bufferedGasEstimate = convertBigNumberToHexString(gasEstimateNumber.plus(constants.GAS_BUFFER));
+    var tradePayloadOnSuccess = assign({}, tradePayload, {tx: assign({}, tradePayload.tx, {gas: bufferedGasEstimate})});
     tradeFunction(tradePayloadOnSuccess);
   };
 

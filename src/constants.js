@@ -89,6 +89,7 @@ module.exports = {
   CREATE_ORDER_GAS: "0x927C0",  // 600,000 is the ceiling for executing a single trade, from Alex 5.2.2018
   FILL_ORDER_GAS: "0xdbba0",    // 900,000 is the ceiling for executing a single trade, from Alex 5.2.2018
   MINIMUM_TRADE_GAS: new BigNumber("0x5e3918", 16),
+  GAS_BUFFER: new BigNumber("0x7A120", 16), // 500,000 gas buffer to account for fluctuation in the cost of fills
   TRADE_GAS_LOWER_BOUND_MULTIPLIER: new BigNumber("0.4", 10),
   TRADE_GAS_UPPER_BOUND_MULTIPLIER: new BigNumber("0.8", 10),
 
