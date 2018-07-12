@@ -171,7 +171,7 @@ export function assembleMarket(
       const market = {
         ...marketData,
         description: marketData.description || '',
-        formattedDescription: desc.length === 0 ? 'unreadable_description' : desc,
+        formattedDescription: desc.length === 0 ? 'description' : desc,
         id: marketId,
       }
       if (typeof market.minPrice !== 'undefined') market.minPrice = createBigNumber(market.minPrice)
