@@ -165,8 +165,8 @@ input {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  min-height: 800px;
-  height: 800px;
+  min-height: 700px;
+  height: 700px;
 }
 
 .label {
