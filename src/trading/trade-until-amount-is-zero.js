@@ -51,7 +51,7 @@ function tradeUntilAmountIsZero(p) {
   var cost = tradeCost.cost;
   var numTradesPerTx = 0;
   var gasLimit = p.doNotCreateOrders ? new BigNumber(0) : constants.WORST_CASE_PLACE_ORDER[p.numOutcomes];
-  while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]) < constants.MAX_GAS_LIMIT_FOR_TRADE) {
+  while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]) < constants.MAX_GAS_LIMIT_FOR_TRADE && numTradesPerTx < constants.MAX_FILLS_PER_TX) {
     numTradesPerTx++;
     gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
   }

@@ -104,6 +104,7 @@ module.exports = {
     8: new BigNumber("1292814", 10),
   },
   TRADE_GAS_BUFFER: new BigNumber("100000", 10),
+  MAX_FILLS_PER_TX: new BigNumber("3", 10),
   MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
 
   BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
