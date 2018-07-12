@@ -18,7 +18,7 @@ function airSwapOnClick(e) {
   window.AirSwap.Trader.render({
     env,
     mode: 'buy',
-    token: env === 'production' ? '0xe94327d07fc17907b4db788e5adf2ed424addff6' : '0xcc1cbd4f67cceb7c001bd4adf98451237a193ff8',
+    token: env === 'production' ? '0x1985365e9f78359a9b6ad760e32412f4a445e862' : '0xcc1cbd4f67cceb7c001bd4adf98451237a193ff8',
     onCancel() {
       console.info('AirSwap trade cancelled')
     },
