@@ -804,15 +804,29 @@ module.exports = {
   CREATE_SCALAR_MARKET_GAS: "0x5b8d80",
   CREATE_CATEGORICAL_MARKET_GAS: "0x5e3918",
 
-  CANCEL_ORDER_GAS: "0x5b8d80",
+  CANCEL_ORDER_GAS: "0xC9860",
 
-  // note: these numbers are wrong
-  CREATE_ORDER_GAS: "0x927C0", // 600,000 is the ceiling for executing a single trade, from Alex 5.2.2018
-  FILL_ORDER_GAS: "0xdbba0", // 900,000 is the ceiling for executing a single trade, from Alex 5.2.2018
-  MINIMUM_TRADE_GAS: new BigNumber("0x5e3918", 16),
-  GAS_BUFFER: new BigNumber("0x7A120", 16), // 500,000 gas buffer to account for fluctuation in the cost of fills
-  TRADE_GAS_LOWER_BOUND_MULTIPLIER: new BigNumber("0.4", 10),
-  TRADE_GAS_UPPER_BOUND_MULTIPLIER: new BigNumber("0.8", 10),
+  WORST_CASE_FILL: {
+    2: new BigNumber("933495", 10),
+    3: new BigNumber("1172245", 10),
+    4: new BigNumber("1410995", 10),
+    5: new BigNumber("1649744", 10),
+    6: new BigNumber("1888494", 10),
+    7: new BigNumber("2127244", 10),
+    8: new BigNumber("2365994", 10)
+  },
+  WORST_CASE_PLACE_ORDER: {
+    2: new BigNumber("695034", 10),
+    3: new BigNumber("794664", 10),
+    4: new BigNumber("894294", 10),
+    5: new BigNumber("993924", 10),
+    6: new BigNumber("1093554", 10),
+    7: new BigNumber("1193184", 10),
+    8: new BigNumber("1292814", 10)
+  },
+  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
+  MAX_FILLS_PER_TX: new BigNumber("3", 10),
+  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
 
   BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
   MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
@@ -3620,8 +3634,10 @@ module.exports = normalizePrice;
 
 var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
+var BigNumber = require("bignumber.js");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
+var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
@@ -3650,17 +3666,21 @@ function placeTrade(p) {
     price: p.limitPrice
   }, function (err, betterWorseOrders) {
     if (err) return p.onFailed(err);
-    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {
-      _price: p.limitPrice,
-      _fxpAmount: p.amount,
-      _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
-      _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0"
-    }));
+    api().Market.getNumberOfOutcomes({ tx: { to: p._market } }, function (err, numOutcomes) {
+      if (err) return p.onFailed(err);
+      tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {
+        _price: p.limitPrice,
+        _fxpAmount: p.amount,
+        numOutcomes: new BigNumber(numOutcomes, 16),
+        _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
+        _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0"
+      }));
+    });
   });
 }
 
 module.exports = placeTrade;
-},{"./get-better-worse-orders":97,"./trade-until-amount-is-zero":130,"immutable-delete":376,"lodash":419}],106:[function(require,module,exports){
+},{"../api":7,"./get-better-worse-orders":97,"./trade-until-amount-is-zero":130,"bignumber.js":161,"immutable-delete":376,"lodash":419}],106:[function(require,module,exports){
 "use strict";
 
 var longerPositionPL = require("./longer-position-pl");
@@ -4493,6 +4513,7 @@ var constants = require("../constants");
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {number} p.numOutcomes The number of outcomes in the market, must be an integer value on [2, 8].
  * @param {string} p.minPrice The minimum display price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display price for this market, as a base-10 string.
  * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
@@ -4519,60 +4540,57 @@ function tradeUntilAmountIsZero(p) {
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = tradeCost.cost;
+  var numTradesPerTx = new BigNumber(0);
+  var gasLimit = p.doNotCreateOrders ? new BigNumber(0) : constants.WORST_CASE_PLACE_ORDER[p.numOutcomes];
+  while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && numTradesPerTx.lt(constants.MAX_FILLS_PER_TX)) {
+    numTradesPerTx = numTradesPerTx.plus(1);
+    gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
+  }
+  gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
+  console.log("gasLimit: ", gasLimit.toFixed(), " numTradesPerTx: ", numTradesPerTx.toFixed());
   console.log("cost:", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (tradeCost.onChainAmount.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-
-  var payloadArgs = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
-    tx: assign({ value: convertBigNumberToHexString(cost) }, p.tx),
-    _loopLimit: convertBigNumberToHexString(3),
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
+    tx: assign({
+      value: convertBigNumberToHexString(cost),
+      gas: convertBigNumberToHexString(gasLimit)
+    }, p.tx),
+    _loopLimit: convertBigNumberToHexString(numTradesPerTx),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
-    _price: convertBigNumberToHexString(onChainPrice)
+    _price: convertBigNumberToHexString(onChainPrice),
+    onSuccess: function onSuccess(res) {
+      var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
+      getTradeAmountRemaining({
+        transactionHash: res.hash,
+        startingOnChainAmount: onChainAmount,
+        tickSize: tickSize
+      }, function (err, tradeOnChainAmountRemaining) {
+        if (err) return p.onFailed(err);
+        console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
+        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
+        if (tradeOnChainAmountRemaining.eq(onChainAmount)) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
+          return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
+        }
+        var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
+        var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
+        newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
+        tradeUntilAmountIsZero(assign({}, p, {
+          _fxpAmount: newAmount.toFixed(),
+          sharesProvided: newSharesProvided,
+          onSent: noop // so that p.onSent only fires when the first transaction is sent
+        }));
+      });
+    }
   });
-
-  var tradeOnSuccess = function tradeOnSuccess(res) {
-    var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
-    getTradeAmountRemaining({
-      transactionHash: res.hash,
-      startingOnChainAmount: onChainAmount,
-      tickSize: tickSize
-    }, function (err, tradeOnChainAmountRemaining) {
-      if (err) return p.onFailed(err);
-      console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
-      console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
-      if (tradeOnChainAmountRemaining.eq(onChainAmount)) {
-        if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
-        return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
-      }
-      var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
-      var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
-      newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
-      tradeUntilAmountIsZero(assign({}, p, {
-        _fxpAmount: newAmount.toFixed(),
-        sharesProvided: newSharesProvided,
-        onSent: noop // so that p.onSent only fires when the first transaction is sent
-      }));
-    });
-  };
-
-  var tradePayload = assign({}, payloadArgs, { onSuccess: tradeOnSuccess });
-  var tradeFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrderWithLimit : api().Trade.publicTradeWithLimit;
-
-  var estimateGasOnSuccess = function estimateGasOnSuccess(gasEstimate) {
-    var gasEstimateNumber = new BigNumber(gasEstimate, 16);
-    var bufferedGasEstimate = convertBigNumberToHexString(gasEstimateNumber.plus(constants.GAS_BUFFER));
-    var tradePayloadOnSuccess = assign({}, tradePayload, { tx: assign({}, tradePayload.tx, { gas: bufferedGasEstimate }) });
-    tradeFunction(tradePayloadOnSuccess);
-  };
-
-  var estimateGasPayload = assign({}, payloadArgs, {
-    onSent: noop,
-    onSuccess: estimateGasOnSuccess,
-    tx: assign({}, payloadArgs.tx, { estimateGas: true }) });
-
-  tradeFunction(estimateGasPayload);
+  if (p.doNotCreateOrders) {
+    api().Trade.publicFillBestOrderWithLimit(tradePayload);
+  } else {
+    api().Trade.publicTradeWithLimit(tradePayload);
+  }
 }
 
 module.exports = tradeUntilAmountIsZero;
@@ -4758,7 +4776,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.0.0-14';
+module.exports = '5.0.0-15';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -34517,7 +34535,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.vfOUSVRx/augur.js"
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.sf7H8d3i/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34543,7 +34561,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.vfOUSVRx/augur.js",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.sf7H8d3i/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
