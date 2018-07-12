@@ -32,10 +32,8 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const marketType = (market && market.marketType) || null
   const minPrice = (market && ((typeof market.minPrice === 'number') || (BigNumber.isBigNumber(market.minPrice)))) ? market.minPrice : null
   const maxPrice = (market && ((typeof market.maxPrice === 'number') || (BigNumber.isBigNumber(market.maxPrice)))) ? market.maxPrice : null
-  const sharesDepleted = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.sharesDepleted) || '0', 10)
-  const tokensDepleted = createBigNumber((outcomeTradeInProgress && outcomeTradeInProgress.tokensDepleted) || '0', 10)
   const adjustedTotalCost = (totalCost.gt('0')) ? totalCost.minus(totalFee).abs().toFixed() : null
-  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minPrice, maxPrice, marketType, sharesFilled, adjustedTotalCost, sharesDepleted, tokensDepleted)
+  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minPrice, maxPrice, marketType, sharesFilled, adjustedTotalCost)
 
   let maxNumShares
   if (limitPrice != null) {

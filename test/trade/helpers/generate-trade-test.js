@@ -9,6 +9,7 @@ import { formatEther, formatPercent } from 'utils/format-number'
 describe('modules/trade/helpers/generate-trade.js', () => {
   const { state } = mocks
   const { generateTrade } = require('modules/trade/helpers/generate-trade')
+  console.log(state.marketsData.testMarketId, state.outcomesData.testMarketId['1'], state.tradesInProgress.testMarketId['1'], state.orderBooks.testMarketId);
   const trade = generateTrade(state.marketsData.testMarketId, state.outcomesData.testMarketId['1'], state.tradesInProgress.testMarketId['1'], state.orderBooks.testMarketId)
 
   it('should generate trade object', () => {
@@ -25,9 +26,9 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         roundedValue: 0,
         value: 0,
       },
-      potentialEthProfit: formatEther(2500),
-      potentialEthLoss: formatEther(2500),
-      potentialProfitPercent: formatPercent(100),
+      potentialEthProfit: formatEther(7500),
+      potentialEthLoss: formatEther(-2500),
+      potentialProfitPercent: formatPercent(-300),
       potentialLossPercent: formatPercent(100),
       side: 'buy',
       shareCost: formatEther(0),
