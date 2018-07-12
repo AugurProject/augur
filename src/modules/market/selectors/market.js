@@ -174,6 +174,7 @@ export function assembleMarket(
         formattedDescription: desc.length === 0 ? 'description' : desc,
         id: marketId,
       }
+
       if (typeof market.minPrice !== 'undefined') market.minPrice = createBigNumber(market.minPrice)
       if (typeof market.maxPrice !== 'undefined') market.maxPrice = createBigNumber(market.maxPrice)
 
