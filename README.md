@@ -8,7 +8,7 @@ Augur App is a lightweight Electron app that bundles the [Augur UI](https://gith
 
 Download the executable of the [latest release](https://github.com/AugurProject/augur-app/releases) for your respective operating system:
 
-**Mac OSX** : ```mac-augur-1.0.0.dmg```
+**MacOS** : ```mac-augur-1.0.0.dmg```
 
 **Windows** : ```win-augur-1.0.0.exe```
 
@@ -52,7 +52,7 @@ If you’ve installed a previous pre-release of Augur App locally on your machin
 
 Please delete the ```augur``` directory (or, just the ```config.json``` file) in the following location:
 
-**Mac OSX** : ```~/Library/Application\ Support/augur```
+**MacOS** : ```~/Library/Application\ Support/augur```
 
 **Windows** : ```%AppData%\augur```
 
@@ -66,9 +66,9 @@ Alternatively, you can share feedback or seek help from community members in the
 
 When filing a bug, it may helpful to include the log file generated Augur App:
 
-- on Linux: ~/.config/augur/log.log
-- on OS X: ~/Library/Logs/augur/log.log
-- on Windows: %USERPROFILE%\AppData\Roaming\augur\log.log
+**MacOS** : ~/Library/Logs/augur/log.log
+**Windows** : %USERPROFILE%\AppData\Roaming\augur\log.log
+**Linux** : ~/.config/augur/log.log
 
 ## License
 
