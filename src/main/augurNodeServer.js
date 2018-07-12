@@ -7,6 +7,9 @@ const path = require('path')
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 
+const REMOTE_DELAY_WAIT = 60*1000;
+const LOCAL_DELAY_WAIT = 1*1000;
+
 const defaultConfig = {
   'network': 'mainnet',
   'version': '1.0.0',
@@ -76,7 +79,11 @@ AugurNodeServer.prototype.setWindow = function (window) {
 
 AugurNodeServer.prototype.startServer = function () {
   try {
-    this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
+    var propagationDelayWaitMillis = REMOTE_DELAY_WAIT;
+    if (this.networkConfig.http.indexOf("localhost") > -1 || this.networkConfig.http.indexOf("127.0.0.1") > -1) {
+      propagationDelayWaitMillis = LOCAL_DELAY_WAIT;
+    }
+    this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis }), this.appDataPath)
     this.augurNodeController.addLogger(log);
 
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
