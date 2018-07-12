@@ -65,7 +65,7 @@ const MarketProperties = (p) => {
             <MarketLink
               className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
-              formattedDescription={p.description}
+              formattedDescription={p.formattedDescription}
               linkType={linkType}
             >
               { linkType || 'view'}
@@ -121,7 +121,6 @@ MarketProperties.propTypes = {
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
   forkingMarket: PropTypes.string,
-  description: PropTypes.string,
 }
 
 export default MarketProperties

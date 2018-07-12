@@ -72,7 +72,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
         <h1 className={CommonStyles.MarketCommon__description}>
           <MarketLink
             id={p.id}
-            formattedDescription={p.description}
+            formattedDescription={p.formattedDescription}
             className="market-link"
           >
             {p.description}
