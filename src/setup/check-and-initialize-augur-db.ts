@@ -119,7 +119,7 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 }
 
 export async function renameDatabaseFile(networkId: string, databaseDir?: string) {
-  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
+  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
   const backupDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, `backup-augur-%s-${new Date().getTime()}.db`);
   logger.info(`Moving database ${augurDbPath} to ${backupDbPath}`);
   await promisify(rename)(augurDbPath, backupDbPath);
