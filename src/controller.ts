@@ -7,7 +7,7 @@ import { startAugurListeners } from "./blockchain/start-augur-listeners";
 import { createDbAndConnect, renameDatabaseFile, saveBulkSyncDatabase } from "./setup/check-and-initialize-augur-db";
 import { clearOverrideTimestamp } from "./blockchain/process-block";
 import { processQueue } from "./blockchain/process-queue";
-import { ErrorCallback } from "./types";
+import { ConnectOptions, ErrorCallback } from "./types";
 import { EventEmitter } from "events";
 import { ControlMessageType } from "./constants";
 import { logger } from "./utils/logger";
@@ -30,7 +30,7 @@ export class AugurNodeController {
   private errorCallback: ErrorCallback | undefined;
   private logger = logger;
 
-  constructor(augur: Augur, networkConfig: NetworkConfiguration, databaseDir?: string) {
+  constructor(augur: Augur, networkConfig: ConnectOptions, databaseDir?: string) {
     this.augur = augur;
     this.networkConfig = networkConfig;
     this.databaseDir = databaseDir;
