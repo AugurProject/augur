@@ -239,7 +239,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     const highestBlockNumber = data.highestBlockNumber;
     if (lastSyncBlockNumber !== null && lastSyncBlockNumber !== 0) {
       blocksRemaining = parseInt(highestBlockNumber, 10) - parseInt(lastSyncBlockNumber, 10)
-      if (blocksRemaining <= 5) {
+      if (blocksRemaining <= 15) {
         this.isSynced = true;
       }
       blocksRemainingCountLbl = blocksRemaining.toString()
