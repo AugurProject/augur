@@ -48,6 +48,7 @@ function createWindow () {
     submenu: [
         //{ label: "About Application", selector: "orderFrontStandardAboutPanel:" },
         //{ type: "separator" },
+        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
         { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
     ]}, {
     label: "Edit",
