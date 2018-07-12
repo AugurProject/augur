@@ -270,7 +270,6 @@ Renderer.prototype.clearNotice = function () {
 
 
 Renderer.prototype.showNotice = function (message, className) {
-    log.info(message);
     const notice = document.getElementById("notice");
     clearClassList(notice.classList);
     notice.innerHTML = "";
