@@ -25,6 +25,7 @@ const MarketProperties = (p) => {
   if (getValue(p, 'consensus.isInvalid')) {
     consensus = 'Invalid'
   }
+  console.log(p)
   return (
     <article>
       <section className={Styles.MarketProperties}>
@@ -64,7 +65,7 @@ const MarketProperties = (p) => {
             <MarketLink
               className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
-              formattedDescription={p.formattedDescription}
+              formattedDescription={p.description}
               linkType={linkType}
             >
               { linkType || 'view'}
@@ -120,6 +121,7 @@ MarketProperties.propTypes = {
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
   forkingMarket: PropTypes.string,
+  description: PropTypes.string,
 }
 
 export default MarketProperties

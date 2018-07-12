@@ -72,7 +72,7 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
         <h1 className={CommonStyles.MarketCommon__description}>
           <MarketLink
             id={p.id}
-            formattedDescription={p.formattedDescription}
+            formattedDescription={p.description}
             className="market-link"
           >
             {p.description}
@@ -108,6 +108,7 @@ MarketBasics.propTypes = {
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,
   tags: PropTypes.arrayOf(PropTypes.string),
+  description: PropTypes.string,
 }
 
 export default MarketBasics
