@@ -2,8 +2,10 @@
 
 var assign = require("lodash").assign;
 var immutableDelete = require("immutable-delete");
+var BigNumber = require("bignumber.js");
 var getBetterWorseOrders = require("./get-better-worse-orders");
 var tradeUntilAmountIsZero = require("./trade-until-amount-is-zero");
+var api = require("../api");
 
 /**
  * @param {Object} p Parameters object.
@@ -32,12 +34,16 @@ function placeTrade(p) {
     price: p.limitPrice,
   }, function (err, betterWorseOrders) {
     if (err) return p.onFailed(err);
-    tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {
-      _price: p.limitPrice,
-      _fxpAmount: p.amount,
-      _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
-      _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
-    }));
+    api().Market.getNumberOfOutcomes({tx: {to: p._market}}, function (err, numOutcomes) {
+      if (err) return p.onFailed(err);
+      tradeUntilAmountIsZero(assign({}, immutableDelete(p, ["limitPrice", "amount"]), {
+        _price: p.limitPrice,
+        _fxpAmount: p.amount,
+        numOutcomes: new BigNumber(numOutcomes, 16),
+        _betterOrderId: (betterWorseOrders || {}).betterOrderId || "0x0",
+        _worseOrderId: (betterWorseOrders || {}).worseOrderId || "0x0",
+      }));
+    });
   });
 }
 

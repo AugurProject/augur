@@ -83,15 +83,29 @@ module.exports = {
   CREATE_SCALAR_MARKET_GAS: "0x5b8d80",
   CREATE_CATEGORICAL_MARKET_GAS: "0x5e3918",
 
-  CANCEL_ORDER_GAS: "0x5b8d80",
+  CANCEL_ORDER_GAS: "0xC9860",
 
-  // note: these numbers are wrong
-  CREATE_ORDER_GAS: "0x927C0",  // 600,000 is the ceiling for executing a single trade, from Alex 5.2.2018
-  FILL_ORDER_GAS: "0xdbba0",    // 900,000 is the ceiling for executing a single trade, from Alex 5.2.2018
-  MINIMUM_TRADE_GAS: new BigNumber("0x5e3918", 16),
-  GAS_BUFFER: new BigNumber("0x7A120", 16), // 500,000 gas buffer to account for fluctuation in the cost of fills
-  TRADE_GAS_LOWER_BOUND_MULTIPLIER: new BigNumber("0.4", 10),
-  TRADE_GAS_UPPER_BOUND_MULTIPLIER: new BigNumber("0.8", 10),
+  WORST_CASE_FILL: {
+    2: new BigNumber("933495", 10),
+    3: new BigNumber("1172245", 10),
+    4: new BigNumber("1410995", 10),
+    5: new BigNumber("1649744", 10),
+    6: new BigNumber("1888494", 10),
+    7: new BigNumber("2127244", 10),
+    8: new BigNumber("2365994", 10),
+  },
+  WORST_CASE_PLACE_ORDER: {
+    2: new BigNumber("695034", 10),
+    3: new BigNumber("794664", 10),
+    4: new BigNumber("894294", 10),
+    5: new BigNumber("993924", 10),
+    6: new BigNumber("1093554", 10),
+    7: new BigNumber("1193184", 10),
+    8: new BigNumber("1292814", 10),
+  },
+  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
+  MAX_FILLS_PER_TX: new BigNumber("3", 10),
+  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
 
   BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
   MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error

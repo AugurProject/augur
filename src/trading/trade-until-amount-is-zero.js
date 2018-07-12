@@ -22,6 +22,7 @@ var constants = require("../constants");
  * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [0, 7].
+ * @param {number} p.numOutcomes The number of outcomes in the market, must be an integer value on [2, 8].
  * @param {string} p.minPrice The minimum display price for this market, as a base-10 string.
  * @param {string} p.maxPrice The maximum display price for this market, as a base-10 string.
  * @param {string=} p._tradeGroupId ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
@@ -48,60 +49,57 @@ function tradeUntilAmountIsZero(p) {
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = tradeCost.cost;
+  var numTradesPerTx = new BigNumber(0);
+  var gasLimit = p.doNotCreateOrders ? new BigNumber(0) : constants.WORST_CASE_PLACE_ORDER[p.numOutcomes];
+  while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && numTradesPerTx.lt(constants.MAX_FILLS_PER_TX)) {
+    numTradesPerTx = numTradesPerTx.plus(1);
+    gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
+  }
+  gasLimit = gasLimit.plus(constants.TRADE_GAS_BUFFER);
+  console.log("gasLimit: ", gasLimit.toFixed(), " numTradesPerTx: ", numTradesPerTx.toFixed());
   console.log("cost:", cost.toFixed(), "wei", speedomatic.unfix(cost, "string"), "eth");
   if (tradeCost.onChainAmount.lt(constants.PRECISION.zero)) {
     console.info("tradeUntilAmountIsZero complete: only dust remaining");
     return p.onSuccess(null);
   }
-
-  var payloadArgs = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
-    tx: assign({ value: convertBigNumberToHexString(cost) }, p.tx),
-    _loopLimit: convertBigNumberToHexString(3),
+  var tradePayload = assign({}, immutableDelete(p, ["doNotCreateOrders", "numTicks", "minPrice", "maxPrice", "sharesProvided"]), {
+    tx: assign({
+      value: convertBigNumberToHexString(cost),
+      gas: convertBigNumberToHexString(gasLimit),
+    }, p.tx),
+    _loopLimit: convertBigNumberToHexString(numTradesPerTx),
     _fxpAmount: convertBigNumberToHexString(onChainAmount),
     _price: convertBigNumberToHexString(onChainPrice),
+    onSuccess: function (res) {
+      var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
+      getTradeAmountRemaining({
+        transactionHash: res.hash,
+        startingOnChainAmount: onChainAmount,
+        tickSize: tickSize,
+      }, function (err, tradeOnChainAmountRemaining) {
+        if (err) return p.onFailed(err);
+        console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
+        console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
+        if (tradeOnChainAmountRemaining.eq(onChainAmount)) {
+          if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
+          return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
+        }
+        var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
+        var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
+        newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
+        tradeUntilAmountIsZero(assign({}, p, {
+          _fxpAmount: newAmount.toFixed(),
+          sharesProvided: newSharesProvided,
+          onSent: noop, // so that p.onSent only fires when the first transaction is sent
+        }));
+      });
+    },
   });
-
-  var tradeOnSuccess = function (res) {
-    var tickSize = calculateTickSize(p.numTicks, p.minPrice, p.maxPrice);
-    getTradeAmountRemaining({
-      transactionHash: res.hash,
-      startingOnChainAmount: onChainAmount,
-      tickSize: tickSize,
-    }, function (err, tradeOnChainAmountRemaining) {
-      if (err) return p.onFailed(err);
-      console.log("starting amount: ", onChainAmount.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(onChainAmount, tickSize).toFixed(), "shares");
-      console.log("remaining amount:", tradeOnChainAmountRemaining.toFixed(), "ocs", convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize).toFixed(), "shares");
-      if (tradeOnChainAmountRemaining.eq(onChainAmount)) {
-        if (p.doNotCreateOrders) return p.onSuccess(tradeOnChainAmountRemaining.toFixed());
-        return p.onFailed(new Error("Trade completed but amount of trade unchanged"));
-      }
-      var newAmount = convertOnChainAmountToDisplayAmount(tradeOnChainAmountRemaining, tickSize);
-      var newSharesProvided = newAmount.minus(new BigNumber(displayAmount, 10).minus(new BigNumber(p.sharesProvided, 10)));
-      newSharesProvided = newSharesProvided.lt(0) ? "0" : newSharesProvided.toFixed();
-      tradeUntilAmountIsZero(assign({}, p, {
-        _fxpAmount: newAmount.toFixed(),
-        sharesProvided: newSharesProvided,
-        onSent: noop, // so that p.onSent only fires when the first transaction is sent
-      }));
-    });
-  };
-
-  var tradePayload = assign({}, payloadArgs, {onSuccess: tradeOnSuccess});
-  var tradeFunction = p.doNotCreateOrders ? api().Trade.publicFillBestOrderWithLimit : api().Trade.publicTradeWithLimit;
-
-  var estimateGasOnSuccess = function (gasEstimate) {
-    var gasEstimateNumber = new BigNumber(gasEstimate, 16);
-    var bufferedGasEstimate = convertBigNumberToHexString(gasEstimateNumber.plus(constants.GAS_BUFFER));
-    var tradePayloadOnSuccess = assign({}, tradePayload, {tx: assign({}, tradePayload.tx, {gas: bufferedGasEstimate})});
-    tradeFunction(tradePayloadOnSuccess);
-  };
-
-  var estimateGasPayload = assign({}, payloadArgs, {
-    onSent: noop,
-    onSuccess: estimateGasOnSuccess,
-    tx: assign({}, payloadArgs.tx, { estimateGas: true })});
-
-  tradeFunction(estimateGasPayload);
+  if (p.doNotCreateOrders) {
+    api().Trade.publicFillBestOrderWithLimit(tradePayload);
+  } else {
+    api().Trade.publicTradeWithLimit(tradePayload);
+  }
 }
 
 module.exports = tradeUntilAmountIsZero;
