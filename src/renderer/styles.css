@@ -46,13 +46,6 @@ body, html {
   height: 100%;
 }
 
-.container {
-  min-height: 800px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
 input[type=text] {
   background-color: #DBDAE1;
 }
@@ -172,6 +165,8 @@ input {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  min-height: 800px;
+  height: 800px;
 }
 
 .label {
