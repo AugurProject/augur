@@ -42,3 +42,9 @@ export enum ControlMessageType {
   BulkSyncStarted = "BulkSyncStarted",
   BulkSyncFinished = "BulkSyncFinished",
 }
+
+export enum MarketType {
+  yesNo,
+  categorical,
+  scalar,
+}
