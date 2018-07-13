@@ -4,7 +4,6 @@ import hashlib
 import json
 import os
 import requests
-import pprint
 
 # headers
 GH_TOKEN = os.environ['GH_TOKEN']
@@ -48,8 +47,6 @@ current_version = get_current_version()
 result = get_github_release_info()
 release_info = get_version_release_info(result, current_version)
 release_id = release_info['id']
-print(release_id)
-
 
 # set up build dir paths
 build_dir = 'dist/'
