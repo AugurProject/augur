@@ -2,10 +2,10 @@ import { expect } from "chai";
 import "mocha";
 import { augur, augurNodeRequest } from "./utils";
 
-describe("getContractAddresses", () => {
+describe("getSyncData", () => {
   let result: any;
   before( async () => {
-    result = await augurNodeRequest("getContractAddresses", {});
+    result = await augurNodeRequest("getSyncData", {});
   });
   it("isSyncFinished", () => {
     expect(result.isSyncFinished).to.equal(true);
