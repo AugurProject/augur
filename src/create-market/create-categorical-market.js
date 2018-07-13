@@ -7,7 +7,6 @@ var getMarketCreationCost = require("./get-market-creation-cost");
 var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -33,12 +32,12 @@ function createCategoricalMarket(p) {
       tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_CATEGORICAL_MARKET_GAS,
       }, p.tx),
       _outcomes: p._outcomes.map(function (outcome) { return encodeTag(outcome); }),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function (res) {
+        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
         getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
           p.onSuccess(assign({}, res, { callReturn: marketId }));
