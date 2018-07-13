@@ -42,7 +42,7 @@ function Renderer() {
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
     ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
 
-    ipcRenderer.on('resetConfig', this.onResetConfig.bind(this));
+    ipcRenderer.on('reset', this.onResetConfig.bind(this));
     ipcRenderer.on('generateCert', this.toggleSSL.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
@@ -70,6 +70,7 @@ Renderer.prototype.onResetConfig = function() {
 }
 
 Renderer.prototype.toggleSSL = function() {
+  console.log('toggle')
   ipcRenderer.send("toggleSslAndRestart", !this.isSsl);
 }
 

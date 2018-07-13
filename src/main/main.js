@@ -57,10 +57,10 @@ function createWindow () {
     submenu: [
         { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
         { label: "Reset Configuration File", click: function() { 
-          ipc.send('reset', {});
+          mainWindow.webContents.send('reset', '');
         }},
-        { label: "Enable SSL for Ledger", click: function() { 
-          ipc.send('generateCert', {});
+        { label: "Toggle SSL for Ledger", click: function() { 
+          mainWindow.webContents.send('generateCert', '');
         }},
     ]},
     {

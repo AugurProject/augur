@@ -221,6 +221,7 @@ input {
   margin-bottom: 2rem;
   width: 100%;
   align-items: center;
+  min-height: 90px;
 }
 
 #syncing_info {
@@ -267,10 +268,6 @@ input {
 
 .blocksLabel {
   font-size: 16px;
-}
-
-.dbInfo {
-  
 }
 
 .networkName {
