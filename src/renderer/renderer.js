@@ -52,7 +52,7 @@ function Renderer() {
 }
 
 Renderer.prototype.reset = function() {
-  ipcRenderer.send("reset");
+  ipcRenderer.send("resetConfig");
 }
 
 Renderer.prototype.onResetResponse = function() {

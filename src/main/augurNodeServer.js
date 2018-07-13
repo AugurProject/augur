@@ -69,7 +69,7 @@ function AugurNodeServer() {
   ipcMain.on('start', this.onStartNetwork.bind(this))
   ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
   ipcMain.on('reset', this.onReset.bind(this))
-
+  ipcMain.on('resetConfig', this.onResetConfig.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
@@ -158,11 +158,23 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
   }
 }
 
-AugurNodeServer.prototype.onReset = function (event) {
+AugurNodeServer.prototype.onResetConfig = function (event) {
   try {
     this.config = JSON.parse(JSON.stringify(defaultConfig));
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('config', this.config)
+  } catch (err) {
+    log.error(err)
+    this.window.webContents.send('error', {
+      error: err
+    })
+  }
+  event.sender.send('resetResponse', {})
+}
+
+
+AugurNodeServer.prototype.onReset = function (event) {
+  try {
     if (this.augurNodeController) {
       this.augurNodeController.resetDatabase()
     }
