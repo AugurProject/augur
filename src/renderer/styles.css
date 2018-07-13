@@ -452,6 +452,11 @@ input {
   margin-right: 5px;
 }
 
+.neverBreakup {
+  white-space: nowrap;
+  display: inline;
+}
+
 @-webkit-keyframes fadeinout {
   0%,
   100% {
