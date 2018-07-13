@@ -16,7 +16,6 @@ export default function () {
       const expirationDate = marketsWithAccountReport[marketId].expirationDate || null
       const isFinal = marketsWithAccountReport[marketId].isFinal || null
       const description = marketsWithAccountReport[marketId].description || null
-      const formattedDescription = marketsWithAccountReport[marketId].description || null
       const outcome = marketsWithAccountReport[marketId].marketOutcome || null
       const outcomePercentage = (marketsWithAccountReport[marketId].proportionCorrect && formatPercent(createBigNumber(marketsWithAccountReport[marketId].proportionCorrect, 10).times(100))) || null
       const reported = marketsWithAccountReport[marketId].accountReport || null
@@ -33,7 +32,6 @@ export default function () {
         ...(marketsData[marketId] || {}), // TODO -- clean up this object
         marketId,
         description,
-        formattedDescription,
         outcome,
         outcomePercentage,
         reported,
