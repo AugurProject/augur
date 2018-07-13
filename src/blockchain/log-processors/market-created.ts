@@ -7,13 +7,12 @@ import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { WEI_PER_ETHER, ZERO } from "../../constants";
+import { MarketType, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
   parallel({
-    numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
     feeWindow: (next: AsyncCallback): void => augur.api.Market.getFeeWindow(marketPayload, next),
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
     designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
@@ -40,8 +39,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateId = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
-        const numOutcomes = parseInt(onMarketContractData.numberOfOutcomes!, 10);
-        const marketType: string = ["yesNo", "categorical", "scalar"][log.marketType];
+        const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? log.outcomes.length : 2;
+        const marketType: string = MarketType[log.marketType];
         const marketsDataToInsert: MarketsRow<string|number> = {
           marketType,
           marketId:                   log.market,
