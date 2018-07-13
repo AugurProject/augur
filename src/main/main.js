@@ -19,7 +19,7 @@ const url = require('url');
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 650, width: 900, minHeight: 400, height: 870, icon: path.join(__dirname, '../augur.ico')});
+  mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')});
 
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
@@ -48,9 +48,16 @@ function createWindow () {
     submenu: [
         //{ label: "About Application", selector: "orderFrontStandardAboutPanel:" },
         //{ type: "separator" },
-        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
         { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-    ]}, {
+    ]}, 
+    {
+    label: "Settings",
+    submenu: [
+        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+        { label: "Reset Configuration File", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+        { label: "Enable SSL for Ledger", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+    ]},
+    {
     label: "Edit",
     submenu: [
         { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
