@@ -45,25 +45,17 @@ function Renderer() {
     ipcRenderer.on('reset', this.onResetConfig.bind(this));
     ipcRenderer.on('showNotice', this.onShowNotice.bind(this));
     ipcRenderer.on('toggleSsl', this.onToggleSSL.bind(this));
+    ipcRenderer.on('clearDB', this.onResetConfig.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
 }
 
 Renderer.prototype.reset = function() {
-  event.preventDefault();
-  document.getElementById("reset_button").value = "RESETTING...";
-  document.getElementById("reset_button").setAttribute('style', 'padding-left:20px !important');
-  document.getElementById("reset_button").disabled = true;
   ipcRenderer.send("reset");
 }
 
 Renderer.prototype.onResetResponse = function() {
-  setTimeout(() => {
-    document.getElementById("reset_button").value = "RESET";
-    document.getElementById("reset_button").disabled = (this.connectedServer !== "");
-    document.getElementById("reset_button").setAttribute('style', 'padding-left:30px !important');
-  }, 3000);
 }
 
 Renderer.prototype.onResetConfig = function() {

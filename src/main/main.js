@@ -65,6 +65,9 @@ function createWindow () {
         { label: "Reset Configuration File", click: function() {
           mainWindow.webContents.send('reset', '');
         }},
+        { label: "Clear Database", click: function() {
+          mainWindow.webContents.send('clearDB', '');
+        }},
         { type: "separator" },
         { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
         { type: "separator" },
