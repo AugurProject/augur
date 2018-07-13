@@ -34,10 +34,14 @@ def get_version_release_info(result, version):
 # https://uploads.github.com/repos/AugurProject/augur-app/releases/11907294/assets{?name,label}
 def upload_release_asset(id, name):
     headers['Content-Type'] = 'text/plain'
-    request = requests.put('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
-              file={'file': open(name, 'rb')},
-              headers={headers}
-              )
+    try:
+        request = requests.put('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
+                  file={'file': open(name, 'rb')},
+                  headers={headers}
+                  )
+        request.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print(err)
 
 
 current_version = get_current_version()
