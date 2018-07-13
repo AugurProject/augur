@@ -51,18 +51,21 @@ function createWindow () {
         //{ label: "About Application", selector: "orderFrontStandardAboutPanel:" },
         //{ type: "separator" },
         { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-    ]}, 
+    ]},
     {
     label: "Settings",
     submenu: [
         { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-        { label: "Reset Configuration File", click: function() { 
+        { label: "Reset Configuration File", click: function() {
           mainWindow.webContents.send('reset', '');
         }},
-        { label: "Toggle SSL for Ledger", click: function() { 
-          mainWindow.webContents.send('generateCert', '');
+        { label: "Enable SSL for Ledger", click: function() {
+          mainWindow.webContents.send('toggleSsl', true);
         }},
-    ]},
+        { label: "Disable SSL for Ledger", click: function() {
+          mainWindow.webContents.send('toggleSsl', false);
+        }},
+      ]},
     {
     label: "Edit",
     submenu: [

@@ -75,6 +75,11 @@ AugurUIServer.prototype.stopServer = function () {
 }
 
 AugurUIServer.prototype.restart = function () {
+  // clear any message that occured to start server
+  this.window.webContents.send("showNotice", {
+    message: "",
+    class: "success"
+  });
   this.server.close();
   this.startServer();
 }
@@ -87,6 +92,10 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
   if (!enabled) {
     fs.unlinkSync(certPath);
     fs.unlinkSync(keyPath);
+    this.window.webContents.send("showNotice", {
+      message: "Disabling SSL for Ledger...",
+      class: "success"
+    });
     return this.restart();
   }
 
@@ -122,6 +131,12 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       return this.restart();
     });
   });
+
+  this.window.webContents.send("showNotice", {
+    message: "Enabling SSL for Ledger...",
+    class: "success"
+  });
+
 }
 
 module.exports = AugurUIServer;

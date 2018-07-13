@@ -43,7 +43,8 @@ function Renderer() {
     ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
 
     ipcRenderer.on('reset', this.onResetConfig.bind(this));
-    ipcRenderer.on('generateCert', this.toggleSSL.bind(this));
+    ipcRenderer.on('showNotice', this.onShowNotice.bind(this));
+    ipcRenderer.on('toggleSsl', this.onToggleSSL.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
@@ -69,9 +70,8 @@ Renderer.prototype.onResetConfig = function() {
   ipcRenderer.send("reset");
 }
 
-Renderer.prototype.toggleSSL = function() {
-  console.log('toggle')
-  ipcRenderer.send("toggleSslAndRestart", !this.isSsl);
+Renderer.prototype.onToggleSSL = function(event, data) {
+  ipcRenderer.send("toggleSslAndRestart", data);
 }
 
 Renderer.prototype.checkConnectValidity = function(event) {
@@ -289,6 +289,9 @@ Renderer.prototype.clearNotice = function () {
   this.showNotice("", "success")
 }
 
+Renderer.prototype.onShowNotice = function (event, data) {
+  this.showNotice(data.message, data.class)
+}
 
 Renderer.prototype.showNotice = function (message, className) {
     const notice = document.getElementById("notice");
