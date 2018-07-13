@@ -262,10 +262,13 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       this.clearNotice();
     }
 
+    const pct = blocksSyncedNum / highestBlockNumber * 100
+    const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+
     highestBlock.innerHTML = highestBlockNumber || 0;
     blocksSynced.innerHTML = blocksSyncedNum  || blocksRemainingCountLbl;
     blocksBehind.innerHTML = blocksSyncedNum ? highestBlockNumber - blocksSyncedNum  : '0';
-    syncPercent.innerHTML = Math.floor(blocksSyncedNum / highestBlockNumber * 100)  || 0;
+    syncPercent.innerHTML = pctLbl || 0
 
     blocksSynced.style.minWidth = '15px';
 
