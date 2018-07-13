@@ -2,7 +2,8 @@ const electron = require('electron');
 const log = require('electron-log');
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug';
-
+const appData = require('app-data-folder');
+const fs = require("fs");
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
 const {app, BrowserWindow, Menu} = electron;
@@ -16,8 +17,6 @@ const augurUIServer = new AugurUIServer();
 
 const path = require('path');
 const url = require('url');
-
-
 
 function createWindow () {
   // Create the browser window.
@@ -43,6 +42,19 @@ function createWindow () {
     augurNodeController.setWindow(mainWindow);
   }, 2000);
 
+  // check if ssl files exist
+  this.sslMenu = [
+    { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+    { label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '')} }
+  ];
+  this.appDataPath = appData("augur");
+  const certPath = path.join(this.appDataPath, 'localhost.crt');
+  const keyPath = path.join(this.appDataPath, 'localhost.key');
+  if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    this.sslMenu.push({ label: "Disable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', false)}})
+  } else {
+    this.sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
+  }
 
   // Create the Application's main menu
   var template = [{
@@ -53,19 +65,9 @@ function createWindow () {
         { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
     ]},
     {
-    label: "Settings",
-    submenu: [
-        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-        { label: "Reset Configuration File", click: function() {
-          mainWindow.webContents.send('reset', '');
-        }},
-        { label: "Enable SSL for Ledger", click: function() {
-          mainWindow.webContents.send('toggleSsl', true);
-        }},
-        { label: "Disable SSL for Ledger", click: function() {
-          mainWindow.webContents.send('toggleSsl', false);
-        }},
-      ]},
+      label: "Settings",
+      submenu: this.sslMenu
+    },
     {
     label: "Edit",
     submenu: [
