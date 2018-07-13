@@ -4,7 +4,6 @@
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
-var constants = require("../../../src/constants");
 
 describe("create-market/create-scalar-market", function () {
   var extraInfo = {
@@ -66,7 +65,6 @@ describe("create-market/create-scalar-market", function () {
               assert.deepEqual(p.tx, {
                 to: "UNIVERSE_ADDRESS",
                 value: "0xf43fc2c04ee0000",
-                gas: constants.CREATE_SCALAR_MARKET_GAS,
               });
               assert.strictEqual(p._endTime, 2345678901);
               assert.strictEqual(p._feePerEthInWei, "0x4321");

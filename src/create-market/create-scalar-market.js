@@ -36,7 +36,6 @@ function createScalarMarket(p) {
       tx: assign({
         to: p.universe,
         value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_SCALAR_MARKET_GAS,
       }, p.tx),
       _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),
@@ -44,6 +43,7 @@ function createScalarMarket(p) {
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function (res) {
+        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
         getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
           p.onSuccess(assign({}, res, { callReturn: marketId }));
