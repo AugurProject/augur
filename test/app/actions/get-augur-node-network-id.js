@@ -26,7 +26,7 @@ describe('modules/app/actions/get-augur-node-network-id.js', () => {
     stub: {
       augur: {
         augurNode: {
-          getContractAddresses: () => assert.fail(),
+          getSyncData: () => assert.fail(),
         },
       },
     },
@@ -44,7 +44,7 @@ describe('modules/app/actions/get-augur-node-network-id.js', () => {
     stub: {
       augur: {
         augurNode: {
-          getContractAddresses: callback => callback(null, { net_version: '4' }),
+          getSyncData: callback => callback(null, { net_version: '4' }),
         },
       },
     },
