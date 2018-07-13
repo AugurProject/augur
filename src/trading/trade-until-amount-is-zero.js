@@ -50,7 +50,8 @@ function tradeUntilAmountIsZero(p) {
   var onChainPrice = tradeCost.onChainPrice;
   var cost = tradeCost.cost;
   var numTradesPerTx = new BigNumber(1);
-  var orderCreationCost = p.doNotCreateOrders ? new BigNumber(0) : constants.WORST_CASE_PLACE_ORDER[p.numOutcomes];
+  var placeOrderGas = p.sharesProvided > 0 ? constants.PLACE_ORDER_WITH_SHARES[p.numOutcomes] : constants.PLACE_ORDER_NO_SHARES[p.numOutcomes];
+  var orderCreationCost = p.doNotCreateOrders ? new BigNumber(0) : placeOrderGas;
   var gasLimit = orderCreationCost.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
   while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && numTradesPerTx.lt(constants.MAX_FILLS_PER_TX)) {
     numTradesPerTx = numTradesPerTx.plus(1);

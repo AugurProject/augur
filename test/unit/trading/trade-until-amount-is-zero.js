@@ -92,7 +92,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              assert.strictEqual(p.tx.gas, "0x36dcff");
+              assert.strictEqual(p.tx.gas, "0x349d73");
               p.onSent({ hash: "TRANSACTION_HASH" });
               p.onSuccess({ hash: "TRANSACTION_HASH", value: speedomatic.fix("5", "hex") });
             },
@@ -159,7 +159,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.strictEqual(p.tx.gas, "0x36dcff");
+              assert.strictEqual(p.tx.gas, "0x349d73");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
@@ -229,7 +229,7 @@ describe("trading/trade-until-amount-is-zero", function () {
               assert.strictEqual(p._fxpAmount, "0x38d7ea4c68000");
               assert.strictEqual(p._price, "0x1388");
               assert.strictEqual(p._tradeGroupId, "0x1");
-              assert.strictEqual(p.tx.gas, "0x36dcff");
+              assert.strictEqual(p.tx.gas, "0x349d73");
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
