@@ -158,7 +158,7 @@ export default class CreateMarketResolution extends Component {
                 className={classNames({ [`${StylesForm.active}`]: newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC })}
                 onClick={() => this.validateExpiryType(EXPIRY_SOURCE_GENERIC)}
                 onKeyPress={e => keyPressed(e)}
-              >Outcome will be determined by news media
+              >General knowledge
               </button>
             </li>
             <li className={Styles['CreateMarketResolution__expiry-source-specific']}>

@@ -159,7 +159,7 @@ export default class CreateMarketReview extends Component {
             <p className={Styles.CreateMarketReview__smallparagraph}>
               {
                 newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
-                  'Outcome will be determined by news media' :
+                  'General knowledge' :
                   `Outcome will be detailed on public website: ${newMarket.expirySource}`
               }
             </p>
