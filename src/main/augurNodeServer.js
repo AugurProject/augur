@@ -84,6 +84,7 @@ AugurNodeServer.prototype.startServer = function () {
       propagationDelayWaitMillis = LOCAL_DELAY_WAIT;
     }
     this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis }), this.appDataPath)
+    this.augurNodeController.clearLoggers();
     this.augurNodeController.addLogger(log);
 
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
