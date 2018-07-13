@@ -175,7 +175,7 @@ input {
   flex-grow: 1;
   min-height: 700px;
   padding-right: 3.5rem;
-  min-width: 500px;
+  min-width: 450px;
   padding-bottom: 10px;
 }
 
@@ -449,6 +449,7 @@ input {
 
 #blocks_synced {
   display:inline-block;
+  margin-right: 5px;
 }
 
 @-webkit-keyframes fadeinout {

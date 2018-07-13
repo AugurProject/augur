@@ -234,6 +234,7 @@ Renderer.prototype.renderNetworkOptions = function () {
 Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let blocksRemaining = null;
     let blocksRemainingCountLbl = "0";
+    let blocksSyncedNum = null;
 
     const networkStatus = document.getElementById("network_status");
     const highestBlock = document.getElementById("highest_block");
@@ -250,6 +251,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
         this.isSynced = true;
       }
       blocksRemainingCountLbl = blocksRemaining.toString()
+      blocksSyncedNum = highestBlockNumber - blocksRemainingCountLbl
     } else {
       blocksRemainingCountLbl = this.spinner[this.spinnerCount++ % this.spinner.length]
     }
@@ -260,11 +262,10 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       this.clearNotice();
     }
 
-    const blocksSyncedNum = highestBlockNumber - blocksRemainingCountLbl;
-    highestBlock.innerHTML = highestBlockNumber;
-    blocksSynced.innerHTML = blocksSyncedNum;
-    blocksBehind.innerHTML = highestBlockNumber - blocksSyncedNum;
-    syncPercent.innerHTML = this.isSynced ? 100 : Math.round(blocksSyncedNum / highestBlockNumber * 100);
+    highestBlock.innerHTML = highestBlockNumber || 0;
+    blocksSynced.innerHTML = blocksSyncedNum  || blocksRemainingCountLbl;
+    blocksBehind.innerHTML = blocksSyncedNum ? highestBlockNumber - blocksSyncedNum  : '0';
+    syncPercent.innerHTML = this.isSynced ? 100 : (Math.round(blocksSyncedNum / highestBlockNumber * 100)  || 0);
 
     blocksSynced.style.minWidth = '15px';
 
