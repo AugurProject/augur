@@ -11,6 +11,7 @@ EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     npm run make -- --mac
+    brew install pyenv
 else
     rm -rf node_modules/*
     apt update
@@ -25,5 +26,5 @@ else
     npm run make -- --linux
 fi
 
-pip install requests
+sudo pip install requests
 python scripts/post_build.py
