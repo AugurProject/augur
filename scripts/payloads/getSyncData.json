@@ -1,7 +1,7 @@
 {
   "id": 11,
   "jsonrpc": "2.0",
-  "method": "getContractAddresses",
+  "method": "getSyncData",
   "params": {
   }
 }
