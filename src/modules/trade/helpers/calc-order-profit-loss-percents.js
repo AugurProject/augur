@@ -21,30 +21,31 @@ import { SCALAR } from 'modules/markets/constants/market-types'
  */
 
 export default function (numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost) {
+  // tradeTotalCost is the "orderbook stays the same when this trade gets processed" value, not the maximum possible cost of the trade.
   if (!numShares || !sharesFilled || !side|| !type || (!limitPrice && tradeTotalCost == null)) return null
-  let calculatedShares = numShares
-  let calculatedPrice = limitPrice
-  if (!limitPrice && tradeTotalCost) {
-    // market order
-    calculatedPrice = createBigNumber(tradeTotalCost, 10).dividedBy(sharesFilled).toFixed()
-    calculatedShares = sharesFilled
-  }
-  if (type === SCALAR && (!minPrice || (isNaN(minPrice) && !BigNumber.isBigNumber(minPrice)) || !maxPrice || (isNaN(maxPrice) && !BigNumber.isBigNumber(maxPrice)))) return null
-  const max = createBigNumber(type === SCALAR ? maxPrice : 1)
-  const min = createBigNumber(type === SCALAR ? minPrice : 0)
-  const limit = createBigNumber(calculatedPrice, 10)
-  const totalCost = type === SCALAR ? min.minus(limit).abs().times(calculatedShares) : limit.times(calculatedShares)
 
-  const potentialEthProfit = side === BUY ?
-    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares) :
-    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares)
+  if (type === SCALAR && (!minPrice || (!BigNumber.isBigNumber(minPrice) && isNaN(minPrice)) || !maxPrice || (!BigNumber.isBigNumber(maxPrice) && isNaN(maxPrice)))) return null
+  const max = createBigNumber(maxPrice, 10)
+  const min = createBigNumber(minPrice, 10)
+  const marketRange = max.minus(min).abs()
 
-  const potentialEthLoss = side === BUY ?
-    createBigNumber(limit.minus(min).abs(), 10).times(calculatedShares) :
-    createBigNumber(max.minus(limit).abs(), 10).times(calculatedShares)
+  const displayLimit = createBigNumber(limitPrice, 10)
 
-  const potentialProfitPercent = potentialEthProfit.dividedBy(totalCost).times(100)
-  const potentialLossPercent = potentialEthLoss.dividedBy(totalCost).times(100)
+  const sharePriceLong = displayLimit.minus(min).dividedBy(marketRange)
+  const sharePriceShort = max.minus(displayLimit).dividedBy(marketRange)
+
+  const longETH = sharePriceLong.times(numShares).times(marketRange)
+  const shortETH = sharePriceShort.times(numShares).times(marketRange)
+
+  const maxTotalTradeCost= side === BUY ? longETH : shortETH
+
+  const longETHPercent = shortETH.dividedBy(maxTotalTradeCost).times(100)
+  const shortETHPercent = longETH.dividedBy(maxTotalTradeCost).times(100)
+
+  const potentialEthProfit = side === BUY ? shortETH : longETH
+  const potentialEthLoss = side === BUY ? longETH : shortETH
+  const potentialProfitPercent = side === BUY ? longETHPercent : shortETHPercent
+  const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent
 
   return {
     potentialEthProfit,
