@@ -10,6 +10,7 @@ export function getSyncData(db: Knex, augur: Augur, callback: (err?: Error|null,
     timestamp: parseInt(currentBlock.timestamp, 16),
   };
   db("blocks").first(["blockNumber as number", "blockHash as hash", "timestamp"]).orderBy("blockNumber", "DESC").asCallback((err: Error|null, lastProcessedBlock) => {
+    if (err) return callback(err);
     callback(null, {
       version: augur.version,
       net_version: augur.rpc.getNetworkID(),

@@ -1,14 +1,19 @@
 "use strict";
 
 const assert = require("chai").assert;
-const { getContractAddresses } = require("../../../../build/server/getters/get-contract-addresses");
+const setupTestDb = require("../../test.database");
+const { getSyncData } = require("../../../../build/server/getters/get-sync-data");
 
-describe("server/getters/get-contract-addresses", () => {
+describe("server/getters/get-sync-data", () => {
   const test = (t) => {
     it(t.description, (done) => {
-      getContractAddresses(t.params.augur, (err, contractAddresses) => {
-        t.assertions(err, contractAddresses);
-        done();
+      setupTestDb((err, db) => {
+        if (err) assert.fail(err);
+        getSyncData(db, t.params.augur, (err, contractAddresses) => {
+          t.assertions(err, contractAddresses);
+          db.destroy();
+          done();
+        });
       });
     });
   };
@@ -27,6 +32,13 @@ describe("server/getters/get-contract-addresses", () => {
         },
         rpc: {
           getNetworkID: () => 974,
+          getCurrentBlock: () => {
+            return {
+              hash: "0x1500002",
+              timestamp: "0x59f28308",
+              number: "0x16e362",
+            };
+          },
         },
       },
     },
@@ -40,6 +52,16 @@ describe("server/getters/get-contract-addresses", () => {
         addresses: {
           universe: "the-universe-address",
           controller: "the-controller-address",
+        },
+        highestBlock: {
+          hash: "0x1500002",
+          number: 1500002,
+          timestamp: 1509065480,
+        },
+        lastProcessedBlock: {
+          hash: "0x1500001",
+          number: 1500001,
+          timestamp: 1509065474,
         },
       });
     },
