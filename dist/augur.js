@@ -16,7 +16,7 @@ var api = require("../api");
  * @param {function} p.onFailed Called if the transaction fails.
  */
 function approveAugur(p) {
-  augurNode.getContractAddresses(function (err, contractsInfo) {
+  augurNode.getSyncData(function (err, contractsInfo) {
     if (err) return p.onFailed(err);
     var augurContract = contractsInfo.addresses.Augur;
     api().Cash.allowance({ _owner: p.address, _spender: augurContract }, function (err, allowance) {
@@ -348,23 +348,24 @@ var submitRequest = require("./submit-json-rpc-request");
  * @param {function} callback Called after the version and contract addresses have been retrieved.
  * @return {Object} Object containing version and addresses.
  */
-function getContractAddresses(callback) {
-  submitRequest("getContractAddresses", null, callback);
+function getSyncData(callback) {
+  submitRequest("getSyncData", null, callback);
 }
 
-module.exports = getContractAddresses;
+module.exports = getSyncData;
 },{"./submit-json-rpc-request":18}],16:[function(require,module,exports){
 "use strict";
 
 module.exports = {
   connect: require("./connect"),
-  getContractAddresses: require("./get-contract-addresses"),
+  getContractAddresses: require("./get-sync-data"),
+  getSyncData: require("./get-sync-data"),
   submitRequest: require("./submit-json-rpc-request"),
   subscribeToEvent: require("./subscribe-to-event"),
   unsubcribeFromEvent: require("./unsubscribe-from-event"),
   unsubscribeFromAllEvents: require("./unsubscribe-from-all-events")
 };
-},{"./connect":13,"./get-contract-addresses":15,"./submit-json-rpc-request":18,"./subscribe-to-event":19,"./unsubscribe-from-all-events":20,"./unsubscribe-from-event":21}],17:[function(require,module,exports){
+},{"./connect":13,"./get-sync-data":15,"./submit-json-rpc-request":18,"./subscribe-to-event":19,"./unsubscribe-from-all-events":20,"./unsubscribe-from-event":21}],17:[function(require,module,exports){
 "use strict";
 
 var state = {
@@ -34532,27 +34533,21 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":163,"minimalistic-assert":423,"minimalistic-crypto-utils":424}],199:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "elliptic@6.4.0",
-      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.sf7H8d3i/augur.js"
-    ]
-  ],
-  "_from": "elliptic@6.4.0",
+  "_from": "elliptic@^6.0.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "elliptic@6.4.0",
+    "raw": "elliptic@^6.0.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.4.0",
+    "rawSpec": "^6.0.0",
     "saveSpec": null,
-    "fetchSpec": "6.4.0"
+    "fetchSpec": "^6.0.0"
   },
   "_requiredBy": [
     "/browserify-sign",
@@ -34560,8 +34555,9 @@ module.exports={
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_spec": "6.4.0",
-  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.sf7H8d3i/augur.js",
+  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
+  "_spec": "elliptic@^6.0.0",
+  "_where": "/Users/bthaile/gitrepos/augur.js/node_modules/browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -34569,6 +34565,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -34578,6 +34575,7 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
+  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",

@@ -15,7 +15,7 @@ var api = require("../api");
  * @param {function} p.onFailed Called if the transaction fails.
  */
 function approveAugur(p) {
-  augurNode.getContractAddresses(function (err, contractsInfo) {
+  augurNode.getSyncData(function (err, contractsInfo) {
     if (err) return p.onFailed(err);
     var augurContract = contractsInfo.addresses.Augur;
     api().Cash.allowance({ _owner: p.address, _spender: augurContract }, function (err, allowance) {

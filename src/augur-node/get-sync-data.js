@@ -6,8 +6,8 @@ var submitRequest = require("./submit-json-rpc-request");
  * @param {function} callback Called after the version and contract addresses have been retrieved.
  * @return {Object} Object containing version and addresses.
  */
-function getContractAddresses(callback) {
-  submitRequest("getContractAddresses", null, callback);
+function getSyncData(callback) {
+  submitRequest("getSyncData", null, callback);
 }
 
-module.exports = getContractAddresses;
+module.exports = getSyncData;

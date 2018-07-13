@@ -44,7 +44,7 @@ describe("accounts/approve-augur", function () {
     },
     mock: {
       augurNode: {
-        getContractAddresses: function (cb) {
+        getSyncData: function (cb) {
           cb(null, {
             addresses: {
               Augur: "0x0b0b",
@@ -87,7 +87,7 @@ describe("accounts/approve-augur", function () {
     },
     mock: {
       augurNode: {
-        getContractAddresses: function (cb) {
+        getSyncData: function (cb) {
           cb(null, {
             addresses: {
               Augur: "0x0b0b",
@@ -116,7 +116,7 @@ describe("accounts/approve-augur", function () {
     },
   });
   test({
-    description: "Should return an error object if one is returned from augurNode.getContractAddresses",
+    description: "Should return an error object if one is returned from augurNode.getSyncData",
     params: {
       address: "0xa11ce",
       meta: {
@@ -125,7 +125,7 @@ describe("accounts/approve-augur", function () {
     },
     mock: {
       augurNode: {
-        getContractAddresses: function (cb) {
+        getSyncData: function (cb) {
           cb({ error: 100, message: "Uh-Oh!" });
         },
       },
@@ -143,7 +143,7 @@ describe("accounts/approve-augur", function () {
       },
     },
     assertions: function (err) {
-      assert.deepEqual(err, { error: 100, message: "Uh-Oh!" }, "Didn't recieve the expected error object from a augurNode.getContractAddresses failure.");
+      assert.deepEqual(err, { error: 100, message: "Uh-Oh!" }, "Didn't recieve the expected error object from a augurNode.getSyncData failure.");
     },
   });
   test({
@@ -156,7 +156,7 @@ describe("accounts/approve-augur", function () {
     },
     mock: {
       augurNode: {
-        getContractAddresses: function (cb) {
+        getSyncData: function (cb) {
           cb(null, {
             addresses: {
               Augur: "0x0b0b",
@@ -194,7 +194,7 @@ describe("accounts/approve-augur", function () {
     },
     mock: {
       augurNode: {
-        getContractAddresses: function (cb) {
+        getSyncData: function (cb) {
           cb(null, {
             addresses: {
               Augur: "0x0b0b",
