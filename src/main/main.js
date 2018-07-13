@@ -17,6 +17,8 @@ const augurUIServer = new AugurUIServer();
 const path = require('path');
 const url = require('url');
 
+
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')});
@@ -54,8 +56,12 @@ function createWindow () {
     label: "Settings",
     submenu: [
         { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-        { label: "Reset Configuration File", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-        { label: "Enable SSL for Ledger", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+        { label: "Reset Configuration File", click: function() { 
+          ipc.send('reset', {});
+        }},
+        { label: "Enable SSL for Ledger", click: function() { 
+          ipc.send('generateCert', {});
+        }},
     ]},
     {
     label: "Edit",
