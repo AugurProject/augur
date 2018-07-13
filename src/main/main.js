@@ -55,16 +55,19 @@ function createWindow () {
     {
     label: "Settings",
     submenu: [
-        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-        { label: "Reset Configuration File", click: function() {
-          mainWindow.webContents.send('reset', '');
-        }},
         { label: "Enable SSL for Ledger", click: function() {
           mainWindow.webContents.send('toggleSsl', true);
         }},
         { label: "Disable SSL for Ledger", click: function() {
           mainWindow.webContents.send('toggleSsl', false);
         }},
+        { type: "separator" },
+        { label: "Reset Configuration File", click: function() {
+          mainWindow.webContents.send('reset', '');
+        }},
+        { type: "separator" },
+        { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
+        { type: "separator" },
       ]},
     {
     label: "Edit",
