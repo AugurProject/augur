@@ -43,10 +43,7 @@ function createWindow () {
   }, 2000);
 
   // check if ssl files exist
-  this.sslMenu = [
-    { label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }},
-    { label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '')} }
-  ];
+  this.sslMenu = [];
   this.appDataPath = appData("augur");
   const certPath = path.join(this.appDataPath, 'localhost.crt');
   const keyPath = path.join(this.appDataPath, 'localhost.key');
@@ -55,6 +52,12 @@ function createWindow () {
   } else {
     this.sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
   }
+  this.sslMenu.push({ type: "separator" })
+  this.sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
+  this.sslMenu.push({ label: "Clear Database", click: function() { mainWindow.webContents.send('clearDB', '') }})
+  this.sslMenu.push({ type: "separator" })
+  this.sslMenu.push({ label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }})
+  this.sslMenu.push({ type: "separator" })
 
   // Create the Application's main menu
   var template = [{
