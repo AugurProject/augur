@@ -35,12 +35,6 @@ body {
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-width: 900px;
-  overflow-x: scroll;
 }
 
 body, html {
@@ -72,6 +66,20 @@ button {
   color: #412468;
 }
 
+.container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row; 
+  min-width: 800px;
+  height: 100%;
+}
+
+.scrollableContainer {
+  padding: 3.5rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-grow: 1;
+}
 .outlineButton {
   border: 1px solid white;
   background-color: #231A3A !important;
@@ -160,16 +168,15 @@ input {
 }
 
 .networkForm {
-  padding-left: 4rem;
-  padding-top: 2rem;
   width: 60%;
   text-transform: uppercase;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 700px;
-  height: 700px;
-  margin-top: 70px;
+  padding-right: 3.5rem;
+  min-width: 500px;
+  padding-bottom: 10px;
 }
 
 .label {
@@ -195,22 +202,80 @@ input {
   margin-top: 80px;
 }
 
-.header {
-  background-color: white;
+.sideMenu {
   color: black;
+  align-items: center;
   display: flex;
-  flex-direction: row;
-  padding: 30px 0;
-  height: 20px;
-  position: fixed;
+  flex-direction: column;
+  width: 300px;
+  max-width: 300px;
+  min-width: 300px;
+  flex-grow: 1;
+}
+
+.connectedInfo {
+  display: flex;
+  max-height: 90px;
+  background-color: white;
+  flex-grow: 1;
+  margin-bottom: 2rem;
   width: 100%;
   align-items: center;
 }
 
-.networkName {
-  padding-left: 4rem;
-  white-space: nowrap;
+#syncing_info {
+  display: flex;
+  max-height: 220px;
+  background-color: white;
   flex-grow: 1;
+  flex-direction: column;
+  padding: 40px 32px;
+}
+
+.dbInfo {
+  font-size: 16px;
+  color: #372E4B;
+}
+
+.syncPercentInfo {
+  font-size: 24px;
+  color: #A7A2B2;
+  border-bottom: 1px solid #D8D8D8;
+  padding-bottom: 13px;
+  margin-bottom: 16px;
+}
+
+#sync_percent {
+  font-size: 48px;
+}
+
+.blocksBehind {
+  font-size: 16px;
+  color: #372E4B;
+  margin-bottom: 16px;
+}
+
+#blocks_behind {
+  font-size: 24px;
+  color: #372E4B;
+}
+
+.blocksProcessed {
+  font-size: 14px;
+  color: #372E4B;
+}
+
+.blocksLabel {
+  font-size: 16px;
+}
+
+.dbInfo {
+  
+}
+
+.networkName {
+  flex-grow: 1;
+  padding: 0 32px;
 }
 
 .connected,
@@ -238,7 +303,7 @@ input {
 
 .synced {
   white-space: nowrap;
-  padding-right: 4rem;
+  padding-right: 3.5rem;
   min-width: 281px;
 }
 
@@ -288,7 +353,6 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 2rem;
 }
 
 .error {
@@ -381,6 +445,10 @@ input {
   flex-grow: 1;
   justify-content: flex-end;
   margin-top: 5px;
+}
+
+#blocks_synced {
+  display:inline-block;
 }
 
 @-webkit-keyframes fadeinout {

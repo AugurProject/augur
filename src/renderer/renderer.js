@@ -96,6 +96,8 @@ Renderer.prototype.onServerConnected = function (event) {
   // hide config form and show open network screen
   document.getElementById("network_config_screen").style.display = "none";
   document.getElementById("open_app_screen").style.display = "block";
+  document.getElementById("syncing_info").style.display = "block";
+
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
   document.getElementById("reset_button").disabled = true;
 }
@@ -106,8 +108,8 @@ Renderer.prototype.connectToServer = function (event) {
   this.isSynced = false;
   this.connectedServer = data;
 
-  const blocksRemainingLbl = document.getElementById("blocks_remaining");
-  const currentBlock = document.getElementById("current_block");
+  const blocksRemainingLbl = document.getElementById("blocks_synced");
+  const currentBlock = document.getElementById("highest_block");
   blocksRemainingLbl.innerHTML = "-";
   currentBlock.innerHTML = "-";
   blocksRemainingLbl.style.minWidth = 'unset';
@@ -126,6 +128,8 @@ Renderer.prototype.goToOpenApp = function (event) {
 
 Renderer.prototype.renderOpenNetworkPage = function (data) {
   document.getElementById("current_network").innerHTML = data.networkConfig.name;
+  document.getElementById("current_network2").innerHTML = data.networkConfig.name;
+
   document.getElementById("open_network_name").innerHTML = data.networkConfig.name;
   document.getElementById("open_network_http_endpoint").innerHTML = data.networkConfig.http;
   document.getElementById("open_network_ws_endpoint").innerHTML = data.networkConfig.ws;
@@ -232,8 +236,11 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let blocksRemainingCountLbl = "0";
 
     const networkStatus = document.getElementById("network_status");
-    const blocksRemainingLbl = document.getElementById("blocks_remaining");
-    const currentBlock = document.getElementById("current_block");
+    const highestBlock = document.getElementById("highest_block");
+    const blocksSynced = document.getElementById("blocks_synced");
+    const syncPercent = document.getElementById("sync_percent");
+    const blocksBehind = document.getElementById("blocks_behind");
+
 
     const lastSyncBlockNumber = data.lastSyncBlockNumber;
     const highestBlockNumber = data.highestBlockNumber;
@@ -253,10 +260,15 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       this.clearNotice();
     }
 
-    currentBlock.innerHTML = highestBlockNumber;
-    blocksRemainingLbl.innerHTML = blocksRemainingCountLbl;
-    blocksRemainingLbl.style.minWidth = '15px';
+    const blocksSyncedNum = highestBlockNumber - blocksRemainingCountLbl;
+    highestBlock.innerHTML = highestBlockNumber;
+    blocksSynced.innerHTML = blocksSyncedNum;
+    blocksBehind.innerHTML = highestBlockNumber - blocksSyncedNum;
+    syncPercent.innerHTML = this.isSynced ? 100 : Math.round(blocksSyncedNum / highestBlockNumber * 100);
 
+    blocksSynced.style.minWidth = '15px';
+
+    document.getElementById("sync_percent").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
