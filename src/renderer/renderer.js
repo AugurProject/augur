@@ -276,7 +276,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
 
     blocksSynced.style.minWidth = '15px';
 
-    document.getElementById("sync_percent").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
+    document.getElementById("syncPercentInfo").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 

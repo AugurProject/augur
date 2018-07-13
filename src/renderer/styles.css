@@ -237,7 +237,7 @@ input {
   color: #372E4B;
 }
 
-.syncPercentInfo {
+#syncPercentInfo {
   font-size: 24px;
   color: #A7A2B2;
   border-bottom: 1px solid #D8D8D8;
