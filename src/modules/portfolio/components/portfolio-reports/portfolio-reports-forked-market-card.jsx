@@ -47,10 +47,7 @@ const PortfolioReportsForkedMarketCard = ({ buttonAction, currentTimestamp, fork
         </div>
 
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink
-            id={market.id}
-            formattedDescription={market.formattedDescription}
-          >
+          <MarketLink id={market.id}>
             {market.description}
           </MarketLink>
         </h1>

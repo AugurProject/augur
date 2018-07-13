@@ -51,7 +51,6 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes'
 
-import { listWordsUnderLength } from 'utils/list-words-under-length'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 export default function () {
@@ -167,11 +166,9 @@ export function assembleMarket(
       dispatch,
     ) => {
 
-      const desc = listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_')
       const market = {
         ...marketData,
         description: marketData.description || '',
-        formattedDescription: desc.length === 0 ? 'description' : desc,
         id: marketId,
       }
 

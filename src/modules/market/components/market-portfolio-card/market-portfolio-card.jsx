@@ -105,10 +105,7 @@ export default class MarketPortfolioCard extends Component {
                 { isMobile ? market.endTime.formattedShort : market.endTime.formatted }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
-                <MarketLink
-                  id={market.id}
-                  formattedDescription={market.description}
-                >
+                <MarketLink id={market.id}>
                   {market.description}
                 </MarketLink>
               </h1>
