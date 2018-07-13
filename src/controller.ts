@@ -112,6 +112,10 @@ export class AugurNodeController {
     this.logger.addLogger(logger);
   }
 
+  public clearLoggers() {
+    this.logger.clear();
+  }
+
   private shutdownCallback(err: Error|null) {
     if (err == null) return;
     this.logger.error("Fatal Error, shutting down servers", err);
