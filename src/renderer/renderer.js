@@ -265,7 +265,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     highestBlock.innerHTML = highestBlockNumber || 0;
     blocksSynced.innerHTML = blocksSyncedNum  || blocksRemainingCountLbl;
     blocksBehind.innerHTML = blocksSyncedNum ? highestBlockNumber - blocksSyncedNum  : '0';
-    syncPercent.innerHTML = this.isSynced ? 100 : (Math.round(blocksSyncedNum / highestBlockNumber * 100)  || 0);
+    syncPercent.innerHTML = Math.floor(blocksSyncedNum / highestBlockNumber * 100)  || 0;
 
     blocksSynced.style.minWidth = '15px';
 
