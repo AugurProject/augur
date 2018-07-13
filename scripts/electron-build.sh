@@ -25,4 +25,5 @@ else
     npm run make -- --linux
 fi
 
+pip install requests
 python scripts/post_build.py
