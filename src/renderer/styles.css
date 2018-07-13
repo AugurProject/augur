@@ -301,27 +301,10 @@ input {
   background: url(connected.svg) no-repeat center center;
 }
 
-.synced {
-  white-space: nowrap;
-  padding-right: 3.5rem;
-  min-width: 281px;
-}
-
-#blocks_remaining {
-  padding: 0 5px;
-  display: inline-block;
-}
-
 .status {
   text-transform: uppercase;
 }
-
-.networks {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
+b
 .networkSelect {
   height: 2rem;
   width: 20rem;
@@ -332,14 +315,6 @@ input {
   background-repeat: no-repeat;
   padding-left: 5px;
   background-color: #DBDAE1;
-}
-
-.center {
-  text-align: center;
-}
-
-.config {
-  padding: 0;
 }
 
 .footer {
@@ -359,12 +334,6 @@ input {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
-}
-
-.openAugur {
-  display: flex;
-  justify-content: end;
-  float: right;
 }
 
 .versionNumber {
@@ -389,13 +358,8 @@ input {
   padding: .5rem 0 1.5rem 0;
 }
 
-.instruction-bold,
 .instruction {
   text-transform: none;
-}
-
-.instruction-bold {
-  font-weight: bolder;
 }
 
 .networkInfo {
