@@ -6,7 +6,13 @@ import os
 import requests
 
 # headers
-GH_TOKEN = os.environ['GH_TOKEN']
+try:
+    GH_TOKEN = os.environ['GH_TOKEN']
+except KeyError:
+    print('no github token')
+    print(os.environ)
+    exit(0)
+
 headers = {"Authorization": "token " + GH_TOKEN}
 
 
