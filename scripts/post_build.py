@@ -39,10 +39,10 @@ def get_version_release_info(result, version):
 
 # upload asset
 # https://uploads.github.com/repos/AugurProject/augur-app/releases/11907294/assets{?name,label}
-def upload_release_asset(id, name):
+def upload_release_asset(id, data, name):
     try:
         request = requests.post('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
-                  files={'file':  (name, open(name, 'rb'), 'multipart/form-data')},
+                  data=data
                   headers=headers
                   )
         request.raise_for_status()
@@ -74,6 +74,6 @@ for fname in os.listdir(full_path):
         with open(shasums_file, "w") as shafile:
             shasums = '{} {}'.format(sha, fname)
             shafile.write(shasums)
-        upload_release_asset(release_id, shasums_file)
+        upload_release_asset(release_id, shasums, shasums_file)
 
 
