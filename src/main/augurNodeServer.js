@@ -174,7 +174,8 @@ AugurNodeServer.prototype.onResetConfig = function (event) {
 
 AugurNodeServer.prototype.onReset = function (event) {
   try {
-    const wasRunning = this.augurNodeController.isRunning
+    const wasRunning = this.augurNodeController.isRunning()
+    log.info("augur-node was running", wasRunning)
     if (this.augurNodeController && !wasRunning) {
       this.augurNodeController.resetDatabase()
     } else {
