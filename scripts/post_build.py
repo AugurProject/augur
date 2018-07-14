@@ -40,7 +40,7 @@ def get_version_release_info(result, version):
 def upload_release_asset(id, name):
     headers['Content-Type'] = 'text/plain'
     try:
-        request = requests.put('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
+        request = requests.post('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
                   files={'file': open(name, 'rb')},
                   headers=headers
                   )
