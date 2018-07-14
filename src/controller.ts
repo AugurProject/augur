@@ -85,11 +85,8 @@ export class AugurNodeController {
   public async resetDatabase(id: string, errorCallback: ErrorCallback | undefined) {
     let networkId = id || "1";
     try {
-      if (this.augur != null) {
-        const fetchedNetworkId = this.augur.rpc.getNetworkID();
-        if (fetchedNetworkId) {
-          networkId = fetchedNetworkId;
-        }
+      if (this.augur != null && this.augur.rpc.getNetworkID()) {
+        networkId = this.augur.rpc.getNetworkID();
       }
       if (this.isRunning()) this._shutdown();
       await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
