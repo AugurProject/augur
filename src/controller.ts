@@ -57,24 +57,29 @@ export class AugurNodeController {
     }
   }
 
-  public shutdown() {
-    if (!this.running) return;
-    this.running = false;
-    this.logger.info("Stopping Augur Node Server");
-    processQueue.pause();
-    if (this.serverResult !== undefined) {
-      const servers = this.serverResult.servers;
-      shutdownServers(servers);
-      this.serverResult = undefined;
+  public shutdown(errorCallback: ErrorCallback | undefined) {
+    try {
+      if (!this.running) return;
+      this.running = false;
+      this.logger.info("Stopping Augur Node Server");
+      processQueue.pause();
+      if (this.serverResult !== undefined) {
+        const servers = this.serverResult.servers;
+        shutdownServers(servers);
+        this.serverResult = undefined;
+      }
+      if (this.db !== undefined) {
+        this.db.destroy();
+        this.db = undefined;
+      }
+      clearOverrideTimestamp();
+      // When we have real shutdown feature in augur.js and ethrpc, implement here.
+      this.augur = new Augur();
+      this.logger.clear();
+      if (errorCallback) errorCallback(null);
+    } catch (err) {
+      if (errorCallback) errorCallback(err);
     }
-    if (this.db !== undefined) {
-      this.db.destroy();
-      this.db = undefined;
-    }
-    clearOverrideTimestamp();
-    // When we have real shutdown feature in augur.js and ethrpc, implement here.
-    this.augur = new Augur();
-    this.logger.clear();
   }
 
   public isRunning() {
@@ -94,18 +99,26 @@ export class AugurNodeController {
     return ({ lastSyncBlockNumber, uploadBlockNumber, highestBlockNumber });
   }
 
-  public async resetDatabase() {
-    let networkId = "1";
-    if (this.augur != null) {
-      const fetchedNetworkId = this.augur.rpc.getNetworkID();
-      if (fetchedNetworkId) {
-        networkId = fetchedNetworkId;
+  public async resetDatabase(id: string, errorCallback: ErrorCallback | undefined) {
+    let networkId = id || "1";
+    try {
+      if (this.augur != null) {
+        const fetchedNetworkId = this.augur.rpc.getNetworkID();
+        if (fetchedNetworkId) {
+          networkId = fetchedNetworkId;
+        }
       }
+      if (this.isRunning()) {
+        this.shutdown(async (err: Error|null) => {
+          await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
+          return;
+        });
+      } else {
+        await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
+      }
+    } catch (err) {
+      if (errorCallback) errorCallback(err);
     }
-    if (this.isRunning()) {
-      this.shutdown();
-    }
-    await renameDatabaseFile(networkId, this.databaseDir);
   }
 
   public addLogger(logger: LoggerInterface) {

@@ -13,7 +13,7 @@ const augurNodeController = new AugurNodeController(augur, networkConfig);
 augur.rpc.setDebugOptions({ broadcast: false });
 augur.events.nodes.ethereum.on("disconnect", (event) => {
   logger.warn("Disconnected from Ethereum node", event);
-  augurNodeController.shutdown();
+  augurNodeController.shutdown(undefined);
   throw new Error("Disconnected from Ethereum node");
 });
 
