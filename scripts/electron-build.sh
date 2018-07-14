@@ -11,12 +11,13 @@ EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     npm run make -- --mac
-    pyenv global
+    eval "$(pyenv init -)"
     pip install requests
+
 else
     rm -rf node_modules/*
     apt update
-    apt install -y libusb-{dev,1.0-0-dev} rpm curl tzdata
+    apt install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
     export NVM_DIR="$HOME/.nvm"
     mkdir -p $HOME/.nvm
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
