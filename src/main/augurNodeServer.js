@@ -174,15 +174,18 @@ AugurNodeServer.prototype.onResetConfig = function (event) {
 
 AugurNodeServer.prototype.onReset = function (event) {
   try {
-    if (this.augurNodeController && !this.augurNodeController.isRunning) {
+    const wasRunning = this.augurNodeController.isRunning
+    if (this.augurNodeController && !wasRunning) {
       this.augurNodeController.resetDatabase()
     } else {
       this.shutDownServer()
-      if (this.augurNodeController && !this.augurNodeController.isRunning) {
+      if (this.augurNodeController && !wasRunning) {
         console.log('reset after shutdown')
         this.augurNodeController.resetDatabase()
       }
-      setTimeout(this.startServer.bind(this), 2000)
+      if (wasRunning) {
+        setTimeout(this.startServer.bind(this), 2000)
+      }
     }
   } catch (err) {
     log.error(err)
