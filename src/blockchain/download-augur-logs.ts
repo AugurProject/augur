@@ -69,14 +69,24 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
     processFunction(nextFunction);
   }, 1);
 
-  logger.info("Getting Augur logs from block " + fromBlock + " to block " + toBlock);
+  logger.info(`Getting Augur logs from block ${fromBlock} to block ${toBlock}`);
   augur.events.getAllAugurLogs({ fromBlock, toBlock }, (batchOfAugurLogs?: Array<FormattedEventLog>): void => {
-    if (!batchOfAugurLogs) return ;
-    batchLogProcessQueue.push( (nextBatch) => processBatchOfLogs(db, augur, batchOfAugurLogs, nextBatch ));
+    if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
+    batchLogProcessQueue.push((nextBatch) => processBatchOfLogs(db, augur, batchOfAugurLogs, (err: Error|null) => {
+      if (err) {
+        batchLogProcessQueue.kill();
+        batchLogProcessQueue.pause();
+        callback(err);
+      } else {
+        nextBatch(null);
+      }
+    }));
   }, (err) => {
-    batchLogProcessQueue.push(() => {
-      callback(err);
-      batchLogProcessQueue.kill();
-    });
+    if (!batchLogProcessQueue.paused) {
+      batchLogProcessQueue.push(() => {
+        callback(err);
+        batchLogProcessQueue.kill();
+      });
+    }
   });
 }
