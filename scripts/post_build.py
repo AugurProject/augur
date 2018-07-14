@@ -41,9 +41,8 @@ def get_version_release_info(result, version):
 # https://uploads.github.com/repos/AugurProject/augur-app/releases/11907294/assets{?name,label}
 def upload_release_asset(id, name):
     try:
-        headers['Content-Type'] = 'multipart/form-data'
         request = requests.post('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
-                  files={'file':  open(name, 'rb')},
+                  files={'file':  (open(name, 'rb'), 'multipart/form-data')},
                   headers=headers
                   )
         request.raise_for_status()
