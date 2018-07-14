@@ -90,7 +90,16 @@ module.exports = {
     7: new BigNumber("2127244", 10),
     8: new BigNumber("2365994", 10),
   },
-  WORST_CASE_PLACE_ORDER: {
+  PLACE_ORDER_NO_SHARES: {
+    2: new BigNumber("547694", 10),
+    3: new BigNumber("562138", 10),
+    4: new BigNumber("576582", 10),
+    5: new BigNumber("591026", 10),
+    6: new BigNumber("605470", 10),
+    7: new BigNumber("619914", 10),
+    8: new BigNumber("634358", 10),
+  },
+  PLACE_ORDER_WITH_SHARES: {
     2: new BigNumber("695034", 10),
     3: new BigNumber("794664", 10),
     4: new BigNumber("894294", 10),
