@@ -45,21 +45,25 @@ function Renderer() {
     ipcRenderer.on('reset', this.onResetConfig.bind(this));
     ipcRenderer.on('showNotice', this.onShowNotice.bind(this));
     ipcRenderer.on('toggleSsl', this.onToggleSSL.bind(this));
-    ipcRenderer.on('clearDB', this.onResetConfig.bind(this));
+    ipcRenderer.on('clearDB', this.reset.bind(this));
 
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
 }
 
 Renderer.prototype.reset = function() {
-  ipcRenderer.send("resetConfig");
+  ipcRenderer.send("reset");
 }
 
 Renderer.prototype.onResetResponse = function() {
+  this.showNotice("Resetting Database...", "success")
+  setTimeout(() => {
+    this.clearNotice()
+  }, 2000);
 }
 
 Renderer.prototype.onResetConfig = function() {
-  ipcRenderer.send("reset");
+  ipcRenderer.send("resetConfig");
 }
 
 Renderer.prototype.onToggleSSL = function(event, data) {
