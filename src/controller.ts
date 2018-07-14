@@ -111,7 +111,6 @@ export class AugurNodeController {
       if (this.isRunning()) {
         this.shutdown(async (err: Error|null) => {
           await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
-          return;
         });
       } else {
         await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
