@@ -64,6 +64,10 @@ Renderer.prototype.onResetResponse = function() {
 
 Renderer.prototype.onResetConfig = function() {
   ipcRenderer.send("resetConfig");
+  this.showNotice("Configuration Reset", "success")
+  setTimeout(() => {
+    this.clearNotice()
+  }, 2000);
 }
 
 Renderer.prototype.onToggleSSL = function(event, enabled) {
