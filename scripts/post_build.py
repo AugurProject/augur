@@ -5,6 +5,8 @@ import json
 import os
 import requests
 
+from pprint import pprint
+
 # headers
 try:
     GH_TOKEN = os.environ['GH_TOKEN']
@@ -40,10 +42,11 @@ def get_version_release_info(result, version):
 def upload_release_asset(id, name):
     try:
         request = requests.post('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
-                  files={'file': open(name, 'rb'),},
+                  files={'file': (name, open(name, 'rb'), 'text/plain', {'Expires': '0'})},
                   headers=headers
                   )
         request.raise_for_status()
+        pprint(request.json()['headers'])
     except requests.exceptions.HTTPError as err:
         print(err)
 
