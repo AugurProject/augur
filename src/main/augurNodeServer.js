@@ -9,7 +9,6 @@ const appData = require('app-data-folder')
 
 const REMOTE_DELAY_WAIT = 60*1000;
 const LOCAL_DELAY_WAIT = 1*1000;
-
 const defaultConfig = {
   'network': 'mainnet',
   'version': '1.0.0',
@@ -17,17 +16,20 @@ const defaultConfig = {
     'rinkeby': {
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
-      'ws': 'wss://rinkeby.augur.net/ethereum-ws'
+      'ws': 'wss://rinkeby.augur.net/ethereum-ws',
+      'id': '4',
     },
     'ropsten': {
       'http': 'https://ropsten.augur.net/ethereum-http',
       'name': 'Ropsten',
-      'ws': 'wss://ropsten.augur.net/ethereum-ws'
+      'ws': 'wss://ropsten.augur.net/ethereum-ws',
+      'id': '3'
     },
     'kovan': {
       'http': 'https://kovan.augur.net/ethereum-http',
       'name': 'Kovan',
-      'ws': 'wss://kovan.augur.net/ethereum-ws'
+      'ws': 'wss://kovan.augur.net/ethereum-ws',
+      'id': '42'
     },
     'local': {
       'http': 'http://localhost:8545',
@@ -37,7 +39,8 @@ const defaultConfig = {
     'mainnet': {
       'http': 'https://mainnet.infura.io/augur',
       'name': 'Mainnet',
-      'ws': 'wss://mainnet.infura.io/ws'
+      'ws': 'wss://mainnet.infura.io/ws',
+      'id': '1'
     },
     'custom': {
       'http': 'http://localhost:8545',
@@ -172,27 +175,22 @@ AugurNodeServer.prototype.onResetConfig = function (event) {
 }
 
 
-AugurNodeServer.prototype.onReset = function (event) {
+AugurNodeServer.prototype.onReset = function (event, data) {
+  const parent = this
+  const wasRunning = this.augurNodeController.isRunning()
   try {
-    const wasRunning = this.augurNodeController.isRunning()
+    // need to pass in id or mainnet will be used
+    // only an issue if user hasn't connected
+    const network = data.network
+    const id = this.config.networks[network].id || defaultConfig.networks[network].id
     log.info("augur-node was running", wasRunning)
-    if (this.augurNodeController && !wasRunning) {
-      this.augurNodeController.resetDatabase()
-    } else {
-      this.shutDownServer()
-      if (this.augurNodeController && !wasRunning) {
-        console.log('reset after shutdown')
-        this.augurNodeController.resetDatabase()
-      }
-      if (wasRunning) {
-        setTimeout(this.startServer.bind(this), 2000)
-      }
-    }
+    // make sure we are resetting the correct database
+    this.augurNodeController.resetDatabase(id, function() {
+      if (wasRunning) parent.restart()
+    })
   } catch (err) {
     log.error(err)
-    this.window.webContents.send('error', {
-      error: err
-    })
+    if (wasRunning) parent.restart()
   }
   event.sender.send('resetResponse', {})
 }

@@ -52,7 +52,7 @@ function Renderer() {
 }
 
 Renderer.prototype.reset = function() {
-  ipcRenderer.send("reset");
+  ipcRenderer.send("reset", {network: this.selectedNetworkForm});
 }
 
 Renderer.prototype.onResetResponse = function() {
