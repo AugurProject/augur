@@ -41,7 +41,7 @@ def upload_release_asset(id, name):
     headers['Content-Type'] = 'text/plain'
     try:
         request = requests.post('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
-                  files={'file': open(name, 'rb')},
+                  data={'file': open(name, 'rb')},
                   headers=headers
                   )
         request.raise_for_status()
