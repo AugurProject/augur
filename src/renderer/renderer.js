@@ -263,10 +263,13 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       blocksRemainingCountLbl = this.spinner[this.spinnerCount++ % this.spinner.length]
     }
 
-    clearClassList(networkStatus.classList);
-    networkStatus.classList.add("connected")
     if (this.isSynced) {
-     this.clearNotice(); // makes msgs on 2nd page disappear
+      clearClassList(networkStatus.classList);
+      networkStatus.classList.add("connected")
+      this.clearNotice(); // makes msgs on 2nd page disappear
+    } else {
+      clearClassList(networkStatus.classList);
+      networkStatus.classList.add("notConnected")
     }
 
     const pct = blocksSyncedNum / highestBlockNumber * 100
