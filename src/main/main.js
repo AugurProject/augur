@@ -93,9 +93,7 @@ function createWindow () {
   }, 2000);
 
   ipcMain.on('rebuildMenu', function (event, data) {
-    setTimeout(() => {
-      buildMenu(false);
-    }, 100);
+    buildMenu(false);
   })
 
   // Emitted when the window is closed.
