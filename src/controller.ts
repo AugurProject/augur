@@ -108,13 +108,8 @@ export class AugurNodeController {
           networkId = fetchedNetworkId;
         }
       }
-      if (this.isRunning()) {
-        this.shutdown(async (err: Error|null) => {
-          await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
-        });
-      } else {
-        await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
-      }
+      if (this.isRunning()) this.shutdown(undefined);
+      await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
     } catch (err) {
       if (errorCallback) errorCallback(err);
     }
