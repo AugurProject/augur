@@ -266,7 +266,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     if (this.isSynced) {
       clearClassList(networkStatus.classList);
       networkStatus.classList.add("connected")
-      this.clearNotice(); // makes msgs on 2nd page disappear
+      // this.clearNotice(); // makes msgs on 2nd page disappear
     } else {
       clearClassList(networkStatus.classList);
       networkStatus.classList.add("notConnected")
