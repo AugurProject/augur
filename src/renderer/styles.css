@@ -248,6 +248,7 @@ input {
 
 #sync_percent {
   font-size: 48px;
+  font-weight: 500;
 }
 
 .blocksBehind {
@@ -259,15 +260,18 @@ input {
 #blocks_behind {
   font-size: 24px;
   color: #372E4B;
+  font-weight: 500;
 }
 
 .blocksProcessed {
   font-size: 14px;
   color: #372E4B;
+  font-weight: 500;
 }
 
 .blocksLabel {
   font-size: 16px;
+  font-weight: 400;
 }
 
 .networkName {
@@ -300,6 +304,7 @@ input {
 
 .status {
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .networkSelect {
