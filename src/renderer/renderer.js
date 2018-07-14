@@ -70,9 +70,6 @@ Renderer.prototype.onToggleSSL = function(event, enabled) {
   ipcRenderer.send("toggleSslAndRestart", enabled);
   if (!enabled) {
     this.showNotice("Disabling SSL for Ledger...", "success")
-    setTimeout(() => {
-      this.clearNotice()
-    }, 2000);
   }
 }
 
