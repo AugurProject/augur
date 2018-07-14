@@ -57,7 +57,7 @@ export class AugurNodeController {
     }
   }
 
-  public shutdown(errorCallback: ErrorCallback | undefined) {
+  public shutdown() {
     try {
       if (!this.running) return;
       this.running = false;
@@ -76,9 +76,8 @@ export class AugurNodeController {
       // When we have real shutdown feature in augur.js and ethrpc, implement here.
       this.augur = new Augur();
       this.logger.clear();
-      if (errorCallback) errorCallback(null);
     } catch (err) {
-      if (errorCallback) errorCallback(err);
+      if (this.errorCallback) this.errorCallback(err);
     }
   }
 
@@ -108,7 +107,7 @@ export class AugurNodeController {
           networkId = fetchedNetworkId;
         }
       }
-      if (this.isRunning()) this.shutdown(undefined);
+      if (this.isRunning()) this.shutdown();
       await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
     } catch (err) {
       if (errorCallback) errorCallback(err);
