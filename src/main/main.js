@@ -6,8 +6,8 @@ const appData = require('app-data-folder');
 const fs = require("fs");
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
-const {app, BrowserWindow, Menu} = electron;
-var ipc = require('electron').ipcRenderer;
+const {app, BrowserWindow, Menu, ipcMain} = electron;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -18,46 +18,24 @@ const augurUIServer = new AugurUIServer();
 const path = require('path');
 const url = require('url');
 
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')});
 
-  mainWindow.webContents.on('will-navigate', ev => {
-    ev.preventDefault()
-  })
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '../renderer/index.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
-  // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
-  setTimeout(function() {
-    augurUIServer.setWindow(mainWindow);
-    augurNodeController.setWindow(mainWindow);
-  }, 2000);
-
+function buildMenu() {
   // check if ssl files exist
-  this.sslMenu = [];
-  this.appDataPath = appData("augur");
-  const certPath = path.join(this.appDataPath, 'localhost.crt');
-  const keyPath = path.join(this.appDataPath, 'localhost.key');
+  const sslMenu = [];
+  const appDataPath = appData("augur");
+  const certPath = path.join(appDataPath, 'localhost.crt');
+  const keyPath = path.join(appDataPath, 'localhost.key');
   if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-    this.sslMenu.push({ label: "Disable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', false)}})
+    sslMenu.push({ label: "Disable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', false)}})
   } else {
-    this.sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
+    sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
   }
-  this.sslMenu.push({ type: "separator" })
-  this.sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
-  this.sslMenu.push({ label: "Clear Database", click: function() { mainWindow.webContents.send('clearDB', '') }})
-  this.sslMenu.push({ type: "separator" })
-  this.sslMenu.push({ label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }})
-  this.sslMenu.push({ type: "separator" })
+  sslMenu.push({ type: "separator" })
+  sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
+  sslMenu.push({ label: "Clear Database", click: function() { mainWindow.webContents.send('clearDB', '') }})
+  sslMenu.push({ type: "separator" })
+  sslMenu.push({ label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }})
+  sslMenu.push({ type: "separator" })
 
   // Create the Application's main menu
   var template = [{
@@ -69,7 +47,7 @@ function createWindow () {
     ]},
     {
       label: "Settings",
-      submenu: this.sslMenu
+      submenu: sslMenu
     },
     {
     label: "Edit",
@@ -86,6 +64,33 @@ function createWindow () {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
+}
+
+
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')});
+
+  mainWindow.webContents.on('will-navigate', ev => {
+    ev.preventDefault()
+  })
+
+  // and load the index.html of the app.
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, '../renderer/index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
+  setTimeout(function() {
+    augurUIServer.setWindow(mainWindow);
+    augurNodeController.setWindow(mainWindow);
+  }, 2000);
+
+  ipcMain.on('rebuildMenu', function (event, data) {
+    buildMenu();
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -97,14 +102,16 @@ function createWindow () {
       augurUIServer.stopServer();
       mainWindow = null;
     } catch (err) {
-      ipc.send('error', { error: err });
+      mainWindow.webContents.send('error', { error: err });
     }
   })
 
   mainWindow.on('error', function(error) {
-    ipc.send('error', { error });
+    mainWindow.webContents.send('error', { error });
   })
 
+  // build initial menus
+  buildMenu();
 }
 
 // This method will be called when Electron has finished

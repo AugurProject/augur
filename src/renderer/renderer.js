@@ -1,4 +1,4 @@
-const {ipcRenderer, remote, shell} = require('electron');
+const {ipcRenderer, remote, shell, ipcMain} = require('electron');
 const log = require('electron-log');
 const {app} = require('electron').remote
 
@@ -134,8 +134,8 @@ Renderer.prototype.renderOpenNetworkPage = function (data) {
 }
 
 Renderer.prototype.onSsl = function (event, value) {
-    log.info("SSL is enabled: " + value);
-    this.isSsl = value
+  ipcRenderer.send("rebuildMenu", value)
+  this.isSsl = value
 }
 
 Renderer.prototype.onServerError = function (event, data) {

@@ -90,8 +90,10 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
   const keyPath = path.join(this.appDataPath, 'localhost.key');
 
   if (!enabled) {
-    fs.unlinkSync(certPath);
-    fs.unlinkSync(keyPath);
+    if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+      fs.unlinkSync(certPath);
+      fs.unlinkSync(keyPath);
+    }
     this.window.webContents.send("showNotice", {
       message: "Disabling SSL for Ledger...",
       class: "success"
