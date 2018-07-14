@@ -263,7 +263,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     clearClassList(networkStatus.classList);
     networkStatus.classList.add("connected")
     if (this.isSynced) {
-     // this.clearNotice(); is this needed?
+     this.clearNotice(); // makes msgs on 2nd page disappear
     }
 
     const pct = blocksSyncedNum / highestBlockNumber * 100
