@@ -30,12 +30,12 @@ function buildMenu() {
   } else {
     sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
   }
-  this.sslMenu.push({ type: "separator" })
-  this.sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
-  this.sslMenu.push({ label: "Reset Database", click: function() { mainWindow.webContents.send('clearDB', '') }})
-  this.sslMenu.push({ type: "separator" })
-  this.sslMenu.push({ label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }})
-  this.sslMenu.push({ type: "separator" })
+  sslMenu.push({ type: "separator" })
+  sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
+  sslMenu.push({ label: "Reset Database", click: function() { mainWindow.webContents.send('clearDB', '') }})
+  sslMenu.push({ type: "separator" })
+  sslMenu.push({ label: "Open Inspector", accelerator: "CmdOrCtrl+Shift+I", click: function() { mainWindow.webContents.openDevTools(); }})
+  sslMenu.push({ type: "separator" })
 
   // Create the Application's main menu
   var template = [{

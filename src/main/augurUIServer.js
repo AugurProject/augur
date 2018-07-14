@@ -94,10 +94,6 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.unlinkSync(certPath);
       fs.unlinkSync(keyPath);
     }
-    this.window.webContents.send("showNotice", {
-      message: "Disabling SSL for Ledger...",
-      class: "success"
-    });
     return this.restart();
   }
 
