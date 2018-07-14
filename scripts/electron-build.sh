@@ -11,6 +11,8 @@ EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     npm run make -- --mac
+    pyenv global
+    pip install requests
 else
     rm -rf node_modules/*
     apt update
@@ -23,7 +25,10 @@ else
     nvm use v9.11.2
     npm install
     npm run make -- --linux
+    pip install requests
 fi
+
 set -x
-sudo pip install requests
+
+
 python scripts/post_build.py
