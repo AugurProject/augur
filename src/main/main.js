@@ -18,17 +18,21 @@ const augurUIServer = new AugurUIServer();
 const path = require('path');
 const url = require('url');
 
+function toggleEnableSsl() {
+  mainWindow.webContents.send('toggleSsl', true);
+  buildMenu(true);
+}
 
-function buildMenu() {
+function buildMenu(showDisable) {
   // check if ssl files exist
   const sslMenu = [];
   const appDataPath = appData("augur");
   const certPath = path.join(appDataPath, 'localhost.crt');
   const keyPath = path.join(appDataPath, 'localhost.key');
-  if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-    sslMenu.push({ label: "Disable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', false)}})
+  if (fs.existsSync(keyPath) && fs.existsSync(certPath) || showDisable) {
+    sslMenu.push({ label: "Disable SSL for Ledger", enabled: !showDisable, click: function() { mainWindow.webContents.send('toggleSsl', false)}})
   } else {
-    sslMenu.push({ label: "Enable SSL for Ledger", click: function() { mainWindow.webContents.send('toggleSsl', true)}})
+    sslMenu.push({ label: "Enable SSL for Ledger", click: toggleEnableSsl})
   }
   sslMenu.push({ type: "separator" })
   sslMenu.push({ label: "Reset Configuration File", click: function() { mainWindow.webContents.send('reset', '') }})
@@ -89,7 +93,7 @@ function createWindow () {
   }, 2000);
 
   ipcMain.on('rebuildMenu', function (event, data) {
-    buildMenu();
+    buildMenu(false);
   })
 
   // Emitted when the window is closed.

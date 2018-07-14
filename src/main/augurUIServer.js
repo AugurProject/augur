@@ -94,7 +94,11 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.unlinkSync(certPath);
       fs.unlinkSync(keyPath);
     }
-    return this.restart();
+    setTimeout(() => {
+      this.restart();
+    }, 2000);
+
+    return;
   }
 
   const kg = new KeyGen();

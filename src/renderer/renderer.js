@@ -70,9 +70,6 @@ Renderer.prototype.onToggleSSL = function(event, enabled) {
   ipcRenderer.send("toggleSslAndRestart", enabled);
   if (!enabled) {
     this.showNotice("Disabling SSL for Ledger...", "success")
-    setTimeout(() => {
-      this.clearNotice()
-    }, 2000);
   }
 }
 
@@ -266,7 +263,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     clearClassList(networkStatus.classList);
     networkStatus.classList.add("connected")
     if (this.isSynced) {
-      this.clearNotice();
+     // this.clearNotice(); is this needed?
     }
 
     const pct = blocksSyncedNum / highestBlockNumber * 100
