@@ -263,7 +263,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     clearClassList(networkStatus.classList);
     networkStatus.classList.add("connected")
     if (this.isSynced) {
-      this.clearNotice();
+     // this.clearNotice(); is this needed?
     }
 
     const pct = blocksSyncedNum / highestBlockNumber * 100
