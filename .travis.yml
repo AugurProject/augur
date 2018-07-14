@@ -10,6 +10,7 @@ branches:
   - master
   - electron-build
   - "/v\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)$/"
+  - petong/ch13701/publish-installer-checksums-for-users-to
 
 
 matrix:

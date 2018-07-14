@@ -9,6 +9,7 @@ import requests
 try:
     GH_TOKEN = os.environ['GH_TOKEN']
 except KeyError:
+    print('no github token')
     print(os.environ)
     exit(0)
 
@@ -41,7 +42,7 @@ def upload_release_asset(id, name):
     try:
         request = requests.put('https://uploads.github.com/repos/AugurProject/augur-app/releases/%s/assets?name=%s' % (id, name),
                   files={'file': open(name, 'rb')},
-                  headers={headers}
+                  headers=headers
                   )
         request.raise_for_status()
     except requests.exceptions.HTTPError as err:
