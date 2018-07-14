@@ -11,7 +11,9 @@ EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     npm run make -- --mac
-    eval "$(pyenv init -)"
+    set -x
+    virtualenv augur-venv
+    source augur-venv/bin/activate
     pip install requests
 
 else
@@ -28,8 +30,5 @@ else
     npm run make -- --linux
     pip install requests
 fi
-
-set -x
-
 
 python scripts/post_build.py
