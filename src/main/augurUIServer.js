@@ -74,12 +74,15 @@ AugurUIServer.prototype.stopServer = function () {
   this.server.close();
 }
 
-AugurUIServer.prototype.restart = function () {
+AugurUIServer.prototype.restart = function (dontClear) {
   // clear any message that occured to start server
-  this.window.webContents.send("showNotice", {
-    message: "",
-    class: "success"
-  });
+  if (!dontClear) { // because of disable ssl button
+    this.window.webContents.send("showNotice", {
+      message: "",
+      class: "success"
+    });
+  }
+
   this.server.close();
   this.startServer();
 }
@@ -94,9 +97,7 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.unlinkSync(certPath);
       fs.unlinkSync(keyPath);
     }
-    setTimeout(() => {
-      this.restart();
-    }, 2000);
+    this.restart(true);
 
     return;
   }
