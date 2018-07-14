@@ -57,7 +57,7 @@ release_id = release_info['id']
 # set up build dir paths
 build_dir = 'dist/'
 full_path = os.path.abspath(build_dir)
-file_extensions = ['dmg', 'deb', 'exe']
+file_extensions = ['dmg', 'deb', 'exe', 'snap']
 
 # change to build dir
 os.chdir(full_path)
