@@ -89,7 +89,7 @@ export class AugurNodeController {
         networkId = this.augur.rpc.getNetworkID();
       }
       if (this.isRunning()) this._shutdown();
-      await renameDatabaseFile(networkId, this.databaseDir).catch(errorCallback);
+      await renameDatabaseFile(networkId, this.databaseDir);
     } catch (err) {
       if (errorCallback) errorCallback(err);
     }
