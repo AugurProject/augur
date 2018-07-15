@@ -801,10 +801,6 @@ module.exports = {
     8: 10000
   },
 
-  CREATE_YES_NO_MARKET_GAS: "0x5b8d80",
-  CREATE_SCALAR_MARKET_GAS: "0x5b8d80",
-  CREATE_CATEGORICAL_MARKET_GAS: "0x5e3918",
-
   CANCEL_ORDER_GAS: "0xC9860",
 
   WORST_CASE_FILL: {
@@ -816,7 +812,16 @@ module.exports = {
     7: new BigNumber("2127244", 10),
     8: new BigNumber("2365994", 10)
   },
-  WORST_CASE_PLACE_ORDER: {
+  PLACE_ORDER_NO_SHARES: {
+    2: new BigNumber("547694", 10),
+    3: new BigNumber("562138", 10),
+    4: new BigNumber("576582", 10),
+    5: new BigNumber("591026", 10),
+    6: new BigNumber("605470", 10),
+    7: new BigNumber("619914", 10),
+    8: new BigNumber("634358", 10)
+  },
+  PLACE_ORDER_WITH_SHARES: {
     2: new BigNumber("695034", 10),
     3: new BigNumber("794664", 10),
     4: new BigNumber("894294", 10),
@@ -1099,7 +1104,6 @@ var getMarketCreationCost = require("./get-market-creation-cost");
 var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -1124,8 +1128,7 @@ function createCategoricalMarket(p) {
     var createCategoricalMarketParams = assign({}, immutableDelete(p, "universe"), {
       tx: assign({
         to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_CATEGORICAL_MARKET_GAS
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex")
       }, p.tx),
       _outcomes: p._outcomes.map(function (outcome) {
         return encodeTag(outcome);
@@ -1133,6 +1136,7 @@ function createCategoricalMarket(p) {
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function onSuccess(res) {
+        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
         getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
           p.onSuccess(assign({}, res, { callReturn: marketId }));
@@ -1144,7 +1148,7 @@ function createCategoricalMarket(p) {
 }
 
 module.exports = createCategoricalMarket;
-},{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":376,"lodash":419,"speedomatic":491}],37:[function(require,module,exports){
+},{"../api":7,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":376,"lodash":419,"speedomatic":491}],37:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash").assign;
@@ -1182,8 +1186,7 @@ function createScalarMarket(p) {
     var createScalarMarketParams = assign({}, immutableDelete(p, ["universe", "tickSize"]), {
       tx: assign({
         to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_SCALAR_MARKET_GAS
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex")
       }, p.tx),
       _numTicks: speedomatic.hex(numTicks),
       _minPrice: speedomatic.fix(p._minPrice, "hex"),
@@ -1191,6 +1194,7 @@ function createScalarMarket(p) {
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function onSuccess(res) {
+        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
         getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
           p.onSuccess(assign({}, res, { callReturn: marketId }));
@@ -1212,7 +1216,6 @@ var getMarketCreationCost = require("./get-market-creation-cost");
 var getMarketFromCreateMarketReceipt = require("./get-market-from-create-market-receipt");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
-var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
@@ -1235,12 +1238,12 @@ function createYesNoMarket(p) {
     var createYesNoMarketParams = assign({}, immutableDelete(p, "universe"), {
       tx: assign({
         to: p.universe,
-        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex"),
-        gas: constants.CREATE_YES_NO_MARKET_GAS
+        value: speedomatic.fix(marketCreationCost.etherRequiredToCreateMarket, "hex")
       }, p.tx),
       _topic: encodeTag(p._topic),
       _extraInfo: JSON.stringify(p._extraInfo || {}),
       onSuccess: function onSuccess(res) {
+        if (p.tx !== undefined && p.tx.estimateGas) return p.onSuccess(res);
         getMarketFromCreateMarketReceipt(res.hash, function (err, marketId) {
           if (err) return p.onFailed(err);
           p.onSuccess(assign({}, res, { callReturn: marketId }));
@@ -1252,7 +1255,7 @@ function createYesNoMarket(p) {
 }
 
 module.exports = createYesNoMarket;
-},{"../api":7,"../constants":30,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":376,"lodash":419,"speedomatic":491}],39:[function(require,module,exports){
+},{"../api":7,"../format/tag/encode-tag":62,"./get-market-creation-cost":40,"./get-market-from-create-market-receipt":41,"immutable-delete":376,"lodash":419,"speedomatic":491}],39:[function(require,module,exports){
 "use strict";
 
 /** Type definition for MarketCreationCostBreakdown.
@@ -4541,8 +4544,10 @@ function tradeUntilAmountIsZero(p) {
   var onChainAmount = tradeCost.onChainAmount;
   var onChainPrice = tradeCost.onChainPrice;
   var cost = tradeCost.cost;
-  var numTradesPerTx = new BigNumber(0);
-  var gasLimit = p.doNotCreateOrders ? new BigNumber(0) : constants.WORST_CASE_PLACE_ORDER[p.numOutcomes];
+  var numTradesPerTx = new BigNumber(1);
+  var placeOrderGas = p.sharesProvided > 0 ? constants.PLACE_ORDER_WITH_SHARES[p.numOutcomes] : constants.PLACE_ORDER_NO_SHARES[p.numOutcomes];
+  var orderCreationCost = p.doNotCreateOrders ? new BigNumber(0) : placeOrderGas;
+  var gasLimit = orderCreationCost.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
   while (gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]).lt(constants.MAX_GAS_LIMIT_FOR_TRADE) && numTradesPerTx.lt(constants.MAX_FILLS_PER_TX)) {
     numTradesPerTx = numTradesPerTx.plus(1);
     gasLimit = gasLimit.plus(constants.WORST_CASE_FILL[p.numOutcomes]);
@@ -4777,7 +4782,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.0.0-15';
+module.exports = '5.0.0-16';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -34533,21 +34538,27 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":163,"minimalistic-assert":423,"minimalistic-crypto-utils":424}],199:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.4.0",
+      "/home/pg/Development/augur/augur.js"
+    ]
+  ],
+  "_from": "elliptic@6.4.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.4.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.4.0",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.4.0"
   },
   "_requiredBy": [
     "/browserify-sign",
@@ -34555,9 +34566,8 @@ module.exports={
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "/Users/bthaile/gitrepos/augur.js/node_modules/browserify-sign",
+  "_spec": "6.4.0",
+  "_where": "/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -34565,7 +34575,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -34575,7 +34584,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -47988,6 +47996,7 @@ HttpTransport.prototype.submitRpcRequest = function (rpcObject, errorCallback) {
       });
     } else if (response.statusCode === 502) { // to handle INFURA's 502 error response
       console.warn("[ethrpc] http-transport 502 response", error, response);
+      error = new Error("Gateway timeout, retryable");
       error.code = response.statusCode;
       error.retryable = true;
       errorCallback(error);
@@ -48288,7 +48297,7 @@ WsTransport.prototype.connect = function (initialCallback) {
     initialCallbackCalled = true;
     initialCallback(err);
   };
-  this.webSocketClient = new WebSocketClient(this.address, undefined, undefined, undefined, { timeout: this.timeout }, this.websocketClientConfig);
+  this.webSocketClient = new WebSocketClient(this.address, [], undefined, undefined, { timeout: this.timeout }, this.websocketClientConfig);
   var messageHandler = function () {};
   this.webSocketClient.onopen = function () {
     console.log("websocket", self.address, "opened");
@@ -48576,7 +48585,7 @@ module.exports = validateTransaction;
 
 },{"./validate-address":336,"./validate-number":340}],342:[function(require,module,exports){
 // generated by genversion
-module.exports = '5.3.15'
+module.exports = '5.4.1'
 
 },{}],343:[function(require,module,exports){
 "use strict";
