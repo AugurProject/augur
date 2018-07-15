@@ -187,6 +187,10 @@ AugurNodeServer.prototype.onReset = function (event, data) {
     }
   } catch (err) {
     log.error(err)
+    log.error(err)
+    this.window.webContents.send('error', {
+      error: err
+    })
   }
   event.sender.send('resetResponse', {})
 }
