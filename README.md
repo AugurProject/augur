@@ -8,11 +8,11 @@ Augur App is a lightweight Electron app that bundles the [Augur UI](https://gith
 
 Download the executable of the [latest release](https://github.com/AugurProject/augur-app/releases) for your respective operating system:
 
-**MacOS** : ```mac-augur-1.0.0.dmg```
+**MacOS** : ```mac-augur-1.0.x.dmg```
 
-**Windows** : ```win-augur-1.0.0.exe```
+**Windows** : ```win-augur-1.0.x.exe```
 
-**Linux** : ```linux-augur-1.0.0.deb```
+**Linux** : ```linux-augur-1.0.x.deb```
 
 ## Running
 
