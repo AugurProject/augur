@@ -35,12 +35,6 @@ body {
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-width: 900px;
-  overflow-x: scroll;
 }
 
 body, html {
@@ -49,7 +43,7 @@ body, html {
 }
 
 input[type=text] {
-  background-color: #DBDAE1;
+  background-color: white;
 }
 
 input[type=submit],
@@ -68,10 +62,24 @@ button {
   padding: 0 0.4em 0.166em;
   text-transform: uppercase;
   transition: background-color 0.15s ease, color 0.15s ease;
-  background-color: #f0eff6;
+  background-color: white;
   color: #412468;
 }
 
+.container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row; 
+  min-width: 800px;
+  height: 100%;
+}
+
+.scrollableContainer {
+  padding: 3.5rem;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-grow: 1;
+}
 .outlineButton {
   border: 1px solid white;
   background-color: #231A3A !important;
@@ -128,7 +136,6 @@ tbody tr td:first-child {
 }
 
 input {
-  border: none;
   font-family: inherit;
   font-size: 1rem;
   width: 100%;
@@ -138,6 +145,11 @@ input {
   font-size: 18px;
   color: #372E4B;
   letter-spacing: 0;
+  border: none;
+}
+
+.inputText {
+  border: solid 1px #9b8bf5;
 }
 
 .success {
@@ -160,16 +172,15 @@ input {
 }
 
 .networkForm {
-  padding-left: 4rem;
-  padding-top: 2rem;
   width: 60%;
   text-transform: uppercase;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   min-height: 700px;
-  height: 700px;
-  margin-top: 70px;
+  padding-right: 3.5rem;
+  min-width: 450px;
+  padding-bottom: 10px;
 }
 
 .label {
@@ -195,22 +206,81 @@ input {
   margin-top: 80px;
 }
 
-.header {
-  background-color: white;
+.sideMenu {
   color: black;
+  align-items: center;
   display: flex;
-  flex-direction: row;
-  padding: 30px 0;
-  height: 20px;
-  position: fixed;
+  flex-direction: column;
+  width: 300px;
+  max-width: 300px;
+  min-width: 300px;
+  flex-grow: 1;
+}
+
+.connectedInfo {
+  display: flex;
+  max-height: 90px;
+  background-color: white;
+  flex-grow: 1;
+  margin-bottom: 2rem;
   width: 100%;
   align-items: center;
+  min-height: 90px;
+}
+
+#syncing_info {
+  display: flex;
+  max-height: 220px;
+  background-color: white;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 40px 32px;
+}
+
+.dbInfo {
+  font-size: 16px;
+  color: #372E4B;
+}
+
+#syncPercentInfo {
+  font-size: 24px;
+  color: #A7A2B2;
+  border-bottom: 1px solid #D8D8D8;
+  padding-bottom: 13px;
+  margin-bottom: 16px;
+}
+
+#sync_percent {
+  font-size: 48px;
+  font-weight: 500;
+}
+
+.blocksBehind {
+  font-size: 16px;
+  color: #372E4B;
+  margin-bottom: 16px;
+}
+
+#blocks_behind {
+  font-size: 24px;
+  color: #372E4B;
+  font-weight: 500;
+}
+
+.blocksProcessed {
+  font-size: 14px;
+  color: #372E4B;
+  font-weight: 500;
+}
+
+.blocksLabel {
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .networkName {
-  padding-left: 4rem;
-  white-space: nowrap;
   flex-grow: 1;
+  padding: 0 32px;
 }
 
 .connected,
@@ -236,25 +306,9 @@ input {
   background: url(connected.svg) no-repeat center center;
 }
 
-.synced {
-  white-space: nowrap;
-  padding-right: 4rem;
-  min-width: 281px;
-}
-
-#blocks_remaining {
-  padding: 0 5px;
-  display: inline-block;
-}
-
 .status {
   text-transform: uppercase;
-}
-
-.networks {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  font-weight: 500;
 }
 
 .networkSelect {
@@ -266,15 +320,7 @@ input {
   background-position: 98% 50%;
   background-repeat: no-repeat;
   padding-left: 5px;
-  background-color: #DBDAE1;
-}
-
-.center {
-  text-align: center;
-}
-
-.config {
-  padding: 0;
+  background-color: white;
 }
 
 .footer {
@@ -288,19 +334,12 @@ input {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-bottom: 2rem;
 }
 
 .error {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
-}
-
-.openAugur {
-  display: flex;
-  justify-content: end;
-  float: right;
 }
 
 .versionNumber {
@@ -325,13 +364,8 @@ input {
   padding: .5rem 0 1.5rem 0;
 }
 
-.instruction-bold,
 .instruction {
   text-transform: none;
-}
-
-.instruction-bold {
-  font-weight: bolder;
 }
 
 .networkInfo {
@@ -381,6 +415,16 @@ input {
   flex-grow: 1;
   justify-content: flex-end;
   margin-top: 5px;
+}
+
+#blocks_synced {
+  display:inline-block;
+  margin-right: 5px;
+}
+
+.neverBreakup {
+  white-space: nowrap;
+  display: inline;
 }
 
 @-webkit-keyframes fadeinout {

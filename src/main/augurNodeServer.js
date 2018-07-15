@@ -9,7 +9,6 @@ const appData = require('app-data-folder')
 
 const REMOTE_DELAY_WAIT = 60*1000;
 const LOCAL_DELAY_WAIT = 1*1000;
-
 const defaultConfig = {
   'network': 'mainnet',
   'version': '1.0.0',
@@ -17,17 +16,20 @@ const defaultConfig = {
     'rinkeby': {
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
-      'ws': 'wss://rinkeby.augur.net/ethereum-ws'
+      'ws': 'wss://rinkeby.augur.net/ethereum-ws',
+      'id': '4',
     },
     'ropsten': {
       'http': 'https://ropsten.augur.net/ethereum-http',
       'name': 'Ropsten',
-      'ws': 'wss://ropsten.augur.net/ethereum-ws'
+      'ws': 'wss://ropsten.augur.net/ethereum-ws',
+      'id': '3'
     },
     'kovan': {
       'http': 'https://kovan.augur.net/ethereum-http',
       'name': 'Kovan',
-      'ws': 'wss://kovan.augur.net/ethereum-ws'
+      'ws': 'wss://kovan.augur.net/ethereum-ws',
+      'id': '42'
     },
     'local': {
       'http': 'http://localhost:8545',
@@ -37,7 +39,8 @@ const defaultConfig = {
     'mainnet': {
       'http': 'https://mainnet.infura.io/augur',
       'name': 'Mainnet',
-      'ws': 'wss://mainnet.infura.io/ws'
+      'ws': 'wss://mainnet.infura.io/ws',
+      'id': '1'
     },
     'custom': {
       'http': 'http://localhost:8545',
@@ -69,7 +72,7 @@ function AugurNodeServer() {
   ipcMain.on('start', this.onStartNetwork.bind(this))
   ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
   ipcMain.on('reset', this.onReset.bind(this))
-
+  ipcMain.on('resetConfig', this.onResetConfig.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
@@ -158,15 +161,32 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
   }
 }
 
-AugurNodeServer.prototype.onReset = function (event) {
+AugurNodeServer.prototype.onResetConfig = function (event) {
   try {
     this.config = JSON.parse(JSON.stringify(defaultConfig));
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('config', this.config)
-    if (this.augurNodeController) {
-      this.augurNodeController.resetDatabase()
+  } catch (err) {
+    log.error(err)
+    this.window.webContents.send('error', {
+      error: err
+    })
+  }
+}
+
+
+AugurNodeServer.prototype.onReset = function (event, data) {
+
+  try {
+    if (this.augurNodeController.isRunning()) {
+      return event.sender.send('noResetDatabase')
+    } else {
+      const network = data.network
+      const id = this.config.networks[network].id || defaultConfig.networks[network].id
+      this.augurNodeController.resetDatabase(id)
     }
   } catch (err) {
+    log.error(err)
     log.error(err)
     this.window.webContents.send('error', {
       error: err
