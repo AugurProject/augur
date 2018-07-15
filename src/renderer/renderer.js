@@ -46,9 +46,17 @@ function Renderer() {
     ipcRenderer.on('showNotice', this.onShowNotice.bind(this));
     ipcRenderer.on('toggleSsl', this.onToggleSSL.bind(this));
     ipcRenderer.on('clearDB', this.reset.bind(this));
-
+    ipcRenderer.on('noResetDatabase', this.onNoResetDatabase.bind(this))
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onNoResetDatabase = function() {
+  this.showNotice("Cannot reset database while connected, restart app then reset database", "failure")
+  // clear error after 3 seconds
+  setTimeout(() => {
+    this.clearNotice()
+  }, 3000);
 }
 
 Renderer.prototype.reset = function() {
@@ -153,7 +161,7 @@ Renderer.prototype.onSsl = function (event, value) {
 }
 
 Renderer.prototype.onServerError = function (event, data) {
-  this.showNotice("Failed to startup: " + data.error, "failure");
+  this.showNotice("Server Error: " + JSON.stringify(data.error), "failure");
 }
 
 Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {

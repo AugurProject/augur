@@ -176,21 +176,17 @@ AugurNodeServer.prototype.onResetConfig = function (event) {
 
 
 AugurNodeServer.prototype.onReset = function (event, data) {
-  const parent = this
-  const wasRunning = this.augurNodeController.isRunning()
+
   try {
-    // need to pass in id or mainnet will be used
-    // only an issue if user hasn't connected
-    const network = data.network
-    const id = this.config.networks[network].id || defaultConfig.networks[network].id
-    log.info("augur-node was running", wasRunning)
-    // make sure we are resetting the correct database
-    this.augurNodeController.resetDatabase(id, function() {
-      if (wasRunning) parent.restart()
-    })
+    if (this.augurNodeController.isRunning()) {
+      return event.sender.send('noResetDatabase')
+    } else {
+      const network = data.network
+      const id = this.config.networks[network].id || defaultConfig.networks[network].id
+      this.augurNodeController.resetDatabase(id)
+    }
   } catch (err) {
     log.error(err)
-    if (wasRunning) parent.restart()
   }
   event.sender.send('resetResponse', {})
 }
