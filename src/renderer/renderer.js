@@ -18,7 +18,7 @@ function Renderer() {
     this.connectedServer = "";
     this.haveHitBack = false;
     this.spinnerCount = 0
-    this.spinner = [".", "..", "..."]
+    this.spinner = ["&bull;", "&bull;&bull;", "&bull;&bull;&bull;"]
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
@@ -259,9 +259,10 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     const syncPercent = document.getElementById("sync_percent");
     const blocksBehind = document.getElementById("blocks_behind");
 
-
     const lastSyncBlockNumber = data.lastSyncBlockNumber;
     const highestBlockNumber = data.highestBlockNumber;
+    const uploadBlockNumber = data.uploadBlockNumber;
+
     if (lastSyncBlockNumber !== null && lastSyncBlockNumber !== 0) {
       blocksRemaining = parseInt(highestBlockNumber, 10) - parseInt(lastSyncBlockNumber, 10)
       if (blocksRemaining <= 15) {
@@ -282,15 +283,15 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
       networkStatus.classList.add("notConnected")
     }
 
-    const pct = blocksSyncedNum / highestBlockNumber * 100
-    const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+    const pct = lastSyncBlockNumber ? ((lastSyncBlockNumber - uploadBlockNumber) / (highestBlockNumber - uploadBlockNumber) * 100) : 0;
+    const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2);
 
     highestBlock.innerHTML = highestBlockNumber || 0;
     blocksSynced.innerHTML = blocksSyncedNum  || blocksRemainingCountLbl;
     blocksBehind.innerHTML = blocksSyncedNum ? highestBlockNumber - blocksSyncedNum  : '0';
     syncPercent.innerHTML = pctLbl || 0
 
-    blocksSynced.style.minWidth = '15px';
+    blocksSynced.style.minWidth = '22px';
 
     document.getElementById("syncPercentInfo").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
     document.getElementById("augur_ui_button").disabled = !this.isSynced;
