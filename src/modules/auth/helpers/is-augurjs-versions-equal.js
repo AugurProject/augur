@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs'
 
 export default function isAugurJSVersionsEqual() {
   return new Promise((resolve) => {
-    augur.augurNode.getContractAddresses((err, res) => {
+    augur.augurNode.getSyncData((err, res) => {
       if (err || (res.version !== augur.version)) {
         resolve({
           isEqual: false,
