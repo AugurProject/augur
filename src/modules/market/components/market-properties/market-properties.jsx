@@ -64,7 +64,6 @@ const MarketProperties = (p) => {
             <MarketLink
               className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
-              formattedDescription={p.formattedDescription}
               linkType={linkType}
             >
               { linkType || 'view'}

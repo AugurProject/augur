@@ -65,10 +65,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
           </div>
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink
-            id={market.id}
-            formattedDescription={market.formattedDescription}
-          >
+          <MarketLink id={market.id}>
             {market.description}
           </MarketLink>
         </h1>

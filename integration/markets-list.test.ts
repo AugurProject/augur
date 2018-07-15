@@ -181,7 +181,7 @@ describe("Markets List", () => {
       await expect(page).toClick("a.market-properties-styles_MarketProperties__trade")
       await page.waitForSelector(".market-header-styles_MarketHeader__back-button", {timeout: TIMEOUT}) // wait to be on right page
       const pageUrl = await page.url();
-      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
+      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?id=${yesNoMarketId}`)
     });
 
     it("should bring you to the trade view for that market when clicking on market title", async () => {
@@ -189,7 +189,7 @@ describe("Markets List", () => {
       await expect(page).toClick("a", { text: yesNoMarketDesc, timeout: TIMEOUT })
       await page.waitForSelector(".market-header-styles_MarketHeader__back-button", {timeout: TIMEOUT}) // wait to be on right page
       const pageUrl = await page.url();
-      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?description=will_antibiotics_be_outlawed_for_agricultural_use_in_china_by_the_end_of_2019&id=${yesNoMarketId}`)
+      expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/market?id=${yesNoMarketId}`)
     });
 
     it("should display categorical market outcomes correctly", async () => {

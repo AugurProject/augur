@@ -18,7 +18,7 @@ const TransactionHeader = ({ transaction }) => {
         }
       </h3>
       { marketId ?
-        <MarketLink id={marketId} formattedDescription={transaction.description}>
+        <MarketLink id={marketId}>
           <h4 className={Styles.TransactionHeader__description}>{ transaction.description }</h4>
         </MarketLink>
         : <h4 className={Styles.TransactionHeader__description}>{ transaction.description }</h4>

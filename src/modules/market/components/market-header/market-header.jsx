@@ -132,7 +132,7 @@ export default class MarketHeader extends Component {
           )}
         >
           <h4>Resolution Source:</h4>
-          <span>{resolutionSource || 'Outcome will be determined by news media'}</span>
+          <span>{resolutionSource || 'General knowledge'}</span>
         </div>
         <div className={Styles[`MarketHeader__details-wrapper`]}>
           { detailsPresent &&
