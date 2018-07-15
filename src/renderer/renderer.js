@@ -29,7 +29,6 @@ function Renderer() {
     document.getElementById("go_to_open_app_screen_button").addEventListener("click", this.connectToServer.bind(this));
     document.getElementById("augur_ui_button").addEventListener("click", this.openAugurUI.bind(this));
     document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
-    document.getElementById("reset_button").addEventListener("click", this.reset.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
 
@@ -119,7 +118,6 @@ Renderer.prototype.onServerConnected = function (event) {
   document.getElementById("syncing_info").style.display = "block";
 
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
-  document.getElementById("reset_button").disabled = true;
 }
 
 Renderer.prototype.connectToServer = function (event) {
@@ -314,6 +312,8 @@ Renderer.prototype.showNotice = function (message, className) {
     const notice = document.getElementById("notice");
     clearClassList(notice.classList);
     notice.innerHTML = "";
+    document.getElementById("error_notice").style.display = 'none'
+
     setTimeout(() => {
         if (className === 'failure') {
             document.getElementById("error_notice").style.display = 'block'
@@ -321,7 +321,6 @@ Renderer.prototype.showNotice = function (message, className) {
             document.getElementById("error_notice").style.display = 'none'
         }
         notice.classList.add(className);
-        notice.classList.add("notice");
         notice.innerHTML = message;
     }, 100);
 }
