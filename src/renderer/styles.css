@@ -43,7 +43,7 @@ body, html {
 }
 
 input[type=text] {
-  background-color: #DBDAE1;
+  background-color: white;
 }
 
 input[type=submit],
@@ -136,7 +136,6 @@ tbody tr td:first-child {
 }
 
 input {
-  border: none;
   font-family: inherit;
   font-size: 1rem;
   width: 100%;
@@ -146,6 +145,7 @@ input {
   font-size: 18px;
   color: #372E4B;
   letter-spacing: 0;
+  border: solid 1px #9b8bf5;
 }
 
 .success {
@@ -316,7 +316,7 @@ input {
   background-position: 98% 50%;
   background-repeat: no-repeat;
   padding-left: 5px;
-  background-color: #DBDAE1;
+  background-color: white;
 }
 
 .footer {
