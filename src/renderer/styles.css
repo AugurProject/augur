@@ -62,7 +62,7 @@ button {
   padding: 0 0.4em 0.166em;
   text-transform: uppercase;
   transition: background-color 0.15s ease, color 0.15s ease;
-  background-color: #f0eff6;
+  background-color: white;
   color: #412468;
 }
 
@@ -145,6 +145,10 @@ input {
   font-size: 18px;
   color: #372E4B;
   letter-spacing: 0;
+  border: none;
+}
+
+.inputText {
   border: solid 1px #9b8bf5;
 }
 
