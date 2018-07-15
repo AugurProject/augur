@@ -66,7 +66,7 @@ Renderer.prototype.onResetResponse = function() {
   this.showNotice("Resetting Database...", "success")
   setTimeout(() => {
     this.clearNotice()
-  }, 2000);
+  }, 8000);
 }
 
 Renderer.prototype.onResetConfig = function() {
