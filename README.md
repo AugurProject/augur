@@ -58,6 +58,17 @@ Please delete the ```augur``` directory (or, just the ```config.json``` file) in
 
 **Linux** : ``` ~/.augur```
 
+##  Logging
+
+If you are looking for more information from augur-node and augur-app, checkout the logs. 
+
+**MacOS** : ```~/Library/Logs/augur/log.log```
+
+**Windows** : ```%USERPROFILE%\AppData\Roaming\augur\log.log```
+
+**Linux** : ``` ~/.config/augur/log.log```
+
+
 ## Questions, Bugs and Issues
 
 Please file any bugs or issues related to Augur App as a GitHub issue in the [Augur App](https://github.com/AugurProject/augur-app) repository. If your issue is related to Augur Node, use the [Augur Node](https://github.com/AugurProject/augur-app) repository. If you have a UI bug or issue to report, use the [Augur Client](https://github.com/AugurProject/augur)  repository. 
