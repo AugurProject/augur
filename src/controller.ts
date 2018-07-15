@@ -57,9 +57,9 @@ export class AugurNodeController {
     }
   }
 
-  public shutdown() {
+  public async shutdown() {
     try {
-      this._shutdown();
+      await this._shutdown();
     } catch (err) {
       if (this.errorCallback) this.errorCallback(err);
     }
@@ -88,7 +88,7 @@ export class AugurNodeController {
       if (this.augur != null && this.augur.rpc.getNetworkID()) {
         networkId = this.augur.rpc.getNetworkID();
       }
-      if (this.isRunning()) this._shutdown();
+      if (this.isRunning()) await this._shutdown();
       await renameDatabaseFile(networkId, this.databaseDir);
     } catch (err) {
       if (errorCallback) errorCallback(err);
@@ -111,7 +111,7 @@ export class AugurNodeController {
     process.exit(1);
   }
 
-  private _shutdown() {
+  private async _shutdown() {
     if (!this.running) return;
     this.running = false;
     this.logger.info("Stopping Augur Node Server");
@@ -122,7 +122,7 @@ export class AugurNodeController {
       this.serverResult = undefined;
     }
     if (this.db !== undefined) {
-      this.db.destroy();
+      await this.db.destroy();
       this.db = undefined;
     }
     clearOverrideTimestamp();
