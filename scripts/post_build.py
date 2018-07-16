@@ -65,7 +65,7 @@ def upload_release_asset(id, data, name):
 current_version = get_current_version()
 result = get_github_release_info()
 release_info = get_version_release_info(result, current_version)
-release_id = release_info['id']
+release_id = ''
 
 # set up build dir paths
 build_dir = 'dist/'
@@ -86,7 +86,9 @@ for fname in os.listdir(full_path):
             shasums = '{} {}'.format(sha, fname)
             print(shasums)
             shafile.write(shasums)
-        delete_asset_if_exists(release_info, shasums_file)
+        if release_info:
+            release_id = release_info['id']
+            delete_asset_if_exists(release_info, shasums_file)
         upload_release_asset(release_id, shasums, shasums_file)
 
 
