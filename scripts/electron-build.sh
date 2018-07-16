@@ -32,3 +32,4 @@ else
 fi
 
 python scripts/post_build.py
+cat dist/*.sha256
