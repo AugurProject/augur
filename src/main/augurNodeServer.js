@@ -247,6 +247,7 @@ AugurNodeServer.prototype.shutDownServer = function () {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Stopping Augur Node Server')
     this.augurNodeController.shutdown()
+    this.window.webContents.send('onServerDisconnected', {})
   } catch (err) {
     log.error(err)
     this.window.webContents.send('error', {
