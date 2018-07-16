@@ -37,6 +37,16 @@ def get_version_release_info(result, version):
             return project
 
 
+def delete_asset_if_exists(release_info, asset_name):
+    asset_url = ""
+    for asset in release_info['assets']:
+        if asset_name in asset['name']:
+            print('found ' + asset_name)
+            asset_url = asset['url']
+            print(asset_url)
+            r = requests.delete(asset_url, headers=headers)
+
+
 # upload asset
 # https://uploads.github.com/repos/AugurProject/augur-app/releases/11907294/assets{?name,label}
 def upload_release_asset(id, data, name):
@@ -74,7 +84,9 @@ for fname in os.listdir(full_path):
         shasums_file = fname + '.sha256'
         with open(shasums_file, "w") as shafile:
             shasums = '{} {}'.format(sha, fname)
+            print(shasums)
             shafile.write(shasums)
+        delete_asset_if_exists(release_info, shasums_file)
         upload_release_asset(release_id, shasums, shasums_file)
 
 
