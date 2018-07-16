@@ -9,6 +9,10 @@ const appData = require('app-data-folder')
 
 const REMOTE_DELAY_WAIT = 60*1000;
 const LOCAL_DELAY_WAIT = 1*1000;
+
+const REMOTE_MAX_RETRIES = 5;
+const LOCAL_MAX_RETRIES = 0;
+
 const defaultConfig = {
   'network': 'mainnet',
   'version': '1.0.0',
@@ -83,10 +87,12 @@ AugurNodeServer.prototype.setWindow = function (window) {
 AugurNodeServer.prototype.startServer = function () {
   try {
     var propagationDelayWaitMillis = REMOTE_DELAY_WAIT;
+    var maxRetries = REMOTE_MAX_RETRIES;
     if (this.networkConfig.http.indexOf("localhost") > -1 || this.networkConfig.http.indexOf("127.0.0.1") > -1) {
       propagationDelayWaitMillis = LOCAL_DELAY_WAIT;
+      maxRetries = LOCAL_MAX_RETRIES;
     }
-    this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis }), this.appDataPath)
+    this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis, maxRetries }), this.appDataPath)
     this.augurNodeController.clearLoggers();
     this.augurNodeController.addLogger(log);
 
