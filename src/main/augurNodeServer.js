@@ -250,6 +250,10 @@ AugurNodeServer.prototype.shutDownServer = function () {
     this.window.webContents.send('onServerDisconnected', {})
   } catch (err) {
     log.error(err)
+    if (!this.augurNodeController.isRunning()) {
+      this.window.webContents.send('onServerDisconnected', {})
+    }
+
     this.window.webContents.send('error', {
       error: err
     })
