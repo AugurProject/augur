@@ -11,7 +11,7 @@ function clearClassList(classList) {
 }
 
 function addCommas(number) {
-  if (!number) {
+  if (!number || isNaN(number)) {
     return number
   }
   let sides = []
