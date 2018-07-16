@@ -99,6 +99,9 @@ AugurNodeServer.prototype.startServer = function () {
       this.window.webContents.send('error', {
         error: err.message
       })
+      if (this.augurNodeController && !this.augurNodeController.isRunning()) {
+        this.disconnectServerMessage();
+      }
     }.bind(this))
   } catch (err) {
     log.error(err)
@@ -242,18 +245,25 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
     })
 }
 
+AugurNodeServer.prototype.disconnectServerMessage = function () {
+  try {
+    this.window.webContents.send('onServerDisconnected', {}) 
+  } catch (err) {
+    log.error(err)
+  }
+}
+
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Stopping Augur Node Server')
     this.augurNodeController.shutdown()
-    this.window.webContents.send('onServerDisconnected', {})
+    this.disconnectServerMessage()
   } catch (err) {
     log.error(err)
-    if (!this.augurNodeController.isRunning()) {
-      this.window.webContents.send('onServerDisconnected', {})
+    if (this.augurNodeController && !this.augurNodeController.isRunning()) {
+      this.disconnectServerMessage()
     }
-
     this.window.webContents.send('error', {
       error: err
     })

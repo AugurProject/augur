@@ -111,8 +111,10 @@ Renderer.prototype.backToNetworkConfig = function (event) {
 
 Renderer.prototype.onServerDisconnected = function (event) {
   const networkStatus = document.getElementById("network_status");
-  clearClassList(networkStatus.classList);
-  networkStatus.classList.add("notConnected")
+  if (networkStatus) {
+    clearClassList(networkStatus.classList);
+    networkStatus.classList.add("notConnected") 
+  }
 }
 
 Renderer.prototype.onServerConnected = function (event) {
