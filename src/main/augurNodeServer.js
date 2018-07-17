@@ -99,9 +99,6 @@ AugurNodeServer.prototype.startServer = function () {
       this.window.webContents.send('error', {
         error: err.message
       })
-      if (this.augurNodeController && !this.augurNodeController.isRunning()) {
-        this.disconnectServerMessage();
-      }
     }.bind(this))
   } catch (err) {
     log.error(err)
