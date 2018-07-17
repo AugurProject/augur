@@ -53,6 +53,7 @@ function Renderer() {
     ipcRenderer.on('ssl', this.onSsl.bind(this))
     ipcRenderer.on('onServerConnected', this.onServerConnected.bind(this))
     ipcRenderer.on('resetResponse', this.onResetResponse.bind(this));
+    ipcRenderer.on('onServerDisconnected', this.onServerDisconnected.bind(this))
 
     ipcRenderer.on('reset', this.onResetConfig.bind(this));
     ipcRenderer.on('showNotice', this.onShowNotice.bind(this));
@@ -121,6 +122,14 @@ Renderer.prototype.backToNetworkConfig = function (event) {
     document.getElementById("augur_ui_button").disabled = true
 }
 
+Renderer.prototype.onServerDisconnected = function (event) {
+  const networkStatus = document.getElementById("network_status");
+  if (networkStatus) {
+    clearClassList(networkStatus.classList);
+    networkStatus.classList.add("notConnected") 
+  }
+}
+
 Renderer.prototype.onServerConnected = function (event) {
   this.clearNotice()
   const data = this.connectedServer;
@@ -131,6 +140,10 @@ Renderer.prototype.onServerConnected = function (event) {
   document.getElementById("syncing_info").style.display = "block";
 
   document.getElementById("augur_ui_button").disabled = !this.isSynced;
+
+  const networkStatus = document.getElementById("network_status");
+  clearClassList(networkStatus.classList);
+  networkStatus.classList.add("connected")
 }
 
 Renderer.prototype.connectToServer = function (event) {
@@ -266,7 +279,6 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     let blocksRemainingCountLbl = "0";
     let blocksSyncedNum = null;
 
-    const networkStatus = document.getElementById("network_status");
     const highestBlock = document.getElementById("highest_block");
     const blocksSynced = document.getElementById("blocks_synced");
     const syncPercent = document.getElementById("sync_percent");
@@ -286,16 +298,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     } else {
       blocksRemainingCountLbl = this.spinner[this.spinnerCount++ % this.spinner.length]
     }
-
-    if (this.isSynced) {
-      clearClassList(networkStatus.classList);
-      networkStatus.classList.add("connected")
-      // this.clearNotice(); // makes msgs on 2nd page disappear
-    } else {
-      clearClassList(networkStatus.classList);
-      networkStatus.classList.add("notConnected")
-    }
-
+    
     const pct = lastSyncBlockNumber ? ((lastSyncBlockNumber - uploadBlockNumber) / (highestBlockNumber - uploadBlockNumber) * 100) : 0;
     const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2);
 
