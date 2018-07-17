@@ -32,7 +32,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
   const onClick = ((location, history, toggleTagFn) => tag => () => {
     const p = {
       ...balanceOfSearchParams,
-      [CATEGORY_PARAM_NAME]: category,
+      [CATEGORY_PARAM_NAME]: category.toUpperCase(),
     }
 
     const tagArr = toggleTagFn(tag)
@@ -54,7 +54,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
       onClick: onClick(tag),
       visible: true,
     })),
-    getOr([], category),
+    getOr([], category.toUpperCase()),
   )(allCategories)
 
   const makeCategoryLink = (categoryClicked) => {
