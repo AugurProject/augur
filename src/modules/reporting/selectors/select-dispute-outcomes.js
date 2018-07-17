@@ -87,7 +87,7 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   outcome = outcomes.find(outcome => outcome.id === stake.id)
 
   // test if stake payout is malformed
-  stake.malformed = stake.payout.reduce((p, ticks) => (ticks > 0 ? p + 1 : p), 0) > 1
+  stake.malformed = marketType !== SCALAR ? stake.payout.reduce((p, ticks) => (ticks > 0 ? p + 1 : p), 0) > 1 : false
   if (marketType === SCALAR) stake.name = stake.id
 
   // TODO: verify that switching is the best way
