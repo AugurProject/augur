@@ -13,7 +13,7 @@ import getValue from 'utils/get-value'
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
 
-  let coreProperties = {
+  const coreProperties = {
     volume: {
       value: getValue(market, 'volume.full'),
     },
@@ -46,7 +46,7 @@ const mapStateToProps = (state, ownProps) => {
     minPrice: market.minPrice || ZERO,
     scalarDenomination: market.scalarDenomination,
     resolutionSource: market.resolutionSource,
-    coreProperties: coreProperties,
+    coreProperties,
   }
 }
 
