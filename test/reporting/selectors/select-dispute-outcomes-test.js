@@ -97,6 +97,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1000, 9000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '90',
@@ -107,6 +108,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [3000, 7000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '70',
@@ -117,6 +119,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [2000, 8000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: true,
           stakeCurrent: '80',
@@ -127,6 +130,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [4000, 6000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '60',
@@ -137,6 +141,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [6000, 4000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '40',
@@ -147,6 +152,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [7000, 3000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '30',
@@ -201,6 +207,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [0, 10000],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '100',
@@ -211,6 +218,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           payout: [1500, 8500],
           isInvalid: false,
+          malformed: false,
           potentialFork: false,
           tentativeWinning: false,
           stakeCurrent: '85',
