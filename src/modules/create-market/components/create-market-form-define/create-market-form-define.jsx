@@ -76,9 +76,7 @@ export default class CreateMarketDefine extends Component {
 
     // compare unquiness remove empty values
     const localValuesLen = Object.values(localValues).filter(x => !isEmpty(x)).length
-    const isUnique = uniqBy(Object.values(localValues).filter(x => !isEmpty(x)), function(value) {
-      return value.toUpperCase()
-    }).length === localValuesLen
+    const isUnique = uniqBy(Object.values(localValues).filter(x => !isEmpty(x)), value => value.toUpperCase()).length === localValuesLen
 
     switch (true) {
       case typeof value === 'string' && !value.trim().length && isRequired:
