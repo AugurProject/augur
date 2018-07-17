@@ -30,9 +30,9 @@ describe('src/modules/app/selectors/select-all-categories.js', () => {
 
   it('should group tags by category', () => {
     const expected = {
-      'category-with-tags': ['unique-tag', 'duplicate-tag', 'unique-tag-1'],
-      'category-with-tags-2': ['unique-tag-1', 'duplicate-tag'],
-      'category-without-tags': [],
+      'CATEGORY-WITH-TAGS': ['unique-tag', 'duplicate-tag', 'unique-tag-1'],
+      'CATEGORY-WITH-TAGS-2': ['unique-tag-1', 'duplicate-tag'],
+      'CATEGORY-WITHOUT-TAGS': [],
     }
 
     assert.deepEqual(result, expected)
