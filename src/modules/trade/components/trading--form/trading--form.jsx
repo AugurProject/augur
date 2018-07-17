@@ -14,6 +14,7 @@ import { Hint } from 'modules/common/components/icons'
 
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
+import Checkbox from 'src/modules/common/components/checkbox'
 
 class MarketTradingForm extends Component {
   static propTypes = {
@@ -372,6 +373,7 @@ class MarketTradingForm extends Component {
             </li>
             <li className={Styles['TradingForm__do-no-create-orders']}>
               <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
+              <Checkbox />
               <input
                 id="tr__input--do-no-create-orders"
                 type="checkbox"
