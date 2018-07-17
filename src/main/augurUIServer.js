@@ -10,14 +10,21 @@ const KeyGen = require('selfsigned.js');
 
 function AugurUIServer() {
   this.app = express();
+  this.port = 8080;
   this.window = null;
   this.appDataPath = appData("augur");
   ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
+  ipcMain.on('startUiServer', this.onStartUiServer.bind(this))
+}
+
+AugurUIServer.prototype.onStartUiServer = function (event, usePort) {
+  this.port = usePort || this.port;
+  this.startServer()
 }
 
 AugurUIServer.prototype.startServer = function () {
   log.info("Starting Augur UI Server");
-  const port = 8080;
+  const port = this.port;
   try {
     const self = this;
     let options = null;
@@ -66,12 +73,11 @@ AugurUIServer.prototype.startServer = function () {
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
 AugurUIServer.prototype.setWindow = function (window) {
   this.window = window;
-  this.startServer();
 }
 
 AugurUIServer.prototype.stopServer = function () {
   log.info("Stopping Augur UI Server");
-  this.server.close();
+  this.server && this.server.close();
 }
 
 AugurUIServer.prototype.restart = function (dontClear) {
@@ -83,7 +89,7 @@ AugurUIServer.prototype.restart = function (dontClear) {
     });
   }
 
-  this.server.close();
+  this.server && this.server.close();
   this.startServer();
 }
 

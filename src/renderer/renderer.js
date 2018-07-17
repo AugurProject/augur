@@ -30,7 +30,8 @@ function Renderer() {
     this.selectedNetworkForm = "";
     this.connectedServer = "";
     this.haveHitBack = false;
-    this.spinnerCount = 0
+    this.spinnerCount = 0;
+    this.uiPort = 8080;
     this.spinner = ["&bull;", "&bull;&bull;", "&bull;&bull;&bull;"]
 
     ipcRenderer.send('requestConfig');
@@ -134,6 +135,7 @@ Renderer.prototype.onServerConnected = function (event) {
 }
 
 Renderer.prototype.connectToServer = function (event) {
+  ipcRenderer.send('startUiServer', this.uiPort);
   this.showNotice("Connecting...", "success")
   const data = this.getNetworkConfigFormData();
   this.isSynced = false;
@@ -183,7 +185,7 @@ Renderer.prototype.openAugurUI = function () {
     const protocol = this.isSsl ? 'https' : 'http'
     const networkConfig = this.connectedServer.networkConfig;
     const queryString = `augur_node=${encodeURIComponent("ws://localhost:9001")}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`;
-    shell.openExternal(`${protocol}://localhost:8080/#/categories?${queryString}`);
+    shell.openExternal(`${protocol}://localhost:${this.uiPort}/#/categories?${queryString}`);
 }
 
 Renderer.prototype.saveNetworkConfig = function (event) {
@@ -233,7 +235,7 @@ Renderer.prototype.renderNetworkConfigForm = function (network, networkConfig) {
 Renderer.prototype.onReceiveConfig = function (event, data) {
   try {
     this.config = data;
-
+    this.uiPort = data.uiPort || this.uiPort;
     this.selectedNetworkForm = (this.selectedNetworkForm === "" ? this.config.network : this.selectedNetworkForm);
     if (!this.config.networks[this.selectedNetworkForm]) {
       this.selectedNetworkForm = this.config.network
