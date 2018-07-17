@@ -48,6 +48,8 @@ export default class ReportingResolved extends Component {
     const { markets } = this.props
     if (nextProps.markets.length > 0 && nextProps.markets !== markets) {
       const filteredMarkets = getMarketIds(nextProps.markets)
+      // Reverse order of filteredMarkets so markets resolved most recently are first
+      filteredMarkets.reverse()
       this.setState({ filteredMarkets })
     }
   }
