@@ -29,10 +29,12 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
   const allCategories = selectAllCategories(state)
 
   const toggleTagFn = curriedToggleMemberOfArray(tags)
+  const categoryU = category && category.toUpperCase()
+  
   const onClick = ((location, history, toggleTagFn) => tag => () => {
     const p = {
       ...balanceOfSearchParams,
-      [CATEGORY_PARAM_NAME]: category.toUpperCase(),
+      [CATEGORY_PARAM_NAME]: categoryU,
     }
 
     const tagArr = toggleTagFn(tag)
@@ -54,7 +56,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
       onClick: onClick(tag),
       visible: true,
     })),
-    getOr([], category.toUpperCase()),
+    getOr([], categoryU),
   )(allCategories)
 
   const makeCategoryLink = (categoryClicked) => {
