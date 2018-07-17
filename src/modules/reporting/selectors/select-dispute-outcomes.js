@@ -86,6 +86,8 @@ const populateFromOutcome = (marketType, outcomes, market, stake, newOutcomeDisp
   stake.id = calculatePayoutNumeratorsValue(market, stake.payout, stake.isInvalid).toString()
   outcome = outcomes.find(outcome => outcome.id === stake.id)
 
+  // test if stake payout is malformed
+  stake.malformed = stake.payout.reduce((p, ticks) => (ticks > 0 ? p + 1 : p), 0) > 1
   if (marketType === SCALAR) stake.name = stake.id
 
   // TODO: verify that switching is the best way

@@ -49,6 +49,9 @@ const Outcome = ({ className, outcome, marketId }) => {
           {outcomeName}
         </span>
       </div>
+      { outcome.tentativeWinning && outcome.malformed &&
+        <label className={Styles.MarketReportingPayouts__malformed}>Malformed Outcome</label>
+      }
       { outcome.tentativeWinning &&
         <div data-testid={'winning-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__winning-outcome-message']}>
           tentative winning outcome

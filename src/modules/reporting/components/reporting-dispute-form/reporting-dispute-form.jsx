@@ -360,7 +360,11 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{winner.isInvalid ? 'Invalid' : winner.name }
+          <p>
+            {winner.malformed &&
+              <label className={Styles.ReportingDisputeForm__malformed}>Malformed Outcome</label>
+            }
+            {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
               <label>{market.scalarDenomination}</label>
             }
