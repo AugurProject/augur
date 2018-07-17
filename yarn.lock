@@ -11094,10 +11094,6 @@ shallowequal@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
 
-shared-git-hooks@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/shared-git-hooks/-/shared-git-hooks-1.2.1.tgz#f17f59677cbf8fc3ee8ee71934a9de70a0920cce"
-
 shasum@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/shasum/-/shasum-1.0.2.tgz#e7012310d8f417f4deb5712150e5678b87ae565f"
