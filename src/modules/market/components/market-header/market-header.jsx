@@ -76,7 +76,14 @@ export default class MarketHeader extends Component {
           <h1 className={Styles.MarketHeader__description}>
             {description}
           </h1>
-          <div className={Styles.MarketHeader__properties}>
+          <div 
+            className={classNames(
+              Styles.MarketHeader__properties,
+              {
+                [Styles['MarketHeader__scalar-properties']]: (marketType === SCALAR),
+              },
+            )}
+          >
             {!!coreProperties &&
               Object.keys(coreProperties).map(property => (
                 coreProperties[property].value !== null &&
