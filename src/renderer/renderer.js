@@ -10,6 +10,19 @@ function clearClassList(classList) {
   return classList
 }
 
+function addCommas(number) {
+  if (!number || isNaN(number)) {
+    return number
+  }
+  let sides = []
+
+  sides = number.toString().split('.')
+  sides[0] = sides[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+  return sides.join('.')
+}
+
+
 function Renderer() {
     this.isSynced = false;
     this.isSsl = false;
@@ -286,9 +299,9 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     const pct = lastSyncBlockNumber ? ((lastSyncBlockNumber - uploadBlockNumber) / (highestBlockNumber - uploadBlockNumber) * 100) : 0;
     const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2);
 
-    highestBlock.innerHTML = highestBlockNumber || 0;
-    blocksSynced.innerHTML = blocksSyncedNum  || blocksRemainingCountLbl;
-    blocksBehind.innerHTML = blocksSyncedNum ? highestBlockNumber - blocksSyncedNum  : '0';
+    highestBlock.innerHTML = addCommas(highestBlockNumber) || 0;
+    blocksSynced.innerHTML = addCommas(blocksSyncedNum)  || blocksRemainingCountLbl;
+    blocksBehind.innerHTML = blocksSyncedNum ? addCommas(highestBlockNumber - blocksSyncedNum)  : '0';
     syncPercent.innerHTML = pctLbl || 0
 
     blocksSynced.style.minWidth = '22px';
