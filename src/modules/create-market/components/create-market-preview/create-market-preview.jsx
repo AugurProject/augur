@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { augur } from 'services/augurjs'
 import { createBigNumber } from 'utils/create-big-number'
+import speedomatic from 'speedomatic'
 
 import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -28,8 +29,7 @@ export default class CreateMarketPreview extends Component {
 
   static formatReporterFee(value) {
     if (!value || value === 0 || isNaN(value)) return 0
-    const { ETHER } = augur.rpc.constants
-    return createBigNumber(value.toString()).times(ETHER).dividedBy(createBigNumber(100)).toNumber()
+    return createBigNumber(100).dividedBy(speedomatic.fix(value)).toNumber()
   }
 
   static getExpirationDate(p) {
