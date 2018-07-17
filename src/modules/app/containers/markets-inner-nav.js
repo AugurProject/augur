@@ -30,7 +30,7 @@ const mapStateToProps = (state, { history, location = {}, openSubMenu = noop }) 
 
   const toggleTagFn = curriedToggleMemberOfArray(tags)
   const categoryU = category && category.toUpperCase()
-  
+
   const onClick = ((location, history, toggleTagFn) => tag => () => {
     const p = {
       ...balanceOfSearchParams,
