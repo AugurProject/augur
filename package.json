@@ -39,6 +39,7 @@
     "docker:start": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose up",
     "docker:pull": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose pull",
     "docker:spin-down": "AUGUR_CORE_VERSION=$(npm explore augur.js -- npm run --silent core:version) docker-compose down",
+    "prepush": "npm run lint && npm run test",
     "version": "npm run build:mainnet"
   },
   "dependencies": {
@@ -130,6 +131,7 @@
     "html-webpack-plugin": "2.30.1",
     "http": "0.0.0",
     "https": "1.0.0",
+    "husky": "^0.14.3",
     "ignore-styles": "5.0.1",
     "import-glob-loader": "1.1.0",
     "inline-source-cli": "1.2.0",
