@@ -89,7 +89,7 @@ function checkForOrphanedOrders(db: Knex, orderData: OrdersRow<string>, callback
     outcome: orderData.outcome,
     orderType: orderData.orderType,
   };
-  db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", ">", 0).asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
+  db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", "!=", "0").asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
     if (err) return callback(err);
     if (results.numPrices === 1 && results.numOrders > 1) {
       db.from("orders").first(db.raw("MAX(blockNumber * 100000 + logIndex) as maxLog")).where(queryData).asCallback((err: Error|null, result: {maxLog: number}): void => {
@@ -114,7 +114,7 @@ function checkForUnOrphanedOrders(db: Knex, log: FormattedEventLog, callback: Er
       outcome: tokensRow.outcome!,
       orderType: log.orderType === "0" ? "buy" : "sell",
     };
-    db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", ">", 0).asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
+    db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", "!=", "0").asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
       if (err) return callback(err);
       if (results.numPrices === 1 && results.numOrders > 1) {
         db.from("orders").first(db.raw("MAX(blockNumber * 100000 + logIndex) as maxLog")).where(queryData).asCallback((err: Error|null, result: {maxLog: number}): void => {
