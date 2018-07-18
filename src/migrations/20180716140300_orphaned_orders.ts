@@ -48,7 +48,7 @@ const KNOWN_ORPHANED_ORDERS = [
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.hasColumn("orders", "orphaned").then((exists) => {
-    if (!exists) knex.schema.table("orders", (t) => t.boolean("orphaned")).then(() => {
+    if (!exists) knex.schema.table("orders", (t) => t.boolean("orphaned").defaultTo(0)).then(() => {
       return knex.from("orders").whereIn("orderId", KNOWN_ORPHANED_ORDERS).update({orphaned: true});
     });
     return;

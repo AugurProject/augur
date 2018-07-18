@@ -292,30 +292,6 @@ describe("server/getters/get-orders", () => {
             },
           },
         },
-        "0x0000000000000000000000000000000000000003": {
-          1: {
-            sell: {
-              "0x8000000000000000000000000000000000000000000000000000000000000000": {
-                orderId: "0x8000000000000000000000000000000000000000000000000000000000000000",
-                amount: "2",
-                originalAmount: "2",
-                creationBlockNumber: 1400002,
-                creationTime: 1506473515,
-                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A09",
-                logIndex: 0,
-                fullPrecisionAmount: "2",
-                originalFullPrecisionAmount: "2",
-                fullPrecisionPrice: "0.6",
-                orderState: "OPEN",
-                owner: "0x0000000000000000000000000000000000000b0b",
-                price: "0.6",
-                shareToken: "0x2000000000000000000000000000000000000000",
-                sharesEscrowed: "0",
-                tokensEscrowed: "1.2",
-              },
-            },
-          },
-        },
         "0x0000000000000000000000000000000000000011": {
           1: {
             buy: {
@@ -381,30 +357,6 @@ describe("server/getters/get-orders", () => {
     assertions: (err, openOrders) => {
       assert.ifError(err);
       assert.deepEqual(openOrders, {
-        "0x0000000000000000000000000000000000000003": {
-          1: {
-            sell: {
-              "0x8000000000000000000000000000000000000000000000000000000000000000": {
-                orderId: "0x8000000000000000000000000000000000000000000000000000000000000000",
-                amount: "2",
-                originalAmount: "2",
-                creationBlockNumber: 1400002,
-                creationTime: 1506473515,
-                transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000A09",
-                logIndex: 0,
-                fullPrecisionAmount: "2",
-                originalFullPrecisionAmount: "2",
-                fullPrecisionPrice: "0.6",
-                orderState: "OPEN",
-                owner: "0x0000000000000000000000000000000000000b0b",
-                price: "0.6",
-                shareToken: "0x2000000000000000000000000000000000000000",
-                sharesEscrowed: "0",
-                tokensEscrowed: "1.2",
-              },
-            },
-          },
-        },
         "0x0000000000000000000000000000000000000011": {
           1: {
             buy: {
@@ -471,7 +423,7 @@ describe("server/getters/get-orders", () => {
     },
   });
   test({
-    description: "get open orphaned orders",
+    description: "get orphaned orders",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       marketId: "0x0000000000000000000000000000000000000003",
