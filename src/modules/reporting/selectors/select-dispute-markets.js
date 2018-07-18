@@ -58,7 +58,6 @@ export const selectMarketsInDispute = createSelector(
         })
       }
     })
-
     nonPotentialForkingMarkets = orderBy(nonPotentialForkingMarkets, ['disputeInfo.disputeRound', 'disputeInfo.highestPercentStaked'], ['desc', 'desc'])
 
     const orderedMarkets = potentialForkingMarkets.concat(nonPotentialForkingMarkets)
