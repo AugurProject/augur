@@ -99,7 +99,8 @@ AugurNodeServer.prototype.startServer = function () {
 
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
-    this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished)
+    this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
+    this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
     this.augurNodeController.start(function (err) {
       log.error(err)
@@ -139,8 +140,14 @@ AugurNodeServer.prototype.onError = function (err) {
   this.shutDownServer()
 }
 
+AugurNodeServer.prototype.onBulkSyncStarted = function () {
+  log.info('Sync with blockchain started.')
+  this.window.webContents.send('bulkSyncStarted')
+}
+
 AugurNodeServer.prototype.onBulkSyncFinished = function () {
   log.info('Sync with blockchain complete.')
+  this.window.webContents.send('bulkSyncFinished')
 }
 
 AugurNodeServer.prototype.onRequestConfig = function (event, data) {
@@ -251,7 +258,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
 
 AugurNodeServer.prototype.disconnectServerMessage = function () {
   try {
-    this.window.webContents.send('onServerDisconnected', {}) 
+    this.window.webContents.send('onServerDisconnected', {})
   } catch (err) {
     log.error(err)
   }
