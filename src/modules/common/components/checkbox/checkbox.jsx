@@ -12,7 +12,7 @@ const Checkbox = p => (
       value={p.value}
       onChange={p.onClick}
     />
-    <span role="checkbox" onClick={p.onClick} className={Styles.Checkbox__checkmark} />
+    <span role="button" tabIndex={0} onClick={p.onClick} className={Styles.Checkbox__checkmark} />
   </div>
 )
 
