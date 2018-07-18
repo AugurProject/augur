@@ -14,7 +14,7 @@ import { Hint } from 'modules/common/components/icons'
 
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
-import Checkbox from 'src/modules/common/components/checkbox'
+import Checkbox from 'src/modules/common/components/checkbox/checkbox'
 
 class MarketTradingForm extends Component {
   static propTypes = {
