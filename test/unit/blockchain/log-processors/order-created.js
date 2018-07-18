@@ -77,6 +77,7 @@ describe("blockchain/log-processors/order-created", () => {
           tokensEscrowed: new BigNumber("2.25", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: "TRADE_GROUP_ID",
+          orphaned: 0,
         }]);
       },
       onRemoved: (err, records) => {
