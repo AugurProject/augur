@@ -33,17 +33,17 @@
   border: 0;
 }
 
-.Checkbox input:checked ~ .Checkbox__checkmark:after {
+.Checkbox input:checked ~ .Checkbox__checkmark::after {
   display: block;
 }
 
-.Checkbox__checkmark:after {
+.Checkbox__checkmark::after {
   content: "";
   display: none;
   position: absolute;
 }
 
-.Checkbox .Checkbox__checkmark:after {
+.Checkbox .Checkbox__checkmark::after {
   border: solid white;
   border-width: 0 1px 1px 0;
   height: 13px;
