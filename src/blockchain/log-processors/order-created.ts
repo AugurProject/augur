@@ -89,13 +89,15 @@ function checkForOrphanedOrders(db: Knex, orderData: OrdersRow<string>, callback
     outcome: orderData.outcome,
     orderType: orderData.orderType,
   };
-  db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
+  db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", ">", 0).asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
     if (err) return callback(err);
     if (results.numPrices === 1 && results.numOrders > 1) {
-      const updateData = {...queryData, logIndex: db.raw("(SELECT MAX(logIndex) FROM orders)")};
-      db.from("orders").where(updateData).update({orphaned: true}).asCallback((err) => {
+      db.from("orders").first(db.raw("MAX(blockNumber * 100000 + logIndex) as maxLog")).where(queryData).asCallback((err: Error|null, result: {maxLog: number}): void => {
         if (err) return callback(err);
-        return callback(null);
+        db.from("orders").where(db.raw("(blockNumber * 100000 + logIndex) == ??", [result.maxLog])).update({orphaned: true}).asCallback((err) => {
+          if (err) return callback(err);
+          return callback(null);
+        });
       });
     } else {
       return callback(null);
@@ -112,13 +114,15 @@ function checkForUnOrphanedOrders(db: Knex, log: FormattedEventLog, callback: Er
       outcome: tokensRow.outcome!,
       orderType: log.orderType === "0" ? "buy" : "sell",
     };
-    db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).where(queryData).from("orders").asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
+    db.first([db.raw("count(*) as numOrders"), db.raw("count(distinct(price)) as numPrices")]).from("orders").where(queryData).where("amount", ">", 0).asCallback((err: Error|null, results: { numOrders: number, numPrices: number }): void => {
       if (err) return callback(err);
       if (results.numPrices === 1 && results.numOrders > 1) {
-        const updateData = {...queryData, logIndex: db.raw("(SELECT MAX(logIndex) FROM orders)")};
-        db.from("orders").where(updateData).update({orphaned: false}).asCallback((err) => {
+        db.from("orders").first(db.raw("MAX(blockNumber * 100000 + logIndex) as maxLog")).where(queryData).asCallback((err: Error|null, result: {maxLog: number}): void => {
           if (err) return callback(err);
-          return callback(null);
+          db.from("orders").where(db.raw("(blockNumber * 100000 + logIndex) == ??", [result.maxLog])).update({orphaned: false}).asCallback((err) => {
+            if (err) return callback(err);
+            return callback(null);
+          });
         });
       } else {
         return callback(null);
