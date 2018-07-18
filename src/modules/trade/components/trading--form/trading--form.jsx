@@ -14,6 +14,7 @@ import { Hint } from 'modules/common/components/icons'
 
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
+import Checkbox from 'src/modules/common/components/checkbox/checkbox'
 
 class MarketTradingForm extends Component {
   static propTypes = {
@@ -371,15 +372,14 @@ class MarketTradingForm extends Component {
               />
             </li>
             <li className={Styles['TradingForm__do-no-create-orders']}>
-              <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
-              <input
+              <Checkbox
                 id="tr__input--do-no-create-orders"
                 type="checkbox"
-                checked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
                 value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                onChange={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])
-                }
+                onClick={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])}
               />
+              <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
             </li>
           </ul>
           <ul className={Styles['TradingForm__form-estimated-cost']}>
