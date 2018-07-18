@@ -538,14 +538,13 @@ function drawLines(options) {
   //  Fills
   const subtleGradientBid = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientBid')
-    .attr('gradientTransform', 'rotate(120)')
-
-  subtleGradientBid.append('stop')
-    .attr('class', 'stop-bottom')
-    .attr('offset', '0%')
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-top-bid')
+    .attr('offset', '0%')
+
+  subtleGradientBid.append('stop')
+    .attr('class', 'stop-bottom')
     .attr('offset', '100%')
 
   const subtleGradientAsk = chartDefs.append('linearGradient')
