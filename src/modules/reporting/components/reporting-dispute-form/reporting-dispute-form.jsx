@@ -13,8 +13,6 @@ import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 
-const TOP_OUTCOME_COUNT = 8
-
 export default class ReportingDisputeForm extends Component {
 
   static propTypes = {
@@ -376,7 +374,8 @@ export default class ReportingDisputeForm extends Component {
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { outcomes && outcomes.filter(o => !o.tentativeWinning).slice(0, TOP_OUTCOME_COUNT).map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
+              outcome.display && 
               <li key={outcome.id}>
                 <button
                   data-testid={'button-' + outcome.id}
