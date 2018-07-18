@@ -11,6 +11,9 @@ function createBigNumber(n) {
 }
 
 function getPayoutNumerators(market, selectedOutcome, invalid) {
+  if (selectedOutcome.indexOf(",") !== -1) {
+    return selectedOutcome.split(",").map(function (x) { return new BigNumber(x); });
+  }
   var maxPrice = createBigNumber(market.maxPrice);
   var minPrice = createBigNumber(market.minPrice);
   var numTicks = createBigNumber(market.numTicks);
