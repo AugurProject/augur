@@ -60,8 +60,26 @@ function Renderer() {
     ipcRenderer.on('toggleSsl', this.onToggleSSL.bind(this));
     ipcRenderer.on('clearDB', this.reset.bind(this));
     ipcRenderer.on('noResetDatabase', this.onNoResetDatabase.bind(this))
+    ipcRenderer.on('bulkSyncStarted', this.onBulkSyncStarted.bind(this))
+    ipcRenderer.on('bulkSyncFinished', this.onBulkSyncFinished.bind(this))
+
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onBulkSyncStarted = function() {
+  this.showNotice("Downloading logs for bulk load ...", "success")
+  // make sure to clear just in case finish isn't called
+  setTimeout(() => {
+    this.clearNotice()
+  }, 8000);
+}
+
+Renderer.prototype.onBulkSyncFinished = function() {
+  this.showNotice("Finished bulk load", "success")
+  setTimeout(() => {
+    this.clearNotice()
+  }, 2000);
 }
 
 Renderer.prototype.onNoResetDatabase = function() {
@@ -126,12 +144,11 @@ Renderer.prototype.onServerDisconnected = function (event) {
   const networkStatus = document.getElementById("network_status");
   if (networkStatus) {
     clearClassList(networkStatus.classList);
-    networkStatus.classList.add("notConnected") 
+    networkStatus.classList.add("notConnected")
   }
 }
 
 Renderer.prototype.onServerConnected = function (event) {
-  this.clearNotice()
   const data = this.connectedServer;
   this.renderOpenNetworkPage(data)
   // hide config form and show open network screen
@@ -194,8 +211,9 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 
 Renderer.prototype.openAugurUI = function () {
     const protocol = this.isSsl ? 'https' : 'http'
+    const wssProtocol = this.isSsl ? 'ws://localhost:9001' : 'wss://localhost:9001'
     const networkConfig = this.connectedServer.networkConfig;
-    const queryString = `augur_node=${encodeURIComponent("ws://localhost:9001")}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`;
+    const queryString = `augur_node=${encodeURIComponent(wssProtocol)}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`;
     shell.openExternal(`${protocol}://localhost:8080/#/categories?${queryString}`);
 }
 
@@ -298,7 +316,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     } else {
       blocksRemainingCountLbl = this.spinner[this.spinnerCount++ % this.spinner.length]
     }
-    
+
     const pct = lastSyncBlockNumber ? ((lastSyncBlockNumber - uploadBlockNumber) / (highestBlockNumber - uploadBlockNumber) * 100) : 0;
     const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2);
 
