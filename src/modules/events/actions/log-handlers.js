@@ -217,5 +217,7 @@ export const handleCompleteSetsSoldLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.account === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
+    // always reload account positions on trade so we get up to date PL data.
+    dispatch(loadAccountTrades({ marketId: log.marketId }))
   }
 }

@@ -15,6 +15,8 @@ function getMarketIds(markets) {
   markets.forEach((market) => {
     filteredMarkets.push(market.id)
   })
+  // Reverse order of filteredMarkets so markets resolved most recently are first
+  filteredMarkets.reverse()
   return filteredMarkets
 }
 

@@ -13,6 +13,10 @@
       margin-bottom: 1rem;
     }
 
+    &:last-child {
+      margin-top: 1.5rem;
+    }
+
     &.TradingForm__error-message {
       color: @color-red;
       display: block;
@@ -36,12 +40,20 @@
       font-weight: 500;
       margin-bottom: 0;
       width: 4.6rem;
+
+      &:last-child {
+        width: 88%;
+      }
     }
 
     > div,
     > input,
     > ul {
       width: 70%;
+
+      &:not(:last-child) {
+        width: 12%;
+      }
     }
 
     > input[type="number"] {

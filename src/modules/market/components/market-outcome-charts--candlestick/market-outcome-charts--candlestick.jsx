@@ -376,11 +376,17 @@ function determineDrawParams({
   const maxPrice = bnMax.plus(buffer).toNumber()
   const minPrice = bnMin.minus(buffer).toNumber()
 
-  const yDomain = [
+  let yDomain = [
     maxPrice > marketMax ? max : maxPrice,
     minPrice < marketMin ? min: minPrice,
   ]
-
+  // common case with low volume
+  if (yDomain[0] === yDomain[1]) {
+    yDomain = [
+      createBigNumber(yDomain[0]).times(1.5).toNumber(),
+      createBigNumber(yDomain[0]).times(0.5).toNumber(),
+    ]
+  }
   // sigment y into 10 to show prices
   const boundDiff = createBigNumber(yDomain[0]).minus(createBigNumber(yDomain[1])).dividedBy(2)
 
