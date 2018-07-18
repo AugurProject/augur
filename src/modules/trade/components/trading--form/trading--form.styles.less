@@ -13,6 +13,10 @@
       margin-bottom: 1rem;
     }
 
+    &:last-child {
+      margin-top: 1.5rem;
+    }
+
     &.TradingForm__error-message {
       color: @color-red;
       display: block;
@@ -36,12 +40,20 @@
       font-weight: 500;
       margin-bottom: 0;
       width: 4.6rem;
+
+      &:last-child {
+        width: 88%;
+      }
     }
 
     > div,
     > input,
     > ul {
       width: 70%;
+
+      &:not(:last-child) {
+        width: 12%;
+      }
     }
 
     > input[type="number"] {
@@ -135,10 +147,6 @@
   min-height: 3rem;
   padding: 0.75rem 1rem 0.75rem 0;
   text-align: left;
-}
-
-.TradingForm__do-no-create-orders {
-
 }
 
 .TradingForm__type {

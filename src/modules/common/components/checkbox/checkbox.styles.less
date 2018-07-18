@@ -1,0 +1,54 @@
+@import (reference) '~assets/styles/shared';
+
+.Checkbox {
+    display: block;
+    position: relative;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+
+.Checkbox__checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 23px;
+    width: 23px;
+    background-color: white;
+    border: 1px solid @color-lightergray;
+    border-radius: 1px;
+}
+
+.Checkbox input {
+  visibility: hidden;
+}
+
+.Checkbox:hover input ~ .Checkbox__checkmark {
+    filter: brightness(95%);
+}
+
+.Checkbox input:checked ~ .Checkbox__checkmark {
+    background-color: @color-purple;
+    border: 0px;
+}
+
+.Checkbox input:checked ~ .Checkbox__checkmark:after {
+    display: block;
+}
+
+.Checkbox__checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.Checkbox .Checkbox__checkmark:after {
+    left: 8px;
+    top: 3px;
+    width: 7px;
+    height: 13px;
+    border: solid white;
+    border-width: 0 1px 1px 0;
+    transform: rotate(45deg);
+}

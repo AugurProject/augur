@@ -372,12 +372,12 @@ class MarketTradingForm extends Component {
               />
             </li>
             <li className={Styles['TradingForm__do-no-create-orders']}>
-              <input
+              <Checkbox 
                 id="tr__input--do-no-create-orders"
                 type="checkbox"
-                checked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
                 value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
-                onChange={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])}
+                onClick={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])}
               />
               <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
             </li>

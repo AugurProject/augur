@@ -3,19 +3,8 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
 import debounce from 'utils/debounce'
-import Styles from 'modules/common/components/checkbox/checkbox.styles'
 
 class Checkbox extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    id: PropTypes.string,
-    title: PropTypes.string,
-    label: PropTypes.string,
-    isChecked: PropTypes.bool,
-    value: PropTypes.bool,
-    onClick: PropTypes.func,
-  }
-
   constructor(props) {
     super(props)
   }
@@ -27,18 +16,19 @@ class Checkbox extends Component {
       isChecked,
       onClick,
       value,
-      label
     } = this.props
+    // console.log('p -- ', p);
+
     return (
-      <div className={Styles.Checkbox}>
+      <div>
+        FILL ORDERS ONLY
         <input
           id={id}
           type="checkbox"
           checked={isChecked}
-          value={isChecked}
+          value={value}
           onChange={onClick}
         />
-        <span onClick={onClick} className={Styles.Checkbox__checkmark}></span>
       </div>
     )
   }
