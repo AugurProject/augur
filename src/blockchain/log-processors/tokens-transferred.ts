@@ -4,8 +4,6 @@ import { series } from "async";
 import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
 import { augurEmitter } from "../../events";
-import { TokenType } from "../../constants";
-import { updateShareTokenTransfer } from "./token/share-token-transfer";
 import { increaseTokenBalance } from "./token/increase-token-balance";
 import { decreaseTokenBalance } from "./token/decrease-token-balance";
 
@@ -27,10 +25,7 @@ export function processTokensTransferredLog(db: Knex, augur: Augur, log: Formatt
     series([
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.to, value, next),
       (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.from, value, next),
-    ], (err: Error|null): void => {
-      if (err) return callback(err);
-      handleShareTokenTransfer(db, augur, log, callback);
-    });
+    ], callback);
   });
 }
 
@@ -43,17 +38,6 @@ export function processTokensTransferredLogRemoval(db: Knex, augur: Augur, log: 
     series([
       (next: AsyncCallback): void => increaseTokenBalance(db, augur, token, log.from, value, next),
       (next: AsyncCallback): void => decreaseTokenBalance(db, augur, token, log.to, value, next),
-    ], (err: Error|null): void => {
-      if (err) return callback(err);
-      handleShareTokenTransfer(db, augur, log, callback);
-    });
+    ], callback);
   });
-}
-
-function handleShareTokenTransfer(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback) {
-  if (log.tokenType === TokenType.ShareToken && log.to !== log.market) {
-    updateShareTokenTransfer(db, augur, log.market, log.from, log.to, callback);
-  } else {
-    callback(null);
-  }
 }
