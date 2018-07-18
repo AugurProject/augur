@@ -1,5 +1,6 @@
 {
   "name": "augur",
+  "productName": "Augur",
   "version": "1.0.5-snapshot",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
