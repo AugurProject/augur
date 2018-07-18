@@ -383,8 +383,8 @@ function determineDrawParams({
   // common case with low volume
   if (yDomain[0] === yDomain[1]) {
     yDomain = [
-      createBigNumber(yDomain[0]).times(1.5),
-      createBigNumber(yDomain[0]).times(0.5),
+      createBigNumber(yDomain[0]).times(1.5).toNumber(),
+      createBigNumber(yDomain[0]).times(0.5).toNumber(),
     ]
   }
   // sigment y into 10 to show prices
