@@ -16,6 +16,7 @@ const LOCAL_MAX_RETRIES = 0;
 const defaultConfig = {
   'network': 'mainnet',
   'version': '1.0.0',
+  'uiPort': '8080',
   'networks': {
     'rinkeby': {
       'http': 'https://rinkeby.augur.net/ethereum-http',
