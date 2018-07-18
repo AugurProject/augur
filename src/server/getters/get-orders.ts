@@ -13,7 +13,7 @@ interface OrdersRowWithCreationTimeAndCanceled extends OrdersRow<BigNumber> {
 }
 
 // market, outcome, creator, orderType, limit, sort
-export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: GenericCallback<UIOrders<string>>): void {
+export function getOrders(db: Knex, universe: Address|null, marketId: Address|null, outcome: number|null, orderType: string|null, creator: Address|null, orderState: OrderState|null, earliestCreationTime: number|null, latestCreationTime: number|null, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, orphaned: boolean|null|undefined, callback: GenericCallback<UIOrders<string>>): void {
   if (universe == null && marketId == null) return callback(new Error("Must provide universe, either via universe or marketId"));
   const queryData: {} = _.omitBy({
     universe,
@@ -35,6 +35,7 @@ export function getOrders(db: Knex, universe: Address|null, marketId: Address|nu
   query.leftJoin("orders_canceled", "orders_canceled.orderId", "orders.orderId");
   query.leftJoin("blocks as canceledBlock", "orders_canceled.blockNumber", "canceledBlock.blockNumber");
   query.where(queryData);
+  query.where("orphaned", !!orphaned ? 1 : 0);
   if (earliestCreationTime != null) query.where("creationTime", ">=", earliestCreationTime);
   if (latestCreationTime != null) query.where("creationTime", "<=", latestCreationTime);
   if (orderState != null && orderState !== OrderState.ALL) query.where("orderState", orderState);

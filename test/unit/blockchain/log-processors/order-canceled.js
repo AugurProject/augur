@@ -77,6 +77,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
+          orphaned: 0,
         });
         assert.deepEqual(records.orderCanceled, {
           blockNumber: 1400101,
@@ -107,6 +108,7 @@ describe("blockchain/log-processors/order-canceled", () => {
           tokensEscrowed: new BigNumber("0.7", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: null,
+          orphaned: 0,
         });
         assert.isUndefined(records.orderCanceled);
       },
