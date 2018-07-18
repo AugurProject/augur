@@ -5,10 +5,12 @@ const KNOWN_ORPHANED_ORDERS = [
 ];
 
 exports.up = async (knex: Knex): Promise<any> => {
-  return knex.schema.table("orders", (table: Knex.CreateTableBuilder): void => {
-    table.boolean("orphaned").defaultTo(false);
+  return knex.schema.hasColumn("orders", "orphaned").then((exists) => {
+    if (!exists) knex.schema.table("orders", (t) => t.boolean("orphaned")).then(() => {
+      return knex.from("orders").whereIn("orderId", KNOWN_ORPHANED_ORDERS).update({orphaned: true});
+    });
+    return;
   });
-  knex.from("orders").whereIn("orderId", KNOWN_ORPHANED_ORDERS).update({orphaned: true});
 };
 
 exports.down = async (knex: Knex): Promise<any> => {
