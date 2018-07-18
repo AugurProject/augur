@@ -538,6 +538,7 @@ function drawLines(options) {
   //  Fills
   const subtleGradientBid = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientBid')
+    .attr('gradientTransform', 'rotate(120)')
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-bottom')
@@ -587,7 +588,7 @@ function drawLines(options) {
 
   Object.keys(marketDepth).forEach((side) => {
     depthChart.append('path')
-      .data([marketDepth[side]].reverse())
+      .data([marketDepth[side]])
       .classed(`filled-subtle-${side}`, true)
       .attr('d', side === BIDS ? areaBid : areaAsk)
   })
