@@ -8,7 +8,7 @@ import WordTrail from 'src/modules/common/components/word-trail/word-trail'
 
 export const CategoryTagTrail = ({ categories, tags }) => (
   <div className={Styles.CategoryTagTrail}>
-    <WordTrail items={categories} typeLabel="Categories" />
+    <WordTrail items={categories} typeLabel="Category" />
     { !isEmpty(tags) && <WordTrail items={tags} typeLabel="Tags" /> }
   </div>
 )

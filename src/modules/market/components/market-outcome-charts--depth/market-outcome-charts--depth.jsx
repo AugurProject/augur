@@ -183,6 +183,14 @@ export default class MarketOutcomeDepth extends Component {
         .attr('width', drawParams.containerWidth + widthPadding)
         .attr('height', drawParams.containerHeight)
 
+      drawLines({
+        drawParams,
+        depthChart,
+        marketDepth: drawParams.newMarketDepth,
+        isMobile,
+        hasOrders,
+      })
+
       drawTicks({
         drawParams,
         depthChart,
@@ -190,14 +198,6 @@ export default class MarketOutcomeDepth extends Component {
         fixedPrecision,
         marketMax,
         marketMin,
-        isMobile,
-        hasOrders,
-      })
-
-      drawLines({
-        drawParams,
-        depthChart,
-        marketDepth: drawParams.newMarketDepth,
         isMobile,
         hasOrders,
       })
@@ -538,19 +538,17 @@ function drawLines(options) {
   //  Fills
   const subtleGradientBid = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientBid')
-    .attr('gradientTransform', 'rotate(120)')
-
-  subtleGradientBid.append('stop')
-    .attr('class', 'stop-bottom')
-    .attr('offset', '0%')
 
   subtleGradientBid.append('stop')
     .attr('class', 'stop-top-bid')
+    .attr('offset', '0%')
+
+  subtleGradientBid.append('stop')
+    .attr('class', 'stop-bottom')
     .attr('offset', '100%')
 
   const subtleGradientAsk = chartDefs.append('linearGradient')
     .attr('id', 'subtleGradientAsk')
-    .attr('gradientTransform', 'rotate(270)')
 
   subtleGradientAsk.append('stop')
     .attr('class', 'stop-bottom-ask')
@@ -575,17 +573,23 @@ function drawLines(options) {
       .attr('d', depthLine)
   })
 
-  const area = d3.area()
+  const areaBid = d3.area()
     .curve(d3.curveStepBefore)
-    .y0(d => drawParams.yScale(drawParams.yDomain[0]))
-    .y1(d => drawParams.yScale(d[0]))
-    .x(d => drawParams.xScale(d[1]))
+    .x0(d => drawParams.xScale(d[1]))
+    .x1(d => drawParams.xScale(drawParams.xDomain[0]))
+    .y(d => drawParams.yScale(d[0]))
+
+  const areaAsk = d3.area()
+    .curve(d3.curveStepBefore)
+    .x0(d => drawParams.xScale(d[1]))
+    .x1(d => drawParams.xScale(drawParams.xDomain[1]))
+    .y(d => drawParams.yScale(d[0]))
 
   Object.keys(marketDepth).forEach((side) => {
     depthChart.append('path')
-      .data([marketDepth[side]].reverse())
+      .data([marketDepth[side]])
       .classed(`filled-subtle-${side}`, true)
-      .attr('d', area)
+      .attr('d', side === BIDS ? areaBid : areaAsk)
   })
 }
 

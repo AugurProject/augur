@@ -23,10 +23,10 @@ const callMethod = (method, amount, address, estimateGas = false, callback) => (
   const { loginAccount } = getState()
   method({
     tx: {
-      meta: loginAccount.meta,
       to: address,
       estimateGas,
     },
+    meta: loginAccount.meta,
     _attotokens: speedomatic.fix(amount, 'hex'),
     onSent: () => {
       // need fee window to do gas estimate
