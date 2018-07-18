@@ -4,11 +4,12 @@ import { AugurNodeController } from "./controller";
 import { logger } from "./utils/logger";
 
 const networkName = process.argv[2] || "environment";
+const databaseDir = process.env.AUGUR_DATABASE_DIR;
 const networkConfig = NetworkConfiguration.create(networkName);
 
 const augur: Augur = new Augur();
 
-const augurNodeController = new AugurNodeController(augur, networkConfig);
+const augurNodeController = new AugurNodeController(augur, networkConfig, databaseDir);
 
 augur.rpc.setDebugOptions({ broadcast: false });
 augur.events.nodes.ethereum.on("disconnect", (event) => {

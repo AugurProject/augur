@@ -16,7 +16,7 @@ interface NetworkIdRow {
 }
 
 // WARNING: Update this only if this release requires destroying all existing Augur Node Databases
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 const DB_FILE_SYNCING = "augur-%s-syncing-%s.db";
 const DB_FILE_BULK_SYNC = "augur-%s-%s.db";
