@@ -181,7 +181,7 @@ class MarketReportingPayouts extends Component {
               ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
               className={Styles.MarketReportingPayouts__outcomes}
             >
-              {outcomes.length > 0 && outcomes.slice(0,TOP_OUTCOME_COUNT).map(outcome => (
+              {outcomes.length > 0 && outcomes.slice(0, TOP_OUTCOME_COUNT).map(outcome => (
                 <Outcome
                   key={outcome.id}
                   outcome={outcome}
