@@ -1,5 +1,6 @@
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { createBigNumber } from 'utils/create-big-number'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default function calculatePayoutNumeratorsValue(market, payout, isInvalid) {
   const {
@@ -19,6 +20,10 @@ export default function calculatePayoutNumeratorsValue(market, payout, isInvalid
     const priceRange = createBigNumber(maxPrice, 10).minus(createBigNumber(minPrice, 10))
     // calculation: ((longPayout * priceRange) / numTicks) + minPrice
     return ((longPayout.times(priceRange)).dividedBy(createBigNumber(numTicks, 10))).plus(createBigNumber(minPrice, 10)).toString()
+  }
+  // test if stake payout is malformed
+  if (payout.reduce((p, ticks) => (ticks > 0 ? p + 1 : p), 0) > 1) {
+    return MALFORMED_OUTCOME
   }
 
   return payout.findIndex(item => item > 0).toString()

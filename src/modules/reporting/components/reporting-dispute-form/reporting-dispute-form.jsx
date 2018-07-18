@@ -12,6 +12,7 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -361,8 +362,8 @@ export default class ReportingDisputeForm extends Component {
             <span>Tentative Winning Outcome</span>
           </label>
           <p>
-            {winner.malformed &&
-              <label className={Styles.ReportingDisputeForm__malformed}>Malformed Outcome</label>
+            {winner.name === MALFORMED_OUTCOME &&
+              <label className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</label>
             }
             {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
