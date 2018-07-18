@@ -68,11 +68,7 @@ function Renderer() {
 }
 
 Renderer.prototype.onBulkSyncStarted = function() {
-  this.showNotice("Downloading logs for bulk load ...", "success")
-  // make sure to clear just in case finish isn't called
-  setTimeout(() => {
-    this.clearNotice()
-  }, 8000);
+  this.showNotice("Downloading bulk logs ...", "success")
 }
 
 Renderer.prototype.onBulkSyncFinished = function() {
@@ -307,6 +303,7 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     const uploadBlockNumber = data.uploadBlockNumber;
 
     if (lastSyncBlockNumber !== null && lastSyncBlockNumber !== 0) {
+      if (!this.isSynced) this.clearNotice()
       blocksRemaining = parseInt(highestBlockNumber, 10) - parseInt(lastSyncBlockNumber, 10)
       if (blocksRemaining <= 15) {
         this.isSynced = true;
