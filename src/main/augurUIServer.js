@@ -10,6 +10,7 @@ const KeyGen = require('selfsigned.js');
 
 function AugurUIServer() {
   this.app = express();
+  this.server = null;
   this.port = 8080;
   this.window = null;
   this.appDataPath = appData("augur");
@@ -19,7 +20,7 @@ function AugurUIServer() {
 
 AugurUIServer.prototype.onStartUiServer = function (event, usePort) {
   this.port = usePort || this.port;
-  this.startServer()
+  if (this.server === null) this.startServer()
 }
 
 AugurUIServer.prototype.startServer = function () {
