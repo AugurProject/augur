@@ -14,6 +14,8 @@ const NUM_ROWS_MOBILE = 2
 const NUM_CELLS_SHOWN_MOBILE = 4
 const NUM_CELLS_SHOWN = 3
 
+const TOP_OUTCOME_COUNT = 8
+
 const Outcome = ({ className, outcome, marketId }) => {
   const totalBondSizeCurrent = formatAttoRep(outcome.bondSizeCurrent, { decimals: 4, roundUp: true }).formatted
   const currentOutcomeStake = formatAttoRep(outcome.stakeCurrent, { decimals: 4, roundUp: true }).formatted
@@ -179,7 +181,7 @@ class MarketReportingPayouts extends Component {
               ref={(outcomeTable) => { this.outcomeTable = outcomeTable }}
               className={Styles.MarketReportingPayouts__outcomes}
             >
-              {outcomes.length > 0 && outcomes.map(outcome => (
+              {outcomes.length > 0 && outcomes.slice(0,TOP_OUTCOME_COUNT).map(outcome => (
                 <Outcome
                   key={outcome.id}
                   outcome={outcome}

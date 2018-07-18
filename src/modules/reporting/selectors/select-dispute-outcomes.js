@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond, forkThreshold) {
-  const TopOutcomeCount = 8
   const invalidMarketId = '0.5'
   if (isEmpty(disputeStakes)) return market.reportableOutcomes
   const { marketType, reportableOutcomes } = market
@@ -41,7 +40,7 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
 
   invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
-  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
+  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b))
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
   if (allDisputedOutcomes.find(o => o.id === invalidMarketId)) return allDisputedOutcomes
