@@ -362,8 +362,8 @@ export default class ReportingDisputeForm extends Component {
             <span>Tentative Winning Outcome</span>
           </label>
           <p>
-            {winner.name === MALFORMED_OUTCOME &&
-              <label className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</label>
+            {winner.id === MALFORMED_OUTCOME &&
+              <div className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</div>
             }
             {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
@@ -379,7 +379,7 @@ export default class ReportingDisputeForm extends Component {
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning && o.id !== MALFORMED_OUTCOME).map(outcome => (
               <li key={outcome.id}>
                 <button
                   data-testid={'button-' + outcome.id}
