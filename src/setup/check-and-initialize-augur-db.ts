@@ -57,6 +57,7 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
     const connectOptions = Object.assign(
       { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
       network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
+      network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
     );
     augur.connect(connectOptions, async (err) => {
       if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
