@@ -23,6 +23,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 1,
       tokensEscrowed: 0.7,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x2000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -42,6 +43,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.200002,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x3000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -61,6 +63,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2.0000001,
       tokensEscrowed: 1.20000006,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x4000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -80,6 +83,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x4100000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -99,6 +103,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x4200000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -118,6 +123,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x5000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
@@ -137,6 +143,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 1,
       tokensEscrowed: 0.73,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x6000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000018",
@@ -156,6 +163,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.200002,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x7000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000011",
@@ -175,6 +183,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2.0000001,
       tokensEscrowed: 1.20000006,
       sharesEscrowed: 0,
+      orphaned: 0,
     }, {
       orderId: "0x8000000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000003",
@@ -194,6 +203,27 @@ exports.seed = async (knex: Knex): Promise<any> => {
       originalFullPrecisionAmount: 2,
       tokensEscrowed: 1.2,
       sharesEscrowed: 0,
+      orphaned: 0,
+    }, {
+      orderId: "0x8470000000000000000000000000000000000000000000000000000000000000",
+      marketId: "0x0000000000000000000000000000000000000003",
+      outcome: 1,
+      shareToken: "0x2470000000000000000000000000000000000000",
+      orderType: "sell",
+      orderCreator: "0x000000000000000000000000000000000caaab0b",
+      orderState: "OPEN",
+      blockNumber: 1400042,
+      transactionHash: "0x00000000000000000000000000000000000000000000000000000000000CCA09",
+      logIndex: 0,
+      price: 0.6,
+      amount: 2,
+      originalAmount: 2,
+      fullPrecisionPrice: 0.6,
+      fullPrecisionAmount: 2,
+      originalFullPrecisionAmount: 2,
+      tokensEscrowed: 1.2,
+      sharesEscrowed: 0,
+      orphaned: 1,
     }];
     return knex.batchInsert("orders", seedData, seedData.length);
   });
