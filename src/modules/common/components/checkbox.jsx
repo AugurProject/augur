@@ -27,7 +27,7 @@ class Checkbox extends Component {
       isChecked,
       onClick,
       value,
-      label
+      label,
     } = this.props
     return (
       <div className={Styles.Checkbox}>
@@ -38,7 +38,7 @@ class Checkbox extends Component {
           value={isChecked}
           onChange={onClick}
         />
-        <span onClick={onClick} className={Styles.Checkbox__checkmark}></span>
+        <span onClick={onClick} className={Styles.Checkbox__checkmark} />
       </div>
     )
   }

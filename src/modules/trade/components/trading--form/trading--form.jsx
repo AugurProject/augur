@@ -372,7 +372,7 @@ class MarketTradingForm extends Component {
               />
             </li>
             <li className={Styles['TradingForm__do-no-create-orders']}>
-              <Checkbox 
+              <Checkbox
                 id="tr__input--do-no-create-orders"
                 type="checkbox"
                 isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
