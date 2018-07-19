@@ -21,7 +21,7 @@ export const selectMarketsInDispute = createSelector(
     }
     const filteredMarkets = markets.filter(market => market.reportingState === constants.REPORTING_STATE.AWAITING_FORK_MIGRATION || market.reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE || market.id === universe.forkingMarket)
     // Potentially forking or forking markets come first
-    const potentialForkingMarkets = []
+    let potentialForkingMarkets = []
     let nonPotentialForkingMarkets = []
     let forkingMarket = null
     filteredMarkets.forEach((market) => {
@@ -44,6 +44,23 @@ export const selectMarketsInDispute = createSelector(
     })
 
     // Sort disputed markets by: 1) dispute round, and 2) highest percent staked in non-tentative-winning outcome
+    Object.keys(potentialForkingMarkets).forEach((marketKey) => {
+      if (potentialForkingMarkets[marketKey].disputeInfo) {
+        potentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = createBigNumber(0)
+        Object.keys(potentialForkingMarkets[marketKey].disputeInfo.stakes).forEach((stakeKey) => {
+          if (!potentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].tentativeWinning) {
+            const percentStakedInOutcome = createBigNumber(potentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].stakeCurrent)
+              .div(createBigNumber(potentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].bondSizeCurrent))
+            if (percentStakedInOutcome.gt(potentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked)) {
+              potentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = percentStakedInOutcome
+            }
+          }
+          potentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = potentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked.toString()
+        })
+      }
+    })
+    potentialForkingMarkets = orderBy(potentialForkingMarkets, ['disputeInfo.disputeRound', 'disputeInfo.highestPercentStaked'], ['desc', 'desc'])
+
     Object.keys(nonPotentialForkingMarkets).forEach((marketKey) => {
       if (nonPotentialForkingMarkets[marketKey].disputeInfo) {
         nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = createBigNumber(0)
