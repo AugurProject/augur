@@ -156,15 +156,9 @@ AugurNodeServer.prototype.onRequestConfig = function (event, data) {
 
 AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
   try {
-    const curNetworkConfig = this.config.networks[data.network]
     this.networkConfig = data.networkConfig
     this.config.networks[data.network] = this.networkConfig
-    if (data.network === this.config.network) {
-      if (curNetworkConfig.http !== data.networkConfig.http ||
-        curNetworkConfig.ws !== data.networkConfig.ws) {
-        this.restart()
-      }
-    }
+
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     event.sender.send('saveNetworkConfigResponse', data)
   } catch (err) {
