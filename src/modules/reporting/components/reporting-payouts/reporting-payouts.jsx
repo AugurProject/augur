@@ -149,7 +149,7 @@ class MarketReportingPayouts extends Component {
     const { outcomes, marketId, isMobile, isMobileSmall } = this.props
 
     const numShown = isMobile && !isMobileSmall ? NUM_CELLS_SHOWN_MOBILE : NUM_CELLS_SHOWN
-    const totalOutcomes = outcomes.length
+    const totalOutcomes = outcomes.filter(outcome => outcome.display).length
     const displayShowMore = totalOutcomes > numShown
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - numShown} less` : `+ ${totalOutcomes - numShown} more`
 
@@ -180,6 +180,7 @@ class MarketReportingPayouts extends Component {
               className={Styles.MarketReportingPayouts__outcomes}
             >
               {outcomes.length > 0 && outcomes.map(outcome => (
+                outcome.display &&
                 <Outcome
                   key={outcome.id}
                   outcome={outcome}
