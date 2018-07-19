@@ -41,7 +41,18 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
 
   invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
-  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
+  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b))
+
+  sortedOutcomes.map((outcome, index) => {
+    if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
+      outcome.display = true
+    }
+    return outcome
+  })
+
+  tentativeWinner.display = true
+  invalidOutcome.display = true
+
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
   if (allDisputedOutcomes.find(o => o.id === invalidMarketId)) return allDisputedOutcomes

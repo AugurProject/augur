@@ -29,7 +29,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: false })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: false })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
@@ -69,7 +69,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: true })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: true })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
@@ -110,7 +110,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: true })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: true })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
