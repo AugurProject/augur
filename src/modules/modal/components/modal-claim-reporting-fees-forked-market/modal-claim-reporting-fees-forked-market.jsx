@@ -92,7 +92,7 @@ export default class ModalClaimReportingFeesForkedMarket extends Component {
         </div>
         <div className={Styles.ModalClaimReportingFeesForkedMarket__details}>
           <ul className={Styles.ModalClaimReportingFeesForkedMarket__info}>
-            <li><span>Recipient</span><span style={{ textTransform: 'none' }}>{recipient}</span></li>
+            <li><span>Recipient</span><span>{recipient}</span></li>
             <li><span>Rep</span><span>{unclaimedRep.formatted}</span></li>
             <li><span>Eth</span><span>{unclaimedEth.formatted}</span></li>
             <li><span>Gas</span><span>{s.ClaimReportingFeesForkedMarketGasEstimate}</span></li>
