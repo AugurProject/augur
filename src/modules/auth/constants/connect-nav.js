@@ -32,7 +32,7 @@ export const ITEMS = [
 ]
 
 if (!process.env.AUGUR_HOSTED) {
-  ITEMS.push({
+  ITEMS.unshift({
     param: PARAMS.EDGE,
     title: 'Edge',
     icon: Edge,
