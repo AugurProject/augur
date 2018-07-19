@@ -121,7 +121,7 @@ export default class EscapeHatchView extends Component {
           <article className={Styles.EscapeHatch_ReviewSummary}>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>Recipient</span>
-              <span>{loginAccount.address}</span>
+              <span style={{textTransform: 'none'}}>{loginAccount.address}</span>
             </div>
             <div>
               <span className={Styles.EscapeHatch_LabelCell}>REP</span>
