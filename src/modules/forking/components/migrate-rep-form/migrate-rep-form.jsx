@@ -42,17 +42,6 @@ export default class MigrateRepForm extends Component {
     this.getForkMigrationTotals()
   }
 
-  checkRepAmount(repAmount, updatedValidations) {
-    if (repAmount === '' || repAmount == null || repAmount <= 0) {
-      updatedValidations.repAmount = 'The REP amount field is required.'
-    } else if (repAmount > this.props.accountREP) {
-      updatedValidations.repAmount = `Migrate REP amount is greater then your available amount`
-    } else {
-      delete updatedValidations.repAmount
-    }
-    return updatedValidations
-  }
-
   getForkMigrationTotals() {
     const {
       getForkMigrationTotals,
@@ -65,6 +54,17 @@ export default class MigrateRepForm extends Component {
         formattedMigrationTotals,
       })
     })
+  }
+
+  checkRepAmount(repAmount, updatedValidations) {
+    if (repAmount === '' || repAmount == null || repAmount <= 0) {
+      updatedValidations.repAmount = 'The REP amount field is required.'
+    } else if (repAmount > this.props.accountREP) {
+      updatedValidations.repAmount = `Migrate REP amount is greater then your available amount`
+    } else {
+      delete updatedValidations.repAmount
+    }
+    return updatedValidations
   }
 
   validateRepAmount(rawRepAmount, isMax) {
