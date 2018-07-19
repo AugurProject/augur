@@ -12,6 +12,6 @@ export function getCategories(db: Knex, universe: Address, sortBy: string|null|u
   queryModifier(db, query, "popularity", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, categoriesInfo?: Array<CategoriesRow>): void => {
     if (err) return callback(err);
     if (!categoriesInfo) return callback(null);
-    callback(null, categoriesInfo.map((categoryInfo: CategoriesRow): CategoriesRow => Object.assign(categoryInfo, { popularity: categoryInfo.popularity.toString() })));
+    callback(null, categoriesInfo.map((categoryInfo: CategoriesRow): CategoriesRow => Object.assign(categoryInfo, { popularity: categoryInfo.popularity.toString(), category: categoryInfo.category.toUpperCase() })));
   });
 }
