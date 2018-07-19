@@ -25,14 +25,7 @@ describe("order-orphaned", () => {
                   assert.ifError(err);
                   getState(trx, "ORDER_ID_2", (err, records) => {
                     t.assertions.onAdded(err, records);
-                    processOrderCreatedLogRemoval(trx, t.params.augur, Object.assign({}, t.params.log, {logIndex: 2, orderId: "ORDER_ID_3"}), (err) => {
-                      assert.ifError(err);
-                      getState(trx, "ORDER_ID_2", (err, records) => {
-                        t.assertions.onRemoved(err, records);
-                        db.destroy();
-                        done();
-                      });
-                    });
+                    done();
                   });
                 });
               });
@@ -59,6 +52,13 @@ describe("order-orphaned", () => {
       },
       augur: {
         utils: augur.utils,
+        api: {
+          OrdersFinder: {
+            getExistingOrders5: function (data, cb) {
+              return cb(null, ["ORDER_ID_1", "ORDER_ID_3"]);
+            },
+          },
+        },
       },
     },
     assertions: {
