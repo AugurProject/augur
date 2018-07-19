@@ -463,6 +463,13 @@ export default class ReportingDisputeForm extends Component {
                 </div>
               }
             </li>
+            { winner.id === MALFORMED_OUTCOME &&
+              <div className={classNames(Styles.ReportingReport__malformed_msg_container)}>
+                <span className={classNames(Styles.ReportingReport__malformed_msg)}>
+                  {InputErrorIcon}{'A malformed outcome is a report that is inconsistent for the market type. If this report wins, payout distribution will be affected. This is considered an attack on the truth'}
+                </span>
+              </div>
+            }
             <li>
               { s.validations.hasOwnProperty('stake') && s.validations.stake.length &&
                 <span className={FormStyles['Form__error--even']}>
