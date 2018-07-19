@@ -217,7 +217,7 @@ Renderer.prototype.openAugurUI = function () {
 
 Renderer.prototype.saveNetworkConfig = function (event) {
     event.preventDefault();
-    this.showNotice("Saving Configuration", "success")
+    this.showNotice("Saving Configuration...", "success")
     // clear error after 3 seconds
     setTimeout(() => {
       this.clearNotice()
