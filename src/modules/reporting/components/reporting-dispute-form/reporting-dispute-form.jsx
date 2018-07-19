@@ -363,7 +363,7 @@ export default class ReportingDisputeForm extends Component {
           </label>
           <p>
             {winner.id === MALFORMED_OUTCOME &&
-              <div className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</div>
+              <span className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</span>
             }
             {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&

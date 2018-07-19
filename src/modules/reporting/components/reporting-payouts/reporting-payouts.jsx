@@ -6,6 +6,7 @@ import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 const CELL_MARGIN = 12
 const INITIAL_CELL_HEIGHT = 54
@@ -49,7 +50,7 @@ const Outcome = ({ className, outcome, marketId }) => {
           {outcomeName}
         </span>
       </div>
-      { outcome.tentativeWinning && outcome.malformed &&
+      { outcome.tentativeWinning && outcome.id === MALFORMED_OUTCOME &&
         <label className={Styles.MarketReportingPayouts__malformed}>Malformed Outcome</label>
       }
       { outcome.tentativeWinning &&
