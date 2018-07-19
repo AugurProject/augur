@@ -5,11 +5,11 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
+import FormStyles from 'modules/common/less/form'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
-import FormStyles from 'modules/common/less/form'
-import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
 import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
+import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
 
 export default class MigrateRepForm extends Component {
 
@@ -23,15 +23,6 @@ export default class MigrateRepForm extends Component {
     accountREP: PropTypes.string.isRequired,
     forkMigrationTotals: PropTypes.object,
     isMarketInValid: PropTypes.bool,
-  }
-
-  static checkRepAmount(repAmount, updatedValidations) {
-    if (repAmount === '' || repAmount == null || repAmount <= 0) {
-      updatedValidations.repAmount = 'The rep Amount field is required.'
-    } else {
-      delete updatedValidations.repAmount
-    }
-    return updatedValidations
   }
 
   constructor(props) {
@@ -49,6 +40,17 @@ export default class MigrateRepForm extends Component {
 
   componentWillMount() {
     this.getForkMigrationTotals()
+  }
+
+  checkRepAmount(repAmount, updatedValidations) {
+    if (repAmount === '' || repAmount == null || repAmount <= 0) {
+      updatedValidations.repAmount = 'The REP amount field is required.'
+    } else if (repAmount > this.props.accountREP) {
+      updatedValidations.repAmount = `Migrate REP amount is greater then your available amount`
+    } else {
+      delete updatedValidations.repAmount
+    }
+    return updatedValidations
   }
 
   getForkMigrationTotals() {
@@ -79,7 +81,7 @@ export default class MigrateRepForm extends Component {
       repAmount = repAmount.toNumber()
     }
 
-    MigrateRepForm.checkRepAmount(repAmount, updatedValidations)
+    this.checkRepAmount(repAmount, updatedValidations)
 
     this.setState({
       inputRepAmount: repAmount,
@@ -104,7 +106,7 @@ export default class MigrateRepForm extends Component {
     if (selectedOutcome === '0.5') isInvalid = true
     this.state.scalarInputChoosen = false
 
-    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
+    this.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: '',
@@ -164,7 +166,7 @@ export default class MigrateRepForm extends Component {
       }
     }
 
-    MigrateRepForm.checkRepAmount(this.state.inputRepAmount, updatedValidations)
+    this.checkRepAmount(this.state.inputRepAmount, updatedValidations)
 
     this.setState({
       inputSelectedOutcome: value,
@@ -265,11 +267,13 @@ export default class MigrateRepForm extends Component {
                 onChange={(e) => { this.validateRepAmount(e.target.value) }}
               />
               { selectedOutcomeName && selectedOutcomeName.length > 0 &&
-                <button
-                  className={FormStyles['button--inline']}
-                  onClick={() => { this.validateRepAmount(accountREP, true) }}
-                >MAX
-                </button>
+                <div className={Styles.MigrateRepForm__container}>
+                  <button
+                    className={classNames(FormStyles['button--inline'], Styles.MigrateRepForm__button)}
+                    onClick={() => { this.validateRepAmount(accountREP, true) }}
+                  >MAX
+                  </button>
+                </div>
               }
             </li>
             <li>
