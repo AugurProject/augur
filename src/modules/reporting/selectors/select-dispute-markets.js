@@ -46,15 +46,16 @@ export const selectMarketsInDispute = createSelector(
     // Sort disputed markets by: 1) dispute round, and 2) highest percent staked in non-tentative-winning outcome
     Object.keys(nonPotentialForkingMarkets).forEach((marketKey) => {
       if (nonPotentialForkingMarkets[marketKey].disputeInfo) {
-        nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = createBigNumber(0, 10)
+        nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = createBigNumber(0)
         Object.keys(nonPotentialForkingMarkets[marketKey].disputeInfo.stakes).forEach((stakeKey) => {
           if (!nonPotentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].tentativeWinning) {
             const percentStakedInOutcome = createBigNumber(nonPotentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].stakeCurrent)
               .div(createBigNumber(nonPotentialForkingMarkets[marketKey].disputeInfo.stakes[stakeKey].bondSizeCurrent))
             if (percentStakedInOutcome.gt(nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked)) {
-              nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = percentStakedInOutcome.toString()
+              nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = percentStakedInOutcome
             }
           }
+          nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked = nonPotentialForkingMarkets[marketKey].disputeInfo.highestPercentStaked.toString()
         })
       }
     })
