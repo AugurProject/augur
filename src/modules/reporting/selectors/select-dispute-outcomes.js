@@ -43,13 +43,13 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
   invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
   const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b))
 
-  sortedOutcomes.map(function(outcome, index) {
+  sortedOutcomes.map((outcome, index) => {
     if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
       outcome.display = true
     }
     return outcome
   })
-  
+
   tentativeWinner.display = true
   invalidOutcome.display = true
 
