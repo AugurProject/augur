@@ -8,11 +8,13 @@ import { ZERO } from 'modules/trade/constants/numbers'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatNumber } from 'utils/format-number'
 import { augur } from 'services/augurjs'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
+import { ExclamationCircle as InputErrorIcon, Hint } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 import { MALFORMED_OUTCOME } from 'utils/constants'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -363,7 +365,9 @@ export default class ReportingDisputeForm extends Component {
           </label>
           <p>
             {winner.id === MALFORMED_OUTCOME &&
-              <span className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</span>
+              <span>
+                <span className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</span>
+              </span>
             }
             {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
@@ -374,6 +378,12 @@ export default class ReportingDisputeForm extends Component {
             }
           </p>
         </li>
+        {winner.id === MALFORMED_OUTCOME &&
+          <p className={Styles.ReportingReport__malformed_msg}>
+            <span>WARNING: The tentative outcome for this market is currently MALFORMED.</span>
+            <p>That means that the tentative outcome CANNOT BE CORRECT.  Reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then the Augur protocol will forever have an INCORRECT OUTCOME for this market, and this market will be paid out incorrectly.</p>
+          </p>
+        }
         <li>
           <label>
             <span>Proposed Outcome</span>
@@ -463,13 +473,6 @@ export default class ReportingDisputeForm extends Component {
                 </div>
               }
             </li>
-            { winner.id === MALFORMED_OUTCOME &&
-              <div className={classNames(Styles.ReportingReport__malformed_msg_container)}>
-                <span className={classNames(Styles.ReportingReport__malformed_msg)}>
-                  {InputErrorIcon}{'A malformed outcome is a report that is inconsistent for the market type. If this report wins, payout distribution will be affected. This is considered an attack on the truth'}
-                </span>
-              </div>
-            }
             <li>
               { s.validations.hasOwnProperty('stake') && s.validations.stake.length &&
                 <span className={FormStyles['Form__error--even']}>
