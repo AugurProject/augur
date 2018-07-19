@@ -217,6 +217,11 @@ Renderer.prototype.openAugurUI = function () {
 
 Renderer.prototype.saveNetworkConfig = function (event) {
     event.preventDefault();
+    this.showNotice("Saving Configuration...", "success")
+    // clear error after 3 seconds
+    setTimeout(() => {
+      this.clearNotice()
+    }, 2000);
     const data = this.getNetworkConfigFormData();
     ipcRenderer.send("saveNetworkConfig", data);
 }
