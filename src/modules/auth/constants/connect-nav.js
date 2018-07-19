@@ -12,12 +12,13 @@ export const PARAMS = {
   TREZOR: 'trezor',
 }
 
+const DEFAULT_ITEM_INDEX = 0
+
 export const ITEMS = [
   {
     param: PARAMS.METAMASK,
     title: 'MetaMask',
     icon: MetaMask,
-    default: true,
   },
   {
     param: PARAMS.LEDGER,
@@ -39,6 +40,8 @@ if (!process.env.AUGUR_HOSTED) {
   })
 }
 
+ITEMS[DEFAULT_ITEM_INDEX].default = true
+
 const VIEWS = {
   [PARAMS.LEDGER]: LedgerConnect,
   [PARAMS.METAMASK]: MetaMaskConnect,
@@ -48,4 +51,4 @@ const VIEWS = {
 if (!process.env.AUGUR_HOSTED) {
   VIEWS[PARAMS.EDGE] = EdgeConnect
 }
-export const getView = selectedNav => VIEWS[selectedNav] || VIEWS[PARAMS.METAMASK]
+export const getView = selectedNav => VIEWS[selectedNav] || VIEWS[ITEMS[DEFAULT_ITEM_INDEX].param]
