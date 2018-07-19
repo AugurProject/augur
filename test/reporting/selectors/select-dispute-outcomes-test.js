@@ -123,6 +123,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
           stakeCurrent: '80',
           stakeRemaining: '10',
+          display: true,
           id: '80',
           name: '80',
         },
@@ -289,9 +290,10 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           tentativeWinning: true,
           stakeCurrent: '80',
           stakeRemaining: '10',
+          display: true,
           id: '80',
           name: '80',
-        }
+        },
       ]
       const expected = [
         { ...stakes[2] },
@@ -309,7 +311,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           stakeCurrent: '0',
           stakeRemaining: 100,
           tentativeWinning: false,
-        }
+        },
       ]
       const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 10000000000)
       assert.deepEqual(actual, expected, `Didn't call the expected method`)
@@ -353,6 +355,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
           isInvalid: false,
           potentialFork: false,
           tentativeWinning: true,
+          display: true,
           id: '80',
           name: 'name',
         },
@@ -437,7 +440,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       ]
       const actual = selectDisputeOutcomes(marketScalar, stakes, 100, 1000000000)
       const expected = [
-        { ...stakes[0], id: '80', name: '80' },
+        { ...stakes[0], display: true, id: '80', name: '80' },
         { ...stakes[1], display: true, id: '90', name: '90' },
         { display: true, id: '0.5', name: 'Indeterminate', ...getDefaultStake(100) },
       ]
@@ -461,6 +464,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       const expected = [
         {
           ...stakes[0],
+          display: true,
           id: '80',
           name: '80',
         },
@@ -485,6 +489,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           ...getDefaultStake(100),
           ...stakes[0],
+          display: true,
           id: '0.5',
           name: 'Indeterminate',
         },
@@ -520,7 +525,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           ...getDefaultStake(100),
           ...stakes[0],
-          display: true, 
+          display: true,
           id: '0',
           name: 'Bob',
         },
@@ -600,13 +605,14 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
         {
           ...getDefaultStake(100),
           ...stakes[0],
+          display: true,
           id: '0',
           name: 'No',
         },
         {
           ...getDefaultStake(100),
           ...stakes[1],
-          display: true, 
+          display: true,
           id: '1',
           name: 'Yes',
         },
@@ -635,7 +641,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       const expected = [
         {
           ...getDefaultStake(100),
-          display: true, 
+          display: true,
           id: '0.5',
           name: 'Indeterminate',
           ...stakes[0],
@@ -665,7 +671,7 @@ describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
       const expected = [
         {
           ...getDefaultStake(100),
-          display: true, 
+          display: true,
           id: '0',
           name: 'No',
           ...stakes[0],

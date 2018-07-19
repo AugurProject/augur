@@ -375,7 +375,7 @@ export default class ReportingDisputeForm extends Component {
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
             { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
-              outcome.display && 
+              outcome.display &&
               <li key={outcome.id}>
                 <button
                   data-testid={'button-' + outcome.id}
