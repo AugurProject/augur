@@ -8,13 +8,11 @@ import { ZERO } from 'modules/trade/constants/numbers'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { formatAttoRep, formatNumber } from 'utils/format-number'
 import { augur } from 'services/augurjs'
-import { ExclamationCircle as InputErrorIcon, Hint } from 'modules/common/components/icons'
+import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
 import { MALFORMED_OUTCOME } from 'utils/constants'
-import ReactTooltip from 'react-tooltip'
-import TooltipStyles from 'modules/common/less/tooltip'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -381,7 +379,7 @@ export default class ReportingDisputeForm extends Component {
         {winner.id === MALFORMED_OUTCOME &&
           <p className={Styles.ReportingReport__malformed_msg}>
             <span>WARNING: The tentative outcome for this market is currently MALFORMED.</span>
-            <p>That means that the tentative outcome CANNOT BE CORRECT.  Reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then Augur will forever have an INCORRECT OUTCOME for this market, and this market will be paid out incorrectly.</p>
+            <p>This means that the tentative outcome CANNOT BE CORRECT.  You and/or other reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then Augur will forever have an INCORRECT OUTCOME for this market, and outstanding bets in this market will not be paid out correctly.</p>
           </p>
         }
         <li>
