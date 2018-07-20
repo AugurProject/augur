@@ -39,8 +39,7 @@ const KNOWN_ORPHANED_ORDERS = [
 "0xc6f51fa97267dda389dadd8ad42c6336869736cc45fb6324a5f507840f8c142f",
 "0xa835ffe373b980d7dce0b5feffa1f21d40e8e5d859c624cca9d3b7dfd6b589d4",
 "0x28fa5d2fbd85949c84c077c724a78d20752c50aaf21795479398df3f20ce2dea",
-]
-
+];
 
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.hasColumn("orders", "orphaned").then((exists) => {
