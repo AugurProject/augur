@@ -3,6 +3,7 @@
   "Controller": "0xb3337164e91b9f05c87c7662c7ac684e8e0ff3e7",
   "Universe": "0xe991247b78f937d7b69cfc00f1a487a293557677",
   "Augur": "0x75228dce4d82566d93068a8d5d49435216551599",
+  "OrdersFinder": "0x01f2aba090b5fa26a64ea9e5afd32f6aab6ba3df",
   "LegacyReputationToken": "0xe94327d07fc17907b4db788e5adf2ed424addff6",
   "CancelOrder": "0x3448209268e97652bb67ea12777d4dfba81e3aaf",
   "Cash": "0xd5524179cb7ae012f5b642c1d6d700bbaa76b96b",
