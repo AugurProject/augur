@@ -23,11 +23,10 @@ export function updateOrder(db: Knex, augur: Augur, marketId: Address, orderId: 
     const updateParams = Object.assign({ orderState }, updateAmountsParams);
     augur.api.Orders.getLastOutcomePrice({ _market: marketId, _outcome: orderRow.outcome }, (err: Error|null, lastOutcomePrice: Int256): void => {
       if (err) return callback(err);
-      const lastPrice = new BigNumber(lastOutcomePrice, 10);
-      const lastO =  augur.utils.convertOnChainPriceToDisplayPrice(lastPrice, minPrice, tickSize).toFixed();
-      db("outcomes").where({marketId, outcome: orderRow.outcome}).update({price: lastO}).asCallback((err) => {
+      const lastOutcomePriceBN = new BigNumber(lastOutcomePrice, 10);
+      const lastOutcomeDisplayPrice =  augur.utils.convertOnChainPriceToDisplayPrice(lastOutcomePriceBN, minPrice, tickSize).toFixed();
+      db("outcomes").where({marketId, outcome: orderRow.outcome}).update({price: lastOutcomeDisplayPrice}).asCallback((err) => {
         if (err) return callback(err);
-        console.log(orderRow.outcome, updateParams);
         db("orders").where({ orderId }).update(formatBigNumberAsFixed(updateParams)).asCallback(callback);
       });
     });
