@@ -1,5 +1,6 @@
 "use strict";
 
+const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { getUserTradingPositions } = require("../../../../build/server/getters/get-user-trading-positions");
@@ -9,10 +10,15 @@ describe("server/getters/get-user-trading-positions", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getUserTradingPositions(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
-          t.assertions(err, userTradingPositions);
-          db.destroy();
-          done();
+
+        getUserTradingPositions(db, new Augur(), t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, userTradingPositions) => {
+          try {
+            t.assertions(err, userTradingPositions);
+            db.destroy();
+            done();
+          } catch (err) {
+            done(err);
+          }
         });
       });
     });
@@ -34,11 +40,11 @@ describe("server/getters/get-user-trading-positions", () => {
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
-        "numShares": "0.2",
-        "numSharesAdjustedForUserIntention": "0.2",
-        "realizedProfitLoss": "0",
-        "unrealizedProfitLoss": "11",
-        "averagePrice": "0",
+        "numShares": "-1.8",
+        "numSharesAdjustedForUserIntention": "-1.8",
+        "realizedProfitLoss": "-0.26",
+        "unrealizedProfitLoss": "0",
+        "averagePrice": "4.2",
       }, {
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 1,
@@ -125,8 +131,8 @@ describe("server/getters/get-user-trading-positions", () => {
   test({
     description: "get a user's position in one outcome of a categorical market where the user is long",
     params: {
-      account: "0x000000000000000000000000000000000000d00d",
-      marketId: "0x0000000000000000000000000000000000000001",
+      account: "0x000000000000000000000000000000000b0bd00d",
+      marketId: "0x1000000000000000000000000000000000000001",
       outcome: 0,
       sortBy: null,
       isSortDescending: null,
@@ -136,21 +142,21 @@ describe("server/getters/get-user-trading-positions", () => {
     assertions: (err, userTradingPositions) => {
       assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
-        "marketId": "0x0000000000000000000000000000000000000001",
+        "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
         "numShares": "0.2",
         "numSharesAdjustedForUserIntention": "0.2",
         "realizedProfitLoss": "0",
-        "unrealizedProfitLoss": "11",
-        "averagePrice": "0",
+        "unrealizedProfitLoss": "0",
+        "averagePrice": "5.5",
       }]);
     },
   });
   test({
     description: "get a user's position in one outcome of a categorical market where the user is short",
     params: {
-      account: "0x0000000000000000000000000000000000000b0b",
-      marketId: "0x0000000000000000000000000000000000000001",
+      account: "0x000000000000000000000000000000000d00db0b",
+      marketId: "0x1000000000000000000000000000000000000001",
       outcome: 0,
       sortBy: null,
       isSortDescending: null,
@@ -160,61 +166,13 @@ describe("server/getters/get-user-trading-positions", () => {
     assertions: (err, userTradingPositions) => {
       assert.ifError(err);
       assert.deepEqual(userTradingPositions, [{
-        "marketId": "0x0000000000000000000000000000000000000001",
+        "marketId": "0x1000000000000000000000000000000000000001",
         "outcome": 0,
-        "numShares": "0.1",
+        "numShares": "-0.2",
         "numSharesAdjustedForUserIntention": "-0.2",
-        "realizedProfitLoss": "1.2",
-        "unrealizedProfitLoss": "0.55",
-        "averagePrice": "0",
-      }]);
-    },
-  });
-  test({
-    description: "get a user's position in one outcome of a yesNo market where the user is long",
-    params: {
-      account: "0x0000000000000000000000000000000000000b1b",
-      marketId: "0x0000000000000000000000000000000000000002",
-      outcome: 1,
-      sortBy: null,
-      isSortDescending: null,
-      limit: null,
-      offset: null,
-    },
-    assertions: (err, userTradingPositions) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingPositions, [{
-        "marketId": "0x0000000000000000000000000000000000000002",
-        "outcome": 1,
-        "numShares": "42",
-        "numSharesAdjustedForUserIntention": "42",
         "realizedProfitLoss": "0",
         "unrealizedProfitLoss": "0",
-        "averagePrice": "0",
-      }]);
-    },
-  });
-  test({
-    description: "get a user's position in one outcome of a yesNo market where the user is short",
-    params: {
-      account: "0x000000000000000000000000000000000000deed",
-      marketId: "0x0000000000000000000000000000000000000002",
-      outcome: 1,
-      sortBy: null,
-      isSortDescending: null,
-      limit: null,
-      offset: null,
-    },
-    assertions: (err, userTradingPositions) => {
-      assert.ifError(err);
-      assert.deepEqual(userTradingPositions, [{
-        "marketId": "0x0000000000000000000000000000000000000002",
-        "outcome": 1,
-        "numShares": "0",
-        "numSharesAdjustedForUserIntention": "-7",
-        "realizedProfitLoss": "0",
-        "unrealizedProfitLoss": "0",
-        "averagePrice": "0",
+        "averagePrice": "5.5",
       }]);
     },
   });

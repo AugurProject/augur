@@ -1,7 +1,7 @@
 const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { calculateBucketProfitLoss, getProfitLoss, bucketRangeByInterval } = require("../../../../build/server/getters/get-profit-loss");
+const { calculateEarningsPerTimePeriod, getProfitLoss, bucketRangeByInterval } = require("../../../../build/server/getters/get-profit-loss");
 const sqlite3 = require("sqlite3");
 const Knex = require("knex");
 const { postProcessDatabaseResults } = require("../../../../build/server/post-process-database-results");
@@ -277,11 +277,11 @@ describe("tests for test/profitloss.db", () => {
           },
           timestamp: endTime,
         }];
-        assert.deepEqual(results.aggregate, expected);
+        assert.deepEqual(expected, results.aggregate);
 
-        assert.deepEqual(results.all, {
-          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected],
-        });
+        assert.deepEqual({
+          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected, null, null, null, null, null, null],
+        }, results.all);
       } catch (e) {
         return done(e);
       }
@@ -310,7 +310,7 @@ describe("server/getters/get-profit-loss", () => {
       var profitLoss = null;
       var error = null;
       try {
-        profitLoss = calculateBucketProfitLoss(augur, t.params.trades, t.params.buckets);
+        profitLoss = calculateEarningsPerTimePeriod(augur, t.params.trades, t.params.buckets);
       } catch (e) {
         error = e;
       }
@@ -745,7 +745,7 @@ describe("server/getters/get-profit-loss", () => {
         lastPrice: "0.3",
       },
     ];
-    var pls1 = calculateBucketProfitLoss(augur, trades1, buckets1);
+    var pls1 = calculateEarningsPerTimePeriod(augur, trades1, buckets1);
     assert.equal(pls1.length, 1);
 
     var buckets2 = [
@@ -770,7 +770,7 @@ describe("server/getters/get-profit-loss", () => {
         lastPrice: "0.3",
       },
     ];
-    var pls2 = calculateBucketProfitLoss(augur, trades1, buckets2);
+    var pls2 = calculateEarningsPerTimePeriod(augur, trades1, buckets2);
     assert.equal(pls2.length, 4);
 
     var result = {
@@ -807,7 +807,7 @@ describe("server/getters/get-profit-loss", () => {
         lastPrice: "0.3",
       },
     ];
-    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
+    var pls1 = calculateEarningsPerTimePeriod(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -853,7 +853,7 @@ describe("server/getters/get-profit-loss", () => {
       },
     ];
 
-    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
+    var pls1 = calculateEarningsPerTimePeriod(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -898,7 +898,7 @@ describe("server/getters/get-profit-loss", () => {
       },
     ];
 
-    var pls1 = calculateBucketProfitLoss(augur, trades2, buckets);
+    var pls1 = calculateEarningsPerTimePeriod(augur, trades2, buckets);
     assert.equal(pls1.length, 1);
 
     var result = {
@@ -942,7 +942,7 @@ describe("server/getters/get-profit-loss", () => {
         lastPrice: 0.1,
       },
     ];
-    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results = calculateEarningsPerTimePeriod(augur, trades, buckets);
     const results2 = augur.trading.calculateProfitLoss({ trades, lastPrice: 0.1 });
 
     assert.deepEqual(results[0].profitLoss, results2);
@@ -987,7 +987,7 @@ describe("server/getters/get-profit-loss", () => {
         lastPrice: 0.1,
       },
     ];
-    const results = calculateBucketProfitLoss(augur, trades, buckets);
+    const results = calculateEarningsPerTimePeriod(augur, trades, buckets);
     const results2 = augur.trading.calculateProfitLoss({ trades, lastPrice: 0.1 });
 
     assert.deepEqual(results[0].profitLoss, results2);
