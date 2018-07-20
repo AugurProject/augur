@@ -606,9 +606,9 @@ augur-core@1.0.0-21:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.0.0-19:
-  version "5.0.0-19"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0-19.tgz#78fb57c2f82ba124783628abf0159a284ba88e4a"
+augur.js@5.0.0-21:
+  version "5.0.0-21"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0-21.tgz#7aa14ffa745c839294fa6ac11e3e3408a3e8abd8"
   dependencies:
     async "1.5.2"
     augur-core "1.0.0-21"
@@ -616,7 +616,7 @@ augur.js@5.0.0-19:
     clone "2.1.1"
     columnify "1.5.4"
     ethereumjs-blockstream "4.0.1"
-    ethrpc "5.5.1"
+    ethrpc "5.5.3"
     event-emitter "0.3.5"
     immutable-delete "1.1.0"
     keccak "1.2.0"
@@ -2682,9 +2682,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@5.5.1:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.5.1.tgz#534dd3e983e47207e26d65af651dd8ac71ff2cdd"
+ethrpc@5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-5.5.3.tgz#0d3098e318a9759a9143c53e884ed50d9f875fa4"
   dependencies:
     async "2.6.0"
     augur-blockstream "5.0.0"
@@ -2700,7 +2700,7 @@ ethrpc@5.5.1:
     postinstall-build "5.0.1"
     redux "3.6.0"
     redux-thunk-subscribe "1.0.3"
-    speedomatic "2.1.4"
+    speedomatic "2.1.5"
     uuid "3.0.1"
   optionalDependencies:
     request "2.85.0"
@@ -6481,6 +6481,13 @@ speedomatic@2.1.2:
 speedomatic@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.1.4.tgz#be3009a33ad9b4e480c7434127566f181005d87c"
+  dependencies:
+    bignumber.js "6.0.0"
+    ethereumjs-abi "0.6.5"
+
+speedomatic@2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/speedomatic/-/speedomatic-2.1.5.tgz#61f0a1e348705d0d68ce977aef4ceb13f1861a1b"
   dependencies:
     bignumber.js "6.0.0"
     ethereumjs-abi "0.6.5"
