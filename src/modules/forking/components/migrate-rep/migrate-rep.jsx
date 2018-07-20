@@ -30,6 +30,7 @@ export default class MigrateRep extends Component {
     market: PropTypes.object.isRequired,
     marketId: PropTypes.string.isRequired,
     submitMigrateREP: PropTypes.func.isRequired,
+    currentBlockNumber: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -112,6 +113,7 @@ export default class MigrateRep extends Component {
       market,
       submitMigrateREP,
       getForkMigrationTotals,
+      currentBlockNumber,
     } = this.props
     const s = this.state
 
@@ -153,6 +155,7 @@ export default class MigrateRep extends Component {
                 repAmounts={s.repAmount}
                 accountREP={accountREP}
                 getForkMigrationTotals={getForkMigrationTotals}
+                currentBlockNumber={currentBlockNumber}
               />
             }
             { s.currentStep === 1 &&

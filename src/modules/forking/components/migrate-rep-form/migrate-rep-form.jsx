@@ -23,6 +23,7 @@ export default class MigrateRepForm extends Component {
     accountREP: PropTypes.string.isRequired,
     forkMigrationTotals: PropTypes.object,
     isMarketInValid: PropTypes.bool,
+    currentBlockNumber: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -33,6 +34,7 @@ export default class MigrateRepForm extends Component {
       inputSelectedOutcome: '',
       scalarInputChoosen: false,
       formattedMigrationTotals: null,
+      blockNumber: props.currentBlockNumber,
     }
 
     this.focusTextInput = this.focusTextInput.bind(this)
@@ -40,6 +42,27 @@ export default class MigrateRepForm extends Component {
 
   componentWillMount() {
     this.getForkMigrationTotals()
+  }
+
+  componentWillUpdate() {
+    this.getForkMigrationTotals()
+  }
+
+  componentWillReceiveProps(newProps) {
+    const updateBlock = createBigNumber(this.state.blockNumber)
+    const currentBlock = createBigNumber(newProps.currentBlockNumber)
+    if (currentBlock.gt(updateBlock)) {
+      this.setState({
+        blockNumber: this.props.currentBlockNumber,
+      })
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const updateBlock = createBigNumber(this.state.blockNumber)
+    const currentBlock = createBigNumber(nextProps.currentBlockNumber)
+    if (currentBlock.gt(updateBlock) || this.props.accountREP !== nextProps.accountREP) return true
+    return false
   }
 
   componentDidUpdate(prevProps) {
