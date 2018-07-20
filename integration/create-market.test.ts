@@ -116,38 +116,38 @@ describe("Create market page", () => {
       {
         type: OrderType.Ask,
         outcome: "Yes",
-        quantity: "2",
-        price: "0.5",
+        quantity: "2.0000",
+        price: "0.5000",
       },
       {
         type: OrderType.Ask,
         outcome: "Yes",
-        quantity: "2",
-        price: "0.47",
+        quantity: "2.0000",
+        price: "0.4700",
       },
       {
         type: OrderType.Ask,
         outcome: "Yes",
-        quantity: "1",
-        price: "0.43",
+        quantity: "1.0000",
+        price: "0.4300",
       },
       {
         type: OrderType.Bid,
         outcome: "Yes",
-        quantity: "2",
-        price: "0.4",
+        quantity: "2.0000",
+        price: "0.4000",
       },
       {
         type: OrderType.Bid,
         outcome: "Yes",
-        quantity: "1",
-        price: "0.37",
+        quantity: "1.0000",
+        price: "0.3700",
       },
       {
         type: OrderType.Bid,
         outcome: "Yes",
-        quantity: "3",
-        price: "0.34",
+        quantity: "3.0000",
+        price: "0.3400",
       },
     ];
     await createLiquidity(orders);
@@ -159,13 +159,17 @@ describe("Create market page", () => {
     // TODO: Verify that the ETH and gas required to place liquidity orders is included in the totals
 
     // Submit new market
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    while (isDisabled) {
+      isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    }
     await expect(page).toClick("button", { text: "Submit" });
 
     // Make sure user is redirected to Portfolio: Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item", { visible: true });
 
     // Go to new market trading page
-    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Yes%2FNo"), { waitUntil: "networkidle0"});
+    await page.goto(url.concat("#/markets?category=INTEGRATION%20TEST&tags=YES%2FNO"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
@@ -227,38 +231,38 @@ describe("Create market page", () => {
       {
         type: OrderType.Ask,
         outcome: "Outcome 1",
-        quantity: "2",
-        price: "0.5",
+        quantity: "2.0000",
+        price: "0.5000",
       },
       {
         type: OrderType.Ask,
         outcome: "Outcome 1",
-        quantity: "2",
-        price: "0.47",
+        quantity: "2.0000",
+        price: "0.4700",
       },
       {
         type: OrderType.Ask,
         outcome: "Outcome 1",
-        quantity: "1",
-        price: "0.43",
+        quantity: "1.0000",
+        price: "0.4300",
       },
       {
         type: OrderType.Bid,
         outcome: "Outcome 1",
-        quantity: "2",
-        price: "0.4",
+        quantity: "2.0000",
+        price: "0.4000",
       },
       {
         type: OrderType.Bid,
         outcome: "Outcome 1",
-        quantity: "1",
-        price: "0.37",
+        quantity: "1.0000",
+        price: "0.3700",
       },
       {
         type: OrderType.Bid,
         outcome: "Outcome 1",
-        quantity: "3",
-        price: "0.34",
+        quantity: "3.0000",
+        price: "0.3400",
       },
     ];
     await createLiquidity(orders);
@@ -267,13 +271,17 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Next: Review" });
 
     // Submit new market
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    while (isDisabled) {
+      isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    }
     await expect(page).toClick("button", { text: "Submit" });
 
     // Make sure user is redirected to Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item", { visible: true });
 
     // Go to new market trading page
-    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Categorical"), { waitUntil: "networkidle0"});
+    await page.goto(url.concat("#/markets?category=INTEGRATION%20TEST&tags=CATEGORICAL"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
@@ -373,13 +381,17 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Next: Review" });
 
     // Submit new market
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    while (isDisabled) {
+      isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    }
     await expect(page).toClick("button", { text: "Submit" });
 
     // Make sure user is redirected to Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item", { visible: true });
 
     // Go to new market trading page
-    await page.goto(url.concat("#/markets?category=Integration%20Test&tags=Scalar"), { waitUntil: "networkidle0"});
+    await page.goto(url.concat("#/markets?category=INTEGRATION%20TEST&tags=SCALAR"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
