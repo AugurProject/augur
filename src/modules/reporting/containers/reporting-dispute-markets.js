@@ -14,7 +14,7 @@ import marketDisputeOutcomes from 'modules/reporting/selectors/select-market-dis
 import logError from 'utils/log-error'
 
 const mapStateToProps = (state, { history }) => {
-  const PAGINATION_COUNT = 5
+  const PAGINATION_COUNT = 10
   const loginAccount = selectLoginAccount(state)
   const disputeOutcomes = marketDisputeOutcomes() || {}
   const disputableMarkets = disputeMarkets() || []
