@@ -33,4 +33,3 @@ export function updateOrder(db: Knex, augur: Augur, marketId: Address, orderId: 
     });
   });
 }
-
