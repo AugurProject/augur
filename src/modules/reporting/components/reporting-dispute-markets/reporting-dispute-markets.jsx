@@ -83,12 +83,12 @@ export default class ReportingDisputeMarkets extends Component {
   }
 
   setLoadedMarkets(markets, lowerBound, boundedLength, showPagination) {
-    const loadedMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination)
+    const loadedMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
     this.setState({ loadedMarkets })
   }
 
   setLoadedMarketsUpcoming(markets, lowerBound, boundedLength, showPagination) {
-    const loadedUpcomingMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination)
+    const loadedUpcomingMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
     this.setState({ loadedUpcomingMarkets })
   }
 
