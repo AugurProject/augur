@@ -7,6 +7,7 @@ import ReportDisputeNoRepState from 'src/modules/reporting/components/reporting-
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
 import MarketsHeaderStyles from 'modules/markets/components/markets-header/markets-header.styles'
+import Paginator from 'modules/common/components/paginator/paginator'
 
 const Styles = require('./reporting-dispute-markets.styles')
 
@@ -26,16 +27,92 @@ export default class ReportingDisputeMarkets extends Component {
     account: PropTypes.string.isRequired,
     isForking: PropTypes.bool.isRequired,
     forkingMarketId: PropTypes.string.isRequired,
+    pageinationCount: PropTypes.number.isRequired,
+    disputableMarketsLength: PropTypes.number,
     forkEndTime: PropTypes.string,
+    showPagination: PropTypes.bool,
+    showUpcomingPagination: PropTypes.bool,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      lowerBound: 1,
+      boundedLength: this.props.pageinationCount,
+      lowerBoundUpcoming: 1,
+      boundedLengthUpcoming: this.props.pageinationCount,
+      loadedMarkets: [],
+      loadedUpcomingMarkets: [],
+    }
+
+    this.setSegment = this.setSegment.bind(this)
+    this.setSegmentUpcoming = this.setSegmentUpcoming.bind(this)
   }
 
   componentWillMount() {
+    const {
+      markets,
+      upcomingMarkets,
+      showPagination,
+      showUpcomingPagination,
+    } = this.props
+    const {
+      lowerBound,
+      boundedLength,
+      lowerBoundUpcoming,
+      boundedLengthUpcoming,
+    } = this.state
+    this.setLoadedMarkets(markets, lowerBound, boundedLength, showPagination)
+    this.setLoadedMarketsUpcoming(upcomingMarkets, lowerBoundUpcoming, boundedLengthUpcoming, showUpcomingPagination)
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.state.lowerBound !== nextState.lowerBound ||
+      this.state.boundedLength !== nextState.boundedLength
+    ) {
+      this.setLoadedMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength, this.state.showPagination)
+    }
+    if (
+      this.state.lowerBoundUpcoming !== nextState.lowerBoundUpcoming ||
+      this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming
+    ) {
+      this.setLoadedMarketsUpcoming(nextProps.upcomingMarkets, nextState.lowerBoundUpcoming, nextState.boundedLengthUpcoming, this.state.showUpcomingPagination)
+    }
+  }
+
+  setLoadedMarkets(markets, lowerBound, boundedLength, showPagination) {
+    const loadedMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination)
+    this.setState({ loadedMarkets })
+  }
+
+  setLoadedMarketsUpcoming(markets, lowerBound, boundedLength, showPagination) {
+    const loadedUpcomingMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination)
+    this.setState({ loadedUpcomingMarkets })
+  }
+
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, boundedLength })
+  }
+
+  setSegmentUpcoming(lowerBoundUpcoming, upperBound, boundedLengthUpcoming) {
+    this.setState({ lowerBoundUpcoming, boundedLengthUpcoming })
+  }
+
+  filterMarkets(markets, lowerBound, boundedLength, showPagination) {
     const {
       isConnected,
       loadMarkets,
     } = this.props
     if (isConnected) {
-      loadMarkets()
+      const marketIdLength = boundedLength + (lowerBound - 1)
+      const marketIds = markets.map(m => m.id)
+      const newMarketIdArray = marketIds.slice(lowerBound - 1, marketIdLength)
+
+      loadMarkets(showPagination ? newMarketIdArray : marketIds)
+
+      return showPagination ? markets.filter(m => newMarketIdArray.indexOf(m.id) !== -1) : markets
     }
   }
 
@@ -50,18 +127,25 @@ export default class ReportingDisputeMarkets extends Component {
       markets,
       navigateToAccountDepositHandler,
       outcomes,
-      upcomingMarkets,
       upcomingMarketsCount,
       forkingMarketId,
+      pageinationCount,
+      disputableMarketsLength,
+      showPagination,
+      showUpcomingPagination,
     } = this.props
+    const {
+      loadedMarkets,
+      loadedUpcomingMarkets,
+    } = this.state
 
     let forkingMarket = null
-    let nonForkingMarkets = markets
+    let nonForkingMarkets = loadedMarkets
     if (isForking) {
       forkingMarket = markets.find(market => market.id === forkingMarketId)
-      nonForkingMarkets = markets.filter(market => market.id !== forkingMarketId)
+      nonForkingMarkets = loadedMarkets.filter(market => market.id !== forkingMarketId)
     }
-    const nonForkingMarketsCount = nonForkingMarkets.length
+    const nonForkingMarketsCount = loadedMarkets.length
 
     return (
       <section className={Styles.ReportDisputeContainer}>
@@ -104,6 +188,16 @@ export default class ReportingDisputeMarkets extends Component {
                 isForkingMarket={false}
               />))
         }
+        { nonForkingMarketsCount > 0 && !isForking && showPagination &&
+          <Paginator
+            itemsLength={disputableMarketsLength}
+            itemsPerPage={pageinationCount}
+            location={location}
+            history={history}
+            setSegment={this.setSegment}
+            pageParam={'disputing' || null}
+          />
+        }
         { nonForkingMarketsCount === 0 && !isForking &&
           <NullStateMessage
             message="There are currently no markets available for dispute."
@@ -125,7 +219,7 @@ export default class ReportingDisputeMarkets extends Component {
               />))
         }
         {upcomingMarketsCount > 0 &&
-            upcomingMarkets.map(market =>
+            loadedUpcomingMarkets.map(market =>
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
@@ -134,6 +228,16 @@ export default class ReportingDisputeMarkets extends Component {
                 history={history}
                 outcomes={outcomes}
               />))
+        }
+        { upcomingMarketsCount > 0 && showUpcomingPagination &&
+          <Paginator
+            itemsLength={upcomingMarketsCount}
+            itemsPerPage={pageinationCount}
+            location={location}
+            history={history}
+            setSegment={this.setSegmentUpcoming}
+            pageParam={'upcoming' || null}
+          />
         }
         { upcomingMarketsCount === 0 && nonForkingMarketsCount === 0 &&
           <NullStateMessage
