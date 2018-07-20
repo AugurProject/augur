@@ -35,8 +35,8 @@ export default class FormattedMigrationTotals extends Component {
     const updateBlock = createBigNumber(this.state.blockNumber)
     const currentBlock = createBigNumber(newProps.currentBlockNumber)
     if (currentBlock.gt(updateBlock)) {
-      this.setState({
-        blockNumber: this.props.currentBlockNumber,
+      this.setState((prevState) => {
+        blockNumber: prevState.currentBlockNumber,
       })
     }
   }
