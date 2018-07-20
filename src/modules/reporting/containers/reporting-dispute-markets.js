@@ -7,11 +7,8 @@ import { ACCOUNT_DEPOSIT } from 'src/modules/routes/constants/views'
 import { selectLoginAccount } from 'src/modules/auth/selectors/login-account'
 import disputeMarkets from 'modules/reporting/selectors/select-dispute-markets'
 import awaitingDisputeMarkets from 'modules/reporting/selectors/select-awaiting-dispute-markets'
-import loadMarkets from 'modules/markets/actions/load-markets'
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
-import { loadMarketsDisputeInfo } from 'modules/markets/actions/load-markets-dispute-info'
+import { loadDisputing } from 'modules/reporting/actions/load-disputing'
 import marketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
-import logError from 'utils/log-error'
 
 const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10
@@ -42,15 +39,7 @@ const mapStateToProps = (state, { history }) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: (loadMarketIds) => {
-    dispatch(loadMarkets((err, marketIds) => {
-      if (err) return logError(err)
-      dispatch(loadMarketsInfoIfNotLoaded(loadMarketIds, (err, data) => {
-        if (err) return logError(err)
-        dispatch(loadMarketsDisputeInfo(loadMarketIds))
-      }))
-    }))
-  },
+  loadMarkets: () => dispatch(loadDisputing()),
 })
 
 const ReportingDisputeContainer = connect(mapStateToProps, mapDispatchToProps)(withRouter(ReportingDisputeMarkets))

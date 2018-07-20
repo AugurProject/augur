@@ -8,6 +8,7 @@ import NullStateMessage from 'modules/common/components/null-state-message/null-
 import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
 import MarketsHeaderStyles from 'modules/markets/components/markets-header/markets-header.styles'
 import Paginator from 'modules/common/components/paginator/paginator'
+import isEqual from 'lodash/isEqual'
 
 const Styles = require('./reporting-dispute-markets.styles')
 
@@ -43,7 +44,9 @@ export default class ReportingDisputeMarkets extends Component {
       lowerBoundUpcoming: 1,
       boundedLengthUpcoming: this.props.pageinationCount,
       loadedMarkets: [],
+      filteredMarkets: [],
       loadedUpcomingMarkets: [],
+      filteredUpcomingMarkets: [],
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -52,44 +55,36 @@ export default class ReportingDisputeMarkets extends Component {
 
   componentWillMount() {
     const {
-      markets,
-      upcomingMarkets,
-      showPagination,
-      showUpcomingPagination,
+      loadMarkets,
     } = this.props
-    const {
-      lowerBound,
-      boundedLength,
-      lowerBoundUpcoming,
-      boundedLengthUpcoming,
-    } = this.state
-    this.setLoadedMarkets(markets, lowerBound, boundedLength, showPagination)
-    this.setLoadedMarketsUpcoming(upcomingMarkets, lowerBoundUpcoming, boundedLengthUpcoming, showUpcomingPagination)
+    loadMarkets()
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (
       this.state.lowerBound !== nextState.lowerBound ||
-      this.state.boundedLength !== nextState.boundedLength
+      this.state.boundedLength !== nextState.boundedLength ||
+      !isEqual(this.state.loadedMarkets.map(m => m.id), nextProps.markets.map(m => m.id))
     ) {
       this.setLoadedMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength, nextProps.showPagination)
     }
     if (
       this.state.lowerBoundUpcoming !== nextState.lowerBoundUpcoming ||
-      this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming
+      this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming ||
+      !isEqual(this.state.loadedUpcomingMarkets.map(m => m.id), nextProps.upcomingMarkets.map(m => m.id))
     ) {
       this.setLoadedMarketsUpcoming(nextProps.upcomingMarkets, nextState.lowerBoundUpcoming, nextState.boundedLengthUpcoming, nextProps.showUpcomingPagination)
     }
   }
 
   setLoadedMarkets(markets, lowerBound, boundedLength, showPagination) {
-    const loadedMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
-    this.setState({ loadedMarkets })
+    const filteredMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
+    this.setState({ filteredMarkets, loadedMarkets: markets })
   }
 
   setLoadedMarketsUpcoming(markets, lowerBound, boundedLength, showPagination) {
-    const loadedUpcomingMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
-    this.setState({ loadedUpcomingMarkets })
+    const filteredUpcomingMarkets = this.filterMarkets(markets, lowerBound, boundedLength, showPagination) || []
+    this.setState({ filteredUpcomingMarkets, loadedUpcomingMarkets: markets })
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -103,14 +98,11 @@ export default class ReportingDisputeMarkets extends Component {
   filterMarkets(markets, lowerBound, boundedLength, showPagination) {
     const {
       isConnected,
-      loadMarkets,
     } = this.props
     if (isConnected) {
       const marketIdLength = boundedLength + (lowerBound - 1)
       const marketIds = markets.map(m => m.id)
       const newMarketIdArray = marketIds.slice(lowerBound - 1, marketIdLength)
-
-      loadMarkets(showPagination ? newMarketIdArray : marketIds)
 
       return showPagination ? markets.filter(m => newMarketIdArray.indexOf(m.id) !== -1) : markets
     }
@@ -135,17 +127,17 @@ export default class ReportingDisputeMarkets extends Component {
       showUpcomingPagination,
     } = this.props
     const {
-      loadedMarkets,
-      loadedUpcomingMarkets,
+      filteredMarkets,
+      filteredUpcomingMarkets,
     } = this.state
 
     let forkingMarket = null
-    let nonForkingMarkets = loadedMarkets
+    let nonForkingMarkets = filteredMarkets
     if (isForking) {
       forkingMarket = markets.find(market => market.id === forkingMarketId)
-      nonForkingMarkets = loadedMarkets.filter(market => market.id !== forkingMarketId)
+      nonForkingMarkets = filteredMarkets.filter(market => market.id !== forkingMarketId)
     }
-    const nonForkingMarketsCount = loadedMarkets.length
+    const nonForkingMarketsCount = filteredMarkets.length
 
     return (
       <section className={Styles.ReportDisputeContainer}>
@@ -219,7 +211,7 @@ export default class ReportingDisputeMarkets extends Component {
               />))
         }
         {upcomingMarketsCount > 0 &&
-            loadedUpcomingMarkets.map(market =>
+            filteredUpcomingMarkets.map(market =>
               (<DisputeMarketCard
                 key={market.id}
                 market={market}
