@@ -377,10 +377,10 @@ export default class ReportingDisputeForm extends Component {
           </p>
         </li>
         {winner.id === MALFORMED_OUTCOME &&
-          <p className={Styles.ReportingReport__malformed_msg}>
+          <div className={Styles.ReportingReport__malformed_msg}>
             <span>WARNING: The tentative outcome for this market is currently MALFORMED.</span>
             <p>This means that the tentative outcome CANNOT BE CORRECT.  You and/or other reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then Augur will forever have an INCORRECT OUTCOME for this market, and outstanding bets in this market will not be paid out correctly.</p>
-          </p>
+          </div>
         }
         <li>
           <label>
