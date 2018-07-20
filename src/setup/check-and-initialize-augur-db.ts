@@ -3,8 +3,7 @@ import * as Knex from "knex";
 import * as path from "path";
 import * as sqlite3 from "sqlite3";
 import { promisify, format } from "util";
-import { dirname } from "path";
-import { rename, copyFile, existsSync, unlinkSync, readFile, writeFile } from "fs";
+import { copyFile, rename, existsSync, readFile, writeFile } from "fs";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
@@ -53,7 +52,7 @@ function createKnex(networkId: string, dbPath: string): Knex {
 }
 
 async function renameDatabaseFile(networkId: string, dbPath: string) {
-  const backupDbPath = getDatabasePathFromNetworkId(networkId, dirname(dbPath), `backup-augur-%s-${new Date().getTime()}.db`);
+  const backupDbPath = getDatabasePathFromNetworkId(networkId, path.dirname(dbPath), `backup-augur-%s-${new Date().getTime()}.db`);
   logger.info(`Moving database ${dbPath} to ${backupDbPath}`);
   await promisify(rename)(dbPath, backupDbPath);
 }
@@ -111,6 +110,7 @@ export async function createDbAndConnect(errorCallback: ErrorCallback|undefined,
     const connectOptions = Object.assign(
       { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
       network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
+      network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
     );
     augur.connect(connectOptions, async (err) => {
       if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
