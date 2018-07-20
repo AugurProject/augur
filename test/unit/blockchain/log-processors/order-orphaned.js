@@ -4,7 +4,7 @@ const assert = require("chai").assert;
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processOrderCreatedLog, processOrderCreatedLogRemoval } = require("../../../../build/blockchain/log-processors/order-created");
+const { processOrderCreatedLog } = require("../../../../build/blockchain/log-processors/order-created");
 const Augur = require("augur.js");
 const augur = new Augur();
 
@@ -25,14 +25,8 @@ describe("order-orphaned", () => {
                   assert.ifError(err);
                   getState(trx, "ORDER_ID_2", (err, records) => {
                     t.assertions.onAdded(err, records);
-                    processOrderCreatedLogRemoval(trx, t.params.augur, Object.assign({}, t.params.log, {logIndex: 2, orderId: "ORDER_ID_3"}), (err) => {
-                      assert.ifError(err);
-                      getState(trx, "ORDER_ID_2", (err, records) => {
-                        t.assertions.onRemoved(err, records);
-                        db.destroy();
-                        done();
-                      });
-                    });
+                    db.destroy();
+                    done();
                   });
                 });
               });
@@ -59,6 +53,13 @@ describe("order-orphaned", () => {
       },
       augur: {
         utils: augur.utils,
+        api: {
+          OrdersFinder: {
+            getExistingOrders5: function (data, cb) {
+              return cb(null, ["ORDER_ID_1", "ORDER_ID_3"]);
+            },
+          },
+        },
       },
     },
     assertions: {
