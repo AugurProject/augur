@@ -44,10 +44,6 @@ export default class MigrateRepForm extends Component {
     this.getForkMigrationTotals()
   }
 
-  componentWillUpdate() {
-    this.getForkMigrationTotals()
-  }
-
   componentWillReceiveProps(newProps) {
     const updateBlock = createBigNumber(this.state.blockNumber)
     const currentBlock = createBigNumber(newProps.currentBlockNumber)
@@ -63,6 +59,10 @@ export default class MigrateRepForm extends Component {
     const currentBlock = createBigNumber(nextProps.currentBlockNumber)
     if (currentBlock.gt(updateBlock) || this.props.accountREP !== nextProps.accountREP) return true
     return false
+  }
+
+  componentWillUpdate() {
+    this.getForkMigrationTotals()
   }
 
   componentDidUpdate(prevProps) {
