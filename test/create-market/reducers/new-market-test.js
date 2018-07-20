@@ -224,7 +224,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.3),
           quantity: createBigNumber(1),
-          orderEstimate: '0.3 ETH'
+          orderEstimate: '0.3 ETH',
         },
       })
 
