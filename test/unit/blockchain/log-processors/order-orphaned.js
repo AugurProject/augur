@@ -25,6 +25,7 @@ describe("order-orphaned", () => {
                   assert.ifError(err);
                   getState(trx, "ORDER_ID_2", (err, records) => {
                     t.assertions.onAdded(err, records);
+                    db.destroy();
                     done();
                   });
                 });
