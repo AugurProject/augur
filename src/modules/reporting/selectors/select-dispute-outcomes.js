@@ -2,6 +2,7 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond, forkThreshold) {
   const TopOutcomeCount = 8
@@ -46,6 +47,9 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
   sortedOutcomes.map((outcome, index) => {
     if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
       outcome.display = true
+    }
+    if (outcome.id === MALFORMED_OUTCOME) {
+      outcome.display = false
     }
     return outcome
   })

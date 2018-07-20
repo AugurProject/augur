@@ -12,6 +12,7 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -360,7 +361,13 @@ export default class ReportingDisputeForm extends Component {
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{winner.isInvalid ? 'Invalid' : winner.name }
+          <p>
+            {winner.id === MALFORMED_OUTCOME &&
+              <span>
+                <span className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</span>
+              </span>
+            }
+            {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
               <label>{market.scalarDenomination}</label>
             }
@@ -369,12 +376,18 @@ export default class ReportingDisputeForm extends Component {
             }
           </p>
         </li>
+        {winner.id === MALFORMED_OUTCOME &&
+          <p className={Styles.ReportingReport__malformed_msg}>
+            <span>WARNING: The tentative outcome for this market is currently MALFORMED.</span>
+            <p>This means that the tentative outcome CANNOT BE CORRECT.  You and/or other reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then Augur will forever have an INCORRECT OUTCOME for this market, and outstanding bets in this market will not be paid out correctly.</p>
+          </p>
+        }
         <li>
           <label>
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning && o.id !== MALFORMED_OUTCOME).map(outcome => (
               outcome.display &&
               <li key={outcome.id}>
                 <button
