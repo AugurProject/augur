@@ -3,11 +3,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 
 import FormStyles from 'modules/common/less/form'
-import { SCALAR } from 'modules/markets/constants/market-types'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
 
@@ -48,7 +46,7 @@ export default class FormattedMigrationTotals extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const updateBlock = createBigNumber(this.state.blockNumber)
     const currentBlock = createBigNumber(nextProps.currentBlockNumber)
-    if (currentBlock.gt(updateBlock) || this.props.accountREP !== nextProps.accountREP) return true
+    if (currentBlock.gt(updateBlock)) return true
     return false
   }
 

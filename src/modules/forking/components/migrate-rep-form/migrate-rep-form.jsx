@@ -8,7 +8,6 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import FormStyles from 'modules/common/less/form'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
-import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
 import FormattedMigrationTotals from 'modules/forking/components/migrate-rep-form/formatted-migration-totals'
 
@@ -198,7 +197,6 @@ export default class MigrateRepForm extends Component {
     } = this.props
 
     const {
-      formattedMigrationTotals,
       inputSelectedOutcome,
       inputRepAmount,
     } = this.state
@@ -211,7 +209,7 @@ export default class MigrateRepForm extends Component {
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
             <li>
-              <label style={{marginBottom: '1.5rem'}}>
+              <label style={{ marginBottom: '1.5rem' }}>
                 <span>Outcome</span>
               </label>
             </li>
