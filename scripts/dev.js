@@ -11,6 +11,7 @@ process.env.FORCE_COLOR = true;
 
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 process.env.USE_SSL = FLAGS.indexOf('--ssl') !== -1 ? true : false;
+process.env.AUTO_LOGIN = FLAGS.indexOf('--auto-login') !== -1 ? true : false;
 
 // START DEVELOPMENT SERVER
 //	NOTE -- this will also automatically spin up webpack w/ HMR (Hot Module Reload)
