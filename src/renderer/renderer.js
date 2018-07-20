@@ -209,7 +209,7 @@ Renderer.prototype.onWindowError = function (errorMsg, url, lineNumber) {
 
 Renderer.prototype.openAugurUI = function () {
     const protocol = this.isSsl ? 'https' : 'http'
-    const wssProtocol = this.isSsl ? 'wss://localhost:9002' : 'ws://localhost:9001'
+    const wssProtocol = 'ws://localhost:9001'
     const networkConfig = this.connectedServer.networkConfig;
     const queryString = `augur_node=${encodeURIComponent(wssProtocol)}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`;
     shell.openExternal(`${protocol}://localhost:${this.uiPort}/#/categories?${queryString}`);
