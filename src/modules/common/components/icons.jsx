@@ -442,7 +442,7 @@ export const Notifications = unseenCount => (
         {!!unseenCount &&
         <g id="Group-14" transform="translate(1.000000, 2.000000)">
           <ellipse id="Oval" fill="#FFFFFF" cx="6.4591451" cy="7.00261291" rx="6.4591451" ry="6.43043779" />
-          <text id="1" fontFamily="DINPro-Bold, DINPro" fontSize="8" fontWeight="bold" fill="#341D53">
+          <text id="1" fontFamily="roboto-Bold, roboto" fontSize="8" fontWeight="bold" fill="#341D53">
             <tspan x="4.01902362" y="10.0428031">{unseenCount}</tspan>
           </text>
         </g>
