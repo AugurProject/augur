@@ -72,13 +72,13 @@ export default class ReportingDisputeMarkets extends Component {
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength
     ) {
-      this.setLoadedMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength, this.state.showPagination)
+      this.setLoadedMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength, nextProps.showPagination)
     }
     if (
       this.state.lowerBoundUpcoming !== nextState.lowerBoundUpcoming ||
       this.state.boundedLengthUpcoming !== nextState.boundedLengthUpcoming
     ) {
-      this.setLoadedMarketsUpcoming(nextProps.upcomingMarkets, nextState.lowerBoundUpcoming, nextState.boundedLengthUpcoming, this.state.showUpcomingPagination)
+      this.setLoadedMarketsUpcoming(nextProps.upcomingMarkets, nextState.lowerBoundUpcoming, nextState.boundedLengthUpcoming, nextProps.showUpcomingPagination)
     }
   }
 
