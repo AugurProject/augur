@@ -1,0 +1,102 @@
+@import (reference) '~assets/styles/shared';
+
+.LiquidityOrders__Header {
+  &:extend(.caps--large);
+
+  color: white;
+  padding: 2rem 0;
+}
+
+.LiquidityOrders__TableHeader {
+  &:extend(.caps--small);
+
+  color: @color-lightgray;
+  display: table-header-group;
+
+  &:first-child > li {
+    padding-top: 0;
+  }
+
+  > li {
+    display: table-cell;
+    padding: 2rem 0 0.625rem;
+    text-align: right;
+
+    &:first-child {
+      padding-left: 2rem;
+      text-align: left;
+    }
+
+    &:last-child {
+      padding-right: 2rem;
+    }
+  }
+}
+
+.LiquidityOrders__table-body {
+  background-color: @color-input-background;
+  display: table-row-group;
+  font-size: @font-size-large;
+  line-height: @font-size-large;
+}
+
+.LiquidityOrders__Order {
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  &.positive > li:first-child {
+    border-left: 0.5rem solid @color-positive;
+  }
+
+  &.negative > li:first-child {
+    border-left: 0.5rem solid @color-negative;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 1.5rem;
+      position: relative;
+      text-align: left;
+      text-transform: capitalize;
+      width: 7rem;
+
+      > .Order__pending {
+        justify-content: flex-start;
+      }
+    }
+
+    &:last-of-type {
+      padding-right: 2rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .NotActive {
+    color: @color-lightgray;
+  }
+}
+
+.LiquidityOrders__TableWrapper {
+  display: table;
+  width: 100%;
+}
+
+.LiquidityOrders__NullState {
+  color: @color-lightgray;
+}

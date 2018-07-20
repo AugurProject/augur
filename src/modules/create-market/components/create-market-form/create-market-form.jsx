@@ -8,6 +8,7 @@ import CreateMarketDefine from 'modules/create-market/components/create-market-f
 import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
 import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
+import CreateMarketLiquidityOrders from 'modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders'
 import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
 
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
@@ -308,6 +309,13 @@ export default class CreateMarketForm extends Component {
             </div>
           }
         </div>
+        { newMarket.currentStep === 3 &&
+          <CreateMarketLiquidityOrders
+            newMarket={newMarket}
+            removeOrderFromNewMarket={removeOrderFromNewMarket}
+            liquidityState={s.liquidityState}
+          />
+        }
       </article>
     )
   }

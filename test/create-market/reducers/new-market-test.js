@@ -108,6 +108,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.5),
           quantity: createBigNumber(1),
+          orderEstimate: '0.5 ETH',
         },
       })
 
@@ -119,6 +120,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.5),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.5),
             },
           ],
         },
@@ -139,11 +141,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.8),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.8),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
           ],
         },
@@ -156,6 +160,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.5),
           quantity: createBigNumber(1),
+          orderEstimate: '0.5 ETH',
         },
       })
 
@@ -167,16 +172,19 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.8),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.8),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
             {
               type: 'bid',
               price: createBigNumber(0.5),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.5),
             },
           ],
         },
@@ -197,11 +205,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.3),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.3),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
           ],
         },
@@ -214,6 +224,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.3),
           quantity: createBigNumber(1),
+          orderEstimate: '0.3 ETH'
         },
       })
 
@@ -225,11 +236,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.3),
               quantity: createBigNumber(2),
+              orderEstimate: createBigNumber(0.6),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
           ],
         },
@@ -250,11 +263,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.3),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.3),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
           ],
         },
@@ -267,6 +282,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.3),
           quantity: createBigNumber(1),
+          orderEstimate: '0.3 ETH',
         },
       })
 
@@ -277,6 +293,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'ask',
           price: createBigNumber(0.9),
           quantity: createBigNumber(5),
+          orderEstimate: '0.5 ETH',
         },
       })
 
@@ -287,6 +304,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.3),
           quantity: createBigNumber(5),
+          orderEstimate: '1.5 ETH',
         },
       })
 
@@ -298,11 +316,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.3),
               quantity: createBigNumber(7),
+              orderEstimate: createBigNumber(2.1),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(6),
+              orderEstimate: createBigNumber(0.6),
             },
           ],
         },

@@ -74,6 +74,7 @@ export default function (newMarket = DEFAULT_STATE(), action) {
         const orderInfo = Object.assign({}, order)
         if (order.price.eq(orderToAdd.price) && order.type === orderToAdd.type) {
           orderInfo.quantity = order.quantity.plus(orderToAdd.quantity)
+          orderInfo.orderEstimate = order.orderEstimate.plus(orderToAdd.orderEstimate.replace(' ETH', ''))
           orderAdded = true
         }
         Orders.push(orderInfo)
@@ -81,14 +82,14 @@ export default function (newMarket = DEFAULT_STATE(), action) {
       }, [])
 
       if (!orderAdded) {
-        updatedOrders.push({ type: action.data.type, price: action.data.price, quantity: action.data.quantity })
+        updatedOrders.push({ type: orderToAdd.type, price: orderToAdd.price, quantity: orderToAdd.quantity, orderEstimate: createBigNumber(orderToAdd.orderEstimate.replace(' ETH', '')) })
       }
 
       return {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [action.data.outcome]: updatedOrders,
+          [orderToAdd.outcome]: updatedOrders,
         },
       }
     }

@@ -62,6 +62,7 @@ export default class CreateMarketLiquidity extends Component {
     this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this)
     this.validateForm = this.validateForm.bind(this)
     this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
+    this.updateLiquidityState = this.updateLiquidityState.bind(this)
   }
 
   componentWillMount() {
@@ -95,6 +96,10 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   componentWillUnmount() {
+    this.updateLiquidityState()
+  }
+
+  updateLiquidityState() {
     const liquidityState = {
       orderPrice: this.state.orderPrice,
       orderQuantity: this.state.orderQuantity,
@@ -115,6 +120,7 @@ export default class CreateMarketLiquidity extends Component {
         type: this.state.selectedNav,
         price: this.state.orderPrice,
         quantity: this.state.orderQuantity,
+        orderEstimate: this.state.orderEstimate,
       })
 
       this.updateInitialLiquidityCosts({
@@ -475,6 +481,7 @@ export default class CreateMarketLiquidity extends Component {
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={(value) => {
                       this.setState({ selectedOutcome: value, orderPrice: '', orderQuantity: '' }, () => {
+                        this.updateLiquidityState()
                         this.validateForm()
                       })
                     }}
