@@ -68,15 +68,27 @@ export default function (newMarket = DEFAULT_STATE(), action) {
   switch (action.type) {
     case ADD_ORDER_TO_NEW_MARKET: {
       const existingOrders = newMarket.orderBook[action.data.outcome] || []
+      const orderToAdd = action.data
+      let orderAdded = false
+      const updatedOrders = existingOrders.reduce((Orders, order) => {
+        const orderInfo = Object.assign({}, order)
+        if (order.price.eq(orderToAdd.price) && order.type === orderToAdd.type) {
+          orderInfo.quantity = order.quantity.plus(orderToAdd.quantity)
+          orderAdded = true
+        }
+        Orders.push(orderInfo)
+        return Orders
+      }, [])
+
+      if (!orderAdded) {
+        updatedOrders.push({ type: action.data.type, price: action.data.price, quantity: action.data.quantity })
+      }
 
       return {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [action.data.outcome]: [
-            ...existingOrders,
-            { type: action.data.type, price: action.data.price, quantity: action.data.quantity },
-          ],
+          [action.data.outcome]: updatedOrders,
         },
       }
     }
