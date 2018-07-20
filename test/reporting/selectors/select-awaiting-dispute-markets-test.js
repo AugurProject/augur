@@ -48,8 +48,59 @@ describe(`modules/reports/selectors/select-awaiting-dispute-markets.js`, () => {
         const actual = selectMarketsAwaitingDispute.resultFunc(
           [
             {
-              id: '0xshouldpass',
+              id: '0xshouldpass1',
               reportingState: 'test',
+              disputeInfo: {
+                stakes: [
+                  {
+                    bondSizeCurrent: '204',
+                    stakeCurrent: '50',
+                    tentativeWinning: false,
+                  },
+                  {
+                    stakeCurrent: '0',
+                    tentativeWinning: true,
+                  },
+                ],
+                disputeRound: 0,
+              },
+            },
+            {
+              id: '0xshouldpass2',
+              reportingState: 'test',
+              disputeInfo: {
+                stakes: [
+                  {
+                    bondSizeCurrent: '204',
+                    stakeCurrent: '70',
+                    tentativeWinning: false,
+                  },
+                  {
+                    stakeCurrent: '0',
+                    tentativeWinning: true,
+                  },
+                ],
+                disputeRound: 0,
+              },
+            },
+            {
+              id: '0xshouldpass3',
+              reportingState: 'test',
+              disputeInfo: {
+                stakes: [
+                  {
+                    bondSizeCurrent: '30000',
+                    stakeCurrent: '0',
+                    tentativeWinning: false,
+                  },
+                  {
+                    bondSizeCurrent: '30000',
+                    stakeCurrent: '30000',
+                    tentativeWinning: true,
+                  },
+                ],
+                disputeRound: 2,
+              },
             },
             {
               id: '0xshouldnt',
@@ -62,10 +113,66 @@ describe(`modules/reports/selectors/select-awaiting-dispute-markets.js`, () => {
           },
         )
 
-        const expected = [{
-          id: '0xshouldpass',
-          reportingState: 'test',
-        }]
+        const expected = [
+          {
+            id: '0xshouldpass3',
+            reportingState: 'test',
+            disputeInfo: {
+              highestPercentStaked: '0',
+              stakes: [
+                {
+                  bondSizeCurrent: '30000',
+                  stakeCurrent: '0',
+                  tentativeWinning: false,
+                },
+                {
+                  bondSizeCurrent: '30000',
+                  stakeCurrent: '30000',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 2,
+            },
+          },
+          {
+            id: '0xshouldpass2',
+            reportingState: 'test',
+            disputeInfo: {
+              highestPercentStaked: '0.34313725490196078431',
+              stakes: [
+                {
+                  bondSizeCurrent: '204',
+                  stakeCurrent: '70',
+                  tentativeWinning: false,
+                },
+                {
+                  stakeCurrent: '0',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 0,
+            },
+          },
+          {
+            id: '0xshouldpass1',
+            reportingState: 'test',
+            disputeInfo: {
+              highestPercentStaked: '0.24509803921568627451',
+              stakes: [
+                {
+                  bondSizeCurrent: '204',
+                  stakeCurrent: '50',
+                  tentativeWinning: false,
+                },
+                {
+                  stakeCurrent: '0',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 0,
+            },
+          },
+        ]
 
         assert.deepEqual(actual, expected, `didn't return the expected result`)
 
