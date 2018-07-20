@@ -21,7 +21,7 @@ const DB_VERSION = 2;
 const DB_FILE_SYNCING = "augur-%s-syncing-%s.db";
 const DB_FILE_BULK_SYNC = "augur-%s-%s.db";
 
-function getDatabasePathFromNetworkId(networkId: string, filenameTemplate: string = DB_FILE_SYNCING, databaseDir: string|undefined, ) {
+function getDatabasePathFromNetworkId(networkId: string, filenameTemplate: string = DB_FILE_SYNCING, databaseDir: string|undefined) {
   return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId, DB_VERSION));
 }
 
