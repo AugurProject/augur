@@ -46,22 +46,22 @@ export default class MigrateRepForm extends Component {
     const {
       updateState,
       validations,
-      accountREP
+      accountREP,
     } = this.props
 
     if (prevProps.accountREP !== accountREP) {
       const updatedValidations = { ...validations }
 
       if (this.state.inputRepAmount > accountREP) {
-        updatedValidations.repAmount = `Migrate REP amount is greater then your available amount`   
+        updatedValidations.repAmount = `Migrate REP amount is greater then your available amount`
       } else {
         delete updatedValidations.repAmount
       }
       updateState({
-        validations: updatedValidations
-      });
+        validations: updatedValidations,
+      })
     }
-    
+
   }
 
   getForkMigrationTotals() {
