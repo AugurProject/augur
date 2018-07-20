@@ -37,8 +37,8 @@ function getAllAugurLogs(p, batchCallback, finalCallback) {
   async.eachSeries(chunkBlocks(fromBlock, toBlock).reverse(), function (chunkOfBlocks, nextChunkOfBlocks) {
     ethrpc.getLogs(assign({}, filterParams, chunkOfBlocks), function (err, logs) {
       if (err) return nextChunkOfBlocks(err);
-      console.log("got", logs.length, "logs in blocks", chunkOfBlocks);
       if (!Array.isArray(logs) || !logs.length) return nextChunkOfBlocks(null);
+      console.log("got", logs.length, "logs in blocks", chunkOfBlocks);
       var batchAugurLogs = logs.map(function (log) {
         if (log && Array.isArray(log.topics) && log.topics.length) {
           var contractName = contractAddressToNameMap[log.address];
