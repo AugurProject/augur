@@ -2,7 +2,7 @@ import { Augur } from "augur.js";
 import * as Knex from "knex";
 import { BigNumber } from "bignumber.js";
 import { Address, FormattedEventLog, TradesRow, TokensRow, MarketsRow, OrdersRow, ErrorCallback } from "../../../types";
-import { updateOrders } from "./update-orders";
+import { updateOrder } from "./update-order";
 import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
@@ -73,7 +73,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           if (err) return callback(err);
           updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
             if (err) return callback(err);
-            updateOrders(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, callback);
+            updateOrder(db, augur, marketId, orderId, amount, orderCreator, filler, tickSize, minPrice, callback);
           });
         });
       });
@@ -112,7 +112,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
         if (err) return callback(err);
         db.from("trades").where({ marketId, outcome, orderId, blockNumber }).del().asCallback((err?: Error|null): void => {
           if (err) return callback(err);
-          updateOrders(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, (err: Error|null) => {
+          updateOrder(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, minPrice, (err: Error|null) => {
             if (err) return callback(err);
             augurEmitter.emit("OrderFilled", Object.assign({}, log, {
               marketId,
