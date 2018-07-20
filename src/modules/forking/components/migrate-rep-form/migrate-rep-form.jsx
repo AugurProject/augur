@@ -102,7 +102,7 @@ export default class MigrateRepForm extends Component {
   validateOutcome(selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const {
       updateState,
-      validations
+      validations,
     } = this.props
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
@@ -211,16 +211,16 @@ export default class MigrateRepForm extends Component {
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
             <li>
-              <label>
+              <label style={{marginBottom: '1.5rem'}}>
                 <span>Outcome</span>
               </label>
             </li>
-            <FormattedMigrationTotals 
-              validateOutcome={this.validateOutcome} 
-              market={market} 
-              getForkMigrationTotals={getForkMigrationTotals} 
-              currentBlockNumber={this.props.currentBlockNumber} 
-              selectedOutcome={selectedOutcome} 
+            <FormattedMigrationTotals
+              validateOutcome={this.validateOutcome}
+              market={market}
+              getForkMigrationTotals={getForkMigrationTotals}
+              currentBlockNumber={this.props.currentBlockNumber}
+              selectedOutcome={selectedOutcome}
             />
             { market.marketType === SCALAR &&
               <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
