@@ -117,10 +117,7 @@ function checkForOrphanedOrders(db: Knex, augur: Augur, orderData: OrdersRow<str
     getExistingOrders(requestData, (err: Error| null, orderIds: Array<string>): void => {
       // Erroring here is expected in the case where we have more orders than are supported by the call used. We correct at some future order creation which must occur for there to be more orders now
       if (err) return callback(null);
-      db.from("orders").whereNotIn("orderId", orderIds).where(queryData).update({orphaned: true}).asCallback((err) => {
-        if (err) return callback(err);
-        return callback(null);
-      });
+      db.from("orders").whereNotIn("orderId", orderIds).where(queryData).update({orphaned: true}).asCallback(callback);
     });
   });
 }
