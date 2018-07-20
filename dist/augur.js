@@ -292,7 +292,7 @@ var dispatchJsonRpcResponse = require("./dispatch-json-rpc-response");
 var WsTransport = require("../rpc-interface").WsTransport;
 
 function connect(augurNodeUrl, callback) {
-  new WsTransport(augurNodeUrl, 100, {}, dispatchJsonRpcResponse, function (err, transport) {
+  new WsTransport(augurNodeUrl, 100, 0, {}, dispatchJsonRpcResponse, function (err, transport) {
     if (err) return callback(err);
     augurNodeState.setTransport(transport);
     callback(null, transport);
@@ -962,42 +962,43 @@ module.exports={
  },
  "22346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x69c95d801ba3890c7090bdedeb7e5cc8f2058586",
+  "Universe": "0xaac01b4aaa2ebd04a4790c85b76e1749d8ef8e13",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0x1fd9274a2fe0e86f5a7b5bde57b93c8c9b62e21d",
-  "CancelOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
-  "Cash": "0x021076fb9adafcf83869435f9d72a5873869b4ad",
-  "ClaimTradingProceeds": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
-  "CompleteSets": "0x5e9529c5c5ac0a7e7258a18782bd31a148c55f4c",
+  "OrdersFinder": "0xf33a8abcf994bafcb28682f08c48015a57ea35d3",
+  "LegacyReputationToken": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
+  "CancelOrder": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
+  "Cash": "0x658655115e55fa3433b9686865f011874bd71083",
+  "ClaimTradingProceeds": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "CompleteSets": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
   "CreateOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "FillOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
-  "Order": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "Orders": "0x56d32d583ee21e748103b029fd97621fde92248d",
-  "OrdersFetcher": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "ShareToken": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "Trade": "0x2adaeaf11753515a37a3d50cecb636cf72ae4854",
-  "TradingEscapeHatch": "0x6749e370e7b1955ffa924f4f75f5f12653c7512c"
+  "FillOrder": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
+  "Order": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
+  "Orders": "0x5f3341ea5989ad3129e325027b8d908b63709a00",
+  "OrdersFetcher": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
+  "ShareToken": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "Trade": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
+  "TradingEscapeHatch": "0x897516718140a2bbb9730904823f9db6d9ae28c0"
  },
  "32346": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x8963d800c1d48301444f4ceb2a13ebcfee9ae957",
+  "Universe": "0x161c723cac007e4283cee4ba11b15277e46eec53",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
+  "OrdersFinder": "0xf33a8abcf994bafcb28682f08c48015a57ea35d3",
   "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
-  "Cash": "0xd28d97d4ea8968e90ec90ab0f43df4ade0c9f611",
-  "ClaimTradingProceeds": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
-  "CompleteSets": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "CreateOrder": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
-  "FillOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "Order": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "Orders": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a",
-  "OrdersFetcher": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
-  "ShareToken": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
-  "Trade": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "TradingEscapeHatch": "0xecaaca82cdf97f53f478609a98c3d36a5f0ef955"
+  "CancelOrder": "0x4eda1aae707c777b55641b9758029c0eabec626c",
+  "Cash": "0xb78b2b637d3861e601e54c00c054972c18a5e991",
+  "ClaimTradingProceeds": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
+  "CompleteSets": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
+  "CreateOrder": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
+  "FillOrder": "0x788c38264635b3782d6ecd309c022c6ae603b9d2",
+  "Order": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
+  "Orders": "0x9da930a2ca12c197e687db22db3fa318fd8aa60a",
+  "OrdersFetcher": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
+  "ShareToken": "0xd11222c7c12da25ed9b153234084ad02235297aa",
+  "Trade": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
+  "TradingEscapeHatch": "0xd1102fbe361acf2c54f572caca4b928350555f40"
  }
 }
-
 },{}],32:[function(require,module,exports){
 "use strict";
 
@@ -1075,16 +1076,15 @@ module.exports.reloadAddresses = function (callback) {
 };
 },{"../utils/read-json-file":146,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":159}],34:[function(require,module,exports){
 module.exports={
-  "1": 5926223,
-  "3": 3598161,
-  "4": 2590036,
-  "42": 7926279,
-  "8995": 0,
-  "12346": 113,
-  "22346": 10,
-  "32346": 10
+ "1": 5926223,
+ "3": 3598161,
+ "4": 2590036,
+ "42": 7926279,
+ "8995": 0,
+ "12346": 113,
+ "22346": 10,
+ "32346": 10
 }
-
 },{}],35:[function(require,module,exports){
 "use strict";
 
@@ -4783,7 +4783,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.0.0-18';
+module.exports = '5.0.0-19';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -11055,6 +11055,249 @@ module.exports={
 		},
 		{
 			"inputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+	],
+	"OrdersFinder": [
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders5",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[5]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders20",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[20]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "orders",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders1000",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[1000]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders50",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[50]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders500",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[500]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders200",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[200]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders100",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[100]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "_type",
+					"type": "uint8"
+				},
+				{
+					"name": "_market",
+					"type": "address"
+				},
+				{
+					"name": "_outcome",
+					"type": "uint256"
+				}
+			],
+			"name": "getExistingOrders10",
+			"outputs": [
+				{
+					"name": "_results",
+					"type": "bytes32[10]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "_orders",
+					"type": "address"
+				}
+			],
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
@@ -34542,7 +34785,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.0KxwF28r/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34568,7 +34811,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.0KxwF28r/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
