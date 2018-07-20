@@ -336,7 +336,7 @@ function processReport(market, transaction) {
 
 function getOutcome(market, outcome) {
   let value = null
-  if (!market || isNaN(outcome)) return value
+  if (!market || isNaN(outcome)) return outcome
   if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
