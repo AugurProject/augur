@@ -28,7 +28,6 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
   });
 
-  console.log(_.keys(allTimeEarningsPerMarket));
   const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
 
   const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
