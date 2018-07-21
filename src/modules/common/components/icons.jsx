@@ -429,6 +429,25 @@ export const CloseBlack = (
   </svg>
 )
 
+export const CloseWithCircle = () => (
+  <svg width="33px" height="33px" viewBox="0 0 33 33">
+    <defs />
+    <g id="Notifications" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+      <g id="notification-bar" transform="translate(-1276.000000, -15.000000)" stroke="#231A3A">
+        <g id="Notification-bar" transform="translate(328.000000, 8.000000)">
+          <g id="dismiss" transform="translate(876.000000, 0.000000)">
+            <g id="icon" transform="translate(88.556349, 23.300776) rotate(45.000000) translate(-88.556349, -23.300776) translate(72.556349, 7.300776)">
+              <path d="M31.2786139,16.0836558 C31.2786139,7.69158167 24.4759074,0.88710131 16.0838332,0.88710131 C7.6899852,0.88710131 0.887278695,7.69158167 0.887278695,16.0836558 C0.887278695,24.47573 7.6899852,31.2784365 16.0838332,31.2784365 C24.4759074,31.2784365 31.2786139,24.47573 31.2786139,16.0836558 Z" id="Stroke-1" />
+              <path d="M15.9931896,8.35854846 L15.9931896,24.1333774" id="Stroke-3" />
+              <path d="M23.8800719,16.2456082 L8.10524299,16.2456082" id="Stroke-5" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>)
+
+
 export const Notifications = unseenCount => (
   <svg viewBox="0 0 24 24">
     <defs />

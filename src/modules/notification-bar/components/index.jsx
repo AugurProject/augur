@@ -1,5 +1,6 @@
 import React from 'react'
 import Styles from 'modules/notification-bar/components/notification-bar'
+import { CloseWithCircle } from 'src/modules/common/components/icons'
 
 export const NotificationBar = () => (
   <div className={Styles.notificationBar}>
@@ -14,11 +15,7 @@ export const NotificationBar = () => (
     <div className={Styles.notificationBar_dismiss}>
       Dismiss
       <div className={Styles.notificationBar_dismissIcon}>
-        <img
-          className={Styles.notificationBar_dismissIconImg}
-          alt="Alert"
-          src="../../assets/images/augur-logo.svg"
-        />
+        <CloseWithCircle />
       </div>
     </div>
   </div>
