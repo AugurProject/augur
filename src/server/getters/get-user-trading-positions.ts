@@ -28,16 +28,25 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
   });
 
+  console.log(_.keys(allTimeEarningsPerMarket));
+  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
+
+  const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
   const positionsRows = _.flatMap(allTimeEarningsPerMarket, (earnings: Array<ProfitLoss|null>, marketId: Address) => {
     const byOutcomes = earnings.map((profitLoss: ProfitLoss|null, outcome: number) => {
       if (profitLoss) {
+        let numShares = "0";
+        const balance = balancesByMarketOutcome[`${marketId}_${outcome}`];
+        if (balance) {
+          numShares = balance.balance.toFixed();
+        }
         return {
           marketId,
           outcome,
+          numShares,
           realizedProfitLoss: profitLoss.realized,
           unrealizedProfitLoss: profitLoss.unrealized,
           numSharesAdjustedForUserIntention: profitLoss.position,
-          numShares: profitLoss.position,
           averagePrice: profitLoss.meanOpenPrice
         };
       } else {

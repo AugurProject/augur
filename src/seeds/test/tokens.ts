@@ -30,6 +30,16 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
     }, {
+      contractAddress: "0xa200000000000000000000000000000000000000",
+      symbol: "shares",
+      marketId: "0x1000000000000000000000000000000000000001",
+      outcome: 1,
+    }, {
+      contractAddress: "0xa100000000000000000000000000000000000000",
+      symbol: "shares",
+      marketId: "0x1000000000000000000000000000000000000001",
+      outcome: 0,
+    }, {
       contractAddress: "0xe0e1900000000000000000000000000000000000",
       symbol: "shares",
       marketId: "0x0000000000000000000000000000000000000019",
