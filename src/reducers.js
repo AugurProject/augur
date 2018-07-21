@@ -35,6 +35,7 @@ import newMarket from 'modules/create-market/reducers/new-market'
 import notifications from 'modules/notifications/reducers/notifications'
 import orderBooks from 'modules/bids-asks/reducers/order-books'
 import orderCancellation from 'modules/bids-asks/reducers/order-cancellation'
+import orphanedOrders from 'modules/orphaned-orders/reducers/orphaned-orders'
 import outcomesData from 'modules/markets/reducers/outcomes-data'
 import participationTokens from 'modules/my-participation-tokens/reducers/participation-token-data'
 import priceHistory from 'modules/markets/reducers/price-history'
@@ -87,6 +88,7 @@ export function createReducer() {
     notifications,
     orderBooks,
     orderCancellation,
+    orphanedOrders,
     outcomesData,
     participationTokens,
     priceHistory,
