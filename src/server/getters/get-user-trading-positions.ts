@@ -46,7 +46,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
           realizedProfitLoss: profitLoss.realized,
           unrealizedProfitLoss: profitLoss.unrealized,
           numSharesAdjustedForUserIntention: profitLoss.position,
-          averagePrice: profitLoss.meanOpenPrice
+          averagePrice: profitLoss.meanOpenPrice,
         };
       } else {
         return {
@@ -56,7 +56,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
           unrealizedProfitLoss: "0",
           numSharesAdjustedForUserIntention: "0",
           numShares: "0",
-          averagePrice: "0"
+          averagePrice: "0",
         };
       }
     });

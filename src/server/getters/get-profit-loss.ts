@@ -207,7 +207,7 @@ export async function getOutcomesProfitLoss(db: Knex, augur: Augur, nowTimestamp
     return a.logIndex - b.logIndex;
   });
 
-  if (trades.length === 0) return null; 
+  if (trades.length === 0) return null;
 
   const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime || Math.max(trades[trades.length - 1].timestamp, nowTimestamp) + 1, periodInterval);
 
