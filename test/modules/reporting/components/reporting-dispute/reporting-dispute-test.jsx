@@ -16,6 +16,7 @@ describe('report dispute component', () => {
         markets: [],
         marketsCount: 0,
         navigateToAccountDepositHandler: spy(),
+        loadMarkets: spy(),
       }
     })
 
