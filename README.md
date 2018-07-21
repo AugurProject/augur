@@ -69,6 +69,22 @@ If you are looking for more information from augur-node and augur-app, checkout 
 **Linux** : ``` ~/.config/augur/log.log```
 
 
+## Running UI on different port (change from 8080)
+
+`uiPort` is a new property in config.json (see location above). Change `uiPort` property to whatever port you want. If you select the `reset configuration` in the menu the default config.json will be saved to harddrive. Here is an example of the uiPort property changed:
+
+```
+{
+    "network": "mainnet",
+        "version": "1.0.0",
+        "uiPort": "8181",
+        "networks": {
+            "rinkeby": {
+              ...
+```
+
+
+
 ## Questions, Bugs and Issues
 
 Please file any bugs or issues related to Augur App as a GitHub issue in the [Augur App](https://github.com/AugurProject/augur-app) repository. If your issue is related to Augur Node, use the [Augur Node](https://github.com/AugurProject/augur-app) repository. If you have a UI bug or issue to report, use the [Augur Client](https://github.com/AugurProject/augur)  repository. 
