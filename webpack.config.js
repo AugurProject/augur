@@ -153,6 +153,7 @@ let config = {
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD),
         ETHEREUM_NETWORK: JSON.stringify(process.env.ETHEREUM_NETWORK || 'dev'),
         CURRENT_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+        AUTO_LOGIN: JSON.stringify(process.env.AUTO_LOGIN || false),
 
         // Set this var to remove code that is problematic for us to host.
         // Will need to be negated in the relevant conditionals.
