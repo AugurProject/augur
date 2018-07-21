@@ -11,6 +11,7 @@
 
 /** Type definition for Order.
  * @typedef {Object} Order
+ * @property {string} orderId ID of the order, as a 32-byte hexadecimal string.
  * @property {string} shareToken Contract address of the share token for which the order was placed, as a hexadecimal string.
  * @property {string} transactionHash Hash to look up the order transaction receipt.
  * @property {number} logIndex Number of the log index position in the Ethereum block containing the order transaction.
@@ -18,17 +19,20 @@
  * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
  * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
  * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
- * @property {number} price Rounded display price, as a base-10 number.
- * @property {number} amount Rounded number of shares to trade, as a base-10 number.
+ * @property {string} price Rounded display price, as a base-10 number.
+ * @property {string} amount Current rounded number of shares to trade, as a base-10 number.
+ * @property {string} originalAmount Original rounded number of shares to trade, as a base-10 number.
  * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 number.
- * @property {number} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 number.
- * @property {number} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
- * @property {number} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
+ * @property {string} fullPrecisionAmount Current full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {string} originalFullPrecisionAmount Original full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {string} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
+ * @property {string} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
  */
 
-/** Type definition for SingleOutcomeOrderBookSide.
- * @typedef {Object} SingleOutcomeOrderBookSide
- * @property {Order} Buy (bid) or sell (ask) orders, indexed by order ID.
+/** Type definition for SingleSideOrderBook.
+ * @typedef {Object} SingleSideOrderBook
+ * @property {Object|null} buy Buy (bid) Orders objects, keyed by order ID.
+ * @property {Object|null} sell Sell (ask) Order objects, keyed by order ID.
  */
 
 var augurNode = require("../augur-node");
@@ -48,7 +52,7 @@ var augurNode = require("../augur-node");
  * @param {string=} p.limit Maximum number of orders to return.
  * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
  * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
- * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for the specified market/universe and outcome.
+ * @return {Array.<SingleSideOrderBook>} Array of orders on one side of the order book (buy or sell) for the specified market/universe and outcome.
  */
 function getOrders(p, callback) {
   augurNode.submitRequest("getOrders", p, function (err, openOrders) {

@@ -11,13 +11,20 @@ var compareOrdersByPrice = {
   },
 };
 
+/** Type definition for singleOutcomeOrderBookSideOrder.
+ * @typedef {Object} singleOutcomeOrderBookSideOrder
+ * @property {string} amount Number of shares to trade.
+ * @property {string} fullPrecisionPrice Full price in ETH at which to trade.
+ * @property {string} owner Ethereum address of the order's owner, as a 20-byte hexadecimal string.
+ */
+
 /**
  * Bids are sorted descendingly, asks are sorted ascendingly.
  * @param {Object} p Parameters object.
- * @param {require("./get-orders").SingleOutcomeOrderBookSide} p.singleOutcomeOrderBookSide Bids or asks for a particular market and outcome.
+ * @param {Array.<singleOutcomeOrderBookSideOrder>} p.singleOutcomeOrderBookSide Bid or ask orders for a particular outcome of a market.
  * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
  * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @return {require("./get-orders").Order[]} Array of filtered and sorted orders.
+ * @return {Array.<singleOutcomeOrderBookSideOrder>} Array of filtered and sorted orders.
  */
 function filterAndSortByPrice(p) {
   if (!p || !p.singleOutcomeOrderBookSide) return [];
