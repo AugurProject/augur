@@ -34,7 +34,7 @@ export default class MarketsList extends Component {
     super(props)
 
     this.state = {
-      lowerBound: this.props.showPagination ? null : 0,
+      lowerBound: this.props.showPagination ? null : 1,
       boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
       marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
     }
