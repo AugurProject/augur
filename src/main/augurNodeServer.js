@@ -11,7 +11,7 @@ const REMOTE_DELAY_WAIT = 60*1000;
 const LOCAL_DELAY_WAIT = 1*1000;
 
 const REMOTE_MAX_RETRIES = 5;
-const LOCAL_MAX_RETRIES = 0;
+const LOCAL_MAX_RETRIES = 3;
 
 const defaultConfig = {
   'network': 'mainnet',
