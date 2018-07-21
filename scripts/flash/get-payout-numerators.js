@@ -12,7 +12,9 @@ function createBigNumber(n) {
 
 function getPayoutNumerators(market, selectedOutcome, invalid) {
   if (selectedOutcome.toString().indexOf(",") !== -1) {
-    return selectedOutcome.split(",").map(function (x) { return new BigNumber(x); });
+    var values = selectedOutcome.split(",").map(function (x) { return new BigNumber(x); });
+    if (values.length !== market.numOutcomes) throw new Error("numTicks array needs " + market.numOutcomes + " values, you provided " + values.length);
+    return values;
   }
   var maxPrice = createBigNumber(market.maxPrice);
   var minPrice = createBigNumber(market.minPrice);
