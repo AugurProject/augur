@@ -9,7 +9,7 @@ import CreateMarketOutcome from 'modules/create-market/components/create-market-
 import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
 import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
 import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
-
+import { EXPIRY_SOURCE_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
@@ -118,8 +118,8 @@ export default class CreateMarketForm extends Component {
 
     // need valid url
     if (fieldName === 'expirySource') {
-      if (!/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(value)) {
-        updatedMarket.validations[currentStep][fieldName] = 'Url is invalid.'
+      if (value && value.length > EXPIRY_SOURCE_LENGTH) {
+        updatedMarket.validations[currentStep][fieldName] = 'resolution source cannot be greater than ' + EXPIRY_SOURCE_LENGTH
       }
     }
     updatedMarket[fieldName] = value
