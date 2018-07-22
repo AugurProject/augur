@@ -7,7 +7,7 @@ export const NotificationBar = ({ actionFn, dismissFn, notifications }) => notif
   <div key={notification.orderId} className={Styles.notificationBar}>
     <div className={Styles.notificationBar_textContainer}>
       <p className={Styles.notificationBar_text}>
-        You have a dropped order. Please click to cancel.
+        `You have a {notifications.length} dropped order{notifications.length > 1 ? `s` : ''}. Please click to cancel.`
       </p>
     </div>
     <button className={Styles.notificationBar_button} onClick={() => actionFn(notification)}>
