@@ -7,11 +7,11 @@ export const NotificationBar = ({ actionFn, dismissFn, notifications }) => notif
   <div key={notification.orderId} className={Styles.notificationBar}>
     <div className={Styles.notificationBar_textContainer}>
       <p className={Styles.notificationBar_text}>
-        {notification.orderId}
+        You have a dropped order. Please click to cancel.
       </p>
     </div>
     <button className={Styles.notificationBar_button} onClick={() => actionFn(notification)}>
-      SIGN TRANSACTION
+      CANCEL ORDER
     </button>
     <button className={Styles.notificationBar_dismiss} onClick={() => dismissFn(notification)}>
       Dismiss
