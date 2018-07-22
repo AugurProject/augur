@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 
 import App from 'modules/app/components/app/app'
 import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
-import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
+import { selectInfoNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header'
 import { selectCoreStats } from 'modules/account/selectors/core-stats'
 import { selectCategories } from 'modules/categories/selectors/categories'
@@ -43,7 +43,7 @@ const mapStateToProps = state => ({
   markets: getAllMarkets(),
   marketsHeader: selectMarketsHeader(state),
   modal: selectModal(state),
-  notifications: selectNotificationsAndSeenCount(state),
+  notifications: selectInfoNotificationsAndSeenCount(state),
   portfolio: portfolio(),
   universe: selectUniverseState(state),
   url: selectUrlState(state),

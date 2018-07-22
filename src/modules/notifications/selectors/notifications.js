@@ -1,15 +1,17 @@
 import { createSelector } from 'reselect'
-import store from 'src/store'
 import { selectNotificationsState } from 'src/select-state'
+
+import * as notificationLevels from 'src/modules/notifications/constants'
 
 import getValue from 'utils/get-value'
 
-export default function () {
-  return selectNotificationsAndSeenCount(store.getState())
-}
+export const selectNotificationsByLevel = level => state => selectNotificationsState(state).filter(it => it.level === level)
 
-export const selectNotificationsAndSeenCount = createSelector(
-  selectNotificationsState,
+export const selectCriticalNotifications = selectNotificationsByLevel(notificationLevels.CRITICAL)
+export const selectInfoNotifications = selectNotificationsByLevel(notificationLevels.INFO)
+
+export const selectInfoNotificationsAndSeenCount = createSelector(
+  selectInfoNotifications,
   (notifications) => {
     const sortedNotifications = notifications.map((notification, i) => ({
       ...notification,
