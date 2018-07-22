@@ -10,7 +10,7 @@ import 'react-dates/lib/css/_datepicker.css'
 import { SingleDatePicker } from 'react-dates'
 
 import { formatDate } from 'utils/format-date'
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC, EXPIRY_SOURCE_LENGTH } from 'modules/create-market/constants/new-market-constraints'
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 import isAddress from 'modules/auth/helpers/is-address'
 
@@ -174,7 +174,6 @@ export default class CreateMarketResolution extends Component {
                     type="text"
                     value={newMarket.expirySource}
                     placeholder="Define URL"
-                    maxLength={EXPIRY_SOURCE_LENGTH}
                     onChange={e => validateField('expirySource', e.target.value)}
                     onKeyPress={e => keyPressed(e)}
                   />
