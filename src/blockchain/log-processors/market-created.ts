@@ -7,13 +7,12 @@ import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { WEI_PER_ETHER, ZERO } from "../../constants";
+import { MarketType, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
   parallel({
-    numberOfOutcomes: (next: AsyncCallback): void => augur.api.Market.getNumberOfOutcomes(marketPayload, next),
     feeWindow: (next: AsyncCallback): void => augur.api.Market.getFeeWindow(marketPayload, next),
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
     designatedReporter: (next: AsyncCallback): void => augur.api.Market.getDesignatedReporter(marketPayload, next),
@@ -22,14 +21,14 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
   }, (err: Error|null, onMarketContractData?: any): void => {
     if (err) return callback(err);
-    if (!onMarketContractData) return callback(new Error("Could not fetch market details"));
+    if (!onMarketContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
     const universePayload: {} = { tx: { to: log.universe, send: false } };
     parallel({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
       designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
       if (err) return callback(err);
-      if (onUniverseContractData.designatedReportStake == null) return callback(new Error("No REP balance on this market, fail"));
+      if (onUniverseContractData.designatedReportStake == null) return callback(new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`));
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketId: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
@@ -44,8 +43,8 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateId = marketStateRow[0];
         const extraInfo: MarketCreatedLogExtraInfo = (log.extraInfo != null && typeof log.extraInfo === "object") ? log.extraInfo : {};
-        const numOutcomes = parseInt(onMarketContractData.numberOfOutcomes!, 10);
-        const marketType: string = ["yesNo", "categorical", "scalar"][log.marketType];
+        const numOutcomes = parseInt(log.marketType, 10) === MarketType.categorical ? log.outcomes.length : 2;
+        const marketType: string = MarketType[log.marketType];
         const marketsDataToInsert: MarketsRow<string|number> = {
           marketType,
           marketId:                   log.market,

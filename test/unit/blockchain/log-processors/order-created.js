@@ -52,6 +52,13 @@ describe("blockchain/log-processors/order-created", () => {
       },
       augur: {
         utils: augur.utils,
+        api: {
+          OrdersFinder: {
+            getExistingOrders5: function (data, cb) {
+              return cb(null, ["ORDER_ID"]);
+            },
+          },
+        },
       },
     },
     assertions: {
@@ -77,6 +84,7 @@ describe("blockchain/log-processors/order-created", () => {
           tokensEscrowed: new BigNumber("2.25", 10),
           sharesEscrowed: new BigNumber("0", 10),
           tradeGroupId: "TRADE_GROUP_ID",
+          orphaned: 0,
         }]);
       },
       onRemoved: (err, records) => {

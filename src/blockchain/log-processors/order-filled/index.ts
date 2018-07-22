@@ -22,7 +22,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
   const filler: Address = log.filler;
   db.first("marketId", "outcome").from("tokens").where({ contractAddress: shareToken }).asCallback((err: Error|null, tokensRow?: Partial<TokensRow>): void => {
     if (err) return callback(err);
-    if (!tokensRow) return callback(new Error("market and outcome not found"));
+    if (!tokensRow) return callback(new Error(`market and outcome not found for shareToken: ${shareToken} (${log.transactionHash})`));
     const marketId = tokensRow.marketId!;
     const outcome = tokensRow.outcome!;
     db.first("minPrice", "maxPrice", "numTicks", "category").from("markets").where({ marketId }).asCallback((err: Error|null, marketsRow?: Partial<MarketsRow<BigNumber>>): void => {
@@ -36,7 +36,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
       const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
       db.first("orderCreator", "fullPrecisionPrice", "orderType").from("orders").where({ orderId }).asCallback((err: Error|null, ordersRow?: Partial<OrdersRow<BigNumber>>): void => {
         if (err) return callback(err);
-        if (!ordersRow) return callback(new Error("order not found"));
+        if (!ordersRow) return callback(new Error(`order not found, orderId: ${orderId} (${log.transactionHash})`));
         const orderCreator = ordersRow.orderCreator!;
         const price = ordersRow.fullPrecisionPrice!;
         const orderType = ordersRow.orderType!;
@@ -86,7 +86,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
   const blockNumber: number = log.blockNumber;
   db.first("tokens.marketId", "tokens.outcome", "markets.numTicks", "markets.category", "markets.minPrice", "markets.maxPrice").from("tokens").join("markets", "tokens.marketId", "markets.marketId").where("tokens.contractAddress", shareToken).asCallback((err: Error|null, tokensRow?: Partial<TokensRowWithNumTicksAndCategory>): void => {
     if (err) return callback(err);
-    if (!tokensRow) return callback(new Error("market and outcome not found"));
+    if (!tokensRow) return callback(new Error(`market and outcome not found for ShareToken: ${shareToken} (${log.transactionHash})`));
     const marketId = tokensRow.marketId!;
     const outcome = tokensRow.outcome!;
     const numTicks = tokensRow.numTicks!;
@@ -96,7 +96,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
     const orderId = log.orderId;
     db.first("orderCreator", "fullPrecisionPrice", "orderType").from("orders").where({ orderId }).asCallback((err: Error|null, ordersRow?: Partial<OrdersRow<BigNumber>>): void => {
       if (err) return callback(err);
-      if (!ordersRow) return callback(new Error("order not found"));
+      if (!ordersRow) return callback(new Error(`order not found, orderId: ${orderId} (${log.transactionHash}`));
       const orderCreator = ordersRow.orderCreator!;
       const price = ordersRow.fullPrecisionPrice!;
       const orderType = ordersRow.orderType!;

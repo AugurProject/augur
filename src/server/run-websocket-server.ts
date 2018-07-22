@@ -19,12 +19,20 @@ import { EventEmitter } from "events";
 import { ControlMessageType } from "../constants";
 import { logger } from "../utils/logger";
 
-function safeSend( websocket: WebSocket, payload: string) {
-  if (websocket.readyState !== WebSocket.OPEN ) {
+function isSafe(websocket: WebSocket) {
+  if (websocket.readyState !== WebSocket.OPEN) {
     logger.warn("Client disconnected during request, ignoring response");
-    return;
+    return false;
   }
-  websocket.send(payload);
+  return true;
+}
+
+function safeSend(websocket: WebSocket, payload: string) {
+  if (isSafe(websocket)) websocket.send(payload);
+}
+
+function safePing(websocket: WebSocket) {
+  if (isSafe(websocket)) websocket.ping();
 }
 
 export function runWebsocketServer(db: Knex, app: express.Application, augur: Augur, webSocketConfigs: WebSocketConfigs, controlEmitter: EventEmitter = new EventEmitter()): ServersData {
@@ -55,7 +63,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
       const subscriptions = new Subscriptions(augurEmitter);
-      const pingInterval = setInterval(() => websocket.ping(), webSocketConfigs.pingMs || 12000);
+      const pingInterval = setInterval(() => safePing(websocket), webSocketConfigs.pingMs || 12000);
 
       websocket.on("message", (data: WebSocket.Data): void => {
         let message: any;

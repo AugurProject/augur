@@ -41,7 +41,18 @@ describe("blockchain/log-processors/tokens-burned", () => {
         token: "TOKEN_ADDRESS",
         amount: new BigNumber("9000", 10),
       },
-      augur: {},
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              LegacyReputationToken: "OTHER_ADDRESS",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {

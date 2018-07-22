@@ -8,7 +8,7 @@ import { augurEmitter } from "../../events";
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("universes").first("forked").where({ universe: log.universe }).asCallback((err, universeRow?: { forked: boolean }) => {
     if (err) return callback(err);
-    if (universeRow == null) return callback(new Error("No universe in initial report"));
+    if (universeRow == null) return callback(new Error(`No universe in initial report. Universe: ${log.universe}`));
     const marketState = universeRow.forked ? ReportingState.AWAITING_FORK_MIGRATION : augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW;
     updateMarketState(db, log.market, log.blockNumber, marketState, (err: Error|null): void => {
       if (err) return callback(err);

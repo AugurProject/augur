@@ -41,7 +41,18 @@ describe("blockchain/log-processors/tokens-minted", () => {
         token: "TOKEN_ADDRESS",
         amount: new BigNumber("10", 10),
       },
-      augur: {},
+      augur: {
+        contracts: {
+          addresses: {
+            974: {
+              LegacyReputationToken: "OTHER_ADDRESS",
+            },
+          },
+        },
+        rpc: {
+          getNetworkID: () => 974,
+        },
+      },
     },
     assertions: {
       onAdded: (err, records) => {

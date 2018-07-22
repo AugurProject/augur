@@ -187,6 +187,8 @@ export const logProcessors: LogProcessors = {
       remove: processMintLogRemoval,
     },
     FundedAccount: passThroughLog,
+    Pause: passThroughLog,
+    Unpause: passThroughLog,
   },
   Cash: {
     Transfer: {

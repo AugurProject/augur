@@ -141,7 +141,7 @@ export function updateDisputeRound(db: Knex, marketId: Address, callback: ErrorC
 export function refreshMarketMailboxEthBalance(db: Knex, augur: Augur, marketId: Address, callback: ErrorCallback) {
   db("markets").first("marketCreatorMailbox").where({ marketId }).asCallback((err, marketCreatorMailboxRow?: {marketCreatorMailbox: Address}) => {
     if (err) return callback(err);
-    if (!marketCreatorMailboxRow) return callback(new Error("Could not get market creator mailbox"));
+    if (!marketCreatorMailboxRow) return callback(new Error(`Could not get market creator mailbox for market: ${marketId}`));
     augur.rpc.eth.getBalance([marketCreatorMailboxRow.marketCreatorMailbox, "latest"], (err: Error|null, mailboxBalanceResponse: string): void => {
       if (err) return callback(err);
       const mailboxBalance = new BigNumber(mailboxBalanceResponse, 16);
