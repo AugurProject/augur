@@ -8,7 +8,6 @@ const { processTokensTransferredLog, processTokensTransferredLogRemoval } = requ
 describe("blockchain/log-processors/tokens-transferred", () => {
   const test = (t) => {
     const getState = (db, params, callback) => db("transfers").where({ transactionHash: params.log.transactionHash, logIndex: params.log.logIndex }).asCallback(callback);
-    const getPositionsState = (db, params, callback) => db("positions").where({ account: params.log.from, marketId: params.log.market }).asCallback(callback);
     const getTokenBalances = (db, params, callback) => db("balances").where({ token: params.log.token }).asCallback(callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -18,19 +17,16 @@ describe("blockchain/log-processors/tokens-transferred", () => {
             assert.ifError(err);
             getState(trx, t.params, (err, records) => {
               t.assertions.onAdded(err, records);
-              getPositionsState(trx, t.params, (err, positions) => {
-                t.assertions.onUpdatedPositions(err, positions);
-                getTokenBalances(trx, t.params, (err, balances) => {
-                  t.assertions.onInitialBalances(err, balances);
-                  processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                    assert.ifError(err);
-                    getState(trx, t.params, (err, records) => {
-                      t.assertions.onRemoved(err, records);
-                      getTokenBalances(trx, t.params, (err, balances) => {
-                        t.assertions.onRemovedBalances(err, balances);
-                        db.destroy();
-                        done();
-                      });
+              getTokenBalances(trx, t.params, (err, balances) => {
+                t.assertions.onInitialBalances(err, balances);
+                processTokensTransferredLogRemoval(trx, t.params.augur, t.params.log, (err) => {
+                  assert.ifError(err);
+                  getState(trx, t.params, (err, records) => {
+                    t.assertions.onRemoved(err, records);
+                    getTokenBalances(trx, t.params, (err, balances) => {
+                      t.assertions.onRemovedBalances(err, balances);
+                      db.destroy();
+                      done();
                     });
                   });
                 });
@@ -82,8 +78,6 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       onRemoved: (err, records) => {
         assert.ifError(err);
         assert.deepEqual(records, []);
-      },
-      onUpdatedPositions: (err, records) => {
       },
       onInitialBalances: (err, balances) => {
         assert.ifError(err);
@@ -153,8 +147,6 @@ describe("blockchain/log-processors/tokens-transferred", () => {
         assert.ifError(err);
         assert.deepEqual(records, []);
       },
-      onUpdatedPositions: (err, records) => {
-      },
       onInitialBalances: (err, balances) => {
         assert.ifError(err);
         assert.deepEqual(balances, []);
@@ -213,11 +205,6 @@ describe("blockchain/log-processors/tokens-transferred", () => {
               queued: "0",
             };
           },
-          getPositionInMarket: (p, callback) => {
-            assert.strictEqual(p.market, "0x0000000000000000000000000000000000000002");
-            assert.oneOf(p.address, ["FROM_ADDRESS", "TO_ADDRESS"]);
-            callback(null, ["2", "0", "0", "0", "0", "0", "0", "0"]);
-          },
           normalizePrice: p => p.price,
         },
         utils: {
@@ -261,99 +248,6 @@ describe("blockchain/log-processors/tokens-transferred", () => {
       },
       onRemovedBalances: (err, balances) => {
         assert.ifError(err);
-      },
-      onUpdatedPositions: (err, positions) => {
-        assert.ifError(err);
-        assert.lengthOf(positions, 8);
-        assert.deepEqual(positions, [{
-          positionId: positions[0].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 0,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[1].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 1,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[2].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 2,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[3].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 3,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[4].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 4,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[5].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 5,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[6].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 6,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: positions[7].positionId,
-          account: "FROM_ADDRESS",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 7,
-          numShares: new BigNumber("0", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }]);
       },
     },
   });

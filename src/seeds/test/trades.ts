@@ -5,6 +5,25 @@ exports.seed = async (knex: Knex): Promise<any> => {
   return knex("trades").del().then(async (): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
+      orderId: "0x1200000000000000000000000000000000000000000000000000000000000000",
+      marketId: "0x1000000000000000000000000000000000000001",
+      outcome: 0,
+      shareToken: "0x0100000000000000000000000000000000000000",
+      orderType: "sell",
+      creator: "0x000000000000000000000000000000000d00db0b",
+      filler: "0x000000000000000000000000000000000b0bd00d",
+      blockNumber: 1400051,
+      transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000D00",
+      logIndex: 0,
+      numCreatorTokens: "0",
+      numCreatorShares: "0.2",
+      numFillerTokens: "1.1",
+      numFillerShares: "0",
+      price: "5.5",
+      amount: "0.2",
+      marketCreatorFees: "0",
+      reporterFees: "0",
+    }, {
       orderId: "0x1100000000000000000000000000000000000000000000000000000000000000",
       marketId: "0x0000000000000000000000000000000000000001",
       outcome: 0,
