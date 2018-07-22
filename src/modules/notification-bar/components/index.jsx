@@ -3,7 +3,7 @@ import Styles from 'modules/notification-bar/components/notification-bar'
 import { CloseWithCircle } from 'src/modules/common/components/icons'
 import PropTypes from 'prop-types'
 
-export const NotificationBar = ({ actionFn, notifications }) => notifications.map(notification => (
+export const NotificationBar = ({ actionFn, dismissFn, notifications }) => notifications.map(notification => (
   <div key={notification.orderId} className={Styles.notificationBar}>
     <div className={Styles.notificationBar_textContainer}>
       <p className={Styles.notificationBar_text}>
@@ -13,7 +13,7 @@ export const NotificationBar = ({ actionFn, notifications }) => notifications.ma
     <button className={Styles.notificationBar_button} onClick={() => actionFn(notification)}>
       SIGN TRANSACTION
     </button>
-    <button className={Styles.notificationBar_dismiss}>
+    <button className={Styles.notificationBar_dismiss} onClick={() => dismissFn(notification)}>
       Dismiss
       <div className={Styles.notificationBar_dismissIcon}>
         <CloseWithCircle />

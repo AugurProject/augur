@@ -1,14 +1,12 @@
-import {
-  CLOSE_DIALOG_CLOSING,
-  CLOSE_DIALOG_FAILED,
-  CLOSE_DIALOG_PENDING,
-} from 'src/modules/market/constants/close-dialog-status'
 import { augur } from 'services/augurjs'
 import logError from 'src/utils/log-error'
 import { addNotification, updateNotification } from 'src/modules/notifications/actions'
 
 export const ADD_ORPHANED_ORDER = 'ADD_ORPHANED_ORDER'
 export const REMOVE_ORPHANED_ORDER = 'REMOVE_ORPHANED_ORDER'
+
+export const DISMISS_ORPHANED_ORDER = 'DISMISS_ORPHANED_ORDER'
+
 
 export const addOrphanedOrder = order => ({
   type: ADD_ORPHANED_ORDER,
@@ -17,6 +15,11 @@ export const addOrphanedOrder = order => ({
 
 export const removeOrphanedOrder = orderId => ({
   type: REMOVE_ORPHANED_ORDER,
+  data: orderId,
+})
+
+export const dismissOrphanedOrder = ({ orderId }) => ({
+  type: DISMISS_ORPHANED_ORDER,
   data: orderId,
 })
 

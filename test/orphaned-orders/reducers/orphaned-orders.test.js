@@ -1,5 +1,9 @@
 import OrphanedOrdersReducer from 'modules/orphaned-orders/reducers/orphaned-orders'
-import { addOrphanedOrder, removeOrphanedOrder } from 'src/modules/orphaned-orders/actions'
+import {
+  addOrphanedOrder,
+  dismissOrphanedOrder,
+  removeOrphanedOrder,
+} from 'src/modules/orphaned-orders/actions'
 import { RESET_STATE } from 'src/modules/app/actions/reset-state'
 
 // I'm back door testing action creators here.
@@ -14,12 +18,11 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
   })
 
   describe('ADD_ORPHANED_ORDER', () => {
-    it('should push the data payload onto the state', () => {
-
+    it('should push the data payload onto the state with an added dismissed property', () => {
       const action = addOrphanedOrder({ orderId: '12345' })
       const actual = OrphanedOrdersReducer([], action)
-
       assert.deepEqual(actual, [{
+        dismissed: false,
         orderId: '12345',
       }])
     })
@@ -28,10 +31,32 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
       // I'm back door testing action creators here.
       const action = addOrphanedOrder({ orderId: '12345' })
       const actual = OrphanedOrdersReducer([{
+        dismissed: false,
         orderId: '12345',
       }], action)
 
       assert.deepEqual(actual, [{
+        dismissed: false,
+        orderId: '12345',
+      }])
+    })
+  })
+
+  describe('DISMISS_ORPHANED_ORDER', () => {
+    it('should set dismissed propert to true', () => {
+      const actual = OrphanedOrdersReducer([{
+        dismissed: false,
+        orderId: '54321',
+      }, {
+        dismissed: false,
+        orderId: '12345',
+      }], dismissOrphanedOrder({ orderId: '12345' }))
+
+      assert.deepEqual(actual, [{
+        dismissed: false,
+        orderId: '54321',
+      }, {
+        dismissed: true,
         orderId: '12345',
       }])
     })
@@ -41,6 +66,7 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
     it('should filter out anything with a matching orderId', () => {
       const action = removeOrphanedOrder('12345')
       const actual = OrphanedOrdersReducer([{
+        dismissed: false,
         orderId: '12345',
       }], action)
 
@@ -51,6 +77,7 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
   describe('RESET_STATE', () => {
     it('should return to the default state', () => {
       const actual = OrphanedOrdersReducer([{
+        dismissed: false,
         orderId: '12345',
       }], {
         type: RESET_STATE,
