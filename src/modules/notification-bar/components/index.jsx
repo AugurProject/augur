@@ -1,22 +1,27 @@
 import React from 'react'
 import Styles from 'modules/notification-bar/components/notification-bar'
 import { CloseWithCircle } from 'src/modules/common/components/icons'
+import PropTypes from 'prop-types'
 
-export const NotificationBar = () => (
-  <div className={Styles.notificationBar}>
+export const NotificationBar = ({ actionFn, notifications }) => notifications.map(notification => (
+  <div key={notification.orderId} className={Styles.notificationBar}>
     <div className={Styles.notificationBar_textContainer}>
       <p className={Styles.notificationBar_text}>
-        {'blashdjhhajkdhsjkdhshj dshjkshdsdd dsdhsdd dhdhhd sgsgsg. ddsdsjdhsd'}
+        {notification.orderId}
       </p>
     </div>
-    <div className={Styles.notificationBar_button}>
-        SIGN TRANSACTION
-    </div>
-    <div className={Styles.notificationBar_dismiss}>
+    <button className={Styles.notificationBar_button} onClick={() => actionFn(notification)}>
+      SIGN TRANSACTION
+    </button>
+    <button className={Styles.notificationBar_dismiss}>
       Dismiss
       <div className={Styles.notificationBar_dismissIcon}>
         <CloseWithCircle />
       </div>
-    </div>
-  </div>
-)
+    </button>
+  </div>))
+
+NotificationBar.propTypes = {
+  cancelOrder: PropTypes.func,
+  notifications: PropTypes.arrayOf(PropTypes.object),
+}
