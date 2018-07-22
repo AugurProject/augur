@@ -143,8 +143,7 @@ export default class AppView extends Component {
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: REPORTING_REPORT_MARKETS,
-        requireLogin: true,
+        route: REPORTING_DISPUTE_MARKETS,
       },
       {
         title: 'Account',
