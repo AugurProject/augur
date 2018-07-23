@@ -89,7 +89,7 @@ export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockD
   const blockHash = block.hash;
   blockHeadTimestamp = parseInt(block.timestamp, 16);
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
-  logger.info("new block:", `${blockNumber}`, `${timestamp}`);
+  logger.info("new block:", `${blockNumber}, ${timestamp} (${(new Date(timestamp * 1000)).toString()})`);
   db.transaction((trx: Knex.Transaction): void => {
     insertBlockRow(trx, blockNumber, blockHash, timestamp, (err: Error|null) => {
       if (err) {
