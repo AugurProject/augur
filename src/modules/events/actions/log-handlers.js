@@ -65,6 +65,7 @@ export const handleTokensMintedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount
   const isStoredTransaction = log.target === address
   if (isStoredTransaction) {
+    dispatch(loadReportingWindowBounds())
     dispatch(defaultLogHandler(log))
   }
 }
