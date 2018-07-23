@@ -195,13 +195,27 @@ describe("Create market page", () => {
     await expect(page).toFill("#cm__input--tag2", "Test");
     await expect(page).toClick("button", { text: "Next: Outcome" });
 
-    // TODO: Verify there are 8 inputs under the "Potential Outcomes" label and the first 2 are required
-    // TODO: Verify that Outcome names must be unique
-    // TODO: Verify that Additional Information field is optional
-    // TODO: Confirm that when a with two or more outcomes is created, those outcomes are properly listed as the market's outcomes
-
     // Fill out Outcome page
     await expect(page).toClick("button", { text: "Multiple Choice" });
+
+    // Verify there are 8 inputs under the "Potential Outcomes" label and the first 2 are required
+    await page.waitForSelector("[data-testid='categoricalOutcome-0']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-1']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-2']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-3']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-4']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-5']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-6']", { visible: true });
+    await page.waitForSelector("[data-testid='categoricalOutcome-7']", { visible: true });
+
+    // Verify that Outcome names must be unique
+    await expect(page).toFill("[data-testid='categoricalOutcome-0']", "Outcome 1");
+    await expect(page).toFill("[data-testid='categoricalOutcome-1']", "Outcome 1");
+
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await page.$eval("[data-testid='categoricalOutcome-1']", input => input.value = "");
+
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(1) input", "Outcome 1");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(2) input", "Outcome 2");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(3) input", "Outcome 3");
@@ -210,6 +224,11 @@ describe("Create market page", () => {
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(6) input", "Outcome 6");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(7) input", "Outcome 7");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(8) input", "Outcome 8");
+
+    // Verify that the Additional Details field is optional
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(false);
+
     await expect(page).toFill("#cm__input--details", "Here is some additional information.");
     await expect(page).toClick("button", { text: "Next: Resolution" });
 
@@ -271,7 +290,7 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Next: Review" });
 
     // Submit new market
-    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     while (isDisabled) {
       isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     }
@@ -287,6 +306,16 @@ describe("Create market page", () => {
 
     // Verify settlement fee is correct
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
+
+    // Confirm that when the market is created, all outcomes are properly listed as the market's outcomes
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(1) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(2) li:nth-child(1)", { text: "Outcome 2", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(3) li:nth-child(1)", { text: "Outcome 3", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(4) li:nth-child(1)", { text: "Outcome 4", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(5) li:nth-child(1)", { text: "Outcome 5", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(6) li:nth-child(1)", { text: "Outcome 6", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(7) li:nth-child(1)", { text: "Outcome 7", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(8) li:nth-child(1)", { text: "Outcome 8", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
     await verifyLiquidity(orders);
