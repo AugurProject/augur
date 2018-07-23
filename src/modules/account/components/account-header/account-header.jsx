@@ -6,7 +6,6 @@ import Styles from 'modules/account/components/account-header/account-header.sty
 
 const AccountHeader = (p) => {
   // assign defaults incase we have nulls for value
-  console.log(p.stats[0])
   const ethValue = p.stats[0].totalRealEth.value.formatted
   const repValue = p.stats[0].totalRep.value.formatted
 

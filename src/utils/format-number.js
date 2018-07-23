@@ -278,7 +278,6 @@ export function formatNumber(num, opts = {
   } else {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
     const roundToZeroThreshold = constants.PRECISION.zero
-    console.log(useSignificantFiguresThreshold.toString())
     o.value = value.toNumber()
     if (value.abs().lt(roundToZeroThreshold)) {
       o.formattedValue = '0'
@@ -287,7 +286,6 @@ export function formatNumber(num, opts = {
         o.formattedValue = '0'
       } else {
         o.formattedValue = value.toPrecision(decimals, roundingMode)
-        console.log('sig fig')
         displaySigFig = true
       }
     } else {
