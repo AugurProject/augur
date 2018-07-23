@@ -16,13 +16,13 @@ const TopBar = props => (
           <div className={Styles.TopBar__stat}>
             <span className={Styles['TopBar__stat-label']}>ETH</span>
             <span className={Styles['TopBar__stat-value']} id="core-bar-eth">
-              {props.stats[0].totalRealEth.value.rounded}
+              {props.stats[0].totalRealEth.value.formatted}
             </span>
           </div>
           <div className={Styles.TopBar__stat}>
             <span className={Styles['TopBar__stat-label']}>REP</span>
             <span className={Styles['TopBar__stat-value']} id="core-bar-rep">
-              {props.stats[0].totalRep.value.rounded}
+              {props.stats[0].totalRep.value.formatted}
             </span>
           </div>
         </div>

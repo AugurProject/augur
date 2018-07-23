@@ -267,6 +267,7 @@ export function formatNumber(num, opts = {
   } else {
     roundingMode = BigNumber.ROUND_HALF_EVEN
   }
+  let displaySigFig = false
   if (isNaN(parseFloat(num))) {
     o.value = 0
     o.formattedValue = 0
@@ -277,6 +278,7 @@ export function formatNumber(num, opts = {
   } else {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
     const roundToZeroThreshold = constants.PRECISION.zero
+    console.log(useSignificantFiguresThreshold.toString())
     o.value = value.toNumber()
     if (value.abs().lt(roundToZeroThreshold)) {
       o.formattedValue = '0'
@@ -285,15 +287,23 @@ export function formatNumber(num, opts = {
         o.formattedValue = '0'
       } else {
         o.formattedValue = value.toPrecision(decimals, roundingMode)
+        console.log('sig fig')
+        displaySigFig = true
       }
     } else {
       o.formattedValue = value.times(decimalsValue).integerValue(roundingMode)
         .dividedBy(decimalsValue)
         .toFixed(decimals)
     }
-    o.formatted = (bigUnitPostfix)
-      ? addBigUnitPostfix(value, o.formattedValue)
-      : addCommas(o.formattedValue)
+
+    if (bigUnitPostfix) {
+      o.formatted = addBigUnitPostfix(value, o.formattedValue)
+    } else if (displaySigFig) {
+      o.formatted = constants.PRECISION.zero.toFixed(decimalsRounded)
+    } else {
+      o.formatted = addCommas(o.formattedValue)
+    }
+
     o.fullPrecision = value.toFixed()
     o.roundedValue = value.times(decimalsRoundedValue).integerValue(roundingMode).dividedBy(decimalsRoundedValue)
     o.rounded = (bigUnitPostfix)
