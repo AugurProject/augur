@@ -101,10 +101,6 @@ class ReportingReporting extends React.Component {
     loadReporting()
   }
 
-  componentWillUpdate(nextProps, nextState) {
-
-  }
-
   setDrSegment(lower, upperBound, boundedLength) {
     this.keyedSetSegment(lower, upperBound, boundedLength, 'dr')
   }
