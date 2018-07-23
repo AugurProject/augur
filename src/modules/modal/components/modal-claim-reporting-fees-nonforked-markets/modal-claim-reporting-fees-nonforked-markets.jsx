@@ -99,8 +99,8 @@ export default class ModalClaimReportingFeesNonforkedMarkets extends Component {
         <div className={Styles.ModalClaimReportingFeesNonforkedMarkets__details}>
           <ul className={Styles.ModalClaimReportingFeesNonforkedMarkets__info}>
             <li><span>Recipient</span><span>{recipient}</span></li>
-            <li><span>Rep</span><span>{unclaimedRep.formatted}</span></li>
-            <li><span>Eth</span><span>{unclaimedEth.formatted}</span></li>
+            <li><span>Rep</span><span>{unclaimedRep.formattedValue}</span></li>
+            <li><span>Eth</span><span>{unclaimedEth.formattedValue}</span></li>
             <li><span>Gas</span><span>{s.ClaimReportingFeesNonforkedMarketsGasEstimate}</span></li>
           </ul>
         </div>
