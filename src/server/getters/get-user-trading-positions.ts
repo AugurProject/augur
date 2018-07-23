@@ -29,7 +29,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
   });
 
-  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
+  const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket)).where({ owner: account });
   const marketDetails = await db.select("marketId", "numTicks", "maxPrice", "minPrice").from("markets").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
 
   const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
@@ -37,28 +37,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
 
   const positionsRows = _.flatMap(allTimeEarningsPerMarket, (earnings: Array<ProfitLoss|null>, marketId: Address) => {
     const byOutcomes = earnings.map((profitLoss: ProfitLoss|null, outcome: number) => {
-      if (profitLoss) {
-        let numShares = "0";
-
-        const marketDetailsRow  = detailsByMarket[marketId];
-        if (!marketDetailsRow) throw new Error(`Data integrity error: Market ${marketId} not found while processing getUserTradingPositions`);
-
-        const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
-        if (marketBalancesRow) {
-          const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
-          numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
-        }
-
-        return {
-          marketId,
-          outcome,
-          numShares,
-          realizedProfitLoss: profitLoss.realized,
-          unrealizedProfitLoss: profitLoss.unrealized,
-          numSharesAdjustedForUserIntention: profitLoss.position,
-          averagePrice: profitLoss.meanOpenPrice,
-        };
-      } else {
+      if (!profitLoss) {
         return {
           marketId,
           outcome,
@@ -69,6 +48,25 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
           averagePrice: "0",
         };
       }
+
+      const marketDetailsRow  = detailsByMarket[marketId];
+      if (!marketDetailsRow) throw new Error(`Data integrity error: Market ${marketId} not found while processing getUserTradingPositions`);
+
+      const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
+      if (!marketBalancesRow) throw new Error(`Data integrity error: Market ${marketId} has no balances for account ${account}`);
+
+      const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
+      const numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
+
+      return {
+        marketId,
+        outcome,
+        numShares,
+        realizedProfitLoss: profitLoss.realized,
+        unrealizedProfitLoss: profitLoss.unrealized,
+        numSharesAdjustedForUserIntention: profitLoss.position,
+        averagePrice: profitLoss.meanOpenPrice,
+      };
     });
 
     if (typeof outcome === "number") return [byOutcomes[outcome]];
