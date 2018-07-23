@@ -35,7 +35,7 @@ function sub(n1: string, n2: string) {
 }
 
 export type ProfitLoss = Record<"position" | "meanOpenPrice" | "realized" | "unrealized" | "total", string>;
-export interface PLBucket {
+export interface EarningsAtTime {
   timestamp: number;
   lastPrice?: string;
   profitLoss?: ProfitLoss | null;
@@ -45,15 +45,23 @@ export type TradeRow = TradingHistoryRow & { type: string; maker: boolean } | Pr
 export type PayoutBlockAndPricing= Payout<BigNumber> & BlocksRow & MarketPricing<BigNumber>;
 
 export interface ProfitLossResults {
-  aggregate: Array<PLBucket>;
+  aggregate: Array<EarningsAtTime>;
   all: any;
 }
 
-export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>, buckets: Array<PLBucket>): Array<PLBucket> {
+// For each group, gather the last trade prices for each bucket, and
+// calculate each bucket's profit and loss
+export interface MarketOutcomeEarnings {
+  marketId: string;
+  outcome: number;
+  earnings: Array<EarningsAtTime>;
+}
+
+export function calculateEarningsPerTimePeriod(augur: Augur, trades: Array<TradeRow>, buckets: Array<EarningsAtTime>): Array<EarningsAtTime> {
   if (buckets == null) throw new Error("Buckets are required");
   if (typeof buckets.map === "undefined") throw new Error(`buckets must be an array, got ${buckets}`);
 
-  const [basisPL, ...windowPLs] = buckets.map((bucket: PLBucket) => {
+  const [basisPL, ...windowPLs] = buckets.map((bucket: EarningsAtTime) => {
     if (bucket.lastPrice == null) return bucket;
 
     const bucketTrades = _.filter(trades, (t: TradeRow) => t.timestamp < bucket.timestamp);
@@ -76,7 +84,7 @@ export function calculateBucketProfitLoss(augur: Augur, trades: Array<TradeRow>,
   return windowPLs;
 }
 
-export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<PLBucket> {
+export function bucketRangeByInterval(startTime: number, endTime: number, periodInterval: number | null): Array<EarningsAtTime> {
   if (startTime < 0) throw new Error("startTime must be a valid unix timestamp, greater than 0");
   if (endTime < 0) throw new Error("endTime must be a valid unix timestamp, greater than 0");
   if (endTime < startTime) throw new Error("endTime must be greater than or equal startTime");
@@ -84,7 +92,7 @@ export function bucketRangeByInterval(startTime: number, endTime: number, period
 
   const interval = periodInterval == null ? Math.ceil((endTime - startTime) / DEFAULT_NUMBER_OF_BUCKETS) : periodInterval;
 
-  const buckets: Array<PLBucket> = [];
+  const buckets: Array<EarningsAtTime> = [];
   for (let bucketEndTime = startTime; bucketEndTime < endTime; bucketEndTime += interval) {
     buckets.push({ timestamp: bucketEndTime, profitLoss: null });
   }
@@ -117,11 +125,11 @@ async function getFinalizedOutcomePrice(db: Knex, marketId: Address, outcome: nu
   return { timestamp: payout.timestamp, price };
 }
 
-async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number | null, buckets: Array<PLBucket>): Promise<Array<PLBucket>> {
+async function getBucketLastTradePrices(db: Knex, universe: Address, marketId: Address, outcome: number, endTime: number | null, buckets: Array<EarningsAtTime>): Promise<Array<EarningsAtTime>> {
   const outcomeTrades: Array<Partial<TradingHistoryRow>> = await queryTradingHistory(db, universe, null, marketId, outcome, null, null, endTime, "trades.blockNumber", false, null, null, true);
   const outcomeFinalized = await getFinalizedOutcomePrice(db, marketId, outcome);
 
-  return buckets.map((bucket: PLBucket) => {
+  return buckets.map((bucket: EarningsAtTime) => {
     // This market has been finalized and this bucket is after the time which
     // that happened. We will fix the price for this outcome at the value
     // defined in the `payouts` table. This will effectively adjust the unrealized
@@ -149,7 +157,7 @@ function groupOutcomesProfitLossByBucket(results: any) {
   return _.zip(..._.values(results));
 }
 
-function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
+function sumProfitLossResults(left: EarningsAtTime, right: EarningsAtTime): EarningsAtTime {
   if (left == null) return right;
   if (left.profitLoss == null) return right;
   if (right.profitLoss == null) return left;
@@ -181,10 +189,10 @@ function sumProfitLossResults(left: PLBucket, right: PLBucket): PLBucket {
   };
 }
 
-async function getPL(db: Knex, augur: Augur, universe: Address, account: Address, startTime: number, endTime: number|null, periodInterval: number | null): Promise<ProfitLossResults> {
+export async function getOutcomesProfitLoss(db: Knex, augur: Augur, nowTimestamp: number, universe: Address, account: Address, marketId: Address|null, startTime: number|null, endTime: number|null, periodInterval: number | null): Promise<Array<MarketOutcomeEarnings> | null> {
   // get all the trades for this user from the beginning of time, until
   // `endTime`
-  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, null, null, null, null, endTime, "trades.blockNumber", false, null, null, true);
+  const tradeHistory: Array<TradingHistoryRow> = await queryTradingHistory(db, universe, account, marketId, null, null, null, endTime, "trades.blockNumber", false, null, null, true);
   const marketIds = _.uniq(_.map(tradeHistory, "marketId"));
   const claimHistory: Array<ProceedTradesRow<BigNumber>> = await getProceedTradeRows(db, augur, marketIds, account, endTime);
   const trades: Array<TradeRow> = tradeHistory.map((trade: TradingHistoryRow): TradeRow => {
@@ -199,44 +207,40 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
     return a.logIndex - b.logIndex;
   });
 
-  const now = Date.now();
-  if (trades.length === 0) return { aggregate: bucketRangeByInterval(startTime, endTime || now, periodInterval).slice(1), all: {} };
+  if (trades.length === 0) return null;
 
-  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime || Math.max(trades[trades.length - 1].timestamp, now) + 1, periodInterval);
+  const buckets = bucketRangeByInterval(startTime || trades[0].timestamp, endTime || Math.max(trades[trades.length - 1].timestamp, nowTimestamp) + 1, periodInterval);
 
   // group these trades by their market & outcome, so we can process each
   // separately
   const tradesByOutcome = _.groupBy(trades, (trade) => _.values(_.pick(trade, ["marketId", "outcome"])));
 
-  // For each group, gather the last trade prices for each bucket, and
-  // calculate each bucket's profit and loss
-  interface GroupResults {
-    marketId: string;
-    outcome: number;
-    profitLoss: Array<PLBucket>;
-  }
   const results = await Promise.all(
-    _.map(tradesByOutcome, async (trades: Array<TradeRow>): Promise<GroupResults> => {
+    _.map(tradesByOutcome, async (trades: Array<TradeRow>): Promise<MarketOutcomeEarnings> => {
       const { marketId, outcome } = trades[0];
-      const bucketsWithLastPrice: Array<PLBucket> = await getBucketLastTradePrices(db, universe, marketId, outcome, endTime, buckets);
-      return {marketId, outcome, profitLoss: calculateBucketProfitLoss(augur, trades, bucketsWithLastPrice)};
+      const bucketsWithLastPrice: Array<EarningsAtTime> = await getBucketLastTradePrices(db, universe, marketId, outcome, endTime, buckets);
+      return {marketId, outcome, earnings: calculateEarningsPerTimePeriod(augur, trades, bucketsWithLastPrice)};
     }),
   );
 
+  return results;
+}
+
+export function formatProfitLossResults(results: Array<MarketOutcomeEarnings>): ProfitLossResults {
   // We have results! Drop the market & outcome groups, and then re-group by
-  // bucket timestamp, and aggregate all of the PLBuckets by bucket
-  const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.profitLoss)).map((bucket: Array<PLBucket>) => {
+  // bucket timestamp, and aggregate all of the EarningsAtTimes by bucket
+  const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.earnings)).map((bucket: Array<EarningsAtTime>) => {
     return bucket.reduce(sumProfitLossResults, { timestamp: 0, profitLoss: null });
   });
 
   const all = _
     .chain(results)
     .groupBy((result) => result.marketId)
-    .mapValues((results: Array<GroupResults>) => {
+    .mapValues((results: Array<MarketOutcomeEarnings>) => {
       const byOutcome = _
         .chain(results)
         .groupBy((result) => result.outcome)
-        .mapValues((results: Array<GroupResults>) => results.map((result) => result.profitLoss))
+        .mapValues((results: Array<MarketOutcomeEarnings>) => results.map((result) => result.earnings))
         .value();
 
       const array = [];
@@ -244,20 +248,24 @@ async function getPL(db: Knex, augur: Augur, universe: Address, account: Address
         array.push(byOutcome[i.toString()] || null);
       }
 
-      return _.dropRightWhile(_.flatten(array), (v) => v === null);
+      return _.flatten(array);
     })
     .value();
 
   return { aggregate, all};
 }
 
-export function getProfitLoss(db: Knex, augur: Augur, universe: Address|undefined, account: Address|undefined, startTime: number|null, endTime: number|null, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
-  if (typeof universe !== "string") return callback(new Error("Universe Address Required"));
-  if (typeof account !== "string") return callback(new Error("Account Address Required"));
-  try {
-    getPL(db, augur, universe.toLowerCase(), account.toLowerCase(), startTime || 0, endTime, periodInterval)
-      .then((results: ProfitLossResults) => callback(null, results));
-  } catch (e) {
-    callback(e);
-  }
+export function getProfitLoss(db: Knex, augur: Augur, universe: Address|null|undefined, account: Address|null|undefined, startTime: number|null, endTime: number|null, periodInterval: number|null, callback: GenericCallback<ProfitLossResults>) {
+  if (typeof universe !== "string" || universe === null) return callback(new Error("Universe Address Required"));
+  if (typeof account !== "string" || account === null) return callback(new Error("Account Address Required"));
+
+  const nowTimestamp = Date.now();
+  getOutcomesProfitLoss(db, augur, nowTimestamp, universe.toLowerCase(), account.toLowerCase(), null, startTime || 0, endTime, periodInterval)
+    .then((results: Array<MarketOutcomeEarnings> | null) => {
+      if (results === null) {
+        callback(null, { aggregate: bucketRangeByInterval(startTime || 0, endTime || nowTimestamp, periodInterval).slice(1), all: {} });
+      } else {
+        callback(null, formatProfitLossResults(results));
+      }
+    }).catch(callback);
 }
