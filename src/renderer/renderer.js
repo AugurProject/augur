@@ -132,7 +132,7 @@ Renderer.prototype.backToNetworkConfig = function (event) {
     document.getElementById("network_config_screen").style.display = "block";
     document.getElementById("open_app_screen").style.display = "none";
 
-    document.getElementById("go_to_open_app_screen_button").value = "Update Connection";
+    document.getElementById("go_to_open_app_screen_button").value = "Restart Connection";
     document.getElementById("cancel_switch_button").style.display = "block";
     document.getElementById("augur_ui_button").disabled = true
 }
@@ -244,6 +244,13 @@ Renderer.prototype.getNetworkConfigFormData = function () {
 Renderer.prototype.switchNetworkConfigForm = function () {
   try {
     this.selectedNetworkForm = document.getElementById("network_id_select").value;
+    if (this.connectedServer) {
+      if (this.selectedNetworkForm === this.connectedServer.network) {
+        document.getElementById("go_to_open_app_screen_button").value = "Restart Connection";
+      } else {
+        document.getElementById("go_to_open_app_screen_button").value = "Update Connection";
+      }
+    }
     const networkConfig = this.config.networks[this.selectedNetworkForm];
     this.renderNetworkConfigForm(this.selectedNetworkForm, networkConfig);
     this.clearNotice()
