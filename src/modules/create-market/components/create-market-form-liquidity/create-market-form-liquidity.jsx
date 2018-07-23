@@ -408,7 +408,7 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   formatOrderValue(orderValue) {
-    return orderValue !== '' ? createBigNumber(this.state.orderQuantity, 10).toString() : orderValue
+    return orderValue !== '' ? orderValue.toString() : orderValue
   }
 
   render() {
