@@ -101,8 +101,8 @@ function deployAugurUi()
 	export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	rm -rf augur
-	git clone git@github.com:AugurProject/augur
-	cd augur
+	git clone git@github.com:AugurProject/augur-ui
+	cd augur-ui
 	git checkout -b augur.js@$AUGUR_JS_VERSION
 	npm install
 	npm install --save-exact augur.js@$AUGUR_JS_VERSION
@@ -120,7 +120,7 @@ function deployAugurApp()
 {
 	(
 	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
-	AUGUR_UI_VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
+	AUGUR_UI_VERSION=$($GET_VERSION $TMP_DIR/augur-ui/package.json)
 	AUGUR_NODE_VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
 	rm -rf augur-app
 	git clone git@github.com:AugurProject/augur-app
