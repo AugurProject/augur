@@ -27,7 +27,7 @@ export const selectMarketsAwaitingDispute = createSelector(
         Object.keys(filteredMarkets[marketKey].disputeInfo.stakes).forEach((stakeKey) => {
           if (!filteredMarkets[marketKey].disputeInfo.stakes[stakeKey].tentativeWinning) {
             const percentStakedInOutcome = createBigNumber(filteredMarkets[marketKey].disputeInfo.stakes[stakeKey].stakeCurrent)
-              .div(createBigNumber(filteredMarkets[marketKey].disputeInfo.stakes[stakeKey].bondSizeCurrent))
+              .div(createBigNumber(filteredMarkets[marketKey].disputeInfo.stakes[stakeKey].bondSizeCurrent.toString()))
             if (percentStakedInOutcome.gt(filteredMarkets[marketKey].disputeInfo.highestPercentStaked)) {
               filteredMarkets[marketKey].disputeInfo.highestPercentStaked = percentStakedInOutcome
             }

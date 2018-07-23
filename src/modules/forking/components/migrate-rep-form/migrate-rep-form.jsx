@@ -8,8 +8,8 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import FormStyles from 'modules/common/less/form'
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
-import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
 import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
+import FormattedMigrationTotals from 'modules/forking/components/migrate-rep-form/formatted-migration-totals'
 
 export default class MigrateRepForm extends Component {
 
@@ -23,6 +23,7 @@ export default class MigrateRepForm extends Component {
     accountREP: PropTypes.string.isRequired,
     forkMigrationTotals: PropTypes.object,
     isMarketInValid: PropTypes.bool,
+    currentBlockNumber: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -32,14 +33,10 @@ export default class MigrateRepForm extends Component {
       inputRepAmount: '',
       inputSelectedOutcome: '',
       scalarInputChoosen: false,
-      formattedMigrationTotals: null,
     }
 
     this.focusTextInput = this.focusTextInput.bind(this)
-  }
-
-  componentWillMount() {
-    this.getForkMigrationTotals()
+    this.validateOutcome = this.validateOutcome.bind(this)
   }
 
   componentDidUpdate(prevProps) {
@@ -62,20 +59,6 @@ export default class MigrateRepForm extends Component {
       })
     }
 
-  }
-
-  getForkMigrationTotals() {
-    const {
-      getForkMigrationTotals,
-    } = this.props
-    getForkMigrationTotals((err, forkMigrationTotals) => {
-      if (err) return console.error(err)
-      const { reportableOutcomes } = this.props.market
-      const formattedMigrationTotals = selectMigrateTotals(reportableOutcomes, forkMigrationTotals)
-      this.setState({
-        formattedMigrationTotals,
-      })
-    })
   }
 
   checkRepAmount(repAmount, updatedValidations) {
@@ -115,9 +98,10 @@ export default class MigrateRepForm extends Component {
     })
   }
 
-  validateOutcome(validations, selectedOutcome, selectedOutcomeName, isMarketInValid) {
+  validateOutcome(selectedOutcome, selectedOutcomeName, isMarketInValid) {
     const {
       updateState,
+      validations,
     } = this.props
     const updatedValidations = { ...validations }
     updatedValidations.selectedOutcome = true
@@ -209,13 +193,14 @@ export default class MigrateRepForm extends Component {
       selectedOutcome,
       selectedOutcomeName,
       validations,
+      getForkMigrationTotals,
     } = this.props
 
     const {
-      formattedMigrationTotals,
       inputSelectedOutcome,
       inputRepAmount,
     } = this.state
+
     return (
       <ul className={classNames(Styles.MigrateRepForm__fields, FormStyles.Form__fields)}>
         <li>
@@ -224,24 +209,17 @@ export default class MigrateRepForm extends Component {
         <li>
           <ul className={FormStyles['Form__radio-buttons--per-line']}>
             <li>
-              <label>
+              <label style={{ marginBottom: '1.5rem' }}>
                 <span>Outcome</span>
               </label>
             </li>
-            { formattedMigrationTotals && formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
-              <li key={outcome.id}>
-                <button
-                  className={classNames({ [`${FormStyles.active}`]: selectedOutcome === outcome.id })}
-                  onClick={(e) => { this.validateOutcome(validations, outcome.id, outcome.name, false) }}
-                >{outcome.name === 'Indeterminate' ? 'Market is Invalid': outcome.name}
-                  <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep.formatted) || '0'} REP Migrated</span>
-                  { outcome && outcome.winner &&
-                    <span className={Styles.MigrateRepForm__winning_outcome}> WINNING UNIVERSE</span>
-                  }
-                </button>
-              </li>
-            ))
-            }
+            <FormattedMigrationTotals
+              validateOutcome={this.validateOutcome}
+              market={market}
+              getForkMigrationTotals={getForkMigrationTotals}
+              currentBlockNumber={this.props.currentBlockNumber}
+              selectedOutcome={selectedOutcome}
+            />
             { market.marketType === SCALAR &&
               <ul className={FormStyles['Form__radio-buttons--per-line-long']}>
                 <li>

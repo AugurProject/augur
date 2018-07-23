@@ -18,6 +18,7 @@ const mapStateToProps = state => ({
   marketsData: state.marketsData,
   isMobile: state.isMobile,
   accountREP: state.loginAccount.rep,
+  currentBlockNumber: state.blockchain.currentBlockNumber,
 })
 
 const mapDispatchToProps = dispatch => ({
