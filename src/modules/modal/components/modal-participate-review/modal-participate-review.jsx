@@ -26,8 +26,8 @@ const ModalParticipateReview = (p) => {
         </ul>
         <ul className={Styles.ModalParticipateReview__values}>
           <li>Participation Tokens</li>
-          <li>{cleanQuantity.formatted}</li>
-          <li>{cleanQuantity.full}</li>
+          <li>{cleanQuantity.fullPrecision}</li>
+          <li>{cleanQuantity.fullPrecision} REP</li>
           <li>{formatEther(p.gasEstimate).full}</li>
         </ul>
       </div>
