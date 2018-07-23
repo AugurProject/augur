@@ -22,8 +22,8 @@ const CreateMarketLiquidityOrders = (props) => {
   let outcomeLabel = newMarket.type === YES_NO ? 'Yes' : selectedOutcome
 
   return (
-    <div className={StylesForm['CreateMarketForm__form-outer-wrapper']}>
-      <div className={StylesForm['CreateMarketForm__form-inner-wrapper']}>
+    <div className={StylesForm['CreateMarketForm__form-inner-wrapper']}>
+      <div className={Styles.LiquidityOrders__Container}>
         <h1 className={Styles.LiquidityOrders__Header}>Initial Liquidity Orders</h1>
         { isNullState &&
           <div className={Styles.LiquidityOrders__NullState}>
@@ -33,11 +33,11 @@ const CreateMarketLiquidityOrders = (props) => {
         { !isNullState &&
           <div className={Styles.LiquidityOrders__TableWrapper}>
             <ul className={Styles.LiquidityOrders__TableHeader}>
-              <li>Order Type</li>
+              <li>Type</li>
               <li>Outcome</li>
               <li>Quantity</li>
               <li>Limit Price</li>
-              <li>EST. ETH</li>
+              <li>Cost</li>
               <li>Action</li>
             </ul>
             <div className={Styles['LiquidityOrders__table-body']}>
@@ -54,9 +54,9 @@ const CreateMarketLiquidityOrders = (props) => {
                   >
                     <li>{order.type}</li>
                     <li>{outcomeLabel}</li>
-                    <li>{`${direction}${formatShares(order.quantity).full}`}</li>
-                    <li>{formatEther(order.price).full}</li>
-                    <li>{formatEther(order.orderEstimate).full}</li>
+                    <li>{`${direction}${formatShares(order.quantity).formatted}`}</li>
+                    <li>{formatEther(order.price).formatted}</li>
+                    <li>{formatEther(order.orderEstimate).formatted}</li>
                     <li>
                       <button
                         onClick={e => removeOrderFromNewMarket({

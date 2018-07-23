@@ -294,6 +294,13 @@ export default class CreateMarketForm extends Component {
               </div>
             </div>
           </div>
+          { newMarket.currentStep === 3 &&
+            <CreateMarketLiquidityOrders
+              newMarket={newMarket}
+              removeOrderFromNewMarket={removeOrderFromNewMarket}
+              liquidityState={s.liquidityState}
+            />
+          }
           { newMarket.currentStep === 4 && s.awaitingSignature &&
             <div className={Styles['CreateMarketForm__submit-wrapper']}>
               <div className={Styles.CreateMarketForm__submitWarning}>
@@ -302,13 +309,6 @@ export default class CreateMarketForm extends Component {
             </div>
           }
         </div>
-        { newMarket.currentStep === 3 &&
-          <CreateMarketLiquidityOrders
-            newMarket={newMarket}
-            removeOrderFromNewMarket={removeOrderFromNewMarket}
-            liquidityState={s.liquidityState}
-          />
-        }
       </article>
     )
   }

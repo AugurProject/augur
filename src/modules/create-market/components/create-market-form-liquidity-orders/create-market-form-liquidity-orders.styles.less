@@ -1,10 +1,15 @@
 @import (reference) '~assets/styles/shared';
 
+.LiquidityOrders__Container {
+  max-width: 65.75rem;
+}
+
 .LiquidityOrders__Header {
   &:extend(.caps--large);
 
   color: white;
-  padding: 2rem 0;
+  margin: 1rem 0;
+  padding: 2rem 0.6rem 0;
 }
 
 .LiquidityOrders__TableHeader {
@@ -24,6 +29,10 @@
 
     &:first-child {
       padding-left: 2rem;
+      text-align: left;
+    }
+
+    &:nth-child(2) {
       text-align: left;
     }
 
@@ -59,12 +68,12 @@
   > li {
     border-top: 1px solid @color-lightest-gray;
     display: table-cell;
-    max-width: 19vw;
     overflow: hidden;
     padding: 1.125rem 0;
     text-align: right;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 8.5rem;
 
     &:first-child {
       padding-left: 1.5rem;
@@ -78,6 +87,11 @@
       }
     }
 
+    &:nth-child(2) {
+      text-align: left;
+      width: 11.5rem;
+    }
+
     &:last-of-type {
       padding-right: 2rem;
 
@@ -86,17 +100,89 @@
       }
     }
   }
-
-  .NotActive {
-    color: @color-lightgray;
-  }
 }
 
 .LiquidityOrders__TableWrapper {
   display: table;
+  margin-bottom: 2rem;
   width: 100%;
 }
 
 .LiquidityOrders__NullState {
   color: @color-lightgray;
+  margin-bottom: 2rem;
+}
+
+@media @breakpoint-mobile {
+  .LiquidityOrders__Header {
+    padding-top: 0;
+  }
+
+  .LiquidityOrders__table {
+    background-color: @color-input-background;
+    display: table-row-group;
+    font-size: @font-size-small;
+    line-height: @font-size-small;
+  }
+
+  .LiquidityOrders__TableHeader {
+    > li {
+      display: table-cell;
+      padding: 1rem 0 0.625rem;
+      text-align: right;
+
+      &:first-child {
+        padding-left: 0.75rem;
+        text-align: left;
+      }
+
+      &:last-child {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+
+  .LiquidityOrders__Order {
+    &.active,
+    &:hover {
+      background-color: @color-darkpurple;
+    }
+
+    &.positive > li:first-child {
+      border-left: 0.35rem solid @color-positive;
+    }
+
+    &.negative > li:first-child {
+      border-left: 0.35rem solid @color-negative;
+    }
+
+    > li {
+      border-top-color: @color-darkpurple;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 0;
+        text-align: center;
+      }
+
+      &:last-of-type {
+        padding-right: 0;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .LiquidityOrders__Order {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
 }
