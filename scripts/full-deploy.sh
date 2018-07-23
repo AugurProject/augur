@@ -5,7 +5,7 @@ NPM_VERSION=${NPM_VERSION:-prerelease}
 NPM_TAG=${NPM_TAG:-dev}
 PRODUCTION=${PRODUCTION:-false}
 GAS_PRICE_IN_NANOETH=${GAS_PRICE_IN_NANOETH:-20}
-BUMP_AUGUR_CORE=false
+BUMP_AUGUR_CORE=${BUMP_AUGUR_CORE:-false}
 
 NETWORKS_TO_DEPLOY=${NETWORKS_TO_DEPLOY:-"ROPSTEN RINKEBY KOVAN"}
 
@@ -116,6 +116,26 @@ function deployAugurUi()
 	)
 }
 
+function deployAugurApp()
+{
+	(
+	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
+	AUGUR_UI_VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
+	AUGUR_NODE_VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
+	rm -rf augur-app
+	git clone git@github.com:AugurProject/augur-app
+	cd augur-app
+	git checkout -b augur.js@$AUGUR_JS_VERSION
+	npm install
+	npm install --save-exact augur.js@$AUGUR_JS_VERSION
+	npm install --save-exact augur-ui@$AUGUR_UI_VERSION
+	npm install --save-exact augur-node@$AUGUR_NODE_VERSION
+	npm install
+	git commit package.json package-lock.json -m augur.js@$AUGUR_JS_VERSION
+	git push
+	)
+}
+
 # This happens within the subshell of the augur.js deploy
 function deployContracts()
 {
@@ -145,3 +165,4 @@ fi
 deployAugurJsAndUploadContracts
 deployAugurUi
 deployAugurNode
+deployAugurApp
