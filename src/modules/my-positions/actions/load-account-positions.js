@@ -22,31 +22,9 @@ export const loadAccountPositions = (options = {}, callback = logError) => (disp
         outcomeIds.forEach((outcomeId) => {
           marketPositionData[marketId][outcomeId] = positions.filter(position => position.marketId === marketId && position.outcome === outcomeId)
         })
-        augur.augurNode.submitRequest(
-          'getProfitLoss',
-          {
-            universe: universe.id,
-            account: loginAccount.address,
-          },
-          (err, rawPerformanceData) => {
-            const { all } = rawPerformanceData
-            Object.keys(marketPositionData[marketId]).reduce((acc, outcome) => {
-              const outcomePosition = marketPositionData[marketId][outcome]
-              outcomePosition[0].realizedProfitLoss = '0'
-              outcomePosition[0].unrealizedProfitLoss = '0'
-              if (all && all[marketId] && all[marketId][outcome] && all[marketId][outcome].length && all[marketId][outcome][0].profitLoss) {
-                outcomePosition[0].realizedProfitLoss = all[marketId][outcome][0].profitLoss.realized
-                outcomePosition[0].unrealizedProfitLoss = all[marketId][outcome][0].profitLoss.unrealized
-                outcomePosition[0].averagePrice = all[marketId][outcome][0].profitLoss.meanOpenPrice
-              }
-              acc[marketId][outcome] = outcomePosition
-              return acc
-            }, { [marketId]: {} })
-            dispatch(updateAccountPositionsData(marketPositionData, marketId))
-          },
-        )
-        dispatch(updateTopBarPL())
+        dispatch(updateAccountPositionsData(marketPositionData, marketId))
       })
+      dispatch(updateTopBarPL())
       callback(null, positions)
     }))
   })
