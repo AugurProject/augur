@@ -89,8 +89,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginId: '123ThisIsALoginId',
           accountName: 'testing',
-          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
-          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
+          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 4 }),
+          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 4 }),
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -117,8 +117,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           address: '0xAccountAddress',
           loginId: '123ThisIsALoginId',
           accountName: 'testing',
-          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
-          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
+          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 4 }),
+          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 4 }),
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -147,8 +147,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           loginId: '123ThisIsALoginId',
           accountName: 'testing',
           isUnlocked: true,
-          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
-          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
+          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 4 }),
+          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 4 }),
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
@@ -179,8 +179,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           loginId: '123ThisIsALoginId',
           accountName: 'testing',
           isUnlocked: true,
-          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
-          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
+          rep: formatRep(12, { zeroStyled: false, decimalsRounded: 4 }),
+          eth: formatEther(10, { zeroStyled: false, decimalsRounded: 4 }),
         }
 
         assert.deepEqual(actual, expected, `didn't return the expected object`)
