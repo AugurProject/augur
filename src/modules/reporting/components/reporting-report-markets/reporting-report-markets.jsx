@@ -32,7 +32,7 @@ export const ReportSection = ({
     theChildren = newItems.map(item => (<MarketPreview key={item.id} {...item} />))
   }
 
-  const pageinationCount = 3
+  const pageinationCount = 10
 
   return (
     <article className={Styles.ReportSection}>
