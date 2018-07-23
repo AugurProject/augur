@@ -423,6 +423,7 @@ export default class AppView extends Component {
       isLoading,
       finalizeMarket,
     } = this.props
+    console.log(coreStats)
     const s = this.state
 
     const { mainMenu, subMenu } = this.state

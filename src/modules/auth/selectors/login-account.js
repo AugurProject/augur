@@ -17,7 +17,7 @@ export const selectLoginAccount = createSelector(
     ...loginAccount,
     ...generateDownloadAccountLink(loginAccount.address, loginAccount.keystore, getValue(loginAccount, 'privateKey.data') ? loginAccount.privateKey.data : loginAccount.privateKey), // Ternary due to differences in the way data is stored between Airbitz + local -- TODO -- unify
     accountName,
-    rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
-    eth: formatEther(loginAccount.eth, { zeroStyled: false, decimalsRounded: 2 }),
+    rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 4 }),
+    eth: formatEther(loginAccount.eth, { zeroStyled: false, decimalsRounded: 4 }),
   }),
 )
