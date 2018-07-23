@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
+import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { Address, PositionsRow } from "../../types";
 import { queryModifier } from "./database";
 import { getOutcomesProfitLoss, MarketOutcomeEarnings, EarningsAtTime, ProfitLoss, formatProfitLossResults } from "./get-profit-loss";
@@ -29,16 +30,25 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
   });
 
   const marketBalances = await db.select("marketId", "outcome", "balance").from("balances_detail").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
+  const marketDetails = await db.select("marketId", "numTicks", "maxPrice", "minPrice").from("markets").whereIn("marketId", _.keys(allTimeEarningsPerMarket));
 
   const balancesByMarketOutcome = _.keyBy(marketBalances, (balance) => `${balance.marketId}_${balance.outcome}`);
+  const detailsByMarket = _.keyBy(marketDetails, "marketId");
+
   const positionsRows = _.flatMap(allTimeEarningsPerMarket, (earnings: Array<ProfitLoss|null>, marketId: Address) => {
     const byOutcomes = earnings.map((profitLoss: ProfitLoss|null, outcome: number) => {
       if (profitLoss) {
         let numShares = "0";
-        const balance = balancesByMarketOutcome[`${marketId}_${outcome}`];
-        if (balance) {
-          numShares = balance.balance.toFixed();
+
+        const marketDetailsRow  = detailsByMarket[marketId];
+        if (!marketDetailsRow) throw new Error(`Data integrity error: Market ${marketId} not found while processing getUserTradingPositions`);
+
+        const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
+        if (marketBalancesRow) {
+          const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
+          numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
         }
+
         return {
           marketId,
           outcome,

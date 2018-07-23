@@ -40,7 +40,7 @@ describe("server/getters/get-user-trading-positions", () => {
       assert.deepEqual(userTradingPositions, [{
         "marketId": "0x0000000000000000000000000000000000000001",
         "outcome": 0,
-        "numShares": "60",
+        "numShares": "1.8",
         "numSharesAdjustedForUserIntention": "-1.8",
         "realizedProfitLoss": "-0.26",
         "unrealizedProfitLoss": "0",
