@@ -10,7 +10,6 @@ import CreateMarketResolution from 'modules/create-market/components/create-mark
 import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
 import CreateMarketLiquidityOrders from 'modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders'
 import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
-
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 
@@ -117,12 +116,6 @@ export default class CreateMarketForm extends Component {
         updatedMarket.validations[currentStep][fieldName] = true
     }
 
-    // need valid url
-    if (fieldName === 'expirySource') {
-      if (!/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(value)) {
-        updatedMarket.validations[currentStep][fieldName] = 'Url is invalid.'
-      }
-    }
     updatedMarket[fieldName] = value
     updatedMarket.isValid = this.isValid(currentStep)
 

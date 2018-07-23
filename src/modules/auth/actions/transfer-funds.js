@@ -1,6 +1,6 @@
 import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
-import { updateNotification, addNotification } from 'modules/notifications/actions/update-notifications'
+import { updateNotification, addNotification } from 'modules/notifications/actions'
 import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
 import trimString from 'utils/trim-string'

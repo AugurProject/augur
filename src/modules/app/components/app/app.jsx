@@ -47,6 +47,7 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 import MarketsInnerNavContainer from 'src/modules/app/containers/markets-inner-nav'
+import { NotificationBarContainer } from 'src/modules/notification-bar/containers/notification-bar-container'
 import * as qs from 'query-string'
 
 export const mobileMenuStates = {
@@ -142,8 +143,7 @@ export default class AppView extends Component {
         iconName: 'nav-reporting-icon',
         icon: NavReportingIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: REPORTING_REPORT_MARKETS,
-        requireLogin: true,
+        route: REPORTING_DISPUTE_MARKETS,
       },
       {
         title: 'Account',
@@ -457,6 +457,7 @@ export default class AppView extends Component {
           defaultTitle="Decentralized Prediction Markets | Augur"
           titleTemplate="%s | Augur"
         />
+        <NotificationBarContainer />
         {Object.keys(modal).length !== 0 &&
           <Modal />
         }

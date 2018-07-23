@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test'
 module.exports = function (wallaby) { // eslint-disable-line
   return {
     files: [

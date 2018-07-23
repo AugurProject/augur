@@ -36,8 +36,8 @@ export async function verifyLiquidity(orders: Array<LiquidityOrder>, timeoutMill
     } else {
       sign = "-"
     }
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(2) span", { text: sign, timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(2)", { text: orders[i].quantity, timeout: timeoutMilliseconds });
-    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(3)", { text: orders[i].price, timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(3) span", { text: sign, timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(3)", { text: orders[i].quantity, timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-positions-list-styles_MarketPositionsList__table-body .market-positions-list--order-styles_Order:nth-child(" + row + ") li:nth-child(4)", { text: orders[i].price, timeout: timeoutMilliseconds });
   }
 }

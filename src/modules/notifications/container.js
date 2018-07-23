@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 
 import NotificationsView from 'modules/notifications/components/notifications-view'
-import selectNotifications from 'modules/notifications/selectors/notifications'
-import { updateNotification, removeNotification, clearNotifications } from 'modules/notifications/actions/update-notifications'
+import { selectInfoNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
+import { updateNotification, removeNotification, clearNotifications } from 'modules/notifications/actions'
 
 const mapStateToProps = state => ({
-  notifications: selectNotifications(),
+  notifications: selectInfoNotificationsAndSeenCount(state),
 })
 
 const mapDispatchToProps = dispatch => ({
