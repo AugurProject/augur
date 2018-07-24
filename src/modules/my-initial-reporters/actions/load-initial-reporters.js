@@ -3,7 +3,7 @@ import logError from 'utils/log-error'
 import speedomatic from 'speedomatic'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { augur } from 'services/augurjs'
-import { updateInitialReportersData, updateInitialReportersEscapeHatchGasCost } from './update-initial-reporters'
+import { updateInitialReportersData } from './update-initial-reporters'
 
 export default (callback = logError) => (dispatch, getState) => {
   const { loginAccount, universe } = getState()
@@ -16,10 +16,7 @@ export default (callback = logError) => (dispatch, getState) => {
       augur.api.InitialReporter.withdrawInEmergency({
         tx: { estimateGas: true, to: initialReporterID },
         onSent: noop,
-        onSuccess: (attoGasCost) => {
-          const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
-          dispatch(updateInitialReportersEscapeHatchGasCost(initialReporterID, gasCost))
-        },
+        onSuccess: noop,
         onFailed: callback,
       })
     })

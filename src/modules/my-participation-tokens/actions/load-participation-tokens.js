@@ -3,7 +3,7 @@ import logError from 'utils/log-error'
 import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
-import { updateParticipationTokensData, updateParticipationTokensEscapeHatchGasCost } from './update-participation-tokens'
+import { updateParticipationTokensData } from './update-participation-tokens'
 
 export default (includeCurrent = true, callback = logError) => (dispatch, getState) => {
   const { loginAccount, universe } = getState()
@@ -16,10 +16,7 @@ export default (includeCurrent = true, callback = logError) => (dispatch, getSta
       augur.api.FeeWindow.withdrawInEmergency({
         tx: { estimateGas: true, to: feeWindowID },
         onSent: noop,
-        onSuccess: (attoGasCost) => {
-          const gasCost = speedomatic.encodeNumberAsJSNumber(attoGasCost)
-          dispatch(updateParticipationTokensEscapeHatchGasCost(feeWindowID, gasCost))
-        },
+        onSuccess: noop,
         onFailed: callback,
       })
     })
