@@ -36,6 +36,10 @@ export default class CreateMarketLiquidity extends Component {
     updateState: PropTypes.func.isRequired,
   }
 
+  static formatOrderValue(orderValue) {
+    return orderValue !== '' ? createBigNumber(orderValue, 10).toString() : orderValue
+  }
+
   constructor(props) {
     super(props)
 
@@ -413,10 +417,6 @@ export default class CreateMarketLiquidity extends Component {
     this.setState({ orderEstimate })
   }
 
-  formatOrderValue(orderValue) {
-    return orderValue !== '' ? createBigNumber(this.state.orderQuantity, 10).toString() : orderValue
-  }
-
   render() {
     const {
       isMobileSmall,
@@ -460,7 +460,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID, [`${Styles.activePositive}`]: s.selectedNav === BID })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: BID }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
+                    this.setState({ selectedNav: BID }, () => this.validateForm(CreateMarketLiquidity.formatOrderValue(this.state.orderQuantity), CreateMarketLiquidity.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Buy
@@ -469,7 +469,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: ASK }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
+                    this.setState({ selectedNav: ASK }, () => this.validateForm(CreateMarketLiquidity.formatOrderValue(this.state.orderQuantity), CreateMarketLiquidity.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Sell
