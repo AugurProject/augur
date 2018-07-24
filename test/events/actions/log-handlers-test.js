@@ -39,14 +39,12 @@ describe('modules/events/actions/log-handlers.js', () => {
       __RewireAPI__.__Rewire__('loadReportingWindowBounds', log => ({
         type: ACTIONS.LOAD_REPORTING_WINDOW,
       }))
-      __RewireAPI__.__Rewire__('getWinningBalance',(marketIds) => {
-          return {
-            type: ACTIONS.GET_WINNING_BALANCE,
-            data: {
-              marketIds,
-            },
-          }
-        })
+      __RewireAPI__.__Rewire__('getWinningBalance', marketIds => ({
+        type: ACTIONS.GET_WINNING_BALANCE,
+        data: {
+          marketIds,
+        },
+      }))
       __RewireAPI__.__Rewire__('isCurrentMarket', options => ({
         type: ACTIONS.IS_CURRENT_MARKET,
         data: {
@@ -152,12 +150,12 @@ describe('modules/events/actions/log-handlers.js', () => {
         },
         marketsData: {
           '0xdeadbeef': {},
-        }
+        },
       },
       assertions: (store) => {
         const log = {
           market: '0xdeadbeef',
-          sender: '0xb0b'
+          sender: '0xb0b',
         }
         store.dispatch(handleTradingProceedsClaimedLog(log))
         const actual = store.getActions()
@@ -179,7 +177,7 @@ describe('modules/events/actions/log-handlers.js', () => {
             data: {
               marketIds: ['0xdeadbeef'],
             },
-          }
+          },
         ]
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
       },
