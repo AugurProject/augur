@@ -6,13 +6,21 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 const MarketAdditonalDetails = (p) => {
   const { details, resolutionSource, marketType, minPrice, maxPrice, scalarDenomination } = p.market
   const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
-
+  if (this.additionalDetails && this.additionalDetails.scrollHeight) {
+    this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
+  }
   return (
     <article>
       <div className={Styles[`MarketAdditionalDetails__details-wrapper`]}>
         <div className={Styles[`MarketAdditionalDetails__details-container`]}>
           { details &&
-            <p className={Styles[`MarketAdditionalDetails__details-details-text`]}>{details}</p>
+            <textarea
+              ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+              className={Styles[`MarketAdditionalDetails__details-details-text`]}
+              disabled
+              readOnly
+              value={details}
+            />
           }
           <h4>Resolution Source:</h4>
           <span>{resolutionSource ? <a href={resolutionSource} target="_blank" rel="noopener noreferrer">{resolutionSource}</a> : 'General knowledge'}</span>
