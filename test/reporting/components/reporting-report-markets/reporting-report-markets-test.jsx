@@ -38,7 +38,7 @@ describe('reporting-report-markets', () => {
           endTime: { timestamp: 1 },
         }]
 
-        cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
+        cmp = shallow(<ReportSection title={exampleTitle} items={items} lower={1} boundedLength={3} />)
         assert.lengthOf(cmp.find(ConnectedMarketPreview), 3)
       })
     })
@@ -56,7 +56,7 @@ describe('reporting-report-markets', () => {
           endTime: { timestamp: 4 },
         }]
 
-        cmp = shallow(<ReportSection title={exampleTitle} items={items} />)
+        cmp = shallow(<ReportSection title={exampleTitle} items={items} lower={1} boundedLength={3} />)
         const sections = cmp.find(ConnectedMarketPreview)
         const result = sections.map(x => x.props().id)
         assert.deepEqual([1, 2, 3], result)
@@ -68,7 +68,7 @@ describe('reporting-report-markets', () => {
   describe('NoMarketFound', () => {
     it('should display the message passed in', () => {
       const message = 'some message'
-      const cmp = shallow(<NoMarketsFound message={message} />)
+      const cmp = shallow(<NoMarketsFound message={message} lower={1} boundedLength={3} />)
 
       assert.include(cmp.text(), message)
     })

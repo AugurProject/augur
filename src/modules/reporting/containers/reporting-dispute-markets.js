@@ -20,7 +20,7 @@ const mapStateToProps = (state, { history }) => {
   return ({
     isLogged: state.isLogged,
     isConnected: state.connection.isConnected && state.universe.id != null,
-    doesUserHaveRep: (loginAccount.rep.value > 0),
+    doesUserHaveRep: (loginAccount.rep.value > 0 || !state.isLogged),
     markets: disputableMarkets,
     showPagination: disputableMarkets.length > PAGINATION_COUNT,
     disputableMarketsLength: disputableMarkets.length,
@@ -31,7 +31,6 @@ const mapStateToProps = (state, { history }) => {
     isMobile: state.isMobile,
     navigateToAccountDepositHandler: () => history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
-    account: loginAccount.address,
     isForking: state.universe.isForking,
     forkEndTime: state.universe.forkEndTime,
     forkingMarketId: state.universe.forkingMarket,

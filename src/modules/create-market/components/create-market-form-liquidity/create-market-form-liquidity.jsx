@@ -36,10 +36,20 @@ export default class CreateMarketLiquidity extends Component {
     updateState: PropTypes.func.isRequired,
   }
 
+  static formatOrderValue(orderValue) {
+    return orderValue !== '' ? createBigNumber(orderValue, 10).toString() : orderValue
+  }
+
   constructor(props) {
     super(props)
 
-    const defaultOutcome = this.props.newMarket.type === CATEGORICAL ? '' : 1
+    let selectedOutcome = props.newMarket.type === CATEGORICAL ? '' : 1
+    if (props.newMarket.type === CATEGORICAL && props.liquidityState && props.liquidityState.selectedOutcome) {
+      if (props.newMarket.outcomes.indexOf(props.liquidityState.selectedOutcome) > -1) {
+        [selectedOutcome] = props.liquidityState.selectedOutcome
+      }
+    }
+
     this.state = {
       errors: {
         quantity: [],
@@ -52,7 +62,7 @@ export default class CreateMarketLiquidity extends Component {
       minPrice: createBigNumber(0),
       maxPrice: createBigNumber(1),
       selectedNav: props.liquidityState && props.liquidityState.selectedNav ? props.liquidityState.selectedNav : BID,
-      selectedOutcome: props.liquidityState && props.liquidityState.selectedOutcome ? props.liquidityState.selectedOutcome : defaultOutcome,
+      selectedOutcome,
     }
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
@@ -62,6 +72,7 @@ export default class CreateMarketLiquidity extends Component {
     this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this)
     this.validateForm = this.validateForm.bind(this)
     this.updateOrderEstimate = this.updateOrderEstimate.bind(this)
+    this.updateLiquidityState = this.updateLiquidityState.bind(this)
   }
 
   componentWillMount() {
@@ -95,6 +106,10 @@ export default class CreateMarketLiquidity extends Component {
   }
 
   componentWillUnmount() {
+    this.updateLiquidityState()
+  }
+
+  updateLiquidityState() {
     const liquidityState = {
       orderPrice: this.state.orderPrice,
       orderQuantity: this.state.orderQuantity,
@@ -115,6 +130,7 @@ export default class CreateMarketLiquidity extends Component {
         type: this.state.selectedNav,
         price: this.state.orderPrice,
         quantity: this.state.orderQuantity,
+        orderEstimate: this.state.orderEstimate,
       })
 
       this.updateInitialLiquidityCosts({
@@ -401,10 +417,6 @@ export default class CreateMarketLiquidity extends Component {
     this.setState({ orderEstimate })
   }
 
-  formatOrderValue(orderValue) {
-    return orderValue !== '' ? createBigNumber(this.state.orderQuantity, 10).toString() : orderValue
-  }
-
   render() {
     const {
       isMobileSmall,
@@ -448,7 +460,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BID, [`${Styles.activePositive}`]: s.selectedNav === BID })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: BID }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
+                    this.setState({ selectedNav: BID }, () => this.validateForm(CreateMarketLiquidity.formatOrderValue(this.state.orderQuantity), CreateMarketLiquidity.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Buy
@@ -457,7 +469,7 @@ export default class CreateMarketLiquidity extends Component {
               <li className={classNames({ [`${Styles.active}`]: s.selectedNav === ASK })}>
                 <button
                   onClick={() => {
-                    this.setState({ selectedNav: ASK }, () => this.validateForm(this.formatOrderValue(this.state.orderQuantity), this.formatOrderValue(this.state.orderPrice)))
+                    this.setState({ selectedNav: ASK }, () => this.validateForm(CreateMarketLiquidity.formatOrderValue(this.state.orderQuantity), CreateMarketLiquidity.formatOrderValue(this.state.orderPrice)))
                   }}
                 >
                   Sell
@@ -475,6 +487,7 @@ export default class CreateMarketLiquidity extends Component {
                     options={newMarket.outcomes.filter(outcome => outcome !== '')}
                     onChange={(value) => {
                       this.setState({ selectedOutcome: value, orderPrice: '', orderQuantity: '' }, () => {
+                        this.updateLiquidityState()
                         this.validateForm()
                       })
                     }}

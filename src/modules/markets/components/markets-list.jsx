@@ -139,7 +139,7 @@ export default class MarketsList extends Component {
             location={location}
             history={history}
             setSegment={this.setSegment}
-            pageParam={paginationPageParam || null}
+            pageParam={paginationPageParam || 'page'}
           />
         }
       </article>
