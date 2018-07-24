@@ -53,7 +53,9 @@ export default class MarketHeader extends Component {
     const s = this.state
     const detailsPresent = (details != null && details.length > 0) || (marketType === SCALAR)
     const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
-
+    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
+      this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
+    }
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
@@ -158,7 +160,13 @@ export default class MarketHeader extends Component {
               className={details ? Styles.MarketHeader__details : Styles.MarketHeader__no_details}
             >
               { details &&
-                <span>{details}</span>
+                <textarea
+                  ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+                  className={Styles['MarketHeader__AdditionalDetails-text']}
+                  disabled
+                  readOnly
+                  value={details}
+                />
               }
               { marketType === SCALAR &&
               <p>
