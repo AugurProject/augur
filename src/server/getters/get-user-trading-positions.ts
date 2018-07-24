@@ -23,7 +23,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
 
   if (results === null) return [];
 
-  const { all: earningsPerMarket } = formatProfitLossResults(results);
+  const { all: earningsPerMarket } = await formatProfitLossResults(db, results);
 
   const allTimeEarningsPerMarket = _.mapValues(earningsPerMarket, (outcomes: Array<Array<EarningsAtTime>>, marketId: Address) => {
     return outcomes.map((earnings: Array<EarningsAtTime>) => earnings === null ? null : earnings[earnings.length - 1].profitLoss);
@@ -60,7 +60,7 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
       };
     });
 
-    if (typeof outcome === "number") return [byOutcomes[outcome]];
+    if (typeof outcome === "number" && byOutcomes[outcome]) return [byOutcomes[outcome]];
     return byOutcomes;
   });
 
