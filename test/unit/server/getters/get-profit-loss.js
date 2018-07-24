@@ -280,7 +280,7 @@ describe("tests for test/profitloss.db", () => {
         assert.deepEqual(expected, results.aggregate);
 
         assert.deepEqual({
-          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected, null, null, null, null, null, null],
+          "0x0402c3fe7c695cb619b817f7bb9e42e2ad29e214": [null, expected],
         }, results.all);
       } catch (e) {
         return done(e);
