@@ -36,27 +36,18 @@ async function queryUserTradingPositions(db: Knex, augur: Augur, universe: Addre
   const detailsByMarket = _.keyBy(marketDetails, "marketId");
 
   const positionsRows = _.flatMap(allTimeEarningsPerMarket, (earnings: Array<ProfitLoss|null>, marketId: Address) => {
-    const byOutcomes = earnings.map((profitLoss: ProfitLoss|null, outcome: number) => {
-      if (!profitLoss) {
-        return {
-          marketId,
-          outcome,
-          realizedProfitLoss: "0",
-          unrealizedProfitLoss: "0",
-          numSharesAdjustedForUserIntention: "0",
-          numShares: "0",
-          averagePrice: "0",
-        };
-      }
+    const byOutcomes = earnings.map((profitLossResult: ProfitLoss|null, outcome: number) => {
+      const profitLoss = profitLossResult || { realized: "0", unrealized: "0", meanOpenPrice: "0", position: "0" };
 
       const marketDetailsRow  = detailsByMarket[marketId];
       if (!marketDetailsRow) throw new Error(`Data integrity error: Market ${marketId} not found while processing getUserTradingPositions`);
 
+      let numShares = "0";
       const marketBalancesRow = balancesByMarketOutcome[`${marketId}_${outcome}`];
-      if (!marketBalancesRow) throw new Error(`Data integrity error: Market ${marketId} has no balances for account ${account}`);
-
-      const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
-      const numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
+      if (marketBalancesRow) {
+        const tickSize = numTicksToTickSize(marketDetailsRow.numTicks, marketDetailsRow.minPrice, marketDetailsRow.maxPrice);
+        numShares = augur.utils.convertOnChainAmountToDisplayAmount(marketBalancesRow.balance, tickSize).toFixed();
+      }
 
       return {
         marketId,

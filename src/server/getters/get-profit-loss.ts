@@ -248,7 +248,7 @@ export function formatProfitLossResults(results: Array<MarketOutcomeEarnings>): 
         array.push(byOutcome[i.toString()] || null);
       }
 
-      return _.flatten(array);
+      return _.dropRightWhile(_.flatten(array), (p, n) => p === null && n > 1);
     })
     .value();
 
