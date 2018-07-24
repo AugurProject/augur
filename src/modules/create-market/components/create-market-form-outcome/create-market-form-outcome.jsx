@@ -334,6 +334,7 @@ export default class CreateMarketOutcome extends Component {
                     <input
                       type="text"
                       className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: highlightInput })}
+                      data-testid={'categoricalOutcome-' + i}
                       value={newMarket.outcomes[i]}
                       placeholder={placeholderText}
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
