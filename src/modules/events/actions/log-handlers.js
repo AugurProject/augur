@@ -125,7 +125,7 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
     dispatch(loadAccountTrades({ marketId: log.market }))
     dispatch(getWinningBalance([log.market]))
   }
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
+  if (isCurrentMarket(log.market)) dispatch(loadBidsAsks(log.market))
 }
 
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
