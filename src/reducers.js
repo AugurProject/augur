@@ -54,7 +54,6 @@ export function createReducer() {
     accountDisputes,
     accountPositions,
     accountTrades,
-    allOrders,
     blockchain,
     categories,
     closePositionTradeGroups,
