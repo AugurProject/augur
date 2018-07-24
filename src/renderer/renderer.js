@@ -120,8 +120,9 @@ Renderer.prototype.checkConnectValidity = function(event) {
     const name = document.getElementById("network_name").value;
     const http = document.getElementById("network_http_endpoint").value;
     const ws = document.getElementById("network_ws_endpoint").value;
+    const ipc = document.getElementById("network_ipc_endpoint").value;
 
-    if (name.length === 0 || http.length === 0 && ws.length === 0) {
+    if (name.length === 0 || http.length === 0 && ws.length === 0 && ipc.length === 0) {
       document.getElementById("go_to_open_app_screen_button").disabled = true;
     } else {
       document.getElementById("go_to_open_app_screen_button").disabled = false;
@@ -192,6 +193,7 @@ Renderer.prototype.renderOpenNetworkPage = function (data) {
   document.getElementById("open_network_name").innerHTML = data.networkConfig.name;
   document.getElementById("open_network_http_endpoint").innerHTML = data.networkConfig.http;
   document.getElementById("open_network_ws_endpoint").innerHTML = data.networkConfig.ws;
+  document.getElementById("open_network_ipc_endpoint").innerHTML = data.networkConfig.ipc;
 }
 
 Renderer.prototype.onSsl = function (event, value) {
@@ -236,7 +238,8 @@ Renderer.prototype.getNetworkConfigFormData = function () {
     const networkConfig = {
         "name": document.getElementById("network_name").value,
         "http": document.getElementById("network_http_endpoint").value,
-        "ws": document.getElementById("network_ws_endpoint").value
+        "ws": document.getElementById("network_ws_endpoint").value,
+        "ipc": document.getElementById("network_ipc_endpoint").value
     }
     return { network, networkConfig };
 }
@@ -265,6 +268,7 @@ Renderer.prototype.renderNetworkConfigForm = function (network, networkConfig) {
     document.getElementById("network_name").value = networkName
     document.getElementById("network_http_endpoint").value = networkConfig.http;
     document.getElementById("network_ws_endpoint").value = networkConfig.ws;
+    document.getElementById("network_ipc_endpoint").value = networkConfig.ipc || null;
     this.checkConnectValidity();
   } catch (err) {
     log.error(err)

@@ -39,6 +39,12 @@
               <input class='inputText' id="network_ws_endpoint" name="ws" type="text" onchange="renderer.clearNotice()">
             </div>
           </div>
+          <div>
+            <div class="label">IPC Endpoint:</div>
+            <div>
+              <input class='inputText' id="network_ipc_endpoint" name="ipc" type="text" onchange="renderer.clearNotice()">
+            </div>
+          </div>
           <div class="formFooter">
             <input id="save_configuration" style="float:left;width:40%;margin-top:5px;" type="submit" value="Save Configuration" class="outlineButton">
             <input id="go_to_open_app_screen_button" style="float:right;width:40%;margin-top:5px;" type="submit" value="Connect">
@@ -59,6 +65,10 @@
           <div class="networkInfoBlock">
             <div class="label">Websocket Endpoint:</div>
             <div id="open_network_ws_endpoint" class="networkInfo"></div>
+          </div>
+          <div class="networkInfoBlock">
+            <div class="label">IPC Endpoint:</div>
+            <div id="open_network_ipc_endpoint" class="networkInfo"></div>
           </div>
           <div class="formFooter borderTop">
             <input id="back_to_network_config_button" style="float:left;width:40%;margin-top:5px;" type="submit" value="Switch Network" class="outlineButton">
