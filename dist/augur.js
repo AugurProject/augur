@@ -1515,19 +1515,18 @@ function hashEventAbi(eventAbi) {
 
 module.exports = hashEventAbi;
 },{"./hash-event-signature":47}],47:[function(require,module,exports){
-(function (Buffer){
 "use strict";
 
 var speedomatic = require("speedomatic");
 var keccak256 = require("../utils/keccak256");
+var Buffer = require("safe-buffer").Buffer;
 
 function hashEventSignature(eventName) {
   return speedomatic.formatInt256(keccak256(Buffer.from(eventName, "utf8")).toString("hex"));
 }
 
 module.exports = hashEventSignature;
-}).call(this,require("buffer").Buffer)
-},{"../utils/keccak256":141,"buffer":175,"speedomatic":526}],48:[function(require,module,exports){
+},{"../utils/keccak256":141,"safe-buffer":488,"speedomatic":526}],48:[function(require,module,exports){
 "use strict";
 
 var EventEmitter = require("event-emitter");
@@ -3293,13 +3292,20 @@ var compareOrdersByPrice = {
   }
 };
 
+/** Type definition for singleOutcomeOrderBookSideOrder.
+ * @typedef {Object} singleOutcomeOrderBookSideOrder
+ * @property {string} amount Number of shares to trade.
+ * @property {string} fullPrecisionPrice Full price in ETH at which to trade.
+ * @property {string} owner Ethereum address of the order's owner, as a 20-byte hexadecimal string.
+ */
+
 /**
  * Bids are sorted descendingly, asks are sorted ascendingly.
  * @param {Object} p Parameters object.
- * @param {require("./get-orders").SingleOutcomeOrderBookSide} p.singleOutcomeOrderBookSide Bids or asks for a particular market and outcome.
+ * @param {Array.<singleOutcomeOrderBookSideOrder>} p.singleOutcomeOrderBookSide Bid or ask orders for a particular outcome of a market.
  * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
  * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @return {require("./get-orders").Order[]} Array of filtered and sorted orders.
+ * @return {Array.<singleOutcomeOrderBookSideOrder>} Array of filtered and sorted orders.
  */
 function filterAndSortByPrice(p) {
   if (!p || !p.singleOutcomeOrderBookSide) return [];
@@ -3376,6 +3382,7 @@ module.exports = getBetterWorseOrders;
 
 /** Type definition for Order.
  * @typedef {Object} Order
+ * @property {string} orderId ID of the order, as a 32-byte hexadecimal string.
  * @property {string} shareToken Contract address of the share token for which the order was placed, as a hexadecimal string.
  * @property {string} transactionHash Hash to look up the order transaction receipt.
  * @property {number} logIndex Number of the log index position in the Ethereum block containing the order transaction.
@@ -3383,17 +3390,20 @@ module.exports = getBetterWorseOrders;
  * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
  * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
  * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
- * @property {number} price Rounded display price, as a base-10 number.
- * @property {number} amount Rounded number of shares to trade, as a base-10 number.
+ * @property {string} price Rounded display price, as a base-10 number.
+ * @property {string} amount Current rounded number of shares to trade, as a base-10 number.
+ * @property {string} originalAmount Original rounded number of shares to trade, as a base-10 number.
  * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 number.
- * @property {number} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 number.
- * @property {number} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
- * @property {number} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
+ * @property {string} fullPrecisionAmount Current full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {string} originalFullPrecisionAmount Original full-precision (un-rounded) number of shares to trade, as a base-10 number.
+ * @property {string} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 number.
+ * @property {string} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 number.
  */
 
-/** Type definition for SingleOutcomeOrderBookSide.
- * @typedef {Object} SingleOutcomeOrderBookSide
- * @property {Order} Buy (bid) or sell (ask) orders, indexed by order ID.
+/** Type definition for SingleSideOrderBook.
+ * @typedef {Object} SingleSideOrderBook
+ * @property {Object|null} buy Buy (bid) Orders objects, keyed by order ID.
+ * @property {Object|null} sell Sell (ask) Order objects, keyed by order ID.
  */
 
 var augurNode = require("../augur-node");
@@ -3413,7 +3423,7 @@ var augurNode = require("../augur-node");
  * @param {string=} p.limit Maximum number of orders to return.
  * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
  * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
- * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for the specified market/universe and outcome.
+ * @return {Array.<SingleSideOrderBook>} Array of orders on one side of the order book (buy or sell) for the specified market/universe and outcome.
  */
 function getOrders(p, callback) {
   augurNode.submitRequest("getOrders", p, function (err, openOrders) {
@@ -4411,19 +4421,29 @@ module.exports = simulateSell;
 },{"../../constants":30,"../filter-and-sort-by-price":95,"./simulate-create-ask-order":123,"./simulate-fill-bid-order":126,"./sum-simulated-results":129}],128:[function(require,module,exports){
 "use strict";
 
+/** Type definition for SimulateTradeSingleOutcomeOrderBookOrder.
+ * @typedef {Object} SimulateTradeSingleOutcomeOrderBookOrder
+ * @property {string} amount Number of shares to trade.
+ * @property {string} fullPrecisionPrice Full price in ETH at which to trade.
+ * @property {string} sharesEscrowed Number of shares escrowed in the trade.
+ * @property {string} owner Ethereum address of the order's owner, as a 20-byte hexadecimal string.
+ */
+
 /** Type definition for SingleOutcomeOrderBook.
  * @typedef {Object} SingleOutcomeOrderBook
- * @property {require("../get-orders").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
- * @property {require("../get-orders").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
+ * @property {Array.<SimulateTradeSingleOutcomeOrderBookOrder>|null} buy Buy orders (bids), indexed by order ID as a 32-byte hexadecimal string.
+ * @property {Array.<SimulateTradeSingleOutcomeOrderBookOrder>|null} sell Sell orders (asks), indexed by order ID as a 32-byte hexadecimal string.
  */
 
 /** Type definition for SimulatedTrade.
  * @typedef {Object} SimulatedTrade
+ * @property {string} sharesFilled Number of shares filled by the trade.
  * @property {string} settlementFees Projected settlement fees paid on this trade, as a base-10 string.
+ * @property {string} worstCaseFees Maximum amount of settlement fees to be paid, as a base-10 string.
  * @property {string} sharesDepleted Projected number of shares of the traded outcome spent on this trade, as a base-10 string.
  * @property {string} otherSharesDepleted Projected number of shares of the other (non-traded) outcomes spent on this trade, as a base-10 string.
  * @property {string} tokensDepleted Projected number of tokens spent on this trade, as a base-10 string.
- * @property {string[]} shareBalances Projected final balances after the trade is complete, as an array of base-10 strings.
+ * @property {Array.<string>} shareBalances Projected final balances after the trade is complete, as an array of base-10 strings.
  */
 
 var BigNumber = require("bignumber.js");
@@ -4438,15 +4458,17 @@ var simulateSell = require("./simulate-sell");
  * @param {Object} p Trade simulation parameters.
  * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
  * @param {number} p.outcome Outcome ID to trade, must be an integer value on [0, 7].
- * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
+ * @param {string} p.shares Number of shares to trade, as a base-10 string.
+ * @param {Array.<string>} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
  * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
- * @param {string|null} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
- * @param {string} p.shares Number of shares to trade, as a base-10 string.
+ * @param {string} p.numTicks The number of ticks for this market.
+ * @param {string=} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
  * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
- * @param {SingleOutcomeOrderBook} p.singleOutcomeOrderBook The full order book (buy and sell) for this market and outcome.
+ * @param {string} p.reportingFeeRate The reporting fee for the market.
  * @param {boolean=} p.shouldCollectReportingFees False if reporting fees are not collected; this is rare and only occurs in disowned markets (default: true).
+ * @param {SingleOutcomeOrderBook} p.singleOutcomeOrderBook The full order book (buy and sell) for this market and outcome.
  * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
  */
 function simulateTrade(p) {
@@ -4788,7 +4810,7 @@ module.exports = '5.0.0-23';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
-global.augur = augur;
+global.Augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./build/index":63}],149:[function(require,module,exports){
@@ -34786,7 +34808,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.CvlAjamk/augur.js"
+      "/home/pg/Development/augur/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34812,7 +34834,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.CvlAjamk/augur.js",
+  "_where": "/home/pg/Development/augur/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
