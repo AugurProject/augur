@@ -19,7 +19,7 @@ NoMarketsFound.propTypes = {
 }
 
 export const ReportSection = ({
-  title, items, emptyMessage, pageinationName, setSegment, lower, boundedLength, history, location,
+  title, items, emptyMessage, pageinationName, setSegment, lower, boundedLength, history, location, pageinationCount,
 }) => {
   let theChildren
   const count = items.length
@@ -31,8 +31,6 @@ export const ReportSection = ({
 
     theChildren = newItems.map(item => (<MarketPreview key={item.id} {...item} />))
   }
-
-  const pageinationCount = 10
 
   return (
     <article className={Styles.ReportSection}>
@@ -58,6 +56,7 @@ ReportSection.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   pageinationName: PropTypes.string.isRequired,
+  pageinationCount: PropTypes.number.isRequired,
   emptyMessage: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   setSegment: PropTypes.func.isRequired,
@@ -70,8 +69,8 @@ class ReportingReporting extends React.Component {
 
   constructor(props) {
     super(props)
-    const PAGINATION_LENGTH = 10
 
+    const PAGINATION_LENGTH = 10
     const paginations = {
       dr: {
         lower: 1,
@@ -89,6 +88,7 @@ class ReportingReporting extends React.Component {
 
     this.state = {
       paginations,
+      PAGINATION_LENGTH,
     }
 
     this.setDrSegment = this.setDrSegment.bind(this)
@@ -135,6 +135,7 @@ class ReportingReporting extends React.Component {
     } = markets
     const {
       paginations,
+      PAGINATION_LENGTH,
     } = this.state
 
     return (
@@ -145,9 +146,9 @@ class ReportingReporting extends React.Component {
         <ReportingHeader
           heading="Markets"
         />
-        <ReportSection location={location} history={history} title="Designated Reporting" items={designated} emptyMessage="There are no markets available for you to report on. " pageinationName="dr" lower={paginations.dr.lower} boundedLength={paginations.dr.boundedLength} setSegment={this.setDrSegment} />
-        <ReportSection location={location} history={history} title="Open Reporting" items={open} emptyMessage="There are no markets in Open Reporting." pageinationName="or" lower={paginations.or.lower} boundedLength={paginations.or.boundedLength} setSegment={this.setOrSegment} />
-        <ReportSection location={location} history={history} title="Upcoming Reporting" items={upcoming} buttonText="View" emptyMessage="There are no upcoming markets for you to report on." pageinationName="ur" lower={paginations.ur.lower} boundedLength={paginations.ur.boundedLength} setSegment={this.setUrSegment} />
+        <ReportSection location={location} history={history} pageinationCount={PAGINATION_LENGTH} title="Designated Reporting" items={designated} emptyMessage="There are no markets available for you to report on. " pageinationName="designated" lower={paginations.dr.lower} boundedLength={paginations.dr.boundedLength} setSegment={this.setDrSegment} />
+        <ReportSection location={location} history={history} pageinationCount={PAGINATION_LENGTH} title="Open Reporting" items={open} emptyMessage="There are no markets in Open Reporting." pageinationName="open" lower={paginations.or.lower} boundedLength={paginations.or.boundedLength} setSegment={this.setOrSegment} />
+        <ReportSection location={location} history={history} pageinationCount={PAGINATION_LENGTH} title="Upcoming Reporting" items={upcoming} buttonText="View" emptyMessage="There are no upcoming markets for you to report on." pageinationName="upcoming" lower={paginations.ur.lower} boundedLength={paginations.ur.boundedLength} setSegment={this.setUrSegment} />
       </section>
     )
   }
