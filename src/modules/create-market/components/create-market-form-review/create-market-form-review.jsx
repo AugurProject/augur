@@ -112,7 +112,9 @@ export default class CreateMarketReview extends Component {
         this.updateFunds(insufficientFundsString)
       }
     }
-
+    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
+      this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
+    }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
         <div className={Styles.CreateMarketReview}>
@@ -166,7 +168,13 @@ export default class CreateMarketReview extends Component {
           </div>
           <div className={Styles.CreateMarketReview__addedDetails}>
             <h4 className={Styles.CreateMarketReview__smallheading}>Additional Details</h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>{newMarket.detailsText || 'None'}</p>
+            <textarea
+              ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+              className={Styles['CreateMarketReview__AdditionalDetails-text']}
+              disabled
+              readOnly
+              value={newMarket.detailsText || 'None'}
+            />
           </div>
         </div>
       </article>
