@@ -890,22 +890,23 @@ module.exports={
   "TradingEscapeHatch": "0x6e13753f0359b5088c1131f6cd80d0bf6033ed8e"
  },
  "4": {
-  "Controller": "0x84ba57c1a9a05a05188714a854d69ec1d0704c01",
-  "Universe": "0x0e5aec6fd6b6b109266e265c4598bf9acb80df0e",
-  "Augur": "0xba9a591ee7067b49339af0a1811ef12229e06339",
-  "LegacyReputationToken": "0xfc883de1a14e0aaa7a1ee00e8dfbb30239675d79",
-  "CancelOrder": "0x6c62a7c541958cfc6242272fc4d279f4f3b2c579",
-  "Cash": "0x8d8eeb29562c338ec995b58d104f3195955d2aa6",
-  "ClaimTradingProceeds": "0x2551369dde86c2bfd57eb80999d069812af4361d",
-  "CompleteSets": "0xaad4f621a511e82ac7b139dc07e725284ac00813",
-  "CreateOrder": "0x5232f2c5adc312c869a4382d53d73b2880fa0857",
-  "FillOrder": "0x1f1206e22db7502fb27be0cb53ebd22508468ff9",
-  "Order": "0x649421637e7328a7bc572857bf52284d8e950393",
-  "Orders": "0x7a65103b880c5dd9b160da44e53a03e8217f242a",
-  "OrdersFetcher": "0x10293500d01b74baf60bbf04ad406b9c3d7d60eb",
-  "ShareToken": "0x7641e57e87180e6f7b29fa1933ae1646687f22e2",
-  "Trade": "0xcb506ec08699c8df0a885c116e6dc03949b72043",
-  "TradingEscapeHatch": "0xfdde7fc502e8e349a89f5947fd66860c3b2ad3d1"
+  "Controller": "0xa702f45c3b1fd31793a409768bd3a0a91fad32bc",
+  "Universe": "0x02149d40d255fceac54a3ee3899807b0539bad60",
+  "Augur": "0x990b2d2af7e87cd015a607c3a95d7622c9bbede1",
+  "OrdersFinder": "0xf8f15e2591881982183808e010626cb05152ff90",
+  "LegacyReputationToken": "0x903e028cb6752c9079bcf1b6bfae182d873b4b23",
+  "CancelOrder": "0x207fd3161632770367d4dbd251592d3a6f210bf8",
+  "Cash": "0x2da4d465978981bd75bbac4c9f3bda10be0b465c",
+  "ClaimTradingProceeds": "0x9e94fdea4aace8c61eeb1dc2d3c55bfc7b7e8739",
+  "CompleteSets": "0x48fcc9d538b9c86ba9d35b3eb0e7f64ee2b4664f",
+  "CreateOrder": "0xc32a16c3266d9af42ef0d32b4acf6b751accd903",
+  "FillOrder": "0x038a54379de640fe99af06caacdb50075ffcc3af",
+  "Order": "0xa63c56565abeb99ca635264dd3bf00e119336997",
+  "Orders": "0xee9a27c699c510e1a70b3784d3743b3bcad3a0b1",
+  "OrdersFetcher": "0x3861886c99cdf6abc9329682d2c05bf1be5b6777",
+  "ShareToken": "0x4541dc5f016afba66b251695afbcc69eb014fa96",
+  "Trade": "0x4b3a944ca8ce8117eba411b735bd12ea5c7b1b10",
+  "TradingEscapeHatch": "0x3f16fab467d4bbca93c6a1a555c937b0a968791c"
  },
  "42": {
   "Controller": "0x591b727c84ead2ea8bdb83cdd6e68f5c79bcab49",
@@ -1077,14 +1078,14 @@ module.exports.reloadAddresses = function (callback) {
 };
 },{"../utils/read-json-file":146,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":159}],34:[function(require,module,exports){
 module.exports={
- "1": 5926223,
- "3": 3598161,
- "4": 2590036,
- "42": 7926279,
- "8995": 0,
- "12346": 113,
- "22346": 10,
- "32346": 10
+  "1": 5926223,
+  "3": 3598161,
+  "4": 2687175,
+  "42": 7926279,
+  "8995": 0,
+  "12346": 113,
+  "22346": 10,
+  "32346": 10
 }
 },{}],35:[function(require,module,exports){
 "use strict";
@@ -11081,6 +11082,88 @@ module.exports={
 			"payable": false,
 			"stateMutability": "nonpayable",
 			"type": "constructor"
+		}
+	],
+	"EscapeHatchController": [
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "emergencyStop",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "getOwner",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_controller",
+					"type": "address"
+				}
+			],
+			"name": "setController",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_newOwner",
+					"type": "address"
+				}
+			],
+			"name": "transferOwnership",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [],
+			"name": "controller",
+			"outputs": [
+				{
+					"name": "",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
 		}
 	],
 	"OrdersFinder": [
@@ -34808,7 +34891,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/pg/Development/augur/augur.js"
+      "/tmp/deploy/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -34834,7 +34917,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/pg/Development/augur/augur.js",
+  "_where": "/tmp/deploy/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
