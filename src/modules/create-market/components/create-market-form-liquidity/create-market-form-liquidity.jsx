@@ -42,8 +42,8 @@ export default class CreateMarketLiquidity extends Component {
     let selectedOutcome = props.newMarket.type === CATEGORICAL ? '' : 1
     if (props.newMarket.type === CATEGORICAL && props.liquidityState && props.liquidityState.selectedOutcome) {
       if (props.newMarket.outcomes.indexOf(props.liquidityState.selectedOutcome) > -1) {
-        selectedOutcome = props.liquidityState.selectedOutcome
-      } 
+        [selectedOutcome] = props.liquidityState.selectedOutcome
+      }
     }
 
     this.state = {
@@ -58,7 +58,7 @@ export default class CreateMarketLiquidity extends Component {
       minPrice: createBigNumber(0),
       maxPrice: createBigNumber(1),
       selectedNav: props.liquidityState && props.liquidityState.selectedNav ? props.liquidityState.selectedNav : BID,
-      selectedOutcome: selectedOutcome,
+      selectedOutcome,
     }
 
     this.handleAddOrder = this.handleAddOrder.bind(this)
