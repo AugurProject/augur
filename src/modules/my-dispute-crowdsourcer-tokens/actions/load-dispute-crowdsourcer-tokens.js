@@ -1,4 +1,3 @@
-import speedomatic from 'speedomatic'
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 import { augur } from 'services/augurjs'

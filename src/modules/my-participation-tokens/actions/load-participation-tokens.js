@@ -1,6 +1,5 @@
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
-import speedomatic from 'speedomatic'
 import { augur } from 'services/augurjs'
 import { UNIVERSE_ID } from 'modules/app/constants/network'
 import { updateParticipationTokensData } from './update-participation-tokens'

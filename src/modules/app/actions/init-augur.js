@@ -11,7 +11,6 @@ import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
-import getAllMarkets from 'modules/markets/selectors/markets-all'
 import logError from 'utils/log-error'
 import networkConfig from 'config/network'
 

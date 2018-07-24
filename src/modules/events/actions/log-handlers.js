@@ -90,7 +90,6 @@ export const handleOrderCreatedLog = log => (dispatch, getState) => {
 export const handleOrderCanceledLog = log => (dispatch, getState) => {
   dispatch(loadMarketsInfoIfNotLoaded([log.marketId]))
   const isStoredTransaction = log.sender === getState().loginAccount.address
-  const { modal } = getState()
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId))
     dispatch(updateOrder(log, false))
