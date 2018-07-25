@@ -130,7 +130,7 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.writeFileSync(keyPath, key)
 
       const certData = kg.getCertData({
-        commonName: 'localhost',
+        commonName: '127.0.0.1',
         keyData
       });
 
