@@ -11,7 +11,7 @@ if (require.main === module) {
 
   const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf("--") !== -1);
 
-  const shouldFix = FLAGS.indexOf("--fix") !== -1 ? true : false;
+  shouldFix = FLAGS.indexOf("--fix") !== -1 ? true : false;
 }
 
 const lintSource = () => new Promise((resolve, reject) => {
