@@ -41,7 +41,7 @@ const KNOWN_ORPHANED_ORDERS = [
   "0x68954b4d66c1938ca98aba9512ff3f1fafef1b2c88f0e25c764d5b79abdcfabe",
   "0x61057d2db33296d5b4dcd15902f826cb1a0d6ccb7c5211549ae1ef0c0e2e3c79",
   "0x58b713c51be330c79ac32a360246bad97503fbcd66024c71bc94b18c9c49cf28",
-  "0x8dd0ea501f1a404a010408b277d76279c979da3b439dce27048b32de740c2a5f"
+  "0x8dd0ea501f1a404a010408b277d76279c979da3b439dce27048b32de740c2a5f",
 ];
 
 exports.up = async (knex: Knex): Promise<any> => {
