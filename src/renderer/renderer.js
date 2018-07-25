@@ -186,14 +186,22 @@ Renderer.prototype.goToOpenApp = function (event) {
   document.getElementById("open_app_screen").style.display = "block";
 }
 
+Renderer.prototype.checkForHideEndpoints = function(endpoint, endpointId, containerId) {
+  if (endpoint.length > 0) {
+    document.getElementById(endpointId).innerHTML = endpoint;
+    document.getElementById(containerId).style.display = 'block';
+  } else {
+    document.getElementById(containerId).style.display = 'none';
+  }
+}
+
 Renderer.prototype.renderOpenNetworkPage = function (data) {
   document.getElementById("current_network").innerHTML = data.networkConfig.name;
   document.getElementById("current_network2").innerHTML = data.networkConfig.name;
 
-  document.getElementById("open_network_name").innerHTML = data.networkConfig.name;
-  document.getElementById("open_network_http_endpoint").innerHTML = data.networkConfig.http;
-  document.getElementById("open_network_ws_endpoint").innerHTML = data.networkConfig.ws;
-  document.getElementById("open_network_ipc_endpoint").innerHTML = data.networkConfig.ipc;
+  this.checkForHideEndpoints(data.networkConfig.http, "open_network_http_endpoint", "http_endpoint_container")
+  this.checkForHideEndpoints(data.networkConfig.ws, "open_network_ws_endpoint", "ws_endpoint_container")
+  this.checkForHideEndpoints(data.networkConfig.ipc, "open_network_ipc_endpoint", "ipc_endpoint_container")
 }
 
 Renderer.prototype.onSsl = function (event, value) {
