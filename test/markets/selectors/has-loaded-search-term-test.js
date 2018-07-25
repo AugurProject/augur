@@ -2,7 +2,7 @@
 
 import { hasLoadedSearchTerm } from '../../../src/modules/markets/selectors/has-loaded-search-term'
 
-describe.only('modules/markets/selectors/has-loaded-search-term.js', () => {
+describe('modules/markets/selectors/has-loaded-search-term.js', () => {
 
   it('should return nothing', () => {
     const actual = hasLoadedSearchTerm({}, undefined, undefined, [])
