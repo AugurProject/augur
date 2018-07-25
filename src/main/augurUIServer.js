@@ -7,9 +7,11 @@ const fs = require("fs");
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder');
 const KeyGen = require('selfsigned.js');
+const helmet = require('helmet');
 
 function AugurUIServer() {
   this.app = express();
+  this.app.use(helmet());
   this.server = null;
   this.port = 8080;
   this.window = null;
