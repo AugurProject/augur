@@ -40,9 +40,9 @@ const defaultConfig = {
       'id': '42'
     },
     'local': {
-      'http': 'http://localhost:8545',
+      'http': 'http://127.0.0.1:8545',
       'name': 'Local',
-      'ws': 'ws://localhost:8546',
+      'ws': 'ws://127.0.0.1:8546',
       'ipc': guessIPCEndpoint()
     },
     'mainnet': {
@@ -53,9 +53,9 @@ const defaultConfig = {
       'id': '1'
     },
     'custom': {
-      'http': 'http://localhost:8545',
+      'http': 'http://127.0.0.1:8545',
       'name': 'Custom',
-      'ws': 'ws://localhost:8546',
+      'ws': 'ws://127.0.0.1:8546',
       'ipc': null,
       'ipc': guessIPCEndpoint()
     }
