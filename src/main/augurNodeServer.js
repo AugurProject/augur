@@ -22,54 +22,36 @@ const defaultConfig = {
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
       'ws': 'wss://rinkeby.augur.net/ethereum-ws',
-      'ipc': null,
       'id': '4',
     },
     'ropsten': {
       'http': 'https://ropsten.augur.net/ethereum-http',
       'name': 'Ropsten',
       'ws': 'wss://ropsten.augur.net/ethereum-ws',
-      'ipc': null,
       'id': '3'
     },
     'kovan': {
       'http': 'https://kovan.augur.net/ethereum-http',
       'name': 'Kovan',
       'ws': 'wss://kovan.augur.net/ethereum-ws',
-      'ipc': null,
       'id': '42'
     },
     'local': {
       'http': 'http://localhost:8545',
       'name': 'Local',
       'ws': 'ws://localhost:8546',
-      'ipc': guessIPCEndpoint()
     },
     'mainnet': {
       'http': 'https://mainnet.infura.io/augur',
       'name': 'Mainnet',
       'ws': null,
-      'ipc': null,
       'id': '1'
     },
     'custom': {
       'http': 'http://localhost:8545',
       'name': 'Custom',
       'ws': 'ws://localhost:8546',
-      'ipc': null,
-      'ipc': guessIPCEndpoint()
     }
-  }
-}
-
-function guessIPCEndpoint() {
-  switch (process.platform) {
-    case "win32":
-      return "//./pipe/geth.ipc";
-    case "darwin":
-      return "~/Library/Ethereum/geth.ipc";
-    default:
-      return "~/.ethereum/geth.ipc";
   }
 }
 
