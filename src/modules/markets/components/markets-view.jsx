@@ -16,7 +16,7 @@ export default class MarketsView extends Component {
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
     category: PropTypes.string,
-    hasLoadedCategory: PropTypes.object.isRequired,
+    hasLoadedSearch: PropTypes.object.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsByCategory: PropTypes.func.isRequired,
     loadMarketsBySearch: PropTypes.func.isRequired,
@@ -33,7 +33,7 @@ export default class MarketsView extends Component {
     const {
       canLoadMarkets,
       category,
-      hasLoadedCategory,
+      hasLoadedSearch,
       hasLoadedMarkets,
       loadMarkets,
       loadMarketsByCategory,
@@ -45,7 +45,7 @@ export default class MarketsView extends Component {
       loadMarkets,
       loadMarketsByCategory,
       hasLoadedMarkets,
-      hasLoadedCategory,
+      hasLoadedSearch,
     })
   }
 
@@ -53,7 +53,7 @@ export default class MarketsView extends Component {
     const {
       canLoadMarkets,
       category,
-      hasLoadedCategory,
+      hasLoadedSearch,
       hasLoadedMarkets,
       loadMarkets,
       loadMarketsByCategory,
@@ -67,7 +67,7 @@ export default class MarketsView extends Component {
       (tags !== prevProps.tags) ||
       (canLoadMarkets !== prevProps.canLoadMarkets && canLoadMarkets) ||
 
-      !isEqual(hasLoadedCategory, prevProps.hasLoadedCategory) ||
+      !isEqual(hasLoadedSearch, prevProps.hasLoadedSearch) ||
       (hasLoadedMarkets !== prevProps.hasLoadedMarkets && !hasLoadedMarkets)
     ) {
       loadMarketsFn({
@@ -78,7 +78,7 @@ export default class MarketsView extends Component {
         loadMarketsByCategory,
         loadMarketsBySearch,
         hasLoadedMarkets,
-        hasLoadedCategory,
+        hasLoadedSearch,
         tags,
         keywords,
       })
@@ -123,18 +123,20 @@ export default class MarketsView extends Component {
   }
 }
 
-function loadMarketsFn({ canLoadMarkets, category, hasLoadedCategory, loadMarketsByCategory, loadMarketsBySearch, loadMarkets, tags, keywords }) {
+function loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, loadMarketsByCategory, loadMarketsBySearch, loadMarkets, tags, keywords }) {
   if (canLoadMarkets) {
-    // Expected behavior is to load a specific category if one is present
-    // else, if we aren't searching (which is a local market data search)
-    // then load markets (loads all markets)
-    if (category && !hasLoadedCategory[category]) {
+    if (category && !hasLoadedSearch[category]) {
       loadMarketsByCategory(category)
-    } else if (tags && tags.length > 0 && !hasLoadedCategory.tags) {
-      loadMarketsBySearch(tags.join(' ').trim(), 'tags')
-    } else if (keywords && keywords.length > 3 && !hasLoadedCategory.keywords) {
+    } else if (tags && tags.length > 0) {
+      if (tags[0] && !hasLoadedSearch[tags[0]]) {
+        loadMarketsBySearch(tags[0], tags[0])
+      }
+      if (tags[1] && !hasLoadedSearch[tags[1]]) {
+        loadMarketsBySearch(tags[1], tags[1])
+      }
+    } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
       loadMarketsBySearch(keywords, 'keywords')
-    } else if (!hasLoadedCategory.all) {
+    } else if (!hasLoadedSearch.all) {
       loadMarkets('all')
     }
   }

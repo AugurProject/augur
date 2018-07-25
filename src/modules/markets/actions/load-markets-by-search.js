@@ -4,19 +4,16 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 
 export const loadMarketsBySearch = (search, type) => (dispatch, getState) => {
   const { universe } = getState()
+
   augur.augurNode.submitRequest(
     'getMarketsSearch',
     {
       universe: universe.id,
       search,
     }, (err, marketIds) => {
-      if (err) {
-        console.error('ERROR loadMarketsBySearch()', err)
-      } else if (!marketIds) {
-        console.warn('WARN loadMarketsBySearch()', `no market id's returned`)
-        dispatch(updateHasLoadedCategory({ [type]: false }))
-      } else if (marketIds.length) {
-        dispatch(updateHasLoadedCategory({ [type]: true }))
+      if (err) return console.error('ERROR loadMarketsBySearch()', err)
+      dispatch(updateHasLoadedCategory({ name: type, state: true, term: search }))
+      if (marketIds.length) {
         dispatch(loadMarketsInfoIfNotLoaded(marketIds))
       }
     },

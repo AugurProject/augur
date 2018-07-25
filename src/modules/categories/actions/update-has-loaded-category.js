@@ -1,5 +1,5 @@
-export const UPDATE_HAS_LOADED_CATEGORY = 'UPDATE_HAS_LOADED_CATEGORY'
+export const UPDATE_HAS_LOADED_SEARCH = 'UPDATE_HAS_LOADED_SEARCH'
 
-export function updateHasLoadedCategory(hasLoadedCategory) {
-  return ({ type: UPDATE_HAS_LOADED_CATEGORY, hasLoadedCategory })
+export function updateHasLoadedCategory(hasLoadedSearch) {
+  return ({ type: UPDATE_HAS_LOADED_SEARCH, hasLoadedSearch })
 }

@@ -1,5 +1,6 @@
 // Keys to search on market objects.
 export const FILTER_SEARCH_KEYS = [
+  'id',
   'category',
   'description',
   ['outcomes', 'description'],

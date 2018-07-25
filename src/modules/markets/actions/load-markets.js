@@ -7,27 +7,20 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
 const loadMarkets = (type, callback = logError) => (dispatch, getState) => {
-  const { env, universe } = getState()
-
-  let getMarketsFunc
+  const { universe } = getState()
   const params = { universe: universe.id }
-  getMarketsFunc = augur.markets.getMarkets
 
-  if (env['bug-bounty']) {
-    params.creator = env['bug-bounty-address']
-    getMarketsFunc = augur.markets.getMarketsCreatedByUser
-  }
-
-  getMarketsFunc(params, (err, marketsArray) => {
+  augur.markets.getMarkets(params, (err, marketsArray) => {
     if (err) return callback(err)
 
     const marketsData = marketsArray.reduce((p, id) => ({
       ...p,
       [id]: { id },
     }), {})
+
     dispatch(updateHasLoadedMarkets(true))
     dispatch(updateMarketsData(marketsData))
-    dispatch(updateHasLoadedCategory({ [type]: true }))
+    dispatch(updateHasLoadedCategory({ name: type, state: true }))
     callback(null, marketsArray)
   })
 }

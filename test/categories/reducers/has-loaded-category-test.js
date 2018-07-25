@@ -1,8 +1,8 @@
 
 
-import hasLoadedCategory from 'modules/categories/reducers/has-loaded-category'
+import hasLoadedSearch from 'modules/categories/reducers/has-loaded-category'
 
-import { UPDATE_HAS_LOADED_CATEGORY } from 'modules/categories/actions/update-has-loaded-category'
+import { UPDATE_HAS_LOADED_SEARCH } from 'modules/categories/actions/update-has-loaded-category'
 
 describe('modules/categories/reducers/has-loaded-category.js', () => {
   const test = (t) => {
@@ -14,7 +14,7 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
   test({
     describe: 'should return the default value',
     assertions: () => {
-      const actual = hasLoadedCategory(undefined, { type: null })
+      const actual = hasLoadedSearch(undefined, { type: null })
 
       const expected = {}
 
@@ -25,7 +25,7 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
   test({
     describe: 'should return the existing value',
     assertions: () => {
-      const actual = hasLoadedCategory({ category: true }, { type: null })
+      const actual = hasLoadedSearch({ category: true }, { type: null })
 
       const expected = { category: true }
 
@@ -36,9 +36,9 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
   test({
     describe: 'should return the updated value',
     assertions: () => {
-      const actual = hasLoadedCategory({ category: true }, {
-        type: UPDATE_HAS_LOADED_CATEGORY,
-        hasLoadedCategory: {
+      const actual = hasLoadedSearch({ category: true }, {
+        type: UPDATE_HAS_LOADED_SEARCH,
+        hasLoadedSearch: {
           category: false,
           category2: true,
         },

@@ -12,14 +12,10 @@ export const loadMarketsByCategory = category => (dispatch, getState) => {
   }
 
   augur.markets.getMarkets(params, (err, marketIds) => {
-    if (err) {
-      console.error('ERROR findMarketsWithCategory()', err)
-      dispatch(updateHasLoadedCategory({ [category]: false }))
-    } else if (!marketIds) {
-      console.warn('WARN findMarketsWithCategory()', `no market id's returned`)
-      dispatch(updateHasLoadedCategory({ [category]: false }))
-    } else if (marketIds.length) {
-      dispatch(updateHasLoadedCategory({ [category]: true }))
+    if (err) return console.error('ERROR findMarketsWithCategory()', err)
+
+    dispatch(updateHasLoadedCategory({ name: category, state: true }))
+    if (marketIds.length) {
       dispatch(loadMarketsInfoIfNotLoaded(marketIds))
     }
   })
