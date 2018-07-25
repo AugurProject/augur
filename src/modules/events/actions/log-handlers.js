@@ -22,6 +22,7 @@ import { loadMarketsInfoIfNotLoaded } from 'src/modules/markets/actions/load-mar
 import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
+import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 
 export const handleMarketStateLog = log => (dispatch) => {
   dispatch(loadMarketsInfo([log.marketId], () => {
@@ -117,9 +118,10 @@ export const handleTradingProceedsClaimedLog = log => (dispatch, getState) => {
   const isStoredTransaction = log.sender === getState().loginAccount.address
   if (isStoredTransaction) {
     dispatch(updateLoggedTransactions(log))
-    dispatch(loadAccountTrades({ marketId: log.marketId }))
+    dispatch(loadAccountTrades({ marketId: log.market }))
+    dispatch(getWinningBalance([log.market]))
   }
-  if (isCurrentMarket(log.marketId)) dispatch(loadBidsAsks(log.marketId))
+  if (isCurrentMarket(log.market)) dispatch(loadBidsAsks(log.market))
 }
 
 export const handleInitialReportSubmittedLog = log => (dispatch, getState) => {
