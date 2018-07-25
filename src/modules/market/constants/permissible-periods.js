@@ -22,12 +22,12 @@ export const RANGES = [
   {
     duration: 86400,
     label: 'Past day',
-    isDefault: true,
     tickInterval: axis => axis.ticks(timeHour.every(3)),
   },
   {
     duration: 604800,
     label: 'Past week',
+    isDefault: true,
     tickInterval: axis => axis.ticks(timeDay.every(1)),
   },
   {
@@ -55,11 +55,11 @@ export const
     {
       duration: 3600,
       label: 'Hourly',
-      isDefault: true,
     },
     {
       duration: 86400,
       label: 'Daily',
+      isDefault: true,
     },
     {
       duration: 604800,
