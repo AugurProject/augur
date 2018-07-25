@@ -2,7 +2,6 @@
 import accountDisputes from 'modules/reporting/reducers/account-disputes-state'
 import accountPositions from 'modules/my-positions/reducers/account-positions'
 import accountTrades from 'modules/my-positions/reducers/account-trades'
-import allOrders from 'modules/escape-hatch/reducers/all-orders-data'
 import blockchain from 'modules/app/reducers/blockchain'
 import categories from 'modules/categories/reducers/categories-data'
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
@@ -55,7 +54,6 @@ export function createReducer() {
     accountDisputes,
     accountPositions,
     accountTrades,
-    allOrders,
     blockchain,
     categories,
     closePositionTradeGroups,

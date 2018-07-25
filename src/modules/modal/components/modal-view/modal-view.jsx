@@ -10,7 +10,6 @@ import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatc
 import ModalNetworkDisabled from 'modules/modal/components/modal-network-disabled/modal-network-disabled'
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
 import ModalApproval from 'modules/modal/containers/modal-approval'
-import ModalEscapeHatch from 'modules/modal/components/modal-escape-hatch/modal-escape-hatch'
 import ModalClaimReportingFeesForkedMarket from 'modules/modal/containers/modal-claim-reporting-fees-forked-market'
 import ModalClaimReportingFeesNonforkedMarkets from 'modules/modal/containers/modal-claim-reporting-fees-nonforked-markets'
 import ModalParticipate from 'modules/modal/containers/modal-participate'
@@ -117,9 +116,6 @@ export default class ModalView extends Component {
           }
           {modal.type === TYPES.MODAL_ACCOUNT_APPROVAL &&
             <ModalApproval {...this.props} />
-          }
-          {modal.type === TYPES.MODAL_ESCAPE_HATCH &&
-            <ModalEscapeHatch {...this.props} />
           }
           {modal.type === TYPES.MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET &&
             <ModalClaimReportingFeesForkedMarket {...modal} />
