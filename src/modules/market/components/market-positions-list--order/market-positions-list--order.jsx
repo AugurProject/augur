@@ -76,6 +76,7 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
+
     return (
       <ul
         ref={(order) => { this.order = order }}
@@ -104,8 +105,12 @@ export default class Order extends Component {
             {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li /> }
-        { !isMobile && <li /> }
+        { !isMobile &&
+          <li>{getValue(order, 'tokensEscrowed.formatted')}</li>
+        }
+        { !isMobile &&
+          <li>{getValue(order, 'sharesEscrowed.formatted')}</li>
+        }
         { isExtendedDisplay &&
           <li />
         }
