@@ -1,11 +1,12 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
+import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
 import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loaded-markets'
 
 // NOTE -- We ONLY load the market ids during this step.
 // From here we populate the marketsData
-const loadMarkets = (callback = logError) => (dispatch, getState) => {
+const loadMarkets = (type, callback = logError) => (dispatch, getState) => {
   const { env, universe } = getState()
 
   let getMarketsFunc
@@ -26,6 +27,7 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
     }), {})
     dispatch(updateHasLoadedMarkets(true))
     dispatch(updateMarketsData(marketsData))
+    dispatch(updateHasLoadedCategory({ [type]: true }))
     callback(null, marketsArray)
   })
 }

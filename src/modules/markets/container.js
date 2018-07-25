@@ -9,6 +9,7 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsByCategory } from 'modules/markets/actions/load-markets-by-category'
+import { loadMarketsBySearch } from 'modules/markets/actions/load-markets-by-search'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import getValue from 'utils/get-value'
@@ -21,6 +22,7 @@ import { FILTER_SEARCH_KEYS } from 'src/modules/markets/constants/filter-sort'
 
 const mapStateToProps = (state, { location }) => {
   const markets = selectMarkets(state)
+
   const {
     category,
     keywords,
@@ -52,12 +54,14 @@ const mapStateToProps = (state, { location }) => {
     markets,
     category,
     tags,
+    keywords,
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadMarkets()),
+  loadMarkets: type => dispatch(loadMarkets(type)),
   loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
+  loadMarketsBySearch: (search, type) => dispatch(loadMarketsBySearch(search, type)),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
 })
