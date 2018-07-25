@@ -17,7 +17,7 @@ describe('modules/events/actions/log-handlers.js', () => {
     t.assertions(store)
   })
 
-  describe('handleCompleteSetsSoldLog', () => {
+  describe('log handlers', () => {
 
     const ACTIONS = {
       LOAD_ACCOUNT_TRADES: 'LOAD_ACCOUNT_TRADES',
@@ -145,6 +145,28 @@ describe('modules/events/actions/log-handlers.js', () => {
         store.dispatch(handleTokensMintedLog(log))
         const actual = store.getActions()
         const expected = [{ type: ACTIONS.LOAD_REPORTING_WINDOW }]
+        assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
+      },
+    })
+
+    test({
+      description: `should process token mint log when address does not match`,
+      state: {
+        loginAccount: {
+          address: '0xb0b111',
+        },
+      },
+      stub: {
+        isCurrentMarket: () => false,
+      },
+      assertions: (store) => {
+        const log = {
+          marketId: '0xdeadbeef',
+          target: '0xb0b',
+        }
+        store.dispatch(handleTokensMintedLog(log))
+        const actual = store.getActions()
+        const expected = []
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`)
       },
     })
