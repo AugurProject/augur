@@ -1,4 +1,4 @@
-import { UPDATE_HAS_LOADED_SEARCH } from 'modules/categories/actions/update-has-loaded-category'
+import { UPDATE_HAS_LOADED_SEARCH } from 'modules/categories/actions/update-has-loaded-search'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}

@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
+import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-search'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 export const loadMarketsBySearch = (search, type) => (dispatch, getState) => {

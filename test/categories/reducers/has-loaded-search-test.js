@@ -1,10 +1,10 @@
 
 
-import hasLoadedSearch from 'modules/categories/reducers/has-loaded-category'
+import hasLoadedSearch from 'modules/categories/reducers/has-loaded-search'
 
-import { UPDATE_HAS_LOADED_SEARCH } from 'modules/categories/actions/update-has-loaded-category'
+import { UPDATE_HAS_LOADED_SEARCH } from 'modules/categories/actions/update-has-loaded-search'
 
-describe('modules/categories/reducers/has-loaded-category.js', () => {
+describe('modules/categories/reducers/has-loaded-search.js', () => {
   const test = (t) => {
     it(t.describe, () => {
       t.assertions()
@@ -25,9 +25,9 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
   test({
     describe: 'should return the existing value',
     assertions: () => {
-      const actual = hasLoadedSearch({ category: true }, { type: null })
+      const actual = hasLoadedSearch({ category: { name: 'category', state: true } }, { name: 'type', state: null })
 
-      const expected = { category: true }
+      const expected = { category: { name: 'category', state: true } }
 
       assert.deepEqual(actual, expected, `Didn't return the expected existing value`)
     },
@@ -36,17 +36,14 @@ describe('modules/categories/reducers/has-loaded-category.js', () => {
   test({
     describe: 'should return the updated value',
     assertions: () => {
-      const actual = hasLoadedSearch({ category: true }, {
+      const actual = hasLoadedSearch({ bob: { name: 'bob', state: true } }, {
         type: UPDATE_HAS_LOADED_SEARCH,
-        hasLoadedSearch: {
-          category: false,
-          category2: true,
-        },
+        hasLoadedSearch: { name: 'category', state: false },
       })
 
       const expected = {
-        category: false,
-        category2: true,
+        category: { name: 'category', state: false },
+        bob: { name: 'bob', state: true },
       }
 
       assert.deepEqual(actual, expected, `Didn't return the expected updated value`)

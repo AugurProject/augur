@@ -1,7 +1,7 @@
 import { augur } from 'services/augurjs'
 import logError from 'utils/log-error'
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data'
-import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
+import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-search'
 import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loaded-markets'
 
 // NOTE -- We ONLY load the market ids during this step.

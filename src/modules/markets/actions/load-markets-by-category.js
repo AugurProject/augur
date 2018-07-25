@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs'
-import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-category'
+import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-search'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 export const loadMarketsByCategory = category => (dispatch, getState) => {
@@ -15,7 +15,7 @@ export const loadMarketsByCategory = category => (dispatch, getState) => {
     if (err) return console.error('ERROR findMarketsWithCategory()', err)
 
     dispatch(updateHasLoadedCategory({ name: category, state: true }))
-    if (marketIds.length) {
+    if (marketIds && marketIds.length > 0) {
       dispatch(loadMarketsInfoIfNotLoaded(marketIds))
     }
   })
