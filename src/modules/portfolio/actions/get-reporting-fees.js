@@ -22,7 +22,7 @@ export const getReportingFees = (callback = logError) => (dispatch, getState) =>
           unclaimedEth: formatAttoEth(result.total.unclaimedEth, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
           unclaimedRep: formatAttoRep(unclaimedRepTotal, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
           unclaimedForkEth: formatAttoEth(result.total.unclaimedForkEth, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
-          unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, {  decimals: 4, decimalsRounded: 4, zeroStyled: true }),
+          unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
           feeWindows: result.feeWindows,
           forkedMarket: result.forkedMarket,
           nonforkedMarkets: result.nonforkedMarkets,
