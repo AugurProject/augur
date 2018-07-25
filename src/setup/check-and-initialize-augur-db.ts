@@ -108,7 +108,7 @@ async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string
 export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string): Promise<Knex> {
   return new Promise<Knex>((resolve, reject) => {
     const connectOptions = Object.assign(
-      { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
+      { ethereumNode: { http: network.http, ws: network.ws, ipc: network.ipc }, startBlockStreamOnConnect: false },
       network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
       network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
     );

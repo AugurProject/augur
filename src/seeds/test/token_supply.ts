@@ -46,6 +46,12 @@ exports.seed = async (knex: Knex): Promise<any> => {
     }, {
       token: "REP_TOKEN_SECOND_GRAND_CHILD",
       supply: 0,
+    }, {
+      token: "0xa100000000000000000000000000000000000000",
+      supply: 1,
+    }, {
+      token: "0xa200000000000000000000000000000000000000",
+      supply: 1,
     }];
     return knex.batchInsert("token_supply", seedData, seedData.length);
   });

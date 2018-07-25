@@ -2,14 +2,13 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { BigNumber } = require("bignumber.js");
 const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("../../../../build/blockchain/log-processors/completesets");
 const Augur = require("augur.js");
 const augur = new Augur();
 
 describe("blockchain/log-processors/completesets", () => {
   const test = (t) => {
-    const getState = (db, params, callback) => db("positions").where({
+    const getState = (db, params, callback) => db("completeSets").where({
       account: params.log.account,
       marketId: params.log.market,
     }).asCallback(callback);
@@ -19,12 +18,12 @@ describe("blockchain/log-processors/completesets", () => {
         db.transaction((trx) => {
           processCompleteSetsPurchasedOrSoldLog(trx, t.params.augur, t.params.log, (err) => {
             assert.ifError(err);
-            getState(trx, t.params, (err, positions) => {
-              t.assertions.onUpdated(err, positions);
+            getState(trx, t.params, (err, completeSetsRows) => {
+              t.assertions.onUpdated(err, completeSetsRows);
               processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
                 assert.ifError(err);
-                getState(trx, t.params, (err, positions) => {
-                  t.assertions.onUpdated(err, positions);
+                getState(trx, t.params, (err, completeSetsRows) => {
+                  t.assertions.onRemoved(err, completeSetsRows);
                   db.destroy();
                   done();
                 });
@@ -44,6 +43,7 @@ describe("blockchain/log-processors/completesets", () => {
         account: "0x0000000000000000000000000000000000000b0b",
         numCompleteSets: "200000000000000",
         numPurchasedOrSold: "200000000000000",
+        eventName: "CompleteSetsPurchased",
         blockNumber: 437,
         transactionHash: "0x00000000000000000000000000000000deadbeef",
         logIndex: 0,
@@ -87,94 +87,21 @@ describe("blockchain/log-processors/completesets", () => {
       onUpdated: (err, positions) => {
         assert.ifError(err);
         assert.deepEqual(positions, [{
-          positionId: 21,
           account: "0x0000000000000000000000000000000000000b0b",
+          blockNumber: 437,
+          logIndex: 0,
+          eventName: "CompleteSetsPurchased",
           marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 0,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("2", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0.75", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 22,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 1,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 23,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 2,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 24,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 3,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 25,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 4,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 26,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 5,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 27,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 6,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
-        }, {
-          positionId: 28,
-          account: "0x0000000000000000000000000000000000000b0b",
-          marketId: "0x0000000000000000000000000000000000000002",
-          outcome: 7,
-          numShares: new BigNumber("2", 10),
-          numSharesAdjustedForUserIntention: new BigNumber("0", 10),
-          realizedProfitLoss: new BigNumber("0", 10),
-          unrealizedProfitLoss: new BigNumber("0", 10),
-          averagePrice: new BigNumber("0", 10),
-          lastUpdated: positions[0].lastUpdated,
+          numCompleteSets: "2",
+          numPurchasedOrSold: "2",
+          tradeGroupId: 12,
+          transactionHash: "0x00000000000000000000000000000000deadbeef",
+          universe: "0x0000000000000000000000000000000000000001",
         }]);
+      },
+      onRemoved: (err, positions) => {
+        assert.ifError(err);
+        assert.deepEqual(positions, []);
       },
     },
   });
