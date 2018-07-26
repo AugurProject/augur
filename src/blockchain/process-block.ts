@@ -46,8 +46,26 @@ export function clearOverrideTimestamp(): void {
   blockHeadTimestamp = 0;
 }
 
+function processBlockDetailsAndLogs(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback) {
+  if (!block || !block.timestamp) return callback(new Error(JSON.stringify(block)));
+  db.transaction((trx: Knex.Transaction): void => {
+    processBlockByBlockDetails(trx, augur, block, (err) => {
+      if (err) {
+        trx.rollback(err);
+        return callback(err);
+      }
+      logQueueProcess(trx, block.hash, (err: Error|null) => {
+        if (err != null) trx.rollback(err);
+        else trx.commit();
+
+        return callback(err);
+      });
+    });
+  });
+}
+
 export function processBlock(db: Knex, augur: Augur, block: BlockDetail, callback: ErrorCallback): void {
-  processQueue.push((next) => processBlockByBlockDetails(db, augur, block, (err: Error|null): void => {
+  processQueue.push((next) => processBlockDetailsAndLogs(db, augur, block, (err: Error|null): void => {
     if (err) return callback(err);
     return next(null);
   }));
@@ -67,17 +85,16 @@ export function processBlockByNumber(db: Knex, augur: Augur, blockNumber: number
   });
 }
 
-function insertBlockRow(trx: Knex.Transaction, blockNumber: number, blockHash: string, timestamp: number, callback: ErrorCallback) {
-  trx("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
+function insertBlockRow(db: Knex, blockNumber: number, blockHash: string, timestamp: number, callback: ErrorCallback) {
+  db("blocks").where({ blockNumber }).asCallback((err: Error|null, blocksRows?: Array<BlocksRow>): void => {
     if (err) {
-      trx.rollback();
       return callback(err);
     }
     let query: Knex.QueryBuilder;
     if (!blocksRows || !blocksRows.length) {
-      query = trx.transacting(trx).insert({ blockNumber, blockHash, timestamp }).into("blocks");
+      query = db.insert({ blockNumber, blockHash, timestamp }).into("blocks");
     } else {
-      query = trx("blocks").transacting(trx).where({ blockNumber }).update({ blockHash, timestamp });
+      query = db("blocks").where({ blockNumber }).update({ blockHash, timestamp });
     }
     query.asCallback(callback);
   });
@@ -90,29 +107,12 @@ export function processBlockByBlockDetails(db: Knex, augur: Augur, block: BlockD
   blockHeadTimestamp = parseInt(block.timestamp, 16);
   const timestamp = getOverrideTimestamp() || blockHeadTimestamp;
   logger.info("new block:", `${blockNumber}, ${timestamp} (${(new Date(timestamp * 1000)).toString()})`);
-  db.transaction((trx: Knex.Transaction): void => {
-    insertBlockRow(trx, blockNumber, blockHash, timestamp, (err: Error|null) => {
-      if (err) {
-        trx.rollback(err);
-        return callback(err);
-      } else {
-        advanceTime(trx, augur, blockNumber, timestamp, (err: Error|null) => {
-          if (err != null) {
-            trx.rollback(err);
-            return callback(err);
-          } else {
-            logQueueProcess(trx, blockHash, (err: Error|null) => {
-              if (err != null) {
-                trx.rollback(err);
-              } else {
-                trx.commit();
-              }
-              return callback(err);
-            });
-          }
-        });
-      }
-    });
+  insertBlockRow(db, blockNumber, blockHash, timestamp, (err: Error|null) => {
+    if (err) {
+      return callback(err);
+    } else {
+      advanceTime(db, augur, blockNumber, timestamp, callback);
+    }
   });
 }
 
@@ -126,8 +126,7 @@ function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallb
         trx.rollback(err);
         return callback(err);
       }
-      // TODO: un-advan
-      // ce time
+      // TODO: un-advance time
       db("blocks").transacting(trx).where({ blockNumber }).del().asCallback((err: Error|null): void => {
         if (err) {
           trx.rollback(err);
