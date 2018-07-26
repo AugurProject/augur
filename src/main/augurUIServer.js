@@ -11,7 +11,9 @@ const helmet = require('helmet');
 
 function AugurUIServer() {
   this.app = express();
-  this.app.use(helmet());
+  this.app.use(helmet({
+    hsts: false
+  }));
   this.server = null;
   this.port = 8080;
   this.window = null;
