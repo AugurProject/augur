@@ -15,7 +15,7 @@ export const selectEdgeContextState = state => state.edgeContext
 export const selectEdgeLoadingState = state => state.edgeLoading
 export const selectEnvState = state => state.env
 export const selectFavoritesState = state => state.favorites
-export const selectHasLoadedCategoryState = state => state.hasLoadedCategory
+export const selectHasLoadedCategoryState = state => state.hasLoadedSearch
 export const selectHasLoadedMarketsState = state => state.hasLoadedMarkets
 export const selectInitialReporters = state => state.initialReporters
 export const selectIsLogged = state => state.isLogged
