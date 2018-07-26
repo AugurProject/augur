@@ -9,6 +9,7 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import loadMarkets from 'modules/markets/actions/load-markets'
 import { loadMarketsByCategory } from 'modules/markets/actions/load-markets-by-category'
+import { loadMarketsBySearch } from 'modules/markets/actions/load-markets-by-search'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
 import getValue from 'utils/get-value'
@@ -18,6 +19,8 @@ import { getSelectedTagsAndCategoriesFromLocation } from 'src/modules/markets/he
 import { filterArrayByArrayPredicate } from 'src/modules/filter-sort/helpers/filter-array-of-objects-by-array'
 import { filterBySearch } from 'src/modules/filter-sort/helpers/filter-by-search'
 import { FILTER_SEARCH_KEYS } from 'src/modules/markets/constants/filter-sort'
+import { hasLoadedSearchTerm } from 'modules/markets/selectors/has-loaded-search-term'
+import debounce from 'utils/debounce'
 
 const mapStateToProps = (state, { location }) => {
   const markets = selectMarkets(state)
@@ -40,6 +43,8 @@ const mapStateToProps = (state, { location }) => {
     categoryFilter,
   )(markets)
 
+  const searchTermState = hasLoadedSearchTerm(state.hasLoadedSearch, category, keywords, tags)
+
   return {
     isLogged: state.isLogged,
     loginAccount: state.loginAccount,
@@ -47,17 +52,19 @@ const mapStateToProps = (state, { location }) => {
     universe: state.universe,
     canLoadMarkets: !!getValue(state, 'universe.id'),
     hasLoadedMarkets: state.hasLoadedMarkets,
-    hasLoadedCategory: state.hasLoadedCategory,
+    hasLoadedSearch: searchTermState,
     isMobile: state.isMobile,
     markets,
     category,
     tags,
+    keywords,
   }
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: () => dispatch(loadMarkets()),
-  loadMarketsByCategory: category => dispatch(loadMarketsByCategory(category)),
+  loadMarkets: type => debounce(dispatch(loadMarkets(type))),
+  loadMarketsByCategory: category => debounce(dispatch(loadMarketsByCategory(category))),
+  loadMarketsBySearch: (search, type) => debounce(dispatch(loadMarketsBySearch(search, type))),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
 })

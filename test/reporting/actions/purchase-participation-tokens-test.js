@@ -170,4 +170,38 @@ describe('purchase participation tokens tests', () => {
       }))
     },
   })
+
+  test({
+    description: 'It should handle an null current Fee Window',
+    assertions: (done) => {
+      ReWireModule.__Rewire__('augur', {
+        api: {
+          FeeWindow: {
+            buy: (p) => {
+              assert.isNull('we should never hit this.')
+            },
+          },
+          Universe: {
+            buyParticipationTokens: (p) => { p.onSuccess('10.25') },
+          },
+        },
+        reporting: {
+          getFeeWindowCurrent: (p, cb) => {
+            assert.deepEqual(p, { universe: store.getState().universe.id })
+            assert.isFunction(cb)
+            cb(null)
+          },
+        },
+        rpc: mockRPC,
+      })
+
+      store.dispatch(purchaseParticipationTokens('10.25', false, (err, res) => {
+        assert.isNull(err)
+        assert.deepEqual(res, '10.25')
+        const expectedActions = []
+        assert.deepEqual(store.getActions(), expectedActions)
+        done()
+      }))
+    },
+  })
 })

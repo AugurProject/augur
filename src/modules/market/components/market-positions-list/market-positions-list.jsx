@@ -88,8 +88,8 @@ export default class MarketPositionsList extends Component {
                 <li />
                 <li><span>Quantity</span></li>
                 <li><span>Average <span />Price</span></li>
-                <li />
-                <li />
+                <li>Escrowed ETH</li>
+                <li>Escrowed Shares</li>
                 <li><span>Action</span></li>
               </ul>
             }

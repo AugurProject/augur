@@ -11,18 +11,16 @@ import { loadUniverse } from 'modules/app/actions/load-universe'
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay'
 import { updateModal } from 'modules/modal/actions/update-modal'
 import { closeModal } from 'modules/modal/actions/close-modal'
-import getAllMarkets from 'modules/markets/selectors/markets-all'
 import logError from 'utils/log-error'
 import networkConfig from 'config/network'
 
 import { isEmpty } from 'lodash'
 
-import { MODAL_NETWORK_MISMATCH, MODAL_ESCAPE_HATCH, MODAL_NETWORK_DISCONNECTED, MODAL_DISCLAIMER, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
+import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED, MODAL_DISCLAIMER, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
-const ESCAPE_HATCH_POLL_INTERVAL_DURATION = 30000
 
 const NETWORK_NAMES = {
   1: 'Mainnet',
@@ -91,32 +89,6 @@ function pollForNetwork(dispatch, getState) {
   }, NETWORK_ID_POLL_INTERVAL_DURATION)
 }
 
-function pollForEscapeHatch(dispatch, getState) {
-  doPollForEscapeHatch(dispatch, getState)
-  setInterval(() => {
-    doPollForEscapeHatch(dispatch, getState)
-  }, ESCAPE_HATCH_POLL_INTERVAL_DURATION)
-}
-
-function doPollForEscapeHatch(dispatch, getState) {
-  const { modal } = getState()
-  const modalShowing = !!modal.type && modal.type === MODAL_ESCAPE_HATCH
-  AugurJS.augur.api.Controller.stopped((err, stopped) => {
-    if (stopped && !modalShowing) {
-      dispatch(updateModal({
-        type: MODAL_ESCAPE_HATCH,
-        markets: getAllMarkets(),
-        disputeBonds: [],
-        initialReports: [],
-        shares: [],
-        participationTokens: [],
-      }))
-    } else if (!stopped && modalShowing) {
-      dispatch(closeModal())
-    }
-  })
-}
-
 export function connectAugur(history, env, isInitialConnection = false, callback = logError) {
   return (dispatch, getState) => {
     const { modal } = getState()
@@ -149,7 +121,6 @@ export function connectAugur(history, env, isInitialConnection = false, callback
         if (isInitialConnection) {
           pollForAccount(dispatch, getState)
           pollForNetwork(dispatch, getState)
-          pollForEscapeHatch(dispatch, getState)
         }
         callback()
       }

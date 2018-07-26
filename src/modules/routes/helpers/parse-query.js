@@ -12,7 +12,7 @@ export default function parseQuery(searchString) {
         if (pairSplit.length >= 2 && pairSplit[1]) {
           p[decodeURIComponent(pairSplit[0])] = decodeURIComponent(pairSplit[1])
         } else {
-          p[decodeURIComponent(pairSplit[0])] = ''
+          p[decodeURIComponent(pairSplit[0])] = undefined
         }
       }
     }

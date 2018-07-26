@@ -39,14 +39,14 @@ describe('utils/format-number.js', () => {
       func: 'formatPercent',
       denom: '%',
       out: {
-        value: 1000.1,
+        value: 1000.1000,
         formattedValue: 1000.1,
-        roundedValue: 1000,
-        formatted: '1,000.10',
-        rounded: '1,000',
+        roundedValue: 1000.1,
+        formatted: '1,000.1000',
+        rounded: '1,000.1000',
         minimized: '1,000.1',
         denomination: '%',
-        full: '1,000.10%',
+        full: '1,000.1000%',
         fullPrecision: '1000.1',
       },
     },
@@ -96,6 +96,21 @@ describe('utils/format-number.js', () => {
         fullPrecision: '1000.1',
       },
     },
+    {
+      func: 'formatRepTokens',
+      denom: 'REP',
+      out: {
+        value: 1000.1,
+        formattedValue: 1000.1,
+        roundedValue: 1000.1,
+        formatted: '1,000.10',
+        rounded: '1,000.10',
+        minimized: '1,000.1',
+        denomination: ' REP Tokens',
+        full: '1,000.10 REP Tokens',
+        fullPrecision: '1000.1',
+      },
+    },
   ]
 
   utils.forEach((currentUtil) => {
@@ -136,6 +151,13 @@ describe('utils/format-number.js', () => {
   describe('format gas cost different gas', () => {
     it('should return a properly formatted gas cost number', () => {
       assert.deepEqual(formatNumber.formatGasCostToEther('0x632ea0', { decimalsRounded: 8 }, 20000000), '0.00013000', 'returned gas cost formated in ether given gas price')
+    })
+  })
+
+  describe('format attoETH', () => {
+    it('should return a properly formatted attoETH number', () => {
+      const result = formatNumber.formatAttoEth('349680582682291650', { decimals: 4 })
+      assert.deepEqual(result.formatted, '0.3497', 'returned attoETH formated to 4 decimals')
     })
   })
 
