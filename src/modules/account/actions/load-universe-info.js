@@ -10,6 +10,8 @@ import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-va
 import { SCALAR } from 'modules/markets/constants/market-types'
 import { NULL_ADDRESS } from 'utils/constants'
 
+const REQUIRED_GENESIS_SUPPLY = createBigNumber('1100000000000000000000000', 10)
+
 export function loadUniverseInfo(callback = logError) {
   return (dispatch, getState) => {
     const { universe, loginAccount, marketsData } = getState()
@@ -109,7 +111,10 @@ function getUniversesInfoWithParentContext(account, currentUniverseData, parentU
         })
       }, (err) => {
         callback(result.reduce((acc, universeData) => {
-          if (universeData.parentUniverse === currentUniverseData.id) {
+          const supply = createBigNumber(universeData.supply || '0', 10)
+          if (universeData.parentUniverse === '0x0000000000000000000000000000000000000000' && supply.lt(REQUIRED_GENESIS_SUPPLY)) {
+            return acc
+          } else if (universeData.parentUniverse === currentUniverseData.id) {
             universeData.description = getUniverseName(currentUniverseData, universeData)
             universeData.isWinningUniverse = currentUniverseData.winningChildUniverseId === universeData.universe
             acc.children.push(universeData)
