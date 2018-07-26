@@ -194,6 +194,11 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   needsDisavowal: number;
 }
 
+export interface SearchRow {
+  marketId: Address;
+  content: string;
+}
+
 export interface PositionsRow<BigNumberType> {
   outcome: number;
   marketId?: Address;

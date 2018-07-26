@@ -226,7 +226,11 @@ export async function getOutcomesProfitLoss(db: Knex, augur: Augur, nowTimestamp
   return results;
 }
 
-export function formatProfitLossResults(results: Array<MarketOutcomeEarnings>): ProfitLossResults {
+export async function formatProfitLossResults(db: Knex, results: Array<MarketOutcomeEarnings>): Promise<ProfitLossResults> {
+
+  const marketNumOutcomes = await db.select("marketId", "numOutcomes").from("markets").whereIn("marketId", _.map(results, "marketId"));
+  const numOutcomesByMarket = _.keyBy(marketNumOutcomes, "marketId");
+
   // We have results! Drop the market & outcome groups, and then re-group by
   // bucket timestamp, and aggregate all of the EarningsAtTimes by bucket
   const aggregate = groupOutcomesProfitLossByBucket(results.map((r) => r.earnings)).map((bucket: Array<EarningsAtTime>) => {
@@ -236,7 +240,7 @@ export function formatProfitLossResults(results: Array<MarketOutcomeEarnings>): 
   const all = _
     .chain(results)
     .groupBy((result) => result.marketId)
-    .mapValues((results: Array<MarketOutcomeEarnings>) => {
+    .mapValues((results: Array<MarketOutcomeEarnings>, marketId: Address) => {
       const byOutcome = _
         .chain(results)
         .groupBy((result) => result.outcome)
@@ -244,7 +248,7 @@ export function formatProfitLossResults(results: Array<MarketOutcomeEarnings>): 
         .value();
 
       const array = [];
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < numOutcomesByMarket[marketId].numOutcomes; i++) {
         array.push(byOutcome[i.toString()] || null);
       }
 
@@ -265,7 +269,7 @@ export function getProfitLoss(db: Knex, augur: Augur, universe: Address|null|und
       if (results === null) {
         callback(null, { aggregate: bucketRangeByInterval(startTime || 0, endTime || nowTimestamp, periodInterval).slice(1), all: {} });
       } else {
-        callback(null, formatProfitLossResults(results));
+        formatProfitLossResults(db, results).then((results) => callback(null, results)).catch(callback);
       }
     }).catch(callback);
 }
