@@ -23,7 +23,7 @@ const MarketAdditonalDetails = (p) => {
             />
           }
           <h4>Resolution Source:</h4>
-          <span>{resolutionSource ? <a href={resolutionSource} target="_blank" rel="noopener noreferrer">{resolutionSource}</a> : 'General knowledge'}</span>
+          <span>{resolutionSource ? <span>{resolutionSource}</span> : 'General knowledge'}</span>
           { marketType === SCALAR &&
             <p className={Styles[`MarketAdditionalDetails__details-helper-text`]}>
               If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
