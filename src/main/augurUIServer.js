@@ -24,10 +24,10 @@ function AugurUIServer() {
 
 AugurUIServer.prototype.onStartUiServer = function (event, usePort) {
   this.port = usePort || this.port;
-  if (this.server === null) this.startServer()
+  if (this.server === null) this.startServer(event)
 }
 
-AugurUIServer.prototype.startServer = function () {
+AugurUIServer.prototype.startServer = function (event) {
   log.info("Starting Augur UI Server");
   const port = this.port;
   try {
@@ -46,7 +46,7 @@ AugurUIServer.prototype.startServer = function () {
       };
     }
 
-    self.window.webContents.send("ssl", options !== null);
+    event.sender.send("ssl", options !== null);
 
     const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build');
     this.app.use(express.static(serverBuildPath));
@@ -55,11 +55,11 @@ AugurUIServer.prototype.startServer = function () {
       server.on('error', (e) => {
         log.error(e);
         if (e.code === 'EADDRINUSE') {
-          self.window.webContents.send("error", {
+          event.sender.send("error", {
             error: `Port ${port} is in use. Please free up port and close and restart this app.`
           });
         } else {
-          self.window.webContents.send("error", {
+          event.sender.send("error", {
             error: e.toString()
           });
         }
@@ -69,9 +69,7 @@ AugurUIServer.prototype.startServer = function () {
     this.server = this.app.listen(port);
   } catch (err) {
     log.error(err);
-    this.window.webContents.send("error", {
-      error: err.toString()
-    });
+    event.sender.send("error", { error: err.toString()});
   }
 }
 
@@ -85,17 +83,17 @@ AugurUIServer.prototype.stopServer = function () {
   this.server && this.server.close();
 }
 
-AugurUIServer.prototype.restart = function (dontClear) {
+AugurUIServer.prototype.restart = function (event, dontClear) {
   // clear any message that occured to start server
   if (!dontClear) { // because of disable ssl button
-    this.window.webContents.send("showNotice", {
+    event.sender.send("showNotice", {
       message: "",
       class: "success"
     });
   }
 
   this.server && this.server.close();
-  this.startServer();
+  this.startServer(event);
 }
 
 AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
@@ -108,7 +106,7 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.unlinkSync(certPath);
       fs.unlinkSync(keyPath);
     }
-    this.restart(true);
+    this.restart(event, true);
 
     return;
   }
@@ -118,14 +116,14 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
   kg.getPrime(1024, (err, p) => {
     if (err) {
       log.error(err)
-      this.window.webContents.send('error', { error: err })
+      event.sender.send('error', { error: err })
       return;
     }
     log.info("finalize key and cert files");
     kg.getPrime(1024, (err, q) => {
       if (err) {
         log.error(err)
-        this.window.webContents.send('error', { error: err })
+        event.sender.send('error', { error: err })
         return;
       }
 
@@ -142,11 +140,11 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
       fs.writeFileSync(certPath, cert)
 
       log.info("self signed certificate files generated")
-      return this.restart();
+      return this.restart(event);
     });
   });
 
-  this.window.webContents.send("showNotice", {
+  event.sender.send("showNotice", {
     message: "Enabling SSL for Ledger...",
     class: "success"
   });
