@@ -22,6 +22,30 @@ Download the executable of the [latest release](https://github.com/AugurProject/
 4. Once synced to 100%, click "Open Augur App" to deploy the UI locally in your browser. 
 5. Authenticate using [MetaMask](https://metamask.io/), [Edge](https://edge.app/), [Ledger](https://www.ledgerwallet.com/) or [Trezor](https://trezor.io/). 
 
+### From source
+If you want to run Augur App from source, you will need git and npm installed on your machine. Follow these steps:
+```bash
+# Clone this repository
+git clone https://github.com/AugurProject/augur-app
+# Go into the repository
+cd augur-app
+# Install dependencies
+npm install
+# Run the app. NOTE: This will have to install native dependencies which may take a long time depending on your environment.
+npm start
+```
+Once the application is running, wait for the Sync progress to reach 100%, then the "Open Augur UI" button will light up and you can click on it to open the Augur UI. Note that the Augur App must remain open while using the UI, or it will stop functioning.
+
+If the instructions above don't work try:
+```
+yarn
+yarn start
+```
+
+### To build the binary
+
+Do: `npm run make`
+
 ## Selecting An Ethereum Node
 
 You have two options for connecting to an Ethereum node: local or remote.
