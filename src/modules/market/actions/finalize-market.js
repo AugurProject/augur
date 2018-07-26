@@ -7,6 +7,7 @@ export const sendFinalizeMarket = (marketId, callback = logError) => (dispatch, 
   const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   augur.api.Market.finalize({ tx: { to: marketId },
+    meta: loginAccount.meta,
     onSent: noop,
     onSuccess: noop,
     onFailed: err => callback(err),
