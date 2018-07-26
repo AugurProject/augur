@@ -14,6 +14,7 @@ export default (includeCurrent = true, callback = logError) => (dispatch, getSta
     Object.keys(feeWindowsWithUnclaimedTokens).forEach((feeWindowID) => {
       augur.api.FeeWindow.withdrawInEmergency({
         tx: { estimateGas: true, to: feeWindowID },
+        meta: loginAccount.meta,
         onSent: noop,
         onSuccess: noop,
         onFailed: callback,
