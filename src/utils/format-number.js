@@ -88,8 +88,8 @@ export function formatPercent(num, opts) {
   return formatNumber(
     num,
     {
-      decimals: 4,
-      decimalsRounded: 4,
+      decimals: 2,
+      decimalsRounded: 0,
       denomination: '%',
       positiveSign: false,
       zeroStyled: false,

@@ -30,7 +30,7 @@ export default class CreateMarketPreview extends Component {
 
   static formatReporterFee(value) {
     if (!value || value === 0 || isNaN(value)) return 0
-    return formatPercent(createBigNumber(100).dividedBy(speedomatic.fix(value)).toNumber())
+    return formatPercent(createBigNumber(100).dividedBy(speedomatic.fix(value)).toNumber(), { decimals: 4, decimalsRounded: 4 })
   }
 
   static getExpirationDate(p) {
@@ -156,7 +156,7 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + formatPercent(newMarket.settlementFee).full + ')' : ''} + Reporting Fee ({s.reporterFeePercentage.full})</span>
+                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + formatPercent(newMarket.settlementFee, { decimals: 4, decimalsRounded: 4 }).full + ')' : ''} + Reporting Fee ({s.reporterFeePercentage.full})</span>
               </li>
               <li>
                 <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
