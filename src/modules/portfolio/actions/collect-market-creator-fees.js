@@ -6,7 +6,7 @@ import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const collectMarketCreatorFees = (getBalanceOnly, marketId, callback = logError) => (dispatch, getState) => {
-  const { loginAccount } = getState();
+  const { loginAccount } = getState()
   if (!loginAccount.address) return callback(null)
   augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketId } }, (err, marketMailboxAddress) => {
     if (err) return callback(err)
