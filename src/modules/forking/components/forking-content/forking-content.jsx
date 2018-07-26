@@ -27,12 +27,12 @@ const ForkingContent = (p) => {
         />
         {forkWindowActive &&
           <p>
-            If you are a REP holder, please collect any outstanding REP on the Portfolio: Reporting page. Then, migrate your REP to your chosen child universe. All REP migrated during the forking period will receive a 5% bonus. The forking period will end on {unixFormattedDate.formattedLocalShort} or when at least {threshold.formatted} REP has been migrated to a single child universe. Read more about the forking process <a href="http://docs.augur.net/#fork-state" target="_blank">here</a>.
+            If you are a REP holder, please collect any outstanding REP on the Portfolio: Reporting page. Then, migrate your REP to your chosen child universe. All REP migrated during the forking period will receive a 5% bonus. The forking period will end on {unixFormattedDate.formattedLocalShort} or when at least {threshold.formatted} REP has been migrated to a single child universe. Read more about the forking process <a href="http://docs.augur.net/#fork-state" target="_blank" rel="noopener noreferrer">here</a>.
           </p>
         }
         {!forkWindowActive &&
           <p>
-            If you are a REP holder, please collect any outstanding REP on the Portfolio: Reporting page. Then, migrate to your chosen child universe. The forking period has ended. Read more about the forking process <a href="http://docs.augur.net/#fork-state" target="_blank">here</a>.
+            If you are a REP holder, please collect any outstanding REP on the Portfolio: Reporting page. Then, migrate to your chosen child universe. The forking period has ended. Read more about the forking process <a href="http://docs.augur.net/#fork-state" target="_blank" rel="noopener noreferrer">here</a>.
           </p>
         }
         <div className={Styles.ForkingContent__buttonBar}>

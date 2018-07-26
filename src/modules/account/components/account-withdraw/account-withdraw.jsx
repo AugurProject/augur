@@ -129,7 +129,7 @@ export default class AccountWithdraw extends Component {
         <div className={Styles.AccountWithdraw__main}>
           <div className={Styles.AccountWithdraw__description}>
             <p>Withdraw Ethereum or Reputation from your Trading Account into another account.</p>
-            <a href="https://shapeshift.io/" target="_blank">Use Shapeshift</a>
+            <a href="https://shapeshift.io/" target="_blank" rel="noopener noreferrer">Use Shapeshift</a>
           </div>
           <div className={Styles.AccountWithdraw__form}>
             <div className={Styles['AccountWithdraw__form-fields']}>
