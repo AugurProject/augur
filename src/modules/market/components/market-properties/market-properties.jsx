@@ -25,6 +25,7 @@ const MarketProperties = (p) => {
   if (getValue(p, 'consensus.isInvalid')) {
     consensus = 'Invalid'
   }
+
   return (
     <article>
       <section className={Styles.MarketProperties}>
@@ -40,6 +41,10 @@ const MarketProperties = (p) => {
           <li>
             <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
             <span className="value_expires">{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
+          </li>
+          <li>
+            <span>Resolution Source</span>
+            <span className={Styles.MarketProperties__resolutionSource}>{ p.resolutionSource || 'General Knowledge' }</span>
           </li>
           {consensus &&
           <li>
