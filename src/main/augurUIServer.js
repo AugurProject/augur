@@ -140,7 +140,7 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
     });
   });
 
-  this.window.webContents.send("showNotice", {
+  event.sender.send("showNotice", {
     message: "Enabling SSL for Ledger...",
     class: "success"
   });
