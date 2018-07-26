@@ -17,6 +17,14 @@ describe('modules/account/actions/load-universe-info.js', () => {
             payout: [],
             isInvalid: false,
             numMarkets: 15,
+            supply: '1100000000000000000000000',
+            parentUniverse: '0x0000000000000000000000000000000000000000',
+          }, {
+            universe: '0xGENESIS_2',
+            payout: [],
+            isInvalid: false,
+            numMarkets: 0,
+            supply: '50000000000000000000000',
             parentUniverse: '0x0000000000000000000000000000000000000000',
           }, {
             universe: '0xCHILD_1',
@@ -96,6 +104,7 @@ describe('modules/account/actions/load-universe-info.js', () => {
               isInvalid: false,
               numMarkets: 15,
               openInterest: '1000000',
+              supply: '1100000000000000000000000',
               parentUniverse: '0x0000000000000000000000000000000000000000',
               description: 'GENESIS',
               isWinningUniverse: false,
