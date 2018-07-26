@@ -44,7 +44,10 @@ yarn start
 
 ### To build the binary
 
-Do: `npm run make`
+    Windows: npm run make-win  
+    MacOs: npm run make-mac 
+    Linux: npm run make-linux  
+    All: npm run make-all
 
 ## Selecting An Ethereum Node
 
