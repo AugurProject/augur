@@ -12,6 +12,7 @@ import Styles from 'modules/market/components/market-header/market-header.styles
 import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
+import CoreProperties from 'modules/market/components/market-header/core-properties'
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -22,7 +23,7 @@ export default class MarketHeader extends Component {
     maxPrice: PropTypes.instanceOf(BigNumber).isRequired,
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     market: PropTypes.object.isRequired,
-    currentTimestamp: PropTypes.string.isRequired,
+    currentTimestamp: PropTypes.number.isRequired,
     marketType: PropTypes.string,
     scalarDenomination: PropTypes.string,
     resolutionSource: PropTypes.any,
@@ -40,7 +41,6 @@ export default class MarketHeader extends Component {
   render() {
     const {
       clearSelectedOutcome,
-      coreProperties,
       description,
       details,
       history,
@@ -51,6 +51,7 @@ export default class MarketHeader extends Component {
       maxPrice,
       scalarDenomination,
       market,
+      currentTimestamp,
     } = this.props
     const s = this.state
     const detailsPresent = (details != null && details.length > 0) || (marketType === SCALAR)
@@ -77,9 +78,32 @@ export default class MarketHeader extends Component {
           }
         </div>
         <div className={Styles[`MarketHeader__main-values`]}>
-          <h1 className={Styles.MarketHeader__description}>
-            {description}
-          </h1>
+          <div className={Styles[`MarketHeader__descContainer`]}>
+            <h1 className={Styles.MarketHeader__description}>
+              {description}
+            </h1>
+            <div className={Styles.MarketHeader__descriptionContainer}>
+              <div className={classNames(Styles[`MarketHeader__details`])} style={{marginBottom: '20px'}}>
+                <h4>Resolution Source</h4>
+                <span>{resolutionSource || 'General knowledge'}</span>
+              </div>
+              <div className={classNames(Styles[`MarketHeader__details`])}>
+                <h4>Additional Details</h4>
+                <textarea
+                  ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+                  className={Styles['MarketHeader__AdditionalDetails-text']}
+                  disabled
+                  readOnly
+                  value={details}
+                />
+                { marketType === SCALAR &&
+                  <span>
+                  If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
           <div
             className={classNames(
               Styles.MarketHeader__properties,
@@ -88,54 +112,9 @@ export default class MarketHeader extends Component {
               },
             )}
           >
-            <CoreProperties market={market}/>
+            <CoreProperties market={market} currentTimestamp={currentTimestamp} />
           </div>
         </div>
-        <div
-          className={classNames(
-            Styles[`MarketHeader__resolution-source`],
-            {
-              [Styles[`MarketHeader__resolution-source--empty_details`]]: !detailsPresent,
-            },
-          )}
-        >
-          <h4>Resolution Source:</h4>
-          <span>{resolutionSource || 'General knowledge'}</span>
-        </div>
-        <div className={Styles[`MarketHeader__details-wrapper`]}>
-          { detailsPresent &&
-            <button
-              className={Styles[`MarketHeader__details-button`]}
-              onClick={() => toggleHeight(this.marketDetails, s.areMarketDetailsVisible, () => this.setState({ areMarketDetailsVisible: !s.areMarketDetailsVisible }))}
-            >
-              additional details {s.areMarketDetailsVisible ? <ChevronUp /> : <ChevronDown />}
-            </button>
-          }
-          <div
-            ref={(marketDetails) => { this.marketDetails = marketDetails }}
-            className={classNames(Styles[`MarketHeader__details-container`], ToggleHeightStyles['toggle-height-target'])}
-          >
-            <div
-              className={details ? Styles.MarketHeader__details : Styles.MarketHeader__no_details}
-            >
-              { details &&
-                <textarea
-                  ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
-                  className={Styles['MarketHeader__AdditionalDetails-text']}
-                  disabled
-                  readOnly
-                  value={details}
-                />
-              }
-              { marketType === SCALAR &&
-              <p>
-              If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
-              </p>
-              }
-            </div>
-          </div>
-        </div>
-
       </section>
     )
   }
