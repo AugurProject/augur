@@ -19,7 +19,7 @@ const MetaMask = ({ connectMetaMask, isMetaMaskPresent }) => (
           MetaMask is a secure identity vault that allows you to manage your identities across different dApps.
         </span>
         <span>
-          Install the browser plugin at <a href="https://metamask.io/">metamask.io</a>.
+          Install the browser plugin at <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer">metamask.io</a>.
         </span>
         <hr />
         <span>
