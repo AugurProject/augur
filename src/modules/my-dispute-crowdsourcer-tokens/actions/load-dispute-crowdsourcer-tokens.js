@@ -14,6 +14,7 @@ export default (callback = logError) => (dispatch, getState) => {
     Object.keys(disputeCrowdsourcerTokens).forEach((disputeCrowdsourcerID) => {
       augur.api.DisputeCrowdsourcer.withdrawInEmergency({
         tx: { estimateGas: true, to: disputeCrowdsourcerID },
+        meta: loginAccount.meta,
         onSent: noop,
         onFailed: callback,
       })

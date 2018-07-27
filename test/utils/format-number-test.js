@@ -39,7 +39,7 @@ describe('utils/format-number.js', () => {
       func: 'formatPercent',
       denom: '%',
       out: {
-        value: 1000.1,
+        value: 1000.10,
         formattedValue: 1000.1,
         roundedValue: 1000,
         formatted: '1,000.10',

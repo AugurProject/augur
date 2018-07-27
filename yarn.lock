@@ -612,9 +612,9 @@ augur-blockstream@5.0.0:
     source-map-support "0.5.6"
     uuid "3.2.1"
 
-augur-core@1.0.0-21:
-  version "1.0.0-21"
-  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.0.0-21.tgz#9e66470c79db15d018bae31c03a497a075c31e76"
+augur-core@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/augur-core/-/augur-core-1.1.0.tgz#957aba6f9ad42c50e86736b1f2a79962fe2952b4"
   dependencies:
     "@types/get-port" "3.2.0"
     "@types/mkdirp" "0.5.1"
@@ -644,12 +644,12 @@ augur-core@1.0.0-21:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.0.0-23:
-  version "5.0.0-23"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0-23.tgz#ce8f4b850a2fa72289ce64c6bd87d6e9a5d74eee"
+augur.js@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.0.0.tgz#1afcabdbf5eb486503f452a5d68494fcefc04ba9"
   dependencies:
     async "1.5.2"
-    augur-core "1.0.0-21"
+    augur-core "1.1.0"
     bignumber.js "6.0.0"
     clone "2.1.1"
     columnify "1.5.4"

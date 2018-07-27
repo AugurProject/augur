@@ -7,10 +7,10 @@ export const migrateMarketThroughFork = (marketId, estimateGas = false, callback
   const { loginAccount } = getState()
   augur.api.Market.migrateThroughOneFork({
     tx: {
-      meta: loginAccount.meta,
       to: marketId,
       estimateGas,
     },
+    meta: loginAccount.meta,
     onSent: () => {
       // if we aren't estimatingGas, close the modal once the transaction is sent.
       if (!estimateGas) dispatch(closeModal())

@@ -207,9 +207,9 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
-      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false })
-      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false })
-      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
+      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
+      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
+      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
       market.isRequiredToReportByAccount = !!marketReport

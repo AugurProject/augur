@@ -14,6 +14,7 @@ export default (callback = logError) => (dispatch, getState) => {
     Object.keys(initialReporters).forEach((initialReporterID) => {
       augur.api.InitialReporter.withdrawInEmergency({
         tx: { estimateGas: true, to: initialReporterID },
+        meta: loginAccount.meta,
         onSent: noop,
         onSuccess: noop,
         onFailed: callback,
