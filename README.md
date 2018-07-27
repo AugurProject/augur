@@ -53,7 +53,7 @@ yarn start
 
 You have two options for connecting to an Ethereum node: local or remote.
 
-- Run a synced [Geth](https://github.com/ethereum/go-ethereum) or [Parity](https://www.parity.io) client locally.
+- Run a synced [Geth](https://github.com/ethereum/go-ethereum) or [Parity](https://www.parity.io) client locally. (The quickest way to do this is by starting up a Geth light node by running the following command: `geth --syncmode="light" --rpc --ws --wsorigins='127.0.0.1,http://127.0.0.1:8080,https://127.0.0.1:8080'`)
 
     or
 
