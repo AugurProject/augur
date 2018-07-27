@@ -10,34 +10,37 @@ const KeyGen = require('selfsigned.js');
 const helmet = require('helmet');
 
 function AugurUIServer() {
-  this.app = express();
-  this.app.use(helmet({
-    hsts: false
-  }));
   this.server = null;
-  this.port = 8080;
+  this.uiPort = 8080;
   this.window = null;
   this.appDataPath = appData("augur");
   ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
   ipcMain.on('startUiServer', this.onStartUiServer.bind(this))
 }
 
-AugurUIServer.prototype.onStartUiServer = function (event, usePort) {
-  this.port = usePort || this.port;
+AugurUIServer.prototype.onStartUiServer = function (event, data) {
+  this.uiPort = data.uiPort || this.uiPort;
+  this.sslPort = data.sslPort || this.sslPort
   if (this.server === null) this.startServer(event)
 }
 
 AugurUIServer.prototype.startServer = function (event) {
   log.info("Starting Augur UI Server");
-  const port = this.port;
+  const port = this.uiPort;
+  const sslPort = this.sslPort;
+
   try {
-    const self = this;
+    this.app = express();
+    this.httpApp = express();
+    this.app.use(helmet({
+      hsts: false
+    }));
+
     let options = null;
 
     const key = path.join(this.appDataPath, 'localhost.key')
     const cert = path.join(this.appDataPath, 'localhost.crt')
 
-    log.info("Looking for certificate files in " + this.appDataPath)
     if (fs.existsSync(key) && fs.existsSync(cert)) {
       log.info("Found localhost certificate and key");
       options = {
@@ -46,17 +49,30 @@ AugurUIServer.prototype.startServer = function (event) {
       };
     }
 
-    event.sender.send("ssl", options !== null);
-
+    const isSslEnabled = options !== null
+    event.sender.send("ssl", isSslEnabled);
+    if (isSslEnabled) {
+      const self = this
+      this.httpApp.set('port', port)
+      this.httpApp.get("*", function (req, res) {
+          res.redirect("https://" + req.hostname + ":" + sslPort + "/" + req.path);
+      });
+      this.httpListener = http.createServer(this.httpApp).listen(this.httpApp.get('port'), function() {
+        console.log('Express HTTP server listening on port ' + self.httpApp.get('port'));
+      });
+    } else {
+      if (this.httpListener) this.httpListener.close()
+    }
     const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build');
     this.app.use(express.static(serverBuildPath));
+
     this.app.listen = function () {
-      const server = options === null ? http.createServer(this) : https.createServer(options, this)
+      const server = isSslEnabled ? https.createServer(options, this) : http.createServer(this)
       server.on('error', (e) => {
         log.error(e);
         if (e.code === 'EADDRINUSE') {
           event.sender.send("error", {
-            error: `Port ${port} is in use. Please free up port and close and restart this app.`
+            error: `Port ${isSslEnabled ? sslPort : port} is in use. Please free up port and close and restart this app.`
           });
         } else {
           event.sender.send("error", {
@@ -66,7 +82,7 @@ AugurUIServer.prototype.startServer = function (event) {
       });
       return server.listen.apply(server, arguments);
     }
-    this.server = this.app.listen(port);
+    this.server = this.app.listen(isSslEnabled ? sslPort : port);
   } catch (err) {
     log.error(err);
     event.sender.send("error", { error: err.toString()});
@@ -97,7 +113,6 @@ AugurUIServer.prototype.restart = function (event, dontClear) {
 }
 
 AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
-
   const certPath = path.join(this.appDataPath, 'localhost.crt');
   const keyPath = path.join(this.appDataPath, 'localhost.key');
 
