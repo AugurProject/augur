@@ -50,7 +50,9 @@ function loadAccount(dispatch, existing, env, callback) {
     let account = existing
     if (existing !== accounts[0]) {
       account = accounts[0]
-      if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
+      console.log(process.env.NODE_ENV)
+      console.log(account)
+      if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN || process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development')) {
         dispatch(useUnlockedAccount(account))
       } else {
         dispatch(logout())
