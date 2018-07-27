@@ -1,4 +1,4 @@
-import { parallel } from "async";
+import { series } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
@@ -243,7 +243,7 @@ function getMarketsReportingParticipants(db: Knex, reporter: Address, universe: 
     .where("markets.universe", universe)
     .join("market_state", "markets.marketId", "market_state.marketId");
 
-  parallel({
+  series({
     initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
     crowdsourcers: (next: AsyncCallback) => crowdsourcersQuery.asCallback(next),
     forkedMarket: (next: AsyncCallback) => forkedMarketQuery.asCallback(next),
@@ -289,7 +289,7 @@ function getStakedRepResults(db: Knex, reporter: Address, universe: Address, cal
     .where("initial_reports.reporter", reporter)
     .whereNot("initial_reports.redeemed", 1);
 
-  parallel({
+  series({
     crowdsourcers: (next: AsyncCallback) => crowdsourcerQuery.asCallback(next),
     initialReporters: (next: AsyncCallback) => initialReportersQuery.asCallback(next),
   }, (err: Error|null, result: StakedRepResults) => {

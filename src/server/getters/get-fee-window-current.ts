@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { Address, AsyncCallback, FeeWindowRow, FeeWindowState, UIFeeWindowCurrent } from "../../types";
-import { parallel } from "async";
+import { series } from "async";
 import { BigNumber } from "bignumber.js";
 import { sumBy } from "./database";
 import { ZERO } from "../../constants";
@@ -62,7 +62,7 @@ export function getFeeWindowCurrent(db: Knex, augur: Augur, universe: Address, r
         })
         .where("fee_windows.feeWindow", feeWindowRow.feeWindow);
 
-      parallel({
+      series({
         participantContributions: (next: AsyncCallback) => {
           participantQuery.asCallback((err: Error|null, results?: Array<{ amountStaked: BigNumber }>) => {
             if (err || results == null || results.length === 0) return next(err, ZERO);

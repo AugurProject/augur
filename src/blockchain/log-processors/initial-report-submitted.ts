@@ -1,6 +1,6 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
-import { parallel } from "async";
+import { series } from "async";
 import { FormattedEventLog, ErrorCallback, AsyncCallback, Address, ReportingState } from "../../types";
 import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindow, updateDisputeRound, refreshMarketMailboxEthBalance } from "./database";
 import { augurEmitter } from "../../events";
@@ -24,7 +24,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
           payoutId,
           redeemed: false,
         };
-        parallel({
+        series({
           initialReport: (next: AsyncCallback) => {
             augur.api.Market.getInitialReporter({ tx: { to: log.market } }, (err: Error|null, initialReporter?: Address): void => {
               if (err) return next(err);
@@ -52,7 +52,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
 }
 
 export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel(
+  series(
     {
       marketState: (next: AsyncCallback) => {
         rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, (err: Error|null) => {

@@ -6,10 +6,10 @@ const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
 const {processMarketFinalizedLog, processMarketFinalizedLogRemoval} = require("../../../../build/blockchain/log-processors/market-finalized");
 const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const {parallel} = require("async");
+const {series} = require("async");
 
 const getMarketState = (db, params, callback) => {
-  parallel({
+  series({
     market: (next) => getMarketsWithReportingState(db, ["markets.marketId", "market_state.reportingState", "marketCreatorFeesBalance"]).first().where({"markets.marketId": params.log.market}).asCallback(next),
     winningPayout: (next) => db("payouts").where({marketId: params.log.market, "winning": 1}).first().asCallback(next),
   }, callback);

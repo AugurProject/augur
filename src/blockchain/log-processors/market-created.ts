@@ -1,4 +1,4 @@
-import { forEachOf, parallel } from "async";
+import { forEachOf, series, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
@@ -24,7 +24,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     if (err) return callback(err);
     if (!onMarketContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
     const universePayload: {} = { tx: { to: log.universe, send: false } };
-    parallel({
+    series({
       reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
       designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
     }, (err?: any, onUniverseContractData?: any): void => {
@@ -101,7 +101,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         }, (err: Error|null): void => {
           if (err) return callback(err);
           const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log!.outcomes) ? log!.outcomes! : new Array(numOutcomes).fill(null);
-          parallel([
+          series([
             (next: AsyncCallback): void => {
               db.insert(marketsDataToInsert).into("markets").asCallback(next);
             },
@@ -136,7 +136,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
 }
 
 export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel([
+  series([
     (next: AsyncCallback): void => {
       db.from("markets").where({ marketId: log.market }).del().asCallback(next);
     },
