@@ -19,7 +19,7 @@ Download the executable of the [latest release](https://github.com/AugurProject/
 1. Download the executable for your respective operating system, double click to install.
 2. Select your configuration: Mainnet, Local, Rinkeby, Ropsten, or Kovan. 
 3. Select "Connect", and Augur App will begin to sync Augur Node in the background. 
-4. Once synced to 100%, click "Open Augur App" to deploy the UI locally in your browser. 
+4. When the sync progress gets to around 99.9%, the "Open Augur App" button will become clickable. (This is because Augur App intentionally has a slight syncing delay.) Click it to deploy the UI locally in your browser.
 5. Authenticate using [MetaMask](https://metamask.io/), [Edge](https://edge.app/), [Ledger](https://www.ledgerwallet.com/) or [Trezor](https://trezor.io/). 
 
 ### From source
