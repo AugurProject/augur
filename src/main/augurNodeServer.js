@@ -6,12 +6,17 @@ const fs = require('fs')
 const path = require('path')
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
+const debounce = require('debounce');
 
 const REMOTE_DELAY_WAIT = 60*1000;
 const LOCAL_DELAY_WAIT = 1*1000;
 
 const REMOTE_MAX_RETRIES = 5;
 const LOCAL_MAX_RETRIES = 3;
+
+const AUGUR_NODE_RESTART_RETRIES = 1;
+const AUGUR_NODE_RESTART_WAIT = 5*1000;
+const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000;
 
 const defaultConfig = {
   'network': 'mainnet',
@@ -72,6 +77,7 @@ function AugurNodeServer() {
   this.augur = new Augur()
   this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
   this.window = null
+  this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES;
   ipcMain.on('requestLatestSyncedBlock', this.requestLatestSyncedBlock.bind(this))
   ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
   ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
@@ -88,6 +94,7 @@ AugurNodeServer.prototype.setWindow = function (window) {
 
 AugurNodeServer.prototype.startServer = function () {
   try {
+    log.info("Starting Server");
     var propagationDelayWaitMillis = REMOTE_DELAY_WAIT;
     var maxRetries = REMOTE_MAX_RETRIES;
     if (this.networkConfig.http.indexOf("localhost") > -1 || this.networkConfig.http.indexOf("127.0.0.1") > -1) {
@@ -98,16 +105,25 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.clearLoggers();
     this.augurNodeController.addLogger(log);
 
+    this.augurNodeController.augur.events.nodes.ethereum.on("disconnect", this.onEthereumDisconnect.bind(this));
+    this.augurNodeController.augur.events.nodes.ethereum.on("reconnect", this.onEthereumReconnect.bind(this));
     this.augurNodeController.controlEmitter.on(ControlMessageType.ServerError, this.onError.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
     this.augurNodeController.start(function (err) {
-      log.error(err)
-      this.window.webContents.send('error', {
-        error: err.message
-      })
+      if (this.retriesRemaining > 0) {
+        this.window.webContents.send('error', {
+          error: `ERROR: ${err.message}. RESTARTING.`
+        })
+        this.retriesRemaining--;
+        this.restartOnFailure();
+      } else {
+        this.window.webContents.send('error', {
+          error: `ERROR: ${err.message}.`
+        })
+      }
     }.bind(this))
   } catch (err) {
     log.error(err)
@@ -117,8 +133,22 @@ AugurNodeServer.prototype.startServer = function () {
   }
 }
 
+AugurNodeServer.prototype.onEthereumDisconnect = function (event) {
+  this.window.webContents.send('error', {
+    error: "Disconnected from Ethereum Node. Attempting to reconnect..."
+  })
+}
+
+AugurNodeServer.prototype.onEthereumReconnect = function (event) {
+  this.window.webContents.send('showNotice', {
+    message: "Reconnected",
+    class: "success"
+  });
+}
+
 AugurNodeServer.prototype.restart = function () {
   try {
+    log.info("Restarting Server");
     this.shutDownServer()
     setTimeout(this.startServer.bind(this), 2000)
   } catch (err) {
@@ -129,17 +159,16 @@ AugurNodeServer.prototype.restart = function () {
   }
 }
 
-AugurNodeServer.prototype.onWarning = function (err) {
+AugurNodeServer.prototype.onError = function (err) {
   const errorMessage = (err || {}).message || 'Unexpected Error'
   this.window.webContents.send('error', {
     error: errorMessage
   })
 }
 
-AugurNodeServer.prototype.onError = function (err) {
-  this.onWarning(err)
-  this.shutDownServer()
-}
+AugurNodeServer.prototype.restartOnFailure = debounce(function () {
+  this.restart()
+}, AUGUR_NODE_RESTART_WAIT)
 
 AugurNodeServer.prototype.onBulkSyncStarted = function () {
   log.info('Sync with blockchain started.')
@@ -183,9 +212,7 @@ AugurNodeServer.prototype.onResetConfig = function (event) {
   }
 }
 
-
 AugurNodeServer.prototype.onReset = function (event, data) {
-
   try {
     if (this.augurNodeController.isRunning()) {
       return event.sender.send('noResetDatabase')
@@ -195,7 +222,6 @@ AugurNodeServer.prototype.onReset = function (event, data) {
       this.augurNodeController.resetDatabase(id)
     }
   } catch (err) {
-    log.error(err)
     log.error(err)
     this.window.webContents.send('error', {
       error: err
@@ -210,6 +236,7 @@ AugurNodeServer.prototype.onStartNetwork = function (event, data) {
     this.config.network = data.network
     this.config.networks[data.network] = data.networkConfig
     this.networkConfig = this.config.networks[this.config.network]
+    this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES;
     this.restart()
 
     const waiting = setInterval(() => {
@@ -243,6 +270,15 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
   this.augurNodeController.requestLatestSyncedBlock()
     .then((syncedBlockInfo) => {
       event.sender.send('latestSyncedBlock', syncedBlockInfo)
+      const blocksBehind = syncedBlockInfo.highestBlockNumber - syncedBlockInfo.lastSyncBlockNumber;
+      if (blocksBehind > MAX_BLOCKS_BEHIND_BEFORE_RESTART) {
+        const message = `Behind by ${blocksBehind}. Restarting to bulk sync.`
+        log.info(message)
+        this.window.webContents.send('error', {
+          error: message
+        })
+        this.restart();
+      }
     }).catch((err) => {
       log.error(err)
       this.window.webContents.send('error', {
@@ -262,7 +298,7 @@ AugurNodeServer.prototype.disconnectServerMessage = function () {
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
-    log.info('Stopping Augur Node Server')
+    log.info('Calling Augur Node Controller Shutdown')
     this.augurNodeController.shutdown()
     this.disconnectServerMessage()
   } catch (err) {
