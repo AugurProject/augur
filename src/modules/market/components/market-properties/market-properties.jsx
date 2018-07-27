@@ -53,7 +53,7 @@ const MarketProperties = (p) => {
             <span className="value_expires">{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
           </li>
           {showResolution &&
-            <li>
+            <li className={Styles.MarketProperties__resolutionSource}>
               <span>Resolution Source</span>
               <span className={Styles.MarketProperties__resolutionSource}>{ p.resolutionSource || 'General Knowledge' }</span>
             </li>
