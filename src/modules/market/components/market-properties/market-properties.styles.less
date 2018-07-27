@@ -41,12 +41,20 @@
 }
 
 .MarketProperties__meta {
+  display: flex;
+  flex-wrap: nowrap;
+
   > li {
     display: inline-block;
     margin-left: 2em;
 
     &:first-child {
       margin-left: 0;
+    }
+
+    &.MarketProperties__resolutionSource {
+      flex: 1 0 160px;
+      padding-right: 1rem;
     }
 
     > span {
@@ -65,6 +73,11 @@
   }
 }
 
+.MarketProperties__resolutionSource {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .MarketProperties__trade {
   &:extend(.button--purple all);
 
@@ -81,7 +94,7 @@
   margin-left: 3em;
 }
 
-@media @breakpoint-mobile {
+@media @breakpoint-small-desktop {
   .MarketProperties {
     align-items: flex-end;
   }
@@ -99,6 +112,11 @@
 
       &:first-child {
         margin-left: 1rem;
+      }
+
+      &.MarketProperties__resolutionSource {
+        flex: 1 0 auto;
+        max-width: 100%;
       }
     }
   }

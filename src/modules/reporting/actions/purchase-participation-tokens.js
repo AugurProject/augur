@@ -10,7 +10,7 @@ export const purchaseParticipationTokens = (amount, estimateGas = false, callbac
   augur.reporting.getFeeWindowCurrent({ universe: universe.id }, (err, currFeeWindowInfo) => {
     if (err) return callback(err)
     let methodFunc = augur.api.FeeWindow.buy
-    let address = currFeeWindowInfo.feeWindow
+    let address = currFeeWindowInfo ? currFeeWindowInfo.feeWindow : null
     if (address == null) {
       methodFunc = augur.api.Universe.buyParticipationTokens
       address = universe.id

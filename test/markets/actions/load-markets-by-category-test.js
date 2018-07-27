@@ -46,12 +46,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': true },
         },
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': false },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': false },
         },
       ]
 
@@ -65,12 +65,12 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': true },
         },
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': false },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': false },
         },
       ]
 
@@ -84,8 +84,8 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions, loadMarketsInfoIfNotLoaded) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': true },
         },
       ]
 
@@ -100,8 +100,8 @@ describe('modules/markets/actions/load-markets-by-category.js', () => {
     assertions: (actions, loadMarketsInfoIfNotLoaded) => {
       const expected = [
         {
-          type: 'UPDATE_HAS_LOADED_CATEGORY',
-          hasLoadedCategory: { 'fail-err': true },
+          type: 'UPDATE_HAS_LOADED_SEARCH',
+          hasLoadedSearch: { 'fail-err': true },
         },
       ]
 

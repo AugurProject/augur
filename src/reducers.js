@@ -2,7 +2,6 @@
 import accountDisputes from 'modules/reporting/reducers/account-disputes-state'
 import accountPositions from 'modules/my-positions/reducers/account-positions'
 import accountTrades from 'modules/my-positions/reducers/account-trades'
-import allOrders from 'modules/escape-hatch/reducers/all-orders-data'
 import blockchain from 'modules/app/reducers/blockchain'
 import categories from 'modules/categories/reducers/categories-data'
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
@@ -15,7 +14,7 @@ import env from 'modules/app/reducers/env'
 import eventsAPI from 'modules/contracts/reducers/events-api'
 import favorites from 'modules/markets/reducers/favorites'
 import functionsAPI from 'modules/contracts/reducers/functions-api'
-import hasLoadedCategory from 'modules/categories/reducers/has-loaded-category'
+import hasLoadedSearch from 'modules/categories/reducers/has-loaded-search'
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
 import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
 import isAnimating from 'modules/app/reducers/is-animating'
@@ -55,7 +54,6 @@ export function createReducer() {
     accountDisputes,
     accountPositions,
     accountTrades,
-    allOrders,
     blockchain,
     categories,
     closePositionTradeGroups,
@@ -68,7 +66,7 @@ export function createReducer() {
     eventsAPI,
     favorites,
     functionsAPI,
-    hasLoadedCategory,
+    hasLoadedSearch,
     hasLoadedMarkets,
     initialReporters,
     isAnimating,

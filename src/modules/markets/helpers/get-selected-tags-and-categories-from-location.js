@@ -11,7 +11,7 @@ export const getSelectedTagsAndCategoriesFromLocation = (location) => {
   // This is black magic.
   const {
     [CATEGORY_PARAM_NAME]: selectedCategory,
-    [FILTER_SEARCH_PARAM]: keywords = '',
+    [FILTER_SEARCH_PARAM]: keywords = undefined,
     [TAGS_PARAM_NAME]: tagsString,
     ...balanceOfSearchParams
   } = parseQuery(location.search)

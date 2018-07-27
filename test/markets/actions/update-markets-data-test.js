@@ -78,34 +78,4 @@ describe(`modules/markets/actions/update-markets-data.js`, () => {
       assert.deepEqual(actual, expected, `didn't return the expected value`)
     },
   })
-
-  test({
-    description: '`updateMarketEscapeHatchGasCost` should return the expected object',
-    assertions: () => {
-      const actual = updateMarketsDataReducer.updateMarketEscapeHatchGasCost('0xMarket1', 0.01)
-
-      const expected = {
-        type: updateMarketsDataReducer.UPDATE_MARKET_ESCAPE_HATCH_GAS_COST,
-        marketId: '0xMarket1',
-        escapeHatchGasCost: 0.01,
-      }
-
-      assert.deepEqual(actual, expected, `didn't return the expected value`)
-    },
-  })
-
-  test({
-    description: '`updateMarketTradingEscapeHatchGasCost` should return the expected object',
-    assertions: () => {
-      const actual = updateMarketsDataReducer.updateMarketTradingEscapeHatchGasCost('0xMarket1', 0.20)
-
-      const expected = {
-        type: updateMarketsDataReducer.UPDATE_MARKET_TRADING_ESCAPE_HATCH_GAS_COST,
-        marketId: '0xMarket1',
-        tradingEscapeHatchGasCost: 0.20,
-      }
-
-      assert.deepEqual(actual, expected, `didn't return the expected value`)
-    },
-  })
 })

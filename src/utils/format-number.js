@@ -267,7 +267,6 @@ export function formatNumber(num, opts = {
   } else {
     roundingMode = BigNumber.ROUND_HALF_EVEN
   }
-  let displaySigFig = false
   if (isNaN(parseFloat(num))) {
     o.value = 0
     o.formattedValue = 0
@@ -286,7 +285,6 @@ export function formatNumber(num, opts = {
         o.formattedValue = '0'
       } else {
         o.formattedValue = value.toPrecision(decimals, roundingMode)
-        displaySigFig = true
       }
     } else {
       o.formattedValue = value.times(decimalsValue).integerValue(roundingMode)
@@ -296,8 +294,6 @@ export function formatNumber(num, opts = {
 
     if (bigUnitPostfix) {
       o.formatted = addBigUnitPostfix(value, o.formattedValue)
-    } else if (displaySigFig) {
-      o.formatted = constants.PRECISION.zero.toFixed(decimalsRounded)
     } else {
       o.formatted = addCommas(o.formattedValue)
     }
