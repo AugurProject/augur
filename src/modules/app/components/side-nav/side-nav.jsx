@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'modules/common/containers/sticky-params-link'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 

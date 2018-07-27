@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'modules/common/containers/sticky-params-link'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import moment from 'moment'
 
 import debounce from 'utils/debounce'

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { Link } from 'modules/common/containers/sticky-params-link'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import makePath from 'modules/routes/helpers/make-path'
 
 import PositionsMarketsList from 'modules/portfolio/components/positions-markets-list/positions-markets-list'

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'modules/common/containers/sticky-params-link'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
