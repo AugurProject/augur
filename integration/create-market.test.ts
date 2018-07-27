@@ -174,10 +174,10 @@ describe("Create market page", () => {
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
     // Verify that Additional Information is displayed
-    await expect(page).toMatchElement(".market-header-styles_MarketHeader__details span", { text: "Here is some additional information.", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-header-styles_MarketHeader__AdditionalDetails-text", { text: "Here is some additional information.", timeout: timeoutMilliseconds });
 
     // Verify settlement fee is correct
-    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.0000%", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
     await verifyLiquidity(orders);
@@ -305,7 +305,7 @@ describe("Create market page", () => {
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
     // Verify settlement fee is correct
-    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.0000%", timeout: timeoutMilliseconds });
 
     // Confirm that when the market is created, all outcomes are properly listed as the market's outcomes
     await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(1) li:nth-child(1)", { text: "Outcome 1", timeout: timeoutMilliseconds });
@@ -347,7 +347,7 @@ describe("Create market page", () => {
     await expect(defaultPrecisionValue).toMatch("0.0001");
 
     // Verify that Min Value is required and must be less than Max Value
-    await expect(page).toFill("#cm__input--max", "1");
+    await expect(page).toFill("#cm__input--max", "0");
     let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
     await expect(isDisabled).toEqual(true);
     await expect(page).toFill("#cm__input--min", "30");
@@ -361,7 +361,7 @@ describe("Create market page", () => {
     // Verify that Max Value is required
     await page.$eval("#cm__input--min", input => input.value = "");
     await page.$eval("#cm__input--max", input => input.value = "");
-    await expect(page).toFill("#cm__input--min", "1");
+    await expect(page).toFill("#cm__input--min", "0");
     isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
     await expect(isDisabled).toEqual(true);
     await expect(page).toFill("#cm__input--max", "30");
@@ -384,10 +384,7 @@ describe("Create market page", () => {
     isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
     await expect(isDisabled).toEqual(false);
 
-    await expect(page).toFill("#cm__input--min", "0");
-    await expect(page).toFill("#cm__input--max", "30");
     await expect(page).toFill("#cm__input--denomination", "dollars");
-    await expect(page).toFill("#cm__input--ticksize", "0.0001");
     await expect(page).toFill("#cm__input--details", "Here is some additional information.");
     await expect(page).toClick("button", { text: "Next: Resolution" });
 
@@ -458,16 +455,25 @@ describe("Create market page", () => {
     // Make sure user is redirected to Transactions page
     await page.waitForSelector(".transactions-styles_Transaction__item", { visible: true });
 
-    // Go to new market trading page
+    // Go to new market's category/tags page
     await page.goto(url.concat("#/markets?category=INTEGRATION%20TEST&tags=SCALAR"), { waitUntil: "networkidle0"});
     await page.waitForSelector(".market-common-styles_MarketCommon__topcontent h1 span a", { visible: true });
+
+    // Verify that the min, max, & denomination are properly displayed on the Markets List market card
+    await expect(page).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__min", { text: "0 dollars" });
+    await expect(page).toMatchElement(".market-outcomes-yes-no-scalar-styles_MarketOutcomes__max", { text: "30 dollars" });
+
+    // Go to new market trading page
     await expect(page).toClick(".market-common-styles_MarketCommon__topcontent h1 span a", { timeout: timeoutMilliseconds });
 
-    // TODO: Verify that the precision is the same as the entered precision value
-    // TODO: Verify that the Min, Max, & Denomination are properly displayed on the Markets List market card
-
     // Verify settlement fee is correct
-    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.00%", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .market-header-styles_MarketHeader__property:nth-child(2) span:nth-child(2)", { text: "2.0000%", timeout: timeoutMilliseconds });
+
+    // Verify that the precision is the same as the entered precision value
+    const step = await page.$eval("#tr__input--quantity", el => el.step);
+    await expect(step).toEqual("0.0001");
+    const placeholder = await page.$eval("#tr__input--quantity", el => el.placeholder);
+    await expect(placeholder).toEqual("0.0001 Shares");
 
     // Verify liquidity got created
     await verifyLiquidity(orders);
