@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-link'
 
 import makePath from 'modules/routes/helpers/make-path'
 

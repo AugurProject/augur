@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-link'
 import { Helmet } from 'react-helmet'
 import { createBigNumber } from 'utils/create-big-number'
 import CategoryList from 'modules/categories/components/category-list/category-list'

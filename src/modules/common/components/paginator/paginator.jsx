@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-link'
 
 import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
