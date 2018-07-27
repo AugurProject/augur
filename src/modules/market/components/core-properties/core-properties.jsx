@@ -3,18 +3,14 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { SCALAR } from 'modules/markets/constants/market-types'
 
-import toggleHeight from 'utils/toggle-height/toggle-height'
-
-import { ChevronLeft, ChevronDown, ChevronUp, Hint } from 'modules/common/components/icons'
-
-import { BigNumber } from 'bignumber.js'
-import Styles from 'modules/market/components/market-header/market-header.styles'
-import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
+import Styles from 'modules/market/components/core-properties/core-properties.styles'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
 
 import getValue from 'utils/get-value'
 import { dateHasPassed } from 'utils/format-date'
+import { constants } from 'services/augurjs'
+import { Hint } from 'modules/common/components/icons'
 
 export default class CoreProperties extends Component {
   static propTypes = {
@@ -22,14 +18,41 @@ export default class CoreProperties extends Component {
     currentTimestamp: PropTypes.number.isRequired,
   }
 
-  constructor(props) {
-    super(props)
+  determinePhase() {
+    const { reportingState } = this.props.market
+    switch (reportingState) {
+
+      case constants.REPORTING_STATE.PRE_REPORTING:
+        return 'Open'
+
+      case constants.REPORTING_STATE.DESIGNATED_REPORTING:
+      case constants.REPORTING_STATE.OPEN_REPORTING:
+      case constants.REPORTING_STATE.CROWDSOURCING_DISPUTE:
+      case constants.REPORTING_STATE.AWAITING_NEXT_WINDOW:
+        return 'Reporting'
+
+      case constants.REPORTING_STATE.AWAITING_FINALIZATION:
+      case constants.REPORTING_STATE.FINALIZED:
+        return 'Resolved'
+
+      case constants.FORKING:
+        return 'Forking'
+
+      case constants.REPORTING_STATE.AWAITING_NO_REPORT_MIGRATIO:
+        return 'Awaiting No Report Migrated'
+
+      case constants.REPORTING_STATE.AWAITING_FORK_MIGRATION:
+        return 'Awaiting Fork Migration'
+
+      default:
+        return ''
+    }
   }
 
   render() {
     const {
       market,
-      currentTimestamp
+      currentTimestamp,
     } = this.props
 
     const volume = getValue(market, 'volume.full')
@@ -40,46 +63,45 @@ export default class CoreProperties extends Component {
     const expires = dateHasPassed(currentTimestamp, getValue(market, 'endTime.timestamp')) ? 'expired' : 'expires'
     const min = market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null
     const max = market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null
-    const phase = market.reportingState
+    const phase = this.determinePhase()
     const creationTime = getValue(market, 'creationTime.formattedLocal')
     const isScalar = market.marketType === SCALAR
     const consensus = getValue(market, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
 
-    console.log(market)
     return (
-      <div className={Styles.MarketHeader__coreContainer}>
-        {consensus && 
-          <div className={Styles.MarketHeader__row}>
-            <div className={Styles.MarketHeader__property}>
-              <span className={Styles[`MarketHeader__property-name`]}>
+      <div className={Styles.CoreProperties__coreContainer}>
+        {consensus &&
+          <div className={Styles.CoreProperties__row}>
+            <div className={Styles.CoreProperties__property}>
+              <span className={Styles[`CoreProperties__property-name`]}>
                 <div>
-                  Winning Outcome: 
+                  Winning Outcome:
                 </div>
               </span>
-              <span className={Styles[`MarketHeader__property-winningOutcome`]}>{consensus}</span>
+              <span className={Styles[`CoreProperties__property-winningOutcome`]}>{consensus}</span>
             </div>
           </div>
         }
-        { consensus && 
-          <div className={Styles.MarketHeader__lineBreak}/>
+        { consensus &&
+          <div className={Styles.CoreProperties__lineBreak} />
         }
-        <div className={Styles.MarketHeader__row}>
-          <div className={Styles.MarketHeader__property}>
-            <span className={Styles[`MarketHeader__property-name`]}>
+        <div className={Styles.CoreProperties__row}>
+          <div className={Styles.CoreProperties__property}>
+            <span className={Styles[`CoreProperties__property-name`]}>
               <div>
                 volume
               </div>
             </span>
             <span>{volume}</span>
           </div>
-          <div className={Styles.MarketHeader__property}>
-            <span className={Styles[`MarketHeader__property-name`]}>
+          <div className={Styles.CoreProperties__property}>
+            <span className={Styles[`CoreProperties__property-name`]}>
               <div>
                 fee
               </div>
               <div>
                 <label
-                  className={classNames(TooltipStyles.TooltipHint, Styles['MarketHeader__property-tooltip'])}
+                  className={classNames(TooltipStyles.TooltipHint, Styles['CoreProperties__property-tooltip'])}
                   data-tip
                   data-for="tooltip--market-fees"
                 >
@@ -101,36 +123,36 @@ export default class CoreProperties extends Component {
             </span>
             <span>{fee}</span>
           </div>
-          <div className={Styles.MarketHeader__property}>
-            <span className={Styles[`MarketHeader__property-name`]}>
+          <div className={Styles.CoreProperties__property}>
+            <span className={Styles[`CoreProperties__property-name`]}>
               <div>
                 Phase
               </div>
             </span>
             <span>{phase && phase.toLowerCase()}</span>
           </div>
-        </div>  
-        <div className={Styles.MarketHeader__lineBreak}/>
-        <div className={Styles.MarketHeader__row}>
-          <div className={Styles.MarketHeader__propertySmall}>
-            <span className={Styles[`MarketHeader__property-name`]} style={{minWidth: '210px'}}>
+        </div>
+        <div className={Styles.CoreProperties__lineBreak} />
+        <div className={Styles.CoreProperties__row}>
+          <div className={Styles.CoreProperties__propertySmall}>
+            <span className={Styles[`CoreProperties__property-name`]} style={{ minWidth: '210px' }}>
               <div>
                 created
               </div>
             </span>
             <span>{creationTime}</span>
           </div>
-          <div className={Styles.MarketHeader__propertySmall}>
-            <span className={Styles[`MarketHeader__property-name`]}>
+          <div className={Styles.CoreProperties__propertySmall}>
+            <span className={Styles[`CoreProperties__property-name`]}>
               <div>
                 Type
               </div>
             </span>
             <span>{market.marketType}</span>
           </div>
-          {min && 
-            <div className={Styles.MarketHeader__propertySmall}>
-              <span className={Styles[`MarketHeader__property-name`]}>
+          {min &&
+            <div className={Styles.CoreProperties__propertySmall}>
+              <span className={Styles[`CoreProperties__property-name`]}>
                 <div>
                   Min
                 </div>
@@ -139,28 +161,28 @@ export default class CoreProperties extends Component {
             </div>
           }
         </div>
-        <div className={Styles.MarketHeader__row}>
-          <div className={Styles.MarketHeader__propertySmall}>
-            <span className={Styles[`MarketHeader__property-name`]} style={{minWidth: '210px'}}>
+        <div className={Styles.CoreProperties__row}>
+          <div className={Styles.CoreProperties__propertySmall}>
+            <span className={Styles[`CoreProperties__property-name`]} style={{ minWidth: '210px' }}>
               <div>
                 {expires}
               </div>
             </span>
             <span>{endTime}</span>
           </div>
-          {market.scalarDenomination && 
-            <div className={Styles.MarketHeader__propertySmall}>
-              <span className={Styles[`MarketHeader__property-name`]}>
+          {market.scalarDenomination &&
+            <div className={Styles.CoreProperties__propertySmall}>
+              <span className={Styles[`CoreProperties__property-name`]}>
                 <div>
                   Denominated In
                 </div>
               </span>
-              <span  style={{textTransform: 'none'}}>{market.scalarDenomination}</span>
+              <span style={{ textTransform: 'none' }}>{market.scalarDenomination}</span>
             </div>
           }
-          {max && 
-            <div className={Styles.MarketHeader__propertySmall}>
-              <span className={Styles[`MarketHeader__property-name`]}>
+          {max &&
+            <div className={Styles.CoreProperties__propertySmall}>
+              <span className={Styles[`CoreProperties__property-name`]}>
                 <div>
                   Max
                 </div>

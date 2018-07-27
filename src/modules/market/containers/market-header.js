@@ -8,30 +8,6 @@ import { selectCurrentTimestamp } from 'src/select-state'
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
-  // const coreProperties = {
-  //   volume: {
-  //     value: getValue(market, 'volume.full'),
-  //   },
-  //   fee: {
-  //     value: getValue(market, 'settlementFeePercent.full'),
-  //     tooltipHeader: 'Trading Settlement Fee',
-  //     marketCreatorFee: getValue(market, 'marketCreatorFeeRatePercent.full'),
-  //     reportingFee: getValue(market, 'reportingFeeRatePercent.full'),
-  //     tooltip: true,
-  //   },
-  //   expires: {
-  //     value: dateHasPassed(selectCurrentTimestamp(state), getValue(market, 'endTime.timestamp')) ? null : getValue(market, 'endTime.formattedLocal'),
-  //   },
-  //   expired: {
-  //     value: !dateHasPassed(selectCurrentTimestamp(state), getValue(market, 'endTime.timestamp')) ? null : getValue(market, 'endTime.formattedLocal'),
-  //   },
-  //   min: {
-  //     value: market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null,
-  //   },
-  //   max: {
-  //     value: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
-  //   },
-  // }
 
   return {
     description: market.description || '',

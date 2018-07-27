@@ -2,17 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import toggleHeight from 'utils/toggle-height/toggle-height'
 
-import { ChevronLeft, ChevronDown, ChevronUp, Hint } from 'modules/common/components/icons'
+import { ChevronLeft } from 'modules/common/components/icons'
 
 import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { BigNumber } from 'bignumber.js'
 import Styles from 'modules/market/components/market-header/market-header.styles'
-import ToggleHeightStyles from 'utils/toggle-height/toggle-height.styles'
-import ReactTooltip from 'react-tooltip'
-import TooltipStyles from 'modules/common/less/tooltip'
-import CoreProperties from 'modules/market/components/market-header/core-properties'
+import CoreProperties from 'modules/market/components/core-properties/core-properties'
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -30,14 +26,6 @@ export default class MarketHeader extends Component {
     selectedOutcome: PropTypes.any,
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      areMarketDetailsVisible: false,
-    }
-  }
-
   render() {
     const {
       clearSelectedOutcome,
@@ -53,8 +41,6 @@ export default class MarketHeader extends Component {
       market,
       currentTimestamp,
     } = this.props
-    const s = this.state
-    const detailsPresent = (details != null && details.length > 0) || (marketType === SCALAR)
     const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
     if (this.additionalDetails && this.additionalDetails.scrollHeight) {
       this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
@@ -78,16 +64,16 @@ export default class MarketHeader extends Component {
           }
         </div>
         <div className={Styles[`MarketHeader__main-values`]}>
-          <div className={Styles[`MarketHeader__descContainer`]}>
+          <div className={Styles.MarketHeader__descContainer}>
             <h1 className={Styles.MarketHeader__description}>
               {description}
             </h1>
             <div className={Styles.MarketHeader__descriptionContainer}>
-              <div className={classNames(Styles[`MarketHeader__details`])} style={{marginBottom: '20px'}}>
+              <div className={classNames(Styles.MarketHeader__details)} style={{ marginBottom: '20px' }}>
                 <h4>Resolution Source</h4>
                 <span>{resolutionSource || 'General knowledge'}</span>
               </div>
-              <div className={classNames(Styles[`MarketHeader__details`])}>
+              <div className={classNames(Styles.MarketHeader__details)}>
                 <h4>Additional Details</h4>
                 <textarea
                   ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
