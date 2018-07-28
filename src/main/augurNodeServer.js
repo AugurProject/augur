@@ -78,6 +78,7 @@ function AugurNodeServer() {
   this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
   this.window = null
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES;
+  this.bulkSyncing = false;
   ipcMain.on('requestLatestSyncedBlock', this.requestLatestSyncedBlock.bind(this))
   ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
   ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
@@ -97,6 +98,7 @@ AugurNodeServer.prototype.startServer = function () {
     log.info("Starting Server");
     var propagationDelayWaitMillis = REMOTE_DELAY_WAIT;
     var maxRetries = REMOTE_MAX_RETRIES;
+    this.bulkSyncing = false;
     if (this.networkConfig.http.indexOf("localhost") > -1 || this.networkConfig.http.indexOf("127.0.0.1") > -1) {
       propagationDelayWaitMillis = LOCAL_DELAY_WAIT;
       maxRetries = LOCAL_MAX_RETRIES;
@@ -173,11 +175,13 @@ AugurNodeServer.prototype.restartOnFailure = debounce(function () {
 AugurNodeServer.prototype.onBulkSyncStarted = function () {
   log.info('Sync with blockchain started.')
   this.window.webContents.send('bulkSyncStarted')
+  this.bulkSyncing = true;
 }
 
 AugurNodeServer.prototype.onBulkSyncFinished = function () {
   log.info('Sync with blockchain complete.')
   this.window.webContents.send('bulkSyncFinished')
+  this.bulkSyncing = false;
 }
 
 AugurNodeServer.prototype.onRequestConfig = function (event, data) {
@@ -271,7 +275,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function (event, data) {
     .then((syncedBlockInfo) => {
       event.sender.send('latestSyncedBlock', syncedBlockInfo)
       const blocksBehind = syncedBlockInfo.highestBlockNumber - syncedBlockInfo.lastSyncBlockNumber;
-      if (blocksBehind > MAX_BLOCKS_BEHIND_BEFORE_RESTART) {
+      if (!this.bulkSyncing && (blocksBehind > MAX_BLOCKS_BEHIND_BEFORE_RESTART)) {
         const message = `Behind by ${blocksBehind}. Restarting to bulk sync.`
         log.info(message)
         this.window.webContents.send('error', {
@@ -297,6 +301,7 @@ AugurNodeServer.prototype.disconnectServerMessage = function () {
 
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
+    this.bulkSyncing = false;
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Calling Augur Node Controller Shutdown')
     this.augurNodeController.shutdown()
