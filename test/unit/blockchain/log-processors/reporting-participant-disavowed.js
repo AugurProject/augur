@@ -3,10 +3,10 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("../../../../build/blockchain/log-processors/reporting-participant-disavowed");
-const {parallel} = require("async");
+const {series} = require("async");
 
 const getParticipantState = (db, params, callback) => {
-  parallel({
+  series({
     initialReporter: (next) => db("initial_reports").first(["initialReporter", "disavowed"]).where("initialReporter", params.log.reportingParticipant).asCallback(next),
     crowdsourcer: (next) => db("crowdsourcers").first(["crowdsourcerId", "disavowed"]).where("crowdsourcerId", params.log.reportingParticipant).asCallback(next),
   }, callback);

@@ -7,7 +7,7 @@ import { augurEmitter } from "../../events";
 import { updateMarketState, rollbackMarketState, insertPayout, updateDisputeRound, updateMarketFeeWindow } from "./database";
 import { groupByAndSum } from "../../server/getters/database";
 import { QueryBuilder } from "knex";
-import { parallel } from "async";
+import { series } from "async";
 
 interface StakesByPayoutId {
   payoutId: number;
@@ -26,7 +26,7 @@ function updateTentativeWinningPayout(db: Knex, marketId: Address, callback: Err
       .sort((a: StakesByPayoutId, b: StakesByPayoutId) => b.amountStaked.comparedTo(a.amountStaked));
 
     const mostStakedPayoutId = summed[0];
-    parallel([
+    series([
       (next: AsyncCallback) => {
         const query = db("payouts").update("tentativeWinning", 0).where("marketId", marketId);
         if (mostStakedPayoutId != null) query.whereNot("payoutId", mostStakedPayoutId.payoutId);
@@ -146,7 +146,7 @@ export function processDisputeCrowdsourcerContributionLogRemoval(db: Knex, augur
 export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("crowdsourcers").update({ completed: 1 }).where({ crowdsourcerId: log.disputeCrowdsourcer }).asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    parallel([
+    series([
       (next: AsyncCallback) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateDisputeRound(db, log.market, next),
       (next: AsyncCallback) => updateMarketFeeWindow(db, augur, log.universe, log.market, true, next),
@@ -167,7 +167,7 @@ export function processDisputeCrowdsourcerCompletedLog(db: Knex, augur: Augur, l
 export function processDisputeCrowdsourcerCompletedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   rollbackCrowdsourcerCompletion(db, log.disputeCrowdsourcer, log.market, (err: Error|null) => {
     if (err) return callback(err);
-    parallel([
+    series([
       (next: AsyncCallback) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.AWAITING_NEXT_WINDOW, next),
       (next: AsyncCallback) => updateDisputeRound(db, log.market, next),
       (next: AsyncCallback) => updateMarketFeeWindow(db, augur, log.universe, log.market, false, next),

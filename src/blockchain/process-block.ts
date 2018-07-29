@@ -1,5 +1,5 @@
 import Augur from "augur.js";
-import { parallel } from "async";
+import { series } from "async";
 import * as Knex from "knex";
 import { each } from "async";
 import { augurEmitter } from "../events";
@@ -143,7 +143,7 @@ function _processBlockRemoval(db: Knex, block: BlockDetail, callback: ErrorCallb
 }
 
 function advanceTime(db: Knex, augur: Augur, blockNumber: number, timestamp: number, callback: AsyncCallback) {
-  parallel([
+  series([
     (next: AsyncCallback) => advanceMarketReachingEndTime(db, augur, blockNumber, timestamp, next),
     (next: AsyncCallback) => advanceMarketMissingDesignatedReport(db, augur, blockNumber, timestamp, next),
     (next: AsyncCallback) => advanceFeeWindowActive(db, augur, blockNumber, timestamp, next),
