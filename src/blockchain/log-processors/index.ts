@@ -173,19 +173,9 @@ export const logProcessors: LogProcessors = {
     },
   },
   LegacyReputationToken: {
-    Transfer: {
-      add: processTokensTransferredLog,
-      remove: processTokensTransferredLogRemoval,
-    },
-    Approval: {
-      noAutoEmit: true,
-      add: processApprovalLog,
-      remove: processApprovalLogRemoval,
-    },
-    Mint: {
-      add: processMintLog,
-      remove: processMintLogRemoval,
-    },
+    Transfer: passThroughLog,
+    Approval: passThroughLog,
+    Mint: passThroughLog,
     FundedAccount: passThroughLog,
     Pause: passThroughLog,
     Unpause: passThroughLog,
