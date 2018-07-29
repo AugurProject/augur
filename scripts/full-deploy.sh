@@ -109,7 +109,7 @@ function deployAugurUi()
 	yarn
 	git commit package.json package-lock.json yarn.lock -m augur.js@$AUGUR_JS_VERSION
 	npm version $NPM_VERSION
-	VERSION=$($GET_VERSION $TMP_DIR/augur/package.json)
+	VERSION=$($GET_VERSION $TMP_DIR/augur-ui/package.json)
 	git push
 	git push origin v$VERSION --no-verify
 	npm publish --tag $NPM_TAG
@@ -119,6 +119,7 @@ function deployAugurUi()
 function deployAugurApp()
 {
 	(
+	AUGUR_CORE_VERSION=$($GET_VERSION $TMP_DIR/augur.js/node_modules/augur-core/package.json)
 	AUGUR_JS_VERSION=$($GET_VERSION $TMP_DIR/augur.js/package.json)
 	AUGUR_UI_VERSION=$($GET_VERSION $TMP_DIR/augur-ui/package.json)
 	AUGUR_NODE_VERSION=$($GET_VERSION $TMP_DIR/augur-node/package.json)
@@ -127,6 +128,7 @@ function deployAugurApp()
 	cd augur-app
 	git checkout -b augur.js@$AUGUR_JS_VERSION
 	npm install
+	npm install --save-exact augur-core@$AUGUR_CORE_VERSION
 	npm install --save-exact augur.js@$AUGUR_JS_VERSION
 	npm install --save-exact augur-ui@$AUGUR_UI_VERSION
 	npm install --save-exact augur-node@$AUGUR_NODE_VERSION
