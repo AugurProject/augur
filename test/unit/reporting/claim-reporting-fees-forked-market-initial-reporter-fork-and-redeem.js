@@ -14,7 +14,7 @@ var noop = require("../../../src/utils/noop");
 var sinon = require("sinon");
 
 describe("reporting/claim-reporting-fees-forked-market", function () {
-  var claimReportingFees;
+  var claimReportingFeesForkedMarket;
   var disputeCrowdsourcerForkAndRedeemStub;
   var disputeCrowdsourcerRedeemStub;
   var initialReporterForkAndRedeemStub;
@@ -48,7 +48,7 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
     },
     estimateGas: true,
   };
-  var claimReportingFeesResult;
+  var claimReportingFeesForkedMarketResult;
   var api = function () {
     return {
       DisputeCrowdsourcer: {
@@ -69,13 +69,13 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
         initialReporterForkAndRedeemStub = sinon.stub(api().InitialReporter, "forkAndRedeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
-        claimReportingFees = proxyquire("../../../src/reporting/claim-reporting-fees-forked-market", {
+        claimReportingFeesForkedMarket = proxyquire("../../../src/reporting/claim-reporting-fees-forked-market", {
           "../api": api,
         });
-        claimReportingFees(assign(params, {
+        claimReportingFeesForkedMarket(assign(params, {
           onSent: noop,
           onSuccess: function (res) {
-            claimReportingFeesResult = res;
+            claimReportingFeesForkedMarketResult = res;
           },
           onFailed: noop,
         }));
@@ -186,7 +186,7 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
               },
             },
           };
-          assert.deepEqual(expectedResult.gasEstimates, claimReportingFeesResult.gasEstimates);
+          assert.deepEqual(expectedResult.gasEstimates, claimReportingFeesForkedMarketResult.gasEstimates);
         });
       });
     });
@@ -198,13 +198,13 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
         disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
         initialReporterForkAndRedeemStub = sinon.stub(api().InitialReporter, "forkAndRedeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_FORK_AND_REDEEM_GAS_ESTIMATE); });
         initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
-        claimReportingFees = proxyquire("../../../src/reporting/claim-reporting-fees-forked-market", {
+        claimReportingFeesForkedMarket = proxyquire("../../../src/reporting/claim-reporting-fees-forked-market", {
           "../api": api,
         });
-        claimReportingFees(assign(params, {
+        claimReportingFeesForkedMarket(assign(params, {
           onSent: noop,
           onSuccess: function (res) {
-            claimReportingFeesResult = res;
+            claimReportingFeesForkedMarketResult = res;
           },
           onFailed: noop,
         }));
@@ -293,7 +293,7 @@ describe("reporting/claim-reporting-fees-forked-market", function () {
             },
           };
 
-          assert.deepEqual(expectedResult, claimReportingFeesResult);
+          assert.deepEqual(expectedResult, claimReportingFeesForkedMarketResult);
         });
       });
     });
