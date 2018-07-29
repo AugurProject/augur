@@ -7,13 +7,15 @@ var expect = require("chai").expect;
 var fs = require("fs");
 var path = require("path");
 
+var NETWORK_IDS = ["1", "3", "4", "19", "42", "8995", "12346", "22346", "32346"];
+
 describe("artifacts", function () {
   it("has a well-formed addresses.json", function (done) {
     var file = fs.readFileSync(path.join(__dirname, "../../../", "./src/contracts/addresses.json"));
     expect(file).to.exist;
 
     var parsed = JSON.parse(file);
-    expect(parsed).to.be.an("object").that.has.all.keys(["1", "3", "4", "42", "8995", "12346", "22346", "32346"]);
+    expect(parsed).to.be.an("object").that.has.all.keys(NETWORK_IDS);
 
     for (var networkId in parsed) {
       if (parsed.hasOwnProperty(networkId)) {
@@ -37,7 +39,7 @@ describe("artifacts", function () {
     expect(file).to.exist;
 
     var parsed = JSON.parse(file);
-    expect(parsed).to.be.an("object").that.has.all.keys(["1", "3", "4", "42", "8995", "12346", "22346", "32346"]);
+    expect(parsed).to.be.an("object").that.has.all.keys(NETWORK_IDS);
 
     for (var networkId in parsed) {
       if (parsed.hasOwnProperty(networkId)) {

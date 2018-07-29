@@ -16,7 +16,7 @@ var createMarkets = require("./create-markets");
 var createOrders = require("./create-orders");
 
 var COMMANDS = ["create-markets", "create-orders", "deploy", "rep-faucet", "upload"];
-var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten"];
+var NETWORKS = ["aura", "clique", "environment", "rinkeby", "ropsten", "thunder"];
 
 function help() {
   return parrotSay(" Augur Deployment Parrot ").then(function (say) {
@@ -67,6 +67,9 @@ function help() {
     }, {
       env: "ROPSTEN_PRIVATE_KEY",
       description: "Set key used to deploy to Ropsten, default is blank and " + chalk.bold("will error if not set"),
+    }, {
+      env: "THUNDER_PRIVATE_KEY",
+      description: "Set key used to deploy to Thunder, default is blank and " + chalk.bold("will error if not set"),
     }], {
       columnSplitter: " - ",
       minWidth: 20,
@@ -135,7 +138,7 @@ function runCannedData(command, networks, callback) {
             callback(null);
           });
         }
-        augur.connect({ ethereumNode: { http: network.http }, augurNode: process.env.AUGUR_WS }, function (err) {
+        augur.connect({ ethereumNode: { http: network.http, ws: network.ws, ipc: network.ipc }, augurNode: process.env.AUGUR_WS }, function (err) {
           if (err) return callback(err);
           createOrders(augur, auth, callback);
         });
