@@ -3,14 +3,14 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {BigNumber} = require("bignumber.js");
-const {parallel} = require("async");
+const {series} = require("async");
 const {processOrderCanceledLog, processOrderCanceledLogRemoval} = require("../../../../build/blockchain/log-processors/order-canceled");
 
 describe("blockchain/log-processors/order-canceled", () => {
   const test = (t) => {
     const getState = (db, params, callback) => {
 
-      parallel({
+      series({
         order: (next) => db("orders").where("orderId", params.log.orderId).first().asCallback(next),
         orderCanceled: (next) => db("orders_canceled").where("orderId", params.log.orderId).first().asCallback(next),
       }, callback);
