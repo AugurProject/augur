@@ -2,7 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, AsyncCallback } from "../../types";
 import { refreshMarketMailboxEthBalance, rollbackMarketState, updateMarketState } from "./database";
-import { parallel } from "async";
+import { series } from "async";
 
 function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address, universe: Address, callback: ErrorCallback) {
   db("markets").first("forking").where("marketId", finalizedMarketId).asCallback((err, isForkingMarket: {forking: number}) => {
@@ -13,7 +13,7 @@ function flagMarketsNeedingMigration(db: Knex, finalizedMarketId: Address, unive
 }
 
 export function processMarketFinalizedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel([
+  series([
     (next) => updateMarketState(db, log.market, log.blockNumber, augur.constants.REPORTING_STATE.FINALIZED, next),
     (next) => db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: log.blockNumber }).asCallback(next),
     (next) => flagMarketsNeedingMigration(db, log.market, log.universe, next),
@@ -25,7 +25,7 @@ export function processMarketFinalizedLog(db: Knex, augur: Augur, log: Formatted
 }
 
 export function processMarketFinalizedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel([
+  series([
     (next) => rollbackMarketState(db, log.market, augur.constants.REPORTING_STATE.FINALIZED, next),
     (next) => db("markets").where({ marketId: log.market }).update({ finalizationBlockNumber: null }).asCallback(next),
     (next) => db("markets").where({ universe: log.universe }).update({ needsMigration: 0 }).asCallback(next),
