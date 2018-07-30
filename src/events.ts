@@ -11,7 +11,6 @@ class EventNameEmitter extends EventEmitter {
         event,
       );
     });
-    console.log(eventsWithName);
     return super.emit(type, eventsWithName);
   }
 }
