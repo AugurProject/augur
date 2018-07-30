@@ -5,6 +5,7 @@ import { updateMarketState } from "./database";
 import { augurEmitter } from "../../events";
 import { getMarketsWithReportingState } from "../../server/getters/database";
 import { forEach } from "async";
+import { SubscriptionEventNames } from "../../constants";
 
 // set all crowdsourcers completed to 0, and markets.disputeRounds = null if no initial report, 0 if there is
 function uncompleteNonforkingCrowdsourcers(db: Knex, universe: Address, forkingMarket: Address, callback: ErrorCallback) {
@@ -29,8 +30,7 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
       if (err) return callback(err);
       updateMarketState(db, forkingMarket, log.blockNumber, ReportingState.FORKING, (err) => {
         if (err) return callback(err);
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
+        augurEmitter.emit(SubscriptionEventNames.MarketState, {
           universe: log.universe,
           marketId: forkingMarket,
           reportingState: ReportingState.FORKING,
@@ -48,8 +48,7 @@ export function processUniverseForkedLog(db: Knex, augur: Augur, log: FormattedE
                   forEach(marketsToRevert, (marketIdRow: MarketsContractAddressRow, nextMarketId: ErrorCallback): void => {
                     updateMarketState(db, marketIdRow.marketId, log.blockNumber, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
                       if (err) return nextMarketId(err);
-                      augurEmitter.emit("MarketState", {
-                        eventName: "MarketState",
+                      augurEmitter.emit(SubscriptionEventNames.MarketState, {
                         universe: log.universe,
                         marketId: marketIdRow.marketId,
                         reportingState: ReportingState.AWAITING_FORK_MIGRATION,

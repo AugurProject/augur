@@ -43,6 +43,11 @@ export enum ControlMessageType {
   BulkSyncFinished = "BulkSyncFinished",
 }
 
+export enum SubscriptionEventNames {
+  MarketState = "MarketState",
+  MarketCreated = "MarketCreated",
+}
+
 export enum MarketType {
   yesNo,
   categorical,
