@@ -78,10 +78,10 @@ export default class CoreProperties extends Component {
       case constants.REPORTING_STATE.FINALIZED:
         return 'Resolved'
 
-      case constants.FORKING:
+      case constants.REPORTING_STATE.FORKING:
         return 'Forking'
 
-      case constants.REPORTING_STATE.AWAITING_NO_REPORT_MIGRATIO:
+      case constants.REPORTING_STATE.AWAITING_NO_REPORT_MIGRATION:
         return 'Awaiting No Report Migrated'
 
       case constants.REPORTING_STATE.AWAITING_FORK_MIGRATION:
