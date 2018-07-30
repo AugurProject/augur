@@ -10,6 +10,8 @@ import { BigNumber } from 'bignumber.js'
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import CoreProperties from 'modules/market/components/core-properties/core-properties'
 
+const OVERFLOW_DETAILS_LENGTH = 500
+
 export default class MarketHeader extends Component {
   static propTypes = {
     clearSelectedOutcome: PropTypes.func,
@@ -26,11 +28,24 @@ export default class MarketHeader extends Component {
     selectedOutcome: PropTypes.any,
   }
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      showReadMore: false,
+    }
+
+    this.toggleReadMore = this.toggleReadMore.bind(this)
+  }
+
+  toggleReadMore() {
+    this.setState({ showReadMore: !this.state.showReadMore })
+  }
+
   render() {
     const {
       clearSelectedOutcome,
       description,
-      details,
       history,
       marketType,
       resolutionSource,
@@ -41,10 +56,22 @@ export default class MarketHeader extends Component {
       market,
       currentTimestamp,
     } = this.props
+
+    const { details } = this.props
+
+    let detailsTooLong = false
+
+    if (details.length > OVERFLOW_DETAILS_LENGTH) {
+      detailsTooLong = true
+    }
+
     const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
     if (this.additionalDetails && this.additionalDetails.scrollHeight) {
-      this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
+      const height = (!this.state.showReadMore && detailsTooLong) ? 65 : this.additionalDetails.scrollHeight
+      this.additionalDetails.style.height = `${height}px`
     }
+
+
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
@@ -68,26 +95,31 @@ export default class MarketHeader extends Component {
             <h1 className={Styles.MarketHeader__description}>
               {description}
             </h1>
-            <div className={Styles.MarketHeader__descriptionContainer}>
-              <div className={classNames(Styles.MarketHeader__details)} style={{ marginBottom: '20px' }}>
+            <div className={Styles.MarketHeader__descriptionContainer} onClick={this.toggleReadMore} role="button" tabIndex="0">
+              <div className={Styles.MarketHeader__details}>
                 <h4>Resolution Source</h4>
                 <span>{resolutionSource || 'General knowledge'}</span>
               </div>
-              <div className={classNames(Styles.MarketHeader__details)}>
-                <h4>Additional Details</h4>
-                <textarea
-                  ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
-                  className={Styles['MarketHeader__AdditionalDetails-text']}
-                  disabled
-                  readOnly
-                  value={details}
-                />
-                { marketType === SCALAR &&
-                  <span>
-                  If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
-                  </span>
-                }
-              </div>
+              {details.length > 0 &&
+                <div className={Styles.MarketHeader__details} style={{ marginTop: '20px' }}>
+                  <h4>Additional Details</h4>
+                  <textarea
+                    ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+                    className={Styles['MarketHeader__AdditionalDetails-text']}
+                    disabled
+                    readOnly
+                    value={!this.state.showReadMore && detailsTooLong ? details.substring(0, OVERFLOW_DETAILS_LENGTH) + '...' : details}
+                  />
+                  { marketType === SCALAR &&
+                    <span>
+                    If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
+                    </span>
+                  }
+                  { detailsTooLong &&
+                    <div className={Styles.MarketHeader__readMoreButton}>read more</div>
+                  }
+                </div>
+              }
             </div>
           </div>
           <div
