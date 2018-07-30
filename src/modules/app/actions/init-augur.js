@@ -45,7 +45,7 @@ function pollForAccount(dispatch, getState) {
         if (err) console.error(err)
         account = loadedAccount
       })
-      const disclaimerSeen = windowRef.localStorage.getItem(DISCLAIMER_SEEN)
+      const disclaimerSeen = windowRef && windowRef.localStorage && windowRef.localStorage.getItem(DISCLAIMER_SEEN)
       if (!disclaimerSeen) {
         dispatch(updateModal({
           type: MODAL_DISCLAIMER,
