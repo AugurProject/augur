@@ -143,6 +143,8 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       endTime: row.endTime,
       finalizationBlockNumber: row.finalizationBlockNumber,
       finalizationTime: row.finalizationTime,
+      lastTradeBlockNumber: row.lastTradeBlockNumber,
+      lastTradeTime: row.lastTradeTime,
       reportingState: row.reportingState,
       forking: row.forking,
       needsMigration: row.needsMigration,
