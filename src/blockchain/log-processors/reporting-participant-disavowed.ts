@@ -1,7 +1,7 @@
 import Augur from "augur.js";
 import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, AsyncCallback } from "../../types";
-import { parallel } from "async";
+import { series } from "async";
 import { augurEmitter } from "../../events";
 
 interface ParticipantUpdateResult {
@@ -10,7 +10,7 @@ interface ParticipantUpdateResult {
 }
 
 export function processReportingParticipantDisavowedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel({
+  series({
     initialReporter: (next: AsyncCallback) => db("initial_reports").update("disavowed", 1).where({initialReporter: log.reportingParticipant }).asCallback(next),
     crowdsourcer: (next: AsyncCallback) => db("crowdsourcers").update("disavowed", 1).where({crowdsourcerId: log.reportingParticipant}).asCallback(next),
   }, (err, participantUpdateResult: ParticipantUpdateResult) => {
@@ -28,7 +28,7 @@ export function processReportingParticipantDisavowedLog(db: Knex, augur: Augur, 
 }
 
 export function processReportingParticipantDisavowedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel({
+  series({
     initialReporter: (next: AsyncCallback) => db("initial_reports").update("disavowed", 0).where({initialReporter: log.reportingParticipant }).asCallback(next),
     crowdsourcer: (next: AsyncCallback) => db("crowdsourcers").update("disavowed", 0).where({crowdsourcerId: log.reportingParticipant}).asCallback(next),
   }, (err, participantUpdateResult: ParticipantUpdateResult) => {

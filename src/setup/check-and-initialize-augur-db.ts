@@ -3,7 +3,7 @@ import * as Knex from "knex";
 import * as path from "path";
 import * as sqlite3 from "sqlite3";
 import { promisify, format } from "util";
-import { rename, copyFile, existsSync, unlinkSync, readFile, writeFile } from "fs";
+import { copyFile, rename, existsSync, readFile, writeFile } from "fs";
 import { setOverrideTimestamp } from "../blockchain/process-block";
 import { postProcessDatabaseResults } from "../server/post-process-database-results";
 import { monitorEthereumNodeHealth } from "../blockchain/monitor-ethereum-node-health";
@@ -21,7 +21,7 @@ const DB_VERSION = 2;
 const DB_FILE_SYNCING = "augur-%s-syncing-%s.db";
 const DB_FILE_BULK_SYNC = "augur-%s-%s.db";
 
-function getDatabasePathFromNetworkId(networkId: string, databaseDir: string|undefined, filenameTemplate: string = DB_FILE_SYNCING) {
+function getDatabasePathFromNetworkId(networkId: string, filenameTemplate: string = DB_FILE_SYNCING, databaseDir: string|undefined) {
   return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId, DB_VERSION));
 }
 
@@ -29,9 +29,8 @@ function getUploadBlockPathFromNetworkId(networkId: string, databaseDir: string|
   return path.join(databaseDir || path.join(__dirname, "../../"), format(filenameTemplate, networkId));
 }
 
-function createKnex(networkId: string, databaseDir?: string): Knex {
-  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
-  logger.info(augurDbPath);
+function createKnex(networkId: string, dbPath: string): Knex {
+  logger.info(dbPath);
   if (process.env.DATABASE_URL) {
     // Be careful about non-serializable transactions. We expect database writes to be processed from the blockchain, serially, in block order.
     return Knex({
@@ -43,7 +42,7 @@ function createKnex(networkId: string, databaseDir?: string): Knex {
     return Knex({
       client: "sqlite3",
       connection: {
-        filename: augurDbPath,
+        filename: dbPath,
       },
       acquireConnectionTimeout: 5 * 60 * 1000,
       useNullAsDefault: true,
@@ -52,44 +51,16 @@ function createKnex(networkId: string, databaseDir?: string): Knex {
   }
 }
 
-export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string): Promise<Knex> {
-  return new Promise<Knex>((resolve, reject) => {
-    const connectOptions = Object.assign(
-      { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
-      network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
-      network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
-    );
-    augur.connect(connectOptions, async (err) => {
-      if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
-      const networkId: string = augur.rpc.getNetworkID();
-      if (networkId == null) return reject(new Error("could not get networkId"));
-      try {
-        monitorEthereumNodeHealth(errorCallback, augur);
-        await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
-        const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
-        resolve(db);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  });
+async function renameDatabaseFile(networkId: string, dbPath: string) {
+  const backupDbPath = getDatabasePathFromNetworkId(networkId, `backup-augur-%s-${new Date().getTime()}.db`, path.dirname(dbPath));
+  logger.info(`Moving database ${dbPath} to ${backupDbPath}`);
+  await promisify(rename)(dbPath, backupDbPath);
 }
 
-async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
-  const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
-  let oldUploadBlockNumber = 0;
-  if (existsSync(oldUploadBlockNumberFile)) {
-    oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
-  }
-  const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
-  if (currentUploadBlockNumber !== oldUploadBlockNumber) {
-    console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
-    const dbPath = getDatabasePathFromNetworkId(networkId, databaseDir);
-    if (existsSync(dbPath)) {
-      unlinkSync(dbPath);
-    }
-    await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
-  }
+async function getFreshDatabase(db: Knex|null, networkId: string, dbPath: string): Promise<Knex> {
+  if (db != null) db.destroy();
+  await renameDatabaseFile(networkId, dbPath);
+  return createKnex(networkId, dbPath);
 }
 
 async function isDatabaseDamaged(db: Knex): Promise<boolean> {
@@ -119,40 +90,65 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
   }
 }
 
-export async function renameDatabaseFile(networkId: string, databaseDir?: string) {
-  const augurDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
-  const backupDbPath = getDatabasePathFromNetworkId(networkId, databaseDir, `backup-augur-%s-${new Date().getTime()}.db`);
-  logger.info(`Moving database ${augurDbPath} to ${backupDbPath}`);
-  await promisify(rename)(augurDbPath, backupDbPath);
+async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
+  const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
+  let oldUploadBlockNumber = 0;
+  if (existsSync(oldUploadBlockNumberFile)) {
+    oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
+  }
+  const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
+  if (currentUploadBlockNumber !== oldUploadBlockNumber) {
+    console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
+    const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir);
+    renameDatabaseFile(networkId, dbPath);
+    await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
+  }
 }
 
-async function getFreshDatabase(db: Knex|null, networkId: string, databaseDir?: string): Promise<Knex> {
+export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string): Promise<Knex> {
+  return new Promise<Knex>((resolve, reject) => {
+    const connectOptions = Object.assign(
+      { ethereumNode: { http: network.http, ws: network.ws }, startBlockStreamOnConnect: false },
+      network.propagationDelayWaitMillis != null ? { propagationDelayWaitMillis: network.propagationDelayWaitMillis } : {},
+      network.maxRetries != null ? { maxRetries: network.maxRetries } : {},
+    );
+    augur.connect(connectOptions, async (err) => {
+      if (err) return reject(new Error(`Could not connect via augur.connect ${err}`));
+      const networkId: string = augur.rpc.getNetworkID();
+      if (networkId == null) return reject(new Error("could not get networkId"));
+      try {
+        monitorEthereumNodeHealth(errorCallback, augur);
+        await checkAndUpdateContractUploadBlock(augur, networkId, databaseDir);
+        const db = await checkAndInitializeAugurDb(augur, networkId, databaseDir);
+        resolve(db);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+}
+
+export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?: string) {
+  return renameDatabaseFile(networkId, getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir));
+}
+
+export async function swapBulkSyncForSyncingDatabase(db: Knex, networkId: string, databaseDir?: string): Promise<Knex> {
   if (db != null) db.destroy();
-  await renameDatabaseFile(networkId, databaseDir);
-  return createKnex(networkId);
-}
-
-export async function saveBulkSyncDatabase(networkId: string, databaseDir?: string) {
-  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
-  const databasePathSyncing = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_SYNCING);
-  logger.info(`Saving bulk sync database ${databasePathSyncing} to ${databasePathBulkSync}`);
-  return promisify(copyFile)(databasePathSyncing, databasePathBulkSync);
+  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir);
+  const databasePathSyncing = getDatabasePathFromNetworkId(networkId, DB_FILE_SYNCING, databaseDir);
+  logger.info(`Copying bulk sync database to snapshot ${databasePathBulkSync} to ${databasePathSyncing}`);
+  await promisify(copyFile)(databasePathBulkSync, databasePathSyncing);
+  return createKnex(networkId, databasePathSyncing);
 }
 
 export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
-  const databasePathSyncing = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_SYNCING);
-  if (existsSync(databasePathSyncing)) {
-    logger.info(`Removing sync-only database: ${databasePathSyncing}`);
-    unlinkSync(databasePathSyncing);
-  }
-  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, databaseDir, DB_FILE_BULK_SYNC);
+  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir);
   if (existsSync(databasePathBulkSync)) {
     logger.info(`Found prior bulk-sync database: ${databasePathBulkSync}`);
-    await promisify(copyFile)(databasePathBulkSync, getDatabasePathFromNetworkId(networkId, databaseDir));
   }
-  let db: Knex = createKnex(networkId, databaseDir);
+  let db: Knex = createKnex(networkId, databasePathBulkSync);
   const databaseDamaged = await isDatabaseDamaged(db);
-  if (databaseDamaged) db = await getFreshDatabase(db, networkId, databaseDir);
+  if (databaseDamaged) db = await getFreshDatabase(db, networkId, databasePathBulkSync);
   await db.migrate.latest({ directory: path.join(__dirname, "../migrations") });
   await initializeNetworkInfo(db, augur);
   return db;

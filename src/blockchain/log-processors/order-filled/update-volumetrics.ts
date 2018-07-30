@@ -1,7 +1,7 @@
 import { Augur } from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { parallel } from "async";
+import { series } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber>) {
@@ -55,7 +55,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
             let amount = tradesRow.amount!;
             if (!isIncrease) amount = amount.negated();
 
-            parallel({
+            series({
               market: (next) => incrementMarketVolume(db, marketId, amount, next),
               outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
               category: (next) => incrementCategoryPopularity(db, category, amount, next),

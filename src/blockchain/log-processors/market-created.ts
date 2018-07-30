@@ -1,9 +1,10 @@
-import { forEachOf, parallel } from "async";
+import { forEachOf, series, parallel } from "async";
 import Augur from "augur.js";
 import BigNumber from "bignumber.js";
 import * as Knex from "knex";
-import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
+import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, SearchRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
+import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
@@ -12,6 +13,7 @@ import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketPayload: {} = { tx: { to: log.market } };
+  const universePayload: {} = { tx: { to: log.universe, send: false } };
   parallel({
     feeWindow: (next: AsyncCallback): void => augur.api.Market.getFeeWindow(marketPayload, next),
     endTime: (next: AsyncCallback): void => augur.api.Market.getEndTime(marketPayload, next),
@@ -19,16 +21,13 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
     marketCreatorMailbox: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorMailbox(marketPayload, next),
     numTicks: (next: AsyncCallback): void => augur.api.Market.getNumTicks(marketPayload, next),
     marketCreatorSettlementFeeDivisor: (next: AsyncCallback): void => augur.api.Market.getMarketCreatorSettlementFeeDivisor(marketPayload, next),
-  }, (err: Error|null, onMarketContractData?: any): void => {
+    reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
+  }, (err: Error|null, onContractData?: any): void => {
     if (err) return callback(err);
-    if (!onMarketContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
-    const universePayload: {} = { tx: { to: log.universe, send: false } };
-    parallel({
-      reportingFeeDivisor: (next: AsyncCallback): void => augur.api.Universe.getOrCacheReportingFeeDivisor(universePayload, next),
-      designatedReportStake: (next: AsyncCallback) => db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback(next),
-    }, (err?: any, onUniverseContractData?: any): void => {
+    if (!onContractData) return callback(new Error(`Could not fetch market details for market: ${log.market}`));
+    db("balances_detail").first("balance").where({owner: log.market, symbol: "REP"}).asCallback((err?: any, designatedReportStakeRow?: {balance: BigNumber}): void => {
       if (err) return callback(err);
-      if (onUniverseContractData.designatedReportStake == null) return callback(new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`));
+      if (designatedReportStakeRow == null) return callback(new Error(`No REP balance on market: ${log.market} (${log.transactionHash}`));
       const marketStateDataToInsert: { [index: string]: string|number|boolean } = {
         marketId: log.market,
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
@@ -59,17 +58,17 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           universe:                   log.universe,
           numOutcomes,
           marketStateId,
-          feeWindow:                  onMarketContractData.feeWindow,
-          endTime:                    parseInt(onMarketContractData.endTime!, 10),
-          designatedReporter:         onMarketContractData.designatedReporter,
-          designatedReportStake:      convertFixedPointToDecimal(onUniverseContractData!.designatedReportStake.balance, WEI_PER_ETHER),
-          numTicks:                   onMarketContractData.numTicks,
-          marketCreatorFeeRate:       convertDivisorToRate(onMarketContractData.marketCreatorSettlementFeeDivisor!, 10),
-          marketCreatorMailbox:       onMarketContractData.marketCreatorMailbox,
+          feeWindow:                  onContractData.feeWindow,
+          endTime:                    parseInt(onContractData.endTime!, 10),
+          designatedReporter:         onContractData.designatedReporter,
+          designatedReportStake:      convertFixedPointToDecimal(designatedReportStakeRow.balance, WEI_PER_ETHER),
+          numTicks:                   onContractData.numTicks,
+          marketCreatorFeeRate:       convertDivisorToRate(onContractData.marketCreatorSettlementFeeDivisor!, 10),
+          marketCreatorMailbox:       onContractData.marketCreatorMailbox,
           marketCreatorMailboxOwner:  log.marketCreator,
           initialReportSize:          null,
-          reportingFeeRate:           convertDivisorToRate(onUniverseContractData!.reportingFeeDivisor!, 10),
-          marketCreatorFeesBalance: "0",
+          reportingFeeRate:           convertDivisorToRate(onContractData.reportingFeeDivisor!, 10),
+          marketCreatorFeesBalance:   "0",
           volume:                     "0",
           sharesOutstanding:          "0",
           forking:                    0,
@@ -82,6 +81,10 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)),
           volume: ZERO,
         });
+        const fullTextStringInsert: SearchRow = {
+          marketId: marketsDataToInsert.marketId,
+          content: contentSearchBuilder(marketsDataToInsert),
+        };
         const tokensDataToInsert: Partial<TokensRow> = {
           marketId: log.market,
           symbol: "shares",
@@ -96,9 +99,12 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         }, (err: Error|null): void => {
           if (err) return callback(err);
           const outcomeNames: Array<string|number|null> = (log.marketType === "1" && log!.outcomes) ? log!.outcomes! : new Array(numOutcomes).fill(null);
-          parallel([
+          series([
             (next: AsyncCallback): void => {
               db.insert(marketsDataToInsert).into("markets").asCallback(next);
+            },
+            (next: AsyncCallback): void => {
+              db.raw("insert into search_en(marketId, content) values( ?, ? )", [fullTextStringInsert.marketId, fullTextStringInsert.content]).asCallback(next);
             },
             (next: AsyncCallback): void => {
               db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).asCallback(next);
@@ -128,7 +134,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
 }
 
 export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  parallel([
+  series([
     (next: AsyncCallback): void => {
       db.from("markets").where({ marketId: log.market }).del().asCallback(next);
     },
@@ -140,6 +146,9 @@ export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: Form
     },
     (next: AsyncCallback): void => {
       db.from("market_state").where({ marketId: log.market }).del().asCallback(next);
+    },
+    (next: AsyncCallback): void => {
+      db.from("search_en").where({ marketId: log.market }).del().asCallback(next);
     },
   ], (err) => {
     if (err) callback(err);

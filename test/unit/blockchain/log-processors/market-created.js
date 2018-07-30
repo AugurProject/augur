@@ -2,7 +2,7 @@
 
 const Augur = require("augur.js");
 const assert = require("chai").assert;
-const {parallel} = require("async");
+const {series} = require("async");
 const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
 const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../../build/blockchain/log-processors/market-created");
@@ -10,11 +10,12 @@ const {getMarketsWithReportingState} = require("../../../../build/server/getters
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {
-    const getState = (db, params, callback) => parallel({
+    const getState = (db, params, callback) => series({
       markets: next => getMarketsWithReportingState(db).where({"markets.marketId": params.log.market}).asCallback(next),
       categories: next => db("categories").where({category: params.log.topic}).asCallback(next),
       outcomes: next => db("outcomes").where({marketId: params.log.market}).asCallback(next),
       tokens: next => db("tokens").select(["contractAddress", "symbol", "marketId", "outcome"]).where({marketId: params.log.market}).asCallback(next),
+      search: next => db("search_en").where({marketId: params.log.market}).asCallback(next),
     }, callback);
     it(t.description, (done) => {
       setupTestDb((err, db) => {
@@ -163,6 +164,10 @@ describe("blockchain/log-processors/market-created", () => {
             volume: new BigNumber("0", 10),
             description: null,
           }],
+          search: [{
+            content: "0x1111111111111111111111111111111111111111 TEST_CATEGORY this is a test market TEST_TAG_1 TEST_TAG_2 https://www.trusted-third-party-co.com",
+            marketId: "0x1111111111111111111111111111111111111111",
+          }],
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
@@ -186,6 +191,7 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
+          search: [],
           tokens: [],
         });
       },
@@ -328,6 +334,10 @@ describe("blockchain/log-processors/market-created", () => {
             volume: new BigNumber("0", 10),
             description: "test outcome 3",
           }],
+          search: [{
+            content: "0x1111111111111111111111111111111111111112 TEST_CATEGORY this is a test market TEST_TAG_1 TEST_TAG_2 https://www.trusted-third-party-co.com",
+            marketId: "0x1111111111111111111111111111111111111112",
+          }],
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
@@ -361,6 +371,7 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
+          search: [],
           tokens: [],
         });
       },
@@ -490,6 +501,10 @@ describe("blockchain/log-processors/market-created", () => {
             volume: new BigNumber("0", 10),
             description: null,
           }],
+          search: [{
+            content: "0x1111111111111111111111111111111111111113 TEST_CATEGORY this is a test market TEST_TAG_1 TEST_TAG_2 https://www.trusted-third-party-co.com",
+            marketId: "0x1111111111111111111111111111111111111113",
+          }],
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
@@ -513,6 +528,7 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
+          search: [],
           tokens: [],
         });
       },
@@ -638,6 +654,10 @@ describe("blockchain/log-processors/market-created", () => {
             volume: new BigNumber("0", 10),
             description: null,
           }],
+          search: [{
+            content: "0x1111111111111111111111111111111111111111 TEST_CATEGORY this is a test market",
+            marketId: "0x1111111111111111111111111111111111111111",
+          }],
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
@@ -661,6 +681,7 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
+          search: [],
           tokens: [],
         });
       },
@@ -794,6 +815,10 @@ describe("blockchain/log-processors/market-created", () => {
             volume: new BigNumber("0", 10),
             description: null,
           }],
+          search: [{
+            content: "0x1111111111111111111111111111111111111111 TEST_CATEGORY this is a test market TEST_TAG_1 TEST_TAG_2 https://www.trusted-third-party-co.com",
+            marketId: "0x1111111111111111111111111111111111111111",
+          }],
           tokens: [{
             contractAddress: "SHARE_TOKEN_0",
             symbol: "shares",
@@ -817,6 +842,7 @@ describe("blockchain/log-processors/market-created", () => {
             universe: "0x000000000000000000000000000000000000000b",
           }],
           outcomes: [],
+          search: [],
           tokens: [],
         });
       },

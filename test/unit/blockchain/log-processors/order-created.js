@@ -52,6 +52,13 @@ describe("blockchain/log-processors/order-created", () => {
       },
       augur: {
         utils: augur.utils,
+        api: {
+          OrdersFinder: {
+            getExistingOrders5: function (data, cb) {
+              return cb(null, ["ORDER_ID"]);
+            },
+          },
+        },
       },
     },
     assertions: {

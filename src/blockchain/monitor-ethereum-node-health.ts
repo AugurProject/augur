@@ -15,7 +15,7 @@ export function monitorEthereumNodeHealth(errorCallback: ErrorCallback | undefin
     augur.api.Universe.getController({ tx: { to: universe } }, (err: Error, universeController: string) => {
       if (err) {
         clearInterval(monitorEthereumNodeHealthId);
-        if (errorCallback) errorCallback(err);
+        if (errorCallback) errorCallback(new Error(`Controller Match Lookup Error. Check if universe "${universe}" exists. ${err.message}`));
       }
       if (universeController !== controller) {
         clearInterval(monitorEthereumNodeHealthId);

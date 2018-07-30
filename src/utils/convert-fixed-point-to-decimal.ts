@@ -4,7 +4,7 @@ export function fixedPointToDecimal(fixedPointValue: BigNumber, conversionFactor
   return fixedPointValue.dividedBy(conversionFactor);
 }
 
-export function convertFixedPointToDecimal(fixedPointValue: string|number, conversionFactor: string|number): string {
+export function convertFixedPointToDecimal(fixedPointValue: string|number|BigNumber, conversionFactor: string|number): string {
   return fixedPointToDecimal(new BigNumber(fixedPointValue, 10), new BigNumber(conversionFactor, 10)).toFixed();
 }
 

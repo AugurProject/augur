@@ -2,12 +2,12 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {parallel} = require("async");
+const {series} = require("async");
 const {processUniverseForkedLog, processUniverseForkedLogRemoval} = require("../../../../build/blockchain/log-processors/universe-forked");
 
 const otherMarket = "0x0000000000000000000000000000000000000222";
 
-const getForkRows = (db, params, callback) => parallel({
+const getForkRows = (db, params, callback) => series({
   forkingMarket: next => db("markets").where({universe: params.log.universe, forking: 1}).asCallback(next),
   otherMarket: next => db("markets").where({marketId: otherMarket}).asCallback(next),
   universe: next => db("universes").where({universe: params.log.universe}).asCallback(next),
