@@ -17,7 +17,7 @@ const mapStateToProps = (state, ownProps) => {
     minPrice: market.minPrice || ZERO,
     scalarDenomination: market.scalarDenomination,
     resolutionSource: market.resolutionSource,
-    currentTimestamp: selectCurrentTimestamp(state) || '0',
+    currentTimestamp: selectCurrentTimestamp(state) || 0,
     market,
   }
 }

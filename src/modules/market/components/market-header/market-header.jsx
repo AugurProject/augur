@@ -10,7 +10,7 @@ import { BigNumber } from 'bignumber.js'
 import Styles from 'modules/market/components/market-header/market-header.styles'
 import CoreProperties from 'modules/market/components/core-properties/core-properties'
 
-const OVERFLOW_DETAILS_LENGTH = 500
+const OVERFLOW_DETAILS_LENGTH = 560
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -57,7 +57,17 @@ export default class MarketHeader extends Component {
       currentTimestamp,
     } = this.props
 
-    const { details } = this.props
+    let { details } = this.props
+
+
+    if (marketType === SCALAR) {
+      const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
+      const warningText = `
+
+If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toNumber()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toNumber()}${denomination}) should be reported.`
+
+      details += warningText
+    }
 
     let detailsTooLong = false
 
@@ -65,7 +75,6 @@ export default class MarketHeader extends Component {
       detailsTooLong = true
     }
 
-    const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
     if (this.additionalDetails && this.additionalDetails.scrollHeight) {
       const height = (!this.state.showReadMore && detailsTooLong) ? 65 : this.additionalDetails.scrollHeight
       this.additionalDetails.style.height = `${height}px`
@@ -110,13 +119,8 @@ export default class MarketHeader extends Component {
                     readOnly
                     value={!this.state.showReadMore && detailsTooLong ? details.substring(0, OVERFLOW_DETAILS_LENGTH) + '...' : details}
                   />
-                  { marketType === SCALAR &&
-                    <span>
-                    If the real-world outcome for this market is above this market&#39;s maximum value, the maximum value ({maxPrice.toNumber()}{denomination}) should be reported. If the real-world outcome for this market is below this market&#39;s minimum value, the minimum value ({minPrice.toNumber()}{denomination}) should be reported.
-                    </span>
-                  }
                   { detailsTooLong &&
-                    <div className={Styles.MarketHeader__readMoreButton}>read more</div>
+                    <div className={Styles.MarketHeader__readMoreButton}>{ this.state.showReadMore ? 'read less' : 'read more' }</div>
                   }
                 </div>
               }
