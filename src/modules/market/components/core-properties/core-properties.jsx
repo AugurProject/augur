@@ -1,7 +1,9 @@
+/* eslint react/no-array-index-key: 0 */
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR, YES_NO } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/core-properties/core-properties.styles'
 import ReactTooltip from 'react-tooltip'
@@ -11,6 +13,47 @@ import getValue from 'utils/get-value'
 import { dateHasPassed } from 'utils/format-date'
 import { constants } from 'services/augurjs'
 import { Hint } from 'modules/common/components/icons'
+
+const Property = p => (
+  <div
+    className={classNames(
+      Styles.CoreProperties__property,
+      {
+        [Styles.CoreProperties__propertySmall]: (p.numRow !== 0),
+      },
+    )}
+  >
+    <span className={Styles[`CoreProperties__property-name`]}>
+      <div>
+        {p.property.name}
+      </div>
+      {p.property.tooltip &&
+        <div>
+          <label
+            className={classNames(TooltipStyles.TooltipHint, Styles['CoreProperties__property-tooltip'])}
+            data-tip
+            data-for="tooltip--market-fees"
+          >
+            { Hint }
+          </label>
+          <ReactTooltip
+            id="tooltip--market-fees"
+            className={TooltipStyles.Tooltip}
+            effect="solid"
+            place="bottom"
+            type="light"
+          >
+            <h4>Trading Settlement Fee</h4>
+            <p>
+              The trading settlement fee is a combination of the Market Creator Fee (<b>{p.property.marketCreatorFee}</b>) and the Reporting Fee (<b>{p.property.reportingFee}</b>)
+            </p>
+          </ReactTooltip>
+        </div>
+      }
+    </span>
+    <span style={p.property.textStyle}>{p.property.value}</span>
+  </div>
+)
 
 export default class CoreProperties extends Component {
   static propTypes = {
@@ -55,18 +98,75 @@ export default class CoreProperties extends Component {
       currentTimestamp,
     } = this.props
 
-    const volume = getValue(market, 'volume.full')
-    const fee = getValue(market, 'settlementFeePercent.full')
+
     const marketCreatorFee = getValue(market, 'marketCreatorFeeRatePercent.full')
     const reportingFee = getValue(market, 'reportingFeeRatePercent.full')
-    const endTime = getValue(market, 'endTime.formattedLocal')
-    const expires = dateHasPassed(currentTimestamp, getValue(market, 'endTime.timestamp')) ? 'expired' : 'expires'
-    const min = market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null
-    const max = market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null
-    const phase = this.determinePhase()
-    const creationTime = getValue(market, 'creationTime.formattedLocal')
+
     const isScalar = market.marketType === SCALAR
     const consensus = getValue(market, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
+
+    const propertyRows = [
+      [
+        {
+          name: 'volume',
+          value: getValue(market, 'volume.full'),
+        },
+        {
+          name: 'fee',
+          value: getValue(market, 'settlementFeePercent.full'),
+          tooltip: true,
+          marketCreatorFee,
+          reportingFee,
+        },
+        {
+          name: 'phase',
+          value: this.determinePhase(),
+        },
+      ],
+      [
+        {
+          name: 'created',
+          value: getValue(market, 'creationTime.formattedLocal'),
+        },
+        {
+          name: 'type',
+          value: getValue(market, 'marketType') === YES_NO ? 'Yes/No' : getValue(market, 'marketType'),
+        },
+        {
+          name: 'min',
+          value: market.marketType === SCALAR ? getValue(market, 'minPrice').toString() : null,
+        },
+      ],
+      [
+        {
+          name: dateHasPassed(currentTimestamp, getValue(market, 'endTime.timestamp')) ? 'expired' : 'expires',
+          value: getValue(market, 'endTime.formattedLocal'),
+        },
+        {
+          name: 'denominated in',
+          value: getValue(market, 'scalarDenomination'),
+          textStyle: { textTransform: 'none' },
+        },
+        {
+          name: 'max',
+          value: market.marketType === SCALAR ? getValue(market, 'maxPrice').toString() : null,
+        },
+      ],
+    ]
+
+    const renderedProperties = []
+    propertyRows.forEach((propertyRow, numRow) => {
+      const row = []
+      propertyRow.forEach((property, numCol) => {
+        if (property.value) {
+          row.push(<Property key={'property' + numRow + numCol} property={property} numRow={numRow} />)
+        }
+      })
+      renderedProperties.push(<div key={'row' + numRow} className={Styles.CoreProperties__row}> {row}</div>)
+      if (numRow === 0) {
+        renderedProperties.push(<div key={'linebreak' + numRow} className={Styles.CoreProperties__lineBreak} />)
+      }
+    })
 
     return (
       <div className={Styles.CoreProperties__coreContainer}>
@@ -85,112 +185,7 @@ export default class CoreProperties extends Component {
         { consensus &&
           <div className={Styles.CoreProperties__lineBreak} />
         }
-        <div className={Styles.CoreProperties__row}>
-          <div className={Styles.CoreProperties__property}>
-            <span className={Styles[`CoreProperties__property-name`]}>
-              <div>
-                volume
-              </div>
-            </span>
-            <span>{volume}</span>
-          </div>
-          <div className={Styles.CoreProperties__property}>
-            <span className={Styles[`CoreProperties__property-name`]}>
-              <div>
-                fee
-              </div>
-              <div>
-                <label
-                  className={classNames(TooltipStyles.TooltipHint, Styles['CoreProperties__property-tooltip'])}
-                  data-tip
-                  data-for="tooltip--market-fees"
-                >
-                  { Hint }
-                </label>
-                <ReactTooltip
-                  id="tooltip--market-fees"
-                  className={TooltipStyles.Tooltip}
-                  effect="solid"
-                  place="bottom"
-                  type="light"
-                >
-                  <h4>Trading Settlement Fee</h4>
-                  <p>
-                    The trading settlement fee is a combination of the Market Creator Fee (<b>{marketCreatorFee}</b>) and the Reporting Fee (<b>{reportingFee}</b>)
-                  </p>
-                </ReactTooltip>
-              </div>
-            </span>
-            <span>{fee}</span>
-          </div>
-          <div className={Styles.CoreProperties__property}>
-            <span className={Styles[`CoreProperties__property-name`]}>
-              <div>
-                Phase
-              </div>
-            </span>
-            <span>{phase && phase.toLowerCase()}</span>
-          </div>
-        </div>
-        <div className={Styles.CoreProperties__lineBreak} />
-        <div className={Styles.CoreProperties__row}>
-          <div className={Styles.CoreProperties__propertySmall}>
-            <span className={Styles[`CoreProperties__property-name`]} style={{ minWidth: '210px' }}>
-              <div>
-                created
-              </div>
-            </span>
-            <span>{creationTime}</span>
-          </div>
-          <div className={Styles.CoreProperties__propertySmall}>
-            <span className={Styles[`CoreProperties__property-name`]}>
-              <div>
-                Type
-              </div>
-            </span>
-            <span>{market.marketType}</span>
-          </div>
-          {min &&
-            <div className={Styles.CoreProperties__propertySmall}>
-              <span className={Styles[`CoreProperties__property-name`]}>
-                <div>
-                  Min
-                </div>
-              </span>
-              <span>{min}</span>
-            </div>
-          }
-        </div>
-        <div className={Styles.CoreProperties__row}>
-          <div className={Styles.CoreProperties__propertySmall}>
-            <span className={Styles[`CoreProperties__property-name`]} style={{ minWidth: '210px' }}>
-              <div>
-                {expires}
-              </div>
-            </span>
-            <span>{endTime}</span>
-          </div>
-          {market.scalarDenomination &&
-            <div className={Styles.CoreProperties__propertySmall}>
-              <span className={Styles[`CoreProperties__property-name`]}>
-                <div>
-                  Denominated In
-                </div>
-              </span>
-              <span style={{ textTransform: 'none' }}>{market.scalarDenomination}</span>
-            </div>
-          }
-          {max &&
-            <div className={Styles.CoreProperties__propertySmall}>
-              <span className={Styles[`CoreProperties__property-name`]}>
-                <div>
-                  Max
-                </div>
-              </span>
-              <span>{max}</span>
-            </div>
-          }
-        </div>
+        {renderedProperties}
       </div>
     )
   }
