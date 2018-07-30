@@ -37,12 +37,11 @@ const windowRef = typeof window === 'undefined' ? {} : window
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
-
-  loadAccount(dispatch, null, env, getState, (err, loadedAccount) => {
+  loadAccount(dispatch, null, env, (err, loadedAccount) => {
     if (err) console.error(err)
     let account = loadedAccount
     setInterval(() => {
-      loadAccount(dispatch, account, env, getState, (err, loadedAccount) => {
+      loadAccount(dispatch, account, env, (err, loadedAccount) => {
         if (err) console.error(err)
         account = loadedAccount
       })
@@ -56,9 +55,7 @@ function pollForAccount(dispatch, getState) {
   })
 }
 
-function loadAccount(dispatch, existing, env, getState, callback) {
-  const { isLogged } = getState()
-
+function loadAccount(dispatch, existing, env, callback) {
   let loggedInAccount = null
 
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
