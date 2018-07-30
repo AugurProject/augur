@@ -11,6 +11,8 @@ import Styles from 'modules/market/components/market-header/market-header.styles
 import CoreProperties from 'modules/market/components/core-properties/core-properties'
 
 const OVERFLOW_DETAILS_LENGTH = 560
+const TALL_HEIGHT = 150
+const SMALL_HEIGHT = 65
 
 export default class MarketHeader extends Component {
   static propTypes = {
@@ -69,15 +71,15 @@ If the real-world outcome for this market is above this market's maximum value, 
       details += warningText
     }
 
-    let detailsTooLong = false
+    const detailsTooLong = details.length > OVERFLOW_DETAILS_LENGTH
 
-    if (details.length > OVERFLOW_DETAILS_LENGTH) {
-      detailsTooLong = true
+    let additionalDetailsHeight = SMALL_HEIGHT
+    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
+      additionalDetailsHeight = this.additionalDetails.scrollHeight
     }
 
-    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
-      const height = (!this.state.showReadMore && detailsTooLong) ? 65 : this.additionalDetails.scrollHeight
-      this.additionalDetails.style.height = `${height}px`
+    if (detailsTooLong) {
+      additionalDetailsHeight = this.state.showReadMore ? TALL_HEIGHT : SMALL_HEIGHT
     }
 
 
@@ -117,9 +119,10 @@ If the real-world outcome for this market is above this market's maximum value, 
                     className={Styles['MarketHeader__AdditionalDetails-text']}
                     disabled
                     readOnly
+                    style={{ height: additionalDetailsHeight + 'px' }}
                     value={!this.state.showReadMore && detailsTooLong ? details.substring(0, OVERFLOW_DETAILS_LENGTH) + '...' : details}
                   />
-                  { detailsTooLong && !this.state.showReadMore && 
+                  { detailsTooLong && !this.state.showReadMore &&
                     <div className={Styles.MarketHeader__readMoreButton}>read more</div>
                   }
                 </div>
