@@ -84,6 +84,7 @@ export default class MarketPortfolioCard extends Component {
       default:
         localButtonText = 'View'
     }
+    console.log(market.endTime)
 
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -102,7 +103,7 @@ export default class MarketPortfolioCard extends Component {
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles['MarketCard__expiration--mobile']}>
                 {dateHasPassed(currentTimestamp, market.endTime.timestamp) ? 'Expired ' : 'Expires '}
-                { isMobile ? market.endTime.formattedShort : market.endTime.formatted }
+                { isMobile ? market.endTime.formattedLocalShort : market.endTime.formattedLocal }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
                 <MarketLink id={market.id}>
@@ -152,7 +153,7 @@ export default class MarketPortfolioCard extends Component {
                 {market.endTimeLabel}
               </span>
               <span className={Styles.MarketCard__expirationvalue}>
-                {getValue(market, 'endTime.formatted')}
+                {getValue(market, 'endTime.formattedLocal')}
               </span>
             </span>
           </div>
