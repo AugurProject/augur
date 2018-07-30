@@ -5,6 +5,7 @@ import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
 import * as _ from "lodash";
 import Augur from "augur.js";
+import { SubscriptionEventNames } from "../../constants";
 
 export interface FeeWindowModifications {
   expiredFeeWindows: Array<Address>;
@@ -58,7 +59,7 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     if (err) return callback(err);
                     if (expiredFeeWindowRows != null) {
                       expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
-                        augurEmitter.emit("FeeWindowClosed", Object.assign({
+                        augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
                             eventName: "FeeWindowClosed",
                             blockNumber,
                             timestamp,
@@ -68,7 +69,7 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     }
                     if (newActiveFeeWindowRows != null) {
                       newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
-                        augurEmitter.emit("FeeWindowOpened", Object.assign({
+                        augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
                             eventName: "FeeWindowOpened",
                             blockNumber,
                             timestamp,

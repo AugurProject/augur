@@ -44,17 +44,28 @@ export enum ControlMessageType {
 }
 
 export enum SubscriptionEventNames {
-  InitialReporterRedeemed = "InitialReporterRedeemed",
-  FeeWindowCreated = "FeeWindowCreated",
-  TradingProceedsClaimed = "TradingProceedsClaimed",
-  FeeWindowRedeemed = "FeeWindowRedeemed",
-  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
-  MarketState = "MarketState",
-  MarketCreated = "MarketCreated",
-  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
-  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
+  CompleteSetsPurchased = "CompleteSetsPurchased",
+  CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
-
+  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
+  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
+  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
+  FeeWindowClosed = "FeeWindowClosed",
+  FeeWindowCreated = "FeeWindowCreated",
+  FeeWindowRedeemed = "FeeWindowRedeemed",
+  InitialReportSubmitted = "InitialReportSubmitted",
+  InitialReporterRedeemed = "InitialReporterRedeemed",
+  InitialReporterTransferred = "InitialReporterTransferred",
+  MarketCreated = "MarketCreated",
+  MarketState = "MarketState",
+  OrderCanceled = "OrderCanceled",
+  OrderCreated = "OrderCreated",
+  OrderFilled = "OrderFilled",
+  ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
+  SyncFinished = "SyncFinished",
+  TokensTransferred = "TokensTransferred",
+  TradingProceedsClaimed = "TradingProceedsClaimed",
+  UniverseCreated = "UniverseCreated",
 }
 
 export enum MarketType {

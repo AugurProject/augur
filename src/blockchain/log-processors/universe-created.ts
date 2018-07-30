@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address } from "../../types";
 import { insertPayout } from "./database";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventNames } from "../../constants";
 
 export function processUniverseCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   insertPayout( db, log.childUniverse, log.payoutNumerators, log.invalid, true, (err, payoutId) => {
@@ -18,7 +19,7 @@ export function processUniverseCreatedLog(db: Knex, augur: Augur, log: Formatted
       };
       db.insert(universeToInsert).into("universes").asCallback((err: Error|null): void => {
         if (err) return callback(err);
-        augurEmitter.emit("UniverseCreated", log);
+        augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
         const repToken = [{
           contractAddress: reputationToken,
           symbol: "REP",
@@ -35,7 +36,7 @@ export function processUniverseCreatedLog(db: Knex, augur: Augur, log: Formatted
 export function processUniverseCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("universes").where({universe: log.childUniverse}).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("UniverseCreated", log);
+    augurEmitter.emit(SubscriptionEventNames.UniverseCreated, log);
     callback(null);
   });
 }

@@ -79,8 +79,7 @@ export function processUniverseForkedLogRemoval(db: Knex, augur: Augur, log: For
     if (forkingMarket == null) return callback(new Error(`Could not retrieve forking market to rollback for universe ${log.universe}`));
     db("markets").update("forking", 0).where("marketId", forkingMarket.marketId).asCallback((err) => {
       if (err) return callback(err);
-      augurEmitter.emit("MarketState", {
-        eventName: "MarketState",
+      augurEmitter.emit(SubscriptionEventNames.MarketState, {
         universe: log.universe,
         marketId: forkingMarket,
         reportingState: ReportingState.CROWDSOURCING_DISPUTE,

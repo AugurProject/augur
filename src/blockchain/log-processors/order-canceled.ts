@@ -2,6 +2,7 @@ import Augur from "augur.js";
 import * as Knex from "knex";
 import { Bytes32, FormattedEventLog, ErrorCallback, OrderState } from "../../types";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventNames } from "../../constants";
 
 interface MarketIDAndOutcomeAndPrice {
   marketId: Bytes32;
@@ -19,7 +20,7 @@ export function processOrderCanceledLog(db: Knex, augur: Augur, log: FormattedEv
       db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
         if (err) return callback(err);
         if (ordersRow) ordersRow.orderType = orderTypeLabel;
-        augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
+        augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
         callback(null);
       });
     });
@@ -35,7 +36,7 @@ export function processOrderCanceledLogRemoval(db: Knex, augur: Augur, log: Form
       db.first("marketId", "outcome", "price").from("orders").where("orderId", log.orderId).asCallback((err: Error|null, ordersRow?: MarketIDAndOutcomeAndPrice): void => {
         if (err) return callback(err);
         if (ordersRow) ordersRow.orderType = orderTypeLabel;
-        augurEmitter.emit("OrderCanceled", Object.assign({}, log, ordersRow));
+        augurEmitter.emit(SubscriptionEventNames.OrderCanceled, Object.assign({}, log, ordersRow));
         callback(null);
       });
     });
