@@ -119,8 +119,8 @@ If the real-world outcome for this market is above this market's maximum value, 
                     readOnly
                     value={!this.state.showReadMore && detailsTooLong ? details.substring(0, OVERFLOW_DETAILS_LENGTH) + '...' : details}
                   />
-                  { detailsTooLong &&
-                    <div className={Styles.MarketHeader__readMoreButton}>{ this.state.showReadMore ? 'read less' : 'read more' }</div>
+                  { detailsTooLong && !this.state.showReadMore && 
+                    <div className={Styles.MarketHeader__readMoreButton}>read more</div>
                   }
                 </div>
               }
