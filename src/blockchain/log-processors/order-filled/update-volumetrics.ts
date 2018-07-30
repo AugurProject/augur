@@ -38,6 +38,10 @@ function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumb
   db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback(callback);
 }
 
+function setMarketLastTrade(db: Knex, marketId: Address, blockNumber: number, next: any) {
+  db("markets").update("lastTradeBlockNumber", blockNumber).where({ marketId }).asCallback(next);
+}
+
 export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: BigNumber, minPrice: BigNumber, maxPrice: BigNumber, isIncrease: boolean, callback: ErrorCallback): void {
   db.first("token_supply.supply").from("tokens").join("token_supply", "token_supply.token", "tokens.contractAddress").where({ outcome, marketId })
     .asCallback((err: Error|null, shareTokenRow?: { supply: BigNumber }): void => {
@@ -57,6 +61,7 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
 
             series({
               market: (next) => incrementMarketVolume(db, marketId, amount, next),
+              marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
               outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
               category: (next) => incrementCategoryPopularity(db, category, amount, next),
             }, callback);
