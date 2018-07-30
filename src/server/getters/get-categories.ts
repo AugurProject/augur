@@ -20,6 +20,6 @@ export function getCategories(db: Knex, universe: Address, sortBy: string|null|u
       };
     });
     const groupedCategoryInfo = groupByAndSum(upperCaseCategoryInfo, ["category"], ["popularity"]);
-    callback(null, groupedCategoryInfo.map((categoryInfo: CategoriesRow): CategoriesRow => ({ popularity: categoryInfo.popularity.toString(), category: categoryInfo.category.toUpperCase() })));
+    callback(null, groupedCategoryInfo.map((categoryInfo: CategoriesRow): CategoriesRow => ({ popularity: categoryInfo.popularity.toString(), category: categoryInfo.category })));
   });
 }
