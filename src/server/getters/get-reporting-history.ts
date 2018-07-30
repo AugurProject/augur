@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { Address, AsyncCallback, JoinedReportsMarketsRow, UIReport } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { queryModifier } from "./database";
-import { parallel } from "async";
+import { series } from "async";
 
 export interface UIReports<BigNumberType> {
   [universe: string]: {
@@ -68,7 +68,7 @@ export function getReportingHistory(db: Knex, reporter: Address, universe: Addre
   crowdsourcersQuery.join("markets", "markets.marketId", "crowdsourcers.marketId");
   crowdsourcersQuery.join("payouts", "crowdsourcers.payoutId", "payouts.payoutId");
   if (marketId != null) crowdsourcersQuery.where("crowdsourcers.marketId", marketId);
-  parallel({
+  series({
     initialReport: (next: AsyncCallback) => queryModifier(db, initialReportQuery, "creationBlockNumber", "asc", sortBy, isSortDescending, limit, offset, next),
     crowdsourcers: (next: AsyncCallback) => queryModifier(db, crowdsourcersQuery, "creationBlockNumber", "asc", sortBy, isSortDescending, limit, offset, next),
   }, (err: Error|null, participantResults: ParticipantResults<BigNumber>): void => {

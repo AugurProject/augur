@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require("chai").assert;
-const { parallel } = require("async");
+const { series } = require("async");
 const { BigNumber } = require("bignumber.js");
 const { fix } = require("speedomatic");
 const setupTestDb = require("../../../test.database");
@@ -11,7 +11,7 @@ const augur = new Augur();
 
 describe("blockchain/log-processors/order-filled", () => {
   const test = (t) => {
-    const getState = (db, params, aux, callback) => parallel({
+    const getState = (db, params, aux, callback) => series({
       orders: next => db("orders").where("orderId", params.log.orderId).asCallback(next),
       trades: next => db("trades").where("orderId", params.log.orderId).asCallback(next),
       markets: next => db.first("volume", "sharesOutstanding").from("markets").where("marketId", aux.marketId).asCallback(next),

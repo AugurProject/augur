@@ -1,4 +1,4 @@
-import { parallel } from "async";
+import { series } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
@@ -118,7 +118,7 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
 export function getDisputeInfo(db: Knex, marketIds: Array<Address>, account: Address|null, callback: (err: Error|null, result?: Array<UIStakeInfo<string>|null>) => void): void {
   if (marketIds == null) return callback(new Error("must include marketIds parameter"));
 
-  parallel({
+  series({
     markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketId", marketIds).asCallback(next),
     payouts: (next: AsyncCallback) => db("payouts").whereIn("marketId", marketIds).asCallback(next),
     stakesCompleted: (next: AsyncCallback) => getCompletedStakes(db, marketIds, next),

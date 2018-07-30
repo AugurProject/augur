@@ -14,23 +14,30 @@ interface BlockDetailsByBlock {
   [blockNumber: number]: BlockDetail;
 }
 
-function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>, callback: (error: Error|null, blockDetailsByBlock?: BlockDetailsByBlock) => void) {
-  mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, (blockNumber, nextBlockNumber) => {
-    augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
-      if (err || block == null) return nextBlockNumber(new Error("Could not get block"));
-      nextBlockNumber(undefined, [blockNumber, block]);
+function extractBlockNumbers(batchOfAugurLogs: Array<FormattedEventLog>) {
+  return _.uniq(batchOfAugurLogs.map((augurLog) => augurLog.blockNumber));
+}
+
+async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): Promise<BlockDetailsByBlock> {
+  return new Promise<BlockDetailsByBlock>((resolve, reject) => {
+    if (blockNumbers.length === 0) return resolve([]);
+    console.log(`Fetching blocks details from ${blockNumbers[0]} to ${blockNumbers[blockNumbers.length - 1]}`);
+    mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, (blockNumber, nextBlockNumber) => {
+      augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
+        if (err || block == null) return nextBlockNumber(new Error("Could not get block"));
+        nextBlockNumber(undefined, [blockNumber, block]);
+      });
+    }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
+      if (err) return reject(err);
+      const blockDetailsByBlock = _.fromPairs(blockDetails);
+      resolve(blockDetailsByBlock);
     });
-  }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
-    if (err) return callback(err);
-    const blockDetailsByBlock = _.fromPairs(blockDetails);
-    callback(null, blockDetailsByBlock);
   });
 }
 
-function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, callback: ErrorCallback) {
-  const blockNumbers = _.uniq(allAugurLogs.map((augurLog) => augurLog.blockNumber));
-  fetchAllBlockDetails(augur, blockNumbers, (err, blockDetailsByBlock) => {
-    if (err || blockDetailsByBlock == null) return callback(err);
+async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<FormattedEventLog>, blockNumbers: Array<number>, blockDetailsByBlockPromise: Promise<BlockDetailsByBlock>) {
+  return new Promise(async (resolve, reject) => {
+    const blockDetailsByBlock = await blockDetailsByBlockPromise;
     const logsByBlock: { [blockNumber: number]: Array<FormattedEventLog> } = _.groupBy(allAugurLogs, (log) => log.blockNumber);
     eachSeries(blockNumbers, (blockNumber: number, nextBlock: ErrorCallback) => {
       const logs = logsByBlock[blockNumber];
@@ -50,17 +57,16 @@ function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Formatte
               processLog(trx, augur, log, logProcessors[contractName][eventName], nextLog);
             }
           }, (err: Error|null) => {
-            if (err) {
-              trx.rollback(err);
-              return nextBlock(err);
-            } else {
-              trx.commit();
-              return nextBlock(null);
-            }
+            if (err) trx.rollback(err);
+            else trx.commit();
+            return nextBlock(err);
           });
         });
       });
-    }, callback);
+    }, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
   });
 }
 
@@ -70,23 +76,29 @@ export function downloadAugurLogs(db: Knex, augur: Augur, fromBlock: number, toB
   }, 1);
 
   logger.info(`Getting Augur logs from block ${fromBlock} to block ${toBlock}`);
+  let lastBlockDetails = new Promise<BlockDetailsByBlock>((resolve) => resolve([]));
   augur.events.getAllAugurLogs({ fromBlock, toBlock }, (batchOfAugurLogs?: Array<FormattedEventLog>): void => {
-    if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
-    batchLogProcessQueue.push((nextBatch) => processBatchOfLogs(db, augur, batchOfAugurLogs, (err: Error|null) => {
-      if (err) {
-        batchLogProcessQueue.kill();
-        batchLogProcessQueue.pause();
-        callback(err);
-      } else {
-        nextBatch(null);
-      }
-    }));
-  }, (err) => {
-    if (!batchLogProcessQueue.paused) {
-      batchLogProcessQueue.push(() => {
-        callback(err);
-        batchLogProcessQueue.kill();
+      if (!batchOfAugurLogs || batchLogProcessQueue.paused) return;
+      const blockNumbers = extractBlockNumbers(batchOfAugurLogs);
+      const blockDetailPromise = lastBlockDetails.then(() => fetchAllBlockDetails(augur, blockNumbers));
+      lastBlockDetails = blockDetailPromise;
+      batchLogProcessQueue.push(async (nextBatch) => {
+        try {
+          await processBatchOfLogs(db, augur, batchOfAugurLogs, blockNumbers, blockDetailPromise);
+          nextBatch(null);
+        } catch (err) {
+          batchLogProcessQueue.kill();
+          batchLogProcessQueue.pause();
+          callback(err);
+        }
       });
-    }
-  });
+    },
+    (err) => {
+      if (!batchLogProcessQueue.paused) {
+        batchLogProcessQueue.push(() => {
+          callback(err);
+          batchLogProcessQueue.kill();
+        });
+      }
+    });
 }
