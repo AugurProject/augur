@@ -2,9 +2,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import MarketsView from 'modules/markets/components/markets-view'
-
-import { identity, filter, map } from 'lodash/fp'
-
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 
 import loadMarkets from 'modules/markets/actions/load-markets'
@@ -16,9 +13,7 @@ import getValue from 'utils/get-value'
 import { compose } from 'redux'
 import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import { getSelectedTagsAndCategoriesFromLocation } from 'src/modules/markets/helpers/get-selected-tags-and-categories-from-location'
-import { filterArrayByArrayPredicate } from 'src/modules/filter-sort/helpers/filter-array-of-objects-by-array'
-import { filterBySearch } from 'src/modules/filter-sort/helpers/filter-by-search'
-import { FILTER_SEARCH_KEYS } from 'src/modules/markets/constants/filter-sort'
+import { loadMarketsByFilter } from 'modules/markets/actions/load-markets-by-filter'
 import { hasLoadedSearchTerm } from 'modules/markets/selectors/has-loaded-search-term'
 import debounce from 'utils/debounce'
 
@@ -30,25 +25,11 @@ const mapStateToProps = (state, { location }) => {
     tags,
   } = getSelectedTagsAndCategoriesFromLocation(location)
 
-  const categoryFilter = category ? filter(m => (m.category || '').toLowerCase() === category.toLowerCase()) : identity
-
-  // The filterBySearch function returns ids not objects.
-  const keywordFilter = keywords ? filterBySearch(keywords, FILTER_SEARCH_KEYS) : map('id')
-  const tagFilterPredicate = filterArrayByArrayPredicate('tags', tags)
-
-  // filter by category
-  const filteredMarkets = compose(
-    keywordFilter,
-    filter(tagFilterPredicate),
-    categoryFilter,
-  )(markets)
-
   const searchTermState = hasLoadedSearchTerm(state.hasLoadedSearch, category, keywords, tags)
 
   return {
     isLogged: state.isLogged,
     loginAccount: state.loginAccount,
-    filteredMarkets,
     universe: state.universe,
     canLoadMarkets: !!getValue(state, 'universe.id'),
     hasLoadedMarkets: state.hasLoadedMarkets,
@@ -67,6 +48,7 @@ const mapDispatchToProps = dispatch => ({
   loadMarketsBySearch: (search, type) => debounce(dispatch(loadMarketsBySearch(search, type))),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
+  loadMarketsByFilter: (filter, cb) => dispatch(loadMarketsByFilter(filter, cb)),
 })
 
 const Markets = compose(
