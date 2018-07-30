@@ -18,6 +18,11 @@ import { isEmpty } from 'lodash'
 
 import { MODAL_NETWORK_MISMATCH, MODAL_NETWORK_DISCONNECTED, MODAL_DISCLAIMER, MODAL_NETWORK_DISABLED } from 'modules/modal/constants/modal-types'
 import { DISCLAIMER_SEEN } from 'src/modules/modal/constants/local-storage-keys'
+import {
+  AUGUR_NODE_URL_PARAM,
+  ETHEREUM_NODE_HTTP_URL_PARAM,
+  ETHEREUM_NODE_WS_URL_PARAM,
+} from 'src/modules/app/constants/endpoint-url-params'
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000
@@ -155,9 +160,9 @@ export function initAugur(history, overrides, callback = logError) {
       env['ethereum-node'].ws = windowRef.localStorage.getItem('ethereum-node-ws') || env['ethereum-node'].ws
     }
 
-    env['augur-node'] = overrides.augur_node === undefined ? env['augur-node'] : overrides.augur_node
-    env['ethereum-node'].http = overrides.ethereum_node_http === undefined ? env['ethereum-node'].http : overrides.ethereum_node_http
-    env['ethereum-node'].ws = overrides.ethereum_node_ws === undefined ? env['ethereum-node'].ws : overrides.ethereum_node_ws
+    env['augur-node'] = overrides[AUGUR_NODE_URL_PARAM] === undefined ? env['augur-node'] : overrides[AUGUR_NODE_URL_PARAM]
+    env['ethereum-node'].http = overrides[ETHEREUM_NODE_HTTP_URL_PARAM] === undefined ? env['ethereum-node'].http : overrides[ETHEREUM_NODE_HTTP_URL_PARAM]
+    env['ethereum-node'].ws = overrides[ETHEREUM_NODE_WS_URL_PARAM] === undefined ? env['ethereum-node'].ws : overrides[ETHEREUM_NODE_WS_URL_PARAM]
 
     if (windowRef.localStorage && windowRef.localStorage.setItem) {
       windowRef.localStorage.setItem('augur-node', env['augur-node'])
