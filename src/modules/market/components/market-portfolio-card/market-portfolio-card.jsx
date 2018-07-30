@@ -84,7 +84,6 @@ export default class MarketPortfolioCard extends Component {
       default:
         localButtonText = 'View'
     }
-    console.log(market.endTime)
 
     return (
       <article className={CommonStyles.MarketCommon__container}>
