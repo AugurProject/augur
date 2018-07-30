@@ -7,6 +7,8 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
   if (universe == null) return callback(new Error("Must provide universe"));
   const query = getMarketsWithReportingState(db, ["markets.marketId", "marketStateBlock.timestamp as reportingStateUpdatedOn"]);
   query.join("blocks as marketStateBlock", "marketStateBlock.blockNumber", "market_state.blockNumber");
+  query.leftJoin("blocks as lastTradeBlock", "lastTradeBlock.blockNumber", "markets.lastTradeBlockNumber").select("lastTradeBlock.timestamp as lastTradeTime");
+
   if (universe != null) query.where({ universe });
   if (creator != null) query.where({ marketCreator: creator });
   if (category != null) query.whereRaw("LOWER(category) = ?", [category.toLowerCase()]);
