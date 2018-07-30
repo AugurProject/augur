@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 
 import { Notifications } from 'modules/common/components/icons'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 import UnauthenticatedRoute from 'modules/routes/components/unauthenticated-route/unauthenticated-route'
@@ -7,7 +7,7 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import * as VIEWS from 'modules/routes/constants/views'
 import * as COMPONENTS from 'modules/routes/constants/components'
-
+import { Redirect } from 'modules/common/containers/sticky-params-components'
 
 // NOTE --  Routes are declarative, meaning ONLY top level views should be declared here.
 //          Sub-views should be declared as needed at their respective inclusion points.

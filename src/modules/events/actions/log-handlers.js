@@ -145,6 +145,7 @@ export const handleInitialReporterRedeemedLog = log => (dispatch, getState) => {
     dispatch(loadDisputing())
     dispatch(updateLoggedTransactions(log))
   }
+  dispatch(getReportingFees())
 }
 
 export const handleMarketFinalizedLog = log => (dispatch, getState) => (
@@ -195,6 +196,7 @@ export const handleDisputeCrowdsourcerRedeemedLog = log => (dispatch) => {
   dispatch(loadMarketsDisputeInfo([log.marketId]))
   dispatch(loadReportingWindowBounds())
   dispatch(defaultLogHandler(log))
+  dispatch(getReportingFees())
 }
 
 export const handleFeeWindowCreatedLog = log => (dispatch) => {
