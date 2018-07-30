@@ -5,20 +5,17 @@ import { EventEmitter } from "events";
 class EventNameEmitter extends EventEmitter {
   emit(type: string|symbol, ...args: any[]): boolean {
     const eventsWithName = args.map((event) => {
-      if (event.name == null) return event;
       return Object.assign(
-        {},
-        event,
         { eventName: type },
+        event,
       );
     });
     console.log(eventsWithName);
     return super.emit(type, eventsWithName);
   }
-
 }
 
 export const augurEmitter: EventNameEmitter = new EventNameEmitter();
 
-// Purposefully setting this to 0 because we need one per websocket client
+// 0 because we need one per websocket client
 augurEmitter.setMaxListeners(0);
