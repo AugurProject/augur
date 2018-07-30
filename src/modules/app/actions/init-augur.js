@@ -45,6 +45,12 @@ function pollForAccount(dispatch, getState) {
         if (err) console.error(err)
         account = loadedAccount
       })
+      const disclaimerSeen = windowRef && windowRef.localStorage && windowRef.localStorage.getItem(DISCLAIMER_SEEN)
+      if (!disclaimerSeen) {
+        dispatch(updateModal({
+          type: MODAL_DISCLAIMER,
+        }))
+      }
     }, ACCOUNTS_POLL_INTERVAL_DURATION)
   })
 }
@@ -111,13 +117,7 @@ export function connectAugur(history, env, isInitialConnection = false, callback
       let universeId = env.universe || AugurJS.augur.contracts.addresses[AugurJS.augur.rpc.getNetworkID()].Universe
       if (windowRef.localStorage && windowRef.localStorage.getItem) {
         const storedUniverseId = windowRef.localStorage.getItem('selectedUniverse')
-        const disclaimerSeen = windowRef.localStorage.getItem(DISCLAIMER_SEEN)
         universeId = storedUniverseId === null ? universeId : storedUniverseId
-        if (!disclaimerSeen) {
-          dispatch(updateModal({
-            type: MODAL_DISCLAIMER,
-          }))
-        }
       }
 
       const doIt = () => {
