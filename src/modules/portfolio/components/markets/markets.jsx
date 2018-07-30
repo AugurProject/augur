@@ -81,7 +81,7 @@ class MyMarkets extends Component {
       if (market.reportingState === this.reportingStates.PRE_REPORTING) {
         openMarkets.push(market)
         filteredMarketsOpen.push(market.id)
-      } else if (market.reportingState === this.reportingStates.FINALIZED) {
+      } else if (market.reportingState === this.reportingStates.FINALIZED || market.reportingState === this.reportingStates.AWAITING_FINALIZATION) {
         finalMarkets.push(market)
         filteredMarketsFinal.push(market.id)
       } else {
