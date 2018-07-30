@@ -14,7 +14,7 @@ export const loadAccountData = (account, callback = logError) => (dispatch) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
   if (localStorageRef && localStorageRef.setItem && !process.env.AUGUR_HOSTED) {
-  	localStorageRef.setItem('loggedInAccount', account.address)
+    localStorageRef.setItem('loggedInAccount', account.address)
   }
 
   dispatch(loadAccountDataFromLocalStorage(account.address))

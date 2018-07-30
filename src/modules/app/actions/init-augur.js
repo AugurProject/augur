@@ -64,16 +64,12 @@ function loadAccount(dispatch, existing, env, callback) {
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
     if (err) return callback(err)
     let account = existing
-  
-    console.log('existing: ' + existing)
-    console.log('accounts: '+ accounts)
-    
+
     if (existing !== accounts[0]) {
       account = accounts[0]
-
       if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
         dispatch(useUnlockedAccount(account))
-      } else if (loggedInAccount && accounts.includes(loggedInAccount) && !process.env.AUGUR_HOSTED) {
+      } else if (loggedInAccount && accounts.includes(loggedInAccount)) {
         dispatch(useUnlockedAccount(loggedInAccount))
       } else {
         dispatch(logout())
@@ -82,11 +78,9 @@ function loadAccount(dispatch, existing, env, callback) {
       if (loggedInAccount && account !== loggedInAccount) {
         dispatch(logout())
       }
-    } 
-    if (!existing) {
-      if (loggedInAccount && accounts.includes(loggedInAccount)) {
-        dispatch(useUnlockedAccount(loggedInAccount))
-      }  
+    }
+    if (!existing && loggedInAccount && accounts.includes(loggedInAccount)) {
+      dispatch(useUnlockedAccount(loggedInAccount))
     }
     callback(null, account)
   })
