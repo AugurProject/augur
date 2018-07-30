@@ -10,6 +10,13 @@ import logError from 'utils/log-error'
 export const loadAccountData = (account, callback = logError) => (dispatch) => {
   const address = getValue(account, 'address')
   if (!address) return callback('account address required')
+
+  const localStorageRef = typeof window !== 'undefined' && window.localStorage
+
+  if (localStorageRef && localStorageRef.setItem && !process.env.AUGUR_HOSTED) {
+  	localStorageRef.setItem('loggedInAccount', account.address)
+  }
+
   dispatch(loadAccountDataFromLocalStorage(account.address))
   dispatch(updateLoginAccount(account))
   dispatch(loadAccountTrades())

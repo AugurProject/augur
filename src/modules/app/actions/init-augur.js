@@ -37,11 +37,12 @@ const windowRef = typeof window === 'undefined' ? {} : window
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState()
-  loadAccount(dispatch, null, env, (err, loadedAccount) => {
+
+  loadAccount(dispatch, null, env, getState, (err, loadedAccount) => {
     if (err) console.error(err)
     let account = loadedAccount
     setInterval(() => {
-      loadAccount(dispatch, account, env, (err, loadedAccount) => {
+      loadAccount(dispatch, account, env, getState, (err, loadedAccount) => {
         if (err) console.error(err)
         account = loadedAccount
       })
@@ -55,19 +56,40 @@ function pollForAccount(dispatch, getState) {
   })
 }
 
-function loadAccount(dispatch, existing, env, callback) {
+function loadAccount(dispatch, existing, env, getState, callback) {
+  const { isLogged } = getState()
+
+  let loggedInAccount = null
+
+  if (windowRef.localStorage && windowRef.localStorage.getItem) {
+    loggedInAccount = windowRef.localStorage.getItem('loggedInAccount')
+  }
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
     if (err) return callback(err)
     let account = existing
+  
+    console.log('existing: ' + existing)
+    console.log('accounts: '+ accounts)
+    
     if (existing !== accounts[0]) {
       account = accounts[0]
-      console.log(process.env.NODE_ENV)
-      console.log(account)
-      if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN || process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'development')) {
+
+      if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
         dispatch(useUnlockedAccount(account))
+      } else if (loggedInAccount && accounts.includes(loggedInAccount) && !process.env.AUGUR_HOSTED) {
+        dispatch(useUnlockedAccount(loggedInAccount))
       } else {
         dispatch(logout())
       }
+
+      if (loggedInAccount && account !== loggedInAccount) {
+        dispatch(logout())
+      }
+    } 
+    if (!existing) {
+      if (loggedInAccount && accounts.includes(loggedInAccount)) {
+        dispatch(useUnlockedAccount(loggedInAccount))
+      }  
     }
     callback(null, account)
   })
