@@ -44,8 +44,17 @@ export enum ControlMessageType {
 }
 
 export enum SubscriptionEventNames {
+  InitialReporterRedeemed = "InitialReporterRedeemed",
+  FeeWindowCreated = "FeeWindowCreated",
+  TradingProceedsClaimed = "TradingProceedsClaimed",
+  FeeWindowRedeemed = "FeeWindowRedeemed",
+  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
   MarketState = "MarketState",
   MarketCreated = "MarketCreated",
+  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
+  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
+  DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
+
 }
 
 export enum MarketType {
