@@ -5,6 +5,8 @@ Augur is a decentralized oracle and peer to peer protocol for prediction markets
 
 Augur is a protocol, freely available for anyone to use however they please. Augur is accessible through a desktop client app, similar to interacting with an Ethereum or Bitcoin node. Users of the Augur protocol must themselves ensure that the actions they are performing are compliant with the laws in all applicable jurisdictions and must acknowledge that others’ use of the Augur protocol may not be compliant. Users of the Augur protocol do so at their own risk.
 
+For more information about the Augur protocol and the Forecast Foundation, [check out the FAQ](https://www.augur.net/faq/).
+
 ## Want to try Augur?
 
 [Grab the latest release of Augur App](https://github.com/AugurProject/augur-app/releases) to connect to the Ethereum Network and explore what the Augur Community has done.
