@@ -3,6 +3,7 @@ import {
   addOrphanedOrder,
   dismissOrphanedOrder,
   removeOrphanedOrder,
+  cancelOrphanedOrder, __RewireAPI__ as cancelOrphanedOrderRequireAPI,
 } from 'src/modules/orphaned-orders/actions'
 import { RESET_STATE } from 'src/modules/app/actions/reset-state'
 
@@ -19,12 +20,11 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
 
   describe('ADD_ORPHANED_ORDER', () => {
     it('should push the data payload onto the state with an added dismissed property', () => {
-      const action = addOrphanedOrder({ orderId: '12345', timestamp: 123456 })
+      const action = addOrphanedOrder({ orderId: '12345' })
       const actual = OrphanedOrdersReducer([], action)
       assert.deepEqual(actual, [{
         dismissed: false,
         orderId: '12345',
-        timestamp: 123456,
       }])
     })
 
@@ -40,6 +40,7 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
       assert.deepEqual(actual, [{
         dismissed: false,
         orderId: '12345',
+        timestamp: 123456,
       }])
     })
   })
@@ -90,6 +91,21 @@ describe('src/modules/orphaned-orders/reducers/orphaned-orders.js', () => {
       })
 
       assert.deepEqual(actual, [])
+    })
+  })
+
+  describe('CANCEL_ORDER', () => {
+    it('should return to the default state', () => {
+      cancelOrphanedOrderRequireAPI.__Rewire__('selectCurrentTimestampInSeconds', () => {})
+      cancelOrphanedOrderRequireAPI.__Rewire__('augur', {
+        api: {
+          CancelOrder: () => {
+          },
+        },
+      })
+      cancelOrphanedOrder({ orderId: '12345' }, (actual) => {
+        assert.deepEqual(actual, [])
+      })
     })
   })
 })
