@@ -15,7 +15,7 @@ You can view, edit, and contribute to Augur via our 100% open source repositorie
 
 - [Augur Core](https://github.com/AugurProject/augur-core) - The core implementation of the Augur Project as Smart Contracts written in Solidity for the Ethereum Network.
 - [Augur.js](https://github.com/AugurProject/augur.js) - Javascript library for Node.js and the browser to help you communicate with the Augur smart contracts, and Augur Node.
-- [Augur Node](https://github.com/AugurProject/augur-node) - Helper application to aggregrate the activity of the Augur Community on the Ethereum Network. Allows you to quickly search and fitler markets, and build responsive and performant user interfaces.
+- [Augur Node](https://github.com/AugurProject/augur-node) - Helper application to aggregrate the activity of the Augur Community on the Ethereum Network. Allows you to quickly build responsive and performant user interfaces.
 - [Augur UI](https://github.com/AugurProject/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
 - [Augur App](https://github.com/AugurProject/augur-app/) - An electron-based application which combines the above projects in an easy-to-use intallable application.
 
