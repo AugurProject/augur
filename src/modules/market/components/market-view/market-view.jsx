@@ -135,7 +135,7 @@ export default class MarketView extends Component {
     const s = this.state
 
     return (
-      <section ref={(node) => {this.node = node}}>
+      <section ref={(node) => { this.node = node }}>
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>
