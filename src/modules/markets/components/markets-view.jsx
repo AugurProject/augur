@@ -6,13 +6,23 @@ import MarketsHeader from 'modules/markets/components/markets-header/markets-hea
 import MarketsList from 'modules/markets/components/markets-list'
 import isEqual from 'lodash/isEqual'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
+import { filterArrayByArrayPredicate } from 'src/modules/filter-sort/helpers/filter-array-of-objects-by-array'
+import { filterBySearch } from 'src/modules/filter-sort/helpers/filter-by-search'
+import { FILTER_SEARCH_KEYS } from 'src/modules/markets/constants/filter-sort'
+import { identity, filter, map } from 'lodash/fp'
+import { compose } from 'redux'
+import {
+  MARKET_RECENTLY_TRADED,
+} from 'modules/filter-sort/constants/market-sort-params'
+import {
+  MARKET_OPEN,
+} from 'modules/filter-sort/constants/market-states'
 
 export default class MarketsView extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
-    filteredMarkets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
     category: PropTypes.string,
@@ -27,6 +37,20 @@ export default class MarketsView extends Component {
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
+    loadMarketsByFilter: PropTypes.func.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      filter: MARKET_OPEN,
+      sort: MARKET_RECENTLY_TRADED,
+      filterSortedMarkets: [],
+    }
+
+    this.updateFilter = this.updateFilter.bind(this)
+    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this)
   }
 
   componentDidMount() {
@@ -47,6 +71,7 @@ export default class MarketsView extends Component {
       hasLoadedMarkets,
       hasLoadedSearch,
     })
+    this.updateFilteredMarkets()
   }
 
   componentDidUpdate(prevProps) {
@@ -85,9 +110,24 @@ export default class MarketsView extends Component {
     }
   }
 
+  updateFilter(params) {
+    const { filter, sort } = params
+    this.setState({ filter, sort }, this.updateFilteredMarkets)
+  }
+
+  updateFilteredMarkets() {
+    const { filter, sort } = this.state
+    this.props.loadMarketsByFilter({ filter, sort }, (err, filterSortedMarkets) => {
+      if (err) return console.log('Error loadMarketsFilter:', err)
+      this.setState({ filterSortedMarkets })
+    })
+  }
+
   render() {
     const {
-      filteredMarkets,
+      category,
+      keywords,
+      tags,
       history,
       isLogged,
       isMobile,
@@ -96,6 +136,27 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite,
     } = this.props
+    const s = this.state
+    const categoryFilter = category ? filter(m => (m.category || '').toLowerCase() === category.toLowerCase()) : identity
+    // The filterBySearch function returns ids not objects.
+    const keywordFilter = keywords ? filterBySearch(keywords, FILTER_SEARCH_KEYS) : map('id')
+    const tagFilterPredicate = filterArrayByArrayPredicate('tags', tags)
+    // filter by category
+    const filteredMarkets = compose(
+      keywordFilter,
+      filter(tagFilterPredicate),
+      categoryFilter,
+    )(markets)
+    const filteredMarketsFinal = []
+    if (s.filterSortedMarkets.length) {
+      s.filterSortedMarkets.reduce((finalArray, marketId) => {
+        if (filteredMarkets.includes(marketId)) {
+          finalArray.push(marketId)
+        }
+        return finalArray
+      }, filteredMarketsFinal)
+    }
+
     return (
       <section id="markets_view">
         <Helmet>
@@ -105,12 +166,15 @@ export default class MarketsView extends Component {
           isLogged={isLogged}
           location={location}
           markets={markets}
+          filter={s.filter}
+          sort={s.sort}
+          updateFilter={this.updateFilter}
         />
         <MarketsList
           testid="markets"
           isLogged={isLogged}
           markets={markets}
-          filteredMarkets={filteredMarkets}
+          filteredMarkets={filteredMarketsFinal}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
