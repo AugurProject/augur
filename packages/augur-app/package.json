@@ -1,0 +1,101 @@
+{
+  "name": "augur",
+  "productName": "Augur",
+  "version": "1.1.0-snapshot",
+  "description": "Augur Desktop Application",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron-forge start .src/main/main.js",
+    "debug": "electron-forge start  --inspect-electron .src/main/main.js",
+    "package": "electron-forge package",
+    "publish": "electron-forge publish",
+    "make": "electron-builder make --publish always",
+    "make-win": "electron-builder make --win",
+    "make-mac": "electron-builder make --mac",
+    "make-linux": "electron-builder make --linux",
+    "make-all": "electron-builder make -mwl",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules"
+  },
+  "repository": "https://github.com/AugurProject/augur-app",
+  "keywords": [
+    "Augur",
+    "Desktop",
+    "Electron",
+    "App",
+    "Application"
+  ],
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "MIT",
+  "build": {
+    "files": [
+      "!certs/*"
+    ],
+    "mac": {
+      "asar": "false",
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "snap"
+      ],
+      "category": "Office",
+      "icon": "build/icon.png"
+    },
+    "artifactName": "${os}-${productName}-${version}.${ext}",
+    "publish": {
+      "provider": "github"
+    }
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-deb",
+          "platforms": [
+            "linux"
+          ],
+          "config": {
+            "icon": "build/icon.png"
+          }
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "app-data-folder": "1.0.0",
+    "augur-core": "1.1.0",
+    "augur-node": "5.1.0",
+    "augur-ui": "5.1.0",
+    "augur.js": "5.0.1",
+    "debounce": "1.1.0",
+    "electron-compile": "6.4.2",
+    "electron-log": "^2.2.16",
+    "express": "4.16.2",
+    "helmet": "3.13.0",
+    "knex": "0.14.6",
+    "node-pre-gyp": "~0.6.38",
+    "selfsigned.js": "^3.0.2",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "electron": "2.0.0",
+    "electron-builder": "^20.19.1",
+    "electron-builder-squirrel-windows": "^20.19.0",
+    "electron-forge": "5.2.0",
+    "electron-prebuilt-compile": "2.0.0",
+    "electron-publisher-s3": "^20.15.0",
+    "eslint": "^5.0.1",
+    "prettier": "^1.13.7"
+  }
+}
