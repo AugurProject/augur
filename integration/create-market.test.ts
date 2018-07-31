@@ -2,18 +2,15 @@
 
 import "jest-environment-puppeteer";
 import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity"
-require("./helpers/beforeEach");
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const timeoutMilliseconds = 10000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
 jest.setTimeout(100000);
 
 describe("Create market page", () => {
-  beforeAll(async () => {
-    await page.goto(url);
-  });
-
   it("should allow user to create a new yes/no market", async () => {
     // Go to create-market page and wait for it to load
     await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});

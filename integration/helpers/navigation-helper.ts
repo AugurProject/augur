@@ -1,5 +1,3 @@
-require("./beforeEach");
-
 export const toDefaultView = async () => {
   const url = `${process.env.AUGUR_URL}`;
   await page.goto(url);
@@ -33,6 +31,11 @@ export const toReporting = async () => {
 export const toAccount = async () => {
   const url = `${process.env.AUGUR_URL}`;
   await page.goto(url.concat("#/deposit-funds"), {waitUntil: "networkidle0"});
+};
+
+export const toMarket = async (id: string) => {
+  const url = `${process.env.AUGUR_URL}`;
+  await page.goto(url.concat("/#/market?id=" + id));
 };
 
 export const toInitialReporting = async (id: string) => {

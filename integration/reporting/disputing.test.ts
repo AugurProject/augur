@@ -1,12 +1,13 @@
 import "jest-environment-puppeteer";
 import Flash from "../helpers/flash";
-import { IFlash, IMarket, Outcome } from "../types/types"
+import { IFlash, IMarket, Outcome } from "../types/types";
 import {UnlockedAccounts} from "../constants/accounts";
 import { toDisputing } from "../helpers/navigation-helper";
-import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from '../helpers/create-markets'
-import { waitNextBlock } from '../helpers/wait-new-block'
-require("../helpers/beforeEach");
+import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from '../helpers/create-markets';
+import { waitNextBlock } from "../helpers/wait-new-block";
+require("../helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const SMALL_TIMEOUT = 80000
 const BIG_TIMEOUT = 160000
@@ -68,8 +69,6 @@ describe("Disputing", () => {
   let market: IMarket;
 
   beforeAll(async () => {
-    await page.goto(url);
-
     await toDisputing()
 
     market = await createYesNoMarket()

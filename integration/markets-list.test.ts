@@ -4,8 +4,9 @@ import { ElementHandle } from "puppeteer";
 import { createYesNoMarket, createScalarMarket } from './helpers/create-markets'
 import { IFlash, IMarket } from "./types/types"
 import { waitNextBlock } from './helpers/wait-new-block'
-require("./helpers/beforeEach");
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
 const TIMEOUT = 5000;
@@ -33,8 +34,6 @@ describe("Markets List", () => {
   const yesNoMarketDesc = "Will antibiotics be outlawed for agricultural use in China by the end of 2019?"
 
   beforeAll(async () => {
-    await page.goto(url);
-
     await expect(page).toClick("a[href$='#/markets']")
     yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
   });

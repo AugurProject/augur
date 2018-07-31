@@ -7,9 +7,10 @@ import { IFlash, IMarket, MarketCosts } from "./types/types"
 import { toMyMarkets, toPortfolio } from "./helpers/navigation-helper";
 import { createYesNoMarket, createScalarMarket } from './helpers/create-markets'
 import { waitNextBlock } from './helpers/wait-new-block'
-import BigNumber from 'bignumber.js'
-require("./helpers/beforeEach");
+import BigNumber from "bignumber.js"
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const SMALL_TIMEOUT = 10000
 const BIG_TIMEOUT = 100000
@@ -26,8 +27,6 @@ describe("My Markets", () => {
   let marketCosts: MarketCosts;
 
   beforeAll(async () => {
-    await page.goto(url);
-
     marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
     marketCosts = await page.evaluate(() => window.integrationHelpers.getMarketCreationCostBreakdown());
 

@@ -1,8 +1,10 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
-import BigNumber from 'bignumber.js'
-require("./helpers/beforeEach");
+import BigNumber from "bignumber.js"
+import { toDefaultView } from "./helpers/navigation-helper";
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const TIMEOUT = 20000 // this is big because loading account balances can take a while
 
@@ -16,8 +18,6 @@ describe("Account", () => {
   let originalAccountData:AccountData;
 
   beforeAll(async () => {
-    await page.goto(url);
-
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
   });
 

@@ -1,18 +1,14 @@
 import "jest-environment-puppeteer";
-import {UnlockedAccounts} from "./constants/accounts";
-require("./helpers/beforeEach");
-
-const url = `${process.env.AUGUR_URL}`;
+import { UnlockedAccounts } from "./constants/accounts";
+import { toMarket } from "./helpers/navigation-helper";
+require("./helpers/beforeAll");
 
 jest.setTimeout(100000);
 
 describe("Trading", () => {
   beforeAll(async () => {
-    await page.goto(url);
-
     const marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
-
-    await page.goto(url.concat('/#/market?id=' + marketId));
+    await toMarket(marketId);
   });
 
   it("should display a modal", async () => {
