@@ -1,7 +1,6 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
 import BigNumber from "bignumber.js"
-import { toDefaultView } from "./helpers/navigation-helper";
 require("./helpers/beforeAll");
 
 // TODO: Replace uses of `url` with calls to functions in navigation-helper
