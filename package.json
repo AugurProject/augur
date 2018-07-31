@@ -1,0 +1,25 @@
+{
+ "name": "augur",
+ "private": true,
+ "version": "6.0.0-0",
+ "description": "Augur Top-Level Monorepo",
+ "author": "The Augur Developers <team@augur.net>",
+ "engines": {
+   "node": ">=8",
+   "yarn": "~1.6.0"
+ },
+ "devDependencies": {
+  "lerna": "^2.11.0",
+  "mocha": "5.1.1"
+ },
+ "workspaces": {
+   "packages": [
+     "packages/*"
+   ],
+   "nohoist": [
+     "augur-app/electron",
+     "augur-app/electron/**",
+     "augur-app/electron-compile"
+   ]
+ }
+}
