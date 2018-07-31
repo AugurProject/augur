@@ -21,6 +21,12 @@ You can view, edit, and contribute to Augur via our 100% open source repositorie
 - [Augur UI](https://github.com/AugurProject/augur-ui/) - A reference client UI which uses Augur Node and a connection to the Ethereum Network to interact with the Augur community.
 - [Augur App](https://github.com/AugurProject/augur-app/) - An electron-based application which combines the above projects in an easy-to-use intallable application.
 
+## Documentation and Whitepaper
+
+Developer documentation is available on [the Augur documentation site](https://docs.augur.net/). If you find any mistakes or want to add any clarifications, you can submit pull requests for updates to [the github repository](https://github.com/AugurProject/docs).
+
+If you're interested in going in-depth with Augur, [The Augur Whitepaper](https://github.com/AugurProject/whitepaper) provides an in-depth look at the game theory behind the Augur Protocol.
+
 ## Report Issues
 
 Augur needs community support to find and fix issues in the protocol, middleware, client libraries, and applications. If you have an issue, or find a bug please [create an issue](https://github.com/AugurProject/augur/issues/new) with any information needed to recreate the problem.
