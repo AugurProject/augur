@@ -27,7 +27,7 @@ export default class MarketPositionsList extends Component {
     super(props)
 
     this.state = {
-      isOpen: false,
+      isOpen: true,
     }
   }
 
@@ -53,7 +53,7 @@ export default class MarketPositionsList extends Component {
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
-          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'])}
+          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketPositionsList__table}>
             { positions.length > 0 &&
