@@ -1,0 +1,17 @@
+node_modules
+.gitignore
+.npmignore
+.travis.yml
+data
+test
+env.js
+coverage
+overflow
+*.csv
+package
+*.log
+npm-debug*
+pu.sh
+build
+.vscode
+dev-key.json
