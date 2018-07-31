@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
+import ReactDOM from 'react-dom'
 import MarketHeader from 'modules/market/containers/market-header'
 import MarketOutcomesChart from 'modules/market/containers/market-outcomes-chart'
 import MarketOutcomeCharts from 'modules/market/containers/market-outcome-charts'
@@ -62,6 +63,10 @@ export default class MarketView extends Component {
     ) {
       loadFullMarket(marketId)
     }
+  }
+
+  componentDidMount () {
+    ReactDOM.findDOMNode(this).scrollIntoView();
   }
 
   componentWillUpdate(nextProps, nextState) {
