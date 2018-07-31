@@ -11,8 +11,6 @@ import Styles from 'modules/market/components/market-header/market-header.styles
 import CoreProperties from 'modules/market/components/core-properties/core-properties'
 
 const OVERFLOW_DETAILS_LENGTH = 560
-const TALL_HEIGHT = 150
-const SMALL_HEIGHT = 65
 
 export default class MarketHeader extends Component {
   static propTypes = {

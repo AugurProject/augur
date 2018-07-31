@@ -21,11 +21,12 @@
   padding: 0;
   resize: none;
   text-transform: none;
-  transition: max-height 0.15s ease-out;
+  transition: max-height @animation-speed-normal @animation-default-type;
   white-space: pre-wrap;
 }
 
 .MarketHeader__AdditionalDetails-tall {
+  height: auto;
   max-height: 150px;
 }
 
@@ -116,7 +117,6 @@
   font-size: @font-size-small;
   line-height: @font-size-medium;
   overflow: auto;
-  transition: height @animation-speed-normal @animation-default-type;
 }
 
 .MarketHeader__details {
