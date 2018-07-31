@@ -75,7 +75,7 @@ export default class MarketOutcomeChartsOrders extends Component {
     return (
       <section
         className={Styles.MarketOutcomeOrderBook}
-        style={{ paddingBottom: sharedChartMargins.bottom }}
+        style={{ paddingBottom: sharedChartMargins.bottom  - 4 }}
       >
         <MarketOutcomeChartHeaderOrders
           fixedPrecision={fixedPrecision}
