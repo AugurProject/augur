@@ -23,6 +23,6 @@ You can view, edit, and contribute to Augur via our 100% open source repositorie
 
 ## Report Issues
 
-Augur needs community support to find and fix issues in the protocol, middleware, client libraries, and applications. If you have an issue, or find a bug please [create an issue](https://github.com/AugurProject/augur/issues/new) to with any information needed to recreate the problem.
+Augur needs community support to find and fix issues in the protocol, middleware, client libraries, and applications. If you have an issue, or find a bug please [create an issue](https://github.com/AugurProject/augur/issues/new) with any information needed to recreate the problem.
 
 If you're a developer wanting to contribute to the augur community, please check out [the open issues](https://github.com/AugurProject/augur/issues) and feel free to propose fixes by submitting a Pull Request to the appropriate repository.
