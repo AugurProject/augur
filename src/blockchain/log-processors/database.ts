@@ -60,7 +60,6 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     if (expiredFeeWindowRows != null) {
                       expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
                         augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
-                            eventName: "FeeWindowClosed",
                             blockNumber,
                             timestamp,
                           },
@@ -69,8 +68,7 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     }
                     if (newActiveFeeWindowRows != null) {
                       newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
-                        augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
-                            eventName: "FeeWindowOpened",
+                        augurEmitter.emit(SubscriptionEventNames.FeeWindowOpened, Object.assign({
                             blockNumber,
                             timestamp,
                           },

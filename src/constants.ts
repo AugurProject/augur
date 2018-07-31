@@ -44,6 +44,7 @@ export enum ControlMessageType {
 }
 
 export enum SubscriptionEventNames {
+  FeeWindowOpened = "FeeWindowOpened",
   CompleteSetsPurchased = "CompleteSetsPurchased",
   CompleteSetsSold = "CompleteSetsSold",
   DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
