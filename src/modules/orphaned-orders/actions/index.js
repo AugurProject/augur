@@ -1,6 +1,7 @@
 import { augur } from 'services/augurjs'
 import logError from 'src/utils/log-error'
 import { addNotification, updateNotification } from 'src/modules/notifications/actions'
+import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
 export const ADD_ORPHANED_ORDER = 'ADD_ORPHANED_ORDER'
 export const REMOVE_ORPHANED_ORDER = 'REMOVE_ORPHANED_ORDER'
@@ -28,11 +29,14 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
     loginAccount,
   } = getState()
 
+  const timestamp = selectCurrentTimestampInSeconds(getState())
+
   augur.api.CancelOrder.cancelOrder({
     meta: loginAccount.meta,
     _orderId: orderId,
     onSent: () => dispatch(addNotification({
       id: orderId,
+      timestamp,
       title: 'Cancelling Orphaned Order',
       description: 'Cancelling Orphaned Order - Sent',
     })),
@@ -40,6 +44,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(removeOrphanedOrder(orderId))
       dispatch(updateNotification({
         id: orderId,
+        timestamp,
         title: 'Cancelling Orphaned Order - Completed',
         description: 'Cancelling Orphaned Order - Completed',
       }))
@@ -48,6 +53,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
     onFailed: (err) => {
       dispatch(updateNotification({
         id: orderId,
+        timestamp,
         title: 'Cancelling Orphaned Order - Failed',
         description: 'Cancelling Orphaned Order - Failed',
       }))
