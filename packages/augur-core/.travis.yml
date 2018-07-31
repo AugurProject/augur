@@ -1,0 +1,85 @@
+dist: trusty
+sudo: required
+language: javascript
+services:
+  - docker
+notifications:
+  email: false
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - sudo sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
+script: docker pull $IMAGE_BUILD;
+        docker tag $IMAGE_BUILD $IMAGE_LATEST;
+        if [[ "$TESTS" == "integration:geth" ]]; then
+        travis_wait 30 npm run docker:run:test:integration:geth;
+        elif [[ "$TESTS" == "integration:parity" ]]; then
+        travis_wait 30 npm run docker:run:test:integration:parity;
+        elif [[ "$TESTS" == "security:mythril" ]]; then
+        travis_wait 30 npm run docker:run:test:security:mythril;
+        cat source/contracts/test-results.log;
+        elif [[ "$TESTS" == "security:maian" ]]; then
+        travis_wait 30 npm run docker:run:test:security:maian;
+        elif [[ "$TESTS" == "security:smt" ]]; then
+        travis_wait 30 npm run docker:run:test:security:smt;
+        elif [[ "$TESTS" == "security:oyente" ]]; then
+        travis_wait 30 npm run docker:run:test:security:oyente;
+        else
+          travis_wait 30 npm run docker:run:test:unit -- $TESTS;
+        fi
+jobs:
+  include:
+    - stage: build
+      script: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+              docker pull $IMAGE_LATEST;
+              npm run docker:build;
+              docker tag $IMAGE_LATEST $IMAGE_BUILD;
+              docker push $IMAGE_BUILD
+      env:
+        - DOCKER_USERNAME=augurintegration
+        - secure: "E/KuY851UD21wGg82orQJBWzAiIBAvFJAvJpMX/Msce8nS4bBodNpBMVf7Ya0rQwV2hh9ngouFnzabSyv1AV1tlRfV5kp0MjfOs+AP5SonIU3Eeh8+bvXdypMuJOm5zZIKvqkVd7Sm1Er9fXWvN1PVaktq6Ls/zf3iG1I1lI8pU="
+    - stage: deploy
+      script: skip
+      env:
+        - DOCKER_USERNAME=augurintegration
+        - secure: "E/KuY851UD21wGg82orQJBWzAiIBAvFJAvJpMX/Msce8nS4bBodNpBMVf7Ya0rQwV2hh9ngouFnzabSyv1AV1tlRfV5kp0MjfOs+AP5SonIU3Eeh8+bvXdypMuJOm5zZIKvqkVd7Sm1Er9fXWvN1PVaktq6Ls/zf3iG1I1lI8pU="
+        - TESTS=
+      deploy: &script
+        provider: script
+        skip_cleanup: true
+        script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+                docker pull $IMAGE_BUILD;
+                docker tag $IMAGE_BUILD $IMAGE_LATEST;
+                docker push $IMAGE_LATEST
+      if: type = push
+stages:
+  - build
+  - test
+  - name: deploy
+    if: branch = master or tag =~ ^v\d+\.\d+\.\d+(-\d+)?$
+git:
+  depth: 5
+branches:
+  only:
+    - master
+    - /^v\d+\.\d+\.\d+(-\d+)?$/
+env:
+  global:
+    - IMAGE_BUILD=augurproject/augur-core:build.${TRAVIS_BUILD_NUMBER}
+    - IMAGE_LATEST=augurproject/augur-core:latest
+  matrix:
+    - TESTS="tests/test*.py tests/libraries tests/trading"
+    - TESTS="tests/reporting"
+    - TESTS="tests/fuzzy"
+    - TESTS="tests/unit"
+    - TESTS="tests/test*.py tests/libraries tests/trading" --subFork
+    - TESTS="tests/reporting" --subFork
+    - TESTS="tests/fuzzy" --subFork
+    - TESTS="tests/unit" --subFork
+    - TESTS="integration:geth"
+    - TESTS="integration:parity"
+    - TESTS="security:mythril"
+    - TESTS="security:maian"

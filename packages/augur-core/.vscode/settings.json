@@ -1,0 +1,19 @@
+{
+    "files.exclude": {
+        "**/.cache": true,
+        "node_modules/": true,
+        ".idea": true,
+        ".mypy_cache": true,
+        "tests/compilation_cache": true,
+        "venv": true,
+        "*/__pycache__": true,
+        "**/__pycache__": true,
+        "*/*.pyc": true,
+        "**/*.pyc": true
+    },
+    "python.linting.pylintEnabled": false,
+    "files.trimTrailingWhitespace": true,
+    "solidity.lintOnChange": false,
+    "solidity.solidityRoot": "source/contracts",
+    "typescript.tsdk": "node_modules\\typescript\\lib"
+}

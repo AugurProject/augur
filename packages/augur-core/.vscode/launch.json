@@ -1,0 +1,67 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Remote",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/output/**/*"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Integration Tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceRoot}",
+            "args": [
+                "--require", "source-map-support/register",
+                "output/tests-integration/**/*.js",
+                "--no-timeouts"
+            ],
+            // uncomment one of the following and run `docker-compose -f support/test/integration/docker-compose.yml up --build --force-recreate --abort-on-container-exit parity-dev-node` then you can debug tests against any chain from within VSCode
+            // ** Local **
+            //"env": {
+            //     "ETHEREUM_HOST": "localhost",
+            //     "ETHEREUM_PORT": "47624",
+            //     "ETHEREUM_GAS_PRICE_IN_NANOETH": "1",
+            //     "ETHEREUM_PRIVATE_KEY": "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
+            // },
+            // ** Aura **
+            // "env": {
+            //     "ETHEREUM_HOST": "dev-node-geth-1.1245c996.cont.dockerapp.io",
+            //     "ETHEREUM_PORT": "32770",
+            //     "ETHEREUM_GAS_PRICE_IN_NANOETH": "1",
+            //     "ETHEREUM_PRIVATE_KEY": "0x47f49c399482f73143cadeb2db8938d3f249578bdc64cdcda4ecf1ee535a5c91",
+            ////     "AUGUR_CONTROLLER_ADDRESS": "0xe416b1cf13579c309aa3614cfe172e3b5910760a"
+            // },
+            // ** Clique **
+            // "env": {
+            //     "ETHEREUM_HOST": "dev-node-geth-1.26fbbfb5.cont.dockerapp.io",
+            //     "ETHEREUM_PORT": "32773",
+            //     "ETHEREUM_GAS_PRICE_IN_NANOETH": "1",
+            //     "ETHEREUM_PRIVATE_KEY": "0x47f49c399482f73143cadeb2db8938d3f249578bdc64cdcda4ecf1ee535a5c91",
+            ////     "AUGUR_CONTROLLER_ADDRESS": "0xe416b1cf13579c309aa3614cfe172e3b5910760a"
+            // },
+            // ** Rinkeby **
+            // "env": {
+            //     "ETHEREUM_HOST": "rinkeby.augur.net",
+            //     "ETHEREUM_PORT": "8545",
+            //     "ETHEREUM_GAS_PRICE_IN_NANOETH": "1",
+            //     "ETHEREUM_PRIVATE_KEY": "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+            ////     "AUGUR_CONTROLLER_ADDRESS": "0x7B51CbD28e4A7Fe6631FFed2Dd3F276F416ebF10"
+            // },
+            "protocol": "inspector",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/output/**/*"
+            ]
+        }
+    ]
+}
