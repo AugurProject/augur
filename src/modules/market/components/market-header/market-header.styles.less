@@ -13,13 +13,20 @@
 .MarketHeader__AdditionalDetails-text:disabled {
   background: none;
   border: 0;
-  color: @color-lightgray;
+  color: @color-white;
   margin: 0;
+  max-height: 65px;
   overflow: hidden;
   overflow-y: scroll;
   padding: 0;
   resize: none;
-  transition: height 0.15s ease-out;
+  white-space: pre-wrap;
+  text-transform: none;
+  transition: max-height 0.15s ease-out;
+}
+
+.MarketHeader__AdditionalDetails-tall {
+  max-height: 150px;
 }
 
 .MarketHeader__nav {
@@ -57,7 +64,6 @@
   border-radius: 4px;
   overflow-y: auto;
   padding: 1em;
-  transition: height 0.15s ease-out;
 
   > p {
     margin-bottom: 0;
