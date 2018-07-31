@@ -11,7 +11,7 @@ For more information about the Augur protocol and the Forecast Foundation, [chec
 
 # 100% Fully Open Source
 
-You can view, edit, and contribute to Augur via our 100% open source repositories hosted on GitHub!
+You can view, edit, and contribute to Augur via the 100% open source repositories hosted on GitHub!
 
 - [Augur Core](https://github.com/AugurProject/augur-core) - The core implementation of the Augur Project as Smart Contracts written in Solidity for the Ethereum Network.
 - [Augur.js](https://github.com/AugurProject/augur.js) - Javascript library for Node.js and the browser to help you communicate with the Augur smart contracts, and Augur Node.
