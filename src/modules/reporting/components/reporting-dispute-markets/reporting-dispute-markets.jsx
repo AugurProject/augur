@@ -138,6 +138,9 @@ export default class ReportingDisputeMarkets extends Component {
     }
     const nonForkingMarketsCount = filteredMarkets.length
 
+    console.log(upcomingMarketsCount)
+    console.log(nonForkingMarketsCount)
+
     return (
       <section className={Styles.ReportDisputeContainer}>
         <Helmet>
@@ -230,7 +233,7 @@ export default class ReportingDisputeMarkets extends Component {
             pageParam={'upcoming' || null}
           />
         }
-        { upcomingMarketsCount === 0 && nonForkingMarketsCount === 0 &&
+        { (upcomingMarketsCount === 0 || ( nonForkingMarketsCount === 0 && upcomingMarketsCount === 0 && isForking )) &&
           <NullStateMessage
             message="There are currently no markets slated for the upcoming dispute window."
           />
