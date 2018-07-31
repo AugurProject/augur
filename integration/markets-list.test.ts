@@ -1,11 +1,12 @@
 import "jest-environment-puppeteer";
 import Flash from "./helpers/flash";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
 import { ElementHandle } from "puppeteer";
 import { createYesNoMarket, createScalarMarket } from './helpers/create-markets'
 import { IFlash, IMarket } from "./types/types"
 import { waitNextBlock } from './helpers/wait-new-block'
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const MARKETS_SELECTOR = ".market-common-styles_MarketCommon__container"
 const TIMEOUT = 5000;
@@ -24,7 +25,7 @@ const checkMarketNames = async (expectedMarketTitles: string[]) => {
   for (let i = 0; i < expectedMarketTitles.length; i++) {
     await expect(page).toMatchElement("a", { text: expectedMarketTitles[i]})
   }
-  return 
+  return
 }
 
 describe("Markets List", () => {
@@ -33,16 +34,6 @@ describe("Markets List", () => {
   const yesNoMarketDesc = "Will antibiotics be outlawed for agricultural use in China by the end of 2019?"
 
   beforeAll(async () => {
-    await page.goto(url);
-
-    // No idea what a 'typical' desktop resolution would be for our users.
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
-
-    await dismissDisclaimerModal(page);
-
     await expect(page).toClick("a[href$='#/markets']")
     yesNoMarketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), yesNoMarketDesc);
   });
@@ -83,7 +74,7 @@ describe("Markets List", () => {
       // check that number of markets listed is as expected
       await checkNumElements(true, 3)
     });
-    
+
     it("should populate submenu bar with the tag values for the markets displayed", async () => {
       // check that tag submenu has right number of tags displayed
       await checkNumElements(false, 17)
@@ -170,7 +161,7 @@ describe("Markets List", () => {
       await expect(yesNoMarket).toMatchElement(".value_fee", { text: "2.00"})
       // @todo Figure out how to handle local datetimes
       // await expect(yesNoMarket).toMatchElement(".value_expires", { text: "Dec 31, 2019 4:00 PM (UTC -8)"})
-    }); 
+    });
 
     it("should display a togglable favorites star to the left of the action button on the bottom right of the card", async () => {
       await expect(yesNoMarket).toClick("button.market-properties-styles_MarketProperties__favorite")
@@ -219,9 +210,9 @@ describe("Markets List", () => {
 
     it("should have accurate volume stat", async () => {
       // expect volume to start at zero
-      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", { 
-        text: '0', 
-        timeout: TIMEOUT 
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", {
+        text: '0',
+        timeout: TIMEOUT
       });
 
       // create and fill order
@@ -230,9 +221,9 @@ describe("Markets List", () => {
       await flash.fillMarketOrders(newMarket.id, "1", "buy");
 
       // expect volume increase
-      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", { 
-        text: '2.0000', 
-        timeout: TIMEOUT 
+      await expect(page).toMatchElement("[data-testid='markets-" + newMarket.id + "'] .value_volume", {
+        text: '2.0000',
+        timeout: TIMEOUT
       });
     });
 

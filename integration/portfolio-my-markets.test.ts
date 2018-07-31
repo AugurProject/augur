@@ -4,12 +4,13 @@ import "jest-environment-puppeteer";
 import Flash from "./helpers/flash";
 import { UnlockedAccounts } from "./constants/accounts";
 import { IFlash, IMarket, MarketCosts } from "./types/types"
-import { dismissDisclaimerModal } from "./helpers/dismiss-disclaimer-modal";
 import { toMyMarkets, toPortfolio } from "./helpers/navigation-helper";
 import { createYesNoMarket, createScalarMarket } from './helpers/create-markets'
 import { waitNextBlock } from './helpers/wait-new-block'
-import BigNumber from 'bignumber.js'
+import BigNumber from "bignumber.js"
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const SMALL_TIMEOUT = 10000
 const BIG_TIMEOUT = 100000
@@ -26,14 +27,6 @@ describe("My Markets", () => {
   let marketCosts: MarketCosts;
 
   beforeAll(async () => {
-    await page.goto(url);
-
-    // No idea what a 'typical' desktop resolution would be for our users.
-    await page.setViewport({
-      height: 1500,
-      width: 1200
-    });
-    await dismissDisclaimerModal(page);
     marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
     marketCosts = await page.evaluate(() => window.integrationHelpers.getMarketCreationCostBreakdown());
 

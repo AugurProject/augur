@@ -1,29 +1,17 @@
 import "jest-environment-puppeteer";
-import {UnlockedAccounts} from "./constants/accounts";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
-
-const url = `${process.env.AUGUR_URL}`;
+import { UnlockedAccounts } from "./constants/accounts";
+import { toMarket } from "./helpers/navigation-helper";
+require("./helpers/beforeAll");
 
 jest.setTimeout(100000);
 
 describe("Trading", () => {
   beforeAll(async () => {
-    await page.goto(url);
-
     const marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
-
-    await page.goto(url.concat('/#/market?id=' + marketId));
-
-    // No idea what a 'typical' desktop resolution would be for our users.
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
+    await toMarket(marketId);
   });
 
   it("should display a modal", async () => {
-    await dismissDisclaimerModal(page);
-
     await expect(page).toClick("button", {
       text: "Sell"
     });

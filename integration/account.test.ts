@@ -1,8 +1,9 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
-import BigNumber from 'bignumber.js'
+import BigNumber from "bignumber.js"
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const TIMEOUT = 20000 // this is big because loading account balances can take a while
 
@@ -16,15 +17,7 @@ describe("Account", () => {
   let originalAccountData:AccountData;
 
   beforeAll(async () => {
-    await page.goto(url);
-
-    // No idea what a 'typical' desktop resolution would be for our users.
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
-    await dismissDisclaimerModal(page);
   });
 
   describe("Deposit Page", () => {

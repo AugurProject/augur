@@ -1,10 +1,13 @@
 import {Page} from "puppeteer";
 
-export const dismissDisclaimerModal = async (page:Page) => {
-  const isModalDismissed = await page.evaluate(() => window.integrationHelpers.hasDisclaimerModalBeenDismissed());
-  if(isModalDismissed) return;
+export const dismissDisclaimerModal = async (page: Page) => {
+  console.log('in dismissDisclaimerModal')
 
-  await expect(page).toClick(".modal-disclaimer-styles_ModalDisclaimer__TextBox");
+  const isModalDismissed = await page.evaluate(() => window.integrationHelpers.hasDisclaimerModalBeenDismissed());
+  if (isModalDismissed) return;
+
+  const timeoutMilliseconds = 5000;
+  await expect(page).toClick(".modal-disclaimer-styles_ModalDisclaimer__TextBox", { timeout: timeoutMilliseconds });
 
   let checkboxDisabled = await page.$eval("#i_have_read_disclaimer", el => el.disabled);
   while (checkboxDisabled) {
