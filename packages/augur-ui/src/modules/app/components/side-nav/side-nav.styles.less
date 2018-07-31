@@ -1,0 +1,180 @@
+@import (reference) '~assets/styles/shared';
+
+.SideNav {
+  background: @color-purple;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.SideNav__nav {
+  border: 1px solid @color-grayish-purple;
+  border-left: none;
+  border-right: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li {
+    border-bottom: 1px solid @color-grayish-purple;
+
+    &:last-child { border: none; }
+  }
+
+  .disabled {
+    pointer-events: none;
+
+    > li,
+    > a,
+    > button {
+      span {
+        color: @color-gray;
+      }
+
+      svg {
+        g {
+          stroke: @color-gray;
+        }
+      }
+    }
+  }
+
+  > li a,
+  > li button {
+    background: none;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.625rem;
+    justify-content: center;
+    margin: 0;
+    padding: 0.95rem 0 1rem;
+    text-align: center;
+    width: 100%;
+
+    &.selected {
+      background: @color-lightpurple;
+    }
+
+    &:hover {
+      background: @color-lightpurple;
+      cursor: pointer;
+    }
+
+    &:last-child { border: none; }
+
+    > span {
+      color: @color-white;
+      display: block;
+      font-weight: 400;
+      letter-spacing: 0.01875rem;
+      text-align: center;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    > svg {
+      display: block;
+      height: 1.5rem;
+      margin-bottom: 0.4rem;
+      width: 1.5rem;
+    }
+
+    svg.nav-create-icon {
+      margin-top: 0.125rem;
+      transform: translateY(0.5rem) scale(0.85);
+    }
+
+    svg.nav-portfolio-icon {
+      transform: translateY(0.5rem) scale(0.95);
+    }
+  }
+}
+
+.SideNav__item--selected {
+  background: @color-lightpurple;
+}
+
+@media @breakpoint-mobile {
+  .SideNav {
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+    left: -12.5rem;
+    overflow: auto;
+    padding-top: 2.8125rem;
+    position: absolute;
+    transition: left 0.2s ease-in-out;
+    width: 12.5rem;
+
+    &.mobileShow {
+      left: 0;
+    }
+  }
+
+  .SideNav__nav__separator {
+    background: @color-grayish-purple;
+    height: 1px;
+    margin: 1rem 0 0.5rem;
+    width: 12.125rem;
+  }
+
+  .SideNav__stat-label {
+    color: @color-white;
+    font-weight: 500;
+    max-width: 100%;
+    overflow: hidden;
+    padding-bottom: 0.5rem;
+    text-overflow: ellipsis;
+  }
+
+  .SideNav__stat-value {
+    color: @color-white;
+    font-weight: 400;
+    padding-left: 0.5rem;
+  }
+
+  .SideName__placement {
+    padding: 1.5rem;
+  }
+
+  .SideNav__amt {
+    align-self: flex-end;
+    font-size: 0.925rem;
+    margin-top: auto;
+    width: 100%;
+  }
+
+  .SideNav__nav {
+    border: none;
+    padding-left: 1rem;
+    padding-top: 10px;
+
+    > li {
+      border: none;
+      padding: 0;
+
+      a,
+      button {
+        align-items: center;
+        flex-wrap: nowrap;
+        font-size: 0.75rem;
+        justify-content: flex-start;
+        padding: 1rem 0;
+
+        &:hover { background: none; }
+
+        > svg {
+          display: inline-block;
+          margin-bottom: 0;
+        }
+
+        > span {
+          display: inline-block;
+          font-weight: 500;
+          margin-left: 1rem;
+          text-align: left;
+          width: auto;
+        }
+      }
+    }
+  }
+}

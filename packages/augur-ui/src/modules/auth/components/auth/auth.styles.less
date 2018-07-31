@@ -1,0 +1,77 @@
+@import (reference) '~assets/styles/shared';
+
+.Auth {
+  &:extend(.view);
+
+  display: flex;
+  justify-content: center;
+}
+
+.Auth--constrained {
+  &:extend(.view--constrained);
+
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Auth__header {
+  h1 {
+    &:extend(.caps);
+
+    color: @color-text-light;
+  }
+
+  margin-top: 5rem;
+
+  @media @breakpoint-mobile {
+    padding-left: 2em;
+  }
+
+  @media @breakpoint-mobile-small {
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.Auth__content {
+  display: flex;
+  min-height: 500px;
+  width: 100%;
+
+  h3 {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  h4 {
+    align-self: center;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
+
+  span {
+    display: block;
+
+    &:not(:last-of-type) {
+      margin-bottom: 1em;
+    }
+  }
+
+  @media @breakpoint-mobile {
+    & {
+      flex-direction: column;
+    }
+  }
+}
+
+.Auth__connections {
+  background: @color-white;
+  display: flex;
+  flex: 1;
+}

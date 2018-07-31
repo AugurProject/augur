@@ -1,0 +1,92 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountUniverses {
+  background: white;
+  padding: 5.5rem 4.625rem 7rem;
+}
+
+.AccountUniverses__heading {
+  margin-bottom: 2.5rem;
+
+  > h1 {
+    color: @color-darkpurple;
+    display: inline-block;
+    font-size: @font-size-extra-large;
+    font-weight: 500;
+    letter-spacing: 0.14rem;
+    margin-bottom: 0;
+    margin-right: 1rem;
+    text-transform: uppercase;
+  }
+}
+
+.AccountUniverses__main {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: @max-width;
+
+  > div {
+    margin-right: 2%;
+    width: 32%;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.AccountUniverses__description {
+  > h4 {
+    font-weight: bold;
+    margin-bottom: 3em;
+    text-transform: uppercase;
+  }
+
+  > a {
+    &:extend(.caps--large);
+
+    color: @color-purple;
+    font-weight: 500;
+  }
+}
+
+.AccountUniverses__legacyRep {
+  font-weight: bold;
+}
+
+@media @breakpoint-mobile {
+  .AccountUniverses {
+    padding: 3.125rem 2rem;
+  }
+
+  .AccountUniverses__main > div {
+    width: 48%;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .AccountUniverses__main > div {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .AccountUniverses__heading {
+    margin-bottom: 1rem;
+
+    > h1 {
+      font-size: @font-size-rather-large;
+    }
+  }
+
+  .AccountUniverses__description {
+    > h4 {
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+    }
+
+    > p {
+      font-size: @font-size-normal;
+      line-height: @font-size-somewhat-large;
+    }
+  }
+}

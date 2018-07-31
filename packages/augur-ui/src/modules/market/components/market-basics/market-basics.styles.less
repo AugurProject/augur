@@ -1,0 +1,48 @@
+@import (reference) '~assets/styles/shared';
+@import (reference) '~modules/market/components/common/market-common.styles';
+
+.MarketBasics {
+  &__header {
+    .MarketCommon__header;
+
+    align-items: center;
+    margin-bottom: 1.625rem;
+  }
+
+  &__reportingends {
+    .label-12--dark;
+
+    align-items: center;
+    display: inline-flex;
+
+    > div {
+      padding-right: 0.4rem;
+    }
+  }
+}
+
+.MarketBasics__round-number {
+  margin-top: -0.5rem;
+}
+
+.MarketBasics__round-label {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.MarketBasics__round-text {
+  align-items: center;
+  background: @color-purple-dark;
+  border-radius: 100%;
+  color: @color-white;
+  display: inline-flex;
+  font-size: @font-size-normal;
+  font-weight: 600;
+  height: 1.875rem;
+  justify-content: center;
+  letter-spacing: 0;
+  width: 1.875rem;
+}

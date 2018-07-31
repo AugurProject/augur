@@ -1,0 +1,243 @@
+@import (reference) '~assets/styles/shared';
+
+.Position {
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+
+      > .Position__pending {
+        justify-content: flex-start;
+      }
+    }
+
+    &:last-of-type {
+      padding-right: 4.5rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .NotActive {
+    color: @color-lightgray;
+  }
+}
+
+.Position-not_extended {
+  > li {
+    &:first-child {
+      padding-left: 0.5rem;
+    }
+  }
+}
+
+.PortMobile {
+  display: table-row;
+  transition: background-color 0.15s ease;
+
+  &:first-child > li {
+    border-top-width: 0;
+  }
+
+  > li {
+    border-top: 1px solid @color-lightest-gray;
+    display: table-cell;
+    max-width: 19vw;
+    overflow: hidden;
+    padding: 1.125rem 0;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 2rem;
+      position: relative;
+      text-align: left;
+
+      > .Position__pending {
+        justify-content: flex-start;
+      }
+    }
+
+    &:last-of-type {
+      padding-right: 1rem;
+
+      > button {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.Position__confirm {
+  background-color: @color-purple;
+  color: @color-white;
+  left: 0;
+  opacity: 0;
+  padding: 1.19rem 4.5rem 1.19rem 1rem;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.15s ease;
+  width: 100%;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.Position__confirm-details {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.Position__confirm-options {
+  color: @color-white;
+  display: flex;
+
+  > button {
+    &:extend(.caps--medium);
+
+    &:not(:first-child) {
+      margin-left: 2rem;
+    }
+  }
+
+  > button > svg {
+    font-weight: 500;
+    height: 0.875rem;
+    width: 0.875rem;
+  }
+}
+
+.Position__pending {
+  display: flex;
+  font-size: @font-size-small;
+  justify-content: flex-end;
+  line-height: @font-size-medium;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:first-of-type {
+    margin-top: 0.75rem;
+  }
+
+  > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.Position__pending-message {
+  color: @color-gray;
+}
+
+.Position__pending-title {
+  &:extend(.caps--small);
+
+  line-height: @font-size-medium;
+  margin-right: 1.2rem;
+}
+
+@media @breakpoint-mobile {
+  .Position {
+    &.active,
+    &:hover {
+      background-color: @color-darkpurple;
+    }
+
+    > li {
+      border-top-color: @color-darkpurple;
+      color: @color-darkpurple;
+
+      &:first-child {
+        padding-left: 1rem;
+      }
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+
+      &:not(:first-child) {
+        color: @color-white;
+      }
+    }
+  }
+
+  .PortMobile {
+    > li {
+      border-top-color: @color-lightergray;
+      color: inherit;
+
+      &:first-child {
+        padding-left: 0.5rem;
+      }
+
+      &:last-of-type {
+        padding-right: 0.5rem;
+      }
+    }
+
+    .NotActive {
+      color: @color-lightgray;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .Position {
+    &:first-child > li {
+      border-top-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+  }
+
+  .PortMobile {
+    &:first-child > li {
+      border-bottom-width: 1px;
+    }
+
+    > li {
+      font-size: @font-size-medium;
+      line-height: @font-size-medium;
+      max-width: 25vw;
+    }
+
+    .NotActive {
+      color: @color-lightgray;
+    }
+  }
+}

@@ -1,0 +1,143 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalParticipate {
+  max-width: 35rem;
+  position: relative;
+  width: 100%;
+}
+
+.ModalParticipate__heading {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: @font-size-massive;
+
+  > svg {
+    width: 1.875rem;
+  }
+
+  > h1 {
+    .caps--extra-large();
+
+    color: @color-white;
+    margin: 0.375rem 0 0 1rem;
+  }
+}
+
+.ModalParticipate__helperText {
+  color: @color-white;
+  display: none;
+  margin-bottom: @font-size-rather-large;
+}
+
+.ModalParticipate__form {
+  width: 100%;
+
+  > * {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+
+  input::placeholder {
+    color: @color-gray;
+  }
+}
+
+.ModalParticipate__error-section {
+  height: @font-size-large;
+  line-height: @font-size-large;
+}
+
+.ModalParticipate__error {
+  color: @color-red;
+  display: inline-flex;
+  margin: 0.4rem 2rem 0;
+  position: absolute;
+  width: 100%;
+
+  > svg {
+    height: 1rem;
+    line-height: 1rem;
+    margin-right: 0.3rem;
+    width: 1rem;
+  }
+}
+
+div.ModalParticipate__error--field,
+div.ModalParticipate__error--field:focus-within,
+div.ModalParticipate__error--field:focus {
+  .border(true, @border-all, @color-red, @border-width-2);
+}
+
+.ModalParticipate__button {
+  .button--white();
+}
+
+.ModalParticipate__form-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin-top: 4rem;
+}
+
+@media @breakpoint-mobile-small {
+  .ModalParticipate {
+    margin-top: -7.25rem;
+  }
+
+  .ModalParticipate__form > * {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .ModalParticipate__helperText {
+    display: block;
+  }
+
+  .ModalParticipate__heading {
+    margin-bottom: 1rem;
+
+    > h1 {
+      font-size: @font-size-somewhat-large;
+      line-height: @font-size-somewhat-large;
+      margin-top: 0.75rem;
+    }
+  }
+
+  .ModalParticipate__error {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .ModalParticipate__form-actions {
+    bottom: 0;
+    flex-wrap: wrap;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+
+    > button {
+      border-radius: 0;
+      margin: 0;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+
+        &:disabled {
+          background-color: @color-lightgray;
+          color: @color-lightergray;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .ModalParticipate__button {
+    width: 100%;
+  }
+}

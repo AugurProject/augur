@@ -1,0 +1,160 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomesChart {
+  h3 {
+    .caps--medium();
+
+    color: @color-white;
+    padding: 10px 0 20px;
+  }
+}
+
+.MarketOutcomesChart__chart-header {
+  display: flex;
+  width: 100%;
+}
+
+.MarketOutcomesChart__details {
+  .caps--small();
+
+  color: @color-lightgray;
+  flex: 1;
+
+  * {
+    margin-right: 1em;
+  }
+}
+
+.MarketOutcomesChart__name {
+  color: @color-white;
+}
+
+.MarketOutcomesChart__filter {
+  align-self: flex-end;
+}
+
+.MarketOutcomesChart__chart {
+  align-items: center;
+  cursor: cell;
+  display: flex;
+  height: 400px;
+  justify-content: center;
+  width: 100%;
+
+  & > div {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.MarketOutcomesChart__outcomes-axis {
+  & > path {
+    display: none;
+  }
+
+  line {
+    stroke: @color-lightgray;
+  }
+
+  text {
+    &:extend(.caps--extra-small all);
+
+    fill: @color-lightgray;
+  }
+}
+
+.MarketOutcomesChart__price-label {
+  &:extend(.caps--extra-small all);
+
+  fill: @color-lightgray;
+}
+
+.MarketOutcomesChart__bounding-line {
+  stroke: @color-gray;
+  stroke-width: 1px;
+}
+
+.MarketOutcomesChart__tick-line {
+  stroke: @color-gray;
+  stroke-width: 1px;
+}
+
+.MarketOutcomesChart__tick-line--excluded {
+  display: none;
+}
+
+.MarketOutcomesChart__tick-value {
+  &:extend(.caps--extra-small all);
+
+  fill: @color-lightgray;
+}
+
+.MarketOutcomesChart__outcome-line {
+  fill: none;
+
+  :global {
+    .domain,
+    .tick > line {
+      stroke: @color-gray;
+    }
+  }
+}
+
+.MarketOutcomesChart__crosshair {
+  fill: none;
+  stroke: @color-white;
+  stroke-dasharray: 5;
+}
+
+.MarketOutcomesChart__outcome-line--1 {
+  stroke: @color-outcome-one;
+}
+
+.MarketOutcomesChart__outcome-line--2 {
+  stroke: @color-outcome-two;
+}
+
+.MarketOutcomesChart__outcome-line--3 {
+  stroke: @color-outcome-three;
+}
+
+.MarketOutcomesChart__outcome-line--4 {
+  stroke: @color-outcome-four;
+}
+
+.MarketOutcomesChart__outcome-line--5 {
+  stroke: @color-outcome-five;
+}
+
+.MarketOutcomesChart__outcome-line--6 {
+  stroke: @color-outcome-six;
+}
+
+.MarketOutcomesChart__outcome-line--7 {
+  stroke: @color-outcome-seven;
+}
+
+.MarketOutcomesChart__outcome-line--8 {
+  stroke: @color-outcome-eight;
+}
+
+.MarketOutcomesChart__hover-overlay {
+  fill: none;
+  pointer-events: visible;
+}
+
+.MarketOutcomesChart__null-message {
+  fill: @color-gray;
+}
+
+:global {
+  #priceTimeSeries_chart {
+    height: 100%;
+    width: 100%;
+  }
+
+  #priceTimeSeries_crosshairs {
+    cursor: crosshair;
+    pointer-events: none;
+  }
+}

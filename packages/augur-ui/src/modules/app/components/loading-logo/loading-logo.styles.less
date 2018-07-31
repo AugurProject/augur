@@ -1,0 +1,148 @@
+@import (reference) "~assets/styles/shared";
+
+@keyframes drawout-inner {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  49% {
+    stroke-dashoffset: 455;
+  }
+
+  51% {
+    stroke-dashoffset: 455;
+  }
+
+  100% {
+    stroke-dashoffset: 335;
+  }
+}
+
+@keyframes drawout-inner-fill {
+  0% {
+    stroke-dashoffset: 335;
+  }
+
+  100% {
+    stroke-dashoffset: 455;
+  }
+}
+
+@keyframes drawout-inner-inverse {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  49% {
+    stroke-dashoffset: 0;
+  }
+
+  51% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 82;
+  }
+}
+
+@keyframes drawout-inner-inverse-fill {
+  0% {
+    stroke-dashoffset: 82;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.LoadingLogo {
+  backface-visibility: hidden; /* VERY IMPORTANT - PREVENTS FLICKER */
+  width: 2.85rem;
+
+  svg {
+    :global {
+      .outer-lines {
+        fill: none;
+        stroke: @color-white;
+        stroke-dashoffset: 0;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-lines {
+        :local {
+          transition: 1.25s;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 230;
+        stroke-dashoffset: 230;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .inner-bottom-line {
+        :local {
+          transition: 1.25s;
+        }
+
+        fill: none;
+        stroke: @color-white;
+        stroke-dasharray: 82;
+        stroke-dashoffset: 82;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-miterlimit: 10;
+        stroke-width: 5;
+      }
+
+      .mask {
+        fill: @color-purple-dark;
+      }
+    }
+  }
+}
+
+.running {
+  svg {
+    :global {
+      .inner-lines {
+        :local {
+          animation: drawout-inner 2.5s both 1;
+          animation-direction: alternate;
+        }
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse 2.5s both 1;
+          animation-direction: alternate;
+        }
+      }
+    }
+  }
+}
+
+.paused {
+  svg {
+    :global {
+      .inner-lines {
+        :local {
+          animation: drawout-inner-fill 1.25s both;
+        }
+      }
+
+      .inner-bottom-line {
+        :local {
+          animation: drawout-inner-inverse-fill 1.25s both;
+        }
+      }
+    }
+  }
+}

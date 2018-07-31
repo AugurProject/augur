@@ -1,0 +1,61 @@
+@import (reference) '~assets/styles/shared';
+
+.Markets {
+  align-items: center;
+  text-align: left;
+  width: 100%;
+}
+
+.Markets__SortBar {
+  align-items: baseline;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.Markets__SortBar-title {
+  &:extend(.caps--large);
+
+  color: @color-white;
+}
+
+.Markets__SortBar-sort {
+  display: flex;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.Markets__SortBar-filter {
+  display: flex;
+}
+
+.NoMarkets__container {
+  color: @color-lightgray;
+  font-size: @font-size-large;
+  font-weight: 500;
+  line-height: @font-size-rather-large;
+  padding: 2rem;
+  text-align: center;
+}
+
+.NoMarkets__link {
+  color: @color-lightgray;
+  margin-left: 0.5rem;
+  text-decoration-line: underline;
+}
+
+.Markets__nullState--spacer {
+  height: 3.125rem;
+  margin: 2.5rem 0;
+}
+
+@media @breakpoint-mobile {
+  .Markets__SortBar {
+    padding: 0 1rem;
+  }
+
+  .Markets__SortBar-title {
+    font-size: @font-size-large;
+  }
+}

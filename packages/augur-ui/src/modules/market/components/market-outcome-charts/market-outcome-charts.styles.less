@@ -1,0 +1,98 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketOutcomeCharts {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 100%;
+
+  & > *:not(:last-of-type) {
+    margin-right: 1rem;
+  }
+
+  h3 {
+    &:extend(.caps--large all);
+
+    color: @color-gray;
+    margin-bottom: 1.2rem;
+
+    span {
+      color: @color-white;
+      margin-right: 1rem;
+    }
+  }
+}
+
+.MarketOutcomeCharts__charts {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  width: 100%;
+
+  & > * {
+    overflow: hidden;
+  }
+}
+
+.MarketOutcomeCharts__charts--mobile {
+  overflow-x: auto;
+}
+
+.MarketOutcomeCharts__candlestick {
+  flex: 2.5;
+  position: relative;
+}
+
+.MarketOutcomeCharts__candlestick--mobile {
+  flex: 1 0 100%;
+}
+
+.MarketOutcomeCharts__candlestick-null {
+  &:extend(.caps--small);
+
+  color: @color-gray;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, calc(-100% - 30px));
+}
+
+.MarketOutcomeCharts__orders {
+  display: flex;
+  flex: 2;
+}
+
+.MarketOutcomeCharts__orders--mobile {
+  flex: 1 0 100%;
+}
+
+.MarketOutcomeCharts__depth {
+  flex: 1;
+}
+
+.MarketOutcomeCharts__orderbook {
+  flex: 0.8;
+}
+
+.MarketOutcomeCharts__indicator {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.MarketOutcomeCharts__dot {
+  background-color: @color-lightergray-2;
+  border-radius: 50%;
+  height: 0.5em;
+  margin: 0 0.25em;
+  opacity: 0.2;
+  width: 0.5em;
+}
+
+.MarketOutcomeCharts__dot--active {
+  opacity: 0.5;
+}

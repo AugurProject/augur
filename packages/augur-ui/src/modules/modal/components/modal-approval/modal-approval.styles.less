@@ -1,0 +1,63 @@
+@import (reference) "~assets/styles/shared";
+
+.ModalApproval {
+  margin: 0 2rem;
+  max-width: 30rem;
+  position: relative;
+
+  > * {
+    width: 100%;
+  }
+
+  h1 {
+    .caps--extra-large();
+
+    color: @color-white;
+  }
+
+  > p {
+    color: @color-white;
+    line-height: 1.25rem;
+    margin: 0 0 1rem;
+
+    &:not(:first-of-type) {
+      margin-bottom: 3rem;
+    }
+  }
+}
+
+.ModalApproval__ActionButtons {
+  display: flex;
+  justify-content: space-between;
+
+  > button {
+    .button--white();
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .ModalApproval {
+    margin-top: -3.75rem;
+  }
+
+  .ModalApproval__ActionButtons {
+    bottom: 0;
+    flex-wrap: wrap;
+    position: fixed;
+
+    > button {
+      border-radius: 0;
+      width: 100%;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:last-child {
+        background-color: @color-lightpurple;
+        color: @color-white;
+        order: 1;
+      }
+    }
+  }
+}

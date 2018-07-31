@@ -1,0 +1,228 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketReportingPayouts__container {
+  display: flex;
+  flex-direction: row;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: column;
+  }
+}
+
+.MarketReportingPayouts__button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+.MarketReportingPayouts {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  transition: min-height 0.3s ease;
+
+  @media @breakpoint-mobile-small {
+    flex-direction: row;
+  }
+}
+
+.MarketReportingPayouts__alert_icon {
+  display: inline-block;
+  margin-right: 0.5em;
+
+  svg {
+    padding-top: 0.1em;
+    width: 1.1em;
+  }
+}
+
+.MarketReportingPayouts__outcome-name-text {
+  vertical-align: top;
+}
+
+.MarketReportingPayouts__height-sentinel {
+  display: inline-block;
+  margin-bottom: 0.25em;
+  visibility: hidden;
+}
+
+.MarketReportingPayouts__outcomes {
+  display: grid;
+  grid-gap: 0.75rem 3.75rem;
+  grid-template-columns: repeat(3, auto);
+
+  @media @breakpoint-mobile {
+    grid-template-columns: repeat(2, auto);
+  }
+
+  @media @breakpoint-mobile-small {
+    grid-template-columns: repeat(1, auto);
+  }
+}
+
+.MarketReportingPayouts__outcomes-container {
+  display: inline-block;
+  left: 0;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+
+  &.show-more {
+    padding-right: 7.5rem;
+  }
+}
+
+.MarketReportingPayouts__outcome {
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.MarketReportingPayouts__malformed {
+  color: @color-negative;
+  font-size: @font-size-normal;
+  font-weight: 700;
+  line-height: unset;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.MarketReportingPayouts__outcome-name {
+  line-height: 1.3rem;
+  max-width: 9.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.MarketReportingPayouts__winning-outcome-message {
+  color: #9d93d0;
+  font-size: 0.8em;
+  font-weight: 500;
+  margin-top: 0.55em;
+  text-transform: uppercase;
+}
+
+.MarketReportingPayouts__outcome-value {
+  &:extend(.number--large);
+
+  margin-left: 1.75rem;
+}
+
+.MarketReportingPayouts__show-more {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  cursor: pointer;
+}
+
+@media @breakpoint-mobile {
+  .MarketReportingPayouts__outcomes-container.show-more {
+    padding-right: 6rem;
+  }
+
+  .MarketReportingPayouts__outcome-value {
+    margin-left: 3vw;
+  }
+
+  .MarketReportingPayouts__outcomes {
+    grid-gap: 0.75rem 7vw;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketReportingPayouts__outcome {
+    align-items: flex-start;
+    flex-direction: column;
+
+    > span {
+      margin-left: 0;
+      margin-top: 0.7rem;
+      width: 100%;
+
+      &:first-child {
+        margin-top: 0;
+        order: 2;
+      }
+
+      &:last-child {
+        order: 1;
+      }
+    }
+  }
+
+  .MarketReportingPayouts__height-sentinel > span {
+    display: block;
+
+    &:first-child { margin-top: 0.7rem; }
+  }
+
+  .MarketReportingPayouts__show-more {
+    top: 0.75rem;
+  }
+}
+
+.MarketReportingPayouts__progress-bar-container {
+  display: flex;
+  height: 0.6em;
+  margin-bottom: 0.2em;
+  margin-top: 0.55em;
+}
+
+.MarketReportingPayouts__progress-bar {
+  background: @color-lightergray;
+  display: flex;
+  min-width: 11em;
+  position: relative;
+  white-space: nowrap;
+  width: 15rem;
+
+  > div:first-child {
+    background: @color-lighter-purple;
+    height: 100%;
+  }
+
+  > div:last-child {
+    background: @color-purple;
+    height: 100%;
+  }
+}
+
+.MarketReportingPayouts__progress-bar-total-rep-text {
+  color: @color-purple;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  line-height: 0.6em;
+  margin-left: 1em;
+}
+
+.MarketReportingPayouts__progress-bar-break {
+  color: @color-lightgray;
+  font-size: @font-size-medium;
+  font-weight: 500;
+  line-height: 0.6em;
+  margin-left: 0.4em;
+}
+
+.MarketReportingPayouts__progress-bar-goal-text {
+  color: @color-lightgray;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: 0.9em;
+  margin-left: 0.4em;
+  white-space: nowrap;
+}
+
+.MarketReportingPayouts__tooltip-container {
+  white-space: normal !important;
+}

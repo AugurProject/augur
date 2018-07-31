@@ -1,0 +1,66 @@
+@import (reference) '~assets/styles/shared';
+
+.notificationBar {
+  align-items: center;
+  background: @color-outcome-six;
+  display: flex;
+  flex-direction: row;
+  height: 3.8rem;
+  left: 0;
+  overflow: hidden;
+  padding: 15px 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 101;
+}
+
+.notificationBar_dismissIcon {
+  display: block;
+  margin-left: 15px;
+}
+
+.notificationBar_textContainer {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  max-width: 50%;
+}
+
+.notificationBar_text {
+  color: @color-almostblack;
+  font-size: 16px;
+  max-width: 60%;
+  overflow-wrap: normal;
+}
+
+.notificationBar_dismiss {
+  align-items: center;
+  color: @color-almostblack;
+  display: flex;
+  flex-grow: 1;
+  font-size: 16px;
+  font-weight: 500;
+  justify-content: flex-end;
+  margin-right: 9rem;
+  text-align: center;
+}
+
+.notificationBar_button {
+  &:extend(.button--purple all);
+
+  font-size: 18px;
+  font-weight: 500;
+  height: 23px;
+  letter-spacing: 0.3px;
+  margin: 0 5%;
+  padding-top: 0.3rem;
+  text-align: center;
+  width: 217px;
+
+  &.disabled {
+    &:extend(.button--purple--disabled);
+
+    pointer-events: none;
+  }
+}

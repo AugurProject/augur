@@ -1,0 +1,142 @@
+@import (reference) '~assets/styles/shared';
+
+.InnerNav {
+  height: 100vh;
+  position: relative;
+}
+
+.InnerNav__menu {
+  height: 100%;
+  list-style: none;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 2.625rem 0;
+  text-transform: uppercase;
+}
+
+.InnerNav__menu-item {
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+
+  *:hover {
+    background: @color-lightpurple;
+  }
+
+  a,
+  button {
+    background: none;
+    border: none;
+    color: @color-white;
+    cursor: pointer;
+    display: block;
+    font-size: 0.75rem;
+    height: 100%;
+    letter-spacing: 0.01875rem;
+    line-height: 1.8125rem;
+    margin: 0;
+    min-height: 1.625rem;
+    outline: 0;
+    overflow: hidden;
+    padding: 0 0.3125rem 0 0.6875rem;
+    text-align: inherit;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    transform: translateY(-50%) scaleY(0);
+    transition: transform 0.3s ease-in-out;
+    white-space: nowrap;
+    width: 100%;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.InnerNav__menu-item--visible {
+  height: 1.625rem;
+  opacity: 1;
+
+  a,
+  button {
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.InnerNav__menu-item--selected {
+  background: @color-lightpurple;
+}
+
+.InnerNav__menu--main {
+  background: @color-darkgray;
+  position: relative;
+  z-index: @mask;
+}
+
+.InnerNav__menu--submenu {
+  background: @color-darkpurple;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 6.875rem;
+  z-index: @above-all-content;
+}
+
+@media @breakpoint-mobile {
+  .InnerNav {
+    left: -12.5rem;
+    overflow-x: hidden;
+    transition: left 0.2s ease-in-out;
+    width: 12.5rem;
+
+    &.mobileShow {
+      left: 0;
+    }
+  }
+
+  .InnerNav__menu {
+    padding-top: 2rem;
+  }
+
+  .InnerNav__menu-item {
+    a,
+    button {
+      font-size: 0.75rem;
+      line-height: 3.4375rem;
+      padding-left: 2.5rem;
+
+      &:hover {
+        background: none;
+      }
+    }
+  }
+
+  .InnerNav__menu-item--visible {
+    height: 3.4375rem;
+  }
+
+  .InnerNav__menu-item--selected:hover {
+    a,
+    button {
+      background: @color-lightpurple;
+    }
+  }
+
+  .InnerNav__menu--main,
+  .InnerNav__menu--submenu {
+    width: 100%;
+    z-index: @above-all-content;
+  }
+
+  .InnerNav__menu--submenu {
+    left: 12.5rem;
+    transition: left 0.2s ease-in-out;
+    z-index: @mask;
+  }
+
+  .InnerNav__menu--submenu--mobileshow {
+    left: 0;
+  }
+}

@@ -1,0 +1,76 @@
+@import (reference) '~assets/styles/shared';
+
+.PortfolioReports {
+  padding: 0 2rem 2rem;
+
+  > h4 {
+    .caps--large();
+
+    color: @color-white;
+  }
+
+  > h5 {
+    color: @color-white;
+    padding: 0.6875rem 0 3.0625rem;
+  }
+}
+
+.PortfolioReports__details {
+  .border(true, @border-bottom, @color-white);
+
+  align-content: space-between;
+  color: @color-white;
+  display: flex;
+  padding: 2rem 0;
+}
+
+.PortfolioReports__info {
+  flex: 1;
+  line-height: 2rem;
+
+  > li:nth-child(even) {
+    margin-top: 1rem;
+  }
+
+  > li {
+    display: flex;
+    flex-flow: row nowrap;
+
+    > span {
+      flex: 0 0 10rem;
+    }
+  }
+}
+
+button.PortfolioReports__claim {
+  &:extend(.button--white all);
+
+  align-self: flex-end;
+  margin-right: 2.75rem;
+  padding: 0 2rem;
+}
+
+@media @breakpoint-mobile {
+  .PortfolioReports {
+    padding: 0 1rem 1rem;
+  }
+
+  .PortfolioReports__details {
+    flex-flow: column nowrap;
+  }
+
+  .PortfolioReports__info {
+    > li {
+      justify-content: space-between;
+
+      > span {
+        flex: 0;
+      }
+    }
+  }
+
+  .PortfolioReports__claim {
+    margin-top: 3rem;
+    width: 100%;
+  }
+}

@@ -1,0 +1,2 @@
+export const ORDER_BOOK_TABLE = 'ORDER_BOOK_TABLE'
+export const ORDER_BOOK_CHART = 'ORDER_BOOK_CHART'

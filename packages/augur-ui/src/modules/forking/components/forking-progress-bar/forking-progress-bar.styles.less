@@ -1,0 +1,58 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingProgressBar {
+  margin-top: 0.25rem;
+}
+
+.ForkingProgressBar__graph {
+  background-color: @color-darkpurple;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.ForkingProgressBar__current {
+  width: 100%;
+
+  > div {
+    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    border-right: 2px solid @color-white;
+    height: 100%;
+    position: relative;
+
+    > span {
+      font-size: 0.625rem;
+      left: 100%;
+      line-height: 0.625rem;
+      margin-left: 0.5rem;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+    }
+  }
+}
+
+.ForkingProgressBar__current_overflow {
+  width: 100%;
+
+  > div {
+    background-image: linear-gradient(-90deg, rgba(155, 139, 245, 0.5) 3%, rgba(155, 139, 245, 0) 96%);
+    border-right: 2px solid @color-white;
+    height: 100%;
+    position: relative;
+
+    > span {
+      font-size: 0.625rem;
+      line-height: 0.625rem;
+      margin-right: 0.5rem;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+    }
+  }
+}

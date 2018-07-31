@@ -1,0 +1,135 @@
+@import (reference) "~assets/styles/shared";
+
+.MarketOutcomeCandlestick {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-right: 30px;
+}
+
+.MarketOutcomeCandlestick__period-stats {
+  &:extend(.caps--small all);
+
+  display: flex;
+}
+
+.MarketOutcomeCandlestick__period-stat {
+  display: flex;
+}
+
+.MarketOutcomeCandlestick__period-stat-title {
+  color: @color-white;
+  margin-right: 0.3em;
+}
+
+.MarketOutcomeCandlestick__period-stat-value {
+  color: @color-lightgray;
+  width: 5em;
+}
+
+.MarketOutcomeCandlestick__container {
+  cursor: cell;
+  flex: 1;
+
+  :global {
+    #hovered_candlestick_price_label {
+      .caps--small();
+
+      stroke: @color-white;
+    }
+
+    .bounding-line,
+    .midpoint-line,
+    .tick-line,
+    .tick-line--midpoint {
+      stroke: @color-gray;
+      stroke-width: 1px;
+    }
+
+    .overlay {
+      fill: none;
+      pointer-events: visible;
+    }
+
+    .tick-line {
+      stroke: @color-gray;
+
+      &--midpoint {
+        stroke-width: 2px;
+      }
+    }
+
+    .tick-value {
+      &:extend(.caps--extra-small all);
+
+      fill: @color-lightgray;
+    }
+
+    rect {
+      &.up-period {
+        fill: @color-positive;
+      }
+
+      &.down-period {
+        fill: @color-negative;
+      }
+    }
+
+    line {
+      &.up-period {
+        stroke: @color-positive;
+      }
+
+      &.down-period {
+        stroke: @color-negative;
+      }
+    }
+
+    .period-volume {
+      fill: @color-white;
+      opacity: 0.2;
+    }
+
+    .line .crosshair {
+      fill: none;
+      stroke: @color-white;
+      stroke-dasharray: 5;
+    }
+
+    .period-hover {
+      fill: none;
+      pointer-events: visible;
+    }
+
+    #candlestick_crosshairs {
+      pointer-events: none;
+    }
+
+    #candlestick-x-axis {
+      line {
+        stroke: @color-lightgray;
+      }
+
+      text {
+        fill: @color-lightgray;
+      }
+    }
+  }
+}
+
+.MarketOutcomeCandlestick__null-message {
+  fill: @color-gray;
+}
+
+.MarketOutcomeCandlestick__ticks-container {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.MarketOutcomeCandlestick__chart-container {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: absolute;
+}

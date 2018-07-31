@@ -1,0 +1,73 @@
+@import (reference) '~assets/styles/shared';
+
+.Notification {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0.5em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Notification__link {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.Notification__title {
+  flex: 0 1 auto;
+  font-size: @font-size-small;
+  height: 1rem;
+  line-height: 1em;
+  text-transform: uppercase;
+  transition: flex 1000ms ease-in;
+}
+
+.Notification__dot {
+  flex: 0 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  transition: flex 500ms ease-out;
+  width: 1rem;
+}
+
+.Notification__dot-seen {
+  flex: 0 0 0;
+  height: 0;
+  margin: 0;
+  transition: flex 500ms ease-out;
+  width: 0;
+}
+
+.Notification__close {
+  align-self: baseline;
+  flex: 0 0 @font-size-small;
+  font-size: @font-size-small;
+  margin-left: auto;
+}
+
+.Notification__description {
+  flex: 1 0 100%;
+  font-size: @font-size-rather-large;
+  line-height: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Notification__time {
+  flex: 1 0 100%;
+  font-size: @font-size-extra-small;
+  line-height: 1rem;
+}
+
+@media @breakpoint-mobile {
+  .Notification__description {
+    flex: 1 0 100%;
+    font-size: @font-size-large;
+    line-height: 1.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

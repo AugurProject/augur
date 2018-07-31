@@ -1,0 +1,92 @@
+
+/* stylelint-disable declaration-no-important  */
+@import (reference) '~assets/styles/shared';
+
+.Tooltip {
+  background-color: @color-lightergray !important;
+  border-radius: 0 !important;
+  box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.5);
+  color: @color-darkpurple !important;
+  font-size: @font-size-small !important;
+  line-height: 0.9375rem;
+  max-width: 13.7rem;
+  padding: 1rem 1.5rem !important;
+  text-transform: none;
+  white-space: initial;
+
+  > h4 {
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  > p {
+    margin: 0 0 0.75rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.TooltipHint {
+  > svg {
+    max-height: 1rem;
+    max-width: 1rem;
+  }
+}
+
+:global {
+  .__react_component_tooltip {
+    &.show {
+      opacity: 1 !important;
+    }
+
+    &.place-top {
+      box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.2);
+      margin-bottom: -14px;
+
+      &::after {
+        border-top-color: @color-lightergray !important;
+        bottom: -10px !important;
+      }
+
+      &.type-light::after {
+        border-left-width: 10px;
+        border-right-width: 10px;
+        border-top-width: 10px !important;
+      }
+    }
+
+    &.place-bottom {
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+      margin-top: -14px;
+
+      &::after {
+        border-bottom-color: @color-lightergray !important;
+        top: -10px !important;
+      }
+
+      &.type-light::after {
+        border-bottom-width: 10px !important;
+        border-left-width: 10px;
+        border-right-width: 10px;
+      }
+    }
+
+    &.place-left {
+      margin-left: -14px;
+      margin-top: -5px;
+
+      &::after {
+        border-left-color: @color-lightergray !important;
+        right: -10px !important;
+      }
+
+      &.type-light::after {
+        border-bottom-width: 10px;
+        border-left-width: 10px !important;
+        border-top-width: 10px;
+      }
+    }
+  }
+}

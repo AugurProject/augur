@@ -1,0 +1,66 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountUniverseDescription {
+  margin-bottom: 2em;
+
+  h3 {
+    color: @color-purple;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+  }
+}
+
+.AccountUniverseDescription__container {
+  border-bottom: 1px solid @color-lightergray;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1em;
+}
+
+.AccountUniverseDescription__label {
+  margin-bottom: auto;
+  margin-top: auto;
+  width: 50%;
+}
+
+.AccountUniverseDescription__winning_universe {
+  color: #9e82ef;
+  font-size: small;
+  font-weight: bold;
+  margin-top: 0.25em;
+  text-transform: uppercase;
+}
+
+.AccountUniverseDescription__description {
+  margin-top: 1em;
+
+  div {
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 0.5em 0;
+    text-transform: uppercase;
+  }
+}
+
+.AccountUniversesDescription__button {
+  &:extend(.button--purple all);
+
+  margin-right: 1rem;
+  min-width: 7.75rem;
+}
+
+.AccountUniversesDescription__current_universe_button {
+  &:extend(.button--white--short all);
+
+  border: 2px solid @color-darkpurple;
+  color: @color-darkpurple;
+  cursor: auto;
+  margin-right: 1rem;
+  min-width: 7.75rem;
+
+  &:hover {
+    background-color: @color-white;
+    color: @color-darkpurple;
+  }
+}
