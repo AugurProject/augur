@@ -57,14 +57,16 @@ describe('modules/notifications/reducers/notifications', () => {
       },
       {
         id: '0xTest1',
-        testing: 'old object',
+        seen: true,
+        title: 'old object',
       },
     ], {
       type: UPDATE_NOTIFICATION,
       data: {
         id: '0xTest1',
         notification: {
-          testing: 'new object',
+          seen: false,
+          title: 'new object',
         },
       },
     })
@@ -75,7 +77,8 @@ describe('modules/notifications/reducers/notifications', () => {
       },
       {
         id: '0xTest1',
-        testing: 'new object',
+        seen: false,
+        title: 'new object',
       },
     ]
 
