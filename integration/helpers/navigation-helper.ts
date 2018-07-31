@@ -1,14 +1,8 @@
-import { dismissDisclaimerModal } from "../helpers/dismiss-disclaimer-modal";
+require("./beforeEach");
 
 export const toDefaultView = async () => {
-  await page.setViewport({
-    height: 1200,
-    width: 1200
-  });
-
   const url = `${process.env.AUGUR_URL}`;
   await page.goto(url);
-  await dismissDisclaimerModal(page);
 };
 
 export const toMarketListView = async () => {

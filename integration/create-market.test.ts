@@ -1,8 +1,8 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import { dismissDisclaimerModal } from "./helpers/dismiss-disclaimer-modal";
 import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity"
+require("./helpers/beforeEach");
 
 const url = `${process.env.AUGUR_URL}`;
 const timeoutMilliseconds = 10000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
@@ -12,17 +12,9 @@ jest.setTimeout(100000);
 describe("Create market page", () => {
   beforeAll(async () => {
     await page.goto(url);
-
-    // TODO: Determine what a 'typical' desktop resolution would be for our users
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
   });
 
   it("should allow user to create a new yes/no market", async () => {
-    await dismissDisclaimerModal(page);
-
     // Go to create-market page and wait for it to load
     await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0"});
     await page.waitForSelector("#cm__input--desc", { visible: true });
