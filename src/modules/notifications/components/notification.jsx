@@ -118,7 +118,7 @@ export default class Notification extends Component {
       >
         <EtherscanLink
           txhash={id}
-          label="etherscan link"
+          label="view in etherscan"
         />
         <Link
           className={Styles.Notification__link}
