@@ -180,6 +180,7 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   feeWindow: Address;
   endTime: number;
   finalizationBlockNumber?: number|null;
+  lastTradeBlockNumber?: number|null;
   reportingState?: ReportingState|null;
   shortDescription: string;
   longDescription?: string|null;
@@ -361,6 +362,8 @@ export interface UIMarketInfo<BigNumberType> {
   endTime: number;
   finalizationBlockNumber?: number|null;
   finalizationTime?: number|null;
+  lastTradeBlockNumber?: number|null;
+  lastTradeTime?: number|null;
   reportingState?: ReportingState|null;
   forking: number;
   needsMigration: number;
@@ -510,6 +513,7 @@ export interface MarketPriceHistory<BigNumberType> {
 export interface MarketsRowWithTime extends MarketsRow<BigNumber> {
   creationTime: number;
   finalizationTime?: null|number;
+  lastTradeTime?: null|number;
 }
 
 export interface JoinedReportsMarketsRow<BigNumberType> extends Payout<BigNumberType> {

@@ -17,6 +17,7 @@ export function getMarketsInfo(db: Knex, marketIds: Array<Address>, callback: (e
   const cleanedMarketIds = _.compact(marketIds);
   marketsQuery.whereIn("markets.marketId", cleanedMarketIds);
   marketsQuery.leftJoin("blocks as finalizationBlockNumber", "finalizationBlockNumber.blockNumber", "markets.finalizationBlockNumber").select("finalizationBlockNumber.timestamp as finalizationTime");
+  marketsQuery.leftJoin("blocks as lastTradeBlock", "lastTradeBlock.blockNumber", "markets.lastTradeBlockNumber").select("lastTradeBlock.timestamp as lastTradeTime");
 
   series({
     marketsRows: (next: AsyncCallback) => marketsQuery.asCallback(next),
