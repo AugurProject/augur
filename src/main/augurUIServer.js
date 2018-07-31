@@ -12,7 +12,6 @@ const helmet = require('helmet');
 function AugurUIServer() {
   this.server = null;
   this.uiPort = 8080;
-  this.window = null;
   this.appDataPath = appData("augur");
   ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
   ipcMain.on('startUiServer', this.onStartUiServer.bind(this))
@@ -87,11 +86,6 @@ AugurUIServer.prototype.startServer = function (event) {
     log.error(err);
     event.sender.send("error", { error: err.toString()});
   }
-}
-
-// We wait until the window is provided so that if it fails we can send an error message to the renderer
-AugurUIServer.prototype.setWindow = function (window) {
-  this.window = window;
 }
 
 AugurUIServer.prototype.stopServer = function () {

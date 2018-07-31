@@ -30,6 +30,15 @@
     "files": [
       "!certs/*"
     ],
+    "extraFiles": [
+      {
+        "from": "resources/${os}",
+        "to": "resources/${os}",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "mac": {
       "asar": "false",
       "target": [

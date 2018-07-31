@@ -3,3 +3,4 @@ out
 *.db*
 src/config.json*
 dist
+log.txt

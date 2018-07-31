@@ -222,7 +222,7 @@ input {
   max-height: 90px;
   background-color: white;
   flex-grow: 1;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   width: 100%;
   align-items: center;
   min-height: 90px;
@@ -235,6 +235,16 @@ input {
   flex-grow: 1;
   flex-direction: column;
   padding: 40px 32px;
+}
+
+#geth_syncing_info {
+  max-height: 220px;
+  background-color: white;
+  flex-direction: column;
+  padding: 40px 0px;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: center;
 }
 
 .dbInfo {
@@ -250,7 +260,19 @@ input {
   margin-bottom: 16px;
 }
 
+#geth_syncPercentInfo {
+  font-size: 24px;
+  color: #A7A2B2;
+  padding-bottom: 13px;
+  margin-bottom: 10px;
+}
+
 #sync_percent {
+  font-size: 48px;
+  font-weight: 500;
+}
+
+#geth_sync_percent {
   font-size: 48px;
   font-weight: 500;
 }
@@ -262,6 +284,12 @@ input {
 }
 
 #blocks_behind {
+  font-size: 24px;
+  color: #372E4B;
+  font-weight: 500;
+}
+
+#geth_blocks_behind {
   font-size: 24px;
   color: #372E4B;
   font-weight: 500;
@@ -418,6 +446,11 @@ input {
 }
 
 #blocks_synced {
+  display:inline-block;
+  margin-right: 5px;
+}
+
+#geth_blocks_synced {
   display:inline-block;
   margin-right: 5px;
 }

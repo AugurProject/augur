@@ -6,7 +6,8 @@ const appData = require('app-data-folder');
 const fs = require("fs");
 const AugurUIServer = require('./augurUIServer');
 const AugurNodeController = require('./augurNodeServer');
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const GethNodeController = require('./gethNodeController');
+const {app, BrowserWindow, Menu, ipcMain } = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,6 +15,7 @@ let mainWindow;
 
 const augurNodeController = new AugurNodeController();
 const augurUIServer = new AugurUIServer();
+const gethNodeController = new GethNodeController();
 
 const path = require('path');
 const url = require('url');
@@ -88,8 +90,8 @@ function createWindow () {
 
   // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
   setTimeout(function() {
-    augurUIServer.setWindow(mainWindow);
     augurNodeController.setWindow(mainWindow);
+    gethNodeController.setWindow(mainWindow);
   }, 2000);
 
   ipcMain.on('rebuildMenu', function (event, data) {
@@ -104,6 +106,7 @@ function createWindow () {
       // when you should delete the corresponding element.
       augurNodeController.shutDownServer();
       augurUIServer.stopServer();
+      gethNodeController.stop();
       mainWindow = null;
     } catch (err) {
       mainWindow.webContents.send('error', { error: err });
@@ -139,4 +142,3 @@ app.on('activate', function () {
     createWindow();
   }
 });
-
