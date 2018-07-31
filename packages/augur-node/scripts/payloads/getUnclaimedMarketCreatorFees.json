@@ -1,0 +1,8 @@
+{
+  "id": 4,
+  "jsonrpc": "2.0",
+  "method": "getUnclaimedMarketCreatorFees",
+  "params": {
+    "marketIds": ["0xad3b46308cb5b8a0d3acecea9b7caf7b7e9b5a4e"]
+  }
+}

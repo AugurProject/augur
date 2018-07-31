@@ -1,0 +1,8 @@
+node_modules/
+*.log
+coverage/
+build/
+definitions/
+augur*.db
+upload-block*
+tags

@@ -1,0 +1,18 @@
+{
+  "name": "Augur Node",
+  "description": "A middleware node suitable for aggregating data for Augur from the Ethereum blockchain",
+  "repository": "https://github.com/augurproject/augur-node",
+  "keywords": ["augur", "ethereum"],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    },
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.5"
+      }
+    }
+  }
+}
