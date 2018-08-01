@@ -1,21 +1,35 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import hashlib
 import json
 import os
 import requests
+import sys
+import signal
 
 from pprint import pprint
+#from prettytable import PrettyTable
+
+try:
+    from cursesmenu import SelectionMenu
+except ImportError:
+    print('for a better experience install curses-menu')
+    print('pip install curses-menu')
 
 # headers
 try:
     GH_TOKEN = os.environ['GH_TOKEN']
 except KeyError:
     print('no github token')
-    print(os.environ)
-    exit(0)
+    print('https://github.com/settings/tokens')
+    sys.exit(0)
 
 headers = {"Authorization": "token " + GH_TOKEN}
+
+
+def signal_handler(sig, frame):
+    print('\nsee ya.')
+    sys.exit(0)
 
 
 def augur_app_all_releases():
@@ -38,48 +52,47 @@ def assets_for_version(releases, version):
             return release['assets']
 
 
+# main starts here for now
+signal.signal(signal.SIGINT, signal_handler)
 
 all_release_info = augur_app_all_releases()
 
+release_versions = all_release_versions(all_release_info)
+
+
+# promt for version
+if 'cursesmenu' in sys.modules:
+    selection = SelectionMenu.get_selection(release_versions)
+    if selection < len(release_versions):
+        version = release_versions[selection]
+    else:
+        sys.exit(0)
+else:
+    print('  '.join(release_versions))
+    version = input('enter version to sanity check')
+
 file_extensions = ['dmg', 'deb', 'exe', 'snap']
-#print(all_release_versions(all_release_info))
-#pprint(all_release_info['assets'])
-#pprint(assets_for_version(all_release_info, '1.1.0-snapshot'))
 assets = assets_for_version(all_release_info, '1.1.0-snapshot')
 
-headers['Accept-Encoding'] = 'gzip, deflate, br'
-headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+headers['Accept'] = 'application/octet-stream'
 comparison = {}
 for asset in assets:
     for x in file_extensions:
         if asset['name'].endswith(x):
+            print(asset['name'])
             if x not in comparison:
                 comparison[x] = {}
-            url = asset['browser_download_url']
-            print(url)
+            url = asset['url']
             r = requests.get(url, headers=headers, stream=True)
-            pprint(r.headers)
             r.raise_for_status()
-
-
-            #response = requests.get('http://www.example.com/image.jpg', stream=True)
-# Throw an error for bad status codes
-            #response.raise_for_status()
-#            with open('output.jpg', 'wb') as handle:
-#                for block in response.iter_content(1024):
-#                    handle.write(block)
-
-
-            print(r.headers)
             comparison[x]['sha'] = sha = hashlib.sha256(r.content).hexdigest()
-#            print('==asset=={}'.format(x))
-#            print(asset['name'])
         if asset['name'].endswith('{}.sha256'.format(x)):
+            print(asset['name'])
             if x not in comparison:
                 comparison[x] = {}
-            comparison[x]['shasum'] = ''
-
-    #if any(asset['name'].endswith(x) for x in file_extensions):
-
+            url = asset['url']
+            r = requests.get(url, headers=headers)
+            shasum = r.content.split(' ')[0]
+            comparison[x]['shasum'] = shasum
 
 pprint(comparison)
