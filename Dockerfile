@@ -17,7 +17,7 @@ FROM augurproject/dev-node-geth:latest
 ARG normal_time=false
 ENV USE_NORMAL_TIME=$normal_time
 
-ARG network_id=12346
+ARG network_id=101
 ENV NETWORK_ID=$network_id
 
 # Install Node
