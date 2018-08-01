@@ -16,12 +16,6 @@
   margin-bottom: 0.675rem;
 }
 
-.ReportingHeader__endTime {
-  &:extend(.caps--small);
-
-  font-weight: 500;
-}
-
 .ReportingHeader__graph {
   background-color: @color-darkgray;
   border-radius: 3px;
@@ -73,6 +67,59 @@
       white-space: nowrap;
     }
   }
+}
+
+.ReportingHeader__daysLeft {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+.ReportingHeader__value-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a7a2b2;
+  text-transform: uppercase;
+}
+
+.ReportingHeader__value-number {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.ReportingHeader__value-unit {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+
+.ReportingHeader__endTime {
+  &:extend(.caps--small);
+
+  font-weight: 500;
+  font-size: 12px;
+  color: #a7a2b2;
+}
+
+.ReportingHeader__endTimeValue {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  text-transform: none;
+  margin-left: 10px;
+}
+
+.ReportingHeader__row {
+  display: flex;
+  flex-grow: 1;
+}
+
+.ReportingHeader__participation {
+  display: flex;
+  flex-grow: 1;
 }
 
 .ReportingHeader__heading {

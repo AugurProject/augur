@@ -138,9 +138,6 @@ export default class ReportingDisputeMarkets extends Component {
     }
     const nonForkingMarketsCount = filteredMarkets.length
 
-    console.log(upcomingMarketsCount)
-    console.log(nonForkingMarketsCount)
-
     return (
       <section className={Styles.ReportDisputeContainer}>
         <Helmet>

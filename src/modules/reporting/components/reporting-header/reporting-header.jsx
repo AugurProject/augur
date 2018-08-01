@@ -55,9 +55,6 @@ export default class ReportingHeader extends Component {
     const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
     const disableParticipate = (repBalance === '0')
-    const currentPeriodStyle = {
-      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
-    }
     const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue || 0
 
     return (
@@ -81,24 +78,37 @@ export default class ReportingHeader extends Component {
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles['ReportingHeader__meta-wrapper']}>
-                    <span data-testid="endTime" className={Styles.ReportingHeader__endTime}>Dispute Window ends { formattedDate.formattedLocal }</span>
-                    <span className={Styles.ReportingHeader__stake}> | </span><span className={Styles.ReportingHeader__stake}>{ disputeRep } REP Staked</span>
+                    <div className={Styles['ReportingHeader__row']}>
+                      <div className={Styles['ReportingHeader__value-label']}>
+                        My Rep Staked
+                      </div>
+                      <div className={Styles['ReportingHeader__value-number']}>
+                        { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
+                      </div>
+                    </div>
+                    <div className={Styles['ReportingHeader__participation']}>
+                      <button
+                        className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
+                        data-tip
+                        data-for="tooltip--participation-tokens"
+                        disabled={disableParticipate}
+                        onClick={() => updateModal({
+                          type: MODAL_PARTICIPATE,
+                          canClose: true,
+                        })}
+                      >
+                        { Participate }
+                        <span className={Styles['ReportingHeader__participationTokens--text']}>
+                          participate
+                        </span>
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
-                    data-tip
-                    data-for="tooltip--participation-tokens"
-                    disabled={disableParticipate}
-                    onClick={() => updateModal({
-                      type: MODAL_PARTICIPATE,
-                      canClose: true,
-                    })}
-                  >
-                    { Participate }
-                    <span className={Styles['ReportingHeader__participationTokens--text']}>
-                      participate
+                  <div className={Styles['ReportingHeader__row']}>
+                    <span data-testid="endTime" className={Styles.ReportingHeader__endTime}>
+                      Dispute Window ends <span className={Styles.ReportingHeader__endTimeValue}> { formattedDate.formattedLocalShort } </span>
                     </span>
-                  </button>
+                  </div>
                   { !isMobile &&
                     <ReactTooltip
                       id="tooltip--participation-tokens"
@@ -115,11 +125,11 @@ export default class ReportingHeader extends Component {
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>
                     <div className={currentPercentage <= 90 && !(isMobile && currentPercentage > 70) ? Styles['ReportingHeader__graph-current'] : Styles['ReportingHeader__graph-current-90']}>
-                      <div style={currentPeriodStyle}>
-                        <span data-testid="daysLeft">{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
-                      </div>
                     </div>
                   </div>
+                </div>
+                <div className={Styles['ReportingHeader__daysLeft']}>
+                  <span data-testid="daysLeft">{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
                 </div>
               </div>
             }
