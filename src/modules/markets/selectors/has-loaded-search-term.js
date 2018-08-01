@@ -8,7 +8,7 @@ export const hasLoadedSearchTerm = (hasLoadedSearch, category, keywords, tags) =
   })
 
   if (category && !hasLoaded[category]) hasLoaded[category] = false
-  if (keywords) hasLoaded.keywords = hasLoadedSearch.keywords && hasLoadedSearch.keywords.term === keywords
+  if (keywords) hasLoaded.keywords = hasLoadedSearch.keywords || {}.term === keywords
 
   if (tags && tags.length > 0) {
     each(tags, (t) => {

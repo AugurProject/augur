@@ -6,11 +6,6 @@ import MarketsHeader from 'modules/markets/components/markets-header/markets-hea
 import MarketsList from 'modules/markets/components/markets-list'
 import isEqual from 'lodash/isEqual'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
-import { filterArrayByArrayPredicate } from 'src/modules/filter-sort/helpers/filter-array-of-objects-by-array'
-import { filterBySearch } from 'src/modules/filter-sort/helpers/filter-by-search'
-import { FILTER_SEARCH_KEYS } from 'src/modules/markets/constants/filter-sort'
-import { identity, filter, map } from 'lodash/fp'
-import { compose } from 'redux'
 import {
   MARKET_RECENTLY_TRADED,
 } from 'modules/filter-sort/constants/market-sort-params'
@@ -59,18 +54,18 @@ export default class MarketsView extends Component {
       canLoadMarkets,
       category,
       hasLoadedSearch,
+      tags,
+      keywords,
       hasLoadedMarkets,
-      loadMarkets,
-      loadMarketsByCategory,
     } = this.props
 
     this.loadMarketsFn({
       canLoadMarkets,
       category,
-      loadMarkets,
-      loadMarketsByCategory,
-      hasLoadedMarkets,
       hasLoadedSearch,
+      tags,
+      keywords,
+      hasLoadedMarkets,
     })
     this.updateFilteredMarkets()
   }
@@ -82,6 +77,7 @@ export default class MarketsView extends Component {
       hasLoadedSearch,
       tags,
       keywords,
+      hasLoadedMarkets,
     } = this.props
     if (
       (category !== prevProps.category) ||
@@ -97,6 +93,7 @@ export default class MarketsView extends Component {
         hasLoadedSearch,
         tags,
         keywords,
+        hasLoadedMarkets,
       })
     }
   }
@@ -107,7 +104,11 @@ export default class MarketsView extends Component {
     })
   }
 
-  loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, tags, keywords }) {
+  loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, tags, keywords, hasLoadedMarkets }) {
+    if (!category && (!tags || tags.length === 0) && !keywords) {
+      this.setState({ loadByMarkets: [] })
+      if (!hasLoadedMarkets) this.updateFilteredMarkets()
+    }
     if (canLoadMarkets) {
       if (category && !hasLoadedSearch[category]) {
         this.props.loadMarketsByCategory(category, (err, marketIds) => {
@@ -150,11 +151,12 @@ export default class MarketsView extends Component {
       toggleFavorite,
     } = this.props
     const s = this.state
-
     const filteredMarketsFinal = []
     if (s.filterSortedMarkets.length) {
       s.filterSortedMarkets.reduce((finalArray, marketId) => {
         if (s.loadByMarkets.includes(marketId)) {
+          finalArray.push(marketId)
+        } else if (s.loadByMarkets.length === 0) {
           finalArray.push(marketId)
         }
         return finalArray
