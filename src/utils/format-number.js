@@ -52,6 +52,8 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 export const ETHER_NUMBER_OF_DECIMALS = 4
 export const SHARES_NUMBER_OF_DECIMALS = 4
 
+const SMALLEST_NUMBER_DECIMAL_PLACES = 8
+
 export function formatEther(num, opts) {
   return formatNumber(
     num,
@@ -267,6 +269,7 @@ export function formatNumber(num, opts = {
   } else {
     roundingMode = BigNumber.ROUND_HALF_EVEN
   }
+  let formatSigFig = false
   if (isNaN(parseFloat(num))) {
     o.value = 0
     o.formattedValue = 0
@@ -278,12 +281,13 @@ export function formatNumber(num, opts = {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
     const roundToZeroThreshold = constants.PRECISION.zero
     o.value = value.toNumber()
-    if (value.abs().lt(roundToZeroThreshold)) {
+    if (value.abs().lt(roundToZeroThreshold)) { // value is less than zero
       o.formattedValue = '0'
     } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
         o.formattedValue = '0'
       } else {
+        formatSigFig = true;
         o.formattedValue = value.toPrecision(decimals, roundingMode)
       }
     } else {
@@ -292,8 +296,19 @@ export function formatNumber(num, opts = {
         .toFixed(decimals)
     }
 
-    if (bigUnitPostfix) {
+    if (bigUnitPostfix && !formatSigFig) {
       o.formatted = addBigUnitPostfix(value, o.formattedValue)
+    } else if (formatSigFig) { // for numbers smaller than the set number of decimals - ie ones with scientific notation
+      let formatted = value.toFixed(decimalsRounded) // round to smallest number of decimals set
+      if (formatted == 0) { // if this is equal to zero, try to show significant digits up to 8 digit places
+        formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+        if (formatted == 0) {
+          formatted = constants.PRECISION.zero.toFixed(decimalsRounded) // if there are no significant digits in the 8 decimal places, just use zero
+        } else {
+          formatted = value.toFixed(1 - Math.floor(Math.log(value.abs())/Math.log(10))) // find first two significant digit
+        }
+      }
+      o.formatted = formatted
     } else {
       o.formatted = addCommas(o.formattedValue)
     }
@@ -323,7 +338,7 @@ export function formatNumber(num, opts = {
   }
 
   o.denomination = denomination
-  o.full = makeFull(o.formatted, o.denomination)
+  o.full = makeFull(o.formatted, o.denomination) // should this use this?
 
   return o
 }

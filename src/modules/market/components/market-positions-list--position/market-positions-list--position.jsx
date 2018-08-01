@@ -123,6 +123,8 @@ export default class MarketPositionsListPosition extends Component {
       message = `Close position by ${getValue(position, 'netPosition.value') > 0 ? 'selling' : 'buying back'} ${netPositionShares.replace('-', '')} shares ${outcomeName ? `of "${outcomeName}"` : ''} at market price?`
     }
 
+    //console.log(position)
+
     return (
       <ul
         ref={(position) => { this.position = position }}
