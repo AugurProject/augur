@@ -115,7 +115,7 @@ for asset in assets:
 for file, v in comparison.items():
     sha = str(v['sha'])
     shasum = str(v['shasum'])
-    if sha is shasum:
+    if sha == shasum:
         color = colors.OKGREEN
     else:
         color = colors.RED
