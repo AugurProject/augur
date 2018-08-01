@@ -35,6 +35,8 @@ export default class MarketsView extends Component {
     loadMarketsByFilter: PropTypes.func.isRequired,
   }
 
+  static MIN_KEYWORDS_LENGTH = 3
+
   constructor(props) {
     super(props)
 
@@ -98,12 +100,6 @@ export default class MarketsView extends Component {
     }
   }
 
-  getMarketIdsBySearch(keywords, tagName) {
-    this.props.loadMarketsBySearch(keywords, tagName, (err, marketIds) => {
-      if (!err) this.setState({ loadByMarkets: marketIds })
-    })
-  }
-
   loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, tags, keywords, hasLoadedMarkets }) {
     if (!category && (!tags || tags.length === 0) && !keywords) {
       this.setState({ loadByMarkets: [] })
@@ -111,19 +107,16 @@ export default class MarketsView extends Component {
     } else {
       this.updateFilteredMarkets()
       if (canLoadMarkets) {
-        if (category && !hasLoadedSearch[category]) {
-          this.props.loadMarketsByCategory(category, (err, marketIds) => {
+        const terms = []
+        const keywordSearch = keywords && keywords.length > MarketsView.MIN_KEYWORDS_LENGTH ? keywords : undefined;
+        [category, ...tags, keywordSearch].forEach((i) => {
+          if (i) terms.push(i)
+        })
+        if (terms.length > 0 && !hasLoadedSearch.search) {
+          this.props.loadMarketsBySearch(terms, (err, marketIds) => {
             if (!err) this.setState({ loadByMarkets: marketIds })
+            if (marketIds.length === 0) this.setState({ filterSortedMarkets: marketIds })
           })
-        } else if (tags && tags.length > 0) {
-          if (tags[0] && !hasLoadedSearch[tags[0]]) {
-            this.getMarketIdsBySearch(tags[0], tags[0])
-          }
-          if (tags[1] && !hasLoadedSearch[tags[1]]) {
-            this.getMarketIdsBySearch(tags[1], tags[1])
-          }
-        } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
-          this.getMarketIdsBySearch(keywords, 'keywords')
         }
       }
     }
@@ -151,14 +144,15 @@ export default class MarketsView extends Component {
       location,
       markets,
       toggleFavorite,
+      hasLoadedSearch,
     } = this.props
     const s = this.state
     const filteredMarketsFinal = []
     if (s.filterSortedMarkets.length) {
       s.filterSortedMarkets.reduce((finalArray, marketId) => {
-        if (s.loadByMarkets.includes(marketId)) {
+        if (hasLoadedSearch.search && s.loadByMarkets.includes(marketId)) {
           finalArray.push(marketId)
-        } else if (s.loadByMarkets.length === 0) {
+        } else if (!hasLoadedSearch.search) {
           finalArray.push(marketId)
         }
         return finalArray

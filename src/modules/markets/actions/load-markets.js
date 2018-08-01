@@ -10,8 +10,6 @@ const loadMarkets = (type, callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
   const params = { universe: universe.id }
 
-  console.log('load markets', params)
-
   augur.markets.getMarkets(params, (err, marketsArray) => {
     if (err) return callback(err)
 
