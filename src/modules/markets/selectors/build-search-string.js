@@ -7,7 +7,7 @@ export const buildSearchString = (category, keywords, tags) => {
     if (i) terms.push(i)
   })
 
-  const search = (terms && terms.length > 1) ? terms.join(' AND ').trim(' AND ') : terms[0]
+  const search = (terms && terms.length > 1) ? terms.join(' OR ').trim(' OR ') : terms[0]
 
   return search
 }
