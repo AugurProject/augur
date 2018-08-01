@@ -34,6 +34,27 @@ describe('modules/notifications/reducers/notifications', () => {
     assert.deepEqual(actual, expected, `Didn't return the expected array`)
   })
 
+  it('should return non dup array for type ADD_NOTIFICATION', () => {
+    const actual = notifications([
+      {
+        id: '0xTEST',
+      },
+    ], {
+      type: ADD_NOTIFICATION,
+      data: {
+        notification: {
+          id: '0xTEST',
+        },
+      },
+    })
+    const expected = [
+      {
+        id: '0xTEST',
+      },
+    ]
+    assert.deepEqual(actual, expected, `Didn't return the expected array`)
+  })
+
   it('should return the expected array for type REMOVE_NOTIFICATION', () => {
     const actual = notifications([
       {
