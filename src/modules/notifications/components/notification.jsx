@@ -6,6 +6,7 @@ import moment from 'moment'
 import debounce from 'utils/debounce'
 import { AlertCircle, CloseBlack } from 'modules/common/components/icons'
 import Styles from 'modules/notifications/components/notification.styles'
+import EtherscanLink from 'modules/common/containers/etherscan-link'
 
 export default class Notification extends Component {
   static propTypes = {
@@ -98,6 +99,7 @@ export default class Notification extends Component {
 
   render() {
     const {
+      id,
       description,
       linkPath,
       onClick,
@@ -114,6 +116,10 @@ export default class Notification extends Component {
         }}
         className={Styles.Notification}
       >
+        <EtherscanLink
+          txhash={id}
+          label="view in etherscan"
+        />
         <Link
           className={Styles.Notification__link}
           to={linkPath || ''}

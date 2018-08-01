@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loginWithLedger: (address, lib) => dispatch(loginWithLedger(address, lib)),
+  loginWithLedger: (address, lib, devPath) => dispatch(loginWithLedger(address, lib, devPath)),
   updateLedgerStatus: status => dispatch(updateLedgerStatus(status)),
   onConnectLedgerRequest: () => dispatch(onConnectLedgerRequest()),
   onOpenEthereumAppRequest: () => dispatch(onOpenEthereumAppRequest()),

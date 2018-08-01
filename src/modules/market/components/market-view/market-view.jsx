@@ -64,6 +64,10 @@ export default class MarketView extends Component {
     }
   }
 
+  componentDidMount() {
+    this.node.scrollIntoView()
+  }
+
   componentWillUpdate(nextProps, nextState) {
     const {
       isConnected,
@@ -131,7 +135,7 @@ export default class MarketView extends Component {
     const s = this.state
 
     return (
-      <section>
+      <section ref={(node) => { this.node = node }}>
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>

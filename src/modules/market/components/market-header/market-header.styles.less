@@ -13,13 +13,20 @@
 .MarketHeader__AdditionalDetails-text:disabled {
   background: none;
   border: 0;
-  color: @color-lightgray;
+  color: @color-white;
   margin: 0;
+  max-height: 160px;
   overflow: hidden;
   overflow-y: scroll;
   padding: 0;
   resize: none;
-  transition: height 0.15s ease-out;
+  text-transform: none;
+  transition: max-height @animation-speed-normal @animation-default-type;
+  white-space: pre-wrap;
+}
+
+.MarketHeader__AdditionalDetails-tall {
+  max-height: 1000px;
 }
 
 .MarketHeader__nav {
@@ -57,7 +64,6 @@
   border-radius: 4px;
   overflow-y: auto;
   padding: 1em;
-  transition: height 0.15s ease-out;
 
   > p {
     margin-bottom: 0;
@@ -110,7 +116,6 @@
   font-size: @font-size-small;
   line-height: @font-size-medium;
   overflow: auto;
-  transition: height @animation-speed-normal @animation-default-type;
 }
 
 .MarketHeader__details {
