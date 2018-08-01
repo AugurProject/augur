@@ -200,8 +200,6 @@ function loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, loadMarketsB
       }
     } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
       loadMarketsBySearch(keywords, 'keywords')
-    } else if (!category && !hasLoadedSearch.all) {
-      loadMarkets('all')
     }
   }
 }
