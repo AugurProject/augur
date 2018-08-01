@@ -46,7 +46,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(removeOrphanedOrder(orderId))
       dispatch(updateNotification({
         id: res.hash,
-        timestamp,        
+        timestamp,
         title: 'Cancelling Orphaned Order - Completed',
         description: 'Cancelling Orphaned Order - Completed',
       }))
