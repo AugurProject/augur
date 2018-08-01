@@ -287,7 +287,7 @@ export function formatNumber(num, opts = {
       if (!decimals) {
         o.formattedValue = '0'
       } else {
-        formatSigFig = true;
+        formatSigFig = true
         o.formattedValue = value.toPrecision(decimals, roundingMode)
       }
     } else {
@@ -296,14 +296,16 @@ export function formatNumber(num, opts = {
         .toFixed(decimals)
     }
 
+    const zeroFixed = constants.PRECISION.zero.toFixed(decimalsRounded)
+
     if (bigUnitPostfix && !formatSigFig) {
       o.formatted = addBigUnitPostfix(value, o.formattedValue)
     } else if (formatSigFig) { // for numbers smaller than the set number of decimals - ie ones with scientific notation
-      let formatted = value.toFixed(decimalsRounded) // round to smallest number of decimals set
-      if (formatted == 0) { // if this is equal to zero, try to show significant digits up to 8 digit places
+      let formatted = value.toFixed(decimalsRounded)
+      if (formatted === zeroFixed) { // if this is equal to zero, try to show significant digits up to 8 digit places
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
-        if (formatted == 0) {
-          formatted = constants.PRECISION.zero.toFixed(decimalsRounded) // if there are no significant digits in the 8 decimal places, just use zero
+        if (formatted === constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)) {
+          formatted = zeroFixed // if there are no significant digits in the 8 decimal places, just use zero
         } else {
           formatted = value.toFixed(1 - Math.floor(Math.log(value.abs())/Math.log(10))) // find first two significant digit
         }
