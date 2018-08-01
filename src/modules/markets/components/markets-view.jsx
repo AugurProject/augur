@@ -19,7 +19,6 @@ export default class MarketsView extends Component {
     markets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
-    loadMarkets: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
