@@ -151,11 +151,12 @@ export default class Notification extends Component {
         </Link>
         <div className={Styles.Notification__row}>
           <span className={Styles.Notification__time}>{moment.unix(timestamp).fromNow()}  — </span>
-          <EtherscanLink
-            txhash={id}
-            label="etherscan tx"
-            style={{ color: '#372e4b', fontSize: '10px', textDecoration: 'underline', fontWeight: '500' }}
-          />
+          <span className={Styles.Notification__etherLink}>
+            <EtherscanLink
+              txhash={id}
+              label="etherscan tx"
+            />
+          </span>
         </div>
       </article>
     )

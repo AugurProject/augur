@@ -12,7 +12,7 @@
 .Notification__link {
   display: flex;
   flex-direction: column;
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
 }
 
 .Notification__row {
@@ -20,19 +20,26 @@
 }
 
 .Notification__title {
-  color: #372e4b;
+  color: @color-darkpurple;
   flex: 0 1 auto;
-  font-size: 16px;
+  font-size: @font-size-normal;
   text-transform: uppercase;
   transition: flex 1000ms ease-in;
 }
 
 .Notification__status {
-  color: #372e4b;
-  font-size: 10px;
+  color: @color-darkpurple;
+  font-size: @font-size-extra-small;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
   text-transform: uppercase;
+}
+
+.Notification__etherLink {
+  color: @color-darkpurple;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  text-decoration: underline;
 }
 
 .Notification__dot {
@@ -68,7 +75,7 @@
 
 .Notification__time {
   font-size: @font-size-extra-small;
-  margin-right: 4px;
+  margin-right: 0.25rem;
 }
 
 @media @breakpoint-mobile {

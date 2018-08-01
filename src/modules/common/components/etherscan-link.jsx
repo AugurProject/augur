@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const EtherscanLink = p => (
-  <span style={p.style}>
+  <span>
     { p.baseUrl &&
       <a
         href={p.baseUrl + p.txhash}
@@ -24,7 +24,6 @@ EtherscanLink.propTypes = {
   txhash: PropTypes.string,
   label: PropTypes.string,
   showNonLink: PropTypes.bool,
-  style: PropTypes.object,
 }
 
 export default EtherscanLink
