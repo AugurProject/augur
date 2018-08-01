@@ -44,8 +44,8 @@ const mapStateToProps = (state, { location }) => {
 
 const mapDispatchToProps = dispatch => ({
   loadMarkets: type => debounce(dispatch(loadMarkets(type))),
-  loadMarketsByCategory: category => debounce(dispatch(loadMarketsByCategory(category))),
-  loadMarketsBySearch: (search, type) => debounce(dispatch(loadMarketsBySearch(search, type))),
+  loadMarketsByCategory: (category, cb) => debounce(dispatch(loadMarketsByCategory(category, cb))),
+  loadMarketsBySearch: (search, type, cb) => debounce(dispatch(loadMarketsBySearch(search, type, cb))),
   toggleFavorite: marketId => dispatch(toggleFavorite(marketId)),
   loadMarketsInfoIfNotLoaded: marketIds => dispatch(loadMarketsInfoIfNotLoaded(marketIds)),
   loadMarketsByFilter: (filter, cb) => dispatch(loadMarketsByFilter(filter, cb)),

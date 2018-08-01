@@ -47,6 +47,7 @@ export default class MarketsView extends Component {
       filter: MARKET_OPEN,
       sort: MARKET_RECENTLY_TRADED,
       filterSortedMarkets: [],
+      loadByMarkets: [],
     }
 
     this.updateFilter = this.updateFilter.bind(this)
@@ -63,7 +64,7 @@ export default class MarketsView extends Component {
       loadMarketsByCategory,
     } = this.props
 
-    loadMarketsFn({
+    this.loadMarketsFn({
       canLoadMarkets,
       category,
       loadMarkets,
@@ -79,10 +80,6 @@ export default class MarketsView extends Component {
       canLoadMarkets,
       category,
       hasLoadedSearch,
-      hasLoadedMarkets,
-      loadMarkets,
-      loadMarketsByCategory,
-      loadMarketsBySearch,
       tags,
       keywords,
     } = this.props
@@ -92,21 +89,40 @@ export default class MarketsView extends Component {
       (tags !== prevProps.tags) ||
       (canLoadMarkets !== prevProps.canLoadMarkets && canLoadMarkets) ||
 
-      !isEqual(hasLoadedSearch, prevProps.hasLoadedSearch) ||
-      (hasLoadedMarkets !== prevProps.hasLoadedMarkets && !hasLoadedMarkets)
+      !isEqual(hasLoadedSearch, prevProps.hasLoadedSearch)
     ) {
-      loadMarketsFn({
+      this.loadMarketsFn({
         canLoadMarkets,
         category,
-        location,
-        loadMarkets,
-        loadMarketsByCategory,
-        loadMarketsBySearch,
-        hasLoadedMarkets,
         hasLoadedSearch,
         tags,
         keywords,
       })
+    }
+  }
+
+  getMarketIdsBySearch(keywords, tagName) {
+    this.props.loadMarketsBySearch(keywords, tagName, (err, marketIds) => {
+      if (!err) this.setState({ loadByMarkets: marketIds })
+    })
+  }
+
+  loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, tags, keywords }) {
+    if (canLoadMarkets) {
+      if (category && !hasLoadedSearch[category]) {
+        this.props.loadMarketsByCategory(category, (err, marketIds) => {
+          if (!err) this.setState({ loadByMarkets: marketIds })
+        })
+      } else if (tags && tags.length > 0) {
+        if (tags[0] && !hasLoadedSearch[tags[0]]) {
+          this.getMarketIdsBySearch(tags[0], tags[0])
+        }
+        if (tags[1] && !hasLoadedSearch[tags[1]]) {
+          this.getMarketIdsBySearch(tags[1], tags[1])
+        }
+      } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
+        this.getMarketIdsBySearch(keywords, 'keywords')
+      }
     }
   }
 
@@ -125,9 +141,6 @@ export default class MarketsView extends Component {
 
   render() {
     const {
-      category,
-      keywords,
-      tags,
       history,
       isLogged,
       isMobile,
@@ -137,20 +150,11 @@ export default class MarketsView extends Component {
       toggleFavorite,
     } = this.props
     const s = this.state
-    const categoryFilter = category ? filter(m => (m.category || '').toLowerCase() === category.toLowerCase()) : identity
-    // The filterBySearch function returns ids not objects.
-    const keywordFilter = keywords ? filterBySearch(keywords, FILTER_SEARCH_KEYS) : map('id')
-    const tagFilterPredicate = filterArrayByArrayPredicate('tags', tags)
-    // filter by category
-    const filteredMarkets = compose(
-      keywordFilter,
-      filter(tagFilterPredicate),
-      categoryFilter,
-    )(markets)
+
     const filteredMarketsFinal = []
     if (s.filterSortedMarkets.length) {
       s.filterSortedMarkets.reduce((finalArray, marketId) => {
-        if (filteredMarkets.includes(marketId)) {
+        if (s.loadByMarkets.includes(marketId)) {
           finalArray.push(marketId)
         }
         return finalArray
@@ -184,22 +188,5 @@ export default class MarketsView extends Component {
         />
       </section>
     )
-  }
-}
-
-function loadMarketsFn({ canLoadMarkets, category, hasLoadedSearch, loadMarketsByCategory, loadMarketsBySearch, loadMarkets, tags, keywords }) {
-  if (canLoadMarkets) {
-    if (category && !hasLoadedSearch[category]) {
-      loadMarketsByCategory(category)
-    } else if (tags && tags.length > 0) {
-      if (tags[0] && !hasLoadedSearch[tags[0]]) {
-        loadMarketsBySearch(tags[0], tags[0])
-      }
-      if (tags[1] && !hasLoadedSearch[tags[1]]) {
-        loadMarketsBySearch(tags[1], tags[1])
-      }
-    } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
-      loadMarketsBySearch(keywords, 'keywords')
-    }
   }
 }

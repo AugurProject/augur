@@ -1,9 +1,11 @@
 import { augur } from 'services/augurjs'
+import logError from 'utils/log-error'
 import { updateHasLoadedCategory } from 'modules/categories/actions/update-has-loaded-search'
-import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
-export const loadMarketsBySearch = (search, type) => (dispatch, getState) => {
+export const loadMarketsBySearch = (search, type, callback = logError) => (dispatch, getState) => {
   const { universe } = getState()
+
+  console.log('load markets by search', search)
 
   augur.augurNode.submitRequest(
     'getMarketsSearch',
@@ -11,11 +13,12 @@ export const loadMarketsBySearch = (search, type) => (dispatch, getState) => {
       universe: universe.id,
       search,
     }, (err, marketIds) => {
-      if (err) return console.error('ERROR loadMarketsBySearch()', err)
-      dispatch(updateHasLoadedCategory({ name: type, state: true, term: search }))
-      if (marketIds.length) {
-        dispatch(loadMarketsInfoIfNotLoaded(marketIds))
+      if (err) {
+        callback(err)
+        return console.error('ERROR loadMarketsBySearch()', err)
       }
+      dispatch(updateHasLoadedCategory({ name: type, state: true, term: search }))
+      callback(null, marketIds)
     },
   )
 }
