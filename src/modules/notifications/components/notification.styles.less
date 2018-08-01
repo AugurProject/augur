@@ -11,22 +11,33 @@
 
 .Notification__link {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.Notification__row {
+  display: flex;
 }
 
 .Notification__title {
+  color: #372e4b;
   flex: 0 1 auto;
-  font-size: @font-size-small;
-  height: 1rem;
-  line-height: 1em;
+  font-size: 16px;
   text-transform: uppercase;
   transition: flex 1000ms ease-in;
+}
+
+.Notification__status {
+  color: #372e4b;
+  font-size: 10px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .Notification__dot {
   flex: 0 1rem;
   height: 1rem;
-  margin-left: 0.5rem;
   transition: flex 500ms ease-out;
   width: 1rem;
 }
@@ -56,9 +67,8 @@
 }
 
 .Notification__time {
-  flex: 1 0 100%;
   font-size: @font-size-extra-small;
-  line-height: 1rem;
+  margin-right: 4px;
 }
 
 @media @breakpoint-mobile {
