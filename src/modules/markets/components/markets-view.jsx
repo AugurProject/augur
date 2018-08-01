@@ -15,10 +15,7 @@ import {
 export default class MarketsView extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
-    loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
-    canLoadMarkets: PropTypes.bool.isRequired,
-    hasLoadedMarkets: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
@@ -27,6 +24,7 @@ export default class MarketsView extends Component {
     loadMarketsByFilter: PropTypes.func.isRequired,
     search: PropTypes.string,
     category: PropTypes.string,
+    universe: PropTypes.string,
   }
 
   constructor(props) {
@@ -43,15 +41,18 @@ export default class MarketsView extends Component {
   }
 
   componentDidMount() {
-    this.updateFilteredMarkets()
+    if (this.props.universe) {
+      this.updateFilteredMarkets()
+    }
   }
 
   componentDidUpdate(prevProps) {
     const {
       search,
       category,
+      universe,
     } = this.props
-    if (search !== prevProps.search || category !== prevProps.category) {
+    if (universe !== prevProps.universe || (search !== prevProps.search || category !== prevProps.category)) {
       this.updateFilteredMarkets()
     }
   }

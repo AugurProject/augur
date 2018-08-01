@@ -5,7 +5,6 @@ import MarketsView from 'modules/markets/components/markets-view'
 import { toggleFavorite } from 'modules/markets/actions/update-favorites'
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 
-import getValue from 'utils/get-value'
 import { compose } from 'redux'
 import { selectMarkets } from 'src/modules/markets/selectors/markets-all'
 import { getSelectedTagsAndCategoriesFromLocation } from 'src/modules/markets/helpers/get-selected-tags-and-categories-from-location'
@@ -25,9 +24,7 @@ const mapStateToProps = (state, { location }) => {
 
   return {
     isLogged: state.isLogged,
-    loginAccount: state.loginAccount,
-    universe: state.universe,
-    canLoadMarkets: !!getValue(state, 'universe.id'),
+    universe: (state.universe || {}).id,
     hasLoadedMarkets: state.hasLoadedMarkets,
     search: searchPhrase,
     isMobile: state.isMobile,
