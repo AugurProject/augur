@@ -93,9 +93,22 @@
   color: #ffffff;
 }
 
+.ReportingHeader__readMore-value-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #5a407e;
+  text-transform: uppercase;
+}
+
+.ReportingHeader__readMore-value-number {
+  font-size: 14px;
+  color: #231a3a;
+}
+
 .ReportingHeader__value-unit {
   font-size: 16px;
   font-weight: 400;
+  margin-right: 5px;
 }
 
 
@@ -128,7 +141,6 @@
 }
 
 .ReportingHeader__participation {
-  height: 178px;
   width: 550px;
   border-radius: 4px;
   padding: 24px;
@@ -168,6 +180,7 @@
   display: flex;
   flex-grow: 1;
   max-width: 289px;
+  margin-top: 30px;
 }
 
 .ReportingHeader__participationHeader {
@@ -179,7 +192,6 @@
 }
 
 .ReportingHeader__participationText {
-  margin-bottom: 30px;
   font-size: 16px;
   color: #d8d8d8;
 }
@@ -201,6 +213,27 @@
   // g {
   //   stroke: @color-gray;
   // }
+}
+
+.ReportingHeader__tooltip {
+  &::after {
+    border: 0;
+  }
+}
+
+.ReportingHeader__readMore {
+  height: 64px;
+  border-radius: 4px;
+  background-color: #f6f6f6;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  position: absolute;
+  display: flex;
+  margin-top: 60px;
+  padding: 13px 24px;
+}
+
+.ReportingHeader__column {
+
 }
 
 .ReportingHeader__participationTokens--text {

@@ -5,10 +5,9 @@ import ReactTooltip from 'react-tooltip'
 import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
-import TooltipStyles from 'modules/common/less/tooltip'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
 import ForkingContent from 'modules/forking/components/forking-content/forking-content'
-import { Participate } from 'modules/common/components/icons'
+import { showMore } from 'modules/common/components/icons'
 import classNames from 'classnames'
 
 export default class ReportingHeader extends Component {
@@ -27,11 +26,26 @@ export default class ReportingHeader extends Component {
     forkEndTime: PropTypes.string,
     forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
+    isLogged: PropTypes.bool,
+  }
+  
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      readMore: false,
+    }
+
+    this.showReadMore = this.showReadMore.bind(this)
   }
 
   componentWillMount() {
     const { loadReportingWindowBounds } = this.props
     loadReportingWindowBounds()
+  }
+
+  showReadMore() {
+    this.setState({readMore: !this.state.readMore})
   }
 
   render() {
@@ -49,6 +63,7 @@ export default class ReportingHeader extends Component {
       forkReputationGoal,
       finalizeMarket,
       isForkingMarketFinalized,
+      isLogged,
     } = this.props
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
     const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
@@ -56,6 +71,8 @@ export default class ReportingHeader extends Component {
     const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
     const disableParticipate = (repBalance === '0')
     const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+    const disputingRep = formatAttoRep(reportingWindowStats.contribution, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+    const partRep = formatAttoRep(reportingWindowStats.participation, { decimals: 4, denomination: ' REP' }).formattedValue || 0
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -83,9 +100,33 @@ export default class ReportingHeader extends Component {
                       <div className={Styles['ReportingHeader__value-label']}>
                         My Rep Staked
                       </div>
-                      <div className={Styles['ReportingHeader__value-number']}>
-                        { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
+                      <div 
+                        className={Styles['ReportingHeader__value-number']} 
+                        onClick={this.showReadMore}
+                      >
+                        { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                        { showMore }
                       </div>
+                      { this.state.readMore && 
+                        <div className={Styles['ReportingHeader__readMore']}>
+                          <div className={Styles['ReportingHeader__column']} style={{marginRight: '30px'}}>
+                            <div className={Styles['ReportingHeader__readMore-value-label']}>
+                              Disputing
+                            </div>
+                            <div className={Styles['ReportingHeader__readMore-value-number']}>
+                              { disputingRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                            </div>
+                          </div>
+                          <div className={Styles['ReportingHeader__column']}>
+                            <div className={Styles['ReportingHeader__readMore-value-label']}>
+                              Participation Tokens
+                            </div>
+                            <div className={Styles['ReportingHeader__readMore-value-number']}>
+                              { partRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                            </div>
+                          </div>
+                        </div>
+                      }
                     </div>
                     <div className={Styles['ReportingHeader__participation']}>
                       <div className={Styles['ReportingHeader__participationHeader']}>
@@ -93,21 +134,24 @@ export default class ReportingHeader extends Component {
                       </div>
                       <div className={Styles['ReportingHeader__participationText']}>
                         You can still earn a share of this dispute window's reporting fees by purchasing Participation Tokens.
+                        {!isLogged && 
+                          <b> Please login to purchase Participation tokens. </b>
+                        }
                       </div>
-                      <button
-                        className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
-                        data-tip
-                        data-for="tooltip--participation-tokens"
-                        disabled={disableParticipate}
-                        onClick={() => updateModal({
-                          type: MODAL_PARTICIPATE,
-                          canClose: true,
-                        })}
-                      >
-                        <span className={Styles['ReportingHeader__participationTokens--text']}>
-                          buy participation tokens
-                        </span>
-                      </button>
+                      {isLogged && 
+                        <button
+                          className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
+                          disabled={disableParticipate}
+                          onClick={() => updateModal({
+                            type: MODAL_PARTICIPATE,
+                            canClose: true,
+                          })}
+                        >
+                          <span className={Styles['ReportingHeader__participationTokens--text']}>
+                            buy participation tokens
+                          </span>
+                        </button>
+                      }
                     </div>
 
                   </div>
