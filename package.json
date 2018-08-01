@@ -8,7 +8,8 @@
     "start": "electron-forge start .src/main/main.js",
     "debug": "electron-forge start  --inspect-electron .src/main/main.js",
     "package": "electron-forge package",
-    "publish": "electron-forge publish",
+    "publish": "electron-builder  --publish always",
+    "postinstall": "electron-builder install-app-deps",
     "make": "electron-builder make --publish always",
     "make-win": "electron-builder make --win",
     "make-mac": "electron-builder make --mac",
@@ -16,7 +17,12 @@
     "make-all": "electron-builder make -mwl",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules",
     "test": "mocha",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "make:local": "electron-builder --config electron-builder.local.yml",
+    "publish:local": "DEBUG=electron-builder AWS_ACCESS_KEY_ID=FXX4WBKC65J15KP993DP AWS_SECRET_ACCESS_KEY=xk2VJezDOsR5xlhM9f4osqyTPnLujE0WbHv0h4WY electron-builder --publish always --config electron-builder.local.yml",
+    "minio:spin-up": "docker-compose -f docker-compose.minio.yml up",
+    "minio:spin-down": "docker-compose -f docker-compose.minio.yml down",
+    "minio:pull": "docker-compose -f docker-compose.minio.yml pull"
   },
   "repository": "https://github.com/AugurProject/augur-app",
   "keywords": [
@@ -28,44 +34,6 @@
   ],
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
-  "build": {
-    "files": [
-      "!certs/*"
-    ],
-    "extraFiles": [
-      {
-        "from": "resources/${os}",
-        "to": "resources/${os}",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "mac": {
-      "asar": "false",
-      "target": [
-        "dmg"
-      ],
-      "icon": "build/icon.png"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "build/icon.png"
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ],
-      "category": "Network"
-    },
-    "artifactName": "${os}-${productName}-${version}.${ext}",
-    "publish": {
-      "provider": "github"
-    }
-  },
   "config": {
     "forge": {
       "packagerConfig": {},
@@ -91,6 +59,8 @@
     "debounce": "1.1.0",
     "electron-compile": "6.4.2",
     "electron-log": "^2.2.16",
+    "electron-progressbar": "^1.1.0",
+    "electron-updater": "^3.0.3",
     "express": "4.16.2",
     "helmet": "3.13.0",
     "knex": "0.14.6",

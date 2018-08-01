@@ -1,13 +1,17 @@
 const electron = require('electron')
 const log = require('electron-log')
+
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
+
+const checkForUpdates = require('../update/check-for-updates')
+
 const appData = require('app-data-folder')
 const fs = require('fs')
 const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
-const {app, BrowserWindow, Menu, ipcMain } = electron
+const {app, BrowserWindow, Menu, ipcMain} = electron
 /* global __dirname process*/
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -50,6 +54,8 @@ function buildMenu(showDisable) {
     submenu: [
       { label: 'About', accelerator: 'Command+A', click: function() { about() }},
       { type: 'separator' },
+      { label: 'Check For Updates', click: () => checkForUpdates(true)},
+      {type: 'separator'},
       { label: 'Quit', accelerator: 'Command+Q', click: function() { app.quit() }}
     ]},
   {
@@ -129,12 +135,16 @@ function createWindow () {
 
   // build initial menus
   buildMenu()
+
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  checkForUpdates()
+    .then(createWindow)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
