@@ -5,7 +5,7 @@ import { prefixHex } from 'speedomatic'
 
 import { MODAL_LEDGER } from 'modules/modal/constants/modal-types'
 
-const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
+const ledgerSigner = async (rawTxArgs, ledgerLib, derivationPath, dispatch) => {
   dispatch(updateModal({
     type: MODAL_LEDGER,
   }))
@@ -17,7 +17,7 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, dispatch) => {
 
   const formattedTx = new TX(rawTxArgs[0])
 
-  return ledgerLib.signTransactionByBip44Index(formattedTx.serialize().toString('hex'))
+  return ledgerLib.signTransactionByBip32Path(formattedTx.serialize().toString('hex'), derivationPath)
     .then((res) => {
       tx.r = prefixHex(res.r)
       tx.s = prefixHex(res.s)
