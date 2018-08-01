@@ -50,6 +50,7 @@ function Renderer() {
     document.getElementById("geth_control_button").addEventListener("click", this.toggleGeth.bind(this));
 
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
+    ipcRenderer.on('peerCountData', this.onPeerCountData.bind(this));
     ipcRenderer.on('latestSyncedGethBlock', this.onLatestSyncedGethBlock.bind(this));
     ipcRenderer.on('gethFinishedSyncing', this.onGethFinishedSyncing.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
@@ -343,6 +344,12 @@ Renderer.prototype.onGethFinishedSyncing = function (event) {
   syncPercent.innerHTML = "100"
 
   document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
+}
+
+Renderer.prototype.onPeerCountData = function (event, data) {
+  const peerCount = document.getElementById("geth_peer_count");
+  peerCount.innerHTML = data.peerCount.toFixed();
+  peerCount.style.color = data.peerCount > 0 ? '#00F1C4' : '#A7A2B2';
 }
 
 Renderer.prototype.onLatestSyncedGethBlock = function (event, data) {
