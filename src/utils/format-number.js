@@ -53,6 +53,7 @@ export const ETHER_NUMBER_OF_DECIMALS = 4
 export const SHARES_NUMBER_OF_DECIMALS = 4
 
 const SMALLEST_NUMBER_DECIMAL_PLACES = 8
+const USUAL_NUMBER_DECIMAL_PLACES = 4
 
 export function formatEther(num, opts) {
   return formatNumber(
@@ -296,12 +297,12 @@ export function formatNumber(num, opts = {
         .toFixed(decimals)
     }
 
-    const zeroFixed = constants.PRECISION.zero.toFixed(decimalsRounded)
+    const zeroFixed = constants.PRECISION.zero.toFixed(USUAL_NUMBER_DECIMAL_PLACES)
 
     if (bigUnitPostfix && !formatSigFig) {
       o.formatted = addBigUnitPostfix(value, o.formattedValue)
     } else if (formatSigFig) { // for numbers smaller than the set number of decimals - ie ones with scientific notation
-      let formatted = value.toFixed(decimalsRounded)
+      let formatted = value.toFixed(USUAL_NUMBER_DECIMAL_PLACES)
       if (formatted === zeroFixed) { // if this is equal to zero, try to show significant digits up to 8 digit places
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
         if (formatted === constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)) {
