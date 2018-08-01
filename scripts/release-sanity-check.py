@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
 import hashlib
-import json
 import os
 import requests
-import sys
 import signal
-
-from pprint import pprint
-#from prettytable import PrettyTable
+import sys
 
 try:
     from cursesmenu import SelectionMenu
@@ -25,6 +21,18 @@ except KeyError:
     sys.exit(0)
 
 headers = {"Authorization": "token " + GH_TOKEN}
+
+
+class colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    RED = '\033[31m'
 
 
 def signal_handler(sig, frame):
@@ -56,9 +64,7 @@ def assets_for_version(releases, version):
 signal.signal(signal.SIGINT, signal_handler)
 
 all_release_info = augur_app_all_releases()
-
 release_versions = all_release_versions(all_release_info)
-
 
 # promt for version
 if 'cursesmenu' in sys.modules:
@@ -75,6 +81,7 @@ file_extensions = ['dmg', 'deb', 'exe', 'snap']
 assets = assets_for_version(all_release_info, '1.1.0-snapshot')
 
 headers['Accept'] = 'application/octet-stream'
+
 comparison = {}
 for asset in assets:
     for x in file_extensions:
@@ -92,7 +99,17 @@ for asset in assets:
                 comparison[x] = {}
             url = asset['url']
             r = requests.get(url, headers=headers)
-            shasum = r.content.split(' ')[0]
+            r.raise_for_status()
+            shasum = r.text.split(' ')[0]
             comparison[x]['shasum'] = shasum
 
-pprint(comparison)
+
+for file, v in comparison.items():
+    sha = v['sha']
+    shasum = v['shasum']
+    if sha is shasum:
+        color = colors.OKGREEN
+    else:
+        color = colors.RED
+    print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
+
