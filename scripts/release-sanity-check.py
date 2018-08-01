@@ -68,7 +68,7 @@ release_versions = all_release_versions(all_release_info)
 
 # promt for version
 if 'cursesmenu' in sys.modules:
-    selection = SelectionMenu.get_selection(release_versions)
+    selection = SelectionMenu.get_selection(release_versions, title='Pick a release to verify')
     if selection < len(release_versions):
         version = release_versions[selection]
     else:
@@ -90,7 +90,11 @@ for asset in assets:
             if x not in comparison:
                 comparison[x] = {}
             url = asset['url']
-            r = requests.get(url, headers=headers, stream=True)
+            try:
+                r = requests.get(url, headers=headers, stream=True)
+            except requests.exceptions.RequestException as e:
+                print(e)
+                break
             r.raise_for_status()
             comparison[x]['sha'] = sha = hashlib.sha256(r.content).hexdigest()
         if asset['name'].endswith('{}.sha256'.format(x)):
@@ -98,15 +102,19 @@ for asset in assets:
             if x not in comparison:
                 comparison[x] = {}
             url = asset['url']
-            r = requests.get(url, headers=headers)
+            try:
+                r = requests.get(url, headers=headers)
+            except requests.exceptions.RequestException as e:
+                print(e)
+                break
             r.raise_for_status()
             shasum = r.text.split(' ')[0]
             comparison[x]['shasum'] = shasum
 
 
 for file, v in comparison.items():
-    sha = v['sha']
-    shasum = v['shasum']
+    sha = str(v['sha'])
+    shasum = str(v['shasum'])
     if sha is shasum:
         color = colors.OKGREEN
     else:
