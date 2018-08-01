@@ -108,21 +108,23 @@ export default class MarketsView extends Component {
     if (!category && (!tags || tags.length === 0) && !keywords) {
       this.setState({ loadByMarkets: [] })
       if (!hasLoadedMarkets) this.updateFilteredMarkets()
-    }
-    if (canLoadMarkets) {
-      if (category && !hasLoadedSearch[category]) {
-        this.props.loadMarketsByCategory(category, (err, marketIds) => {
-          if (!err) this.setState({ loadByMarkets: marketIds })
-        })
-      } else if (tags && tags.length > 0) {
-        if (tags[0] && !hasLoadedSearch[tags[0]]) {
-          this.getMarketIdsBySearch(tags[0], tags[0])
+    } else {
+      this.updateFilteredMarkets()
+      if (canLoadMarkets) {
+        if (category && !hasLoadedSearch[category]) {
+          this.props.loadMarketsByCategory(category, (err, marketIds) => {
+            if (!err) this.setState({ loadByMarkets: marketIds })
+          })
+        } else if (tags && tags.length > 0) {
+          if (tags[0] && !hasLoadedSearch[tags[0]]) {
+            this.getMarketIdsBySearch(tags[0], tags[0])
+          }
+          if (tags[1] && !hasLoadedSearch[tags[1]]) {
+            this.getMarketIdsBySearch(tags[1], tags[1])
+          }
+        } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
+          this.getMarketIdsBySearch(keywords, 'keywords')
         }
-        if (tags[1] && !hasLoadedSearch[tags[1]]) {
-          this.getMarketIdsBySearch(tags[1], tags[1])
-        }
-      } else if (keywords && keywords.length > 3 && !hasLoadedSearch.keywords) {
-        this.getMarketIdsBySearch(keywords, 'keywords')
       }
     }
   }
