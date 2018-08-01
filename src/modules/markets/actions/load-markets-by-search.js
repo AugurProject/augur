@@ -6,7 +6,7 @@ export const loadMarketsBySearch = (terms, callback = logError) => (dispatch, ge
   const { universe } = getState()
 
   if (!terms || terms.length === 0) callback([])
-  const search = (terms && terms.length > 1) ? terms.join(' and ').trim(' and ') : terms[0]
+  const search = (terms && terms.length > 1) ? terms.join(' OR ').trim(' OR ') : terms[0]
 
   augur.augurNode.submitRequest(
     'getMarketsSearch',
