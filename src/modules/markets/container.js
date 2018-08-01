@@ -21,7 +21,7 @@ const mapStateToProps = (state, { location }) => {
     tags,
   } = getSelectedTagsAndCategoriesFromLocation(location)
 
-  const searchPhrase = buildSearchString(category, keywords, tags)
+  const searchPhrase = buildSearchString(keywords, tags)
 
   return {
     isLogged: state.isLogged,
@@ -32,6 +32,7 @@ const mapStateToProps = (state, { location }) => {
     search: searchPhrase,
     isMobile: state.isMobile,
     markets,
+    category,
   }
 }
 

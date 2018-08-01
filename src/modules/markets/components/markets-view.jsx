@@ -26,6 +26,7 @@ export default class MarketsView extends Component {
     isMobile: PropTypes.bool,
     loadMarketsByFilter: PropTypes.func.isRequired,
     search: PropTypes.string,
+    category: PropTypes.string,
   }
 
   constructor(props) {
@@ -48,8 +49,9 @@ export default class MarketsView extends Component {
   componentDidUpdate(prevProps) {
     const {
       search,
+      category,
     } = this.props
-    if (search !== prevProps.search) {
+    if (search !== prevProps.search || category !== prevProps.category) {
       this.updateFilteredMarkets()
     }
   }
@@ -60,9 +62,9 @@ export default class MarketsView extends Component {
   }
 
   updateFilteredMarkets() {
-    const { search } = this.props
+    const { search, category } = this.props
     const { filter, sort } = this.state
-    this.props.loadMarketsByFilter({ search, filter, sort }, (err, filterSortedMarkets) => {
+    this.props.loadMarketsByFilter({ category, search, filter, sort }, (err, filterSortedMarkets) => {
       if (err) return console.log('Error loadMarketsFilter:', err)
       this.setState({ filterSortedMarkets })
     })
