@@ -340,7 +340,7 @@ Renderer.prototype.onGethFinishedSyncing = function (event) {
 
   blocksBehind.style.display = "none";
   blocksProcessed.style.display = "none";
-  syncPercent.innerHTML = "100%"
+  syncPercent.innerHTML = "100"
 
   document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
 }
