@@ -8,8 +8,8 @@ import Styles from 'modules/reporting/components/reporting-header/reporting-head
 import TooltipStyles from 'modules/common/less/tooltip'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
 import ForkingContent from 'modules/forking/components/forking-content/forking-content'
-
 import { Participate } from 'modules/common/components/icons'
+import classNames from 'classnames'
 
 export default class ReportingHeader extends Component {
   static propTypes = {
@@ -77,8 +77,9 @@ export default class ReportingHeader extends Component {
             { heading === 'Dispute' && !isForking &&
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
-                  <div className={Styles['ReportingHeader__meta-wrapper']}>
-                    <div className={Styles['ReportingHeader__row']}>
+                  <div className={Styles['ReportingHeader__row']}>
+
+                    <div className={Styles['ReportingHeader__repValuesInfo']}>
                       <div className={Styles['ReportingHeader__value-label']}>
                         My Rep Staked
                       </div>
@@ -87,6 +88,12 @@ export default class ReportingHeader extends Component {
                       </div>
                     </div>
                     <div className={Styles['ReportingHeader__participation']}>
+                      <div className={Styles['ReportingHeader__participationHeader']}>
+                        don't see any reports that need to be disputed?
+                      </div>
+                      <div className={Styles['ReportingHeader__participationText']}>
+                        You can still earn a share of this dispute window's reporting fees by purchasing Participation Tokens.
+                      </div>
                       <button
                         className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
                         data-tip
@@ -97,30 +104,19 @@ export default class ReportingHeader extends Component {
                           canClose: true,
                         })}
                       >
-                        { Participate }
                         <span className={Styles['ReportingHeader__participationTokens--text']}>
-                          participate
+                          buy participation tokens
                         </span>
                       </button>
                     </div>
+
                   </div>
-                  <div className={Styles['ReportingHeader__row']}>
+
+                  <div className={classNames(Styles['ReportingHeader__endTimeRow'], Styles['ReportingHeader__row'])}>
                     <span data-testid="endTime" className={Styles.ReportingHeader__endTime}>
                       Dispute Window ends <span className={Styles.ReportingHeader__endTimeValue}> { formattedDate.formattedLocalShort } </span>
                     </span>
                   </div>
-                  { !isMobile &&
-                    <ReactTooltip
-                      id="tooltip--participation-tokens"
-                      className={TooltipStyles.Tooltip}
-                      effect="solid"
-                      place="left"
-                      type="light"
-                    >
-                      <h4>Don&apos;t see any markets that need to be disputed?</h4>
-                      <p>Purchase participation tokens to earn a share of the reporting fees collected during this dispute window.</p>
-                    </ReactTooltip>
-                  }
                 </div>
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>

@@ -10,10 +10,13 @@
 }
 
 .ReportingHeader__dispute-header {
-  align-items: flex-end;
   display: flex;
-  justify-content: space-between;
   margin-bottom: 0.675rem;
+  flex-direction: column;
+}
+
+.ReportingHeader__endTimeRow {
+  justify-content: flex-end;
 }
 
 .ReportingHeader__graph {
@@ -115,11 +118,26 @@
 .ReportingHeader__row {
   display: flex;
   flex-grow: 1;
+  margin-top: 20px;
+}
+
+.ReportingHeader__repValuesInfo {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
 }
 
 .ReportingHeader__participation {
-  display: flex;
+  height: 178px;
+  width: 550px;
+  border-radius: 4px;
+  padding: 24px;
+  background-color: rgba(55, 46, 75, 0.41);
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 526px;
+  margin-bottom: 25px;
 }
 
 .ReportingHeader__heading {
@@ -144,40 +162,56 @@
 }
 
 .ReportingHeader__participationTokens {
-  align-items: flex-end;
-  cursor: pointer;
-  display: inline-flex;
-  padding-bottom: 2px;
-  white-space: nowrap;
+  .button--offWhite();
+  max-height: 39px;
+  padding: 5px 10px;
+  display: flex;
+  flex-grow: 1;
+  max-width: 289px;
+}
+
+.ReportingHeader__participationHeader {
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a7a2b2;
+}
+
+.ReportingHeader__participationText {
+  margin-bottom: 30px;
+  font-size: 16px;
+  color: #d8d8d8;
 }
 
 .ReportingHeader__participationTokens--disabled {
   &:extend(.ReportingHeader__participationTokens);
 
-  color: @color-gray;
-  cursor: not-allowed;
+  // color: @color-gray;
+  // cursor: not-allowed;
 
-  > .ReportingHeader__participationTokens--text {
-    border-color: @color-gray;
-    color: @color-gray;
-    cursor: not-allowed;
-  }
+  // > .ReportingHeader__participationTokens--text {
+  //   border-color: @color-gray;
+  //   color: @color-gray;
+  //   cursor: not-allowed;
+  // }
 
-  > svg,
-  path,
-  g {
-    stroke: @color-gray;
-  }
+  // > svg,
+  // path,
+  // g {
+  //   stroke: @color-gray;
+  // }
 }
 
 .ReportingHeader__participationTokens--text {
-  &:extend(.caps);
+  // &:extend(.caps);
 
-  border-bottom: 1px solid @color-white;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  padding-bottom: 2px;
-  white-space: nowrap;
+  // border-bottom: 1px solid @color-white;
+  // cursor: pointer;
+  // margin-left: 0.5rem;
+  // padding-bottom: 2px;
+  // white-space: nowrap;
+  font-size: 18px;
 }
 
 .ReportingHeader__stake {
