@@ -12,12 +12,12 @@ export const loadAccountDataFromLocalStorage = address => (dispatch, getState) =
         dispatch(updateFavorites(storedAccountData.favorites))
       }
       if (storedAccountData.notifications) {
-        storedAccountData.notifications.map(n => {
+        storedAccountData.notifications.map((n) => {
           // change pending we don't know what state the tx is in
-          if (n.status && n.status.toLowerCase() === "pending"){
-            n.status = undefined
+          if (n.status && n.status.toLowerCase() === 'pending') {
+            n.status = 'unknown'
           }
-          dispatch(addNotification(n))
+          return dispatch(addNotification(n))
         })
       }
       if (storedAccountData.scalarMarketsShareDenomination) {
