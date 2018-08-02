@@ -121,7 +121,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
@@ -132,7 +131,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
@@ -143,7 +141,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
@@ -195,7 +192,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
@@ -206,7 +202,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
@@ -217,7 +212,6 @@ export default class MarketOutcomeChartsOrders extends Component {
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
