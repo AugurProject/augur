@@ -34,19 +34,20 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
   augur.api.CancelOrder.cancelOrder({
     meta: loginAccount.meta,
     _orderId: orderId,
-    onSent: () => dispatch(addNotification({
-      id: orderId,
-      timestamp,
-      title: 'Cancelling Orphaned Order',
-      description: 'Cancelling Orphaned Order - Sent',
-    })),
-    onSuccess: () => {
+    onSent: (res) => {
+      dispatch(addNotification({
+        id: res.hash,
+        timestamp,
+        status: 'Sent',
+        title: 'Cancelling Orphaned Order',
+      }))
+    },
+    onSuccess: (res) => {
       dispatch(removeOrphanedOrder(orderId))
       dispatch(updateNotification({
-        id: orderId,
+        id: res.hash,
         timestamp,
-        title: 'Cancelling Orphaned Order - Completed',
-        description: 'Cancelling Orphaned Order - Completed',
+        status: 'Completed',
       }))
       callback(null)
     },
@@ -54,8 +55,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(updateNotification({
         id: orderId,
         timestamp,
-        title: 'Cancelling Orphaned Order - Failed',
-        description: 'Cancelling Orphaned Order - Failed',
+        status: 'Failed',
       }))
       callback(err)
     },

@@ -51,7 +51,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
     }
   }
 
-  const params = { universe: universe.id, ...sort }
+  const params = { universe: universe.id, category: filterOptions.category, search: filterOptions.search, ...sort }
   switch (filterOptions.filter) {
     case (MARKET_REPORTING): {
       // reporting markets only:

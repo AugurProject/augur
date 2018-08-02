@@ -72,7 +72,7 @@ describe("Disputing", () => {
     await toDisputing()
 
     market = await createYesNoMarket()
-
+    await waitNextBlock(10)
     await flash.initialReport(market.id, "0", false, false)
     await flash.pushWeeks(1) // push into dispute window
   });
@@ -108,6 +108,7 @@ describe("Disputing", () => {
     describe("Yes/No Market", () => {
       beforeAll(async () => {
         yesNoMarket = await createYesNoMarket()
+        await waitNextBlock(10)
         await flash.initialReport(yesNoMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -122,6 +123,7 @@ describe("Disputing", () => {
     describe("Categorical Market", () => {
        beforeAll(async () => {
         categoricalMarket = await createCategoricalMarket(4)
+        await waitNextBlock(10)
         await flash.initialReport(categoricalMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -135,6 +137,7 @@ describe("Disputing", () => {
     describe("Scalar Market", () => {
       beforeAll(async () => {
         scalarMarket = await createScalarMarket()
+        await waitNextBlock(10)
         await flash.initialReport(scalarMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -204,6 +207,7 @@ describe("Disputing", () => {
       it("should have all of the dispute bonds on a market be equal to one another in the first dispute round", async () => {
         // create new yes/no market
         market = await createYesNoMarket()
+        await waitNextBlock(10)
 
         // put yes/no market into disputing
         await flash.initialReport(market.id, "0", false, false)
@@ -261,6 +265,7 @@ describe("Disputing", () => {
 
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           yesNoMarket = await createYesNoMarket()
+          await waitNextBlock(10)
           await flash.initialReport(yesNoMarket.id, "0", false, false)
           await flash.pushWeeks(1)
           await waitNextBlock(2)
@@ -276,6 +281,7 @@ describe("Disputing", () => {
       describe("Categorical Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           const categoricalMarket = await createCategoricalMarket(4)
+          await waitNextBlock(10)
           await flash.initialReport(categoricalMarket.id, "0", false, false)
           await flash.pushWeeks(1)
           await waitNextBlock(2)
@@ -286,6 +292,7 @@ describe("Disputing", () => {
       describe("Scalar Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           const scalarMarket = await createScalarMarket()
+          await waitNextBlock(10)
           await flash.initialReport(scalarMarket.id, "1", false, false)
           await waitNextBlock(2)
           await flash.pushWeeks(1)
@@ -297,6 +304,7 @@ describe("Disputing", () => {
 
         it("should have no other outcomes listed when the tentative winning outcome is 'Market is Invalid'", async () => {
           const scalarMarket = await createScalarMarket()
+          await waitNextBlock(10)
           await flash.initialReport(scalarMarket.id, "0", true, false)
           await waitNextBlock(2)
           await flash.pushWeeks(1)

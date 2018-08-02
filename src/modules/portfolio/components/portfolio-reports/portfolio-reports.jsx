@@ -80,8 +80,8 @@ export default class PortfolioReports extends Component {
           </h4>
           <div className={Styles.PortfolioReports__details}>
             <ul className={Styles.PortfolioReports__info}>
-              <li><span>REP</span><span>{reportingFees.unclaimedRep.rounded}</span></li>
-              <li><span>ETH</span><span>{reportingFees.unclaimedEth.rounded}</span></li>
+              <li><span>REP</span><span>{reportingFees.unclaimedRep.formatted}</span></li>
+              <li><span>ETH</span><span>{reportingFees.unclaimedEth.formatted}</span></li>
             </ul>
             <button
               className={Styles.PortfolioReports__claim}
