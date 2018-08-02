@@ -15,7 +15,6 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 const { REPORTING_STATE } = constants
 
 export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, getState) => {
-  console.log('search called')
   const { universe } = getState()
   const filter = []
   const sort = {}
