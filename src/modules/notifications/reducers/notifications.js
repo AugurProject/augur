@@ -55,8 +55,8 @@ export default function (notifications = DEFAULT_STATE, { data, type }) {
         if (notification.id !== data.id) {
           return notification
         }
-        if (notification.title === data.notification.title) {
-          data.notification.seen = notification.seen
+        if (notification.status !== data.notification.status) {
+          data.notification.seen = data.notification.seen || false
         }
         return {
           ...notification,

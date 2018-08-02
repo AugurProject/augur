@@ -163,8 +163,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) => (
           timestamp: log.timestamp,
           blockNumber: log.blockNumber,
           status: 'Success',
-          title: `Collect Fees`,
-          description: `Market Finalized: "${description}"`,
+          title: `Finalized Market: "${description}"`,
           linkPath: makePath(MY_MARKETS),
         }))
       }

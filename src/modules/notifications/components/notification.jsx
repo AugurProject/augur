@@ -3,22 +3,19 @@ import PropTypes from 'prop-types'
 import { Link } from 'modules/common/containers/sticky-params-components'
 import moment from 'moment'
 
-import debounce from 'utils/debounce'
 import { AlertCircle, CloseBlack } from 'modules/common/components/icons'
 import Styles from 'modules/notifications/components/notification.styles'
 import EtherscanLink from 'modules/common/containers/etherscan-link'
 
 export default class Notification extends Component {
   static propTypes = {
-    checkSeen: PropTypes.bool.isRequired,
-    description: PropTypes.string.isRequired,
+    description: PropTypes.string,
     id: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
     linkPath: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object,
     ]),
-    notificationsBounds: PropTypes.object.isRequired,
     onClick: PropTypes.func,
     removeNotification: PropTypes.func.isRequired,
     seen: PropTypes.bool.isRequired,
@@ -26,76 +23,6 @@ export default class Notification extends Component {
     title: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     toggleNotifications: PropTypes.func.isRequired,
-    updateNotification: PropTypes.func.isRequired,
-    updateNotificationsBoundingBox: PropTypes.func.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      notificationBounds: {},
-    }
-
-    this.updateNotificationBoundingBox = debounce(this.updateNotificationBoundingBox.bind(this), 100)
-    this.hasNotificationBeenSeen = this.hasNotificationBeenSeen.bind(this)
-  }
-
-  componentDidMount() {
-    this.updateNotificationBoundingBox()
-
-    window.addEventListener('scroll', this.updateNotificationBoundingBox)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const {
-      checkSeen,
-      notificationsBounds,
-      updateNotificationsBoundingBox,
-    } = this.props
-    if (this.state.notificationBounds !== nextState.notificationBounds) {
-      updateNotificationsBoundingBox()
-    }
-
-    if (
-      notificationsBounds !== nextProps.notificationsBounds ||
-      this.state.notificationBounds !== nextState.notificationBounds
-    ) {
-      this.hasNotificationBeenSeen(nextProps.notificationsBounds, nextState.notificationBounds)
-    }
-
-    if (checkSeen !== nextProps.checkSeen && nextProps.checkSeen) {
-      this.updateNotificationBoundingBox()
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.updateNotificationBoundingBox)
-  }
-
-  updateNotificationBoundingBox() {
-    if (this.notification) this.setState({ notificationBounds: this.notification.getBoundingClientRect() })
-  }
-
-  hasNotificationBeenSeen(notificationsBounds, notificationBounds) {
-    const {
-      id,
-      updateNotification,
-    } = this.props
-    if (!this.seen && notificationsBounds.top && notificationsBounds.bottom && notificationBounds.top && notificationBounds.bottom) {
-      const topBound = notificationsBounds.top
-      const bottomBound = notificationsBounds.bottom
-      const notificationMidpoint = (notificationBounds.top + notificationBounds.bottom) / 2
-
-      if (
-        notificationMidpoint >= topBound &&
-        notificationMidpoint <= bottomBound
-      ) {
-        setTimeout(() => {
-          updateNotification(id, { seen: true })
-        }, 1000)
-      }
-    }
   }
 
   render() {
@@ -147,7 +74,9 @@ export default class Notification extends Component {
               {CloseBlack}
             </button>
           </div>
-          <span className={Styles.Notification__description}>{description}</span>
+          { description && description !== '' &&
+            <span className={Styles.Notification__description}>{description}</span>
+          }
         </Link>
         <div className={Styles.Notification__row}>
           <span className={Styles.Notification__time}>{moment.unix(timestamp).fromNow()}  — </span>

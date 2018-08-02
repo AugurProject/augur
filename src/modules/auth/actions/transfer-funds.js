@@ -23,24 +23,19 @@ export function transferFunds(amount, currency, toAddress) {
             dispatch(addNotification({
               id: tx.hash,
               status: 'Pending',
-              title: `Transfer Ether`,
-              description: `${amount} ETH -> ${trimString(to)}`,
+              title: `Transfer ${amount} ETH to ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onSuccess: (tx) => {
             dispatch(updateNotification(tx.hash, {
               status: 'Success',
-              title: `Transfer Ether`,
-              description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(tx.hash, {
               status: 'Failed',
-              title: `Transfer Ether -- Failed`,
-              description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
@@ -55,24 +50,19 @@ export function transferFunds(amount, currency, toAddress) {
             dispatch(addNotification({
               id: `REP-${tx.hash}`,
               status: 'Pending',
-              title: `Transfer REP`,
-              description: `${amount} REP -> ${trimString(to)}`,
+              title: `Transfer ${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onSuccess: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
               status: 'Success',
-              title: `Transfer REP`,
-              description: `${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
               status: 'Failed',
-              title: `Transfer REP`,
-              description: `${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },

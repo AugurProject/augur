@@ -38,8 +38,8 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(addNotification({
         id: res.hash,
         timestamp,
+        status: 'Sent',
         title: 'Cancelling Orphaned Order',
-        description: 'Cancelling Orphaned Order - Sent',
       }))
     },
     onSuccess: (res) => {
@@ -47,8 +47,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(updateNotification({
         id: res.hash,
         timestamp,
-        title: 'Cancelling Orphaned Order - Completed',
-        description: 'Cancelling Orphaned Order - Completed',
+        status: 'Completed',
       }))
       callback(null)
     },
@@ -56,8 +55,7 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
       dispatch(updateNotification({
         id: orderId,
         timestamp,
-        title: 'Cancelling Orphaned Order - Failed',
-        description: 'Cancelling Orphaned Order - Failed',
+        status: 'Failed',
       }))
       callback(err)
     },
