@@ -82,11 +82,11 @@ const MarketTradingConfirm = (p) => {
       <ul className={Styles.TradingConfirm__potential}>
         <li>
           <span>Potential Profit</span>
-          <span><ValueDenomination formatted={potentialEthProfit ? potentialEthProfit.formattedValue : '0'} /> <span>ETH ({potentialProfitPercent ? potentialProfitPercent.formatted : '0'}%)</span></span>
+          <span><ValueDenomination formatted={potentialEthProfit ? potentialEthProfit.formattedValue.toString() : '0'} /> <span>ETH ({potentialProfitPercent ? potentialProfitPercent.formatted : '0'}%)</span></span>
         </li>
         <li>
           <span>Potential Loss</span>
-          <span><span><ValueDenomination formatted={potentialEthLoss ? potentialEthLoss.formattedValue : '0'} /> <span>ETH ({potentialLossPercent ? potentialLossPercent.formatted : '0'}%)</span></span></span>
+          <span><span><ValueDenomination formatted={potentialEthLoss ? potentialEthLoss.formattedValue.toString() : '0'} /> <span>ETH ({potentialLossPercent ? potentialLossPercent.formatted : '0'}%)</span></span></span>
         </li>
       </ul>
       <div className={Styles.TradingConfirmation__actions}>
