@@ -98,7 +98,7 @@ describe('modules/notifications/reducers/notifications', () => {
       },
       {
         id: '0xTest1',
-        seen: false,
+        seen: true,
         title: 'new object',
       },
     ]

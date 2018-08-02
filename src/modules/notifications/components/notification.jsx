@@ -21,7 +21,7 @@ export default class Notification extends Component {
     seen: PropTypes.bool.isRequired,
     timestamp: PropTypes.number,
     title: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
+    status: PropTypes.string,
     toggleNotifications: PropTypes.func.isRequired,
   }
 
