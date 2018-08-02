@@ -15,7 +15,7 @@ export const loadAccountDataFromLocalStorage = address => (dispatch, getState) =
         storedAccountData.notifications.map(n => {
           // change pending we don't know what state the tx is in
           if (n.status && n.status.toLowerCase() === "pending"){
-            n.status = ''
+            n.status = undefined
           }
           dispatch(addNotification(n))
         })
