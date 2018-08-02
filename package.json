@@ -48,8 +48,7 @@
         "deb",
         "snap"
       ],
-      "category": "Office",
-      "icon": "build/icon.png"
+      "category": "Office"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
