@@ -164,7 +164,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
         });
 
         assert.deepEqual(records.market, {
-          category: "test category",
+          category: "TEST CATEGORY",
           consensusPayoutId: null,
           creationBlockNumber: 1500001,
           creationFee: new BigNumber("10", 10),
@@ -174,6 +174,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           endTime: 1507573470,
           feeWindow: "0x2100000000000000000000000000000000000000",
           finalizationBlockNumber: null,
+          lastTradeBlockNumber: null,
           forking: 0,
           needsMigration: 0,
           needsDisavowal: 0,
@@ -232,7 +233,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           marketCreatorMailbox: "0xbbb0000000000000000000000000000000000211",
           marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
           initialReportSize: new BigNumber("10"),
-          category: "test category",
+          category: "TEST CATEGORY",
           tag1: "test tag 1",
           tag2: "test tag 2",
           volume: new BigNumber("0"),
@@ -240,6 +241,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           feeWindow: "0x2000000000000000000000000000000000000000",
           endTime: 1507573470,
           finalizationBlockNumber: null,
+          lastTradeBlockNumber: null,
           marketStateId: 15,
           shortDescription: "This is a yesNo test market created by b0b awaiting round 1 reporting.",
           longDescription: null,
