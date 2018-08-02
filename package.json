@@ -71,7 +71,7 @@
     "rimraf": "2.6.2",
     "secp256k1": "3.5.0",
     "secure-random": "1.1.1",
-    "speedomatic": "2.1.4",
+    "speedomatic": "2.1.5",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
   },
