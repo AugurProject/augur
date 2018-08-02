@@ -2,15 +2,21 @@
 
 .FilterSearch {
   width: 100%;
+  min-width: 400px;
 }
 
 .FilterSearch__input {
   .caps--medium;
+  font-size: 14px;
 
   align-items: center;
-  background-color: @color-transparent;
-  color: @color-lightgray;
+  color: @color-lightpurple;
   display: flex;
+
+  border-radius: 17px;
+  background-color: #ffffff;
+
+  padding: 2px 12px;
 
   > svg {
     height: 0.75rem;
@@ -26,12 +32,18 @@
     text-transform: none;
 
     &::placeholder {
-      color: @color-lightgray;
+      color: @color-gray2;
       text-transform: uppercase;
     }
 
     &:focus {
       .border(false);
     }
+  }
+}
+
+@media @breakpoint-mobile {
+  .FilterSearch {
+    min-width: 200px;
   }
 }
