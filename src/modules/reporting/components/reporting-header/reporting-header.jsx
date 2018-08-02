@@ -97,64 +97,68 @@ export default class ReportingHeader extends Component {
 
                   <div className={Styles['ReportingHeader__row']}>
                     <div className={Styles['ReportingHeader__column']}>
-                      <div className={Styles['ReportingHeader__column']}>
-                        <div className={Styles['ReportingHeader__value-label']}>
-                          My Rep Staked
-                        </div>
-                        <div 
-                          className={Styles['ReportingHeader__value-number']} 
-                          onClick={this.showReadMore}
-                        >
-                          { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
-                          { showMore }
-                        </div>
-                        { this.state.readMore && 
-                          <div className={Styles['ReportingHeader__readMore']}>
-                            <div className={Styles['ReportingHeader__column']} style={{marginRight: '30px'}}>
-                              <div className={Styles['ReportingHeader__readMore-value-label']}>
-                                Reporting
-                              </div>
-                              <div className={Styles['ReportingHeader__readMore-value-number']}>
-                                { disputingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
-                              </div>
+                      <div className={Styles['ReportingHeader__value-label']}>
+                        My Rep Staked
+                      </div>
+                      <div 
+                        className={Styles['ReportingHeader__value-number']} 
+                        onClick={this.showReadMore}
+                      >
+                        { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                        { showMore }
+                      </div>
+                      { this.state.readMore && 
+                        <div className={Styles['ReportingHeader__readMore']}>
+                          <div className={Styles['ReportingHeader__column']} style={{marginRight: '30px'}}>
+                            <div className={Styles['ReportingHeader__readMore-value-label']}>
+                              Reporting
                             </div>
-                            <div className={Styles['ReportingHeader__column']} style={{marginRight: '30px'}}>
-                              <div className={Styles['ReportingHeader__readMore-value-label']}>
-                                Disputing
-                              </div>
-                              <div className={Styles['ReportingHeader__readMore-value-number']}>
-                                { disputingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
-                              </div>
-                            </div>
-                            <div className={Styles['ReportingHeader__column']}>
-                              <div className={Styles['ReportingHeader__readMore-value-label']}>
-                                Participation Tokens
-                              </div>
-                              <div className={Styles['ReportingHeader__readMore-value-number']}>
-                                { partRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
-                              </div>
+                            <div className={Styles['ReportingHeader__readMore-value-number']}>
+                              { disputingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
                             </div>
                           </div>
-                        }
-                      </div>
-                      <div>
-                        <div className={Styles['ReportingHeader__value-label']}>
-                          Total Fees Available
+                          <div className={Styles['ReportingHeader__column']} style={{marginRight: '30px'}}>
+                            <div className={Styles['ReportingHeader__readMore-value-label']}>
+                              Disputing
+                            </div>
+                            <div className={Styles['ReportingHeader__readMore-value-number']}>
+                              { disputingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
+                            </div>
+                          </div>
+                          <div className={Styles['ReportingHeader__column']}>
+                            <div className={Styles['ReportingHeader__readMore-value-label']}>
+                              Participation Tokens
+                            </div>
+                            <div className={Styles['ReportingHeader__readMore-value-number']}>
+                              { partRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span> 
+                            </div>
+                          </div>
                         </div>
-                        <div 
-                          className={Styles['ReportingHeader__value-number']} 
-                          onClick={this.showReadMore}
-                        >
-                          { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
-                        </div>
-                        <div className={Styles['ReportingHeader__value-label']}>
-                          Total Rep Staked
-                        </div>
-                        <div 
-                          className={Styles['ReportingHeader__value-number']} 
-                          onClick={this.showReadMore}
-                        >
-                          { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                      }
+                      <div className={Styles['ReportingHeader__column']}>
+                        <div className={Styles['ReportingHeader__row']}>
+                          <div className={Styles['ReportingHeader__column']} style={{maxWidth: '192px'}}>
+                            <div className={Styles['ReportingHeader__value-label']}>
+                              Total Fees Available
+                            </div>
+                            <div 
+                              className={Styles['ReportingHeader__value-number']} 
+                              onClick={this.showReadMore}
+                            >
+                              { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>ETH</span> 
+                            </div>
+                          </div>
+                          <div className={Styles['ReportingHeader__column']}>
+                            <div className={Styles['ReportingHeader__value-label']}>
+                              Total Rep Staked
+                            </div>
+                            <div 
+                              className={Styles['ReportingHeader__value-number']} 
+                              onClick={this.showReadMore}
+                            >
+                              { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span> 
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
