@@ -21,7 +21,7 @@ describe("server/getters/get-markets-in-category", () => {
     description: "category with markets in it",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      category: "test category",
+      category: "TEST CATEGORY",
     },
     assertions: (err, marketsInCategory) => {
       assert.ifError(err);
@@ -48,7 +48,7 @@ describe("server/getters/get-markets-in-category", () => {
     description: "category with markets in it, limit 2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      category: "test category",
+      category: "TEST CATEGORY",
       limit: 2,
     },
     assertions: (err, marketsInCategory) => {
