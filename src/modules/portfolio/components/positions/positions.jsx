@@ -54,6 +54,7 @@ export default class Positions extends Component {
             history={history}
             currentTimestamp={currentTimestamp}
             isMobile={isMobile}
+            pageinationName="open"
           />
           <PositionsMarketsList
             title="In Reporting"
@@ -63,6 +64,7 @@ export default class Positions extends Component {
             positionsDefault={false}
             currentTimestamp={currentTimestamp}
             isMobile={isMobile}
+            pageinationName="reporting"
           />
           <PositionsMarketsList
             title="Resolved"
@@ -73,6 +75,7 @@ export default class Positions extends Component {
             currentTimestamp={currentTimestamp}
             claimTradingProceeds={claimTradingProceeds}
             isMobile={isMobile}
+            pageinationName="resolved"
           />
         </div>}
         { marketsCount === 0 &&
