@@ -48,7 +48,7 @@
         "deb",
         "snap"
       ],
-      "category": "Office"
+      "category": "Network"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
