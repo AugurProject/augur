@@ -78,7 +78,7 @@ else:
     version = input('enter version to sanity check')
 
 file_extensions = ['dmg', 'deb', 'exe', 'snap']
-assets = assets_for_version(all_release_info, '1.1.0-snapshot')
+assets = assets_for_version(all_release_info, version)
 
 headers['Accept'] = 'application/octet-stream'
 
