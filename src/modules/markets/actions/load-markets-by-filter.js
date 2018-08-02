@@ -14,6 +14,7 @@ import {
 const { REPORTING_STATE } = constants
 
 export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, getState) => {
+  console.log('search called')
   const { universe } = getState()
   const filter = []
   const sort = {}
@@ -50,6 +51,8 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
       break
     }
   }
+
+  dispatch(updateHasLoadedMarkets(false))
 
   const params = { universe: universe.id, category: filterOptions.category, search: filterOptions.search, ...sort }
   switch (filterOptions.filter) {
@@ -90,6 +93,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
         finalizedMarketList = finalizedMarketList.concat(filteredMarkets[filterType])
       }
     })
+    dispatch(updateHasLoadedMarkets(true))
     return cb(null, finalizedMarketList)
   })
 }
