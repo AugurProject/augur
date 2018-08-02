@@ -417,6 +417,18 @@ export const Close = (
   </svg>
 )
 
+export const CloseDark = (
+  <svg viewBox="0 0 24 24">
+    <defs />
+    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+      <g id="Icon/Close" stroke="#dbdae1">
+        <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="CloseLine" />
+        <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="CloseLineJoinRound" strokeLinejoin="round" />
+      </g>
+    </g>
+  </svg>
+)
+
 export const CloseBlack = (
   <svg viewBox="0 0 24 24">
     <defs />
