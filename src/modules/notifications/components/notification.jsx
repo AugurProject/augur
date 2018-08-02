@@ -3,14 +3,12 @@ import PropTypes from 'prop-types'
 import { Link } from 'modules/common/containers/sticky-params-components'
 import moment from 'moment'
 
-import debounce from 'utils/debounce'
 import { AlertCircle, CloseBlack } from 'modules/common/components/icons'
 import Styles from 'modules/notifications/components/notification.styles'
 import EtherscanLink from 'modules/common/containers/etherscan-link'
 
 export default class Notification extends Component {
   static propTypes = {
-    checkSeen: PropTypes.bool.isRequired,
     description: PropTypes.string,
     id: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
@@ -18,7 +16,6 @@ export default class Notification extends Component {
       PropTypes.string,
       PropTypes.object,
     ]),
-    notificationsBounds: PropTypes.object.isRequired,
     onClick: PropTypes.func,
     removeNotification: PropTypes.func.isRequired,
     seen: PropTypes.bool.isRequired,
@@ -26,44 +23,6 @@ export default class Notification extends Component {
     title: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     toggleNotifications: PropTypes.func.isRequired,
-    updateNotificationsBoundingBox: PropTypes.func.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      notificationBounds: {},
-    }
-
-    this.updateNotificationBoundingBox = debounce(this.updateNotificationBoundingBox.bind(this), 100)
-  }
-
-  componentDidMount() {
-    this.updateNotificationBoundingBox()
-
-    window.addEventListener('scroll', this.updateNotificationBoundingBox)
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const {
-      checkSeen,
-      updateNotificationsBoundingBox,
-    } = this.props
-    if (this.state.notificationBounds !== nextState.notificationBounds) {
-      updateNotificationsBoundingBox()
-    }
-    if (checkSeen !== nextProps.checkSeen && nextProps.checkSeen) {
-      this.updateNotificationBoundingBox()
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.updateNotificationBoundingBox)
-  }
-
-  updateNotificationBoundingBox() {
-    if (this.notification) this.setState({ notificationBounds: this.notification.getBoundingClientRect() })
   }
 
   render() {

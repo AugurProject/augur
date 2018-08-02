@@ -48,7 +48,6 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
         id: res.hash,
         timestamp,
         status: 'Completed',
-        title: 'Cancelling Orphaned Order',
       }))
       callback(null)
     },
@@ -57,7 +56,6 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
         id: orderId,
         timestamp,
         status: 'Failed',
-        title: 'Cancelling Orphaned Order',
       }))
       callback(err)
     },

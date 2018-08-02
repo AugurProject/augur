@@ -30,14 +30,12 @@ export function transferFunds(amount, currency, toAddress) {
           onSuccess: (tx) => {
             dispatch(updateNotification(tx.hash, {
               status: 'Success',
-              title: `Transfer ${amount} ETH to ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(tx.hash, {
               status: 'Failed',
-              title: `Transfer ${amount} ETH to ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
@@ -59,14 +57,12 @@ export function transferFunds(amount, currency, toAddress) {
           onSuccess: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
               status: 'Success',
-              title: `Transfer ${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
               status: 'Failed',
-              title: `Transfer ${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
