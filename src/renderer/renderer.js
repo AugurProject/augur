@@ -341,7 +341,7 @@ Renderer.prototype.onGethFinishedSyncing = function (event) {
 
   blocksBehind.style.display = "none";
   blocksProcessed.style.display = "none";
-  syncPercent.innerHTML = "100"
+  syncPercent.innerHTML = "100%"
 
   document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
 }
@@ -350,6 +350,11 @@ Renderer.prototype.onPeerCountData = function (event, data) {
   const peerCount = document.getElementById("geth_peer_count");
   peerCount.innerHTML = data.peerCount.toFixed();
   peerCount.style.color = data.peerCount > 0 ? '#00F1C4' : '#A7A2B2';
+  if (data.peerCount === 0) {
+    const syncPercent = document.getElementById("geth_sync_percent");
+    syncPercent.innerHTML = "No Peers"
+    document.getElementById("geth_syncPercentInfo").style.color = '#A7A2B2';
+  }
 }
 
 Renderer.prototype.onLatestSyncedGethBlock = function (event, data) {
@@ -394,7 +399,8 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data, isGeth) {
     highestBlock.innerHTML = addCommas(highestBlockNumber) || 0;
     blocksSynced.innerHTML = addCommas(blocksSyncedNum)  || blocksRemainingCountLbl;
     blocksBehind.innerHTML = blocksSyncedNum ? addCommas(highestBlockNumber - blocksSyncedNum)  : '0';
-    syncPercent.innerHTML = pctLbl || 0
+    syncPercent.innerHTML = pctLbl || 0;
+    if (isGeth) syncPercent.innerHTML += "%";
 
     blocksSynced.style.minWidth = '22px';
 
