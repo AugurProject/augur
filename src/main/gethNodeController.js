@@ -71,7 +71,7 @@ GethNodeController.prototype.start = function () {
     fs.writeFileSync(staticNodesPath, JSON.stringify(PEER_NODES, null, 4))
     this.gethProcess = spawn(this.gethExecutablePath, [
             '--syncmode=light',
-            '--cache=1024',
+            '--cache=512',
             '--rpc',
             '--ws',
             '--wsorigins=127.0.0.1,http://127.0.0.1:8080,https://127.0.0.1:8080',
