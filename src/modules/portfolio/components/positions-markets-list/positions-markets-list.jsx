@@ -90,7 +90,7 @@ export default class PositionsMarketsList extends Component {
             {title}
           </div>
         </div>
-        {markets.length &&
+        { markets && markets.length > 0 &&
           filteredMarkets.map(market =>
             (<MarketPortfolioCard
               key={market.id}
