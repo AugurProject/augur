@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet'
 import { Link } from 'modules/common/containers/sticky-params-components'
 
 import makePath from 'modules/routes/helpers/make-path'
-
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
