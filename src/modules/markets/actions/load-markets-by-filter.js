@@ -96,7 +96,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
 
     setTimeout(() => {
       dispatch(updateHasLoadedMarkets(true))
-    }, 5)
+    }, 2000)
     return cb(null, finalizedMarketList)
   })
 }
