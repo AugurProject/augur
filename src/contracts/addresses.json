@@ -111,7 +111,7 @@
   "Trade": "0xb03cf72bc5a9a344aac43534d664917927367487",
   "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
  },
- "12346": {
+ "101": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0xf5fa9e803f10c099531047826b9de7bb34975da8",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
@@ -129,7 +129,7 @@
   "Trade": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
   "TradingEscapeHatch": "0x021076fb9adafcf83869435f9d72a5873869b4ad"
  },
- "22346": {
+ "102": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0xaac01b4aaa2ebd04a4790c85b76e1749d8ef8e13",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
@@ -148,7 +148,7 @@
   "Trade": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
   "TradingEscapeHatch": "0x897516718140a2bbb9730904823f9db6d9ae28c0"
  },
- "32346": {
+ "103": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0x161c723cac007e4283cee4ba11b15277e46eec53",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
