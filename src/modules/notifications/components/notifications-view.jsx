@@ -43,6 +43,14 @@ export default class NotificationsView extends Component {
 
   componentWillUnmount() {
     this.notifications && this.notifications.removeEventListener('scroll', this.setCheckSeen)
+
+    const notifications = getValue(this.props, 'notifications.notifications')
+    const {
+      updateNotification,
+    } = this.props
+    notifications.forEach((notification) => {
+      updateNotification(notification.id, { seen: true })
+    })
   }
 
   setCheckSeen(checkSeen) {
@@ -57,12 +65,10 @@ export default class NotificationsView extends Component {
     const {
       removeNotification,
       toggleNotifications,
-      updateNotification,
     } = this.props
     const s = this.state
 
     const notifications = getValue(this.props, 'notifications.notifications')
-
     return (
       <section id="notifications_view" className={Styles.NotificationsView}>
         <button
@@ -86,7 +92,6 @@ export default class NotificationsView extends Component {
                 key={`${notification.id}-${notification.title}`}
                 removeNotification={() => removeNotification(notification.id)}
                 toggleNotifications={toggleNotifications}
-                updateNotification={updateNotification}
                 notificationsBounds={s.notificationsBounds}
                 checkSeen={s.checkSeen}
                 updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}
