@@ -86,11 +86,13 @@
   font-weight: 500;
   color: #a7a2b2;
   text-transform: uppercase;
+  margin-bottom: 5px;
 }
 
 .ReportingHeader__value-number {
   font-size: 32px;
   color: #ffffff;
+  font-family: 'Roboto Mono', monospace;
 }
 
 .ReportingHeader__readMore-value-label {
@@ -98,19 +100,29 @@
   font-weight: 500;
   color: #5a407e;
   text-transform: uppercase;
+  margin-bottom: 6px;
 }
 
 .ReportingHeader__readMore-value-number {
   font-size: 14px;
   color: #231a3a;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
 }
 
 .ReportingHeader__value-unit {
   font-size: 16px;
   font-weight: 400;
   margin-right: 5px;
+  font-family: @roboto;
 }
 
+.ReportingHeader__readMore-value-unit {
+  font-size: 14px;
+  font-weight: 400;
+  margin-right: 5px;
+  font-family: @roboto;
+}
 
 .ReportingHeader__endTime {
   &:extend(.caps--small);
@@ -134,7 +146,7 @@
   margin-top: 20px;
 }
 
-.ReportingHeader__repValuesInfo {
+.ReportingHeader__column {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -230,6 +242,7 @@
   display: flex;
   margin-top: 60px;
   padding: 13px 24px;
+  max-height: 60px;
 }
 
 .ReportingHeader__column {
