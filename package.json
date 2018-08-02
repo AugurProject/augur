@@ -76,6 +76,7 @@
     "react-helmet": "5.2.0",
     "react-redux": "5.0.6",
     "react-router-dom": "4.2.2",
+    "react-spinners": "^0.3.3",
     "react-textfit": "1.1.0",
     "react-tooltip": "3.4.0",
     "redux": "3.7.2",

@@ -14,6 +14,7 @@ export default class FilterSearch extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     searchPlaceholder: PropTypes.string,
+    hasLoadedMarkets: PropTypes.bool,
   }
 
   constructor(props) {
@@ -57,7 +58,7 @@ export default class FilterSearch extends Component {
   }
 
   render() {
-    const { searchPlaceholder } = this.props
+    const { searchPlaceholder, hasLoadedMarkets } = this.props
     const s = this.state
 
     return (
@@ -70,6 +71,7 @@ export default class FilterSearch extends Component {
           placeholder={searchPlaceholder || 'Search'}
           value={s.search}
           onChange={search => this.setState({ search })}
+          isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== '')}
         />
       </article>
     )
