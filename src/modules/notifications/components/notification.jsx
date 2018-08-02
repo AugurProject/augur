@@ -24,6 +24,7 @@ export default class Notification extends Component {
     seen: PropTypes.bool.isRequired,
     timestamp: PropTypes.number,
     title: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
     toggleNotifications: PropTypes.func.isRequired,
     updateNotification: PropTypes.func.isRequired,
     updateNotificationsBoundingBox: PropTypes.func.isRequired,
@@ -108,6 +109,7 @@ export default class Notification extends Component {
       timestamp,
       title,
       toggleNotifications,
+      status,
     } = this.props
     return (
       <article
@@ -116,10 +118,7 @@ export default class Notification extends Component {
         }}
         className={Styles.Notification}
       >
-        <EtherscanLink
-          txhash={id}
-          label="view in etherscan"
-        />
+
         <Link
           className={Styles.Notification__link}
           to={linkPath || ''}
@@ -129,21 +128,36 @@ export default class Notification extends Component {
             if (linkPath && onClick) toggleNotifications()
           }}
         >
-          <span className={Styles.Notification__title}>{title}</span>
-          {AlertCircle(!seen ? Styles.Notification__dot : Styles['Notification__dot-seen'], '#553580')}
-          <button
-            className={Styles.Notification__close}
-            onClick={(e) => {
-              e.stopPropagation()
-              e.preventDefault()
-              removeNotification()
-            }}
-          >
-            {CloseBlack}
-          </button>
+          <div className={Styles.Notification__row}>
+            {AlertCircle(!seen ? Styles.Notification__dot : Styles['Notification__dot-seen'], '#553580')}
+            <div className={Styles.Notification__status}>
+              { status }
+            </div>
+          </div>
+          <div className={Styles.Notification__row}>
+            <span className={Styles.Notification__title}>{title}</span>
+            <button
+              className={Styles.Notification__close}
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                removeNotification()
+              }}
+            >
+              {CloseBlack}
+            </button>
+          </div>
           <span className={Styles.Notification__description}>{description}</span>
-          <span className={Styles.Notification__time}>{moment.unix(timestamp).fromNow()}</span>
         </Link>
+        <div className={Styles.Notification__row}>
+          <span className={Styles.Notification__time}>{moment.unix(timestamp).fromNow()}  — </span>
+          <span className={Styles.Notification__etherLink}>
+            <EtherscanLink
+              txhash={id}
+              label="etherscan tx"
+            />
+          </span>
+        </div>
       </article>
     )
   }

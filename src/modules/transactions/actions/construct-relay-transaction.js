@@ -19,7 +19,8 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       id: hash,
       timestamp,
       blockNumber,
-      title: `${unpackedParams.type} - ${status}`,
+      status,
+      title: unpackedParams.type,
       description: unpackedParams._description || '',
       linkPath: makePath(TRANSACTIONS),
       seen: false, // Manually set to false to ensure notification
@@ -30,7 +31,8 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       id: hash,
       timestamp,
       blockNumber,
-      title: `${unpackedParams.type} - ${status}`,
+      status,
+      title: unpackedParams.type,
       description: unpackedParams._description || '',
       linkPath: makePath(TRANSACTIONS),
     }))
