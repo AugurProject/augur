@@ -11,7 +11,7 @@ describe("server/getters/get-markets", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getMarkets(db, t.params.universe, t.params.creator, t.params.category, t.params.reportingState, t.params.feeWindow, t.params.designatedReporter, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsMatched) => {
+        getMarkets(db, t.params.universe, t.params.creator, t.params.category, t.params.search, t.params.reportingState, t.params.feeWindow, t.params.designatedReporter, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, (err, marketsMatched) => {
           t.assertions(err, marketsMatched);
           db.destroy();
           done();
@@ -109,7 +109,7 @@ describe("server/getters/get-markets", () => {
     description: "category with markets in it",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      category: "test category",
+      category: "TEST CATEGORY",
     },
     assertions: (err, marketsInCategory) => {
       assert.ifError(err);
@@ -136,7 +136,7 @@ describe("server/getters/get-markets", () => {
     description: "category with markets in it, limit 2",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
-      category: "test category",
+      category: "TEST CATEGORY",
       limit: 2,
     },
     assertions: (err, marketsInCategory) => {
@@ -352,6 +352,38 @@ describe("server/getters/get-markets", () => {
       assert.ifError(err);
       assert.deepEqual(marketsInfo, [
         "0x0000000000000000000000000000000000000222",
+      ]);
+    },
+  });
+  test({
+    description: "fts search for bob",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      search: "bob",
+    },
+    assertions: (err, marketsMatched) => {
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
+        "0x0000000000000000000000000000000000000012",
+        "0x0000000000000000000000000000000000000015",
+      ]);
+    },
+  });
+  test({
+    description: "search for sue",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      search: "sue",
+    },
+    assertions: (err, marketsCreatedByUser) => {
+      assert.ifError(err);
+      assert.deepEqual(marketsCreatedByUser, [
+        "0x0000000000000000000000000000000000000014",
+        "0x0000000000000000000000000000000000000015",
+        "0x0000000000000000000000000000000000000016",
+        "0x0000000000000000000000000000000000000017",
+        "0x0000000000000000000000000000000000000018",
+        "0x0000000000000000000000000000000000000019",
       ]);
     },
   });
