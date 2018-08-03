@@ -123,26 +123,25 @@ describe("Account", () => {
   });
 
   describe("Authentication", () => {
-
     it("should correctly display 'Account' page", async () => {
       // logout
       await page.evaluate(() => window.integrationHelpers.logout());
 
-      await expect(page).toMatch("CONNECT AN ACCOUNT", { timeout: TIMEOUT })
+      await expect(page).toMatch("Connect An Account", { timeout: TIMEOUT })
 
       // expect to be on authentication page
       const pageUrl = await page.url();
       await expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/authentication`)
     });
 
-    it("should only display two options in the sidebar when not logged in", async () => {
-      // options available should be "Markets" and "Account"
+    it("should only display three options in the sidebar when not logged in", async () => {
+      // options available should be "Markets", "Reporting", and "Account"
       await page.waitForSelector("a[href$='#/markets']")
       await page.waitForSelector("a[href='#/deposit-funds']")
 
-      // check that only those two options show up
+      // check that only those three options show up
       const sidebarElements = await page.$$("li#side-nav-items")
-      await expect(sidebarElements.length).toEqual(2);
+      await expect(sidebarElements.length).toEqual(3);
     });
   });
 });

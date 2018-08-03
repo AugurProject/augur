@@ -63,10 +63,7 @@ export default class MarketHeader extends Component {
 
     if (marketType === SCALAR) {
       const denomination = scalarDenomination ? ' ' + scalarDenomination : ''
-      const warningText = `
-
-If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toNumber()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toNumber()}${denomination}) should be reported.`
-
+      const warningText = (details.length > 0 ? `\n\n` : ``) + `If the real-world outcome for this market is above this market's maximum value, the maximum value (${maxPrice.toNumber()}${denomination}) should be reported. If the real-world outcome for this market is below this market's minimum value, the minimum value (${minPrice.toNumber()}${denomination}) should be reported.`
       details += warningText
     }
 

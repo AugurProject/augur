@@ -23,7 +23,7 @@ describe('modules/auth/helpers/ledger-signer', () => {
 
   beforeEach(() => {
     ledgerLib = {
-      signTransactionByBip44Index: sinon.stub(),
+      signTransactionByBip32Path: sinon.stub(),
     }
 
     store.clearActions()
@@ -42,13 +42,14 @@ describe('modules/auth/helpers/ledger-signer', () => {
         },
       ]
 
-      ledgerLib.signTransactionByBip44Index.resolves({ r: 'blah', s: 'test', v: 'bob' })
+      ledgerLib.signTransactionByBip32Path.resolves({ r: 'blah', s: 'test', v: 'bob' })
 
-      await ledgerSigner([{}, () => {}], ledgerLib, store.dispatch)
+      await ledgerSigner([{}, () => {}], ledgerLib, "m/44'/60'/0'/0/0", store.dispatch)
         .then((res) => {
           actual = store.getActions()
         })
         .catch((err) => {
+          console.log(err)
           assert(false, `didn't resolve as expected`)
         })
 
@@ -70,9 +71,9 @@ describe('modules/auth/helpers/ledger-signer', () => {
         },
       ]
 
-      ledgerLib.signTransactionByBip44Index.rejects()
+      ledgerLib.signTransactionByBip32Path.rejects()
 
-      await ledgerSigner([{}, () => {}], ledgerLib, store.dispatch)
+      await ledgerSigner([{}, () => {}], ledgerLib, "m/44'/60'/0'/0/0", store.dispatch)
         .then(() => {
           assert(false, `didn't reject as expected`)
         })

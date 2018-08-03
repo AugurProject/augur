@@ -1,8 +1,6 @@
 import {Page} from "puppeteer";
 
 export const dismissDisclaimerModal = async (page: Page) => {
-  console.log('in dismissDisclaimerModal')
-
   const isModalDismissed = await page.evaluate(() => window.integrationHelpers.hasDisclaimerModalBeenDismissed());
   if (isModalDismissed) return;
 

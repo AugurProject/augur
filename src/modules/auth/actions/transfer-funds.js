@@ -22,22 +22,20 @@ export function transferFunds(amount, currency, toAddress) {
           onSent: (tx) => {
             dispatch(addNotification({
               id: tx.hash,
-              title: `Transfer Ether -- Pending`,
-              description: `${amount} ETH -> ${trimString(to)}`,
+              status: 'Pending',
+              title: `Transfer ${amount} ETH to ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onSuccess: (tx) => {
             dispatch(updateNotification(tx.hash, {
-              title: `Transfer Ether -- Success`,
-              description: `${amount} ETH -> ${trimString(to)}`,
+              status: 'Success',
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(tx.hash, {
-              title: `Transfer Ether -- Failed`,
-              description: `${amount} ETH -> ${trimString(to)}`,
+              status: 'Failed',
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
@@ -51,22 +49,20 @@ export function transferFunds(amount, currency, toAddress) {
           onSent: (tx) => {
             dispatch(addNotification({
               id: `REP-${tx.hash}`,
-              title: `Transfer REP -- Pending`,
-              description: `${amount} REP -> ${trimString(to)}`,
+              status: 'Pending',
+              title: `Transfer ${amount} REP -> ${trimString(to)}`,
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onSuccess: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
-              title: `Transfer REP -- Success`,
-              description: `${amount} REP -> ${trimString(to)}`,
+              status: 'Success',
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
           onFailed: (tx) => {
             dispatch(updateNotification(`REP-${tx.hash}`, {
-              title: `Transfer REP -- Failed`,
-              description: `${amount} REP -> ${trimString(to)}`,
+              status: 'Failed',
               timestamp: selectCurrentTimestampInSeconds(getState()),
             }))
           },
