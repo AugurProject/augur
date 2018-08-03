@@ -46,7 +46,7 @@
     "linux": {
       "target": [
         "deb",
-        "snap"
+        "AppImage"
       ],
       "category": "Network"
     },
