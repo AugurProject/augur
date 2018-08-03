@@ -46,10 +46,9 @@
     "linux": {
       "target": [
         "deb",
-        "snap"
+        "AppImage"
       ],
-      "category": "Office",
-      "icon": "build/icon.png"
+      "category": "Network"
     },
     "artifactName": "${os}-${productName}-${version}.${ext}",
     "publish": {
@@ -76,7 +75,7 @@
     "app-data-folder": "1.0.0",
     "augur-core": "1.1.0",
     "augur-node": "5.3.0",
-    "augur-ui": "5.3.0",
+    "augur-ui": "5.3.1",
     "augur.js": "5.1.0",
     "debounce": "1.1.0",
     "electron-compile": "6.4.2",
