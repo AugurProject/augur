@@ -22,9 +22,6 @@ var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
 /**
  * @typedef {Object} ForkedMarket
- * @property {string} marketId Ethereum contract address of the Forked Market, as a hexadecimal string.
- * @property {string} universeAddress Ethereum contract address of Universe to which the Forked Market belongs, as a hexadecimal string.
- * @property {boolen} isFinalized Whether the Forked Market has been Finalized (i.e., the function `Market.finalize` has been called on it successfully).
  * @property {Array.<CrowdsourcerState>} crowdsourcers Array of objects containing information about the Forked Market’s DisputeCrowdsourcers.
  * @property {InitialReporterState|null} initialReporter Object containing information about the Forked Market’s InitialReporter.
  */

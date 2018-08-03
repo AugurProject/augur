@@ -8,22 +8,9 @@ var api = require("../api");
 var contractTypes = require("../constants").CONTRACT_TYPE;
 var PARALLEL_LIMIT = require("../constants").PARALLEL_LIMIT;
 
-/**
- * @typedef {Object} CrowdsourcerState
- * @property {string} crowdsourcerId Ethereum contract address of a DisputeCrowdsourcer belonging to a Forked Market, as a hexadecimal string.
- * @property {boolean} needsFork Whether `DisputeCrowdsourcer.fork` has been called successfully on the DisputeCrowdsourcer.
- */
-
-/**
- * @typedef {Object} InitialReporterState
- * @property {string} initialReporterId Ethereum contract address of the InitialReporter belonging to a Forked Market, as a hexadecimal string.
- * @property {boolean} needsFork Whether `InitialReporter.fork` has been called successfully on the InitialReporter.
- */
-
  /**
  * @typedef {Object} NonforkedMarket
  * @property {string} marketId Ethereum contract address of the non-Forked Market, as a hexadecimal string.
- * @property {string} universe Ethereum contract address of Universe to which the non-Forked Market belongs, as a hexadecimal string.
  * @property {boolean} crowdsourcersAreDisavowed Whether the non-Forked Market's DisputeCrowdsourcers have been disavowed (i.e., its `Market.disavowCrowdsourcers` function has been called successfully).
  * @property {boolean} isMigrated Whether the non-Forked Market has been migrated to the Child Universe of its original Universe (i.e., its `Market.isMigrated` function has been called successfully).
  * @property {boolean} isFinalized Whether the non-Forked Market has been Finalized (i.e., its `Market.finalize` function has been called successfully).

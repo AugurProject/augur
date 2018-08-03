@@ -52,7 +52,7 @@ var augurNode = require("../augur-node");
  * @param {string=} p.limit Maximum number of orders to return.
  * @param {string=} p.offset Number of orders to truncate from the beginning of the results.
  * @param {function} callback Called when the requested orders for this market/universe have been received and parsed.
- * @return {Array.<SingleSideOrderBook>} Array of orders on one side of the order book (buy or sell) for the specified market/universe and outcome.
+ * @return {Object} Object containing a SingleSideOrderBook object for one side of the order book (buy or sell), keyed by universe/market and outcome.
  */
 function getOrders(p, callback) {
   augurNode.submitRequest("getOrders", p, function (err, openOrders) {
