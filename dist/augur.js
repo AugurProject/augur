@@ -735,32 +735,39 @@ var SECONDS_PER_DAY = 3600 * 24;
 // being completely filled with Transfer transactions
 var MAX_LOG_BYTES_PER_BLOCK = 160000;
 
+var SubscriptionEventNames;
+(function (SubscriptionEventNames) {
+  SubscriptionEventNames.FeeWindowOpened = "FeeWindowOpened";
+  SubscriptionEventNames.CompleteSetsPurchased = "CompleteSetsPurchased";
+  SubscriptionEventNames.CompleteSetsSold = "CompleteSetsSold";
+  SubscriptionEventNames.DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted";
+  SubscriptionEventNames.DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution";
+  SubscriptionEventNames.DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated";
+  SubscriptionEventNames.DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog";
+  SubscriptionEventNames.FeeWindowClosed = "FeeWindowClosed";
+  SubscriptionEventNames.FeeWindowCreated = "FeeWindowCreated";
+  SubscriptionEventNames.FeeWindowRedeemed = "FeeWindowRedeemed";
+  SubscriptionEventNames.InitialReportSubmitted = "InitialReportSubmitted";
+  SubscriptionEventNames.InitialReporterRedeemed = "InitialReporterRedeemed";
+  SubscriptionEventNames.InitialReporterTransferred = "InitialReporterTransferred";
+  SubscriptionEventNames.MarketCreated = "MarketCreated";
+  SubscriptionEventNames.MarketState = "MarketState";
+  SubscriptionEventNames.OrderCanceled = "OrderCanceled";
+  SubscriptionEventNames.OrderCreated = "OrderCreated";
+  SubscriptionEventNames.OrderFilled = "OrderFilled";
+  SubscriptionEventNames.ReportingParticipantDisavowed = "ReportingParticipantDisavowed";
+  SubscriptionEventNames.SyncFinished = "SyncFinished";
+  SubscriptionEventNames.TokensTransferred = "TokensTransferred";
+  SubscriptionEventNames.TradingProceedsClaimed = "TradingProceedsClaimed";
+  SubscriptionEventNames.UniverseCreated = "UniverseCreated";
+})(SubscriptionEventNames || (SubscriptionEventNames = {}));
+
 module.exports = {
-  REPORTING_STATE: {
-    PRE_REPORTING: "PRE_REPORTING",
-    DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
-    OPEN_REPORTING: "OPEN_REPORTING",
-    CROWDSOURCING_DISPUTE: "CROWDSOURCING_DISPUTE",
-    AWAITING_NEXT_WINDOW: "AWAITING_NEXT_WINDOW",
-    AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
-    FINALIZED: "FINALIZED",
-    FORKING: "FORKING",
-    AWAITING_NO_REPORT_MIGRATION: "AWAITING_NO_REPORT_MIGRATION",
-    AWAITING_FORK_MIGRATION: "AWAITING_FORK_MIGRATION"
-  },
+  AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
 
-  ORDER_STATE: {
-    ALL: "ALL",
-    OPEN: "OPEN",
-    CLOSED: "CLOSED",
-    CANCELED: "CANCELED"
-  },
+  BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
 
-  STAKE_TOKEN_STATE: {
-    ALL: "ALL",
-    UNCLAIMED: "UNCLAIMED",
-    UNFINALIZED: "UNFINALIZED"
-  },
+  CANCEL_ORDER_GAS: "0xC9860",
 
   CONTRACT_INTERVAL: {
     DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
@@ -775,23 +782,14 @@ module.exports = {
     FEE_WINDOW: 2
   },
 
-  ZERO: new BigNumber(0),
-
-  PRECISION: {
-    decimals: decimals.toNumber(),
-    limit: ten.dividedBy(multiple),
-    zero: new BigNumber(1, 10).dividedBy(multiple),
-    multiple: multiple
-  },
-  MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
-
-  ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
-
   DEFAULT_CONNECTION_TIMEOUT: 60000,
-  DEFAULT_NETWORK_ID: "3",
+
   DEFAULT_GASPRICE: 20000000000,
+
   DEFAULT_MAX_GAS: "0x5e3918",
-  DEFAULT_SCALAR_TICK_SIZE: "0.0001",
+
+  DEFAULT_NETWORK_ID: "3",
+
   DEFAULT_NUM_TICKS: {
     2: 10000,
     3: 10002,
@@ -802,7 +800,83 @@ module.exports = {
     8: 10000
   },
 
-  CANCEL_ORDER_GAS: "0xC9860",
+  DEFAULT_SCALAR_TICK_SIZE: "0.0001",
+
+  ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
+
+  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
+
+  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
+
+  MAX_FILLS_PER_TX: new BigNumber("3", 10),
+
+  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
+
+  MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
+
+  MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
+
+  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000),
+
+  ORDER_STATE: {
+    ALL: "ALL",
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+    CANCELED: "CANCELED"
+  },
+
+  // maximum number of transactions to auto-submit in parallel
+  PARALLEL_LIMIT: 10,
+
+  PLACE_ORDER_NO_SHARES: {
+    2: new BigNumber("547694", 10),
+    3: new BigNumber("562138", 10),
+    4: new BigNumber("576582", 10),
+    5: new BigNumber("591026", 10),
+    6: new BigNumber("605470", 10),
+    7: new BigNumber("619914", 10),
+    8: new BigNumber("634358", 10)
+  },
+
+  PLACE_ORDER_WITH_SHARES: {
+    2: new BigNumber("695034", 10),
+    3: new BigNumber("794664", 10),
+    4: new BigNumber("894294", 10),
+    5: new BigNumber("993924", 10),
+    6: new BigNumber("1093554", 10),
+    7: new BigNumber("1193184", 10),
+    8: new BigNumber("1292814", 10)
+  },
+
+  PRECISION: {
+    decimals: decimals.toNumber(),
+    limit: ten.dividedBy(multiple),
+    zero: new BigNumber(1, 10).dividedBy(multiple),
+    multiple: multiple
+  },
+
+  REPORTING_STATE: {
+    PRE_REPORTING: "PRE_REPORTING",
+    DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
+    OPEN_REPORTING: "OPEN_REPORTING",
+    CROWDSOURCING_DISPUTE: "CROWDSOURCING_DISPUTE",
+    AWAITING_NEXT_WINDOW: "AWAITING_NEXT_WINDOW",
+    AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+    FINALIZED: "FINALIZED",
+    FORKING: "FORKING",
+    AWAITING_NO_REPORT_MIGRATION: "AWAITING_NO_REPORT_MIGRATION",
+    AWAITING_FORK_MIGRATION: "AWAITING_FORK_MIGRATION"
+  },
+
+  STAKE_TOKEN_STATE: {
+    ALL: "ALL",
+    UNCLAIMED: "UNCLAIMED",
+    UNFINALIZED: "UNFINALIZED"
+  },
+
+  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
+
+  TRADE_GROUP_ID_NUM_BYTES: 32,
 
   WORST_CASE_FILL: {
     2: new BigNumber("933495", 10),
@@ -813,42 +887,8 @@ module.exports = {
     7: new BigNumber("2127244", 10),
     8: new BigNumber("2365994", 10)
   },
-  PLACE_ORDER_NO_SHARES: {
-    2: new BigNumber("547694", 10),
-    3: new BigNumber("562138", 10),
-    4: new BigNumber("576582", 10),
-    5: new BigNumber("591026", 10),
-    6: new BigNumber("605470", 10),
-    7: new BigNumber("619914", 10),
-    8: new BigNumber("634358", 10)
-  },
-  PLACE_ORDER_WITH_SHARES: {
-    2: new BigNumber("695034", 10),
-    3: new BigNumber("794664", 10),
-    4: new BigNumber("894294", 10),
-    5: new BigNumber("993924", 10),
-    6: new BigNumber("1093554", 10),
-    7: new BigNumber("1193184", 10),
-    8: new BigNumber("1292814", 10)
-  },
-  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
-  MAX_FILLS_PER_TX: new BigNumber("3", 10),
-  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
 
-  BLOCKS_PER_CHUNK: 1440, // 1/4 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
-  MAX_WEBSOCKET_FRAME_SIZE: 1440 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 0.25GB, extreme case but prevents error
-
-  AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
-
-  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
-  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
-
-  // maximum number of transactions to auto-submit in parallel
-  PARALLEL_LIMIT: 10,
-
-  TRADE_GROUP_ID_NUM_BYTES: 32,
-
-  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000)
+  ZERO: new BigNumber(0)
 };
 },{"bignumber.js":166}],31:[function(require,module,exports){
 module.exports={
@@ -4838,7 +4878,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.2.0-1';
+module.exports = '5.2.0-2';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -35601,21 +35641,27 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":168,"minimalistic-assert":456,"minimalistic-crypto-utils":457}],198:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.4.0",
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.kvUgrDYK/augur.js"
+    ]
+  ],
+  "_from": "elliptic@6.4.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.4.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.4.0",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.4.0"
   },
   "_requiredBy": [
     "/browserify-sign",
@@ -35623,9 +35669,8 @@ module.exports={
     "/secp256k1"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "/Users/bthaile/gitrepos/augur.js/node_modules/browserify-sign",
+  "_spec": "6.4.0",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.kvUgrDYK/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -35633,7 +35678,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -35643,7 +35687,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -84363,35 +84406,8 @@ arguments[4][256][0].apply(exports,arguments)
 },{"./bignum":511,"./constants":515,"./prefix-hex":528,"./wrap":536,"bignumber.js":166,"dup":256}],519:[function(require,module,exports){
 arguments[4][257][0].apply(exports,arguments)
 },{"./format-abi-raw-decoded-data":520,"dup":257}],520:[function(require,module,exports){
-"use strict";
-
-var formatEthereumAddress = require("./format-ethereum-address");
-var hex = require("./hex");
-var prefixHex = require("./prefix-hex");
-var formatInt256 = require("./format-int256");
-
-function formatAbiRawDecodedData(inputType, decodedData) {
-  if (inputType === "null") return null;
-  if (inputType.slice(-2) === "[]") {
-    return decodedData.map(function (decodedElement) {
-      return formatAbiRawDecodedData(inputType.slice(0, -2), decodedElement);
-    });
-  }
-  if (inputType.startsWith("address")) {
-    return formatEthereumAddress(decodedData.toString("hex"));
-  } else if (inputType === "bytes") {
-    return prefixHex(decodedData.toString("hex"));
-  } else if (inputType.startsWith("bytes")) {
-    return formatInt256(hex(decodedData));
-  } else if (inputType.startsWith("bool")) {
-    return decodedData;
-  }
-  return decodedData.toString();
-}
-
-module.exports = formatAbiRawDecodedData;
-
-},{"./format-ethereum-address":521,"./format-int256":522,"./hex":523,"./prefix-hex":528}],521:[function(require,module,exports){
+arguments[4][258][0].apply(exports,arguments)
+},{"./format-ethereum-address":521,"./format-int256":522,"./hex":523,"./prefix-hex":528,"dup":258}],521:[function(require,module,exports){
 arguments[4][259][0].apply(exports,arguments)
 },{"./prefix-hex":528,"./strip-0x-prefix":531,"dup":259}],522:[function(require,module,exports){
 (function (Buffer){
