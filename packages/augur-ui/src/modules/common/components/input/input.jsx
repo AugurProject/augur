@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { PulseLoader } from 'react-spinners'
 
-import { IconSearch, Close } from 'modules/common/components/icons'
+import { IconSearch, CloseDark } from 'modules/common/components/icons'
 
 import debounce from 'utils/debounce'
 
@@ -32,6 +33,7 @@ export default class Input extends Component {
     maxButton: PropTypes.bool,
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
+    isLoading: PropTypes.bool,
   };
 
   constructor(props) {
@@ -95,7 +97,7 @@ export default class Input extends Component {
 
   render() {
     const {
-      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, ...p
+      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, isLoading, ...p
     } = this.props // eslint-disable-line no-unused-vars
     const s = this.state
 
@@ -124,13 +126,24 @@ export default class Input extends Component {
           />
         }
 
+        {isSearch &&
+          <div style={{ marginRight: '8px' }}>
+            <PulseLoader
+              color="#553580"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          </div>
+        }
+
         {isClearable && !p.isMultiline && !!s.value &&
           <button
             type="button"
             className={Styles.close}
             onClick={this.handleClear}
           >
-            {Close}
+            {CloseDark}
           </button>
         }
 

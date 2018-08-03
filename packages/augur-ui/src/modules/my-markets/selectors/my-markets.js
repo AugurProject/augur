@@ -6,6 +6,7 @@ import { selectLoginAccountAddress, selectPriceHistoryState, selectMarketCreator
 import selectAllMarkets from 'modules/markets/selectors/markets-all'
 import { ZERO } from 'modules/trade/constants/numbers'
 import { formatNumber, formatEther } from 'utils/format-number'
+import { sortBy } from 'lodash'
 
 export default function () {
   return selectLoginAccountMarkets(store.getState())
@@ -45,6 +46,9 @@ export const selectLoginAccountMarkets = createSelector(
         openVolume,
       })
     })
+
+    sortBy(markets, ['finalizationTime', 'endTime'])
+
     return markets
   },
 )

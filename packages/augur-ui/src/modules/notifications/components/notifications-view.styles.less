@@ -1,13 +1,12 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationsView {
-  background: @color-lightergray;
+  background: @color-offwhite;
   box-shadow: @box-shadow-notifications;
   color: @color-text-dark;
   display: flex;
   height: 30.25rem;
   max-height: 80%;
-  padding: 0.25em;
   position: absolute;
   right: 1.8rem;
   text-align: left;
@@ -18,7 +17,7 @@
 
 .NotificationsView::after {
   border: solid transparent;
-  border-color: @color-transparent @color-transparent @color-lightergray @color-transparent;
+  border-color: @color-transparent @color-transparent @color-offwhite @color-transparent;
   border-width: 10px;
   bottom: 100%;
   content: " ";
@@ -31,8 +30,8 @@
 }
 
 .NotificationsView__box {
-  max-height: 95%;
   overflow-y: auto;
+  padding-bottom: 1.5rem;
   width: 100%;
 }
 

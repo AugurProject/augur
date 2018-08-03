@@ -33,7 +33,6 @@ export default class MarketView extends Component {
       orderPrice: '',
       orderQuantity: '',
       selectedNav: BUY,
-      doNotCreateOrders: false,
     }
 
     this.state = {
@@ -62,6 +61,10 @@ export default class MarketView extends Component {
     ) {
       loadFullMarket(marketId)
     }
+  }
+
+  componentDidMount() {
+    this.node.scrollIntoView()
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -131,7 +134,7 @@ export default class MarketView extends Component {
     const s = this.state
 
     return (
-      <section>
+      <section ref={(node) => { this.node = node }}>
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>

@@ -1,12 +1,13 @@
 import "jest-environment-puppeteer";
 import Flash from "../helpers/flash";
-import { IFlash, IMarket, Outcome } from "../types/types"
+import { IFlash, IMarket, Outcome } from "../types/types";
 import {UnlockedAccounts} from "../constants/accounts";
-import {dismissDisclaimerModal} from "../helpers/dismiss-disclaimer-modal";
 import { toDisputing } from "../helpers/navigation-helper";
-import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from '../helpers/create-markets'
-import { waitNextBlock } from '../helpers/wait-new-block'
+import { createYesNoMarket, createCategoricalMarket, createScalarMarket } from '../helpers/create-markets';
+import { waitNextBlock } from "../helpers/wait-new-block";
+require("../helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const SMALL_TIMEOUT = 80000
 const BIG_TIMEOUT = 160000
@@ -55,7 +56,7 @@ const disputeOnScalarOutcome = async (marketId: string, outcomeValue: string, am
 
 const verifyDisputedOutcome = async (marketId: string, outcomeId: string, amount: string) => {
   // TODO: need to be aware of "+ more" button
-  await expect(page).toMatchElement("[data-testid='disputeBond-" + marketId + "-" + outcomeId + "']", 
+  await expect(page).toMatchElement("[data-testid='disputeBond-" + marketId + "-" + outcomeId + "']",
     {
       text: amount,
       timeout: BIG_TIMEOUT
@@ -68,17 +69,10 @@ describe("Disputing", () => {
   let market: IMarket;
 
   beforeAll(async () => {
-    await page.goto(url);
-
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
-    await dismissDisclaimerModal(page);
     await toDisputing()
 
     market = await createYesNoMarket()
-
+    await waitNextBlock(10)
     await flash.initialReport(market.id, "0", false, false)
     await flash.pushWeeks(1) // push into dispute window
   });
@@ -114,6 +108,7 @@ describe("Disputing", () => {
     describe("Yes/No Market", () => {
       beforeAll(async () => {
         yesNoMarket = await createYesNoMarket()
+        await waitNextBlock(10)
         await flash.initialReport(yesNoMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -128,6 +123,7 @@ describe("Disputing", () => {
     describe("Categorical Market", () => {
        beforeAll(async () => {
         categoricalMarket = await createCategoricalMarket(4)
+        await waitNextBlock(10)
         await flash.initialReport(categoricalMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -141,6 +137,7 @@ describe("Disputing", () => {
     describe("Scalar Market", () => {
       beforeAll(async () => {
         scalarMarket = await createScalarMarket()
+        await waitNextBlock(10)
         await flash.initialReport(scalarMarket.id, "0", false, false)
         await flash.pushWeeks(1)
         await waitNextBlock(2)
@@ -194,7 +191,7 @@ describe("Disputing", () => {
       // get new stats
       reportingWindowStats = await page.evaluate(() => window.integrationHelpers.getReportingWindowStats());
       const formattedDate =  await page.evaluate((date) => window.integrationHelpers.convertUnixToFormattedDate(date), reportingWindowStats.endTime);
-      
+
       // check that dispute window ends is displayed correctly
       await expect(page).toMatchElement("[data-testid='endTime']", {text: "Dispute Window ends " + formattedDate.formattedLocal, timeout: BIG_TIMEOUT});
     });
@@ -210,6 +207,7 @@ describe("Disputing", () => {
       it("should have all of the dispute bonds on a market be equal to one another in the first dispute round", async () => {
         // create new yes/no market
         market = await createYesNoMarket()
+        await waitNextBlock(10)
 
         // put yes/no market into disputing
         await flash.initialReport(market.id, "0", false, false)
@@ -217,14 +215,14 @@ describe("Disputing", () => {
 
         // check that dispute bonds for outcomes yes and market is invalid are expected
         // TODO: make .6994 not hard coded, and make this reusable for different market types -- use outcomes selector
-        await expect(page).toMatchElement("[data-testid='disputeBondTarget-"+market.id+"-1']", 
+        await expect(page).toMatchElement("[data-testid='disputeBondTarget-"+market.id+"-1']",
           {
             text: "0.6994 REP",
             timeout: BIG_TIMEOUT
           }
         );
 
-        await expect(page).toMatchElement("[data-testid='disputeBondTarget-"+market.id+"-0.5']", 
+        await expect(page).toMatchElement("[data-testid='disputeBondTarget-"+market.id+"-0.5']",
           {
             text: "0.6994 REP",
             timeout: BIG_TIMEOUT
@@ -242,7 +240,7 @@ describe("Disputing", () => {
 
     describe("Round Numbers", () => {
       it("should have round number be 1 while a market is waiting for its first Dispute window and while in its first round number", async () => {
-        await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']", 
+        await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']",
           {
             text: "1",
             timeout: SMALL_TIMEOUT
@@ -252,7 +250,7 @@ describe("Disputing", () => {
 
       it("should have round number increase if a dispute is successful and a market is waiting for or is in its next dispute window", async () => {
          await flash.disputeContribute(market.id, "1", false, false)
-         await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']", 
+         await expect(page).toMatchElement("[data-testid='roundNumber-"+market.id+"']",
           {
             text: "2",
             timeout: SMALL_TIMEOUT
@@ -267,6 +265,7 @@ describe("Disputing", () => {
 
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           yesNoMarket = await createYesNoMarket()
+          await waitNextBlock(10)
           await flash.initialReport(yesNoMarket.id, "0", false, false)
           await flash.pushWeeks(1)
           await waitNextBlock(2)
@@ -282,6 +281,7 @@ describe("Disputing", () => {
       describe("Categorical Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           const categoricalMarket = await createCategoricalMarket(4)
+          await waitNextBlock(10)
           await flash.initialReport(categoricalMarket.id, "0", false, false)
           await flash.pushWeeks(1)
           await waitNextBlock(2)
@@ -292,6 +292,7 @@ describe("Disputing", () => {
       describe("Scalar Market", () => {
         it("should have the market's reported-on outcome display correctly on the market card", async () => {
           const scalarMarket = await createScalarMarket()
+          await waitNextBlock(10)
           await flash.initialReport(scalarMarket.id, "1", false, false)
           await waitNextBlock(2)
           await flash.pushWeeks(1)
@@ -303,6 +304,7 @@ describe("Disputing", () => {
 
         it("should have no other outcomes listed when the tentative winning outcome is 'Market is Invalid'", async () => {
           const scalarMarket = await createScalarMarket()
+          await waitNextBlock(10)
           await flash.initialReport(scalarMarket.id, "0", true, false)
           await waitNextBlock(2)
           await flash.pushWeeks(1)

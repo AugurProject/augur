@@ -6,8 +6,8 @@ import Styles from 'modules/account/components/account-header/account-header.sty
 
 const AccountHeader = (p) => {
   // assign defaults incase we have nulls for value
-  const ethValue = p.stats[0].totalRealEth.value.rounded
-  const repValue = p.stats[0].totalRep.value.rounded
+  const ethValue = p.stats[0].totalRealEth.value.formatted
+  const repValue = p.stats[0].totalRep.value.formatted
 
   return (
     <TextFit mode="single" min={16} max={90}>

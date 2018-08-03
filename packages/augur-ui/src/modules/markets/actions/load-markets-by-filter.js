@@ -10,6 +10,7 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED,
 } from 'modules/filter-sort/constants/market-states'
+import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loaded-markets'
 
 const { REPORTING_STATE } = constants
 
@@ -51,7 +52,9 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
     }
   }
 
-  const params = { universe: universe.id, ...sort }
+  dispatch(updateHasLoadedMarkets(false))
+
+  const params = { universe: universe.id, category: filterOptions.category, search: filterOptions.search, ...sort }
   switch (filterOptions.filter) {
     case (MARKET_REPORTING): {
       // reporting markets only:
@@ -90,6 +93,10 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (dispatch, 
         finalizedMarketList = finalizedMarketList.concat(filteredMarkets[filterType])
       }
     })
+
+    setTimeout(() => {
+      dispatch(updateHasLoadedMarkets(true))
+    }, 2000)
     return cb(null, finalizedMarketList)
   })
 }

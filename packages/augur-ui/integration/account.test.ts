@@ -1,8 +1,9 @@
 import "jest-environment-puppeteer";
 import {UnlockedAccounts} from "./constants/accounts";
-import {dismissDisclaimerModal} from "./helpers/dismiss-disclaimer-modal";
-import BigNumber from 'bignumber.js'
+import BigNumber from "bignumber.js"
+require("./helpers/beforeAll");
 
+// TODO: Replace uses of `url` with calls to functions in navigation-helper
 const url = `${process.env.AUGUR_URL}`;
 const TIMEOUT = 20000 // this is big because loading account balances can take a while
 
@@ -16,15 +17,7 @@ describe("Account", () => {
   let originalAccountData:AccountData;
 
   beforeAll(async () => {
-    await page.goto(url);
-
-    // No idea what a 'typical' desktop resolution would be for our users.
-    await page.setViewport({
-      height: 1200,
-      width: 1200
-    });
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
-    await dismissDisclaimerModal(page);
   });
 
   describe("Deposit Page", () => {
@@ -130,26 +123,25 @@ describe("Account", () => {
   });
 
   describe("Authentication", () => {
-
     it("should correctly display 'Account' page", async () => {
       // logout
       await page.evaluate(() => window.integrationHelpers.logout());
 
-      await expect(page).toMatch("CONNECT AN ACCOUNT", { timeout: TIMEOUT })
+      await expect(page).toMatch("Connect An Account", { timeout: TIMEOUT })
 
       // expect to be on authentication page
       const pageUrl = await page.url();
       await expect(pageUrl).toEqual(`${process.env.AUGUR_URL}#/authentication`)
     });
 
-    it("should only display two options in the sidebar when not logged in", async () => {
-      // options available should be "Markets" and "Account"
+    it("should only display three options in the sidebar when not logged in", async () => {
+      // options available should be "Markets", "Reporting", and "Account"
       await page.waitForSelector("a[href$='#/markets']")
       await page.waitForSelector("a[href='#/deposit-funds']")
 
-      // check that only those two options show up
+      // check that only those three options show up
       const sidebarElements = await page.$$("li#side-nav-items")
-      await expect(sidebarElements.length).toEqual(2);
+      await expect(sidebarElements.length).toEqual(3);
     });
   });
 });

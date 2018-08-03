@@ -9,6 +9,7 @@ import { loadAccountTrades } from 'modules/my-positions/actions/load-account-tra
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import { constants } from 'services/augurjs'
+import { sortBy } from 'lodash'
 
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions()
@@ -30,6 +31,8 @@ const mapStateToProps = (state) => {
       openPositionMarkets.push(market)
     }
   })
+
+  sortBy(closedMarkets, ['finalizationTime', 'endTime'])
 
   return {
     currentTimestamp: selectCurrentTimestamp(state),

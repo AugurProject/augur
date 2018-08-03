@@ -30,6 +30,7 @@ export default class Ledger extends Component {
 
     this.state = {
       displayInstructions: false,
+      derivationPath: "m/44'/60'/0'/0/0",
     }
 
     this.connectLedger = this.connectLedger.bind(this)
@@ -85,10 +86,10 @@ export default class Ledger extends Component {
       this.onEnableContractSupportRequestHook,
     )
 
-    const address = await ledgerEthereum.getAddressByBip44Index()
+    const address = await ledgerEthereum.getAddressByBip32Path(this.state.derivationPath)
 
     if (address) {
-      return loginWithLedger(address.toLowerCase(), ledgerEthereum)
+      return loginWithLedger(address.toLowerCase(), ledgerEthereum, this.state.derivationPath)
     }
 
     this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE)

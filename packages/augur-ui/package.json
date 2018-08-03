@@ -1,6 +1,6 @@
 {
   "name": "augur-ui",
-  "version": "5.1.0",
+  "version": "5.4.0-0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "5.0.1",
+    "augur.js": "5.1.0",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -76,6 +76,7 @@
     "react-helmet": "5.2.0",
     "react-redux": "5.0.6",
     "react-router-dom": "4.2.2",
+    "react-spinners": "^0.3.3",
     "react-textfit": "1.1.0",
     "react-tooltip": "3.4.0",
     "redux": "3.7.2",

@@ -52,7 +52,7 @@ class Dropdown extends Component {
   }
 
   render() {
-    const { options } = this.props
+    const { options, alignLeft } = this.props
     return (
       <div className={Styles.Dropdown} ref={(dropdown) => { this.refDropdown = dropdown }}>
         <button
@@ -61,7 +61,7 @@ class Dropdown extends Component {
         >
           {this.state.label}
         </button>
-        <div className={classNames(Styles.Dropdown__list, { [`${Styles.active}`]: this.state.showList })}>
+        <div className={classNames(Styles.Dropdown__list, { [Styles.Dropdown__listLeft]: alignLeft }, { [`${Styles.active}`]: this.state.showList })}>
           {options.map(option => (
             <button
               className={classNames({ [`${Styles.active}`]: option.value === this.state.value })}
@@ -97,6 +97,7 @@ Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   default: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
+  alignLeft: PropTypes.bool,
 }
 
 export default Dropdown
