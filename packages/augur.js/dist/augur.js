@@ -735,32 +735,39 @@ var SECONDS_PER_DAY = 3600 * 24;
 // being completely filled with Transfer transactions
 var MAX_LOG_BYTES_PER_BLOCK = 160000;
 
+var SubscriptionEventNames;
+(function (SubscriptionEventNames) {
+  SubscriptionEventNames.FeeWindowOpened = "FeeWindowOpened";
+  SubscriptionEventNames.CompleteSetsPurchased = "CompleteSetsPurchased";
+  SubscriptionEventNames.CompleteSetsSold = "CompleteSetsSold";
+  SubscriptionEventNames.DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted";
+  SubscriptionEventNames.DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution";
+  SubscriptionEventNames.DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated";
+  SubscriptionEventNames.DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog";
+  SubscriptionEventNames.FeeWindowClosed = "FeeWindowClosed";
+  SubscriptionEventNames.FeeWindowCreated = "FeeWindowCreated";
+  SubscriptionEventNames.FeeWindowRedeemed = "FeeWindowRedeemed";
+  SubscriptionEventNames.InitialReportSubmitted = "InitialReportSubmitted";
+  SubscriptionEventNames.InitialReporterRedeemed = "InitialReporterRedeemed";
+  SubscriptionEventNames.InitialReporterTransferred = "InitialReporterTransferred";
+  SubscriptionEventNames.MarketCreated = "MarketCreated";
+  SubscriptionEventNames.MarketState = "MarketState";
+  SubscriptionEventNames.OrderCanceled = "OrderCanceled";
+  SubscriptionEventNames.OrderCreated = "OrderCreated";
+  SubscriptionEventNames.OrderFilled = "OrderFilled";
+  SubscriptionEventNames.ReportingParticipantDisavowed = "ReportingParticipantDisavowed";
+  SubscriptionEventNames.SyncFinished = "SyncFinished";
+  SubscriptionEventNames.TokensTransferred = "TokensTransferred";
+  SubscriptionEventNames.TradingProceedsClaimed = "TradingProceedsClaimed";
+  SubscriptionEventNames.UniverseCreated = "UniverseCreated";
+})(SubscriptionEventNames || (SubscriptionEventNames = {}));
+
 module.exports = {
-  REPORTING_STATE: {
-    PRE_REPORTING: "PRE_REPORTING",
-    DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
-    OPEN_REPORTING: "OPEN_REPORTING",
-    CROWDSOURCING_DISPUTE: "CROWDSOURCING_DISPUTE",
-    AWAITING_NEXT_WINDOW: "AWAITING_NEXT_WINDOW",
-    AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
-    FINALIZED: "FINALIZED",
-    FORKING: "FORKING",
-    AWAITING_NO_REPORT_MIGRATION: "AWAITING_NO_REPORT_MIGRATION",
-    AWAITING_FORK_MIGRATION: "AWAITING_FORK_MIGRATION"
-  },
+  AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
 
-  ORDER_STATE: {
-    ALL: "ALL",
-    OPEN: "OPEN",
-    CLOSED: "CLOSED",
-    CANCELED: "CANCELED"
-  },
+  BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
 
-  STAKE_TOKEN_STATE: {
-    ALL: "ALL",
-    UNCLAIMED: "UNCLAIMED",
-    UNFINALIZED: "UNFINALIZED"
-  },
+  CANCEL_ORDER_GAS: "0xC9860",
 
   CONTRACT_INTERVAL: {
     DESIGNATED_REPORTING_DURATION_SECONDS: 3 * SECONDS_PER_DAY,
@@ -775,23 +782,14 @@ module.exports = {
     FEE_WINDOW: 2
   },
 
-  ZERO: new BigNumber(0),
-
-  PRECISION: {
-    decimals: decimals.toNumber(),
-    limit: ten.dividedBy(multiple),
-    zero: new BigNumber(1, 10).dividedBy(multiple),
-    multiple: multiple
-  },
-  MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
-
-  ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
-
   DEFAULT_CONNECTION_TIMEOUT: 60000,
-  DEFAULT_NETWORK_ID: "3",
+
   DEFAULT_GASPRICE: 20000000000,
+
   DEFAULT_MAX_GAS: "0x5e3918",
-  DEFAULT_SCALAR_TICK_SIZE: "0.0001",
+
+  DEFAULT_NETWORK_ID: "3",
+
   DEFAULT_NUM_TICKS: {
     2: 10000,
     3: 10002,
@@ -802,7 +800,83 @@ module.exports = {
     8: 10000
   },
 
-  CANCEL_ORDER_GAS: "0xC9860",
+  DEFAULT_SCALAR_TICK_SIZE: "0.0001",
+
+  ETERNAL_APPROVAL_VALUE: "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // 2^256 - 1
+
+  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
+
+  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
+
+  MAX_FILLS_PER_TX: new BigNumber("3", 10),
+
+  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
+
+  MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
+
+  MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
+
+  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000),
+
+  ORDER_STATE: {
+    ALL: "ALL",
+    OPEN: "OPEN",
+    CLOSED: "CLOSED",
+    CANCELED: "CANCELED"
+  },
+
+  // maximum number of transactions to auto-submit in parallel
+  PARALLEL_LIMIT: 10,
+
+  PLACE_ORDER_NO_SHARES: {
+    2: new BigNumber("547694", 10),
+    3: new BigNumber("562138", 10),
+    4: new BigNumber("576582", 10),
+    5: new BigNumber("591026", 10),
+    6: new BigNumber("605470", 10),
+    7: new BigNumber("619914", 10),
+    8: new BigNumber("634358", 10)
+  },
+
+  PLACE_ORDER_WITH_SHARES: {
+    2: new BigNumber("695034", 10),
+    3: new BigNumber("794664", 10),
+    4: new BigNumber("894294", 10),
+    5: new BigNumber("993924", 10),
+    6: new BigNumber("1093554", 10),
+    7: new BigNumber("1193184", 10),
+    8: new BigNumber("1292814", 10)
+  },
+
+  PRECISION: {
+    decimals: decimals.toNumber(),
+    limit: ten.dividedBy(multiple),
+    zero: new BigNumber(1, 10).dividedBy(multiple),
+    multiple: multiple
+  },
+
+  REPORTING_STATE: {
+    PRE_REPORTING: "PRE_REPORTING",
+    DESIGNATED_REPORTING: "DESIGNATED_REPORTING",
+    OPEN_REPORTING: "OPEN_REPORTING",
+    CROWDSOURCING_DISPUTE: "CROWDSOURCING_DISPUTE",
+    AWAITING_NEXT_WINDOW: "AWAITING_NEXT_WINDOW",
+    AWAITING_FINALIZATION: "AWAITING_FINALIZATION",
+    FINALIZED: "FINALIZED",
+    FORKING: "FORKING",
+    AWAITING_NO_REPORT_MIGRATION: "AWAITING_NO_REPORT_MIGRATION",
+    AWAITING_FORK_MIGRATION: "AWAITING_FORK_MIGRATION"
+  },
+
+  STAKE_TOKEN_STATE: {
+    ALL: "ALL",
+    UNCLAIMED: "UNCLAIMED",
+    UNFINALIZED: "UNFINALIZED"
+  },
+
+  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
+
+  TRADE_GROUP_ID_NUM_BYTES: 32,
 
   WORST_CASE_FILL: {
     2: new BigNumber("933495", 10),
@@ -813,42 +887,8 @@ module.exports = {
     7: new BigNumber("2127244", 10),
     8: new BigNumber("2365994", 10)
   },
-  PLACE_ORDER_NO_SHARES: {
-    2: new BigNumber("547694", 10),
-    3: new BigNumber("562138", 10),
-    4: new BigNumber("576582", 10),
-    5: new BigNumber("591026", 10),
-    6: new BigNumber("605470", 10),
-    7: new BigNumber("619914", 10),
-    8: new BigNumber("634358", 10)
-  },
-  PLACE_ORDER_WITH_SHARES: {
-    2: new BigNumber("695034", 10),
-    3: new BigNumber("794664", 10),
-    4: new BigNumber("894294", 10),
-    5: new BigNumber("993924", 10),
-    6: new BigNumber("1093554", 10),
-    7: new BigNumber("1193184", 10),
-    8: new BigNumber("1292814", 10)
-  },
-  TRADE_GAS_BUFFER: new BigNumber("100000", 10),
-  MAX_FILLS_PER_TX: new BigNumber("3", 10),
-  MAX_GAS_LIMIT_FOR_TRADE: new BigNumber("3500000", 10),
 
-  BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
-  MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
-
-  AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
-
-  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
-  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
-
-  // maximum number of transactions to auto-submit in parallel
-  PARALLEL_LIMIT: 10,
-
-  TRADE_GROUP_ID_NUM_BYTES: 32,
-
-  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000)
+  ZERO: new BigNumber(0)
 };
 },{"bignumber.js":166}],31:[function(require,module,exports){
 module.exports={
@@ -946,25 +986,7 @@ module.exports={
   "Trade": "0xb0de64b40973fff9f4b82cecf7be2754329d3c07",
   "TradingEscapeHatch": "0x669c8504a7fbdd94e132ec246834607f36bbf44a"
  },
- "8995": {
-  "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x077c4f7463824c0461c0be9b4af270a14aea16f4",
-  "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
-  "Cash": "0x575f3c652894360f4b7655379ea1eae53381e012",
-  "ClaimTradingProceeds": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "CompleteSets": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
-  "CreateOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
-  "FillOrder": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
-  "Order": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
-  "Orders": "0xee7ec8baf44d90535adecfc652ef05925404e6ea",
-  "OrdersFetcher": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
-  "ShareToken": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "Trade": "0xb03cf72bc5a9a344aac43534d664917927367487",
-  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
- },
- "12346": {
+ "101": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0xf5fa9e803f10c099531047826b9de7bb34975da8",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
@@ -982,43 +1004,61 @@ module.exports={
   "Trade": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
   "TradingEscapeHatch": "0x021076fb9adafcf83869435f9d72a5873869b4ad"
  },
- "22346": {
+ "102": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
   "Universe": "0xaac01b4aaa2ebd04a4790c85b76e1749d8ef8e13",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "OrdersFinder": "0xf33a8abcf994bafcb28682f08c48015a57ea35d3",
-  "LegacyReputationToken": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
-  "CancelOrder": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
-  "Cash": "0x658655115e55fa3433b9686865f011874bd71083",
-  "ClaimTradingProceeds": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
-  "CompleteSets": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
-  "CreateOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
-  "FillOrder": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
-  "Order": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
-  "Orders": "0x5f3341ea5989ad3129e325027b8d908b63709a00",
-  "OrdersFetcher": "0xebddb8f1ee6a3a041dba3a236b3d36095f96fe22",
-  "ShareToken": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
-  "Trade": "0x97ba58dbe58898f2b669c56496f46f638dc322d4",
-  "TradingEscapeHatch": "0x897516718140a2bbb9730904823f9db6d9ae28c0"
+  "OrdersFinder": "0xf28fc4b34a7c4534dd3e40e0ad5df6f2cb69aec0",
+  "LegacyReputationToken": "0xd11222c7c12da25ed9b153234084ad02235297aa",
+  "CancelOrder": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
+  "Cash": "0xecaaca82cdf97f53f478609a98c3d36a5f0ef955",
+  "ClaimTradingProceeds": "0x7a8f8e48d4cc990bbd8e088fb027e850486e8e0c",
+  "CompleteSets": "0xac80704c80ab83512b48314bdfa82f79923c2fbe",
+  "CreateOrder": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
+  "FillOrder": "0x2ef25877b254d6391b843df25dd7a8b0a243bee9",
+  "Order": "0x4ddebcebe274751dfb129efc96a588a5242530ab",
+  "Orders": "0xf33a8abcf994bafcb28682f08c48015a57ea35d3",
+  "OrdersFetcher": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "ShareToken": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "Trade": "0x204cdd1689c8a4da426894c150a0fa672a2eab4c",
+  "TradingEscapeHatch": "0x4e61185d7f125b84ac4a1837a0688d2bb58e8491"
  },
- "32346": {
+ "103": {
   "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
-  "Universe": "0x161c723cac007e4283cee4ba11b15277e46eec53",
+  "Universe": "0xa946e4eee696b22900069a336c91e223d211eef0",
   "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
-  "OrdersFinder": "0xf33a8abcf994bafcb28682f08c48015a57ea35d3",
+  "OrdersFinder": "0xf28fc4b34a7c4534dd3e40e0ad5df6f2cb69aec0",
   "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
-  "CancelOrder": "0x4eda1aae707c777b55641b9758029c0eabec626c",
-  "Cash": "0xb78b2b637d3861e601e54c00c054972c18a5e991",
-  "ClaimTradingProceeds": "0x6bb64a5ec419bee4a9f769427733c1a7258d1cf3",
-  "CompleteSets": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
-  "CreateOrder": "0xe78a332d0f96aa9a56b876c20125ba8a88619d07",
-  "FillOrder": "0x788c38264635b3782d6ecd309c022c6ae603b9d2",
-  "Order": "0x6226649431c4180a390f810bfd604b50eb68d9c5",
-  "Orders": "0x9da930a2ca12c197e687db22db3fa318fd8aa60a",
-  "OrdersFetcher": "0xf265d8d30a1a2cdb9857e124010b02765c9a7c70",
-  "ShareToken": "0xd11222c7c12da25ed9b153234084ad02235297aa",
-  "Trade": "0xb8da5fa6c6f9b55f1c9fa09e26a24d3675dbc36e",
-  "TradingEscapeHatch": "0xd1102fbe361acf2c54f572caca4b928350555f40"
+  "CancelOrder": "0xf780694a2ea833fc85131b9de8af4e71f49e3e12",
+  "Cash": "0x9da930a2ca12c197e687db22db3fa318fd8aa60a",
+  "ClaimTradingProceeds": "0x0d676967088088546837accf52a72bbd5066ffee",
+  "CompleteSets": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "CreateOrder": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "FillOrder": "0x6c38ab26f860380a8a2367c79dda3a54afef4b1e",
+  "Order": "0x3c6721551c2ba3973560aef3e11d34ce05db4047",
+  "Orders": "0xb836ae3f6c90e93c7b34f7cd798149503b09ac1b",
+  "OrdersFetcher": "0x2ebd326b3830297fd4cfb6b8b2c1d967a51dfdc6",
+  "ShareToken": "0x9a83c0458d2141a58149ce54e96e58673e4b72eb",
+  "Trade": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
+  "TradingEscapeHatch": "0x4e61185d7f125b84ac4a1837a0688d2bb58e8491"
+ },
+ "8995": {
+  "Controller": "0xfcaf25bf38e7c86612a25ff18cb8e09ab07c9885",
+  "Universe": "0x077c4f7463824c0461c0be9b4af270a14aea16f4",
+  "Augur": "0x25ff5dc79a7c4e34254ff0f4a19d69e491201dd3",
+  "LegacyReputationToken": "0xf5f22562ec76f33a9f114e0ca9e3916c383df041",
+  "CancelOrder": "0xce77d3c706e0fe6da5d71b1249756b5ea0d77202",
+  "Cash": "0x575f3c652894360f4b7655379ea1eae53381e012",
+  "ClaimTradingProceeds": "0x635c8ef61a07dfe49b683d1a34da3547b0d6705e",
+  "CompleteSets": "0x257b56115544e9519fb2de5b7b99c3c2150528fb",
+  "CreateOrder": "0x8bdad8ee0b47e2e7294a5b8b8b74ea3968f4a177",
+  "FillOrder": "0xdd1c4919217e409abeb699e8171a5e92c2e506fa",
+  "Order": "0x905419e7a1f96a973ab8988ba19c84135c6f7122",
+  "Orders": "0xee7ec8baf44d90535adecfc652ef05925404e6ea",
+  "OrdersFetcher": "0xf3bcabd8fae29f75be271ebe2499edb4c7c139b7",
+  "ShareToken": "0x80f8daa435a9ab4b1802ba56fe7e0abd0f8ab3d3",
+  "Trade": "0xb03cf72bc5a9a344aac43534d664917927367487",
+  "TradingEscapeHatch": "0xdfef677bf5f66f3eeff481a587c04cb58e95b92a"
  }
 }
 },{}],32:[function(require,module,exports){
@@ -1098,15 +1138,15 @@ module.exports.reloadAddresses = function (callback) {
 };
 },{"../utils/read-json-file":146,"./addresses":31,"./generate-abi-map":32,"./upload-block-numbers":34,"augur-core":163}],34:[function(require,module,exports){
 module.exports={
-  "1": 5926223,
-  "3": 3718180,
-  "4": 2687175,
-  "19": 1340162,
-  "42": 7926279,
-  "8995": 0,
-  "12346": 113,
-  "22346": 10,
-  "32346": 10
+ "1": 5926223,
+ "3": 3718180,
+ "4": 2687175,
+ "19": 1340162,
+ "42": 7926279,
+ "101": 113,
+ "102": 11,
+ "103": 10,
+ "8995": 0
 }
 },{}],35:[function(require,module,exports){
 "use strict";
@@ -4838,7 +4878,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.2.0-1';
+module.exports = '5.2.0-2';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -35604,7 +35644,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/home/jack/src/augur.js"
+      "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.kvUgrDYK/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -35630,7 +35670,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/home/jack/src/augur.js",
+  "_where": "/private/var/folders/cs/vvjt3v5s1t900wr51g7jps980000gn/T/tmp.kvUgrDYK/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -84366,35 +84406,8 @@ arguments[4][256][0].apply(exports,arguments)
 },{"./bignum":511,"./constants":515,"./prefix-hex":528,"./wrap":536,"bignumber.js":166,"dup":256}],519:[function(require,module,exports){
 arguments[4][257][0].apply(exports,arguments)
 },{"./format-abi-raw-decoded-data":520,"dup":257}],520:[function(require,module,exports){
-"use strict";
-
-var formatEthereumAddress = require("./format-ethereum-address");
-var hex = require("./hex");
-var prefixHex = require("./prefix-hex");
-var formatInt256 = require("./format-int256");
-
-function formatAbiRawDecodedData(inputType, decodedData) {
-  if (inputType === "null") return null;
-  if (inputType.slice(-2) === "[]") {
-    return decodedData.map(function (decodedElement) {
-      return formatAbiRawDecodedData(inputType.slice(0, -2), decodedElement);
-    });
-  }
-  if (inputType.startsWith("address")) {
-    return formatEthereumAddress(decodedData.toString("hex"));
-  } else if (inputType === "bytes") {
-    return prefixHex(decodedData.toString("hex"));
-  } else if (inputType.startsWith("bytes")) {
-    return formatInt256(hex(decodedData));
-  } else if (inputType.startsWith("bool")) {
-    return decodedData;
-  }
-  return decodedData.toString();
-}
-
-module.exports = formatAbiRawDecodedData;
-
-},{"./format-ethereum-address":521,"./format-int256":522,"./hex":523,"./prefix-hex":528}],521:[function(require,module,exports){
+arguments[4][258][0].apply(exports,arguments)
+},{"./format-ethereum-address":521,"./format-int256":522,"./hex":523,"./prefix-hex":528,"dup":258}],521:[function(require,module,exports){
 arguments[4][259][0].apply(exports,arguments)
 },{"./prefix-hex":528,"./strip-0x-prefix":531,"dup":259}],522:[function(require,module,exports){
 (function (Buffer){

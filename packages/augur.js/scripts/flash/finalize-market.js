@@ -12,8 +12,10 @@ function help() {
   console.log(chalk.red("--noPush do not move time, just finalize the market"));
 }
 
-function callFinalize(augur, marketId, callback) {
-  augur.api.Market.finalize({ tx: { to: marketId  },
+function callFinalize(augur, marketId, auth, callback) {
+  augur.api.Market.finalize({
+    meta: auth,
+    tx: { to: marketId },
     onSent: function (result) {
       console.log(chalk.yellow.dim("Sent:"), chalk.yellow(JSON.stringify(result)));
       console.log(chalk.yellow.dim("Waiting for reply ...."));
@@ -58,14 +60,14 @@ function finalizeMarket(augur, args, auth, callback) {
         }
         displayTime("Current Time", timeResult.timestamp);
         if (parseInt(timeResult.timestamp, 10) > endTime) {
-          callFinalize(augur, marketId, callback);
+          callFinalize(augur, marketId, auth, callback);
         } else {
           setTimestamp(augur, endTime, timeResult.timeAddress, auth, function (err) {
             if (err) {
               console.log(chalk.red(err));
               return callback(err);
             }
-            callFinalize(augur, marketId, callback);
+            callFinalize(augur, marketId, auth, callback);
           });
         }
       });

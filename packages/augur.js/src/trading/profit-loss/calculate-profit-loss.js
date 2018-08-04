@@ -9,6 +9,16 @@ var constants = require("../../constants");
 var ZERO = constants.ZERO;
 
 /**
+ * Type definition for ProfitLoss.
+ * @typedef {Object} ProfitLoss
+ * @property {string} meanOpenPrice Mean price of trades at time of buy-in, in attoETH.
+ * @property {string} position Net trading position, where the quantity is the number of Share Units. An overall "sell" position is negative, and an overall "buy" position is positive.
+ * @property {string} realized Amount of realized profits or losses from all trades, in attoETH.
+ * @property {string} unrealized Unrealized profit/loss in attoETH, calculated as Share Units held * (last trade price - price on buy-in).
+ * @property {string} total Sum of realized and unrealized profit/loss.
+ */
+
+/**
  * Calculates realized and unrealized profit/loss for trades in a single outcome.
  *
  * Note: buy/sell labels are from taker's point-of-view.
@@ -16,7 +26,7 @@ var ZERO = constants.ZERO;
  * @param {Object} p Parameters object.
  * @param {Object[]} p.trades Trades for a single outcome {type, amount, price, maker}.
  * @param {string=} p.lastPrice Price of this outcome's most recent trade, as a base-10 string (default: 0).
- * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
+ * @return {ProfitLoss} Realized and unrealized P/L {position, realized, unrealized}.
  */
 function calculateProfitLoss(p) {
   var PL = {

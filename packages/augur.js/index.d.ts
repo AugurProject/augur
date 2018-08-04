@@ -10,6 +10,32 @@ type Address = string;
 type Bytes32 = string;
 type Int256 = string;
 
+export enum SubscriptionEventNames {
+  FeeWindowOpened = "FeeWindowOpened",
+  CompleteSetsPurchased = "CompleteSetsPurchased",
+  CompleteSetsSold = "CompleteSetsSold",
+  DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
+  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
+  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
+  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
+  FeeWindowClosed = "FeeWindowClosed",
+  FeeWindowCreated = "FeeWindowCreated",
+  FeeWindowRedeemed = "FeeWindowRedeemed",
+  InitialReportSubmitted = "InitialReportSubmitted",
+  InitialReporterRedeemed = "InitialReporterRedeemed",
+  InitialReporterTransferred = "InitialReporterTransferred",
+  MarketCreated = "MarketCreated",
+  MarketState = "MarketState",
+  OrderCanceled = "OrderCanceled",
+  OrderCreated = "OrderCreated",
+  OrderFilled = "OrderFilled",
+  ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
+  SyncFinished = "SyncFinished",
+  TokensTransferred = "TokensTransferred",
+  TradingProceedsClaimed = "TradingProceedsClaimed",
+  UniverseCreated = "UniverseCreated",
+}
+
 interface AugurJsOptions {
   debug: {
     [optionName: string]: boolean,
