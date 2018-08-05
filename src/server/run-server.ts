@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as Knex from "knex";
+import * as helmet from "helmet";
 import Augur from "augur.js";
 import { Address, ErrorCallback, ServersData } from "../types";
 import { runWebsocketServer } from "./run-websocket-server";
@@ -17,6 +18,10 @@ export interface RunServerResult {
 
 export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter = new EventEmitter()): RunServerResult {
   const app: express.Application = express();
+
+  app.use(helmet({
+    hsts: false
+  }))
 
   const servers: ServersData = runWebsocketServer(db, app, augur, websocketConfigs, controlEmitter);
 
