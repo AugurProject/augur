@@ -13,7 +13,6 @@ export default class FilterSearch extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    searchPlaceholder: PropTypes.string,
     hasLoadedMarkets: PropTypes.bool,
   }
 
@@ -22,9 +21,13 @@ export default class FilterSearch extends Component {
 
     this.state = {
       search: '',
+      placeholder: 'Search',
+      width: '250px',
     }
 
     this.updateQuery = this.updateQuery.bind(this)
+    this.onFocus = this.onFocus.bind(this)
+    this.onBlur = this.onBlur.bind(this)
   }
 
   componentWillMount() {
@@ -57,20 +60,31 @@ export default class FilterSearch extends Component {
     })
   }
 
+  onFocus() {
+    this.setState({ placeholder: '', width: '400px' })
+  }
+
+  onBlur() {
+    this.setState({ placeholder: 'Search', width: '250px' })
+    console.log('blur')
+  }
+
   render() {
-    const { searchPlaceholder, hasLoadedMarkets } = this.props
+    const { hasLoadedMarkets } = this.props
     const s = this.state
 
     return (
-      <article className={Styles.FilterSearch}>
+      <article className={Styles.FilterSearch} style={{ minWidth: s.width }}>
         <Input
           className={Styles.FilterSearch__input}
           isSearch
           isClearable
           noFocus
-          placeholder={searchPlaceholder || 'Search'}
+          placeholder={s.placeholder}
           value={s.search}
           onChange={search => this.setState({ search })}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
           isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== '')}
         />
       </article>
