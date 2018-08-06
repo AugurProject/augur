@@ -177,7 +177,7 @@ export default class ReportingHeader extends Component {
                                 Total Rep Staked
                               </div>
                               <div className={Styles['ReportingHeader__value-number']}>
-                                { feeWindowRepStaked } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
+                                <span>{ feeWindowRepStaked }</span> <span className={Styles['ReportingHeader__value-unit']}>REP</span>
                               </div>
                             </div>
                           </div>
@@ -192,6 +192,9 @@ export default class ReportingHeader extends Component {
                         {'You can still earn a share of this dispute window\'s reporting fees by purchasing Participation Tokens.'}
                         {!isLogged &&
                           <b> Please login to purchase Participation tokens. </b>
+                        }
+                        {!disableParticipate && isLogged &&
+                          <b> Please add REP to your account to purchase Participation Tokens. </b>
                         }
                       </div>
                       {isLogged &&
@@ -217,7 +220,7 @@ export default class ReportingHeader extends Component {
                       <span className={Styles.ReportingHeader__endTimeValue} style={{ fontSize: '12px' }}> { formattedDate.clockTimeLocal }</span>
                     </span>
                   </div>
-                  <div className={classNames(Styles.ReportingHeader__row, Styles.ReportingHeader__endTimeRow)} style={{ marginTop: '5px' }}>
+                  <div className={classNames(Styles.ReportingHeader__row, Styles.ReportingHeader__endTimeRow)}>
                     <span data-testid="endTime" className={Styles.ReportingHeader__endTime}>
                       Dispute Window ends <span className={Styles.ReportingHeader__endTimeValue}> { formattedDate.formattedSimpleData } </span>
                     </span>

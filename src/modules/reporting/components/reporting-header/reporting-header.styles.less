@@ -15,11 +15,6 @@
   margin-bottom: 0.675rem;
 }
 
-.ReportingHeader__endTimeRow {
-  justify-content: flex-end;
-  margin-top: 5px;
-}
-
 .ReportingHeader__graph {
   background-color: @color-darkgray;
   border-radius: 3px;
@@ -52,10 +47,11 @@
 
 .ReportingHeader__daysLeft {
   display: flex;
+  font-family: 'Roboto Mono', monospace;
   font-size: 12px;
   font-weight: 500;
   justify-content: flex-end;
-  margin-top: 5px;
+  margin-top: 8px;
   text-transform: uppercase;
 }
 
@@ -87,7 +83,8 @@
 
 .ReportingHeader__border {
   border-bottom: 1px solid #5a536b;
-  padding-bottom: 20px;
+  padding-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .ReportingHeader__statsContainer {
@@ -112,7 +109,6 @@
 .ReportingHeader__rowFees {
   display: flex;
   flex-grow: 1;
-  margin-top: 20px;
 }
 
 .ReportingHeader__readMore-value-unit {
@@ -131,6 +127,8 @@
   font-size: 12px;
   font-weight: 500;
   justify-content: flex-end;
+  flex-direction: row;
+  align-items: baseline;
 }
 
 .ReportingHeader__endTimeValue {
@@ -138,7 +136,7 @@
   font-family: 'Roboto Mono', monospace;
   font-size: 18px;
   font-weight: 500;
-  margin-left: 10px;
+  margin-left: 12px;
   text-transform: none;
 }
 
@@ -152,6 +150,13 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+.ReportingHeader__endTimeRow {
+  justify-content: flex-end;
+  margin-top: 5px;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .ReportingHeader__participation {
@@ -230,8 +235,7 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   display: flex;
   height: 64px;
-  margin-top: -20px;
-  max-height: 60px;
+  margin-top: -50px;
   padding: 13px 24px;
   position: absolute;
 }
