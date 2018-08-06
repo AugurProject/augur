@@ -88,5 +88,21 @@
         border-top-width: 10px;
       }
     }
+
+    &.place-right {
+      margin-right: -14px;
+      margin-top: -5px;
+
+      &::after {
+        border-right-color: @color-lightergray !important;
+        left: -10px !important;
+      }
+
+      &.type-light::after {
+        border-bottom-width: 10px;
+        border-right-width: 10px !important;
+        border-top-width: 10px;
+      }
+    }
   }
 }
