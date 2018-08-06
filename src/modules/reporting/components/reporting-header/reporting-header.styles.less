@@ -83,7 +83,7 @@
 }
 
 .ReportingHeader__value-label {
-  color: #a7a2b2;
+  color: @color-lightgray;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 5px;
@@ -91,13 +91,17 @@
 }
 
 .ReportingHeader__value-number {
-  color: #ffffff;
+  color: @color-white;
   font-family: 'Roboto Mono', monospace;
   font-size: 32px;
 }
 
+.ReportingHeader__value-number:focus {
+  outline: none;
+}
+
 .ReportingHeader__readMore-value-label {
-  color: #5a407e;
+  color: @color-grayish-purple;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 6px;
@@ -106,12 +110,16 @@
 
 .ReportingHeader__border {
   border-bottom: 1px solid #5a536b;
-  max-width: 409px;
   padding-bottom: 20px;
 }
 
+.ReportingHeader__statsContainer {
+  margin-right: 10px;
+  width: 60%;
+}
+
 .ReportingHeader__readMore-value-number {
-  color: #231a3a;
+  color: @color-almostblack;
   font-family: 'Roboto Mono', monospace;
   font-size: 14px;
   font-weight: 500;
@@ -140,7 +148,7 @@
 .ReportingHeader__endTime {
   &:extend(.caps--small);
 
-  color: #a7a2b2;
+  color: @color-lightgray;
   display: flex;
   flex-grow: 1;
   font-size: 12px;
@@ -149,7 +157,7 @@
 }
 
 .ReportingHeader__endTimeValue {
-  color: #ffffff;
+  color: @color-white;
   font-family: 'Roboto Mono', monospace;
   font-size: 18px;
   font-weight: 500;
@@ -213,7 +221,7 @@
 }
 
 .ReportingHeader__participationHeader {
-  color: #a7a2b2;
+  color: @color-lightgray;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 10px;
@@ -245,7 +253,7 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   display: flex;
   height: 64px;
-  margin-top: 60px;
+  margin-top: -20px;
   max-height: 60px;
   padding: 13px 24px;
   position: absolute;
@@ -264,6 +272,10 @@
 }
 
 @media @breakpoint-mobile {
+  .ReportingHeader__statsContainer {
+    width: 100%;
+  }
+
   .ReportingHeader__participation {
     margin-top: 20px;
     max-width: unset;
