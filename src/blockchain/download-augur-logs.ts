@@ -9,6 +9,7 @@ import { processBlockByBlockDetails } from "./process-block";
 import { logger } from "../utils/logger";
 
 const BLOCK_DOWNLOAD_PARALLEL_LIMIT = 15;
+const BLOCK_DETAIL_PROGRESS_INTERVAL_MS = 5000;
 
 interface BlockDetailsByBlock {
   [blockNumber: number]: BlockDetail;
@@ -22,12 +23,18 @@ async function fetchAllBlockDetails(augur: Augur, blockNumbers: Array<number>): 
   return new Promise<BlockDetailsByBlock>((resolve, reject) => {
     if (blockNumbers.length === 0) return resolve([]);
     console.log(`Fetching blocks details from ${blockNumbers[0]} to ${blockNumbers[blockNumbers.length - 1]}`);
+    let fetchedBlockCount = 0;
+    let highestBlockFetched = 0;
+    const progressInterval = setInterval(() => console.log(`Fetched ${fetchedBlockCount} / ${blockNumbers.length} block details (current: ${highestBlockFetched})`), BLOCK_DETAIL_PROGRESS_INTERVAL_MS);
     mapLimit(blockNumbers, BLOCK_DOWNLOAD_PARALLEL_LIMIT, (blockNumber, nextBlockNumber) => {
       augur.rpc.eth.getBlockByNumber([blockNumber, false], (err: Error|null, block: BlockDetail): void => {
         if (err || block == null) return nextBlockNumber(new Error("Could not get block"));
+        fetchedBlockCount++;
+        if (blockNumber > highestBlockFetched) highestBlockFetched = blockNumber;
         nextBlockNumber(undefined, [blockNumber, block]);
       });
     }, (err: Error|undefined, blockDetails: Array<[number, BlockDetail]>) => {
+      clearInterval(progressInterval);
       if (err) return reject(err);
       const blockDetailsByBlock = _.fromPairs(blockDetails);
       resolve(blockDetailsByBlock);

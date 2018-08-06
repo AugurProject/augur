@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { Address } from "../../types";
-import { queryModifier } from "./database";
+import { groupByAndSum, queryModifier } from "./database";
 
 export interface CategoriesRow {
   category: string;
@@ -12,6 +12,14 @@ export function getCategories(db: Knex, universe: Address, sortBy: string|null|u
   queryModifier(db, query, "popularity", "desc", sortBy, isSortDescending, limit, offset, (err: Error|null, categoriesInfo?: Array<CategoriesRow>): void => {
     if (err) return callback(err);
     if (!categoriesInfo) return callback(null);
-    callback(null, categoriesInfo.map((categoryInfo: CategoriesRow): CategoriesRow => Object.assign(categoryInfo, { popularity: categoryInfo.popularity.toString() })));
+    // Group categories by upper case in case DB has not been fully sync'd with upper casing code. This can be removed once DB version > 2
+    const upperCaseCategoryInfo = categoriesInfo.map((category) => {
+      return {
+        category: category.category.toUpperCase(),
+        popularity: category.popularity,
+      };
+    });
+    const groupedCategoryInfo = groupByAndSum(upperCaseCategoryInfo, ["category"], ["popularity"]);
+    callback(null, groupedCategoryInfo.map((categoryInfo: CategoriesRow): CategoriesRow => ({ popularity: categoryInfo.popularity.toString(), category: categoryInfo.category })));
   });
 }
