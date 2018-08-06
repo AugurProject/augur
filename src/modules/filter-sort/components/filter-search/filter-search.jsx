@@ -66,7 +66,6 @@ export default class FilterSearch extends Component {
 
   onBlur() {
     this.setState({ placeholder: 'Search', width: '250px' })
-    console.log('blur')
   }
 
   render() {
