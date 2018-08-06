@@ -20,8 +20,8 @@ export function runServer(db: Knex, augur: Augur, controlEmitter: EventEmitter =
   const app: express.Application = express();
 
   app.use(helmet({
-    hsts: false
-  }))
+    hsts: false,
+  }));
 
   const servers: ServersData = runWebsocketServer(db, app, augur, websocketConfigs, controlEmitter);
 
