@@ -48,9 +48,9 @@ const defaultConfig = {
       'ws': 'ws://127.0.0.1:8546'
     },
     'mainnet': {
-      'http': 'https://gethnode.com/http',
+      'http': null,
       'name': 'Mainnet',
-      'ws': 'wss://gethnode.com/ws',
+      'ws': null,
       'id': '1'
     },
     'custom': {
