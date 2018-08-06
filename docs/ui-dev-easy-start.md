@@ -6,7 +6,7 @@ This is for UI developers already familiar with the different components but onl
 
 You'll need to clone augur UI only:
 
-* [augur git repo](https://github.com/AugurProject/augur)
+* [augur-ui git repo](https://github.com/AugurProject/augur-ui)
 * node and npm installed
 * yarn installed
 * docker installed

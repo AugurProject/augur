@@ -11,7 +11,7 @@ You'll need to clone the following repositories prior to starting:
 
 * [augur.js](https://github.com/AugurProject/augur.js)
 * [augur-node](https://github.com/AugurProject/augur-node)
-* [augur](https://github.com/AugurProject/augur)
+* [augur-ui](https://github.com/AugurProject/augur-ui)
 * node and npm installed
 * yarn installed
 
