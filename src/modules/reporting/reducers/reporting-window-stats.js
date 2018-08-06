@@ -14,6 +14,8 @@ const DEFAULT_STATE = {
     feeWindows: [],
     forkedMarket: null,
     nonforkedMarkets: [],
+    feeWindowEthFees: '0',
+    feeWindowRepStaked: '0',
   },
 }
 

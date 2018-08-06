@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
-import { formatAttoRep } from 'utils/format-number'
+import { formatAttoRep, formatAttoEth } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
 import ForkingContent from 'modules/forking/components/forking-content/forking-content'
@@ -36,7 +36,7 @@ export default class ReportingHeader extends Component {
     }
 
     this.showReadMore = this.showReadMore.bind(this)
-    this.hideReadMore = this.hideReadMore.bind(this);
+    this.hideReadMore = this.hideReadMore.bind(this)
   }
 
   componentWillMount() {
@@ -45,26 +45,19 @@ export default class ReportingHeader extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('mousedown', this.hideReadMore);
+    document.addEventListener('mousedown', this.hideReadMore)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousedown', this.hideReadMore);
+    document.removeEventListener('mousedown', this.hideReadMore)
   }
 
-  showReadMore(e) {
-    if (!this.state.readMore) {
-      this.setState({ readMore: true})
-    } else {
-            this.setState({ readMore: false})
-
-    }
-          e.preventDefault()
-
+  showReadMore() {
+    this.setState({ readMore: !this.state.readMore })
   }
 
-  hideReadMore() {
-    if (this.state.readMore) {
+  hideReadMore(e) {
+    if (this.readMore && !this.readMore.contains(event.target)) {
       this.setState({ readMore: false })
     }
   }
@@ -76,7 +69,6 @@ export default class ReportingHeader extends Component {
       forkingMarket,
       heading,
       isForking,
-      isMobile,
       repBalance,
       reportingWindowStats,
       updateModal,
@@ -89,13 +81,17 @@ export default class ReportingHeader extends Component {
     const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
     const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
     const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
-    const currentPercentage = ((totalDays - daysLeft) / totalDays) * 100
     const disableParticipate = (repBalance === '0')
     const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue || 0
-    const disputingRep = formatAttoRep(reportingWindowStats.contributions, { decimals: 4, denomination: ' REP' }).formattedValue || 0
-    const partRep = formatAttoRep(reportingWindowStats.participation, { decimals: 4, denomination: ' REP' }).formattedValue || 0
-    const currentPeriodStyle = {  
-      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,  
+    const disputingRep = formatAttoRep(reportingWindowStats.participantContributionsCrowdsourcer, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+    const partRep = formatAttoRep(reportingWindowStats.participationTokens, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+    const reportingRep = formatAttoRep(reportingWindowStats.participantContributionsInitialReport, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+
+    const feeWindowEthFees = formatAttoEth(reportingWindowStats.feeWindowEthFees, { decimals: 4, denomination: ' ETH' }).formattedValue || 0
+    const feeWindowRepStaked = formatAttoRep(reportingWindowStats.feeWindowRepStaked, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+
+    const currentPeriodStyle = {
+      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
     }
 
     return (
@@ -131,6 +127,7 @@ export default class ReportingHeader extends Component {
                               onClick={this.showReadMore}
                               role="button"
                               tabIndex={0}
+                              ref={(readMore) => { this.readMore = readMore }}
                             >
                               { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
                               { showMore }
@@ -144,7 +141,7 @@ export default class ReportingHeader extends Component {
                                 Reporting
                               </div>
                               <div className={Styles['ReportingHeader__readMore-value-number']}>
-                                { disputingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span>
+                                { reportingRep } <span className={Styles['ReportingHeader__readMore-value-unit']}>REP</span>
                               </div>
                             </div>
                             <div className={Styles.ReportingHeader__column} style={{ marginRight: '30px' }}>
@@ -172,7 +169,7 @@ export default class ReportingHeader extends Component {
                                 Total Fees Available
                               </div>
                               <div className={Styles['ReportingHeader__value-number']}>
-                                { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>ETH</span>
+                                { feeWindowEthFees } <span className={Styles['ReportingHeader__value-unit']}>ETH</span>
                               </div>
                             </div>
                             <div className={Styles.ReportingHeader__column}>
@@ -180,7 +177,7 @@ export default class ReportingHeader extends Component {
                                 Total Rep Staked
                               </div>
                               <div className={Styles['ReportingHeader__value-number']}>
-                                { disputeRep } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
+                                { feeWindowRepStaked } <span className={Styles['ReportingHeader__value-unit']}>REP</span>
                               </div>
                             </div>
                           </div>
@@ -229,8 +226,7 @@ export default class ReportingHeader extends Component {
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>
                     <div className={Styles['ReportingHeader__graph-current']}>
-                      <div style={currentPeriodStyle}>
-                      </div>
+                      <div style={currentPeriodStyle} />
                     </div>
                   </div>
                 </div>
