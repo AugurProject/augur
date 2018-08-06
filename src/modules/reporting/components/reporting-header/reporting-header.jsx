@@ -115,7 +115,7 @@ export default class ReportingHeader extends Component {
               <div className={Styles['ReportingHeader__dispute-wrapper']}>
                 <div className={Styles['ReportingHeader__dispute-header']}>
                   <div className={Styles.ReportingHeader__row}>
-                    <div className={Styles.ReportingHeader__column}>
+                    <div>
                       <div className={Styles.ReportingHeader__statsContainer}>
                         { isLogged &&
                           <div className={Styles.ReportingHeader__border}>
@@ -184,33 +184,35 @@ export default class ReportingHeader extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className={Styles.ReportingHeader__participation}>
-                      <div className={Styles.ReportingHeader__participationHeader}>
-                        {'don\'t see any reports that need to be disputed?'}
-                      </div>
-                      <div className={Styles.ReportingHeader__participationText}>
-                        {'You can still earn a share of this dispute window\'s reporting fees by purchasing Participation Tokens.'}
-                        {!isLogged &&
-                          <b> Please login to purchase Participation tokens. </b>
+                    <div className={Styles.ReportingHeader__column} style={{alignItems: 'flex-end'}}>
+                      <div className={Styles.ReportingHeader__participation}>
+                        <div className={Styles.ReportingHeader__participationHeader}>
+                          {'don\'t see any reports that need to be disputed?'}
+                        </div>
+                        <div className={Styles.ReportingHeader__participationText}>
+                          {'You can still earn a share of this dispute window\'s reporting fees by purchasing Participation Tokens.'}
+                          {!isLogged &&
+                            <b> Please login to purchase Participation tokens. </b>
+                          }
+                          {!disableParticipate && isLogged &&
+                            <b> Please add REP to your account to purchase Participation Tokens. </b>
+                          }
+                        </div>
+                        {isLogged &&
+                          <button
+                            className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
+                            disabled={disableParticipate}
+                            onClick={() => updateModal({
+                              type: MODAL_PARTICIPATE,
+                              canClose: true,
+                            })}
+                          >
+                            <span className={Styles['ReportingHeader__participationTokens--text']}>
+                              buy participation tokens
+                            </span>
+                          </button>
                         }
-                        {!disableParticipate && isLogged &&
-                          <b> Please add REP to your account to purchase Participation Tokens. </b>
-                        }
                       </div>
-                      {isLogged &&
-                        <button
-                          className={disableParticipate ? Styles['ReportingHeader__participationTokens--disabled'] : Styles.ReportingHeader__participationTokens}
-                          disabled={disableParticipate}
-                          onClick={() => updateModal({
-                            type: MODAL_PARTICIPATE,
-                            canClose: true,
-                          })}
-                        >
-                          <span className={Styles['ReportingHeader__participationTokens--text']}>
-                            buy participation tokens
-                          </span>
-                        </button>
-                      }
                     </div>
 
                   </div>
