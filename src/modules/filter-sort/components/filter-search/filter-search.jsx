@@ -42,6 +42,14 @@ export default class FilterSearch extends Component {
     }
   }
 
+  onFocus() {
+    this.setState({ placeholder: '', width: '400px' })
+  }
+
+  onBlur() {
+    this.setState({ placeholder: 'Search', width: '250px' })
+  }
+
   updateQuery(search, location) {
     const { history } = this.props
     let updatedSearch = parseQuery(location.search)
@@ -58,14 +66,6 @@ export default class FilterSearch extends Component {
       ...location,
       search: updatedSearch,
     })
-  }
-
-  onFocus() {
-    this.setState({ placeholder: '', width: '400px' })
-  }
-
-  onBlur() {
-    this.setState({ placeholder: 'Search', width: '250px' })
   }
 
   render() {
