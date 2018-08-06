@@ -36,6 +36,7 @@ export default class ReportingHeader extends Component {
     }
 
     this.showReadMore = this.showReadMore.bind(this)
+    this.hideReadMore = this.hideReadMore.bind(this);
   }
 
   componentWillMount() {
@@ -43,8 +44,29 @@ export default class ReportingHeader extends Component {
     loadReportingWindowBounds()
   }
 
-  showReadMore() {
-    this.setState({ readMore: !this.state.readMore })
+  componentDidMount() {
+    document.addEventListener('mousedown', this.hideReadMore);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.hideReadMore);
+  }
+
+  showReadMore(e) {
+    if (!this.state.readMore) {
+      this.setState({ readMore: true})
+    } else {
+            this.setState({ readMore: false})
+
+    }
+          e.preventDefault()
+
+  }
+
+  hideReadMore() {
+    if (this.state.readMore) {
+      this.setState({ readMore: false })
+    }
   }
 
   render() {
@@ -72,6 +94,9 @@ export default class ReportingHeader extends Component {
     const disputeRep = formatAttoRep(reportingWindowStats.stake, { decimals: 4, denomination: ' REP' }).formattedValue || 0
     const disputingRep = formatAttoRep(reportingWindowStats.contributions, { decimals: 4, denomination: ' REP' }).formattedValue || 0
     const partRep = formatAttoRep(reportingWindowStats.participation, { decimals: 4, denomination: ' REP' }).formattedValue || 0
+    const currentPeriodStyle = {  
+      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,  
+    }
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -203,7 +228,10 @@ export default class ReportingHeader extends Component {
                 </div>
                 <div className={Styles['ReportingHeader__dispute-graph']}>
                   <div className={Styles.ReportingHeader__graph}>
-                    <div className={currentPercentage <= 90 && !(isMobile && currentPercentage > 70) ? Styles['ReportingHeader__graph-current'] : Styles['ReportingHeader__graph-current-90']} />
+                    <div className={Styles['ReportingHeader__graph-current']}>
+                      <div style={currentPeriodStyle}>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className={Styles.ReportingHeader__daysLeft}>
