@@ -184,7 +184,7 @@ export default class ReportingHeader extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className={Styles.ReportingHeader__column} style={{alignItems: 'flex-end'}}>
+                    <div className={Styles.ReportingHeader__column} style={{ alignItems: 'flex-end' }}>
                       <div className={Styles.ReportingHeader__participation}>
                         <div className={Styles.ReportingHeader__participationHeader}>
                           {'don\'t see any reports that need to be disputed?'}

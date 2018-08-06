@@ -48,7 +48,7 @@
 .ReportingHeader__daysLeft {
   display: flex;
   font-family: 'Roboto Mono', monospace;
-  font-size: 12px;
+  font-size: @font-size-small;
   font-weight: 500;
   justify-content: flex-end;
   margin-top: 8px;
@@ -57,7 +57,7 @@
 
 .ReportingHeader__value-label {
   color: @color-lightgray;
-  font-size: 12px;
+  font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 5px;
   text-transform: uppercase;
@@ -75,7 +75,7 @@
 
 .ReportingHeader__readMore-value-label {
   color: @color-grayish-purple;
-  font-size: 12px;
+  font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 6px;
   text-transform: uppercase;
@@ -89,18 +89,19 @@
 
 .ReportingHeader__statsContainer {
   margin-right: 10px;
+  position: relative;
 }
 
 .ReportingHeader__readMore-value-number {
   color: @color-almostblack;
   font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
+  font-size: @font-size-medium;
   font-weight: 500;
 }
 
 .ReportingHeader__value-unit {
   font-family: @roboto;
-  font-size: 16px;
+  font-size: @font-size-normal;
   font-weight: 400;
   margin-right: 5px;
 }
@@ -112,7 +113,7 @@
 
 .ReportingHeader__readMore-value-unit {
   font-family: @roboto;
-  font-size: 14px;
+  font-size: @font-size-medium;
   font-weight: 400;
   margin-right: 5px;
 }
@@ -125,7 +126,7 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  font-size: 12px;
+  font-size: @font-size-small;
   font-weight: 500;
   justify-content: flex-end;
 }
@@ -133,7 +134,7 @@
 .ReportingHeader__endTimeValue {
   color: @color-white;
   font-family: 'Roboto Mono', monospace;
-  font-size: 18px;
+  font-size: @font-size-large;
   font-weight: 500;
   margin-left: 12px;
   text-transform: none;
@@ -203,7 +204,7 @@
 
 .ReportingHeader__participationHeader {
   color: @color-lightgray;
-  font-size: 12px;
+  font-size: @font-size-small;
   font-weight: 500;
   margin-bottom: 10px;
   text-transform: uppercase;
@@ -211,7 +212,7 @@
 
 .ReportingHeader__participationText {
   color: #d8d8d8;
-  font-size: 16px;
+  font-size: @font-size-normal;
 }
 
 .ReportingHeader__participationTokens--disabled {
@@ -233,14 +234,16 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   display: flex;
+  left: -15px;
   margin-top: -50px;
   max-height: 64px;
+  min-width: 438px;
   padding: 13px 24px;
   position: absolute;
 }
 
 .ReportingHeader__participationTokens--text {
-  font-size: 18px;
+  font-size: @font-size-large;
 }
 
 .ReportingHeader__stake {
