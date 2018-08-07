@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, UIMarketCreatorFee, ReportingState} from "../../types";
-import { getMarketsWithReportingState } from "./database";
+import { getCashAddress, getMarketsWithReportingState } from "./database";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
 
@@ -19,7 +19,7 @@ export function getUnclaimedMarketCreatorFees(db: Knex, augur: Augur, marketIds:
   marketsQuery.leftJoin("balances AS cash", function () {
     this
       .on("cash.owner", db.raw("markets.marketCreatorMailbox"))
-      .andOn("cash.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+      .andOn("cash.token", db.raw("?", getCashAddress(augur)));
   });
 
   marketsQuery.asCallback(( err: Error|null, marketCreatorFeeRows: Array<MarketCreatorFeesRow>): void => {
