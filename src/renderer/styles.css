@@ -5,33 +5,33 @@ html {
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 300;
-  src: url('assets/fonts/3449FB_0_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Light.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 400;
-  src: url('assets/fonts/3449FB_1_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 500;
-  src: url('assets/fonts/3449FB_2_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Medium.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 600;
-  src: url('assets/fonts/3449FB_3_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Bold.woff2') format('woff2');
 }
 
 body {
   color: white;
   background-color: #231A3A;
-  font-family: 'DINPro', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -69,7 +69,7 @@ button {
 .container {
   display: flex;
   flex-grow: 1;
-  flex-direction: row; 
+  flex-direction: row;
   min-width: 800px;
   height: 100%;
 }
@@ -387,7 +387,7 @@ input {
   filter: brightness(90%);
 }
 
-.ledgerSupportText { 
+.ledgerSupportText {
   margin-top:  16px;
   font-size: 0.8rem;
   font-weight: 400;
