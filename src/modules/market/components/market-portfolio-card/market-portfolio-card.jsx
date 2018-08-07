@@ -200,7 +200,7 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
                   key={outcome.id + outcome.marketId}
-                  outcomeName={outcome.name}
+                  outcomeName={outcome.outcome}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
@@ -261,6 +261,20 @@ export default class MarketPortfolioCard extends Component {
                       closePositionStatus={closePositionStatus}
                     />
                   ))
+                ))
+                }
+                { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcome}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay
+                    isMobile={isMobile}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    isOrphaned
+                  />
                 ))
                 }
                 { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (

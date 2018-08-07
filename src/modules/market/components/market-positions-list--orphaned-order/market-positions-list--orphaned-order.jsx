@@ -7,7 +7,8 @@ import classNames from 'classnames'
 import getValue from 'utils/get-value'
 import { SELL } from 'modules/trade/constants/types'
 
-import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
+import OrphanedStyles from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order.styles.less'
+import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles.less'
 
 export default class OrphanedOrder extends Component {
   static propTypes = {
@@ -71,8 +72,8 @@ export default class OrphanedOrder extends Component {
     } = this.props
     const { orderCancellationStatus } = order
     const s = this.state
-    const orderPrice = getValue(order, 'avgPrice.formatted')
-    const orderShares = getValue(order, 'unmatchedShares.formatted')
+    const orderPrice = getValue(order, 'fullPrecisionPrice')
+    const orderShares = getValue(order, 'amount')
     const orderType = getValue(order, 'type')
     const confirmStyle = {
       height: s.confirmHeight,
@@ -83,7 +84,7 @@ export default class OrphanedOrder extends Component {
       <ul
         ref={(order) => { this.order = order }}
         className={!isMobile ?
-          classNames(Styles.Order, { [Styles['Order-not_extended']]: isExtendedDisplay })
+          classNames(Styles.Order, OrphanedStyles.Order, { [Styles['Order-not_extended']]: isExtendedDisplay })
           : Styles.PortMobile
         }
       >
@@ -104,14 +105,13 @@ export default class OrphanedOrder extends Component {
         </li>
         { isExtendedDisplay && !isMobile && outcome &&
           <li>
-            {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
         { !isMobile &&
-          <li>{getValue(order, 'tokensEscrowed.formatted')}</li>
+          <li></li>
         }
         { !isMobile &&
-          <li>{getValue(order, 'sharesEscrowed.formatted')}</li>
+          <li></li>
         }
         { isExtendedDisplay &&
           <li />
@@ -119,7 +119,7 @@ export default class OrphanedOrder extends Component {
         <li>
           { pending ?
             <span className={Styles.NotActive}>Cancel</span> :
-            <button onClick={this.toggleConfirm}>Cancel</button>
+            <button className={OrphanedStyles.Order__cancel} onClick={this.toggleConfirm}>Cancel</button>
           }
         </li>
         <div
@@ -142,6 +142,9 @@ export default class OrphanedOrder extends Component {
               </div>
             </div>
           }
+        </div>
+        <div className={OrphanedStyles['Order__learnMore']}>
+          This is an orphaned order. Please cancel it. <span className={OrphanedStyles['Order__link']}><a href="http://docs.augur.net/#orphaned-order" target="_blank" rel="noopener noreferrer">Learn More</a></span>
         </div>
       </ul>
     )

@@ -113,6 +113,42 @@
   }
 }
 
+.button--transparent {
+  .button;
+
+  background-color: @color-transparent;
+  color: @color-purple;
+  border-radius: 32px;
+  border: solid 1px @color-purple;
+  text-transform: none;
+  padding: 8px 24px;
+  line-height: unset;
+  min-height: unset;
+  min-width: unset;
+
+  &:hover {
+    background-color: @color-transparent
+  }
+}
+
+
+.button--transparent--disabled,
+.button--transparent:disabled,
+.button--transparent:disabled:hover {
+  background-color: @color-transparent;
+  color: @color-purple;
+  cursor: default;
+}
+
+.button--offWhite--disabled,
+.button--offWhite:disabled,
+.button--offWhite:disabled:hover {
+  background-color: @color-lightgray;
+  color: @color-lightergray;
+  cursor: default;
+}
+
+
 .button--white--short {
   .button;
 

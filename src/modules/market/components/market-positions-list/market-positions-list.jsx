@@ -96,14 +96,14 @@ export default class MarketPositionsList extends Component {
             { openOrders.length > 0 &&
               <div className={Styles['MarketPositionsList__table-body']}>
                 { openOrders.map((order, i) => (
-                  <MarketPositionsListOrder
-                    key={i}
-                    outcomeName={order.name}
-                    order={order}
-                    pending={order.pending}
-                    isExtendedDisplay={false}
-                    isMobile={false}
-                  />
+                    <MarketPositionsListOrder
+                      key={i}
+                      outcomeName={order.name}
+                      order={order}
+                      pending={order.pending}
+                      isExtendedDisplay={false}
+                      isMobile={false}
+                    />
                 ))}
               </div>
             }
