@@ -1,6 +1,6 @@
 # Augur App
 
-Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur) and [Augur Node](https://github.com/AugurProject/augur-node) together and deploys them locally to your machine. The Augur UI is a reference client used to interact with the Augur protocols core smart contracts on the Ethereum blockchain. Augur Node is a locally-run program that scans the Ethereum blockchain for event logs relevant to Augur, stores them in a database, and serves the respective data to the Augur UI. 
+Augur App is a lightweight Electron app that bundles the [Augur UI](https://github.com/AugurProject/augur-ui) and [Augur Node](https://github.com/AugurProject/augur-node) together and deploys them locally to your machine. The Augur UI is a reference client used to interact with the Augur protocols core smart contracts on the Ethereum blockchain. Augur Node is a locally-run program that scans the Ethereum blockchain for event logs relevant to Augur, stores them in a database, and serves the respective data to the Augur UI. 
 
 ## Install 
 
@@ -114,7 +114,7 @@ If you are looking for more information from augur-node and augur-app, checkout 
 
 ## Questions, Bugs and Issues
 
-Please file any bugs or issues related to Augur App as a GitHub issue in the [Augur App](https://github.com/AugurProject/augur-app) repository. If your issue is related to Augur Node, use the [Augur Node](https://github.com/AugurProject/augur-app) repository. If you have a UI bug or issue to report, use the [Augur Client](https://github.com/AugurProject/augur)  repository. 
+Please file any bugs or issues related to Augur App as a GitHub issue in the [Augur App](https://github.com/AugurProject/augur-app) repository. If your issue is related to Augur Node, use the [Augur Node](https://github.com/AugurProject/augur-app) repository. If you have a UI bug or issue to report, use the [Augur UI Client](https://github.com/AugurProject/augur-ui)  repository. 
 
 Alternatively, you can share feedback or seek help from community members in the [Augur Discord](https://discordapp.com/invite/faud6Fx). 
 
