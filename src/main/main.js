@@ -109,7 +109,7 @@ function createWindow () {
       gethNodeController.stop();
       mainWindow = null;
     } catch (err) {
-      mainWindow.webContents.send('error', { error: err });
+      if (mainWindow) mainWindow.webContents.send('error', { error: err });
     }
   })
 

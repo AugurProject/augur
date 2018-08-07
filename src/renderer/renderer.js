@@ -25,6 +25,7 @@ function addCommas(number) {
 
 function Renderer() {
     this.isSynced = false;
+    this.augurNodeStarted = false;
     this.isSsl = false;
     this.config = {};
     this.selectedNetworkForm = "";
@@ -69,9 +70,14 @@ function Renderer() {
     ipcRenderer.on('noResetDatabase', this.onNoResetDatabase.bind(this))
     ipcRenderer.on('bulkSyncStarted', this.onBulkSyncStarted.bind(this))
     ipcRenderer.on('bulkSyncFinished', this.onBulkSyncFinished.bind(this))
+    ipcRenderer.on('augurNodeStatus', this.onAugurNodeStatus.bind(this))
 
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onAugurNodeStatus = function(event, status) {
+  this.augurNodeStarted = status
 }
 
 Renderer.prototype.onBulkSyncStarted = function() {
@@ -346,7 +352,7 @@ Renderer.prototype.onGethFinishedSyncing = function (event) {
   document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
 
   const data = this.getNetworkConfigFormData();
-  ipcRenderer.send("start", data);
+  if (!this.augurNodeStarted) ipcRenderer.send("start", data);
 }
 
 Renderer.prototype.onPeerCountData = function (event, data) {

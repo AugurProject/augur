@@ -126,6 +126,7 @@ AugurNodeServer.prototype.startServer = function (event) {
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
+    event.sender.send('augurNodeStatus', true)
     this.augurNodeController.start(function (err) {
       if (this.retriesRemaining > 0) {
         event.sender.send('error', {
@@ -140,6 +141,7 @@ AugurNodeServer.prototype.startServer = function (event) {
       }
     }.bind(this))
   } catch (err) {
+    event.sender.send('augurNodeStop')
     log.error(err)
     event.sender.send('error', {
       error: message
@@ -320,6 +322,7 @@ AugurNodeServer.prototype.shutDownServer = function (event) {
     log.info('Calling Augur Node Controller Shutdown')
     this.augurNodeController.shutdown()
     this.disconnectServerMessage(event)
+    event.sender.send('augurNodeStatus', false)
   } catch (err) {
     log.error(err)
     if (this.augurNodeController && !this.augurNodeController.isRunning()) {
