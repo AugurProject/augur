@@ -3,17 +3,19 @@
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 GET_VERSION="node $SCRIPT_DIR/get-version.js"
+NPM_VERSION=${NPM_VERSION:-patch}
+POST_RELEASE_VERSION=${NPM_VERSION:-patch}
 CURRENT_VERSION="$($GET_VERSION ../package.json)"
 RELEASE_VERSION="${VERSION%-snapshot}"
 RELEASE_BRANCH="release-$RELEASE_VERSION"
 
 # removes -snapshot from version
-npm version --no-git-tag-version patch > /dev/null
+npm version --no-git-tag-version $NPM_VERSION > /dev/null
 
-# increment patch version
-NEW_SNAPSHOT_VERSION=$(npm version --no-git-tag-version patch)-snapshot
+# increment NPM_VERSION version
+NEW_SNAPSHOT_VERSION=$(npm version --no-git-tag-version $POST_RELEASE_VERSION)-snapshot
 
-# set snapshot version 
+# set snapshot version
 #NEW_SNAPSHOT_VERSION=$($GET_VERSION ../package.json)-snapshot
 npm version --no-git-tag-version $NEW_SNAPSHOT_VERSION
 
