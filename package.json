@@ -14,7 +14,8 @@
     "make-mac": "electron-builder make --mac",
     "make-linux": "electron-builder make --linux",
     "make-all": "electron-builder make -mwl",
-    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules"
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules",
+    "test": "mocha"
   },
   "repository": "https://github.com/AugurProject/augur-app",
   "keywords": [
@@ -104,6 +105,7 @@
     "electron-prebuilt-compile": "2.0.0",
     "electron-publisher-s3": "^20.15.0",
     "eslint": "^5.0.1",
+    "mocha": "^5.2.0",
     "prettier": "^1.13.7"
   }
 }
