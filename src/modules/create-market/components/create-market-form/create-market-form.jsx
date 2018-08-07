@@ -14,7 +14,7 @@ import CreateMarketReview from 'modules/create-market/components/create-market-f
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import { createBigNumber } from 'utils/create-big-number'
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 import { BID } from 'modules/transactions/constants/types'
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000)
