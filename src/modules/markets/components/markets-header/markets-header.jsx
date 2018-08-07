@@ -83,18 +83,18 @@ export default class MarketsHeader extends Component {
 
     return (
       <article className={Styles.MarketsHeader}>
-        <div className={Styles.MarketsHeader__search} >
-          <FilterSearch
-            searchPlaceholder="Search"
-          />
-        </div>
+        <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
         <div className={Styles.MarketsHeader__wrapper}>
-          <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
           <div className={Styles.MarketsHeader__filters}>
             <FilterDropDowns
               filter={filter}
               sort={sort}
               updateFilter={updateFilter}
+            />
+          </div>
+          <div className={Styles.MarketsHeader__search} >
+            <FilterSearch
+              searchPlaceholder="Search"
             />
           </div>
         </div>

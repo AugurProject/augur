@@ -1,6 +1,7 @@
 @import (reference) '~assets/styles/shared';
 
 .FilterSearch {
+  min-width: 400px;
   width: 100%;
 }
 
@@ -8,9 +9,12 @@
   .caps--medium;
 
   align-items: center;
-  background-color: @color-transparent;
-  color: @color-lightgray;
+  background-color: #ffffff;
+  border-radius: 17px;
+  color: @color-lightpurple;
   display: flex;
+  font-size: 14px;
+  padding: 5px 12px;
 
   > svg {
     height: 0.75rem;
@@ -26,12 +30,18 @@
     text-transform: none;
 
     &::placeholder {
-      color: @color-lightgray;
+      color: @color-gray2;
       text-transform: uppercase;
     }
 
     &:focus {
       .border(false);
     }
+  }
+}
+
+@media @breakpoint-mobile {
+  .FilterSearch {
+    min-width: 200px;
   }
 }

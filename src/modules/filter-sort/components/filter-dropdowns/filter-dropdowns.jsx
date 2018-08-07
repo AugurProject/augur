@@ -40,6 +40,7 @@ const FilterSearch = (p) => {
         default={MARKET_OPEN}
         onChange={e => updateFilter({ filter: e, sort })}
         options={filterOptions}
+        alignLeft
       />
       <Dropdown
         default={MARKET_RECENTLY_TRADED}

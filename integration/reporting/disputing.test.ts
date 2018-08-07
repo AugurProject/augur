@@ -108,10 +108,10 @@ describe("Disputing", () => {
     describe("Yes/No Market", () => {
       beforeAll(async () => {
         yesNoMarket = await createYesNoMarket()
-        await waitNextBlock(10)
+        await waitNextBlock(15)
         await flash.initialReport(yesNoMarket.id, "0", false, false)
         await flash.pushWeeks(1)
-        await waitNextBlock(2)
+        await waitNextBlock(15)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
 
@@ -123,10 +123,10 @@ describe("Disputing", () => {
     describe("Categorical Market", () => {
        beforeAll(async () => {
         categoricalMarket = await createCategoricalMarket(4)
-        await waitNextBlock(10)
+        await waitNextBlock(15)
         await flash.initialReport(categoricalMarket.id, "0", false, false)
         await flash.pushWeeks(1)
-        await waitNextBlock(2)
+        await waitNextBlock(15)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
       it("should be able to dispute on all outcomes", async () => {
@@ -137,10 +137,10 @@ describe("Disputing", () => {
     describe("Scalar Market", () => {
       beforeAll(async () => {
         scalarMarket = await createScalarMarket()
-        await waitNextBlock(10)
+        await waitNextBlock(15)
         await flash.initialReport(scalarMarket.id, "0", false, false)
         await flash.pushWeeks(1)
-        await waitNextBlock(2)
+        await waitNextBlock(15)
         outcomes = await page.evaluate(() => window.integrationHelpers.getMarketDisputeOutcomes());
       });
       it("should be able to dispute on all outcomes", async () => {
@@ -257,7 +257,7 @@ describe("Disputing", () => {
           }
         );
       });
-   });
+    });
 
     describe("Listed Outcomes", () => {
       describe("Yes/No Market", () => {
@@ -297,7 +297,7 @@ describe("Disputing", () => {
           await waitNextBlock(2)
           await flash.pushWeeks(1)
 
-          await expect(page).toMatch("Invalid")
+          await expect(page).toMatch("Invalid", { timeout: SMALL_TIMEOUT})
           // expect not to have a dispute bond for winning outcome
           await expect(page).toMatchElement("[data-testid='winning-"+scalarMarket.id+"-1']")
         });
@@ -309,7 +309,7 @@ describe("Disputing", () => {
           await waitNextBlock(2)
           await flash.pushWeeks(1)
 
-          await expect(page).toMatch("Invalid")
+          await expect(page).toMatch("Invalid", { timeout: SMALL_TIMEOUT})
           // expect not to have a dispute bond for winning outcome
           await expect(page).not.toMatchElement("[data-testid='disputeBondTarget-"+scalarMarket.id+"-0']")
         });
