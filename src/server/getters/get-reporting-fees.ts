@@ -5,6 +5,7 @@ import { BigNumber } from "bignumber.js";
 import { Address, AsyncCallback, FeeWindowState, ReportingState } from "../../types";
 import Augur from "augur.js";
 import { ZERO } from "../../constants";
+import { getCashAddress } from "./database";
 
 export interface CrowdsourcerState {
   crowdsourcerId: Address;
@@ -345,7 +346,7 @@ function getParticipationTokenEthFees(db: Knex, augur: Augur, reporter: Address,
   participationTokenQuery.leftJoin("balances AS cashFeeWindow", function () {
     this
       .on("cashFeeWindow.owner", db.raw("fee_windows.feeWindow"))
-      .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+      .on("cashFeeWindow.token", db.raw("?", getCashAddress(augur)));
   });
   participationTokenQuery.leftJoin("token_supply as feeTokenSupply", "feeTokenSupply.token", "fee_windows.feeToken")
     .leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "fee_windows.feeWindow")
@@ -395,12 +396,12 @@ function getParticipantEthFees(db: Knex, augur: Augur, reporter: Address, univer
   participantQuery.leftJoin("balances AS cashFeeWindow", function () {
     this
       .on("cashFeeWindow.owner", db.raw("feeToken.feeWindow"))
-      .on("cashFeeWindow.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+      .on("cashFeeWindow.token", db.raw("?", getCashAddress(augur)));
   });
   participantQuery.leftJoin("balances AS cashParticipant", function () {
     this
       .on("cashParticipant.owner", db.raw("participantAddress"))
-      .andOn("cashParticipant.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+      .andOn("cashParticipant.token", db.raw("?", getCashAddress(augur)));
   });
   participantQuery.leftJoin("token_supply as participationTokenSupply", "participationTokenSupply.token", "feeToken.feeWindow");
   participantQuery.where("all_participants.universe", universe);

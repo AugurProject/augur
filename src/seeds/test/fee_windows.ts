@@ -42,8 +42,17 @@ exports.seed = async (knex: Knex): Promise<any> => {
       fees: 0,
       feeToken: "NEXT_FEE_TOKEN",
     }, {
-      feeWindow: "0x4000000000000000000000000000000000000000",
+      feeWindow: "0x5000000000000000000000000000000000000000",
       feeWindowId: 458,
+      universe: "CHILD_UNIVERSE",
+      startTime: 1508065473,
+      endTime: 1509065473,
+      state: FeeWindowState.CURRENT,
+      fees: 0,
+      feeToken: "FEE_TOKEN_CHILD_UNIVERSE_CURRENT",
+    }, {
+      feeWindow: "0x4000000000000000000000000000000000000000",
+      feeWindowId: 459,
       universe: "CHILD_UNIVERSE",
       startTime: 1509065473,
       endTime: 1511657473,

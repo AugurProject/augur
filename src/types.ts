@@ -552,6 +552,7 @@ export interface UIReport<BigNumberType> {
 
 export interface FeeWindowRow {
   feeWindow: Address;
+  feeToken: Address;
   feeWindowId: number;
   universe: Address;
   startTime: number;
