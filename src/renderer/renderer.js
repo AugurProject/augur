@@ -35,6 +35,7 @@ function Renderer() {
     this.uiPort = 8080;
     this.sslPort = 8443;
     this.spinner = ["&bull;", "&bull;&bull;", "&bull;&bull;&bull;"]
+    this.LIGHT_CLIENT = 'lightclient'
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
@@ -47,7 +48,6 @@ function Renderer() {
     document.getElementById("cancel_switch_button").addEventListener("click", this.goToOpenApp.bind(this));
 
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
-    document.getElementById("geth_control_button").addEventListener("click", this.toggleGeth.bind(this));
 
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
     ipcRenderer.on('peerCountData', this.onPeerCountData.bind(this));
@@ -182,7 +182,11 @@ Renderer.prototype.connectToServer = function (event) {
 
   this.isSynced = false;
   this.spinnerCount = 0;
-  ipcRenderer.send("start", data);
+  if (data.network === this.LIGHT_CLIENT) {
+    this.toggleGeth()
+  } else {
+    ipcRenderer.send("start", data);
+  }
 }
 
 Renderer.prototype.goToOpenApp = function (event) {
@@ -241,12 +245,9 @@ Renderer.prototype.saveNetworkConfig = function (event) {
     ipcRenderer.send("saveNetworkConfig", data);
 }
 
-Renderer.prototype.toggleGeth = function (event) {
-  event.preventDefault();
-  const gethButton = document.getElementById("geth_control_button");
+Renderer.prototype.toggleGeth = function () {
   this.showNotice(this.gethOn ? "Stopping Geth..." : "Starting Geth...", "success")
   this.gethOn = !this.gethOn;
-  gethButton.value = this.gethOn ? "Stop Geth" : "Start Geth";
   const gethSyncInfo = document.getElementById("geth_syncing_info");
   gethSyncInfo.style.display = this.gethOn ? "block" : "none";
   // clear error after 4 seconds
@@ -255,7 +256,6 @@ Renderer.prototype.toggleGeth = function (event) {
   }, 4000);
   ipcRenderer.send("toggleGeth");
 }
-
 
 Renderer.prototype.onSaveNetworkConfigResponse = function (event, data) {
     this.config.networks[data.network] = data.networkConfig;
@@ -344,6 +344,9 @@ Renderer.prototype.onGethFinishedSyncing = function (event) {
   syncPercent.innerHTML = "100%"
 
   document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
+
+  const data = this.getNetworkConfigFormData();
+  ipcRenderer.send("start", data);
 }
 
 Renderer.prototype.onPeerCountData = function (event, data) {

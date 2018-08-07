@@ -61,7 +61,7 @@ GethNodeController.prototype.setWindow = function (window) {
     this.window = window;
 }
 
-GethNodeController.prototype.start = function () {
+GethNodeController.prototype.start = function (event) {
     const appDataPath = appData('augur')
     const gethPath = path.join(appDataPath, 'geth')
     if (!fs.existsSync(gethPath)) {
@@ -86,6 +86,7 @@ GethNodeController.prototype.start = function () {
     this.gethProcess.on('close', this.onGethClose.bind(this));
 
     this.statusLoop = setInterval(this.checkStatus.bind(this), STATUS_LOOP_INTERVAL);
+    event.sender.send("onServerConnected");
 }
 
 GethNodeController.prototype.log = function (data) {
@@ -102,10 +103,10 @@ GethNodeController.prototype.stop = function () {
     if (this.statusLoop) clearInterval(this.statusLoop);
 }
 
-GethNodeController.prototype.toggle = function () {
+GethNodeController.prototype.toggle = function (event) {
     console.log(`Toggling geth process`);
     if (this.gethProcess && !this.gethProcess.killed) return this.stop();
-    this.start();
+    this.start(event);
 }
 
 GethNodeController.prototype.checkStatus = function (window) {
