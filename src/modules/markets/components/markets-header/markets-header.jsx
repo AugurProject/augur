@@ -93,9 +93,7 @@ export default class MarketsHeader extends Component {
             />
           </div>
           <div className={Styles.MarketsHeader__search} >
-            <FilterSearch
-              searchPlaceholder="Search"
-            />
+            <FilterSearch />
           </div>
         </div>
       </article>
