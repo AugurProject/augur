@@ -14,7 +14,7 @@ import CreateMarketReview from 'modules/create-market/components/create-market-f
 import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import { createBigNumber } from 'utils/create-big-number'
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 import { BID } from 'modules/transactions/constants/types'
 
 const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000)
@@ -193,22 +193,9 @@ export default class CreateMarketForm extends Component {
     const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
     const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
     const shareBalances = newMarket.outcomes.map(outcome => 0)
-    let outcome
+    const [outcome] = order
     let initialLiquidityEth
     let initialLiquidityGas
-
-    switch (newMarket.type) {
-      case CATEGORICAL:
-        newMarket.outcomes.forEach((outcomeName, index) => {
-          if (this.state.selectedOutcome === outcomeName) outcome = index
-        })
-        break
-      case SCALAR:
-        outcome = this.state.selectedOutcome
-        break
-      default:
-        outcome = 1
-    }
 
     const orderInfo = {
       orderType: order.type === BID ? 0 : 1,

@@ -137,6 +137,7 @@ export default class CreateMarketLiquidity extends Component {
       })
 
       updateInitialLiquidityCosts({
+        outcome: this.state.selectedOutcome,
         type: this.state.selectedNav,
         price: this.state.orderPrice,
         quantity: this.state.orderQuantity,
