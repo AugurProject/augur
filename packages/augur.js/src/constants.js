@@ -12,32 +12,32 @@ var SECONDS_PER_DAY = 3600 * 24;
 // being completely filled with Transfer transactions
 var MAX_LOG_BYTES_PER_BLOCK = 160000;
 
-var SubscriptionEventNames;
-(function (SubscriptionEventNames) {
-  SubscriptionEventNames.FeeWindowOpened = "FeeWindowOpened";
-  SubscriptionEventNames.CompleteSetsPurchased = "CompleteSetsPurchased";
-  SubscriptionEventNames.CompleteSetsSold = "CompleteSetsSold";
-  SubscriptionEventNames.DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted";
-  SubscriptionEventNames.DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution";
-  SubscriptionEventNames.DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated";
-  SubscriptionEventNames.DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog";
-  SubscriptionEventNames.FeeWindowClosed = "FeeWindowClosed";
-  SubscriptionEventNames.FeeWindowCreated = "FeeWindowCreated";
-  SubscriptionEventNames.FeeWindowRedeemed = "FeeWindowRedeemed";
-  SubscriptionEventNames.InitialReportSubmitted = "InitialReportSubmitted";
-  SubscriptionEventNames.InitialReporterRedeemed = "InitialReporterRedeemed";
-  SubscriptionEventNames.InitialReporterTransferred = "InitialReporterTransferred";
-  SubscriptionEventNames.MarketCreated = "MarketCreated";
-  SubscriptionEventNames.MarketState = "MarketState";
-  SubscriptionEventNames.OrderCanceled = "OrderCanceled";
-  SubscriptionEventNames.OrderCreated = "OrderCreated";
-  SubscriptionEventNames.OrderFilled = "OrderFilled";
-  SubscriptionEventNames.ReportingParticipantDisavowed = "ReportingParticipantDisavowed";
-  SubscriptionEventNames.SyncFinished = "SyncFinished";
-  SubscriptionEventNames.TokensTransferred = "TokensTransferred";
-  SubscriptionEventNames.TradingProceedsClaimed = "TradingProceedsClaimed";
-  SubscriptionEventNames.UniverseCreated = "UniverseCreated";
-}(SubscriptionEventNames || (SubscriptionEventNames = {})));
+var SUBSCRIPTION_EVENT_NAMES;
+(function (SUBSCRIPTION_EVENT_NAMES) {
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_OPENED = "FeeWindowOpened";
+  SUBSCRIPTION_EVENT_NAMES.COMPLETE_SETS_PURCHASED = "CompleteSetsPurchased";
+  SUBSCRIPTION_EVENT_NAMES.COMPLETE_SETS_SOLD = "CompleteSetsSold";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_COMPLETED = "DisputeCrowdsourcerCompleted";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_CONTRIBUTION = "DisputeCrowdsourcerContribution";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_CREATED = "DisputeCrowdsourcerCreated";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_REDEEMED_LOG = "DisputeCrowdsourcerRedeemedLog";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_CLOSED = "FeeWindowClosed";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_CREATED = "FeeWindowCreated";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_REDEEMED = "FeeWindowRedeemed";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_SUBMITTED = "InitialReportSubmitted";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_REDEEMED = "InitialReporterRedeemed";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_TRANSFERRED = "InitialReporterTransferred";
+  SUBSCRIPTION_EVENT_NAMES.MARKET_CREATED = "MarketCreated";
+  SUBSCRIPTION_EVENT_NAMES.MARKET_STATE = "MarketState";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_CANCELLED = "OrderCanceled";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_CREATED = "OrderCreated";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_FILLED = "OrderFilled";
+  SUBSCRIPTION_EVENT_NAMES.REPORTING_PARTICIPANT_DISAVOWED = "ReportingParticipantDisavowed";
+  SUBSCRIPTION_EVENT_NAMES.SYNC_FINISHED = "SyncFinished";
+  SUBSCRIPTION_EVENT_NAMES.TOKENS_TRANSFERRED = "TokensTransferred";
+  SUBSCRIPTION_EVENT_NAMES.TRADING_PROCEEDS_CLAIMED = "TradingProceedsClaimed";
+  SUBSCRIPTION_EVENT_NAMES.UNIVERSE_CREATED = "UniverseCreated";
+}(SUBSCRIPTION_EVENT_NAMES || (SUBSCRIPTION_EVENT_NAMES = {})));
 
 module.exports = {
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
@@ -92,8 +92,6 @@ module.exports = {
   MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
 
   MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
-
-  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000),
 
   ORDER_STATE: {
     ALL: "ALL",
@@ -150,6 +148,8 @@ module.exports = {
     UNCLAIMED: "UNCLAIMED",
     UNFINALIZED: "UNFINALIZED",
   },
+
+  SUBSCRIPTION_EVENT_NAMES: SUBSCRIPTION_EVENT_NAMES,
 
   TRADE_GAS_BUFFER: new BigNumber("100000", 10),
 

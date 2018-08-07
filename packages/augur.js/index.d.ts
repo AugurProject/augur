@@ -10,30 +10,30 @@ type Address = string;
 type Bytes32 = string;
 type Int256 = string;
 
-export enum SubscriptionEventNames {
-  FeeWindowOpened = "FeeWindowOpened",
-  CompleteSetsPurchased = "CompleteSetsPurchased",
-  CompleteSetsSold = "CompleteSetsSold",
-  DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
-  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
-  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
-  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
-  FeeWindowClosed = "FeeWindowClosed",
-  FeeWindowCreated = "FeeWindowCreated",
-  FeeWindowRedeemed = "FeeWindowRedeemed",
-  InitialReportSubmitted = "InitialReportSubmitted",
-  InitialReporterRedeemed = "InitialReporterRedeemed",
-  InitialReporterTransferred = "InitialReporterTransferred",
-  MarketCreated = "MarketCreated",
-  MarketState = "MarketState",
-  OrderCanceled = "OrderCanceled",
-  OrderCreated = "OrderCreated",
-  OrderFilled = "OrderFilled",
-  ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
-  SyncFinished = "SyncFinished",
-  TokensTransferred = "TokensTransferred",
-  TradingProceedsClaimed = "TradingProceedsClaimed",
-  UniverseCreated = "UniverseCreated",
+export enum SUBSCRIPTION_EVENT_NAMES {
+  FEE_WINDOW_OPENED = "FeeWindowOpened",
+  COMPLETE_SETS_PURCHASED = "CompleteSetsPurchased",
+  COMPLETE_SETS_SOLD = "CompleteSetsSold",
+  DISPUTE_CROWDSOURCER_COMPLETED = "DisputeCrowdsourcerCompleted",
+  DISPUTE_CROWDSOURCER_CONTRIBUTION = "DisputeCrowdsourcerContribution",
+  DISPUTE_CROWDSOURCER_CREATED = "DisputeCrowdsourcerCreated",
+  DISPUTE_CROWDSOURCER_REDEEMED_LOG = "DisputeCrowdsourcerRedeemedLog",
+  FEE_WINDOW_CLOSED = "FeeWindowClosed",
+  FEE_WINDOW_CREATED = "FeeWindowCreated",
+  FEE_WINDOW_REDEEMED = "FeeWindowRedeemed",
+  INITIAL_REPORT_SUBMITTED = "InitialReportSubmitted",
+  INITIAL_REPORT_REDEEMED = "InitialReporterRedeemed",
+  INITIAL_REPORT_TRANSFERRED = "InitialReporterTransferred",
+  MARKET_CREATED = "MarketCreated",
+  MARKET_STATE = "MarketState",
+  ORDER_CANCELLED = "OrderCanceled",
+  ORDER_CREATED = "OrderCreated",
+  ORDER_FILLED = "OrderFilled",
+  REPORTING_PARTICIPANT_DISAVOWED = "ReportingParticipantDisavowed",
+  SYNC_FINISHED = "SyncFinished",
+  TOKENS_TRANSFERRED = "TokensTransferred",
+  TRADING_PROCEEDS_CLAIMED = "TradingProceedsClaimed",
+  UNIVERSE_CREATED = "UniverseCreated",
 }
 
 interface AugurJsOptions {
@@ -156,11 +156,11 @@ interface BlockSubscriptionCallbacks {
   onRemoved?: (block: Block) => void;
 }
 
-export enum OrderState {
-  All = "ALL",
-  Cancelled = "CANCELLED",
-  Closed = "CLOSED",
-  Open = "OPEN",
+export enum ORDER_STATE {
+  ALL = "ALL",
+  CANCELED = "CANCELED",
+  CLOSED = "CLOSED",
+  OPEN = "OPEN",
 }
 
 export interface Order {
