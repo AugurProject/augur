@@ -418,13 +418,11 @@ export const Close = (
 )
 
 export const CloseDark = (
-  <svg viewBox="0 0 24 24">
-    <defs />
-    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
-      <g id="Icon/Close" stroke="#44415a">
-        <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="CloseLine" />
-        <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="CloseLineJoinRound" strokeLinejoin="round" />
-      </g>
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+    <g fill="none" fillRule="nonzero" transform="translate(-5 -5)">
+      <path fill="#DBDAE1" d="M8.721 24.278c-4.295-4.296-4.295-11.26 0-15.556 4.297-4.296 11.261-4.296 15.557 0 4.296 4.295 4.296 11.26 0 15.557-4.296 4.295-11.26 4.295-15.557-.001z" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(135 16.5 16.5)" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(-135 16.5 16.5)" />
     </g>
   </svg>
 )
@@ -650,6 +648,26 @@ export const SigningPen = (
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
       <g id="Icon/Edit-White" fillRule="nonzero" stroke="#FFFFFF">
         <path d="M1,18.4173032 L1,23 L5.58269685,23 L18.2857143,10.4285714 L13.7030174,5.84587458 L1,18.4173032 Z M22.6425496,5.9401472 C23.1191501,5.46354673 23.1191501,4.69365366 22.6425496,4.21705319 L19.7829468,1.35745035 C19.3063463,0.880849882 18.5364533,0.880849882 18.0598528,1.35745035 L15.8234967,3.59380642 L20.4061936,8.17650326 L22.6425496,5.9401472 Z" id="Shape" />
+      </g>
+    </g>
+  </svg>
+)
+
+export const showMore = (
+  <svg width="14px" height="14px" viewBox="0 0 14 14">
+    <defs />
+    <g id="Reporting:-Dispute" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Reporting_Dispute" transform="translate(-297.000000, -247.000000)">
+        <g id="Reporting/Header:-Dispute" transform="translate(73.000000, 40.000000)">
+          <g id="Group-7" transform="translate(39.000000, 166.000000)">
+            <g id="show-more" transform="translate(186.000000, 42.000000)">
+              <circle id="Oval" stroke="#A7A2B2" cx="6" cy="6" r="6" />
+              <circle id="Oval-2" fill="#A7A2B2" fillRule="nonzero" cx="3" cy="6" r="1" />
+              <circle id="Oval-3" fill="#A7A2B2" fillRule="nonzero" cx="6" cy="6" r="1" />
+              <circle id="Oval-4" fill="#A7A2B2" fillRule="nonzero" cx="9" cy="6" r="1" />
+            </g>
+          </g>
+        </g>
       </g>
     </g>
   </svg>

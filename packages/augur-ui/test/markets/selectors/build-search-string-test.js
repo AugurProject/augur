@@ -23,7 +23,7 @@ describe('modules/markets/selectors/build-search-string.js', () => {
   })
 
   it('keyword is too short to search on', () => {
-    const actual = buildSearchString('sue', [])
+    const actual = buildSearchString('s', [])
     const expected = undefined
     assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
   })
