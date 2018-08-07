@@ -75,12 +75,7 @@ describe("Create market page", () => {
     await expect(page).toClick("button", { text: "Next: Resolution" });
 
     // Fill out Resolution page
-    await expect(page).toClick("button", { text: "Outcome will be detailed on a public website" });
-    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
-    await expect(page).toClick("button", { text: "Someone Else" });
-    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(2) ul li div input", "0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6");
-
-    // Confirm that the Datepicker doesn't allow you to choose a day in the past
+    // Confirm that the Datepicker doesn't allow the user to choose a day in the past
     await expect(page).toClick("#cm__input--date");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
@@ -96,6 +91,7 @@ describe("Create market page", () => {
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
+
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
@@ -103,6 +99,25 @@ describe("Create market page", () => {
     endDateString = await page.$eval("#cm__input--date", el => el.value);
     endDateString += " 11:59 PM";
     const endDate = new Date(endDateString);
+
+    // Verify that the Designated Reporter is required
+    await expect(page).toClick("button", { text: "Outcome will be detailed on a public website" });
+    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "a");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await page.keyboard.press("Backspace");
+
+    // Verify that the Resolution Source is required
+    await expect(page).toClick("button", { text: "Someone Else" });
+    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(2) ul li div input", "0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
+
+    // TODO: Verify that End Date & End Time fields are required
+    // TODO: Create a market with "Myself" set as the Designated Reporter. Verify that that user is the only one who sees the market when it's in the Designated Reporting phase
+    // TODO: Create a market with "Someone Else" as the Designated Reporter. Verify that that user is the only user that sees the market when it's in the Designated Reporting phase
 
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
@@ -201,12 +216,6 @@ describe("Create market page", () => {
     // Verify liquidity got created
     // await verifyLiquidity(orders);
   });
-
-  // TODO: Each section is required
-  // TODO: If you select "Outcome will be detailed on a public website" you should see a text input appear to allow website to be entered. This input should be required if shown
-  // TODO: If you select "Someone Else" in the "Designated Reporter" section, then you should see a text input appear and you should be required to enter an ethereum address if this input is shown
-  // TODO: Create a market with yourself set as the Designated Reporter. Verify that you are the only user that sees the market when its in the Designated Reporting phase
-  // TODO: Create a market with someone else as the Designated Reporter. Verify that that user is the only user that see the market when its in the Designated Reporting phase
 
   it("should allow user to create a new categorical market", async () => {
     // Go to create-market page & wait for it to load
