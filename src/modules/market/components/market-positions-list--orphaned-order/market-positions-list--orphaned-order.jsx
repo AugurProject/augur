@@ -9,7 +9,7 @@ import { SELL } from 'modules/trade/constants/types'
 
 import Styles from 'modules/market/components/market-positions-list--order/market-positions-list--order.styles'
 
-export default class Order extends Component {
+export default class OrphanedOrder extends Component {
   static propTypes = {
     isExtendedDisplay: PropTypes.bool,
     isMobile: PropTypes.bool,

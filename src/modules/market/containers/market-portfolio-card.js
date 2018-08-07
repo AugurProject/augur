@@ -8,11 +8,13 @@ import { selectMarket } from 'modules/market/selectors/market'
 import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
+import { selectOrphanOrders } from 'src/select-state'
 
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestampInSeconds(state),
   linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.market.id), state.loginAccount),
   closePositionStatus: getClosePositionStatus(),
+  orphanedOrders: selectOrphanOrders(state).filter(order => order.marketId === ownProps.market.id),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

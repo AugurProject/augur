@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
 
+import MarketPositionsListOrphanedOrder from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
@@ -27,6 +28,7 @@ export default class MarketPortfolioCard extends Component {
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
     getWinningBalances: PropTypes.func.isRequired,
+    orphanedOrders: PropTypes.array.isRequired,
   }
 
   static defaultProps = {
@@ -66,6 +68,7 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       closePositionStatus,
+      orphanedOrders,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -84,7 +87,9 @@ export default class MarketPortfolioCard extends Component {
       default:
         localButtonText = 'View'
     }
-
+    if (orphanedOrders.length > 0) {
+      console.log(orphanedOrders)
+    }
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -256,6 +261,20 @@ export default class MarketPortfolioCard extends Component {
                       closePositionStatus={closePositionStatus}
                     />
                   ))
+                ))
+                }
+                { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcome}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay
+                    isMobile={isMobile}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    isOrphaned
+                  />
                 ))
                 }
               </div>
