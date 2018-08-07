@@ -418,13 +418,11 @@ export const Close = (
 )
 
 export const CloseDark = (
-  <svg viewBox="0 0 24 24">
-    <defs />
-    <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
-      <g id="Icon/Close" stroke="#44415a">
-        <path d="M2.25937312,2.25937312 L21.7139306,21.7139306" id="CloseLine" />
-        <path d="M21.8116947,2.3571372 L2.3571372,21.8116947 L21.8116947,2.3571372 Z" id="CloseLineJoinRound" strokeLinejoin="round" />
-      </g>
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+    <g fill="none" fillRule="nonzero" transform="translate(-5 -5)">
+      <path fill="#DBDAE1" d="M8.721 24.278c-4.295-4.296-4.295-11.26 0-15.556 4.297-4.296 11.261-4.296 15.557 0 4.296 4.295 4.296 11.26 0 15.557-4.296 4.295-11.26 4.295-15.557-.001z" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(135 16.5 16.5)" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(-135 16.5 16.5)" />
     </g>
   </svg>
 )
