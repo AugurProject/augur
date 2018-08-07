@@ -34,6 +34,7 @@ export default class Input extends Component {
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
     isLoading: PropTypes.bool,
+    onFocus: PropTypes.func,
   };
 
   constructor(props) {
@@ -47,6 +48,7 @@ export default class Input extends Component {
     this.handleOnChange = this.handleOnChange.bind(this)
     this.handleOnBlur = this.handleOnBlur.bind(this)
     this.handleClear = this.handleClear.bind(this)
+    this.handleOnFocus = this.handleOnFocus.bind(this)
     this.handleToggleVisibility = this.handleToggleVisibility.bind(this)
     this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200)
   }
@@ -78,6 +80,11 @@ export default class Input extends Component {
   handleOnBlur = () => {
     this.props.onChange(this.state.value)
     this.props.onBlur && this.props.onBlur()
+  };
+
+  handleOnFocus = () => {
+    this.props.onChange(this.state.value)
+    this.props.onFocus && this.props.onFocus()
   };
 
   handleClear = () => {
@@ -113,6 +120,7 @@ export default class Input extends Component {
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
             placeholder={p.placeholder}
+            onFocus={this.handleOnFocus}
           />
         }
 
@@ -123,6 +131,7 @@ export default class Input extends Component {
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
+            onFocus={this.handleOnFocus}
           />
         }
 

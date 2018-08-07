@@ -42,6 +42,8 @@ export function formatDate(d) {
     full: date.toUTCString(),
     timestamp: date.getTime() / 1000,
     utcLocalOffset: localOffset,
+    clockTimeLocal: `${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffsetFormatted})`,
+    formattedSimpleData: `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`,
   }
 }
 

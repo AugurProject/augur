@@ -94,7 +94,7 @@ export default class CreateMarketReview extends Component {
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
           gasPrice,
-          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
+          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue || '0', { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
         }, this.updateFunds(this.getFundsString()))
