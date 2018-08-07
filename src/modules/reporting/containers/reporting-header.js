@@ -16,6 +16,7 @@ const mapStateToProps = state => ({
   doesUserHaveRep: state.loginAccount.rep > 0,
   forkReputationGoal: state.universe.forkReputationGoal,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
+  isLogged: state.isLogged,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -654,3 +654,23 @@ export const SigningPen = (
     </g>
   </svg>
 )
+
+export const showMore = (
+  <svg width="14px" height="14px" viewBox="0 0 14 14">
+    <defs />
+    <g id="Reporting:-Dispute" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Reporting_Dispute" transform="translate(-297.000000, -247.000000)">
+        <g id="Reporting/Header:-Dispute" transform="translate(73.000000, 40.000000)">
+          <g id="Group-7" transform="translate(39.000000, 166.000000)">
+            <g id="show-more" transform="translate(186.000000, 42.000000)">
+              <circle id="Oval" stroke="#A7A2B2" cx="6" cy="6" r="6" />
+              <circle id="Oval-2" fill="#A7A2B2" fillRule="nonzero" cx="3" cy="6" r="1" />
+              <circle id="Oval-3" fill="#A7A2B2" fillRule="nonzero" cx="6" cy="6" r="1" />
+              <circle id="Oval-4" fill="#A7A2B2" fillRule="nonzero" cx="9" cy="6" r="1" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
