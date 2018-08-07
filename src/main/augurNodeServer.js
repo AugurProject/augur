@@ -20,7 +20,7 @@ const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000;
 
 const defaultConfig = {
   'network': 'mainnet',
-  'version': '1.0.0',
+  'version': '1.0.1',
   'uiPort': '8080',
   'sslPort': '8443',
   'networks': {
@@ -45,6 +45,11 @@ const defaultConfig = {
     'local': {
       'http': 'http://127.0.0.1:8545',
       'name': 'Local',
+      'ws': 'ws://127.0.0.1:8546'
+    },
+    'lightclient': {
+      'http': 'http://127.0.0.1:8545',
+      'name': 'Local Light Node',
       'ws': 'ws://127.0.0.1:8546'
     },
     'mainnet': {
@@ -72,6 +77,12 @@ function AugurNodeServer() {
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
   } else {
     this.config = JSON.parse(fs.readFileSync(this.configPath))
+    if (this.config.version === "1.0.0") {
+      this.config.networks.lightclient = defaultConfig.networks.lightclient
+      this.config.version = "1.0.1"
+      this.config.network = 'lightclient'
+      fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
+    }
   }
   this.networkConfig = this.config.networks[this.config.network]
   this.augur = new Augur()
