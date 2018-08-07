@@ -8,38 +8,43 @@
 
 .Order__cancel {
   .button--transparent();
+
   display: inline-block;
 }
 
 .Order__learnMore {
-	position: absolute;
-	left: 0;
-	right: 0;
-	margin-top: 70px;
-	background-color: @color-outcome-six;
-	font-size: 12px;
-  	color: @color-darkpurple;
-  	padding: 16px 8px;
+  background-color: @color-outcome-six;
+  color: @color-darkpurple;
+  font-size: 12px;
+  left: 0;
+  margin-top: 70px;
+  padding: 16px 8px;
+  position: absolute;
+  right: 0;
 }
 
 .Order__link {
-	text-decoration: underline;
-	font-size: 12px;
-	color: @color-purple;
-	font-weight: 700;
-	margin-left: 8px;
+  color: @color-purple;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 8px;
+  text-decoration: underline;
 }
+
 .Order__learnMore::after {
-	bottom: 100%;
-	left: 1.1%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-	border-color: rgba(255, 213, 0, 0);
-	border-bottom-color: @color-outcome-six;
-	border-width: 11px;
-	margin-left: -11px;
+  border: solid transparent;
+  border-bottom-color: @color-outcome-six;
+  border-width: 11px;
+  bottom: 100%;
+  content: " ";
+  height: 0;
+  left: 1.1%;
+  margin-left: -11px;
+  pointer-events: none;
+  position: absolute;
+  width: 0;
+}
+
+.Order__learnMore-extended::after {
+  left: 3.4%;
 }

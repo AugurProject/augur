@@ -17,7 +17,6 @@ export default class Order extends Component {
     order: PropTypes.object,
     pending: PropTypes.bool,
     outcome: PropTypes.object,
-    isOrphanedOrder: PropTypes.bool,
   }
 
   constructor(props) {
@@ -67,7 +66,6 @@ export default class Order extends Component {
       order,
       pending,
       outcome,
-      isOrphanedOrder
     } = this.props
     const { orderCancellationStatus } = order
     const s = this.state

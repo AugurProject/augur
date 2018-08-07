@@ -29,6 +29,7 @@ export default class MarketPortfolioCard extends Component {
     finalizeMarket: PropTypes.func.isRequired,
     getWinningBalances: PropTypes.func.isRequired,
     orphanedOrders: PropTypes.array.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -69,6 +70,7 @@ export default class MarketPortfolioCard extends Component {
       market,
       closePositionStatus,
       orphanedOrders,
+      cancelOrphanedOrder,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -86,9 +88,6 @@ export default class MarketPortfolioCard extends Component {
         break
       default:
         localButtonText = 'View'
-    }
-    if (orphanedOrders.length > 0) {
-      console.log(orphanedOrders)
     }
     return (
       <article className={CommonStyles.MarketCommon__container}>
@@ -274,20 +273,7 @@ export default class MarketPortfolioCard extends Component {
                     outcome={order}
                     closePositionStatus={closePositionStatus}
                     isOrphaned
-                  />
-                ))
-                }
-                { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
-                  <MarketPositionsListOrphanedOrder
-                    key={order.orderId}
-                    outcomeName={order.outcome}
-                    order={order}
-                    pending={false}
-                    isExtendedDisplay
-                    isMobile={isMobile}
-                    outcome={order}
-                    closePositionStatus={closePositionStatus}
-                    isOrphaned
+                    cancelOrphanedOrder={cancelOrphanedOrder}
                   />
                 ))
                 }
