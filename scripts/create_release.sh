@@ -4,9 +4,9 @@
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 GET_VERSION="node $SCRIPT_DIR/get-version.js"
 NPM_VERSION=${NPM_VERSION:-patch}
-POST_RELEASE_VERSION=${NPM_VERSION:-patch}
+POST_RELEASE_VERSION=${POST_RELEASE_VERSION:-patch}
 CURRENT_VERSION="$($GET_VERSION ../package.json)"
-RELEASE_VERSION="${VERSION%-snapshot}"
+RELEASE_VERSION="${CURRENT_VERSION%-snapshot}"
 RELEASE_BRANCH="release-$RELEASE_VERSION"
 
 # removes -snapshot from version
