@@ -193,23 +193,9 @@ export default class CreateMarketForm extends Component {
     const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
     const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
     const shareBalances = newMarket.outcomes.map(outcome => 0)
-    let outcome
+    const outcome = order.outcome
     let initialLiquidityEth
     let initialLiquidityGas
-
-    switch (newMarket.type) {
-      case CATEGORICAL:
-        newMarket.outcomes.forEach((outcomeName, index) => {
-          if (this.state.selectedOutcome === outcomeName) outcome = index
-        })
-        break
-      case SCALAR:
-        outcome = this.state.selectedOutcome
-        break
-      default:
-        outcome = 1
-    }
-
     const orderInfo = {
       orderType: order.type === BID ? 0 : 1,
       outcome,

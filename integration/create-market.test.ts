@@ -167,8 +167,7 @@ describe("Create market page", () => {
         price: "0.3400",
       },
     ];
-    // TODO: Fix liquidity creation & re-enable liquidity verification
-    // await createLiquidity(orders);
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -214,7 +213,7 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__properties .core-properties-styles_CoreProperties__property:nth-child(2) span:nth-child(2)", { text: "2.0000%", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
-    // await verifyLiquidity(orders);
+    await verifyLiquidity(orders);
   });
 
   it("should allow user to create a new categorical market", async () => {
@@ -248,9 +247,7 @@ describe("Create market page", () => {
 
     let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
     expect(isDisabled).toEqual(true);
-    await page.$eval("[data-testid='categoricalOutcome-1']", input => input.value = "");
 
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(1) input", "Outcome 1");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(2) input", "Outcome 2");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(3) input", "Outcome 3");
     await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(4) input", "Outcome 4");
@@ -318,8 +315,7 @@ describe("Create market page", () => {
         price: "0.3400",
       },
     ];
-    // TODO: Fix liquidity creation & re-enable liquidity verification
-    // await createLiquidity(orders);
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -354,7 +350,7 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-outcomes-list-styles_MarketOutcomesList__table-body .market-outcomes-list--outcome-styles_Outcome:nth-child(8) li:nth-child(1)", { text: "Outcome 8", timeout: timeoutMilliseconds });
 
     // Verify liquidity got created
-    // await verifyLiquidity(orders);
+    await verifyLiquidity(orders);
   });
 
   it("should allow user to create a new scalar market", async () => {
@@ -489,8 +485,7 @@ describe("Create market page", () => {
         price: "1.0000",
       },
     ];
-    // TODO: Fix liquidity creation & re-enable liquidity verification
-    // await createLiquidity(orders);
+    await createLiquidity(orders);
 
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
@@ -527,6 +522,6 @@ describe("Create market page", () => {
     await expect(placeholder).toEqual("0.0001 Shares");
 
     // Verify liquidity got created
-    // await verifyLiquidity(orders);
+    await verifyLiquidity(orders);
   });
 });
