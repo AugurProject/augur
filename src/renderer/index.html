@@ -13,7 +13,6 @@
         <section id="network_config_screen" style="display:block;">
           <div class="instructions">
             <div class="instruction">Please select an Ethereum node to connect to.</div>
-            <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
           </div>
           <div style="padding-bottom:40px">
             <div class="label">Select Configuration:</div>
@@ -22,7 +21,8 @@
             </div>
           </div>
           <div class="borderTop">
-            <div class="label" style="padding-top:0px">Configuration Name:</div>
+            <div class="instruction">Only one endpoint (HTTP or Websocket) is required.</div>
+            <div class="label" style="padding-top:40px">Configuration Name:</div>
             <div>
               <input class='inputText' id="network_name" name="name" type="text" onchange="renderer.clearNotice()">
             </div>
@@ -86,6 +86,23 @@
               <span id="current_network" class="status">None</span>
               <span id="network_status" class="notConnected" />
             </div>
+          </div>
+        </div>
+        <div id="geth_syncing_info" style="display:none">
+          <div class='dbInfo'>
+            Syncing Local Geth
+          </div>
+          <div>Peers: <span style="color:#A7A2B2" id='geth_peer_count'>0</span></div>
+          <div id='geth_syncPercentInfo'>
+            <span id='geth_sync_percent'>No Peers</span>
+          </div>
+          <div id="geth_blocks_behind_container" style="display:none" class='blocksBehind'>
+            <span id="geth_blocks_behind">0</span> blocks behind
+          </div>
+          <div id="geth_blocks_processed" style="display:none" class='blocksProcessed'>
+            <div id="geth_blocks_synced">-</div>/
+            <span id="geth_highest_block">-</span>
+            <div class='blocksLabel'>blocks processed</div>
           </div>
         </div>
         <div id="syncing_info" style="display:none;">

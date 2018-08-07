@@ -25,15 +25,18 @@ function addCommas(number) {
 
 function Renderer() {
     this.isSynced = false;
+    this.augurNodeStarted = false;
     this.isSsl = false;
     this.config = {};
     this.selectedNetworkForm = "";
     this.connectedServer = "";
     this.haveHitBack = false;
     this.spinnerCount = 0;
+    this.gethOn = false;
     this.uiPort = 8080;
     this.sslPort = 8443;
     this.spinner = ["&bull;", "&bull;&bull;", "&bull;&bull;&bull;"]
+    this.LIGHT_CLIENT = 'lightclient'
 
     ipcRenderer.send('requestConfig');
     setInterval(() => {
@@ -48,6 +51,9 @@ function Renderer() {
     document.getElementById("network_config_screen").addEventListener("input", this.checkConnectValidity.bind(this))
 
     ipcRenderer.on('latestSyncedBlock', this.onLatestSyncedBlock.bind(this));
+    ipcRenderer.on('peerCountData', this.onPeerCountData.bind(this));
+    ipcRenderer.on('latestSyncedGethBlock', this.onLatestSyncedGethBlock.bind(this));
+    ipcRenderer.on('gethFinishedSyncing', this.onGethFinishedSyncing.bind(this));
     ipcRenderer.on('config', this.onReceiveConfig.bind(this));
     ipcRenderer.on('saveNetworkConfigResponse', this.onSaveNetworkConfigResponse.bind(this));
     ipcRenderer.on('consoleLog', this.onConsoleLog.bind(this));
@@ -64,9 +70,14 @@ function Renderer() {
     ipcRenderer.on('noResetDatabase', this.onNoResetDatabase.bind(this))
     ipcRenderer.on('bulkSyncStarted', this.onBulkSyncStarted.bind(this))
     ipcRenderer.on('bulkSyncFinished', this.onBulkSyncFinished.bind(this))
+    ipcRenderer.on('augurNodeStatus', this.onAugurNodeStatus.bind(this))
 
     window.onerror = this.onWindowError.bind(this);
     document.getElementById("version").innerHTML = app.getVersion()
+}
+
+Renderer.prototype.onAugurNodeStatus = function(event, status) {
+  this.augurNodeStarted = status
 }
 
 Renderer.prototype.onBulkSyncStarted = function() {
@@ -177,7 +188,11 @@ Renderer.prototype.connectToServer = function (event) {
 
   this.isSynced = false;
   this.spinnerCount = 0;
-  ipcRenderer.send("start", data);
+  if (data.network === this.LIGHT_CLIENT) {
+    this.toggleGeth()
+  } else {
+    ipcRenderer.send("start", data);
+  }
 }
 
 Renderer.prototype.goToOpenApp = function (event) {
@@ -234,6 +249,18 @@ Renderer.prototype.saveNetworkConfig = function (event) {
     }, 2000);
     const data = this.getNetworkConfigFormData();
     ipcRenderer.send("saveNetworkConfig", data);
+}
+
+Renderer.prototype.toggleGeth = function () {
+  this.showNotice(this.gethOn ? "Stopping Geth..." : "Starting Geth...", "success")
+  this.gethOn = !this.gethOn;
+  const gethSyncInfo = document.getElementById("geth_syncing_info");
+  gethSyncInfo.style.display = this.gethOn ? "block" : "none";
+  // clear error after 4 seconds
+  setTimeout(() => {
+    this.clearNotice()
+  }, 4000);
+  ipcRenderer.send("toggleGeth");
 }
 
 Renderer.prototype.onSaveNetworkConfigResponse = function (event, data) {
@@ -313,15 +340,51 @@ Renderer.prototype.renderNetworkOptions = function () {
     });
 }
 
-Renderer.prototype.onLatestSyncedBlock = function (event, data) {
+Renderer.prototype.onGethFinishedSyncing = function (event) {
+  const syncPercent = document.getElementById("geth_sync_percent");
+  const blocksProcessed = document.getElementById("geth_blocks_processed");
+  const blocksBehind = document.getElementById("geth_blocks_behind_container");
+
+  blocksBehind.style.display = "none";
+  blocksProcessed.style.display = "none";
+  syncPercent.innerHTML = "100%"
+
+  document.getElementById("geth_syncPercentInfo").style.color = '#00F1C4';
+
+  const data = this.getNetworkConfigFormData();
+  if (!this.augurNodeStarted) ipcRenderer.send("start", data);
+}
+
+Renderer.prototype.onPeerCountData = function (event, data) {
+  const peerCount = document.getElementById("geth_peer_count");
+  peerCount.innerHTML = data.peerCount.toFixed();
+  peerCount.style.color = data.peerCount > 0 ? '#00F1C4' : '#A7A2B2';
+  if (data.peerCount === 0) {
+    const syncPercent = document.getElementById("geth_sync_percent");
+    syncPercent.innerHTML = "No Peers"
+    document.getElementById("geth_syncPercentInfo").style.color = '#A7A2B2';
+  }
+}
+
+Renderer.prototype.onLatestSyncedGethBlock = function (event, data) {
+  const blocksProcessed = document.getElementById("geth_blocks_processed");
+  const blocksBehind = document.getElementById("geth_blocks_behind_container");
+
+  blocksBehind.style.display = "block";
+  blocksProcessed.style.display = "block";
+
+  this.onLatestSyncedBlock(event, data, true);
+}
+
+Renderer.prototype.onLatestSyncedBlock = function (event, data, isGeth) {
     let blocksRemaining = null;
     let blocksRemainingCountLbl = "0";
     let blocksSyncedNum = null;
 
-    const highestBlock = document.getElementById("highest_block");
-    const blocksSynced = document.getElementById("blocks_synced");
-    const syncPercent = document.getElementById("sync_percent");
-    const blocksBehind = document.getElementById("blocks_behind");
+    const highestBlock = document.getElementById(isGeth? "geth_highest_block" : "highest_block");
+    const blocksSynced = document.getElementById(isGeth? "geth_blocks_synced" : "blocks_synced");
+    const syncPercent = document.getElementById(isGeth? "geth_sync_percent" : "sync_percent");
+    const blocksBehind = document.getElementById(isGeth? "geth_blocks_behind" : "blocks_behind");
 
     const lastSyncBlockNumber = data.lastSyncBlockNumber;
     const highestBlockNumber = data.highestBlockNumber;
@@ -345,12 +408,13 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data) {
     highestBlock.innerHTML = addCommas(highestBlockNumber) || 0;
     blocksSynced.innerHTML = addCommas(blocksSyncedNum)  || blocksRemainingCountLbl;
     blocksBehind.innerHTML = blocksSyncedNum ? addCommas(highestBlockNumber - blocksSyncedNum)  : '0';
-    syncPercent.innerHTML = pctLbl || 0
+    syncPercent.innerHTML = pctLbl || 0;
+    if (isGeth) syncPercent.innerHTML += "%";
 
     blocksSynced.style.minWidth = '22px';
 
-    document.getElementById("syncPercentInfo").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
-    document.getElementById("augur_ui_button").disabled = !this.isSynced;
+    document.getElementById(isGeth ? "geth_syncPercentInfo" : "syncPercentInfo").style.color = this.isSynced ? '#00F1C4' : '#A7A2B2';
+    if (!isGeth) document.getElementById("augur_ui_button").disabled = !this.isSynced;
 }
 
 Renderer.prototype.onConsoleLog = function (event, message) {
