@@ -148,13 +148,13 @@ AugurNodeServer.prototype.startServer = function (event) {
 }
 
 AugurNodeServer.prototype.onEthereumDisconnect = function (event) {
-  event.sender.send('error', {
+  if (this.window) this.window.webContents.send('error', {
     error: "Disconnected from Ethereum Node. Attempting to reconnect..."
   })
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function (event) {
-  event.sender.send('showNotice', {
+  if (this.window) this.window.webContents.send('showNotice', {
     message: "Reconnected",
     class: "success"
   });
@@ -177,7 +177,7 @@ AugurNodeServer.prototype.restart = function (event) {
 
 AugurNodeServer.prototype.onError = function (err) {
   const errorMessage = (err || {}).message || 'Unexpected Error'
-  event.sender.send('error', {
+  if (this.window) this.window.webContents.send('error', {
     error: errorMessage
   })
 }
