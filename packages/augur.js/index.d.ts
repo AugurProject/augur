@@ -170,7 +170,7 @@ export interface Order {
   owner: string;
   creationTime: number;
   creationBlockNumber: number;
-  orderState: OrderState;
+  orderState: ORDER_STATE;
   price: number;
   amount: number;
   fullPrecisionPrice: string;
