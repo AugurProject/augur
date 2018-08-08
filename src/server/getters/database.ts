@@ -23,6 +23,7 @@ import {
   TradingHistoryRow,
 } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
+import Augur from "augur.js";
 
 export interface Dictionary {
   [key: string]: any;
@@ -310,4 +311,8 @@ export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, .
       return _.fromPairs(mapped) as Pick<T, K>;
     })
     .value()!;
+}
+
+export function getCashAddress(augur: Augur) {
+  return augur.contracts.addresses[augur.rpc.getNetworkID()].Cash;
 }
