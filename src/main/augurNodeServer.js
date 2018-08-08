@@ -98,6 +98,7 @@ function AugurNodeServer() {
   ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
   ipcMain.on('reset', this.onReset.bind(this))
   ipcMain.on('resetConfig', this.onResetConfig.bind(this))
+  ipcMain.on('stop', this.shutDownServer.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer

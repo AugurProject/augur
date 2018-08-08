@@ -188,6 +188,7 @@ Renderer.prototype.connectToServer = function () {
   this.isSynced = false
   this.spinnerCount = 0
   this.spinnerLigthCount = 0
+  if (this.augurNodeStarted) ipcRenderer.send('stop')
   if (data.network === this.LIGHT_CLIENT) {
     document.getElementById('connectedInfo').style.display = 'none'
     document.getElementById('connectedInfoLight').style.display = 'block'
@@ -200,6 +201,7 @@ Renderer.prototype.connectToServer = function () {
     }, 500)
 
   } else {
+    if (this.gethOn) this.toggleGeth()
     document.getElementById('connectedInfoLight').style.display = 'none'
     document.getElementById('connectedInfo').style.display = 'flex'
     ipcRenderer.send('start', data)
