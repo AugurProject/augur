@@ -350,6 +350,7 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onGethFinishedSyncing = function () {
+  this.gethSyncd = true
   const peerSyncing = document.getElementById('peerSyncing')
   const peerSynced = document.getElementById('peerSynced')
 
@@ -363,6 +364,9 @@ Renderer.prototype.onGethFinishedSyncing = function () {
 Renderer.prototype.onPeerCountData = function (event, data) {
   const peerLooking = document.getElementById('peerLooking')
   const peerSyncing = document.getElementById('peerSyncing')
+
+  if (this.gethSyncd) return
+
   if (data.peerCount > 0) {
     peerSyncing.style.display = 'block'
     peerLooking.style.display = 'none'
@@ -373,6 +377,7 @@ Renderer.prototype.onPeerCountData = function (event, data) {
 }
 
 Renderer.prototype.onLatestSyncedGethBlock = function (event, data) {
+  this.gethSyncd = false
   this.onLatestSyncedBlock(event, data, true)
 }
 
