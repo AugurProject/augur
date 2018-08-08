@@ -405,13 +405,15 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data, isGeth) {
   const pct = lastSyncBlockNumber ? ((lastSyncBlockNumber - uploadBlockNumber) / (highestBlockNumber - uploadBlockNumber) * 100) : 0
   const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
 
-  highestBlock.innerHTML = addCommas(highestBlockNumber) || 0
-  blocksSynced.innerHTML = addCommas(blocksSyncedNum)  || blocksRemainingCountLbl
-  blocksBehind.innerHTML = blocksSyncedNum ? addCommas(highestBlockNumber - blocksSyncedNum)  : '0'
   syncPercent.innerHTML = pctLbl || 0
   if (isGeth) syncPercent.innerHTML += '%'
 
-  blocksSynced.style.minWidth = '22px'
+  if (!isGeth) {
+    highestBlock.innerHTML = addCommas(highestBlockNumber) || 0
+    blocksSynced.innerHTML = addCommas(blocksSyncedNum)  || blocksRemainingCountLbl
+    blocksBehind.innerHTML = blocksSyncedNum ? addCommas(highestBlockNumber - blocksSyncedNum)  : '0'
+    blocksSynced.style.minWidth = '22px'
+  }
 
   document.getElementById(isGeth ? 'geth_syncPercentInfo' : 'syncPercentInfo').style.color = this.isSynced ? '#00F1C4' : '#A7A2B2'
   if (!isGeth) document.getElementById('augur_ui_button').disabled = !this.isSynced
