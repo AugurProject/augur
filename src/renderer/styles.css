@@ -273,8 +273,9 @@ input {
 }
 
 #geth_sync_percent {
-  font-size: 48px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 5px;
 }
 
 .blocksBehind {
