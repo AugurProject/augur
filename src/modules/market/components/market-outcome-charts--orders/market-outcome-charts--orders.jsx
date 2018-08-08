@@ -13,6 +13,11 @@ import Styles from 'modules/market/components/market-outcome-charts--orders/mark
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 import { isEmpty, isEqual } from 'lodash'
 
+
+function findTrailingZeros(number) {
+  return number.match(/[0]+$/)
+}
+
 export default class MarketOutcomeChartsOrders extends Component {
   static propTypes = {
     sharedChartMargins: PropTypes.object.isRequired,
@@ -53,10 +58,6 @@ export default class MarketOutcomeChartsOrders extends Component {
     ) {
       this.asks.scrollTop = this.asks.scrollHeight
     }
-  }
-
-  findTrailingZeros(number) {
-    return number.match(/[0]+$/)
   }
 
   render() {
@@ -137,7 +138,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: BUY,
                   })}
                 >
-                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#6d1d3d', marginLeft: '.5px' }}>{this.findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#6d1d3d', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_ask}
@@ -208,7 +209,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: SELL,
                   })}
                 >
-                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#135045', marginLeft: '.5px' }}>{this.findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#135045', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_bid}
