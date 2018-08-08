@@ -79,7 +79,7 @@
         </section>
       </section>
       <section class="sideMenu">
-        <div class="connectedInfo">
+        <div id="connectedInfo" class="connectedInfo">
           <div class="networkName">
             Connected to:
             <div class='neverBreakup'>
@@ -88,21 +88,17 @@
             </div>
           </div>
         </div>
-        <div id="geth_syncing_info" style="display:none">
-          <div class='dbInfo'>
-            Syncing Local Geth
-          </div>
-          <div>Peers: <span style="color:#A7A2B2" id='geth_peer_count'>0</span></div>
-          <div id='geth_syncPercentInfo'>
-            <span id='geth_sync_percent'>No Peers</span>
-          </div>
-          <div id="geth_blocks_behind_container" style="display:none" class='blocksBehind'>
-            <span id="geth_blocks_behind">0</span> blocks behind
-          </div>
-          <div id="geth_blocks_processed" style="display:none" class='blocksProcessed'>
-            <div id="geth_blocks_synced">-</div>/
-            <span id="geth_highest_block">-</span>
-            <div class='blocksLabel'>blocks processed</div>
+        <div id="connectedInfoLight" class="connectedInfo" style="display:none">
+          <div class="networkName">Connected to: <span style="font-weight: 700">Local Light Node</span>
+            <div id="peerLooking" class="syncLineInfo">
+              <span id="current_network">Looking for peers <span id="lookingAni"/></span>
+            </div>
+            <div id="peerSyncing" style="display:none" class="syncLineInfo">
+              Syncing<span id="geth_syncPercentInfo" ><span id="geth_sync_percent">0%</span></span>
+            </div>
+            <div id="peerSynced" style="display:none" class="syncLineInfo">
+              Synced<span id="network_status" class="connected" />
+            </div>
           </div>
         </div>
         <div id="syncing_info" style="display:none;">
