@@ -5,33 +5,33 @@ html {
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 300;
-  src: url('assets/fonts/3449FB_0_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Light.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 400;
-  src: url('assets/fonts/3449FB_1_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 500;
-  src: url('assets/fonts/3449FB_2_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Medium.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'DINPro';
+  font-family: 'roboto';
   font-weight: 600;
-  src: url('assets/fonts/3449FB_3_0.woff2') format('woff2');
+  src: url('assets/fonts/Roboto-Bold.woff2') format('woff2');
 }
 
 body {
   color: white;
   background-color: #231A3A;
-  font-family: 'DINPro', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -69,7 +69,7 @@ button {
 .container {
   display: flex;
   flex-grow: 1;
-  flex-direction: row; 
+  flex-direction: row;
   min-width: 800px;
   height: 100%;
 }
@@ -217,15 +217,28 @@ input {
   flex-grow: 1;
 }
 
+.syncLineInfo {
+  margin-top: 18px;
+}
+
 .connectedInfo {
   display: flex;
   max-height: 90px;
   background-color: white;
   flex-grow: 1;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   width: 100%;
   align-items: center;
   min-height: 90px;
+}
+
+#connectedInfoLight {
+  padding: 34px 0;
+  min-height: 50px;
+  max-height: 50px;
+  font-size: 16px;
+  color: #372e4b;
+  margin-bottom: 18px;
 }
 
 #syncing_info {
@@ -235,6 +248,16 @@ input {
   flex-grow: 1;
   flex-direction: column;
   padding: 40px 32px;
+}
+
+#geth_syncing_info {
+  max-height: 220px;
+  background-color: white;
+  flex-direction: column;
+  padding: 40px 0px;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: center;
 }
 
 .dbInfo {
@@ -250,9 +273,22 @@ input {
   margin-bottom: 16px;
 }
 
+#geth_syncPercentInfo {
+  font-size: 24px;
+  color: #A7A2B2;
+  padding-bottom: 13px;
+  margin-bottom: 10px;
+}
+
 #sync_percent {
   font-size: 48px;
   font-weight: 500;
+}
+
+#geth_sync_percent {
+  font-size: 20px;
+  font-weight: 600;
+  padding-left: 5px;
 }
 
 .blocksBehind {
@@ -262,6 +298,12 @@ input {
 }
 
 #blocks_behind {
+  font-size: 24px;
+  color: #372E4B;
+  font-weight: 500;
+}
+
+#geth_blocks_behind {
   font-size: 24px;
   color: #372E4B;
   font-weight: 500;
@@ -289,7 +331,7 @@ input {
   min-height: 24px;
   min-width: 24px;
   padding-left: 2rem;
-  padding-top: 0.1rem;
+  padding-top: 0.4rem;
 }
 
 .errorIcon {
@@ -308,7 +350,7 @@ input {
 
 .status {
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .networkSelect {
@@ -387,7 +429,7 @@ input {
   filter: brightness(90%);
 }
 
-.ledgerSupportText { 
+.ledgerSupportText {
   margin-top:  16px;
   font-size: 0.8rem;
   font-weight: 400;
@@ -418,6 +460,11 @@ input {
 }
 
 #blocks_synced {
+  display:inline-block;
+  margin-right: 5px;
+}
+
+#geth_blocks_synced {
   display:inline-block;
   margin-right: 5px;
 }
