@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
 
+import MarketPositionsListOrphanedOrder from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
@@ -27,6 +28,8 @@ export default class MarketPortfolioCard extends Component {
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
     getWinningBalances: PropTypes.func.isRequired,
+    orphanedOrders: PropTypes.array.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -66,6 +69,8 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       closePositionStatus,
+      orphanedOrders,
+      cancelOrphanedOrder,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -84,7 +89,6 @@ export default class MarketPortfolioCard extends Component {
       default:
         localButtonText = 'View'
     }
-
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -195,7 +199,7 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
                   key={outcome.id + outcome.marketId}
-                  outcomeName={outcome.name}
+                  outcomeName={outcome.outcome}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
@@ -256,6 +260,21 @@ export default class MarketPortfolioCard extends Component {
                       closePositionStatus={closePositionStatus}
                     />
                   ))
+                ))
+                }
+                { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcomeName}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay
+                    isMobile={isMobile}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    isOrphaned
+                    cancelOrphanedOrder={cancelOrphanedOrder}
+                  />
                 ))
                 }
               </div>

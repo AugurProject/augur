@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import MarketPositionsListOrphanedOrder from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -21,6 +22,8 @@ export default class MarketPositionsList extends Component {
     numCompleteSets: PropTypes.object,
     sellCompleteSets: PropTypes.func.isRequired,
     marketId: PropTypes.string.isRequired,
+    orphanedOrders: PropTypes.array.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -39,6 +42,8 @@ export default class MarketPositionsList extends Component {
       numCompleteSets,
       sellCompleteSets,
       marketId,
+      orphanedOrders,
+      cancelOrphanedOrder,
     } = this.props
     const s = this.state
 
@@ -105,6 +110,19 @@ export default class MarketPositionsList extends Component {
                     isMobile={false}
                   />
                 ))}
+                { (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcomeName || order.outcome}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay={false}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    cancelOrphanedOrder={cancelOrphanedOrder}
+                  />
+                ))
+                }
               </div>
             }
           </div>

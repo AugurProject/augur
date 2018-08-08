@@ -440,22 +440,14 @@ export const CloseBlack = (
 )
 
 export const CloseWithCircle = () => (
-  <svg width="33px" height="33px" viewBox="0 0 33 33">
-    <defs />
-    <g id="Notifications" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-      <g id="notification-bar" transform="translate(-1276.000000, -15.000000)" stroke="#231A3A">
-        <g id="Notification-bar" transform="translate(328.000000, 8.000000)">
-          <g id="dismiss" transform="translate(876.000000, 0.000000)">
-            <g id="icon" transform="translate(88.556349, 23.300776) rotate(45.000000) translate(-88.556349, -23.300776) translate(72.556349, 7.300776)">
-              <path d="M31.2786139,16.0836558 C31.2786139,7.69158167 24.4759074,0.88710131 16.0838332,0.88710131 C7.6899852,0.88710131 0.887278695,7.69158167 0.887278695,16.0836558 C0.887278695,24.47573 7.6899852,31.2784365 16.0838332,31.2784365 C24.4759074,31.2784365 31.2786139,24.47573 31.2786139,16.0836558 Z" id="Stroke-1" />
-              <path d="M15.9931896,8.35854846 L15.9931896,24.1333774" id="Stroke-3" />
-              <path d="M23.8800719,16.2456082 L8.10524299,16.2456082" id="Stroke-5" />
-            </g>
-          </g>
-        </g>
-      </g>
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+    <g fill="none" fillRule="nonzero" transform="translate(-5 -5)">
+      <path fill="#412468" d="M8.721 24.278c-4.295-4.296-4.295-11.26 0-15.556 4.297-4.296 11.261-4.296 15.557 0 4.296 4.295 4.296 11.26 0 15.557-4.296 4.295-11.26 4.295-15.557-.001z" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(135 16.5 16.5)" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(-135 16.5 16.5)" />
     </g>
-  </svg>)
+  </svg>
+)
 
 
 export const Notifications = unseenCount => (
