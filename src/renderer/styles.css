@@ -226,6 +226,8 @@ input {
   width: 100%;
   align-items: center;
   min-height: 90px;
+  padding: 40px 32px;
+
 }
 
 #syncing_info {
