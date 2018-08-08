@@ -130,13 +130,21 @@
     background-color: @color-lightpurple;
     color: @color-white;
   }
+
+  &:disabled,
+  &:disabled:hover {
+    background-color: transparent;
+    border: 1px solid @color-lightgray;
+    color: @color-lightgray;
+    cursor: default;
+  }
 }
 
 .button--transparent--disabled,
 .button--transparent:disabled,
 .button--transparent:disabled:hover {
-  background-color: @color-transparent;
-  border: solid 1px @color-lightgray;
+  background-color: transparent;
+  border: 1px solid @color-lightgray;
   color: @color-lightgray;
   cursor: default;
 }

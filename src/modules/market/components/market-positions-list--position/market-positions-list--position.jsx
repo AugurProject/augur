@@ -158,7 +158,7 @@ export default class MarketPositionsListPosition extends Component {
         <li>
           {positionShares !== '0' || netPositionShares !== '0' ?
             <button className={Styles.Position__closeButton} onClick={this.toggleConfirm}>Close</button> :
-            <span className={Styles.NotActive}>Close</span>
+            <button className={Styles.Position__closeButton} disabled>Close</button> 
           }
         </li>
         <div
