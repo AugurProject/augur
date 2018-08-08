@@ -55,6 +55,10 @@ export default class MarketOutcomeChartsOrders extends Component {
     }
   }
 
+  findTrailingZeros(number) {
+    return number.match(/[0]+$/)
+  }
+
   render() {
     const {
       fixedPrecision,
@@ -133,7 +137,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: BUY,
                   })}
                 >
-                  <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#6d1d3d', marginLeft: '.5px' }}>{this.findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_ask}
@@ -204,7 +208,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: SELL,
                   })}
                 >
-                  <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#135045', marginLeft: '.5px' }}>{this.findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_bid}
