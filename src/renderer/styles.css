@@ -217,6 +217,10 @@ input {
   flex-grow: 1;
 }
 
+.syncLineInfo {
+  margin-top: 18px;
+}
+
 .connectedInfo {
   display: flex;
   max-height: 90px;
@@ -226,8 +230,15 @@ input {
   width: 100%;
   align-items: center;
   min-height: 90px;
-  padding: 40px 32px;
+}
 
+#connectedInfoLight {
+  padding: 34px 0;
+  min-height: 50px;
+  max-height: 50px;
+  font-size: 16px;
+  color: #372e4b;
+  margin-bottom: 18px;
 }
 
 #syncing_info {
@@ -320,7 +331,7 @@ input {
   min-height: 24px;
   min-width: 24px;
   padding-left: 2rem;
-  padding-top: 0.1rem;
+  padding-top: 0.4rem;
 }
 
 .errorIcon {
@@ -339,7 +350,7 @@ input {
 
 .status {
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .networkSelect {

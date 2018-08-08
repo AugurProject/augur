@@ -201,7 +201,7 @@ Renderer.prototype.connectToServer = function () {
 
   } else {
     document.getElementById('connectedInfoLight').style.display = 'none'
-    document.getElementById('connectedInfo').style.display = 'block'
+    document.getElementById('connectedInfo').style.display = 'flex'
     ipcRenderer.send('start', data)
   }
 }
