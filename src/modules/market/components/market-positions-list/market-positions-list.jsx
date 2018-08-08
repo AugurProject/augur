@@ -113,7 +113,7 @@ export default class MarketPositionsList extends Component {
                 { (orphanedOrders || []).map(order => (
                   <MarketPositionsListOrphanedOrder
                     key={order.orderId}
-                    outcomeName={order.outcome}
+                    outcomeName={order.outcomeName || order.outcome}
                     order={order}
                     pending={false}
                     isExtendedDisplay={false}

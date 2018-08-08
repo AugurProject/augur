@@ -9,13 +9,26 @@ import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
 import { cancelOrphanedOrder } from 'src/modules/orphaned-orders/actions'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
+import { find } from 'lodash'
 
-const mapStateToProps = (state, ownProps) => ({
-  currentTimestamp: selectCurrentTimestampInSeconds(state),
-  linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.market.id), state.loginAccount),
-  closePositionStatus: getClosePositionStatus(),
-  orphanedOrders: selectOrphanOrders(state).filter(order => order.marketId === ownProps.market.id),
-})
+const mapStateToProps = (state, ownProps) => {
+
+  const filteredOrphanOrders = selectOrphanOrders(state).filter(order => order.marketId === ownProps.market.id)
+
+  filteredOrphanOrders.forEach((order) => {
+    const id = order.outcome
+    const outcome = find(ownProps.market.outcomes, { id })
+    order.outcomeName = ownProps.market.marketType === CATEGORICAL ? outcome.description : outcome.name || order.price
+  })
+
+  return {
+    currentTimestamp: selectCurrentTimestampInSeconds(state),
+    linkType: ownProps.linkType || determineMarketLinkType(selectMarket(ownProps.market.id), state.loginAccount),
+    closePositionStatus: getClosePositionStatus(),
+    orphanedOrders: filteredOrphanOrders,
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   getWinningBalances: marketIds => dispatch(getWinningBalance(marketIds)),

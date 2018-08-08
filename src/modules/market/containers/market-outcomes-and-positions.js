@@ -8,6 +8,8 @@ import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-set
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status'
 import { selectOrphanOrders } from 'src/select-state'
 import { cancelOrphanedOrder } from 'src/modules/orphaned-orders/actions'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
+import { find } from 'lodash'
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
@@ -30,6 +32,16 @@ const mapStateToProps = (state, ownProps) => {
     }, [])
   }
 
+  const filteredOrphanOrders = selectOrphanOrders(state)
+    .filter(order => order.marketId === ownProps.marketId)
+
+  filteredOrphanOrders.forEach((order) => {
+    const id = order.outcome
+    const outcome = find(market.outcomes, { id })
+    order.outcomeName = market.marketType === CATEGORICAL ? outcome.description : outcome.name || order.price
+  })
+
+
   return {
     numCompleteSets: (market.myPositionsSummary && market.myPositionsSummary.numCompleteSets) || undefined,
     closePositionStatus: getClosePositionStatus(),
@@ -37,7 +49,7 @@ const mapStateToProps = (state, ownProps) => {
     outcomes: market.outcomes || [],
     positions,
     openOrders,
-    orphanedOrders: selectOrphanOrders(state).filter(order => order.marketId === ownProps.marketId),
+    orphanedOrders: filteredOrphanOrders,
   }
 }
 

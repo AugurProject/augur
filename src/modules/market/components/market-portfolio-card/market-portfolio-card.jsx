@@ -265,7 +265,7 @@ export default class MarketPortfolioCard extends Component {
                 { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
                   <MarketPositionsListOrphanedOrder
                     key={order.orderId}
-                    outcomeName={order.outcome}
+                    outcomeName={order.outcomeName}
                     order={order}
                     pending={false}
                     isExtendedDisplay
