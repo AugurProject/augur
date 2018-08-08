@@ -185,12 +185,23 @@ Renderer.prototype.connectToServer = function () {
   currentBlock.innerHTML = '-'
   blocksRemainingLbl.style.minWidth = 'unset'
 
-
   this.isSynced = false
   this.spinnerCount = 0
+  this.spinnerLigthCount = 0
   if (data.network === this.LIGHT_CLIENT) {
+    document.getElementById('connectedInfo').style.display = 'none'
+    document.getElementById('connectedInfoLight').style.display = 'block'
     this.toggleGeth()
+
+    // better to just have a static pulse wait indicator
+    setInterval(() => {
+      const lookingAni = document.getElementById('lookingAni')
+      lookingAni.innerHTML = this.spinner[this.spinnerLigthCount++ % this.spinner.length]
+    }, 500)
+
   } else {
+    document.getElementById('connectedInfoLight').style.display = 'none'
+    document.getElementById('connectedInfo').style.display = 'block'
     ipcRenderer.send('start', data)
   }
 }
@@ -254,8 +265,6 @@ Renderer.prototype.saveNetworkConfig = function (event) {
 Renderer.prototype.toggleGeth = function () {
   this.showNotice(this.gethOn ? 'Stopping Geth...' : 'Starting Geth...', 'success')
   this.gethOn = !this.gethOn
-  const gethSyncInfo = document.getElementById('geth_syncing_info')
-  gethSyncInfo.style.display = this.gethOn ? 'block' : 'none'
   // clear error after 4 seconds
   setTimeout(() => {
     this.clearNotice()
@@ -341,38 +350,29 @@ Renderer.prototype.renderNetworkOptions = function () {
 }
 
 Renderer.prototype.onGethFinishedSyncing = function () {
-  const syncPercent = document.getElementById('geth_sync_percent')
-  const blocksProcessed = document.getElementById('geth_blocks_processed')
-  const blocksBehind = document.getElementById('geth_blocks_behind_container')
+  const peerSyncing = document.getElementById('peerSyncing')
+  const peerSynced = document.getElementById('peerSynced')
 
-  blocksBehind.style.display = 'none'
-  blocksProcessed.style.display = 'none'
-  syncPercent.innerHTML = '100%'
-
-  document.getElementById('geth_syncPercentInfo').style.color = '#00F1C4'
+  peerSynced.style.display = 'block'
+  peerSyncing.style.display = 'none'
 
   const data = this.getNetworkConfigFormData()
   if (!this.augurNodeStarted) ipcRenderer.send('start', data)
 }
 
 Renderer.prototype.onPeerCountData = function (event, data) {
-  const peerCount = document.getElementById('geth_peer_count')
-  peerCount.innerHTML = data.peerCount.toFixed()
-  peerCount.style.color = data.peerCount > 0 ? '#00F1C4' : '#A7A2B2'
-  if (data.peerCount === 0) {
-    const syncPercent = document.getElementById('geth_sync_percent')
-    syncPercent.innerHTML = 'No Peers'
-    document.getElementById('geth_syncPercentInfo').style.color = '#A7A2B2'
+  const peerLooking = document.getElementById('peerLooking')
+  const peerSyncing = document.getElementById('peerSyncing')
+  if (data.peerCount > 0) {
+    peerSyncing.style.display = 'block'
+    peerLooking.style.display = 'none'
+  } else {
+    peerLooking.style.display = 'block'
+    peerSyncing.style.display = 'none'
   }
 }
 
 Renderer.prototype.onLatestSyncedGethBlock = function (event, data) {
-  const blocksProcessed = document.getElementById('geth_blocks_processed')
-  const blocksBehind = document.getElementById('geth_blocks_behind_container')
-
-  blocksBehind.style.display = 'block'
-  blocksProcessed.style.display = 'block'
-
   this.onLatestSyncedBlock(event, data, true)
 }
 
@@ -381,10 +381,10 @@ Renderer.prototype.onLatestSyncedBlock = function (event, data, isGeth) {
   let blocksRemainingCountLbl = '0'
   let blocksSyncedNum = null
 
-  const highestBlock = document.getElementById(isGeth? 'geth_highest_block' : 'highest_block')
-  const blocksSynced = document.getElementById(isGeth? 'geth_blocks_synced' : 'blocks_synced')
+  const highestBlock = document.getElementById('highest_block')
+  const blocksSynced = document.getElementById('blocks_synced')
   const syncPercent = document.getElementById(isGeth? 'geth_sync_percent' : 'sync_percent')
-  const blocksBehind = document.getElementById(isGeth? 'geth_blocks_behind' : 'blocks_behind')
+  const blocksBehind = document.getElementById('blocks_behind')
 
   const lastSyncBlockNumber = data.lastSyncBlockNumber
   const highestBlockNumber = data.highestBlockNumber
