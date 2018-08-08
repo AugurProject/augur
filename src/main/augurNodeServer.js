@@ -54,9 +54,9 @@ const defaultConfig = {
       'ws': 'ws://127.0.0.1:8546'
     },
     'mainnet': {
-      'http': 'https://mainnet.infura.io/augur',
+      'http': 'https://gethnode.com/http',
       'name': 'Mainnet',
-      'ws': null,
+      'ws': 'wss://gethnode.com/ws',
       'id': '1'
     },
     'custom': {

@@ -57,7 +57,7 @@ You have two options for connecting to an Ethereum node: local or remote.
 
     or
 
-- Use a remote node, such as [Infura](https://infura.io/). This is the default configuration.
+- Use a remote node, such as [Gethnode.com](https://gethnode.com). This is the default configuration.
 
 ## Using Ledger Hardware Wallet
 
