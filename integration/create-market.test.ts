@@ -248,13 +248,13 @@ describe("Create market page", () => {
     let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
     expect(isDisabled).toEqual(true);
 
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(2) input", "Outcome 2");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(3) input", "Outcome 3");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(4) input", "Outcome 4");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(5) input", "Outcome 5");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(6) input", "Outcome 6");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(7) input", "Outcome 7");
-    await expect(page).toFill(".create-market-form-outcome-styles_CreateMarketOutcome__categorical div:nth-child(8) input", "Outcome 8");
+    await expect(page).toFill("[data-testid='categoricalOutcome-1']", "Outcome 2");
+    await expect(page).toFill("[data-testid='categoricalOutcome-2']", "Outcome 3");
+    await expect(page).toFill("[data-testid='categoricalOutcome-3']", "Outcome 4");
+    await expect(page).toFill("[data-testid='categoricalOutcome-4']", "Outcome 5");
+    await expect(page).toFill("[data-testid='categoricalOutcome-5']", "Outcome 6");
+    await expect(page).toFill("[data-testid='categoricalOutcome-6']", "Outcome 7");
+    await expect(page).toFill("[data-testid='categoricalOutcome-7']", "Outcome 8");
 
     // Verify that the Additional Details field is optional
     isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
