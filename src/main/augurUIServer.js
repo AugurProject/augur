@@ -8,6 +8,7 @@ const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const KeyGen = require('selfsigned.js')
 const helmet = require('helmet')
+/* global __dirname */
 
 function AugurUIServer() {
   this.server = null

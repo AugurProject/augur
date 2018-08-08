@@ -8,6 +8,7 @@ const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
 const {app, BrowserWindow, Menu, ipcMain } = electron
+/* global __dirname process*/
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

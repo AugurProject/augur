@@ -4,6 +4,7 @@ const { request } = require('http')
 const fs = require('fs')
 const path = require('path')
 const appData = require('app-data-folder')
+/* global Buffer process*/
 
 const STATUS_LOOP_INTERVAL = 5000
 
