@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { Address, UnclaimedFeeWindowsRow, UnclaimedFeeWindows, UnclaimedFeeWindowInfo } from "../../types";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { getCurrentTime } from "../../blockchain/process-block";
+import { getCashAddress } from "./database";
 
 export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account: Address, includeCurrent: boolean, callback: (err: Error|null, result?: any) => void): void {
   if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));
@@ -14,7 +15,7 @@ export function getFeeWindows(db: Knex, augur: Augur, universe: Address, account
     .leftJoin("balances AS cash", function () {
       this
         .on("cash.owner", db.raw("fee_windows.feeWindow"))
-        .andOn("cash.token", db.raw("?", augur.contracts.addresses[augur.rpc.getNetworkID()].Cash));
+        .andOn("cash.token", db.raw("?", getCashAddress(augur)));
       })
     .where("fee_windows.universe", universe)
     .where("balances.balance", ">", 0)
