@@ -52,6 +52,14 @@ export default class FilterSearch extends Component {
     this.setState({ placeholder: 'Search', width: '250px' })
   }
 
+  onChange(search) {
+    clearTimeout(this.timeout)
+
+    this.timeout = setTimeout(() => {
+      this.setState({ search })
+    }, 500)
+  }
+
   updateQuery(search, location) {
     const { history } = this.props
     let updatedSearch = parseQuery(location.search)
@@ -68,14 +76,6 @@ export default class FilterSearch extends Component {
       ...location,
       search: updatedSearch,
     })
-  }
-
-  onChange(search) {
-    clearTimeout(this.timeout);
-
-    this.timeout = setTimeout(() => {
-      this.setState({search});
-    }, 500)
   }
 
   render() {
