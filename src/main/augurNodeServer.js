@@ -20,7 +20,7 @@ const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000
 const LIGHT_CLIENT = 'lightclient'
 
 const defaultConfig = {
-  'network': 'mainnet',
+  'network': 'lightclient',
   'version': '1.0.1',
   'uiPort': '8080',
   'sslPort': '8443',
