@@ -116,7 +116,7 @@ export default class Order extends Component {
         }
         <li>
           { pending ?
-            <button className={Styles.Order__cancel} disabled>Cancel</button>  :
+            <button className={Styles.Order__cancel} disabled>Cancel</button> :
             <button className={Styles.Order__cancel} onClick={this.toggleConfirm}>Cancel</button>
           }
         </li>
