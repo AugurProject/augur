@@ -17,10 +17,9 @@ const LOCAL_MAX_RETRIES = 3
 const AUGUR_NODE_RESTART_RETRIES = 1
 const AUGUR_NODE_RESTART_WAIT = 5*1000
 const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000
-const LIGHT_CLIENT = 'lightclient'
 
 const defaultConfig = {
-  'network': 'lightclient',
+  'network': 'mainnet',
   'version': '1.0.1',
   'uiPort': '8080',
   'sslPort': '8443',
@@ -82,7 +81,6 @@ function AugurNodeServer() {
     if (this.config.version === '1.0.0') {
       this.config.networks.lightclient = defaultConfig.networks.lightclient
       this.config.version = '1.0.1'
-      this.config.network = LIGHT_CLIENT
       fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
     }
   }
