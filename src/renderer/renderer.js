@@ -231,7 +231,7 @@ Renderer.prototype.renderOpenNetworkPage = function (data) {
   this.checkForHideEndpoints(data.networkConfig.ws, 'open_network_ws_endpoint', 'ws_endpoint_container')
 }
 
-Renderer.prototype.onSsl = function (value) {
+Renderer.prototype.onSsl = function (event, value) {
   ipcRenderer.send('rebuildMenu', value)
   this.isSsl = value
 }
