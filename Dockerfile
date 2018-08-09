@@ -4,6 +4,7 @@ ARG SOLC_MD5=ae7047eb018ec59d241b478ae6ea1f8a
 
 RUN apk add --update \
     python \
+    python3 \
     python-dev \
     py-pip \
     git \
