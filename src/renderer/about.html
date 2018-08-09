@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="styles.css" rel="stylesheet" type="text/css">
+  <title>About Augur App</title>
+</head>
+
+<body style="background-color: white; font-size: 14px;color:black; line-height: 1.2rem;">
+  <div class="about_top_section">
+    <div>
+      <img src="assets/augur.png" alt="augur logo" height="100" width="100">
+    </div>
+    <div class="about_versions">
+      <div>Augur App</div>
+      <div>
+        version: <span id="version" />
+      </div>
+      <div>
+        repository: <a href="https://github.com/AugurProject/augur-app">github source</a>
+      </div>
+      <div>
+        license: MIT
+      </div>
+     </div>
+
+    </div>
+    <div class="about_bottom_section">
+      Augur App ships with a version of geth, go to their github repository to get more information.
+      <div style="padding: 10px 0px">
+        Go Ethereum (geth)
+        <div>
+          Release: <a href="https://github.com/ethereum/go-ethereum/releases">github releases</a>
+        </div>
+        <div>
+          license: GPLv3
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const AboutRenderer = require("./aboutRenderer");
+    window.aboutRenderer = new AboutRenderer();
+  </script>
+</body>
+
+</html>

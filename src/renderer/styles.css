@@ -474,6 +474,22 @@ input {
   display: inline;
 }
 
+.about_versions {
+  padding: 10px 20px;
+}
+
+.about_top_section {
+  align-content: center;
+  display: flex;
+  flex-direction: row;
+  padding: 40px 40px;
+  justify-content: center;
+}
+
+.about_bottom_section {
+  padding: 10px 40px;
+}
+
 @-webkit-keyframes fadeinout {
   0%,
   100% {

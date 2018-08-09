@@ -7,7 +7,7 @@ const fs = require('fs')
 const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
-const {app, BrowserWindow, Menu, ipcMain } = electron
+const {app, dialog, BrowserWindow, Menu, ipcMain } = electron
 /* global __dirname process*/
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -48,8 +48,8 @@ function buildMenu(showDisable) {
   var template = [{
     label: 'Application',
     submenu: [
-      //{ label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-      //{ type: "separator" },
+      { label: 'About', accelerator: 'Command+A', click: function() { about() }},
+      { type: 'separator' },
       { label: 'Quit', accelerator: 'Command+Q', click: function() { app.quit() }}
     ]},
   {
@@ -73,6 +73,15 @@ function buildMenu(showDisable) {
 
 }
 
+function about() {
+  const aboutWindow = new BrowserWindow({width: 450, height: 350, icon: path.join(__dirname, '../augur.ico')})
+
+  aboutWindow.loadURL(url.format({
+    pathname: path.join(__dirname, '../renderer/about.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+}
 
 function createWindow () {
   // Create the browser window.
