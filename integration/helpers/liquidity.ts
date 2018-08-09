@@ -71,7 +71,6 @@ export async function verifyLiquidityOrderBook(askOrders: LiquidityChartRows, bi
   while (await page.$(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ")") !== null) {
     let quantity: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(1) span", el => el.textContent);
     let price: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(2) span", el => el.textContent);
-    let depth: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(3) span", el => el.textContent);
     expect(quantity).toEqual(askOrders[price].quantity.toFixed(4));
     expect(price).toEqual(askOrders[price].price.toFixed(4));
     // TODO: Add check to verify that depth is correct
@@ -83,7 +82,6 @@ export async function verifyLiquidityOrderBook(askOrders: LiquidityChartRows, bi
   while (await page.$(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ")") !== null) {
     let quantity = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(1) span", el => el.textContent);
     let price = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(2) span", el => el.textContent);
-    let depth = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(3) span", el => el.textContent);
     expect(quantity).toEqual(bidOrders[price].quantity.toFixed(4));
     expect(price).toEqual(bidOrders[price].price.toFixed(4));
     // TODO: Add check to verify that depth is correct
