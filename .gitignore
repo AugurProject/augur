@@ -4,3 +4,4 @@ out
 src/config.json*
 dist
 log.txt
+dev-app-update.yml
