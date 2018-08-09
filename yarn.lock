@@ -1214,9 +1214,9 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur-node@5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/augur-node/-/augur-node-5.4.0.tgz#7ac3035036a77c133a3b6646bc43a749b66662d5"
+augur-node@5.5.0-0:
+  version "5.5.0-0"
+  resolved "https://registry.yarnpkg.com/augur-node/-/augur-node-5.5.0-0.tgz#58895a3be886ea8392c6f8e33cfc31e2a19bd6c2"
   dependencies:
     "@types/async" "2.0.43"
     "@types/express" "4.11.0"
@@ -1235,35 +1235,11 @@ augur-node@5.4.0:
     pg "7.3.0"
     postinstall-build "5.0.1"
     speedomatic "2.1.5"
-    sqlite3 "4.0.0"
+    sqlite3 "4.0.2"
     ts-node "^6.1.1"
     uuid "3.1.0"
     webpack "4.8.1"
     ws "5.1.1"
-
-augur.js@5.2.0-2:
-  version "5.2.0-2"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.2.0-2.tgz#d7d2cec34cba4f81027cbfcbe93024ec54fae44d"
-  dependencies:
-    async "1.5.2"
-    augur-core "1.1.0"
-    bignumber.js "6.0.0"
-    clone "2.1.1"
-    columnify "1.5.4"
-    ethereumjs-blockstream "4.0.1"
-    ethrpc "5.5.4"
-    event-emitter "0.3.5"
-    immutable-delete "1.1.0"
-    keccak "1.2.0"
-    lodash "4.17.10"
-    options-parser "0.4.0"
-    parrotsay-api "0.1.1"
-    rimraf "2.6.2"
-    secp256k1 "3.5.0"
-    secure-random "1.1.1"
-    speedomatic "2.1.5"
-    uuid "3.0.0"
-    uuid-parse "1.0.0"
 
 author-regex@^1.0.0:
   version "1.0.0"
@@ -11228,17 +11204,9 @@ mz@^2.6.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@2.10.0, nan@^2.0.8, nan@^2.2.1, nan@^2.3.2, nan@^2.3.3, nan@^2.4.0, nan@^2.9.2:
+nan@2.10.0, nan@^2.0.8, nan@^2.2.1, nan@^2.3.2, nan@^2.3.3, nan@^2.4.0, nan@^2.9.2, nan@~2.10.0:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
-
-nan@~2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
-
-nan@~2.9.2:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -11495,7 +11463,7 @@ node-pre-gyp@0.6.31:
     tar "~2.2.1"
     tar-pack "~3.3.0"
 
-node-pre-gyp@^0.10.0:
+node-pre-gyp@^0.10.0, node-pre-gyp@^0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.10.3.tgz#3070040716afdc778747b61b6887bf78880b80fc"
   dependencies:
@@ -11525,21 +11493,6 @@ node-pre-gyp@~0.6.38:
     semver "^5.3.0"
     tar "^2.2.1"
     tar-pack "^3.4.0"
-
-node-pre-gyp@~0.9.0:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.9.1.tgz#f11c07516dd92f87199dbc7e1838eab7cd56c9e0"
-  dependencies:
-    detect-libc "^1.0.2"
-    mkdirp "^0.5.1"
-    needle "^2.2.0"
-    nopt "^4.0.1"
-    npm-packlist "^1.1.6"
-    npmlog "^4.0.2"
-    rc "^1.1.7"
-    rimraf "^2.6.1"
-    semver "^5.3.0"
-    tar "^4"
 
 node-releases@^1.0.0-alpha.10:
   version "1.0.0-alpha.10"
@@ -15368,19 +15321,13 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-sqlite3@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-4.0.0.tgz#cc0e093ab51873f50d9dfc4126fcbef15d486570"
+sqlite3@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-4.0.2.tgz#1bbeb68b03ead5d499e42a3a1b140064791c5a64"
   dependencies:
-    nan "~2.9.2"
-    node-pre-gyp "~0.9.0"
-
-sqlite3@^3.1.13:
-  version "3.1.13"
-  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-3.1.13.tgz#d990a05627392768de6278bafd1a31fdfe907dd9"
-  dependencies:
-    nan "~2.7.0"
-    node-pre-gyp "~0.6.38"
+    nan "~2.10.0"
+    node-pre-gyp "^0.10.3"
+    request "^2.87.0"
 
 sshpk@^1.7.0:
   version "1.14.2"
@@ -16571,10 +16518,6 @@ typedarray-to-buffer@^3.1.2:
 typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
-
-typescript@2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.1.tgz#ef39cdea27abac0b500242d6726ab90e0c846631"
 
 typescript@2.9.2, typescript@^2.9.1:
   version "2.9.2"

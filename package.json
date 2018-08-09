@@ -27,7 +27,8 @@
       "augur-ui/@types/jest",
       "augur-ui/@types/expect-puppeteer",
       "**/electron/**",
-      "**/electron-compile/**"
+      "**/electron-compile/**",
+      "augur.js/uuid-parse"
     ]
   }
 }
