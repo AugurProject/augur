@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 export enum OrderType {
   Bid = "BID",
   Ask = "ASK",
@@ -10,13 +12,36 @@ export interface LiquidityOrder {
   price: string;
 }
 
+interface LiquidityChartRow {
+  quantity: BigNumber,
+  price: BigNumber,
+}
+
+interface LiquidityChartRows {
+  [key: string]: LiquidityChartRow
+}
+
 export async function createLiquidity(orders: Array<LiquidityOrder>) {
+  let askOrders: LiquidityChartRows = {};
+  let bidOrders: LiquidityChartRows = {};
+  let currentOrdersArray;
   for (let order of orders) {
     if (order.type == OrderType.Bid) {
       await expect(page).toClick("button", { text: "Buy" });
+      currentOrdersArray = bidOrders;
     } else {
       await expect(page).toClick("button", { text: "Sell" });
+      currentOrdersArray = askOrders;
     }
+    if (!currentOrdersArray[order.price]) {
+      currentOrdersArray[order.price.toString()] = {
+        quantity: new BigNumber("0"),
+        price: new BigNumber(order.price),
+        // TODO: Ideally, we should also be calculating depth and verifying it
+      };
+    }
+    currentOrdersArray[order.price.toString()].quantity = currentOrdersArray[order.price.toString()].quantity.plus(new BigNumber(order.quantity));
+
     if (await page.$(".create-market-form-liquidity-styles_CreateMarketLiquidity__outcomes-categorical") !== null) {
       await expect(page).toClick(".create-market-form-liquidity-styles_CreateMarketLiquidity__outcomes-categorical");
 
@@ -36,6 +61,33 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
     await expect(page).toFill("#cm__input--quantity", order.quantity);
     await expect(page).toFill("#cm__input--limit-price", order.price);
     await expect(page).toClick("button", { text: "Add Order" });
+  }
+  await verifyLiquidityOrderBook(askOrders, bidOrders);
+}
+
+export async function verifyLiquidityOrderBook(askOrders: LiquidityChartRows, bidOrders: LiquidityChartRows, timeoutMilliseconds = 10000) {
+  // Verify ask orders
+  let rowNumber = 1
+  while (await page.$(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ")") !== null) {
+    let quantity: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(1) span", el => el.textContent);
+    let price: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(2) span", el => el.textContent);
+    let depth: string = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--asks div div:nth-child(" + rowNumber + ") button:nth-child(3) span", el => el.textContent);
+    expect(quantity).toEqual(askOrders[price].quantity.toFixed(4));
+    expect(price).toEqual(askOrders[price].price.toFixed(4));
+    // TODO: Add check to verify that depth is correct
+    rowNumber++;
+  }
+
+  // Verify bid orders
+  rowNumber = 1
+  while (await page.$(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ")") !== null) {
+    let quantity = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(1) span", el => el.textContent);
+    let price = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(2) span", el => el.textContent);
+    let depth = await page.$eval(".market-outcome-charts--orders-styles_MarketOutcomeOrderBook__side--bids div div:nth-child(" + rowNumber + ") button:nth-child(3) span", el => el.textContent);
+    expect(quantity).toEqual(bidOrders[price].quantity.toFixed(4));
+    expect(price).toEqual(bidOrders[price].price.toFixed(4));
+    // TODO: Add check to verify that depth is correct
+    rowNumber++;
   }
 }
 
