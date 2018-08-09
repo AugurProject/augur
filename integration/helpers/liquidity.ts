@@ -17,8 +17,21 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
     } else {
       await expect(page).toClick("button", { text: "Sell" });
     }
-    if (await page.$(".input-dropdown-styles_InputDropdown__select") !== null) {
-      await expect(page).toSelect(".input-dropdown-styles_InputDropdown__select", order.outcome);
+    if (await page.$(".create-market-form-liquidity-styles_CreateMarketLiquidity__outcomes-categorical") !== null) {
+      await expect(page).toClick(".create-market-form-liquidity-styles_CreateMarketLiquidity__outcomes-categorical");
+
+      let buttonIndex = 1;
+      let foundOutcome = false;
+      while (await page.$(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")") !== null) {
+        let outcomeName = await page.$eval(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")", el => el.value);
+        if (outcomeName === order.outcome) {
+          await expect(page).toClick(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")");
+          foundOutcome = true;
+          break;
+        }
+        buttonIndex++;
+      }
+      expect(foundOutcome).toEqual(true);
     }
     await expect(page).toFill("#cm__input--quantity", order.quantity);
     await expect(page).toFill("#cm__input--limit-price", order.price);
