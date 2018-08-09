@@ -98,7 +98,7 @@ export default class ReportingHeader extends Component {
       <article className={Styles.ReportingHeader}>
         <div className={Styles.ReportingHeader__header}>
           <div>
-            <h1 className={Styles.ReportingHeader__heading}>Reporting: {heading}</h1>
+            <h1 className={Styles.ReportingHeader__heading}>Reporting<span>: {heading}</span></h1>
             { heading === 'Dispute' && isForking &&
               <ForkingContent
                 forkingMarket={forkingMarket}
