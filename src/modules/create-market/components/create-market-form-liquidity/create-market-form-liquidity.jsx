@@ -391,7 +391,7 @@ export default class CreateMarketLiquidity extends Component {
               type="number"
               value={newMarket.settlementFee}
               placeholder="0"
-              onChange={e => validateNumber('settlementFee', e.target.value, 'market creator fee', 0, 100, 2)}
+              onChange={e => validateNumber('settlementFee', e.target.value, 'market creator fee', 0, 50, 2)}
               onKeyPress={e => keyPressed(e)}
             />
             <span className={Styles.CreateMarketLiquidity__settlementFeePercent}>%</span>

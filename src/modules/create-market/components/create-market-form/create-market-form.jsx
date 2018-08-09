@@ -204,10 +204,11 @@ export default class CreateMarketForm extends Component {
         })
         break
       case SCALAR:
-        outcome = order.outcome
+        ({ outcome } = order)
         break
       default:
         outcome = 1
+        break
     }
 
     const orderInfo = {
