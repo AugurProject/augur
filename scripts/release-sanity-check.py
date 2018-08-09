@@ -17,6 +17,7 @@ try:
     GH_TOKEN = os.environ['GH_TOKEN']
 except KeyError:
     print('no github token')
+    print('export GH_TOKEN=${token}')
     print('https://github.com/settings/tokens')
     sys.exit(0)
 
