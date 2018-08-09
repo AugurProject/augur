@@ -2,8 +2,8 @@ image: augurproject/gitlab-ci-base-node:latest
 
 stages:
 - build
-- app_build
 - test
+- app_build
 
 
 before_script:
