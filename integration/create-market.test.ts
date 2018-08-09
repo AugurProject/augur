@@ -1,7 +1,10 @@
 "use strict";
 
 import "jest-environment-puppeteer";
-import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity"
+import Flash from "./helpers/flash";
+import { IFlash, IMarket, MarketCosts } from "./types/types"
+import { OrderType, createLiquidity, verifyLiquidity } from "./helpers/liquidity";
+import {UnlockedAccounts} from "./constants/accounts";
 import { waitNextBlock } from "./helpers/wait-new-block";
 require("./helpers/beforeAll");
 
@@ -10,6 +13,8 @@ const url = `${process.env.AUGUR_URL}`;
 const timeoutMilliseconds = 10000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
 jest.setTimeout(100000);
+
+let flash: IFlash = new Flash();
 
 describe("Create market page", () => {
   it("should allow user to create a new yes/no market", async () => {
@@ -116,8 +121,6 @@ describe("Create market page", () => {
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
 
     // TODO: Verify that End Date & End Time fields are required
-    // TODO: Create a market with "Myself" set as the Designated Reporter. Verify that that user is the only one who sees the market when it's in the Designated Reporting phase
-    // TODO: Create a market with "Someone Else" as the Designated Reporter. Verify that that user is the only user that sees the market when it's in the Designated Reporting phase
 
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
@@ -216,6 +219,115 @@ describe("Create market page", () => {
     await verifyLiquidity(orders);
   });
 
+  it("should allow only market creator to submit designated report when market creator is the designated reporter", async () => {
+    // Go to create-market page and wait for it to load
+    await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0" });
+    await page.waitForSelector("#cm__input--desc", { visible: true });
+
+    // Fill out Define page
+    await expect(page).toFill("#cm__input--desc", "Designated Report Test 1");
+    await expect(page).toFill("#cm__input--cat", "Designated Report Test");
+    await expect(page).toFill("#cm__input--tag1", "Self");
+    await expect(page).toClick("button", { text: "Next: Outcome" });
+
+    // Fill out Outcome page
+    await expect(page).toClick("li button", { text: "Yes/No" });
+    await expect(page).toClick("button", { text: "Next: Resolution" });
+
+    // Fill out Resolution page
+    await expect(page).toClick("button", { text: "General knowledge" });
+    await expect(page).toClick("button", { text: "Myself" });
+    await expect(page).toClick("#cm__input--date");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    await expect(page).toClick("button", { text: "Next: Liquidity" });
+
+    // Go to the Review page
+    await expect(page).toFill("#cm__input--settlement", "1");
+    await expect(page).toClick("button", { text: "Next: Review" });
+
+    // Submit new market
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    while (isDisabled) {
+      isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    }
+    await expect(page).toClick("button", { text: "Submit" });
+    await waitNextBlock(10);
+
+    await flash.pushDays(2);
+
+    // Verify that market creator can view market on Reporting:Reports page
+    await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
+    await expect(page).toMatchElement("a", { text: "Designated Report Test 1", timeout: timeoutMilliseconds });
+
+    // Switch to a different account
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+
+    // Verify that another user cannot view market on Reporting:Reports page
+    await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
+    await expect(page).not.toMatchElement("a", { text: "Designated Report Test 1", timeout: timeoutMilliseconds });
+  });
+
+  it("should allow designated reporter to submit designated report, but not market creator", async () => {
+    // Go to create-market page and wait for it to load
+    await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0" });
+    await page.waitForSelector("#cm__input--desc", { visible: true });
+
+    // Fill out Define page
+    await expect(page).toFill("#cm__input--desc", "Designated Report Test 2");
+    await expect(page).toFill("#cm__input--cat", "Designated Report Test");
+    await expect(page).toFill("#cm__input--tag1", "Else");
+    await expect(page).toClick("button", { text: "Next: Outcome" });
+
+    // Fill out Outcome page
+    await expect(page).toClick("li button", { text: "Yes/No" });
+    await expect(page).toClick("button", { text: "Next: Resolution" });
+
+    // Fill out Resolution page
+    await expect(page).toClick("button", { text: "General knowledge" });
+    await expect(page).toClick("button", { text: "Someone Else" });
+    await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(2) ul li div input", UnlockedAccounts.SECONDARY_ACCOUNT);
+    await expect(page).toClick("#cm__input--date");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    await expect(page).toClick("button", { text: "Next: Liquidity" });
+
+    // Go to the Review page
+    await expect(page).toFill("#cm__input--settlement", "1");
+    await expect(page).toClick("button", { text: "Next: Review" });
+
+    // Submit new market
+    let isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    while (isDisabled) {
+      isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
+    }
+    await expect(page).toClick("button", { text: "Submit" });
+    await waitNextBlock(10);
+
+    await flash.pushDays(2);
+
+    // Verify that market creator cannot view market on Reporting:Reports page
+    await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
+    await expect(page).not.toMatchElement("a", { text: "Designated Report Test 2", timeout: timeoutMilliseconds });
+
+    // Switch to a different account
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+
+    // Verify that another user cannot view market on Reporting:Reports page
+    await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
+    await expect(page).toMatchElement("a", { text: "Designated Report Test 2", timeout: timeoutMilliseconds });
+  });
+
   it("should allow user to create a new categorical market", async () => {
     // Go to create-market page & wait for it to load
     await page.goto(url.concat("#/create-market"), { waitUntil: "networkidle0" });
@@ -268,7 +380,10 @@ describe("Create market page", () => {
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
     await expect(page).toClick("button", { text: "Someone Else" });
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(2) ul li div input", "0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6");
-    await expect(page).toFill("#cm__input--date", "Jan 1, 2030");
+    await expect(page).toClick("#cm__input--date");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
@@ -438,7 +553,10 @@ describe("Create market page", () => {
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
     await expect(page).toClick("button", { text: "Someone Else" });
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(2) ul li div input", "0xbd355A7e5a7ADb23b51F54027E624BfE0e238DF6");
-    await expect(page).toFill("#cm__input--date", "Jan 1, 2030");
+    await expect(page).toClick("#cm__input--date");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
