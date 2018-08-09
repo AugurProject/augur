@@ -155,7 +155,7 @@ GethNodeController.prototype.updateSyncData = function (syncData) {
 }
 
 GethNodeController.prototype.sendMsgToWindowContents = function(msg, payload) {
-  if(this.window) this.window.webContents.send(msg, payload)
+  if(this.window && this.window.webContents) this.window.webContents.send(msg, payload)
 }
 
 module.exports = GethNodeController
