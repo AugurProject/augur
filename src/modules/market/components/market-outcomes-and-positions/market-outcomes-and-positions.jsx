@@ -23,6 +23,8 @@ const MarketOutcomesAndPositions = p => (
         numCompleteSets={p.numCompleteSets}
         marketId={p.marketId}
         sellCompleteSets={p.sellCompleteSets}
+        orphanedOrders={p.orphanedOrders}
+        cancelOrphanedOrder={p.cancelOrphanedOrder}
       />
     }
     { p.isMobile && p.selectedOutcome && p.outcomes.length > 0 &&
