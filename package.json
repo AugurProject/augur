@@ -13,16 +13,18 @@
     "lerna": "^2.11.0",
     "listr": "^0.14.1",
     "mocha": "5.1.1",
-    "rxjs-compat": "^6.2.2"
+    "rxjs-compat": "^6.2.2",
+    "typescript": "2.9.2"
   },
   "workspaces": {
     "packages": [
       "packages/*"
     ],
     "nohoist": [
-      "augur-app/electron",
-      "augur-app/electron/**",
-      "augur-app/electron-compile"
+      "augur-ui/@types/jest",
+      "augur-ui/@types/expect-puppeteer",
+      "**/electron/**",
+      "**/electron-compile/**"
     ]
   }
 }
