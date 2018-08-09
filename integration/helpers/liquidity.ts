@@ -25,8 +25,6 @@ export async function createLiquidity(orders: Array<LiquidityOrder>) {
       while (await page.$(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")") !== null) {
         let outcomeName = await page.$eval(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")", el => el.value);
         if (outcomeName === order.outcome) {
-          console.log(outcomeName);
-          console.log(buttonIndex);
           await expect(page).toClick(".input-dropdown-styles_InputDropdown__list button:nth-child(" + buttonIndex + ")");
           foundOutcome = true;
           break;

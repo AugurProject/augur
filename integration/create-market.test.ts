@@ -271,6 +271,9 @@ describe("Create market page", () => {
     // Verify that another user cannot view market on Reporting:Reports page
     await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
     await expect(page).not.toMatchElement("a", { text: "Designated Report Test 1", timeout: timeoutMilliseconds });
+
+    // Switch back to market creator account
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
   });
 
   it("should allow designated reporter to submit designated report, but not market creator", async () => {
@@ -323,9 +326,12 @@ describe("Create market page", () => {
     // Switch to a different account
     await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
 
-    // Verify that another user cannot view market on Reporting:Reports page
+    // Verify that the designated reporter can view market on Reporting:Reports page
     await page.goto(url.concat("#/reporting-report-markets"), { waitUntil: "networkidle0" });
     await expect(page).toMatchElement("a", { text: "Designated Report Test 2", timeout: timeoutMilliseconds });
+
+    // Switch back to market creator account
+    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.CONTRACT_OWNER);
   });
 
   it("should allow user to create a new categorical market", async () => {
