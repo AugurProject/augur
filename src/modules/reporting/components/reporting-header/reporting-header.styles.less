@@ -171,10 +171,14 @@
 }
 
 .ReportingHeader__heading {
+  color: @color-lightergray;
   margin: 0 0 1rem;
   text-transform: uppercase;
 
-  &:extend(.h1--heavy);
+  > span {
+    color: @color-white;
+    font-weight: 500;
+  }
 }
 
 .ReportingHeader__labels {
