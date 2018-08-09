@@ -55,11 +55,8 @@
 }
 
 .notificationBar_button {
-  &:extend(.button--offWhite all);
+  &:extend(.button--transparent all);
 
-  background-color: transparent;
-  border: solid 1px #412468;
-  border-radius: 26px;
   font-size: @font-size-medium;
   font-weight: 500;
   height: 35px;
@@ -68,16 +65,11 @@
   min-height: 35px;
   text-align: center;
   text-transform: none;
-  width: 191px;
 
   &.disabled {
-    &:extend(.button--offWhite--disabled);
+    &:extend(.button--transparent--disabled);
 
     background-color: transparent;
     pointer-events: none;
-  }
-
-  &:hover {
-    background-color: transparent;
   }
 }

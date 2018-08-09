@@ -28,6 +28,8 @@ export default class FilterSearch extends Component {
     this.updateQuery = this.updateQuery.bind(this)
     this.onFocus = this.onFocus.bind(this)
     this.onBlur = this.onBlur.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.timeout = null
   }
 
   componentWillMount() {
@@ -48,6 +50,14 @@ export default class FilterSearch extends Component {
 
   onBlur() {
     this.setState({ placeholder: 'Search', width: '250px' })
+  }
+
+  onChange(search) {
+    clearTimeout(this.timeout)
+
+    this.timeout = setTimeout(() => {
+      this.setState({ search })
+    }, 500)
   }
 
   updateQuery(search, location) {
@@ -81,7 +91,7 @@ export default class FilterSearch extends Component {
           noFocus
           placeholder={s.placeholder}
           value={s.search}
-          onChange={search => this.setState({ search })}
+          onChange={this.onChange}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
           isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== '')}

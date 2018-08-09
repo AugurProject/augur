@@ -193,7 +193,7 @@ export default class CreateMarketForm extends Component {
     const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
     const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
     const shareBalances = newMarket.outcomes.map(outcome => 0)
-    const [outcome] = order
+    const { outcome } = order
     let initialLiquidityEth
     let initialLiquidityGas
 
