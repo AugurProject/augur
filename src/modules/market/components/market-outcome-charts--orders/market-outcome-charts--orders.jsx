@@ -15,7 +15,12 @@ import { isEmpty, isEqual } from 'lodash'
 
 
 function findTrailingZeros(number) {
-  return number.match(/[0]+$/)
+  const zeros = number.match(/[0]+$/)
+  if (number.toString().indexOf('.') === -1 || !zeros) {
+    return ''
+  }
+  return (number % 1 === 0 ? '.' : '') + zeros
+
 }
 
 export default class MarketOutcomeChartsOrders extends Component {
