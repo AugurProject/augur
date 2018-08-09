@@ -5,8 +5,10 @@ import { getMarketsWithReportingState, reshapeDisputeTokensRowToUIDisputeTokenIn
 
 export function getDisputeTokens(db: Knex, universe: Address, account: Address, disputeTokenState: DisputeTokenState|null, callback: (err: Error|null, result?: any) => void): void {
     if (universe == null || account == null) return callback(new Error("Must provide both universe and account"));
-    const query: Knex.QueryBuilder = getMarketsWithReportingState(db, ["payouts.*", "disputes.crowdsourcerId as disputeToken", "balances.balance", "market_state.reportingState"]).from("disputes");
+    const query: Knex.QueryBuilder = db.select(["payouts.*", "disputes.crowdsourcerId as disputeToken", "balances.balance", "market_state.reportingState"]).from("disputes");
     query.join("markets", "markets.marketId", "crowdsourcers.marketId");
+    query.leftJoin("market_state", "markets.marketStateId", "market_state.marketStateId");
+    query.leftJoin("blocks", "markets.creationBlockNumber", "blocks.blockNumber");
     query.join("crowdsourcers", "crowdsourcers.crowdsourcerId", "disputes.crowdsourcerId");
     query.join("payouts", "payouts.payoutId", "crowdsourcers.payoutId");
     query.join("balances", "crowdsourcers.crowdsourcerId", "balances.token");
