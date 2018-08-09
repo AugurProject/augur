@@ -424,7 +424,7 @@ export default class ReportingDisputeForm extends Component {
                       step={market.tickSize}
                       placeholder={market.scalarDenomination}
                       value={s.inputSelectedOutcome}
-                      className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
+                      className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
                     <ReportingDisputeProgress
