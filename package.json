@@ -5,8 +5,11 @@
   "description": "Augur Top-Level Monorepo",
   "author": "The Augur Developers <team@augur.net>",
   "engines": {
-    "node": ">=8",
+    "node": ">=8 <10",
     "yarn": "~1.6.0"
+  },
+  "scripts": {
+    "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest"
   },
   "devDependencies": {
     "execa": "^0.10.0",
