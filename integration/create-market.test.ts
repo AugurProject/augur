@@ -119,9 +119,6 @@ describe("Create market page", () => {
     expect(isDisabled).toEqual(true);
 
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
-
-    // TODO: Verify that End Date & End Time fields are required
-
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
     // Fill out Liquidity page
@@ -261,13 +258,18 @@ describe("Create market page", () => {
     // Fill out Resolution page
     await expect(page).toClick("button", { text: "General knowledge" });
     await expect(page).toClick("button", { text: "Myself" });
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    // Verify that End Date field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
     await expect(page).toClick("#cm__input--date");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
-    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
-    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
-    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
 
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
@@ -323,10 +325,14 @@ describe("Create market page", () => {
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
-    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
 
+    // Verify that End Time Hour field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
     // Go to the Review page
@@ -415,8 +421,13 @@ describe("Create market page", () => {
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
-    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    // Verify that End Time Minute field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
     // Fill out Liquidity page
@@ -589,6 +600,11 @@ describe("Create market page", () => {
     await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+
+    // Verify that End Time PM field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
