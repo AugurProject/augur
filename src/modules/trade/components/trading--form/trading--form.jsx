@@ -11,7 +11,7 @@ import { isEqual } from 'lodash'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { Hint } from 'modules/common/components/icons'
-
+import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
 import Checkbox from 'src/modules/common/components/checkbox/checkbox'
@@ -293,7 +293,7 @@ class MarketTradingForm extends Component {
           <li>
             <label htmlFor="tr__input--total-cost">Total Cost</label>
             <input
-              className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].length })}
+              className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].length })}
               id="tr__input--total-cost"
               type="number"
               step={tickSize}
@@ -348,7 +348,7 @@ class MarketTradingForm extends Component {
             <li className={Styles['TradingForm__limit-quantity']}>
               <label htmlFor="tr__input--quantity">Quantity</label>
               <input
-                className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY].length })}
+                className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY].length })}
                 id="tr__input--quantity"
                 type="number"
                 step={tickSize}
@@ -360,7 +360,7 @@ class MarketTradingForm extends Component {
             <li className={Styles['TradingForm__limit-price']}>
               <label htmlFor="tr__input--limit-price">Limit Price</label>
               <input
-                className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length })}
+                className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length })}
                 id="tr__input--limit-price"
                 type="number"
                 step={tickSize}
