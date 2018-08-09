@@ -196,14 +196,21 @@ describe("Create market page", () => {
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
 
-    // TODO: Verify that the broken-down stats appear to be accurate
-    // TODO: Verify that the ETH and gas required to place liquidity orders is included in the totals
-
     // Submit new market
     isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     while (isDisabled) {
       isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     }
+
+    // Verify that the broken-down stats are accurate
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(1) span:nth-child(2)", { text: "0.0100 ETH", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(2) span:nth-child(2)", { text: "0.3497 REP", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(3) span:nth-child(2)", { text: "0.0518 ETH", timeout: timeoutMilliseconds });
+
+    // Verify that the ETH and gas required to place liquidity orders is included in the totals
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(2) ul li:nth-child(1) span:nth-child(2)", { text: "4.8200 ETH", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(2) ul li:nth-child(2) span:nth-child(2)", { text: "0.0840 ETH", timeout: timeoutMilliseconds });
+
     await expect(page).toClick("button", { text: "Submit" });
     await waitNextBlock(10);
 
