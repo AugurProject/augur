@@ -44,7 +44,7 @@ describe("RepMigration", () => {
         }
 
         // Now we can run the LegacyRepMigrator which will freeze the legacy REP contract and migrate allowances and balances to the new one, making it unlock. When running the script normally we'll be reading from a file and passing a large data structure but here we'll just pass in the data corresponding to the balances and allowances we created.
-        const reputationTokenAddress = await fixture.universe.getReputationToken_();
+        const reputationTokenAddress = await fixture.universe!.getReputationToken_();
         const txSize = 2;
         const legacyRepMigrator = await LegacyRepMigrator.create(legacyRepData, reputationTokenAddress, txSize);
         await legacyRepMigrator.migrateLegacyRep();

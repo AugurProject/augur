@@ -183,7 +183,7 @@ export class TestFixture {
     }
 
     public async isForking(): Promise<boolean> {
-        return await this.universe.isForking_();
+        return await this.universe!.isForking_();
     }
 
     public async migrateOutByPayout(reputationToken: ReputationToken, payoutNumerators: Array<BN>, invalid: boolean, attotokens: BN) {
@@ -224,7 +224,7 @@ export class TestFixture {
     }
 
     public async getTimestamp(): Promise<BN> {
-        return this.contractDeployer.controller.getTimestamp_();
+        return this.contractDeployer.controller!.getTimestamp_();
     }
 
     public async doInitialReport(market: Market, payoutNumerators: Array<BN>, invalid: boolean): Promise<void> {
@@ -277,14 +277,14 @@ export class TestFixture {
     }
 
     public async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
-        const childUniverseAddress = await this.contractDeployer.universe.getChildUniverse_(parentPayoutDistributionHash);
+        const childUniverseAddress = await this.contractDeployer.universe!.getChildUniverse_(parentPayoutDistributionHash);
         const childUniverse = new Universe(this.connector, this.accountManager, childUniverseAddress, TestFixture.GAS_PRICE);
         const repContractAddress = await childUniverse.getReputationToken_();
         return new ReputationToken(this.connector, this.accountManager, repContractAddress, TestFixture.GAS_PRICE);
     }
 
     public async getReputationToken(): Promise<ReputationToken> {
-        const repContractAddress = await this.contractDeployer.universe.getReputationToken_();
+        const repContractAddress = await this.contractDeployer.universe!.getReputationToken_();
         return new ReputationToken(this.connector, this.accountManager, repContractAddress, TestFixture.GAS_PRICE);
     }
 
