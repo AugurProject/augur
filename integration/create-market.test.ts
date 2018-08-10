@@ -119,17 +119,38 @@ describe("Create market page", () => {
     expect(isDisabled).toEqual(true);
 
     await expect(page).toFill(".create-market-form-styles_CreateMarketForm__fields li:nth-child(1) ul li div input", "https://www.reuters.com");
-
-    // TODO: Verify that End Date & End Time fields are required
-
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
-    // TODO: Verify Settlement Fee is required and must be a number between 0 and 100
-    // TODO: Verify that orders must be priced between min and max value for the market
-    // TOOD: Verify that adding an order should update the charts
-    // TODO: Verify that the orders added to the market are listed on the market's Trading page after market creation
-
     // Fill out Liquidity page
+    // Verify Settlement Fee is required and must be a number between 0 and 100
+    await expect(page).toClick("#cm__input--settlement");
+    await page.keyboard.press("Backspace");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await expect(page).toFill("#cm__input--settlement", "-1");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await expect(page).toFill("#cm__input--settlement", "101");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await expect(page).toFill("#cm__input--settlement", "0");
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(false);
+
+    // Verify that orders must be priced between min and max value for the market
+    await expect(page).toFill(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-form-body li:nth-child(1) input", "1");
+    await expect(page).toFill(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-form-body li:nth-child(2) input", "-0.1");
+    isDisabled = await page.$eval(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-add button", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await expect(page).toFill(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-form-body li:nth-child(2) input", "1");
+    isDisabled = await page.$eval(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-add button", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+    await expect(page).toClick(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-form-body li:nth-child(1) input");
+    await page.keyboard.press("Backspace");
+    await expect(page).toClick(".create-market-form-liquidity-styles_CreateMarketLiquidity__order-form-body li:nth-child(2) input");
+    await page.keyboard.press("Backspace");
+
+    // Add liquidity orders
     await expect(page).toFill("#cm__input--settlement", "1");
 
     const orders = [
@@ -175,14 +196,21 @@ describe("Create market page", () => {
     // Go to the Review page
     await expect(page).toClick("button", { text: "Next: Review" });
 
-    // TODO: Verify that the broken-down stats appear to be accurate
-    // TODO: Verify that the ETH and gas required to place liquidity orders is included in the totals
-
     // Submit new market
     isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     while (isDisabled) {
       isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__submit", el => el.disabled);
     }
+
+    // Verify that the broken-down stats are accurate
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(1) span:nth-child(2)", { text: "0.0100 ETH", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(2) span:nth-child(2)", { text: "0.3497 REP", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(1) ul li:nth-child(3) span:nth-child(2)", { text: "0.0518 ETH", timeout: timeoutMilliseconds });
+
+    // Verify that the ETH and gas required to place liquidity orders is included in the totals
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(2) ul li:nth-child(1) span:nth-child(2)", { text: "4.8200 ETH", timeout: timeoutMilliseconds });
+    await expect(page).toMatchElement(".create-market-form-review-styles_CreateMarketReview__wrapper div:nth-child(2) ul li:nth-child(2) span:nth-child(2)", { text: "0.0840 ETH", timeout: timeoutMilliseconds });
+
     await expect(page).toClick("button", { text: "Submit" });
     await waitNextBlock(10);
 
@@ -208,7 +236,7 @@ describe("Create market page", () => {
     await expect(page).toMatchElement(".market-header-styles_MarketHeader__details span", { text: "https://www.reuters.com", timeout: timeoutMilliseconds });
 
     // Verify that the Market End Date/Time are displayed
-    let marketPageEndDateString =  await page.$eval(".core-properties-styles_CoreProperties__coreContainer .core-properties-styles_CoreProperties__row:nth-child(4) span:nth-child(2)", el => el.textContent);
+    let marketPageEndDateString = await page.$eval(".core-properties-styles_CoreProperties__coreContainer .core-properties-styles_CoreProperties__row:nth-child(4) span:nth-child(2)", el => el.textContent);
     let marketPageEndDate = new Date(marketPageEndDateString);
     expect(marketPageEndDate.toString()).toEqual(endDate.toString());
 
@@ -237,13 +265,18 @@ describe("Create market page", () => {
     // Fill out Resolution page
     await expect(page).toClick("button", { text: "General knowledge" });
     await expect(page).toClick("button", { text: "Myself" });
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    // Verify that End Date field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
     await expect(page).toClick("#cm__input--date");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
-    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
-    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
-    await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
 
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
@@ -299,10 +332,14 @@ describe("Create market page", () => {
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
-    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
 
+    // Verify that End Time Hour field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
     // Go to the Review page
@@ -391,8 +428,13 @@ describe("Create market page", () => {
     await page.keyboard.press("ArrowRight");
     await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
-    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
+
+    // Verify that End Time Minute field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
+    await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 
     // Fill out Liquidity page
@@ -565,6 +607,11 @@ describe("Create market page", () => {
     await page.keyboard.press("Enter");
     await expect(page).toSelect("#cm__input--time div:nth-child(1) select", "11");
     await expect(page).toSelect("#cm__input--time div:nth-child(2) select", "59");
+
+    // Verify that End Time PM field is required
+    isDisabled = await page.$eval(".create-market-form-styles_CreateMarketForm__next", el => el.disabled);
+    expect(isDisabled).toEqual(true);
+
     await expect(page).toSelect("#cm__input--time div:nth-child(3) select", "PM");
     await expect(page).toClick("button", { text: "Next: Liquidity" });
 

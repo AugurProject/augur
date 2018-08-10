@@ -30,6 +30,8 @@ const mapStateToProps = (state, { location }) => {
     isMobile: state.isMobile,
     markets,
     category,
+    defaultFilter: state.filterOption,
+    defaultSort: state.sortOption,
   }
 }
 
