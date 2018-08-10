@@ -8,7 +8,7 @@ var calculateSettlementFee = require("./calculate-settlement-fee");
 
 function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome < 0 || outcome >= numOutcomes || typeof outcome === "undefined" || typeof shareBalances[outcome] === "undefined") throw new Error("Invalid outcome ID " + outcome);
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
   var worstCaseFees = ZERO;
