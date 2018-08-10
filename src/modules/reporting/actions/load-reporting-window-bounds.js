@@ -12,8 +12,6 @@ export const loadReportingWindowBounds = (callback = logError) => (dispatch, get
     }, (err, result) => {
       if (err) return callback(err)
 
-        console.log(result)
-
       dispatch(updateReportingWindowStats({
         startTime: (result || {}).startTime,
         endTime: (result || {}).endTime,
