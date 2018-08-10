@@ -1,14 +1,27 @@
 import { connect } from 'react-redux'
 import { NotificationBar } from 'src/modules/notification-bar/components/index'
 import { selectUndissmissedOrphanedOrders } from 'src/modules/orphaned-orders/selectors'
-import { cancelOrphanedOrder, dismissOrphanedOrder } from 'src/modules/orphaned-orders/actions'
+import { dismissOrphanedOrder } from 'src/modules/orphaned-orders/actions'
+import { selectMarket } from 'modules/market/selectors/market'
 
-const mapStateToProps = state => ({
-  notifications: selectUndissmissedOrphanedOrders(state),
-})
+const mapStateToProps = (state) => {
+  const notifications = selectUndissmissedOrphanedOrders(state)
+  let market = null
+  let marketsNumber = 1
+  if (notifications.length === 1) {
+    market = selectMarket(notifications[0].marketId)
+  } else {
+    const marketIds = notifications.map(notification => notification.marketId).filter((value, index, self) => self.indexOf(value) === index)
+    marketsNumber = marketIds.length
+  }
+  return {
+    notifications,
+    market,
+    marketsNumber,
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
-  actionFn: order => dispatch(cancelOrphanedOrder(order)),
   dismissFn: order => dispatch(dismissOrphanedOrder(order)),
 })
 

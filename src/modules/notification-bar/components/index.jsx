@@ -1,20 +1,31 @@
 import React from 'react'
-import Styles from 'modules/notification-bar/components/notification-bar'
-import { CloseWithCircle } from 'src/modules/common/components/icons'
 import PropTypes from 'prop-types'
 
-export const NotificationBar = ({ actionFn, dismissFn, notifications }) => notifications.map(notification => (
+import makePath from 'modules/routes/helpers/make-path'
+import Styles from 'modules/notification-bar/components/notification-bar'
+import { CloseWithCircle } from 'src/modules/common/components/icons'
+import { Link } from 'modules/common/containers/sticky-params-components'
+import { MY_POSITIONS } from 'modules/routes/constants/views'
+
+const numberToWords = require('number-to-words')
+
+export const NotificationBar = ({ dismissFn, notifications, market, marketsNumber }) => notifications.map(notification => (
   <div key={notification.orderId} className={Styles.notificationBar}>
     <div className={Styles.notificationBar_textContainer}>
       <span className={Styles.notificationBar_text}>
-        You have {notifications.length} orphaned order{notifications.length > 1 ? `s` : ''}. Please click to cancel.
+        { !market ?
+          'You have ' + numberToWords.toWords(notifications.length) + ' orphaned orders across ' + numberToWords.toWords(marketsNumber) +' markets. Please go to your portfolio to cancel these orders.'
+          : 'You have one orphaned order on market "' + market.description + '". Please go to your portfolio to cancel this order.'
+        }
       </span>
       <span className={Styles.notificationBar_learnMore}>
         <a href="http://docs.augur.net/#orphaned-order" target="_blank" rel="noopener noreferrer">Learn More</a>
       </span>
     </div>
-    <button className={Styles.notificationBar_button} onClick={() => actionFn(notification)}>
-      Cancel orphaned order
+    <button className={Styles.notificationBar_button}>
+      <Link to={makePath(MY_POSITIONS)}>
+        View Portfolio
+      </Link>
     </button>
     <button className={Styles.notificationBar_dismiss} onClick={() => dismissFn(notification)}>
       <div className={Styles.notificationBar_dismissIcon}>
@@ -26,4 +37,6 @@ export const NotificationBar = ({ actionFn, dismissFn, notifications }) => notif
 NotificationBar.propTypes = {
   cancelOrder: PropTypes.func,
   notifications: PropTypes.arrayOf(PropTypes.object),
+  market: PropTypes.object,
+  marketsNumber: PropTypes.number.isRequired,
 }
