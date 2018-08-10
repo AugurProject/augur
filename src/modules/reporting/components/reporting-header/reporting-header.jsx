@@ -40,6 +40,15 @@ export default class ReportingHeader extends Component {
     this.hideReadMore = this.hideReadMore.bind(this)
   }
 
+  componentWillMount() {
+    const { loadReportingWindowBounds } = this.props
+    loadReportingWindowBounds()
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.hideReadMore)
+  }
+
   componentDidUpdate(prevProps) {
     const {
       loadReportingWindowBounds,
@@ -48,15 +57,6 @@ export default class ReportingHeader extends Component {
     if (universe !== prevProps.universe) {
       loadReportingWindowBounds()
     }
-  }
-
-  componentWillMount() {
-    const { loadReportingWindowBounds } = this.props
-    loadReportingWindowBounds()
-  }
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.hideReadMore)
   }
 
   componentWillUnmount() {
