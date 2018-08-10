@@ -5,12 +5,6 @@ import { Helmet } from 'react-helmet'
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
-import {
-  MARKET_RECENTLY_TRADED,
-} from 'modules/filter-sort/constants/market-sort-params'
-import {
-  MARKET_OPEN,
-} from 'modules/filter-sort/constants/market-states'
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -25,14 +19,16 @@ export default class MarketsView extends Component {
     search: PropTypes.string,
     category: PropTypes.string,
     universe: PropTypes.string,
+    defaultFilter: PropTypes.string.isRequired,
+    defaultSort: PropTypes.string.isRequired,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      filter: MARKET_OPEN,
-      sort: MARKET_RECENTLY_TRADED,
+      filter: props.defaultFilter,
+      sort: props.defaultSort,
       filterSortedMarkets: [],
     }
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 // import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from 'modules/filter-sort/containers/filter-search'
-import FilterDropDowns from 'modules/filter-sort/components/filter-dropdowns/filter-dropdowns'
+import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns'
 // import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
 // import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
