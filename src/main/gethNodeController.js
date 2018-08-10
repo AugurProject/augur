@@ -71,7 +71,8 @@ GethNodeController.prototype.start = function (event) {
   if (!fs.existsSync(gethPath)) {
     fs.mkdirSync(gethPath)
   }
-  const staticNodesPath = path.join(gethPath, 'static-nodes.json')
+
+  const staticNodesPath = path.join(gethPath, 'geth', 'static-nodes.json')
   fs.writeFileSync(staticNodesPath, JSON.stringify(PEER_NODES, null, 4))
   this.gethProcess = spawn(this.gethExecutablePath, [
     '--syncmode=light',
