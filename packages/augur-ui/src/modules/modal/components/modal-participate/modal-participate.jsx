@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { createBigNumber } from 'utils/create-big-number'
-
+import FormStyles from 'modules/common/less/form'
 import { Participate, ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import Styles from 'modules/modal/components/modal-participate/modal-participate.styles'
 import Input from 'modules/common/components/input/input'
@@ -127,7 +127,7 @@ export default class ModalParticipate extends Component {
             <Input
               id="modal__participate-quantity"
               type="number"
-              className={classNames({ [`${Styles['ModalParticipate__error--field']}`]: invalidWithErrors })}
+              className={classNames(FormStyles.Form__input, { [`${Styles['ModalParticipate__error--field']}`]: invalidWithErrors })}
               value={s.quantity}
               placeholder="0.0"
               onChange={value => this.updateQuantity(value)}

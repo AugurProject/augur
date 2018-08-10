@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   MARKET_VOLUME,
   MARKET_CREATION_TIME,
@@ -28,27 +29,66 @@ const filterOptions = [
   { value: MARKET_CLOSED, label: 'Resolved' },
 ]
 
-const FilterSearch = (p) => {
-  const {
-    filter,
-    sort,
-    updateFilter,
-  } = p
-  return (
-    <div className={Styles.FilterDropdowns}>
-      <Dropdown
-        default={MARKET_OPEN}
-        onChange={e => updateFilter({ filter: e, sort })}
-        options={filterOptions}
-        alignLeft
-      />
-      <Dropdown
-        default={MARKET_RECENTLY_TRADED}
-        onChange={e => updateFilter({ filter, sort: e })}
-        options={sortOptions}
-      />
-    </div>
-  )
-}
+export default class FilterSearch extends Component {
+  static propTypes = {
+    filter: PropTypes.string.isRequired,
+    sort: PropTypes.string.isRequired,
+    updateFilter: PropTypes.func.isRequired,
+    defaultFilter: PropTypes.string.isRequired,
+    defaultSort: PropTypes.string.isRequired,
+    updateFilterOption: PropTypes.func.isRequired,
+    updateSortOption: PropTypes.func.isRequired,
+  }
 
-export default FilterSearch
+  constructor(props) {
+    super(props)
+    this.changeSortDropdown = this.changeSortDropdown.bind(this)
+    this.changeFilterDropdown = this.changeFilterDropdown.bind(this)
+  }
+
+  changeSortDropdown(value) {
+    const {
+      filter,
+      updateSortOption,
+      updateFilter,
+    } = this.props
+
+    updateSortOption(value)
+    updateFilter({ filter, sort: value })
+  }
+
+  changeFilterDropdown(value) {
+    const {
+      sort,
+      updateFilterOption,
+      updateFilter,
+    } = this.props
+
+    updateFilterOption(value)
+    updateFilter({ filter: value, sort })
+  }
+
+
+  render() {
+    const {
+      defaultFilter,
+      defaultSort,
+    } = this.props
+
+    return (
+      <div className={Styles.FilterDropdowns}>
+        <Dropdown
+          default={defaultFilter}
+          onChange={this.changeFilterDropdown}
+          options={filterOptions}
+          alignLeft
+        />
+        <Dropdown
+          default={defaultSort}
+          onChange={this.changeSortDropdown}
+          options={sortOptions}
+        />
+      </div>
+    )
+  }
+}

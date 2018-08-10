@@ -15,7 +15,7 @@ const PortfolioHeader = p => (
     className={Styles.PortfolioHeader}
   >
     <div className={Styles.PortfolioHeader__header}>
-      <h1 className={Styles.PortfolioHeader__title}>portfolio: {getTitle(p.location.pathname)}</h1>
+      <h1 className={Styles.PortfolioHeader__title}>portfolio<span>: {getTitle(p.location.pathname)}</span></h1>
       { p.location.pathname.indexOf(PORTFOLIO_REPORTS) === -1 &&
         <button
           className={Styles.PortfolioHeader__export}
