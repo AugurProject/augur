@@ -26,6 +26,7 @@ Build:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
     - node_modules
+    - node_modules/sqlite3/lib/binding/node-v57-linux-x64/node_sqlite3.node
     - packages/*/node_modules
     - packages/augur-node/build
     - packages/augur-node/definitions
