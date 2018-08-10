@@ -13,6 +13,7 @@ import edgeLoading from 'modules/auth/reducers/edge-loading'
 import env from 'modules/app/reducers/env'
 import eventsAPI from 'modules/contracts/reducers/events-api'
 import favorites from 'modules/markets/reducers/favorites'
+import filterOption from 'modules/filter-sort/reducers/filter-option'
 import functionsAPI from 'modules/contracts/reducers/functions-api'
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
 import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
@@ -41,6 +42,7 @@ import reportingWindowStats from 'modules/reporting/reducers/reporting-window-st
 import reports from 'modules/reports/reducers/reports'
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
 import selectedMarketId from 'modules/market/reducers/selected-market-id'
+import sortOption from 'modules/filter-sort/reducers/sort-option'
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
 import transactionPeriod from 'modules/portfolio/reducers/transaction-period'
 import transactionsData from 'modules/transactions/reducers/transactions-data'
@@ -64,6 +66,7 @@ export function createReducer() {
     env,
     eventsAPI,
     favorites,
+    filterOption,
     functionsAPI,
     hasLoadedMarkets,
     initialReporters,
@@ -92,6 +95,7 @@ export function createReducer() {
     reports,
     scalarMarketsShareDenomination,
     selectedMarketId,
+    sortOption,
     tradesInProgress,
     transactionPeriod,
     transactionsData,
