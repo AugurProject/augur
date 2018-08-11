@@ -14,8 +14,8 @@ export const NotificationBar = ({ dismissFn, notifications, market, marketsNumbe
     <div className={Styles.notificationBar_textContainer}>
       <span className={Styles.notificationBar_text}>
         { !market ?
-          'You have ' + numberToWords.toWords(notifications.length) + ' orphaned orders across ' + numberToWords.toWords(marketsNumber) +' markets. Please go to your portfolio to cancel these orders.'
-          : 'You have one orphaned order on market "' + market.description + '". Please go to your portfolio to cancel this order.'
+          `You have ${numberToWords.toWords(notifications.length)} orphaned orders across ${numberToWords.toWords(marketsNumber)} ${marketsNumber > 1 ? ' markets' : ' market'}. Please go to your portfolio to cancel these orders.`
+          : `You have one orphaned order on market "${market.description}". Please go to your portfolio to cancel this order.`
         }
       </span>
       <span className={Styles.notificationBar_learnMore}>
