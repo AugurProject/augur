@@ -26,6 +26,7 @@ export default class ReportingHeader extends Component {
     forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
     isLogged: PropTypes.bool,
+    universe: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -46,6 +47,16 @@ export default class ReportingHeader extends Component {
 
   componentDidMount() {
     document.addEventListener('mousedown', this.hideReadMore)
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      loadReportingWindowBounds,
+      universe,
+    } = this.props
+    if (universe !== prevProps.universe) {
+      loadReportingWindowBounds()
+    }
   }
 
   componentWillUnmount() {

@@ -10,13 +10,13 @@ const mapStateToProps = state => ({
   reportingWindowStats: state.reportingWindowStats,
   isMobile: state.isMobile,
   repBalance: state.loginAccount.rep || '0',
-  universe: state.universe,
   forkingMarket: state.universe.forkingMarket,
   currentTime: state.blockchain.currentAugurTimestamp,
   doesUserHaveRep: state.loginAccount.rep > 0,
   forkReputationGoal: state.universe.forkReputationGoal,
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
   isLogged: state.isLogged,
+  universe: (state.universe || {}).id,
 })
 
 const mapDispatchToProps = dispatch => ({
