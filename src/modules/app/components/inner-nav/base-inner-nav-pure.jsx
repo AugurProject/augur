@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "modules/common/containers/sticky-params-link";
+import { Link } from "react-router-dom";
 import classNames from "classnames";
 import { mobileMenuStates } from "modules/app/components/app/app";
 

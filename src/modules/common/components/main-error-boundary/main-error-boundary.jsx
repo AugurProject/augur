@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "modules/common/containers/sticky-params-link";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import makePath from "modules/routes/helpers/make-path";
 import { DEFAULT_VIEW } from "modules/routes/constants/views";

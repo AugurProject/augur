@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import { Link } from "modules/common/containers/sticky-params-link";
+import { Link } from "react-router-dom";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 
 import MarketTradingForm from "modules/trade/components/trading--form/trading--form";

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Link } from "modules/common/containers/sticky-params-link";
+import { Link } from "react-router-dom";
 
 import MarketTradingWrapper from "modules/trade/components/trading--wrapper/trading--wrapper";
 import { Check, Close } from "modules/common/components/icons";
