@@ -72,7 +72,11 @@ GethNodeController.prototype.start = function (event) {
     fs.mkdirSync(gethPath)
   }
 
-  const staticNodesPath = path.join(gethPath, 'geth', 'static-nodes.json')
+  const gethGethPath = path.join(appDataPath, 'geth', 'geth')
+  if (!fs.existsSync(gethGethPath)) {
+    fs.mkdirSync(gethGethPath)
+  }
+  const staticNodesPath = path.join(gethGetPath, 'static-nodes.json')
   if (!fs.existsSync(staticNodesPath)) {
     fs.writeFileSync(staticNodesPath, JSON.stringify(PEER_NODES, null, 4))
   }
