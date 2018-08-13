@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "modules/common/containers/sticky-params-components";
+import { Link } from "modules/common/containers/sticky-params-link";
 
 import makePath from "modules/routes/helpers/make-path";
 import makeQuery from "modules/routes/helpers/make-query";

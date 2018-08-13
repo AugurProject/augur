@@ -4,7 +4,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
-import { Link } from "modules/common/containers/sticky-params-components";
+import { Link } from "modules/common/containers/sticky-params-link";
 import classNames from "classnames";
 
 import shouldComponentUpdatePure from "utils/should-component-update-pure";
