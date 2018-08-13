@@ -14,7 +14,7 @@ const downloadAndInstall = () => {
 
   autoUpdater
     .on('download-progress', ({ percent }) => {
-      progressBar.detail = `${percent}%`
+      progressBar.detail = `${percent.toFixed(1)}%`
       progressBar.value = percent
     })
     .on('update-downloaded', () => {
