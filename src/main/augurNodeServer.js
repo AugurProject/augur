@@ -8,10 +8,10 @@ const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const debounce = require('debounce')
 
-const POOLED_DELAY_WAIT = 60*1000
+const POOL_DELAY_WAIT = 60*1000
 const DEFAULT_DELAY_WAIT = 1*1000
 
-const POOLED_MAX_RETRIES = 5
+const POOL_MAX_RETRIES = 5
 const DEFAULT_MAX_RETRIES = 3
 
 const AUGUR_NODE_RESTART_RETRIES = 1
@@ -115,8 +115,8 @@ AugurNodeServer.prototype.startServer = function () {
     this.bulkSyncing = false
     log.info('here looking at networkConfig')
     if (this.networkConfig.http.indexOf('infura') > -1) {
-      propagationDelayWaitMillis = POOLED_DELAY_WAIT
-      maxRetries = POOLED_MAX_RETRIES
+      propagationDelayWaitMillis = POOL_DELAY_WAIT
+      maxRetries = POOL_MAX_RETRIES
     }
     console.log(propagationDelayWaitMillis, maxRetries)
     this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis, maxRetries }), this.appDataPath)
