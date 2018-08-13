@@ -60,6 +60,14 @@
 
     <script>
       document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch-enabled' : ' touch-disabled');
+    if(window.navigator && navigator.serviceWorker) {
+      navigator.serviceWorker.getRegistrations()
+        .then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+          }
+        });
+    }
     </script>
 
     <!-- AirSwap Widget -->
