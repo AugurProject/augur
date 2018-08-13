@@ -58,6 +58,7 @@
     "augur.js": "5.2.0",
     "debounce": "1.1.0",
     "electron-compile": "6.4.2",
+    "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.16",
     "electron-progressbar": "^1.1.0",
     "electron-updater": "^3.0.3",

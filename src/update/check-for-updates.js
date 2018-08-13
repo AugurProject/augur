@@ -3,6 +3,8 @@ const {autoUpdater} = require('electron-updater')
 const ProgressBar = require('electron-progressbar');
 const log = require('electron-log')
 
+const isDev = require('electron-is-dev')
+
 const downloadAndInstall = () => {
   var progressBar = new ProgressBar({
     text: 'Downloading update',
@@ -58,6 +60,8 @@ autoUpdater.logger = log
 autoUpdater.autoDownload = false
 
 module.exports = (notifyUpdateNotAvailable = false, callBack) => {
+  if(isDev) return Promise.resolve()
+
   const p = new Promise((resolve) => {
     autoUpdater
       .once('update-not-available', resolve)
