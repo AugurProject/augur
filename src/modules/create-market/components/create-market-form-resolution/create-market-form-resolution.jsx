@@ -11,14 +11,14 @@ import { SingleDatePicker } from 'react-dates'
 
 import { formatDate } from 'utils/format-date'
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC, DESIGNATED_REPORTER_SELF, DESIGNATED_REPORTER_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
-
 import isAddress from 'modules/auth/helpers/is-address'
 
 import InputDropdown from 'modules/common/components/input-dropdown/input-dropdown'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
-
+import { ExclamationCircle as InputErrorIcon, Hint } from 'modules/common/components/icons'
 import Styles from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 export const ChevronLeft = () => (
   <svg viewBox="0 0 8 14" xmlns="http://www.w3.org/2000/svg">
@@ -234,6 +234,27 @@ export default class CreateMarketResolution extends Component {
         >
           <label htmlFor="cm__input--date">
             <span>Expiration Date</span>
+            <div style={{ display: 'inline-block' }}>
+              <label
+                className={classNames(TooltipStyles.TooltipHint, Styles.CreateMarketResolution__tooltip)}
+                data-tip
+                data-for="tooltip--expiration-date"
+              >
+                { Hint }
+              </label>
+              <ReactTooltip
+                id="tooltip--expiration-date"
+                className={classNames(TooltipStyles.Tooltip, Styles.CreateMarketResolution__tooltipContainer)}
+                effect="solid"
+                place="right"
+                type="light"
+              >
+                <h4>Market Expiration Date</h4>
+                <p style={{ color: '#372e4b' }}>
+                  {'Augur is still experimental software, creating markets past six months has been disabled to discourage long running markets.'}
+                </p>
+              </ReactTooltip>
+            </div>
           </label>
           <SingleDatePicker
             id="cm__input--date"
@@ -245,7 +266,10 @@ export default class CreateMarketResolution extends Component {
               if (!date) return validateField('endTime', '')
               validateField('endTime', formatDate(date.toDate()))
             }}
-            isOutsideRange={day => day.isBefore(moment(this.props.currentTimestamp))}
+            isOutsideRange={day =>
+              day.isAfter(moment(this.props.currentTimestamp).add(6, 'M')) ||
+              day.isBefore(moment(this.props.currentTimestamp))
+            }
             focused={this.state.focused}
             onFocusChange={({ focused }) => {
               if (this.state.date == null) {
