@@ -8,11 +8,11 @@ const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const debounce = require('debounce')
 
-const REMOTE_DELAY_WAIT = 60*1000
-const LOCAL_DELAY_WAIT = 1*1000
+const POOL_DELAY_WAIT = 60*1000
+const DEFAULT_DELAY_WAIT = 1*1000
 
-const REMOTE_MAX_RETRIES = 5
-const LOCAL_MAX_RETRIES = 3
+const POOL_MAX_RETRIES = 5
+const DEFAULT_MAX_RETRIES = 3
 
 const AUGUR_NODE_RESTART_RETRIES = 1
 const AUGUR_NODE_RESTART_WAIT = 5*1000
@@ -110,14 +110,15 @@ AugurNodeServer.prototype.setWindow = function (window) {
 AugurNodeServer.prototype.startServer = function () {
   try {
     log.info('Starting Server')
-    var propagationDelayWaitMillis = REMOTE_DELAY_WAIT
-    var maxRetries = REMOTE_MAX_RETRIES
+    var propagationDelayWaitMillis = DEFAULT_DELAY_WAIT
+    var maxRetries = DEFAULT_MAX_RETRIES
     this.bulkSyncing = false
     log.info('here looking at networkConfig')
-    if (this.networkConfig.http.indexOf('localhost') > -1 || this.networkConfig.http.indexOf('127.0.0.1') > -1) {
-      propagationDelayWaitMillis = LOCAL_DELAY_WAIT
-      maxRetries = LOCAL_MAX_RETRIES
+    if (this.networkConfig.http.indexOf('infura') > -1) {
+      propagationDelayWaitMillis = POOL_DELAY_WAIT
+      maxRetries = POOL_MAX_RETRIES
     }
+    console.log(propagationDelayWaitMillis, maxRetries)
     this.augurNodeController = new AugurNodeController(this.augur, Object.assign({}, this.networkConfig, { propagationDelayWaitMillis, maxRetries }), this.appDataPath)
     this.augurNodeController.clearLoggers()
     this.augurNodeController.addLogger(log)
