@@ -41,7 +41,7 @@ export default class MarketPortfolioCard extends Component {
     this.state = {
       tableOpen: {
         myPositions: this.props.positionsDefault,
-        openOrders: false,
+        openOrders: props.orphanedOrders.length > 0, // open if orphaned orders are present
       },
     }
   }
