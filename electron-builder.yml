@@ -16,7 +16,7 @@ linux:
   - snap
   category: Office
   icon: build/icon.png
-appId: "net.augur.${name}"
+appId: "net.augur.augur"
 artifactName: "${os}-${productName}-${version}.${ext}"
 publish:
   provider: github
