@@ -392,8 +392,8 @@ function determineDrawParams({
         createBigNumber(yDomain[0]).times(1.5).toNumber(),
         createBigNumber(yDomain[0]).times(0.5).toNumber(),
       ]
+    }
   }
-
   // sigment y into 10 to show prices
   const boundDiff = createBigNumber(yDomain[0]).minus(createBigNumber(yDomain[1])).dividedBy(2)
 
