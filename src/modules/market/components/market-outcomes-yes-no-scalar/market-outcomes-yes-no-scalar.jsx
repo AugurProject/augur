@@ -31,8 +31,8 @@ const MarketOutcomes = (p) => {
 
   const lastPriceDenomination = p.type !== YES_NO ? '' : getValue(p.outcomes[0], 'lastPricePercent.denomination')
   const arrowStyles = {
-    left: (p.type === YES_NO ? '15px' : '8px'),
-    marginLeft: (p.type === YES_NO ? '10px' : '0px'),
+    left: (p.type === YES_NO ? '0.9375rem' : '0.5rem'),
+    marginLeft: (p.type === YES_NO ? '0.625rem' : '0'),
   }
 
   return (
