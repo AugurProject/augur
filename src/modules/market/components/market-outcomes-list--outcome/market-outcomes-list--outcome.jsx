@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import getValue from 'utils/get-value'
-
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator'
 import Styles from 'modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome.styles'
 
 const Outcome = (p) => {
@@ -33,6 +33,7 @@ const Outcome = (p) => {
       <li><ValueDenomination formatted={topAskPrice} /></li>
       <li><ValueDenomination formatted={topAskShares} /></li>
       <li><ValueDenomination formatted={lastPrice} /></li>
+      <MarketOutcomeTradingIndicator outcome={p.outcome} />
     </ul>
   )
 }
