@@ -10,7 +10,7 @@ import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 import { isEqual } from 'lodash'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
-import { Hint } from 'modules/common/components/icons'
+import { Hint, ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
@@ -308,7 +308,7 @@ class MarketTradingForm extends Component {
           </li>
           { errors.length > 0 &&
             <li className={Styles['TradingForm__error-message']}>
-              { errors.map(error => <p key={error}>{error}</p>) }
+              { InputErrorIcon } { errors.map(error => <p key={error}>{error}</p>) }
             </li>
           }
           <li className={marketType === YES_NO ? Styles['TradingForm__button__yes_no--review'] : Styles['TradingForm__button--review']}>
@@ -394,7 +394,7 @@ class MarketTradingForm extends Component {
           <ul className={Styles['TradingForm__form-body']}>
             { errors.length > 0 &&
               <li className={Styles['TradingForm__error-message']}>
-                { errors.map(error => <p key={error}>{error}</p>) }
+                { InputErrorIcon } { errors.map(error => <p key={error}>{error}</p>) }
               </li>
             }
             <li className={marketType === YES_NO ? Styles['TradingForm__button__yes_no--review'] : Styles['TradingForm__button--review']}>
