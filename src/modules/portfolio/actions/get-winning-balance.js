@@ -20,7 +20,6 @@ export const getWinningBalance = (marketIds = [], callback = logError) => (dispa
     const updatedMarketsData = balances.reduce((p, balance) => ({
       ...p,
       [balance.marketId]: {
-        ...marketsData[balance.marketId],
         outstandingReturns: speedomatic.unfix(balance.winnings, 'string'),
       },
     }), {})
