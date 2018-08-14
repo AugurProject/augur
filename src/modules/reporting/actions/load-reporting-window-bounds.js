@@ -16,8 +16,12 @@ export const loadReportingWindowBounds = (callback = logError) => (dispatch, get
         startTime: (result || {}).startTime,
         endTime: (result || {}).endTime,
         stake: (result || {}).totalStake || 0,
-        contributions: (result || {}).participantContributions || 0,
-        participation: (result || {}).participationTokens || 0,
+        participantContributions: (result || {}).participantContributions || 0,
+        participationTokens: (result || {}).participationTokens || 0,
+        feeWindowRepStaked: (result || {}).feeWindowRepStaked || 0,
+        feeWindowEthFees: (result || {}).feeWindowEthFees || 0,
+        participantContributionsCrowdsourcer: (result || {}).participantContributionsCrowdsourcer || 0,
+        participantContributionsInitialReport: (result || {}).participantContributionsInitialReport || 0,
       }))
     },
   )

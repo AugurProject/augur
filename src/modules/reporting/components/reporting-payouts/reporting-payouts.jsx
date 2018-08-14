@@ -6,6 +6,7 @@ import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-payouts/reporting-payouts.styles'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { ExclamationCircle } from 'modules/common/components/icons'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 const CELL_MARGIN = 12
 const INITIAL_CELL_HEIGHT = 54
@@ -49,8 +50,11 @@ const Outcome = ({ className, outcome, marketId }) => {
           {outcomeName}
         </span>
       </div>
+      { outcome.tentativeWinning && outcome.id === MALFORMED_OUTCOME &&
+        <label className={Styles.MarketReportingPayouts__malformed}>Malformed Outcome</label>
+      }
       { outcome.tentativeWinning &&
-        <div className={Styles['MarketReportingPayouts__winning-outcome-message']}>
+        <div data-testid={'winning-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__winning-outcome-message']}>
           tentative winning outcome
         </div>
       }
@@ -71,9 +75,9 @@ const Outcome = ({ className, outcome, marketId }) => {
                 style={{ width: String(outcome.percentageComplete) + '%' }}
               />
             </div>
-            <span className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
+            <span data-testid={'disputeBond-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__progress-bar-total-rep-text']}>{currentOutcomeStake}</span>
             <span className={Styles['MarketReportingPayouts__progress-bar-break']}> / </span>
-            <span className={Styles['MarketReportingPayouts__progress-bar-goal-text']}>{totalBondSizeCurrent} REP</span>
+            <span data-testid={'disputeBondTarget-' + marketId + '-' + outcome.id} className={Styles['MarketReportingPayouts__progress-bar-goal-text']}>{totalBondSizeCurrent} REP</span>
           </div>
           <ReactTooltip
             id={'tooltip--rep-progress-'+outcome.id+marketId}
@@ -149,7 +153,7 @@ class MarketReportingPayouts extends Component {
     const { outcomes, marketId, isMobile, isMobileSmall } = this.props
 
     const numShown = isMobile && !isMobileSmall ? NUM_CELLS_SHOWN_MOBILE : NUM_CELLS_SHOWN
-    const totalOutcomes = outcomes.length
+    const totalOutcomes = outcomes.filter(outcome => outcome.display).length
     const displayShowMore = totalOutcomes > numShown
     const showMoreText = this.state.isOpen ? `- ${totalOutcomes - numShown} less` : `+ ${totalOutcomes - numShown} more`
 
@@ -180,6 +184,7 @@ class MarketReportingPayouts extends Component {
               className={Styles.MarketReportingPayouts__outcomes}
             >
               {outcomes.length > 0 && outcomes.map(outcome => (
+                outcome.display &&
                 <Outcome
                   key={outcome.id}
                   outcome={outcome}
@@ -193,6 +198,7 @@ class MarketReportingPayouts extends Component {
           { displayShowMore &&
             <button
               className={Styles['MarketReportingPayouts__show-more']}
+              data-testid="showMoreButton"
               onClick={this.showMore}
             >
               { showMoreText }

@@ -23,7 +23,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) {
+      if (!marketIds || marketIds.length === 0 || isNaN(loginAccount.address)) {
         dispatch(updateUpcomingDesignatedReportingMarkets([]))
         return callback(null)
       }
@@ -44,7 +44,7 @@ export const loadReporting = (callback = logError) => (dispatch, getState) => {
     },
     (err, marketIds) => {
       if (err) return callback(err)
-      if (!marketIds || marketIds.length === 0) {
+      if (!marketIds || marketIds.length === 0 || isNaN(loginAccount.address)) {
         dispatch(updateDesignatedReportingMarkets([]))
         return callback(null)
       }

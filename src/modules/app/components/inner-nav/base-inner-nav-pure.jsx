@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 import { mobileMenuStates } from 'modules/app/components/app/app'
 
@@ -31,7 +31,7 @@ const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScal
       </Link>
       }
       {!item.link &&
-      <button onClick={item.onClick}>
+      <button onClick={item.onClick} className={item.label}>
         {item.label}
       </button>
       }

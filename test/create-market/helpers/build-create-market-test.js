@@ -75,7 +75,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
           'one',
           'two',
         ],
-        _topic: 'test category',
+        _topic: 'TEST CATEGORY',
         _feePerEthInWei: '0x470de4df820000',
       }
 
@@ -130,7 +130,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
           resolutionSource: '',
           tags: [],
         },
-        _topic: 'test category',
+        _topic: 'TEST CATEGORY',
         _feePerEthInWei: '0x470de4df820000',
       }
 
@@ -193,7 +193,7 @@ describe('modules/create-market/helpers/build-create-market', () => {
         _maxPrice: '10',
         _minPrice: '-10',
         tickSize: 1000,
-        _topic: 'test category',
+        _topic: 'TEST CATEGORY',
         _feePerEthInWei: '0x470de4df820000',
       }
 

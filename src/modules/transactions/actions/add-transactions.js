@@ -1,5 +1,4 @@
-import { augur } from 'services/augurjs'
-import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL } from 'modules/transactions/constants/types'
+import { MARKET_CREATION, PUBLIC_TRADE, TRANSFER, REPORTING, TRADE, OPEN_ORDER, BUY, SELL, COMPLETE_SETS_SOLD } from 'modules/transactions/constants/types'
 import { SUCCESS, PENDING } from 'modules/transactions/constants/statuses'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { eachOf, each } from 'async'
@@ -8,14 +7,17 @@ import { isNull, orderBy } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
 import { convertUnixToFormattedDate } from 'src/utils/format-date'
 import { YES_NO, CATEGORICAL } from 'modules/markets/constants/market-types'
-import { formatAttoRep, formatShares } from 'utils/format-number'
+import { formatAttoRep, formatShares, formatEther } from 'utils/format-number'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 import { groupBy } from 'lodash/fp'
 
-function formatTransactionMessage(sumBuy, sumSell, txType) {
+function formatTransactionMessage(sumBuy, sumSell, txType, isFill) {
   const buys = (sumBuy !== 0 ? `${sumBuy} ${BUY}` : '')
   const sells = (sumSell !== 0 ? `${sumSell} ${SELL}` : '')
+  if (isFill) {
+    return `${sumBuy + sumSell} ${txType}${(sumBuy + sumSell > 1) ? 's' : ''} Filled`
+  }
   return buys + (sumBuy !== 0 && sumSell !== 0 ? ' & ' : ' ') + sells + ' ' + (sumBuy + sumSell > 1 ? txType + 's' : txType)
 }
 
@@ -58,8 +60,12 @@ function buildTradeTransactionGroup(group, marketsData) {
       header.transactions.push(localHeader.transactions[0])
     }
   })
-
-  header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
+  if (header.transactions && header.transactions.length === 1 && header.transactions[0].maker) {
+    // own order filled
+    header.message = formatTransactionMessage(sumBuy, sumSell, 'Order', true)
+  } else {
+    header.message = formatTransactionMessage(sumBuy, sumSell, 'Trade')
+  }
   return header
 }
 
@@ -68,7 +74,7 @@ function buildTradeTransaction(trade, marketsData) {
   const transaction = { ...trade, market }
   transaction.status = SUCCESS
   transaction.id = `${transaction.transactionHash}-${transaction.orderId}`
-  const header = buildHeader(transaction, TRADE)
+  const header = buildHeader(transaction, TRADE, SUCCESS)
   const meta = {}
   meta.type = TRADE
   const outcomeName = getOutcome(market, transaction.outcome)
@@ -90,12 +96,9 @@ function buildTradeTransaction(trade, marketsData) {
 }
 
 export function addTransferTransactions(transfers) {
-  const FillOrderContractAddress = augur.contracts.addresses[augur.rpc.getNetworkID()].FillOrder
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const transactions = {}
     each(transfers, (transfer) => {
-      // filter out market trade transfers from FillOrder contract
-      if (transfer.sender && transfer.sender.toLowerCase() === FillOrderContractAddress.toLowerCase()) return
       const transaction = { ...transfer }
       transaction.id = `${transaction.transactionHash}-${transaction.logIndex}`
       const header = buildHeader(transaction, TRANSFER, SUCCESS)
@@ -124,7 +127,7 @@ export function addTransferTransactions(transfers) {
         txhash: transaction.transactionHash,
         recipient: transaction.recipient,
       })
-      transactions[transaction.id] = header
+      if (transaction.meta.recipient !== null) transactions[transaction.id] = header
     })
     dispatch(updateTransactionsData(transactions))
   }
@@ -176,7 +179,6 @@ export function addMarketCreationTransactions(marketsCreated) {
       })
       transaction.meta = {
         market: transaction.marketId,
-        'creation fee': market.creationFee,
         'market type': market.marketType,
         category: market.category,
         'end time': convertUnixToFormattedDate(market.endTime).formattedLocal,
@@ -193,21 +195,45 @@ export function addMarketCreationTransactions(marketsCreated) {
   }
 }
 
+export function addCompleteSetsSoldLogs(completeSetsSoldLogs) {
+  return (dispatch, getState) => {
+    const { marketsData } = getState()
+    const completeSetsData = {}
+    each(completeSetsSoldLogs, (completeSetLog) => {
+      const { marketId } = completeSetLog
+      const market = marketsData[marketId]
+      const transaction = Object.assign({ marketId, ...completeSetLog }, {
+        id: completeSetLog.transactionHash,
+      })
+      transaction.meta = {
+        market: transaction.marketId,
+        amount: formatShares(transaction.numCompleteSets).full,
+        block: completeSetLog.blockNumber,
+        sender: completeSetLog.account,
+      }
+      const header = Object.assign(buildHeader(transaction, COMPLETE_SETS_SOLD, SUCCESS), {
+        message: 'Complete Sets Sold',
+        description: `${transaction.meta.amount} sold on Market: ${market.description}`,
+        transactions: [transaction],
+      })
+      completeSetsData[transaction.id] = header
+    })
+    dispatch(updateTransactionsData(completeSetsData))
+  }
+}
+
 export function addOpenOrderTransactions(openOrders) {
   return (dispatch, getState) => {
     const { marketsData } = getState()
     // flatten open orders
     const transactions = {}
-    let index = 100
     eachOf(openOrders, (value, marketId) => {
       const market = marketsData[marketId]
-      // TODO: remove index when I figure a comprehensive uique id strategy
-      index += 1
       let sumBuy = 0
       let sumSell = 0
       const marketHeader = {
         status: 'Market Outcome Trade',
-        hash: marketId + index,
+        marketId,
         sortOrder: getSortOrder(OPEN_ORDER),
       }
       if (market !== undefined) {
@@ -221,16 +247,23 @@ export function addOpenOrderTransactions(openOrders) {
           eachOf(sorted, (value4, hash) => {
             const transaction = { marketId, type, hash, ...value4 }
             transaction.id = transaction.transactionHash + transaction.logIndex
-            transaction.message = `${transaction.orderState} - ${type} ${transaction.fullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             const meta = {}
+            if (transaction.canceledTransactionHash && transaction.canceledTime) {
+              const cancelationTime = convertUnixToFormattedDate(transaction.canceledTime)
+              meta.canceledTransactionHash = transaction.canceledTransactionHash
+              meta.canceledTime = cancelationTime.full
+            }
+            transaction.message = `${type} ${transaction.originalFullPrecisionAmount} Shares @ ${transaction.fullPrecisionPrice} ETH`
             creationTime = convertUnixToFormattedDate(transaction.creationTime)
             meta.txhash = transaction.transactionHash
             meta.timestamp = creationTime.full
             const outcomeName = getOutcome(market, outcome)
             if (outcomeName) meta.outcome = outcomeName
-            meta.status = transaction.orderState
-            meta.amount = transaction.fullPrecisionAmount
-            meta.price = transaction.fullPrecisionPrice
+            meta.status = transaction.orderState.toLowerCase()
+            meta.status = meta.status.charAt(0).toUpperCase() + meta.status.slice(1)
+            meta.amount = formatShares(transaction.originalFullPrecisionAmount).full
+            meta.filled = formatShares(createBigNumber(transaction.originalFullPrecisionAmount, 10).minus(transaction.fullPrecisionAmount, 10)).full
+            meta.price = formatEther(transaction.fullPrecisionPrice).full
             transaction.meta = meta
             marketTradeTransactions.push(transaction)
             if (type === BUY) {
@@ -242,10 +275,11 @@ export function addOpenOrderTransactions(openOrders) {
           })
         })
       })
-      // TODO: last order creation time will be in header, eariest activite
+      // TODO: last order creation time will be in header, earliest activite
       marketHeader.timestamp = creationTime
       marketHeader.message = formatTransactionMessage(sumBuy, sumSell, 'Order')
       marketHeader.transactions = marketTradeTransactions
+      marketHeader.hash = `${marketTradeTransactions[0].orderId}`
       transactions[marketHeader.hash] = marketHeader
     })
     dispatch(updateTransactionsData(transactions))
@@ -302,11 +336,11 @@ function processReport(market, transaction) {
 
 function getOutcome(market, outcome) {
   let value = null
-  if (!market || !outcome) return value
+  if (!market || isNaN(outcome)) return outcome
   if (market.marketType === YES_NO) {
     value = 'Yes'
   } else if (market.marketType === CATEGORICAL) {
-    value = market.outcomes[outcome].description
+    value = market.outcomes[outcome] && market.outcomes[outcome].description
   } else {
     value = outcome
   }
@@ -336,6 +370,9 @@ export function getSortOrder(type) {
   }
   if (type === TRADE) {
     return 20
+  }
+  if (type === COMPLETE_SETS_SOLD) {
+    return 40
   }
   if (type === TRANSFER) {
     return 50

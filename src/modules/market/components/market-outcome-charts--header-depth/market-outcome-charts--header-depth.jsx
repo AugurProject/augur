@@ -35,6 +35,10 @@ export default class MarketOutcomeDepthHeader extends Component {
         <section style={{ minHeight: headerHeight }} />
       )
     }
+    let type = ''
+    if (hoveredDepth.length > 0) {
+      type = hoveredDepth[4] === ASKS ? 'ask ' : 'bid '
+    }
 
     return (
       <section
@@ -46,19 +50,19 @@ export default class MarketOutcomeDepthHeader extends Component {
         </div>
         <div className={Styles.MarketOutcomeChartsHeader__stats}>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>
-            <span className={Styles['MarketOutcomeChartsHeader__stat-title']}>
-              {(hoveredDepth.length === 0 || hoveredDepth[3] === ASKS) ? 'ask' : 'bid'} price
+            <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
+              {type}qty
             </span>
-            <span className={Styles['MarketOutcomeChartsHeader__stat-value']}>
-              {isNumber(hoveredDepth[1]) ? hoveredDepth[1].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
+            <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
+              {hoveredDepth[0] ? hoveredDepth[2].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
             </span>
           </span>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>
-            <span className={Styles[`MarketOutcomeChartsHeader__stat-title`]}>
-            qty
+            <span className={Styles['MarketOutcomeChartsHeader__stat-title']}>
+              price
             </span>
-            <span className={Styles[`MarketOutcomeChartsHeader__stat-value`]}>
-              {isNumber(hoveredDepth[2]) ? hoveredDepth[2].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
+            <span className={Styles['MarketOutcomeChartsHeader__stat-value']}>
+              {isNumber(hoveredDepth[1]) ? hoveredDepth[1].toFixed(fixedPrecision).toString() : <span>&mdash;</span>}
             </span>
           </span>
           <span className={Styles.MarketOutcomeChartsHeader__stat}>

@@ -11,9 +11,11 @@ export const selectCategoriesState = state => state.categories
 export const selectClosePositionTradeGroupsState = state => state.closePositionTradeGroups
 export const selectConnectionState = state => state.connection
 export const selectDisputeCrowdsourcerTokens = state => state.disputeCrowdsourcerTokens
+export const selectEdgeContextState = state => state.edgeContext
+export const selectEdgeLoadingState = state => state.edgeLoading
 export const selectEnvState = state => state.env
 export const selectFavoritesState = state => state.favorites
-export const selectHasLoadedCategoryState = state => state.hasLoadedCategory
+export const selectHasLoadedCategoryState = state => state.hasLoadedSearch
 export const selectHasLoadedMarketsState = state => state.hasLoadedMarkets
 export const selectInitialReporters = state => state.initialReporters
 export const selectIsLogged = state => state.isLogged
@@ -29,6 +31,7 @@ export const selectMarketsFilteredSorted = state => state.marketsFilteredSorted
 export const selectModal = state => state.modal
 export const selectNewMarketState = state => state.newMarket
 export const selectNotificationsState = state => state.notifications
+export const selectOrphanOrders = state => state.orphanedOrders
 export const selectOrderBooksState = state => state.orderBooks
 export const selectOrderCancellationState = state => state.orderCancellation
 export const selectAllOrders = state => state.allOrders

@@ -8,12 +8,12 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
   })
 
   test({
-    description: `Should handle an error from augurNode.getContractAddresses, and return false`,
+    description: `Should handle an error from augurNode.getSyncData, and return false`,
     assertions: () => {
       isAugurJSVersionsEqualAPI.__Rewire__('augur', {
         version: 'helloWorld',
         augurNode: {
-          getContractAddresses: (cb) => {
+          getSyncData: (cb) => {
             cb({ error: 1000, message: 'Uh-Oh!' })
           },
         },
@@ -34,7 +34,7 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
       isAugurJSVersionsEqualAPI.__Rewire__('augur', {
         version: 'helloWorld',
         augurNode: {
-          getContractAddresses: (cb) => {
+          getSyncData: (cb) => {
             cb(undefined, { version: 'goodbyeWorld' })
           },
         },
@@ -55,7 +55,7 @@ describe('modules/auth/helpers/is-augurjs-versions-equal', () => {
       isAugurJSVersionsEqualAPI.__Rewire__('augur', {
         version: 'helloWorld',
         augurNode: {
-          getContractAddresses: (cb) => {
+          getSyncData: (cb) => {
             cb(undefined, { version: 'helloWorld' })
           },
         },

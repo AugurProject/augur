@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import getValue from 'utils/get-value'
 
+import MarketPositionsListOrphanedOrder from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
@@ -27,6 +28,8 @@ export default class MarketPortfolioCard extends Component {
     positionsDefault: PropTypes.bool,
     finalizeMarket: PropTypes.func.isRequired,
     getWinningBalances: PropTypes.func.isRequired,
+    orphanedOrders: PropTypes.array.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -38,7 +41,7 @@ export default class MarketPortfolioCard extends Component {
     this.state = {
       tableOpen: {
         myPositions: this.props.positionsDefault,
-        openOrders: false,
+        openOrders: props.orphanedOrders.length > 0, // open if orphaned orders are present
       },
     }
   }
@@ -66,6 +69,8 @@ export default class MarketPortfolioCard extends Component {
       linkType,
       market,
       closePositionStatus,
+      orphanedOrders,
+      cancelOrphanedOrder,
     } = this.props
     const myPositionsSummary = getValue(market, 'myPositionsSummary')
     const myPositionOutcomes = getValue(market, 'outcomes')
@@ -84,7 +89,6 @@ export default class MarketPortfolioCard extends Component {
       default:
         localButtonText = 'View'
     }
-
     return (
       <article className={CommonStyles.MarketCommon__container}>
         <section
@@ -102,13 +106,10 @@ export default class MarketPortfolioCard extends Component {
             <div className={Styles.MarketCard__headertext}>
               <span className={Styles['MarketCard__expiration--mobile']}>
                 {dateHasPassed(currentTimestamp, market.endTime.timestamp) ? 'Expired ' : 'Expires '}
-                { isMobile ? market.endTime.formattedShort : market.endTime.formatted }
+                { isMobile ? market.endTime.formattedLocalShort : market.endTime.formattedLocal }
               </span>
               <h1 className={CommonStyles.MarketCommon__description}>
-                <MarketLink
-                  id={market.id}
-                  formattedDescription={market.description}
-                >
+                <MarketLink id={market.id}>
                   {market.description}
                 </MarketLink>
               </h1>
@@ -155,7 +156,7 @@ export default class MarketPortfolioCard extends Component {
                 {market.endTimeLabel}
               </span>
               <span className={Styles.MarketCard__expirationvalue}>
-                {getValue(market, 'endTime.formatted')}
+                {getValue(market, 'endTime.formattedLocal')}
               </span>
             </span>
           </div>
@@ -184,6 +185,7 @@ export default class MarketPortfolioCard extends Component {
               )}
               >
                 <li>Outcome</li>
+                { isMobile ? <li><span>Net Qty</span></li> : <li><span>Net Quantity</span></li>}
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
@@ -197,7 +199,7 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
                   key={outcome.id + outcome.marketId}
-                  outcomeName={outcome.name}
+                  outcomeName={outcome.outcome}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
@@ -234,11 +236,12 @@ export default class MarketPortfolioCard extends Component {
               )}
               >
                 <li>Outcome</li>
+                <li />
                 { isMobile ? <li><span>Qty</span></li> : <li><span>Quantity</span></li>}
                 { isMobile ? <li><span>Avg</span></li> : <li><span>Avg Price</span></li>}
                 { !isMobile && <li><span>Last Price</span></li> }
-                { !isMobile && <li className={Styles.MarketCard__hide}><span>Unrealized <span />P/L</span></li>}
-                { !isMobile && <li className={Styles.MarketCard__hide}><span>Realized <span />P/L</span></li>}
+                { !isMobile && <li><span>Escrowed ETH</span></li>}
+                { !isMobile && <li><span>Escrowed Shares</span></li>}
                 <li className={Styles.MarketCard__hide}><span>Total <span />P/L</span></li>
                 <li><span>Action</span></li>
               </ul>
@@ -257,6 +260,21 @@ export default class MarketPortfolioCard extends Component {
                       closePositionStatus={closePositionStatus}
                     />
                   ))
+                ))
+                }
+                { this.state.tableOpen.openOrders && (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcomeName}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay
+                    isMobile={isMobile}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    isOrphaned
+                    cancelOrphanedOrder={cancelOrphanedOrder}
+                  />
                 ))
                 }
               </div>

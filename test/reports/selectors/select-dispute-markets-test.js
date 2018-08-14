@@ -74,7 +74,7 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
 
   describe('selectMarketsInDispute', () => {
     test({
-      description: `should return one element expected array`,
+      description: `should return 3 elements expected array`,
       assertions: () => {
         const mockMarketsAll = {
           selectMarkets: () => (
@@ -90,6 +90,57 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
               {
                 id: '0xMARKETID3',
                 reportingState: 'CROWDSOURCING_DISPUTE',
+                disputeInfo: {
+                  stakes: [
+                    {
+                      bondSizeCurrent: '204',
+                      stakeCurrent: '50',
+                      tentativeWinning: false,
+                    },
+                    {
+                      stakeCurrent: '0',
+                      tentativeWinning: true,
+                    },
+                  ],
+                  disputeRound: 0,
+                },
+              },
+              {
+                id: '0xMARKETID4',
+                reportingState: 'CROWDSOURCING_DISPUTE',
+                disputeInfo: {
+                  stakes: [
+                    {
+                      bondSizeCurrent: '204',
+                      stakeCurrent: '70',
+                      tentativeWinning: false,
+                    },
+                    {
+                      stakeCurrent: '0',
+                      tentativeWinning: true,
+                    },
+                  ],
+                  disputeRound: 0,
+                },
+              },
+              {
+                id: '0xMARKETID5',
+                reportingState: 'CROWDSOURCING_DISPUTE',
+                disputeInfo: {
+                  stakes: [
+                    {
+                      bondSizeCurrent: '30000',
+                      stakeCurrent: '0',
+                      tentativeWinning: false,
+                    },
+                    {
+                      bondSizeCurrent: '30000',
+                      stakeCurrent: '30000',
+                      tentativeWinning: true,
+                    },
+                  ],
+                  disputeRound: 2,
+                },
               },
             ]
           ),
@@ -109,8 +160,62 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
 
         const expected = [
           {
+            id: '0xMARKETID5',
+            reportingState: 'CROWDSOURCING_DISPUTE',
+            disputeInfo: {
+              highestPercentStaked: '0',
+              stakes: [
+                {
+                  bondSizeCurrent: '30000',
+                  stakeCurrent: '0',
+                  tentativeWinning: false,
+                },
+                {
+                  bondSizeCurrent: '30000',
+                  stakeCurrent: '30000',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 2,
+            },
+          },
+          {
+            id: '0xMARKETID4',
+            reportingState: 'CROWDSOURCING_DISPUTE',
+            disputeInfo: {
+              highestPercentStaked: '0.34313725490196078431',
+              stakes: [
+                {
+                  bondSizeCurrent: '204',
+                  stakeCurrent: '70',
+                  tentativeWinning: false,
+                },
+                {
+                  stakeCurrent: '0',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 0,
+            },
+          },
+          {
             id: '0xMARKETID3',
             reportingState: 'CROWDSOURCING_DISPUTE',
+            disputeInfo: {
+              highestPercentStaked: '0.24509803921568627451',
+              stakes: [
+                {
+                  bondSizeCurrent: '204',
+                  stakeCurrent: '50',
+                  tentativeWinning: false,
+                },
+                {
+                  stakeCurrent: '0',
+                  tentativeWinning: true,
+                },
+              ],
+              disputeRound: 0,
+            },
           },
         ]
 

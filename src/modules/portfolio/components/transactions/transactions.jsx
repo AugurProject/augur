@@ -6,6 +6,7 @@ import TransactionSingle from 'modules/portfolio/components/transaction-single/t
 import TransactionMultiple from 'modules/portfolio/components/transaction-multiple/transaction-multiple'
 import Dropdown from 'modules/common/components/dropdown/dropdown'
 import Paginator from 'modules/common/components/paginator/paginator'
+import { DAY, WEEK, MONTH, ALL } from 'modules/portfolio/constants/transaction-periods'
 
 import { getBeginDate } from 'src/utils/format-date'
 
@@ -19,7 +20,10 @@ export default class Transactions extends Component {
     currentTimestamp: PropTypes.number.isRequired,
     transactions: PropTypes.array.isRequired,
     loadAccountHistoryTransactions: PropTypes.func.isRequired,
-    transactionPeriod: PropTypes.string,
+    transactionPeriod: PropTypes.string.isRequired,
+    transactionsLoading: PropTypes.bool,
+    updateTransactionPeriod: PropTypes.func.isRequired,
+    loadAccountCompleteSets: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -29,12 +33,13 @@ export default class Transactions extends Component {
       lowerBound: null,
       boundedLength: null,
       transactionPeriodOptions: [
-        { label: 'Past 24hrs', value: 'day' },
-        { label: 'Past Week', value: 'week' },
-        { label: 'Past Month', value: 'month' },
-        { label: 'All', value: 'all' },
+        { label: 'Past 24hrs', value: DAY },
+        { label: 'Past Week', value: WEEK },
+        { label: 'Past Month', value: MONTH },
+        { label: 'All', value: ALL },
       ],
-      transactionPeriodDefault: 'day',
+      transactionPeriodDefault: props.transactionPeriod,
+      transactionPeriod: props.transactionPeriod,
     }
 
     this.setSegment = this.setSegment.bind(this)
@@ -43,6 +48,7 @@ export default class Transactions extends Component {
 
   componentWillMount() {
     this.loadTransactions(this.state.transactionPeriodDefault)
+    this.props.loadAccountCompleteSets()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,6 +80,7 @@ export default class Transactions extends Component {
     })
 
     this.setState({ transactionPeriod: newPeriod })
+    this.props.updateTransactionPeriod(newPeriod)
   }
 
   render() {
@@ -81,6 +88,7 @@ export default class Transactions extends Component {
       history,
       location,
       transactions,
+      transactionsLoading,
     } = this.props
     const s = this.state
 
@@ -101,13 +109,19 @@ export default class Transactions extends Component {
             <Dropdown default={s.transactionPeriodDefault} options={s.transactionPeriodOptions} onChange={this.changeTransactionDropdown} />
           </div>
         </div>
-        { transactions.length === 0 &&
+
+        { transactionsLoading === true &&
+        <div className={PortfolioStyles.Loading__container} >
+          <span>Loading...</span>
+        </div>
+        }
+        { transactionsLoading === false && transactions.length === 0 &&
           <div className={PortfolioStyles.NoMarkets__container} >
             <span>You don&apos;t have any transactions.</span>
           </div>
         }
         <div className={Styles.Transactions__list}>
-          { transactions.length > 0 && s.boundedLength &&
+          { transactionsLoading === false && transactions.length > 0 && s.boundedLength &&
             [...Array(s.boundedLength)].map((unused, i) => {
               const transaction = transactions[(s.lowerBound - 1) + i]
               if (transaction) {
@@ -120,7 +134,7 @@ export default class Transactions extends Component {
             })
           }
         </div>
-        { transactions.length > 0 &&
+        { transactionsLoading === false && transactions.length > 0 &&
           <Paginator
             itemsLength={transactions.length}
             itemsPerPage={10}

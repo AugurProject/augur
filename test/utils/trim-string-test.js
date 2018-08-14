@@ -21,7 +21,7 @@ describe('utils/trim-string', () => {
     assertions: () => {
       const actual = trimString('string to be trimmed')
 
-      const expected = 'stri...mmed'
+      const expected = 'stri...'
 
       assert.strictEqual(actual, expected, `didn't return the expected trimmed string`)
     },

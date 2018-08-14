@@ -32,7 +32,6 @@ export default class CreateMarketReview extends Component {
     super(props)
 
     this.state = {
-      // creationFee: null,
       // gasCost: null,
       // initialLiquidity: {
       // gas: null,
@@ -75,7 +74,6 @@ export default class CreateMarketReview extends Component {
       if (err) return console.error(err)
       self.setState({
         gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
-        creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
         validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
       })
     })
@@ -89,7 +87,6 @@ export default class CreateMarketReview extends Component {
     } = this.props
     const s = this.state
 
-    const creationFee = getValue(s, 'creationFee.formatted')
     const validityBond = getValue(s, 'validityBond.formatted')
     const gasCost = getValue(s, 'gasCost.formatted')
     const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted')
@@ -107,15 +104,6 @@ export default class CreateMarketReview extends Component {
             <form onSubmit={e => e.preventDefault()} >
               <h3>Market Creation:</h3>
               <ul>
-                <li>
-                  <span>
-                    Creation Fee:
-                  </span>
-                  <span>
-                    {creationFee}
-                    <span className="cost-denomination">{creationFee && 'ETH'}</span>
-                  </span>
-                </li>
                 <li>
                   <span>
                     Bond (refundable):

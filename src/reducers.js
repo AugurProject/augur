@@ -1,98 +1,106 @@
-import env from 'modules/app/reducers/env'
+// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
+import accountDisputes from 'modules/reporting/reducers/account-disputes-state'
+import accountPositions from 'modules/my-positions/reducers/account-positions'
+import accountTrades from 'modules/my-positions/reducers/account-trades'
 import blockchain from 'modules/app/reducers/blockchain'
-import universe from 'modules/universe/reducers/universe'
+import categories from 'modules/categories/reducers/categories-data'
+import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
 import connection from 'modules/app/reducers/connection'
+import contractAddresses from 'modules/contracts/reducers/contract-addresses'
+import disputeCrowdsourcerTokens from 'modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data'
+import edgeContext from 'modules/auth/reducers/edge-context'
+import edgeLoading from 'modules/auth/reducers/edge-loading'
+import env from 'modules/app/reducers/env'
+import eventsAPI from 'modules/contracts/reducers/events-api'
+import favorites from 'modules/markets/reducers/favorites'
+import filterOption from 'modules/filter-sort/reducers/filter-option'
+import functionsAPI from 'modules/contracts/reducers/functions-api'
+import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
+import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
+import isAnimating from 'modules/app/reducers/is-animating'
+import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded'
+import isLogged from 'modules/auth/reducers/is-logged'
 import isMobile from 'modules/app/reducers/is-mobile'
 import isMobileSmall from 'modules/app/reducers/is-mobile-small'
-import isAnimating from 'modules/app/reducers/is-animating'
-import loginAccount from 'modules/auth/reducers/login-account'
-import isLogged from 'modules/auth/reducers/is-logged'
 import ledgerStatus from 'modules/auth/reducers/ledger-status'
-import newMarket from 'modules/create-market/reducers/new-market'
-import marketsData from 'modules/markets/reducers/markets-data'
-import marketLoading from 'modules/market/reducers/market-loading'
-import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets'
-import outcomesData from 'modules/markets/reducers/outcomes-data'
-import favorites from 'modules/markets/reducers/favorites'
-import reports from 'modules/reports/reducers/reports'
-import marketsWithAccountReport from 'modules/my-reports/reducers/markets-with-account-report'
-import orderBooks from 'modules/bids-asks/reducers/order-books'
-import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded'
-import orderCancellation from 'modules/bids-asks/reducers/order-cancellation'
-import accountTrades from 'modules/my-positions/reducers/account-trades'
-import accountPositions from 'modules/my-positions/reducers/account-positions'
-import transactionsData from 'modules/transactions/reducers/transactions-data'
-import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block'
-import transactionsLoading from 'modules/transactions/reducers/transactions-loading'
-import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
-import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups'
-import categories from 'modules/categories/reducers/categories-data'
-import hasLoadedCategory from 'modules/categories/reducers/has-loaded-category'
-import selectedMarketId from 'modules/market/reducers/selected-market-id'
-import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
-// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
-import priceHistory from 'modules/markets/reducers/price-history'
+import loginAccount from 'modules/auth/reducers/login-account'
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees'
-import contractAddresses from 'modules/contracts/reducers/contract-addresses'
-import functionsAPI from 'modules/contracts/reducers/functions-api'
-import eventsAPI from 'modules/contracts/reducers/events-api'
-import notifications from 'modules/notifications/reducers/notifications'
-import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
+import marketLoading from 'modules/market/reducers/market-loading'
 import marketReportState from 'modules/reporting/reducers/market-report-state'
-import accountDisputes from 'modules/reporting/reducers/account-disputes-state'
+import marketsData from 'modules/markets/reducers/markets-data'
+import marketsWithAccountReport from 'modules/my-reports/reducers/markets-with-account-report'
 import modal from 'modules/modal/reducers/modal'
+import newMarket from 'modules/create-market/reducers/new-market'
+import notifications from 'modules/notifications/reducers/notifications'
+import orderBooks from 'modules/bids-asks/reducers/order-books'
+import orderCancellation from 'modules/bids-asks/reducers/order-cancellation'
+import orphanedOrders from 'modules/orphaned-orders/reducers/orphaned-orders'
+import outcomesData from 'modules/markets/reducers/outcomes-data'
 import participationTokens from 'modules/my-participation-tokens/reducers/participation-token-data'
-import initialReporters from 'modules/my-initial-reporters/reducers/initial-reporters-data'
-import disputeCrowdsourcerTokens from 'modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data'
-import allOrders from 'modules/escape-hatch/reducers/all-orders-data'
+import priceHistory from 'modules/markets/reducers/price-history'
+import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
+import reports from 'modules/reports/reducers/reports'
+import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
+import selectedMarketId from 'modules/market/reducers/selected-market-id'
+import sortOption from 'modules/filter-sort/reducers/sort-option'
+import tradesInProgress from 'modules/trade/reducers/trades-in-progress'
+import transactionPeriod from 'modules/portfolio/reducers/transaction-period'
+import transactionsData from 'modules/transactions/reducers/transactions-data'
+import transactionsLoading from 'modules/transactions/reducers/transactions-loading'
+import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block'
+import universe from 'modules/universe/reducers/universe'
 
 export function createReducer() {
   return {
-    env,
+    accountDisputes,
+    accountPositions,
+    accountTrades,
     blockchain,
-    universe,
+    categories,
+    closePositionTradeGroups,
     connection,
+    contractAddresses,
+    disputeCrowdsourcerTokens,
+    edgeContext,
+    edgeLoading,
+    env,
+    eventsAPI,
+    favorites,
+    filterOption,
+    functionsAPI,
+    hasLoadedMarkets,
+    initialReporters,
+    isAnimating,
+    isFirstOrderBookChunkLoaded,
+    isLogged,
     isMobile,
     isMobileSmall,
-    isAnimating,
-    loginAccount,
-    isLogged,
     ledgerStatus,
-    newMarket,
-    marketsData,
-    marketLoading,
-    hasLoadedMarkets,
-    outcomesData,
-    favorites,
-    reports,
-    marketsWithAccountReport,
-    selectedMarketId,
-    categories,
-    hasLoadedCategory,
-    priceHistory,
-    tradesInProgress,
-    orderBooks,
-    isFirstOrderBookChunkLoaded,
-    orderCancellation,
-    accountTrades,
-    accountPositions,
-    transactionsData,
-    transactionsOldestLoadedBlock,
-    transactionsLoading,
-    scalarMarketsShareDenomination,
-    closePositionTradeGroups,
+    loginAccount,
     marketCreatorFees,
-    contractAddresses,
-    functionsAPI,
-    eventsAPI,
-    notifications,
-    reportingWindowStats,
+    marketLoading,
     marketReportState,
+    marketsData,
+    marketsWithAccountReport,
     modal,
+    newMarket,
+    notifications,
+    orderBooks,
+    orderCancellation,
+    orphanedOrders,
+    outcomesData,
     participationTokens,
-    initialReporters,
-    disputeCrowdsourcerTokens,
-    accountDisputes,
-    allOrders,
+    priceHistory,
+    reportingWindowStats,
+    reports,
+    scalarMarketsShareDenomination,
+    selectedMarketId,
+    sortOption,
+    tradesInProgress,
+    transactionPeriod,
+    transactionsData,
+    transactionsLoading,
+    transactionsOldestLoadedBlock,
+    universe,
   }
 }

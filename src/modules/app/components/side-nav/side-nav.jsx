@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
@@ -106,6 +106,7 @@ export default class SideNav extends Component {
               <li
                 className={classNames({ [Styles['SideNav__item--selected']]: selected }, item.disabled ? Styles.disabled : '')}
                 key={item.title}
+                id="side-nav-items"
               >
                 <Link
                   to={item.route ? makePath(item.route) : null}

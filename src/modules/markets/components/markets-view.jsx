@@ -4,82 +4,71 @@ import { Helmet } from 'react-helmet'
 
 import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
 import MarketsList from 'modules/markets/components/markets-list'
-
-import isEqual from 'lodash/isEqual'
-
 import { TYPE_TRADE } from 'modules/market/constants/link-types'
 
 export default class MarketsView extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
-    loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
-    filteredMarkets: PropTypes.array.isRequired,
-    canLoadMarkets: PropTypes.bool.isRequired,
-    hasLoadedMarkets: PropTypes.bool.isRequired,
-    category: PropTypes.string,
-    hasLoadedCategory: PropTypes.object.isRequired,
-    loadMarkets: PropTypes.func.isRequired,
-    loadMarketsByCategory: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    tags: PropTypes.array,
     toggleFavorite: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
     isMobile: PropTypes.bool,
+    loadMarketsByFilter: PropTypes.func.isRequired,
+    search: PropTypes.string,
+    category: PropTypes.string,
+    universe: PropTypes.string,
+    defaultFilter: PropTypes.string.isRequired,
+    defaultSort: PropTypes.string.isRequired,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      filter: props.defaultFilter,
+      sort: props.defaultSort,
+      filterSortedMarkets: [],
+    }
+
+    this.updateFilter = this.updateFilter.bind(this)
+    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this)
   }
 
   componentDidMount() {
-    const {
-      canLoadMarkets,
-      category,
-      hasLoadedCategory,
-      hasLoadedMarkets,
-      loadMarkets,
-      loadMarketsByCategory,
-    } = this.props
-
-    loadMarketsFn({
-      canLoadMarkets,
-      category,
-      loadMarkets,
-      loadMarketsByCategory,
-      hasLoadedMarkets,
-      hasLoadedCategory,
-    })
+    if (this.props.universe) {
+      this.updateFilteredMarkets()
+    }
   }
 
   componentDidUpdate(prevProps) {
     const {
-      canLoadMarkets,
+      search,
       category,
-      hasLoadedCategory,
-      hasLoadedMarkets,
-      loadMarkets,
-      loadMarketsByCategory,
+      universe,
     } = this.props
-    if (
-      (category !== prevProps.category) ||
-      (canLoadMarkets !== prevProps.canLoadMarkets && canLoadMarkets) ||
-
-      !isEqual(hasLoadedCategory, prevProps.hasLoadedCategory) ||
-      (hasLoadedMarkets !== prevProps.hasLoadedMarkets && !hasLoadedMarkets)
-    ) {
-      loadMarketsFn({
-        canLoadMarkets,
-        category,
-        location,
-        loadMarkets,
-        loadMarketsByCategory,
-        hasLoadedMarkets,
-        hasLoadedCategory,
-      })
+    if (universe !== prevProps.universe || (search !== prevProps.search || category !== prevProps.category)) {
+      this.updateFilteredMarkets()
     }
+  }
+
+  updateFilter(params) {
+    const { filter, sort } = params
+    this.setState({ filter, sort }, this.updateFilteredMarkets)
+  }
+
+  updateFilteredMarkets() {
+    const { search, category } = this.props
+    const { filter, sort } = this.state
+    this.props.loadMarketsByFilter({ category, search, filter, sort }, (err, filterSortedMarkets) => {
+      if (err) return console.log('Error loadMarketsFilter:', err)
+      this.setState({ filterSortedMarkets })
+    })
   }
 
   render() {
     const {
-      filteredMarkets,
       history,
       isLogged,
       isMobile,
@@ -88,6 +77,8 @@ export default class MarketsView extends Component {
       markets,
       toggleFavorite,
     } = this.props
+    const s = this.state
+
     return (
       <section id="markets_view">
         <Helmet>
@@ -97,11 +88,15 @@ export default class MarketsView extends Component {
           isLogged={isLogged}
           location={location}
           markets={markets}
+          filter={s.filter}
+          sort={s.sort}
+          updateFilter={this.updateFilter}
         />
         <MarketsList
+          testid="markets"
           isLogged={isLogged}
           markets={markets}
-          filteredMarkets={filteredMarkets}
+          filteredMarkets={s.filterSortedMarkets}
           location={location}
           history={history}
           toggleFavorite={toggleFavorite}
@@ -111,18 +106,5 @@ export default class MarketsView extends Component {
         />
       </section>
     )
-  }
-}
-
-function loadMarketsFn({ canLoadMarkets, category, hasLoadedCategory, loadMarketsByCategory, loadMarkets }) {
-  if (canLoadMarkets) {
-    // Expected behavior is to load a specific category if one is present
-    // else, if we aren't searching (which is a local market data search)
-    // then load markets (loads all markets)
-    if (category && !hasLoadedCategory[category]) {
-      loadMarketsByCategory(category)
-    } else {
-      loadMarkets()
-    }
   }
 }

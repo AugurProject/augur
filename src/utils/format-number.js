@@ -52,6 +52,9 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 export const ETHER_NUMBER_OF_DECIMALS = 4
 export const SHARES_NUMBER_OF_DECIMALS = 4
 
+const SMALLEST_NUMBER_DECIMAL_PLACES = 8
+const USUAL_NUMBER_DECIMAL_PLACES = 4
+
 export function formatEther(num, opts) {
   return formatNumber(
     num,
@@ -106,7 +109,7 @@ export function formatShares(num, opts) {
     {
       decimals: SHARES_NUMBER_OF_DECIMALS,
       decimalsRounded: SHARES_NUMBER_OF_DECIMALS,
-      denomination: ` share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
+      denomination: ` Share${encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
       minimized: false,
       zeroStyled: false,
       blankZero: false,
@@ -117,7 +120,7 @@ export function formatShares(num, opts) {
   )
 
   if (formattedShares.formattedValue === 1) {
-    formattedShares.full = makeFull(formattedShares.formatted, ' share')
+    formattedShares.full = makeFull(formattedShares.formatted, ' Share')
   }
 
   return formattedShares
@@ -127,7 +130,7 @@ export function formatRep(num, opts) {
   return formatNumber(
     num,
     {
-      decimals: 2,
+      decimals: 4,
       decimalsRounded: 0,
       denomination: ' REP',
       positiveSign: false,
@@ -267,6 +270,7 @@ export function formatNumber(num, opts = {
   } else {
     roundingMode = BigNumber.ROUND_HALF_EVEN
   }
+  let formatSigFig = false
   if (isNaN(parseFloat(num))) {
     o.value = 0
     o.formattedValue = 0
@@ -278,12 +282,13 @@ export function formatNumber(num, opts = {
     const useSignificantFiguresThreshold = TEN.exponentiatedBy(new BigNumber(decimals, 10).minus(1).negated().toNumber())
     const roundToZeroThreshold = constants.PRECISION.zero
     o.value = value.toNumber()
-    if (value.abs().lt(roundToZeroThreshold)) {
+    if (value.abs().lt(roundToZeroThreshold)) { // value is less than zero
       o.formattedValue = '0'
     } else if (value.abs().lt(useSignificantFiguresThreshold)) {
       if (!decimals) {
         o.formattedValue = '0'
       } else {
+        formatSigFig = true
         o.formattedValue = value.toPrecision(decimals, roundingMode)
       }
     } else {
@@ -291,9 +296,26 @@ export function formatNumber(num, opts = {
         .dividedBy(decimalsValue)
         .toFixed(decimals)
     }
-    o.formatted = (bigUnitPostfix)
-      ? addBigUnitPostfix(value, o.formattedValue)
-      : addCommas(o.formattedValue)
+
+    const zeroFixed = constants.PRECISION.zero.toFixed(USUAL_NUMBER_DECIMAL_PLACES)
+
+    if (bigUnitPostfix && !formatSigFig) {
+      o.formatted = addBigUnitPostfix(value, o.formattedValue)
+    } else if (formatSigFig) { // for numbers smaller than the set number of decimals - ie ones with scientific notation
+      let formatted = value.toFixed(USUAL_NUMBER_DECIMAL_PLACES)
+      if (formatted === zeroFixed) { // if this is equal to zero, try to show significant digits up to 8 digit places
+        formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+        if (formatted === constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)) {
+          formatted = zeroFixed // if there are no significant digits in the 8 decimal places, just use zero
+        } else {
+          formatted = value.toFixed(1 - Math.floor(Math.log(value.abs())/Math.log(10))) // find first two significant digit
+        }
+      }
+      o.formatted = formatted
+    } else {
+      o.formatted = addCommas(o.formattedValue)
+    }
+
     o.fullPrecision = value.toFixed()
     o.roundedValue = value.times(decimalsRoundedValue).integerValue(roundingMode).dividedBy(decimalsRoundedValue)
     o.rounded = (bigUnitPostfix)
@@ -319,7 +341,7 @@ export function formatNumber(num, opts = {
   }
 
   o.denomination = denomination
-  o.full = makeFull(o.formatted, o.denomination)
+  o.full = makeFull(o.formatted, o.denomination) // should this use this?
 
   return o
 }

@@ -1,4 +1,4 @@
-import { UPDATE_DISPUTE_CROWDSOURCERS_DATA, UPDATE_DISPUTE_CROWDSOURCERS_ESCAPE_HATCH_GAS_COST, UPDATE_DISPUTE_CROWDSOURCERS_BALANCE } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
+import { UPDATE_DISPUTE_CROWDSOURCERS_DATA, UPDATE_DISPUTE_CROWDSOURCERS_BALANCE } from 'modules/my-dispute-crowdsourcer-tokens/actions/update-dispute-crowdsourcer-tokens'
 import { RESET_STATE } from 'modules/app/actions/reset-state'
 
 const DEFAULT_STATE = {}
@@ -14,16 +14,6 @@ export default function (disputeCrowdsourcersData = DEFAULT_STATE, action) {
       return {
         ...disputeCrowdsourcersData,
         ...updatedDisputeCrowdsourcers,
-      }
-    }
-    case UPDATE_DISPUTE_CROWDSOURCERS_ESCAPE_HATCH_GAS_COST: {
-      if (!action.disputeCrowdsourcerID) return disputeCrowdsourcersData
-      return {
-        ...disputeCrowdsourcersData,
-        [action.disputeCrowdsourcerID]: {
-          ...disputeCrowdsourcersData[action.disputeCrowdsourcerID],
-          escapeHatchGasCost: action.escapeHatchGasCost,
-        },
       }
     }
     case UPDATE_DISPUTE_CROWDSOURCERS_BALANCE: {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import { Helmet } from 'react-helmet'
 import { createBigNumber } from 'utils/create-big-number'
 import CategoryList from 'modules/categories/components/category-list/category-list'
@@ -15,6 +15,7 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 import { MARKETS } from 'modules/routes/constants/views'
 
 import { tween } from 'shifty'
+import TermsAndConditions from 'src/modules/app/components/terms-and-conditions/terms-and-conditions'
 
 export default class CategoriesView extends Component {
   static propTypes = {
@@ -167,6 +168,7 @@ export default class CategoriesView extends Component {
             />
           </div>
         }
+        <TermsAndConditions />
       </section>
     )
   }

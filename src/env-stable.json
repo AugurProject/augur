@@ -7,7 +7,6 @@
     "blockRetention": 100,
     "connectionTimeout": 60000
   },
-  "auto-login": true,
   "universe": null,
   "bug-bounty": false,
   "bug-bounty-address": null,

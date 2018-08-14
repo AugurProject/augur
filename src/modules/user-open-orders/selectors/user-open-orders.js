@@ -77,6 +77,8 @@ function getUserOpenOrders(marketId, orders, orderType, outcomeId, userId, order
         avgPrice: formatEther(order.fullPrecisionPrice),
         matchedShares: formatNone(),
         unmatchedShares: formatShares(order.amount),
+        tokensEscrowed: formatEther(order.tokensEscrowed),
+        sharesEscrowed: formatShares(order.sharesEscrowed),
         cancelOrder: (orderId, marketId, outcome, type) => {
           store.dispatch(cancelOrder(orderId, marketId, outcome, type))
         },

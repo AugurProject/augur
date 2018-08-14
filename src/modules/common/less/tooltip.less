@@ -12,6 +12,7 @@
   max-width: 13.7rem;
   padding: 1rem 1.5rem !important;
   text-transform: none;
+  white-space: initial;
 
   > h4 {
     font-weight: 500;
@@ -84,6 +85,22 @@
       &.type-light::after {
         border-bottom-width: 10px;
         border-left-width: 10px !important;
+        border-top-width: 10px;
+      }
+    }
+
+    &.place-right {
+      margin-right: -14px;
+      margin-top: -5px;
+
+      &::after {
+        border-right-color: @color-lightergray !important;
+        left: -10px !important;
+      }
+
+      &.type-light::after {
+        border-bottom-width: 10px;
+        border-right-width: 10px !important;
         border-top-width: 10px;
       }
     }

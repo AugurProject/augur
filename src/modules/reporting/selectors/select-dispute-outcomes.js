@@ -2,6 +2,7 @@ import { SCALAR } from 'modules/markets/constants/market-types'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 import { isEmpty } from 'lodash'
 import { createBigNumber } from 'utils/create-big-number'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default function (market, disputeStakes, newOutcomeDisputeBond, forkThreshold) {
   const TopOutcomeCount = 8
@@ -41,7 +42,21 @@ export default function (market, disputeStakes, newOutcomeDisputeBond, forkThres
   const invalidOutcome = getInvalidOutcome(filteredOutcomes, addDefaultStakeOutcomes, invalidMarketId)
 
   invalidOutcome.potentialFork = !invalidOutcome.tentativeWinning && createBigNumber(invalidOutcome.bondSizeCurrent || newOutcomeDisputeBond, 10).gt(forkThreshold)
-  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b)).slice(0, TopOutcomeCount)
+  const sortedOutcomes = filteredOutcomes.sort((a, b) => sortOutcomes(a, b))
+
+  sortedOutcomes.map((outcome, index) => {
+    if (index < TopOutcomeCount - 1 || outcome.id === invalidMarketId) {
+      outcome.display = true
+    }
+    if (outcome.id === MALFORMED_OUTCOME) {
+      outcome.display = false
+    }
+    return outcome
+  })
+
+  tentativeWinner.display = true
+  invalidOutcome.display = true
+
   const allDisputedOutcomes = [tentativeWinner, ...sortedOutcomes]
   // check that market invalid is in list
   if (allDisputedOutcomes.find(o => o.id === invalidMarketId)) return allDisputedOutcomes

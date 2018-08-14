@@ -51,7 +51,6 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes'
 
-import { listWordsUnderLength } from 'utils/list-words-under-length'
 import calculatePayoutNumeratorsValue from 'utils/calculate-payout-numerators-value'
 
 export default function () {
@@ -170,7 +169,6 @@ export function assembleMarket(
       const market = {
         ...marketData,
         description: marketData.description || '',
-        formattedDescription: listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_'),
         id: marketId,
       }
 
@@ -209,9 +207,9 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite
 
-      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false })
-      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false })
-      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false })
+      market.reportingFeeRatePercent = formatPercent(marketData.reportingFeeRate * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
+      market.marketCreatorFeeRatePercent = formatPercent(marketData.marketCreatorFeeRate * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
+      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false, decimals: 4, decimalsRounded: 4 })
       market.volume = formatShares(marketData.volume, { positiveSign: false })
 
       market.isRequiredToReportByAccount = !!marketReport
@@ -233,6 +231,7 @@ export function assembleMarket(
       market.outcomes = Object.keys(marketOutcomesData || {}).map((outcomeId) => {
         const outcomeData = marketOutcomesData[outcomeId]
         const outcomeTradeInProgress = marketTradeInProgress && marketTradeInProgress[outcomeId]
+        const volume = createBigNumber(outcomeData.volume)
 
         const outcome = {
           ...outcomeData,
@@ -240,10 +239,12 @@ export function assembleMarket(
           marketId,
           lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false }),
         }
-
+        if (volume && volume.eq(ZERO)) {
+          outcome.lastPrice.formatted = '—'
+        }
         if (market.isScalar) {
           // note: not actually a percent
-          if (createBigNumber(outcome.volume).gt(ZERO)) {
+          if (volume && volume.gt(ZERO)) {
             outcome.lastPricePercent = formatNumber(outcome.lastPrice.value, {
               decimals: 2,
               decimalsRounded: 1,
@@ -265,6 +266,11 @@ export function assembleMarket(
               positiveSign: false,
               zeroStyled: true,
             })
+          }
+          // format-number thinks 0 is '-', need to correct
+          if (outcome.lastPrice.fullPrecision === '0') {
+            outcome.lastPricePercent.formatted = '0'
+            outcome.lastPricePercent.full = '0'
           }
         } else if (createBigNumber(outcome.volume || 0).gt(ZERO)) {
           outcome.lastPricePercent = formatPercent(outcome.lastPrice.value * 100, { positiveSign: false })
@@ -290,7 +296,22 @@ export function assembleMarket(
         outcome.priceTimeSeries = selectPriceTimeSeries(outcome, marketPriceHistory)
 
         return outcome
-      }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1))
+      }).sort((a, b) => (parseInt(a.id, 10) - parseInt(b.id, 10)))
+
+      let numCompleteSets = createBigNumber(0)
+      if (marketAccountPositions) {
+        numCompleteSets = Object.keys(marketAccountPositions).reduce((num, outcomePositionId) => {
+          const outcomePosition = marketAccountPositions[outcomePositionId][0]
+          const numShares = createBigNumber(outcomePosition.numShares)
+          if (numShares.eq(0)) {
+            return createBigNumber(0)
+          }
+          if (numShares.lt(num)) {
+            return numShares
+          }
+          return num
+        }, createBigNumber(marketAccountPositions[0][0].numShares))
+      }
 
       market.tags = (market.tags || []).filter(tag => !!tag)
 
@@ -312,6 +333,8 @@ export function assembleMarket(
         if (market.myPositionsSummary) {
           market.myPositionOutcomes = market.myPositionsSummary.positionOutcomes
           delete market.myPositionsSummary.positionOutcomes
+
+          market.myPositionsSummary.numCompleteSets = formatShares(numCompleteSets)
         }
       }
 

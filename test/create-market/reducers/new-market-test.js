@@ -108,6 +108,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.5),
           quantity: createBigNumber(1),
+          orderEstimate: '0.5 ETH',
         },
       })
 
@@ -119,6 +120,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.5),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.5),
             },
           ],
         },
@@ -139,11 +141,13 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.8),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.8),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
           ],
         },
@@ -156,6 +160,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
           type: 'bid',
           price: createBigNumber(0.5),
           quantity: createBigNumber(1),
+          orderEstimate: '0.5 ETH',
         },
       })
 
@@ -167,16 +172,157 @@ describe('modules/create-market/reducers/new-market.js', () => {
               type: 'bid',
               price: createBigNumber(0.8),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.8),
             },
             {
               type: 'ask',
               price: createBigNumber(0.9),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
             },
             {
               type: 'bid',
               price: createBigNumber(0.5),
               quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.5),
+            },
+          ],
+        },
+      }
+
+      assert.deepEqual(actual, expected, `Didn't return the expected orderBook object`)
+    },
+  })
+
+  test({
+    describe: 'should add order to an existing outcome that has an order at that price point',
+    assertions: () => {
+      const newMarketState = {
+        test: 'test',
+        orderBook: {
+          Outcome1: [
+            {
+              type: 'bid',
+              price: createBigNumber(0.3),
+              quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.3),
+            },
+            {
+              type: 'ask',
+              price: createBigNumber(0.9),
+              quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
+            },
+          ],
+        },
+      }
+
+      const actual = newMarket(newMarketState, {
+        type: ADD_ORDER_TO_NEW_MARKET,
+        data: {
+          outcome: 'Outcome1',
+          type: 'bid',
+          price: createBigNumber(0.3),
+          quantity: createBigNumber(1),
+          orderEstimate: '0.3 ETH',
+        },
+      })
+
+      const expected = {
+        test: 'test',
+        orderBook: {
+          Outcome1: [
+            {
+              type: 'bid',
+              price: createBigNumber(0.3),
+              quantity: createBigNumber(2),
+              orderEstimate: createBigNumber(0.6),
+            },
+            {
+              type: 'ask',
+              price: createBigNumber(0.9),
+              quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
+            },
+          ],
+        },
+      }
+
+      assert.deepEqual(actual, expected, `Didn't return the expected orderBook object`)
+    },
+  })
+
+  test({
+    describe: 'should add multiple orders to an existing outcome that has an orders at those price points',
+    assertions: () => {
+      const newMarketState = {
+        test: 'test',
+        orderBook: {
+          Outcome1: [
+            {
+              type: 'bid',
+              price: createBigNumber(0.3),
+              quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.3),
+            },
+            {
+              type: 'ask',
+              price: createBigNumber(0.9),
+              quantity: createBigNumber(1),
+              orderEstimate: createBigNumber(0.1),
+            },
+          ],
+        },
+      }
+
+      const action1 = newMarket(newMarketState, {
+        type: ADD_ORDER_TO_NEW_MARKET,
+        data: {
+          outcome: 'Outcome1',
+          type: 'bid',
+          price: createBigNumber(0.3),
+          quantity: createBigNumber(1),
+          orderEstimate: '0.3 ETH',
+        },
+      })
+
+      const action2 = newMarket(action1, {
+        type: ADD_ORDER_TO_NEW_MARKET,
+        data: {
+          outcome: 'Outcome1',
+          type: 'ask',
+          price: createBigNumber(0.9),
+          quantity: createBigNumber(5),
+          orderEstimate: '0.5 ETH',
+        },
+      })
+
+      const actual = newMarket(action2, {
+        type: ADD_ORDER_TO_NEW_MARKET,
+        data: {
+          outcome: 'Outcome1',
+          type: 'bid',
+          price: createBigNumber(0.3),
+          quantity: createBigNumber(5),
+          orderEstimate: '1.5 ETH',
+        },
+      })
+
+      const expected = {
+        test: 'test',
+        orderBook: {
+          Outcome1: [
+            {
+              type: 'bid',
+              price: createBigNumber(0.3),
+              quantity: createBigNumber(7),
+              orderEstimate: createBigNumber(2.1),
+            },
+            {
+              type: 'ask',
+              price: createBigNumber(0.9),
+              quantity: createBigNumber(6),
+              orderEstimate: createBigNumber(0.6),
             },
           ],
         },

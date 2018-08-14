@@ -4,7 +4,7 @@ ENV PATH /root/.yarn/bin:$PATH
 ARG ethereum_network=rinkeby
 ENV ETHEREUM_NETWORK=$ethereum_network
 
-RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn \
+RUN apk --update add python nginx git curl g++ make binutils bash libusb-dev yarn linux-headers eudev-dev \
   #&& touch ~/.bashrc \
   #&& curl -o- -L https://yarnpkg.com/install.sh | bash \
   && echo "daemon off;" >> /etc/nginx/nginx.conf
@@ -45,7 +45,7 @@ COPY support/local-run.sh /augur/local-run.sh
 # workaround a bug when running inside an alpine docker image
 RUN rm -f /augur/yarn.lock
 
-RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev
+RUN ETHEREUM_NETWORK=$ethereum_network yarn build --dev --augur-hosted --disableMainnet
 
 # need arg to pass in for augur-ui (production) and augur-dev (dev)
 RUN git rev-parse HEAD > /augur/build/git-hash.txt \

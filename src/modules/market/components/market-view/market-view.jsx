@@ -33,7 +33,6 @@ export default class MarketView extends Component {
       orderPrice: '',
       orderQuantity: '',
       selectedNav: BUY,
-      doNotCreateOrders: false,
     }
 
     this.state = {
@@ -69,6 +68,10 @@ export default class MarketView extends Component {
     }
   }
 
+  componentDidMount() {
+    this.node.scrollIntoView()
+  }
+
   componentWillUpdate(nextProps, nextState) {
     const {
       isConnected,
@@ -84,7 +87,7 @@ export default class MarketView extends Component {
         nextProps.isConnected &&
         nextProps.loadingState === null &&
         !!nextProps.marketId &&
-          nextProps.marketId !== marketId
+          (nextProps.marketId !== marketId || nextProps.marketType === undefined)
       )
     ) {
       nextProps.loadFullMarket(nextProps.marketId)
@@ -155,7 +158,7 @@ export default class MarketView extends Component {
     const s = this.state
 
     return (
-      <section>
+      <section ref={(node) => { this.node = node }}>
         <Helmet>
           <title>{parseMarketTitle(description)}</title>
         </Helmet>

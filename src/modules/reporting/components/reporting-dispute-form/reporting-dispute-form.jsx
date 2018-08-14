@@ -12,6 +12,7 @@ import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/i
 import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/reporting/components/reporting-dispute-form/reporting-dispute-form.styles'
 import ReportingDisputeProgress from 'modules/reporting/components/reporting-dispute-progress/reporting-dispute-progress'
+import { MALFORMED_OUTCOME } from 'utils/constants'
 
 export default class ReportingDisputeForm extends Component {
 
@@ -331,7 +332,6 @@ export default class ReportingDisputeForm extends Component {
     return ReportingDisputeForm.constructRepObject(outcome ? outcome.stakeRemaining : this.state.disputeBondValue)
   }
 
-
   render() {
     const {
       market,
@@ -341,13 +341,33 @@ export default class ReportingDisputeForm extends Component {
     const s = this.state
     const winner = (outcomes && outcomes.find(o => o.tentativeWinning)) || {}
     const { disputeRound } = market.disputeInfo
+
+    // need to check if selectedOutcome has already been disputed on
+    let selectedOutcome = outcomes && outcomes.find(outcome => outcome.name === s.inputSelectedOutcome)
+    if (!selectedOutcome) {
+      selectedOutcome = {
+        percentageComplete: 0,
+        percentageAccount: 0,
+        bondSizeCurrent: s.disputeBondValue,
+        stakeRemaining: s.disputeBondValue,
+        stakeCurrent: '0',
+        accountStakeCurrent: '0',
+      }
+    }
+
     return (
       <ul className={classNames(Styles.ReportingDisputeForm__fields, FormStyles.Form__fields)}>
         <li>
           <label>
             <span>Tentative Winning Outcome</span>
           </label>
-          <p>{winner.isInvalid ? 'Invalid' : winner.name }
+          <p>
+            {winner.id === MALFORMED_OUTCOME &&
+              <span>
+                <span className={Styles.ReportingDisputeForm__malformed}>MALFORMED OUTCOME</span>
+              </span>
+            }
+            {winner.isInvalid ? 'Invalid' : winner.name }
             {market.marketType === SCALAR && !winner.isInvalid &&
               <label>{market.scalarDenomination}</label>
             }
@@ -356,15 +376,23 @@ export default class ReportingDisputeForm extends Component {
             }
           </p>
         </li>
+        {winner.id === MALFORMED_OUTCOME &&
+          <div className={Styles.ReportingReport__malformed_msg}>
+            <span>WARNING: The tentative outcome for this market is currently MALFORMED.</span>
+            <p>This means that the tentative outcome CANNOT BE CORRECT.  You and/or other reporters MUST DISPUTE the outcome of this market!  If no one disputes this outcome, then Augur will forever have an INCORRECT OUTCOME for this market, and outstanding bets in this market will not be paid out correctly.</p>
+          </div>
+        }
         <li>
           <label>
             <span>Proposed Outcome</span>
           </label>
           <ul className={classNames(Styles.ReportingDisputeForm__table, FormStyles['Form__radio-buttons--per-line'])}>
-            { outcomes && outcomes.filter(o => !o.tentativeWinning).map(outcome => (
+            { outcomes && outcomes.filter(o => !o.tentativeWinning && o.id !== MALFORMED_OUTCOME).map(outcome => (
+              outcome.display &&
               <li key={outcome.id}>
                 <button
-                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id })}
+                  data-testid={'button-' + outcome.id}
+                  className={classNames({ [`${FormStyles.active}`]: s.selectedOutcome === outcome.id && !s.scalarInputChoosen })}
                   onClick={(e) => { this.validateOutcome(s.validations, outcome.id, outcome.name, false) }}
                 >
                   { outcome.name === 'Indeterminate' ? 'Market Is Invalid' : outcome.name }
@@ -384,6 +412,7 @@ export default class ReportingDisputeForm extends Component {
                   <li>
                     <button
                       className={classNames({ [`${FormStyles.active}`]: s.scalarInputChoosen })}
+                      data-testid="scalar-dispute-button"
                       onClick={(e) => { this.validateScalar('', 'selected outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
                     <input
@@ -395,19 +424,14 @@ export default class ReportingDisputeForm extends Component {
                       step={market.tickSize}
                       placeholder={market.scalarDenomination}
                       value={s.inputSelectedOutcome}
-                      className={classNames({ [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
+                      className={classNames(FormStyles.Form__input, { [`${FormStyles['Form__error--field']}`]: s.validations.hasOwnProperty('err') && s.validations.selectedOutcome })}
                       onChange={(e) => { this.validateScalar(e.target.value, 'outcome', market.minPrice, market.maxPrice, market.tickSize, false) }}
                     />
                     <ReportingDisputeProgress
                       key="scalar_input_progress"
+                      {...selectedOutcome}
                       isSelected={s.scalarInputChoosen}
                       tentativeStake={stakeInfo.displayValue}
-                      percentageComplete={0}
-                      percentageAccount={0}
-                      bondSizeCurrent={s.disputeBondValue}
-                      stakeRemaining={s.disputeBondValue}
-                      stakeCurrent="0"
-                      accountStakeCurrent="0"
                     />
                   </li>
                   <li>

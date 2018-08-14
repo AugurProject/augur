@@ -49,7 +49,6 @@ export default class ReportingReport extends Component {
       validations: {
         selectedOutcome: null,
       },
-      reporterGasCost: null,
       designatedReportNoShowReputationBond: formatEtherEstimate(props.market.designatedReportStake),
       gasEstimate: '0',
     }
@@ -95,14 +94,13 @@ export default class ReportingReport extends Component {
       isOpenReporting,
       universe,
     } = this.props
-    // TODO: might have short-cut, reporter gas cost (creationFee) and designatedReportStake is on market from augur-node
+    // TODO: might have short-cut, designatedReportStake is on market from augur-node
     augur.createMarket.getMarketCreationCostBreakdown({ universe }, (err, marketCreationCostBreakdown) => {
       if (err) return console.error(err)
 
       const repAmount = formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond)
 
       this.setState({
-        reporterGasCost: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
         stake: isOpenReporting ? '0' : repAmount.formatted,
       })
     })
@@ -181,7 +179,6 @@ export default class ReportingReport extends Component {
                 selectedOutcome={s.selectedOutcomeName}
                 stake={s.stake}
                 designatedReportNoShowReputationBond={s.designatedReportNoShowReputationBond}
-                reporterGasCost={s.reporterGasCost}
                 isOpenReporting={isOpenReporting}
                 gasEstimate={s.gasEstimate}
               />

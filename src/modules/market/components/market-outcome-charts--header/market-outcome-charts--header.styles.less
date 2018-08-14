@@ -71,6 +71,12 @@
   &:extend(.caps--small);
 
   display: flex;
+  margin-right: 0.2em;
+  text-transform: capitalize;
+}
+
+.MarketOutcomeChartsHeader__stat:last-of-type {
+  margin-right: 0;
 }
 
 .MarketOutcomeChartsHeader__stat--right {
@@ -78,6 +84,7 @@
 
   flex: 1;
   justify-content: flex-end;
+  text-transform: capitalize;
 }
 
 .MarketOutcomeChartsHeader__stat-title {
@@ -89,4 +96,7 @@
   color: @color-gray;
   flex: 1 0 50%;
   margin-left: 0.4em;
+  max-width: 60px;
+  overflow-y: hidden;
+  text-overflow: ellipsis;
 }

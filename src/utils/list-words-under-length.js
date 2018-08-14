@@ -7,16 +7,14 @@ export function listWordsUnderLength(str, maxLength) {
   }
 
   str.toString().split(' ').some((word) => {
-    const cleanWord = word.replace(/[^a-zA-Z0-9-]/ig, '')
-
-    if (!cleanWord || !cleanWord.length) {
+    if (!word || !word.length) {
       return false
     }
 
-    currentLength += cleanWord.length
+    currentLength += word.length
 
     if (currentLength <= maxLength) {
-      wordsList.push(cleanWord)
+      wordsList.push(word)
       return false
     }
     return true

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { augur } from 'services/augurjs'
 import { createBigNumber } from 'utils/create-big-number'
+import speedomatic from 'speedomatic'
+import { formatPercent } from 'utils/format-number'
 
 import { YES_NO, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
@@ -28,8 +30,7 @@ export default class CreateMarketPreview extends Component {
 
   static formatReporterFee(value) {
     if (!value || value === 0 || isNaN(value)) return 0
-    const { ETHER } = augur.rpc.constants
-    return createBigNumber(value.toString()).times(ETHER).dividedBy(createBigNumber(100)).toNumber()
+    return formatPercent(createBigNumber(100).dividedBy(speedomatic.fix(value)).toNumber(), { decimals: 4, decimalsRounded: 4 })
   }
 
   static getExpirationDate(p) {
@@ -155,7 +156,7 @@ export default class CreateMarketPreview extends Component {
               </li>
               <li>
                 <span>Fee</span>
-                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + newMarket.settlementFee + '%)' : ''} + Reporting Fee ({s.reporterFeePercentage}%)</span>
+                <span>Market Creator Fee { newMarket.settlementFee !== '' ? '(' + formatPercent(newMarket.settlementFee, { decimals: 4, decimalsRounded: 4 }).full + ')' : ''} + Reporting Fee ({s.reporterFeePercentage.full})</span>
               </li>
               <li>
                 <span>{dateHasPassed(currentTimestamp, newMarket.endTime.timestamp) ? 'Expired' : 'Expires'}</span>

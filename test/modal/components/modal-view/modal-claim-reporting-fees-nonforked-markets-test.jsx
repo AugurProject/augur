@@ -70,13 +70,13 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
 
       describe('REP field', () => {
         it('should match expected claimable REP value', () => {
-          assert.include(Cmp.html(), '<span>Rep</span><span>-</span>')
+          assert.include(Cmp.html(), '<span>Rep</span><span>0</span>')
         })
       })
 
       describe('ETH field', () => {
         it('should match expected claimable ETH value', () => {
-          assert.include(Cmp.html(), '<span>Eth</span><span>-</span>')
+          assert.include(Cmp.html(), '<span>Eth</span><span>0</span>')
         })
       })
 
@@ -141,13 +141,13 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
 
       describe('REP field', () => {
         it('should match expected claimable REP value', () => {
-          assert.include(Cmp.html(), '<span>Rep</span><span>-</span>')
+          assert.include(Cmp.html(), '<span>Rep</span><span>0</span>')
         })
       })
 
       describe('ETH field', () => {
         it('should match expected claimable ETH value', () => {
-          assert.include(Cmp.html(), '<span>Eth</span><span>0.1230</span>')
+          assert.include(Cmp.html(), '<span>Eth</span><span>0.123</span>')
         })
       })
 
@@ -212,13 +212,13 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
 
       describe('REP field', () => {
         it('should match expected claimable REP value', () => {
-          assert.include(Cmp.html(), '<span>Rep</span><span>2.0000</span>')
+          assert.include(Cmp.html(), '<span>Rep</span><span>2</span>')
         })
       })
 
       describe('ETH field', () => {
         it('should match expected claimable ETH value', () => {
-          assert.include(Cmp.html(), '<span>Eth</span><span>-</span>')
+          assert.include(Cmp.html(), '<span>Eth</span><span>0</span>')
         })
       })
 
@@ -283,13 +283,13 @@ describe('modal-claim-reporting-fees-nonforked-markets', () => {
 
       describe('REP field', () => {
         it('should match expected claimable REP value', () => {
-          assert.include(Cmp.html(), '<span>Rep</span><span>2.0000</span>')
+          assert.include(Cmp.html(), '<span>Rep</span><span>2</span>')
         })
       })
 
       describe('ETH field', () => {
         it('should match expected claimable ETH value', () => {
-          assert.include(Cmp.html(), '<span>Eth</span><span>0.1230</span>')
+          assert.include(Cmp.html(), '<span>Eth</span><span>0.123</span>')
         })
       })
 

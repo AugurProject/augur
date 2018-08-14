@@ -11,6 +11,7 @@ import debounce from 'utils/debounce'
 
 export default class MarketsList extends Component {
   static propTypes = {
+    testid: PropTypes.string,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
@@ -33,8 +34,8 @@ export default class MarketsList extends Component {
     super(props)
 
     this.state = {
-      lowerBound: this.props.showPagination ? null : 1,
-      boundedLength: this.props.showPagination ? null : this.props.filteredMarkets.length,
+      lowerBound: 1,
+      boundedLength: 10,
       marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
     }
 
@@ -55,7 +56,7 @@ export default class MarketsList extends Component {
       this.state.boundedLength !== nextState.boundedLength ||
       !isEqual(filteredMarkets, nextProps.filteredMarkets)
     ) {
-      this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
+      this.setMarketIDsMissingInfo(nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
     }
 
     if (!isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)) this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo)
@@ -65,17 +66,12 @@ export default class MarketsList extends Component {
     this.setState({ lowerBound, boundedLength })
   }
 
-  setMarketIDsMissingInfo(markets, filteredMarkets, lowerBound, boundedLength) {
-    const marketIdsMissingInfo = []
+  setMarketIDsMissingInfo(filteredMarkets, lowerBound, boundedLength) {
     if (filteredMarkets.length && boundedLength) {
-      [...Array(boundedLength)].forEach((unused, i) => {
-        const item = filteredMarkets[(lowerBound - 1) + i]
-        const market = markets.find(market => market.id === item)
-        if (market && !market.hasLoadedMarketInfo) marketIdsMissingInfo.push(market.id)
-      })
+      const marketIdLength = boundedLength + (lowerBound - 1)
+      const marketIdsMissingInfo = filteredMarkets.slice(lowerBound - 1, marketIdLength)
+      this.setState({ marketIdsMissingInfo })
     }
-
-    this.setState({ marketIdsMissingInfo })
   }
 
   // debounced call
@@ -97,13 +93,14 @@ export default class MarketsList extends Component {
       paginationPageParam,
       showPagination,
       toggleFavorite,
+      testid,
     } = this.props
     const s = this.state
 
     const marketsLength = filteredMarkets.length
 
     return (
-      <article className="markets-list">
+      <article className="markets-list" data-testid={testid}>
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[(s.lowerBound - 1) + i]
@@ -121,6 +118,8 @@ export default class MarketsList extends Component {
                   collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
                   linkType={TYPE_TRADE}
+                  id={market.id}
+                  testid={testid}
                 />
               )
             }
@@ -135,7 +134,7 @@ export default class MarketsList extends Component {
             location={location}
             history={history}
             setSegment={this.setSegment}
-            pageParam={paginationPageParam || null}
+            pageParam={paginationPageParam || 'page'}
           />
         }
       </article>

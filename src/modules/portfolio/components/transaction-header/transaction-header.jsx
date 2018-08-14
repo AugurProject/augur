@@ -11,9 +11,14 @@ const TransactionHeader = ({ transaction }) => {
   return (
     <div>
       <h5 className={Styles.TransactionHeader__status}>{ transaction.status }</h5>
-      <h3 className={Styles.TransactionHeader__message}>{ transaction.message || transaction.type }</h3>
+      <h3 className={Styles.TransactionHeader__message}>
+        { transaction.message || transaction.type }
+        { transaction.transactions && transaction.transactions.length === 1 && transaction.transactions[0].meta && transaction.transactions[0].meta.canceledTransactionHash &&
+          <span className={Styles['TransactionHeader__message-canceled']}>Canceled</span>
+        }
+      </h3>
       { marketId ?
-        <MarketLink id={marketId} formattedDescription={transaction.description}>
+        <MarketLink id={marketId}>
           <h4 className={Styles.TransactionHeader__description}>{ transaction.description }</h4>
         </MarketLink>
         : <h4 className={Styles.TransactionHeader__description}>{ transaction.description }</h4>

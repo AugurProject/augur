@@ -56,7 +56,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
             {!isForkingMarket &&
             <span>
               <span className={Styles['DisptueMarket__round-label']}>Dispute Round</span>
-              <span className={Styles['DisptueMarket__round-text']}>{market && market.disputeInfo &&
+              <span data-testid={'roundNumber-' + market.id} className={Styles['DisptueMarket__round-text']}>{market && market.disputeInfo &&
                 market.disputeInfo.disputeRound
               }
               </span>
@@ -65,10 +65,7 @@ const DisputeMarketCard = ({ history, isForkingMarket, location, market, ...p })
           </div>
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink
-            id={market.id}
-            formattedDescription={market.formattedDescription}
-          >
+          <MarketLink id={market.id}>
             {market.description}
           </MarketLink>
         </h1>

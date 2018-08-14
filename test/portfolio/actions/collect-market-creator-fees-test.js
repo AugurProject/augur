@@ -10,7 +10,6 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
 
   const test = t => it(t.description, () => {
     const store = mockStore(t.state || {})
-
     t.assertions(store)
   })
 
@@ -89,6 +88,11 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
 
     test({
       description: `Should fire a withdrawEther and updateMarketsData if we have ETH to collect from a market.`,
+      state: {
+        loginAccount: {
+          address: 'ADDRESS',
+        },
+      },
       assertions: (store) => {
         store.dispatch(collectMarketCreatorFees(false, MarketIds[0], (err, amountOfEthToBeCollected) => {
           assert.isNull(err, `Didn't return null for error as expected`)
@@ -114,6 +118,11 @@ describe('modules/portfolio/actions/collect-market-creator-fees.js', () => {
 
     test({
       description: `Shouldn't fire a withdrawEther or updateMarketsData if we have 0 ETH to collect from a market.`,
+      state: {
+        loginAccount: {
+          address: 'ADDRESS',
+        },
+      },
       assertions: (store) => {
         store.dispatch(collectMarketCreatorFees(false, MarketIds[1], (err, amountOfEthToBeCollected) => {
           assert.isNull(err, `Didn't return null for error as expected`)

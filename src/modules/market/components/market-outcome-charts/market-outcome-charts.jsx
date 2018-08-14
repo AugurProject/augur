@@ -4,15 +4,11 @@ import classNames from 'classnames'
 import ScrollSnap from 'scroll-snap'
 import logError from 'utils/log-error'
 
-import debounce from 'utils/debounce'
-
 import MarketOutcomeCandlestick
   from 'modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick'
 import MarketOutcomeDepth from 'modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth'
-import MarketOutcomeOrderBook
+import MarketOutcomeChartsOrders
   from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders'
-import MarketOutcomeMidpoint
-  from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts/market-outcome-charts.styles'
 import { loadCandleStickData } from 'modules/market/actions/load-candlestick-data'
@@ -56,44 +52,34 @@ export default class MarketOutcomeCharts extends Component {
       candleScrolled: true,
       selectedPeriod: period,
       selectedRange: range,
-      hoveredPeriod: {},
       hoveredDepth: [],
       hoveredPrice: null,
-      headerHeight: 0,
+      headerHeight: props.isMobile ? 20 : 0,
       priceTimeSeriesCandleStick: [],
       sharedChartMargins: {
         top: 0,
         bottom: 30,
       },
-      chartWidths: {
-        candle: 0,
-        orders: 0,
-      },
+      ordersWidth: 0,
     }
 
-    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
     this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
     this.updateHoveredDepth = this.updateHoveredDepth.bind(this)
     this.updateSelectedPeriod = this.updateSelectedPeriod.bind(this)
     this.updateSelectedRange = this.updateSelectedRange.bind(this)
-    this.updateChartWidths = this.updateChartWidths.bind(this)
-    this.debouncedUpdateChartWidths = debounce(this.updateChartWidths, 500)
     this.snapScrollHandler = this.snapScrollHandler.bind(this)
     this.updateChartHeaderHeight = this.updateChartHeaderHeight.bind(this)
-    this.updateChartsWidth = this.updateChartWidths.bind(this)
     this.determineActiveScrolledChart = this.determineActiveScrolledChart.bind(this)
+    this.updateOrdersWidth = this.updateOrdersWidth.bind(this)
   }
 
   componentDidMount() {
-    this.updateChartWidths()
-
     this.snapScrollHandler()
 
     if (this.props.selectedOutcome && !this.props.excludeCandlestick && this.props.currentTimeInSeconds) {
       this.getData()
     }
-
-    window.addEventListener('resize', this.debouncedUpdateChartWidths)
+    this.calculateOrdersWidth()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -107,10 +93,7 @@ export default class MarketOutcomeCharts extends Component {
     if ((prevState.selectedPeriod !== this.state.selectedPeriod || prevState.selectedRange !== this.state.selectedRange || prevProps.selectedOutcome.id !== this.props.selectedOutcome.id || prevProps.currentTimeInSeconds !== this.props.currentTimeInSeconds) && !this.props.excludeCandlestick) {
       this.getData()
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.debouncedUpdateChartWidths)
+    this.calculateOrdersWidth()
   }
 
   getData() {
@@ -140,9 +123,15 @@ export default class MarketOutcomeCharts extends Component {
       const priceTimeSeriesCandleStick = data[selectedOutcome.id] || []
       this.setState({
         priceTimeSeriesCandleStick,
-        hasPriceHistory: priceTimeSeriesCandleStick.length !== 0,
       })
     })
+  }
+
+  calculateOrdersWidth() {
+    const width = this.ordersContainer.clientWidth
+    if (width !== this.state.ordersWidth) {
+      this.updateOrdersWidth(width)
+    }
   }
 
   updateHoveredDepth(hoveredDepth) {
@@ -171,24 +160,15 @@ export default class MarketOutcomeCharts extends Component {
     })
   }
 
-  updateChartWidths() { // NOTE -- utilized for the midpoint component's null state rendering
-    this.setState({
-      chartWidths: {
-        candle: this.candlestickContainer ? this.candlestickContainer.clientWidth : 0,
-        orders: this.ordersContainer ? this.ordersContainer.clientWidth : 0,
-      },
-    })
-  }
-
   updateChartHeaderHeight(headerHeight) {
     this.setState({
       headerHeight,
     })
   }
 
-  updateHoveredPeriod(hoveredPeriod) {
+  updateOrdersWidth(ordersWidth) {
     this.setState({
-      hoveredPeriod,
+      ordersWidth,
     })
   }
 
@@ -233,6 +213,7 @@ export default class MarketOutcomeCharts extends Component {
       isMobile,
       fixedPrecision,
       updatePrecision,
+      hasPriceHistory,
     } = this.props
     const s = this.state
 
@@ -263,10 +244,6 @@ export default class MarketOutcomeCharts extends Component {
                 orderBookKeys={orderBookKeys}
                 marketMax={maxPrice}
                 marketMin={minPrice}
-                hoveredPrice={s.hoveredPrice}
-                hoveredPeriod={s.hoveredPeriod}
-                updateHoveredPrice={this.updateHoveredPrice}
-                updateHoveredPeriod={this.updateHoveredPeriod}
                 updateSelectedPeriod={this.updateSelectedPeriod}
                 updateSelectedRange={this.updateSelectedRange}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
@@ -290,16 +267,20 @@ export default class MarketOutcomeCharts extends Component {
                 marketDepth={marketDepth}
                 marketMax={maxPrice}
                 marketMin={minPrice}
+                hasOrders={hasOrders}
                 hoveredPrice={s.hoveredPrice}
                 hoveredDepth={s.hoveredDepth}
                 updateHoveredPrice={this.updateHoveredPrice}
                 updateHoveredDepth={this.updateHoveredDepth}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
                 updateChartHeaderHeight={this.updateChartHeaderHeight}
+                ordersWidth={s.ordersWidth}
               />
             </div>
-            <div className={Styles.MarketOutcomeCharts__orderbook}>
-              <MarketOutcomeOrderBook
+            <div
+              className={Styles.MarketOutcomeCharts__orderbook}
+            >
+              <MarketOutcomeChartsOrders
                 headerHeight={s.headerHeight}
                 isMobile={isMobile}
                 sharedChartMargins={s.sharedChartMargins}
@@ -310,20 +291,12 @@ export default class MarketOutcomeCharts extends Component {
                 updateHoveredPrice={this.updateHoveredPrice}
                 updatePrecision={updatePrecision}
                 updateSelectedOrderProperties={updateSelectedOrderProperties}
+                hasOrders={hasOrders}
+                orderBookKeys={orderBookKeys}
+                hasPriceHistory={hasPriceHistory}
               />
             </div>
           </div>
-          <MarketOutcomeMidpoint
-            isMobile={isMobile}
-            excludeCandlestick={excludeCandlestick}
-            hasPriceHistory={s.hasPriceHistory}
-            hasOrders={hasOrders}
-            chartWidths={s.chartWidths}
-            headerHeight={s.headerHeight}
-            orderBookKeys={orderBookKeys}
-            sharedChartMargins={s.sharedChartMargins}
-            fixedPrecision={fixedPrecision}
-          />
         </div>
         {isMobile &&
           <div className={Styles.MarketOutcomeCharts__indicator}>

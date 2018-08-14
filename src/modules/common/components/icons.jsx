@@ -14,7 +14,7 @@ export const Check = (
 
 export const IconSearch = (
   <svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-    <g id="Symbols" fill="none" fillRule="evenodd" fillOpacity=".5"><g id="Markets/Header" fill="#FFF"><g id="Group-5"><path d="M8.337 7.402h-.494l-.172-.17c.608-.707.977-1.624.977-2.63C8.647 2.37 6.837.56 4.604.56 2.37.56.56 2.37.56 4.603s1.81 4.043 4.044 4.043c1.004 0 1.92-.368 2.628-.974l.17.17v.493l3.11 3.105.928-.928-3.103-3.11zm-3.733 0c-1.547 0-2.8-1.252-2.8-2.8 0-1.544 1.253-2.798 2.8-2.798 1.545 0 2.8 1.254 2.8 2.8 0 1.546-1.255 2.798-2.8 2.798z" id="Shape" /></g></g></g>
+    <g id="Symbols" fill="none" fillRule="evenodd" fillOpacity="1"><g id="Markets/Header" fill="#9592a4"><g id="Group-5"><path d="M8.337 7.402h-.494l-.172-.17c.608-.707.977-1.624.977-2.63C8.647 2.37 6.837.56 4.604.56 2.37.56.56 2.37.56 4.603s1.81 4.043 4.044 4.043c1.004 0 1.92-.368 2.628-.974l.17.17v.493l3.11 3.105.928-.928-3.103-3.11zm-3.733 0c-1.547 0-2.8-1.252-2.8-2.8 0-1.544 1.253-2.798 2.8-2.798 1.545 0 2.8 1.254 2.8 2.8 0 1.546-1.255 2.798-2.8 2.798z" id="Shape" /></g></g></g>
   </svg>
 )
 
@@ -55,56 +55,18 @@ export const Ledger = (
   </svg>
 )
 
-export const Airbitz = (
-  <svg id="5146e58a-82e2-4f67-a236-2c765e0c2589" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.5 22.01">
-    <defs>
-      <style>
-        {`.\\35 adafa42-3bbf-42b1-82df-2f38d7915eaf {
-          fill: #fff;
-        }
-
-        .\\31 a8ae57d-82b4-49dc-abba-7ff178064742 {
-          mask: url(#8e5ba2bf-221c-40d9-b8e1-8d88080f9371);
-        }
-
-        .\\31 ae8a9e7-e9b6-43ec-9f04-98e99371b427 {
-          mask: url(#d01e4ea2-d3bd-49bb-9d51-5c376617b0c4);
-        }`}
-      </style>
-      <mask id="8e5ba2bf-221c-40d9-b8e1-8d88080f9371" x="0" y="0" width="45.5" height="22.01" maskUnits="userSpaceOnUse">
-        <g transform="translate(-1 -12.69)">
-          <g id="c70f333d-4852-43d5-b6b2-d7f3a0373259" data-name="mask-2">
-            <polygon id="1efbfaab-efe7-466c-8f4b-d2828857cb32" data-name="path-1" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" points="46.5 12.69 46.5 34.7 1 34.7 1 12.69 46.5 12.69 1 12.69 1 34.7 46.5 34.7 46.5 12.69 46.5 12.69" />
-          </g>
-        </g>
-      </mask>
-      <mask id="d01e4ea2-d3bd-49bb-9d51-5c376617b0c4" x="0" y="0" width="45.5" height="10.28" maskUnits="userSpaceOnUse">
-        <g transform="translate(-1 -12.69)">
-          <g id="a5e84cd7-4cde-46e1-853d-48dffba00e35" data-name="mask-4">
-            <polygon id="5ce6f515-967d-42f9-9754-adcebce5d36d" data-name="path-3" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" points="46.5 12.69 46.5 22.97 1 22.97 1 12.69 46.5 12.69" />
-          </g>
-        </g>
-      </mask>
-    </defs>
-    <title>Airbitz</title>
-    <g id="4781732b-1826-4bd2-8a8f-03decdc48e6d" data-name="Symbols">
-      <g id="8ed932e2-05f5-4ddf-882c-ad49993aded6" data-name="Icon/Airbitz">
-        <g id="98e1bbc2-eee8-4a8e-8f94-2e8f97a9b718" data-name="Page-1">
-          <g id="d83155ee-0e75-4d4d-bc06-12db352f3101" data-name="Group-3">
-            <g className="1a8ae57d-82b4-49dc-abba-7ff178064742">
-              <path id="a899a67f-825e-4188-a9a4-6506a85fbe77" data-name="Fill-1" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" d="M34.88,34.23a4,4,0,0,0-.38-.52,15.39,15.39,0,0,0-17.86-2.65A14.92,14.92,0,0,0,13,33.73a.8.8,0,0,0-.23.6c.08.44.57.48.95.11a13.45,13.45,0,0,1,5.24-3.28,14.14,14.14,0,0,1,13.52,2.12c.5.37.94.83,1.43,1.22a.76.76,0,0,0,.57.13c.15,0,.26-.25.42-.42m5.85-5.87a5.23,5.23,0,0,0-.48-.61,23.25,23.25,0,0,0-19.44-6.52,23,23,0,0,0-13.55,6.5,2.22,2.22,0,0,0-.31.34A.45.45,0,0,0,7,28.7a.49.49,0,0,0,.66,0,2,2,0,0,0,.23-.22,22.3,22.3,0,0,1,19.28-6.2A21.49,21.49,0,0,1,37.88,27c.64.51,1.21,1.1,1.84,1.62a.83.83,0,0,0,.61.14c.14,0,.24-.24.4-.42M23.37,12.69c-.8.06-2,.11-3.13.23A31,31,0,0,0,8.75,16.46,31.69,31.69,0,0,0,1.28,22c-.34.34-.36.62-.11.85s.52.16.84-.14c.7-.64,1.37-1.31,2.11-1.9A30.39,30.39,0,0,1,31,14.62a29.82,29.82,0,0,1,14.43,8,2,2,0,0,0,.21.2.49.49,0,0,0,.68,0,.45.45,0,0,0,0-.66,4.6,4.6,0,0,0-.39-.41,32.1,32.1,0,0,0-22.61-9.05" transform="translate(-1 -12.69)" />
-            </g>
-          </g>
-          <g id="ffda8b8f-e469-4a2e-acae-896545f5e4bf" data-name="Group-6">
-            <g className="1ae8a9e7-e9b6-43ec-9f04-98e99371b427">
-              <path id="2939735f-6a50-444a-84ff-7df7fef1db0b" data-name="Fill-4" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" d="M23.37,12.69A32.11,32.11,0,0,1,46,21.74a4.7,4.7,0,0,1,.39.41.45.45,0,0,1,0,.66.49.49,0,0,1-.68,0,2.09,2.09,0,0,1-.21-.2,29.81,29.81,0,0,0-14.43-8A30.39,30.39,0,0,0,4.13,20.79c-.74.59-1.41,1.26-2.11,1.9-.33.3-.6.36-.84.14s-.23-.52.11-.85a31.71,31.71,0,0,1,7.48-5.52,31,31,0,0,1,11.48-3.54c1.16-.12,2.34-.17,3.13-.23" transform="translate(-1 -12.69)" />
-            </g>
-          </g>
-          <path id="1aa7fcc8-1631-49ef-a64b-ebdcbd3ee740" data-name="Fill-7" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" d="M40.73,28.35c-.16.18-.26.4-.4.42a.83.83,0,0,1-.61-.14c-.63-.52-1.2-1.11-1.84-1.62a21.5,21.5,0,0,0-10.69-4.7,22.3,22.3,0,0,0-19.28,6.2,2,2,0,0,1-.23.22.49.49,0,0,1-.66,0,.46.46,0,0,1-.07-.64,2.21,2.21,0,0,1,.31-.34,23,23,0,0,1,13.55-6.5,23.25,23.25,0,0,1,19.44,6.52,5.23,5.23,0,0,1,.48.61" transform="translate(-1 -12.69)" />
-          <path id="d0df3d2c-071d-430d-8cc6-3583fe00819c" data-name="Fill-9" className="5adafa42-3bbf-42b1-82df-2f38d7915eaf" d="M34.88,34.23c-.16.17-.27.38-.42.42a.76.76,0,0,1-.57-.13c-.49-.39-.93-.85-1.43-1.22a14.14,14.14,0,0,0-13.52-2.12,13.45,13.45,0,0,0-5.24,3.28c-.37.37-.86.32-.95-.11a.8.8,0,0,1,.23-.6,14.92,14.92,0,0,1,3.66-2.68A15.39,15.39,0,0,1,34.5,33.71a4,4,0,0,1,.38.52" transform="translate(-1 -12.69)" />
-        </g>
-      </g>
-    </g>
+export const Edge = (
+  <svg
+    id="5146e58a-82e2-4f67-a236-2c765e0c2589"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 90"
+  >
+    <title>Edge</title>
+    <path
+      style={{ stroke: '#ffffff', strokeWidth: 2 }}
+      id="Combined-Shape"
+      d="M97.2816934,16.4998357 L61.1033863,16.4998357 L48.3660257,51.0653264 L24.1402173,51.0628958 L10.7170264,87.4988463 L71.1236286,87.4988463 L97.2816934,16.4998357 Z M60.4061504,15.4998357 L98.7158329,15.4998357 L71.8209109,88.4988463 L9.28291856,88.4988463 L23.4429455,50.0628259 L47.6688155,50.0652565 L60.4061504,15.4998357 Z M22.2869673,4.54686471 L8.71982374,40.7888235 L40.7024059,40.7888235 L54.2599205,4.54686471 L22.2869673,4.54686471 Z M41.3960015,41.7888235 L7.27770258,41.7888235 L21.5935443,3.54686471 L55.7016829,3.54686471 L41.3960015,41.7888235 Z"
+    />
   </svg>
 )
 
@@ -455,6 +417,16 @@ export const Close = (
   </svg>
 )
 
+export const CloseDark = (
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+    <g fill="none" fillRule="nonzero" transform="translate(-5 -5)">
+      <path fill="#DBDAE1" d="M8.721 24.278c-4.295-4.296-4.295-11.26 0-15.556 4.297-4.296 11.261-4.296 15.557 0 4.296 4.295 4.296 11.26 0 15.557-4.296 4.295-11.26 4.295-15.557-.001z" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(135 16.5 16.5)" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(-135 16.5 16.5)" />
+    </g>
+  </svg>
+)
+
 export const CloseBlack = (
   <svg viewBox="0 0 24 24">
     <defs />
@@ -466,6 +438,17 @@ export const CloseBlack = (
     </g>
   </svg>
 )
+
+export const CloseWithCircle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
+    <g fill="none" fillRule="nonzero" transform="translate(-5 -5)">
+      <path fill="#412468" d="M8.721 24.278c-4.295-4.296-4.295-11.26 0-15.556 4.297-4.296 11.261-4.296 15.557 0 4.296 4.295 4.296 11.26 0 15.557-4.296 4.295-11.26 4.295-15.557-.001z" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(135 16.5 16.5)" />
+      <rect width="1" height="13" x="16" y="10" fill="#FFF" rx=".5" transform="rotate(-135 16.5 16.5)" />
+    </g>
+  </svg>
+)
+
 
 export const Notifications = unseenCount => (
   <svg viewBox="0 0 24 24">
@@ -480,7 +463,7 @@ export const Notifications = unseenCount => (
         {!!unseenCount &&
         <g id="Group-14" transform="translate(1.000000, 2.000000)">
           <ellipse id="Oval" fill="#FFFFFF" cx="6.4591451" cy="7.00261291" rx="6.4591451" ry="6.43043779" />
-          <text id="1" fontFamily="DINPro-Bold, DINPro" fontSize="8" fontWeight="bold" fill="#341D53">
+          <text id="1" fontFamily="roboto-Bold, roboto" fontSize="8" fontWeight="bold" fill="#341D53">
             <tspan x="4.01902362" y="10.0428031">{unseenCount}</tspan>
           </text>
         </g>
@@ -657,6 +640,26 @@ export const SigningPen = (
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinejoin="round">
       <g id="Icon/Edit-White" fillRule="nonzero" stroke="#FFFFFF">
         <path d="M1,18.4173032 L1,23 L5.58269685,23 L18.2857143,10.4285714 L13.7030174,5.84587458 L1,18.4173032 Z M22.6425496,5.9401472 C23.1191501,5.46354673 23.1191501,4.69365366 22.6425496,4.21705319 L19.7829468,1.35745035 C19.3063463,0.880849882 18.5364533,0.880849882 18.0598528,1.35745035 L15.8234967,3.59380642 L20.4061936,8.17650326 L22.6425496,5.9401472 Z" id="Shape" />
+      </g>
+    </g>
+  </svg>
+)
+
+export const showMore = (
+  <svg width="14px" height="14px" viewBox="0 0 14 14">
+    <defs />
+    <g id="Reporting:-Dispute" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+      <g id="Reporting_Dispute" transform="translate(-297.000000, -247.000000)">
+        <g id="Reporting/Header:-Dispute" transform="translate(73.000000, 40.000000)">
+          <g id="Group-7" transform="translate(39.000000, 166.000000)">
+            <g id="show-more" transform="translate(186.000000, 42.000000)">
+              <circle id="Oval" stroke="#A7A2B2" cx="6" cy="6" r="6" />
+              <circle id="Oval-2" fill="#A7A2B2" fillRule="nonzero" cx="3" cy="6" r="1" />
+              <circle id="Oval-3" fill="#A7A2B2" fillRule="nonzero" cx="6" cy="6" r="1" />
+              <circle id="Oval-4" fill="#A7A2B2" fillRule="nonzero" cx="9" cy="6" r="1" />
+            </g>
+          </g>
+        </g>
       </g>
     </g>
   </svg>

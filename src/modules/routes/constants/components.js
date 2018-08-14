@@ -26,9 +26,9 @@ export const Auth = asyncComponent({
     .then(module => module.default),
 })
 
-export const AuthLander = asyncComponent({
-  moduleName: 'AuthLander',
-  loader: () => import(/* webpackChunkName: 'auth-lander' */ 'modules/auth/containers/lander')
+export const AuthAccounts = asyncComponent({
+  moduleName: 'AuthAccounts',
+  loader: () => import(/* webpackChunkName: 'auth-lander' */ 'modules/auth/containers/connect')
     .then(module => module.default),
 })
 

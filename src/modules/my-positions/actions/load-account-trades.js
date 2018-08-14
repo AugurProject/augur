@@ -7,13 +7,17 @@ import { loadAccountOrders } from 'modules/bids-asks/actions/load-account-orders
 import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets-info-if-not-loaded'
 import { updateAccountTradeData } from 'modules/my-positions/actions/update-account-trades-data'
 import logError from 'utils/log-error'
+import { loadAccountOrphanedOrders } from 'src/modules/bids-asks/actions/load-account-orphaned-orders'
 
 export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
+    const { loginAccount } = getState()
+    if (!loginAccount.address) return callback(null)
     parallel([
       next => dispatch(loadUserTradingHistory(options, next)),
       next => dispatch(loadAccountPositions(options, next)),
       next => dispatch(loadAccountOrders(options, next)),
+      next => dispatch(loadAccountOrphanedOrders(options, next)),
     ], () => {
       callback(null)
     })

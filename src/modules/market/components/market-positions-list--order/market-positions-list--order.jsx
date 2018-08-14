@@ -76,6 +76,7 @@ export default class Order extends Component {
       height: s.confirmHeight,
       marginTop: s.confirmMargin,
     }
+
     return (
       <ul
         ref={(order) => { this.order = order }}
@@ -92,6 +93,7 @@ export default class Order extends Component {
             </span>
           }
         </li>
+        <li />
         <li>
           { order.type === SELL ? <span>-</span> : <span>+</span> } { orderShares }
         </li>
@@ -103,15 +105,19 @@ export default class Order extends Component {
             {getValue(outcome, 'lastPrice.formatted') }
           </li>
         }
-        { !isMobile && <li /> }
-        { !isMobile && <li /> }
+        { !isMobile &&
+          <li>{getValue(order, 'tokensEscrowed.formatted')}</li>
+        }
+        { !isMobile &&
+          <li>{getValue(order, 'sharesEscrowed.formatted')}</li>
+        }
         { isExtendedDisplay &&
           <li />
         }
         <li>
           { pending ?
-            <span className={Styles.NotActive}>Cancel</span> :
-            <button onClick={this.toggleConfirm}>Cancel</button>
+            <button className={Styles.Order__cancel} disabled>Cancel</button> :
+            <button className={Styles.Order__cancel} onClick={this.toggleConfirm}>Cancel</button>
           }
         </li>
         <div

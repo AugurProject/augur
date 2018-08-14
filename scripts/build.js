@@ -10,6 +10,9 @@ const NODE_MODULES = path.resolve(__dirname, '../node_modules');
 const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf('--') !== -1);
 
 process.env.NODE_ENV = process.env.BABEL_ENV = FLAGS.indexOf('--dev') !== -1 ? 'development' : 'production';
+process.env.AUGUR_HOSTED = FLAGS.indexOf('--augur-hosted') !== -1;
+console.log("AUGUR_HOSTED", process.env.AUGUR_HOSTED);
+
 process.env.DEBUG_BUILD = FLAGS.indexOf('--dev') !== -1 ? true : false;
 
 let network = ""
@@ -21,13 +24,8 @@ if (FLAGS.indexOf('--rinkeby') !== -1) {
   network = 'aura'
 }
 
-let enableMainNet = 'false';
-if (FLAGS.indexOf('--enableMainnet') !== -1) {
-  enableMainNet = 'true';
-}
-
 if (network) { process.env.ETHEREUM_NETWORK = network }
-process.env.ENABLE_MAINNET = enableMainNet
+process.env.ENABLE_MAINNET = FLAGS.indexOf('--disableMainnet') === -1;
 
 process.env.FORCE_COLOR = true;
 network ? console.log(`Using Network: ${network}`) : console.log('Using local network');

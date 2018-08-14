@@ -16,4 +16,4 @@ services:
     depends_on:
       - geth
 
-    entrypoint: ["/app/wait-for-geth.sh", "geth:8545", "--", "/app/docker-entrypoint.sh"]
+    entrypoint: ["/app/wait-for-url.sh", "geth:8545", "--", "/app/docker-entrypoint.sh"]

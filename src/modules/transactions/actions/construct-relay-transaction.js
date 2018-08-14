@@ -1,6 +1,6 @@
 import { constructBasicTransaction } from 'modules/transactions/actions/construct-transaction'
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters'
-import { addNotification, updateNotification } from 'modules/notifications/actions/update-notifications'
+import { addNotification, updateNotification } from 'modules/notifications/actions'
 import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
 import makePath from 'modules/routes/helpers/make-path'
@@ -19,7 +19,8 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       id: hash,
       timestamp,
       blockNumber,
-      title: `${unpackedParams.type} - ${status}`,
+      status,
+      title: unpackedParams.type,
       description: unpackedParams._description || '',
       linkPath: makePath(TRANSACTIONS),
       seen: false, // Manually set to false to ensure notification
@@ -30,7 +31,8 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
       id: hash,
       timestamp,
       blockNumber,
-      title: `${unpackedParams.type} - ${status}`,
+      status,
+      title: unpackedParams.type,
       description: unpackedParams._description || '',
       linkPath: makePath(TRANSACTIONS),
     }))

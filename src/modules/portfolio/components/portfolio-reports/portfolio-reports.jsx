@@ -64,7 +64,7 @@ export default class PortfolioReports extends Component {
       reportingFees,
     } = this.props
     let disableClaimReportingFeesNonforkedMarketsButton = ''
-    if (reportingFees.unclaimedEth.formatted === '-' && reportingFees.unclaimedRep.formatted === '-') {
+    if ((isNaN(reportingFees.unclaimedEth.value) || reportingFees.unclaimedEth.formatted === '-' || reportingFees.unclaimedEth.formatted === '') && (isNaN(reportingFees.unclaimedEth.value) || reportingFees.unclaimedRep.formatted === '-' || reportingFees.unclaimedRep.formatted === '')) {
       disableClaimReportingFeesNonforkedMarketsButton = 'disabled'
     }
     const userHasClaimableForkFees = reportingFees.forkedMarket && (reportingFees.unclaimedForkEth.value > 0 || reportingFees.unclaimedForkRepStaked.value > 0)

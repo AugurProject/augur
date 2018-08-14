@@ -14,6 +14,15 @@ import { dateHasPassed } from 'utils/format-date'
 import Styles from 'modules/market/components/market-properties/market-properties.styles'
 import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
 import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
+import { constants } from 'services/augurjs'
+
+const {
+  DESIGNATED_REPORTING,
+  OPEN_REPORTING,
+  CROWDSOURCING_DISPUTE,
+  AWAITING_NEXT_WINDOW,
+} = constants.REPORTING_STATE
+const ShowResolutionStates = [DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW]
 
 const MarketProperties = (p) => {
   const shareVolumeFormatted = getValue(p, 'volume.formatted')
@@ -25,22 +34,30 @@ const MarketProperties = (p) => {
   if (getValue(p, 'consensus.isInvalid')) {
     consensus = 'Invalid'
   }
+  const showResolution = (ShowResolutionStates.indexOf(p.reportingState) !== -1)
+
   return (
     <article>
       <section className={Styles.MarketProperties}>
         <ul className={Styles.MarketProperties__meta}>
           <li>
             <span>Volume</span>
-            <ValueDenomination formatted={shareVolumeFormatted} denomination={shareDenomination} />
+            <ValueDenomination valueClassname="volume" formatted={shareVolumeFormatted} denomination={shareDenomination} />
           </li>
           <li>
             <span>Fee</span>
-            <ValueDenomination {...p.settlementFeePercent} />
+            <ValueDenomination valueClassname="fee" {...p.settlementFeePercent} />
           </li>
           <li>
             <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
-            <span>{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
+            <span className="value_expires">{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
           </li>
+          {showResolution &&
+            <li className={Styles.MarketProperties__resolutionSource}>
+              <span>Resolution Source</span>
+              <span className={Styles.MarketProperties__resolutionSource}>{ p.resolutionSource || 'General Knowledge' }</span>
+            </li>
+          }
           {consensus &&
           <li>
             <span>Winning Outcome</span>
@@ -64,7 +81,6 @@ const MarketProperties = (p) => {
             <MarketLink
               className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
               id={p.id}
-              formattedDescription={p.formattedDescription}
               linkType={linkType}
             >
               { linkType || 'view'}

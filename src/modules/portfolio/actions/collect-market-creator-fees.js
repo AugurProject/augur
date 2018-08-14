@@ -6,6 +6,8 @@ import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 
 export const collectMarketCreatorFees = (getBalanceOnly, marketId, callback = logError) => (dispatch, getState) => {
+  const { loginAccount } = getState()
+  if (!loginAccount.address) return callback(null)
   augur.api.Market.getMarketCreatorMailbox({ tx: { to: marketId } }, (err, marketMailboxAddress) => {
     if (err) return callback(err)
     if (marketMailboxAddress == null) return callback(`no market mailbox address found for market ${marketId}`)
@@ -24,6 +26,7 @@ export const collectMarketCreatorFees = (getBalanceOnly, marketId, callback = lo
           // something to collect? sendTransaction to withdrawEther
           augur.api.Mailbox.withdrawEther({
             tx: { to: marketMailboxAddress },
+            meta: loginAccount.meta,
             onSent: noop,
             onSuccess: (res) => {
               dispatch(loadMarketsInfo([marketId]))

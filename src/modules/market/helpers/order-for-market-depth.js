@@ -13,19 +13,15 @@ const orderForMarketDepth = (orderBook) => {
     .sort((a, b) => a.price.value - b.price.value)
     .reduce((p, order) => [...p, [order.cumulativeShares, order.price.value, order.shares.value, true]], [])
 
-  // no need to add an starting data point if one side is empty.
-  if (asks.length === 0 || bids.length === 0) {
-    return {
-      [BIDS]: bids,
-      [ASKS]: asks,
-    }
+  if (asks.length > 0) {
+    const minAsksDepthOrder = asks.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), asks[0])
+    asks.unshift([createBigNumber(0), minAsksDepthOrder[1], minAsksDepthOrder[2], false])
   }
 
-  const minAsksDepthOrder = asks.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), asks[0])
-  const minBidDepthOrder = bids.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), bids[0])
-
-  asks.unshift([createBigNumber(0), minAsksDepthOrder[1], minAsksDepthOrder[2], false])
-  bids.unshift([createBigNumber(0), minBidDepthOrder[1], minBidDepthOrder[2], false])
+  if (bids.length > 0) {
+    const minBidDepthOrder = bids.reduce((lastValue, nextValue) => (lastValue[0].lte(nextValue[0]) ? lastValue : nextValue), bids[0])
+    bids.unshift([createBigNumber(0), minBidDepthOrder[1], minBidDepthOrder[2], false])
+  }
 
   return {
     [BIDS]: bids,

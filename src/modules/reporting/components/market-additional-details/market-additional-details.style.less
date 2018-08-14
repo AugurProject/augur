@@ -14,10 +14,6 @@
   padding: 1.875rem 2rem;
   transition: height @animation-speed-normal @animation-default-type;
 
-  > p {
-    margin: 0 0 1.5rem;
-  }
-
   > h4 {
     &:extend(.caps--small);
 
@@ -25,6 +21,21 @@
     display: inline-block;
     padding-right: 0.5em;
   }
+}
+
+.MarketAdditionalDetails__details-helper-text {
+  margin-bottom: 0;
+}
+
+.MarketAdditionalDetails__details-details-text,
+.MarketAdditionalDetails__details-details-text:disabled {
+  background: none;
+  border: 0;
+  color: @color-lightgray;
+  margin: 1rem 0 0;
+  overflow: hidden;
+  padding: 0;
+  resize: none;
 }
 
 @media @breakpoint-mobile-medium {

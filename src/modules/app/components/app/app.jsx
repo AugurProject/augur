@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure'
@@ -47,6 +47,8 @@ import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 import MarketsInnerNavContainer from 'src/modules/app/containers/markets-inner-nav'
+import { NotificationBarContainer } from 'src/modules/notification-bar/containers/notification-bar-container'
+import * as qs from 'query-string'
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -80,6 +82,7 @@ export default class AppView extends Component {
     categories: PropTypes.any,
     connection: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
+    env: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     initAugur: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
@@ -141,7 +144,6 @@ export default class AppView extends Component {
         icon: NavReportingIcon,
         mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: REPORTING_REPORT_MARKETS,
-        requireLogin: true,
       },
       {
         title: 'Account',
@@ -164,12 +166,17 @@ export default class AppView extends Component {
 
   componentWillMount() {
     const {
+      env,
       history,
       initAugur,
       location,
       updateModal,
     } = this.props
-    initAugur(history, (err, res) => {
+    const queryArgs = qs.parse(location.search)
+    initAugur(history, {
+      ...env,
+      ...queryArgs,
+    }, (err, res) => {
       if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
         updateModal({
           type: MODAL_NETWORK_CONNECT,
@@ -450,6 +457,7 @@ export default class AppView extends Component {
           defaultTitle="Decentralized Prediction Markets | Augur"
           titleTemplate="%s | Augur"
         />
+        <NotificationBarContainer />
         {Object.keys(modal).length !== 0 &&
           <Modal />
         }

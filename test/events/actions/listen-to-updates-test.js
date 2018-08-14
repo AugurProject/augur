@@ -102,6 +102,7 @@ describe('events/actions/listen-to-updates', () => {
     const test = t => it(t.description, () => {
       const store = mockStore.mockStore(t.state)
       RewireLogHandlers.__Rewire__('loadMarketsInfo', marketIds => ({ type: 'LOAD_MARKETS_INFO', marketIds }))
+      RewireLogHandlers.__Rewire__('loadUnclaimedFees', marketIds => ({ type: 'UPDATE_UNCLAIMED_DATA', marketIds }))
       RewireLogHandlers.__Rewire__('updateLoggedTransactions', log => ({ type: 'UPDATE_LOGGED_TRANSACTIONS', log }))
       RewireLogHandlers.__Rewire__('updateAssets', () => ({ type: 'UPDATE_ASSETS' }))
       RewireLogHandlers.__Rewire__('loadReporting', () => ({ type: 'LOAD_REPORTING' }))
@@ -126,7 +127,7 @@ describe('events/actions/listen-to-updates', () => {
           },
         },
       },
-      assertions: actions => assert.deepEqual(actions, [{ type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] }]),
+      assertions: actions => assert.deepEqual(actions, [{ type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] }, { type: 'UPDATE_UNCLAIMED_DATA', marketIds: ['MARKET_ADDRESS'] }, { type: 'LOAD_REPORTING' }]),
     })
     test({
       description: 'it should handle calling initial report IS designated reporter',
@@ -147,6 +148,7 @@ describe('events/actions/listen-to-updates', () => {
       },
       assertions: actions => assert.deepEqual(actions, [
         { type: 'LOAD_MARKETS_INFO', marketIds: ['MARKET_ADDRESS'] },
+        { type: 'UPDATE_UNCLAIMED_DATA', marketIds: ['MARKET_ADDRESS'] },
         { type: 'LOAD_REPORTING' },
         { type: 'UPDATE_LOGGED_TRANSACTIONS', log: { eventName: 'InitialReportSubmitted', market: 'MARKET_ADDRESS', reporter: 'MY_ADDRESS', universe: 'UNIVERSE_ADDRESS' } },
       ]),

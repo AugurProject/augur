@@ -8,7 +8,7 @@
 
 .MarketOutcomeOrderBook__stats {
   flex: 0;
-  margin: 2px 0 -3px;
+  margin: 0.4em 0 -3px;
 }
 
 .MarketOutcomeOrderBook__Side {
@@ -47,12 +47,18 @@
 
 .MarketOutcomeOrderBook__row {
   display: flex;
-  padding: 0.4em;
+  padding: 0.3em 0;
   width: 100%;
 }
 
-.MarketOutcomeOrderBook__row--head {
-  .MarketOutcomeOrderBook__RowItem {
+.MarketOutcomeOrderBook__row--head-ask {
+  .MarketOutcomeOrderBook__RowItem_ask {
+    color: @color-white;
+  }
+}
+
+.MarketOutcomeOrderBook__row--head-bid {
+  .MarketOutcomeOrderBook__RowItem_bid {
     color: @color-white;
   }
 }
@@ -65,14 +71,34 @@
   background-color: fade(@color-white, 5%);
 }
 
-.MarketOutcomeOrderBook__RowItem {
+.MarketOutcomeOrderBook__RowItem_ask {
   color: @color-gray;
   display: flex;
   flex: 1;
+  font-size: 0.75rem;
+  font-weight: 700;
   justify-content: flex-end;
   overflow: hidden;
+
+  &:nth-child(2) {
+    color: @color-negative;
+  }
+}
+
+.MarketOutcomeOrderBook__RowItem_bid {
+  color: @color-gray;
+  display: flex;
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  justify-content: flex-end;
+  overflow: hidden;
+
+  &:nth-child(2) {
+    color: @color-positive;
+  }
 }
 
 .MarketOutcomeOrderBook__Midmarket {
-  min-height: 3em;
+  margin: 1rem 0;
 }

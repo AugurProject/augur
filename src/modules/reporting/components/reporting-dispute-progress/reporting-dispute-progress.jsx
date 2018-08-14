@@ -13,7 +13,8 @@ const ReportingDisputeProgress = (p) => {
   let repStakedFormatted = formatAttoRep(p.stakeCurrent, { decimals: 4, roundUp: true }).formatted
 
   if (userStaked) {
-    userPercentage = calculateAddedStakePercentage(bondSizeCurrent.fullPrecision, p.accountStakeCurrent, p.tentativeStake)
+    const accountStakeCurrentFormatted = formatAttoRep(p.accountStakeCurrent, { decimals: 4, roundUp: true }).formattedValue
+    userPercentage = calculateAddedStakePercentage(bondSizeCurrent.fullPrecision, accountStakeCurrentFormatted, p.tentativeStake)
     repStakedFormatted = calculateTentativeCurrentRep(p.stakeCurrent, p.tentativeStake)
     totalPercentageComplete = currentPercentageComplete + userPercentage
   }

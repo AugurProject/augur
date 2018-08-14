@@ -38,8 +38,7 @@ export const selectTransactions = createSelector(
         p.push(formatTransaction(transactionsData[id]))
         return p
       }, [])
-      .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'))
-      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .sort((a, b) => ((a.sortOrder === b.sortOrder) ? getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp') : a.sortOrder - b.sortOrder))
 
     return formattedTransactions
   },

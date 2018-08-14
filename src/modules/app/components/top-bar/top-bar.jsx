@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import classNames from 'classnames'
 
 import { Notifications } from 'modules/common/components/icons'
@@ -15,13 +15,13 @@ const TopBar = props => (
         <div className={Styles.TopBar__stats}>
           <div className={Styles.TopBar__stat}>
             <span className={Styles['TopBar__stat-label']}>ETH</span>
-            <span className={Styles['TopBar__stat-value']}>
+            <span className={Styles['TopBar__stat-value']} id="core-bar-eth">
               {props.stats[0].totalRealEth.value.formatted}
             </span>
           </div>
           <div className={Styles.TopBar__stat}>
             <span className={Styles['TopBar__stat-label']}>REP</span>
-            <span className={Styles['TopBar__stat-value']}>
+            <span className={Styles['TopBar__stat-value']} id="core-bar-rep">
               {props.stats[0].totalRep.value.formatted}
             </span>
           </div>

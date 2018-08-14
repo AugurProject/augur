@@ -239,7 +239,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
         api: {
           CreateOrder: {
             publicCreateOrder: (data) => {
-              data.onSuccess()
+              data.onSent()
               ordersCreated += 1
             },
           },

@@ -5,6 +5,7 @@ import { loadFundingHistory } from 'modules/account/actions/load-funding-history
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading'
 import { clearTransactions } from 'modules/transactions/actions/delete-transaction'
+import { augur } from 'services/augurjs'
 
 export const loadAccountHistory = (beginTime, endTime) => (dispatch, getState) => {
   const options = {
@@ -18,10 +19,11 @@ export const loadAccountHistory = (beginTime, endTime) => (dispatch, getState) =
 }
 
 function loadTransactions(dispatch, getState, options, cb) {
+  const allOptions = Object.assign(options, { orderState: augur.constants.ORDER_STATE.ALL })
   dispatch(updateTransactionsLoading(true))
   dispatch(clearTransactions())
   parallel([
-    next => dispatch(loadAccountTrades(options, (err, values) => {
+    next => dispatch(loadAccountTrades(allOptions, (err) => {
       if (err) next(err)
       next(null)
     })),

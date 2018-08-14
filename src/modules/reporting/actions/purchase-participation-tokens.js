@@ -10,7 +10,7 @@ export const purchaseParticipationTokens = (amount, estimateGas = false, callbac
   augur.reporting.getFeeWindowCurrent({ universe: universe.id }, (err, currFeeWindowInfo) => {
     if (err) return callback(err)
     let methodFunc = augur.api.FeeWindow.buy
-    let address = currFeeWindowInfo.feeWindow
+    let address = currFeeWindowInfo ? currFeeWindowInfo.feeWindow : null
     if (address == null) {
       methodFunc = augur.api.Universe.buyParticipationTokens
       address = universe.id
@@ -23,10 +23,10 @@ const callMethod = (method, amount, address, estimateGas = false, callback) => (
   const { loginAccount } = getState()
   method({
     tx: {
-      meta: loginAccount.meta,
       to: address,
       estimateGas,
     },
+    meta: loginAccount.meta,
     _attotokens: speedomatic.fix(amount, 'hex'),
     onSent: () => {
       // need fee window to do gas estimate

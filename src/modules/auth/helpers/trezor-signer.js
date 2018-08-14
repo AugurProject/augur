@@ -19,9 +19,6 @@ const trezorSigner = async (connect, addressPath, dispatch, rawTxArgs) => {
   }))
 
   const tx = rawTxArgs[0]
-
-  console.log('trezor-signer: tx is ', tx)
-
   const callback = rawTxArgs[1]
 
   return new Promise((resolve, reject) => {

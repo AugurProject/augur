@@ -37,7 +37,12 @@ export default class LinkedTransaction extends Component {
             { transaction.open &&
               <h5 className={Styles.LinkedTransaction__status}>Open Order</h5>
             }
-            <span className={Styles['LinkedTransaction__message-text']}>{ transaction.message }</span>
+            <span className={Styles['LinkedTransaction__message-text']}>
+              { transaction.message }
+              { transaction.meta && transaction.meta.canceledTransactionHash &&
+                <span className={Styles['LinkedTransaction__message-canceled']}>Canceled</span>
+              }
+            </span>
           </div>
           <span className={classNames(Styles['LinkedTransaction__message-chevron'], { [`${Styles['is-open']}`]: s.isOpen })}>{ <ChevronDown /> }</span>
         </button>

@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { uniq, isEmpty } from 'lodash'
+import { uniqBy, isEmpty } from 'lodash'
 import { DESCRIPTION_MAX_LENGTH, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
@@ -16,7 +16,6 @@ export default class CreateMarketDefine extends Component {
 
   static propTypes = {
     categories: PropTypes.array.isRequired,
-    isBugBounty: PropTypes.bool.isRequired,
     isValid: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
@@ -77,7 +76,7 @@ export default class CreateMarketDefine extends Component {
 
     // compare unquiness remove empty values
     const localValuesLen = Object.values(localValues).filter(x => !isEmpty(x)).length
-    const isUnique = uniq(Object.values(localValues).filter(x => !isEmpty(x))).length === localValuesLen
+    const isUnique = uniqBy(Object.values(localValues).filter(x => !isEmpty(x)), value => value.toUpperCase()).length === localValuesLen
 
     switch (true) {
       case typeof value === 'string' && !value.trim().length && isRequired:
@@ -112,7 +111,6 @@ export default class CreateMarketDefine extends Component {
 
   render() {
     const {
-      isBugBounty,
       newMarket,
       validateField,
       keyPressed,
@@ -128,11 +126,6 @@ export default class CreateMarketDefine extends Component {
 
     return (
       <ul className={StylesForm.CreateMarketForm__fields}>
-        {isBugBounty &&
-        <div className={Styles.CreateMarketDefine_bugBountyDisclaimer}>
-          Augur is currently in the bug bounty phase. Market creation is disabled, but this page is available for users to test out up until the final step.
-        </div>
-        }
         <li className={Styles.CreateMarketDefine__question}>
           <label htmlFor="cm__input--desc">
             <span>Market Question</span>

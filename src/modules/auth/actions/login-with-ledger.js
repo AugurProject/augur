@@ -4,7 +4,7 @@ import { loadAccountData } from 'modules/auth/actions/load-account-data'
 import { toChecksumAddress } from 'ethereumjs-util'
 import ledgerSigner from 'modules/auth/helpers/ledger-signer'
 
-export default function loginWithLedger(address, ledgerLib) {
+export default function loginWithLedger(address, ledgerLib, derivationPath) {
   return (dispatch) => {
     dispatch(updateIsLogged(true))
     dispatch(loadAccountData({
@@ -14,7 +14,7 @@ export default function loginWithLedger(address, ledgerLib) {
       meta: {
         address,
         signer: async (...args) => {
-          ledgerSigner(args, ledgerLib, dispatch)
+          ledgerSigner(args, ledgerLib, derivationPath, dispatch)
         },
         accountType: augur.rpc.constants.ACCOUNT_TYPES.LEDGER,
       },

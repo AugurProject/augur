@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
+import { PulseLoader } from 'react-spinners'
 
-import { IconSearch, Close } from 'modules/common/components/icons'
+import { IconSearch, CloseDark } from 'modules/common/components/icons'
 
 import debounce from 'utils/debounce'
 
@@ -32,6 +33,8 @@ export default class Input extends Component {
     maxButton: PropTypes.bool,
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    onFocus: PropTypes.func,
   };
 
   constructor(props) {
@@ -45,6 +48,7 @@ export default class Input extends Component {
     this.handleOnChange = this.handleOnChange.bind(this)
     this.handleOnBlur = this.handleOnBlur.bind(this)
     this.handleClear = this.handleClear.bind(this)
+    this.handleOnFocus = this.handleOnFocus.bind(this)
     this.handleToggleVisibility = this.handleToggleVisibility.bind(this)
     this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200)
   }
@@ -78,6 +82,11 @@ export default class Input extends Component {
     this.props.onBlur && this.props.onBlur()
   };
 
+  handleOnFocus = () => {
+    this.props.onChange(this.state.value)
+    this.props.onFocus && this.props.onFocus()
+  };
+
   handleClear = () => {
     this.setState({ value: '' })
     this.props.onChange('')
@@ -95,7 +104,7 @@ export default class Input extends Component {
 
   render() {
     const {
-      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, ...p
+      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, isLoading, ...p
     } = this.props // eslint-disable-line no-unused-vars
     const s = this.state
 
@@ -111,6 +120,7 @@ export default class Input extends Component {
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
             placeholder={p.placeholder}
+            onFocus={this.handleOnFocus}
           />
         }
 
@@ -121,7 +131,19 @@ export default class Input extends Component {
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
+            onFocus={this.handleOnFocus}
           />
+        }
+
+        {isSearch &&
+          <div style={{ marginRight: '8px' }}>
+            <PulseLoader
+              color="#553580"
+              sizeUnit="px"
+              size={6}
+              loading={isLoading}
+            />
+          </div>
         }
 
         {isClearable && !p.isMultiline && !!s.value &&
@@ -130,7 +152,7 @@ export default class Input extends Component {
             className={Styles.close}
             onClick={this.handleClear}
           >
-            {Close}
+            {CloseDark}
           </button>
         }
 

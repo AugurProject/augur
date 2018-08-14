@@ -39,7 +39,7 @@ describe('src/modules/markets/helpers/get-tags-and-categories-from-location.js',
     it('should return an object with the relevant parsed data', () => {
       assert.deepEqual(result, {
         category: 'Augur',
-        keywords: '',
+        keywords: undefined,
         tags: [],
         balanceOfSearchParams: {},
       })
@@ -54,7 +54,7 @@ describe('src/modules/markets/helpers/get-tags-and-categories-from-location.js',
     it('should return an object with a null category and empty tags array', () => {
       assert.deepEqual(result, {
         category: undefined,
-        keywords: '',
+        keywords: undefined,
         tags: [],
         balanceOfSearchParams: {},
       })
@@ -75,7 +75,7 @@ describe('src/modules/markets/helpers/get-tags-and-categories-from-location.js',
     it('should do something', () => {
       assert.deepEqual(result, {
         category: undefined,
-        keywords: '',
+        keywords: undefined,
         tags: [],
         balanceOfSearchParams: {},
       })
@@ -90,7 +90,7 @@ describe('src/modules/markets/helpers/get-tags-and-categories-from-location.js',
     it('should be returned as part of the "balanceOfSearchParams"', () => {
       assert.deepEqual(result, {
         category: 'Augur',
-        keywords: '',
+        keywords: undefined,
         tags: [],
         balanceOfSearchParams: {
           page: '1',

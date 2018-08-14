@@ -4,7 +4,7 @@ import makePath from 'modules/routes/helpers/make-path'
 import makeQuery from 'modules/routes/helpers/make-query'
 
 import { MARKETS, MARKET } from 'modules/routes/constants/views'
-import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export function nextReportPage(history) {
   return (dispatch, getState) => {
@@ -18,7 +18,6 @@ export function nextReportPage(history) {
     history.push({
       pathname: makePath(MARKET),
       search: makeQuery({
-        [MARKET_DESCRIPTION_PARAM_NAME]: nextPendingReportMarket.formattedDescription,
         [MARKET_ID_PARAM_NAME]: nextPendingReportMarket.id,
       }),
     })

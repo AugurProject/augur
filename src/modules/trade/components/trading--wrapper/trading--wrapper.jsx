@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 import { BigNumber, createBigNumber } from 'utils/create-big-number'
 
 import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
@@ -39,15 +39,15 @@ class MarketTradingWrapper extends Component {
 
     this.state = {
       orderType: LIMIT,
-      orderPrice: props.selectedOrderProperties.price,
-      orderQuantity: props.selectedOrderProperties.quantity,
+      orderPrice: props.selectedOrderProperties.price || '',
+      orderQuantity: props.selectedOrderProperties.quantity || '',
       orderEthEstimate: '0',
       orderShareEstimate: '0',
       marketOrderTotal: '',
       marketQuantity: '',
-      selectedNav: props.selectedOrderProperties.selectedNav,
+      selectedNav: props.selectedOrderProperties.selectedNav || BUY,
       currentPage: 0,
-      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders,
+      doNotCreateOrders: props.selectedOrderProperties.doNotCreateOrders || false,
     }
 
     this.prevPage = this.prevPage.bind(this)
@@ -181,11 +181,11 @@ class MarketTradingWrapper extends Component {
         }
         { s.currentPage === 0 &&
           <div>
-            <ul className={Styles.TradingWrapper__header}>
-              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === BUY })}>
+            <ul className={s.selectedNav === BUY ? Styles.TradingWrapper__header_buy : Styles.TradingWrapper__header_sell}>
+              <li className={classNames({ [`${Styles.active_buy}`]: s.selectedNav === BUY })}>
                 <button onClick={() => this.setState({ selectedNav: BUY })}>Buy</button>
               </li>
-              <li className={classNames({ [`${Styles.active}`]: s.selectedNav === SELL })}>
+              <li className={classNames({ [`${Styles.active_sell}`]: s.selectedNav === SELL })}>
                 <button onClick={() => this.setState({ selectedNav: SELL })}>Sell</button>
               </li>
             </ul>

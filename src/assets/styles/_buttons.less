@@ -13,7 +13,7 @@
   line-height: 1.125rem;
   min-height: 2.5rem;
   min-width: 9.75rem;
-  padding: 0 0.4em 0.166em;
+  padding: 0 0.4em;
   text-transform: uppercase;
   transition:
     background-color 0.15s ease,
@@ -111,6 +111,42 @@
   &:hover {
     background-color: @color-disabled;
   }
+}
+
+.button--transparent {
+  .button;
+
+  background-color: @color-transparent;
+  border: solid 1px @color-purple;
+  border-radius: 32px;
+  color: @color-purple;
+  line-height: unset;
+  min-height: unset;
+  min-width: unset;
+  padding: 8px 24px;
+  text-transform: none;
+
+  &:hover {
+    background-color: @color-lightpurple;
+    color: @color-white;
+  }
+
+  &:disabled,
+  &:disabled:hover {
+    background-color: transparent;
+    border: 1px solid @color-lightgray;
+    color: @color-lightgray;
+    cursor: default;
+  }
+}
+
+.button--transparent--disabled,
+.button--transparent:disabled,
+.button--transparent:disabled:hover {
+  background-color: transparent;
+  border: 1px solid @color-lightgray;
+  color: @color-lightgray;
+  cursor: default;
 }
 
 .button--white--short {

@@ -22,6 +22,7 @@ import {
   handleTokensMintedLog,
   handleTokensBurnedLog,
   handleFeeWindowRedeemedLog,
+  handleCompleteSetsSoldLog,
 } from 'modules/events/actions/log-handlers'
 import { wrapLogHandler } from 'modules/events/actions/wrap-log-handler'
 import logError from 'utils/log-error'
@@ -51,7 +52,7 @@ export const listenToUpdates = history => (dispatch, getState) => {
     DisputeCrowdsourcerRedeemed: dispatch(wrapLogHandler(handleDisputeCrowdsourcerRedeemedLog)),
     UniverseForked: dispatch(wrapLogHandler()),
     CompleteSetsPurchased: dispatch(wrapLogHandler()),
-    CompleteSetsSold: dispatch(wrapLogHandler()),
+    CompleteSetsSold: dispatch(wrapLogHandler(handleCompleteSetsSoldLog)),
     TokensMinted: dispatch(wrapLogHandler(handleTokensMintedLog)),
     TokensBurned: dispatch(wrapLogHandler(handleTokensBurnedLog)),
     FeeWindowCreated: dispatch(wrapLogHandler(handleFeeWindowCreatedLog)),

@@ -6,12 +6,24 @@ import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-out
 
 import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
 import { BUY, SELL } from 'modules/transactions/constants/types'
+import MarketOutcomeMidpoint
+  from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
 
 import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
 import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
 import { isEmpty, isEqual } from 'lodash'
 
-export default class MarketOutcomeOrderbook extends Component {
+
+function findTrailingZeros(number) {
+  const zeros = number.match(/[0]+$/)
+  if (number.toString().indexOf('.') === -1 || !zeros) {
+    return ''
+  }
+  return (number % 1 === 0 ? '.' : '') + zeros
+
+}
+
+export default class MarketOutcomeChartsOrders extends Component {
   static propTypes = {
     sharedChartMargins: PropTypes.object.isRequired,
     orderBook: PropTypes.object.isRequired,
@@ -21,9 +33,12 @@ export default class MarketOutcomeOrderbook extends Component {
     updatePrecision: PropTypes.func,
     isMobile: PropTypes.bool.isRequired,
     headerHeight: PropTypes.number.isRequired,
+    hasOrders: PropTypes.bool.isRequired,
+    orderBookKeys: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
+    hasPriceHistory: PropTypes.bool,
   }
 
   constructor(props) {
@@ -60,6 +75,8 @@ export default class MarketOutcomeOrderbook extends Component {
       updateSelectedOrderProperties,
       isMobile,
       headerHeight,
+      hasOrders,
+      orderBookKeys,
     } = this.props
     const s = this.state
 
@@ -68,7 +85,7 @@ export default class MarketOutcomeOrderbook extends Component {
     return (
       <section
         className={Styles.MarketOutcomeOrderBook}
-        style={{ paddingBottom: sharedChartMargins.bottom }}
+        style={{ paddingBottom: sharedChartMargins.bottom - 4 }}
       >
         <MarketOutcomeChartHeaderOrders
           fixedPrecision={fixedPrecision}
@@ -87,7 +104,7 @@ export default class MarketOutcomeOrderbook extends Component {
                   classNames(
                     Styles.MarketOutcomeOrderBook__row,
                     {
-                      [Styles['MarketOutcomeOrderBook__row--head']]: i === orderBook.asks.length - 1,
+                      [Styles['MarketOutcomeOrderBook__row--head-bid']]: i === orderBook.asks.length - 1,
                       [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
                       [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === ASKS && i > s.hoveredOrderIndex,
                     },
@@ -109,34 +126,31 @@ export default class MarketOutcomeOrderbook extends Component {
                 }}
               >
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_ask}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
                 </button>
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_ask}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
-                  <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#6d1d3d', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_ask}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: BUY,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
@@ -145,7 +159,13 @@ export default class MarketOutcomeOrderbook extends Component {
             ))}
           </div>
         </div>
-        <div className={Styles.MarketOutcomeOrderBook__Midmarket} />
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket} >
+          <MarketOutcomeMidpoint
+            hasOrders={hasOrders}
+            orderBookKeys={orderBookKeys}
+            fixedPrecision={fixedPrecision}
+          />
+        </div>
         <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
           <div className={Styles.MarketOutcomeOrderBook__container} ref={(bids) => { this.bids = bids }} >
             {(orderBook.bids || []).map((order, i) => (
@@ -155,7 +175,7 @@ export default class MarketOutcomeOrderbook extends Component {
                   classNames(
                     Styles.MarketOutcomeOrderBook__row,
                     {
-                      [Styles['MarketOutcomeOrderBook__row--head']]: i === 0,
+                      [Styles['MarketOutcomeOrderBook__row--head-ask']]: i === 0,
                       [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === BIDS,
                       [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === BIDS && i < s.hoveredOrderIndex,
                     },
@@ -177,34 +197,31 @@ export default class MarketOutcomeOrderbook extends Component {
                 }}
               >
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_bid}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
                 </button>
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_bid}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
-                  <span>{order.price.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#135045', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
                 </button>
                 <button
-                  className={Styles.MarketOutcomeOrderBook__RowItem}
+                  className={Styles.MarketOutcomeOrderBook__RowItem_bid}
                   onClick={() => updateSelectedOrderProperties({
                     orderPrice: order.price.value.toString(),
                     orderQuantity: order.cumulativeShares.toString(),
                     selectedNav: SELL,
-                    doNotCreateOrders: true,
                   })}
                 >
                   <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>

@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 
 import makePath from 'modules/routes/helpers/make-path'
-
 import MarketsList from 'modules/markets/components/markets-list'
 import Styles from 'modules/portfolio/components/markets/markets.styles'
 import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
@@ -81,7 +80,7 @@ class MyMarkets extends Component {
       if (market.reportingState === this.reportingStates.PRE_REPORTING) {
         openMarkets.push(market)
         filteredMarketsOpen.push(market.id)
-      } else if (market.reportingState === this.reportingStates.FINALIZED) {
+      } else if (market.reportingState === this.reportingStates.FINALIZED || market.reportingState === this.reportingStates.AWAITING_FINALIZATION) {
         finalMarkets.push(market)
         filteredMarketsFinal.push(market.id)
       } else {
@@ -129,6 +128,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
+            testid="open"
             isLogged={isLogged}
             markets={s.openMarkets}
             filteredMarkets={s.filteredMarketsOpen}
@@ -157,6 +157,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
+            testid="inReporting"
             isLogged={isLogged}
             markets={s.reportingMarkets}
             filteredMarkets={s.filteredMarketsReporting}
@@ -185,6 +186,7 @@ class MyMarkets extends Component {
         }
         {haveMarkets &&
           <MarketsList
+            testid="resolved"
             isLogged={isLogged}
             markets={s.finalMarkets}
             filteredMarkets={s.filteredMarketsFinal}

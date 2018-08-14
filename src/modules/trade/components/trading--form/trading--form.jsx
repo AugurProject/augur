@@ -11,9 +11,10 @@ import { isEqual } from 'lodash'
 import ReactTooltip from 'react-tooltip'
 import TooltipStyles from 'modules/common/less/tooltip'
 import { Hint } from 'modules/common/components/icons'
-
+import FormStyles from 'modules/common/less/form'
 import Styles from 'modules/trade/components/trading--form/trading--form.styles'
 import { formatEther, formatShares } from 'utils/format-number'
+import Checkbox from 'src/modules/common/components/checkbox/checkbox'
 
 class MarketTradingForm extends Component {
   static propTypes = {
@@ -34,6 +35,7 @@ class MarketTradingForm extends Component {
     selectedNav: PropTypes.string.isRequired,
     selectedOutcome: PropTypes.object.isRequired,
     updateState: PropTypes.func.isRequired,
+    doNotCreateOrders: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -43,7 +45,9 @@ class MarketTradingForm extends Component {
       QUANTITY: 'orderQuantity',
       PRICE: 'orderPrice',
       MARKET_ORDER_SIZE: 'marketOrderTotal',
+      DO_NOT_CREATE_ORDERS: 'doNotCreateOrders',
     }
+    this.TRADE_MAX_COST = 'tradeMaxCost'
     this.MINIMUM_TRADE_VALUE = createBigNumber(1, 10).dividedBy(10000)
     this.orderValidation = this.orderValidation.bind(this)
     this.testQuantity = this.testQuantity.bind(this)
@@ -53,10 +57,12 @@ class MarketTradingForm extends Component {
       [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
       [this.INPUT_TYPES.PRICE]: props.orderPrice,
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: props.marketOrderTotal,
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: props.doNotCreateOrders,
       errors: {
         [this.INPUT_TYPES.QUANTITY]: [],
         [this.INPUT_TYPES.PRICE]: [],
         [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
+        [this.TRADE_MAX_COST]: [],
       },
       isOrderValid: this.orderValidation({
         [this.INPUT_TYPES.QUANTITY]: props.orderQuantity,
@@ -66,6 +72,7 @@ class MarketTradingForm extends Component {
           [this.INPUT_TYPES.QUANTITY]: [],
           [this.INPUT_TYPES.PRICE]: [],
           [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
+          [this.TRADE_MAX_COST]: [],
         },
       }).isOrderValid,
     }
@@ -79,15 +86,21 @@ class MarketTradingForm extends Component {
       selectedOutcome,
       updateState,
     } = this.props
+    // make sure to keep Quantity and Price as bigNumbers
+    const nextQuantity = nextProps[this.INPUT_TYPES.QUANTITY]
+    const nextPrice = nextProps[this.INPUT_TYPES.PRICE]
+
     const newStateInfo = {
-      [this.INPUT_TYPES.QUANTITY]: nextProps[this.INPUT_TYPES.QUANTITY],
-      [this.INPUT_TYPES.PRICE]: nextProps[this.INPUT_TYPES.PRICE],
+      [this.INPUT_TYPES.QUANTITY]: nextQuantity ? createBigNumber(nextQuantity, 10) : nextQuantity,
+      [this.INPUT_TYPES.PRICE]: nextPrice && nextPrice !== '' ? createBigNumber(nextPrice, 10) : nextPrice,
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: nextProps[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: nextProps[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
     }
     const currentStateInfo = {
       [this.INPUT_TYPES.QUANTITY]: this.state[this.INPUT_TYPES.QUANTITY],
       [this.INPUT_TYPES.PRICE]: this.state[this.INPUT_TYPES.PRICE],
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: this.state[this.INPUT_TYPES.MARKET_ORDER_SIZE],
+      [this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]: this.state[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS],
     }
     const newOrderInfo = {
       orderEthEstimate: nextProps.orderEthEstimate,
@@ -119,9 +132,9 @@ class MarketTradingForm extends Component {
       }
 
       // orderValidation
-      const { isOrderValid, errors } = this.orderValidation(newStateInfo, nextProps)
+      const { isOrderValid, errors, errorCount } = this.orderValidation(newStateInfo, nextProps)
       // update state
-      this.setState({ ...newStateInfo, errors, isOrderValid })
+      this.setState({ ...newStateInfo, errors, isOrderValid, errorCount })
     }
   }
 
@@ -137,12 +150,13 @@ class MarketTradingForm extends Component {
     return { isOrderValid: passedTest, errors, errorCount }
   }
 
-  testPrice(value, errors, isOrderValid) {
+  testPrice(value, errors, isOrderValid, nextProps = null) {
+    const props = nextProps || this.props
     const {
       maxPrice,
       minPrice,
       market,
-    } = this.props
+    } = props
     const tickSize = createBigNumber(market.tickSize)
     let errorCount = 0
     let passedTest = !!isOrderValid
@@ -161,26 +175,39 @@ class MarketTradingForm extends Component {
     return { isOrderValid: passedTest, errors, errorCount }
   }
 
-  orderValidation(order) {
+  orderValidation(order, nextProps = null) {
     let errors = {
       [this.INPUT_TYPES.QUANTITY]: [],
       [this.INPUT_TYPES.PRICE]: [],
       [this.INPUT_TYPES.MARKET_ORDER_SIZE]: [],
+      [this.TRADE_MAX_COST]: [],
     }
     let isOrderValid = true
     let errorCount = 0
 
     const quantity = order[this.INPUT_TYPES.QUANTITY] && createBigNumber(order[this.INPUT_TYPES.QUANTITY])
-    const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(quantity, errors, isOrderValid)
+    const { isOrderValid: quantityValid, errors: quantityErrors, errorCount: quantityErrorCount } = this.testQuantity(quantity, errors, isOrderValid, nextProps)
     isOrderValid = quantityValid
     errorCount += quantityErrorCount
     errors = { ...errors, ...quantityErrors }
 
     const price = order[this.INPUT_TYPES.PRICE] && createBigNumber(order[this.INPUT_TYPES.PRICE])
-    const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(price, errors, isOrderValid)
+    const { isOrderValid: priceValid, errors: priceErrors, errorCount: priceErrorCount } = this.testPrice(price, errors, isOrderValid, nextProps)
     isOrderValid = priceValid
     errorCount += priceErrorCount
     errors = { ...errors, ...priceErrors }
+
+    if ((nextProps && nextProps.selectedOutcome.trade.potentialEthLoss) || this.props.selectedOutcome.trade.potentialEthLoss) {
+      const props = nextProps || this.props
+      const { selectedOutcome, availableFunds } = props
+      const { trade } = selectedOutcome
+      const { totalCost } = trade
+      if (totalCost && createBigNumber(totalCost.formattedValue, 10).gte(createBigNumber(availableFunds, 10))) {
+        isOrderValid = false
+        errors = { ...errors, [this.TRADE_MAX_COST]: ['You need more ETH to make this trade.'] }
+        errorCount += 1
+      }
+    }
 
     return { isOrderValid, errors, errorCount }
   }
@@ -191,9 +218,15 @@ class MarketTradingForm extends Component {
     const side = props.selectedNav
     let limitPrice = updatedState[this.INPUT_TYPES.PRICE]
     let shares = updatedState[this.INPUT_TYPES.QUANTITY]
+    const oldShares = this.state[this.INPUT_TYPES.QUANTITY]
     if (shares === null || shares === undefined || shares === '') {
       shares = '0'
       limitPrice = null
+    }
+    // keep auto-filling functionality
+    if (oldShares !== '' && (limitPrice === null || limitPrice === undefined || limitPrice === '')) {
+      shares = null
+      limitPrice = SCALAR ? '' : '0'
     }
     props.selectedOutcome.trade.updateTradeOrder(shares, limitPrice, side, null)
   }
@@ -201,9 +234,9 @@ class MarketTradingForm extends Component {
   validateForm(property, rawValue) {
     const { updateState } = this.props
     // since the order changed by user action, make sure we can place orders.
-    updateState('doNotCreateOrders', false)
+    // updateState('doNotCreateOrders', false)
     let value = rawValue
-    if (!(BigNumber.isBigNumber(value)) && value !== '') value = createBigNumber(value, 10)
+    if (!(property === this.INPUT_TYPES.DO_NOT_CREATE_ORDERS) && !(BigNumber.isBigNumber(value)) && value !== '') value = createBigNumber(value, 10)
     const updatedState = {
       ...this.state,
       [property]: value,
@@ -239,13 +272,14 @@ class MarketTradingForm extends Component {
       selectedOutcome,
       maxPrice,
       minPrice,
+      updateState,
     } = this.props
     const s = this.state
 
     const tickSize = parseFloat(market.tickSize)
     const max = maxPrice.toString()
     const min = minPrice.toString()
-    const errors = Array.from(new Set([...s.errors[this.INPUT_TYPES.QUANTITY], ...s.errors[this.INPUT_TYPES.PRICE], ...s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE]]))
+    const errors = Array.from(new Set([...s.errors[this.INPUT_TYPES.QUANTITY], ...s.errors[this.INPUT_TYPES.PRICE], ...s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE], ...s.errors[this.TRADE_MAX_COST]]))
 
     if (orderType === MARKET) {
       return (
@@ -259,7 +293,7 @@ class MarketTradingForm extends Component {
           <li>
             <label htmlFor="tr__input--total-cost">Total Cost</label>
             <input
-              className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].length })}
+              className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.MARKET_ORDER_SIZE].length })}
               id="tr__input--total-cost"
               type="number"
               step={tickSize}
@@ -314,7 +348,7 @@ class MarketTradingForm extends Component {
             <li className={Styles['TradingForm__limit-quantity']}>
               <label htmlFor="tr__input--quantity">Quantity</label>
               <input
-                className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY].length })}
+                className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.QUANTITY].length })}
                 id="tr__input--quantity"
                 type="number"
                 step={tickSize}
@@ -326,7 +360,7 @@ class MarketTradingForm extends Component {
             <li className={Styles['TradingForm__limit-price']}>
               <label htmlFor="tr__input--limit-price">Limit Price</label>
               <input
-                className={classNames({ [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length })}
+                className={classNames(FormStyles.Form__input, { [`${Styles.error}`]: s.errors[this.INPUT_TYPES.PRICE].length })}
                 id="tr__input--limit-price"
                 type="number"
                 step={tickSize}
@@ -337,14 +371,24 @@ class MarketTradingForm extends Component {
                 onChange={e => this.validateForm(this.INPUT_TYPES.PRICE, e.target.value)}
               />
             </li>
+            <li className={Styles['TradingForm__do-no-create-orders']}>
+              <Checkbox
+                id="tr__input--do-no-create-orders"
+                type="checkbox"
+                isChecked={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                value={s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS]}
+                onClick={e => updateState(this.INPUT_TYPES.DO_NOT_CREATE_ORDERS, !s[this.INPUT_TYPES.DO_NOT_CREATE_ORDERS])}
+              />
+              <label htmlFor="tr__input--do-no-create-orders">Fill Orders Only</label>
+            </li>
           </ul>
           <ul className={Styles['TradingForm__form-estimated-cost']}>
             <li>
               <span>Est. Cost</span>
             </li>
             <li>
-              <span>{ orderEthEstimate && formatEther(orderEthEstimate).full }</span>
-              <span>{ orderShareEstimate && formatShares(orderShareEstimate).full }</span>
+              <span>{ orderEthEstimate && `${formatEther(orderEthEstimate).fullPrecision}${formatEther(orderEthEstimate).denomination}` }</span>
+              <span>{ orderShareEstimate && `${formatShares(orderShareEstimate).fullPrecision}${formatShares(orderShareEstimate).denomination}` }</span>
             </li>
           </ul>
           <ul className={Styles['TradingForm__form-body']}>

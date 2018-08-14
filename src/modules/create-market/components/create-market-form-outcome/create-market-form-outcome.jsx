@@ -16,9 +16,11 @@ import {
   CATEGORICAL_OUTCOME_MAX_LENGTH,
 } from 'modules/create-market/constants/new-market-constraints'
 
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
+import { ExclamationCircle as InputErrorIcon, Hint } from 'modules/common/components/icons'
 import Styles from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome.styles'
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
+import ReactTooltip from 'react-tooltip'
+import TooltipStyles from 'modules/common/less/tooltip'
 
 export default class CreateMarketOutcome extends Component {
 
@@ -51,6 +53,7 @@ export default class CreateMarketOutcome extends Component {
         MIN_PRICE: 'MIN_PRICE',
         MAX_PRICE: 'MAX_PRICE',
         TICK_SIZE: 'TICK_SIZE',
+        DENOMINATION: 'DENOMINATION',
       },
     }
 
@@ -92,13 +95,17 @@ export default class CreateMarketOutcome extends Component {
     const updatedMarket = { ...newMarket }
     const validations = updatedMarket.validations[newMarket.currentStep]
 
-    const updatedValidations = Object.keys(validations).reduce((p, key) => (validations[key] === true ? {
-      ...p,
-      [key]: true,
-    } : p), {})
+    const updatedValidations = Object.keys(validations)
+      .reduce((p, key) => (validations[key] === true
+        ? { ...p, [key]: true }
+        : { ...p, [key]: validations[key] || false }), {})
 
     // Reset tickSize as it only applies to 'scalar' markets and we are 'defaulting' the value in the componenet.
     delete updatedMarket.tickSize
+    delete updatedValidations.outcomes
+    delete updatedValidations.scalarSmallNum
+    delete updatedValidations.scalarBigNum
+    delete updatedValidations.tickSize
 
     switch (value) {
       case CATEGORICAL:
@@ -107,8 +114,7 @@ export default class CreateMarketOutcome extends Component {
       case SCALAR:
         updatedValidations.scalarSmallNum = updatedValidations.scalarSmallNum ? updatedValidations.scalarSmallNum : false
         updatedValidations.scalarBigNum = updatedValidations.scalarBigNum ? updatedValidations.scalarBigNum : false
-        // tickSize is pre-populated
-        // updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
+        updatedValidations.tickSize = updatedValidations.tickSize ? updatedValidations.tickSize : false
         break
       default:
         break
@@ -137,6 +143,7 @@ export default class CreateMarketOutcome extends Component {
     let scalarSmallNum = type === scalarType.MIN_PRICE ? value : updatedMarket.scalarSmallNum
     let scalarBigNum = type === scalarType.MAX_PRICE ? value : updatedMarket.scalarBigNum
     let numTicksBigNum = type === scalarType.TICK_SIZE ? value : updatedMarket.tickSize
+    const denomination = type === scalarType.DENOMINATION ? value : updatedMarket.scalarDenomination
 
     if (!(BigNumber.isBigNumber(scalarSmallNum)) && scalarSmallNum !== '') {
       scalarSmallNum = createBigNumber(scalarSmallNum)
@@ -146,7 +153,7 @@ export default class CreateMarketOutcome extends Component {
       scalarBigNum = createBigNumber(scalarBigNum)
     }
 
-    if (numTicksBigNum !== '') {
+    if (!(BigNumber.isBigNumber(numTicksBigNum)) && numTicksBigNum !== '') {
       numTicksBigNum = createBigNumber(numTicksBigNum)
     }
 
@@ -193,28 +200,41 @@ export default class CreateMarketOutcome extends Component {
     }
     updatedMarket.scalarBigNum = scalarBigNum
 
+    switch (true) {
+      case numTicksBigNum === '' || numTicksBigNum.eq(ZERO):
+        updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
+        break
+      case numTicksBigNum.lt(ZERO):
+        updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
+        break
+      case numTicksBigNum.gt(this.state.scalarMax):
+        updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
+        break
+      default:
+        updatedMarket.validations[currentStep].tickSize = true
+    }
+
     if (type === scalarType.TICK_SIZE) {
-      switch (true) {
-        case !value:
-          updatedMarket.validations[currentStep].tickSize = 'Tick size is required.'
-          break
-        case numTicksBigNum.lt(ZERO):
-          updatedMarket.validations[currentStep].tickSize = 'Tick size cannot be negative.'
-          break
-        case numTicksBigNum.gt(this.state.scalarMax):
-          updatedMarket.validations[currentStep].tickSize =`Must be less than: ${this.state.scalarMaxFormatted.roundedValue}`
-          break
-        default:
-          updatedMarket.validations[currentStep].tickSize = true
-      }
       updatedMarket.tickSize = value
     }
 
+    switch (true) {
+      case denomination === '':
+        updatedMarket.validations[currentStep].scalarDenomination = 'Denomination is required.'
+        break
+      default:
+        updatedMarket.validations[currentStep].scalarDenomination = true
+    }
+
+    if (type === scalarType.DENOMINATION) {
+      updatedMarket.scalarDenomination = value
+    }
+
     // Make sure scalarBigNum, scalarSmallNum, & numTicksBigNum are all BigNumbers
-    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum)) {
+    if (BigNumber.isBigNumber(scalarBigNum) && BigNumber.isBigNumber(scalarSmallNum) && BigNumber.isBigNumber(numTicksBigNum) && !numTicksBigNum.eq(ZERO)) {
       // Always check if (maxPrice - minPrice) / precision is an even number
       if ((scalarBigNum.minus(scalarSmallNum).div(numTicksBigNum)).mod(2).toString() !== '0') {
-        updatedMarket.validations[currentStep].tickSize =`Increase range or precision.`
+        updatedMarket.validations[currentStep].tickSize =`Range must be evenly divisible by the precision.`
       }
     }
 
@@ -264,7 +284,6 @@ export default class CreateMarketOutcome extends Component {
     const {
       newMarket,
       updateNewMarket,
-      validateField,
       keyPressed,
     } = this.props
     const s = this.state
@@ -330,6 +349,7 @@ export default class CreateMarketOutcome extends Component {
                     <input
                       type="text"
                       className={classNames({ [`${StylesForm['CreateMarketForm__error--field']}`]: highlightInput })}
+                      data-testid={'categoricalOutcome-' + i}
                       value={newMarket.outcomes[i]}
                       placeholder={placeholderText}
                       maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
@@ -400,7 +420,28 @@ export default class CreateMarketOutcome extends Component {
             </div>
             <div>
               <label htmlFor="cm__input--denomination">
-                <span>&nbsp;</span>
+                <span>Denomination</span>
+                <div style={{ display: 'inline-block' }}>
+                  <label
+                    className={classNames(TooltipStyles.TooltipHint, Styles.CreateMarketOutcome__tooltip)}
+                    data-tip
+                    data-for="tooltip--market-fees"
+                  >
+                    { Hint }
+                  </label>
+                  <ReactTooltip
+                    id="tooltip--market-fees"
+                    className={TooltipStyles.Tooltip}
+                    effect="solid"
+                    place="right"
+                    type="light"
+                  >
+                    <h4>Enter a denomination for your scalar market</h4>
+                    <p style={{ color: '#372e4b' }}>
+                      {'The denomination specifies what units your market is measured in. For example, a market predicting the temperature on a certain day might be denominated in "Degrees Fahrenheit".'}
+                    </p>
+                  </ReactTooltip>
+                </div>
               </label>
               <input
                 id="cm__input--denomination"
@@ -408,9 +449,14 @@ export default class CreateMarketOutcome extends Component {
                 value={newMarket.scalarDenomination}
                 maxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
                 placeholder="Denomination"
-                onChange={e => validateField('scalarDenomination', e.target.value, CATEGORICAL_OUTCOME_MAX_LENGTH)}
+                onChange={e => this.validateScalarNum(e.target.value, s.scalarType.DENOMINATION)}
                 onKeyPress={e => keyPressed(e)}
               />
+              {validation.scalarDenomination && validation.scalarDenomination.length &&
+              <span className={StylesForm.CreateMarketForm__error_tick}>
+                {InputErrorIcon}{validation.scalarDenomination}
+              </span>
+              }
             </div>
             <div>
               <label htmlFor="cm__input--ticksize">
@@ -426,7 +472,7 @@ export default class CreateMarketOutcome extends Component {
                 onKeyPress={e => keyPressed(e)}
               />
               {validation.tickSize && validation.tickSize.length &&
-              <span className={StylesForm['CreateMarketForm__error--bottom']}>
+              <span className={StylesForm.CreateMarketForm__error_tick}>
                 {InputErrorIcon}{validation.tickSize}
               </span>
               }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 // import FilterSort from 'modules/filter-sort/containers/filter-sort-controller'
 import FilterSearch from 'modules/filter-sort/containers/filter-search'
+import FilterDropDowns from 'modules/filter-sort/containers/filter-dropdowns'
 // import FilterMarketState from 'modules/filter-sort/containers/filter-market-state'
 // import SortMarketParam from 'modules/filter-sort/containers/sort-market-param'
 
@@ -19,6 +20,9 @@ export default class MarketsHeader extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
+    filter: PropTypes.string.isRequired,
+    sort: PropTypes.string.isRequired,
+    updateFilter: PropTypes.func.isRequired,
     // updateFilteredItems: PropTypes.func.isRequired
   }
 
@@ -70,24 +74,29 @@ export default class MarketsHeader extends Component {
   }
 
   render() {
-    // const p = this.props
+    const {
+      filter,
+      sort,
+      updateFilter,
+    } = this.props
     const s = this.state
 
     return (
       <article className={Styles.MarketsHeader}>
-        <div className={Styles.MarketsHeader__search} >
-          <FilterSearch
-            searchPlaceholder="Search"
-          />
-        </div>
+        <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
         <div className={Styles.MarketsHeader__wrapper}>
-          <h1 className={Styles.MarketsHeader__heading}>{s.headerTitle}</h1>
-          <div className={Styles.MarketsHeader__filters} />
+          <div className={Styles.MarketsHeader__filters}>
+            <FilterDropDowns
+              filter={filter}
+              sort={sort}
+              updateFilter={updateFilter}
+            />
+          </div>
+          <div className={Styles.MarketsHeader__search} >
+            <FilterSearch />
+          </div>
         </div>
       </article>
     )
   }
 }
-// <SortMarketParam />
-//
-// <FilterMarketState />

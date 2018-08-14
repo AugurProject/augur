@@ -9,6 +9,7 @@ import { loadAccountTrades } from 'modules/my-positions/actions/load-account-tra
 import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import claimTradingProceeds from 'modules/my-positions/actions/claim-trading-proceeds'
 import { constants } from 'services/augurjs'
+import { orderBy } from 'lodash'
 
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions()
@@ -22,7 +23,7 @@ const mapStateToProps = (state) => {
   // TODO -- getting each section of markets should be it's own call
   const marketsCount = markets.length
   markets.forEach((market, index) => {
-    if (market.reportingState === reportingStates.FINALIZED) {
+    if (market.reportingState === reportingStates.FINALIZED || market.reportingState === reportingStates.AWAITING_FINALIZATION) {
       closedMarkets.push(market)
     } else if (market.reportingState !== reportingStates.PRE_REPORTING) {
       reportingMarkets.push(market)
@@ -31,12 +32,14 @@ const mapStateToProps = (state) => {
     }
   })
 
+  const orderdClosedMarkets = orderBy(closedMarkets, ['reportingState', 'endTime.timestamp'], ['asc', 'desc'])
+
   return {
     currentTimestamp: selectCurrentTimestamp(state),
     marketsCount,
     openPositionMarkets,
     reportingMarkets,
-    closedMarkets,
+    closedMarkets: orderdClosedMarkets,
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
     registerBlockNumber: state.loginAccount.registerBlockNumber,

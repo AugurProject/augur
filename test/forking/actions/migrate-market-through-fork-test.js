@@ -25,7 +25,6 @@ describe('modules/forking/actions/migrate-market-through-fork.js', () => {
                 assert.deepEqual(args.tx, {
                   to: '0xMARKET',
                   estimateGas: false,
-                  meta: 'META',
                 })
                 return args.onSuccess(null)
               },

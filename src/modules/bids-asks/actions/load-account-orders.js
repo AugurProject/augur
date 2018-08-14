@@ -7,6 +7,7 @@ import { loadMarketsInfoIfNotLoaded } from 'modules/markets/actions/load-markets
 
 export const loadAccountOrders = (options = {}, callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
+  if (!options.orderState) options.orderState = augur.constants.ORDER_STATE.OPEN
   augur.trading.getOrders({ ...options, creator: loginAccount.address, universe: universe.id }, (err, orders) => {
     if (err) return callback(err)
     if (orders == null || Object.keys(orders).length === 0) return callback(null)
@@ -17,7 +18,14 @@ export const loadAccountOrders = (options = {}, callback = logError) => (dispatc
       forEach(marketIds, (marketId) => {
         forEach(orders[marketId], (outcomeOrder, outcome) => {
           forEach(outcomeOrder, (orderBook, orderTypeLabel) => {
-            dispatch(updateOrderBook(marketId, outcome, orderTypeLabel, orderBook))
+            const openOrders = Object.keys(orderBook)
+              .reduce((p, key) => {
+                if (orderBook[key].orderState === augur.constants.ORDER_STATE.OPEN) {
+                  p[key] = orderBook[key]
+                }
+                return p
+              }, {})
+            dispatch(updateOrderBook(marketId, outcome, orderTypeLabel, openOrders))
           })
         })
       })

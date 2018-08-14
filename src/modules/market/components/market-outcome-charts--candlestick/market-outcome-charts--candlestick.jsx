@@ -5,6 +5,7 @@ import * as d3 from 'd3'
 import ReactFauxDOM from 'react-faux-dom'
 
 import { map } from 'lodash/fp'
+import { sortBy } from 'lodash'
 
 import findPeriodSeriesBounds from 'modules/market/helpers/find-period-series-bounds'
 import MarketOutcomeChartsHeaderCandlestick from 'modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick'
@@ -19,8 +20,6 @@ class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {
     currentTimeInSeconds: PropTypes.number,
     fixedPrecision: PropTypes.number.isRequired,
-    hoveredPeriod: PropTypes.object.isRequired,
-    hoveredPrice: PropTypes.any,
     isMobile: PropTypes.bool.isRequired,
     marketMax: CustomPropTypes.bigNumber,
     marketMin: CustomPropTypes.bigNumber,
@@ -30,8 +29,6 @@ class MarketOutcomeCandlestick extends React.Component {
     selectedPeriod: PropTypes.number.isRequired,
     selectedRange: PropTypes.number.isRequired,
     sharedChartMargins: PropTypes.object.isRequired,
-    updateHoveredPeriod: PropTypes.func.isRequired,
-    updateHoveredPrice: PropTypes.func.isRequired,
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
     updateSelectedOrderProperties: PropTypes.func.isRequired,
@@ -99,14 +96,21 @@ class MarketOutcomeCandlestick extends React.Component {
       containerHeight: 0,
       containerWidth: 0,
       yScale: null,
+      hoveredPrice: null,
+      hoveredPeriod: {},
     })
 
     this.getContainerWidths = this.getContainerWidths.bind(this)
     this.updateContainerWidths = this.updateContainerWidths.bind(this)
+    this.updateHoveredPrice = this.updateHoveredPrice.bind(this)
+    this.updateHoveredPeriod = this.updateHoveredPeriod.bind(this)
+    this.clearCrosshairs = this.clearCrosshairs.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.updateContainerWidths)
+
+    this.drawContainer.addEventListener('mouseout', this.clearCrosshairs)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -124,6 +128,7 @@ class MarketOutcomeCandlestick extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateContainerWidths)
+    this.drawContainer.removeEventListener('mouseout', this.clearCrosshairs)
   }
 
   getContainerWidths() {
@@ -137,20 +142,34 @@ class MarketOutcomeCandlestick extends React.Component {
     this.setState(this.getContainerWidths())
   }
 
+  updateHoveredPrice(hoveredPrice) {
+    this.setState({
+      hoveredPrice,
+    })
+  }
+
+  updateHoveredPeriod(hoveredPeriod) {
+    this.setState({
+      hoveredPeriod,
+    })
+  }
+
+  clearCrosshairs() {
+    this.updateHoveredPrice(null)
+    this.updateHoveredPeriod({})
+    updateHoveredPriceCrosshair(null)
+  }
+
   render() {
     const {
       currentTimeInSeconds,
       fixedPrecision,
-      hoveredPeriod,
-      hoveredPrice,
       isMobile,
       orderBookKeys,
       outcomeName,
       priceTimeSeries,
       selectedPeriod,
       selectedRange,
-      updateHoveredPeriod,
-      updateHoveredPrice,
       updateSelectedPeriod,
       updateSelectedRange,
       updateSelectedOrderProperties,
@@ -169,6 +188,8 @@ class MarketOutcomeCandlestick extends React.Component {
       xScale,
       yDomain,
       yScale,
+      hoveredPrice,
+      hoveredPeriod,
     } = this.state
 
     const candleChartContainer = ReactFauxDOM.createElement('div')
@@ -273,11 +294,12 @@ class MarketOutcomeCandlestick extends React.Component {
         marketMin,
         orderBookKeys,
         priceTimeSeries,
-        updateHoveredPeriod,
-        updateHoveredPrice,
+        updateHoveredPeriod: this.updateHoveredPeriod,
+        updateHoveredPrice: this.updateHoveredPrice,
         updateSelectedOrderProperties,
         yScale,
         xScale,
+        clearCrosshairs: this.clearCrosshairs,
       })
 
       updateHoveredPriceCrosshair(hoveredPrice, yScale, containerWidth, fixedPrecision)
@@ -313,18 +335,12 @@ class MarketOutcomeCandlestick extends React.Component {
 }
 
 function determineDrawParams({
-  candleDim,
   containerHeight,
   containerWidth,
   currentTimeInSeconds,
-  drawContainer,
-  fixedPrecision,
   marketMax,
   marketMin,
-  orderBookKeys,
-  outcomeBounds,
   priceTimeSeries,
-  selectedPeriod,
   selectedRange,
   sharedChartMargins,
 }) {
@@ -345,25 +361,34 @@ function determineDrawParams({
     new Date(currentTimeInSeconds * 1000),
   ]
 
-
   const drawableWidth = containerWidth
 
   //  Y
-  // Determine bounding diff
-  // This scale is off because it's only looking at the order book rather than the price history + scaling around the midpoint
-  const maxDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.max).toPrecision(15)).absoluteValue() // NOTE -- toPrecision to address an error when attempting to get the absolute value
-  const minDiff = createBigNumber(orderBookKeys.mid.minus(outcomeBounds.min).toPrecision(15)).absoluteValue()
-  let boundDiff = maxDiff.gt(minDiff) ? maxDiff : minDiff
+  const highValues = sortBy(priceTimeSeries, ['high'])
+  const lowValues = sortBy(priceTimeSeries, ['low'])
+  const max = highValues.length ? highValues[highValues.length - 1].high : marketMax.toNumber()
+  const min = lowValues.length ? lowValues[0].low : marketMin.toNumber()
 
-  if (boundDiff.eq(0)) boundDiff = marketMax.minus(marketMin).dividedBy(2)
+  const bnMax = createBigNumber(max)
+  const bnMin = createBigNumber(min)
+  const buffer = bnMax.minus(bnMin).times('.10')
 
+  const maxPrice = bnMax.plus(buffer).toNumber()
+  const minPrice = bnMin.minus(buffer).toNumber()
 
-  const yDomain = [
-    createBigNumber(orderBookKeys.mid.plus(boundDiff).toFixed(fixedPrecision)).toNumber(),
-    createBigNumber(orderBookKeys.mid.minus(boundDiff).toFixed(fixedPrecision)).toNumber(),
+  let yDomain = [
+    maxPrice > marketMax ? max : maxPrice,
+    minPrice < marketMin ? min: minPrice,
   ]
-
-  boundDiff = boundDiff.toNumber()
+  // common case with low volume
+  if (yDomain[0] === yDomain[1]) {
+    yDomain = [
+      createBigNumber(yDomain[0]).times(1.5).toNumber(),
+      createBigNumber(yDomain[0]).times(0.5).toNumber(),
+    ]
+  }
+  // sigment y into 10 to show prices
+  const boundDiff = createBigNumber(yDomain[0]).minus(createBigNumber(yDomain[1])).dividedBy(2)
 
   // Scale
   const xScale = d3.scaleTime()
@@ -387,62 +412,22 @@ function determineDrawParams({
 
 function drawTicks({
   boundDiff,
-  candleChart,
-  candleDim,
   candleTicks,
   chartDim,
-  containerHeight,
   containerWidth,
   fixedPrecision,
-  marketMax,
-  marketMin,
-  orderBookKeys,
-  priceTimeSeries,
-  xScale,
   yDomain,
   yScale,
 }) {
 
-  // Y axis
-  //  Bounds
-  //    Top
-  candleTicks.append('line')
-    .attr('class', 'bounding-line')
-    .attr('x1', 0)
-    .attr('x2', containerWidth)
-    .attr('y1', 0)
-    .attr('y2', 0)
-  //    Bottom
-  candleTicks.append('line')
-    .attr('class', 'bounding-line')
-    .attr('x1', 0)
-    .attr('x2', containerWidth)
-    .attr('y1', containerHeight - chartDim.bottom)
-    .attr('y2', containerHeight - chartDim.bottom)
-
-  //  Midpoint
-  //    Conditional Tick Line
-  // candleTicks.append('line')
-  //   .attr('class', 'tick-line tick-line--midpoint')
-  //   .attr('x1', chartDim.tickOffset)
-  //   .attr('x2', containerWidth)
-  //   .attr('y1', () => yScale(orderBookKeys.mid))
-  //   .attr('y2', () => yScale(orderBookKeys.mid))
-
-  //    Label
-  candleTicks.append('text')
-    .attr('class', 'tick-value')
-    .attr('x', 0)
-    .attr('y', yScale(orderBookKeys.mid))
-    .attr('dx', 0)
-    .attr('dy', chartDim.tickOffset)
-    .text(orderBookKeys.mid.toFixed(fixedPrecision))
-
   //  Ticks
-  const offsetTicks = yDomain.map((d, i) => { // Assumes yDomain is [max, min]
-    if (i === 0) return d - (boundDiff / 2)
-    return d + (boundDiff / 2)
-  })
+  const offsetTicks = [
+    yDomain[0],
+    yDomain[1],
+    createBigNumber(yDomain[1]).plus(boundDiff).toNumber(),
+    createBigNumber(yDomain[0]).minus(boundDiff.dividedBy(2)).toNumber(),
+    createBigNumber(yDomain[1]).plus(boundDiff.dividedBy(2)).toNumber(),
+  ]
 
   const yTicks = candleTicks.append('g')
     .attr('id', 'depth_y_ticks')
@@ -456,6 +441,8 @@ function drawTicks({
     .attr('x2', containerWidth)
     .attr('y1', d => yScale(d))
     .attr('y2', d => yScale(d))
+    .text(d => d.toFixed(fixedPrecision))
+
   yTicks.selectAll('text')
     .data(offsetTicks)
     .enter()
@@ -473,41 +460,41 @@ function drawCandles({
   candleChart,
   containerWidth,
   containerHeight,
-  chartDim,
   candleDim,
   xScale,
   yScale,
 
 }) {
-  candleChart.selectAll('rect.candle')
-    .data(priceTimeSeries)
-    .enter().append('rect')
-    .attr('x', d => xScale(d.period))
-    .attr('y', d => yScale(d3.max([d.open, d.close])))
-    .attr('height', d => Math.max(Math.abs(yScale(d.open) - yScale(d.close)), 1))
-    .attr('width', candleDim.width)
-    .attr('class', d => (d.close > d.open) ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
 
-  candleChart.selectAll('line.stem')
-    .data(priceTimeSeries)
-    .enter().append('line')
-    .attr('class', 'stem')
-    .attr('x1', d => xScale(d.period) + (candleDim.width / 2))
-    .attr('x2', d => xScale(d.period) + (candleDim.width / 2))
-    .attr('y1', d => yScale(d.high))
-    .attr('y2', d => yScale(d.low))
-    .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  if (priceTimeSeries.length === 0) {
+    drawNullState({ candleChart, containerWidth, containerHeight })
+  } else {
+    candleChart.selectAll('rect.candle')
+      .data(priceTimeSeries)
+      .enter().append('rect')
+      .attr('x', d => xScale(d.period))
+      .attr('y', d => yScale(d3.max([d.open, d.close])))
+      .attr('height', d => Math.max(Math.abs(yScale(d.open) - yScale(d.close)), 1))
+      .attr('width', candleDim.width)
+      .attr('class', d => (d.close > d.open) ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+
+    candleChart.selectAll('line.stem')
+      .data(priceTimeSeries)
+      .enter().append('line')
+      .attr('class', 'stem')
+      .attr('x1', d => xScale(d.period) + (candleDim.width / 2))
+      .attr('x2', d => xScale(d.period) + (candleDim.width / 2))
+      .attr('y1', d => yScale(d.high))
+      .attr('y2', d => yScale(d.low))
+      .attr('class', d => d.close > d.open ? 'up-period' : 'down-period') // eslint-disable-line no-confusing-arrow
+  }
 }
-
 function drawVolume({
   priceTimeSeries,
   candleChart,
-  containerWidth,
   containerHeight,
   chartDim,
   candleDim,
-  boundDiff,
-  yDomain,
   xScale,
 
 }) {
@@ -529,15 +516,10 @@ function drawVolume({
 }
 
 function drawXAxisLabels({
-  priceTimeSeries,
   candleChart,
-  containerWidth,
   containerHeight,
   chartDim,
-  candleDim,
-  boundDiff,
   tickInterval,
-  yDomain,
   xScale,
 }) {
   candleChart.append('g')
@@ -566,7 +548,6 @@ function attachHoverClickHandlers({
   candleDim,
   chartDim,
   containerHeight,
-  containerWidth,
   drawableWidth,
   fixedPrecision,
   marketMax,
@@ -578,13 +559,14 @@ function attachHoverClickHandlers({
   updateSelectedOrderProperties,
   yScale,
   xScale,
+  clearCrosshairs,
 }) {
   candleChart.append('rect')
     .attr('class', 'overlay')
     .attr('width', drawableWidth)
     .attr('height', containerHeight)
     .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => updateHoveredPrice(null))
+    .on('mouseout', clearCrosshairs)
     .on('click', () => {
       const mouse = d3.mouse(d3.select('#candlestick_chart').node())
       const orderPrice = yScale.invert(mouse[1]).toFixed(fixedPrecision)
@@ -611,10 +593,10 @@ function attachHoverClickHandlers({
     .attr('class', 'period-hover')
     .on('mouseover', d => updateHoveredPeriod(d))
     .on('mousemove', () => updateHoveredPrice(yScale.invert(d3.mouse(d3.select('#candlestick_chart').node())[1]).toFixed(fixedPrecision)))
-    .on('mouseout', () => {
-      updateHoveredPeriod({})
-      updateHoveredPrice(null)
-    })
+    .on('mouseout', clearCrosshairs)
+
+  candleChart.on('mouseout', clearCrosshairs)
+
 }
 
 function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrecision) {
@@ -624,7 +606,6 @@ function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrec
   } else {
     const yPosition = yScale(hoveredPrice)
     const clampedHoveredPrice = yScale.invert(yPosition)
-
     d3.select('#candlestick_crosshairs').style('display', null)
     d3.select('#candlestick_crosshairY')
       .attr('x1', 0)
@@ -637,5 +618,22 @@ function updateHoveredPriceCrosshair(hoveredPrice, yScale, chartWidth, fixedPrec
       .text(clampedHoveredPrice.toFixed(fixedPrecision))
   }
 }
+
+function drawNullState(options) {
+  const {
+    containerWidth,
+    containerHeight,
+    candleChart,
+  } = options
+
+  candleChart.append('text')
+    .attr('class', Styles['MarketOutcomeCandlestick__null-message'])
+    .attr('x', containerWidth / 2)
+    .attr('y', containerHeight / 2)
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .text('No Completed Trades')
+}
+
 
 export default MarketOutcomeCandlestick

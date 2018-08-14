@@ -22,16 +22,15 @@ export function closePosition(marketId, outcomeId, callback = logError) {
       const { orderBooks, loginAccount } = getState()
       const market = selectMarket(marketId)
       const positionOutcome = market ? (market.outcomes || []).find(outcome => parseInt(outcome.id, 10) === parseInt(outcomeId, 10)) : null
-      const positionShares = createBigNumber(getValue(positionOutcome, 'position.qtyShares.fullPrecision') || '0')
+      const positionShares = createBigNumber(getValue(positionOutcome, 'position.netPosition.fullPrecision') || '0')
       const userAddress = loginAccount.address
       const bestFill = getBestFill((orderBooks[marketId] || {})[outcomeId] || {}, positionShares.gt(ZERO) ? BUY : SELL, positionShares.absoluteValue(), marketId, outcomeId, userAddress)
       if (bestFill.amountOfShares.isEqualTo(ZERO)) {
         dispatch(clearClosePositionOutcome(marketId, outcomeId))
         dispatch(addClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_NO_ORDERS))
       } else {
-        dispatch(updateTradesInProgress(marketId, outcomeId, positionShares.gt(ZERO) ? SELL : BUY, bestFill.amountOfShares.toFixed(), bestFill.price.toNumber(), null, () => {
-          const { tradesInProgress } = getState()
-          dispatch(placeTrade(marketId, outcomeId, tradesInProgress[marketId][outcomeId], true, (err, tradeGroupId) => {
+        dispatch(updateTradesInProgress(marketId, outcomeId, positionShares.gt(ZERO) ? SELL : BUY, bestFill.amountOfShares.toFixed(), bestFill.price.toNumber(), null, (err, tradesInProgress) => {
+          dispatch(placeTrade(marketId, outcomeId, tradesInProgress, true, (err, tradeGroupId) => {
             if (err) {
               console.error('placeTrade err -- ', err)
               dispatch(addClosePositionTradeGroup(marketId, outcomeId, CLOSE_DIALOG_FAILED))

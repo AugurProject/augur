@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'modules/common/containers/sticky-params-components'
 
 import MarketTradingWrapper from 'modules/trade/components/trading--wrapper/trading--wrapper'
 import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
+import classNames from 'classnames'
 
 import { BigNumber } from 'utils/create-big-number'
 
@@ -61,6 +62,14 @@ class MarketTrading extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const {
+      clearTradeInProgress,
+      market,
+    } = this.props
+    clearTradeInProgress(market.id)
+  }
+
   toggleForm() {
     this.setState({ showForm: !this.state.showForm })
   }
@@ -106,7 +115,7 @@ class MarketTrading extends Component {
     }
 
     return (
-      <section className={Styles.Trading}>
+      <section className={classNames(Styles.Trading, 'market-trading-wrapper')}>
         { (!isMobile || s.showForm) &&
           <MarketTradingWrapper
             market={market}

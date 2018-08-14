@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
+import MarketPositionsListOrphanedOrder from 'modules/market/components/market-positions-list--orphaned-order/market-positions-list--orphaned-order'
 import MarketPositionsListPosition from 'modules/market/components/market-positions-list--position/market-positions-list--position'
 import MarketPositionsListOrder from 'modules/market/components/market-positions-list--order/market-positions-list--order'
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
@@ -18,13 +19,18 @@ export default class MarketPositionsList extends Component {
     openOrders: PropTypes.array,
     positions: PropTypes.array.isRequired,
     closePositionStatus: PropTypes.object.isRequired,
+    numCompleteSets: PropTypes.object,
+    sellCompleteSets: PropTypes.func.isRequired,
+    marketId: PropTypes.string.isRequired,
+    orphanedOrders: PropTypes.array.isRequired,
+    cancelOrphanedOrder: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
-      isOpen: false,
+      isOpen: true,
     }
   }
 
@@ -33,6 +39,11 @@ export default class MarketPositionsList extends Component {
       openOrders,
       positions,
       closePositionStatus,
+      numCompleteSets,
+      sellCompleteSets,
+      marketId,
+      orphanedOrders,
+      cancelOrphanedOrder,
     } = this.props
     const s = this.state
 
@@ -47,12 +58,13 @@ export default class MarketPositionsList extends Component {
         </button>
         <div
           ref={(outcomeList) => { this.outcomeList = outcomeList }}
-          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'])}
+          className={classNames(ToggleHeightStyles['open-on-mobile'], ToggleHeightStyles['toggle-height-target'], ToggleHeightStyles['start-open'])}
         >
           <div className={Styles.MarketPositionsList__table}>
             { positions.length > 0 &&
               <ul className={Styles['MarketPositionsList__table-header']}>
                 <li>Position</li>
+                <li><span>Net Position</span></li>
                 <li><span>Quantity</span></li>
                 <li><span>Price</span></li>
                 <li><span>Unrealized <span />P/L</span></li>
@@ -78,10 +90,11 @@ export default class MarketPositionsList extends Component {
             { openOrders.length > 0 &&
               <ul className={Styles['MarketPositionsList__table-header']}>
                 <li>Open Orders</li>
+                <li />
                 <li><span>Quantity</span></li>
                 <li><span>Average <span />Price</span></li>
-                <li />
-                <li />
+                <li>Escrowed ETH</li>
+                <li>Escrowed Shares</li>
                 <li><span>Action</span></li>
               </ul>
             }
@@ -97,11 +110,30 @@ export default class MarketPositionsList extends Component {
                     isMobile={false}
                   />
                 ))}
+                { (orphanedOrders || []).map(order => (
+                  <MarketPositionsListOrphanedOrder
+                    key={order.orderId}
+                    outcomeName={order.outcomeName || order.outcome}
+                    order={order}
+                    pending={false}
+                    isExtendedDisplay={false}
+                    outcome={order}
+                    closePositionStatus={closePositionStatus}
+                    cancelOrphanedOrder={cancelOrphanedOrder}
+                  />
+                ))
+                }
               </div>
             }
           </div>
           { positions.length === 0 && openOrders.length === 0 &&
             <NullStateMessage className={Styles['MarketPositionsList__null-state']} message="No positions or open orders" />
+          }
+          { numCompleteSets && numCompleteSets.value > 0 &&
+            <div className={Styles.MarketPositionsList__completeSets}>
+              <span>{`You currently have ${numCompleteSets.full} of all outcomes.`}</span>
+              <button onClick={e => sellCompleteSets(marketId, numCompleteSets)}>Sell Complete Sets</button>
+            </div>
           }
         </div>
       </section>

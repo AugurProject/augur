@@ -109,7 +109,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
     },
   })
   test({
-    description: 'using metamask',
+    description: 'using metamask-connect',
     params: {
       unlockedAddress: '0xb0b',
     },

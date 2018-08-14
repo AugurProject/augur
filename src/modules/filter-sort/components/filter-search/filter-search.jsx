@@ -13,7 +13,7 @@ export default class FilterSearch extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    searchPlaceholder: PropTypes.string,
+    hasLoadedMarkets: PropTypes.bool,
   }
 
   constructor(props) {
@@ -21,9 +21,15 @@ export default class FilterSearch extends Component {
 
     this.state = {
       search: '',
+      placeholder: 'Search',
+      width: '250px',
     }
 
     this.updateQuery = this.updateQuery.bind(this)
+    this.onFocus = this.onFocus.bind(this)
+    this.onBlur = this.onBlur.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.timeout = null
   }
 
   componentWillMount() {
@@ -36,6 +42,22 @@ export default class FilterSearch extends Component {
     if (this.state.search !== nextState.search) {
       this.updateQuery(nextState.search, nextProps.location)
     }
+  }
+
+  onFocus() {
+    this.setState({ placeholder: '', width: '400px' })
+  }
+
+  onBlur() {
+    this.setState({ placeholder: 'Search', width: '250px' })
+  }
+
+  onChange(search) {
+    clearTimeout(this.timeout)
+
+    this.timeout = setTimeout(() => {
+      this.setState({ search })
+    }, 500)
   }
 
   updateQuery(search, location) {
@@ -57,19 +79,22 @@ export default class FilterSearch extends Component {
   }
 
   render() {
-    const { searchPlaceholder } = this.props
+    const { hasLoadedMarkets } = this.props
     const s = this.state
 
     return (
-      <article className={Styles.FilterSearch}>
+      <article className={Styles.FilterSearch} style={{ minWidth: s.width }}>
         <Input
           className={Styles.FilterSearch__input}
           isSearch
           isClearable
           noFocus
-          placeholder={searchPlaceholder || 'Search'}
+          placeholder={s.placeholder}
           value={s.search}
-          onChange={search => this.setState({ search })}
+          onChange={this.onChange}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== '')}
         />
       </article>
     )

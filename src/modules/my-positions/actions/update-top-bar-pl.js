@@ -6,15 +6,13 @@ export const updateTopBarPL = (options = {}, callback = logError) => (dispatch, 
   const { universe, loginAccount, blockchain } = getState()
   if (loginAccount.address == null || universe.id == null) return callback(null)
   // make sure we have a timestamp
-  const endTime = (blockchain.currentAugurTimestamp || Math.round((new Date()).getTime() / 1000))
+  const now = (blockchain.currentAugurTimestamp || Math.round((new Date()).getTime() / 1000))
   augur.augurNode.submitRequest(
     'getProfitLoss',
     {
       universe: universe.id,
       account: loginAccount.address,
-      startTime: (endTime - 2592000),
-      endTime,
-      periodInterval: null,
+      startTime: (now - 2592000),
     },
     (err, rawPerformanceData) => {
       if (rawPerformanceData && rawPerformanceData.aggregate && rawPerformanceData.aggregate.length && rawPerformanceData.aggregate[rawPerformanceData.aggregate.length - 1].profitLoss) {
@@ -28,9 +26,7 @@ export const updateTopBarPL = (options = {}, callback = logError) => (dispatch, 
     {
       universe: universe.id,
       account: loginAccount.address,
-      startTime: (endTime - 86400),
-      endTime,
-      periodInterval: null,
+      startTime: (now - 86400),
     },
     (err, rawPerformanceData) => {
       if (rawPerformanceData && rawPerformanceData.aggregate && rawPerformanceData.aggregate.length && rawPerformanceData.aggregate[rawPerformanceData.aggregate.length - 1].profitLoss) {

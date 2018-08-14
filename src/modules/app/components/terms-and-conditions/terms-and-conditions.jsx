@@ -5,22 +5,16 @@ import Styles from 'modules/app/components/terms-and-conditions/terms-and-condit
 const TermsAndConditions = p => (
   <div className={Styles.TermsAndConditions}>
     <a
-      href="https://augur.net/terms.txt"
+      href="https://raw.githubusercontent.com/AugurProject/augur-core/master/LICENSE"
       target="blank"
     >
-      Terms & Conditions
+      Augur Core License
     </a>
     <a
-      href="http://terms.augur.net/"
+      href="https://raw.githubusercontent.com/AugurProject/augur/master/LICENSE"
       target="blank"
     >
-      Privacy Policy
-    </a>
-    <a
-      href="https://augur.net/license.txt"
-      target="blank"
-    >
-      Licensing Agreement
+      Augur UI License
     </a>
   </div>
 )

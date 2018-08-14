@@ -58,14 +58,15 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   })
 
   test({
-    description: `should return the expected profit and loss values for a BUY in a yes/no  market`,
+    description: `should return the expected profit and loss values for a BUY in a yes/no market`,
     assertions: () => {
+      // numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost
       const actual = calcProfits(
         '10',
         '0.4',
         BUY,
+        '0',
         '1',
-        '2',
         YES_NO,
         '10',
         '4',
@@ -83,14 +84,14 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   })
 
   test({
-    description: `should return the expected profit and loss values for a SELL in a yes/no  market`,
+    description: `should return the expected profit and loss values for a SELL in a yes/no market`,
     assertions: () => {
       const actual = calcProfits(
         '10',
         '0.4',
         SELL,
+        '0',
         '1',
-        '2',
         YES_NO,
         '10',
         '6',
@@ -99,8 +100,8 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       const expected = {
         potentialEthProfit: createBigNumber('4'),
         potentialEthLoss: createBigNumber('6'),
-        potentialProfitPercent: createBigNumber('100'),
-        potentialLossPercent: createBigNumber('150'),
+        potentialProfitPercent: createBigNumber('66.666666666666666667'),
+        potentialLossPercent: createBigNumber('100'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)
@@ -149,8 +150,8 @@ describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
       const expected = {
         potentialEthProfit: createBigNumber('60'),
         potentialEthLoss: createBigNumber('90'),
-        potentialProfitPercent: createBigNumber('100'),
-        potentialLossPercent: createBigNumber('150'),
+        potentialProfitPercent: createBigNumber('66.666666666666666667'),
+        potentialLossPercent: createBigNumber('100'),
       }
 
       assert.deepEqual(actual, expected, `didn't return the expected profit and loss values`)

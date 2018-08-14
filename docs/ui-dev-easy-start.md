@@ -6,7 +6,7 @@ This is for UI developers already familiar with the different components but onl
 
 You'll need to clone augur UI only:
 
-* [augur git repo](https://github.com/AugurProject/augur)
+* [augur-ui git repo](https://github.com/AugurProject/augur-ui)
 * node and npm installed
 * yarn installed
 * docker installed
@@ -26,7 +26,7 @@ This command will download the needed docker files and start them up. (This migh
 
 
 
-When the command shell output looks like this your good to move on:
+When the command shell output looks like this, you're good to move on:
 
 ```
 ...

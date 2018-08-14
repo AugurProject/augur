@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Route, Redirect } from 'react-router-dom'
+import { Route } from 'react-router-dom'
+
+import { Redirect } from 'modules/common/containers/sticky-params-components'
 
 import makePath from 'modules/routes/helpers/make-path'
 

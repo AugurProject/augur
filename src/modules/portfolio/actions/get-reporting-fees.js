@@ -6,6 +6,7 @@ import { updateReportingWindowStats } from 'modules/reporting/actions/update-rep
 
 export const getReportingFees = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState()
+  if (loginAccount.address === undefined) return callback(null)
   augur.augurNode.submitRequest(
     'getReportingFees',
     {
@@ -18,10 +19,10 @@ export const getReportingFees = (callback = logError) => (dispatch, getState) =>
 
       dispatch(updateReportingWindowStats({
         reportingFees: {
-          unclaimedEth: formatAttoEth(result.total.unclaimedEth, { decimals: 4, zeroStyled: true }),
-          unclaimedRep: formatAttoRep(unclaimedRepTotal, { decimals: 4, zeroStyled: true }),
-          unclaimedForkEth: formatAttoEth(result.total.unclaimedForkEth, { decimals: 4, zeroStyled: true }),
-          unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, zeroStyled: true }),
+          unclaimedEth: formatAttoEth(result.total.unclaimedEth, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
+          unclaimedRep: formatAttoRep(unclaimedRepTotal, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
+          unclaimedForkEth: formatAttoEth(result.total.unclaimedForkEth, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
+          unclaimedForkRepStaked: formatAttoRep(result.total.unclaimedForkRepStaked, { decimals: 4, decimalsRounded: 4, zeroStyled: true }),
           feeWindows: result.feeWindows,
           forkedMarket: result.forkedMarket,
           nonforkedMarkets: result.nonforkedMarkets,

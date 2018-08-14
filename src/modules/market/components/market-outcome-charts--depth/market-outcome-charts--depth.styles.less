@@ -54,35 +54,64 @@
     .tick-line,
     .tick-line--midpoint {
       stroke: @color-gray;
-      stroke-width: 2px;
+    }
+
+    .tick-line--midpoint {
+      opacity: 0.5;
+      stroke-dasharray: 3;
     }
 
     .tick-line {
+      color: @color-lightergray;
       stroke-width: 1px;
     }
 
-    .depth-line {
+    .depth-line-bids {
       fill: none;
-      stroke: @color-lighter-purple;
+      stroke: @color-positive;
     }
 
+    .depth-line-asks {
+      fill: none;
+      stroke: @color-negative;
+    }
+
+    .tick-value-midpoint,
     .tick-value {
       &:extend(.caps--extra-small all);
 
       fill: @color-lightgray;
     }
 
-    .stop-left {
+    .tick-value-midpoint {
+      font-size: @font-size-small;
+      text-transform: none;
+    }
+
+    .stop-top-bid {
       stop-color: transparent;
     }
 
-    .stop-right {
-      stop-color: @color-lighter-purple;
+    .stop-top-ask {
+      stop-color: transparent;
     }
 
-    .filled-subtle {
-      fill: url("#subtleGradient");
-      opacity: 0.15;
+    .stop-bottom-ask {
+      stop-color: @color-negative;
+    }
+
+    .stop-bottom {
+      stop-color: @color-positive;
+    }
+
+    .filled-subtle-asks {
+      fill: url("#subtleGradientAsk");
+      opacity: 0.25;
+    }
+
+    .filled-subtle-bids {
+      fill: url("#subtleGradientBid");
+      opacity: 0.25;
     }
 
     .line .crosshair {
@@ -98,7 +127,7 @@
 
     #depth-x-axis {
       line {
-        stroke: @color-lightgray;
+        stroke: @color-white;
       }
 
       text {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { augur } from 'services/augurjs'
-// import { BigNumber, WrappedBigNumber } from 'utils/wrapped-big-number'
+import { createBigNumber } from 'utils/create-big-number'
 import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 
@@ -20,6 +20,7 @@ export default class CreateMarketReview extends Component {
     meta: PropTypes.object,
     availableEth: PropTypes.string.isRequired,
     availableRep: PropTypes.string.isRequired,
+    updateStateValue: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -29,10 +30,10 @@ export default class CreateMarketReview extends Component {
 
     this.state = {
       gasPrice,
-      creationFee: null,
       gasCost: null,
       validityBond: null,
       designatedReportNoShowReputationBond: null,
+      insufficientFundsString: '',
       // initialLiquidity: {
       // gas: null,
       // },
@@ -41,6 +42,8 @@ export default class CreateMarketReview extends Component {
     }
 
     this.calculateMarketCreationCosts = this.calculateMarketCreationCosts.bind(this)
+    this.getFundsString = this.getFundsString.bind(this)
+    this.updateFunds = this.updateFunds.bind(this)
   }
 
   componentWillMount() {
@@ -51,6 +54,30 @@ export default class CreateMarketReview extends Component {
     const { newMarket } = this.props
     if (newMarket.initialLiquidityEth !== nextProps.newMarket.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.newMarket.initialLiquidityEth) })
     if (newMarket.initialLiquidityGas !== nextProps.newMarket.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(formatGasCostToEther(nextProps.newMarket.initialLiquidityGas, { decimalsRounded: 4 }, this.state.gasPrice)) })
+  }
+
+  getFundsString() {
+    const {
+      availableEth,
+      availableRep,
+    } = this.props
+    const s = this.state
+    let insufficientFundsString = ''
+
+    if (s.validityBond) {
+      const validityBond = getValue(s, 'validityBond.formattedValue')
+      const gasCost = getValue(s, 'gasCost.formattedValue')
+      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
+      insufficientFundsString = insufficientFunds(validityBond, gasCost, designatedReportNoShowReputationBond, createBigNumber(availableEth, 10), createBigNumber(availableRep, 10))
+    }
+
+    return insufficientFundsString
+  }
+
+  updateFunds(insufficientFundsString) {
+    const { updateStateValue } = this.props
+    updateStateValue('insufficientFunds', (insufficientFundsString !== ''))
+    this.setState({ insufficientFundsString })
   }
 
   calculateMarketCreationCosts() {
@@ -67,31 +94,26 @@ export default class CreateMarketReview extends Component {
         const gasPrice = augur.rpc.getGasPrice()
         this.setState({
           gasPrice,
-          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue, { decimalsRounded: 4 }, gasPrice)),
+          gasCost: formatEtherEstimate(formatGasCostToEther(gasEstimateValue || '0', { decimalsRounded: 4 }, gasPrice)),
           designatedReportNoShowReputationBond: formatEtherEstimate(marketCreationCostBreakdown.designatedReportNoShowReputationBond),
-          creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
           validityBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond),
-        })
+        }, this.updateFunds(this.getFundsString()))
       })
     })
   }
 
   render() {
-    const {
-      availableEth,
-      availableRep,
-      newMarket,
-    } = this.props
+    const { newMarket } = this.props
     const s = this.state
 
-    let insufficientFundsString = ''
     if (s.validityBond) {
-      const validityBond = getValue(s, 'validityBond.formattedValue')
-      const gasCost = getValue(s, 'gasCost.formattedValue')
-      const creationFee = getValue(s, 'creationFee.formattedValue')
-      const designatedReportNoShowReputationBond = getValue(s, 'designatedReportNoShowReputationBond.formattedValue')
-
-      insufficientFundsString = insufficientFunds(validityBond, gasCost, creationFee, designatedReportNoShowReputationBond, availableEth, availableRep)
+      const insufficientFundsString = this.getFundsString()
+      if (s.insufficientFundsString !== insufficientFundsString) {
+        this.updateFunds(insufficientFundsString)
+      }
+    }
+    if (this.additionalDetails && this.additionalDetails.scrollHeight) {
+      this.additionalDetails.style.height = `${this.additionalDetails.scrollHeight}px`
     }
     return (
       <article className={StylesForm.CreateMarketForm__fields}>
@@ -113,10 +135,6 @@ export default class CreateMarketReview extends Component {
                   <span>Est. Gas</span>
                   <span>{s.gasCost && s.gasCost.rounded} ETH</span>
                 </li>
-                <li>
-                  <span>Reporter Gas Bond</span>
-                  <span>{s.creationFee && s.creationFee.rounded} ETH</span>
-                </li>
               </ul>
             </div>
             <div className={Styles.CreateMarketReview__liquidity}>
@@ -127,15 +145,15 @@ export default class CreateMarketReview extends Component {
                   <span>{s.formattedInitialLiquidityEth.rounded} ETH</span>
                 </li>
                 <li>
-                  <span>Gas</span>
+                  <span>Est. Gas</span>
                   <span>{s.formattedInitialLiquidityGas.rounded} ETH</span>
                 </li>
               </ul>
             </div>
           </div>
-          {insufficientFundsString !== '' &&
+          {s.insufficientFundsString !== '' &&
           <span className={StylesForm['CreateMarketForm__error--insufficient-funds']}>
-            {InputErrorIcon}You have insufficient {insufficientFundsString} to create this market.
+            {InputErrorIcon}You have insufficient {s.insufficientFundsString} to create this market.
           </span>
           }
           <div className={Styles.CreateMarketReview__resolution}>
@@ -143,14 +161,20 @@ export default class CreateMarketReview extends Component {
             <p className={Styles.CreateMarketReview__smallparagraph}>
               {
                 newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
-                  'Outcome will be determined by news media' :
+                  'General knowledge' :
                   `Outcome will be detailed on public website: ${newMarket.expirySource}`
               }
             </p>
           </div>
           <div className={Styles.CreateMarketReview__addedDetails}>
             <h4 className={Styles.CreateMarketReview__smallheading}>Additional Details</h4>
-            <p className={Styles.CreateMarketReview__smallparagraph}>{newMarket.detailsText || 'None'}</p>
+            <textarea
+              ref={(additionalDetails) => { this.additionalDetails = additionalDetails }}
+              className={Styles['CreateMarketReview__AdditionalDetails-text']}
+              disabled
+              readOnly
+              value={newMarket.detailsText || 'None'}
+            />
           </div>
         </div>
       </article>

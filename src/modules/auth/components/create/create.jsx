@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 
 import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-// import Airbitz from 'modules/auth/containers/airbitz-create'
-import UportCreate from 'modules/auth/containers/uport-create'
+import Edge from 'modules/auth/containers/edge-create'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 
@@ -35,7 +34,7 @@ export default function AuthCreate(p) {
             selectedNav={selectedNav}
           />
           <div className={Styles.Auth__connections}>
-            <UportCreate />
+            <Edge />
           </div>
         </div>
       </div>

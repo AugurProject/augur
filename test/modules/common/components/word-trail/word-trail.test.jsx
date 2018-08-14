@@ -15,7 +15,7 @@ describe('word-trail', () => {
   describe('when tags array is empty', () => {
     beforeEach(() => {
       items = []
-      wrapper = shallow(<WordTrail items={items} label={SOME_LABEL} />)
+      wrapper = shallow(<WordTrail items={items} typeLabel={SOME_LABEL} />)
     })
 
     it('should render a list', () => {
@@ -38,7 +38,7 @@ describe('word-trail', () => {
         onClick: () => {},
       }]
 
-      wrapper = shallow(<WordTrail items={items} label={SOME_LABEL} />)
+      wrapper = shallow(<WordTrail items={items} typeLabel={SOME_LABEL} />)
     })
 
     it('should render each of them', () => {

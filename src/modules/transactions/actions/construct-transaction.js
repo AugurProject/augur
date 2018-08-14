@@ -1,5 +1,5 @@
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history'
-import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions, getSortOrder } from 'modules/transactions/actions/add-transactions'
+import { addOpenOrderTransactions, addMarketCreationTransactions, addTradeTransactions, addTransferTransactions, getSortOrder, addCompleteSetsSoldLogs } from 'modules/transactions/actions/add-transactions'
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data'
 import { SUCCESS } from 'modules/transactions/constants/statuses'
 import { formatEther } from 'utils/format-number'
@@ -21,13 +21,15 @@ export const constructBasicTransaction = (eventName, hash, blockNumber, timestam
 export const constructTransaction = (log, callback = logError) => (dispatch, getState) => {
   switch (log.eventName) {
     case 'OrderCreated':
-      return dispatch(addOpenOrderTransactions({ [log.marketId]: { [log.outcome]: { [log.orderType === 0 ? 'buy' : 'sell']: log } } }))
+      return dispatch(addOpenOrderTransactions({ [log.marketId]: { [log.outcome]: { [log.orderType]: { [log.orderId]: log } } } }))
     case 'OrderFilled':
       return dispatch(addTradeTransactions([log]))
     case 'TokensTransferred':
       return dispatch(addTransferTransactions([log]))
     case 'MarketCreated':
       return dispatch(addMarketCreationTransactions([log]))
+    case 'CompleteSetsSold':
+      return dispatch(addCompleteSetsSoldLogs([log]))
     case 'MarketFinalized':
     case 'InitialReportSubmitted':
     case 'DesignatedReportSubmitted':

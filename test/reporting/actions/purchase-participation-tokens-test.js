@@ -29,7 +29,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: false })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: false })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
@@ -69,7 +69,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: true })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: true })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
@@ -110,7 +110,7 @@ describe('purchase participation tokens tests', () => {
               const {
                 tx, _attotokens, onSent, onSuccess, onFailed,
               } = p
-              assert.deepEqual(tx, { meta: store.getState().loginAccount.meta, to: '0xfeeWindow01', estimateGas: true })
+              assert.deepEqual(tx, { to: '0xfeeWindow01', estimateGas: true })
               assert.deepEqual(_attotokens, speedomatic.fix('10.25', 'hex'))
               assert.isFunction(onSent)
               assert.isFunction(onSuccess)
@@ -164,6 +164,40 @@ describe('purchase participation tokens tests', () => {
       store.dispatch(purchaseParticipationTokens('10.25', true, (err, res) => {
         assert.isUndefined(res)
         assert.deepEqual(err, { error: 1000, message: 'Uh-Oh!' })
+        const expectedActions = []
+        assert.deepEqual(store.getActions(), expectedActions)
+        done()
+      }))
+    },
+  })
+
+  test({
+    description: 'It should handle an null current Fee Window',
+    assertions: (done) => {
+      ReWireModule.__Rewire__('augur', {
+        api: {
+          FeeWindow: {
+            buy: (p) => {
+              assert.isNull('we should never hit this.')
+            },
+          },
+          Universe: {
+            buyParticipationTokens: (p) => { p.onSuccess('10.25') },
+          },
+        },
+        reporting: {
+          getFeeWindowCurrent: (p, cb) => {
+            assert.deepEqual(p, { universe: store.getState().universe.id })
+            assert.isFunction(cb)
+            cb(null)
+          },
+        },
+        rpc: mockRPC,
+      })
+
+      store.dispatch(purchaseParticipationTokens('10.25', false, (err, res) => {
+        assert.isNull(err)
+        assert.deepEqual(res, '10.25')
         const expectedActions = []
         assert.deepEqual(store.getActions(), expectedActions)
         done()
