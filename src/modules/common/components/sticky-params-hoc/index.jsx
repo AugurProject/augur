@@ -11,8 +11,8 @@ import makeQuery from 'src/modules/routes/helpers/make-query'
  * We will need the location to get the current url parms.
  *
  * */
-export const StickyParamsHOC = function (Komponent, keysToMaintain) {
-  const StickyParamsCmp = function ({ children, location, to, staticContext, ...otherProps }) {
+export const StickyParamsHOC = (Komponent, keysToMaintain) => {
+  const StickyParamsCmp = ({ children, location, to, staticContext, ...otherProps }) => {
     // Handle strings with url params.
     let toObj
     if (isString(to)) {
