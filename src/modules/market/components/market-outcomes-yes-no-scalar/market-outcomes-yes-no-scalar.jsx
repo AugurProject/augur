@@ -30,6 +30,10 @@ const MarketOutcomes = (p) => {
   const maxValue = !isNaN(p.max) && p.type !== YES_NO ? `${p.max} ${scalarDenomination}` : '100 %'
 
   const lastPriceDenomination = p.type !== YES_NO ? '' : getValue(p.outcomes[0], 'lastPricePercent.denomination')
+  const arrowStyles = {
+    left: (p.type === YES_NO ? '15px' : '8px'),
+    marginLeft: (p.type === YES_NO ? '10px' : '0px'),
+  }
 
   return (
     <div className={Styles.MarketOutcomes}>
@@ -47,10 +51,12 @@ const MarketOutcomes = (p) => {
         <span className={Styles['MarketOutcomes__current-value']} data-testid="midpoint">
           {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
-        <span className={Styles['MarketOutcomes__current-denomination']}>
-          {lastPriceDenomination}
-        </span>
-        <MarketOutcomeTradingIndicator outcome={p.outcomes[0]} />
+        <div style={{ position: 'relative', display: 'inline' }}>
+          <span className={Styles['MarketOutcomes__current-denomination']}>
+            {lastPriceDenomination}
+          </span>
+          <MarketOutcomeTradingIndicator outcome={p.outcomes[0]} style={arrowStyles} />
+        </div>
       </span>
     </div>
   )

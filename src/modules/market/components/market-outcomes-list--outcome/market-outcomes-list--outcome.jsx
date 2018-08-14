@@ -32,7 +32,7 @@ const Outcome = (p) => {
       <li><ValueDenomination formatted={topBidPrice} /></li>
       <li><ValueDenomination formatted={topAskPrice} /></li>
       <li><ValueDenomination formatted={topAskShares} /></li>
-      <li style={{position: 'relative'}}><ValueDenomination formatted={lastPrice} /><MarketOutcomeTradingIndicator outcome={p.outcome} /></li>
+      <li style={{ position: 'relative' }}><ValueDenomination formatted={lastPrice} /><MarketOutcomeTradingIndicator outcome={p.outcome} /></li>
     </ul>
   )
 }

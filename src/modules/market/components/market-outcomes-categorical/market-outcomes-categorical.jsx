@@ -17,7 +17,7 @@ const CategoricalOutcome = ({ className, outcome, lastTradeStatus }) => (
     <span className={Styles['MarketOutcomesCategorical__outcome-value']}>
       {lastTradeStatus}
     </span>
-    <MarketOutcomeTradingIndicator outcome={outcome} />
+    <MarketOutcomeTradingIndicator outcome={outcome} style={{ right: '0', bottom: '40%' }} />
   </div>
 )
 
