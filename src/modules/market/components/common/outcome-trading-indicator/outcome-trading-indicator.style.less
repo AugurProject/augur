@@ -5,25 +5,29 @@
 .TradingIndicator_arrow_sell_up,
 .TradingIndicator_arrow_sell_down,
 .TradingIndicator_arrow {
-  border-bottom: 14px solid transparent;
-  border-top: 14px solid transparent;
-  height: 0;
-  padding-left: 1rem;
-  width: 0;
+	
+	border: solid transparent;
+	border-color: rgba(136, 183, 213, 0);
+	border-width: 15px;
+	position: absolute;
+	bottom: 50%;
+    left: 100%;
+    position: absolute;
+    margin-left: 10px;
 }
 
 .TradingIndicator_arrow_buy_up {
-  border-left: 14px solid @color-positive;
+  border-bottom-color: @color-positive;
 }
 
 .TradingIndicator_arrow_buy_down {
-  border-left: 14px solid @color-positive;
+  border-top-color: @color-positive;
 }
 
 .TradingIndicator_arrow_sell_up {
-  border-left: 14px solid @color-negative;
+  border-bottom-color: @color-negative;
 }
 
 .TradingIndicator_arrow_sell_down {
-  border-left: 14px solid @color-negative;
+  border-top-color: @color-negative;
 }

@@ -14,9 +14,7 @@ export default function OutcomeTradingIndicator({ tradingIndicator }) {
   const indicatorStyle = indicatorArray[tradingIndicator]
 
   return (
-    <span
-      className={indicatorStyle}
-    />
+    <span className={indicatorStyle} />
   )
 }
 
