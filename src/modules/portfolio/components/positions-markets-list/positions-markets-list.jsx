@@ -52,14 +52,13 @@ export default class PositionsMarketsList extends Component {
       this.state.boundedLength !== nextState.boundedLength ||
       !isEqual(this.props.markets, nextProps.markets)
     ) {
-      this.setFilteredMarkets(nextState.lowerBound, nextState.boundedLength)
+      this.setFilteredMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength)
     }
   }
 
-  setFilteredMarkets(lowerBound, boundedLength) {
-    const { markets } = this.props
+  setFilteredMarkets(markets, lowerBound, boundedLength) {
     const itemLength = boundedLength + (lowerBound - 1)
-    const filteredMarkets = markets.slice(lowerBound - 1, itemLength)
+    const filteredMarkets = markets && markets.length > 0 ? markets.slice(lowerBound - 1, itemLength) : []
     this.setState({ filteredMarkets })
   }
 
