@@ -103,7 +103,6 @@ MarketBasics.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func,
   currentTimestamp: PropTypes.number.isRequired,
-  outcomeStatuses: PropTypes.object.isRequired,
   marketType: PropTypes.string,
   hideReportEndingIndicator: PropTypes.bool,
   showDisputeRound: PropTypes.bool,

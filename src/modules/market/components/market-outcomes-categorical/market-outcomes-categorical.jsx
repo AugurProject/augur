@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import getValue from 'utils/get-value'
-
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator'
 import Styles from 'modules/market/components/market-outcomes-categorical/market-outcomes-categorical.styles'
 
-const CategoricalOutcome = ({ className, outcome }) => (
+const CategoricalOutcome = ({ className, outcome, lastTradeStatus }) => (
   <div className={className || Styles.MarketOutcomesCategorical__outcome}>
     <span className={Styles['MarketOutcomesCategorical__outcome-name']}>
       {outcome.name}
@@ -14,6 +14,10 @@ const CategoricalOutcome = ({ className, outcome }) => (
     <span className={Styles['MarketOutcomesCategorical__outcome-value']}>
       {getValue(outcome, 'lastPricePercent.full')}
     </span>
+    <span className={Styles['MarketOutcomesCategorical__outcome-value']}>
+      {lastTradeStatus}
+    </span>
+    <MarketOutcomeTradingIndicator outcome={outcome} />
   </div>
 )
 
@@ -97,6 +101,7 @@ MarketOutcomesCategorical.propTypes = {
 CategoricalOutcome.propTypes = {
   outcome: PropTypes.object.isRequired,
   className: PropTypes.string,
+  lastTradeStatus: PropTypes.string,
 }
 
 export default MarketOutcomesCategorical

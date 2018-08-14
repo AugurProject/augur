@@ -1,0 +1,29 @@
+@import (reference) "~assets/styles/shared";
+
+.TradingIndicator_arrow_buy_up,
+.TradingIndicator_arrow_buy_down,
+.TradingIndicator_arrow_sell_up,
+.TradingIndicator_arrow_sell_down,
+.TradingIndicator_arrow {
+  border-bottom: 14px solid transparent;
+  border-top: 14px solid transparent;
+  height: 0;
+  padding-left: 1rem;
+  width: 0;
+}
+
+.TradingIndicator_arrow_buy_up {
+  border-left: 14px solid @color-positive;
+}
+
+.TradingIndicator_arrow_buy_down {
+  border-left: 14px solid @color-positive;
+}
+
+.TradingIndicator_arrow_sell_up {
+  border-left: 14px solid @color-negative;
+}
+
+.TradingIndicator_arrow_sell_down {
+  border-left: 14px solid @color-negative;
+}

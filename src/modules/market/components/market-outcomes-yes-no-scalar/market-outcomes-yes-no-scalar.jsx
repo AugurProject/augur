@@ -6,7 +6,7 @@ import { YES_NO } from 'modules/markets/constants/market-types'
 import getValue from 'utils/get-value'
 import CustomPropTypes from 'utils/custom-prop-types'
 import { createBigNumber } from 'utils/create-big-number'
-
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator'
 import Styles from 'modules/market/components/market-outcomes-yes-no-scalar/market-outcomes-yes-no-scalar.styles'
 
 const MarketOutcomes = (p) => {
@@ -50,6 +50,7 @@ const MarketOutcomes = (p) => {
         <span className={Styles['MarketOutcomes__current-denomination']}>
           {lastPriceDenomination}
         </span>
+        <MarketOutcomeTradingIndicator outcome={p.outcomes[0]} />
       </span>
     </div>
   )
