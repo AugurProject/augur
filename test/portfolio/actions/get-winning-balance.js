@@ -70,10 +70,6 @@ describe('modules/portfolio/actions/get-winning-balance.js', () => {
           data: {
             marketsData: {
               '0xdeadbeef': {
-                marketType: 'yesNo',
-                maxPrice: 1,
-                minPrice: 0,
-                numTicks: 10000,
                 outstandingReturns: '0.001',
               },
             },
