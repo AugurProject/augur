@@ -20,7 +20,7 @@ let mainWindow
 
 const augurNodeController = new AugurNodeController()
 const augurUIServer = new AugurUIServer()
-const gethNodeController = new GethNodeController(app.getAppPath())
+const gethNodeController = new GethNodeController()
 
 const path = require('path')
 const url = require('url')

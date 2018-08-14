@@ -1,4 +1,4 @@
-const { ipcMain } = require('electron')
+const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
 const fs = require('fs')
@@ -45,12 +45,12 @@ const PEER_COUNT_REQUEST_OPTIONS = {
   }
 }
 
-function GethNodeController(basePath) {
+function GethNodeController() {
   this.window = null
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
   if (process.platform === 'darwin') os = 'mac'
-  this.gethExecutablePath = path.join(basePath, `resources/${os}/geth`)
+  this.gethExecutablePath = path.join(app.getAppPath(), `resources/${os}/geth`)
   this.gethProcess = null
   this.statusLoop = null
   ipcMain.on('toggleGeth', this.toggle.bind(this))
