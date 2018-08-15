@@ -1,6 +1,6 @@
 const {app, dialog, shell} = require('electron')
 const {autoUpdater} = require('electron-updater')
-const ProgressBar = require('electron-progressbar');
+const ProgressBar = require('electron-progressbar')
 const log = require('electron-log')
 
 const isDev = require('electron-is-dev')
@@ -10,7 +10,7 @@ const downloadAndInstall = () => {
     text: 'Downloading update',
     detail: '0%',
     indeterminate: false,
-  });
+  })
 
   autoUpdater
     .on('download-progress', ({ percent }) => {
@@ -22,13 +22,13 @@ const downloadAndInstall = () => {
       autoUpdater.quitAndInstall()
     })
 
-  autoUpdater.downloadUpdate();
-};
+  autoUpdater.downloadUpdate()
+}
 
 const notifyNoUpdate = () => {
   dialog.showMessageBox({
     message: 'No update is available.',
-  });
+  })
 }
 
 const notifyUpdate = (resolve) => (updateInfo) => {
@@ -44,13 +44,17 @@ const notifyUpdate = (resolve) => (updateInfo) => {
   }, (data) => {
     switch (data) {
       case 2:
-        downloadAndInstall();
-        break;
+        downloadAndInstall()
+        break
       case 0:
-        shell.openExternal('https://github.com/AugurProject/augur-app/releases');
+        shell.openExternal('https://github.com/AugurProject/augur-app/releases')
+        resolve()
+        break
       case 1:
+        resolve()
+        break
       default:
-        resolve();
+        resolve()
     }
   })
 }
@@ -59,7 +63,7 @@ const notifyUpdate = (resolve) => (updateInfo) => {
 autoUpdater.logger = log
 autoUpdater.autoDownload = false
 
-module.exports = (notifyUpdateNotAvailable = false, callBack) => {
+module.exports = (notifyUpdateNotAvailable = false) => {
   if(isDev) return Promise.resolve()
 
   const p = new Promise((resolve) => {
