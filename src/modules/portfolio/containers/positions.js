@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
   const markets = getPositionsMarkets(positions, openOrders)
   // TODO -- getting each section of markets should be it's own call
   const marketsCount = markets.length
-  markets.forEach((market, index) => {
+  markets.forEach((market) => {
     if (market.reportingState === reportingStates.FINALIZED || market.reportingState === reportingStates.AWAITING_FINALIZATION) {
       closedMarkets.push(market)
     } else if (market.reportingState !== reportingStates.PRE_REPORTING) {

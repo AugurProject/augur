@@ -5,6 +5,7 @@ import MarketPortfolioCard from 'modules/market/containers/market-portfolio-card
 import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
 import Paginator from 'modules/common/components/paginator/paginator'
 import Styles from 'modules/portfolio/components/positions-markets-list/positions-markets-list.styles'
+import isEqual from 'lodash/isEqual'
 
 export default class PositionsMarketsList extends Component {
 
@@ -48,16 +49,16 @@ export default class PositionsMarketsList extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (
       this.state.lowerBound !== nextState.lowerBound ||
-      this.state.boundedLength !== nextState.boundedLength
+      this.state.boundedLength !== nextState.boundedLength ||
+      !isEqual(this.props.markets, nextProps.markets)
     ) {
-      this.setFilteredMarkets(nextState.lowerBound, nextState.boundedLength)
+      this.setFilteredMarkets(nextProps.markets, nextState.lowerBound, nextState.boundedLength)
     }
   }
 
-  setFilteredMarkets(lowerBound, boundedLength) {
-    const { markets } = this.props
+  setFilteredMarkets(markets, lowerBound, boundedLength) {
     const itemLength = boundedLength + (lowerBound - 1)
-    const filteredMarkets = markets.slice(lowerBound - 1, itemLength)
+    const filteredMarkets = markets && markets.length > 0 ? markets.slice(lowerBound - 1, itemLength) : []
     this.setState({ filteredMarkets })
   }
 

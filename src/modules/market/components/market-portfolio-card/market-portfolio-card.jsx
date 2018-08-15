@@ -199,7 +199,7 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
                   key={outcome.id + outcome.marketId}
-                  outcomeName={outcome.outcome}
+                  outcomeName={outcome.outcome || outcome.name}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
