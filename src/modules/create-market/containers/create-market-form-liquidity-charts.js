@@ -14,11 +14,11 @@ import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
 import { BID } from 'modules/transactions/constants/types'
 
 const mapStateToProps = (state, ownProps) => {
-  const { newMarket } = state
+  const { newMarket, loginAccount } = state
 
   const selectedOutcome = ownProps.selectedOutcome.toString()
   const orderBook = formatOrderbook(newMarket.orderBook[selectedOutcome] || [])
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook)
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook, null, loginAccount.address)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(
     marketDepth,

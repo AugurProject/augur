@@ -42,7 +42,7 @@ const MarketOutcomeChartsHeaderOrders = p => (
       </div>
       <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
         <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
-          depth
+          my size
         </span>
       </div>
     </div>
