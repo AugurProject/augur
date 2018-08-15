@@ -7,6 +7,8 @@ import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance
 import noop from 'utils/noop'
 import logError from 'utils/log-error'
 
+// Note: the returns: "null" is due to this geth bug: https://github.com/ethereum/go-ethereum/issues/16999. By including this and a hardcoded gas estimate we bypass any eth_call usage and avoid sprurious failures
+
 const CLAIM_SHARES_GAS_COST = 3000000
 
 const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getState) => {
