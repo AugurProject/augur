@@ -9,8 +9,8 @@ function calculateMySize(openOrders, loginAccount, price) {
     const accountOrdersInPrice = (Object.keys(openOrders) || []).filter(key => openOrders[key].owner === loginAccount && openOrders[key].fullPrecisionPrice === price.fullPrecision)
     let total = createBigNumber(0)
     for (let i = 0; i < accountOrdersInPrice.length; i++) {
-      if (openOrders[accountOrdersInPrice]) {
-        total = total.plus(openOrders[accountOrdersInPrice].fullPrecisionAmount)
+      if (openOrders[accountOrdersInPrice[i]]) {
+        total = total.plus(openOrders[accountOrdersInPrice[i]].fullPrecisionAmount)
       }
     }
     return total.eq(ZERO) ? null : formatEther(total)
