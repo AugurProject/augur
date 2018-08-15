@@ -461,10 +461,10 @@ export const Notifications = unseenCount => (
           <path d="M18.3389,17.4491 C16.5789,14.4471 15.2629,11.4471 15.4209,8.4471 C15.5789,5.4471 12.7349,2.4471 9.4209,2.4471 C6.1069,2.4471 3.2469,5.1381 3.4209,8.4471 C3.5789,11.4471 2.5789,14.4471 0.5789,17.4471 C-1.4211,20.4471 20.0989,20.4501 18.3389,17.4491 Z" id="Stroke-5" />
         </g>
         {!!unseenCount &&
-        <g id="Group-14" transform="translate(1.000000, 2.000000)">
+        <g id="Group-14" transform="translate(1.000000, 2.000000)" text-anchor="middle">
           <ellipse id="Oval" fill="#FFFFFF" cx="6.4591451" cy="7.00261291" rx="6.4591451" ry="6.43043779" />
           <text id="1" fontFamily="roboto-Bold, roboto" fontSize="8" fontWeight="bold" fill="#341D53">
-            <tspan x="4.01902362" y="10.0428031">{unseenCount}</tspan>
+            <tspan x="6.01902362" y="10.0428031">{unseenCount}</tspan>
           </text>
         </g>
         }
