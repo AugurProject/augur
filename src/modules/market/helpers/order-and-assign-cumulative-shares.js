@@ -1,19 +1,19 @@
 import memoize from 'memoizee'
-
+import { createBigNumber } from 'utils/create-big-number'
+import { ZERO } from 'modules/trade/constants/numbers'
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
-import { createBigNumber } from 'src/utils/create-big-number'
 import { formatEther } from 'utils/format-number'
 
 function calculateMySize(openOrders, loginAccount, price) {
   if (openOrders) {
     const accountOrdersInPrice = (Object.keys(openOrders) || []).filter(key => openOrders[key].owner === loginAccount && openOrders[key].fullPrecisionPrice === price.fullPrecision)
-    let total = 0
+    let total = createBigNumber(0)
     for (let i = 0; i < accountOrdersInPrice.length; i++) {
       if (openOrders[accountOrdersInPrice]) {
-        total += openOrders[accountOrdersInPrice].fullPrecisionAmount
+        total = total.plus(openOrders[accountOrdersInPrice].fullPrecisionAmount)
       }
     }
-    return total === 0 ? null : formatEther(total)
+    return total.eq(ZERO) ? null : formatEther(total)
   }
   return null
 }
