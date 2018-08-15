@@ -103,6 +103,11 @@ class MarketTradingWrapper extends Component {
         marketQuantity: '',
         doNotCreateOrders: false,
       })
+      this.props.updateSelectedOrderProperties({
+        orderPrice: '',
+        orderQuantity: '',
+        doNotCreateOrders: false,
+      })
     } else {
       this.setState({ currentPage: newPage })
     }
