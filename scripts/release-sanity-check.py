@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import getpass
 import hashlib
 import os
 import requests
@@ -17,8 +18,16 @@ try:
     GH_TOKEN = os.environ['GH_TOKEN']
 except KeyError:
     print('no github token')
+    print('export GH_TOKEN=${token}')
     print('https://github.com/settings/tokens')
     sys.exit(0)
+
+try:
+    import gnupg
+    HAS_GPG = True
+except ImportError:
+    print('python-gnupg not found')
+    print('pip3 install python-gnupg')
 
 headers = {"Authorization": "token " + GH_TOKEN}
 
@@ -60,6 +69,10 @@ def assets_for_version(releases, version):
             return release['assets']
 
 
+def gpg_sanity_check():
+    pass
+
+
 # main starts here for now
 signal.signal(signal.SIGINT, signal_handler)
 
@@ -97,6 +110,7 @@ for asset in assets:
                 break
             r.raise_for_status()
             comparison[x]['sha'] = sha = hashlib.sha256(r.content).hexdigest()
+            comparison[x]['file'] = asset['name']
         if asset['name'].endswith('{}.sha256'.format(x)):
             print(asset['name'])
             if x not in comparison:
@@ -111,13 +125,18 @@ for asset in assets:
             shasum = r.text.split(' ')[0]
             comparison[x]['shasum'] = shasum
 
-
+message_to_sign = ''
 for file, v in comparison.items():
     sha = str(v['sha'])
     shasum = str(v['shasum'])
+    filename = str(v['file'])
     if sha == shasum:
         color = colors.OKGREEN
     else:
         color = colors.RED
+    message_to_sign += '{shasum} {filename}\n'.format(shasum=shasum, filename=filename)
     print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
+
+print('going to sign this: ')
+print(message_to_sign)
 
