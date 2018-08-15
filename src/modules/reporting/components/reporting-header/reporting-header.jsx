@@ -106,8 +106,8 @@ export default class ReportingHeader extends Component {
       width: `${((totalHours - hoursLeft) / totalHours) * 100}%`,
     }
 
-    let timeLeft = `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`
-    if (daysLeft === 0) timeLeft = `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'}`
+    let timeLeft = `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`
+    if (daysLeft === 0) timeLeft = `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'} left`
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -251,7 +251,7 @@ export default class ReportingHeader extends Component {
                   </div>
                 </div>
                 <div className={Styles.ReportingHeader__daysLeft}>
-                  <span data-testid="daysLeft">{ timeLeft } left</span>
+                  <span data-testid="daysLeft">{ timeLeft }</span>
                 </div>
               </div>
             }
