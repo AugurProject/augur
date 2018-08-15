@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const selectedOutcome = ownProps.selectedOutcome.toString()
   const orderBook = formatOrderbook(newMarket.orderBook[selectedOutcome] || [])
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook)
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(orderBook, selectedOutcome.userOpenOrders)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(
     marketDepth,
