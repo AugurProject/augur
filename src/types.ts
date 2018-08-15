@@ -197,7 +197,12 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
 
 export interface SearchRow {
   marketId: Address;
-  content: string;
+  category: string;
+  tags: string|null;
+  shortDescription: string;
+  longDescription?: string|null;
+  scalarDenomination?: string|null;
+  resolutionSource?: string|null;
 }
 
 export interface PositionsRow<BigNumberType> {
@@ -440,7 +445,7 @@ export interface UITrade {
   type: string;
   price: string;
   amount: string;
-  maker: boolean;
+  maker: boolean|null;
   selfFilled: boolean;
   marketCreatorFees: string;
   reporterFees: string;
@@ -552,6 +557,7 @@ export interface UIReport<BigNumberType> {
 
 export interface FeeWindowRow {
   feeWindow: Address;
+  feeToken: Address;
   feeWindowId: number;
   universe: Address;
   startTime: number;
