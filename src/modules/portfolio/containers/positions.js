@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
     }
   })
 
-  const orderdClosedMarkets = orderBy(closedMarkets, ['reportingState', 'endTime.timestamp'], ['asc', 'desc'])
+  const orderdClosedMarkets = orderBy(closedMarkets, ['endTime.timestamp'], ['desc'])
 
   return {
     currentTimestamp: selectCurrentTimestamp(state),
