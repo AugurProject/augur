@@ -32,6 +32,7 @@
 
 .TopBar__notifications {
   color: @color-white;
+  margin: auto;
 }
 
 .TopBar__notification-icon {
@@ -58,6 +59,16 @@
   line-height: @font-size-medium;
   margin: -2px 0.625rem 0 0;
   text-transform: uppercase;
+}
+
+@media @breakpoint-small-desktop {
+  .TopBar {
+    padding-left: 16rem;
+  }
+
+  .TopBar__stat {
+    margin: 0 0.8rem;
+  }
 }
 
 @media @breakpoint-mobile {
