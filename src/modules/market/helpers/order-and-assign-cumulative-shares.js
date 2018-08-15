@@ -13,7 +13,7 @@ const orderAndAssignCumulativeShares = memoize((orderBook, userOpenOrders) => {
         price: order.price,
         shares: order.shares,
         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares.plus(order.shares.fullPrecision) : createBigNumber(order.shares.fullPrecision),
-        mySize: userOpenOrders[i] && userOpenOrders[i].unmatchedShares,
+        mySize: userOpenOrders ? userOpenOrders[i] && userOpenOrders[i].unmatchedShares : order.shares,
       },
     ], [])
 
@@ -26,7 +26,7 @@ const orderAndAssignCumulativeShares = memoize((orderBook, userOpenOrders) => {
         price: order.price,
         shares: order.shares,
         cumulativeShares: p[i - 1] != null ? p[i - 1].cumulativeShares.plus(order.shares.fullPrecision) : createBigNumber(order.shares.fullPrecision),
-        mySize: userOpenOrders[i] && userOpenOrders[i].unmatchedShares,
+        mySize: userOpenOrders ? userOpenOrders[i] && userOpenOrders[i].unmatchedShares : order.shares,
       },
     ], [])
     .sort((a, b) => b.price.value - a.price.value)
