@@ -6,7 +6,7 @@ import getValue from 'src/utils/get-value'
 import insufficientFunds from 'src/modules/create-market/utils/insufficient-funds'
 
 import { formatEtherEstimate, formatGasCostToEther } from 'utils/format-number'
-import { EXPIRY_SOURCE_GENERIC } from 'modules/create-market/constants/new-market-constraints'
+import { EXPIRY_SOURCE_GENERIC, DESIGNATED_REPORTER_SELF } from 'modules/create-market/constants/new-market-constraints'
 
 import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
 import Styles from 'modules/create-market/components/create-market-form-review/create-market-form-review.styles'
@@ -163,6 +163,17 @@ export default class CreateMarketReview extends Component {
                 newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC ?
                   'General knowledge' :
                   `Outcome will be detailed on public website: ${newMarket.expirySource}`
+              }
+            </p>
+          </div>
+          <div className={Styles.CreateMarketReview_spacer} />
+          <div className={Styles.CreateMarketReview__designated_report}>
+            <h4 className={Styles.CreateMarketReview__smallheading}>Designated Reporter</h4>
+            <p className={Styles.CreateMarketReview__smallparagraph}>
+              {
+                newMarket.designatedReporterType === DESIGNATED_REPORTER_SELF ?
+                  'Myself' :
+                  `Someone Else: ${newMarket.designatedReporterAddress}`
               }
             </p>
           </div>
