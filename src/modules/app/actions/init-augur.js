@@ -29,6 +29,7 @@ import {
   MODAL_NETWORK_DISABLED
 } from "modules/modal/constants/modal-types";
 import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
+import { windowRef } from "src/utils/window-ref";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 3000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 3000;
@@ -38,8 +39,6 @@ const NETWORK_NAMES = {
   4: "Rinkeby",
   12346: "Private"
 };
-
-const windowRef = typeof window === "undefined" ? {} : window;
 
 function pollForAccount(dispatch, getState) {
   const { env } = getState();
