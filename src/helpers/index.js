@@ -12,7 +12,7 @@ import { formatRep, formatEther } from 'utils/format-number'
 import getRep from 'modules/account/actions/get-rep'
 import { augur } from 'services/augurjs'
 import getMarketDisputeOutcomes from 'modules/reporting/selectors/select-market-dispute-outcomes'
-import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
+import { getDaysRemaining, getHoursRemaining, convertUnixToFormattedDate } from 'utils/format-date'
 
 const localStorageRef = typeof window !== 'undefined' && window.localStorage
 
@@ -68,7 +68,7 @@ const getMarketCosts = (callback = logError) => (dispatch) => {
 }
 
 const getDaysRemainingTime = (endTime, startTime, callback = logError) => dispatch => callback(getDaysRemaining(endTime, startTime))
-
+const getHoursRemainingTime = (endTime, startTime, callback = logError) => dispatch => callback(getHoursRemaining(endTime, startTime))
 const convertUnixToFormattedDateTime = (date, callback = logError) => dispatch => callback(convertUnixToFormattedDate(date))
 
 const getReportingWindowStats = () => {
@@ -113,6 +113,7 @@ export const helpers = (store) => {
     getMarketDisputeOutcomes: () => getMarketDisputeOutcomes(),
     getReportingWindowStats: () => getReportingWindowStats(),
     getDaysRemaining: (endTime, startTime) => new Promise(resolve => dispatch(getDaysRemainingTime(endTime, startTime, resolve))),
+    getHoursRemaining: (endTime, startTime) => new Promise(resolve => dispatch(getHoursRemainingTime(endTime, startTime, resolve))),
     convertUnixToFormattedDate: date => new Promise(resolve => dispatch(convertUnixToFormattedDateTime(date, resolve))),
   }
 }
