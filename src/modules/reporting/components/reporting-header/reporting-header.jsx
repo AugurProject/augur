@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import { getDaysRemaining, convertUnixToFormattedDate } from 'utils/format-date'
+import { getDaysRemaining, convertUnixToFormattedDate, getHoursRemaining } from 'utils/format-date'
 import { formatAttoRep, formatAttoEth } from 'utils/format-number'
 import Styles from 'modules/reporting/components/reporting-header/reporting-header.styles'
 import { MODAL_PARTICIPATE } from 'modules/modal/constants/modal-types'
@@ -89,7 +89,8 @@ export default class ReportingHeader extends Component {
       isForkingMarketFinalized,
       isLogged,
     } = this.props
-    const totalDays = getDaysRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
+    const totalHours = getHoursRemaining(reportingWindowStats.endTime, reportingWindowStats.startTime)
+    const hoursLeft = getHoursRemaining(reportingWindowStats.endTime, currentTime)
     const daysLeft = getDaysRemaining(reportingWindowStats.endTime, currentTime)
     const formattedDate = convertUnixToFormattedDate(reportingWindowStats.endTime)
     const disableParticipate = (repBalance === '0')
@@ -102,8 +103,11 @@ export default class ReportingHeader extends Component {
     const feeWindowRepStaked = formatAttoRep(reportingWindowStats.feeWindowRepStaked, { decimals: 4, denomination: ' REP' }).formattedValue || 0
 
     const currentPeriodStyle = {
-      width: `${((totalDays - daysLeft) / totalDays) * 100}%`,
+      width: `${((totalHours - hoursLeft) / totalHours) * 100}%`,
     }
+
+    let timeLeft = `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left`
+    if (daysLeft === 0) timeLeft = `${hoursLeft} ${hoursLeft === 1 ? 'hour' : 'hours'} left`
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -247,7 +251,7 @@ export default class ReportingHeader extends Component {
                   </div>
                 </div>
                 <div className={Styles.ReportingHeader__daysLeft}>
-                  <span data-testid="daysLeft">{ daysLeft } {daysLeft === 1 ? 'day' : 'days'} left</span>
+                  <span data-testid="daysLeft">{ timeLeft }</span>
                 </div>
               </div>
             }

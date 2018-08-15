@@ -161,8 +161,15 @@ describe("Disputing", () => {
       daysLeft = await page.evaluate((endTime, startTime) => window.integrationHelpers.getDaysRemaining(endTime, startTime), reportingWindowStats.endTime, currentTimestamp);
       const denomination = daysLeft === 1 ? ' day' : ' days'
 
-      // check that days left is expected number
-      await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeft + denomination + ' left', timeout: BIG_TIMEOUT});
+      if (daysLeft === 0) {
+        const hoursLeft = await page.evaluate((endTime, startTime) => window.integrationHelpers.getHoursRemaining(endTime, startTime), reportingWindowStats.endTime, currentTimestamp);
+        denomination = hoursLeft === 1 ? ' hour' : ' hours'
+        // check that days left is expected number
+        await expect(page).toMatchElement("[data-testid='daysLeft']", {text: hoursLeft + denomination + ' left', timeout: SMALL_TIMEOUT});
+      } else {
+        // check that days left is expected number
+        await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeft + denomination + ' left', timeout: SMALL_TIMEOUT});
+      }
     });
 
     it("should have days remaining increment properly", async () => {
@@ -171,8 +178,18 @@ describe("Disputing", () => {
       const daysLeftIncr = daysLeft === 0 ? 6 : daysLeft - 1;
       const denomination = daysLeftIncr === 1 ? ' day' : ' days'
 
+      if (daysLeftIncr === 0) {
+        let currentTimestamp = await page.evaluate(() => window.integrationHelpers.getCurrentTimestamp());
+        currentTimestamp = currentTimestamp / 1000
+        daysLeftIncr = await page.evaluate((endTime, startTime) => window.integrationHelpers.getHoursRemaining(endTime, startTime), reportingWindowStats.endTime, currentTimestamp);
+        denomination = daysLeftIncr === 1 ? ' hour' : ' hours';
+      } else if (daysLeftIncr === 6) {
+        daysLeftIncr = 0;
+        denomination = ' hours';
+      }
+
       // check that days left is previous calculation - time pushed
-      await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeftIncr + denomination + ' left', timeout: BIG_TIMEOUT});
+      await expect(page).toMatchElement("[data-testid='daysLeft']", {text: daysLeftIncr + denomination + ' left', timeout: SMALL_TIMEOUT});
     });
 
     it("should have correct end date", async () => {
