@@ -67,7 +67,7 @@ class MarketTradingWrapper extends Component {
     }
     if (this.props.selectedOutcome === null) return this.clearOrderForm()
     if (this.props.selectedOutcome && this.props.selectedOutcome.name !== nextProps.selectedOutcome.name) {
-      return this.clearOrderForm()
+      this.setState({ currentPage: 0 })
     }
     const nextTotalCost = createBigNumber(nextProps.selectedOutcome.trade.totalCost.formattedValue, 10)
     const nextShareCost = createBigNumber(nextProps.selectedOutcome.trade.shareCost.formattedValue, 10)
@@ -101,6 +101,11 @@ class MarketTradingWrapper extends Component {
         orderShareEstimate: '0',
         marketOrderTotal: '',
         marketQuantity: '',
+        doNotCreateOrders: false,
+      })
+      this.props.updateSelectedOrderProperties({
+        orderPrice: '',
+        orderQuantity: '',
         doNotCreateOrders: false,
       })
     } else {
