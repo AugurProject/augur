@@ -81,10 +81,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)),
           volume: ZERO,
         });
-        const fullTextStringInsert: SearchRow = {
-          marketId: marketsDataToInsert.marketId,
-          content: contentSearchBuilder(marketsDataToInsert),
-        };
+        const marketSearchDataToInsert: SearchRow = contentSearchBuilder(marketsDataToInsert);
         const tokensDataToInsert: Partial<TokensRow> = {
           marketId: log.market,
           symbol: "shares",
@@ -104,7 +101,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
               db.insert(marketsDataToInsert).into("markets").asCallback(next);
             },
             (next: AsyncCallback): void => {
-              db.raw("insert into search_en(marketId, content) values( ?, ? )", [fullTextStringInsert.marketId, fullTextStringInsert.content]).asCallback(next);
+              db.insert(marketSearchDataToInsert).into("search_en").asCallback(next);
             },
             (next: AsyncCallback): void => {
               db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).asCallback(next);
