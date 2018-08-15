@@ -8,7 +8,7 @@ import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { MarketType, WEI_PER_ETHER, ZERO } from "../../constants";
+import { MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -114,7 +114,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             },
           ], (err: Error|null): void => {
             if (err) return callback(err);
-            augurEmitter.emit("MarketCreated", Object.assign(
+            augurEmitter.emit(SubscriptionEventNames.MarketCreated, Object.assign(
               { creationTime: getCurrentTime() },
               log,
               marketsDataToInsert));
@@ -149,7 +149,7 @@ export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: Form
     },
   ], (err) => {
     if (err) callback(err);
-    augurEmitter.emit("MarketCreated", log);
+    augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
     callback(null);
   });
 }
