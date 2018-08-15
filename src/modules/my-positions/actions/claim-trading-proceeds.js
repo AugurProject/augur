@@ -19,7 +19,7 @@ const claimTradingProceeds = (marketIds, callback = logError) => (dispatch, getS
   if (markets.length > 0) {
     each(markets, (marketId) => {
       augur.api.ClaimTradingProceeds.claimTradingProceeds({
-        tx: { gas: CLAIM_SHARES_GAS_COST, returns: "null" },
+        tx: { gas: CLAIM_SHARES_GAS_COST, returns: 'null' },
         meta: loginAccount.meta,
         _market: marketId,
         _shareHolder: loginAccount.address,
