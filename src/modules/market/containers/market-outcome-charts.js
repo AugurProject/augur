@@ -16,11 +16,12 @@ import { selectCurrentTimestampInSeconds } from 'src/select-state'
 
 const mapStateToProps = (state, ownProps) => {
   const market = selectMarket(ownProps.marketId)
+  const userOrders = state.orderBooks[ownProps.marketId] && state.orderBooks[ownProps.marketId][ownProps.selectedOutcome]
   const minPrice = market.minPrice || createBigNumber(0)
   const maxPrice = market.maxPrice || createBigNumber(0)
   const outcome = (market.outcomes || []).find(outcome => outcome.id === ownProps.selectedOutcome) || {}
   const priceTimeSeries = outcome.priceTimeSeries || []
-  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook, outcome.userOpenOrders)
+  const cumulativeOrderBook = orderAndAssignCumulativeShares(outcome.orderBook, userOrders, state.loginAccount.address)
   const marketDepth = orderForMarketDepth(cumulativeOrderBook)
   const orderBookKeys = getOrderBookKeys(marketDepth, minPrice, maxPrice)
   return {
