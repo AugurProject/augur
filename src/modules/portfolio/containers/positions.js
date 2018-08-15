@@ -18,11 +18,8 @@ const mapStateToProps = (state) => {
   const orphanedOrders = selectOrphanOrders(state)
   const orphanedMarkets = []
   for (let i = 0; i < orphanedOrders.length; i++) {
-    const orphanedMarket = selectMarket(orphanedOrders[i].marketId)
-    orphanedMarket.id = orphanedOrders[i].marketId
-    orphanedMarkets.push(orphanedMarket)
+    orphanedMarkets.push(selectMarket(orphanedOrders[i].marketId))
   }
-  console.log(orphanedMarkets)
   const reportingStates = constants.REPORTING_STATE
   const openPositionMarkets = []
   const reportingMarkets = []
