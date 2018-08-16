@@ -12,7 +12,7 @@ win:
 linux:
   target:
   - deb
-  - snap
+  - AppImage
   category: Office
   icon: build/icon.png
 artifactName: "${os}-${productName}-${version}.${ext}"
