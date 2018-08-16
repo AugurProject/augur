@@ -4,6 +4,7 @@ import { checkAccountAllowance } from 'modules/auth/actions/approve-account'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { updateAssets } from 'modules/auth/actions/update-assets'
 import { loadReportingWindowBounds } from 'modules/reporting/actions/load-reporting-window-bounds'
+import { clearOrphanedOrderData } from 'modules/orphaned-orders/actions'
 
 import getValue from 'utils/get-value'
 import logError from 'utils/log-error'
@@ -12,6 +13,7 @@ export const loadAccountData = (account, callback = logError) => (dispatch) => {
   const address = getValue(account, 'address')
   if (!address) return callback('account address required')
   dispatch(loadAccountDataFromLocalStorage(account.address))
+  dispatch(clearOrphanedOrderData())
   dispatch(updateLoginAccount(account))
   dispatch(loadAccountTrades())
   dispatch(checkAccountAllowance())
