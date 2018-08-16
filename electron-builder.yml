@@ -15,7 +15,7 @@ linux:
   asar: false
   target:
   - deb
-  - snap
+  - AppImage
   category: Office
   icon: build/icon.png
 appId: "net.augur.augur"
