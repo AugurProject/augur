@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 
 import Styles from 'modules/account/components/account-universes/account-universes.styles'
 import AccountUniverseDescription from '../account-universe-description/account-universe-description'
+import { formatAttoRep } from 'utils/format-number'
+import { orderBy } from 'lodash'
 
 export default class AccountUniverses extends Component {
 
@@ -37,6 +39,8 @@ export default class AccountUniverses extends Component {
       getUniverses,
     } = this.props
     getUniverses((universesInfo) => {
+      universesInfo.children.forEach(c => c.totalRep = formatAttoRep(c.supply, { decimals: 2, roundUp: true }).formattedValue)
+      universesInfo.children = orderBy(universesInfo.children, ['totalRep'], ['desc'])
       this.setState({
         universesInfo,
       })
