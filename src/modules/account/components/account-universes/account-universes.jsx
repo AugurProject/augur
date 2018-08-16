@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { orderBy } from 'lodash'
+import { formatAttoRep } from 'utils/format-number'
 import Styles from 'modules/account/components/account-universes/account-universes.styles'
 import AccountUniverseDescription from '../account-universe-description/account-universe-description'
 
@@ -37,6 +39,21 @@ export default class AccountUniverses extends Component {
       getUniverses,
     } = this.props
     getUniverses((universesInfo) => {
+
+      const children = universesInfo.children.map(c => ({
+        ...c,
+        totalRep: formatAttoRep(c.supply, { decimals: 2, roundUp: true }).formattedValue,
+      }))
+      universesInfo.children = orderBy(children, ['totalRep'], ['desc'])
+
+
+      const currentLevel = universesInfo.currentLevel.map(c => ({
+        ...c,
+        totalRep: formatAttoRep(c.supply, { decimals: 2, roundUp: true }).formattedValue,
+      }))
+      universesInfo.currentLevel = orderBy(currentLevel, ['totalRep'], ['desc'])
+
+
       this.setState({
         universesInfo,
       })
