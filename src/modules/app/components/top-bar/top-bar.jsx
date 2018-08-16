@@ -57,7 +57,10 @@ const TopBar = props => (
               props.toggleNotifications()
             }}
           >
-            {Notifications(props.unseenCount)}
+            { props.unseenCount > 99 ?
+              Notifications('99+', '7.4591451')
+              : Notifications(props.unseenCount, '6.4591451')
+            }
           </button>
         </div>
       </div>
