@@ -1,0 +1,24 @@
+version: '3'
+services:
+  server:
+    image: minio/minio
+    ports:
+    - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: FXX4WBKC65J15KP993DP
+      MINIO_SECRET_KEY: xk2VJezDOsR5xlhM9f4osqyTPnLujE0WbHv0h4WY
+    command: server /data
+
+  setup:
+    image: minio/mc
+    entrypoint: >
+      /bin/sh -xc "
+      /usr/bin/mc config host add myminio http://server:9000 FXX4WBKC65J15KP993DP xk2VJezDOsR5xlhM9f4osqyTPnLujE0WbHv0h4WY;
+      sleep 3s;
+      /usr/bin/mc mb myminio/augur-app;
+      /usr/bin/mc policy public myminio/augur-app;
+      "
+    depends_on:
+      - server
+    environment:
+      MC_HOSTS_server: https://FXX4WBKC65J15KP993DP:zuf+xk2VJezDOsR5xlhM9f4osqyTPnLujE0WbHv0h4WY@server:9000

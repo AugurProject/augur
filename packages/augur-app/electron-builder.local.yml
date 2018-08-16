@@ -1,0 +1,24 @@
+---
+files:
+- "!certs/*"
+mac:
+  target:
+  - default
+  icon: build/icon.png
+win:
+  target:
+  - nsis
+  icon: build/icon.png
+linux:
+  target:
+  - deb
+  - snap
+  category: Office
+  icon: build/icon.png
+artifactName: "${os}-${productName}-${version}.${ext}"
+npmRebuild: false
+# This will publish the generated artifact to the endpoint brought by running 'npm run minio:spin-up'
+publish:
+  bucket: "augur-app"
+  endpoint: "http://localhost:9000"
+  provider: s3

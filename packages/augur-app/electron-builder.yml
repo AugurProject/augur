@@ -1,0 +1,24 @@
+---
+files:
+- "!certs/*"
+mac:
+  asar: false
+  target:
+  - default
+  icon: build/icon.png
+win:
+  asar: false
+  target:
+  - nsis
+  icon: build/icon.png
+linux:
+  asar: false
+  target:
+  - deb
+  - AppImage
+  category: Office
+  icon: build/icon.png
+appId: "net.augur.augur"
+artifactName: "${os}-${productName}-${version}.${ext}"
+publish:
+  provider: github

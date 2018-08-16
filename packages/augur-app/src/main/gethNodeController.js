@@ -1,4 +1,4 @@
-const { ipcMain } = require('electron')
+const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
 const fs = require('fs')
@@ -50,7 +50,7 @@ function GethNodeController() {
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
   if (process.platform === 'darwin') os = 'mac'
-  this.gethExecutablePath = `resources/${os}/geth`
+  this.gethExecutablePath = path.join(app.getAppPath(), `resources/${os}/geth`)
   this.gethProcess = null
   this.statusLoop = null
   ipcMain.on('toggleGeth', this.toggle.bind(this))
@@ -71,8 +71,16 @@ GethNodeController.prototype.start = function (event) {
   if (!fs.existsSync(gethPath)) {
     fs.mkdirSync(gethPath)
   }
-  const staticNodesPath = path.join(gethPath, 'static-nodes.json')
-  fs.writeFileSync(staticNodesPath, JSON.stringify(PEER_NODES, null, 4))
+
+  const gethGetPath = path.join(appDataPath, 'geth', 'geth')
+  if (!fs.existsSync(gethGetPath)) {
+    fs.mkdirSync(gethGetPath)
+  }
+  const staticNodesPath = path.join(gethGetPath, 'static-nodes.json')
+  if (!fs.existsSync(staticNodesPath)) {
+    fs.writeFileSync(staticNodesPath, JSON.stringify(PEER_NODES, null, 4))
+  }
+
   this.gethProcess = spawn(this.gethExecutablePath, [
     '--syncmode=light',
     '--cache=512',
