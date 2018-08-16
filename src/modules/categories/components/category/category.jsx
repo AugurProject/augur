@@ -65,6 +65,7 @@ export default class Category extends Component {
           }),
         }}
         className={isNullCategory ? Styles['Category__link-hidden'] : Styles.Category__link}
+        title={category.toUpperCase()}
       >
         <div
           ref={(categoryNameContainer) => { this.categoryNameContainer = categoryNameContainer }}
