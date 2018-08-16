@@ -26,6 +26,7 @@ export const selectLoginAccountState = state => state.loginAccount
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees
 export const selectMarketLoadingState = state => state.marketLoading
 export const selectMarketReportState = state => state.marketReportState
+export const selectMarketTradingHistory = state => state.tradingHistory
 export const selectMarketsDataState = state => state.marketsData
 export const selectMarketsFilteredSorted = state => state.marketsFilteredSorted
 export const selectModal = state => state.modal

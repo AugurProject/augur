@@ -2,6 +2,7 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks'
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
 import { loadPriceHistory } from 'modules/market/actions/load-price-history'
+import { loadMarketTradingHistory } from 'modules/market/actions/load-market-trading-history'
 import { updateMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading'
 import logError from 'utils/log-error'
 
@@ -31,6 +32,7 @@ export const loadMarketDetails = (marketId, callback = logError) => dispatch => 
       dispatch(loadPriceHistory({ marketId }, (err) => {
         if (err) return loadingError(dispatch, callback, err, marketId)
         dispatch(updateMarketLoading({ [marketId]: MARKET_FULLY_LOADED }))
+        dispatch(loadMarketTradingHistory({ marketId }))
         callback(null)
       }))
     }))

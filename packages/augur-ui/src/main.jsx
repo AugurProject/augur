@@ -11,8 +11,6 @@ import MainErrorBoundary from 'modules/common/components/main-error-boundary/mai
 import store from 'src/store'
 
 import { augur } from 'services/augurjs'
-// require('core-js/fn/array/find')
-// require('core-js/fn/string/starts-with')
 
 window.augur = augur
 console.log(`
@@ -47,19 +45,6 @@ function render(Root) {
 }
 
 handleRender()
-
-if (module.hot) {
-  module.hot.accept(
-    [
-      './modules/app/actions/init-augur',
-      './modules/app/containers/app',
-      './select-state',
-    ],
-    () => {
-      handleRender()
-    },
-  )
-}
 
 function handleRender() {
   const UpdatedRoot = require('modules/app/containers/app').default

@@ -26,12 +26,13 @@ const BaseInnerNavPure = ({ isMobile, menuItems=[], submenuItems=[], subMenuScal
       <Link
         to={item.link}
         onClick={item.onClick}
+        title={item.label}
       >
         {item.label}
       </Link>
       }
       {!item.link &&
-      <button onClick={item.onClick} className={item.label}>
+      <button onClick={item.onClick} className={item.label} title={item.label.toUpperCase()}>
         {item.label}
       </button>
       }

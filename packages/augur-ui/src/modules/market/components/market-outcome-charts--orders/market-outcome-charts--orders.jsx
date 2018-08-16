@@ -153,7 +153,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: BUY,
                   })}
                 >
-                  <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
+                  <span>{order.mySize ? order.mySize.value.toFixed(fixedPrecision).toString() : '—'}</span>
                 </button>
               </div>
             ))}
@@ -224,7 +224,7 @@ export default class MarketOutcomeChartsOrders extends Component {
                     selectedNav: SELL,
                   })}
                 >
-                  <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
+                  <span>{order.mySize ? order.mySize.value.toFixed(fixedPrecision).toString() : '—'}</span>
                 </button>
               </div>
             ))}
@@ -243,7 +243,7 @@ export default class MarketOutcomeChartsOrders extends Component {
           </div>
           <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
             <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
-              depth
+              my size
             </span>
           </div>
         </div>

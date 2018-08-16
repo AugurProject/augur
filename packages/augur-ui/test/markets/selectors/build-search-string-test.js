@@ -30,13 +30,25 @@ describe('modules/markets/selectors/build-search-string.js', () => {
 
   it('add keyword in search', () => {
     const actual = buildSearchString('suez', [])
-    const expected = 'suez'
+    const expected = 'suez*'
+    assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
+  })
+
+  it('add partial keyword and tag', () => {
+    const actual = buildSearchString('bobo', ['tag1'])
+    const expected = 'tag1 OR bobo*'
     assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
   })
 
   it('add keyword and tag', () => {
-    const actual = buildSearchString('bobo', ['tag1'])
+    const actual = buildSearchString('bobo ', ['tag1'])
     const expected = 'tag1 OR bobo'
+    assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
+  })
+
+  it('add keyword phrase', () => {
+    const actual = buildSearchString('"bobo walked to town"', [])
+    const expected = '"bobo walked to town"'
     assert.deepEqual(actual, expected, `Didn't return the expected updated value`)
   })
 })

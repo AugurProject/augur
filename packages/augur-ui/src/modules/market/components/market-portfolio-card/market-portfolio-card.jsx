@@ -41,7 +41,7 @@ export default class MarketPortfolioCard extends Component {
     this.state = {
       tableOpen: {
         myPositions: this.props.positionsDefault,
-        openOrders: false,
+        openOrders: props.orphanedOrders.length > 0, // open if orphaned orders are present
       },
     }
   }
@@ -83,7 +83,7 @@ export default class MarketPortfolioCard extends Component {
         buttonAction = this.claimProceeds
         break
       case TYPE_FINALIZE_MARKET:
-        localButtonText = 'Calculate Payout'
+        localButtonText = 'Finalize Market'
         buttonAction = this.finalizeMarket
         break
       default:
@@ -199,7 +199,7 @@ export default class MarketPortfolioCard extends Component {
               { this.state.tableOpen.myPositions && (myPositionOutcomes || []).filter(outcome => outcome.position).map(outcome => (
                 <MarketPositionsListPosition
                   key={outcome.id + outcome.marketId}
-                  outcomeName={outcome.outcome}
+                  outcomeName={outcome.outcome || outcome.name}
                   position={outcome.position}
                   openOrders={outcome.userOpenOrders ? outcome.userOpenOrders.filter(order => order.id === outcome.position.id && order.pending) : []}
                   isExtendedDisplay
@@ -213,7 +213,7 @@ export default class MarketPortfolioCard extends Component {
         </section>
         <section className={Styles.MarketCard__tablesection}>
           <div className={PositionStyles.MarketPositionsList__table}>
-            {(myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 &&
+            {((myPositionOutcomes || []).filter(outcome => outcome.userOpenOrders.length > 0).length > 0 || orphanedOrders.length > 0) &&
               <button
                 className={Styles.MarketCard__headingcontainer}
                 onClick={() => this.toggleTable('openOrders')}

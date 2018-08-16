@@ -25,11 +25,16 @@
       margin-bottom: 2rem;
 
       > p {
+        display: inline-block;
         margin: 0;
+        margin-bottom: 0.5rem;
+      }
 
-        &:not(:first-child) {
-          margin-top: 0.5rem;
-        }
+      > svg {
+        margin: -0.1rem 0.2rem 0;
+        max-height: 1rem;
+        max-width: 1rem;
+        vertical-align: top;
       }
     }
 
@@ -204,4 +209,8 @@
   .TradingForm__static-field {
     color: @color-white;
   }
+}
+
+.TradingForm__error-message p:not(:first-of-type) {
+  margin-left: 1.65rem !important;
 }

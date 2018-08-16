@@ -87,7 +87,7 @@ export default class MarketPositionsList extends Component {
                 ))}
               </div>
             }
-            { openOrders.length > 0 &&
+            { (openOrders.length > 0 || orphanedOrders.length > 0) &&
               <ul className={Styles['MarketPositionsList__table-header']}>
                 <li>Open Orders</li>
                 <li />
@@ -98,7 +98,7 @@ export default class MarketPositionsList extends Component {
                 <li><span>Action</span></li>
               </ul>
             }
-            { openOrders.length > 0 &&
+            { (openOrders.length > 0 || orphanedOrders.length > 0) &&
               <div className={Styles['MarketPositionsList__table-body']}>
                 { openOrders.map((order, i) => (
                   <MarketPositionsListOrder
@@ -126,7 +126,7 @@ export default class MarketPositionsList extends Component {
               </div>
             }
           </div>
-          { positions.length === 0 && openOrders.length === 0 &&
+          { positions.length === 0 && openOrders.length === 0 && orphanedOrders.length === 0 &&
             <NullStateMessage className={Styles['MarketPositionsList__null-state']} message="No positions or open orders" />
           }
           { numCompleteSets && numCompleteSets.value > 0 &&

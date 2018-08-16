@@ -7,7 +7,7 @@ export const ADD_ORPHANED_ORDER = 'ADD_ORPHANED_ORDER'
 export const REMOVE_ORPHANED_ORDER = 'REMOVE_ORPHANED_ORDER'
 
 export const DISMISS_ORPHANED_ORDER = 'DISMISS_ORPHANED_ORDER'
-
+export const CLEAR_ORPHANED_ORDER_DATA = 'CLEAR_TRANSACTION_DATA'
 
 export const addOrphanedOrder = order => ({
   type: ADD_ORPHANED_ORDER,
@@ -61,3 +61,5 @@ export const cancelOrphanedOrder = ({ orderId, marketId, outcome, orderTypeLabel
     },
   })
 }
+
+export const clearOrphanedOrderData = () => ({ type: CLEAR_ORPHANED_ORDER_DATA })
