@@ -22,11 +22,9 @@ export const NotificationBar = ({ dismissFn, notifications, market, marketsNumbe
         <a href="http://docs.augur.net/#orphaned-order" target="_blank" rel="noopener noreferrer">Learn More</a>
       </span>
     </div>
-    <button className={Styles.notificationBar_button}>
-      <Link to={makePath(MY_POSITIONS)}>
-        View Portfolio
-      </Link>
-    </button>
+    <Link to={makePath(MY_POSITIONS)} className={Styles.notificationBar_button}>
+      View Portfolio
+    </Link>
     <button className={Styles.notificationBar_dismiss} onClick={() => dismissFn(notification)}>
       <div className={Styles.notificationBar_dismissIcon}>
         <CloseWithCircle />
