@@ -1,6 +1,8 @@
 ---
 files:
 - "!certs/*"
+extraResources:
+  - "**/*"
 mac:
   target:
   - default
