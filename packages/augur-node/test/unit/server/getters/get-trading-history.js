@@ -2,14 +2,14 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getUserTradingHistory} = require("../../../../build/server/getters/get-user-trading-history");
+const {getTradingHistory} = require("../../../../build/server/getters/get-trading-history");
 
-describe("server/getters/get-user-trading-history", () => {
+describe("server/getters/get-trading-history", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getUserTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, false, (err, userTradingHistory) => {
+        getTradingHistory(db, t.params.universe, t.params.account, t.params.marketId, t.params.outcome, t.params.orderType, t.params.earliestCreationTime, t.params.latestCreationTime, t.params.sortBy, t.params.isSortDescending, t.params.limit, t.params.offset, false, (err, userTradingHistory) => {
           t.assertions(err, userTradingHistory);
           db.destroy();
           done();
@@ -391,6 +391,45 @@ describe("server/getters/get-user-trading-history", () => {
           tradeGroupId: null,
           transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C08",
           type: "sell",
+        },
+      ]);
+    },
+  });
+  test({
+    description: "lookup trades by market, not account, filter by timestamp",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      account: null,
+      marketId: "0x0000000000000000000000000000000000000012",
+      outcome: 0,
+      orderType: null,
+      sortBy: null,
+      isSortDescending: null,
+      limit: null,
+      offset: null,
+      earliestCreationTime: 1506474514,
+      latestCreationTime: 1506474516,
+    },
+    assertions: (err, userTradingHistory) => {
+      assert.ifError(err);
+      assert.deepEqual(userTradingHistory, [
+        {
+          transactionHash: "0x0000000000000000000000000000000000000000000000000000000000000C04",
+          logIndex: 0,
+          orderId: "0x1500000000000000000000000000000000000000000000000000000000000000",
+          amount: "0.2",
+          maker: null,
+          marketId: "0x0000000000000000000000000000000000000012",
+          outcome: 0,
+          price: "5.5",
+          marketCreatorFees: "0",
+          reporterFees: "0",
+          selfFilled: false,
+          settlementFees: "0",
+          shareToken: "0x0100000000000000000000000000000000000000",
+          timestamp: 1506474515,
+          tradeGroupId: null,
+          type: "buy",
         },
       ]);
     },

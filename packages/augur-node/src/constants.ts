@@ -43,6 +43,32 @@ export enum ControlMessageType {
   BulkSyncFinished = "BulkSyncFinished",
 }
 
+export enum SubscriptionEventNames {
+  FeeWindowOpened = "FeeWindowOpened",
+  CompleteSetsPurchased = "CompleteSetsPurchased",
+  CompleteSetsSold = "CompleteSetsSold",
+  DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted",
+  DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution",
+  DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated",
+  DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog",
+  FeeWindowClosed = "FeeWindowClosed",
+  FeeWindowCreated = "FeeWindowCreated",
+  FeeWindowRedeemed = "FeeWindowRedeemed",
+  InitialReportSubmitted = "InitialReportSubmitted",
+  InitialReporterRedeemed = "InitialReporterRedeemed",
+  InitialReporterTransferred = "InitialReporterTransferred",
+  MarketCreated = "MarketCreated",
+  MarketState = "MarketState",
+  OrderCanceled = "OrderCanceled",
+  OrderCreated = "OrderCreated",
+  OrderFilled = "OrderFilled",
+  ReportingParticipantDisavowed = "ReportingParticipantDisavowed",
+  SyncFinished = "SyncFinished",
+  TokensTransferred = "TokensTransferred",
+  TradingProceedsClaimed = "TradingProceedsClaimed",
+  UniverseCreated = "UniverseCreated",
+}
+
 export enum MarketType {
   yesNo,
   categorical,

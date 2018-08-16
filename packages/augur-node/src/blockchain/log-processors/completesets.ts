@@ -4,6 +4,7 @@ import { BigNumber } from "bignumber.js";
 import { FormattedEventLog, MarketsRow, CompleteSetsRow, ErrorCallback } from "../../types";
 import { numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventNames } from "../../constants";
 
 export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const marketId = log.market;
@@ -27,7 +28,8 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
       numCompleteSets,
       numPurchasedOrSold: numCompleteSets,
     };
-    augurEmitter.emit(log.eventName, completeSetPurchasedData);
+    const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+    augurEmitter.emit(SubscriptionEventNames[eventName], completeSetPurchasedData);
     db.insert(completeSetPurchasedData).into("completeSets").asCallback(callback);
   });
 }
@@ -35,7 +37,8 @@ export function processCompleteSetsPurchasedOrSoldLog(db: Knex, augur: Augur, lo
 export function processCompleteSetsPurchasedOrSoldLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db.from("completeSets").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null) => {
     if (err) return callback(err);
-    augurEmitter.emit(log.eventName, log);
+    const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+    augurEmitter.emit(SubscriptionEventNames[eventName], log);
     callback(null);
   });
 }
