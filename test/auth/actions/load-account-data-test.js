@@ -13,18 +13,21 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const store = mockStore(t.state)
       const LoadAccountDataFromLocalStorage = {}
       const UpdateAssets = { updateAssets: () => {} }
+      const ClearOrphanedOrderData = { clearOrphanedOrderData: () => {} }
       const LoadAccountTrades = { loadAccountTrades: () => {} }
       const UpdateLoginAccount = { updateLoginAccount: () => {} }
       const approveAccount = { checkAccountAllowance: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
         './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
         './update-assets': UpdateAssets,
+        '../../orphaned-orders/actions':ClearOrphanedOrderData,
         './update-login-account': UpdateLoginAccount,
         '../../my-positions/actions/load-account-trades': LoadAccountTrades,
         './approve-account': approveAccount,
       })
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' })
       sinon.stub(UpdateAssets, 'updateAssets').callsFake(() => ({ type: 'UPDATE_ASSETS' }))
+      sinon.stub(ClearOrphanedOrderData, 'clearOrphanedOrderData').callsFake(() => ({ type: 'CLEAR_ORPHANED_ORDER_DATA' }))
       sinon.stub(UpdateLoginAccount, 'updateLoginAccount').callsFake(data => ({ type: 'UPDATE_LOGIN_ACCOUNT', data }))
       sinon.stub(LoadAccountTrades, 'loadAccountTrades').callsFake(data => ({ type: 'UPDATE_ACCOUNT_TRADES_DATA' }))
       sinon.stub(approveAccount, 'checkAccountAllowance').callsFake(data => ({ type: 'CHECK_ACCOUNT_ALLOWANCE' }))
@@ -69,6 +72,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [
         { type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' },
+        { type: 'CLEAR_ORPHANED_ORDER_DATA' },
         { type: 'UPDATE_LOGIN_ACCOUNT', data: { address: '0xb0b' } },
         { type: 'UPDATE_ACCOUNT_TRADES_DATA' },
         { type: 'CHECK_ACCOUNT_ALLOWANCE' },
@@ -97,6 +101,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     assertions: (actions) => {
       assert.deepEqual(actions, [
         { type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' },
+        { type: 'CLEAR_ORPHANED_ORDER_DATA' },
         { type: 'UPDATE_LOGIN_ACCOUNT', data: { address: '0xb0b', name: 'jack', isUnlocked: true, edgeAccount: { username: 'jack' } } },
         { type: 'UPDATE_ACCOUNT_TRADES_DATA' },
         { type: 'CHECK_ACCOUNT_ALLOWANCE' },
