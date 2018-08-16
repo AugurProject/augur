@@ -47,10 +47,7 @@ const PEER_COUNT_REQUEST_OPTIONS = {
 
 function GethNodeController() {
   this.window = null
-  let os = 'linux'
-  if (process.platform === 'win32') os = 'win'
-  if (process.platform === 'darwin') os = 'mac'
-  this.gethExecutablePath = path.join(app.getAppPath(), `resources/${os}/geth`)
+  this.gethExecutablePath = path.join(process.resourcesPath, 'geth')
   this.gethProcess = null
   this.statusLoop = null
   ipcMain.on('toggleGeth', this.toggle.bind(this))
