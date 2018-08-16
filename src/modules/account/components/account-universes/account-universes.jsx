@@ -39,11 +39,21 @@ export default class AccountUniverses extends Component {
       getUniverses,
     } = this.props
     getUniverses((universesInfo) => {
+
       const children = universesInfo.children.map(c => ({
         ...c,
         totalRep: formatAttoRep(c.supply, { decimals: 2, roundUp: true }).formattedValue,
       }))
       universesInfo.children = orderBy(children, ['totalRep'], ['desc'])
+
+
+      const currentLevel = universesInfo.currentLevel.map(c => ({
+        ...c,
+        totalRep: formatAttoRep(c.supply, { decimals: 2, roundUp: true }).formattedValue,
+      }))
+      universesInfo.currentLevel = orderBy(currentLevel, ['totalRep'], ['desc'])
+
+
       this.setState({
         universesInfo,
       })
