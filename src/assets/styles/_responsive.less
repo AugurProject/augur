@@ -19,11 +19,13 @@
 //		Steps
 @step-2: 1200px;
 //		Sub-Steps
+@step-2-0: 1093px;
 @step-2-1: 1050px;
 @step-2-2: 900px; // Mobile tipping point
 @step-2-3: 450px;
 //		Rules
 @breakpoint-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2})";
+@breakpoint-2-0: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-0})";
 @breakpoint-2-1: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-1})";
 @breakpoint-2-2: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-2})"; // Mobile tipping point
 @breakpoint-2-3: ~"all and (min-width: @{step-1}) and (max-width: @{step-2-3})";
@@ -36,6 +38,8 @@
 @breakpoint-3: ~"all and (min-width: @{step-2})";
 
 // Helper Breakpoints
+// Smallish desktop (up to step 2-1)
+@breakpoint-smallish-desktop: ~"all and (max-width: @{step-2-0})";
 // Small desktop (up to step 2-1)
 @breakpoint-small-desktop: ~"all and (max-width: @{step-2-1})";
 //	Mobile (up to step-2-2)
