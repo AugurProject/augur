@@ -13,7 +13,7 @@ linux:
   target:
   - deb
   - AppImage
-  category: Office
+  category: Network
   icon: build/icon.png
 artifactName: "${os}-${productName}-${version}.${ext}"
 npmRebuild: false

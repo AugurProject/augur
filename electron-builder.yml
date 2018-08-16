@@ -16,7 +16,7 @@ linux:
   target:
   - deb
   - AppImage
-  category: Office
+  category: Network
   icon: build/icon.png
 appId: "net.augur.augur"
 artifactName: "${os}-${productName}-${version}.${ext}"
