@@ -1,11 +1,14 @@
----
+directories:
+  # this contains icons, licence agreement, etc
+  buildResources: "./build"
 files:
-- "!certs/*"
-extraResources:
+  - "!certs/*"
+  - "src/**/*"
+extraFiles:
   - from: "resources/${os}"
-  - to: "resources"
-  - filter:
-    - "geth*"
+    to: "resources"
+    filter:
+    - "**/*"
 mac:
   asar: false
   target:
