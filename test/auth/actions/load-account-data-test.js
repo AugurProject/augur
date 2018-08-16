@@ -20,7 +20,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
         './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
         './update-assets': UpdateAssets,
-        '../../orphaned-orders/actions':ClearOrphanedOrderData,
+        '../../orphaned-orders/actions': ClearOrphanedOrderData,
         './update-login-account': UpdateLoginAccount,
         '../../my-positions/actions/load-account-trades': LoadAccountTrades,
         './approve-account': approveAccount,
