@@ -2,7 +2,10 @@
 files:
 - "!certs/*"
 extraResources:
-  - "**/*"
+  - from: "resources/${os}"
+  - to: "resources"
+  - filter:
+    - "**/*"
 mac:
   asar: false
   target:
