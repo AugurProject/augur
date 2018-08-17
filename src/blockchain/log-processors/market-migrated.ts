@@ -37,11 +37,11 @@ export function processMarketMigratedLog(db: Knex, augur: Augur, log: FormattedE
           db.select("category").from("markets").where({ marketId: log.market }).asCallback((err: Error|null, categoryRows?: Array<CategoryRow>): void => {
             if (err) return callback(err);
             if (!categoryRows || !categoryRows.length) return callback(null);
-            const category = categoryRows[0].category;
+            const category = categoryRows[0].category.toUpperCase();
             db.select("popularity").from("categories").where({ category, universe: log.newUniverse }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
               if (err) return callback(err);
               if (categoriesRows && categoriesRows.length) return callback(null);
-              db.insert({ category: category.toUpperCase(), universe: log.newUniverse }).into("categories").asCallback(callback);
+              db.insert({ category, universe: log.newUniverse }).into("categories").asCallback(callback);
             });
           });
         });
