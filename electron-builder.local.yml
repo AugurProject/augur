@@ -1,6 +1,11 @@
 ---
 files:
 - "!certs/*"
+extraResources:
+  - from: "resources/${os}"
+  - to: "resources"
+  - filter:
+    - "geth*"
 mac:
   target:
   - default
@@ -12,8 +17,8 @@ win:
 linux:
   target:
   - deb
-  - snap
-  category: Office
+  - AppImage
+  category: Network
   icon: build/icon.png
 artifactName: "${os}-${productName}-${version}.${ext}"
 npmRebuild: false
