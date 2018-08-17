@@ -46,5 +46,5 @@ script:
           electronuserland/builder:wine-mono \
           /bin/bash -c "scripts/electron-build.sh"
     else
-        travis_wait 30 scripts/electron-build.sh
+        scripts/electron-build.sh
     fi

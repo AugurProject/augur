@@ -11,9 +11,13 @@ set -x
 #EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+    echo "running 'npm run make-mac'"
     npm run make-mac
+    echo "creating virtualenv"
     virtualenv augur-venv
+    echo "sourcing virtualenv"
     source augur-venv/bin/activate
+    echo "running 'pip install requests'"
     pip install requests
 
 else
@@ -31,5 +35,6 @@ else
     pip install requests
 fi
 
+echo "running post_build.py"
 python scripts/post_build.py
 cat dist/*.sha256
