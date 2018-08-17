@@ -88,11 +88,21 @@
 }
 
 @media @breakpoint-mobile {
+  .TradingWrapper {
+    background-color: @color-almostblack;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 30;
+  }
+
   .TradingWrapper__header_buy,
   .TradingWrapper__header_sell,
   .TradingWrapper__header {
-    display: flex;
-    padding: 1.3rem 1.875rem 0;
+    border-bottom-color: @color-lightgray;
+    padding: 0.5rem 0 0;
 
     > li {
       border-bottom: 8px solid transparent;
