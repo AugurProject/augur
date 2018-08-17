@@ -23,6 +23,7 @@ import { loadMarketsInfo } from 'src/modules/markets/actions/load-markets-info'
 import { loadUnclaimedFees } from 'modules/markets/actions/load-unclaimed-fees'
 import { loadFundingHistory } from 'modules/account/actions/load-funding-history'
 import { getWinningBalance } from 'modules/portfolio/actions/get-winning-balance'
+import { startOrderSending } from 'modules/create-market/actions/liquidity-management'
 import { loadMarketTradingHistory } from 'modules/market/actions/load-market-trading-history'
 
 export const handleMarketStateLog = log => (dispatch) => {
@@ -40,6 +41,8 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
     dispatch(loadCategories())
   }
   if (isStoredTransaction) {
+    // My Market? start kicking off liquidity orders
+    if (!log.removed) dispatch(startOrderSending({ marketId: log.market, log }))
     dispatch(updateLoggedTransactions(log))
   }
 }

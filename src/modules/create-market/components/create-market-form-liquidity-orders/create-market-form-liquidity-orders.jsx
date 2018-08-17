@@ -1,10 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
-// import { BigNumber, createBigNumber } from 'utils/create-big-number'
-import { CATEGORICAL, SCALAR, YES_NO } from 'modules/markets/constants/market-types'
-import { formatEther, formatShares } from 'utils/format-number'
-import { BID, ASK } from 'modules/transactions/constants/types'
+import { CATEGORICAL } from 'modules/markets/constants/market-types'
+import MarketLiquidityTable from 'modules/market/components/market-liquidity-table/market-liquidity-table'
 
 import StylesForm from 'modules/create-market/components/create-market-form/create-market-form.styles'
 import Styles from 'modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders.styles'
@@ -19,7 +16,6 @@ const CreateMarketLiquidityOrders = (props) => {
   const selectedOutcome = liquidityState && liquidityState.selectedOutcome ? liquidityState.selectedOutcome : defaultOutcome
   const outcomeOrders = newMarket.orderBook[selectedOutcome]
   const isNullState = !(outcomeOrders && outcomeOrders.length)
-  let outcomeLabel = newMarket.type === YES_NO ? 'Yes' : selectedOutcome
 
   return (
     <div className={StylesForm['CreateMarketForm__form-inner-wrapper']}>
@@ -38,39 +34,14 @@ const CreateMarketLiquidityOrders = (props) => {
               <li>Quantity</li>
               <li>Limit Price</li>
               <li>Cost</li>
-              <li>Action</li>
+              <li />
             </ul>
-            <div className={Styles['LiquidityOrders__table-body']}>
-              { outcomeOrders.map((order, index) => {
-                const direction = order.type === BID ? '' : '-'
-                outcomeLabel = newMarket.type === SCALAR ? formatEther(order.price).formattedValue : outcomeLabel
-                return (
-                  <ul
-                    key={`${selectedOutcome}-${order.type}-${order.price.toFixed()}`}
-                    className={classNames(Styles.LiquidityOrders__Order, {
-                      [`${Styles.positive}`]: order.type === BID,
-                      [`${Styles.negative}`]: order.type === ASK,
-                    })}
-                  >
-                    <li>{order.type}</li>
-                    <li>{outcomeLabel}</li>
-                    <li>{`${direction}${formatShares(order.quantity).formatted}`}</li>
-                    <li>{formatEther(order.price).formatted}</li>
-                    <li>{formatEther(order.orderEstimate).formatted}</li>
-                    <li>
-                      <button
-                        onClick={e => removeOrderFromNewMarket({
-                          outcome: selectedOutcome,
-                          index,
-                        })}
-                      >Cancel
-                      </button>
-                    </li>
-                  </ul>
-                )
-              })
-              }
-            </div>
+            <MarketLiquidityTable
+              marketType={newMarket.type}
+              outcomeOrders={outcomeOrders}
+              removeOrderFromNewMarket={removeOrderFromNewMarket}
+              selectedOutcome={selectedOutcome}
+            />
           </div>
         }
       </div>

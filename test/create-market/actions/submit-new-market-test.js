@@ -249,14 +249,87 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket, history))
 
       const actual = store.getActions()
-
+      // note the liquidity orders are now sorted in the output.
+      const addMarketLiquidityOrders = {
+        type: 'ADD_MARKET_LIQUIDITY_ORDERS',
+        data: {
+          marketId: 'marketId',
+          liquidityOrders: {
+            one: [
+              {
+                type: SELL,
+                price: createBigNumber('0.8'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: SELL,
+                price: createBigNumber('0.7'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: SELL,
+                price: createBigNumber('0.6'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.3'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.2'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.1'),
+                quantity: createBigNumber('1'),
+              },
+            ],
+            two: [
+              {
+                type: SELL,
+                price: createBigNumber('0.8'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: SELL,
+                price: createBigNumber('0.7'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: SELL,
+                price: createBigNumber('0.6'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.3'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.2'),
+                quantity: createBigNumber('1'),
+              },
+              {
+                type: BUY,
+                price: createBigNumber('0.1'),
+                quantity: createBigNumber('1'),
+              },
+            ],
+          },
+        },
+      }
       const expected = [
         pendingTransaction,
         clearNewMarket,
+        addMarketLiquidityOrders,
       ]
       assert.isTrue(history.push.calledOnce, `didn't push a new path to history`)
       assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
-      assert.deepEqual(ordersCreated, 12, `Didn't create the correct number of orders`)
+      assert.deepEqual(ordersCreated, 0, `created orders when it shouldn't have.`)
     },
   })
 

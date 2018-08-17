@@ -25,6 +25,7 @@ class MyMarkets extends Component {
     match: PropTypes.object.isRequired,
     myMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
+    pendingLiquidityOrders: PropTypes.object,
   }
 
   constructor(props) {
@@ -110,6 +111,7 @@ class MyMarkets extends Component {
       location,
       myMarkets,
       toggleFavorite,
+      pendingLiquidityOrders,
     } = this.props
     const s = this.state
     const haveMarkets = myMarkets && !!myMarkets.length
@@ -141,6 +143,7 @@ class MyMarkets extends Component {
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
+            pendingLiquidityOrders={pendingLiquidityOrders}
           />
         }
         {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}

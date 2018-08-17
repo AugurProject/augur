@@ -503,10 +503,10 @@ export const ChevronLeft = (
     </g>
   </svg>
 )
-export const ChevronDown = () => (
+export const ChevronDown = p => (
   <svg viewBox="0 0 16 16">
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
-      <g id="Icon/Dropdown-Down" stroke="#A7A2B2">
+      <g id="Icon/Dropdown-Down" stroke={p.stroke || '#A7A2B2'}>
         <polyline id="Stroke-3" transform="translate(8.156854, 6.156854) rotate(-225.000000) translate(-8.156854, -6.156854) " points="3.65685425 1.65685425 12.6568542 1.65685425 12.6568542 10.6568542" />
       </g>
     </g>

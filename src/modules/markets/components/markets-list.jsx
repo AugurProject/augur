@@ -24,6 +24,7 @@ export default class MarketsList extends Component {
     showPagination: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
+    pendingLiquidityOrders: PropTypes.object,
   }
 
   static defaultProps = {
@@ -94,6 +95,7 @@ export default class MarketsList extends Component {
       showPagination,
       toggleFavorite,
       testid,
+      pendingLiquidityOrders,
     } = this.props
     const s = this.state
 
@@ -120,6 +122,7 @@ export default class MarketsList extends Component {
                   linkType={TYPE_TRADE}
                   id={market.id}
                   testid={testid}
+                  pendingLiquidityOrders={pendingLiquidityOrders}
                 />
               )
             }

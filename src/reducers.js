@@ -39,6 +39,7 @@ import orphanedOrders from 'modules/orphaned-orders/reducers/orphaned-orders'
 import outcomesData from 'modules/markets/reducers/outcomes-data'
 import participationTokens from 'modules/my-participation-tokens/reducers/participation-token-data'
 import priceHistory from 'modules/markets/reducers/price-history'
+import pendingLiquidityOrders from 'modules/create-market/reducers/liquidity-orders'
 import reportingWindowStats from 'modules/reporting/reducers/reporting-window-stats'
 import reports from 'modules/reports/reducers/reports'
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination'
@@ -92,6 +93,7 @@ export function createReducer() {
     orphanedOrders,
     outcomesData,
     participationTokens,
+    pendingLiquidityOrders,
     priceHistory,
     reportingWindowStats,
     reports,

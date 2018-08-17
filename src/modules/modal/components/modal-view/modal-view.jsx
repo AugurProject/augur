@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import ModalLedger from 'modules/modal/components/modal-ledger/modal-ledger'
 import ModalUport from 'modules/modal/components/modal-uport/modal-uport'
 import ModalTrezor from 'modules/modal/components/modal-trezor/modal-trezor'
+import ModalConfirm from 'modules/modal/components/modal-confirm/modal-confirm'
 import ModalNetworkMismatch from 'modules/modal/components/modal-network-mismatch/modal-network-mismatch'
 import ModalNetworkDisabled from 'modules/modal/components/modal-network-disabled/modal-network-disabled'
 import ModalNetworkDisconnected from 'modules/modal/containers/modal-network-disconnected'
@@ -16,6 +17,7 @@ import ModalParticipate from 'modules/modal/containers/modal-participate'
 import ModalMigrateMarket from 'modules/modal/containers/modal-migrate-market'
 import ModalNetworkConnect from 'modules/modal/containers/modal-network-connect'
 import ModalDisclaimer from 'modules/modal/containers/modal-disclaimer'
+
 
 import { Close } from 'modules/common/components/icons'
 
@@ -81,6 +83,9 @@ export default class ModalView extends Component {
             >
               {Close}
             </button>
+          }
+          {modal.type === TYPES.MODAL_CONFIRM &&
+            <ModalConfirm {...this.props} />
           }
           {modal.type === TYPES.MODAL_LEDGER &&
             <ModalLedger {...modal} />

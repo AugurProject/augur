@@ -141,6 +141,7 @@ export default class CreateMarketLiquidity extends Component {
         type: this.state.selectedNav,
         price: this.state.orderPrice,
         quantity: this.state.orderQuantity,
+        selectedOutcome: this.state.selectedOutcome,
       })
 
       this.setState({

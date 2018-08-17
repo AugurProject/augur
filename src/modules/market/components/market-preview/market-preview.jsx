@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import MarketBasics from 'modules/market/containers/market-basics'
 import MarketProperties from 'modules/market/containers/market-properties'
 import OutstandingReturns from 'modules/market/components/market-outstanding-returns/market-outstanding-returns'
+import MarketLiquidity from 'modules/market/containers/market-liquidity'
 
 import CommonStyles from 'modules/market/components/common/market-common.styles'
 import Styles from 'modules/market/components/market-preview/market-preview.styles'
@@ -24,6 +25,11 @@ const MarketPreview = p => (
         />
       </div>
     }
+    <MarketLiquidity
+      marketId={p.id}
+      market={p}
+      pendingLiquidityOrders={p.pendingLiquidityOrders}
+    />
   </article>
 )
 

@@ -243,7 +243,7 @@ export default class CreateMarketForm extends Component {
       removeOrderFromNewMarket,
     } = this.props
     const order = newMarket.orderBook[orderDetails.outcome][orderDetails.index]
-    this.updateInitialLiquidityCosts(order, true)
+    this.updateInitialLiquidityCosts({ ...order, outcome: orderDetails.outcome }, true)
     removeOrderFromNewMarket(orderDetails)
   }
 
