@@ -25,6 +25,8 @@ import { constants } from 'services/augurjs'
 import moment from 'moment'
 import { compact } from 'lodash'
 import { CategoryTagTrail } from 'src/modules/common/components/category-tag-trail/category-tag-trail'
+import { MARKETS } from 'modules/routes/constants/views'
+import makePath from 'modules/routes/helpers/make-path'
 
 const MarketBasics = ({ category, tags = [], location, history, marketType, ...p }) => {
   let ReportEndingIndicator = () => null
@@ -41,15 +43,17 @@ const MarketBasics = ({ category, tags = [], location, history, marketType, ...p
     )
   }
 
+  const path = location.pathname === makePath(MARKETS) ? location : { pathname: makePath(MARKETS) }
+
   const process = (...arr) => compact(arr).map(label => ({
     label,
-    onClick: toggleCategory(label, location, history),
+    onClick: toggleCategory(label, path, history),
   }))
 
   const categoriesWithClick = process(category)
   const tagsWithClick = compact(tags).map(tag => ({
     label: tag,
-    onClick: toggleTag(tag, location, history),
+    onClick: toggleTag(tag, path, history),
   }))
 
   return (
