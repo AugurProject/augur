@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import { BUY_UP, BUY_DOWN, SELL_UP, SELL_DOWN, NONE } from 'modules/trade/constants/types'
 import Styles from 'modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style'
 
-export default function OutcomeTradingIndicator({ tradingIndicator, style }) {
+export default function OutcomeTradingIndicator({ tradingIndicator, style, useSmall = false }) {
   const indicatorArray = {}
   indicatorArray[BUY_UP] = Styles.TradingIndicator_arrow_buy_up
   indicatorArray[BUY_DOWN] = Styles.TradingIndicator_arrow_buy_down
@@ -14,11 +15,12 @@ export default function OutcomeTradingIndicator({ tradingIndicator, style }) {
   const indicatorStyle = indicatorArray[tradingIndicator]
 
   return (
-    <span className={indicatorStyle} style={style} />
+    <span className={classNames(indicatorStyle, { [`${Styles.small}`]: useSmall })} style={style} />
   )
 }
 
 OutcomeTradingIndicator.propTypes = {
   tradingIndicator: PropTypes.string.isRequired,
   style: PropTypes.object,
+  useSmall: PropTypes.bool,
 }
