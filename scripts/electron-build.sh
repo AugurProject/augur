@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 IFS='' cat  <<EOF > build/release-notes.md
 ## Release Notes
@@ -10,7 +11,6 @@ $(git log $(git describe --tags --abbrev=0)..HEAD --oneline | while read l; do e
 EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    set -x
     npm run make-mac
     virtualenv augur-venv
     source augur-venv/bin/activate
