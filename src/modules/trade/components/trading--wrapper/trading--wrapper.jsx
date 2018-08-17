@@ -184,8 +184,9 @@ class MarketTradingWrapper extends Component {
             >{ Close }
             </button>
             <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ selectedOutcome.name }</span>
-            <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} /></span>
-            <MarketOutcomeTradingIndicator outcome={selectedOutcome} style={{ right: '9rem', bottom: '8%' }} useSmall />
+            <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} />
+              <MarketOutcomeTradingIndicator outcome={selectedOutcome} style={{ bottom: '8%' }} useSmall />
+            </span>
           </div>
         }
         { s.currentPage === 0 &&
