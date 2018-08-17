@@ -156,10 +156,6 @@
     background-color: @color-white;
   }
 
-  .TradingConfirmation__button--submit {
-    bottom: 3.125rem;
-  }
-
   .TradingConfirm__details > li > span,
   .TradingConfirm__details > li > span:first-child {
     color: @color-lightgray;
@@ -171,6 +167,14 @@
 
     > h2 {
       color: @color-white;
+
+      &.order__buy {
+        color: @color-positive;
+      }
+
+      &.order__sell {
+        color: @color-negative;
+      }
     }
   }
 

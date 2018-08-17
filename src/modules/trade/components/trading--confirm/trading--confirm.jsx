@@ -3,10 +3,10 @@ import React from 'react'
 import { CreateMarketEdit } from 'modules/common/components/icons'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-
+import classNames from 'classnames'
 import getValue from 'utils/get-value'
 import { CATEGORICAL } from 'modules/markets/constants/market-types'
-import { MARKET, BUY, LIMIT } from 'modules/transactions/constants/types'
+import { MARKET, BUY, LIMIT, SELL } from 'modules/transactions/constants/types'
 
 import Styles from 'modules/trade/components/trading--confirm/trading--confirm.styles'
 
@@ -24,8 +24,11 @@ const MarketTradingConfirm = (p) => {
   return (
     <section className={Styles.TradingConfirm}>
       <div className={Styles.TradingConfirm__header}>
-        <div className={p.selectedNav === BUY ? Styles.TradingConfirm_arrow_buy : Styles.TradingConfirm_arrow_sell} />
-        <h2>Confirm { p.selectedNav } order?</h2>
+        { !p.isMobile && <div className={p.selectedNav === BUY ? Styles.TradingConfirm_arrow_buy : Styles.TradingConfirm_arrow_sell} /> }
+        { !p.isMobile && <h2>Confirm { p.selectedNav } order?</h2> }
+        { p.isMobile &&
+          <h2 className={classNames({ [`${Styles.order__buy}`]: p.selectedNav === BUY, [`${Styles.order__sell}`]: p.selectedNav === SELL })} >Confirm { p.selectedNav } order?</h2>
+        }
         <span>
           <button onClick={p.prevPage}>{ CreateMarketEdit }</button>
         </span>

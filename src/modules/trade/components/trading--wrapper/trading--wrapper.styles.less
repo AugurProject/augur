@@ -88,26 +88,35 @@
 }
 
 @media @breakpoint-mobile {
-  .TradingWrapper {
-    background-color: @color-almostblack;
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 30;
-  }
 
+  .TradingWrapper__header_buy,
+  .TradingWrapper__header_sell,
   .TradingWrapper__header {
-    border-bottom-color: @color-lightgray;
-    padding: 0.5rem 0 0;
+    display: flex;
+    padding: 1.3rem 1.875rem 0;
 
     > li {
+      border-bottom: 8px solid transparent;
       color: @color-lightgray;
+      text-align: center;
+      width: 50%;
 
-      &.active {
-        border-bottom-color: @color-white;
-        color: @color-white;
+      &.active_buy {
+        border-bottom-color: @color-positive;
+        color: @color-positive;
+      }
+
+      &.active_sell {
+        border-bottom-color: @color-negative;
+        color: @color-negative;
+      }
+
+      > button {
+        &:extend(.caps--large);
+
+        font-weight: 700;
+        padding: 1.25rem 0;
+        width: 100%;
       }
     }
   }

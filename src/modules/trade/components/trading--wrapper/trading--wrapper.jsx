@@ -16,7 +16,7 @@ import { isEqual } from 'lodash'
 
 import { BUY, SELL, LIMIT } from 'modules/transactions/constants/types'
 import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
-
+import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator'
 import Styles from 'modules/trade/components/trading--wrapper/trading--wrapper.styles'
 
 class MarketTradingWrapper extends Component {
@@ -185,6 +185,7 @@ class MarketTradingWrapper extends Component {
             </button>
             <span className={Styles['TradingWrapper__mobile-header-outcome']}>{ selectedOutcome.name }</span>
             <span className={Styles['TradingWrapper__mobile-header-last']}><ValueDenomination formatted={lastPrice} /></span>
+            <MarketOutcomeTradingIndicator outcome={selectedOutcome} style={{ right: '8rem', bottom: '5%' }} />
           </div>
         }
         { s.currentPage === 0 &&
