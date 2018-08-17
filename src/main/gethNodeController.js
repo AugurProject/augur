@@ -47,14 +47,12 @@ const PEER_COUNT_REQUEST_OPTIONS = {
 
 function getGethPath() {
   let gethExecutablePath = path.join(process.resourcesPath, 'geth')
-  if (!fs.existsSync(gethExecutablePath)) {
-    let os = 'linux'
-    if (process.platform === 'win32') os = 'win'
-    if (process.platform === 'darwin') os = 'mac'
-    gethExecutablePath = path.join(app.getAppPath(), `resources/${os}/geth`)
-  }
+  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath+".exe")) return gethExecutablePath;
 
-  return gethExecutablePath;
+  let os = 'linux'
+  if (process.platform === 'win32') os = 'win'
+  if (process.platform === 'darwin') os = 'mac'
+  return path.join(app.getAppPath(), `resources/${os}/geth`)
 }
 
 function GethNodeController() {
