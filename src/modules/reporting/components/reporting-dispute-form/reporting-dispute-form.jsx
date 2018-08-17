@@ -531,7 +531,7 @@ export default class ReportingDisputeForm extends Component {
                           s.validations.hasOwnProperty("err") &&
                           s.validations.selectedOutcome
                       })}
-                      style={{boxShadow: 'none'}}
+                      style={{ boxShadow: "none" }}
                       onChange={e => {
                         this.validateScalar(
                           e.target.value,
@@ -580,7 +580,7 @@ export default class ReportingDisputeForm extends Component {
                     s.validations.hasOwnProperty("stake") &&
                     s.validations.selectedOutcome
                 })}
-                style={{boxShadow: 'none'}}
+                style={{ boxShadow: "none" }}
                 onChange={e => this.validateStake({ raw: e.target.value })}
               />
               {s.selectedOutcomeName &&
