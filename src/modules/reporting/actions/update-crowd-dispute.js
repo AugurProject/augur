@@ -1,4 +1,4 @@
-export const UPDATE_CROWD_DISPUTE_MARKETS = 'UPDATE_CROWD_DISPUTE_MARKETS'
+export const UPDATE_CROWD_DISPUTE_MARKETS = "UPDATE_CROWD_DISPUTE_MARKETS";
 
 /**
  *
@@ -8,6 +8,6 @@ export const UPDATE_CROWD_DISPUTE_MARKETS = 'UPDATE_CROWD_DISPUTE_MARKETS'
 export default function updateCrowdDisputeMarkets(marketIds) {
   return {
     type: UPDATE_CROWD_DISPUTE_MARKETS,
-    data: marketIds,
-  }
+    data: marketIds
+  };
 }

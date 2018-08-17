@@ -1,9 +1,9 @@
-import { connect } from 'react-redux'
-import MarketReportingPayouts from 'modules/reporting/components/reporting-payouts/reporting-payouts'
+import { connect } from "react-redux";
+import MarketReportingPayouts from "modules/reporting/components/reporting-payouts/reporting-payouts";
 
 const mapStateToProps = state => ({
   isMobile: state.isMobile,
-  isMobileSmall: state.isMobileSmall,
-})
+  isMobileSmall: state.isMobileSmall
+});
 
-export default connect(mapStateToProps)(MarketReportingPayouts)
+export default connect(mapStateToProps)(MarketReportingPayouts);

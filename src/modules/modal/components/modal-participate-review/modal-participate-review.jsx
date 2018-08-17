@@ -1,18 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 
-import { SigningPen } from 'modules/common/components/icons'
-import { formatRep, formatEther } from 'utils/format-number'
-import Styles from 'modules/modal/components/modal-participate-review/modal-participate-review.styles'
+import { SigningPen } from "modules/common/components/icons";
+import { formatRep, formatEther } from "utils/format-number";
+import Styles from "modules/modal/components/modal-participate-review/modal-participate-review.styles";
 
-const ModalParticipateReview = (p) => {
-  const cleanQuantity = formatRep(p.quantity)
+const ModalParticipateReview = p => {
+  const cleanQuantity = formatRep(p.quantity);
 
   return (
-    <form
-      className={Styles.ModalParticipateReview__form}
-      onSubmit={p.onSubmit}
-    >
+    <form className={Styles.ModalParticipateReview__form} onSubmit={p.onSubmit}>
       <div className={Styles.ModalParticipateReview__heading}>
         {SigningPen}
         <h1>Review Buy Order</h1>
@@ -39,22 +36,19 @@ const ModalParticipateReview = (p) => {
         >
           Back
         </button>
-        <button
-          className={Styles.ModalParticipateReview__button}
-          type="submit"
-        >
+        <button className={Styles.ModalParticipateReview__button} type="submit">
           submit
         </button>
       </div>
     </form>
-  )
-}
+  );
+};
 
 ModalParticipateReview.propTypes = {
   quantity: PropTypes.string.isRequired,
   gasEstimate: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  switchPages: PropTypes.func.isRequired,
-}
+  switchPages: PropTypes.func.isRequired
+};
 
-export default ModalParticipateReview
+export default ModalParticipateReview;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const YesNoIcon = () => (
@@ -11,6 +11,6 @@ const YesNoIcon = () => (
       </g>
     </g>
   </svg>
-)
+);
 
-export default YesNoIcon
+export default YesNoIcon;

@@ -1,5 +1,1 @@
-
-
-describe(`modules/market/actions/load-price-history.js`, () => {
-
-})
+describe(`modules/market/actions/load-price-history.js`, () => {});
