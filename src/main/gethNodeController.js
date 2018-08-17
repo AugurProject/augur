@@ -48,6 +48,9 @@ const PEER_COUNT_REQUEST_OPTIONS = {
 function GethNodeController() {
   this.window = null
   this.gethExecutablePath = path.join(process.resourcesPath, 'geth')
+  if (!fs.existsSync(this.gethExecutablePath)) {
+    this.gethExecutablePath = path.join(app.getAppPath(), 'geth');
+  }
   this.gethProcess = null
   this.statusLoop = null
   ipcMain.on('toggleGeth', this.toggle.bind(this))
