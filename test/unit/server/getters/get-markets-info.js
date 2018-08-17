@@ -589,6 +589,15 @@ describe("server/getters/get-markets-info", () => {
     },
   });
   test({
+    description: "Too many marketIds",
+    params: {
+      marketIds: Array.from({length: 1000}, () => "0x1010101010101010101010101010101010101010"),
+    },
+    assertions: (err, marketInfo) => {
+      assert.isNotNull(err);
+    },
+  });
+  test({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
