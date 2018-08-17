@@ -10,7 +10,7 @@ $(git log $(git describe --tags --abbrev=0)..HEAD --oneline | while read l; do e
 EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    npm run make -- --mac
+    npm run make--mac
     set -x
     virtualenv augur-venv
     source augur-venv/bin/activate
