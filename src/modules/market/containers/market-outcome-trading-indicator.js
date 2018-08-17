@@ -4,9 +4,10 @@ import OutcomeTradingIndicator from 'modules/market/components/common/outcome-tr
 import { selectMarketOutcomeTradingIndicator } from 'modules/market/selectors/select-market-outcome-trading-indicator'
 
 const mapStateToProps = (state, ownProps) => {
-  const { marketTradingHistory } = state
+  const { marketTradingHistory, isMobile } = state
   return {
     tradingIndicator: selectMarketOutcomeTradingIndicator(marketTradingHistory, ownProps.outcome),
+    isMobile,
   }
 }
 
