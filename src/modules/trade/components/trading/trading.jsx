@@ -7,10 +7,8 @@ import { Check, Close } from 'modules/common/components/icons'
 import { isEqual } from 'lodash'
 import makePath from 'modules/routes/helpers/make-path'
 import classNames from 'classnames'
-
+import { AUTHENTICATION, ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 import { BigNumber } from 'utils/create-big-number'
-
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import Styles from 'modules/trade/components/trading/trading.styles'
 
@@ -133,8 +131,16 @@ class MarketTrading extends Component {
         }
         { isMobile && hasSelectedOutcome && initialMessage &&
           <div className={Styles['Trading__initial-message']}>
-            <p>{ initialMessage }</p>
-            {!hasFunds &&
+            <p>
+              { !isLogged ?
+                <span>
+                  <Link to={makePath(AUTHENTICATION)} style={{ textDecoration: 'underline', marginRight: '4px' }}>Log in</Link>
+                  to trade.
+                </span>
+                : initialMessage
+              }
+            </p>
+            {!hasFunds && isLogged &&
               <Link
                 to={makePath(ACCOUNT_DEPOSIT)}
               >

@@ -7,6 +7,7 @@ import { BigNumber, createBigNumber } from 'utils/create-big-number'
 import MarketTradingForm from 'modules/trade/components/trading--form/trading--form'
 import MarketTradingConfirm from 'modules/trade/components/trading--confirm/trading--confirm'
 import { Close } from 'modules/common/components/icons'
+import { AUTHENTICATION, ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 
 import makePath from 'modules/routes/helpers/make-path'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
@@ -15,7 +16,6 @@ import getValue from 'utils/get-value'
 import { isEqual } from 'lodash'
 
 import { BUY, SELL, LIMIT } from 'modules/transactions/constants/types'
-import { ACCOUNT_DEPOSIT } from 'modules/routes/constants/views'
 import MarketOutcomeTradingIndicator from 'modules/market/containers/market-outcome-trading-indicator'
 import Styles from 'modules/trade/components/trading--wrapper/trading--wrapper.styles'
 
@@ -200,7 +200,15 @@ class MarketTradingWrapper extends Component {
               </li>
             </ul>
             { initialMessage &&
-              <p className={Styles['TradingWrapper__initial-message']}>{ initialMessage }</p>
+              <p className={Styles['TradingWrapper__initial-message']}>
+                { !isLogged ?
+                  <span>
+                    <Link to={makePath(AUTHENTICATION)} style={{ textDecoration: 'underline', marginRight: '4px' }}>Log in</Link>
+                    to trade.
+                  </span>
+                  : initialMessage
+                }
+              </p>
             }
             { initialMessage && isLogged && availableFunds && availableFunds.lte(0) &&
               <Link className={Styles['TradingWrapper__button--add-funds']} to={makePath(ACCOUNT_DEPOSIT)}>Add Funds</Link>
