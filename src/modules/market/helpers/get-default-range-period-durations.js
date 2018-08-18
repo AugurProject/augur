@@ -1,13 +1,9 @@
-import {
-  compose,
-  find,
-  property,
-} from 'lodash/fp'
+import { compose, find, property } from "lodash/fp";
 
 const findFn = compose(
-  property('duration'),
-  find(['isDefault', true]),
-)
+  property("duration"),
+  find(["isDefault", true])
+);
 
 /**
  * @typedef {Object} Duration
@@ -28,8 +24,10 @@ const findFn = compose(
  *
  * @return {DefaultRangeAndPeriod}
  */
-export const getDefaultRangePeriodDuration = (fullRangeList, fullPeriodList) => ({
+export const getDefaultRangePeriodDuration = (
+  fullRangeList,
+  fullPeriodList
+) => ({
   range: findFn(fullRangeList),
-  period: findFn(fullPeriodList),
-})
-
+  period: findFn(fullPeriodList)
+});

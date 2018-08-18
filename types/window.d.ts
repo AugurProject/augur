@@ -1,4 +1,3 @@
-
 interface IntegrationHelpers {
   updateAccountAddress(address: string): void;
   findMarketId(marketDescription: string): void;
@@ -19,6 +18,5 @@ interface IntegrationHelpers {
 }
 
 declare namespace window {
-  export const integrationHelpers:IntegrationHelpers;
+  export const integrationHelpers: IntegrationHelpers;
 }
-

@@ -1,2 +1,2 @@
-export const PRICE = 'price'
-export const SHARE = 'share'
+export const PRICE = "price";
+export const SHARE = "share";

@@ -1,15 +1,19 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
-import { Link } from 'modules/common/containers/sticky-params-components'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
+import { Link } from "modules/common/containers/sticky-params-components";
 
-import makePath from 'modules/routes/helpers/make-path'
-import MarketsList from 'modules/markets/components/markets-list'
-import Styles from 'modules/portfolio/components/markets/markets.styles'
-import PortfolioStyles from 'modules/portfolio/components/portfolio-view/portfolio-view.styles'
-import { TYPE_TRADE, TYPE_REPORT, TYPE_CLOSED } from 'modules/market/constants/link-types'
-import { constants } from 'services/augurjs'
-import { CREATE_MARKET } from 'modules/routes/constants/views'
+import makePath from "modules/routes/helpers/make-path";
+import MarketsList from "modules/markets/components/markets-list";
+import Styles from "modules/portfolio/components/markets/markets.styles";
+import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
+import {
+  TYPE_TRADE,
+  TYPE_REPORT,
+  TYPE_CLOSED
+} from "modules/market/constants/link-types";
+import { constants } from "services/augurjs";
+import { CREATE_MARKET } from "modules/routes/constants/views";
 
 class MyMarkets extends Component {
   static propTypes = {
@@ -25,32 +29,32 @@ class MyMarkets extends Component {
     match: PropTypes.object.isRequired,
     myMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    pendingLiquidityOrders: PropTypes.object,
-  }
+    pendingLiquidityOrders: PropTypes.object
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
     // NOTE: from here to this.state was added to sort markets, this might need to be more robust in the future.
-    const openMarkets = []
-    const reportingMarkets = []
-    const finalMarkets = []
-    const filteredMarketsOpen = []
-    const filteredMarketsReporting = []
-    const filteredMarketsFinal = []
-    this.reportingStates = constants.REPORTING_STATE
+    const openMarkets = [];
+    const reportingMarkets = [];
+    const finalMarkets = [];
+    const filteredMarketsOpen = [];
+    const filteredMarketsReporting = [];
+    const filteredMarketsFinal = [];
+    this.reportingStates = constants.REPORTING_STATE;
 
     this.props.myMarkets.forEach((market, index) => {
       if (market.reportingState === this.reportingStates.PRE_REPORTING) {
-        openMarkets.push(market)
-        filteredMarketsOpen.push(market.id)
+        openMarkets.push(market);
+        filteredMarketsOpen.push(market.id);
       } else if (market.reportingState === this.reportingStates.FINALIZED) {
-        finalMarkets.push(market)
-        filteredMarketsFinal.push(market.id)
+        finalMarkets.push(market);
+        filteredMarketsFinal.push(market.id);
       } else {
-        reportingMarkets.push(market)
-        filteredMarketsReporting.push(market.id)
+        reportingMarkets.push(market);
+        filteredMarketsReporting.push(market.id);
       }
-    })
+    });
 
     this.state = {
       openMarkets,
@@ -58,37 +62,40 @@ class MyMarkets extends Component {
       finalMarkets,
       filteredMarketsOpen,
       filteredMarketsReporting,
-      filteredMarketsFinal,
-    }
+      filteredMarketsFinal
+    };
   }
 
   componentWillMount() {
-    const { loadMarkets } = this.props
+    const { loadMarkets } = this.props;
     // Load all markets incase they haven't been loaded already
     // Eventually replace this with a 1 to 1 call to augurnode for example what we need.
-    loadMarkets()
+    loadMarkets();
   }
 
   componentWillReceiveProps(nextProps) {
-    const openMarkets = []
-    const reportingMarkets = []
-    const finalMarkets = []
-    const filteredMarketsOpen = []
-    const filteredMarketsReporting = []
-    const filteredMarketsFinal = []
+    const openMarkets = [];
+    const reportingMarkets = [];
+    const finalMarkets = [];
+    const filteredMarketsOpen = [];
+    const filteredMarketsReporting = [];
+    const filteredMarketsFinal = [];
 
     nextProps.myMarkets.forEach((market, index) => {
       if (market.reportingState === this.reportingStates.PRE_REPORTING) {
-        openMarkets.push(market)
-        filteredMarketsOpen.push(market.id)
-      } else if (market.reportingState === this.reportingStates.FINALIZED || market.reportingState === this.reportingStates.AWAITING_FINALIZATION) {
-        finalMarkets.push(market)
-        filteredMarketsFinal.push(market.id)
+        openMarkets.push(market);
+        filteredMarketsOpen.push(market.id);
+      } else if (
+        market.reportingState === this.reportingStates.FINALIZED ||
+        market.reportingState === this.reportingStates.AWAITING_FINALIZATION
+      ) {
+        finalMarkets.push(market);
+        filteredMarketsFinal.push(market.id);
       } else {
-        reportingMarkets.push(market)
-        filteredMarketsReporting.push(market.id)
+        reportingMarkets.push(market);
+        filteredMarketsReporting.push(market.id);
       }
-    })
+    });
 
     this.setState({
       openMarkets,
@@ -96,8 +103,8 @@ class MyMarkets extends Component {
       finalMarkets,
       filteredMarketsOpen,
       filteredMarketsReporting,
-      filteredMarketsFinal,
-    })
+      filteredMarketsFinal
+    });
   }
 
   render() {
@@ -111,24 +118,23 @@ class MyMarkets extends Component {
       location,
       myMarkets,
       toggleFavorite,
-      pendingLiquidityOrders,
-    } = this.props
-    const s = this.state
-    const haveMarkets = myMarkets && !!myMarkets.length
+      pendingLiquidityOrders
+    } = this.props;
+    const s = this.state;
+    const haveMarkets = myMarkets && !!myMarkets.length;
 
     return (
       <section className={Styles.Markets}>
         <Helmet>
           <title>My Markets</title>
         </Helmet>
-        {myMarkets && !!myMarkets.length &&
-          <div
-            className={Styles.Markets__SortBar}
-          >
-            <h2 className={Styles['Markets__SortBar-title']}>Open</h2>
-          </div>
-        }
-        {haveMarkets &&
+        {myMarkets &&
+          !!myMarkets.length && (
+            <div className={Styles.Markets__SortBar}>
+              <h2 className={Styles["Markets__SortBar-title"]}>Open</h2>
+            </div>
+          )}
+        {haveMarkets && (
           <MarketsList
             testid="open"
             isLogged={isLogged}
@@ -145,20 +151,17 @@ class MyMarkets extends Component {
             isMobile={isMobile}
             pendingLiquidityOrders={pendingLiquidityOrders}
           />
-        }
-        {haveMarkets && s.filteredMarketsOpen.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        )}
         {haveMarkets &&
-          <div
-            className={Styles.Markets__SortBar}
-          >
-            <div
-              className={Styles['Markets__SortBar-title']}
-            >
-              In Reporting
-            </div>
+          s.filteredMarketsOpen.length === 0 && (
+            <div className={Styles["Markets__nullState--spacer"]} />
+          )}
+        {haveMarkets && (
+          <div className={Styles.Markets__SortBar}>
+            <div className={Styles["Markets__SortBar-title"]}>In Reporting</div>
           </div>
-        }
-        {haveMarkets &&
+        )}
+        {haveMarkets && (
           <MarketsList
             testid="inReporting"
             isLogged={isLogged}
@@ -174,20 +177,17 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
           />
-        }
-        {haveMarkets && s.filteredMarketsReporting.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
+        )}
         {haveMarkets &&
-          <div
-            className={Styles.Markets__SortBar}
-          >
-            <div
-              className={Styles['Markets__SortBar-title']}
-            >
-              Resolved
-            </div>
+          s.filteredMarketsReporting.length === 0 && (
+            <div className={Styles["Markets__nullState--spacer"]} />
+          )}
+        {haveMarkets && (
+          <div className={Styles.Markets__SortBar}>
+            <div className={Styles["Markets__SortBar-title"]}>Resolved</div>
           </div>
-        }
-        {haveMarkets &&
+        )}
+        {haveMarkets && (
           <MarketsList
             testid="resolved"
             isLogged={isLogged}
@@ -203,10 +203,13 @@ class MyMarkets extends Component {
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
           />
-        }
-        {haveMarkets && s.filteredMarketsFinal.length === 0 && <div className={Styles['Markets__nullState--spacer']} />}
-        {(myMarkets == null || (myMarkets && myMarkets.length === 0)) &&
-          <div className={PortfolioStyles.NoMarkets__container} >
+        )}
+        {haveMarkets &&
+          s.filteredMarketsFinal.length === 0 && (
+            <div className={Styles["Markets__nullState--spacer"]} />
+          )}
+        {(myMarkets == null || (myMarkets && myMarkets.length === 0)) && (
+          <div className={PortfolioStyles.NoMarkets__container}>
             <span>You haven&apos;t created any markets.</span>
             <Link
               className={PortfolioStyles.NoMarkets__link}
@@ -215,10 +218,10 @@ class MyMarkets extends Component {
               <span>Click here to create a new market.</span>
             </Link>
           </div>
-        }
+        )}
       </section>
-    )
+    );
   }
 }
 
-export default MyMarkets
+export default MyMarkets;

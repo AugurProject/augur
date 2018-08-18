@@ -1,101 +1,101 @@
-import {
-  filterArrayByArrayPredicate,
-} from 'src/modules/filter-sort/helpers/filter-array-of-objects-by-array'
+import { filterArrayByArrayPredicate } from "src/modules/filter-sort/helpers/filter-array-of-objects-by-array";
 
-import { identity } from 'lodash/fp'
+import { identity } from "lodash/fp";
 
-describe('src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js', () => {
-  const examplePropertyToFilterOn = 'some-prop'
-  let result
+describe("src/modules/filter-sort/helpers/filter-array-of-objects-by-array.js", () => {
+  const examplePropertyToFilterOn = "some-prop";
+  let result;
 
-  describe('when propertyToFilterOn is null', () => {
+  describe("when propertyToFilterOn is null", () => {
     beforeEach(() => {
-      result = filterArrayByArrayPredicate(null, [])
-    })
+      result = filterArrayByArrayPredicate(null, []);
+    });
 
-    it('should return identity function', () => {
-      assert.equal(result, identity)
-    })
-  })
+    it("should return identity function", () => {
+      assert.equal(result, identity);
+    });
+  });
 
-  describe('when arrayToFilterBy is null', () => {
+  describe("when arrayToFilterBy is null", () => {
     beforeEach(() => {
-      result = filterArrayByArrayPredicate(examplePropertyToFilterOn, null)
-    })
+      result = filterArrayByArrayPredicate(examplePropertyToFilterOn, null);
+    });
 
-    it('should return identity function', () => {
-      assert.equal(result, identity)
-    })
-  })
+    it("should return identity function", () => {
+      assert.equal(result, identity);
+    });
+  });
 
-  describe('when arrayToFilterBy is an empty array', () => {
+  describe("when arrayToFilterBy is an empty array", () => {
     beforeEach(() => {
-      result = filterArrayByArrayPredicate('some-prop', [])
-    })
+      result = filterArrayByArrayPredicate("some-prop", []);
+    });
 
-    it('should return identity function', () => {
-      assert.equal(result, identity)
-    })
-  })
+    it("should return identity function", () => {
+      assert.equal(result, identity);
+    });
+  });
 
-  describe('when arrayToFilterBy is non-empty', () => {
-    let exampleArrayToFilterBy
-    let filterPredicateFn
+  describe("when arrayToFilterBy is non-empty", () => {
+    let exampleArrayToFilterBy;
+    let filterPredicateFn;
 
     beforeEach(() => {
-      exampleArrayToFilterBy = ['prop1', 'prop2']
-      filterPredicateFn = filterArrayByArrayPredicate(examplePropertyToFilterOn, exampleArrayToFilterBy)
-    })
+      exampleArrayToFilterBy = ["prop1", "prop2"];
+      filterPredicateFn = filterArrayByArrayPredicate(
+        examplePropertyToFilterOn,
+        exampleArrayToFilterBy
+      );
+    });
 
-    it('should return a filter function', () => {
-      assert.isFunction(filterPredicateFn)
-    })
+    it("should return a filter function", () => {
+      assert.isFunction(filterPredicateFn);
+    });
 
-    describe('when passed an object that has one matching members', () => {
+    describe("when passed an object that has one matching members", () => {
       beforeEach(() => {
         result = filterPredicateFn({
-          [examplePropertyToFilterOn]: ['prop1'],
-        })
-      })
+          [examplePropertyToFilterOn]: ["prop1"]
+        });
+      });
 
-      it('should be true', () => {
-        assert.isOk(result)
-      })
-    })
+      it("should be true", () => {
+        assert.isOk(result);
+      });
+    });
 
-    describe('when passed an object with two matching members', () => {
+    describe("when passed an object with two matching members", () => {
       beforeEach(() => {
         result = filterPredicateFn({
-          [examplePropertyToFilterOn]: ['prop1', 'prop2'],
-        })
-      })
+          [examplePropertyToFilterOn]: ["prop1", "prop2"]
+        });
+      });
 
-      it('should be true', () => {
-        assert.isOk(result)
-      })
-    })
+      it("should be true", () => {
+        assert.isOk(result);
+      });
+    });
 
-    describe('when passed an object without matching member', () => {
+    describe("when passed an object without matching member", () => {
       beforeEach(() => {
         result = filterPredicateFn({
-          [examplePropertyToFilterOn]: ['prop3'],
-        })
-      })
+          [examplePropertyToFilterOn]: ["prop3"]
+        });
+      });
 
-      it('should be true', () => {
-        assert.isNotOk(result)
-      })
-    })
+      it("should be true", () => {
+        assert.isNotOk(result);
+      });
+    });
 
-    describe('when passed an object without property to filter on', () => {
+    describe("when passed an object without property to filter on", () => {
       beforeEach(() => {
-        result = filterPredicateFn({
-        })
-      })
+        result = filterPredicateFn({});
+      });
 
-      it('should be false', () => {
-        assert.isNotOk(result)
-      })
-    })
-  })
-})
+      it("should be false", () => {
+        assert.isNotOk(result);
+      });
+    });
+  });
+});

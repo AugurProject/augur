@@ -1,3 +1,1 @@
-export const NO_RELAY = [
-  'buyCompleteSets',
-]
+export const NO_RELAY = ["buyCompleteSets"];

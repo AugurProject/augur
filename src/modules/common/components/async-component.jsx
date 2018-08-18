@@ -1,38 +1,38 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 // { moduleName, loader, props }
-export default options => (
+export default options =>
   class AsyncComponent extends Component {
     constructor(props) {
-      super(props)
+      super(props);
 
       this.state = {
-        Component: null,
-      }
+        Component: null
+      };
 
-      this.loadAsyncComponent = this.loadAsyncComponent.bind(this)
+      this.loadAsyncComponent = this.loadAsyncComponent.bind(this);
     }
 
     componentWillMount() {
-      this.loadAsyncComponent(options.loader, options.props)
+      this.loadAsyncComponent(options.loader, options.props);
     }
 
     loadAsyncComponent(loader) {
       loader()
-        .then((Component) => {
-          this.setState({ Component })
+        .then(Component => {
+          this.setState({ Component });
         })
-        .catch(err => asyncModuleLoadError(options.moduleName, err))
+        .catch(err => asyncModuleLoadError(options.moduleName, err));
     }
 
     render() {
-      if (this.state.Component) return <this.state.Component {...this.props} {...options.props} />
+      if (this.state.Component)
+        return <this.state.Component {...this.props} {...options.props} />;
 
-      return null
+      return null;
     }
-  }
-)
+  };
 
 function asyncModuleLoadError(moduleName, err) {
-  console.error(`ERROR: Failed to load '${moduleName}' module -- `, err)
+  console.error(`ERROR: Failed to load '${moduleName}' module -- `, err);
 }

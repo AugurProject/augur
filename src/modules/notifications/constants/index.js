@@ -6,5 +6,5 @@
  * @readonly
  * @enum {string}
  */
-export const CRITICAL = 'CRITICAL'
-export const INFO = 'INFO'
+export const CRITICAL = "CRITICAL";
+export const INFO = "INFO";

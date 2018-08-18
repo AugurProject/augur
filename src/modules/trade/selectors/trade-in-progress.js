@@ -1,6 +1,6 @@
-import store from 'src/store'
+import store from "src/store";
 
-export default function () {
-  const { selectedMarketId, tradesInProgress } = store.getState()
-  return tradesInProgress[selectedMarketId]
+export default function() {
+  const { selectedMarketId, tradesInProgress } = store.getState();
+  return tradesInProgress[selectedMarketId];
 }

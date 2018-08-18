@@ -1,1 +1,1 @@
-export const TITLE_SUFFIX = '| AUGUR'
+export const TITLE_SUFFIX = "| AUGUR";

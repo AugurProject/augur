@@ -1,117 +1,105 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-import { ChevronUp, ChevronDown } from 'modules/common/components/icons'
+import { ChevronUp, ChevronDown } from "modules/common/components/icons";
 
-import { RANGES, PERIODS } from 'modules/market/constants/permissible-periods'
+import { RANGES, PERIODS } from "modules/market/constants/permissible-periods";
 
-import Styles from 'modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles'
-import { limitPeriodByRange } from 'src/modules/market/helpers'
+import Styles from "modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles";
+import { limitPeriodByRange } from "src/modules/market/helpers";
 
 export default class PeriodSelector extends Component {
   static propTypes = {
     updateSelectedPeriod: PropTypes.func.isRequired,
     updateSelectedRange: PropTypes.func.isRequired,
     selectedPeriod: PropTypes.number,
-    selectedRange: PropTypes.number,
-  }
+    selectedRange: PropTypes.number
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      isModalActive: false,
-    }
+      isModalActive: false
+    };
 
-    this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
-    this.selectRange = this.selectRange.bind(this)
-    this.selectPeriod = this.selectPeriod.bind(this)
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
+    this.selectRange = this.selectRange.bind(this);
+    this.selectPeriod = this.selectPeriod.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('click', this.handleWindowOnClick)
+    window.addEventListener("click", this.handleWindowOnClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('click', this.handleWindowOnClick)
+    window.removeEventListener("click", this.handleWindowOnClick);
   }
 
   handleWindowOnClick(event) {
     if (this.periodSelector && !this.periodSelector.contains(event.target)) {
-      this.setState({ isModalActive: false })
+      this.setState({ isModalActive: false });
     }
   }
 
   selectRange(range) {
-    const {
-      selectedRange,
-      updateSelectedRange,
-    } = this.props
+    const { selectedRange, updateSelectedRange } = this.props;
 
-
-    updateSelectedRange(range.duration === selectedRange ? -1 : range.duration)
+    updateSelectedRange(range.duration === selectedRange ? -1 : range.duration);
     this.setState({
-      isModalActive: false,
-    })
+      isModalActive: false
+    });
   }
 
   selectPeriod(period) {
-    const {
-      selectedPeriod,
-      updateSelectedPeriod,
-    } = this.props
+    const { selectedPeriod, updateSelectedPeriod } = this.props;
 
-
-    updateSelectedPeriod(period.duration === selectedPeriod ? -1 : period.duration)
+    updateSelectedPeriod(
+      period.duration === selectedPeriod ? -1 : period.duration
+    );
     this.setState({
-      isModalActive: false,
-    })
+      isModalActive: false
+    });
   }
 
   render() {
-    const {
-      selectedPeriod,
-      selectedRange,
-    } = this.props
+    const { selectedPeriod, selectedRange } = this.props;
 
-    const s = this.state
+    const s = this.state;
 
-    const selectedPeriodLabel = (PERIODS.find(period => period.duration === selectedPeriod) || {}).label || null
-    const selectedRangeLabel = (RANGES.find(range => range.duration === selectedRange) || {}).label || null
+    const selectedPeriodLabel =
+      (PERIODS.find(period => period.duration === selectedPeriod) || {})
+        .label || null;
+    const selectedRangeLabel =
+      (RANGES.find(range => range.duration === selectedRange) || {}).label ||
+      null;
 
-    const periodsToDisplay = limitPeriodByRange(selectedRange)
-
+    const periodsToDisplay = limitPeriodByRange(selectedRange);
 
     return (
       <section className={Styles.PeriodSelector}>
         <button
           className={Styles.PeriodSelector__button}
-          onClick={(e) => {
-            e.stopPropagation()
-            this.setState({ isModalActive: !s.isModalActive })
+          onClick={e => {
+            e.stopPropagation();
+            this.setState({ isModalActive: !s.isModalActive });
           }}
         >
           <span>
-            {
-              selectedRangeLabel && selectedPeriodLabel ?
-                `${selectedRangeLabel}, ${selectedPeriodLabel}` :
-                'Range, Period'
-            }
+            {selectedRangeLabel && selectedPeriodLabel
+              ? `${selectedRangeLabel}, ${selectedPeriodLabel}`
+              : "Range, Period"}
           </span>
-          {s.isModalActive ?
-            <ChevronUp /> :
-            <ChevronDown />
-          }
+          {s.isModalActive ? <ChevronUp /> : <ChevronDown />}
         </button>
         <div
-          ref={(periodSelector) => { this.periodSelector = periodSelector }}
-          className={classNames(
-            Styles.PeriodSelector__modal,
-            {
-              [Styles['PeriodSelector__modal--active']]: s.isModalActive,
-            },
-          )}
+          ref={periodSelector => {
+            this.periodSelector = periodSelector;
+          }}
+          className={classNames(Styles.PeriodSelector__modal, {
+            [Styles["PeriodSelector__modal--active"]]: s.isModalActive
+          })}
           role="button"
         >
           <div className={Styles.PeriodSelector__column}>
@@ -123,11 +111,10 @@ export default class PeriodSelector extends Component {
                   className={Styles.PeriodSelector__value}
                 >
                   <button
-                    className={
-                      classNames({
-                        [Styles['PeriodSelector__value--active']]: range.duration === selectedRange,
-                      })
-                    }
+                    className={classNames({
+                      [Styles["PeriodSelector__value--active"]]:
+                        range.duration === selectedRange
+                    })}
                     onClick={() => this.selectRange(range)}
                   >
                     {range.label}
@@ -145,11 +132,10 @@ export default class PeriodSelector extends Component {
                   className={Styles.PeriodSelector__value}
                 >
                   <button
-                    className={
-                      classNames({
-                        [Styles['PeriodSelector__value--active']]: period.duration === selectedPeriod,
-                      })
-                    }
+                    className={classNames({
+                      [Styles["PeriodSelector__value--active"]]:
+                        period.duration === selectedPeriod
+                    })}
                     onClick={() => this.selectPeriod(period)}
                   >
                     {period.label}
@@ -160,6 +146,6 @@ export default class PeriodSelector extends Component {
           </div>
         </div>
       </section>
-    )
+    );
   }
 }

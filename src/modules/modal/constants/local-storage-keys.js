@@ -1,1 +1,1 @@
-export const DISCLAIMER_SEEN = 'disclaimerSeen'
+export const DISCLAIMER_SEEN = "disclaimerSeen";
