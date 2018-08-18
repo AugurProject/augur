@@ -194,15 +194,23 @@ export default class ReportingHeader extends Component {
                                   this.readMore = readMore;
                                 }}
                               >
-                                {disputeRep}{" "}
+                                <span style={{ fontSize: "32px" }}>
+                                  {disputeRep}
+                                </span>{" "}
                                 <span
                                   className={
                                     Styles["ReportingHeader__value-unit"]
                                   }
+                                  style={{
+                                    marginLeft: "1rem",
+                                    fontSize: "16px"
+                                  }}
                                 >
                                   REP
                                 </span>
-                                {showMore}
+                                <span style={{ marginBottom: "-0.5px" }}>
+                                  {showMore}
+                                </span>
                               </div>
                             </div>
                           )}
