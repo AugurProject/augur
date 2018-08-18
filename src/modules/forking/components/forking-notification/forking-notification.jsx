@@ -1,34 +1,34 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import ForkingContent from 'modules/forking/components/forking-content/forking-content'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import ForkingContent from "modules/forking/components/forking-content/forking-content";
 
-import Styles from 'modules/forking/components/forking-notification/forking-notification.styles'
+import Styles from "modules/forking/components/forking-notification/forking-notification.styles";
 
 class ForkingNotification extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      isExpanded: false,
-    }
+      isExpanded: false
+    };
 
-    this.expand = this.expand.bind(this)
+    this.expand = this.expand.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { location } = this.props
+    const { location } = this.props;
     if (nextProps.location !== location) {
       this.setState({
-        isExpanded: false,
-      })
+        isExpanded: false
+      });
     }
   }
 
   expand() {
     this.setState({
-      isExpanded: !this.state.isExpanded,
-    })
+      isExpanded: !this.state.isExpanded
+    });
   }
 
   render() {
@@ -37,15 +37,15 @@ class ForkingNotification extends Component {
       doesUserHaveRep,
       marginLeft,
       universe,
-      finalizeMarket,
-    } = this.props
+      finalizeMarket
+    } = this.props;
     const {
       forkEndTime,
       forkingMarket,
       isForkingMarketFinalized,
-      forkReputationGoal,
-    } = universe
-    const forkWindowActive = Number(forkEndTime) > currentTime
+      forkReputationGoal
+    } = universe;
+    const forkWindowActive = Number(forkEndTime) > currentTime;
 
     return (
       <section className={Styles.ForkingNotification__Container}>
@@ -56,28 +56,34 @@ class ForkingNotification extends Component {
               alt="Alert"
               src="../../assets/images/alert-icon.svg"
             />
-            {forkWindowActive &&
+            {forkWindowActive && (
               <div className={Styles.ForkingNotification__message}>
                 A Fork has been initiated. This universe is now locked.
               </div>
-            }
-            {!forkWindowActive &&
+            )}
+            {!forkWindowActive && (
               <div className={Styles.ForkingNotification__message}>
                 A Fork has occurred. This universe is now locked.
               </div>
-            }
+            )}
             <div className={Styles.ForkingNotification__addition_details}>
               <button
                 className={Styles.ForkingNotification__addition_details_button}
                 onClick={this.expand}
               >
                 Additional details
-                <i className={classNames(Styles.ForkingNotification__arrow, 'fa', this.state.isExpanded ? 'fa-angle-up' :'fa-angle-down')} />
+                <i
+                  className={classNames(
+                    Styles.ForkingNotification__arrow,
+                    "fa",
+                    this.state.isExpanded ? "fa-angle-up" : "fa-angle-down"
+                  )}
+                />
               </button>
             </div>
           </section>
         </header>
-        {this.state.isExpanded &&
+        {this.state.isExpanded && (
           <ForkingContent
             forkingMarket={forkingMarket}
             forkEndTime={forkEndTime}
@@ -88,9 +94,9 @@ class ForkingNotification extends Component {
             finalizeMarket={finalizeMarket}
             isForkingMarketFinalized={isForkingMarketFinalized}
           />
-        }
+        )}
       </section>
-    )
+    );
   }
 }
 
@@ -100,7 +106,7 @@ ForkingNotification.propTypes = {
   currentTime: PropTypes.number.isRequired,
   doesUserHaveRep: PropTypes.bool.isRequired,
   marginLeft: PropTypes.number.isRequired,
-  finalizeMarket: PropTypes.func.isRequired,
-}
+  finalizeMarket: PropTypes.func.isRequired
+};
 
-export default ForkingNotification
+export default ForkingNotification;

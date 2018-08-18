@@ -1,15 +1,15 @@
-import * as notificationLevels from 'src/modules/notifications/constants'
+import * as notificationLevels from "src/modules/notifications/constants";
 
-export const ADD_NOTIFICATION = 'ADD_NOTIFICATION'
-export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION'
-export const UPDATE_NOTIFICATION = 'UPDATE_NOTIFICATION'
-export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS'
+export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
+export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
+export const UPDATE_NOTIFICATION = "UPDATE_NOTIFICATION";
+export const CLEAR_NOTIFICATIONS = "CLEAR_NOTIFICATIONS";
 
 export function addCriticalNotification(notification) {
   return addNotification({
     level: notificationLevels.CRITICAL,
-    ...notification,
-  })
+    ...notification
+  });
 }
 
 export function addNotification(notification) {
@@ -20,18 +20,18 @@ export function addNotification(notification) {
         notification: {
           seen: false,
           level: notificationLevels.INFO,
-          ...notification,
-        },
-      },
-    }
+          ...notification
+        }
+      }
+    };
   }
 }
 
 export function removeNotification(id) {
   return {
     type: REMOVE_NOTIFICATION,
-    data: id,
-  }
+    data: id
+  };
 }
 
 export function updateNotification(id, notification) {
@@ -39,18 +39,20 @@ export function updateNotification(id, notification) {
     type: UPDATE_NOTIFICATION,
     data: {
       id,
-      notification,
-    },
-  }
+      notification
+    }
+  };
 }
 
 // We clear by 'notification level'.
 // This will not surface in the UI just yet.
-export function clearNotifications(notificationLevel = notificationLevels.INFO) {
+export function clearNotifications(
+  notificationLevel = notificationLevels.INFO
+) {
   return {
     type: CLEAR_NOTIFICATIONS,
     data: {
-      level: notificationLevel,
-    },
-  }
+      level: notificationLevel
+    }
+  };
 }

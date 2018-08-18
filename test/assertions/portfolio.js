@@ -1,8 +1,6 @@
-
-
-export default function (portfolio) {
-  describe('portfolio state', () => {
-    assert.isDefined(portfolio)
-    assert.isObject(portfolio)
-  })
+export default function(portfolio) {
+  describe("portfolio state", () => {
+    assert.isDefined(portfolio);
+    assert.isObject(portfolio);
+  });
 }

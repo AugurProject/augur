@@ -14,8 +14,8 @@
  */
 export const limitPeriodByRange = (fullPeriodList, selectedRange) => {
   if (!selectedRange) {
-    return fullPeriodList.slice()
+    return fullPeriodList.slice();
   }
 
-  return fullPeriodList.filter(period => period.duration < selectedRange)
-}
+  return fullPeriodList.filter(period => period.duration < selectedRange);
+};

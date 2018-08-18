@@ -1,6 +1,6 @@
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
-import { BUY } from 'modules/transactions/constants/types'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import { BigNumber, createBigNumber } from "utils/create-big-number";
+import { BUY } from "modules/transactions/constants/types";
+import { SCALAR } from "modules/markets/constants/market-types";
 
 /**
  *
@@ -20,37 +20,61 @@ import { SCALAR } from 'modules/markets/constants/market-types'
  *    potentialLossPercent:   number, the max percentage loss that can be lost with current numShares and limit price; for SELLs loss is always 100%
  */
 
-export default function (numShares, limitPrice, side, minPrice, maxPrice, type, sharesFilled, tradeTotalCost) {
+export default function(
+  numShares,
+  limitPrice,
+  side,
+  minPrice,
+  maxPrice,
+  type,
+  sharesFilled,
+  tradeTotalCost
+) {
   // tradeTotalCost is the "orderbook stays the same when this trade gets processed" value, not the maximum possible cost of the trade.
-  if (!numShares || !sharesFilled || !side|| !type || (!limitPrice && tradeTotalCost == null)) return null
+  if (
+    !numShares ||
+    !sharesFilled ||
+    !side ||
+    !type ||
+    (!limitPrice && tradeTotalCost == null)
+  )
+    return null;
 
-  if (type === SCALAR && (!minPrice || (!BigNumber.isBigNumber(minPrice) && isNaN(minPrice)) || !maxPrice || (!BigNumber.isBigNumber(maxPrice) && isNaN(maxPrice)))) return null
-  const max = createBigNumber(maxPrice, 10)
-  const min = createBigNumber(minPrice, 10)
-  const marketRange = max.minus(min).abs()
+  if (
+    type === SCALAR &&
+    (!minPrice ||
+      (!BigNumber.isBigNumber(minPrice) && isNaN(minPrice)) ||
+      !maxPrice ||
+      (!BigNumber.isBigNumber(maxPrice) && isNaN(maxPrice)))
+  )
+    return null;
+  const max = createBigNumber(maxPrice, 10);
+  const min = createBigNumber(minPrice, 10);
+  const marketRange = max.minus(min).abs();
 
-  const displayLimit = createBigNumber(limitPrice, 10)
+  const displayLimit = createBigNumber(limitPrice, 10);
 
-  const sharePriceLong = displayLimit.minus(min).dividedBy(marketRange)
-  const sharePriceShort = max.minus(displayLimit).dividedBy(marketRange)
+  const sharePriceLong = displayLimit.minus(min).dividedBy(marketRange);
+  const sharePriceShort = max.minus(displayLimit).dividedBy(marketRange);
 
-  const longETH = sharePriceLong.times(numShares).times(marketRange)
-  const shortETH = sharePriceShort.times(numShares).times(marketRange)
+  const longETH = sharePriceLong.times(numShares).times(marketRange);
+  const shortETH = sharePriceShort.times(numShares).times(marketRange);
 
-  const maxTotalTradeCost= side === BUY ? longETH : shortETH
+  const maxTotalTradeCost = side === BUY ? longETH : shortETH;
 
-  const longETHPercent = shortETH.dividedBy(maxTotalTradeCost).times(100)
-  const shortETHPercent = longETH.dividedBy(maxTotalTradeCost).times(100)
+  const longETHPercent = shortETH.dividedBy(maxTotalTradeCost).times(100);
+  const shortETHPercent = longETH.dividedBy(maxTotalTradeCost).times(100);
 
-  const potentialEthProfit = side === BUY ? shortETH : longETH
-  const potentialEthLoss = side === BUY ? longETH : shortETH
-  const potentialProfitPercent = side === BUY ? longETHPercent : shortETHPercent
-  const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent
+  const potentialEthProfit = side === BUY ? shortETH : longETH;
+  const potentialEthLoss = side === BUY ? longETH : shortETH;
+  const potentialProfitPercent =
+    side === BUY ? longETHPercent : shortETHPercent;
+  const potentialLossPercent = side === BUY ? shortETHPercent : longETHPercent;
 
   return {
     potentialEthProfit,
     potentialEthLoss,
     potentialProfitPercent,
-    potentialLossPercent,
-  }
+    potentialLossPercent
+  };
 }

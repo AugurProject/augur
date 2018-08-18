@@ -1,23 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
 
-import ReportingHeader from 'modules/reporting/containers/reporting-header'
-import MarketsList from 'modules/markets/components/markets-list'
-import { TYPE_VIEW } from 'modules/market/constants/link-types'
-import DisputeMarketCard from 'modules/reporting/components/dispute-market-card/dispute-market-card'
+import ReportingHeader from "modules/reporting/containers/reporting-header";
+import MarketsList from "modules/markets/components/markets-list";
+import { TYPE_VIEW } from "modules/market/constants/link-types";
+import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 
-import Styles from 'modules/reporting/components/reporting-resolved/reporting-resolved.styles'
-
+import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
 
 function getMarketIds(markets) {
-  const filteredMarkets = []
-  markets.forEach((market) => {
-    filteredMarkets.push(market.id)
-  })
+  const filteredMarkets = [];
+  markets.forEach(market => {
+    filteredMarkets.push(market.id);
+  });
   // Reverse order of filteredMarkets so markets resolved most recently are first
-  filteredMarkets.reverse()
-  return filteredMarkets
+  filteredMarkets.reverse();
+  return filteredMarkets;
 }
 
 export default class ReportingResolved extends Component {
@@ -30,27 +29,27 @@ export default class ReportingResolved extends Component {
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
     isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.object,
-  }
+    forkingMarket: PropTypes.object
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      filteredMarkets: [],
-    }
+      filteredMarkets: []
+    };
   }
 
   componentWillMount() {
-    const { loadReporting } = this.props
-    loadReporting()
+    const { loadReporting } = this.props;
+    loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {
-    const { markets } = this.props
+    const { markets } = this.props;
     if (nextProps.markets.length > 0 && nextProps.markets !== markets) {
-      const filteredMarkets = getMarketIds(nextProps.markets)
-      this.setState({ filteredMarkets })
+      const filteredMarkets = getMarketIds(nextProps.markets);
+      this.setState({ filteredMarkets });
     }
   }
 
@@ -63,20 +62,18 @@ export default class ReportingResolved extends Component {
       markets,
       toggleFavorite,
       isForkingMarketFinalized,
-      forkingMarket,
-    } = this.props
-    const s = this.state
+      forkingMarket
+    } = this.props;
+    const s = this.state;
 
     return (
       <section>
         <Helmet>
           <title>Resolved</title>
         </Helmet>
-        <ReportingHeader
-          heading="Resolved"
-        />
-        { isForkingMarketFinalized &&
-          <div className={Styles['ReportingResolved__forked-market-card']}>
+        <ReportingHeader heading="Resolved" />
+        {isForkingMarketFinalized && (
+          <div className={Styles["ReportingResolved__forked-market-card"]}>
             <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
             <DisputeMarketCard
               market={forkingMarket}
@@ -87,7 +84,7 @@ export default class ReportingResolved extends Component {
               outcomes={[]}
             />
           </div>
-        }
+        )}
         <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
         <MarketsList
           isLogged={isLogged}
@@ -101,6 +98,6 @@ export default class ReportingResolved extends Component {
           paginationPageParam="reporting-resolved-page"
         />
       </section>
-    )
+    );
   }
 }

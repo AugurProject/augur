@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 
-import Styles from 'modules/common/components/checkbox/checkbox.styles'
+import Styles from "modules/common/components/checkbox/checkbox.styles";
 
 const Checkbox = p => (
   <div className={Styles.Checkbox}>
@@ -12,9 +12,14 @@ const Checkbox = p => (
       value={p.value}
       onChange={p.onClick}
     />
-    <span role="button" tabIndex={0} onClick={p.onClick} className={Styles.Checkbox__checkmark} />
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={p.onClick}
+      className={Styles.Checkbox__checkmark}
+    />
   </div>
-)
+);
 
 Checkbox.propTypes = {
   id: PropTypes.string,
@@ -22,7 +27,7 @@ Checkbox.propTypes = {
   title: PropTypes.string,
   isChecked: PropTypes.bool,
   value: PropTypes.bool,
-  onClick: PropTypes.func,
-}
+  onClick: PropTypes.func
+};
 
-export default Checkbox
+export default Checkbox;

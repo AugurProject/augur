@@ -1,1 +1,1 @@
-export const QUERY_VALUE_DELIMITER = '.~_'
+export const QUERY_VALUE_DELIMITER = ".~_";

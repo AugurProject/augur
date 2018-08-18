@@ -1,10 +1,10 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-import MarketOutcomesChart from 'modules/market/components/market-outcomes-chart/market-outcomes-chart'
+import MarketOutcomesChart from "modules/market/components/market-outcomes-chart/market-outcomes-chart";
 
-import { selectMarket } from 'modules/market/selectors/market'
-import { selectCurrentTimestamp } from 'src/select-state'
-import { createBigNumber } from 'src/utils/create-big-number'
+import { selectMarket } from "modules/market/selectors/market";
+import { selectCurrentTimestamp } from "src/select-state";
+import { createBigNumber } from "src/utils/create-big-number";
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -12,13 +12,16 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice = createBigNumber(1),
     minPrice = createBigNumber(0),
     outcomes = [],
-    volume = { formatted: '0' },
-  } = selectMarket(ownProps.marketId)
-
+    volume = { formatted: "0" }
+  } = selectMarket(ownProps.marketId);
 
   // (minPrice + ((maxPrice - minPrice) / outcomes.length)
-  const adjusted = createBigNumber(maxPrice).minus(minPrice).div(outcomes.length)
-  const estimatedInitialPrice = createBigNumber(minPrice).plus(adjusted).toNumber()
+  const adjusted = createBigNumber(maxPrice)
+    .minus(minPrice)
+    .div(outcomes.length);
+  const estimatedInitialPrice = createBigNumber(minPrice)
+    .plus(adjusted)
+    .toNumber();
 
   return {
     creationTime: creationTime.value.getTime(),
@@ -27,8 +30,8 @@ const mapStateToProps = (state, ownProps) => {
     maxPrice: maxPrice.toNumber(),
     minPrice: minPrice.toNumber(),
     outcomes,
-    hasPriceHistory: volume.formatted !== '0',
-  }
-}
+    hasPriceHistory: volume.formatted !== "0"
+  };
+};
 
-export default connect(mapStateToProps)(MarketOutcomesChart)
+export default connect(mapStateToProps)(MarketOutcomesChart);

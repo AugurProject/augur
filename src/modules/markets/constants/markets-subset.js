@@ -1,2 +1,2 @@
-export const FAVORITES = 'favorites'
-export const PENDING_REPORTS = 'pending reports'
+export const FAVORITES = "favorites";
+export const PENDING_REPORTS = "pending reports";

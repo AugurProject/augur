@@ -1,19 +1,22 @@
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-import App from 'modules/app/components/app/app'
-import { sendFinalizeMarket } from 'modules/market/actions/finalize-market'
-import { selectInfoNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
-import { selectMarketsHeader } from 'modules/markets/selectors/markets-header'
-import { selectCoreStats } from 'modules/account/selectors/core-stats'
-import { selectCategories } from 'modules/categories/selectors/categories'
-import portfolio from 'modules/portfolio/selectors/portfolio'
-import { updateIsMobile, updateIsMobileSmall } from 'modules/app/actions/update-is-mobile'
-import getAllMarkets from 'modules/markets/selectors/markets-all'
-import { initAugur } from 'modules/app/actions/init-augur'
-import { updateModal } from 'modules/modal/actions/update-modal'
-import { isLoading } from 'modules/app/selectors/is-loading'
-import { updateIsAnimating } from 'modules/app/actions/update-is-animating'
+import App from "modules/app/components/app/app";
+import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
+import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selectors/notifications";
+import { selectMarketsHeader } from "modules/markets/selectors/markets-header";
+import { selectCoreStats } from "modules/account/selectors/core-stats";
+import { selectCategories } from "modules/categories/selectors/categories";
+import portfolio from "modules/portfolio/selectors/portfolio";
+import {
+  updateIsMobile,
+  updateIsMobileSmall
+} from "modules/app/actions/update-is-mobile";
+import getAllMarkets from "modules/markets/selectors/markets-all";
+import { initAugur } from "modules/app/actions/init-augur";
+import { updateModal } from "modules/modal/actions/update-modal";
+import { isLoading } from "modules/app/selectors/is-loading";
+import { updateIsAnimating } from "modules/app/actions/update-is-animating";
 import {
   selectBlockchainState,
   selectConnectionState,
@@ -25,8 +28,8 @@ import {
   selectLoginAccountState,
   selectModal,
   selectUniverseState,
-  selectUrlState,
-} from 'src/select-state'
+  selectUrlState
+} from "src/select-state";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
@@ -46,18 +49,25 @@ const mapStateToProps = state => ({
   notifications: selectInfoNotificationsAndSeenCount(state),
   portfolio: portfolio(),
   universe: selectUniverseState(state),
-  url: selectUrlState(state),
-})
+  url: selectUrlState(state)
+});
 
 const mapDispatchToProps = dispatch => ({
-  initAugur: (history, overrides, cb) => dispatch(initAugur(history, overrides, cb)),
+  initAugur: (history, overrides, cb) =>
+    dispatch(initAugur(history, overrides, cb)),
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
-  updateIsMobileSmall: isMobileSmall => dispatch(updateIsMobileSmall(isMobileSmall)),
+  updateIsMobileSmall: isMobileSmall =>
+    dispatch(updateIsMobileSmall(isMobileSmall)),
   updateIsAnimating: isAnimating => dispatch(updateIsAnimating(isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
-  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId)),
-})
+  finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
+});
 
-const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
+const AppContainer = withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);
 
-export default AppContainer
+export default AppContainer;
