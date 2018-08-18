@@ -88,9 +88,9 @@ if 'cursesmenu' in sys.modules:
         sys.exit(0)
 else:
     print('  '.join(release_versions))
-    version = input('enter version to sanity check')
+    version = input('enter version to sanity check: ')
 
-file_extensions = ['dmg', 'deb', 'exe', 'snap']
+file_extensions = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 assets = assets_for_version(all_release_info, version)
 
 headers['Accept'] = 'application/octet-stream'
@@ -140,3 +140,8 @@ for file, v in comparison.items():
 print('going to sign this: ')
 print(message_to_sign)
 
+password = getpass.getpass()
+gpg = gnupg.GPG()
+signed_data = gpg.sign(message_to_sign, keyid='4ABBBBE0', passphrase=password)
+
+print(str(signed_data))
