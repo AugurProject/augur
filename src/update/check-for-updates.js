@@ -78,7 +78,16 @@ module.exports = (notifyUpdateNotAvailable = false) => {
   if (notifyUpdateNotAvailable) autoUpdater
     .once('update-not-available', notifyNoUpdate)
 
-  autoUpdater.checkForUpdates()
+
+
+  try {
+    autoUpdater.checkForUpdates()
+  } catch(e) {
+    log.error('There was an error updating app. This is expected if using deb package.', e);
+
+    // Kickoff the app.
+    return Promise.resolve()
+  }
 
   return p
 }
