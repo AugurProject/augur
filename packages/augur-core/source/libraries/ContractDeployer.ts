@@ -90,7 +90,7 @@ Deploying to: ${networkConfiguration.networkName}
 
     private generateCompleteAddressMapping(): { [name: string]: string } {
         const mapping: { [name: string]: string } = {};
-        mapping['Controller'] = this.controller.address;
+        mapping['Controller'] = this.controller!.address;
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;

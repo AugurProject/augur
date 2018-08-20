@@ -20,7 +20,7 @@ export class TestFixture {
     public readonly testRpc: TestRpc | null;
     public readonly sdbEnabled: boolean;
 
-    public get universe() { return this.contractDeployer.universe; }
+    public get universe() { return this.contractDeployer.universe!; }
     public get cash() { return <Cash> this.contractDeployer.getContract('Cash'); }
 
     public constructor(connector: Connector, accountManager: AccountManager, contractDeployer: ContractDeployer, testRpc: TestRpc | null, sdbEnabled: boolean) {
@@ -62,7 +62,7 @@ export class TestFixture {
         }
 
         const testFixture = new TestFixture(connector, accountManager, contractDeployer, testRpc, compilerConfiguration.enableSdb);
-        await testFixture.linkDebugSymbolsForContract('Universe', testFixture.contractDeployer.universe.address);
+        await testFixture.linkDebugSymbolsForContract('Universe', testFixture.universe.address);
 
         return testFixture;
     }
