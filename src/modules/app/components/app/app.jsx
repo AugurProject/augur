@@ -65,7 +65,6 @@ import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
 import Styles from "modules/app/components/app/app.styles";
 import MarketsInnerNavContainer from "src/modules/app/containers/markets-inner-nav";
 import { NotificationBarContainer } from "src/modules/notification-bar/containers/notification-bar-container";
-import * as qs from "query-string";
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -117,7 +116,10 @@ export default class AppView extends Component {
     updateIsAnimating: PropTypes.func.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     url: PropTypes.string,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    augurNode: PropTypes.string,
+    ethereumNodeHttp: PropTypes.string,
+    ethereumNodeWs: PropTypes.string
   };
 
   constructor(props) {
@@ -186,13 +188,23 @@ export default class AppView extends Component {
   }
 
   componentWillMount() {
-    const { env, history, initAugur, location, updateModal } = this.props;
-    const queryArgs = qs.parse(location.search);
+    const {
+      augurNode,
+      env,
+      ethereumNodeHttp,
+      ethereumNodeWs,
+      history,
+      initAugur,
+      location,
+      updateModal
+    } = this.props;
     initAugur(
       history,
       {
         ...env,
-        ...queryArgs
+        augurNode,
+        ethereumNodeHttp,
+        ethereumNodeWs
       },
       (err, res) => {
         if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {

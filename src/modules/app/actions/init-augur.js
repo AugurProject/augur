@@ -20,7 +20,7 @@ import { closeModal } from "modules/modal/actions/close-modal";
 import logError from "utils/log-error";
 import networkConfig from "config/network";
 
-import { isEmpty } from "lodash";
+import { defaultTo, isEmpty } from "lodash";
 
 import {
   MODAL_NETWORK_MISMATCH,
@@ -192,47 +192,24 @@ export function connectAugur(
   };
 }
 
-export function initAugur(history, overrides, callback = logError) {
+export function initAugur(
+  history,
+  { augurNode, ethereumNodeHttp, ethereumNodeWs, useWeb3Transport },
+  callback = logError
+) {
   return (dispatch, getState) => {
     const env = networkConfig[`${process.env.ETHEREUM_NETWORK}`];
+    env.useWeb3Transport = useWeb3Transport;
+    env["augur-node"] = defaultTo(augurNode, env["augur-node"]);
+    env["ethereum-node"].http = defaultTo(
+      ethereumNodeHttp,
+      env["ethereum-node"].http
+    );
 
-    env.useWeb3Transport = overrides.useWeb3Transport;
-
-    if (windowRef.localStorage && windowRef.localStorage.getItem) {
-      env["augur-node"] =
-        windowRef.localStorage.getItem("augur-node") || env["augur-node"];
-      env["ethereum-node"].http =
-        windowRef.localStorage.getItem("ethereum-node-http") ||
-        env["ethereum-node"].http;
-      env["ethereum-node"].ws =
-        windowRef.localStorage.getItem("ethereum-node-ws") ||
-        env["ethereum-node"].ws;
-    }
-
-    env["augur-node"] =
-      overrides.augur_node === undefined
-        ? env["augur-node"]
-        : overrides.augur_node;
-    env["ethereum-node"].http =
-      overrides.ethereum_node_http === undefined
-        ? env["ethereum-node"].http
-        : overrides.ethereum_node_http;
-    env["ethereum-node"].ws =
-      overrides.ethereum_node_ws === undefined
-        ? env["ethereum-node"].ws
-        : overrides.ethereum_node_ws;
-
-    if (windowRef.localStorage && windowRef.localStorage.setItem) {
-      windowRef.localStorage.setItem("augur-node", env["augur-node"]);
-      windowRef.localStorage.setItem(
-        "ethereum-node-http",
-        env["ethereum-node"].http
-      );
-      windowRef.localStorage.setItem(
-        "ethereum-node-ws",
-        env["ethereum-node"].ws
-      );
-    }
+    env["ethereum-node"].ws = defaultTo(
+      ethereumNodeWs,
+      env["ethereum-node"].ws
+    );
 
     dispatch(updateEnv(env));
     connectAugur(history, env, true, callback)(dispatch, getState);

@@ -1,3 +1,5 @@
+import { compose } from "redux";
+
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
@@ -30,6 +32,8 @@ import {
   selectUniverseState,
   selectUrlState
 } from "src/select-state";
+import { RewriteUrlParams } from "src/modules/app/hocs/rewrite-url-params";
+import { windowRef } from "src/utils/window-ref";
 
 const mapStateToProps = state => ({
   blockchain: selectBlockchainState(state),
@@ -63,11 +67,13 @@ const mapDispatchToProps = dispatch => ({
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
 });
 
-const AppContainer = withRouter(
+const AppContainer = compose(
+  withRouter,
+  RewriteUrlParams(windowRef),
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(App)
-);
+  )
+)(App);
 
 export default AppContainer;
