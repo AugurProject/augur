@@ -42,8 +42,9 @@ export default class SideNav extends Component {
     const selected =
       (this.state.selectedKey && this.state.selectedKey === item.title) ||
       item.route === currentBasePath;
-    if (currentBasePath === MARKETS && item.route !== currentBasePath) { // markets tab takes precedence
-      return false
+    if (currentBasePath === MARKETS && item.route !== currentBasePath) {
+      // markets tab takes precedence
+      return false;
     }
     return selected;
   }
