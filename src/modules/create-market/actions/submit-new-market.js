@@ -25,7 +25,6 @@ export function submitNewMarket(newMarket, history, callback = noop) {
       contractAddresses
     );
     const hasOrders = Object.keys(newMarket.orderBook).length;
-    console.log("first entrance to submit new market order");
     newMarket.orderBook = sortOrders(newMarket.orderBook);
 
     dispatch(

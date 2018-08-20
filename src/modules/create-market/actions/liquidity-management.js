@@ -1,5 +1,7 @@
 import { eachOfSeries, eachOfLimit } from "async";
 import { augur } from "services/augurjs";
+import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
+
 import { BID } from "modules/transactions/constants/types";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 
@@ -44,7 +46,11 @@ export const startOrderSending = options => (dispatch, getState) => {
   const orderBook = Object.assign({}, pendingLiquidityOrders[marketId]);
   // if market is undefined (marketsData not loaded yet, log not present), try again...
   if (!market) {
-    return dispatch(startOrderSending({ marketId }));
+    return dispatch(
+      loadMarketsInfo([marketId], () =>
+        dispatch(startOrderSending({ marketId }))
+      )
+    );
   }
   eachOfSeries(
     Object.keys(orderBook),
