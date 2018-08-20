@@ -21,6 +21,7 @@ export default class MarketOutcomesChart extends Component {
     updateSelectedOutcome: PropTypes.func.isRequired,
     fixedPrecision: PropTypes.number.isRequired,
     hasPriceHistory: PropTypes.bool.isRequired,
+    bucketedPriceTimeSeries: PropTypes.object.isRequired,
     selectedOutcome: PropTypes.any // NOTE -- There is a PR in the prop-types lib to handle null values, but until then..
   };
 
@@ -82,7 +83,8 @@ export default class MarketOutcomesChart extends Component {
     maxPrice,
     minPrice,
     outcomes,
-    hasPriceHistory
+    hasPriceHistory,
+    bucketedPriceTimeSeries
   }) {
     if (this.outcomesChart) {
       const drawParams = determineDrawParams({
@@ -93,7 +95,8 @@ export default class MarketOutcomesChart extends Component {
         maxPrice,
         minPrice,
         outcomes,
-        hasPriceHistory
+        hasPriceHistory,
+        bucketedPriceTimeSeries
       });
       const fauxDiv = new ReactFauxDOM.Element("div");
       const chart = d3
@@ -119,7 +122,8 @@ export default class MarketOutcomesChart extends Component {
         creationTime,
         estimatedInitialPrice,
         outcomes,
-        drawParams
+        drawParams,
+        bucketedPriceTimeSeries
       });
 
       drawCrosshairs({
@@ -193,12 +197,10 @@ export default class MarketOutcomesChart extends Component {
 
 function determineDrawParams(options) {
   const {
-    creationTime,
-    currentTimestamp,
     drawContainer,
     maxPrice,
     minPrice,
-    outcomes
+    bucketedPriceTimeSeries
   } = options;
 
   const chartDim = {
@@ -211,34 +213,7 @@ function determineDrawParams(options) {
 
   const containerWidth = drawContainer.clientWidth;
   const containerHeight = drawContainer.clientHeight;
-
-
-  const mmSecondsInHour = createBigNumber(3600 * 1000)
-  const mmSecondsInDay = createBigNumber(24).times(mmSecondsInHour)
-  const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay)
-
-  const bnCurrentTimestamp = createBigNumber(currentTimestamp)
-  const bnCreationTimestamp = createBigNumber(creationTime)
-  const overWeekDuration = (bnCurrentTimestamp.minus(bnCreationTimestamp)).gt(mmSecondsInWeek)
-
-  let bucket = mmSecondsInDay
-  if (!overWeekDuration){
-    bucket = mmSecondsInHour
-  }
-
-  const bnRange = bnCurrentTimestamp.minus(bnCreationTimestamp)
-  const numBuckets = Math.ceil(bnRange.dividedBy(bucket).toNumber())
-  const xDomain = Array.from(new Array(numBuckets),(val, index) => Math.ceil((bnCreationTimestamp.plus(createBigNumber(index).times(bucket))).toNumber()));
-
-  /*
-  const xDomain = outcomes.reduce(
-    (p, outcome) => [
-      ...p,
-      ...outcome.priceTimeSeries.map(dataPoint => dataPoint.timestamp)
-    ],
-    [creationTime, currentTimestamp]
-  );
-  */
+  const xDomain = bucketedPriceTimeSeries.timeBuckets;
   const yDomain = [minPrice, maxPrice];
 
   const xScale = d3
@@ -343,7 +318,8 @@ function drawSeries(options) {
     drawParams,
     estimatedInitialPrice,
     outcomes,
-    chart
+    chart,
+    bucketedPriceTimeSeries
   } = options;
 
   const initialPoint = {
@@ -359,7 +335,9 @@ function drawSeries(options) {
   outcomes.forEach((outcome, i) => {
     chart
       .append("path")
-      .data([[initialPoint, ...outcome.priceTimeSeries]])
+      .data([
+        [initialPoint, ...bucketedPriceTimeSeries.priceTimeSeries[outcome.id]]
+      ])
       .classed(`${Styles["MarketOutcomesChart__outcome-line"]}`, true)
       .classed(`${Styles[`MarketOutcomesChart__outcome-line--${i + 1}`]}`, true)
       .attr("d", outcomeLine);
