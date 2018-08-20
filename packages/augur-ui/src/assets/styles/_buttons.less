@@ -178,3 +178,25 @@
 
   padding: 1.1em 2em;
 }
+
+.button--gray {
+  .button;
+
+  background-color: @color-transparent;
+  border: 2px solid @color-gray;
+  color: @color-gray;
+
+  &:hover {
+    background-color: @color-lightgray;
+    border: 2px solid black;
+    color: black;
+  }
+}
+
+.button--gray--disabled,
+.button--gray:disabled,
+.button--gray:disabled:hover {
+  background-color: @color-lightgray;
+  color: @color-lightergray;
+  cursor: default;
+}

@@ -1,8 +1,8 @@
-export const MARKET_VOLUME = 'volume'
-export const MARKET_CREATION_TIME = 'creationTime'
-export const MARKET_END_DATE = 'endTime'
-export const MARKET_RECENTLY_TRADED = 'recentlyTraded'
-export const MARKET_FEE = 'marketFee'
+export const MARKET_VOLUME = "volume";
+export const MARKET_CREATION_TIME = "creationTime";
+export const MARKET_END_DATE = "endTime";
+export const MARKET_RECENTLY_TRADED = "recentlyTraded";
+export const MARKET_FEE = "marketFee";
 
 // The user should be able to sort by:
 

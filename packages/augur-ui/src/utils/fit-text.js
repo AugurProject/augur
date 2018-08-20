@@ -7,20 +7,20 @@
  */
 export default function fitText(container, target, shouldScaleUp, maxScale) {
   if (container && target) {
-    const containerWidth = container.clientWidth
-    const targetWidth = target.clientWidth
+    const containerWidth = container.clientWidth;
+    const targetWidth = target.clientWidth;
 
-    target.style.transform = null // Reset
+    target.style.transform = null; // Reset
 
     if (shouldScaleUp || targetWidth > containerWidth) {
-      const newWidth = (containerWidth * targetWidth) / targetWidth
-      let newScale = newWidth / targetWidth
+      const newWidth = (containerWidth * targetWidth) / targetWidth;
+      let newScale = newWidth / targetWidth;
 
       if (maxScale) {
-        newScale = newScale > maxScale ? maxScale : newScale
+        newScale = newScale > maxScale ? maxScale : newScale;
       }
 
-      target.style.transform = `scale(${newScale}, ${newScale})`
+      target.style.transform = `scale(${newScale}, ${newScale})`;
     }
   }
 }

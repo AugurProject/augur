@@ -1,4 +1,5 @@
-export const UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS = 'UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS'
+export const UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS =
+  "UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS";
 
 /**
  *
@@ -8,6 +9,6 @@ export const UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS = 'UPDATE_UPCOMING_DES
 export default function updateUpcomingDesignatedReportingMarkets(marketIds) {
   return {
     type: UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS,
-    data: marketIds,
-  }
+    data: marketIds
+  };
 }

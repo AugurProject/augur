@@ -1,13 +1,12 @@
-import React from 'react'
+import React from "react";
 
+import { spy } from "sinon";
+import { shallow } from "enzyme";
+import ReportingDispute from "src/modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets";
 
-import { spy } from 'sinon'
-import { shallow } from 'enzyme'
-import ReportingDispute from 'src/modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets'
-
-describe('report dispute component', () => {
-  describe('props', () => {
-    let props
+describe("report dispute component", () => {
+  describe("props", () => {
+    let props;
 
     beforeEach(() => {
       props = {
@@ -16,34 +15,37 @@ describe('report dispute component', () => {
         markets: [],
         marketsCount: 0,
         navigateToAccountDepositHandler: spy(),
-        loadMarkets: spy(),
-      }
-    })
+        loadMarkets: spy()
+      };
+    });
 
-    describe('doesUserHaveRep', () => {
-      let doesUserHaveRep
-      describe('when true', () => {
+    describe("doesUserHaveRep", () => {
+      let doesUserHaveRep;
+      describe("when true", () => {
         beforeEach(() => {
-          doesUserHaveRep = true
-        })
+          doesUserHaveRep = true;
+        });
 
-        it('should not render ReportDisputeNoRepState component', () => {
-          const cmp = shallow(<ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />)
-          assert.lengthOf(cmp.find('ReportDisputeNoRepState'), 0)
-        })
-      })
+        it("should not render ReportDisputeNoRepState component", () => {
+          const cmp = shallow(
+            <ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />
+          );
+          assert.lengthOf(cmp.find("ReportDisputeNoRepState"), 0);
+        });
+      });
 
-      describe('when false', () => {
+      describe("when false", () => {
         beforeEach(() => {
-          doesUserHaveRep = false
-        })
+          doesUserHaveRep = false;
+        });
 
-        it('should render ReportDisputeNoRepState component', () => {
-          const cmp = shallow(<ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />)
-          assert.lengthOf(cmp.find('ReportDisputeNoRepState'), 1)
-        })
-      })
-    })
-  })
-})
-
+        it("should render ReportDisputeNoRepState component", () => {
+          const cmp = shallow(
+            <ReportingDispute {...props} doesUserHaveRep={doesUserHaveRep} />
+          );
+          assert.lengthOf(cmp.find("ReportDisputeNoRepState"), 1);
+        });
+      });
+    });
+  });
+});

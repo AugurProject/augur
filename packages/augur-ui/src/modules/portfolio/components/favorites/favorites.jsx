@@ -1,25 +1,18 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
+import React from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
 
-import MarketsList from 'modules/markets/components/markets-list'
-import Styles from 'modules/portfolio/components/favorites/favorites.styles'
-import { TYPE_TRADE } from 'modules/market/constants/link-types'
+import MarketsList from "modules/markets/components/markets-list";
+import Styles from "modules/portfolio/components/favorites/favorites.styles";
+import { TYPE_TRADE } from "modules/market/constants/link-types";
 
 const Favorites = p => (
   <section className={Styles.Favorites}>
     <Helmet>
       <title>Favorites</title>
     </Helmet>
-    <div
-      className={Styles.Favorites__SortBar}
-    >
-      <div
-        className={Styles['Favorites__SortBar-title']}
-      >
-        Favorites
-      </div>
-
+    <div className={Styles.Favorites__SortBar}>
+      <div className={Styles["Favorites__SortBar-title"]}>Favorites</div>
     </div>
     <MarketsList
       isLogged={p.isLogged}
@@ -34,7 +27,7 @@ const Favorites = p => (
       isMobile={p.isMobile}
     />
   </section>
-)
+);
 
 Favorites.propTypes = {
   markets: PropTypes.array.isRequired,
@@ -47,7 +40,7 @@ Favorites.propTypes = {
   toggleFavorite: PropTypes.func.isRequired,
   loadMarketsInfo: PropTypes.func.isRequired,
   loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-  isMobile: PropTypes.bool,
-}
+  isMobile: PropTypes.bool
+};
 
-export default Favorites
+export default Favorites;

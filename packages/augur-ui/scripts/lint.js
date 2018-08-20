@@ -9,70 +9,93 @@ let shouldFix = false;
 if (require.main === module) {
   process.env.FORCE_COLOR = true;
 
-  const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(arg => arg.indexOf("--") !== -1);
+  const FLAGS = JSON.parse(process.env.npm_config_argv).original.filter(
+    arg => arg.indexOf("--") !== -1
+  );
 
   shouldFix = FLAGS.indexOf("--fix") !== -1 ? true : false;
 }
 
-const lintSource = () => new Promise((resolve, reject) => {
-  shell.exec(`eslint${shouldFix ? " --fix" : ""} --ext .js,.jsx ${srcPath}`, (code, stdOut) => {
-    if (code !== 0) {
-      console.error(stdOut);
-      reject(new Error());
-      shell.exit(code);
-    }
+const lintSource = () =>
+  new Promise((resolve, reject) => {
+    shell.exec(
+      `eslint${shouldFix ? " --fix" : ""} --ext .js,.jsx ${srcPath}`,
+      (code, stdOut) => {
+        if (code !== 0) {
+          console.error(stdOut);
+          reject(new Error());
+          shell.exit(code);
+        }
 
-    resolve();
+        resolve();
+      }
+    );
   });
-});
 
-const lintTests = () => new Promise((resolve, reject) => {
-  shell.exec(`eslint${shouldFix ? " --fix" : ""} --ext .js ${testPath}`, (code, stdOut) => {
-    if (code !== 0) {
-      console.error(stdOut);
-      reject(new Error());
-      shell.exit(code);
-    }
+const lintTests = () =>
+  new Promise((resolve, reject) => {
+    shell.exec(
+      `eslint${shouldFix ? " --fix" : ""} --ext .js ${testPath}`,
+      (code, stdOut) => {
+        if (code !== 0) {
+          console.error(stdOut);
+          reject(new Error());
+          shell.exit(code);
+        }
 
-    resolve();
+        resolve();
+      }
+    );
   });
-});
 
-const lintStyles = () => new Promise((resolve, reject) => {
-  shell.exec(`stylelint '${srcPath}/**/*.less'${shouldFix ? " --fix" : ""}`, (code, stdOut) => {
-    if (code !== 0) {
-      console.error(stdOut);
-      reject(new Error());
-      shell.exit(code);
-    }
+const lintStyles = () =>
+  new Promise((resolve, reject) => {
+    shell.exec(
+      `stylelint '${srcPath}/**/*.less'${shouldFix ? " --fix" : ""}`,
+      (code, stdOut) => {
+        if (code !== 0) {
+          console.error(stdOut);
+          reject(new Error());
+          shell.exit(code);
+        }
 
-    resolve();
+        resolve();
+      }
+    );
   });
-});
 
-const tasks = new Listr([
+const tasks = new Listr(
+  [
+    {
+      title: "Lint Source",
+      task: lintSource
+    },
+    {
+      title: "Lint Tests",
+      task: lintTests
+    },
+    {
+      title: "Lint Styles",
+      task: lintStyles
+    }
+  ],
   {
-    title: "Lint Source",
-    task: lintSource
-  },
-  {
-    title: "Lint Tests",
-    task: lintTests
-  },
-  {
-    title: "Lint Styles",
-    task: lintStyles
+    concurrent: true
   }
-], {
-  concurrent: true,
-});
+);
 
 // Check if this script was run directly. e.g. `node scripts/lint.js`
 if (require.main === module) {
-  (new Listr([{
-    title: `Linting Augur Project (--fix is ${shouldFix ? 'enabled' : 'disabled'})`,
-    task: () => tasks
-  }])).run().catch((err) => {});
+  new Listr([
+    {
+      title: `Linting Augur Project (--fix is ${
+        shouldFix ? "enabled" : "disabled"
+      })`,
+      task: () => tasks
+    }
+  ])
+    .run()
+    .catch(err => {});
 } else {
   module.exports = tasks;
 }

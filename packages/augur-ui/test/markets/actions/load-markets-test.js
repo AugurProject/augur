@@ -1,5 +1,1 @@
-
-
-describe(`modules/markets/actions/load-markets`, () => {
-
-})
+describe(`modules/markets/actions/load-markets`, () => {});

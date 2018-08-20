@@ -93,6 +93,9 @@ Simply copy these files to your web server of choice.
 After git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
 [dockerized augur client](./docs/deploy-production.md)
 
+### [Prettier](https://prettier.io/)
+We are using prettier to maintain formatting standards.Please [install](https://prettier.io/docs/en/editors.html) the relevant editor extension for your editor.
+
 ***
 
 ## Run everything Locally <a name="totally_local"></a>
