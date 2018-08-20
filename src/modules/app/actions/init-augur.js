@@ -208,7 +208,8 @@ export function initAugur(
 
     env["ethereum-node"].ws = defaultTo(
       ethereumNodeWs,
-      env["ethereum-node"].ws
+      // If only the http param is provided we need to prevent this "default from taking precedence.
+      isEmpty(ethereumNodeHttp) ? env["ethereum-node"].ws : ""
     );
 
     dispatch(updateEnv(env));
