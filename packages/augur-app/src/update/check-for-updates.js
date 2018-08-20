@@ -1,4 +1,4 @@
-const {app, dialog, shell} = require('electron')
+const {app, dialog, shell } = require('electron')
 const {autoUpdater} = require('electron-updater')
 const ProgressBar = require('electron-progressbar')
 const log = require('electron-log')
@@ -65,6 +65,7 @@ autoUpdater.autoDownload = false
 
 module.exports = (notifyUpdateNotAvailable = false) => {
   if(isDev) return Promise.resolve()
+  if(process.platform == "linux" && !process.env.APPIMAGE) return Promise.resolve()
 
   const p = new Promise((resolve) => {
     autoUpdater
@@ -78,7 +79,12 @@ module.exports = (notifyUpdateNotAvailable = false) => {
   if (notifyUpdateNotAvailable) autoUpdater
     .once('update-not-available', notifyNoUpdate)
 
-  autoUpdater.checkForUpdates()
 
-  return p
+  return autoUpdater.checkForUpdates().catch((e) => {
+    log.error('There was an error updating app. This is expected if using deb package.')
+
+    return Promise.resolve(p);
+  });
+
+  return p;
 }

@@ -1,23 +1,28 @@
----
+directories:
+  # this contains icons, licence agreement, etc
+  buildResources: "./build"
 files:
-- "!certs/*"
+  - "!certs/*"
+  - "src/**/*"
+extraFiles:
+  - from: "resources/${os}"
+    to: "resources"
+    filter:
+    - "**/*"
 mac:
   asar: false
   target:
   - default
   icon: build/icon.png
 win:
-  asar: false
   target:
   - nsis
   icon: build/icon.png
 linux:
-  asar: false
   target:
   - deb
   - AppImage
-  category: Office
-  icon: build/icon.png
+  category: Network
 appId: "net.augur.augur"
 artifactName: "${os}-${productName}-${version}.${ext}"
 publish:

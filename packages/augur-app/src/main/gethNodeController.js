@@ -45,14 +45,21 @@ const PEER_COUNT_REQUEST_OPTIONS = {
   }
 }
 
-function GethNodeController() {
-  this.window = null
+function getGethPath() {
+  let gethExecutablePath = path.join(process.resourcesPath, 'geth')
+  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath+".exe")) return gethExecutablePath;
+
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
   if (process.platform === 'darwin') os = 'mac'
-  this.gethExecutablePath = path.join(app.getAppPath(), `resources/${os}/geth`)
+  return path.join(app.getAppPath(), `resources/${os}/geth`)
+}
+
+function GethNodeController() {
+  this.window = null
   this.gethProcess = null
   this.statusLoop = null
+  this.gethExecutablePath = getGethPath()
   ipcMain.on('toggleGeth', this.toggle.bind(this))
   ipcMain.on('startGeth', this.start.bind(this))
   ipcMain.on('stopGeth', this.stop.bind(this))
