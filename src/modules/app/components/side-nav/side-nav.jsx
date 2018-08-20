@@ -32,7 +32,7 @@ export default class SideNav extends Component {
 
   componentWillReceiveProps(newProps) {
     const { isMobile } = this.props;
-    if (isMobile !== newProps.isMobile) {
+    if (isMobile !== newProps.isMobile || newProps.currentBasePath === MARKETS) {
       this.setState({ selectedItem: null, selectedKey: null });
     }
   }
@@ -41,11 +41,7 @@ export default class SideNav extends Component {
     const { currentBasePath } = this.props;
     const selected =
       (this.state.selectedKey && this.state.selectedKey === item.title) ||
-      item.route === currentBasePath;
-    if (currentBasePath === MARKETS && item.route !== currentBasePath) {
-      // markets tab takes precedence
-      return false;
-    }
+      item.route === currentBasePath
     return selected;
   }
 
