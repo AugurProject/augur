@@ -212,6 +212,25 @@ function determineDrawParams(options) {
   const containerWidth = drawContainer.clientWidth;
   const containerHeight = drawContainer.clientHeight;
 
+
+  const mmSecondsInHour = createBigNumber(3600 * 1000)
+  const mmSecondsInDay = createBigNumber(24).times(mmSecondsInHour)
+  const mmSecondsInWeek = createBigNumber(7).times(mmSecondsInDay)
+
+  const bnCurrentTimestamp = createBigNumber(currentTimestamp)
+  const bnCreationTimestamp = createBigNumber(creationTime)
+  const overWeekDuration = (bnCurrentTimestamp.minus(bnCreationTimestamp)).gt(mmSecondsInWeek)
+
+  let bucket = mmSecondsInDay
+  if (!overWeekDuration){
+    bucket = mmSecondsInHour
+  }
+
+  const bnRange = bnCurrentTimestamp.minus(bnCreationTimestamp)
+  const numBuckets = Math.ceil(bnRange.dividedBy(bucket).toNumber())
+  const xDomain = Array.from(new Array(numBuckets),(val, index) => Math.ceil((bnCreationTimestamp.plus(createBigNumber(index).times(bucket))).toNumber()));
+
+  /*
   const xDomain = outcomes.reduce(
     (p, outcome) => [
       ...p,
@@ -219,6 +238,7 @@ function determineDrawParams(options) {
     ],
     [creationTime, currentTimestamp]
   );
+  */
   const yDomain = [minPrice, maxPrice];
 
   const xScale = d3
