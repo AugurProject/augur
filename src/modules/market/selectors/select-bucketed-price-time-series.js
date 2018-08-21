@@ -28,7 +28,7 @@ export const selectBucketedPriceTimeSeries = (
       bnCreationTimestamp.plus(createBigNumber(index).times(bucket)).toNumber()
     )
   );
-
+  timeBuckets.push(currentTimestamp);
   const priceTimeSeries = outcomes.reduce((p, o) => {
     p[o.id] = splitTradesByTimeBucket(o.priceTimeSeries, timeBuckets);
     return p;
