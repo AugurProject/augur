@@ -2,7 +2,7 @@
 
 const environments = require("../../knexfile.js");
 const Knex = require("knex");
-const { postProcessDatabaseResults } = require("../../build/server/post-process-database-results.js");
+const { postProcessDatabaseResults } = require("../../src/server/post-process-database-results");
 
 module.exports = (callback) => {
   const env = Object.assign({}, environments.test, {

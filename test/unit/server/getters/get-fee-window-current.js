@@ -2,8 +2,8 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getFeeWindowCurrent } = require("../../../../build/server/getters/get-fee-window-current");
-const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../build/blockchain/process-block.js");
+const { getFeeWindowCurrent } = require("../../../../src/server/getters/get-fee-window-current");
+const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 
 describe("server/getters/get-fee-window-current", () => {

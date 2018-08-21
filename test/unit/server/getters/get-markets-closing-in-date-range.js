@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketsClosingInDateRange } = require("../../../../build/server/getters/get-markets-closing-in-date-range");
+const { getMarketsClosingInDateRange } = require("../../../../src/server/getters/get-markets-closing-in-date-range");
 
 describe("server/getters/get-markets-closing-in-date-range", () => {
   const test = (t) => {

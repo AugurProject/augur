@@ -3,7 +3,7 @@
 const Augur = require("augur.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUserTradingPositions } = require("../../../../build/server/getters/get-user-trading-positions");
+const { getUserTradingPositions } = require("../../../../src/server/getters/get-user-trading-positions");
 
 describe("server/getters/get-user-trading-positions", () => {
   const test = (t) => {

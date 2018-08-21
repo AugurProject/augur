@@ -3,8 +3,8 @@
 const { BigNumber } = require("bignumber.js");
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getFeeWindows } = require("../../../../build/server/getters/get-fee-windows");
-const { setOverrideTimestamp } = require("../../../../build/blockchain/process-block");
+const { getFeeWindows } = require("../../../../src/server/getters/get-fee-windows");
+const { setOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 describe("server/getters/get-fee-windows", () => {
   const test = (t) => {

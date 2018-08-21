@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeTokens } = require("../../../../build/server/getters/get-dispute-tokens");
+const { getDisputeTokens } = require("../../../../src/server/getters/get-dispute-tokens");
 
 describe("server/getters/get-dispute-tokens", () => {
   const test = (t) => {

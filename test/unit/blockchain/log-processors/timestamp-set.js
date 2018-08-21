@@ -2,8 +2,8 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processTimestampSetLog, processTimestampSetLogRemoval} = require("../../../../build/blockchain/log-processors/timestamp-set");
-const {getOverrideTimestamp} = require("../../../../build/blockchain/process-block");
+const {processTimestampSetLog, processTimestampSetLogRemoval} = require("../../../../src/blockchain/log-processors/timestamp-set");
+const {getOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 function initializeNetwork(db, callback) {
   db.insert({networkId: 9999}).into("network_id").asCallback(callback);
