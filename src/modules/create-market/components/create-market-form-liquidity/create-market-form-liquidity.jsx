@@ -93,6 +93,7 @@ export default class CreateMarketLiquidity extends Component {
     this.validateForm = this.validateForm.bind(this);
     this.updateOrderEstimate = this.updateOrderEstimate.bind(this);
     this.updateLiquidityState = this.updateLiquidityState.bind(this);
+    this.keyPressedInForm = this.keyPressedInForm.bind(this);
   }
 
   componentWillMount() {
@@ -498,6 +499,12 @@ export default class CreateMarketLiquidity extends Component {
     this.setState({ orderEstimate });
   }
 
+  keyPressedInForm(event) {
+    if (event.key === "Enter") {
+      this.handleAddOrder();
+    }
+  }
+
   render() {
     const { isMobileSmall, newMarket, validateNumber, keyPressed } = this.props;
     const s = this.state;
@@ -654,7 +661,7 @@ export default class CreateMarketLiquidity extends Component {
                       : s.orderQuantity
                   }
                   onChange={e => this.validateForm(e.target.value, undefined)}
-                  onKeyPress={e => keyPressed(e)}
+                  onKeyPress={e => this.keyPressedInForm(e)}
                 />
               </li>
               <li>
@@ -673,7 +680,7 @@ export default class CreateMarketLiquidity extends Component {
                       : s.orderPrice
                   }
                   onChange={e => this.validateForm(undefined, e.target.value)}
-                  onKeyPress={e => keyPressed(e)}
+                  onKeyPress={e => this.keyPressedInForm(e)}
                 />
               </li>
               <li>
