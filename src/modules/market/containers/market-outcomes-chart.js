@@ -4,6 +4,7 @@ import MarketOutcomesChart from "modules/market/components/market-outcomes-chart
 
 import { selectMarket } from "modules/market/selectors/market";
 import { selectCurrentTimestamp } from "src/select-state";
+import { selectBucketedPriceTimeSeries } from "modules/market/selectors/select-bucketed-price-time-series";
 import { createBigNumber } from "src/utils/create-big-number";
 
 const mapStateToProps = (state, ownProps) => {
@@ -23,14 +24,24 @@ const mapStateToProps = (state, ownProps) => {
     .plus(adjusted)
     .toNumber();
 
+  const creationTimestamp = creationTime.value.getTime();
+  const currentTimestamp = selectCurrentTimestamp(state);
+  const hasPriceHistory = volume.formatted !== "0";
+  const bucketedPriceTimeSeries = selectBucketedPriceTimeSeries(
+    creationTimestamp,
+    currentTimestamp,
+    outcomes
+  );
+
   return {
-    creationTime: creationTime.value.getTime(),
-    currentTimestamp: selectCurrentTimestamp(state),
+    creationTime: creationTimestamp,
+    currentTimestamp,
     estimatedInitialPrice,
     maxPrice: maxPrice.toNumber(),
     minPrice: minPrice.toNumber(),
     outcomes,
-    hasPriceHistory: volume.formatted !== "0"
+    hasPriceHistory,
+    bucketedPriceTimeSeries
   };
 };
 
