@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import classNames from "classnames";
 
 import TransactionMeta from "modules/portfolio/containers/transaction-meta";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";

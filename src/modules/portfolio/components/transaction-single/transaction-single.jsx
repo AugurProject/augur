@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
 
 import TransactionHeader from "modules/portfolio/components/transaction-header/transaction-header";
 import TransactionMeta from "modules/portfolio/containers/transaction-meta";
