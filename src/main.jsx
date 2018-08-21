@@ -2,9 +2,6 @@ import React from "react";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
-// TODO: Investigate this import see CH issue:
-// https://app.clubhouse.io/augur/story/5572/initaugur-import-issue
-import { initAugur, connectAugur } from "modules/app/actions/init-augur"; // eslint-disable-line
 
 import MainErrorBoundary from "modules/common/components/main-error-boundary/main-error-boundary";
 
