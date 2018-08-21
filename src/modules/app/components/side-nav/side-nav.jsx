@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import makePath from "modules/routes/helpers/make-path";
 
 import { Notifications } from "modules/common/components/icons";
-
+import { MARKETS } from "modules/routes/constants/views";
 import Styles from "modules/app/components/side-nav/side-nav.styles";
 
 export default class SideNav extends Component {
@@ -32,7 +32,10 @@ export default class SideNav extends Component {
 
   componentWillReceiveProps(newProps) {
     const { isMobile } = this.props;
-    if (isMobile !== newProps.isMobile) {
+    if (
+      isMobile !== newProps.isMobile ||
+      newProps.currentBasePath === MARKETS
+    ) {
       this.setState({ selectedItem: null, selectedKey: null });
     }
   }
