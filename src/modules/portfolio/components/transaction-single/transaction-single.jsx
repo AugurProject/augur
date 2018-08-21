@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import TransactionHeader from "modules/portfolio/components/transaction-header/transaction-header";
 import TransactionMeta from "modules/portfolio/containers/transaction-meta";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
 
@@ -39,11 +39,7 @@ export default class TransactionSingle extends Component {
           }}
         >
           <TransactionHeader transaction={transaction} />
-          <span
-            className={classNames({ [`${CommonStyles["is-open"]}`]: s.isOpen })}
-          >
-            {<ChevronDown />}
-          </span>
+          <ChevronFlip big pointDown={!s.isOpen} />
         </button>
         <div
           ref={singleTransactionMeta => {

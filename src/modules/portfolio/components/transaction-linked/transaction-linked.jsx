@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 
 import TransactionMeta from "modules/portfolio/containers/transaction-meta";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
 
@@ -53,14 +53,7 @@ export default class LinkedTransaction extends Component {
                 )}
             </span>
           </div>
-          <span
-            className={classNames(
-              Styles["LinkedTransaction__message-chevron"],
-              { [`${Styles["is-open"]}`]: s.isOpen }
-            )}
-          >
-            {<ChevronDown />}
-          </span>
+          <ChevronFlip big pointDown={!s.isOpen} />
         </button>
         <div
           ref={metaWrapper => {
