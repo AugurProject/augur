@@ -58,7 +58,8 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
     }
   }
 
-  async.eachLimit(redeemableContracts, PARALLEL_LIMIT, function (contract, nextContract) {
+  var limit = p.estimateGas ? PARALLEL_LIMIT : 1;
+  async.eachLimit(redeemableContracts, limit, function (contract, nextContract) {
     switch (contract.type) {
       case contractTypes.FEE_WINDOW:
         api().FeeWindow.redeem(assign({}, payload, {
@@ -67,7 +68,11 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             to: contract.address,
             estimateGas: p.estimateGas,
           },
-          onSent: function () {},
+          onSent: function () {
+            if (!p.estimateGas) {
+              nextContract();
+            }
+          },
           onSuccess: function (result) {
             if (p.estimateGas) {
               result = new BigNumber(result, 16);
@@ -76,13 +81,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             } else {
               successfulTransactions.feeWindowRedeem.push(contract.address);
             }
+            if (p.estimateGas) nextContract();
             // console.log("Redeemed feeWindow", contract.address);
-            nextContract();
           },
           onFailed: function () {
             failedTransactions.feeWindowRedeem.push(contract.address);
             // console.log("Failed to redeem feeWindow", contract.address);
-            nextContract();
           },
         }));
         break;
@@ -93,7 +97,11 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             to: contract.address,
             estimateGas: p.estimateGas,
           },
-          onSent: function () {},
+          onSent: function () {
+            if (!p.estimateGas) {
+              nextContract();
+            }
+          },
           onSuccess: function (result) {
             if (p.estimateGas) {
               result = new BigNumber(result, 16);
@@ -102,13 +110,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             } else {
               successfulTransactions.crowdsourcerRedeem.push(contract.address);
             }
+            if (p.estimateGas) nextContract();
             // console.log("Redeemed crowdsourcer", contract.address);
-            nextContract();
           },
           onFailed: function () {
             failedTransactions.crowdsourcerRedeem.push(contract.address);
             // console.log("Failed to redeem crowdsourcer", contract.address);
-            nextContract();
           },
         }));
         break;
@@ -119,7 +126,11 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             to: contract.address,
             estimateGas: p.estimateGas,
           },
-          onSent: function () {},
+          onSent: function () {
+            if (!p.estimateGas) {
+              nextContract();
+            }
+          },
           onSuccess: function (result) {
             if (p.estimateGas) {
               result = new BigNumber(result, 16);
@@ -128,13 +139,12 @@ function redeemContractFees(p, payload, successfulTransactions, failedTransactio
             } else {
               successfulTransactions.initialReporterRedeem.push(contract.address);
             }
+            if (p.estimateGas) nextContract();
             // console.log("Redeemed initialReporter", contract.address);
-            nextContract();
           },
           onFailed: function () {
             failedTransactions.initialReporterRedeem.push(contract.address);
             // console.log("Failed to redeem initialReporter", contract.address);
-            nextContract();
           },
         }));
         break;
@@ -230,7 +240,8 @@ function claimReportingFeesNonforkedMarkets(p) {
   };
 
   if (p.forkedMarket) {
-    async.eachLimit(p.nonforkedMarkets, PARALLEL_LIMIT, function (nonforkedMarket, nextNonforkedMarket) {
+    var limit = p.estimateGas ? PARALLEL_LIMIT : 1;
+    async.eachLimit(p.nonforkedMarkets, limit, function (nonforkedMarket, nextNonforkedMarket) {
       if (nonforkedMarket.isFinalized || nonforkedMarket.crowdsourcersAreDisavowed) {
         nextNonforkedMarket();
       } else {
@@ -239,7 +250,11 @@ function claimReportingFeesNonforkedMarkets(p) {
             to: nonforkedMarket.marketId,
             estimateGas: p.estimateGas,
           },
-          onSent: function () {},
+          onSent: function () {
+            if (!p.estimateGas) {
+              nextNonforkedMarket();
+            }
+          },
           onSuccess: function (result) {
             if (p.estimateGas) {
               result = new BigNumber(result, 16);
@@ -247,13 +262,12 @@ function claimReportingFeesNonforkedMarkets(p) {
               gasEstimates.totals.disavowCrowdsourcers = gasEstimates.totals.disavowCrowdsourcers.plus(result);
             }
             successfulTransactions.disavowCrowdsourcers.push(nonforkedMarket.marketId);
+            if (p.estimateGas) nextNonforkedMarket();
             // console.log("Disavowed crowdsourcers for market", nonforkedMarket.marketId);
-            nextNonforkedMarket();
           },
           onFailed: function () {
             failedTransactions.disavowCrowdsourcers.push(nonforkedMarket.marketId);
             // console.log("Failed to disavow crowdsourcers for", nonforkedMarket.marketId);
-            nextNonforkedMarket();
           },
         }));
       }

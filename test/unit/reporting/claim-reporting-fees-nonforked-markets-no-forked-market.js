@@ -13,7 +13,7 @@ var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
 var sinon = require("sinon");
 
-describe("reporting/claim-reporting-fees-nonforked-markets", function () {
+describe("reporting/claim-reporting-fees-nonforked-markets-no-forked-market", function () {
   var claimReportingFeesNonforkedMarkets;
   var disputeCrowdsourcerRedeemStub;
   var feeWindowRedeemStub;
@@ -327,10 +327,10 @@ describe("reporting/claim-reporting-fees-nonforked-markets", function () {
     describe("and estimateGas is false", function () {
       before(function () {
         params.estimateGas = false;
-        disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
-        feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
-        initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
-        marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
+        disputeCrowdsourcerRedeemStub = sinon.stub(api().DisputeCrowdsourcer, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(DISPUTE_CROWDSOURCER_REDEEM_GAS_ESTIMATE); });
+        feeWindowRedeemStub = sinon.stub(api().FeeWindow, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(FEE_WINDOW_REDEEM_GAS_ESTIMATE); });
+        initialReporterRedeemStub = sinon.stub(api().InitialReporter, "redeem").callsFake(function (p) { p.onSent(); p.onSuccess(INITIAL_REPORTER_REDEEM_GAS_ESTIMATE); });
+        marketDisavowCrowdsourcersStub = sinon.stub(api().Market, "disavowCrowdsourcers").callsFake(function (p) { p.onSent(); p.onSuccess(MARKET_DISAVOW_CROWDSOURCERS_GAS_ESTIMATE); });
         claimReportingFeesNonforkedMarkets = proxyquire("../../../src/reporting/claim-reporting-fees-nonforked-markets", {
           "../api": api,
         });
@@ -442,32 +442,32 @@ describe("reporting/claim-reporting-fees-nonforked-markets", function () {
               disavowCrowdsourcers: [],
               feeWindowRedeem: ["0xfeeAdd0000000000000000000000000000000001"],
               crowdsourcerRedeem: [
-                "0x0fcAdd0000000000000000000000000000000001",
-                "0x0fcAdd0000000000000000000000000000000002",
-                "0x0fcAdd0000000000000000000000000000000003",
-                "0x0fcAdd0000000000000000000000000000000004",
-                "0x0fcAdd0000000000000000000000000000000005",
-                "0x0fcAdd0000000000000000000000000000000006",
-                "0x0fcAdd0000000000000000000000000000000007",
-                "0x0fcAdd0000000000000000000000000000000008",
-                "0x0fcAdd0000000000000000000000000000000009",
-                "0x0fcAdd0000000000000000000000000000000010",
-                "0x0fcAdd0000000000000000000000000000000011",
-                "0x0fcAdd0000000000000000000000000000000012",
-                "0x0fcAdd0000000000000000000000000000000013",
-                "0x0fcAdd0000000000000000000000000000000014",
-                "0x0fcAdd0000000000000000000000000000000015",
                 "0x0fcAdd0000000000000000000000000000000016",
+                "0x0fcAdd0000000000000000000000000000000015",
+                "0x0fcAdd0000000000000000000000000000000014",
+                "0x0fcAdd0000000000000000000000000000000013",
+                "0x0fcAdd0000000000000000000000000000000012",
+                "0x0fcAdd0000000000000000000000000000000011",
+                "0x0fcAdd0000000000000000000000000000000010",
+                "0x0fcAdd0000000000000000000000000000000009",
+                "0x0fcAdd0000000000000000000000000000000008",
+                "0x0fcAdd0000000000000000000000000000000007",
+                "0x0fcAdd0000000000000000000000000000000006",
+                "0x0fcAdd0000000000000000000000000000000005",
+                "0x0fcAdd0000000000000000000000000000000004",
+                "0x0fcAdd0000000000000000000000000000000003",
+                "0x0fcAdd0000000000000000000000000000000002",
+                "0x0fcAdd0000000000000000000000000000000001",
               ],
               initialReporterRedeem: [
-                "0x0f1Add0000000000000000000000000000000001",
-                "0x0f1Add0000000000000000000000000000000002",
-                "0x0f1Add0000000000000000000000000000000003",
-                "0x0f1Add0000000000000000000000000000000004",
-                "0x0f1Add0000000000000000000000000000000005",
-                "0x0f1Add0000000000000000000000000000000006",
-                "0x0f1Add0000000000000000000000000000000007",
                 "0x0f1Add0000000000000000000000000000000008",
+                "0x0f1Add0000000000000000000000000000000007",
+                "0x0f1Add0000000000000000000000000000000006",
+                "0x0f1Add0000000000000000000000000000000005",
+                "0x0f1Add0000000000000000000000000000000004",
+                "0x0f1Add0000000000000000000000000000000003",
+                "0x0f1Add0000000000000000000000000000000002",
+                "0x0f1Add0000000000000000000000000000000001",
               ],
             },
           };
