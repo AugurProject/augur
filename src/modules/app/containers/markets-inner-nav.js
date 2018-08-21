@@ -5,7 +5,8 @@ import { compose } from "redux";
 import { QUERY_VALUE_DELIMITER } from "src/modules/routes/constants/query-value-delimiter";
 import {
   CATEGORY_PARAM_NAME,
-  TAGS_PARAM_NAME
+  TAGS_PARAM_NAME,
+  FILTER_SEARCH_PARAM
 } from "src/modules/filter-sort/constants/param-names";
 import { selectCategories } from "src/modules/categories/selectors/categories";
 import { selectIsMobile } from "src/select-state";
@@ -27,7 +28,8 @@ const mapStateToProps = (
   const {
     category,
     tags,
-    balanceOfSearchParams
+    balanceOfSearchParams,
+    keywords
   } = getSelectedTagsAndCategoriesFromLocation(location);
 
   const isMobile = selectIsMobile(state);
@@ -42,6 +44,10 @@ const mapStateToProps = (
       ...balanceOfSearchParams,
       [CATEGORY_PARAM_NAME]: categoryU
     };
+
+    if (keywords) {
+      p[FILTER_SEARCH_PARAM] = keywords;
+    }
 
     const tagArr = toggleTagFn(tag);
     if (!isEmpty(tagArr)) {
@@ -70,9 +76,13 @@ const mapStateToProps = (
       pathname: makePath(MARKETS)
     };
     if (categoryClicked !== category || !isEmpty(tags)) {
-      link.search = makeQuery({
+      const query = {
         [CATEGORY_PARAM_NAME]: categoryClicked
-      });
+      };
+      if (keywords) {
+        query[FILTER_SEARCH_PARAM] = keywords;
+      }
+      link.search = makeQuery(query);
     }
     return link;
   };
