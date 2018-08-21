@@ -1,7 +1,8 @@
-export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS'
-export const UPDATE_AUGUR_NODE_CONNECTION_STATUS = 'UPDATE_AUGUR_NODE_CONNECTION_STATUS'
-export const UPDATE_AUGUR_NODE_NETWORK_ID = 'UPDATE_AUGUR_NODE_NETWORK_ID'
-export const UPDATE_IS_RECONNECTION_PAUSED = 'UPDATE_IS_RECONNECTION_PAUSED'
+export const UPDATE_CONNECTION_STATUS = "UPDATE_CONNECTION_STATUS";
+export const UPDATE_AUGUR_NODE_CONNECTION_STATUS =
+  "UPDATE_AUGUR_NODE_CONNECTION_STATUS";
+export const UPDATE_AUGUR_NODE_NETWORK_ID = "UPDATE_AUGUR_NODE_NETWORK_ID";
+export const UPDATE_IS_RECONNECTION_PAUSED = "UPDATE_IS_RECONNECTION_PAUSED";
 
 /**
  * @param {Boolean} isConnected
@@ -10,8 +11,8 @@ export const UPDATE_IS_RECONNECTION_PAUSED = 'UPDATE_IS_RECONNECTION_PAUSED'
 export function updateConnectionStatus(isConnected) {
   return {
     type: UPDATE_CONNECTION_STATUS,
-    isConnected,
-  }
+    isConnected
+  };
 }
 
 /**
@@ -21,8 +22,8 @@ export function updateConnectionStatus(isConnected) {
 export function updateAugurNodeConnectionStatus(isConnected) {
   return {
     type: UPDATE_AUGUR_NODE_CONNECTION_STATUS,
-    isConnected,
-  }
+    isConnected
+  };
 }
 
 /**
@@ -32,8 +33,8 @@ export function updateAugurNodeConnectionStatus(isConnected) {
 export function updateAugurNodeNetworkId(augurNodeNetworkId) {
   return {
     type: UPDATE_AUGUR_NODE_NETWORK_ID,
-    augurNodeNetworkId,
-  }
+    augurNodeNetworkId
+  };
 }
 
 /**
@@ -43,6 +44,6 @@ export function updateAugurNodeNetworkId(augurNodeNetworkId) {
 export function updateIsReconnectionPaused(isReconnectionPaused) {
   return {
     type: UPDATE_IS_RECONNECTION_PAUSED,
-    isReconnectionPaused,
-  }
+    isReconnectionPaused
+  };
 }

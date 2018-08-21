@@ -7,7 +7,11 @@ jest.setTimeout(100000);
 
 describe("Trading", () => {
   beforeAll(async () => {
-    const marketId = await page.evaluate((marketDescription) => window.integrationHelpers.findMarketId(marketDescription), 'Will the Larsen B ice shelf collapse by the end of November 2019?');
+    const marketId = await page.evaluate(
+      marketDescription =>
+        window.integrationHelpers.findMarketId(marketDescription),
+      "Will the Larsen B ice shelf collapse by the end of November 2019?"
+    );
     await toMarket(marketId);
   });
 
@@ -27,9 +31,12 @@ describe("Trading", () => {
       text: "Confirm"
     });
 
-    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+    page.on("console", msg => console.log("PAGE LOG:", msg.text()));
 
-    await page.evaluate((account) => window.integrationHelpers.updateAccountAddress(account), UnlockedAccounts.SECONDARY_ACCOUNT);
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.SECONDARY_ACCOUNT
+    );
     await expect(page).toClick("button", {
       text: "Buy",
       timeout: 2000

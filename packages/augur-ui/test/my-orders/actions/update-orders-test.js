@@ -1,5 +1,1 @@
-
-
-describe('modules/my-orders/actions/update-orders.js', () => {
-
-})
+describe("modules/my-orders/actions/update-orders.js", () => {});

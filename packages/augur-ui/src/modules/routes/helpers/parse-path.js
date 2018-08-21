@@ -1,18 +1,13 @@
-const parsePath = (stringPath) => {
-  let sanitizedPaths = []
+const parsePath = stringPath => {
+  let sanitizedPaths = [];
 
-  if (stringPath == null) return sanitizedPaths
+  if (stringPath == null) return sanitizedPaths;
 
-  sanitizedPaths = stringPath.split('/').reduce(
-    (p, path) => (
-      path.length === 0 ?
-        p :
-        [...p, path]
-    ),
-    [],
-  )
+  sanitizedPaths = stringPath
+    .split("/")
+    .reduce((p, path) => (path.length === 0 ? p : [...p, path]), []);
 
-  return sanitizedPaths
-}
+  return sanitizedPaths;
+};
 
-export default parsePath
+export default parsePath;

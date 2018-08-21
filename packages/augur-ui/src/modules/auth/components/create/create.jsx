@@ -1,27 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Helmet from 'react-helmet'
+import React from "react";
+import PropTypes from "prop-types";
+import Helmet from "react-helmet";
 
-import NavPanel from 'modules/common/components/nav-panel/nav-panel'
-import Edge from 'modules/auth/containers/edge-create'
+import NavPanel from "modules/common/components/nav-panel/nav-panel";
+import Edge from "modules/auth/containers/edge-create";
 
-import parseQuery from 'modules/routes/helpers/parse-query'
+import parseQuery from "modules/routes/helpers/parse-query";
 
-import { CREATE_NAV } from 'modules/routes/constants/param-names'
-import { ITEMS } from 'modules/auth/constants/create-nav'
-import { TITLE_SUFFIX } from 'modules/app/constants/title-suffix'
+import { CREATE_NAV } from "modules/routes/constants/param-names";
+import { ITEMS } from "modules/auth/constants/create-nav";
+import { TITLE_SUFFIX } from "modules/app/constants/title-suffix";
 
-import Styles from 'modules/auth/components/auth/auth.styles'
+import Styles from "modules/auth/components/auth/auth.styles";
 
 export default function AuthCreate(p) {
-  const selectedNav = parseQuery(p.location.search)[CREATE_NAV] || null
+  const selectedNav = parseQuery(p.location.search)[CREATE_NAV] || null;
 
   return (
     <div className={Styles.Auth}>
-      <Helmet
-        titleTemplate={`Create %s ${TITLE_SUFFIX}`}
-      />
-      <div className={Styles['Auth--constrained']}>
+      <Helmet titleTemplate={`Create %s ${TITLE_SUFFIX}`} />
+      <div className={Styles["Auth--constrained"]}>
         <div className={Styles.Auth__header}>
           <h1>Create An Account</h1>
         </div>
@@ -39,11 +37,11 @@ export default function AuthCreate(p) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 AuthCreate.propTypes = {
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  isMobile: PropTypes.bool.isRequired,
-}
+  isMobile: PropTypes.bool.isRequired
+};

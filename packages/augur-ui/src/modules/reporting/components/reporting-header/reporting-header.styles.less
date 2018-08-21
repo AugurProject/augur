@@ -1,4 +1,5 @@
 @import (reference) '~assets/styles/shared';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 
 .ReportingHeader {
   color: @color-white;
@@ -64,9 +65,11 @@
 }
 
 .ReportingHeader__value-number {
+  align-items: flex-end;
   color: @color-white;
+  display: flex;
   font-family: 'Roboto Mono', monospace;
-  font-size: 32px;
+  font-size: @font-size-rather-large;
 }
 
 .ReportingHeader__value-number:focus {
@@ -101,9 +104,11 @@
 
 .ReportingHeader__value-unit {
   font-family: @roboto;
-  font-size: @font-size-normal;
+  font-size: @font-size-medium;
   font-weight: 400;
-  margin-right: 5px;
+  margin-bottom: 0.125rem;
+  margin-left: 0.625rem;
+  margin-right: 0.3125rem;
 }
 
 .ReportingHeader__rowFees {
@@ -112,10 +117,9 @@
 }
 
 .ReportingHeader__readMore-value-unit {
-  font-family: @roboto;
   font-size: @font-size-medium;
   font-weight: 400;
-  margin-right: 5px;
+  margin-right: 0.3125rem;
 }
 
 .ReportingHeader__endTime {
@@ -172,6 +176,7 @@
 
 .ReportingHeader__heading {
   color: @color-lightergray;
+  letter-spacing: 0.125rem;
   margin: 0 0 1rem;
   text-transform: uppercase;
 
@@ -217,6 +222,7 @@
 .ReportingHeader__participationText {
   color: #d8d8d8;
   font-size: @font-size-normal;
+  line-height: 1.313rem;
 }
 
 .ReportingHeader__participationTokens--disabled {
@@ -238,7 +244,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   display: flex;
-  left: -15px;
+  left: -1.313rem;
   margin-top: -50px;
   max-height: 64px;
   min-width: 438px;

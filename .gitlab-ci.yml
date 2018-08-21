@@ -7,7 +7,7 @@ stages:
 
 
 before_script:
-  - yarn install --ignore-scripts --frozen-lockfile
+  - yarn install --frozen-lockfile
   - git config --global user.email "team@augur.net"
   - git config --global user.name "Augur Developers"
 

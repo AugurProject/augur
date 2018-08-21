@@ -9,6 +9,7 @@ import { updateActiveFeeWindows, updateMarketState } from "./log-processors/data
 import { processQueue, logQueueProcess } from "./process-queue";
 import { getMarketsWithReportingState } from "../server/getters/database";
 import { logger } from "../utils/logger";
+import { SubscriptionEventNames } from "../constants";
 
 interface MarketIdUniverseFeeWindow extends MarketsContractAddressRow {
   universe: Address;
@@ -159,8 +160,7 @@ function advanceMarketReachingEndTime(db: Knex, augur: Augur, blockNumber: numbe
     each(designatedDisputeMarketIds, (marketIdRow, nextMarketId: ErrorCallback) => {
       updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.DESIGNATED_REPORTING, (err: Error|null) => {
         if (err) return nextMarketId(err);
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
+        augurEmitter.emit(SubscriptionEventNames.MarketState, {
           universe,
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.DESIGNATED_REPORTING,
@@ -182,8 +182,7 @@ function advanceMarketMissingDesignatedReport(db: Knex, augur: Augur, blockNumbe
     each(marketAddressRows, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
       updateMarketState(db, marketIdRow.marketId, blockNumber, augur.constants.REPORTING_STATE.OPEN_REPORTING, (err: Error|null) => {
         if (err) return callback(err);
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
+        augurEmitter.emit(SubscriptionEventNames.MarketState, {
           universe,
           marketId: marketIdRow.marketId,
           reportingState: augur.constants.REPORTING_STATE.OPEN_REPORTING,
@@ -206,8 +205,7 @@ function advanceMarketsToAwaitingFinalization(db: Knex, augur: Augur, blockNumbe
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
         updateMarketState(db, marketIdRow.marketId, blockNumber, ReportingState.AWAITING_FINALIZATION, (err: Error|null) => {
           if (err) return callback(err);
-          augurEmitter.emit("MarketState", {
-            eventName: "MarketState",
+          augurEmitter.emit(SubscriptionEventNames.MarketState, {
             universe: marketIdRow.universe,
             marketId: marketIdRow.marketId,
             reportingState: ReportingState.AWAITING_FINALIZATION,
@@ -245,8 +243,7 @@ function advanceMarketsToCrowdsourcingDispute(db: Knex, augur: Augur, blockNumbe
     .asCallback((err: Error|null, marketIds: Array<MarketIdUniverseFeeWindow>) => {
       if (err) return callback(err);
       each(marketIds, (marketIdRow, nextMarketIdRow: ErrorCallback) => {
-        augurEmitter.emit("MarketState", {
-          eventName: "MarketState",
+        augurEmitter.emit(SubscriptionEventNames.MarketState, {
           universe: marketIdRow.universe,
           feeWindow: marketIdRow.feeWindow,
           marketId: marketIdRow.marketId,

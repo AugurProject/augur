@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
 
-import MarketsHeader from 'modules/markets/components/markets-header/markets-header'
-import MarketsList from 'modules/markets/components/markets-list'
-import { TYPE_TRADE } from 'modules/market/constants/link-types'
+import MarketsHeader from "modules/markets/components/markets-header/markets-header";
+import MarketsList from "modules/markets/components/markets-list";
+import { TYPE_TRADE } from "modules/market/constants/link-types";
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -20,51 +20,53 @@ export default class MarketsView extends Component {
     category: PropTypes.string,
     universe: PropTypes.string,
     defaultFilter: PropTypes.string.isRequired,
-    defaultSort: PropTypes.string.isRequired,
-  }
+    defaultSort: PropTypes.string.isRequired
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       filter: props.defaultFilter,
       sort: props.defaultSort,
-      filterSortedMarkets: [],
-    }
+      filterSortedMarkets: []
+    };
 
-    this.updateFilter = this.updateFilter.bind(this)
-    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this)
+    this.updateFilter = this.updateFilter.bind(this);
+    this.updateFilteredMarkets = this.updateFilteredMarkets.bind(this);
   }
 
   componentDidMount() {
     if (this.props.universe) {
-      this.updateFilteredMarkets()
+      this.updateFilteredMarkets();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      search,
-      category,
-      universe,
-    } = this.props
-    if (universe !== prevProps.universe || (search !== prevProps.search || category !== prevProps.category)) {
-      this.updateFilteredMarkets()
+    const { search, category, universe } = this.props;
+    if (
+      universe !== prevProps.universe ||
+      (search !== prevProps.search || category !== prevProps.category)
+    ) {
+      this.updateFilteredMarkets();
     }
   }
 
   updateFilter(params) {
-    const { filter, sort } = params
-    this.setState({ filter, sort }, this.updateFilteredMarkets)
+    const { filter, sort } = params;
+    this.setState({ filter, sort }, this.updateFilteredMarkets);
   }
 
   updateFilteredMarkets() {
-    const { search, category } = this.props
-    const { filter, sort } = this.state
-    this.props.loadMarketsByFilter({ category, search, filter, sort }, (err, filterSortedMarkets) => {
-      if (err) return console.log('Error loadMarketsFilter:', err)
-      this.setState({ filterSortedMarkets })
-    })
+    const { search, category } = this.props;
+    const { filter, sort } = this.state;
+    this.props.loadMarketsByFilter(
+      { category, search, filter, sort },
+      (err, filterSortedMarkets) => {
+        if (err) return console.log("Error loadMarketsFilter:", err);
+        this.setState({ filterSortedMarkets });
+      }
+    );
   }
 
   render() {
@@ -75,9 +77,9 @@ export default class MarketsView extends Component {
       loadMarketsInfoIfNotLoaded,
       location,
       markets,
-      toggleFavorite,
-    } = this.props
-    const s = this.state
+      toggleFavorite
+    } = this.props;
+    const s = this.state;
 
     return (
       <section id="markets_view">
@@ -105,6 +107,6 @@ export default class MarketsView extends Component {
           isMobile={isMobile}
         />
       </section>
-    )
+    );
   }
 }

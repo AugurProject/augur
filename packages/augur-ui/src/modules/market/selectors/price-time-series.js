@@ -12,12 +12,12 @@ export const selectPriceTimeSeries = (outcome, marketPriceHistory) => {
     marketPriceHistory == null ||
     marketPriceHistory[outcome.id] == null
   ) {
-    return []
+    return [];
   }
 
   return marketPriceHistory[outcome.id].map(priceTimePoint => ({
     price: priceTimePoint.price,
     amount: priceTimePoint.amount,
-    timestamp: priceTimePoint.timestamp * 1000,
-  }))
-}
+    timestamp: priceTimePoint.timestamp * 1000
+  }));
+};

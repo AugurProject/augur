@@ -11,7 +11,7 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
 
   if (universe != null) query.where({ universe });
   if (creator != null) query.where({ marketCreator: creator });
-  if (category != null) query.whereRaw("LOWER(category) = ?", [category.toLowerCase()]);
+  if (category != null) query.whereRaw("LOWER(markets.category) = ?", [category.toLowerCase()]);
   if (reportingState != null) query.where({ reportingState });
   if (feeWindow != null) query.where({ feeWindow });
   if (designatedReporter != null) query.where({ designatedReporter });

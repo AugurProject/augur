@@ -735,32 +735,32 @@ var SECONDS_PER_DAY = 3600 * 24;
 // being completely filled with Transfer transactions
 var MAX_LOG_BYTES_PER_BLOCK = 160000;
 
-var SubscriptionEventNames;
-(function (SubscriptionEventNames) {
-  SubscriptionEventNames.FeeWindowOpened = "FeeWindowOpened";
-  SubscriptionEventNames.CompleteSetsPurchased = "CompleteSetsPurchased";
-  SubscriptionEventNames.CompleteSetsSold = "CompleteSetsSold";
-  SubscriptionEventNames.DisputeCrowdsourcerCompleted = "DisputeCrowdsourcerCompleted";
-  SubscriptionEventNames.DisputeCrowdsourcerContribution = "DisputeCrowdsourcerContribution";
-  SubscriptionEventNames.DisputeCrowdsourcerCreated = "DisputeCrowdsourcerCreated";
-  SubscriptionEventNames.DisputeCrowdsourcerRedeemedLog = "DisputeCrowdsourcerRedeemedLog";
-  SubscriptionEventNames.FeeWindowClosed = "FeeWindowClosed";
-  SubscriptionEventNames.FeeWindowCreated = "FeeWindowCreated";
-  SubscriptionEventNames.FeeWindowRedeemed = "FeeWindowRedeemed";
-  SubscriptionEventNames.InitialReportSubmitted = "InitialReportSubmitted";
-  SubscriptionEventNames.InitialReporterRedeemed = "InitialReporterRedeemed";
-  SubscriptionEventNames.InitialReporterTransferred = "InitialReporterTransferred";
-  SubscriptionEventNames.MarketCreated = "MarketCreated";
-  SubscriptionEventNames.MarketState = "MarketState";
-  SubscriptionEventNames.OrderCanceled = "OrderCanceled";
-  SubscriptionEventNames.OrderCreated = "OrderCreated";
-  SubscriptionEventNames.OrderFilled = "OrderFilled";
-  SubscriptionEventNames.ReportingParticipantDisavowed = "ReportingParticipantDisavowed";
-  SubscriptionEventNames.SyncFinished = "SyncFinished";
-  SubscriptionEventNames.TokensTransferred = "TokensTransferred";
-  SubscriptionEventNames.TradingProceedsClaimed = "TradingProceedsClaimed";
-  SubscriptionEventNames.UniverseCreated = "UniverseCreated";
-})(SubscriptionEventNames || (SubscriptionEventNames = {}));
+var SUBSCRIPTION_EVENT_NAMES;
+(function (SUBSCRIPTION_EVENT_NAMES) {
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_OPENED = "FeeWindowOpened";
+  SUBSCRIPTION_EVENT_NAMES.COMPLETE_SETS_PURCHASED = "CompleteSetsPurchased";
+  SUBSCRIPTION_EVENT_NAMES.COMPLETE_SETS_SOLD = "CompleteSetsSold";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_COMPLETED = "DisputeCrowdsourcerCompleted";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_CONTRIBUTION = "DisputeCrowdsourcerContribution";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_CREATED = "DisputeCrowdsourcerCreated";
+  SUBSCRIPTION_EVENT_NAMES.DISPUTE_CROWDSOURCER_REDEEMED_LOG = "DisputeCrowdsourcerRedeemedLog";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_CLOSED = "FeeWindowClosed";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_CREATED = "FeeWindowCreated";
+  SUBSCRIPTION_EVENT_NAMES.FEE_WINDOW_REDEEMED = "FeeWindowRedeemed";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_SUBMITTED = "InitialReportSubmitted";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_REDEEMED = "InitialReporterRedeemed";
+  SUBSCRIPTION_EVENT_NAMES.INITIAL_REPORT_TRANSFERRED = "InitialReporterTransferred";
+  SUBSCRIPTION_EVENT_NAMES.MARKET_CREATED = "MarketCreated";
+  SUBSCRIPTION_EVENT_NAMES.MARKET_STATE = "MarketState";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_CANCELLED = "OrderCanceled";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_CREATED = "OrderCreated";
+  SUBSCRIPTION_EVENT_NAMES.ORDER_FILLED = "OrderFilled";
+  SUBSCRIPTION_EVENT_NAMES.REPORTING_PARTICIPANT_DISAVOWED = "ReportingParticipantDisavowed";
+  SUBSCRIPTION_EVENT_NAMES.SYNC_FINISHED = "SyncFinished";
+  SUBSCRIPTION_EVENT_NAMES.TOKENS_TRANSFERRED = "TokensTransferred";
+  SUBSCRIPTION_EVENT_NAMES.TRADING_PROCEEDS_CLAIMED = "TradingProceedsClaimed";
+  SUBSCRIPTION_EVENT_NAMES.UNIVERSE_CREATED = "UniverseCreated";
+})(SUBSCRIPTION_EVENT_NAMES || (SUBSCRIPTION_EVENT_NAMES = {}));
 
 module.exports = {
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
@@ -815,8 +815,6 @@ module.exports = {
   MAX_WEBSOCKET_FRAME_SIZE: 5760 * MAX_LOG_BYTES_PER_BLOCK, // Works out to under 1GB, extreme case but prevents error
 
   MINIMUM_TRADE_SIZE: new BigNumber("0.0001", 10),
-
-  MINIMUM_TRADE_VALUE: new BigNumber(1, 10).dividedBy(10000),
 
   ORDER_STATE: {
     ALL: "ALL",
@@ -873,6 +871,8 @@ module.exports = {
     UNCLAIMED: "UNCLAIMED",
     UNFINALIZED: "UNFINALIZED"
   },
+
+  SUBSCRIPTION_EVENT_NAMES: SUBSCRIPTION_EVENT_NAMES,
 
   TRADE_GAS_BUFFER: new BigNumber("100000", 10),
 
@@ -3430,7 +3430,7 @@ module.exports = getBetterWorseOrders;
 /**
  * Serves as an enum for the state of an order.
  * @typedef {Object} ORDER_STATE
- * @property {string} ALL Order is open, closed, or cancelled. (If no order state is specified, this is the default value.)
+ * @property {string} ALL Order is open, closed, or canceled. (If no order state is specified, this is the default value.)
  * @property {string} OPEN Order is available to be filled.
  * @property {string} CLOSED Order has been filled.
  * @property {string} CANCELED Order has been canceled (although it may have been partially filled).
@@ -3445,7 +3445,7 @@ module.exports = getBetterWorseOrders;
  * @property {string} owner The order maker's Ethereum address, as a hexadecimal string.
  * @property {number} creationTime Timestamp, in seconds, when the Ethereum block containing the order transaction was created.
  * @property {number} creationBlockNumber Number of the Ethereum block containing the order transaction.
- * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @property {ORDER_STATE} orderState State of orders by which to filter results. Valid values are "ALL", "CANCELED", "CLOSED", & "OPEN".
  * @property {string} price Rounded display price, as a base-10 number.
  * @property {string} amount Current rounded number of shares to trade, as a base-10 number.
  * @property {string} originalAmount Original rounded number of shares to trade, as a base-10 number.
@@ -3471,7 +3471,7 @@ var augurNode = require("../augur-node");
  * @param {string=} p.marketId Contract address of the market from which to retrieve orders, as a hexadecimal string. Either this parameter or the universe must be specified.
  * @param {number=} p.outcome Market outcome to filter results by. Valid values are in the range [0,7].
  * @param {string=} p.creator Ethereum address of the order creator, as a hexadecimal string.
- * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELLED", "CLOSED", & "OPEN".
+ * @param {ORDER_STATE=} p.orderState State of orders by which to filter results. Valid values are "ALL", "CANCELED", "CLOSED", & "OPEN".
  * @param {number=} p.earliestCreationTime Earliest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
  * @param {number=} p.latestCreationTime Latest timestamp, in seconds, at which to truncate order results. (This timestamp is when the block on the Ethereum blockchain containing the transfer was created.)
  * @param {string=} p.sortBy Field name by which to sort the orders.
@@ -4198,7 +4198,7 @@ var calculateSettlementFee = require("./calculate-settlement-fee");
 
 function simulateCreateAskOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome < 0 || outcome >= numOutcomes || typeof outcome === "undefined" || typeof shareBalances[outcome] === "undefined") throw new Error("Invalid outcome ID " + outcome);
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
   var worstCaseFees = ZERO;
@@ -4232,7 +4232,7 @@ var calculateSettlementFee = require("./calculate-settlement-fee");
 
 function simulateCreateBidOrder(numShares, price, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcome < 0 || outcome >= numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome < 0 || outcome >= numOutcomes || typeof outcome === "undefined" || typeof shareBalances[outcome] === "undefined") throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
   var worstCaseFees = ZERO;
@@ -4872,7 +4872,7 @@ module.exports = readJsonFile;
 'use strict';
 
 // generated by genversion
-module.exports = '5.2.0';
+module.exports = '5.3.0';
 },{}],148:[function(require,module,exports){
 (function (global){
 var augur = global.augur || require("./build/index");
@@ -35638,7 +35638,7 @@ module.exports={
   "_args": [
     [
       "elliptic@6.4.0",
-      "/tmp/tmp.OdCyY1b484/augur.js"
+      "/tmp/tmp.99zVtH7mLg/augur.js"
     ]
   ],
   "_from": "elliptic@6.4.0",
@@ -35664,7 +35664,7 @@ module.exports={
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
   "_spec": "6.4.0",
-  "_where": "/tmp/tmp.OdCyY1b484/augur.js",
+  "_where": "/tmp/tmp.99zVtH7mLg/augur.js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"

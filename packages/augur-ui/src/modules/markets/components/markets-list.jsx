@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import MarketPreview from 'modules/market/components/market-preview/market-preview'
-import Paginator from 'modules/common/components/paginator/paginator'
-import NullStateMessage from 'modules/common/components/null-state-message/null-state-message'
-import { TYPE_TRADE } from 'modules/market/constants/link-types'
-import isEqual from 'lodash/isEqual'
+import MarketPreview from "modules/market/components/market-preview/market-preview";
+import Paginator from "modules/common/components/paginator/paginator";
+import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
+import { TYPE_TRADE } from "modules/market/constants/link-types";
+import isEqual from "lodash/isEqual";
 
-import debounce from 'utils/debounce'
+import debounce from "utils/debounce";
 
 export default class MarketsList extends Component {
   static propTypes = {
@@ -24,60 +24,73 @@ export default class MarketsList extends Component {
     showPagination: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
-  }
+    pendingLiquidityOrders: PropTypes.object
+  };
 
   static defaultProps = {
-    showPagination: true,
-  }
+    showPagination: true
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       lowerBound: 1,
       boundedLength: 10,
-      marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
-    }
+      marketIdsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
+    };
 
-    this.setSegment = this.setSegment.bind(this)
-    this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this)
-    this.loadMarketsInfoIfNotLoaded = debounce(this.loadMarketsInfoIfNotLoaded.bind(this))
+    this.setSegment = this.setSegment.bind(this);
+    this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
+    this.loadMarketsInfoIfNotLoaded = debounce(
+      this.loadMarketsInfoIfNotLoaded.bind(this)
+    );
   }
 
   componentWillMount() {
-    const { filteredMarkets } = this.props
-    this.loadMarketsInfoIfNotLoaded(filteredMarkets)
+    const { filteredMarkets } = this.props;
+    this.loadMarketsInfoIfNotLoaded(filteredMarkets);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { filteredMarkets } = this.props
+    const { filteredMarkets } = this.props;
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||
       !isEqual(filteredMarkets, nextProps.filteredMarkets)
     ) {
-      this.setMarketIDsMissingInfo(nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength)
+      this.setMarketIDsMissingInfo(
+        nextProps.filteredMarkets,
+        nextState.lowerBound,
+        nextState.boundedLength
+      );
     }
 
-    if (!isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)) this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo)
+    if (
+      !isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)
+    )
+      this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, boundedLength })
+    this.setState({ lowerBound, boundedLength });
   }
 
   setMarketIDsMissingInfo(filteredMarkets, lowerBound, boundedLength) {
     if (filteredMarkets.length && boundedLength) {
-      const marketIdLength = boundedLength + (lowerBound - 1)
-      const marketIdsMissingInfo = filteredMarkets.slice(lowerBound - 1, marketIdLength)
-      this.setState({ marketIdsMissingInfo })
+      const marketIdLength = boundedLength + (lowerBound - 1);
+      const marketIdsMissingInfo = filteredMarkets.slice(
+        lowerBound - 1,
+        marketIdLength
+      );
+      this.setState({ marketIdsMissingInfo });
     }
   }
 
   // debounced call
   loadMarketsInfoIfNotLoaded() {
-    const { loadMarketsInfoIfNotLoaded } = this.props
-    loadMarketsInfoIfNotLoaded(this.state.marketIdsMissingInfo)
+    const { loadMarketsInfoIfNotLoaded } = this.props;
+    loadMarketsInfoIfNotLoaded(this.state.marketIdsMissingInfo);
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
@@ -94,17 +107,18 @@ export default class MarketsList extends Component {
       showPagination,
       toggleFavorite,
       testid,
-    } = this.props
-    const s = this.state
+      pendingLiquidityOrders
+    } = this.props;
+    const s = this.state;
 
-    const marketsLength = filteredMarkets.length
+    const marketsLength = filteredMarkets.length;
 
     return (
       <article className="markets-list" data-testid={testid}>
-        {marketsLength && s.boundedLength ?
+        {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
-            const id = filteredMarkets[(s.lowerBound - 1) + i]
-            const market = markets.find(market => market.id === id)
+            const id = filteredMarkets[s.lowerBound - 1 + i];
+            const market = markets.find(market => market.id === id);
 
             if (market && market.id) {
               return (
@@ -120,24 +134,28 @@ export default class MarketsList extends Component {
                   linkType={TYPE_TRADE}
                   id={market.id}
                   testid={testid}
+                  pendingLiquidityOrders={pendingLiquidityOrders}
                 />
-              )
+              );
             }
 
-            return null
-          }) :
-          <NullStateMessage message="No Markets Available" /> }
-        {!!marketsLength && showPagination &&
-          <Paginator
-            itemsLength={marketsLength}
-            itemsPerPage={10}
-            location={location}
-            history={history}
-            setSegment={this.setSegment}
-            pageParam={paginationPageParam || 'page'}
-          />
-        }
+            return null;
+          })
+        ) : (
+          <NullStateMessage message="No Markets Available" />
+        )}
+        {!!marketsLength &&
+          showPagination && (
+            <Paginator
+              itemsLength={marketsLength}
+              itemsPerPage={10}
+              location={location}
+              history={history}
+              setSegment={this.setSegment}
+              pageParam={paginationPageParam || "page"}
+            />
+          )}
       </article>
-    )
+    );
   }
 }

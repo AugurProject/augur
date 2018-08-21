@@ -1,19 +1,23 @@
 #!/bin/bash
 set -e
+set -x
 
-IFS='' cat  <<EOF > build/release-notes.md
-## Release Notes
-Automatic Build for Commit: $(git rev-parse --verify HEAD)
-
-### Changes since last version
-$(git log $(git describe --tags --abbrev=0)..HEAD --oneline | while read l; do echo " - $l"; done)
-EOF
+#IFS='' cat  <<EOF > build/release-notes.md
+### Release Notes
+#Automatic Build for Commit: $(git rev-parse --verify HEAD)
+#
+#### Changes since last version
+#$(git log $(git describe --tags --abbrev=0)..HEAD --oneline | while read l; do echo " - $l"; done)
+#EOF
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    npm run make -- --mac
-    set -x
+    echo "running 'npm run make-mac'"
+    npm run make-mac
+    echo "creating virtualenv"
     virtualenv augur-venv
+    echo "sourcing virtualenv"
     source augur-venv/bin/activate
+    echo "running 'pip install requests'"
     pip install requests
 
 else
@@ -31,5 +35,6 @@ else
     pip install requests
 fi
 
+echo "running post_build.py"
 python scripts/post_build.py
 cat dist/*.sha256

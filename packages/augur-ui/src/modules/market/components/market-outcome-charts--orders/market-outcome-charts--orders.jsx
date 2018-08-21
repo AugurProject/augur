@@ -1,26 +1,26 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-import MarketOutcomeChartHeaderOrders from 'modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders'
+import MarketOutcomeChartHeaderOrders from "modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
 
-import { ASKS, BIDS } from 'modules/order-book/constants/order-book-order-types'
-import { BUY, SELL } from 'modules/transactions/constants/types'
-import MarketOutcomeMidpoint
-  from 'modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint'
+import {
+  ASKS,
+  BIDS
+} from "modules/order-book/constants/order-book-order-types";
+import { BUY, SELL } from "modules/transactions/constants/types";
+import MarketOutcomeMidpoint from "modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint";
 
-import Styles from 'modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles'
-import StylesHeader from 'modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles'
-import { isEmpty, isEqual } from 'lodash'
-
+import Styles from "modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles";
+import StylesHeader from "modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import { isEmpty, isEqual } from "lodash";
 
 function findTrailingZeros(number) {
-  const zeros = number.match(/[0]+$/)
-  if (number.toString().indexOf('.') === -1 || !zeros) {
-    return ''
+  const zeros = number.match(/[0]+$/);
+  if (number.toString().indexOf(".") === -1 || !zeros) {
+    return "";
   }
-  return (number % 1 === 0 ? '.' : '') + zeros
-
+  return (number % 1 === 0 ? "." : "") + zeros;
 }
 
 export default class MarketOutcomeChartsOrders extends Component {
@@ -38,30 +38,29 @@ export default class MarketOutcomeChartsOrders extends Component {
     selectedOutcome: PropTypes.any,
     hoveredPrice: PropTypes.any,
     marketMidpoint: PropTypes.any,
-    hasPriceHistory: PropTypes.bool,
-  }
+    hasPriceHistory: PropTypes.bool
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       hoveredOrderIndex: null,
-      hoveredSide: null,
-    }
+      hoveredSide: null
+    };
   }
 
   componentDidMount() {
-    this.asks.scrollTop = this.asks.scrollHeight
+    this.asks.scrollTop = this.asks.scrollHeight;
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      orderBook } = this.props
+    const { orderBook } = this.props;
     if (
       isEmpty(prevProps.orderBook.asks) &&
       !isEqual(prevProps.orderBook.asks, orderBook.asks)
     ) {
-      this.asks.scrollTop = this.asks.scrollHeight
+      this.asks.scrollTop = this.asks.scrollHeight;
     }
   }
 
@@ -76,11 +75,11 @@ export default class MarketOutcomeChartsOrders extends Component {
       isMobile,
       headerHeight,
       hasOrders,
-      orderBookKeys,
-    } = this.props
-    const s = this.state
+      orderBookKeys
+    } = this.props;
+    const s = this.state;
 
-    const orderBookAsks = orderBook.asks || []
+    const orderBookAsks = orderBook.asks || [];
 
     return (
       <section
@@ -94,160 +93,235 @@ export default class MarketOutcomeChartsOrders extends Component {
           headerHeight={headerHeight}
         />
         <div
-          className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--asks'])}
+          className={classNames(
+            Styles.MarketOutcomeOrderBook__Side,
+            Styles["MarketOutcomeOrderBook__side--asks"]
+          )}
         >
-          <div className={classNames(Styles.MarketOutcomeOrderBook__container, Styles['MarketOutcomeOrderBook__container--asks'])} ref={(asks) => { this.asks = asks }} >
+          <div
+            className={classNames(
+              Styles.MarketOutcomeOrderBook__container,
+              Styles["MarketOutcomeOrderBook__container--asks"]
+            )}
+            ref={asks => {
+              this.asks = asks;
+            }}
+          >
             {orderBookAsks.map((order, i) => (
               <div
                 key={order.cumulativeShares}
-                className={
-                  classNames(
-                    Styles.MarketOutcomeOrderBook__row,
-                    {
-                      [Styles['MarketOutcomeOrderBook__row--head-bid']]: i === orderBook.asks.length - 1,
-                      [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
-                      [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === ASKS && i > s.hoveredOrderIndex,
-                    },
-                  )
-                }
+                className={classNames(Styles.MarketOutcomeOrderBook__row, {
+                  [Styles["MarketOutcomeOrderBook__row--head-bid"]]:
+                    i === orderBook.asks.length - 1,
+                  [Styles["MarketOutcomeOrderBook__row--hover"]]:
+                    i === s.hoveredOrderIndex && s.hoveredSide === ASKS,
+                  [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
+                    s.hoveredOrderIndex !== null &&
+                    s.hoveredSide === ASKS &&
+                    i > s.hoveredOrderIndex
+                })}
                 onMouseEnter={() => {
-                  updateHoveredPrice(order.price.value)
+                  updateHoveredPrice(order.price.value);
                   this.setState({
                     hoveredOrderIndex: i,
-                    hoveredSide: ASKS,
-                  })
+                    hoveredSide: ASKS
+                  });
                 }}
                 onMouseLeave={() => {
-                  updateHoveredPrice(null)
+                  updateHoveredPrice(null);
                   this.setState({
                     hoveredOrderIndex: null,
-                    hoveredSide: null,
-                  })
+                    hoveredSide: null
+                  });
                 }}
               >
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_ask}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: BUY,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: BUY
+                    })
+                  }
                 >
-                  <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>
+                    {order.shares.value.toFixed(fixedPrecision).toString()}
+                  </span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_ask}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: BUY,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: BUY
+                    })
+                  }
                 >
-                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#6d1d3d', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
+                  <span>
+                    {parseFloat(order.price.value.toFixed(fixedPrecision))}
+                    <span style={{ color: "#6d1d3d", marginLeft: ".5px" }}>
+                      {findTrailingZeros(
+                        order.price.value.toFixed(fixedPrecision)
+                      )}
+                    </span>
+                  </span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_ask}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: BUY,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: BUY
+                    })
+                  }
                 >
-                  <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
+                  <span>
+                    {order.mySize
+                      ? order.mySize.value.toFixed(fixedPrecision).toString()
+                      : "—"}
+                  </span>
                 </button>
               </div>
             ))}
           </div>
         </div>
-        <div className={Styles.MarketOutcomeOrderBook__Midmarket} >
+        <div className={Styles.MarketOutcomeOrderBook__Midmarket}>
           <MarketOutcomeMidpoint
             hasOrders={hasOrders}
             orderBookKeys={orderBookKeys}
             fixedPrecision={fixedPrecision}
           />
         </div>
-        <div className={classNames(Styles.MarketOutcomeOrderBook__Side, Styles['MarketOutcomeOrderBook__side--bids'])} >
-          <div className={Styles.MarketOutcomeOrderBook__container} ref={(bids) => { this.bids = bids }} >
+        <div
+          className={classNames(
+            Styles.MarketOutcomeOrderBook__Side,
+            Styles["MarketOutcomeOrderBook__side--bids"]
+          )}
+        >
+          <div
+            className={Styles.MarketOutcomeOrderBook__container}
+            ref={bids => {
+              this.bids = bids;
+            }}
+          >
             {(orderBook.bids || []).map((order, i) => (
               <div
                 key={order.cumulativeShares}
-                className={
-                  classNames(
-                    Styles.MarketOutcomeOrderBook__row,
-                    {
-                      [Styles['MarketOutcomeOrderBook__row--head-ask']]: i === 0,
-                      [Styles['MarketOutcomeOrderBook__row--hover']]: i === s.hoveredOrderIndex && s.hoveredSide === BIDS,
-                      [Styles['MarketOutcomeOrderbook__row--hover-encompassed']]: s.hoveredOrderIndex !== null && s.hoveredSide === BIDS && i < s.hoveredOrderIndex,
-                    },
-                  )
-                }
+                className={classNames(Styles.MarketOutcomeOrderBook__row, {
+                  [Styles["MarketOutcomeOrderBook__row--head-ask"]]: i === 0,
+                  [Styles["MarketOutcomeOrderBook__row--hover"]]:
+                    i === s.hoveredOrderIndex && s.hoveredSide === BIDS,
+                  [Styles["MarketOutcomeOrderbook__row--hover-encompassed"]]:
+                    s.hoveredOrderIndex !== null &&
+                    s.hoveredSide === BIDS &&
+                    i < s.hoveredOrderIndex
+                })}
                 onMouseEnter={() => {
-                  updateHoveredPrice(order.price.value)
+                  updateHoveredPrice(order.price.value);
                   this.setState({
                     hoveredOrderIndex: i,
-                    hoveredSide: BIDS,
-                  })
+                    hoveredSide: BIDS
+                  });
                 }}
                 onMouseLeave={() => {
-                  updateHoveredPrice(null)
+                  updateHoveredPrice(null);
                   this.setState({
                     hoveredOrderIndex: null,
-                    hoveredSide: null,
-                  })
+                    hoveredSide: null
+                  });
                 }}
               >
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_bid}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: SELL,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: SELL
+                    })
+                  }
                 >
-                  <span>{order.shares.value.toFixed(fixedPrecision).toString()}</span>
+                  <span>
+                    {order.shares.value.toFixed(fixedPrecision).toString()}
+                  </span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_bid}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: SELL,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: SELL
+                    })
+                  }
                 >
-                  <span>{parseFloat(order.price.value.toFixed(fixedPrecision))}<span style={{ color: '#135045', marginLeft: '.5px' }}>{findTrailingZeros(order.price.value.toFixed(fixedPrecision))}</span></span>
+                  <span>
+                    {parseFloat(order.price.value.toFixed(fixedPrecision))}
+                    <span style={{ color: "#135045", marginLeft: ".5px" }}>
+                      {findTrailingZeros(
+                        order.price.value.toFixed(fixedPrecision)
+                      )}
+                    </span>
+                  </span>
                 </button>
                 <button
                   className={Styles.MarketOutcomeOrderBook__RowItem_bid}
-                  onClick={() => updateSelectedOrderProperties({
-                    orderPrice: order.price.value.toString(),
-                    orderQuantity: order.cumulativeShares.toString(),
-                    selectedNav: SELL,
-                  })}
+                  onClick={() =>
+                    updateSelectedOrderProperties({
+                      orderPrice: order.price.value.toString(),
+                      orderQuantity: order.cumulativeShares.toString(),
+                      selectedNav: SELL
+                    })
+                  }
                 >
-                  <span>{order.cumulativeShares.toFixed(fixedPrecision).toString()}</span>
+                  <span>
+                    {order.mySize
+                      ? order.mySize.value.toFixed(fixedPrecision).toString()
+                      : "—"}
+                  </span>
                 </button>
               </div>
             ))}
           </div>
         </div>
-        <div className={classNames(StylesHeader.MarketOutcomeChartsHeader__stats, Styles.MarketOutcomeOrderBook__stats)}>
-          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
-            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+        <div
+          className={classNames(
+            StylesHeader.MarketOutcomeChartsHeader__stats,
+            Styles.MarketOutcomeOrderBook__stats
+          )}
+        >
+          <div
+            className={StylesHeader["MarketOutcomeChartsHeader__stat--right"]}
+          >
+            <span
+              className={StylesHeader["MarketOutcomeChartsHeader__stat-title"]}
+            >
               bid qty
             </span>
           </div>
-          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
-            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
+          <div
+            className={StylesHeader["MarketOutcomeChartsHeader__stat--right"]}
+          >
+            <span
+              className={StylesHeader["MarketOutcomeChartsHeader__stat-title"]}
+            >
               price
             </span>
           </div>
-          <div className={StylesHeader['MarketOutcomeChartsHeader__stat--right']}>
-            <span className={StylesHeader['MarketOutcomeChartsHeader__stat-title']}>
-              depth
+          <div
+            className={StylesHeader["MarketOutcomeChartsHeader__stat--right"]}
+          >
+            <span
+              className={StylesHeader["MarketOutcomeChartsHeader__stat-title"]}
+            >
+              my size
             </span>
           </div>
         </div>
       </section>
-    )
+    );
   }
 }

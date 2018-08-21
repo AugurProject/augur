@@ -1,3 +1,1 @@
-describe('loadFundingHistory', () => {
-
-})
+describe("loadFundingHistory", () => {});
