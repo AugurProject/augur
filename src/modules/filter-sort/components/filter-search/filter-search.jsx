@@ -52,10 +52,6 @@ export default class FilterSearch extends Component {
     }
   }
 
-  resetSearch() {
-    this.setState({search: "", placeholder: "Search" })
-  }
-
   onFocus() {
     this.setState({ placeholder: "", width: "400px" });
   }
@@ -70,6 +66,10 @@ export default class FilterSearch extends Component {
     this.timeout = setTimeout(() => {
       this.setState({ search });
     }, 500);
+  }
+
+  resetSearch() {
+    this.setState({ search: "", placeholder: "Search" });
   }
 
   updateQuery(search, location) {
