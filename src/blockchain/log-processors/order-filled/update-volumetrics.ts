@@ -42,6 +42,21 @@ function setMarketLastTrade(db: Knex, marketId: Address, blockNumber: number, ca
   db("markets").update("lastTradeBlockNumber", blockNumber).where({ marketId }).asCallback(callback);
 }
 
+export function updateOpenInterest(db: Knex, marketId: Address, callback: ErrorCallback) {
+  db.first("numTicks").from("markets").where({ marketId }).asCallback((err: Error|null, marketRow?: { numTicks: BigNumber }): void => {
+    if (err) return callback(err);
+    if (marketRow == null) return callback(new Error(`No marketId for openInterest: ${marketId}`));
+    const numTicks = marketRow.numTicks;
+    db.first("supply").from("token_supply").join("tokens", "token_supply.token", "tokens.contractAddress").where({ marketId, symbol: "shares" })
+      .asCallback((err: Error|null, shareTokenRow?: { supply: BigNumber }): void => {
+        if (err) return callback(err);
+        if (shareTokenRow == null) return callback(new Error(`No shareToken supply found for market: ${marketId}`));
+        const openInterest = shareTokenRow.supply.multipliedBy(numTicks);
+        db("markets").update({ openInterest: openInterest.toFixed() }).where({ marketId }).asCallback(callback);
+      });
+  });
+}
+
 export function updateVolumetrics(db: Knex, augur: Augur, category: string, marketId: Address, outcome: number, blockNumber: number, orderId: Bytes32, orderCreator: Address, tickSize: BigNumber, minPrice: BigNumber, maxPrice: BigNumber, isIncrease: boolean, callback: ErrorCallback): void {
   db.first("token_supply.supply").from("tokens").join("token_supply", "token_supply.token", "tokens.contractAddress").where({ outcome, marketId })
     .asCallback((err: Error|null, shareTokenRow?: { supply: BigNumber }): void => {
@@ -54,18 +69,19 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
           db.first("numCreatorShares", "numCreatorTokens", "price", "orderType", "amount").from("trades")
             .where({ marketId, outcome, orderId, blockNumber })
             .asCallback((err: Error|null, tradesRow?: Partial<TradesRow<BigNumber>>): void => {
-            if (err) return callback(err);
-            if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
-            let amount = tradesRow.amount!;
-            if (!isIncrease) amount = amount.negated();
+              if (err) return callback(err);
+              if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
+              let amount = tradesRow.amount!;
+              if (!isIncrease) amount = amount.negated();
 
-            series({
-              market: (next) => incrementMarketVolume(db, marketId, amount, next),
-              marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
-              outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
-              category: (next) => incrementCategoryPopularity(db, category, amount, next),
-            }, callback);
-          });
+              series({
+                market: (next) => incrementMarketVolume(db, marketId, amount, next),
+                marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
+                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
+                category: (next) => incrementCategoryPopularity(db, category, amount, next),
+                openInterest: (next) => updateOpenInterest(db, marketId, next),
+              }, callback);
+            });
         });
     });
 }
