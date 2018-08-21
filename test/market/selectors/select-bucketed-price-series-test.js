@@ -103,7 +103,7 @@ describe(`modules/market/selectors/select-market-outcome-trading-indicator.js`, 
     );
     const expected = {
       priceTimeSeries: { 0: [], 1: [] },
-      timeBuckets: [1533312112000]
+      timeBuckets: [1533312112000, 1533312312000]
     };
     assert.deepEqual(actual, expected, `Didn't call the expected method`);
   });
@@ -117,7 +117,7 @@ describe(`modules/market/selectors/select-market-outcome-trading-indicator.js`, 
       market2Outcomes
     );
     const expected = {
-      timeBuckets: [1533312111000, 1533315711000, 1533319311000],
+      timeBuckets: [1533312111000, 1533315711000, 1533319311000, 1533322111000],
       priceTimeSeries: {
         0: [
           {
@@ -145,7 +145,7 @@ describe(`modules/market/selectors/select-market-outcome-trading-indicator.js`, 
       market3Outcomes
     );
     const expected = {
-      timeBuckets: [1533312111000, 1533315711000, 1533319311000],
+      timeBuckets: [1533312111000, 1533315711000, 1533319311000, 1533322111000],
       priceTimeSeries: {
         0: [
           {
