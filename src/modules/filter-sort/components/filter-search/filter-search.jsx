@@ -39,6 +39,13 @@ export default class FilterSearch extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if (
+      nextProps.location !== this.props.location &&
+      !nextProps.location.search.includes(FILTER_SEARCH_PARAM)
+    ) {
+      clearTimeout(this.timeout);
+      this.setState({ search: "", placeholder: "Search" });
+    }
     if (this.state.search !== nextState.search) {
       this.updateQuery(nextState.search, nextProps.location);
     }
