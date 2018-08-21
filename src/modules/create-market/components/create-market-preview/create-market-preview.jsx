@@ -124,11 +124,12 @@ export default class CreateMarketPreview extends Component {
       { universe: universe.id },
       (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err);
-        this.setState({
-          reporterFeePercentage: CreateMarketPreview.formatReporterFee(
-            marketCreationCostBreakdown.reportingFeeDivisor
-          )
-        });
+        if (this.componentWrapper)
+          this.setState({
+            reporterFeePercentage: CreateMarketPreview.formatReporterFee(
+              marketCreationCostBreakdown.reportingFeeDivisor
+            )
+          });
       }
     );
   }
@@ -146,7 +147,12 @@ export default class CreateMarketPreview extends Component {
     const tagsWithClick = process(newMarket.tag1, newMarket.tag2);
 
     return (
-      <article className={Styles.CreateMarketPreview}>
+      <article
+        className={Styles.CreateMarketPreview}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
         <div className={Styles.CreateMarketPreview__header}>
           <div className={Styles["CreateMarketPreview__header-wrapper"]}>
             <div className={Styles.CreateMarketPreview__tags}>

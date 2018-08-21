@@ -64,7 +64,7 @@ export default class MarketsView extends Component {
       { category, search, filter, sort },
       (err, filterSortedMarkets) => {
         if (err) return console.log("Error loadMarketsFilter:", err);
-        this.setState({ filterSortedMarkets });
+        if (this.componentWrapper) this.setState({ filterSortedMarkets });
       }
     );
   }
@@ -82,7 +82,11 @@ export default class MarketsView extends Component {
     const s = this.state;
 
     return (
-      <section id="markets_view">
+      <section
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
         <Helmet>
           <title>Markets</title>
         </Helmet>

@@ -79,7 +79,8 @@ export default class CategoriesView extends Component {
         duration: 500,
         easing: "easeOutQuad",
         step: stepObj => {
-          this.setState({ heroCategoryOpacity: stepObj.value });
+          if (this.componentWrapper)
+            this.setState({ heroCategoryOpacity: stepObj.value });
         }
       }).then(cb);
 
@@ -93,7 +94,8 @@ export default class CategoriesView extends Component {
               .plus(createBigNumber(1))
               .mod(createBigNumber(categories.length))
               .toNumber();
-            this.setState({ heroCategoryIndex: nextIndex });
+            if (this.componentWrapper)
+              this.setState({ heroCategoryIndex: nextIndex });
           }
           doCarouselTween(0, 1, waitThenChange);
         });
@@ -121,7 +123,12 @@ export default class CategoriesView extends Component {
     const heroCategory = categories[heroCategoryIndex];
 
     return (
-      <section className={Styles.Categories}>
+      <section
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+        className={Styles.Categories}
+      >
         <Helmet>
           <title>Categories</title>
         </Helmet>
