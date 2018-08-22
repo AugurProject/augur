@@ -68,6 +68,9 @@ export enum SubscriptionEventNames {
   TokensTransferred = "TokensTransferred",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
+  Burn = "Burn",
+  TokensBurned = "TokensBurned",
+  Approval = "Approval",
 }
 
 export enum MarketType {
