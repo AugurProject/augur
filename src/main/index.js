@@ -14,6 +14,9 @@ const GethNodeController = require('./gethNodeController')
 const {app, BrowserWindow, Menu, ipcMain} = electron
 /* global __dirname process*/
 
+
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -83,7 +86,8 @@ function about() {
   const aboutWindow = new BrowserWindow({width: 450, height: 350, icon: path.join(__dirname, '../augur.ico')})
 
   aboutWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '../renderer/about.html'),
+    pathname: path.join(__dirname, 'index.html'),
+    hash: 'about',
     protocol: 'file:',
     slashes: true
   }))
@@ -97,12 +101,16 @@ function createWindow () {
     ev.preventDefault()
   })
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '../renderer/index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  if (isDevelopment) {
+    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
+  } else {
+    // and load the index.html of the app.
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
+  }
 
   // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
   setTimeout(function() {
