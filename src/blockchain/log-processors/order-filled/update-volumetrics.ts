@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { series } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
+import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
+import { WEI_PER_ETHER } from "../../../constants";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber>) {
   db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: { volume: BigNumber }) => {
@@ -52,7 +54,7 @@ export function updateOpenInterest(db: Knex, marketId: Address, callback: ErrorC
         if (err) return callback(err);
         if (shareTokenRow == null) return callback(new Error(`No shareToken supply found for market: ${marketId}`));
         const openInterest = shareTokenRow.supply.multipliedBy(numTicks);
-        db("markets").update({ openInterest: openInterest.toFixed() }).where({ marketId }).asCallback(callback);
+        db("markets").update({ openInterest: convertFixedPointToDecimal(openInterest, WEI_PER_ETHER) }).where({ marketId }).asCallback(callback);
       });
   });
 }
