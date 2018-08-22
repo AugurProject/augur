@@ -4,8 +4,11 @@ import argparse
 import getpass
 import hashlib
 import os
+import requests
 import signal
 import sys
+
+
 
 try:
     from github import Github
@@ -104,13 +107,39 @@ def pick_release(all_versions):
     return all_versions[version]
 
 
+def tmp_local_dir(name):
+    directory = '/tmp/augur-app-{name}'.format(name=name)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    return directory
+
+
+def download_asset(asset_name, asset_url, directory):
+    local_filename = directory + '/' + asset_name
+    print(local_filename)
+    r = requests.get(asset_url, stream=True, headers=dict(Accept='application/octet-stream', **HEADERS))
+    with open(local_filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+                f.flush()
+
+
+HEADERS = {"Authorization": "token " + GH_TOKEN}
+
+
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     args()
     g = Github(GH_TOKEN)
     repo = g.get_repo("augurproject/augur-app")
     all_versions = return_release_ids(repo)
-    version = pick_release(all_versions)
-    for assets in repo.get_release(version).get_assets():
+    release_id = pick_release(all_versions)
+    print(type(release_id))
+    tag_name = repo.get_release(release_id).tag_name
+    directory = tmp_local_dir(tag_name)
+    for assets in repo.get_release(release_id).get_assets():
+        print('downloading {}'.format(assets.name))
+        download_asset(assets.name, assets.url, directory)
         print(assets.name)
         print(assets.url)
