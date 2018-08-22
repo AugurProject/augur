@@ -10,7 +10,6 @@ branches:
   - master
   - electron-build
   - "/release-\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)?$/"
-  - "/v\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)?$/"
   - petong/ch13701/publish-installer-checksums-for-users-to
 
 
