@@ -39,12 +39,11 @@ export const removeLiquidityOrder = data => ({
 });
 
 export const startOrderSending = options => (dispatch, getState) => {
-  const { marketId, log } = options;
+  const { marketId } = options;
   const { loginAccount, marketsData, pendingLiquidityOrders } = getState();
-  // if marketIsn't defined from state, use the log if it's passed.
-  const market = marketsData[marketId] || log;
+  const market = marketsData[marketId];
   const orderBook = Object.assign({}, pendingLiquidityOrders[marketId]);
-  // if market is undefined (marketsData not loaded yet, log not present), try again...
+  // if market is undefined (marketsData not loaded yet), try again...
   if (!market) {
     return dispatch(
       loadMarketsInfo([marketId], () =>

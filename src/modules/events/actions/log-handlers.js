@@ -45,8 +45,7 @@ export const handleMarketCreatedLog = log => (dispatch, getState) => {
   }
   if (isStoredTransaction) {
     // My Market? start kicking off liquidity orders
-    if (!log.removed)
-      dispatch(startOrderSending({ marketId: log.market, log }));
+    if (!log.removed) dispatch(startOrderSending({ marketId: log.market }));
     dispatch(updateLoggedTransactions(log));
   }
 };
