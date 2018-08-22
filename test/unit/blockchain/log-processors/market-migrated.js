@@ -5,6 +5,7 @@ const setupTestDb = require("../../test.database");
 const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../../build/blockchain/log-processors/market-migrated");
 const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
 const ReportingState = require("../../../../build/types").ReportingState;
+const updateMarketState = require("../../../../src/blockchain/log-processors/database").updateMarketState;
 
 const getMarket = (db, params, callback) => {
   getMarketsWithReportingState(db, ["markets.marketId", "markets.universe", "markets.needsMigration", "markets.needsDisavowal", "feeWindow", "reportingState"])
@@ -17,16 +18,16 @@ describe("blockchain/log-processors/market-migrated", () => {
       setupTestDb((err, db) => {
         assert.ifError(err);
         db.transaction((trx) => {
-          trx("markets").update("needsMigration", 1).where("marketId", t.params.log.market).asCallback((err) => {
+          trx("markets").update({needsMigration: 1, needsDisavowal: 1}).where("marketId", t.params.log.market).asCallback((err) => {
             assert.ifError(err);
-            trx("markets").update("needsDisavowal", 1).where("marketId", t.params.log.market).asCallback((err) => {
+            updateMarketState(trx, t.params.log.market, 999, ReportingState.AWAITING_FORK_MIGRATION, (err) => {
               assert.ifError(err);
               processMarketMigratedLog(trx, t.params.augur, t.params.log, (err) => {
                 assert.ifError(err);
                 getMarket(trx, t.params, (err, marketRow) => {
                   t.assertions.onAdded(err, marketRow);
                   processMarketMigratedLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                    // assert.ifError(err);
+                    assert.ifError(err);
                     getMarket(trx, t.params, (err, marketRow) => {
                       t.assertions.onRemoved(err, marketRow);
                       db.destroy();
@@ -77,7 +78,7 @@ describe("blockchain/log-processors/market-migrated", () => {
             "needsMigration": 0,
             "needsDisavowal": 0,
             "feeWindow": "0x0000000000000000000000000000000000FEE000",
-            "reportingState": ReportingState.CROWDSOURCING_DISPUTE,
+            "reportingState": ReportingState.AWAITING_NEXT_WINDOW,
           },
         ]);
       },
@@ -90,7 +91,7 @@ describe("blockchain/log-processors/market-migrated", () => {
             "needsMigration": 1,
             "needsDisavowal": 1,
             "feeWindow": "0x0000000000000000000000000000000000FEE000",
-            "reportingState": ReportingState.CROWDSOURCING_DISPUTE,
+            "reportingState": ReportingState.AWAITING_FORK_MIGRATION,
           },
         ]);
       },
