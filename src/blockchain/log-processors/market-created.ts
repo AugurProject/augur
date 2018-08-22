@@ -71,6 +71,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           marketCreatorFeesBalance:   "0",
           volume:                     "0",
           sharesOutstanding:          "0",
+          openInterest:               "0",
           forking:                    0,
           needsMigration:             0,
           needsDisavowal:             0,
