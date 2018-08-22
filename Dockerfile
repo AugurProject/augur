@@ -30,7 +30,7 @@ RUN echo "${SOLC_MD5} */usr/local/bin/solc" > solc.md5 && \
 
 RUN yarn config set cache-folder .yarn && \
     yarn global add lerna && \
-    yarn global add yarn@1.6.0
+    yarn global add yarn@1.9.4
 
 ADD packages/augur-core/requirements.txt requirements.txt
 RUN pip install --upgrade pip setuptools && \
