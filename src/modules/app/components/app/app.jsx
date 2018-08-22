@@ -485,7 +485,7 @@ export default class AppView extends Component {
     if (!isMobile) {
       if (
         parsePath(location.pathname)[0] === AUTHENTICATION ||
-        parsePath(location.pathname)[0] === CREATE_MARKET
+        (parsePath(location.pathname)[0] === CREATE_MARKET && mainMenu.scalar === 1)
       ) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
