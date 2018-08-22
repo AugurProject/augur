@@ -483,7 +483,7 @@ export default class AppView extends Component {
     let origamiScalar = 0;
 
     if (!isMobile) {
-      if (parsePath(location.pathname)[0] === AUTHENTICATION) {
+      if (parsePath(location.pathname)[0] === AUTHENTICATION || parsePath(location.pathname)[0] === CREATE_MARKET) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
       } else {
