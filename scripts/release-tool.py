@@ -76,11 +76,22 @@ def args():
 def return_release_array(repo):
     release_array = []
     for release in repo.get_releases():
-        release_array.append(release.title)
+        release_array.append(release.tag_name)
+        print(release.tag_name)
     return release_array
 
 
-def pick_release(releases):
+def return_release_ids(repo):
+    release_ids = {}
+    for release in repo.get_releases():
+        id = release.id
+        tag = release.tag_name
+        release_ids[tag] = id
+    return release_ids
+
+
+def pick_release(all_versions):
+    releases = list(all_versions.keys())
     if 'cursesmenu' in sys.modules:
         selection = SelectionMenu.get_selection(releases, title='Pick a release to verify')
         if selection < len(releases):
@@ -90,7 +101,7 @@ def pick_release(releases):
     else:
         print('  '.join(releases))
         version = input('enter version to sanity check: ')
-    return version
+    return all_versions[version]
 
 
 if __name__ == "__main__":
@@ -98,4 +109,8 @@ if __name__ == "__main__":
     args()
     g = Github(GH_TOKEN)
     repo = g.get_repo("augurproject/augur-app")
-    version = pick_release(return_release_array(repo))
+    all_versions = return_release_ids(repo)
+    version = pick_release(all_versions)
+    for assets in repo.get_release(version).get_assets():
+        print(assets.name)
+        print(assets.url)
