@@ -59,6 +59,7 @@ export enum SubscriptionEventNames {
   InitialReporterTransferred = "InitialReporterTransferred",
   MarketCreated = "MarketCreated",
   MarketState = "MarketState",
+  MarketFinalized  = "MarketFinalized",
   OrderCanceled = "OrderCanceled",
   OrderCreated = "OrderCreated",
   OrderFilled = "OrderFilled",
