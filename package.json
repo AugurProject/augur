@@ -36,11 +36,6 @@
   ],
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
-  "electronWebpack": {
-    "renderer": {
-      "webpackConfig": "electron-webpack.js"
-    }
-  },
   "config": {
     "forge": {
       "packagerConfig": {},

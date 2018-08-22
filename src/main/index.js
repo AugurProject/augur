@@ -102,6 +102,10 @@ function createWindow () {
   })
 
   if (isDevelopment) {
+    mainWindow.webContents.openDevTools()
+  }
+
+  if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
   } else {
     // and load the index.html of the app.
