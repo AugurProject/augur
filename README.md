@@ -42,7 +42,7 @@ Augur Node has a Dockerfile and publish docker image which is capable of running
 ```
 $ export ETHEREUM_HTTP=https://rinkeby.ethereum.nodes.augur.net 
 $ export ETHEREUM_WS=wss://websocket-rinkeby.ethereum.nodes.augur.net
-$ scripts/docker/run.sh
+$ scripts/docker/run.sh augurproject/augur-node
 ```
     
 ### Hosted Ethereum nodes
