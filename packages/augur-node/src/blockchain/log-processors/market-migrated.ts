@@ -34,13 +34,12 @@ export function processMarketMigratedLog(db: Knex, augur: Augur, log: FormattedE
           disavowed: db.raw("disavowed + 1"),
         }).into("crowdsourcers").where("marketId", log.market).asCallback((err) => {
           if (err) return callback(err);
-          db.select("category").from("markets").where({ marketId: log.market }).asCallback((err: Error|null, categoryRows?: Array<CategoryRow>): void => {
-            if (err) return callback(err);
-            if (!categoryRows || !categoryRows.length) return callback(null);
-            const category = categoryRows[0].category.toUpperCase();
-            db.select("popularity").from("categories").where({ category, universe: log.newUniverse }).asCallback((err: Error|null, categoriesRows?: Array<CategoriesRow>): void => {
+          db.first("category").from("markets").where({ marketId: log.market }).asCallback((err: Error|null, categoryRows?: CategoryRow): void => {
+            if (err || !categoryRows || categoryRows.category == null ) return callback(err);
+            const category = categoryRows.category.toUpperCase();
+            db.first("popularity").from("categories").where({ category, universe: log.newUniverse }).asCallback((err: Error|null, categoriesRows?: CategoriesRow): void => {
               if (err) return callback(err);
-              if (categoriesRows && categoriesRows.length) return callback(null);
+              if (categoriesRows) return callback(null);
               db.insert({ category, universe: log.newUniverse }).into("categories").asCallback(callback);
             });
           });
@@ -52,7 +51,7 @@ export function processMarketMigratedLog(db: Knex, augur: Augur, log: FormattedE
 
 export function processMarketMigratedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   rollbackMarketState(db, log.market, ReportingState.AWAITING_NEXT_WINDOW, (err) => {
-    // if (err) return callback(err); FIX
+    if (err) return callback(err);
     db.update({
       universe: log.originalUniverse,
       needsMigration: db.raw("needsMigration + 1"),
