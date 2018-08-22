@@ -93,7 +93,7 @@ GethNodeController.prototype.start = function (event) {
     '--cache=512',
     '--rpc',
     '--ws',
-    '--wsorigins=127.0.0.1,http://127.0.0.1:8080,https://127.0.0.1:8080',
+    '--wsorigins=127.0.0.1,http://127.0.0.1:8080,https://127.0.0.1:8443',
     `--datadir=${gethPath}`
   ], {
     stdio: ['ignore', 'ignore', 'pipe']
