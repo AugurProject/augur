@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import MarketOutcomesListOutcome from "modules/market/components/market-outcomes-list--outcome/market-outcomes-list--outcome";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import toggleHeight from "utils/toggle-height/toggle-height";
 
 import Styles from "modules/market/components/market-outcomes-list/market-outcomes-list.styles";
@@ -48,13 +48,7 @@ export default class MarketOutcomesList extends Component {
           }}
         >
           <h2>Outcomes</h2>
-          {!isMobile && (
-            <span
-              className={classNames({ [`${Styles["is-open"]}`]: s.isOpen })}
-            >
-              <ChevronDown />
-            </span>
-          )}
+          {!isMobile && <ChevronFlip big pointDown={!s.isOpen} />}
         </button>
         <div
           ref={outcomeList => {

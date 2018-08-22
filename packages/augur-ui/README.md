@@ -1,6 +1,6 @@
 # augur | client
-[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
-[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur?branch=master)
+[![Build Status](https://travis-ci.com/AugurProject/augur-ui.svg?branch=master)](https://travis-ci.com/AugurProject/augur-ui)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur-ui/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur-ui?branch=master)
 [![Language Grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/AugurProject/augur-ui.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AugurProject/augur-ui/context:javascript)
 
 Augur is a decentralized prediction market platform built on Ethereum.  

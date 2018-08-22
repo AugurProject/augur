@@ -6,6 +6,7 @@ import { helpers } from "src/helpers";
 import thunk from "redux-thunk";
 
 import { createReducer } from "src/reducers";
+import { windowRef } from "src/utils/window-ref";
 
 // console log middleware
 const consoleLog = store => next => action => {
@@ -15,8 +16,6 @@ const consoleLog = store => next => action => {
   }
   return next(action);
 };
-
-const windowRef = typeof window === "undefined" ? {} : window;
 
 // local storage middleware
 const localStorageMiddleware = store => next => action => {

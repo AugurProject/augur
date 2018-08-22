@@ -1,6 +1,6 @@
 {
   "name": "augur-ui",
-  "version": "5.5.0",
+  "version": "5.6.0",
   "description": "Augur UI",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "async": "2.6.0",
-    "augur.js": "5.3.0",
+    "augur.js": "5.4.0",
     "bignumber.js": "6.0.0",
     "bs58": "4.0.1",
     "classnames": "2.2.5",
@@ -59,6 +59,7 @@
     "express": "4.16.2",
     "helmet": "3.9.0",
     "highcharts": "6.0.3",
+    "history": "4.7.2",
     "immutable-delete": "1.1.0",
     "keythereum": "1.0.2",
     "lodash": "4.17.4",
