@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import { ChevronUp, ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import { RANGES, PERIODS } from "modules/market/constants/permissible-periods";
 
@@ -91,7 +91,7 @@ export default class PeriodSelector extends Component {
               ? `${selectedRangeLabel}, ${selectedPeriodLabel}`
               : "Range, Period"}
           </span>
-          {s.isModalActive ? <ChevronUp /> : <ChevronDown />}
+          <ChevronFlip pointDown={!s.isModalActive} />
         </button>
         <div
           ref={periodSelector => {

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { augur } from "services/augurjs";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatGasCostToEther } from "utils/format-number";
 import MarketLiquidityTable from "modules/market/components/market-liquidity-table/market-liquidity-table";
@@ -161,9 +161,7 @@ export default class MarketLiquidity extends Component {
             You have unsigned orders pending for this Market&apos;s Initial
             Liquidity. Please submit or cancel these orders.
           </h1>
-          <span className={classNames({ [`${Styles["is-open"]}`]: isOpen })}>
-            <ChevronDown stroke="#372e4b" />
-          </span>
+          <ChevronFlip big stroke="#372e4b" pointDown={!isOpen} />
         </button>
         {isOpen &&
           pendingLiquidityOrders && (
@@ -215,13 +213,7 @@ export default class MarketLiquidity extends Component {
                 }}
               >
                 <h1>{showAllOrders ? "Show Less" : "Show All"}</h1>
-                <span
-                  className={classNames({
-                    [`${Styles["is-open"]}`]: showAllOrders
-                  })}
-                >
-                  <ChevronDown stroke="#372e4b" />
-                </span>
+                <ChevronFlip big stroke="#372e4b" pointDown={!showAllOrders} />
               </button>
               <div className={Styles.MarketLiquidity__costs}>
                 <div className={Styles["MarketLiquidity__costs-labels"]}>

@@ -7,7 +7,8 @@ import Styles from "modules/common/components/chevron-flip/chevron-flip.styles";
 const ChevronFlip = p => (
   <svg
     className={classNames(Styles.ChevronFlip, p.className, {
-      [Styles.pointDown]: p.pointDown
+      [Styles.pointDown]: p.pointDown,
+      [Styles.big]: p.big
     })}
     viewBox="0 0 16 16"
   >
@@ -19,7 +20,7 @@ const ChevronFlip = p => (
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <g stroke="#A7A2B2">
+      <g stroke={p.stroke ? p.stroke : "#A7A2B2"}>
         <polyline
           transform="translate(8.156854, 11.156854) scale(1, -1) rotate(-225.000000) translate(-8.156854, -11.156854) "
           points="3.65685425 6.65685425 12.6568542 6.65685425 12.6568542 15.6568542"
@@ -31,7 +32,9 @@ const ChevronFlip = p => (
 
 ChevronFlip.propTypes = {
   className: PropTypes.string,
-  pointDown: PropTypes.bool
+  pointDown: PropTypes.bool,
+  stroke: PropTypes.string,
+  big: PropTypes.bool
 };
 
 export default ChevronFlip;
