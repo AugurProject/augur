@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import makePath from "modules/routes/helpers/make-path";
 import Styles from "modules/notification-bar/components/notification-bar";
 import { CloseWithCircle } from "src/modules/common/components/icons";
-import { Link } from "modules/common/containers/sticky-params-components";
+import { Link } from "react-router-dom";
 import { MY_POSITIONS } from "modules/routes/constants/views";
 
 const numberToWords = require("number-to-words");

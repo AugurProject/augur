@@ -8,7 +8,7 @@ import MarketPositionsListOrphanedOrder from "modules/market/components/market-p
 import MarketPositionsListPosition from "modules/market/components/market-positions-list--position/market-positions-list--position";
 import MarketPositionsListOrder from "modules/market/components/market-positions-list--order/market-positions-list--order";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import toggleHeight from "utils/toggle-height/toggle-height";
 
 import Styles from "modules/market/components/market-positions-list/market-positions-list.styles";
@@ -58,9 +58,7 @@ export default class MarketPositionsList extends Component {
           }}
         >
           <h2>My Positions</h2>
-          <span className={classNames({ [`${Styles["is-open"]}`]: s.isOpen })}>
-            <ChevronDown />
-          </span>
+          <ChevronFlip big pointDown={!s.isOpen} />
         </button>
         <div
           ref={outcomeList => {

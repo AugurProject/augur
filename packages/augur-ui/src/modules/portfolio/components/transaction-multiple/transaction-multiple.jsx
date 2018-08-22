@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import TransactionHeader from "modules/portfolio/components/transaction-header/transaction-header";
 import LinkedTransaction from "modules/portfolio/components/transaction-linked/transaction-linked";
-import { ChevronDown } from "modules/common/components/icons";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 
 import toggleHeight from "utils/toggle-height/toggle-height";
 
@@ -53,14 +53,7 @@ export default class TransactionMultiple extends Component {
             {(transaction.transactions && transaction.transactions.length) || 0}{" "}
             Linked Transactions
           </span>
-          <span
-            className={classNames(
-              CommonStyles["Transaction__linked-more-chevron"],
-              { [`${CommonStyles["is-open"]}`]: s.isOpen }
-            )}
-          >
-            {<ChevronDown />}
-          </span>
+          <ChevronFlip big pointDown={!s.isOpen} />
         </button>
         <div
           className={ToggleHeightStyles["toggle-height-target"]}

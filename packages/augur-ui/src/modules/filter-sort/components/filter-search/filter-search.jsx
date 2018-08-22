@@ -29,6 +29,7 @@ export default class FilterSearch extends Component {
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.resetSearch = this.resetSearch.bind(this);
     this.timeout = null;
   }
 
@@ -39,6 +40,13 @@ export default class FilterSearch extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if (
+      nextProps.location !== this.props.location &&
+      !nextProps.location.search.includes(FILTER_SEARCH_PARAM)
+    ) {
+      clearTimeout(this.timeout);
+      this.resetSearch();
+    }
     if (this.state.search !== nextState.search) {
       this.updateQuery(nextState.search, nextProps.location);
     }
@@ -58,6 +66,10 @@ export default class FilterSearch extends Component {
     this.timeout = setTimeout(() => {
       this.setState({ search });
     }, 500);
+  }
+
+  resetSearch() {
+    this.setState({ search: "", placeholder: "Search" });
   }
 
   updateQuery(search, location) {

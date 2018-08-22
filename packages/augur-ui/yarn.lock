@@ -709,9 +709,9 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.3.0.tgz#d4a3ba6c1a202c8f592635281bc1897cbaa5ef78"
+augur.js@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.4.0.tgz#7e493ed8d670cd90004fc4b206106dd9abdb5460"
   dependencies:
     async "1.5.2"
     augur-core "1.1.0"
@@ -5733,7 +5733,7 @@ highcharts@6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.0.3.tgz#51348a0c97d8bdc87cb3b273460e3751db4a51cd"
 
-history@^4.7.2:
+history@4.7.2, history@^4.7.2:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/history/-/history-4.7.2.tgz#22b5c7f31633c5b8021c7f4a8a954ac139ee8d5b"
   dependencies:

@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
 
 import { CATEGORIES } from "modules/routes/constants/views";
-import { Redirect } from "modules/common/containers/sticky-params-components";
 
 const UnauthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
