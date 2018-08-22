@@ -1,3 +1,8 @@
-export const AUGUR_NODE_URL_PARAM = "augur_node";
-export const ETHEREUM_NODE_HTTP_URL_PARAM = "ethereum_node_http";
-export const ETHEREUM_NODE_WS_URL_PARAM = "ethereum_node_ws";
+// augurNode
+export const AUGUR_NODE_URL = "augur_node";
+
+// ethereumNodeHttp
+export const ETHEREUM_NODE_HTTP = "ethereum_node_http";
+
+// ethereumNodeWs
+export const ETHEREUM_NODE_WS = "ethereum_node_ws";

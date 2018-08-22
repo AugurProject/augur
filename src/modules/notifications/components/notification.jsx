@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Link } from "modules/common/containers/sticky-params-components";
+import { Link } from "react-router-dom";
 import moment from "moment";
 
 import { AlertCircle, CloseBlack } from "modules/common/components/icons";
