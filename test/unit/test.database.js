@@ -9,9 +9,8 @@ module.exports = (callback) => {
     postProcessResponse: postProcessDatabaseResults,
   });
   const db = Knex(env);
-  db.migrate.latest().then(() => {
-    db.seed.run().then(() => {
-      callback(null, db);
-    });
-  }).catch(callback);
+  db.migrate.latest(env.migrations)
+    .then(() => db.seed.run(env.seeds))
+    .then(() => callback(null, db))
+    .catch(callback);
 };
