@@ -135,11 +135,7 @@ if __name__ == "__main__":
     repo = g.get_repo("augurproject/augur-app")
     all_versions = return_release_ids(repo)
     release_id = pick_release(all_versions)
-    print(type(release_id))
     tag_name = repo.get_release(release_id).tag_name
     directory = tmp_local_dir(tag_name)
     for assets in repo.get_release(release_id).get_assets():
-        print('downloading {}'.format(assets.name))
         download_asset(assets.name, assets.url, directory)
-        print(assets.name)
-        print(assets.url)
