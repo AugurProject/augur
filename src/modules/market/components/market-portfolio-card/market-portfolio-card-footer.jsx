@@ -98,6 +98,7 @@ const MarketPortfolioCardFooter = p => {
                 </div>
               )}
             <button
+              data-testid={"claimButton-" + p.marketId}
               className={classNames(Styles["MarketCard__action-footer-light"])}
               onClick={p.buttonAction}
               disabled={
@@ -123,6 +124,7 @@ MarketPortfolioCardFooter.propTypes = {
   finalizationTime: PropTypes.number,
   currentTimestamp: PropTypes.number.isRequired,
   unclaimedForkEth: PropTypes.object,
+  marketId: PropTypes.string.isRequired,
   unclaimedForkRepStaked: PropTypes.object
 };
 

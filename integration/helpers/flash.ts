@@ -13,15 +13,16 @@ import fillMarketOrders from "augur.js/scripts/flash/fill-market-orders";
 import initialReport from "augur.js/scripts/flash/initial-report";
 import disputeContribute from "augur.js/scripts/flash/dispute-contribute";
 import createMarketOrder from "augur.js/scripts/flash/create-market-order";
+import finalizeMarket from "augur.js/scripts/flash/finalize-market";
 import { getPrivateKeyFromString } from "augur.js/scripts/dp/lib/get-private-key";
 
 export default class Flash implements IFlash {
   augur: Augur;
   auth: object;
 
-  constructor() {
+  constructor(contractAddress: string = UnlockedAccounts.CONTRACT_OWNER_PRIV) {
     this.augur = new Augur();
-    this.auth = getPrivateKeyFromString(UnlockedAccounts.CONTRACT_OWNER_PRIV);
+    this.auth = getPrivateKeyFromString(contractAddress);
     this.augur.connect(
       connectionEndpoints,
       (err: any) => {
@@ -98,6 +99,15 @@ export default class Flash implements IFlash {
       }
     };
     return this.command(args, forceFinalize);
+  }
+
+  finalizeMarket(marketId: string) {
+    const args = {
+      opt: {
+        marketId: marketId
+      }
+    };
+    return this.command(args, finalizeMarket);
   }
 
   tradeCompleteSets(marketId: string) {

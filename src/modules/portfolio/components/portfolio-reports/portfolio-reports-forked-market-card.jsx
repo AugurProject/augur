@@ -86,6 +86,7 @@ const PortfolioReportsForkedMarketCard = ({
         currentTimestamp={currentTimestamp}
         unclaimedForkEth={unclaimedForkEth}
         unclaimedForkRepStaked={unclaimedForkRepStaked}
+        marketId={market.id}
       />
     </article>
   );

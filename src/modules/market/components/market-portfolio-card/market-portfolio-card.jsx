@@ -397,6 +397,7 @@ export default class MarketPortfolioCard extends Component {
               outstandingReturns={market.outstandingReturns}
               finalizationTime={market.finalizationTime}
               currentTimestamp={currentTimestamp}
+              marketId={market.id}
             />
           )}
       </article>
