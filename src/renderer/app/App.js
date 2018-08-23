@@ -6,6 +6,7 @@ import { NetworkDropdown } from "./components/network-dropdown/network-dropdown"
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import './app.styles.css';
+import { Link } from 'react-router-dom'
 
 export class App extends Component {
   render() {
@@ -18,6 +19,7 @@ export class App extends Component {
           <NetworkDropdown />
           <ConnectingView connected={true}/>
           <ProcessingView />
+          <div><Link to='/about'>About</Link></div>
         </div>
       </div>
     )
