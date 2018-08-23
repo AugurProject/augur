@@ -1,17 +1,23 @@
 import * as React from 'react'
 import { Component } from 'react'
+// import Styles from './app.styles.less'
+import { Logo } from "./components/logo/logo";
+import { NetworkDropdown } from "./components/network-dropdown/network-dropdown";
+import { ProcessingView } from "./components/processing-view/processing-view";
+import { ConnectingView } from "./components/connecting-view/connecting-view";
+import './app.styles.css';
 
 export class App extends Component {
   render() {
     return (
-      <div>
-        <div className="App">
-          <header className="App-header">
-            <h2 className="App-title">Main Page</h2>
-            <div>
-              Here is some content
-            </div>
-          </header>
+      <div className='App'>
+        <div className='App__row'>
+          <Logo />
+        </div>
+        <div>
+          <NetworkDropdown />
+          <ConnectingView />
+          <ProcessingView />
         </div>
       </div>
     )

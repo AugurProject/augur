@@ -98,7 +98,7 @@ function about() {
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')})
+  mainWindow = new BrowserWindow({minWidth: 340, width: 340, minHeight: 700, height: 829, icon: path.join(__dirname, '../augur.ico')})
 
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
