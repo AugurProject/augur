@@ -2,12 +2,12 @@
 
 import argparse
 import getpass
+import glob
 import hashlib
 import os
 import requests
 import signal
 import sys
-
 
 
 try:
@@ -16,7 +16,6 @@ except ImportError:
     print('missing PyGithub')
     print('pip3 install PyGithub')
     sys.exit(0)
-
 
 try:
     from cursesmenu import SelectionMenu
@@ -58,7 +57,6 @@ def signal_handler(sig, frame):
 
 
 def args():
-    print('args')
     parser = argparse.ArgumentParser(
         description='augur-app release tool')
     parser.set_defaults(sign=True)
@@ -72,8 +70,7 @@ def args():
                       action='store_false',
                       help='don\'t sign releases')
     args = parser.parse_args()
-    print(args)
-    print(args.sign)
+    return args
 
 
 def return_release_array(repo):
@@ -129,7 +126,34 @@ def download_asset(asset_name, asset_url, directory):
                 f.flush()
 
 
+def compare_checksums_in_dir(dir):
+    comparison = {}
+    for file in glob.iglob(os.path.join(dir, '*')):
+        print(file)
+        for x in FILE_EXTENSIONS:
+            if file.endswith(x):
+                if x not in comparison:
+                    comparison[x] = {}
+                sha256 = hashlib.sha256()
+                with open(file, 'rb') as f:
+                    while True:
+                        buf = f.read(2**20)
+                        if not buf:
+                            break
+                        sha256.update(buf)
+                comparison[x]['sha'] = sha256.hexdigest()
+                comparison[x]['file'] = file.split('/')[-1]
+            if file.endswith('{}.sha256'.format(x)):
+                if x not in comparison:
+                    comparison[x] = {}
+                shasumfile = open(file, 'r')
+                comparison[x]['shasum'] = shasumfile.read().split(' ')[0]
+                shasumfile.close()
+    return comparison
+
+
 HEADERS = {"Authorization": "token " + GH_TOKEN}
+FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 
 
 if __name__ == "__main__":
@@ -141,5 +165,7 @@ if __name__ == "__main__":
     release_id = pick_release(all_versions)
     tag_name = repo.get_release(release_id).tag_name
     directory = tmp_local_dir(tag_name)
-    for assets in repo.get_release(release_id).get_assets():
-        download_asset(assets.name, assets.url, directory)
+    comparison = compare_checksums_in_dir(directory)
+    print(comparison)
+#    for assets in repo.get_release(release_id).get_assets():
+#        download_asset(assets.name, assets.url, directory)
