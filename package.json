@@ -1,7 +1,7 @@
 {
   "name": "augur",
   "productName": "Augur",
-  "version": "1.4.0-snapshot",
+  "version": "1.5.0-snapshot",
   "description": "Augur Desktop Application",
   "main": "src/main/main.js",
   "scripts": {
@@ -53,8 +53,8 @@
   "dependencies": {
     "app-data-folder": "1.0.0",
     "augur-core": "1.1.0",
-    "augur-node": "5.6.0",
-    "augur-ui": "5.6.0",
+    "augur-node": "5.6.1",
+    "augur-ui": "5.6.1",
     "augur.js": "5.4.0",
     "debounce": "1.1.0",
     "electron-compile": "6.4.2",
