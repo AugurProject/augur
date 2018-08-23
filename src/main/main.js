@@ -85,12 +85,15 @@ function buildMenu(showDisable) {
 function about() {
   const aboutWindow = new BrowserWindow({width: 450, height: 350, icon: path.join(__dirname, '../augur.ico')})
 
-  aboutWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    hash: 'about',
-    protocol: 'file:',
-    slashes: true
-  }))
+  if (isDevelopment) {
+    aboutWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}/about`)
+  } else {
+    aboutWindow.loadURL(url.format({
+      pathname: path.join(__dirname, '/about'),
+      protocol: 'file:',
+      slashes: true
+    }))
+  }
 }
 
 function createWindow () {
@@ -100,10 +103,6 @@ function createWindow () {
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
   })
-
-  if (isDevelopment) {
-    mainWindow.webContents.openDevTools()
-  }
 
   if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)

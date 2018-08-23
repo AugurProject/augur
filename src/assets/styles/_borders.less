@@ -1,0 +1,42 @@
+// BORDERS
+//	Constants
+// 		Defaults
+@border-all: 'all sides';
+@border-default-chroma: @border-normal;
+@border-default-width: 1px;
+
+//		Sides
+@border-top: border-top;
+@border-right: border-right;
+@border-bottom: border-bottom;
+@border-left: border-left;
+
+//		Chroma
+@border-normal: @color-border;
+@border-muted: @color-border-muted;
+@border-light: @color-border-light;
+@border-faded: fadeout(@color-border, @amount-extra-light);
+
+// Style
+@border-solid: solid;
+@border-dotted: dotted;
+@border-dashed: dashed;
+@border-double: double;
+
+//		Width
+@border-width-2: 2px;
+@border-width-3: 3px;
+
+.border(@side: false; @property: @border-all; @chroma: @border-default-chroma; @width: @border-default-width; @style: @border-solid;) {
+  & when (@side) {
+    & when (@property = @border-all) {
+      border: @width @style @chroma;
+    }
+
+    @{property}: @width @style @chroma;
+  }
+
+  & when not (@side) {
+    border: none;
+  }
+}

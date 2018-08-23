@@ -17,7 +17,7 @@
     "make-mac": "electron-builder --mac",
     "make-linux": "electron-builder --linux",
     "make-all": "electron-builder -mwl",
-    "nuke": "rm -rf package-lock.json; rm -rf node_modules; rm -rf dist;",
+    "nuke": "rm -rf package-lock.json; rm -rf yarn.lock; rm -rf node_modules; rm -rf dist;",
     "test": "mocha",
     "lint": "eslint ./src",
     "make:local": "electron-builder --config electron-builder.local.yml",
