@@ -1,4 +1,4 @@
-@import (reference) '../../assets/styles/shared';
+@import (reference) '../assets/styles/shared';
 
 html {
   font-size: 18px;
@@ -20,7 +20,7 @@ body, html {
   height: 100%;
 }
 
-.container {
+:local(.container) {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
@@ -28,7 +28,7 @@ body, html {
   height: 100%;
 }
 
-.label {
+:local(.label) {
   color: #FFFFFF;
   font-size: 12px;
   font-weight: bold;
@@ -37,11 +37,11 @@ body, html {
   padding: 1rem 0 .3rem 0;
 }
 
-.about_versions {
+:local(.about_versions) {
   padding: 10px 20px;
 }
 
-.about_top_section {
+:local(.about_top_section) {
   align-content: center;
   display: flex;
   flex-direction: row;
@@ -49,7 +49,10 @@ body, html {
   justify-content: center;
 }
 
-.about_bottom_section {
+:local(.about_bottom_section) {
   padding: 10px 40px;
 }
 
+:local(.about_bottom_padding) {
+  padding: 10px 10px;
+}
