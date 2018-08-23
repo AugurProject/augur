@@ -1,6 +1,6 @@
-@import (reference) '~assets/styles/shared';
+@import (reference) '../../../../assets/styles/shared';
 
-.Dropdown {
+:local(.Dropdown) {
   color: @color-lightgray;
   cursor: pointer;
   display: flex;
@@ -13,7 +13,7 @@
   }
 }
 
-.Dropdown__angle-down {
+:local(.Dropdown__angle-down) {
   position: absolute;
   right: 0;
   top: 50%;
@@ -21,13 +21,13 @@
   z-index: -1;
 }
 
-.Dropdown__label {
+:local(Dropdown__label) {
   &:extend(.caps--medium);
 
   padding: 0.5rem 1rem 0.5rem 0;
 }
 
-.Dropdown__list {
+:local(.Dropdown__list) {
   background-color: @color-white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   color: @color-darkpurple;
@@ -59,23 +59,11 @@
   }
 }
 
-.Dropdown__listLeft {
+:local(.Dropdown__listLeft) {
   right: unset;
 }
 
-.Dropdown__select {
+:local(.Dropdown__select) {
   display: none;
   padding: 0.5rem 1rem 0.5rem 0;
-}
-
-@media @breakpoint-mobile-medium {
-  .Dropdown__label,
-  .Dropdown__list,
-  .Dropdown__list.active {
-    display: none;
-  }
-
-  .Dropdown__select {
-    display: block;
-  }
 }

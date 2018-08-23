@@ -1,43 +1,30 @@
 @import (reference) '../../../../assets/styles/shared';
 
-:local(.ConnectingView) {
-	max-width: 291px;
-	height: 136px;
-	margin-top: 40px;
-	margin-bottom: 24px;
-	border: solid 1px #736e89;
+:local(.SettingsDropdown) {
+	color: white;
+	position: relative;
 }
 
-:local(.ConnectingView__connectingContainer) {
-	padding: 24px 16px 0 16px;
+:local(.SettingsDropdown__menu) {
+	position: absolute;
+	color: black;
+	background: white;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	right: 0;
+	width: 173px;
+    border-radius: 2px;
+	background-color: #ffffff;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
-:local(.ConnectingView__conectingTitle) {
-  opacity: 0.8;
-  font-size: 22px;
-  font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #736e89;
-  margin-bottom: 14px;
+:local(.SettingsDropdown__menu-item) {
+	padding: 9px 24px;
+    font-size: 12px; 
+    color: #231a3a;
+    cursor: pointer;
 }
 
-:local(.ConnectingView__conectingText) {
-  opacity: 0.8;
-  font-size: 14px;
-  font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: rgba(115, 110, 137, 0.99);
-  margin-bottom: 24px;
-  text-transform: uppercase;
-}
-
-:local(.ConnectingView__loadingIndicator) {
-	max-height: 32px;
-	border-top: solid 1px #736e89;
+:local(.SettingsDropdown__menu-item:hover) {
+	background-color: #f4f2f7;
 }

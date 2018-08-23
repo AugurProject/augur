@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Component } from 'react'
-import { Logo } from "./components/logo/logo";
+import { Logo } from "../common/components/logo/logo";
+import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdown";
 import { NetworkDropdown } from "./components/network-dropdown/network-dropdown";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
@@ -30,6 +31,7 @@ export class App extends Component {
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__row}>
             <Logo />
+            <SettingsDropdown />
           </div>
           <div>
             <NetworkDropdown />
