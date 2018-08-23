@@ -151,6 +151,19 @@ def compare_checksums_in_dir(dir):
                 shasumfile.close()
     return comparison
 
+def visual_checksum_comparison(comparison):
+    message_to_sign = ''
+    for file, v in comparison.items():
+        sha = str(v['sha'])
+        shasum = str(v['shasum'])
+        filename = str(v['file'])
+        if sha == shasum:
+            color = colors.OKGREEN
+        else:
+            color = colors.RED
+        message_to_sign += '{shasum} {filename}\n'.format(shasum=shasum, filename=filename)
+        print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
+
 
 HEADERS = {"Authorization": "token " + GH_TOKEN}
 FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
@@ -166,6 +179,6 @@ if __name__ == "__main__":
     tag_name = repo.get_release(release_id).tag_name
     directory = tmp_local_dir(tag_name)
     comparison = compare_checksums_in_dir(directory)
-    print(comparison)
+    visual_checksum_comparison(comparison)
 #    for assets in repo.get_release(release_id).get_assets():
 #        download_asset(assets.name, assets.url, directory)
