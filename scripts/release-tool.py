@@ -117,7 +117,11 @@ def tmp_local_dir(name):
 def download_asset(asset_name, asset_url, directory):
     local_filename = directory + '/' + asset_name
     print(local_filename)
-    r = requests.get(asset_url, stream=True, headers=dict(Accept='application/octet-stream', **HEADERS))
+    r = requests.get(asset_url,
+                     stream=True,
+                     headers=dict(Accept='application/octet-stream',
+                                  **HEADERS)
+                     )
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
