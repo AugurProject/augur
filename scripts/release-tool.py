@@ -11,7 +11,7 @@ import sys
 
 
 try:
-    from github import Github
+    from github import Github, GithubException
 except ImportError:
     print('missing PyGithub')
     print('pip3 install PyGithub')
@@ -67,6 +67,7 @@ def args():
     sign.add_argument('--sign',
                       dest='sign',
                       action='store_true',
+                      default=True,
                       help='sign releases')
     sign.add_argument('--no-sign',
                       dest='sign',
@@ -128,6 +129,10 @@ def download_asset(asset_name, asset_url, directory):
                 f.write(chunk)
                 f.flush()
 
+def get_release_asset_obj(release, asset_name):
+    for asset in release.get_assets():
+        if asset.name == asset_name:
+            return asset
 
 def compare_checksums_in_dir(dir):
     comparison = {}
@@ -182,8 +187,28 @@ if __name__ == "__main__":
     release_id = pick_release(all_versions)
     tag_name = repo.get_release(release_id).tag_name
     directory = tmp_local_dir(tag_name)
+    release = repo.get_release(release_id)
+    github_release_assets = release.get_assets()
+    print(github_release_assets)
     if not os.path.exists(directory):
-        for assets in repo.get_release(release_id).get_assets():
+        for assets in github_release_assets:
             download_asset(assets.name, assets.url, directory)
     comparison = compare_checksums_in_dir(directory)
     message_to_sign = visual_checksum_comparison(comparison)
+    print('message to sign')
+    print(message_to_sign)
+    if args.sign:
+        password = getpass.getpass()
+        gpg = gnupg.GPG()
+        signed_data = gpg.sign(message_to_sign, keyid='4ABBBBE0', passphrase=password)
+        print(str(signed_data))
+        release_checksum_name = 'release-checksum-{}.txt'.format(tag_name)
+        release_checksum_path = os.path.join(directory, release_checksum_name)
+        release_checksum = open(release_checksum_path, 'w')
+        release_checksum.write(str(signed_data))
+        release_checksum.close()
+        try:
+            release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
+            release_checksum_asset_obj.delete_asset()
+        finally:
+            release.upload_asset(release_checksum_path, label=release_checksum_name)
