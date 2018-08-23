@@ -14,6 +14,7 @@ import {
   CLOSE_DIALOG_FAILED
 } from "modules/market/constants/close-dialog-status";
 import Styles from "modules/market/components/market-positions-list--position/market-positions-list--position.styles";
+import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 
 export default class MarketPositionsListPosition extends Component {
   static propTypes = {
@@ -165,7 +166,20 @@ export default class MarketPositionsListPosition extends Component {
         <li>{getValue(position, "purchasePrice.formatted")}</li>
         {isExtendedDisplay &&
           !isMobile && <li>{getValue(outcome, "lastPrice.formatted")}</li>}
-        {!isMobile && <li>{getValue(position, "unrealizedNet.formatted")}</li>}
+        {!isMobile && (
+          <li style={{ position: "relative" }}>
+            <MarketOutcomeTradingIndicator
+              outcome={outcome}
+              style={{
+                left: "0",
+                bottom: "45%",
+                marginLeft: "0.6rem",
+                width: "0.325rem"
+              }}
+            />
+            {getValue(position, "unrealizedNet.formatted")}
+          </li>
+        )}
         {!isMobile && <li>{getValue(position, "realizedNet.formatted")} </li>}
         {isExtendedDisplay && (
           <li>{getValue(position, "totalNet.formatted")}</li>
@@ -184,6 +198,7 @@ export default class MarketPositionsListPosition extends Component {
             </button>
           )}
         </li>
+
         <div
           ref={confirmMessage => {
             this.confirmMessage = confirmMessage;
