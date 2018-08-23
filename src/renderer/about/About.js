@@ -10,7 +10,7 @@ export class About extends Component {
     const version =  app.getVersion()
     console.log('Styles.container', Styles)
     return (
-      <section className={Styles.container}>
+      <section className={Styles.main_section}>
         <div className={Styles.about_top_section}>
           <div>
             <img src={augurPng} alt="augur logo" height="100" width="100" />
