@@ -103,6 +103,7 @@ function createWindow () {
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
   })
+  mainWindow.webContents.openDevTools()
 
   if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)

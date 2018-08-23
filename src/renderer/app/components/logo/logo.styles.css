@@ -1,6 +1,5 @@
 .Logo {
   flex-grow: 1;
-  margin: 15px 0 20px 15px;
   position: relative;
   width: 120px;
 
@@ -14,7 +13,6 @@
   font-weight: 300;
   letter-spacing: 1.2px;
   line-height: 44px;
-  margin-left: 8px;
   text-transform: uppercase;
   vertical-align: top;
 }

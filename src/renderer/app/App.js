@@ -16,7 +16,7 @@ export class App extends Component {
         </div>
         <div>
           <NetworkDropdown />
-          <ConnectingView />
+          <ConnectingView connected={true}/>
           <ProcessingView />
         </div>
       </div>
