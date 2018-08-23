@@ -1,0 +1,61 @@
+@import (reference) '../../assets/styles/shared';
+
+:local(.App) {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	height: 807px; // had to do some weird stuff for height, really want 100% here but can't find parent to set that
+}
+
+:local(.App__connectingContainer) {
+	padding: 24px;
+	flex-grow: 1;
+}
+
+:local(.App__row) {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+:local(.App__connectButton) {
+	.button--transparent();
+
+	color: white;
+	border: solid 2px white;
+	width: 100%;
+	margin-top: 24px;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 15px 112px;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+:local(.App__footer) {
+	padding: 24px;
+	background-color: white;
+}
+
+:local(.App__openBrowserButton) {
+	.button--purple();
+	height: 56px;
+	border-radius: 5px;
+	border: solid 2px #dbdae1;
+	width: 100%;
+	text-transform: none;
+	font-size: 18px;
+  	font-weight: bold;
+  	border: 0;
+}
+
+:local(.App__openBrowserButton:disabled) {
+	.button--transparent();
+	border-radius: 5px;
+	border: solid 2px #dbdae1;
+	font-size: 18px;
+  	font-weight: bold;
+  	color: #dbdae1;
+}

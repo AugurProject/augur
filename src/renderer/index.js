@@ -8,7 +8,7 @@ import { App } from './app/App'
 const Root = () => {
   return (
     <HashRouter>
-      <div>
+      <div style={{height: '100%'}}>
         <Route path="/" exact component={App} />
         <Route path="/about" component={About} />
       </div>
