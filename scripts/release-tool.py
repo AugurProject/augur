@@ -60,6 +60,9 @@ def args():
     parser = argparse.ArgumentParser(
         description='augur-app release tool')
     parser.set_defaults(sign=True)
+    parser.add_argument('-r', '--release',
+                        dest='release',
+                        help='release to sign/verify')
     sign = parser.add_mutually_exclusive_group()
     sign.add_argument('--sign',
                       dest='sign',
@@ -163,6 +166,7 @@ def visual_checksum_comparison(comparison):
             color = colors.RED
         message_to_sign += '{shasum} {filename}\n'.format(shasum=shasum, filename=filename)
         print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
+    return message_to_sign
 
 
 HEADERS = {"Authorization": "token " + GH_TOKEN}
@@ -171,14 +175,15 @@ FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
-    args()
+    args = args()
     g = Github(GH_TOKEN)
     repo = g.get_repo("augurproject/augur-app")
     all_versions = return_release_ids(repo)
     release_id = pick_release(all_versions)
     tag_name = repo.get_release(release_id).tag_name
     directory = tmp_local_dir(tag_name)
+    if not os.path.exists(directory):
+        for assets in repo.get_release(release_id).get_assets():
+            download_asset(assets.name, assets.url, directory)
     comparison = compare_checksums_in_dir(directory)
-    visual_checksum_comparison(comparison)
-#    for assets in repo.get_release(release_id).get_assets():
-#        download_asset(assets.name, assets.url, directory)
+    message_to_sign = visual_checksum_comparison(comparison)
