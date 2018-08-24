@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 // import Styles from './settings-dropdown.styles.less'
 import Dropdown from "../../../common/components/dropdown/dropdown";
 import settingsPng from '../../../../assets/images/settings.png'
+import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
 
 export class SettingsDropdown extends Component {
   constructor(props) {
@@ -32,8 +33,16 @@ export class SettingsDropdown extends Component {
 
   	return (
   		<section>
-        <Dropdown options={options}>
-          <img src={settingsPng} alt="Settings" width="19" style={{marginBottom: '5px'}} />
+        <Dropdown button={[<img key="0" src={settingsPng} alt="Settings" width="19" style={{marginBottom: '5px'}} />]}>
+          {options.map((option, index) => (
+            <div
+              key={index}
+              className={DropdownStyles.Dropdown__menuItem}
+              onClick={option.onClick}
+            >
+              {option.label}
+            </div>
+          ))}
         </Dropdown>
 		  </section>
   	)

@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import Styles from './network-dropdown.styles.less'
 import Dropdown from "../../../common/components/dropdown/dropdown";
 import ChevronFlip from "../../../common/components/chevron-flip/chevron-flip";
+import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
+import Styles from './network-dropdown.styles.less'
 
 export class NetworkDropdown extends Component {
 	static propTypes = {
@@ -29,6 +30,7 @@ export class NetworkDropdown extends Component {
 	}
 
 	selectNetwork(networkId) { // networkId is network name 
+		this.setState({menuIsOpen: false})
 		this.setState({selectedNetwork: networkId})
 	}
 
@@ -36,10 +38,11 @@ export class NetworkDropdown extends Component {
 		this.setState({menuIsOpen: value})
 	}
 
-
+	addNew() {
+		console.log('add new')
+	}
   	render() {
-	  	const { connections } = this.props;
-	  	console.log(connections)
+  		const { connections } = this.props
 	  	let options = []
 
 	  	for (let i = 0; i < connections.length; i++) {
@@ -56,17 +59,41 @@ export class NetworkDropdown extends Component {
 
 	  	return (
 	  		<section className={Styles.NetworkDropdown}>
-		        <Dropdown options={options} setMenuIsOpen={this.setMenuIsOpen}>
-		        	<div className={classNames(Styles.NetworkDropdown__label, {
-               				[Styles['NetworkDropdown__label-open']]: this.state.menuIsOpen
-           				})}>
-		        		<div className={Styles.NetworkDropdown__labelText}>
-		        			{connections[this.state.selectedNetwork] && connections[this.state.selectedNetwork].name}
-		        		</div>
-		        		<div className={Styles.NetworkDropdown__svg}>
-		        			<ChevronFlip  pointDown={this.state.menuIsOpen} />
-		        		</div>
-		        	</div>
+		        <Dropdown big setMenuIsOpen={this.setMenuIsOpen}
+		        	button={
+			        	[
+			        		<div key="0" className={classNames(Styles.NetworkDropdown__label, {
+		               				[Styles['NetworkDropdown__label-open']]: this.state.menuIsOpen
+		           				})}>
+				        		<div className={Styles.NetworkDropdown__circle} />
+				        		<div className={Styles.NetworkDropdown__labelText}>
+				        			{connections[this.state.selectedNetwork] && connections[this.state.selectedNetwork].name}
+				        		</div>
+				        		<div className={Styles.NetworkDropdown__svg}>
+				        			<ChevronFlip  pointDown={this.state.menuIsOpen} />
+				        		</div>
+				        	</div>
+			        	]
+		        	}
+		        >
+		        	<div className={Styles.NetworkDropdown__dropdownLabel}>Networks</div>
+		        	{options.map((option, index) => (
+			            <div
+			              key={index}
+			              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
+			              onClick={option.onClick}
+			            >	
+			              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+			              {option.label}
+			            </div>
+		          	))}
+		          	<div className={Styles.NetworkDropdown__break}/>
+		          	<div 
+		          		onClick={this.addNew}
+		          		className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem, Styles.NetworkDropdown__addNewButton)}
+					>
+						Add New
+					</div>
 		        </Dropdown>
 			</section>
 	  	)

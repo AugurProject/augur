@@ -24,6 +24,13 @@ const defaultConfig = {
   'networks': [
     {
       'userCreated': false,
+      'http': 'https://gethnode.com/http',
+      'name': 'Mainnet (default)',
+      'ws': 'wss://gethnode.com/ws',
+      'id': '1'
+    },
+    {
+      'userCreated': false,
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
       'ws': 'wss://rinkeby.augur.net/ethereum-ws',
@@ -52,15 +59,8 @@ const defaultConfig = {
     {
       'userCreated': false,
       'http': 'http://127.0.0.1:8545',
-      'name': 'Local Light Node',
+      'name': 'Local (Light Node)',
       'ws': 'ws://127.0.0.1:8546'
-    },
-    {
-      'userCreated': false,
-      'http': 'https://gethnode.com/http',
-      'name': 'Mainnet',
-      'ws': 'wss://gethnode.com/ws',
-      'id': '1'
     }
   ]
 }

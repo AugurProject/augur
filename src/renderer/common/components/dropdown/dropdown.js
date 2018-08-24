@@ -24,26 +24,20 @@ class Dropdown extends Component {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
 
-  dropdownSelect(onClick) {
-    onClick();
-    this.setState({ showList: false });
-    this.props.setMenuIsOpen && this.props.setMenuIsOpen(false);
-  }
-
   toggleList() {
     this.props.setMenuIsOpen && this.props.setMenuIsOpen(!this.state.showList);
     this.setState({ showList: !this.state.showList });
   }
 
   handleWindowOnClick(event) {
-    if (this.refDropdown && !this.refDropdown.contains(event.target)) {
+    if (this.refDropdown && !this.refDropdown.contains(event.target) || this.refDropdownItems && this.refDropdownItems.contains(event.target)) {
       this.setState({ showList: false });
       this.props.setMenuIsOpen &&  this.props.setMenuIsOpen(false);
     }
   }
 
   render() {
-    const { options } = this.props;
+    const { options, big } = this.props;
     
     return (
       <div
@@ -53,25 +47,20 @@ class Dropdown extends Component {
         }}
       >
         <div className={Styles.Dropdown__label} onClick={this.toggleList}>
-          {this.props.children}
+          {this.props.button}
         </div>
 
         <div 
           className={classNames(Styles.Dropdown__menu, {
-             [Styles['Dropdown__menu-visible']]: this.state.showList
+            [Styles['Dropdown__menuBig']]: big,
+             [Styles['Dropdown__menu-visible']]: this.state.showList && !big,
+             [Styles['Dropdown__menuBig-visible']]: this.state.showList && big,
           })}
+          ref={dropdownItems => {
+            this.refDropdownItems = dropdownItems;
+          }}
         >
-          {options.map((option, index) => (
-            <div
-              key={index}
-              className={classNames(Styles.Dropdown__menuItem, {
-                [Styles['Dropdown__menuItem-visible']]: this.state.showList
-              })}
-              onClick={() => this.dropdownSelect(option.onClick)}
-            >
-              {option.label}
-            </div>
-          ))}
+          {this.props.children}
         </div>
       </div>
     );
@@ -79,8 +68,9 @@ class Dropdown extends Component {
 }
 
 Dropdown.propTypes = {
-  options: PropTypes.array.isRequired,
+  button: PropTypes.array.isRequired,
   setMenuIsOpen: PropTypes.func,
+  big: PropTypes.bool,
 };
 
 export default Dropdown;
