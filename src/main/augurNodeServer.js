@@ -1,4 +1,4 @@
-const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, AUGUR_NODE_STATUS, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = '../utils/events'
+const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, AUGUR_NODE_STATUS, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/events')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -25,43 +25,44 @@ const defaultConfig = {
   'sslPort': '8443',
   'networks': {
     'rinkeby': {
+      'userCreated': false,
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
       'ws': 'wss://rinkeby.augur.net/ethereum-ws',
       'id': '4',
     },
     'ropsten': {
+      'userCreated': false,
       'http': 'https://ropsten.augur.net/ethereum-http',
       'name': 'Ropsten',
       'ws': 'wss://ropsten.augur.net/ethereum-ws',
       'id': '3'
     },
     'kovan': {
+      'userCreated': false,
       'http': 'https://kovan.augur.net/ethereum-http',
       'name': 'Kovan',
       'ws': 'wss://kovan.augur.net/ethereum-ws',
       'id': '42'
     },
     'local': {
+      'userCreated': false,
       'http': 'http://127.0.0.1:8545',
       'name': 'Local',
       'ws': 'ws://127.0.0.1:8546'
     },
     'lightclient': {
+      'userCreated': false,
       'http': 'http://127.0.0.1:8545',
       'name': 'Local Light Node',
       'ws': 'ws://127.0.0.1:8546'
     },
     'mainnet': {
+      'userCreated': false,
       'http': 'https://gethnode.com/http',
       'name': 'Mainnet',
       'ws': 'wss://gethnode.com/ws',
       'id': '1'
-    },
-    'custom': {
-      'http': 'http://127.0.0.1:8545',
-      'name': 'Custom',
-      'ws': 'ws://127.0.0.1:8546'
     }
   }
 }
@@ -203,7 +204,7 @@ AugurNodeServer.prototype.onBulkSyncFinished = function () {
 }
 
 AugurNodeServer.prototype.onRequestConfig = function (event) {
-  event.sender.send('config', this.config)
+  event.sender.send(CONFIG, this.config)
 }
 
 AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
