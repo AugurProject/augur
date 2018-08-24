@@ -7,6 +7,7 @@ import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import { requestConnectionConfigurations } from './actions/localServerCmds'
 import Styles from './app.styles.less'
+import Modal from "../common/components/modal/containers/modal-view";
 
 export class App extends Component {
    constructor(props) {
@@ -32,6 +33,7 @@ export class App extends Component {
   render() {
     return (
       <div className={Styles.App}>
+        {<Modal />}
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__row}>
             <Logo />

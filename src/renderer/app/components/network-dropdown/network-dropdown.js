@@ -10,6 +10,7 @@ import Styles from './network-dropdown.styles.less'
 export class NetworkDropdown extends Component {
 	static propTypes = {
 	    connections: PropTypes.array.isRequired,
+	    updateModal: PropTypes.func.isRequired,
 	};
 
 	constructor(props) {
@@ -17,9 +18,10 @@ export class NetworkDropdown extends Component {
 
 	    this.state = {
 	      menuIsOpen: false, 
-	      selectedNetwork: 0, // need connectionInfo state object, and constants for network names, need to do a hunt here (or in container) for selected
+	      selectedNetwork: 0, // need to do a hunt here (or in container) for selected, need to set new selected
 	    };
 
+	    this.addNew = this.addNew.bind(this);
 	    this.setMenuIsOpen = this.setMenuIsOpen.bind(this);
 	}
 
@@ -39,6 +41,7 @@ export class NetworkDropdown extends Component {
 	}
 
 	addNew() {
+		this.props.updateModal();
 		console.log('add new')
 	}
   	render() {
