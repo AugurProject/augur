@@ -1,3 +1,4 @@
+const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, AUGUR_NODE_STATUS, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = '../utils/events'
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -7,7 +8,6 @@ const path = require('path')
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const debounce = require('debounce')
-
 const POOL_DELAY_WAIT = 60*1000
 const DEFAULT_DELAY_WAIT = 1*1000
 
@@ -89,14 +89,13 @@ function AugurNodeServer() {
   this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
-  ipcMain.on('requestLatestSyncedBlock', this.requestLatestSyncedBlock.bind(this))
-  ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
-  ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
-  ipcMain.on('start', this.onStartNetwork.bind(this))
-  ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
-  ipcMain.on('reset', this.onReset.bind(this))
-  ipcMain.on('resetConfig', this.onResetConfig.bind(this))
-  ipcMain.on('stop', this.shutDownServer.bind(this))
+  ipcMain.on(REQUEST_LATEST_SYNCED_BLOCK, this.requestLatestSyncedBlock.bind(this))
+  ipcMain.on(REQUEST_CONFIG, this.onRequestConfig.bind(this))
+  ipcMain.on(SAVE_NETWORK_CONFIG, this.onSaveNetworkConfig.bind(this))
+  ipcMain.on(START, this.onStartNetwork.bind(this))
+  ipcMain.on(RESET, this.onReset.bind(this))
+  ipcMain.on(REQUEST_CONFIG, this.onResetConfig.bind(this))
+  ipcMain.on(STOP, this.shutDownServer.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer
@@ -130,37 +129,36 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
-    this.sendMsgToWindowContents('augurNodeStatus', true)
+    this.sendMsgToWindowContents(AUGUR_NODE_STATUS, true)
     this.augurNodeController.start(function (err) {
       if (this.retriesRemaining > 0) {
-        this.sendMsgToWindowContents('error', {
+        this.sendMsgToWindowContents(ERROR, {
           error: `ERROR: ${err.message}. RESTARTING.`
         })
         this.retriesRemaining--
         this.restartOnFailure()
       } else {
-        this.sendMsgToWindowContents('error', {
+        this.sendMsgToWindowContents(ERROR, {
           error: `ERROR: ${err.message}.`
         })
       }
     }.bind(this))
   } catch (err) {
-    this.sendMsgToWindowContents('augurNodeStop')
     log.error(err)
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err.message
     })
   }
 }
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
-  if (this.window) this.window.webContents.send('error', {
+  if (this.window) this.window.webContents.send(ERROR, {
     error: 'Disconnected from Ethereum Node. Attempting to reconnect...'
   })
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
-  if (this.window) this.window.webContents.send('showNotice', {
+  if (this.window) this.window.webContents.send(SHOW_NOTICE, {
     message: 'Reconnected',
     class: 'success'
   })
@@ -175,7 +173,7 @@ AugurNodeServer.prototype.restart = function () {
     }, 2000)
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }
@@ -183,7 +181,7 @@ AugurNodeServer.prototype.restart = function () {
 
 AugurNodeServer.prototype.onError = function (err) {
   const errorMessage = (err || {}).message || 'Unexpected Error'
-  if (this.window) this.window.webContents.send('error', {
+  if (this.window) this.window.webContents.send(ERROR, {
     error: errorMessage
   })
 }
@@ -194,13 +192,13 @@ AugurNodeServer.prototype.restartOnFailure = debounce(function () {
 
 AugurNodeServer.prototype.onBulkSyncStarted = function () {
   log.info('Sync with blockchain started.')
-  if (this.window) this.window.webContents.send('bulkSyncStarted')
+  if (this.window) this.window.webContents.send(BULK_SYNC_STARTED)
   this.bulkSyncing = true
 }
 
 AugurNodeServer.prototype.onBulkSyncFinished = function () {
   log.info('Sync with blockchain complete.')
-  if (this.window) this.window.webContents.send('bulkSyncFinished')
+  if (this.window) this.window.webContents.send(BULK_SYNC_FINISHED)
   this.bulkSyncing = false
 }
 
@@ -214,10 +212,10 @@ AugurNodeServer.prototype.onSaveNetworkConfig = function (event, data) {
     this.config.networks[data.network] = this.networkConfig
 
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-    event.sender.send('saveNetworkConfigResponse', data)
+    event.sender.send(SAVE_NETWORK_CONFIG_RESPONSE, data)
   } catch (err) {
     log.error(err)
-    event.sender.send('error', {
+    event.sender.send(ERROR, {
       error: err
     })
   }
@@ -227,10 +225,10 @@ AugurNodeServer.prototype.onResetConfig = function () {
   try {
     this.config = JSON.parse(JSON.stringify(defaultConfig))
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-    this.sendMsgToWindowContents('config', this.config)
+    this.sendMsgToWindowContents(CONFIG, this.config)
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }
@@ -239,7 +237,7 @@ AugurNodeServer.prototype.onResetConfig = function () {
 AugurNodeServer.prototype.onReset = function (event, data) {
   try {
     if (this.augurNodeController.isRunning()) {
-      return this.sendMsgToWindowContents('noResetDatabase')
+      return this.sendMsgToWindowContents(NO_RESET_DATABASE)
     } else {
       const network = data.network
       const id = this.config.networks[network].id || defaultConfig.networks[network].id
@@ -247,11 +245,11 @@ AugurNodeServer.prototype.onReset = function (event, data) {
     }
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }
-  this.sendMsgToWindowContents('resetResponse', {})
+  this.sendMsgToWindowContents(RESET_RESPONSE, {})
 }
 
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
@@ -265,14 +263,14 @@ AugurNodeServer.prototype.onStartNetwork = function (event, data) {
 
     const waiting = setInterval(() => {
       if (this.augurNodeController && this.augurNodeController.isRunning()) {
-        event.sender.send('onServerConnected', data)
+        event.sender.send(ON_SERVER_CONNECTED, data)
         clearInterval(waiting)
       }
     }, 1000)
 
   } catch (err) {
     log.error(err)
-    event.sender.send('error', {
+    event.sender.send(ERROR, {
       error: err
     })
   }
@@ -283,7 +281,7 @@ AugurNodeServer.prototype.onSaveConfiguration = function () {
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }
@@ -293,19 +291,19 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
   if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
   this.augurNodeController.requestLatestSyncedBlock()
     .then((syncedBlockInfo) => {
-      this.sendMsgToWindowContents('latestSyncedBlock', syncedBlockInfo)
+      this.sendMsgToWindowContents(LATEST_SYNCED_BLOCK, syncedBlockInfo)
       const blocksBehind = syncedBlockInfo.highestBlockNumber - syncedBlockInfo.lastSyncBlockNumber
       if (!this.bulkSyncing && (blocksBehind > MAX_BLOCKS_BEHIND_BEFORE_RESTART)) {
         const message = `Behind by ${blocksBehind}. Restarting to bulk sync.`
         log.info(message)
-        this.sendMsgToWindowContents('error', {
+        this.sendMsgToWindowContents(ERROR, {
           error: message
         })
         this.restart()
       }
     }).catch((err) => {
       log.error(err)
-      this.sendMsgToWindowContents('error', {
+      this.sendMsgToWindowContents(ERROR, {
         error: err
       })
     })
@@ -313,7 +311,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
 
 AugurNodeServer.prototype.disconnectServerMessage = function () {
   try {
-    this.sendMsgToWindowContents('onServerDisconnected', {})
+    this.sendMsgToWindowContents(ON_SERVER_DISCONNECTED, {})
   } catch (err) {
     log.error(err)
   }
@@ -326,13 +324,13 @@ AugurNodeServer.prototype.shutDownServer = function () {
     log.info('Calling Augur Node Controller Shutdown')
     this.augurNodeController.shutdown()
     this.disconnectServerMessage()
-    this.sendMsgToWindowContents('augurNodeStatus', false)
+    this.sendMsgToWindowContents(AUGUR_NODE_STATUS, false)
   } catch (err) {
     log.error(err)
     if (this.augurNodeController && !this.augurNodeController.isRunning()) {
       this.disconnectServerMessage()
     }
-    this.sendMsgToWindowContents('error', {
+    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }

@@ -5,8 +5,8 @@ import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdo
 import { NetworkDropdown } from "./components/network-dropdown/network-dropdown";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
+import { requestConnectionConfigurations } from './actions/localServerCmds'
 import Styles from './app.styles.less'
-import { Link } from 'react-router-dom'
 
 export class App extends Component {
    constructor(props) {
@@ -23,6 +23,10 @@ export class App extends Component {
 
   connect() {
     this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
+  }
+
+  componentWillMount() {
+    requestConnectionConfigurations()
   }
 
   render() {
