@@ -17,11 +17,11 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(LATEST_SYNCED_BLOCK, (event, info) => {
-    store.dispatch(augurNodeUpdateBlockInfo(info))
+    store.dispatch(UpdateBlockInfo(info))
   })
 
   ipcRenderer.on(LATEST_SYNCED_GETH_BLOCK, (event, info) => {
-    store.dispatch(gethNodeUpdateBlockInfo(info))
+    store.dispatch(UpdateBlockInfo(info))
   })
 
   ipcRenderer.on(ON_SERVER_CONNECTED, () => {

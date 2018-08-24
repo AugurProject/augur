@@ -1,16 +1,8 @@
-export const AUGUR_NODE_UPDATE_BLOCK_INFO = 'AUGUR_NODE_UPDATE_BLOCK_INFO'
-export const GETH_NODE_UPDATE_BLOCK_INFO = 'GETH_NODE_UPDATE_BLOCK_INFO'
+export const UPDATE_BLOCK_INFO = 'UPDATE_BLOCK_INFO'
 
-export function augurNodeUpdateBlockInfo(blockInfo) {
+export function updateBlockInfo(blockInfo) {
   return {
-    type: AUGUR_NODE_UPDATE_BLOCK_INFO,
-    blockInfo
-  }
-}
-
-export function gethNodeUpdateBlockInfo(blockInfo) {
-  return {
-    type: GETH_NODE_UPDATE_BLOCK_INFO,
+    type: UPDATE_BLOCK_INFO,
     blockInfo
   }
 }
