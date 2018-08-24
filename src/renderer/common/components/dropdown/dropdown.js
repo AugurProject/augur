@@ -1,23 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-
 import Styles from "./dropdown.styles.less";
 
+// pass in how options will be rendered in array of html, network dropdown will change default menu label, need a line break option
 class Dropdown extends Component {
   constructor(props) {
     super(props);
 
-    const defaultOption =
-      props.options.find(option => option.value === props.default) || false;
-
     this.state = {
-      label: (defaultOption && defaultOption.label) || props.options[0].label,
-      value: (defaultOption && defaultOption.value) || props.options[0].value,
       showList: false
     };
 
-    this.dropdownSelect = this.dropdownSelect.bind(this);
     this.toggleList = this.toggleList.bind(this);
     this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
   }
@@ -30,16 +24,9 @@ class Dropdown extends Component {
     window.removeEventListener("click", this.handleWindowOnClick);
   }
 
-  dropdownSelect(label, value) {
-    const { onChange } = this.props;
-    if (value !== this.state.value) {
-      this.setState({
-        label,
-        value
-      });
-      onChange(value);
-      this.toggleList();
-    }
+  dropdownSelect(onClick) {
+    onClick();
+    this.setState({ showList: false });
   }
 
   toggleList() {
@@ -53,7 +40,8 @@ class Dropdown extends Component {
   }
 
   render() {
-    const { options, alignLeft } = this.props;
+    const { options } = this.props;
+    
     return (
       <div
         className={Styles.Dropdown}
@@ -61,62 +49,34 @@ class Dropdown extends Component {
           this.refDropdown = dropdown;
         }}
       >
-        <button className={Styles.Dropdown__label} onClick={this.toggleList}>
-          {this.state.label}
-        </button>
-        <div
-          className={classNames(
-            Styles.Dropdown__list,
-            { [Styles.Dropdown__listLeft]: alignLeft },
-            { [`${Styles.active}`]: this.state.showList }
-          )}
+        <div className={Styles.Dropdown__label} onClick={this.toggleList}>
+          {this.props.children}
+        </div>
+
+        <div 
+          className={classNames(Styles.Dropdown__menu, {
+             [Styles['Dropdown__menu-visible']]: this.state.showList
+          })}
         >
-          {options.map(option => (
-            <button
-              className={classNames({
-                [`${Styles.active}`]: option.value === this.state.value
+          {options.map((option, index) => (
+            <div
+              key={index}
+              className={classNames(Styles.Dropdown__menuItem, {
+                [Styles['Dropdown__menuItem-visible']]: this.state.showList
               })}
-              key={option.value}
-              value={option.value}
-              onClick={() => this.dropdownSelect(option.label, option.value)}
+              onClick={() => this.dropdownSelect(option.onClick)}
             >
               {option.label}
-            </button>
+            </div>
           ))}
         </div>
-        <select
-          className={Styles.Dropdown__select}
-          onChange={e => {
-            this.dropdownSelect(
-              e.target.options[e.target.selectedIndex].text,
-              e.target.value
-            );
-          }}
-          value={this.state.value}
-        >
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <i
-          className={classNames(
-            Styles["Dropdown__angle-down"],
-            "fa",
-            "fa-angle-down"
-          )}
-        />
       </div>
     );
   }
 }
 
 Dropdown.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  default: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  alignLeft: PropTypes.bool
 };
 
 export default Dropdown;
