@@ -22,8 +22,17 @@
   z-index: 2;
 } 
 
+:local(.Dropdown__menuBig) {
+  width: 308px;
+  margin-right: -8px;
+}
+
 :local(.Dropdown__menu-visible){
-  max-height: 381px; // TODO: need custom max height for better de-transition
+  max-height: 200px;
+}
+
+:local(.Dropdown__menuBig-visible){
+  max-height: 381px; 
 }
 
 :local(.Dropdown__menuItem) {
@@ -33,7 +42,6 @@
   color: #231a3a;
 }
 
-
 :local(.Dropdown__menuItem):first-child {
   margin-top: 8px;
 }
@@ -42,7 +50,7 @@
   margin-bottom: 8px;
 }
 
-:local(.Dropdown__menuItem-visible:hover) {
+:local(.Dropdown__menuItem:hover) {
   background-color: #f4f2f7;
 }
 
