@@ -220,14 +220,23 @@ def release_message_table(assets, comparison):
         for asset in assets:
             ext = message_table[platform]['ext']
             if ext in asset.name:
-                message_table[platform]['url'] = asset.url
+                message_table[platform]['url'] = asset.browser_download_url
                 message_table[platform]['sha'] = comparison[ext]['sha']
     return message_table
 
 
+def message_table_markup(message_table):
+    markdown_table = 'Platform | Checksum\n-------- | ---------\n'
+    for p in message_table.keys():
+        sha = message_table[p]['sha']
+        url = message_table[p]['url']
+        markdown_table += '[{platform}]({url}) | {sha}\n'.format(platform=p,
+                                                                 url=url,
+                                                                 sha=sha)
+    return markdown_table
+
 
 HEADERS = {"Authorization": "token " + GH_TOKEN}
-PLATFORMS = ['Windows', 'Mac', 'Linux (.deb)', 'Linux (AppImage)']
 FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 KEYID = '4ABBBBE0'
 
@@ -254,4 +263,5 @@ if __name__ == "__main__":
         print('uploading to github releases')
         upload_release_checksum(signed_message, tag_name)
     message_table = release_message_table(github_release_assets, comparison)
-    print(message_table)
+    markdown_table = message_table_markup(message_table)
+    print(markdown_table)
