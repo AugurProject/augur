@@ -8,7 +8,7 @@ const databaseDir = process.env.AUGUR_DATABASE_DIR;
 const maxRetries = process.env.MAX_REQUEST_RETRIES;
 const maxSystemRetries = process.env.MAX_SYSTEM_RETRIES;
 const propagationDelayWaitMillis = process.env.DELAY_WAIT_MILLIS;
-const networkConfig = NetworkConfiguration.create(networkName);
+const networkConfig = NetworkConfiguration.create(networkName, false);
 
 let config = networkConfig;
 if (maxRetries) config = Object.assign({}, config, { maxRetries });
