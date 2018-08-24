@@ -1,9 +1,7 @@
-import React from "react";
-import { Component } from 'react'
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Styles from './settings-dropdown.styles.less'
-
-// dropdown should be made into a shared component so network dropdown can use
+import Dropdown from "../../../common/components/dropdown/dropdown";
 
 export class SettingsDropdown extends Component {
   constructor(props) {
@@ -33,20 +31,16 @@ export class SettingsDropdown extends Component {
 
   render() {
   	const options = [
-	  { onClick: this.toggleLedger, label: (this.state.ledgerEnabled ? "Disable SSL for Ledger" : "Enable SSL for Ledger") },
-	  { onClick: this.resetDatabase, label: "Reset Database" },
-	];
+  	  { onClick: this.toggleLedger, label: [<div key="0">{this.state.ledgerEnabled ? "Disable SSL for Ledger" : "Enable SSL for Ledger"}</div>] },
+  	  { onClick: this.resetDatabase, label: [<div key="0">Reset Database</div>] },
+  	];
+
   	return (
   		<section className={Styles.SettingsDropdown}>
-		    <div style={{cursor: 'pointer'}} onClick={this.toggleShowSettings}>SettingsDropdown</div>
-		    { this.state.showSettings &&
-		    	<div className={Styles.SettingsDropdown__menu}>
-		    		{options.map((option, index) => (
-	                  <div key={index} className={Styles['SettingsDropdown__menu-item']} onClick={option.onClick}>{option.label}</div>
-	                ))}
-		    	</div>
-		    }
-		</section>
+        <Dropdown options={options}>
+          SettingsDropdown
+        </Dropdown>
+		  </section>
   	)
   }
 }

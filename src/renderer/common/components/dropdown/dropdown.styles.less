@@ -1,69 +1,33 @@
-@import (reference) '../../../../assets/styles/shared';
-
 :local(.Dropdown) {
-  color: @color-lightgray;
-  cursor: pointer;
-  display: flex;
-  margin-right: 1em;
+  color: white;
   position: relative;
-  z-index: 1;
-
-  &:last-child {
-    margin-right: 0;
-  }
 }
 
-:local(.Dropdown__angle-down) {
+:local(.Dropdown__label) {
+  color: white;
+  cursor: pointer;
+}
+
+:local(.Dropdown__menu) {
   position: absolute;
+  color: black;
+  background: white;
+  padding-top: 8px;
+  padding-bottom: 8px;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: -1;
+  width: 173px;
+    border-radius: 2px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.12);
 }
 
-:local(Dropdown__label) {
-  &:extend(.caps--medium);
-
-  padding: 0.5rem 1rem 0.5rem 0;
+:local(.Dropdown__menu-item) {
+  padding: 9px 24px;
+  font-size: 12px; 
+  color: #231a3a;
+  cursor: pointer;
 }
 
-:local(.Dropdown__list) {
-  background-color: @color-white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  color: @color-darkpurple;
-  display: none;
-  font-size: @font-size-small;
-  line-height: @font-size-small;
-  padding: 0.5rem 0;
-  position: absolute;
-  right: 0;
-  top: 100%;
-
-  &.active {
-    display: block;
-  }
-
-  > button {
-    background-color: inherit;
-    cursor: pointer;
-    padding: 0.25rem 1rem;
-    text-align: left;
-    transition: background-color 0.15s ease;
-    white-space: nowrap;
-    width: 100%;
-
-    &:hover,
-    &.active {
-      background-color: @color-lightergray;
-    }
-  }
-}
-
-:local(.Dropdown__listLeft) {
-  right: unset;
-}
-
-:local(.Dropdown__select) {
-  display: none;
-  padding: 0.5rem 1rem 0.5rem 0;
+:local(.Dropdown__menu-item:hover) {
+  background-color: #f4f2f7;
 }
