@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Styles from './settings-dropdown.styles.less'
+// import Styles from './settings-dropdown.styles.less'
 import Dropdown from "../../../common/components/dropdown/dropdown";
+import settingsPng from '../../../../assets/images/settings.png'
 
 export class SettingsDropdown extends Component {
   constructor(props) {
@@ -9,15 +10,9 @@ export class SettingsDropdown extends Component {
 
     this.state = {
       ledgerEnabled: false,
-      showSettings: false,
     };
 
     this.toggleLedger = this.toggleLedger.bind(this);
-    this.toggleShowSettings = this.toggleShowSettings.bind(this);
-  }
-
-  toggleShowSettings() {
-  	this.setState({showSettings: !this.state.showSettings})
   }
 
   toggleLedger() {
@@ -36,9 +31,9 @@ export class SettingsDropdown extends Component {
   	];
 
   	return (
-  		<section className={Styles.SettingsDropdown}>
+  		<section>
         <Dropdown options={options}>
-          SettingsDropdown
+          <img src={settingsPng} alt="Settings" width="19" style={{marginBottom: '11px'}} />
         </Dropdown>
 		  </section>
   	)

@@ -26,7 +26,7 @@ class Dropdown extends Component {
 
   dropdownSelect(onClick) {
     onClick();
-    this.toggleList();
+    this.setState({ showList: false });
   }
 
   toggleList() {
@@ -52,19 +52,24 @@ class Dropdown extends Component {
         <div className={Styles.Dropdown__label} onClick={this.toggleList}>
           {this.props.children}
         </div>
-        {this.state.showList && 
-          <div className={Styles['Dropdown__menu']}>
-            {options.map((option, index) => (
-              <div
-                key={index}
-                className={Styles['Dropdown__menu-item']}
-                onClick={() => this.dropdownSelect(option.onClick)}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
-        }
+
+        <div 
+          className={classNames(Styles.Dropdown__menu, {
+             [Styles['Dropdown__menu-visible']]: this.state.showList
+          })}
+        >
+          {options.map((option, index) => (
+            <div
+              key={index}
+              className={classNames(Styles.Dropdown__menuItem, {
+                [Styles['Dropdown__menuItem-visible']]: this.state.showList
+              })}
+              onClick={() => this.dropdownSelect(option.onClick)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
