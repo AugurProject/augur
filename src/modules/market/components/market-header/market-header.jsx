@@ -29,7 +29,6 @@ export default class MarketHeader extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       showReadMore: false
     };
@@ -57,7 +56,6 @@ export default class MarketHeader extends Component {
     } = this.props;
 
     let { details } = this.props;
-
     const detailsTooLong = details.length > OVERFLOW_DETAILS_LENGTH;
 
     if (marketType === SCALAR) {
@@ -117,16 +115,13 @@ export default class MarketHeader extends Component {
                       }
                     )}
                   >
-                    {!this.state.showReadMore && detailsTooLong
-                      ? details.substring(0, OVERFLOW_DETAILS_LENGTH) + "..."
-                      : details}
+                    {details}
                   </label>
-                  {detailsTooLong &&
-                    !this.state.showReadMore && (
-                      <div className={Styles.MarketHeader__readMoreButton}>
-                        read more
-                      </div>
-                    )}
+                  {detailsTooLong && (
+                    <div className={Styles.MarketHeader__readMoreButton}>
+                      {!this.state.showReadMore ? "read more" : "read less"}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
