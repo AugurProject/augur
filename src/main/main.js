@@ -158,7 +158,6 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   setTimeout(() => {
-    console.log('REQUEST_CONFIG', REQUEST_CONFIG)
     mainWindow.webContents.send(REQUEST_CONFIG)
     mainWindow.webContents.send('ready')
   }, 1000)

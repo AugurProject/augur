@@ -21,8 +21,8 @@ export const startUiServer = (data) => {
   ipcRenderer.send(START_UI_SERVER, data)
 }
 
-export const start = (data) => {
-  ipcRenderer.send(START, data)
+export const start = (connection) => {
+  ipcRenderer.send(START, connection)
 }
 
 export const stop = () => {
