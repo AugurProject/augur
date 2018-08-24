@@ -5,8 +5,10 @@ export const REQUEST_LATEST_SYNCED_BLOCK = 'REQUEST_LATEST_SYNCED_BLOCK'
 export const RESET = 'RESET'
 export const SAVE_NETWORK_CONFIG = 'SAVE_NETWORK_CONFIG'
 export const START = 'START'
+export const START_GETH = 'START_GETH'
 export const START_UI_SERVER = 'START_UI_SERVER'
 export const STOP = 'STOP'
+export const STOP_GETH = 'STOP_GETH'
 export const TOGGLE_GETH = 'TOGGLE_GETH'
 export const TOGGLE_SSL_RESET = 'TOGGLE_SSL_RESET'
 
@@ -30,10 +32,7 @@ export const SHOW_NOTICE = 'SHOW_NOTICE'
 export const SSL = 'SSL'
 export const TOGGLE_SSL = 'TOGGLE_SSL'
 
-// network names
-export const KOVAN = 'Kovan'
-export const LIGHT_CLIENT = 'Local Light Node'
-export const LOCAL = 'Local'
-export const MAINNET = 'Mainnet'
-export const RINKEBY = 'Rinkeby'
-export const ROPSTEN = 'Ropsten'
+
+// attributes
+export const CONNECTED = 'CONNECTED'
+
