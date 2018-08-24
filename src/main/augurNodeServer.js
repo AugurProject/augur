@@ -1,4 +1,4 @@
-const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, AUGUR_NODE_STATUS, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -130,7 +130,7 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
-    this.sendMsgToWindowContents(AUGUR_NODE_STATUS, true)
+    this.sendMsgToWindowContents(ON_SERVER_CONNECTED)
     this.augurNodeController.start(function (err) {
       if (this.retriesRemaining > 0) {
         this.sendMsgToWindowContents(ERROR, {
@@ -325,7 +325,6 @@ AugurNodeServer.prototype.shutDownServer = function () {
     log.info('Calling Augur Node Controller Shutdown')
     this.augurNodeController.shutdown()
     this.disconnectServerMessage()
-    this.sendMsgToWindowContents(AUGUR_NODE_STATUS, false)
   } catch (err) {
     log.error(err)
     if (this.augurNodeController && !this.augurNodeController.isRunning()) {
