@@ -1,4 +1,12 @@
 {
-  "presets": ["env", "stage-0"],
-  "compact": false
+  "presets": [
+    ["env",  {
+    "targets": {
+      "browsers": [
+        "last 1 version",
+        "> 3%"
+      ],
+      "node": "8"
+    }
+  }]]
 }
