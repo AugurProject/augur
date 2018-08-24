@@ -17,15 +17,21 @@
   background-color: #ffffff;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.12);
   max-height: 0;
-  transition: all 200ms ease-in;
-  color: transparent;
+  transition: max-height 300ms ease-in;
+  overflow: hidden;
 } 
 
 :local(.Dropdown__menu-visible){
   max-height:200px;
-  transition-delay: 0s, 0s, 0.3s; 
+}
+
+:local(.Dropdown__menuItem) {
+  padding: 9px 24px;
+  font-size: 12px; 
+  cursor: pointer;
   color: #231a3a;
 }
+
 
 :local(.Dropdown__menuItem):first-child {
   margin-top: 8px;
@@ -33,12 +39,6 @@
 
 :local(.Dropdown__menuItem):last-child {
   margin-bottom: 8px;
-}
-
-:local(.Dropdown__menuItem) {
-  padding: 9px 24px;
-  font-size: 12px; 
-  cursor: pointer;
 }
 
 :local(.Dropdown__menuItem-visible:hover) {

@@ -33,7 +33,7 @@ export class SettingsDropdown extends Component {
   	return (
   		<section>
         <Dropdown options={options}>
-          <img src={settingsPng} alt="Settings" width="19" style={{marginBottom: '11px'}} />
+          <img src={settingsPng} alt="Settings" width="19" style={{marginBottom: '5px'}} />
         </Dropdown>
 		  </section>
   	)

@@ -1,5 +1,7 @@
 import React from "react";
 import { Component } from 'react'
+// import { PulseLoader } from "react-spinners";
+
 import PropTypes from "prop-types";
 import Styles from './connecting-view.styles.less'
 
