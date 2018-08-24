@@ -1,4 +1,4 @@
-export const UPDATE_SERVER_STATUS = 'AUGUR_NODE_UPDATE_BLOCK_INFO'
+export const UPDATE_SERVER_STATUS = 'UPDATE_SERVER_STATUS'
 
 export function updateServerStatus(status) {
   return {

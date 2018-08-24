@@ -11,7 +11,6 @@ export const TOGGLE_GETH = 'TOGGLE_GETH'
 export const TOGGLE_SSL_RESET = 'TOGGLE_SSL_RESET'
 
 // events sent to render process
-export const AUGUR_NODE_STATUS = 'AUGUR_NODE_STATUS'
 export const BULK_SYNC_FINISHED = 'BULK_SYNC_FINISHED'
 export const BULK_SYNC_STARTED = 'BULK_SYNC_STARTED'
 export const CLEAR_DB = 'CLEAR_DB'
