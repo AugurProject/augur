@@ -1,6 +1,6 @@
 const electron = require('electron')
 const log = require('electron-log')
-
+const { TOGGLE_SSL, RESET, CLEAR_DB, ERROR, REQUEST_CONFIG } = require('../utils/events')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 
@@ -13,7 +13,6 @@ const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
 const {app, BrowserWindow, Menu, ipcMain} = electron
 /* global __dirname process*/
-
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -29,7 +28,7 @@ const path = require('path')
 const url = require('url')
 
 function toggleEnableSsl() {
-  mainWindow.webContents.send('toggleSsl', true)
+  mainWindow.webContents.send(TOGGLE_SSL, true)
   buildMenu(true)
 }
 
@@ -40,13 +39,13 @@ function buildMenu(showDisable) {
   const certPath = path.join(appDataPath, 'localhost.crt')
   const keyPath = path.join(appDataPath, 'localhost.key')
   if (fs.existsSync(keyPath) && fs.existsSync(certPath) || showDisable) {
-    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: !showDisable, click: function() { mainWindow.webContents.send('toggleSsl', false)}})
+    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: !showDisable, click: function() { mainWindow.webContents.send(TOGGLE_SSL, false)}})
   } else {
     sslMenu.push({ label: 'Enable SSL for Ledger', click: toggleEnableSsl})
   }
   sslMenu.push({ type: 'separator' })
-  sslMenu.push({ label: 'Reset Configuration File', click: function() { mainWindow.webContents.send('reset', '') }})
-  sslMenu.push({ label: 'Reset Database', click: function() { mainWindow.webContents.send('clearDB', '') }})
+  sslMenu.push({ label: 'Reset Configuration File', click: function() { mainWindow.webContents.send(RESET, '') }})
+  sslMenu.push({ label: 'Reset Database', click: function() { mainWindow.webContents.send(CLEAR_DB, '') }})
   sslMenu.push({ type: 'separator' })
   sslMenu.push({ label: 'Open Inspector', accelerator: 'CmdOrCtrl+Shift+I', click: function() { mainWindow.webContents.openDevTools() }})
   sslMenu.push({ type: 'separator' })
@@ -141,12 +140,12 @@ function createWindow () {
       gethNodeController.stop()
       mainWindow = null
     } catch (err) {
-      if (mainWindow) mainWindow.webContents.send('error', { error: err })
+      if (mainWindow) mainWindow.webContents.send(ERROR, { error: err })
     }
   })
 
-  mainWindow.on('error', function(error) {
-    if (mainWindow) mainWindow.webContents.send('error', { error })
+  mainWindow.on(ERROR, function(error) {
+    if (mainWindow) mainWindow.webContents.send(ERROR, { error })
   })
 
   // build initial menus
@@ -158,6 +157,12 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  setTimeout(() => {
+    console.log('REQUEST_CONFIG', REQUEST_CONFIG)
+    mainWindow.webContents.send(REQUEST_CONFIG)
+    mainWindow.webContents.send('ready')
+  }, 1000)
+  console.log('app is ready ')
   checkForUpdates()
     .then(createWindow)
 })
