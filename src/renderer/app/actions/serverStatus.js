@@ -1,8 +1,8 @@
-export const UPDATE_SERVER_STATUS = 'UPDATE_SERVER_STATUS'
+export const UPDATE_SERVER_ATTRIB = 'UPDATE_SERVER_ATTRIB'
 
-export function updateServerStatus(status) {
+export function updateServerAttrib(attrib) {
   return {
-    type: UPDATE_SERVER_STATUS,
-    status
+    type: UPDATE_SERVER_ATTRIB,
+    attrib
   }
 }

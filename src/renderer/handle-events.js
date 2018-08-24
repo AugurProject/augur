@@ -1,9 +1,9 @@
 const {ipcRenderer} = require('electron')
 import { each } from 'lodash'
-import { CONFIG, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED } from '../utils/constants'
+import { CONFIG, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING, CONNECTED } from '../utils/constants'
 import { addUpdateConnection } from './app/actions/connections'
 import { updateBlockInfo } from './app/actions/blockInfo'
-import { updateServerStatus } from './app/actions/serverStatus'
+import { updateServerAttrib } from './app/actions/serverStatus'
 import store from './store'
 
 export const handleEvents = () => {
@@ -25,10 +25,18 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ON_SERVER_CONNECTED, () => {
-    store.dispatch(updateServerStatus(true))
+    store.dispatch(updateServerAttrib({ CONNECTED: true }))
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
-    store.dispatch(updateServerStatus(false))
+    store.dispatch(updateServerAttrib({ CONNECTED: false }))
   })
+
+  ipcRenderer.on(PEER_COUNT_DATA, (event, data) => {
+    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount }))
+  })
+  ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
+    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
+  })
+
 }

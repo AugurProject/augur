@@ -1,3 +1,4 @@
+const { TOGGLE_GETH, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ERROR, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
 const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
@@ -47,7 +48,7 @@ const PEER_COUNT_REQUEST_OPTIONS = {
 
 function getGethPath() {
   let gethExecutablePath = path.join(process.resourcesPath, 'geth')
-  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath+".exe")) return gethExecutablePath;
+  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath + '.exe')) return gethExecutablePath
 
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
@@ -60,9 +61,9 @@ function GethNodeController() {
   this.gethProcess = null
   this.statusLoop = null
   this.gethExecutablePath = getGethPath()
-  ipcMain.on('toggleGeth', this.toggle.bind(this))
-  ipcMain.on('startGeth', this.start.bind(this))
-  ipcMain.on('stopGeth', this.stop.bind(this))
+  ipcMain.on(TOGGLE_GETH, this.toggle.bind(this))
+  ipcMain.on(START_GETH, this.start.bind(this))
+  ipcMain.on(STOP_GETH, this.stop.bind(this))
 }
 
 GethNodeController.prototype.setWindow = function (window) {
@@ -105,7 +106,7 @@ GethNodeController.prototype.start = function (event) {
   this.gethProcess.on('close', this.onGethClose.bind(this))
 
   this.statusLoop = setInterval(this.checkStatus.bind(this), STATUS_LOOP_INTERVAL)
-  event.sender.send('onServerConnected')
+  event.sender.send(ON_SERVER_CONNECTED)
 }
 
 GethNodeController.prototype.log = function (data) {
@@ -146,23 +147,23 @@ GethNodeController.prototype.makeRequest = function (options, data, callback) {
     req.write(data)
     req.end()
   } catch (err) {
-    this.sendMsgToWindowContents('error', {message: err.message})
+    this.sendMsgToWindowContents(ERROR, {message: err.message})
   }
 }
 
 GethNodeController.prototype.updatePeerCount = function (peerCountHex) {
   try {
     const peerCount = parseInt(peerCountHex, 16)
-    this.sendMsgToWindowContents('peerCountData', { peerCount })
+    this.sendMsgToWindowContents(PEER_COUNT_DATA, { peerCount })
     if (peerCount > 0) this.makeRequest(SYNCING_REQUEST_OPTIONS, SYNCING_POST_DATA, this.updateSyncData.bind(this))
   } catch (err) {
-    this.sendMsgToWindowContents('error', {message: err.message})
+    this.sendMsgToWindowContents(ERROR, {message: err.message})
   }
 }
 
 GethNodeController.prototype.updateSyncData = function (syncData) {
-  if (syncData === false) return this.sendMsgToWindowContents('gethFinishedSyncing')
-  this.sendMsgToWindowContents('latestSyncedGethBlock', {
+  if (syncData === false) return this.sendMsgToWindowContents(GETH_FINISHED_SYNCING)
+  this.sendMsgToWindowContents(LATEST_SYNCED_GETH_BLOCK, {
     lastSyncBlockNumber: parseInt(syncData.currentBlock, 16),
     highestBlockNumber: parseInt(syncData.highestBlock, 16),
     uploadBlockNumber: parseInt(syncData.startingBlock, 16),
