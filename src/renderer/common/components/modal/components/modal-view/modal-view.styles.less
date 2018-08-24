@@ -1,14 +1,14 @@
 @import (reference) '../../../../../../assets/styles/shared';
 
-.ModalView {
+:local(.ModalView) {
   background-color: @color-modal-veil;
   height: 100vh;
   position: fixed;
   width: 100vw;
-  z-index: @mask-modal;
+  z-index: 3;
 }
 
-.ModalView__close {
+:local(.ModalView__close) {
   color: @color-white;
   height: 1rem;
   position: absolute;
@@ -17,7 +17,7 @@
   width: 2rem;
 }
 
-.ModalView__content {
+:local(.ModalView__content) {
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@
   }
 }
 
-.ModalView__button {
+:local(.ModalView__button) {
   &:extend(.button--white);
 
   margin-top: 2rem;

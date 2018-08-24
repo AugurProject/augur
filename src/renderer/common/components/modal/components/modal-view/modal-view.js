@@ -46,7 +46,9 @@ export default class ModalView extends Component {
 
   render() {
     const { closeModal, modal } = this.props;
-    console.log('hi')
+
+    if (Object.keys(modal).length === 0) return null
+
     return (
       <section
         ref={modal => {
