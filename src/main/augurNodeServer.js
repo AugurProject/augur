@@ -1,3 +1,4 @@
+const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG } = '../utils/events'
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -7,7 +8,6 @@ const path = require('path')
 const { ipcMain } = require('electron')
 const appData = require('app-data-folder')
 const debounce = require('debounce')
-
 const POOL_DELAY_WAIT = 60*1000
 const DEFAULT_DELAY_WAIT = 1*1000
 
@@ -89,14 +89,13 @@ function AugurNodeServer() {
   this.augurNodeController = new AugurNodeController(this.augur, this.networkConfig, this.appDataPath)
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
-  ipcMain.on('requestLatestSyncedBlock', this.requestLatestSyncedBlock.bind(this))
-  ipcMain.on('requestConfig', this.onRequestConfig.bind(this))
-  ipcMain.on('saveNetworkConfig', this.onSaveNetworkConfig.bind(this))
-  ipcMain.on('start', this.onStartNetwork.bind(this))
-  ipcMain.on('onSaveConfiguration', this.onSaveConfiguration.bind(this))
-  ipcMain.on('reset', this.onReset.bind(this))
-  ipcMain.on('resetConfig', this.onResetConfig.bind(this))
-  ipcMain.on('stop', this.shutDownServer.bind(this))
+  ipcMain.on(REQUEST_LATEST_SYNCED_BLOCK, this.requestLatestSyncedBlock.bind(this))
+  ipcMain.on(REQUEST_CONFIG, this.onRequestConfig.bind(this))
+  ipcMain.on(SAVE_NETWORK_CONFIG, this.onSaveNetworkConfig.bind(this))
+  ipcMain.on(START, this.onStartNetwork.bind(this))
+  ipcMain.on(RESET, this.onReset.bind(this))
+  ipcMain.on(REQUEST_CONFIG, this.onResetConfig.bind(this))
+  ipcMain.on(STOP, this.shutDownServer.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer

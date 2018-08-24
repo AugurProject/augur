@@ -1,7 +1,7 @@
 
 import immutableDelete from 'immutable-delete'
 import { RESET_STATE } from '../app/actions/reset-state'
-import { ADD_UPDATE_CONNECTION, REMOVE_CONNECTION } from '../app/actions/connections'
+import { ADD_UPDATE_CONNECTION, REMOVE_CONNECTION, CLEAR_CONNECTIONS } from '../app/actions/connections'
 
 const DEFAULT_STATE = {}
 
@@ -18,6 +18,6 @@ export default function (connections = DEFAULT_STATE, action) {
     case CLEAR_CONNECTIONS:
       return DEFAULT_STATE
     default:
-      return marketsData
+      return connections
   }
 }

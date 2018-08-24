@@ -1,12 +1,10 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { configureStore } from './store/configureStore'
+import store from './store'
 import { HashRouter, Route } from 'react-router-dom'
 import { About } from './about/About'
 import { App } from './app/App'
-
-const store = configureStore()
 
 const Root = () => {
   return (
