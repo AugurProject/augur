@@ -1,6 +1,6 @@
 const electron = require('electron')
 const log = require('electron-log')
-const { TOGGLE_SSL, RESET, CLEAR_DB, ERROR, REQUEST_CONFIG } = require('../utils/events')
+const { TOGGLE_SSL, RESET, CLEAR_DB, ERROR, REQUEST_CONFIG } = require('../utils/constants')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 

@@ -30,3 +30,11 @@ export const SAVE_NETWORK_CONFIG_RESPONSE = 'SAVE_NETWORK_CONFIG_RESPONSE'
 export const SHOW_NOTICE = 'SHOW_NOTICE'
 export const SSL = 'SSL'
 export const TOGGLE_SSL = 'TOGGLE_SSL'
+
+// network names
+export const KOVAN = 'Kovan'
+export const LIGHT_CLIENT = 'Local Light Node'
+export const LOCAL = 'Local'
+export const MAINNET = 'Mainnet'
+export const RINKEBY = 'Rinkeby'
+export const ROPSTEN = 'Ropsten'

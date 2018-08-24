@@ -1,6 +1,6 @@
 const {ipcRenderer} = require('electron')
 import { each } from 'lodash'
-import { CONFIG } from '../utils/events'
+import { CONFIG } from '../utils/constants'
 import { addUpdateConnection } from './app/actions/connections'
 import store from './store'
 
@@ -11,7 +11,7 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(CONFIG, (event, config) => {
-    store.dispatch(addUpdateConnection(config.networks))
+    each(config.networks, network => store.dispatch(addUpdateConnection(network)))
   })
 
 }
