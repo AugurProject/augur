@@ -173,9 +173,31 @@ def visual_checksum_comparison(comparison):
         print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
     return message_to_sign
 
+def gpg_sign_checksums(message_to_sign):
+        password = getpass.getpass()
+        gpg = gnupg.GPG()
+        signed_data = gpg.sign(message_to_sign, keyid=KEYID, passphrase=password)
+        return str(signed_data)
+
+
+def upload_release_checksum(signed_checksum, tag_name):
+        release_checksum_name = 'release-checksum-{}.txt'.format(tag_name)
+        release_checksum_path = os.path.join(directory, release_checksum_name)
+        release_checksum = open(release_checksum_path, 'w')
+        release_checksum.write(str(signed_checksum))
+        release_checksum.close()
+        try:
+            release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
+            release_checksum_asset_obj.delete_asset()
+        finally:
+            release.upload_asset(release_checksum_path, label=release_checksum_name)
+
+
+
 
 HEADERS = {"Authorization": "token " + GH_TOKEN}
 FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
+KEYID = '4ABBBBE0'
 
 
 if __name__ == "__main__":
@@ -189,26 +211,13 @@ if __name__ == "__main__":
     directory = tmp_local_dir(tag_name)
     release = repo.get_release(release_id)
     github_release_assets = release.get_assets()
-    print(github_release_assets)
     if not os.path.exists(directory):
         for assets in github_release_assets:
             download_asset(assets.name, assets.url, directory)
     comparison = compare_checksums_in_dir(directory)
     message_to_sign = visual_checksum_comparison(comparison)
-    print('message to sign')
-    print(message_to_sign)
     if args.sign:
-        password = getpass.getpass()
-        gpg = gnupg.GPG()
-        signed_data = gpg.sign(message_to_sign, keyid='4ABBBBE0', passphrase=password)
-        print(str(signed_data))
-        release_checksum_name = 'release-checksum-{}.txt'.format(tag_name)
-        release_checksum_path = os.path.join(directory, release_checksum_name)
-        release_checksum = open(release_checksum_path, 'w')
-        release_checksum.write(str(signed_data))
-        release_checksum.close()
-        try:
-            release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
-            release_checksum_asset_obj.delete_asset()
-        finally:
-            release.upload_asset(release_checksum_path, label=release_checksum_name)
+        signed_message = gpg_sign_checksums(message_to_sign)
+        print(signed_message)
+        print('uploading to github releases')
+        upload_release_checksum(signed_message, tag_name)
