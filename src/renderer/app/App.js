@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Component } from 'react'
 import { Logo } from "../common/components/logo/logo";
 import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdown";
-import { NetworkDropdown } from "./components/network-dropdown/network-dropdown";
+import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import { requestConnectionConfigurations } from './actions/localServerCmds'
@@ -38,7 +38,7 @@ export class App extends Component {
             <SettingsDropdown />
           </div>
           <div>
-            <NetworkDropdown />
+            <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {this.state.connected ? 'Disconnect' : 'Connect'}
             </button>

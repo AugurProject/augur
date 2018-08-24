@@ -19,10 +19,11 @@
   max-height: 0;
   transition: max-height 300ms ease-in;
   overflow: hidden;
+  z-index: 2;
 } 
 
 :local(.Dropdown__menu-visible){
-  max-height:200px;
+  max-height: 381px; // TODO: need custom max height for better de-transition
 }
 
 :local(.Dropdown__menuItem) {

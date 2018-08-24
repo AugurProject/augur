@@ -7,8 +7,7 @@ import augurPng from '../../assets/images/augur.png'
 
 export class About extends Component {
   render() {
-    const version =  app.getVersion()
-    console.log('Styles.container', Styles)
+    const version = app.getVersion()
     return (
       <section className={Styles.main_section}>
         <div className={Styles.about_top_section}>

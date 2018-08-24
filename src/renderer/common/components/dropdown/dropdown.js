@@ -27,15 +27,18 @@ class Dropdown extends Component {
   dropdownSelect(onClick) {
     onClick();
     this.setState({ showList: false });
+    this.props.setMenuIsOpen && this.props.setMenuIsOpen(false);
   }
 
   toggleList() {
+    this.props.setMenuIsOpen && this.props.setMenuIsOpen(!this.state.showList);
     this.setState({ showList: !this.state.showList });
   }
 
   handleWindowOnClick(event) {
     if (this.refDropdown && !this.refDropdown.contains(event.target)) {
       this.setState({ showList: false });
+      this.props.setMenuIsOpen &&  this.props.setMenuIsOpen(false);
     }
   }
 
@@ -77,6 +80,7 @@ class Dropdown extends Component {
 
 Dropdown.propTypes = {
   options: PropTypes.array.isRequired,
+  setMenuIsOpen: PropTypes.func,
 };
 
 export default Dropdown;
