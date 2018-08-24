@@ -193,9 +193,41 @@ def upload_release_checksum(signed_checksum, tag_name):
             release.upload_asset(release_checksum_path, label=release_checksum_name)
 
 
+def release_message_table(assets, comparison):
+    message_table = {
+            'Windows': {
+                'ext': 'exe',
+                'url': '',
+                'sha': ''
+                },
+            'Mac': {
+                'ext': 'dmg',
+                'url': '',
+                'sha': ''
+                },
+            'Linux (deb)': {
+                'ext': 'deb',
+                'url': '',
+                'sha': ''
+                },
+            'Linux (AppImage)': {
+                'ext': 'AppImage',
+                'url': '',
+                'sha': ''
+                }
+            }
+    for platform in message_table.keys():
+        for asset in assets:
+            ext = message_table[platform]['ext']
+            if ext in asset.name:
+                message_table[platform]['url'] = asset.url
+                message_table[platform]['sha'] = comparison[ext]['sha']
+    return message_table
+
 
 
 HEADERS = {"Authorization": "token " + GH_TOKEN}
+PLATFORMS = ['Windows', 'Mac', 'Linux (.deb)', 'Linux (AppImage)']
 FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 KEYID = '4ABBBBE0'
 
@@ -221,3 +253,5 @@ if __name__ == "__main__":
         print(signed_message)
         print('uploading to github releases')
         upload_release_checksum(signed_message, tag_name)
+    message_table = release_message_table(github_release_assets, comparison)
+    print(message_table)
