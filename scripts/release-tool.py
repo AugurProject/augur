@@ -265,3 +265,6 @@ if __name__ == "__main__":
     message_table = release_message_table(github_release_assets, comparison)
     markdown_table = message_table_markup(message_table)
     print(markdown_table)
+    body = release.body
+    body += markdown_table
+    release.update_release(name=tag_name, message=body, draft=True)
