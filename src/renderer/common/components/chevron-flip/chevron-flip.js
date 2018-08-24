@@ -12,9 +12,6 @@ const ChevronFlip = p => (
     })}
     viewBox="0 0 16 16"
   >
-    {
-      console.log(p.pointDown)
-    }
     <g
       stroke="none"
       strokeWidth="2"

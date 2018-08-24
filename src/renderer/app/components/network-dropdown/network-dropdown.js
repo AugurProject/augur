@@ -8,7 +8,7 @@ import ChevronFlip from "../../../common/components/chevron-flip/chevron-flip";
 
 export class NetworkDropdown extends Component {
 	static propTypes = {
-	    connections: PropTypes.object.isRequired,
+	    connections: PropTypes.array.isRequired,
 	};
 
 	constructor(props) {
@@ -16,7 +16,7 @@ export class NetworkDropdown extends Component {
 
 	    this.state = {
 	      menuIsOpen: false, 
-	      selectedNetwork: props.connections['mainnet'], // need connectionInfo state object, and constants for network names, need to do a hunt here (or in container) for selected
+	      selectedNetwork: 0, // need connectionInfo state object, and constants for network names, need to do a hunt here (or in container) for selected
 	    };
 
 	    this.setMenuIsOpen = this.setMenuIsOpen.bind(this);
@@ -24,14 +24,12 @@ export class NetworkDropdown extends Component {
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.connections !== this.props.connections) {
-			this.setState({selectedNetwork: this.props.connections['mainnet']})
+			this.setState({selectedNetwork: 0})
 		}
 	}
 
 	selectNetwork(networkId) { // networkId is network name 
-		console.log(networkId)
-		const { connections } = this.props;
-		this.setState({selectedNetwork: connections[networkId]})
+		this.setState({selectedNetwork: networkId})
 	}
 
 	setMenuIsOpen(value) {
@@ -41,22 +39,20 @@ export class NetworkDropdown extends Component {
 
   	render() {
 	  	const { connections } = this.props;
+	  	console.log(connections)
 	  	let options = []
 
-	  	for (let key in connections) {
-	  		let connected = (key === this.state.selectedNetwork)
+	  	for (let i = 0; i < connections.length; i++) {
+	  		let connected = (i === this.state.selectedNetwork)
 	  		options.push({
-	  			onClick: this.selectNetwork.bind(this, key),
+	  			onClick: this.selectNetwork.bind(this, i),
 	  			label: [
 	  				<div key="0">
-	  					{connections[key].name}
+	  					{connections[i].name}
 	  				</div>
 	  			]
 	  		})
 	  	}
-
-	  	console.log(this.state.menuIsOpen)
-
 
 	  	return (
 	  		<section className={Styles.NetworkDropdown}>
@@ -65,7 +61,7 @@ export class NetworkDropdown extends Component {
                				[Styles['NetworkDropdown__label-open']]: this.state.menuIsOpen
            				})}>
 		        		<div className={Styles.NetworkDropdown__labelText}>
-		        			{this.state.selectedNetwork && this.state.selectedNetwork.name}
+		        			{connections[this.state.selectedNetwork] && connections[this.state.selectedNetwork].name}
 		        		</div>
 		        		<div className={Styles.NetworkDropdown__svg}>
 		        			<ChevronFlip  pointDown={this.state.menuIsOpen} />
