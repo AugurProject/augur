@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 import ModalEditConnection from "../modal-edit-connection/modal-edit-connection";
 // import { Close } from "modules/common/components/icons";
@@ -47,18 +48,19 @@ export default class ModalView extends Component {
   render() {
     const { closeModal, modal } = this.props;
 
-    if (Object.keys(modal).length === 0) return null
+    //if (Object.keys(modal).length === 0) return null
 
     return (
       <section
         ref={modal => {
           this.modal = modal;
         }}
-        className={Styles.ModalView}
+        className={classNames(Styles.ModalView, {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)})}
       >
+        <div onClick={closeModal} className={Styles.ModalView__close} />
         <div className={Styles.ModalView__content}>
           {modal.type === TYPES.MODAL_EDIT_CONNECTION && (
-            <ModalEditConnection {...modal} />
+            <ModalEditConnection closeModal={closeModal} {...modal} />
           )}
         </div>
       </section>

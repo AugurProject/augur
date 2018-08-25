@@ -1,20 +1,33 @@
 @import (reference) '../../../../../../assets/styles/shared';
 
 :local(.ModalView) {
-  background-color: @color-modal-veil;
+  background-color: #f6f6f6;
   height: 100vh;
   position: fixed;
   width: 100vw;
   z-index: 3;
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 300ms ease-in;
+  top: 0;
+}
+
+:local(.ModalView__hide) {
+  opacity: 0;
+  pointer-events: none;
+  top: 50%;
 }
 
 :local(.ModalView__close) {
   color: @color-white;
-  height: 1rem;
+  height: 2rem;
   position: absolute;
   right: 1rem;
   top: 1rem;
-  width: 2rem;
+  width: 1.5rem;
+  background: url(../../../../../../assets/images/close.svg);
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 :local(.ModalView__content) {

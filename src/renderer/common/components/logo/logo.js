@@ -7,7 +7,7 @@ export class Logo extends Component {
   render() {
   	return (
   		<section className={Styles.Logo}>
-       <div className={Styles.Logo_image} />
+       		<div className={Styles.Logo_image} />
 		</section>
   	)
   }
