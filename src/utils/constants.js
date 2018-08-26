@@ -7,7 +7,6 @@ export const START_UI_SERVER = 'START_UI_SERVER'
 export const STOP = 'STOP'
 export const STOP_GETH = 'STOP_GETH'
 export const TOGGLE_GETH = 'TOGGLE_GETH'
-export const TOGGLE_SSL_RESET = 'TOGGLE_SSL_RESET'
 
 export const BULK_SYNC_FINISHED = 'BULK_SYNC_FINISHED'
 export const BULK_SYNC_STARTED = 'BULK_SYNC_STARTED'

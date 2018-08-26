@@ -1,5 +1,5 @@
 const {ipcRenderer} = require('electron')
-import { REQUEST_NETWORK_CONFIG, REQUEST_PORTS_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, TOGGLE_SSL_RESET, START_UI_SERVER, STOP, START, REBUILD_MENU, SAVE_NETWORK_CONFIG, TOGGLE_GETH } from '../../../utils/constants'
+import { REQUEST_NETWORK_CONFIG, REQUEST_PORTS_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, START_UI_SERVER, STOP, START, REBUILD_MENU, SAVE_NETWORK_CONFIG, TOGGLE_GETH } from '../../../utils/constants'
 
 export const requestServerConfigurations = () => {
   ipcRenderer.send(REQUEST_NETWORK_CONFIG)
@@ -12,10 +12,6 @@ export const requestLatestSyncedBlock = () => {
 
 export const reset = (data) => {
   ipcRenderer.send(RESET, data)
-}
-
-export const toggleSslAndRestart = (data) => {
-  ipcRenderer.send(TOGGLE_SSL_RESET, data)
 }
 
 export const startUiServer = (data) => {
