@@ -1,16 +1,15 @@
 const electron = require('electron')
 const log = require('electron-log')
-const { TOGGLE_SSL, RESET, CLEAR_DB, ERROR, REQUEST_CONFIG } = require('../utils/constants')
+const { TOGGLE_SSL, RESET, CLEAR_DB, ERROR, REQUEST_NETWORK_CONFIG, REQUEST_PORTS_CONFIG } = require('../utils/constants')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 
 const checkForUpdates = require('../update/check-for-updates')
 
-const appData = require('app-data-folder')
-const fs = require('fs')
 const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
+const ConfigManager = require('./configManager')
 const {app, BrowserWindow, Menu, ipcMain} = electron
 /* global __dirname process*/
 
@@ -20,7 +19,10 @@ const isDevelopment = process.env.NODE_ENV === 'development'
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-const augurNodeController = new AugurNodeController()
+const configManager = new ConfigManager()
+const selectedNetwork = configManager.getSelectedNetwork()
+
+const augurNodeController = new AugurNodeController(selectedNetwork)
 const augurUIServer = new AugurUIServer()
 const gethNodeController = new GethNodeController()
 
@@ -29,17 +31,16 @@ const url = require('url')
 
 function toggleEnableSsl() {
   mainWindow.webContents.send(TOGGLE_SSL, true)
-  buildMenu(true)
+  buildMenu()
 }
 
-function buildMenu(showDisable) {
+function buildMenu() {
+  const sslEnabled = configManager.isSslEnabled()
   // check if ssl files exist
   const sslMenu = []
-  const appDataPath = appData('augur')
-  const certPath = path.join(appDataPath, 'localhost.crt')
-  const keyPath = path.join(appDataPath, 'localhost.key')
-  if (fs.existsSync(keyPath) && fs.existsSync(certPath) || showDisable) {
-    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: !showDisable, click: function() { mainWindow.webContents.send(TOGGLE_SSL, false)}})
+
+  if (sslEnabled) {
+    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: sslEnabled, click: function() { mainWindow.webContents.send(TOGGLE_SSL, false)}})
   } else {
     sslMenu.push({ label: 'Enable SSL for Ledger', click: toggleEnableSsl})
   }
@@ -158,7 +159,6 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   setTimeout(() => {
-    mainWindow.webContents.send(REQUEST_CONFIG)
     mainWindow.webContents.send('ready')
   }, 1000)
   console.log('app is ready ')

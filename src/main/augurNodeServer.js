@@ -1,12 +1,10 @@
-const { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, SAVE_NETWORK_CONFIG, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, SAVE_NETWORK_CONFIG_RESPONSE, ON_SERVER_DISCONNECTED, CONFIG, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK, MAINNET } = require('../utils/constants')
+const { REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
 const { ControlMessageType } = require('augur-node/build/constants')
 const fs = require('fs')
-const path = require('path')
 const { ipcMain } = require('electron')
-const appData = require('app-data-folder')
 const debounce = require('debounce')
 const POOL_DELAY_WAIT = 60*1000
 const DEFAULT_DELAY_WAIT = 1*1000
@@ -18,74 +16,14 @@ const AUGUR_NODE_RESTART_RETRIES = 1
 const AUGUR_NODE_RESTART_WAIT = 5*1000
 const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000
 
-const defaultConfig = {
-  'uiPort': '8080',
-  'sslPort': '8443',
-  'networks': [
-    {
-      'userCreated': false,
-      'http': 'https://gethnode.com/http',
-      'name': 'Mainnet (default)',
-      'ws': 'wss://gethnode.com/ws',
-      'id': '1'
-    },
-    {
-      'userCreated': false,
-      'http': 'https://rinkeby.augur.net/ethereum-http',
-      'name': 'Rinkeby',
-      'ws': 'wss://rinkeby.augur.net/ethereum-ws',
-      'id': '4',
-    },
-    {
-      'userCreated': false,
-      'http': 'https://ropsten.augur.net/ethereum-http',
-      'name': 'Ropsten',
-      'ws': 'wss://ropsten.augur.net/ethereum-ws',
-      'id': '3'
-    },
-    {
-      'userCreated': false,
-      'http': 'https://kovan.augur.net/ethereum-http',
-      'name': 'Kovan',
-      'ws': 'wss://kovan.augur.net/ethereum-ws',
-      'id': '42'
-    },
-    {
-      'userCreated': false,
-      'http': 'http://127.0.0.1:8545',
-      'name': 'Local',
-      'ws': 'ws://127.0.0.1:8546'
-    },
-    {
-      'userCreated': false,
-      'http': 'http://127.0.0.1:8545',
-      'name': 'Local (Light Node)',
-      'ws': 'ws://127.0.0.1:8546'
-    }
-  ]
-}
-
-function AugurNodeServer() {
+function AugurNodeServer(selectedNetwork) {
   this.window = null
-  this.appDataPath = appData('augur')
-  if (!fs.existsSync(this.appDataPath)) {
-    fs.mkdirSync(this.appDataPath)
-  }
-  this.configPath = path.join(this.appDataPath, 'connections.config.json')
-  if (!fs.existsSync(this.configPath)) {
-    this.config = JSON.parse(JSON.stringify(defaultConfig))
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-  } else {
-    this.config = JSON.parse(fs.readFileSync(this.configPath))
-  }
-  this.selectedNetwork = this.config.networks.find(n => n.name === MAINNET)
+  this.selectedNetwork = selectedNetwork
   this.augur = new Augur()
   this.augurNodeController = new AugurNodeController(this.augur, this.selectedNetwork, this.appDataPath)
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
   ipcMain.on(REQUEST_LATEST_SYNCED_BLOCK, this.requestLatestSyncedBlock.bind(this))
-  ipcMain.on(REQUEST_CONFIG, this.onRequestConfig.bind(this))
-  ipcMain.on(SAVE_NETWORK_CONFIG, this.onSaveNetworkConfig.bind(this))
   ipcMain.on(START, this.onStartNetwork.bind(this))
   ipcMain.on(RESET, this.onResetDatabase.bind(this))
   ipcMain.on(STOP, this.shutDownServer.bind(this))
@@ -105,8 +43,8 @@ AugurNodeServer.prototype.startServer = function () {
     var propagationDelayWaitMillis = DEFAULT_DELAY_WAIT
     var maxRetries = DEFAULT_MAX_RETRIES
     this.bulkSyncing = false
-    log.info('here looking at networkConfig')
-    if (this.networkConfig.http.indexOf('infura') > -1) {
+
+    if (this.selectedNetwork.http.indexOf('infura') > -1) {
       propagationDelayWaitMillis = POOL_DELAY_WAIT
       maxRetries = POOL_MAX_RETRIES
     }
@@ -195,24 +133,6 @@ AugurNodeServer.prototype.onBulkSyncFinished = function () {
   this.bulkSyncing = false
 }
 
-AugurNodeServer.prototype.onRequestConfig = function (event) {
-  event.sender.send(CONFIG, this.config.networks)
-}
-
-AugurNodeServer.prototype.onSaveNetworkConfig = function (event, connections) {
-  try {
-    this.config.networks = connections
-
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-    event.sender.send(SAVE_NETWORK_CONFIG_RESPONSE, connections)
-  } catch (err) {
-    log.error(err)
-    event.sender.send(ERROR, {
-      error: err
-    })
-  }
-}
-
 AugurNodeServer.prototype.onResetDatabase = function () {
   try {
     if (this.augurNodeController.isRunning()) {
@@ -245,17 +165,6 @@ AugurNodeServer.prototype.onStartNetwork = function (event, data) {
   } catch (err) {
     log.error(err)
     event.sender.send(ERROR, {
-      error: err
-    })
-  }
-}
-
-AugurNodeServer.prototype.onSaveConfiguration = function () {
-  try {
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-  } catch (err) {
-    log.error(err)
-    this.sendMsgToWindowContents(ERROR, {
       error: err
     })
   }
