@@ -1,38 +1,96 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Styles from "./modal-edit-connection.styles.less";
 
-const ModalEditConnection = p => (
-  <section className={Styles.ModalEditConnection}>
-    <div>
-    	Connection Name
-    </div>
-    <div>
-        <input />
-    </div>
-    <div>
-    	HTTP Endpoint
-    </div>
-    <div>
-    	<input placeholder="http(s)://" />
-    </div>
-    <div>
-    	Websocket Endpoint
-    </div>
-    <div>
-        <input placeholder="ws://"/>
-    </div>
-    <div>
-    	<div>Cancel</div>
-    	<div>Save Connection</div>
-    </div>
-  </section>
-);
+export default class ModalEditConnection extends Component {
+  static propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    connectionId: PropTypes.string,
+    addUpdateConnection: PropTypes.func.isRequired,
+  };
 
-ModalEditConnection.propTypes = {
-  closeModal: PropTypes.func.isRequired,
-  connectionId: PropTypes.string,
-};
+  constructor(props) {
+    super(props);
 
-export default ModalEditConnection;
+    this.state = {
+      connection: {
+        name: '',
+        https: '',
+        ws: '',
+        userCreated: true
+      },
+    };
+
+    this.closeModal = this.closeModal.bind(this)
+    this.updateField = this.updateField.bind(this)
+    this.saveConnection = this.saveConnection.bind(this)
+  }
+
+  saveConnection(e) {
+    this.props.addUpdateConnection(this.state.connection)
+    this.closeModal(e)
+  }
+
+  updateField(name, value) {
+    // need to validate
+    const { connection } = this.state
+    connection[name] = value
+    this.setState({connection: connection})
+  }
+
+  closeModal(e) {
+    this.props.closeModal()
+    e.stopPropagation()
+  }
+
+  render() {
+    const { connectionId } = this.props;
+    const { connection } = this.state
+
+    return (
+      <section id="editModal" className={Styles.ModalEditConnection}>
+        <div>{connectionId ? 'Edit Connection' : 'Add Connection'}</div>
+        <div>
+            Connection Name
+        </div>
+        <div>
+            <input 
+                onChange={e => {
+                  this.updateField("name", e.target.value);
+                }} 
+                value={connection.name}
+            />
+        </div>
+        <div>
+            HTTP Endpoint
+        </div>
+        <div>
+            <input 
+                onChange={e => {
+                  this.updateField("https", e.target.value);
+                }}
+                value={connection.https} 
+                placeholder="http(s)://" 
+            />
+        </div>
+        <div>
+            Websocket Endpoint
+        </div>
+        <div>
+            <input 
+                onChange={e => {
+                  this.updateField("ws", e.target.value);
+                }}
+                value={connection.ws} 
+                placeholder="ws://"
+            />
+        </div>
+        <div>
+            <div onClick={this.closeModal}>Cancel</div>
+            <div onClick={this.saveConnection}>Save Connection</div>
+        </div>
+      </section>
+    )
+  }
+}

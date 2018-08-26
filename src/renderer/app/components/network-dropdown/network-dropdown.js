@@ -18,7 +18,7 @@ export class NetworkDropdown extends Component {
 
 	    this.state = {
 	      menuIsOpen: false, 
-	      selectedNetwork: 0, // need to do a hunt here (or in container) for selected, need to set new selected
+	      selectedNetwork: 0, // need to make mainnet default selected one
 	    };
 
 	    this.addNew = this.addNew.bind(this);
@@ -31,7 +31,7 @@ export class NetworkDropdown extends Component {
 		}
 	}
 
-	selectNetwork(networkId) { // networkId is network name 
+	selectNetwork(networkId) {
 		this.setState({menuIsOpen: false})
 		this.setState({selectedNetwork: networkId})
 	}
@@ -47,17 +47,32 @@ export class NetworkDropdown extends Component {
   	render() {
   		const { connections } = this.props
 	  	let options = []
+	  	let breakAdded = false
 
 	  	for (let i = 0; i < connections.length; i++) {
 	  		let connected = (i === this.state.selectedNetwork)
-	  		options.push({
-	  			onClick: this.selectNetwork.bind(this, i),
-	  			label: [
-	  				<div key="0">
-	  					{connections[i].name}
-	  				</div>
-	  			]
-	  		})
+	  		if (connections[i].userCreated && !breakAdded) {
+	  			breakAdded = true
+	  			options.push(
+	  				<div key='break' className={Styles.NetworkDropdown__break}/>
+	  			)
+	  		}
+	  		options.push(
+	  			<div
+	              key={i}
+	              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
+	              onClick={this.selectNetwork.bind(this, i)}
+	            >	
+	              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+	              {connections[i].name}
+	            </div>
+	  		)
+	  	}
+
+	  	if (!breakAdded) {
+			options.push(
+	  			<div key='break' className={Styles.NetworkDropdown__break}/>
+	  		)
 	  	}
 
 	  	return (
@@ -80,17 +95,7 @@ export class NetworkDropdown extends Component {
 		        	}
 		        >
 		        	<div className={Styles.NetworkDropdown__dropdownLabel}>Networks</div>
-		        	{options.map((option, index) => (
-			            <div
-			              key={index}
-			              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
-			              onClick={option.onClick}
-			            >	
-			              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
-			              {option.label}
-			            </div>
-		          	))}
-		          	<div className={Styles.NetworkDropdown__break}/>
+		        	{options}
 		          	<div 
 		          		onClick={this.addNew}
 		          		className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem, Styles.NetworkDropdown__addNewButton)}

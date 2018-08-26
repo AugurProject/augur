@@ -30,9 +30,18 @@ class Dropdown extends Component {
   }
 
   handleWindowOnClick(event) {
-    const element = document.getElementById('modal');
+    const modal = document.getElementById('modal');
+    const editModal = document.getElementById('editModal');
 
-    if ((event.target !== element && !element.contains(event.target)) && (this.refDropdown && !this.refDropdown.contains(event.target) || this.refDropdownItems && this.refDropdownItems.contains(event.target))) {
+    if (modal || editModal) {
+      if (event.target === modal || modal.contains(event.target) ||
+        event.target === editModal && editModal.contains(event.target)) {
+        return;
+      }
+    }
+    
+    if (this.refDropdown && !this.refDropdown.contains(event.target) || 
+      this.refDropdownItems && this.refDropdownItems.contains(event.target)) {
       this.setState({ showList: false });
       this.props.setMenuIsOpen &&  this.props.setMenuIsOpen(false);
     }

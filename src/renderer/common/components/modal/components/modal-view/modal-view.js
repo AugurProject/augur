@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import ModalEditConnection from "../modal-edit-connection/modal-edit-connection";
+import ModalEditConnection from "../../containers/modal-edit-connection";
 // import { Close } from "modules/common/components/icons";
 
 // import debounce from "utils/debounce";
@@ -25,10 +25,17 @@ export default class ModalView extends Component {
       modalWidth: 0,
       modalHeight: 0
     };
+
+    this.closeModal = this.closeModal.bind(this)
+  }
+
+  closeModal(e) {
+    this.props.closeModal()
+    e.stopPropagation()
   }
 
   render() {
-    const { closeModal, modal } = this.props;
+    const { modal } = this.props;
 
     return (
       <section
@@ -38,10 +45,10 @@ export default class ModalView extends Component {
         }}
         className={classNames(Styles.ModalView, {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)})}
       >
-        <div onClick={closeModal} className={Styles.ModalView__close} />
+        <div onClick={this.closeModal} className={Styles.ModalView__close} />
         <div className={Styles.ModalView__content}>
           {modal.type === TYPES.MODAL_EDIT_CONNECTION && (
-            <ModalEditConnection closeModal={closeModal} {...modal} />
+            <ModalEditConnection closeModal={this.closeModal} {...modal} />
           )}
         </div>
       </section>
