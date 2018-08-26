@@ -1,3 +1,4 @@
+const { SSL, ERROR, SHOW_NOTICE, TOGGLE_SSL_RESET, START_UI_SERVER } = require('../utils/constants')
 const express = require('express')
 const log = require('electron-log')
 const https = require('https')
@@ -14,8 +15,8 @@ function AugurUIServer() {
   this.server = null
   this.uiPort = 8080
   this.appDataPath = appData('augur')
-  ipcMain.on('toggleSslAndRestart', this.onToggleSslAndRestart.bind(this))
-  ipcMain.on('startUiServer', this.onStartUiServer.bind(this))
+  ipcMain.on(TOGGLE_SSL_RESET, this.onToggleSslAndRestart.bind(this))
+  ipcMain.on(START_UI_SERVER, this.onStartUiServer.bind(this))
 }
 
 AugurUIServer.prototype.onStartUiServer = function (event, data) {
@@ -50,7 +51,7 @@ AugurUIServer.prototype.startServer = function (event) {
     }
 
     const isSslEnabled = options !== null
-    event.sender.send('ssl', isSslEnabled)
+    event.sender.send(SSL, isSslEnabled)
     if (isSslEnabled) {
       const self = this
       this.httpApp.set('port', port)
@@ -71,11 +72,11 @@ AugurUIServer.prototype.startServer = function (event) {
       server.on('error', (e) => {
         log.error(e)
         if (e.code === 'EADDRINUSE') {
-          event.sender.send('error', {
+          event.sender.send(ERROR, {
             error: `Port ${isSslEnabled ? sslPort : port} is in use. Please free up port and close and restart this app.`
           })
         } else {
-          event.sender.send('error', {
+          event.sender.send(ERROR, {
             error: e.toString()
           })
         }
@@ -85,7 +86,7 @@ AugurUIServer.prototype.startServer = function (event) {
     this.server = this.app.listen(isSslEnabled ? sslPort : port)
   } catch (err) {
     log.error(err)
-    event.sender.send('error', { error: err.toString()})
+    event.sender.send(ERROR, { error: err.toString()})
   }
 }
 
@@ -97,7 +98,7 @@ AugurUIServer.prototype.stopServer = function () {
 AugurUIServer.prototype.restart = function (event, dontClear) {
   // clear any message that occured to start server
   if (!dontClear) { // because of disable ssl button
-    event.sender.send('showNotice', {
+    event.sender.send(SHOW_NOTICE, {
       message: '',
       class: 'success'
     })
@@ -126,14 +127,14 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
   kg.getPrime(1024, (err, p) => {
     if (err) {
       log.error(err)
-      event.sender.send('error', { error: err })
+      event.sender.send(ERROR, { error: err })
       return
     }
     log.info('finalize key and cert files')
     kg.getPrime(1024, (err, q) => {
       if (err) {
         log.error(err)
-        event.sender.send('error', { error: err })
+        event.sender.send(ERROR, { error: err })
         return
       }
 
@@ -154,7 +155,7 @@ AugurUIServer.prototype.onToggleSslAndRestart = function (event, enabled) {
     })
   })
 
-  event.sender.send('showNotice', {
+  event.sender.send(SHOW_NOTICE, {
     message: 'Enabling SSL for Ledger...',
     class: 'success'
   })
