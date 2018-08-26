@@ -29,11 +29,23 @@
 }
 
 :local(.NetworkDropdown__labelText) {
-	display: flex;
-	flex-grow: 1;
+  text-overflow: ellipsis;
+  width: 115px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+:local(.NetworkDropdown__name) {
+  text-overflow: ellipsis;
+  width: 240px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 :local(.NetworkDropdown__svg) {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 	width: 1rem;
 }
 

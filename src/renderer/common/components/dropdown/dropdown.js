@@ -33,9 +33,9 @@ class Dropdown extends Component {
     const modal = document.getElementById('modal');
     const editModal = document.getElementById('editModal');
 
-    if (modal || editModal) {
+    if (modal && editModal) {
       if (event.target === modal || modal.contains(event.target) ||
-        event.target === editModal && editModal.contains(event.target)) {
+        event.target === editModal || editModal.contains(event.target)) {
         return;
       }
     }

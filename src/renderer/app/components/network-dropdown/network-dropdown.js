@@ -64,7 +64,7 @@ export class NetworkDropdown extends Component {
 	              onClick={this.selectNetwork.bind(this, i)}
 	            >	
 	              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
-	              {connections[i].name}
+	              <div className={Styles.NetworkDropdown__name}>{connections[i].name}</div>
 	            </div>
 	  		)
 	  	}
