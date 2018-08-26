@@ -25,33 +25,14 @@ export default class ModalView extends Component {
       modalWidth: 0,
       modalHeight: 0
     };
-
-    // this.updateModalDimensions = this.updateModalDimensions.bind(this);
-    // this.debounceUpdateModalDimensions = debounce(
-    //   this.updateModalDimensions.bind(this)
-    // );
-  }
-
-  componentDidMount() {
-    this.updateModalDimensions();
-
-   // window.addEventListener("resize", this.debouncedSetQRSize);
-  }
-
-  updateModalDimensions() {
-    // this.setState({
-    //   modalWidth: getValue(this, "modal.clientWidth") || 0,
-    //   modalHeight: getValue(this, "modal.clientHeight") || 0
-    // });
   }
 
   render() {
     const { closeModal, modal } = this.props;
 
-    //if (Object.keys(modal).length === 0) return null
-
     return (
       <section
+        id="modal"
         ref={modal => {
           this.modal = modal;
         }}

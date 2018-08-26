@@ -40,9 +40,9 @@ export class NetworkDropdown extends Component {
 		this.setState({menuIsOpen: value})
 	}
 
-	addNew() {
+	addNew(e) {
 		this.props.updateModal();
-		console.log('add new')
+		e.stopPropagation();
 	}
   	render() {
   		const { connections } = this.props

@@ -9,13 +9,14 @@
   opacity: 1;
   pointer-events: auto;
   transition: all 300ms ease-in;
+  // transition: opacity 50ms, top 200ms ease-in 200ms;
   top: 0;
 }
 
 :local(.ModalView__hide) {
   opacity: 0;
   pointer-events: none;
-  top: 50%;
+  top: 100%;
 }
 
 :local(.ModalView__close) {
@@ -37,13 +38,6 @@
   height: 100%;
   justify-content: center;
   width: 100%;
-
-  & > section {
-    align-items: center;
-    color: @color-white;
-    display: flex;
-    flex-direction: column;
-  }
 }
 
 :local(.ModalView__button) {

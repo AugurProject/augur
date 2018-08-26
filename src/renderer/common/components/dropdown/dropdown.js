@@ -9,7 +9,7 @@ class Dropdown extends Component {
     super(props);
 
     this.state = {
-      showList: false
+      showList: false,
     };
 
     this.toggleList = this.toggleList.bind(this);
@@ -30,7 +30,9 @@ class Dropdown extends Component {
   }
 
   handleWindowOnClick(event) {
-    if (this.refDropdown && !this.refDropdown.contains(event.target) || this.refDropdownItems && this.refDropdownItems.contains(event.target)) {
+    const element = document.getElementById('modal');
+
+    if ((event.target !== element && !element.contains(event.target)) && (this.refDropdown && !this.refDropdown.contains(event.target) || this.refDropdownItems && this.refDropdownItems.contains(event.target))) {
       this.setState({ showList: false });
       this.props.setMenuIsOpen &&  this.props.setMenuIsOpen(false);
     }
