@@ -1,4 +1,4 @@
-const { ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_PORTS_CONFIG_RESPONSE, ERROR, SHOW_NOTICE, START_UI_SERVER } = require('../utils/constants')
+const { ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, ERROR, SHOW_NOTICE, START_UI_SERVER } = require('../utils/constants')
 const express = require('express')
 const log = require('electron-log')
 const https = require('https')
@@ -16,7 +16,7 @@ function AugurUIServer() {
   this.portsConfig = null
   this.appDataPath = appData('augur')
   ipcMain.on(START_UI_SERVER, this.onStartUiServer.bind(this))
-  ipcMain.on(REQUEST_PORTS_CONFIG_RESPONSE, this.onPortsConfig.bind(this))
+  ipcMain.on(REQUEST_CONFIG_RESPONSE, this.onRequestConfigResponse.bind(this))
 }
 
 AugurUIServer.prototype.onStartUiServer = function (event) {
@@ -110,10 +110,11 @@ AugurUIServer.prototype.restart = function (event, dontClear) {
   this.startServer(event)
 }
 
-AugurUIServer.prototype.onPortsConfig = function(event, ports) {
-  this.portsConfig = ports
-  if (ports) {
-    if (ports.sslEnabled) {
+AugurUIServer.prototype.onRequestConfigResponse = function(event, config) {
+  if (config) {
+    const { uiPort, sslPort, sslEnabled } = config
+    this.portsConfig = { uiPort, sslPort, sslEnabled }
+    if (this.portsConfig.sslEnabled) {
       this.createSSLCertificates()
     }
   }

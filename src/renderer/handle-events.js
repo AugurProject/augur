@@ -1,7 +1,6 @@
 const {ipcRenderer} = require('electron')
-import { each } from 'lodash'
-import { ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_PORTS_CONFIG_RESPONSE, REQUEST_NETWORK_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING, SAVE_PORTS_CONFIG_RESPONSE } from '../utils/constants'
-import { addUpdateConnection } from './app/actions/connections'
+import { TOGGLE_SSL, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
+import { initializeConfiguration } from './app/actions/configuration'
 import { updateBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import store from './store'
@@ -12,12 +11,8 @@ export const handleEvents = () => {
     console.log('app is ready')
   })
 
-  ipcRenderer.on(REQUEST_NETWORK_CONFIG_RESPONSE, (event, networks) => {
-    each(networks, network => store.dispatch(addUpdateConnection(network)))
-  })
-
-  ipcRenderer.on(REQUEST_PORTS_CONFIG_RESPONSE, (event, ports) => {
-    store.dispatch(updateServerAttrib({ PORTS: ports }))
+  ipcRenderer.on(REQUEST_CONFIG_RESPONSE, (event, config) => {
+    store.dispatch(initializeConfiguration(config))
   })
 
   ipcRenderer.on(LATEST_SYNCED_BLOCK, (event, info) => {
@@ -52,4 +47,7 @@ export const handleEvents = () => {
     store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
   })
 
+  ipcRenderer.on(TOGGLE_SSL, () => {
+    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
+  })
 }

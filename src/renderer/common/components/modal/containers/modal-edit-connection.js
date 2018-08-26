@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import ModalEditConnection from "../components/modal-edit-connection/modal-edit-connection";
 
 import { closeModal } from "../actions/close-modal";
-import { addUpdateConnection } from "../../../../app/actions/connections";
+import { addUpdateConnection } from "../../../../app/actions/configuration";
 
 const mapStateToProps = state => ({
   modal: state.modal

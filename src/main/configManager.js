@@ -1,4 +1,4 @@
-const { REQUEST_NETWORK_CONFIG, REQUEST_PORTS_CONFIG, REQUEST_NETWORK_CONFIG_RESPONSE, REQUEST_PORTS_CONFIG_RESPONSE, SAVE_NETWORK_CONFIG, SAVE_PORTS_CONFIG_RESPONSE, ERROR, SAVE_NETWORK_CONFIG_RESPONSE, SAVE_PORTS_CONFIG } = require('../utils/constants')
+const { REQUEST_CONFIG, SAVE_CONFIG, REQUEST_CONFIG_RESPONSE, SAVE_CONFIG_RESPONSE, ERROR } = require('../utils/constants')
 const fs = require('fs')
 const path = require('path')
 const { ipcMain } = require('electron')
@@ -67,65 +67,29 @@ function ConfigManager() {
     this.config = JSON.parse(fs.readFileSync(this.configPath))
   }
 
-  ipcMain.on(REQUEST_NETWORK_CONFIG, this.onRequestNetworksConfig.bind(this))
-  ipcMain.on(REQUEST_PORTS_CONFIG, this.onRequestPortsConfig.bind(this))
-  ipcMain.on(SAVE_NETWORK_CONFIG, this.onSaveNetworkConfig.bind(this))
-  ipcMain.on(SAVE_PORTS_CONFIG, this.onSavePortsConfig.bind(this))
-}
-
-ConfigManager.prototype.getPortConfig = function () {
-  const ports = {
-    'uiPort': this.config.uiPort,
-    'sslPort': this.config.sslPort,
-    'sslEnabled': this.config.sslEnabled
-  }
-  console.log('ports', ports)
-  return ports
+  ipcMain.on(REQUEST_CONFIG, this.onRequestConfig.bind(this))
+  ipcMain.on(SAVE_CONFIG, this.onSaveConfig.bind(this))
 }
 
 ConfigManager.prototype.getSelectedNetwork = function () {
-  return this.config.networks.find(n => n.selected)
+  let selected = this.config.networks.find(n => n.selected)
+  if (!selected) selected = this.config.networks.find(n => n.name.toLowerCase().indexOf('mainnet') > -1)
+  return selected
 }
 
 ConfigManager.prototype.isSslEnabled = function () {
   return this.config.sslEnabled
 }
 
-ConfigManager.prototype.onRequestNetworksConfig = function (event) {
-  event.sender.send(REQUEST_NETWORK_CONFIG_RESPONSE, this.config.networks)
+ConfigManager.prototype.onRequestConfig = function (event) {
+  event.sender.send(REQUEST_CONFIG_RESPONSE, this.config)
 }
 
-ConfigManager.prototype.onRequestPortsConfig = function (event) {
-  console.log('config ports', {
-    'uiPort': this.config.uiPort,
-    'sslPort': this.config.sslPort,
-    'sslEnabled': this.config.sslEnabled
-  })
-  event.sender.send(REQUEST_PORTS_CONFIG_RESPONSE, {
-    'uiPort': this.config.uiPort,
-    'sslPort': this.config.sslPort,
-    'sslEnabled': this.config.sslEnabled
-  })
-}
-
-ConfigManager.prototype.onSavePortsConfig = function (event, ports) {
+ConfigManager.prototype.onSaveConfig = function (event, config) {
   try {
-    this.config = Object.assign(this.config, ports)
+    this.config = config
     fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-    event.sender.send(SAVE_PORTS_CONFIG_RESPONSE, this.getPortConfig())
-  } catch (err) {
-    log.error(err)
-    event.sender.send(ERROR, {
-      error: err
-    })
-  }
-}
-
-ConfigManager.prototype.onSaveNetworkConfig = function (event, connections) {
-  try {
-    this.config.networks = connections
-    fs.writeFileSync(this.configPath, JSON.stringify(this.config, null, 4))
-    event.sender.send(SAVE_NETWORK_CONFIG_RESPONSE, connections)
+    event.sender.send(SAVE_CONFIG_RESPONSE, this.config)
   } catch (err) {
     log.error(err)
     event.sender.send(ERROR, {

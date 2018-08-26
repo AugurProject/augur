@@ -17,7 +17,7 @@ export class NetworkDropdown extends Component {
 	    super(props);
 
 	    this.state = {
-	      menuIsOpen: false, 
+	      menuIsOpen: false,
 	      selectedNetwork: 0, // need to make mainnet default selected one
 	    };
 
@@ -62,7 +62,7 @@ export class NetworkDropdown extends Component {
 	              key={i}
 	              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
 	              onClick={this.selectNetwork.bind(this, i)}
-	            >	
+	            >
 	              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
 	              <div className={Styles.NetworkDropdown__name}>{connections[i].name}</div>
 	            </div>
@@ -96,7 +96,7 @@ export class NetworkDropdown extends Component {
 		        >
 		        	<div className={Styles.NetworkDropdown__dropdownLabel}>Networks</div>
 		        	{options}
-		          	<div 
+		          	<div
 		          		onClick={this.addNew}
 		          		className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem, Styles.NetworkDropdown__addNewButton)}
 					>

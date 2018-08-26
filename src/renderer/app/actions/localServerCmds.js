@@ -1,9 +1,8 @@
 const {ipcRenderer} = require('electron')
-import { REQUEST_NETWORK_CONFIG, REQUEST_PORTS_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, START_UI_SERVER, STOP, START, REBUILD_MENU, SAVE_NETWORK_CONFIG, TOGGLE_GETH } from '../../../utils/constants'
+import { REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET, START_UI_SERVER, STOP, START, REBUILD_MENU, SAVE_CONFIG, TOGGLE_GETH } from '../../../utils/constants'
 
 export const requestServerConfigurations = () => {
-  ipcRenderer.send(REQUEST_NETWORK_CONFIG)
-  ipcRenderer.send(REQUEST_PORTS_CONFIG)
+  ipcRenderer.send(REQUEST_CONFIG)
 }
 
 export const requestLatestSyncedBlock = () => {
@@ -30,8 +29,8 @@ export const rebuildMenu = (data) => {
   ipcRenderer.send(REBUILD_MENU, data)
 }
 
-export const saveNetworkConfig = (data) => {
-  ipcRenderer.send(SAVE_NETWORK_CONFIG, data)
+export const saveConfiguration = (config) => {
+  ipcRenderer.send(SAVE_CONFIG, config)
 }
 
 export const toggleGeth = () => {

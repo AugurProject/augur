@@ -5,7 +5,7 @@ import { updateModal } from "../../common/components/modal/actions/update-modal"
 import { MODAL_EDIT_CONNECTION } from "../../common/components/modal/constants/modal-types";
 
 const mapStateToProps = state => ({
-  connections: state.connections,
+  connections: state.configuration.networks || [],
 });
 
 const mapDispatchToProps = dispatch => ({

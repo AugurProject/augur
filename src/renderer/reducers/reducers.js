@@ -1,11 +1,11 @@
-import connections from './connections'
+import configuration from './configuration'
 import blockInfo from './blockInfo'
 import serverStatus from './serverStatus'
 import modal from '../common/components/modal/reducers/modal'
 
 export function createReducer() {
   return {
-    connections,
+    configuration,
     blockInfo,
     serverStatus,
     modal
