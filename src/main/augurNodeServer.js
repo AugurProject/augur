@@ -3,7 +3,7 @@ const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
 const { ControlMessageType } = require('augur-node/build/constants')
-const fs = require('fs')
+
 const { ipcMain } = require('electron')
 const debounce = require('debounce')
 const POOL_DELAY_WAIT = 60*1000
@@ -11,13 +11,14 @@ const DEFAULT_DELAY_WAIT = 1*1000
 
 const POOL_MAX_RETRIES = 5
 const DEFAULT_MAX_RETRIES = 3
-
+const STATUS_LOOP_INTERVAL = 5000
 const AUGUR_NODE_RESTART_RETRIES = 1
 const AUGUR_NODE_RESTART_WAIT = 5*1000
 const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000
 
 function AugurNodeServer(selectedNetwork) {
   this.window = null
+  this.statusLoop = null
   this.selectedNetwork = selectedNetwork
   this.augur = new Augur()
   this.augurNodeController = new AugurNodeController(this.augur, this.selectedNetwork, this.appDataPath)
@@ -59,6 +60,8 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.WebsocketError, this.onError.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
+
+    this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
 
     this.sendMsgToWindowContents(ON_SERVER_CONNECTED)
     this.augurNodeController.start(function (err) {
@@ -194,6 +197,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
 
 AugurNodeServer.prototype.disconnectServerMessage = function () {
   try {
+    if (this.statusLoop) clearInterval(this.statusLoop)
     this.sendMsgToWindowContents(ON_SERVER_DISCONNECTED, {})
   } catch (err) {
     log.error(err)
@@ -202,6 +206,7 @@ AugurNodeServer.prototype.disconnectServerMessage = function () {
 
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
+    if (this.statusLoop) clearInterval(this.statusLoop)
     this.bulkSyncing = false
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Calling Augur Node Controller Shutdown')
