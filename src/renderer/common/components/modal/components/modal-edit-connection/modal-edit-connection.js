@@ -6,7 +6,7 @@ import Styles from "./modal-edit-connection.styles.less";
 export default class ModalEditConnection extends Component {
   static propTypes = {
     closeModal: PropTypes.func.isRequired,
-    connectionId: PropTypes.string,
+    initialConnection: PropTypes.object,
     addUpdateConnection: PropTypes.func.isRequired,
   };
 
@@ -28,7 +28,8 @@ export default class ModalEditConnection extends Component {
   }
 
   saveConnection(e) {
-    this.props.addUpdateConnection(this.state.connection)
+    console.log(this.state.connection)
+    this.props.addUpdateConnection(this.props.numberConnections, this.state.connection)
     this.closeModal(e)
   }
 
@@ -45,12 +46,12 @@ export default class ModalEditConnection extends Component {
   }
 
   render() {
-    const { connectionId } = this.props;
+    const { initialConnection } = this.props;
     const { connection } = this.state
 
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
-        <div>{connectionId ? 'Edit Connection' : 'Add Connection'}</div>
+        <div>{initialConnection ? 'Edit Connection' : 'Add Connection'}</div>
         <div>
             Connection Name
         </div>

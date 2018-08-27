@@ -17,18 +17,19 @@ export function updateConfig(config) {
       type: UPDATE_CONFIG,
       config
     })
-    saveConfiguration(getState().configuration)
+   saveConfiguration(getState().configuration)
   }
 }
 
 export function updateSelectedConnection(selectedKey) {
   return (dispatch, getState) => {
     const config = getState().configuration
-    const networks = Object.keys(config.networks).forEach((key) => {
+    const networks = config.networks
+    Object.keys(config.networks).forEach((key) => {
       if (key === selectedKey) {
-        config.networks[key].selected = true
+        networks[key].selected = true
       } else {
-        delete config.networks[key].selected
+        networks[key].selected = false
       }
     })
     config.networks = networks
@@ -47,7 +48,7 @@ export function addUpdateConnection(key, connection) {
       key,
       connection
     })
-    saveConfiguration(getState().configuration)
+   saveConfiguration(getState().configuration)
   }
 }
 

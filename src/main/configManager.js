@@ -72,8 +72,8 @@ function ConfigManager() {
 }
 
 ConfigManager.prototype.getSelectedNetwork = function () {
-  let selected = this.config.networks.find(n => n.selected)
-  if (!selected) selected = this.config.networks.find(n => n.name.toLowerCase().indexOf('mainnet') > -1)
+  let selected = Object.values(this.config.networks).find(n => n.selected)
+  if (!selected) selected = Object.values(this.config.networks).find(n => n.name.toLowerCase().indexOf('mainnet') > -1)
   return selected
 }
 

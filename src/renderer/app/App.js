@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { Component } from 'react'
+import PropTypes from "prop-types";
+
 import { Logo } from "../common/components/logo/logo";
 import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdown";
 import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
-import { requestServerConfigurations } from './actions/localServerCmds'
+import { requestServerConfigurations, startUiServer, start } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 
@@ -23,6 +25,8 @@ export class App extends Component {
   }
 
   connect() {
+    console.log(this.props.selected)
+    start(this.props.selected)
     this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
@@ -57,3 +61,7 @@ export class App extends Component {
     )
   }
 }
+
+App.propTypes = {
+  selected: PropTypes.object,
+};
