@@ -9,8 +9,8 @@ const defaultConfig = {
   'uiPort': '8080',
   'sslPort': '8443',
   'sslEnabled': false,
-  'networks': [
-    {
+  'networks': {
+    mainnet: {
       'userCreated': false,
       'selected': true,
       'http': 'https://gethnode.com/http',
@@ -18,40 +18,40 @@ const defaultConfig = {
       'ws': 'wss://gethnode.com/ws',
       'id': '1'
     },
-    {
+    rinkeby: {
       'userCreated': false,
       'http': 'https://rinkeby.augur.net/ethereum-http',
       'name': 'Rinkeby',
       'ws': 'wss://rinkeby.augur.net/ethereum-ws',
       'id': '4',
     },
-    {
+    ropsten: {
       'userCreated': false,
       'http': 'https://ropsten.augur.net/ethereum-http',
       'name': 'Ropsten',
       'ws': 'wss://ropsten.augur.net/ethereum-ws',
       'id': '3'
     },
-    {
+    kovan: {
       'userCreated': false,
       'http': 'https://kovan.augur.net/ethereum-http',
       'name': 'Kovan',
       'ws': 'wss://kovan.augur.net/ethereum-ws',
       'id': '42'
     },
-    {
+    local: {
       'userCreated': false,
       'http': 'http://127.0.0.1:8545',
       'name': 'Local',
       'ws': 'ws://127.0.0.1:8546'
     },
-    {
+    localLightNode: {
       'userCreated': false,
       'http': 'http://127.0.0.1:8545',
       'name': 'Local (Light Node)',
       'ws': 'ws://127.0.0.1:8546'
     }
-  ]
+  }
 }
 
 function ConfigManager() {

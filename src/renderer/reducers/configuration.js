@@ -1,7 +1,6 @@
 
-import { pull } from 'lodash'
 import { RESET_STATE } from '../app/actions/reset-state'
-import { INITIALIZE_CONFIG, UPDATE_CONFIG, ADD_CONNECTION, REMOVE_CONNECTION } from '../app/actions/configuration'
+import { INITIALIZE_CONFIG, UPDATE_CONFIG, ADD_UPDATE_CONNECTION, REMOVE_CONNECTION } from '../app/actions/configuration'
 
 const DEFAULT_STATE = []
 
@@ -11,11 +10,11 @@ export default function (configuration = DEFAULT_STATE, action) {
       return action.configuration
     case UPDATE_CONFIG:
       return Object.assign(configuration, action.config)
-    case ADD_CONNECTION:
-      configuration.networks = [...configuration.networks, action.connection]
+    case ADD_UPDATE_CONNECTION:
+      configuration.networks[action.key] = action.connection
       return configuration
     case REMOVE_CONNECTION:
-      configuration.networks = pull(configuration.networks, action.connection)
+      delete configuration.networks[action.key]
       return configuration
     case RESET_STATE:
       return DEFAULT_STATE
