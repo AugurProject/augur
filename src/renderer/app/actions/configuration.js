@@ -1,3 +1,4 @@
+import { saveConfiguration } from './localServerCmds'
 export const INITIALIZE_CONFIG = 'INITIALIZE_CONFIG'
 export const UPDATE_CONFIG = 'UPDATE_CONFIG'
 export const ADD_CONNECTION = 'ADD_UPDATE_CONNECTION'
@@ -11,10 +12,15 @@ export function initializeConfiguration(configuration) {
 }
 
 export function updateConfig(config) {
-  return {
-    type: UPDATE_CONFIG,
-    config
+  (dispatch) => {
+    dispatch({
+      type: UPDATE_CONFIG,
+      config
+    }, () => {
+      dispatch(saveConfiguration())
+    })
   }
+
 }
 
 export function updateConnection(oldConn, newConn) {
@@ -26,6 +32,8 @@ export function updateConnection(oldConn, newConn) {
       dispatch({
         type: ADD_CONNECTION,
         newConn
+      }, () => {
+        dispatch(saveConfiguration())
       })
     })
 
@@ -33,15 +41,25 @@ export function updateConnection(oldConn, newConn) {
 }
 
 export function addConnection(connection) {
-  return {
-    type: ADD_CONNECTION,
-    connection
+  (dispatch) => {
+    dispatch({
+      type: ADD_CONNECTION,
+      connection
+    }, () => {
+      dispatch(saveConfiguration())
+    })
   }
+
 }
 
 export function removeConnection(connection) {
-  return {
-    type: REMOVE_CONNECTION,
-    connection
+  (dispatch) => {
+    dispatch({
+      type: REMOVE_CONNECTION,
+      connection
+    }, () => {
+      dispatch(saveConfiguration())
+    })
   }
+
 }
