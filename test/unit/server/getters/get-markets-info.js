@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketsInfo } = require("../../../../build/server/getters/get-markets-info");
+const {getMarketsInfo} = require("../../../../build/server/getters/get-markets-info");
 
 
 describe("server/getters/get-markets-info", () => {
@@ -164,7 +164,7 @@ describe("server/getters/get-markets-info", () => {
             price: "0.5",
             description: "outcome 1",
           }],
-        }],
+        }]
       );
     },
   });
@@ -316,7 +316,7 @@ describe("server/getters/get-markets-info", () => {
             price: "0.5",
             description: "outcome 1",
           }],
-        }],
+        }]
       );
     },
   });
@@ -466,7 +466,7 @@ describe("server/getters/get-markets-info", () => {
             price: "0.125",
             description: "outcome 7",
           }],
-        }],
+        }]
       );
     },
   });
@@ -564,7 +564,7 @@ describe("server/getters/get-markets-info", () => {
               price: "0.125",
               description: "outcome 4",
             }],
-        }],
+        }]
       );
     },
   });
@@ -591,95 +591,10 @@ describe("server/getters/get-markets-info", () => {
   test({
     description: "Too many marketIds",
     params: {
-      marketIds: Array.from({ length: 1000 }, () => "0x0000000000000000000000000000000000000001"),
+      marketIds: Array.from({length: 1000}, () => "0x1010101010101010101010101010101010101010"),
     },
     assertions: (err, marketInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(marketInfo, Array.from({ length: 1000 }, () => {
-        return {
-          id: "0x0000000000000000000000000000000000000001",
-          universe: "0x000000000000000000000000000000000000000b",
-          marketType: "categorical",
-          numOutcomes: 8,
-          minPrice: "0",
-          maxPrice: "1",
-          cumulativeScale: "1",
-          author: "0x0000000000000000000000000000000000000b0b",
-          creationTime: 1506473474,
-          creationBlock: 1400000,
-          creationFee: "10",
-          settlementFee: "0.03",
-          reportingFeeRate: "0.02",
-          marketCreatorFeeRate: "0.01",
-          marketCreatorFeesBalance: "0",
-          marketCreatorMailbox: "0xbbb0000000000000000000000000000000000001",
-          marketCreatorMailboxOwner: "0x0000000000000000000000000000000000000b0b",
-          initialReportSize: null,
-          category: "TEST CATEGORY",
-          tags: ["test tag 1", "test tag 2"],
-          volume: "0",
-          outstandingShares: "0",
-          reportingState: "DESIGNATED_REPORTING",
-          forking: 0,
-          needsMigration: 0,
-          feeWindow: "0x1000000000000000000000000000000000000000",
-          endTime: 1506573470,
-          finalizationBlockNumber: null,
-          finalizationTime: null,
-          lastTradeBlockNumber: null,
-          lastTradeTime: null,
-          description: "This is a categorical test market created by b0b.",
-          scalarDenomination: null,
-          details: null,
-          designatedReporter: "0x0000000000000000000000000000000000000b0b",
-          designatedReportStake: "10",
-          resolutionSource: "http://www.trusted-third-party.com",
-          numTicks: "10000",
-          tickSize: "0.0001",
-          consensus: null,
-          outcomes: [{
-            id: 0,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 0",
-          }, {
-            id: 1,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 1",
-          }, {
-            id: 2,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 2",
-          }, {
-            id: 3,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 3",
-          }, {
-            id: 4,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 4",
-          }, {
-            id: 5,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 5",
-          }, {
-            id: 6,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 6",
-          }, {
-            id: 7,
-            volume: "100",
-            price: "0.125",
-            description: "outcome 7",
-          }],
-        };
-      }));
+      assert.isNotNull(err);
     },
   });
   test({
