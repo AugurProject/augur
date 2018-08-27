@@ -3,6 +3,7 @@ export const INITIALIZE_CONFIG = 'INITIALIZE_CONFIG'
 export const UPDATE_CONFIG = 'UPDATE_CONFIG'
 export const ADD_UPDATE_CONNECTION = 'ADD_UPDATE_CONNECTION'
 export const REMOVE_CONNECTION = 'REMOVE_CONNECTION'
+export const UPDATE_SELECTED = 'UPDATE_SELECTED'
 
 export function initializeConfiguration(configuration) {
   return {
@@ -23,11 +24,9 @@ export function updateConfig(config) {
 
 export function updateSelectedConnection(selectedKey) {
   return (dispatch, getState) => {
-    const config = getState().configuration
-    Object.keys(config.networks).forEach(key => config.networks[key].selected = key === selectedKey ? true : false)
     dispatch({
-      type: UPDATE_CONFIG,
-      config
+      type: UPDATE_SELECTED,
+      selectedKey
     })
     saveConfiguration(getState().configuration)
   }

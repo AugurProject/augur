@@ -1,6 +1,6 @@
 
 import { RESET_STATE } from '../app/actions/reset-state'
-import { INITIALIZE_CONFIG, UPDATE_CONFIG, ADD_UPDATE_CONNECTION, REMOVE_CONNECTION } from '../app/actions/configuration'
+import { INITIALIZE_CONFIG, UPDATE_CONFIG, UPDATE_SELECTED, ADD_UPDATE_CONNECTION, REMOVE_CONNECTION } from '../app/actions/configuration'
 
 const DEFAULT_STATE = []
 
@@ -10,6 +10,10 @@ export default function (configuration = DEFAULT_STATE, action) {
       return action.configuration
     case UPDATE_CONFIG:
       return Object.assign(configuration, action.config)
+    case UPDATE_SELECTED:
+      if (!action.selectedKey) return configuration
+      Object.keys(configuration.networks).forEach(key => configuration.networks[key].selected = key === action.selectedKey ? true : false)
+      return configuration
     case ADD_UPDATE_CONNECTION:
       configuration.networks[action.key] = action.connection
       return configuration
