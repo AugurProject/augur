@@ -8,7 +8,7 @@ import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
-import { MarketType, WEI_PER_ETHER, ZERO } from "../../constants";
+import { MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
 import { getCurrentTime } from "../process-block";
 
 export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -71,6 +71,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           marketCreatorFeesBalance:   "0",
           volume:                     "0",
           sharesOutstanding:          "0",
+          openInterest:               "0",
           forking:                    0,
           needsMigration:             0,
           needsDisavowal:             0,
@@ -81,10 +82,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)),
           volume: ZERO,
         });
-        const fullTextStringInsert: SearchRow = {
-          marketId: marketsDataToInsert.marketId,
-          content: contentSearchBuilder(marketsDataToInsert),
-        };
+        const marketSearchDataToInsert: SearchRow = contentSearchBuilder(marketsDataToInsert);
         const tokensDataToInsert: Partial<TokensRow> = {
           marketId: log.market,
           symbol: "shares",
@@ -104,7 +102,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
               db.insert(marketsDataToInsert).into("markets").asCallback(next);
             },
             (next: AsyncCallback): void => {
-              db.raw("insert into search_en(marketId, content) values( ?, ? )", [fullTextStringInsert.marketId, fullTextStringInsert.content]).asCallback(next);
+              db.insert(marketSearchDataToInsert).into("search_en").asCallback(next);
             },
             (next: AsyncCallback): void => {
               db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).asCallback(next);
@@ -117,7 +115,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             },
           ], (err: Error|null): void => {
             if (err) return callback(err);
-            augurEmitter.emit("MarketCreated", Object.assign(
+            augurEmitter.emit(SubscriptionEventNames.MarketCreated, Object.assign(
               { creationTime: getCurrentTime() },
               log,
               marketsDataToInsert));
@@ -152,7 +150,7 @@ export function processMarketCreatedLogRemoval(db: Knex, augur: Augur, log: Form
     },
   ], (err) => {
     if (err) callback(err);
-    augurEmitter.emit("MarketCreated", log);
+    augurEmitter.emit(SubscriptionEventNames.MarketCreated, log);
     callback(null);
   });
 }

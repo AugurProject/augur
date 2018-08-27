@@ -3,6 +3,7 @@ import * as Knex from "knex";
 import { FormattedEventLog, ErrorCallback, Address, FeeWindowState } from "../../types";
 import { augurEmitter } from "../../events";
 import { advanceFeeWindowActive, getCurrentTime } from "../process-block";
+import { SubscriptionEventNames } from "../../constants";
 
 export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   augur.api.FeeWindow.getFeeToken({ tx: { to: log.feeWindow } }, (err: Error|null, feeToken?: Address): void => {
@@ -17,7 +18,7 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
       fees: 0,
       feeToken,
     };
-    augurEmitter.emit("FeeWindowCreated", Object.assign({}, log, feeWindowToInsert));
+    augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, Object.assign({}, log, feeWindowToInsert));
     db.from("fee_windows").insert(feeWindowToInsert).asCallback((err) => {
       if (err) return callback(err);
       const feeWindowTokens = [{
@@ -38,7 +39,7 @@ export function processFeeWindowCreatedLog(db: Knex, augur: Augur, log: Formatte
 }
 
 export function processFeeWindowCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
-  augurEmitter.emit("FeeWindowCreated", log);
+  augurEmitter.emit(SubscriptionEventNames.FeeWindowCreated, log);
   db.from("fee_windows").where({ feeWindow: log.feeWindow }).del().asCallback((err) => {
     if (err) return callback(err);
     db("tokens").where("contractAddress", log.feeWindow).orWhere("feeWindow", log.feeWindow).del().asCallback(callback);

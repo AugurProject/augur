@@ -7,7 +7,7 @@ import { updateVolumetrics } from "./update-volumetrics";
 import { augurEmitter } from "../../../events";
 import { formatBigNumberAsFixed } from "../../../utils/format-big-number-as-fixed";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
-import { BN_WEI_PER_ETHER } from "../../../constants";
+import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../../constants";
 
 interface TokensRowWithNumTicksAndCategory extends TokensRow {
   category: string;
@@ -68,7 +68,7 @@ export function processOrderFilledLog(db: Knex, augur: Augur, log: FormattedEven
           marketCreatorFees,
           reporterFees,
         });
-        augurEmitter.emit("OrderFilled", Object.assign({}, log, tradeData));
+        augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, tradeData));
         db.insert(tradeData).into("trades").asCallback((err: Error|null): void => {
           if (err) return callback(err);
           updateVolumetrics(db, augur, category, marketId, outcome, blockNumber, orderId, orderCreator, tickSize, minPrice, maxPrice, true, (err: Error|null): void => {
@@ -114,7 +114,7 @@ export function processOrderFilledLogRemoval(db: Knex, augur: Augur, log: Format
           if (err) return callback(err);
           updateOrder(db, augur, marketId, orderId, amount.negated(), orderCreator, log.filler, tickSize, minPrice, (err: Error|null) => {
             if (err) return callback(err);
-            augurEmitter.emit("OrderFilled", Object.assign({}, log, {
+            augurEmitter.emit(SubscriptionEventNames.OrderFilled, Object.assign({}, log, {
               marketId,
               outcome,
               creator: orderCreator,

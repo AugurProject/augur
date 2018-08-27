@@ -370,6 +370,21 @@ describe("server/getters/get-markets", () => {
     },
   });
   test({
+    description: "fts search for bob with category",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      search: "bob",
+      category: "TEST CATEGORY",
+    },
+    assertions: (err, marketsMatched) => {
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
+        "0x0000000000000000000000000000000000000012",
+        "0x0000000000000000000000000000000000000015",
+      ]);
+    },
+  });
+  test({
     description: "search for sue",
     params: {
       universe: "0x000000000000000000000000000000000000000b",
