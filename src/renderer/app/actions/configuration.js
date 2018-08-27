@@ -21,6 +21,26 @@ export function updateConfig(config) {
   }
 }
 
+export function updateSelectedConnection(name) {
+  return (dispatch, getState) => {
+    const config = getState().configuration
+    const networks = config.networks.map((n) => {
+      if (n.name === name) {
+        n.selected = true
+      } else {
+        delete n.selected
+      }
+      return n
+    })
+    config.networks = networks
+    dispatch({
+      type: UPDATE_CONFIG,
+      config
+    })
+    saveConfiguration(getState().configuration)
+  }
+}
+
 export function updateConnection(oldConn, newConn) {
   return (dispatch, getState) => {
     dispatch({
