@@ -9,7 +9,10 @@ export default function (configuration = DEFAULT_STATE, action) {
     case INITIALIZE_CONFIG:
       return action.configuration
     case UPDATE_CONFIG:
-      return Object.assign(configuration, action.config)
+      return {
+        ...configuration,
+        ...action.config
+      }
     case UPDATE_SELECTED:
       if (!action.selectedKey) return configuration
       const networks = configuration.networks

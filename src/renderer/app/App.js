@@ -34,7 +34,7 @@ export class App extends Component {
     //(Object.values(this.props.connections)).find(network => network.selected === true)
     console.log(selected)
     start(selected)
-    
+
     this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
@@ -45,7 +45,10 @@ export class App extends Component {
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__row}>
             <Logo />
-            <SettingsDropdown />
+            <SettingsDropdown
+              sslEnabled={this.props.sslEnabled}
+              updateConfig={this.props.updateConfig}
+            />
           </div>
           <div>
             <NetworkDropdownContainer />
@@ -69,4 +72,6 @@ export class App extends Component {
 App.propTypes = {
   connections: PropTypes.object,
   selected: PropTypes.object,
+  sslEnabled: PropTypes.bool,
+  updateConfig: PropTypes.func,
 };

@@ -4,30 +4,28 @@ import PropTypes from "prop-types";
 import Dropdown from "../../../common/components/dropdown/dropdown";
 import settingsPng from '../../../../assets/images/settings.png'
 import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
+import { reset } from '../../actions/localServerCmds'
 
 export class SettingsDropdown extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      ledgerEnabled: false,
-    };
-
     this.toggleLedger = this.toggleLedger.bind(this);
   }
 
   toggleLedger() {
-  	console.log('enable/disable ledger clicked')
-  	this.setState({ledgerEnabled: !this.state.ledgerEnabled})
+    this.props.updateConfig({ sslEnabled: !this.props.sslEnabled })
+    console.log('enable/disable ledger clicked')
   }
 
   resetDatabase() {
+    reset()
   	console.log('reset db clicked')
   }
 
   render() {
   	const options = [
-  	  { onClick: this.toggleLedger, label: [<div key="0">{this.state.ledgerEnabled ? "Disable SSL for Ledger" : "Enable SSL for Ledger"}</div>] },
+  	  { onClick: this.toggleLedger, label: [<div key="0">{this.props.sslEnabled ? "Disable SSL for Ledger" : "Enable SSL for Ledger"}</div>] },
   	  { onClick: this.resetDatabase, label: [<div key="0">Reset Database</div>] },
   	];
 
@@ -48,3 +46,9 @@ export class SettingsDropdown extends Component {
   	)
   }
 }
+
+
+SettingsDropdown.propTypes = {
+  sslEnabled: PropTypes.bool,
+  updateConfig: PropTypes.func,
+};
