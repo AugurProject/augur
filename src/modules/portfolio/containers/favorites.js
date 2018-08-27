@@ -9,21 +9,13 @@ import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets
 
 const mapStateToProps = state => {
   // basically just create the filtered markets based on what IDs we find in the favorites object
-  const markets = [];
-  const filteredMarkets = [];
-  const allMarkets = selectAllMarkets();
-  // TODO: potentially move this into it's own function
-  allMarkets.forEach(market => {
-    if (state.favorites[market.id]) {
-      filteredMarkets.push(market.id);
-      markets.push(market);
-    }
-  });
+  const markets = selectAllMarkets();
+  const { favorites } = state;
 
   return {
     isLogged: state.isLogged,
     markets,
-    filteredMarkets,
+    filteredMarkets: Object.keys(favorites),
     transactionsLoading: state.transactionsLoading,
     hasAllTransactionsLoaded:
       state.transactionsOldestLoadedBlock ===

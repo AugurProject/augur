@@ -88,9 +88,9 @@ export default class MarketsList extends Component {
   }
 
   // debounced call
-  loadMarketsInfoIfNotLoaded() {
+  loadMarketsInfoIfNotLoaded(marketIds) {
     const { loadMarketsInfoIfNotLoaded } = this.props;
-    loadMarketsInfoIfNotLoaded(this.state.marketIdsMissingInfo);
+    loadMarketsInfoIfNotLoaded(marketIds || this.state.marketIdsMissingInfo);
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
