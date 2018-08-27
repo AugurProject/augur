@@ -67,7 +67,6 @@ export class NetworkDropdown extends Component {
 	}
   	render() {
   		const { connections } = this.props
-  		console.log(connections)
 
 	  	let options = []
 	  	let userCreatedOptions = []
