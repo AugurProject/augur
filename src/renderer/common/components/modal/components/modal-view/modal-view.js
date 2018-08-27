@@ -3,13 +3,8 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ModalEditConnection from "../../containers/modal-edit-connection";
-// import { Close } from "modules/common/components/icons";
-
-// import debounce from "utils/debounce";
-// import getValue from "utils/get-value";
-
+import ModalDeleteConnection from "../../containers/modal-delete-connection";
 import * as TYPES from "../../constants/modal-types";
-
 import Styles from "./modal-view.styles.less";
 
 export default class ModalView extends Component {
@@ -37,15 +32,46 @@ export default class ModalView extends Component {
   render() {
     const { modal } = this.props;
 
+    console.log(modal)
+    if (modal.type === TYPES.MODAL_DELETE_CONNECTION) {
+      return (
+        <section
+          id="modal"
+          ref={modal => {
+            this.modal = modal;
+          }}
+          className={
+            classNames(
+              Styles.ModalView, 
+              {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)},
+            )
+          }
+        >
+          <div onClick={this.closeModal} className={Styles.ModalView__close} />
+          <div className={Styles.ModalView__content}>
+            <ModalEditConnection closeModal={this.closeModal} {...modal} />
+            <div className={Styles.ModalView__smallBg}>
+              <ModalDeleteConnection closeModal={this.closeModal} key={modal.key} {...modal} />
+            </div>
+          </div>
+        </section>
+      )
+    }
     return (
       <section
         id="modal"
         ref={modal => {
           this.modal = modal;
         }}
-        className={classNames(Styles.ModalView, {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)})}
+        className={
+          classNames(
+            Styles.ModalView, 
+            {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)},
+            {[Styles.ModalView__small]: (modal.type === TYPES.MODAL_DELETE_CONNECTION)},
+          )
+        }
       >
-        <div onClick={this.closeModal} className={Styles.ModalView__close} />
+        { modal.type === TYPES.MODAL_EDIT_CONNECTION && <div onClick={this.closeModal} className={Styles.ModalView__close} /> }
         <div className={Styles.ModalView__content}>
           {modal.type === TYPES.MODAL_EDIT_CONNECTION && (
             <ModalEditConnection closeModal={this.closeModal} {...modal} />

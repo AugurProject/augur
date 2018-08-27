@@ -8,7 +8,7 @@ export default class ModalEditConnection extends Component {
     closeModal: PropTypes.func.isRequired,
     initialConnection: PropTypes.object,
     addUpdateConnection: PropTypes.func.isRequired,
-    removeConnection: PropTypes.func.isRequired,
+    updateModal: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -63,8 +63,8 @@ export default class ModalEditConnection extends Component {
   }
 
   delete(e) {
-    this.props.removeConnection(this.props.initialConnection.key)
-    this.props.closeModal()
+    console.log(this.props.initialConnection.key)
+    this.props.updateModal({initialConnection: this.props.initialConnection, key: this.props.initialConnection.key})
     e.stopPropagation()
   }
 

@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 
 import { RESET_STATE } from '../app/actions/reset-state'
 import { INITIALIZE_CONFIG, UPDATE_CONFIG, UPDATE_SELECTED, ADD_UPDATE_CONNECTION, REMOVE_CONNECTION } from '../app/actions/configuration'
@@ -30,8 +31,10 @@ export default function (configuration = DEFAULT_STATE, action) {
       }
     }
     case REMOVE_CONNECTION:
-      delete configuration.networks[action.key]
-      return configuration
+      return {
+        ...configuration,
+        networks: omit(configuration.networks, action.key)
+      }
     case RESET_STATE:
       return DEFAULT_STATE
     default:

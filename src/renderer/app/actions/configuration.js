@@ -44,6 +44,7 @@ export function addUpdateConnection(key, connection) {
 }
 
 export function removeConnection(key) {
+  // TODO: need to reselect if the selected one is deleted
   return (dispatch, getState) => {
     dispatch({
       type: REMOVE_CONNECTION,

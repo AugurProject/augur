@@ -32,10 +32,16 @@ class Dropdown extends Component {
   handleWindowOnClick(event) {
     const modal = document.getElementById('modal');
     const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
 
     if (modal && editModal) {
       if (event.target === modal || modal.contains(event.target) ||
         event.target === editModal || editModal.contains(event.target)) {
+        return;
+      }
+    } else if (modal && deleteModal) {
+      if (event.target === modal || modal.contains(event.target) ||
+        event.target === deleteModal || deleteModal.contains(event.target)) {
         return;
       }
     }
