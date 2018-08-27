@@ -8,6 +8,7 @@ export default class ModalEditConnection extends Component {
     closeModal: PropTypes.func.isRequired,
     initialConnection: PropTypes.object,
     addUpdateConnection: PropTypes.func.isRequired,
+    removeConnection: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -15,26 +16,42 @@ export default class ModalEditConnection extends Component {
 
     this.state = {
       connection: {
-        name: '',
-        https: '',
-        ws: '',
-        userCreated: true
+        name: (props.initialConnection ? props.initialConnection.name : ''),
+        https: (props.initialConnection ? props.initialConnection.https : ''),
+        ws: (props.initialConnection ? props.initialConnection.ws : ''),
+        userCreated: true,
+        selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
       },
     };
 
     this.closeModal = this.closeModal.bind(this)
     this.updateField = this.updateField.bind(this)
     this.saveConnection = this.saveConnection.bind(this)
+    this.delete = this.delete.bind(this)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.initialConnection !== this.props.initialConnection) {
+      const connection = {
+        name: this.props.initialConnection ? this.props.initialConnection.name : '',
+        https: this.props.initialConnection ? this.props.initialConnection.name : '',
+        name: this.props.initialConnection ? this.props.initialConnection.name : '',
+        userCreated: true,
+        selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
+      }
+      this.setState({connection: connection})
+    }
   }
 
   saveConnection(e) {
+    const key = this.props.initialConnection ? this.props.initialConnection.name : this.state.connection.name
     console.log(this.state.connection)
-    this.props.addUpdateConnection(this.state.connection.name, this.state.connection)
+    this.props.addUpdateConnection(key, this.state.connection)
     this.closeModal(e)
+    e.stopPropagation()
   }
 
   updateField(name, value) {
-    // need to validate
     const { connection } = this.state
     connection[name] = value
     this.setState({connection: connection})
@@ -45,51 +62,70 @@ export default class ModalEditConnection extends Component {
     e.stopPropagation()
   }
 
+  delete(e) {
+    this.props.removeConnection(this.props.initialConnection.key)
+    this.props.closeModal()
+    e.stopPropagation()
+  }
+
   render() {
     const { initialConnection } = this.props;
     const { connection } = this.state
 
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
-        <div>{initialConnection ? 'Edit Connection' : 'Add Connection'}</div>
-        <div>
-            Connection Name
-        </div>
-        <div>
-            <input 
-                onChange={e => {
-                  this.updateField("name", e.target.value);
-                }} 
-                value={connection.name}
-            />
-        </div>
-        <div>
-            HTTP Endpoint
-        </div>
-        <div>
-            <input 
-                onChange={e => {
-                  this.updateField("https", e.target.value);
-                }}
-                value={connection.https} 
-                placeholder="http(s)://" 
-            />
-        </div>
-        <div>
-            Websocket Endpoint
-        </div>
-        <div>
-            <input 
-                onChange={e => {
-                  this.updateField("ws", e.target.value);
-                }}
-                value={connection.ws} 
-                placeholder="ws://"
-            />
-        </div>
-        <div>
-            <div onClick={this.closeModal}>Cancel</div>
-            <div onClick={this.saveConnection}>Save Connection</div>
+        <div className={Styles.ModalEditConnection__container}>
+          <div className={Styles.ModalEditConnection__header}>{ initialConnection ? 'Edit Connection' : 'Add Connection' }</div>
+          <div className={Styles.ModalEditConnection__subheader}>
+            Only one endpoint (HTTP or Websocket) is required.
+          </div>
+          <div className={Styles.ModalEditConnection__label}>
+              Connection Name
+          </div>
+          <div className={Styles.ModalEditConnection__inputContainer}>
+              <input 
+                  onChange={e => {
+                    this.updateField("name", e.target.value);
+                  }} 
+                  className={Styles.ModalEditConnection__input}
+                  value={connection.name}
+              />
+          </div>
+          <div className={Styles.ModalEditConnection__label}>
+              HTTP Endpoint
+          </div>
+          <div className={Styles.ModalEditConnection__inputContainer}>
+              <input 
+                  onChange={e => {
+                    this.updateField("https", e.target.value);
+                  }}
+                  value={connection.https} 
+                  className={Styles.ModalEditConnection__input}
+                  placeholder="http(s)://" 
+              />
+          </div>
+          <div className={Styles.ModalEditConnection__label}>
+              Websocket Endpoint
+          </div>
+          <div className={Styles.ModalEditConnection__inputContainer}>
+              <input 
+                  onChange={e => {
+                    this.updateField("ws", e.target.value);
+                  }}
+                  value={connection.ws} 
+                  className={Styles.ModalEditConnection__input}
+                  placeholder="ws://"
+              />
+          </div>
+          <div className={Styles.ModalEditConnection__buttonContainer}>
+              <div className={Styles.ModalEditConnection__cancel} onClick={this.closeModal}>Cancel</div>
+              <div className={Styles.ModalEditConnection__save} onClick={this.saveConnection}>Save Connection</div>
+          </div>
+          { initialConnection &&
+            <div className={Styles.ModalEditConnection__delete} onClick={this.delete}>
+              Delete connection
+            </div>
+          }
         </div>
       </section>
     )

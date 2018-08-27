@@ -60,8 +60,9 @@ export class NetworkDropdown extends Component {
 		e.stopPropagation();
 	}
 
-	editConnection(connection, e) {
-		this.props.updateModal(connection)
+	editConnection(connection, key, e) {
+		connection.key = key
+		this.props.updateModal({initialConnection: connection})
 		e.stopPropagation();
 	}
   	render() {
@@ -82,7 +83,7 @@ export class NetworkDropdown extends Component {
 		            >
 		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
 		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
-	              	  <div onClick={this.editConnection.bind(this, connections[key])}>
+	              	  <div onClick={this.editConnection.bind(this, connections[key], key)}>
 	              		Edit
 	              	  </div>
 		            </div>

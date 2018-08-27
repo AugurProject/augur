@@ -13,6 +13,7 @@ const mapDispatchToProps = dispatch => ({
    //updateModal: data => dispatch(updateModal({ type: MODAL_EDIT_CONNECTION, ...data }))
   updateConfig: sslEnabled => dispatch(updateConfig(sslEnabled))
 });
+
 const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default AppContainer;
