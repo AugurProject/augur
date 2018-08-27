@@ -29,13 +29,10 @@ export const rebuildMenu = (data) => {
   ipcRenderer.send(REBUILD_MENU, data)
 }
 
-export const saveConfiguration = () => {
-  (dispatch, getStore) => {
-    const { config } = getStore().configuration
-    ipcRenderer.send(SAVE_CONFIG, config)
-  }
-
+export const saveConfiguration = (config) => {
+  ipcRenderer.send(SAVE_CONFIG, config)
 }
+
 
 export const toggleGeth = () => {
   ipcRenderer.send(TOGGLE_GETH)

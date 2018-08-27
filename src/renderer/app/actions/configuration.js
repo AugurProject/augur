@@ -12,19 +12,20 @@ export function initializeConfiguration(configuration) {
 }
 
 export function updateConfig(config) {
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch({
       type: UPDATE_CONFIG,
       config
     }, () => {
-      dispatch(saveConfiguration())
+      const config = getState().configuration
+      saveConfiguration(config)
     })
   }
 
 }
 
 export function updateConnection(oldConn, newConn) {
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch({
       type: REMOVE_CONNECTION,
       oldConn
@@ -33,7 +34,8 @@ export function updateConnection(oldConn, newConn) {
         type: ADD_CONNECTION,
         newConn
       }, () => {
-        dispatch(saveConfiguration())
+        const config = getState().configuration
+        saveConfiguration(config)
       })
     })
 
@@ -41,24 +43,26 @@ export function updateConnection(oldConn, newConn) {
 }
 
 export function addConnection(connection) {
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch({
       type: ADD_CONNECTION,
       connection
     }, () => {
-      dispatch(saveConfiguration())
+      const config = getState().configuration
+      saveConfiguration(config)
     })
   }
 
 }
 
 export function removeConnection(connection) {
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch({
       type: REMOVE_CONNECTION,
       connection
     }, () => {
-      dispatch(saveConfiguration())
+      const config = getState().configuration
+      saveConfiguration(config)
     })
   }
 
