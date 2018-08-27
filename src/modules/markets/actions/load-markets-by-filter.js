@@ -4,7 +4,8 @@ import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,
   MARKET_RECENTLY_TRADED,
-  MARKET_FEE
+  MARKET_FEE,
+  MARKET_OPEN_INTEREST
 } from "modules/filter-sort/constants/market-sort-params";
 import {
   MARKET_REPORTING,
@@ -25,7 +26,6 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
   switch (filterOptions.sort) {
     case MARKET_RECENTLY_TRADED: {
       // Sort By Recently Traded:
-      // defaults for now...
       sort.sortBy = "lastTradeTime";
       sort.isSortDescending = true;
       break;
@@ -46,6 +46,11 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
       // Sort By Fee (lowest first):
       sort.sortBy = "marketCreatorFeeRate";
       sort.isSortDescending = false;
+      break;
+    }
+    case MARKET_OPEN_INTEREST: {
+      sort.sortBy = "openInterest";
+      sort.isSortDescending = true;
       break;
     }
     default: {
