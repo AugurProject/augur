@@ -10,7 +10,7 @@ const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
 const ConfigManager = require('./configManager')
-const {app, BrowserWindow, Menu, ipcMain} = electron
+const {app, BrowserWindow, Menu} = electron
 /* global __dirname process*/
 
 const isDevelopment = process.env.NODE_ENV === 'development'
@@ -29,28 +29,7 @@ const gethNodeController = new GethNodeController()
 const path = require('path')
 const url = require('url')
 
-function toggleEnableSsl() {
-  mainWindow.webContents.send(TOGGLE_SSL, true)
-  buildMenu()
-}
-
 function buildMenu() {
-  const sslEnabled = configManager.isSslEnabled()
-  // check if ssl files exist
-  const sslMenu = []
-
-  if (sslEnabled) {
-    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: sslEnabled, click: function() { mainWindow.webContents.send(TOGGLE_SSL, false)}})
-  } else {
-    sslMenu.push({ label: 'Enable SSL for Ledger', click: toggleEnableSsl})
-  }
-  sslMenu.push({ type: 'separator' })
-  sslMenu.push({ label: 'Reset Configuration File', click: function() { mainWindow.webContents.send(RESET, '') }})
-  sslMenu.push({ label: 'Reset Database', click: function() { mainWindow.webContents.send(CLEAR_DB, '') }})
-  sslMenu.push({ type: 'separator' })
-  sslMenu.push({ label: 'Open Inspector', accelerator: 'CmdOrCtrl+Shift+I', click: function() { mainWindow.webContents.openDevTools() }})
-  sslMenu.push({ type: 'separator' })
-
   // Create the Application's main menu
   var template = [{
     label: 'Application',
@@ -63,7 +42,11 @@ function buildMenu() {
     ]},
   {
     label: 'Settings',
-    submenu: sslMenu
+    submenu: [
+      { type: 'separator' },
+      { label: 'Open Inspector', accelerator: 'CmdOrCtrl+Shift+I', click: function() { mainWindow.webContents.openDevTools() }},
+      { type: 'separator' }
+    ]
   },
   {
     label: 'Edit',
@@ -125,10 +108,6 @@ function createWindow () {
     augurNodeController.setWindow(mainWindow)
     gethNodeController.setWindow(mainWindow)
   }, 2000)
-
-  ipcMain.on('rebuildMenu', function () {
-    buildMenu(false)
-  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

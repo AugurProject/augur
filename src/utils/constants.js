@@ -1,4 +1,3 @@
-export const REBUILD_MENU = 'REBUILD_MENU'
 export const REQUEST_LATEST_SYNCED_BLOCK = 'REQUEST_LATEST_SYNCED_BLOCK'
 export const RESET = 'RESET'
 export const START = 'START'
