@@ -29,12 +29,8 @@ export class App extends Component {
   }
 
   connect() {
-    // need selector
     const selected = this.props.selected
-    //(Object.values(this.props.connections)).find(network => network.selected === true)
-    console.log(selected)
-    start(selected)
-    
+    start(selected)    
     this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 

@@ -7,9 +7,6 @@ const mapStateToProps = state => ({
   selected: (Object.values(state.configuration.networks || [])).find(network => network.selected === true),
 });
 
-// const mapDispatchToProps = dispatch => ({
-// 	updateModal: data => dispatch(updateModal({ type: MODAL_EDIT_CONNECTION, ...data }))
-// });
 const AppContainer = connect(mapStateToProps)(App);
 
 export default AppContainer;

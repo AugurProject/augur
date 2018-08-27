@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import ModalEditConnection from "../components/modal-edit-connection/modal-edit-connection";
 
 import { closeModal } from "../actions/close-modal";
-import { addUpdateConnection } from "../../../../app/actions/configuration";
+import { addUpdateConnection, removeConnection } from "../../../../app/actions/configuration";
 
 const mapStateToProps = state => ({
   modal: state.modal,
@@ -13,6 +13,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(closeModal()),
   addUpdateConnection: (key, connection) => dispatch(addUpdateConnection(key, connection)),
+  removeConnection: (key) => dispatch(removeConnection(key)),
 });
 
 export default withRouter(
