@@ -40,7 +40,7 @@ export function addUpdateConnection(key, connection) {
       key,
       connection
     })
-   saveConfiguration(getState().configuration)
+    saveConfiguration(getState().configuration)
   }
 }
 
