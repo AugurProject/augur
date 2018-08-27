@@ -44,7 +44,7 @@ export default class ModalEditConnection extends Component {
   }
 
   saveConnection(e) {
-    const key = this.props.initialConnection ? this.props.initialConnection.name : this.state.connection.name
+    const key = this.props.initialConnection ? this.props.initialConnection.key : this.state.connection.name
     console.log(this.state.connection)
     this.props.addUpdateConnection(key, this.state.connection)
     this.closeModal(e)
