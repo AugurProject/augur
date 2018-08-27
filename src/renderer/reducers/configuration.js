@@ -12,11 +12,20 @@ export default function (configuration = DEFAULT_STATE, action) {
       return Object.assign(configuration, action.config)
     case UPDATE_SELECTED:
       if (!action.selectedKey) return configuration
-      Object.keys(configuration.networks).forEach(key => configuration.networks[key].selected = key === action.selectedKey ? true : false)
-      return configuration
+      const networks = configuration.networks
+      Object.keys(networks).forEach(key => networks[key].selected = key === action.selectedKey ? true : false)
+      return {
+        ...configuration,
+        networks
+      }
     case ADD_UPDATE_CONNECTION:
-      configuration.networks[action.key] = action.connection
-      return configuration
+      return {
+        ...configuration,
+        networks: {
+          ...configuration.networks,
+          [action.key]: action.connection
+      }
+    }
     case REMOVE_CONNECTION:
       delete configuration.networks[action.key]
       return configuration
