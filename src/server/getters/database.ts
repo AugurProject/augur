@@ -316,3 +316,16 @@ export function sumBy<T extends Dictionary, K extends keyof T>(rows: Array<T>, .
 export function getCashAddress(augur: Augur) {
   return augur.contracts.addresses[augur.rpc.getNetworkID()].Cash;
 }
+
+// move to database utils.
+export async function batchAndCombine<T, K>(lookupIds: Array<K>, dataFetch: (chunkLookupIds: Array<K>) => Promise<Array<T>>) {
+  const chunkedIds = _.chunk(lookupIds, 2);
+  const result: Array<Array<T>> = [];
+
+  for (const chunk of chunkedIds) result.push(await dataFetch(chunk));
+
+  const fullResults = _.flatten(result);
+  // sort results
+  // limit results
+  return fullResults;
+}
