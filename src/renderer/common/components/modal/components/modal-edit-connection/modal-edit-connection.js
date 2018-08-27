@@ -29,7 +29,7 @@ export default class ModalEditConnection extends Component {
 
   saveConnection(e) {
     console.log(this.state.connection)
-    this.props.addUpdateConnection(this.props.numberConnections, this.state.connection)
+    this.props.addUpdateConnection(this.state.connection.name, this.state.connection)
     this.closeModal(e)
   }
 

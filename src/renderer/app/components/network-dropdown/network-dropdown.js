@@ -46,7 +46,6 @@ export class NetworkDropdown extends Component {
 	}
 
 	selectNetwork(networkId) {
-		console.log(networkId)
 		this.props.updateSelectedConnection(networkId)
 		this.setState({menuIsOpen: false})
 		this.setState({selectedNetwork: networkId})
@@ -67,38 +66,39 @@ export class NetworkDropdown extends Component {
 	}
   	render() {
   		const { connections } = this.props
+  		console.log(connections)
+
 	  	let options = []
-	  	let breakAdded = false
+	  	let userCreatedOptions = []
 
 	  	for (let key in connections) {
 	  		let connected = (key === this.state.selectedNetwork)
-	  		if (connections[key].userCreated && !breakAdded) {
-	  			breakAdded = true
-	  			options.push(
-	  				<div key='break' className={Styles.NetworkDropdown__break}/>
-	  			)
-	  		}
-	  		options.push(
-	  			<div
-	              key={key}
-	              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
-	              onClick={this.selectNetwork.bind(this, key)}
-	            >
-	              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
-	              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
-	              { connections[key].userCreated &&
-	              	<div onClick={this.editConnection.bind(this, connections[key])}>
+	  		if (connections[key].userCreated) {
+	  			userCreatedOptions.push(
+		  			<div
+		              key={key}
+		              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
+		              onClick={this.selectNetwork.bind(this, key)}
+		            >
+		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
+	              	  <div onClick={this.editConnection.bind(this, connections[key])}>
 	              		Edit
-	              	</div>
-	              }
-	            </div>
-	  		)
-	  	}
-
-	  	if (!breakAdded) {
-			options.push(
-	  			<div key='break' className={Styles.NetworkDropdown__break}/>
-	  		)
+	              	  </div>
+		            </div>
+	  			)
+	  		} else {
+		  		options.push(
+		  			<div
+		              key={key}
+		              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
+		              onClick={this.selectNetwork.bind(this, key)}
+		            >
+		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
+		            </div>
+		  		)
+		  	}
 	  	}
 
 	  	return (
@@ -122,6 +122,8 @@ export class NetworkDropdown extends Component {
 		        >
 		        	<div className={Styles.NetworkDropdown__dropdownLabel}>Networks</div>
 		        	{options}
+		        	<div key='break' className={Styles.NetworkDropdown__break}/>
+		        	{userCreatedOptions}
 		          	<div
 		          		onClick={this.addNew}
 		          		className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem, Styles.NetworkDropdown__addNewButton)}

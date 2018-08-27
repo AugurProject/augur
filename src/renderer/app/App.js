@@ -24,14 +24,18 @@ export class App extends Component {
     this.connect = this.connect.bind(this);
   }
 
-  connect() {
-    console.log(this.props.selected)
-    start(this.props.selected)
-    this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
-  }
-
   componentWillMount() {
     requestServerConfigurations()
+  }
+
+  connect() {
+    // need selector
+    const selected = this.props.selected
+    //(Object.values(this.props.connections)).find(network => network.selected === true)
+    console.log(selected)
+    start(selected)
+    
+    this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
   render() {
@@ -63,5 +67,6 @@ export class App extends Component {
 }
 
 App.propTypes = {
+  connections: PropTypes.object,
   selected: PropTypes.object,
 };
