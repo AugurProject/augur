@@ -17,22 +17,14 @@ export function updateConfig(config) {
       type: UPDATE_CONFIG,
       config
     })
-   saveConfiguration(getState().configuration)
+    saveConfiguration(getState().configuration)
   }
 }
 
 export function updateSelectedConnection(selectedKey) {
   return (dispatch, getState) => {
     const config = getState().configuration
-    const networks = config.networks
-    Object.keys(config.networks).forEach((key) => {
-      if (key === selectedKey) {
-        networks[key].selected = true
-      } else {
-        networks[key].selected = false
-      }
-    })
-    config.networks = networks
+    Object.keys(config.networks).forEach(key => config.networks[key].selected = key === selectedKey ? true : false)
     dispatch({
       type: UPDATE_CONFIG,
       config
