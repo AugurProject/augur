@@ -1,49 +1,48 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { AugurLoadingLogo } from 'modules/common/components/icons'
-import Styles from 'modules/app/components/loading-logo/loading-logo.styles'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { AugurLoadingLogo } from "modules/common/components/icons";
+import Styles from "modules/app/components/loading-logo/loading-logo.styles";
 
 export default class LoadingLogo extends Component {
-
   static propTypes = {
-    isLoading: PropTypes.bool.isRequired,
-  }
+    isLoading: PropTypes.bool.isRequired
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      loading: false,
-    }
+      loading: false
+    };
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.isLoading) {
       this.setState({
-        loading: newProps.isLoading,
-      })
+        loading: newProps.isLoading
+      });
     }
   }
 
   animateEnd() {
     this.setState({
-      loading: false,
-    })
+      loading: false
+    });
   }
 
   render() {
-    const { loading } = this.state
+    const { loading } = this.state;
     return (
       <div
         className={classNames(Styles.LoadingLogo, {
           [Styles.running]: loading,
-          [Styles.paused]: !loading,
+          [Styles.paused]: !loading
         })}
-        onAnimationEnd={() => (this.animateEnd())}
+        onAnimationEnd={() => this.animateEnd()}
       >
-        { AugurLoadingLogo }
+        {AugurLoadingLogo}
       </div>
-    )
+    );
   }
 }

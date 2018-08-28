@@ -1,53 +1,58 @@
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 
-import BaseInnerNav from 'modules/app/components/inner-nav/base-inner-nav'
+import BaseInnerNav from "modules/app/components/inner-nav/base-inner-nav";
 
-import { augur } from 'services/augurjs'
+import { augur } from "services/augurjs";
 
-import { ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET, ACCOUNT_UNIVERSES } from 'modules/routes/constants/views'
+import {
+  ACCOUNT_DEPOSIT,
+  ACCOUNT_WITHDRAW,
+  ACCOUNT_REP_FAUCET,
+  ACCOUNT_UNIVERSES
+} from "modules/routes/constants/views";
 
 export default class AccountInnerNav extends BaseInnerNav {
   static propTypes = {
     ...BaseInnerNav.propTypes,
-    privateKey: PropTypes.string,
-  }
+    privateKey: PropTypes.string
+  };
 
   getMainMenuData() {
-    const showRepFaucet = parseInt(augur.rpc.getNetworkID(), 10) !== 1
-    const { currentBasePath } = this.props
+    const showRepFaucet = parseInt(augur.rpc.getNetworkID(), 10) !== 1;
+    const { currentBasePath } = this.props;
     return [
       {
-        label: 'Deposit',
+        label: "Deposit",
         visible: true,
-        isSelected: (currentBasePath === ACCOUNT_DEPOSIT),
+        isSelected: currentBasePath === ACCOUNT_DEPOSIT,
         link: {
-          pathname: ACCOUNT_DEPOSIT,
-        },
+          pathname: ACCOUNT_DEPOSIT
+        }
       },
       {
-        label: 'Withdraw',
+        label: "Withdraw",
         visible: true,
-        isSelected: (currentBasePath === ACCOUNT_WITHDRAW),
+        isSelected: currentBasePath === ACCOUNT_WITHDRAW,
         link: {
-          pathname: ACCOUNT_WITHDRAW,
-        },
+          pathname: ACCOUNT_WITHDRAW
+        }
       },
       {
-        label: 'REP Faucet',
+        label: "REP Faucet",
         visible: showRepFaucet,
-        isSelected: (currentBasePath === ACCOUNT_REP_FAUCET),
+        isSelected: currentBasePath === ACCOUNT_REP_FAUCET,
         link: {
-          pathname: ACCOUNT_REP_FAUCET,
-        },
+          pathname: ACCOUNT_REP_FAUCET
+        }
       },
       {
-        label: 'Universes',
+        label: "Universes",
         visible: true,
-        isSelected: (this.props.currentBasePath === ACCOUNT_UNIVERSES),
+        isSelected: this.props.currentBasePath === ACCOUNT_UNIVERSES,
         link: {
-          pathname: ACCOUNT_UNIVERSES,
-        },
-      },
-    ]
+          pathname: ACCOUNT_UNIVERSES
+        }
+      }
+    ];
   }
 }

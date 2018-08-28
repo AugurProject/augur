@@ -1,9 +1,9 @@
-import memoize from 'memoizee'
+import memoize from "memoizee";
 
-import { has } from 'lodash'
+import { has } from "lodash";
 
-export default function (marketId, outcome, orderTypeLabel, orderBooks) {
-  return getOrderBook(marketId, outcome, orderTypeLabel, orderBooks)
+export default function(marketId, outcome, orderTypeLabel, orderBooks) {
+  return getOrderBook(marketId, outcome, orderTypeLabel, orderBooks);
 }
 
 /**
@@ -13,7 +13,10 @@ export default function (marketId, outcome, orderTypeLabel, orderBooks) {
  * @param {Object} orderBooks
  * @return {Object|null}
  */
-const getOrderBook = memoize((marketId, outcome, orderTypeLabel, orderBooks) => {
-  if (!has(orderBooks, [marketId, outcome, orderTypeLabel])) return null
-  return orderBooks[marketId][outcome][orderTypeLabel] || null
-}, { max: 1 })
+const getOrderBook = memoize(
+  (marketId, outcome, orderTypeLabel, orderBooks) => {
+    if (!has(orderBooks, [marketId, outcome, orderTypeLabel])) return null;
+    return orderBooks[marketId][outcome][orderTypeLabel] || null;
+  },
+  { max: 1 }
+);

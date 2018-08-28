@@ -1,6 +1,6 @@
-import { UPDATE_REPORTING_WINDOW_STATS } from 'modules/reporting/actions/update-reporting-window-stats'
-import { RESET_STATE } from 'modules/app/actions/reset-state'
-import { formatAttoRep, formatAttoEth } from 'utils/format-number'
+import { UPDATE_REPORTING_WINDOW_STATS } from "modules/reporting/actions/update-reporting-window-stats";
+import { RESET_STATE } from "modules/app/actions/reset-state";
+import { formatAttoRep, formatAttoEth } from "utils/format-number";
 
 const DEFAULT_STATE = {
   startTime: null,
@@ -14,21 +14,21 @@ const DEFAULT_STATE = {
     feeWindows: [],
     forkedMarket: null,
     nonforkedMarkets: [],
-    feeWindowEthFees: '0',
-    feeWindowRepStaked: '0',
-  },
-}
+    feeWindowEthFees: "0",
+    feeWindowRepStaked: "0"
+  }
+};
 
-export default function (reportingWindowStats = DEFAULT_STATE, action) {
+export default function(reportingWindowStats = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTING_WINDOW_STATS:
       return {
         ...reportingWindowStats,
-        ...action.data,
-      }
+        ...action.data
+      };
     case RESET_STATE:
-      return DEFAULT_STATE
+      return DEFAULT_STATE;
     default:
-      return reportingWindowStats
+      return reportingWindowStats;
   }
 }

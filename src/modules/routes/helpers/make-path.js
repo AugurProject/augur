@@ -6,20 +6,15 @@ export default function makePath(paths, match) {
   if (
     (paths.constructor !== String && paths.constructor !== Array) ||
     (match && paths.constructor !== Array)
-  ) return '/'
+  )
+    return "/";
 
   // Matching Regex for Route Component
-  if (match) {
-    const test = `^\/(${paths.reduce((p, path, i) => `${p}${path}${paths.length - 1 !== i ? '|' : ''}`, '')})/` // eslint-disable-line no-useless-escape
-
-    console.log('test -- ', test)
-
-    return test
-  }
+  if (match) return `^/(${paths.join("|")})/`;
 
   // String Path for Link from Array
-  if (paths.constructor === Array) return `/${paths.reduce((p, path, i) => `${p}${path}${paths.length - 1 !== i ? '/' : ''}`, '')}/` // eslint-disable-line no-useless-escape
+  if (paths.constructor === Array) return `/${paths.join("/")}/`;
 
   // String Path for Link from String
-  return `/${paths}`
+  return `/${paths}`;
 }

@@ -1,58 +1,60 @@
+import reducer from "modules/modal/reducers/modal";
 
+import { UPDATE_MODAL } from "modules/modal/actions/update-modal";
+import { CLOSE_MODAL } from "modules/modal/actions/close-modal";
 
-import reducer from 'modules/modal/reducers/modal'
-
-import { UPDATE_MODAL } from 'modules/modal/actions/update-modal'
-import { CLOSE_MODAL } from 'modules/modal/actions/close-modal'
-
-describe('modules/modal/reducers/modal', () => {
-  const test = t => it(t.description, () => t.assertions())
+describe("modules/modal/reducers/modal", () => {
+  const test = t => it(t.description, () => t.assertions());
 
   test({
-    description: 'should return the DEFAULT_STATE',
+    description: "should return the DEFAULT_STATE",
     assertions: () => {
-      const actual = reducer(undefined, { type: null })
+      const actual = reducer(undefined, { type: null });
 
-      const expected = {}
+      const expected = {};
 
-      assert.deepEqual(actual, expected, `didn't return the expected object`)
-    },
-  })
+      assert.deepEqual(actual, expected, `didn't return the expected object`);
+    }
+  });
 
   test({
-    description: 'should return the passed value',
+    description: "should return the passed value",
     assertions: () => {
-      const actual = reducer({ test: 'TEST' }, { type: null })
+      const actual = reducer({ test: "TEST" }, { type: null });
 
       const expected = {
-        test: 'TEST',
-      }
+        test: "TEST"
+      };
 
-      assert.deepEqual(actual, expected, `didn't return the expected object`)
-    },
-  })
+      assert.deepEqual(actual, expected, `didn't return the expected object`);
+    }
+  });
 
   test({
-    description: 'should return the updated state when case is UPDATE_MODAL',
+    description: "should return the updated state when case is UPDATE_MODAL",
     assertions: () => {
-      const actual = reducer({ test: 'TEST' }, { type: UPDATE_MODAL, data: { test: 'NEW' } })
+      const actual = reducer(
+        { test: "TEST" },
+        { type: UPDATE_MODAL, data: { test: "NEW" } }
+      );
 
       const expected = {
-        test: 'NEW',
-      }
+        test: "NEW"
+      };
 
-      assert.deepEqual(actual, expected, `didn't return the expected object`)
-    },
-  })
+      assert.deepEqual(actual, expected, `didn't return the expected object`);
+    }
+  });
 
   test({
-    description: 'should return the updated DEFAULT_STATE when case is CLOSE_MODAL',
+    description:
+      "should return the updated DEFAULT_STATE when case is CLOSE_MODAL",
     assertions: () => {
-      const actual = reducer({ test: 'TEST' }, { type: CLOSE_MODAL })
+      const actual = reducer({ test: "TEST" }, { type: CLOSE_MODAL });
 
-      const expected = {}
+      const expected = {};
 
-      assert.deepEqual(actual, expected, `didn't return the expected object`)
-    },
-  })
-})
+      assert.deepEqual(actual, expected, `didn't return the expected object`);
+    }
+  });
+});

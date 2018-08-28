@@ -1,14 +1,16 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 // import ReactTooltip from 'react-tooltip'
 // import { Line } from 'rc-progress'
 
-import Bullet from 'modules/common/components/bullet'
+import Bullet from "modules/common/components/bullet";
 
 const Universe = p => (
   <article className="universe-info">
     <span className="reporting-cycle-info">
-      Reporting Period {p.currentReportingWindowAddress} <Bullet /> {Math.round(p.currentReportingPeriodPercentComplete)}% complete <Bullet /> period ends {p.reportingCycleTimeRemaining}
+      Reporting Period {p.currentReportingWindowAddress} <Bullet />{" "}
+      {Math.round(p.currentReportingPeriodPercentComplete)}% complete <Bullet />{" "}
+      period ends {p.reportingCycleTimeRemaining}
     </span>
     <span
       data-tip
@@ -16,10 +18,11 @@ const Universe = p => (
       data-event="click focus"
       className="universe-description pointer"
     >
-      {p.description} <Bullet /> {p.reportingPeriodDurationInSeconds / 3600} hours per period
+      {p.description} <Bullet /> {p.reportingPeriodDurationInSeconds / 3600}{" "}
+      hours per period
     </span>
   </article>
-)
+);
 
 Universe.propTypes = {
   className: PropTypes.string,
@@ -27,10 +30,10 @@ Universe.propTypes = {
   id: PropTypes.string,
   reportingPeriodDurationInSeconds: PropTypes.number,
   reportingCycleTimeRemaining: PropTypes.string,
-  currentReportingPeriodPercentComplete: PropTypes.number,
-}
+  currentReportingPeriodPercentComplete: PropTypes.number
+};
 
-export default Universe
+export default Universe;
 
 // NOTE -- was directly after parent opening tag
 // <Line
