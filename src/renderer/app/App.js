@@ -29,6 +29,9 @@ export class App extends Component {
   }
 
   connect() {
+    this.setState(prevState => ({
+      connectedPressed: !prevState.connected
+    }));
     const selected = this.props.selected
     if (this.props.serverStatus.CONNECTED) stopAugurNode()
     else startAugurNode(selected)
