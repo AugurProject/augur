@@ -269,17 +269,24 @@ KEYID = '4ABBBBE0'
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     args = args()
+    verboseprint = print if args.verbose else lambda *a, **k: None
     g = Github(GH_TOKEN)
     repo = g.get_repo("augurproject/augur-app")
     all_versions = return_release_ids(repo)
     release_id = pick_release(all_versions)
     tag_name = repo.get_release(release_id).tag_name
+    verboseprint('tag: {}'.format(tag_name))
     directory = tmp_local_dir(tag_name)
+    verboseprint('directory: {}'.format(directory))
     release = repo.get_release(release_id)
+    verboseprint('release object: {}'.format(release))
     github_release_assets = release.get_assets()
-    if not os.path.exists(directory):
+    verboseprint(github_release_assets)
+    if is_dir_empty(directory):
         for assets in github_release_assets:
             download_asset(assets.name, assets.url, directory)
+    else:
+        verboseprint('Directory exists: {}'.format(directory))
     comparison = compare_checksums_in_dir(directory)
     message_to_sign = visual_checksum_comparison(comparison)
     if args.sign:
@@ -287,9 +294,11 @@ if __name__ == "__main__":
         print(signed_message)
         print('uploading to github releases')
         upload_release_checksum(signed_message, tag_name)
+    # check for release
     message_table = release_message_table(github_release_assets, comparison)
+    verboseprint('message table: {}'.format(message_table))
     markdown_table = message_table_markup(message_table)
-    print(markdown_table)
+    verboseprint(markdown_table)
     body = release.body
     body += markdown_table
     release.update_release(name=tag_name, message=body, draft=True)
