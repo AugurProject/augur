@@ -90,7 +90,11 @@ export class App extends Component {
                 updateConfig={updateConfig}
               />
             </div>
-            <NetworkDropdownContainer />
+            <NetworkDropdownContainer 
+              openBrowserEnabled={openBrowserEnabled} 
+              isConnectedPressed={connectedPressed}
+              stopAugurNode={this.connect}
+            />
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
             </button>

@@ -12,6 +12,9 @@ export class NetworkDropdown extends Component {
 	    connections: PropTypes.object.isRequired,
 	    updateModal: PropTypes.func.isRequired,
 	    updateSelectedConnection: PropTypes.func.isRequired,
+	    isConnectedPressed: PropTypes.bool,
+	    openBrowserEnabled: PropTypes.bool,
+	    stopAugurNode: PropTypes.func.isRequired,
 	};
 
 	constructor(props) {
@@ -25,6 +28,7 @@ export class NetworkDropdown extends Component {
 
 	    this.addNew = this.addNew.bind(this);
 	    this.setMenuIsOpen = this.setMenuIsOpen.bind(this);
+	    this.renderCircle = this.renderCircle.bind(this);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -49,6 +53,10 @@ export class NetworkDropdown extends Component {
 		this.props.updateSelectedConnection(networkId)
 		this.setState({menuIsOpen: false})
 		this.setState({selectedNetwork: networkId})
+
+		if (this.props.isConnectedPressed) {
+			this.props.stopAugurNode();
+		}
 	}
 
 	setMenuIsOpen(value) {
@@ -65,14 +73,35 @@ export class NetworkDropdown extends Component {
 		this.props.updateModal({initialConnection: connection})
 		e.stopPropagation();
 	}
+
+	renderCircle(isSelected) {
+		const { 
+  			isConnectedPressed,
+  			openBrowserEnabled, 
+  		} = this.props
+
+		return (
+			<div 
+        		className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'], {
+        			[Styles['NetworkDropdown__circle-blue']]: isSelected && isConnectedPressed && !openBrowserEnabled,
+       				[Styles['NetworkDropdown__circle-green']]: isSelected && isConnectedPressed && openBrowserEnabled
+   				})}
+    		/>
+		)
+	}
+
   	render() {
-  		const { connections } = this.props
+  		const { 
+  			connections,
+  			isConnectedPressed,
+  			openBrowserEnabled, 
+  		} = this.props
 
 	  	let options = []
 	  	let userCreatedOptions = []
 
 	  	for (let key in connections) {
-	  		let connected = (key === this.state.selectedNetwork)
+	  		const isSelected = (key === this.state.selectedNetwork)
 	  		if (connections[key].userCreated) {
 	  			userCreatedOptions.push(
 		  			<div
@@ -80,7 +109,7 @@ export class NetworkDropdown extends Component {
 		              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
 		              onClick={this.selectNetwork.bind(this, key)}
 		            >
-		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+		              {this.renderCircle(isSelected)}
 		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
 	              	  <div onClick={this.editConnection.bind(this, connections[key], key)} className={Styles.NetworkDropdown__editButton} />
 		            </div>
@@ -92,7 +121,7 @@ export class NetworkDropdown extends Component {
 		              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
 		              onClick={this.selectNetwork.bind(this, key)}
 		            >
-		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
+		              {this.renderCircle(isSelected)}
 		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
 		            </div>
 		  		)
@@ -107,7 +136,12 @@ export class NetworkDropdown extends Component {
 			        		<div key="0" className={classNames(Styles.NetworkDropdown__label, {
 		               				[Styles['NetworkDropdown__label-open']]: this.state.menuIsOpen
 		           				})}>
-				        		<div className={Styles.NetworkDropdown__circle} />
+				        		<div 
+					        		className={classNames(Styles.NetworkDropdown__circle, {
+					        			[Styles['NetworkDropdown__circle-blue']]: isConnectedPressed && !openBrowserEnabled,
+			               				[Styles['NetworkDropdown__circle-green']]: isConnectedPressed && openBrowserEnabled
+			           				})}
+				        		/>
 				        		<div className={Styles.NetworkDropdown__labelText}>
 				        			{connections[this.state.selectedNetwork] && connections[this.state.selectedNetwork].name}
 				        		</div>
