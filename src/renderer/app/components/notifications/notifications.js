@@ -16,7 +16,7 @@ const Msg = ({ notification, closeToast }) => (
 
 Msg.propTypes = {
   notification: PropTypes.object.isRequired,
-  closeToast: PropTypes.func.isRequired
+  closeToast: PropTypes.func
 }
 
 export class Notifications extends Component {
