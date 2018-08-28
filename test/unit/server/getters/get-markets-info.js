@@ -16,7 +16,7 @@ describe("server/getters/get-markets-info", () => {
           done();
         });
       });
-    }).timeout(20000);
+    });
   };
   test({
     description: "get markets by specifying market IDs",
@@ -603,7 +603,7 @@ describe("server/getters/get-markets-info", () => {
     assertions: (err, marketInfo) => {
       assert.ifError(err);
       assert.deepEqual(marketInfo, Array.from({ length: 1000 }, () => {
-        return {
+        return         {
           id: "0x0000000000000000000000000000000000000001",
           universe: "0x000000000000000000000000000000000000000b",
           marketType: "categorical",
@@ -625,6 +625,7 @@ describe("server/getters/get-markets-info", () => {
           category: "TEST CATEGORY",
           tags: ["test tag 1", "test tag 2"],
           volume: "0",
+          openInterest: "0",
           outstandingShares: "0",
           reportingState: "DESIGNATED_REPORTING",
           forking: 0,
