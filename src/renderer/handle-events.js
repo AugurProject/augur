@@ -56,11 +56,11 @@ export const handleEvents = () => {
     store.dispatch(updateServerAttrib({ AUGUR_BULK_SYNCING: false }))
   })
 
-  ipcRenderer.on(INFO_NOTIFICATION, (notification) => {
+  ipcRenderer.on(INFO_NOTIFICATION, (event, notification) => {
     store.dispatch(addInfoNotification(notification))
   })
 
-  ipcRenderer.on(ERROR_NOTIFICATION, (notification) => {
+  ipcRenderer.on(ERROR_NOTIFICATION, (event, notification) => {
     store.dispatch(addErrorNotification(notification))
   })
 
