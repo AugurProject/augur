@@ -18,51 +18,84 @@ export class App extends Component {
     this.state = {
       connectedPressed: false,
       openBrowserEnabled: false,
-      processing: false,
+      processing: props.serverStatus.CONNECTED || false,
     };
 
     this.connect = this.connect.bind(this);
+    this.processingTimeout = null;
   }
 
   componentWillMount() {
     requestServerConfigurations()
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.serverStatus !== this.props.serverStatus) {
+      // timeout so that there is time to finish animation
+      clearTimeout(this.processingTimeout);
+      if (this.props.serverStatus.CONNECTED) {
+        this.processingTimeout = setTimeout(() => {
+          this.setState({processing: true})
+        }, 500);
+      } else {
+        this.setState({processing: false})
+      }
+    }
+  }
+
   connect() {
-    this.setState(prevState => ({
-      connectedPressed: !prevState.connected
-    }));
     const selected = this.props.selected
-    if (this.props.serverStatus.CONNECTED) stopAugurNode()
-    else startAugurNode(selected)
+    if (this.props.serverStatus.CONNECTED) {
+      this.setState({connectedPressed: false});
+      stopAugurNode()
+    } else {
+      this.setState({connectedPressed: true});
+      startAugurNode(selected)
+    }
   }
 
   render() {
+    const {
+      sslEnabled,
+      updateConfig,
+      serverStatus,
+      blockInfo,
+    } = this.props
+
+    const {
+      connectedPressed,
+      processing,
+      openBrowserEnabled,
+    } = this.state
+
     return (
       <div className={Styles.App}>
-        {<Modal />}
+        <Modal />
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__row}>
             <Logo />
             <SettingsDropdown
-              sslEnabled={this.props.sslEnabled}
-              updateConfig={this.props.updateConfig}
+              sslEnabled={sslEnabled}
+              updateConfig={updateConfig}
             />
           </div>
           <div>
             <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {this.props.serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
+              {serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
             </button>
             <ConnectingView
-              connected={this.props.serverStatus.CONNECTED}
-              connecting={this.state.connectedPressed}
+              connected={serverStatus.CONNECTED}
+              connecting={connectedPressed}
             />
-            <ProcessingView processing={this.state.processing} />
+            <ProcessingView 
+              processing={processing} 
+              blockInfo={blockInfo}
+            />
           </div>
         </div>
         <div className={Styles.App__footer}>
-          <button className={Styles.App__openBrowserButton} disabled={!this.state.openBrowserEnabled}>
+          <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled}>
             Open in Browser
           </button>
         </div>
@@ -77,4 +110,5 @@ App.propTypes = {
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
   serverStatus: PropTypes.object,
+  blockInfo: PropTypes.object,
 };
