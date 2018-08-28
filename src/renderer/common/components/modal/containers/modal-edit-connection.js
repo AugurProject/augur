@@ -9,6 +9,7 @@ import { addUpdateConnection } from "../../../../app/actions/configuration";
 
 const mapStateToProps = state => ({
   modal: state.modal,
+  connections: state.configuration.networks,
 });
 
 const mapDispatchToProps = dispatch => ({

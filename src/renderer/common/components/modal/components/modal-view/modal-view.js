@@ -32,7 +32,6 @@ export default class ModalView extends Component {
   render() {
     const { modal } = this.props;
 
-    console.log(modal)
     if (modal.type === TYPES.MODAL_DELETE_CONNECTION) {
       return (
         <section
@@ -51,7 +50,7 @@ export default class ModalView extends Component {
           <div className={Styles.ModalView__content}>
             <ModalEditConnection closeModal={this.closeModal} {...modal} />
             <div className={Styles.ModalView__smallBg}>
-              <ModalDeleteConnection closeModal={this.closeModal} key={modal.key} {...modal} />
+              <ModalDeleteConnection closeModal={this.closeModal} {...modal} />
             </div>
           </div>
         </section>

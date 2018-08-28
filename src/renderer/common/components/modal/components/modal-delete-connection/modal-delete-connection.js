@@ -23,7 +23,7 @@ export default class ModalDeleteConnection extends Component {
   }
 
   delete(e) {
-    this.props.removeConnection(this.props.key)
+    this.props.removeConnection(this.props.modal.key)
     this.props.closeModal()
     e.stopPropagation()
   }

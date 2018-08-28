@@ -9,6 +9,7 @@ export default class ModalEditConnection extends Component {
     initialConnection: PropTypes.object,
     addUpdateConnection: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
+    connections: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -22,6 +23,7 @@ export default class ModalEditConnection extends Component {
         userCreated: true,
         selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
       },
+      validations: {},
     };
 
     this.closeModal = this.closeModal.bind(this)
@@ -45,13 +47,42 @@ export default class ModalEditConnection extends Component {
 
   saveConnection(e) {
     const key = this.props.initialConnection ? this.props.initialConnection.key : this.state.connection.name
-    console.log(this.state.connection)
     this.props.addUpdateConnection(key, this.state.connection)
     this.closeModal(e)
     e.stopPropagation()
   }
 
+  validateField(name, value) {
+    const { connections } = this.props
+    let { validations, disableButton } = this.state
+    const urlRegex = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+
+    if (name === 'name') {
+      const nameRepeat = (Object.values(connections || [])).find(network => network.name.toLowerCase() === value.toLowerCase())
+      if (nameRepeat) {
+        validations[name] = 'Name already in use'
+      } else {
+        delete validations[name]
+      }
+    } else if (name === 'https') {
+      if (!value.match(urlRegex)) {
+        validations[name] = 'Not a valid HTTP Endpoint'
+      } else {
+        delete validations[name]
+      }
+    } else if (name === 'ws') {
+      if (!value.match(urlRegex)) {
+        validations[name] = 'Not a valid Websocket Endpoint'
+      } else {
+        delete validations[name]
+      }
+    }
+
+    this.setState({validations})
+  }
+
   updateField(name, value) {
+    this.validateField(name, value)
     const { connection } = this.state
     connection[name] = value
     this.setState({connection: connection})
@@ -63,14 +94,18 @@ export default class ModalEditConnection extends Component {
   }
 
   delete(e) {
-    console.log(this.props.initialConnection.key)
     this.props.updateModal({initialConnection: this.props.initialConnection, key: this.props.initialConnection.key})
     e.stopPropagation()
   }
 
   render() {
     const { initialConnection } = this.props;
-    const { connection } = this.state
+    const { connection, validations } = this.state
+
+    let enableButton = (connection.name !== '' && (connection.ws !== '' || connection.https !== '' ))
+    if ( validations.name || validations.ws || validations.https ) {
+      enableButton = false
+    }
 
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
@@ -90,6 +125,9 @@ export default class ModalEditConnection extends Component {
                   className={Styles.ModalEditConnection__input}
                   value={connection.name}
               />
+              {validations.name &&
+                <div className={Styles.ModalEditConnection__errorMessage}>{validations.name}</div>
+              }
           </div>
           <div className={Styles.ModalEditConnection__label}>
               HTTP Endpoint
@@ -103,6 +141,9 @@ export default class ModalEditConnection extends Component {
                   className={Styles.ModalEditConnection__input}
                   placeholder="http(s)://" 
               />
+              {validations.https &&
+                <div className={Styles.ModalEditConnection__errorMessage}>{validations.https}</div>
+              }
           </div>
           <div className={Styles.ModalEditConnection__label}>
               Websocket Endpoint
@@ -116,10 +157,13 @@ export default class ModalEditConnection extends Component {
                   className={Styles.ModalEditConnection__input}
                   placeholder="ws://"
               />
+              {validations.ws &&
+                <div className={Styles.ModalEditConnection__errorMessage}>{validations.ws}</div>
+              }
           </div>
           <div className={Styles.ModalEditConnection__buttonContainer}>
               <div className={Styles.ModalEditConnection__cancel} onClick={this.closeModal}>Cancel</div>
-              <div className={Styles.ModalEditConnection__save} onClick={this.saveConnection}>Save Connection</div>
+              <button className={Styles.ModalEditConnection__save} onClick={this.saveConnection} disabled={!enableButton}>Save Connection</button>
           </div>
           { initialConnection &&
             <div className={Styles.ModalEditConnection__delete} onClick={this.delete}>
