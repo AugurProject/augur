@@ -1,14 +1,14 @@
+@import (css) url('https://fonts.googleapis.com/css?family=Roboto+Mono');
 @import (reference) '../../../../assets/styles/shared';
 
 :local(.ProcessingView) {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-	max-width: 291px;
 	height: 169px;
-	margin-bottom: 24px;
 	border: solid 1px #736e89;
-  transition: all 300ms ease,
+  transition: all 300ms ease;
+  overflow: hidden;
 }
 
 :local(.ProcessingView-processing) {
@@ -17,7 +17,7 @@
 }
 
 :local(.ProcessingView-tall) {
-  height: 270px;
+  height: 310px;
 }
 
 :local(.ProcessingView__connectingContainer) {
@@ -30,13 +30,13 @@
 :local(.ProcessingView__processingTitle) {
   opacity: 0.8;
   font-size: 22px;
-  font-weight: bold;
+  font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: normal;
   color: #736e89;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 :local(.ProcessingView__processingTitle-processing) {
@@ -47,16 +47,18 @@
 :local(.ProcessingView__processingText) {
   opacity: 0.8;
   font-size: 48px;
-  font-weight: bold; 
+  font-weight: 600; 
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: normal;
   color: rgba(115, 110, 137, 0.99);
-  margin-bottom: 20px;
+  margin-bottom: 55px;
   text-transform: uppercase;
   display: flex;
   align-items: baseline;
+  max-height: 17px;
+  min-height: 17px;
 }
 
 :local(.ProcessingView__processingText-processing) {
@@ -73,6 +75,7 @@
 :local(.ProcessingView__loadingIndicator) {
 	max-height: 32px;
 	height: 32px;
+  min-height: 32px;
 	border-top: solid 1px #736e89;
 }
 
@@ -110,3 +113,84 @@
 :local(.ProcessingView__showDetails-arrow-turned) {
   transform: rotate(-180deg);
 }
+
+:local(.ProcessingView__blocksInfo) {
+  // margin-top: 30px;
+  margin-bottom: 40px;
+  padding: 0 3px;
+}
+
+:local(.ProcessingView__blocksBehind) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 24px;
+  font-weight: 600;
+  color: #383b41;
+}
+
+:local(.ProcessingView__blocksLabel) {
+  font-size: 14px;
+  color: #383b41;
+  font-family: @roboto;
+  margin-top: 3px;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+:local(.ProcessingView__blocksInfoBreak) {
+  height: 1px;
+  background-color: #383b41;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+:local(.ProcessingView__blocksFraction) {
+  display: flex;
+}
+
+:local(.ProcessingView__blocksProcessed) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: #383b41;
+  margin-right: 8px;
+}
+
+:local(.ProcessingView__highestBlocks) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: #a7a2b2;
+}
+
+:local(.ProcessingView__graph) {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+:local(.ProcessingView__graph-current) {
+  width: 100%;
+
+  > div {
+    background-color: #cbc5d9;
+    height: 32px;
+    position: relative;
+    transition: width 500ms ease;
+
+    // > span {
+    //   font-size: 0.625rem;
+    //   left: 100%;
+    //   line-height: 0.625rem;
+    //   margin-left: 0.5rem;
+    //   position: absolute;
+    //   top: 50%;
+    //   transform: translateY(-50%);
+    //   white-space: nowrap;
+    // }
+  }
+}
+
