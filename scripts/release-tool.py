@@ -280,6 +280,17 @@ if __name__ == "__main__":
     verboseprint('directory: {}'.format(directory))
     release = repo.get_release(release_id)
     verboseprint('release object: {}'.format(release))
+    if not release.draft:
+        print('{red}WARNING{norm}: {tag} is not a draft!'.format(
+            red=colors.red,
+            norm=colors.ENDC,
+            tag=tag_name))
+        print('Continue?')
+        prompt = input('Y/N')
+        if 'n' in prompt.lower():
+            sys.exit(0)
+    else:
+        verboseprint('{} is still in draft. Continuing.'.format(tag_name))
     github_release_assets = release.get_assets()
     verboseprint(github_release_assets)
     if is_dir_empty(directory):
