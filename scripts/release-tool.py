@@ -211,11 +211,17 @@ def upload_release_checksum(signed_checksum, tag_name):
         release_checksum = open(release_checksum_path, 'w')
         release_checksum.write(str(signed_checksum))
         release_checksum.close()
-        try:
-            release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
+        release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
+        if release_checksum_asset_obj:
             release_checksum_asset_obj.delete_asset()
-        finally:
-            release.upload_asset(release_checksum_path, label=release_checksum_name)
+        release.upload_asset(release_checksum_path, label=release_checksum_name)
+#        try:
+#            release_checksum_asset_obj = get_release_asset_obj(release, release_checksum_name)
+#            release_checksum_asset_obj.delete_asset()
+#        except:
+#            pass
+#        finally:
+#            release.upload_asset(release_checksum_path, label=release_checksum_name)
 
 
 def release_message_table(assets, comparison):
