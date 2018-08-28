@@ -42,7 +42,7 @@ export class ProcessingView extends Component {
   		} = this.props
 
 		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
-  		const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+  		let pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
   		if (pctLbl > 99.95) {
   			pctLbl = 100 
   		}
