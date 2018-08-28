@@ -1,6 +1,7 @@
 import { pull } from 'lodash'
 import { RESET_STATE } from '../app/actions/reset-state'
-import { INFO_NOTIFICATION, ERROR_NOTIFICATION, ADD_NOTIFICATION, REMOVE_NOTIFICATION } from '../app/actions/notifications'
+import { INFO_NOTIFICATION, ERROR_NOTIFICATION } from '../../utils/constants'
+import { ADD_NOTIFICATION, REMOVE_NOTIFICATION } from '../app/actions/notifications'
 
 const DEFAULT_STATE = {
   INFO_NOTIFICATION: [],
