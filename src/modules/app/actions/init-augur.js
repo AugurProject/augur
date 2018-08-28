@@ -31,8 +31,8 @@ import {
 import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
 import { windowRef } from "src/utils/window-ref";
 
-const ACCOUNTS_POLL_INTERVAL_DURATION = 3000;
-const NETWORK_ID_POLL_INTERVAL_DURATION = 3000;
+const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
+const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
 const NETWORK_NAMES = {
   1: "Mainnet",
