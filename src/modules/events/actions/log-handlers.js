@@ -288,3 +288,17 @@ export const handleCompleteSetsSoldLog = log => (dispatch, getState) => {
     dispatch(loadAccountTrades({ marketId: log.marketId }));
   }
 };
+
+export const handleApprovalLog = log => (dispatch, getState) => {
+  const { address } = getState().loginAccount;
+  const isStoredTransaction = log.owner === address;
+  if (isStoredTransaction) {
+    dispatch(
+      updateNotification(log.transactionHash, {
+        id: log.transactionHash,
+        status: "Confirmed",
+        timestamp: selectCurrentTimestampInSeconds(getState())
+      })
+    );
+  }
+};
