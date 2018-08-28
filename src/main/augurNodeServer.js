@@ -1,4 +1,4 @@
-const { REQUEST_LATEST_SYNCED_BLOCK, RESET, STOP, START, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -25,9 +25,9 @@ function AugurNodeServer(selectedNetwork) {
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
   ipcMain.on(REQUEST_LATEST_SYNCED_BLOCK, this.requestLatestSyncedBlock.bind(this))
-  ipcMain.on(START, this.onStartNetwork.bind(this))
-  ipcMain.on(RESET, this.onResetDatabase.bind(this))
-  ipcMain.on(STOP, this.shutDownServer.bind(this))
+  ipcMain.on(START_AUGUR_NODE, this.onStartNetwork.bind(this))
+  ipcMain.on(RESET_DATABASE, this.onResetDatabase.bind(this))
+  ipcMain.on(STOP_AUGUR_NODE, this.shutDownServer.bind(this))
 }
 
 // We wait until the window is provided so that if it fails we can send an error message to the renderer

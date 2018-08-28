@@ -7,7 +7,10 @@ const DEFAULT_STATE = {}
 export default function (serverStatus = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_SERVER_ATTRIB:
-      return Object.assign(serverStatus, action.attrib)
+      Object.assign(serverStatus, action.attrib)
+      return {
+        ...serverStatus
+      }
     case RESET_STATE:
       return DEFAULT_STATE
     default:

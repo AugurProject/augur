@@ -1,4 +1,4 @@
-const { TOGGLE_GETH, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ERROR, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
+const { START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ERROR, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
 const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
@@ -61,7 +61,6 @@ function GethNodeController() {
   this.gethProcess = null
   this.statusLoop = null
   this.gethExecutablePath = getGethPath()
-  ipcMain.on(TOGGLE_GETH, this.toggle.bind(this))
   ipcMain.on(START_GETH, this.start.bind(this))
   ipcMain.on(STOP_GETH, this.stop.bind(this))
 }
@@ -121,12 +120,6 @@ GethNodeController.prototype.stop = function () {
   console.log('Stopping geth process')
   if (this.gethProcess) this.gethProcess.kill('SIGINT')
   if (this.statusLoop) clearInterval(this.statusLoop)
-}
-
-GethNodeController.prototype.toggle = function (event) {
-  console.log('Toggling geth process')
-  if (this.gethProcess && !this.gethProcess.killed) return this.stop()
-  this.start(event)
 }
 
 GethNodeController.prototype.checkStatus = function () {
