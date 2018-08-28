@@ -261,6 +261,12 @@ def message_table_markup(message_table):
     return markdown_table
 
 
+def cleanup_sha256_files(assets):
+    for asset in assets:
+        if asset.name.endwith('sha256'):
+            asset.delete_asset()
+
+
 HEADERS = {"Authorization": "token " + GH_TOKEN}
 FILE_EXTENSIONS = ['dmg', 'deb', 'exe', 'AppImage', 'zip']
 KEYID = '4ABBBBE0'
@@ -314,6 +320,7 @@ if __name__ == "__main__":
         print('qyitting without releasing')
         sys.exit(0)
     if 'y' in ready_to_release:
+        cleanup_sha256_files()
         # tag release and change remove draft flag
         release.update_release(tag_name=tag_name, draft=False)
         # update release info so we have correct asset browser_urls
