@@ -16,7 +16,7 @@ export class App extends Component {
     super(props);
 
     this.state = {
-      connected: false,
+      connectedPressed: false,
       openBrowserEnabled: false,
       processing: false,
     };
@@ -31,7 +31,8 @@ export class App extends Component {
   connect() {
     const selected = this.props.selected
     start(selected)
-    this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
+    this.setState({connectedPressed: !this.state.connectedPressed});
+    //, openBrowserEnabled: !this.state.openBrowserEnabled
   }
 
   render() {
@@ -51,7 +52,10 @@ export class App extends Component {
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {this.state.connected ? 'Disconnect' : 'Connect'}
             </button>
-            <ConnectingView connected={this.state.connected} />
+            <ConnectingView 
+              connected={this.props.serverStatus.CONNECTED} 
+              connecting={this.state.connectedPressed}
+            />
             <ProcessingView processing={this.state.processing} />
           </div>
         </div>
@@ -70,4 +74,5 @@ App.propTypes = {
   selected: PropTypes.object,
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
+  serverStatus: PropTypes.object,
 };

@@ -7,10 +7,10 @@ const mapStateToProps = state => ({
   connections: state.configuration.networks || {},
   sslEnabled: state.configuration.sslEnabled,
   selected: (Object.values(state.configuration.networks || [])).find(network => network.selected === true),
+  serverStatus: state.serverStatus,
 });
 
 const mapDispatchToProps = dispatch => ({
-   //updateModal: data => dispatch(updateModal({ type: MODAL_EDIT_CONNECTION, ...data }))
   updateConfig: sslEnabled => dispatch(updateConfig(sslEnabled))
 });
 
