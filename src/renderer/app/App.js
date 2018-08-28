@@ -7,7 +7,7 @@ import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdo
 import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
-import { requestServerConfigurations, startUiServer, start } from './actions/localServerCmds'
+import { requestServerConfigurations, startUiServer, startAugurNode } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 
@@ -30,7 +30,7 @@ export class App extends Component {
 
   connect() {
     const selected = this.props.selected
-    start(selected)
+    startAugurNode(selected)
     this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
