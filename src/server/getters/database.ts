@@ -139,6 +139,7 @@ export function reshapeMarketsRowToUIMarketInfo(row: MarketsRowWithTime, outcome
       category: row.category,
       tags: [row.tag1, row.tag2],
       volume: row.volume,
+      openInterest: row.openInterest,
       outstandingShares: row.sharesOutstanding,
       feeWindow: row.feeWindow,
       endTime: row.endTime,

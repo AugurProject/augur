@@ -58,7 +58,7 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
     server.listen(webSocketConfigs.ws.port);
     servers.push( new WebSocket.Server({ server }) );
   }
-  controlEmitter.emit("serverStart");
+  controlEmitter.emit(ControlMessageType.ServerStart);
 
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {

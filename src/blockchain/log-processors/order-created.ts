@@ -5,7 +5,7 @@ import { Address, FormattedEventLog, MarketsRow, OrdersRow, TokensRow, OrderStat
 import { augurEmitter } from "../../events";
 import { fixedPointToDecimal, numTicksToTickSize } from "../../utils/convert-fixed-point-to-decimal";
 import { formatOrderAmount, formatOrderPrice } from "../../utils/format-order";
-import { BN_WEI_PER_ETHER} from "../../constants";
+import { BN_WEI_PER_ETHER, SubscriptionEventNames } from "../../constants";
 import { QueryBuilder } from "knex";
 
 export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
@@ -63,7 +63,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
           if (err) return callback(err);
           checkForOrphanedOrders(db, augur, orderData, (err) => {
             if (err) return callback(err);
-            augurEmitter.emit("OrderCreated", Object.assign({}, log, orderData));
+            augurEmitter.emit(SubscriptionEventNames.OrderCreated, Object.assign({}, log, orderData));
             callback(null);
           });
         });
@@ -75,7 +75,7 @@ export function processOrderCreatedLog(db: Knex, augur: Augur, log: FormattedEve
 export function processOrderCreatedLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db.from("orders").where("orderId", log.orderId).delete().asCallback((err: Error|null): void => {
     if (err) return callback(err);
-    augurEmitter.emit("OrderCreated", log);
+    augurEmitter.emit(SubscriptionEventNames.OrderCreated, log);
     return callback(null);
   });
 }

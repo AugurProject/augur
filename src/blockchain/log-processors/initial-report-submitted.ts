@@ -4,6 +4,7 @@ import { parallel } from "async";
 import { FormattedEventLog, ErrorCallback, AsyncCallback, Address, ReportingState } from "../../types";
 import { updateMarketState, rollbackMarketState, insertPayout, updateMarketFeeWindow, updateDisputeRound, refreshMarketMailboxEthBalance } from "./database";
 import { augurEmitter } from "../../events";
+import { SubscriptionEventNames } from "../../constants";
 
 export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   db("universes").first("forked").where({ universe: log.universe }).asCallback((err, universeRow?: { forked: boolean }) => {
@@ -43,7 +44,7 @@ export function processInitialReportSubmittedLog(db: Knex, augur: Augur, log: Fo
           refreshMarketMailboxEthBalance: (next: AsyncCallback) => refreshMarketMailboxEthBalance(db, augur, log.market, next),
         }, (err: Error|null): void => {
           if (err) return callback(err);
-          augurEmitter.emit("InitialReportSubmitted", log);
+          augurEmitter.emit(SubscriptionEventNames.InitialReportSubmitted, log);
           callback(null);
         });
       });
@@ -69,7 +70,7 @@ export function processInitialReportSubmittedLogRemoval(db: Knex, augur: Augur, 
       refreshMarketMailboxEthBalance: (next: AsyncCallback) => refreshMarketMailboxEthBalance(db, augur, log.market, next),
     }, (err: Error|null): void => {
       if (err) return callback(err);
-      augurEmitter.emit("InitialReportSubmitted", log);
+      augurEmitter.emit(SubscriptionEventNames.InitialReportSubmitted, log);
       callback(null);
     },
   );
