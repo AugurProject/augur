@@ -63,6 +63,9 @@ def args():
     parser.add_argument('-r', '--release',
                         dest='release',
                         help='release to sign/verify')
+    parser.add_argument('-v', '--verbose',
+                        action='count',
+                        help='increase output verbosity.')
     sign = parser.add_mutually_exclusive_group()
     sign.add_argument('--sign',
                       dest='sign',
