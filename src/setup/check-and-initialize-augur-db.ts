@@ -132,15 +132,6 @@ export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?
   return renameDatabaseFile(networkId, getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir));
 }
 
-export async function swapBulkSyncForSyncingDatabase(db: Knex, networkId: string, databaseDir?: string): Promise<Knex> {
-  if (db != null) db.destroy();
-  const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir);
-  const databasePathSyncing = getDatabasePathFromNetworkId(networkId, DB_FILE_SYNCING, databaseDir);
-  logger.info(`Copying bulk sync database to snapshot ${databasePathBulkSync} to ${databasePathSyncing}`);
-  await promisify(copyFile)(databasePathBulkSync, databasePathSyncing);
-  return createKnex(networkId, databasePathSyncing);
-}
-
 export async function checkAndInitializeAugurDb(augur: Augur, networkId: string, databaseDir?: string): Promise<Knex> {
   const databasePathBulkSync = getDatabasePathFromNetworkId(networkId, DB_FILE_BULK_SYNC, databaseDir);
   if (existsSync(databasePathBulkSync)) {
