@@ -41,6 +41,7 @@ export const RECONNECT_MSG = 'RECONNECT_MSG'
 export const GETH_REMOTE_MSG = 'GETH_REMOTE_MSG'
 export const APP_ERROR = 'APP_ERROR'
 export const DATABASE_IN_USE = 'DATABASE_IN_USE'
+export const GEN_INFO = 'GEN_INFO'
 
 export const PORT_IN_USE = 'PORT_IN_USE'
 export const SSL_GEN_ERROR = 'SSL_GEN_ERROR'
