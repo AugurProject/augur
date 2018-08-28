@@ -7,6 +7,7 @@ import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdo
 import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
+import { NotificationContainer } from "./containers/notification-container"
 import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
@@ -88,11 +89,12 @@ export class App extends Component {
               connected={serverStatus.CONNECTED}
               connecting={connectedPressed}
             />
-            <ProcessingView 
-              processing={processing} 
+            <ProcessingView
+              processing={processing}
               blockInfo={blockInfo}
             />
           </div>
+          <NotificationContainer />
         </div>
         <div className={Styles.App__footer}>
           <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled}>
