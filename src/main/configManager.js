@@ -1,4 +1,4 @@
-const { REQUEST_CONFIG, SAVE_CONFIG, REQUEST_CONFIG_RESPONSE, SAVE_CONFIG_RESPONSE, ERROR } = require('../utils/constants')
+const { SAVE_FAILURE, ERROR_NOTIFICATION, REQUEST_CONFIG, SAVE_CONFIG, REQUEST_CONFIG_RESPONSE, SAVE_CONFIG_RESPONSE } = require('../utils/constants')
 const fs = require('fs')
 const path = require('path')
 const { ipcMain } = require('electron')
@@ -92,8 +92,9 @@ ConfigManager.prototype.onSaveConfig = function (event, config) {
     event.sender.send(SAVE_CONFIG_RESPONSE, this.config)
   } catch (err) {
     log.error(err)
-    event.sender.send(ERROR, {
-      error: err
+    event.sender.send(ERROR_NOTIFICATION, {
+      messageType: SAVE_FAILURE,
+      message: err
     })
   }
 }

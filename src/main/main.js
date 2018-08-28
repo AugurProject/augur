@@ -1,6 +1,6 @@
 const electron = require('electron')
 const log = require('electron-log')
-const { TOGGLE_SSL, RESET_DATABASE, CLEAR_DB, ERROR } = require('../utils/constants')
+const { APP_ERROR, ERROR_NOTIFICATION } = require('../utils/constants')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 
@@ -120,12 +120,18 @@ function createWindow () {
       gethNodeController.stop()
       mainWindow = null
     } catch (err) {
-      if (mainWindow) mainWindow.webContents.send(ERROR, { error: err })
+      if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
+        messageType: APP_ERROR,
+        message: err
+      })
     }
   })
 
-  mainWindow.on(ERROR, function(error) {
-    if (mainWindow) mainWindow.webContents.send(ERROR, { error })
+  mainWindow.on('error', function(error) {
+    if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
+      messageType: APP_ERROR,
+      message: error
+    })
   })
 
   // build initial menus
