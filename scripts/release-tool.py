@@ -129,10 +129,12 @@ def download_asset(asset_name, asset_url, directory):
                 f.write(chunk)
                 f.flush()
 
+
 def get_release_asset_obj(release, asset_name):
     for asset in release.get_assets():
         if asset.name == asset_name:
             return asset
+
 
 def compare_checksums_in_dir(dir):
     comparison = {}
@@ -159,6 +161,7 @@ def compare_checksums_in_dir(dir):
                 shasumfile.close()
     return comparison
 
+
 def visual_checksum_comparison(comparison):
     message_to_sign = ''
     for file, v in comparison.items():
@@ -169,14 +172,25 @@ def visual_checksum_comparison(comparison):
             color = colors.OKGREEN
         else:
             color = colors.RED
-        message_to_sign += '{shasum} {filename}\n'.format(shasum=shasum, filename=filename)
-        print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(file=file, sha=sha, shasum=shasum, color=color, endcolor=colors.ENDC))
+        message_to_sign += '{shasum} {filename}\n'.format(
+                shasum=shasum,
+                filename=filename)
+        print("{file}:\n\t   sha: {color}{sha}{endcolor}\n\tshasum: {color}{shasum}{endcolor}".format(
+            file=file,
+            sha=sha,
+            shasum=shasum,
+            color=color,
+            endcolor=colors.ENDC))
     return message_to_sign
+
 
 def gpg_sign_checksums(message_to_sign):
         password = getpass.getpass()
         gpg = gnupg.GPG()
-        signed_data = gpg.sign(message_to_sign, keyid=KEYID, passphrase=password)
+        signed_data = gpg.sign(
+                message_to_sign,
+                keyid=KEYID,
+                passphrase=password)
         return str(signed_data)
 
 
