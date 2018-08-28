@@ -43,6 +43,9 @@ export class ProcessingView extends Component {
 
 		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
   		const pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+  		if (pctLbl > 99.95) {
+  			pctLbl = 100 
+  		}
   		const percent = pctLbl
 
   		const blocksBehind = addCommas(parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)) || 0
@@ -54,7 +57,9 @@ export class ProcessingView extends Component {
 	      width: `${percent}%`
 	    };
 
-	    console.log(currentPercentStyle)
+	    // if (blocksRemaining <= 15) {
+     //  		this.isSynced = true
+    	// }
 
 	  	return (
 	  		<section className={classNames(Styles.ProcessingView, {
@@ -78,7 +83,7 @@ export class ProcessingView extends Component {
 				    			{this.state.hideDetails ? 'Show details' : 'Hide details'}
 				    			<div 
 						    		className={classNames(Styles['ProcessingView__showDetails-arrow'], {
-				               			[Styles['ProcessingView__showDetails-arrow-turned']]: this.state.hideDetails,
+				               			[Styles['ProcessingView__showDetails-arrow-turned']]: !this.state.hideDetails,
 				           			})}
 				    			/>
 				    		</div>

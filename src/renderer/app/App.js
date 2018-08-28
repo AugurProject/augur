@@ -7,7 +7,7 @@ import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdo
 import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
-import { NotificationContainer } from "./containers/notification-container"
+import NotificationContainer from "./containers/notification-container"
 import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
