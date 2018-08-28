@@ -16,8 +16,8 @@ export default function (notifications = DEFAULT_STATE, action) {
         ...notifications
       }
     case REMOVE_NOTIFICATION:
-      pull(notifications[INFO_NOTIFICATION], message)
-      pull(notifications[ERROR_NOTIFICATION], message)
+      pull(notifications[INFO_NOTIFICATION], action.data.message)
+      pull(notifications[ERROR_NOTIFICATION], action.data.message)
       return {
         ...notifications
       }
