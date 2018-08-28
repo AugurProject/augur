@@ -50,26 +50,10 @@ export const AuthConnect = asyncComponent({
     )
 });
 
-export const AuthCreate = asyncComponent({
-  moduleName: "AuthCreate",
-  loader: () =>
-    import(/* webpackChunkName: 'auth-create' */ "modules/auth/containers/create").then(
-      module => module.default
-    )
-});
-
 export const Connect = asyncComponent({
   moduleName: "Connect",
   loader: () =>
     import(/* webpackChunkName: 'connect' */ "modules/auth/containers/connect").then(
-      module => module.default
-    )
-});
-
-export const Create = asyncComponent({
-  moduleName: "Create",
-  loader: () =>
-    import(/* webpackChunkName: 'create' */ "modules/auth/containers/create").then(
       module => module.default
     )
 });
