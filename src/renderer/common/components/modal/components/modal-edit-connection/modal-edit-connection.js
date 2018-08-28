@@ -115,14 +115,15 @@ export default class ModalEditConnection extends Component {
     }
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
-        
-        <div 
-          className={classNames(Styles.ModalEditConnection__smallBg, {
-            [Styles['ModalEditConnection__smallBg-show']]: showDelete
-          })}
-        >
-          <ModalDeleteConnection closeModal={this.delete} closeModalFully={this.closeModal} keyId={initialConnection.key} />
-        </div>
+        { initialConnection && 
+          <div 
+            className={classNames(Styles.ModalEditConnection__smallBg, {
+              [Styles['ModalEditConnection__smallBg-show']]: showDelete
+            })}
+          >
+            <ModalDeleteConnection closeModal={this.delete} closeModalFully={this.closeModal} keyId={initialConnection.key} />
+          </div>
+        }
         
         <div className={Styles.ModalEditConnection__container}>
           <div className={Styles.ModalEditConnection__header}>{ initialConnection ? 'Edit Connection' : 'Add Connection' }</div>

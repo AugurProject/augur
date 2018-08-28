@@ -15,6 +15,15 @@
 	flex-grow: 1;
 }
 
+:local(.App__scrollContainer) {
+	position: fixed;
+    height: 215px;
+    top: 0;
+    background-color: #231a3a;
+    z-index: 1;
+    max-width: 308px;
+}
+
 :local(.App__row) {
 	display: flex;
 	flex-direction: row;
@@ -41,6 +50,10 @@
 :local(.App__footer) {
 	padding: 24px;
 	background-color: white;
+  	position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
 :local(.App__openBrowserButton) {

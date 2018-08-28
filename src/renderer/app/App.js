@@ -55,7 +55,6 @@ export class App extends Component {
   }
 
   openAugurUi() {
-    console.log('hi')
     openAugurUi()
   }
 
@@ -83,18 +82,20 @@ export class App extends Component {
       <div className={Styles.App}>
         <Modal />
         <div className={Styles.App__connectingContainer}>
-          <div className={Styles.App__row}>
-            <Logo />
-            <SettingsDropdown
-              sslEnabled={sslEnabled}
-              updateConfig={updateConfig}
-            />
-          </div>
-          <div>
+          <div className={Styles.App__scrollContainer}>
+            <div className={Styles.App__row}>
+              <Logo />
+              <SettingsDropdown
+                sslEnabled={sslEnabled}
+                updateConfig={updateConfig}
+              />
+            </div>
             <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
             </button>
+          </div>
+          <div style={{marginTop: '215px'}}>
             <ConnectingView
               connected={serverStatus.CONNECTED}
               connecting={connectedPressed}
