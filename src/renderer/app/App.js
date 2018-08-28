@@ -16,6 +16,7 @@ export class App extends Component {
     super(props);
 
     this.state = {
+      connectedPressed: false,
       openBrowserEnabled: false,
       processing: false,
     };
@@ -29,9 +30,8 @@ export class App extends Component {
 
   connect() {
     const selected = this.props.selected
-    if (this.props.connected) stopAugurNode()
+    if (this.props.serverStatus.CONNECTED) stopAugurNode()
     else startAugurNode(selected)
-    this.setState({openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
   render() {
@@ -49,9 +49,12 @@ export class App extends Component {
           <div>
             <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {this.props.connected ? 'Disconnect' : 'Connect'}
+              {this.props.serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
             </button>
-            <ConnectingView connected={this.state.connected} />
+            <ConnectingView
+              connected={this.props.serverStatus.CONNECTED}
+              connecting={this.state.connectedPressed}
+            />
             <ProcessingView processing={this.state.processing} />
           </div>
         </div>
@@ -70,5 +73,5 @@ App.propTypes = {
   selected: PropTypes.object,
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
-  connected: PropTypes.bool
+  serverStatus: PropTypes.object,
 };
