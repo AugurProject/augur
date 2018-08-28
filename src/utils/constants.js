@@ -20,8 +20,6 @@ export const ON_UI_SERVER_CONNECTED = 'ON_UI_SERVER_CONNECTED'
 export const ON_UI_SERVER_DISCONNECTED = 'ON_UI_SERVER_DISCONNECTED'
 export const PEER_COUNT_DATA = 'PEER_COUNT_DATA'
 export const RESET_RESPONSE = 'RESET_RESPONSE'
-export const SHOW_NOTICE = 'SHOW_NOTICE'
-export const TOGGLE_SSL = 'TOGGLE_SSL'
 
 // configuration file message types
 export const SAVE_CONFIG = 'SAVE_CONFIG'
