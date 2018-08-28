@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeInfo } = require("../../../../build/server/getters/get-dispute-info");
+const { getDisputeInfo, extractsGetDisputeInfoParams } = require("../../../../build/server/getters/get-dispute-info");
 
 
 describe("server/getters/get-dispute-info", () => {
@@ -10,7 +10,8 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getDisputeInfo(db, t.params.marketIds, t.params.account, (err, disputeInfo) => {
+        const params = extractsGetDisputeInfoParams(t.params);
+        getDisputeInfo(db, params, (err, disputeInfo) => {
           t.assertions(err, disputeInfo);
           db.destroy();
           done();

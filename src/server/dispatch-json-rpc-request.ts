@@ -24,7 +24,7 @@ import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData } from "./getters/get-sync-data";
-import { getDisputeInfo } from "./getters/get-dispute-info";
+import { extractsGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
@@ -70,7 +70,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getDisputeInfo":
-      return getDisputeInfo(db, request.params.marketIds, request.params.account, callback);
+      const params = extractsGetDisputeInfoParams(request.params);
+      if (params === undefined) return callback(new Error("Bad params"));
+      return getDisputeInfo(db, params, callback);
     case "getInitialReporters":
       return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getReportingFees":
