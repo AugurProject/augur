@@ -76,7 +76,7 @@ export class Notifications extends Component {
             hideProgressBar={true}
             className={Styles.Notification__container}
             toastClassName={Styles.Notification__container}
-            autoClose={100000}
+            autoClose={10000}
           />
       </div>
     )
