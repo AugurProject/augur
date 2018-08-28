@@ -6,29 +6,28 @@
 	margin-top: 40px;
 	margin-bottom: 24px;
 	border: solid 1px #736e89;
+  transition: all 300ms ease,
 }
 
 :local(.ConnectingView-connecting) {
   border: 0;
+  background-color: white;
 }
 
 :local(.ConnectingView-connected) {
   height: 80px;
   border: 0;
-  transition: height 300ms linear;
+  margin-top: 25px;
+  margin-bottom: 40px;
+  background-color: transparent;
+  transition:
+    background-color 500ms ease,
+    margin-top .5s .5s,
+    height 0.5s 0.5s;
 }
 
 :local(.ConnectingView__connectingContainer) {
 	padding: 24px 16px;
-  transition: background-color 300ms linear;
-}
-
-:local(.ConnectingView__connectingContainer-connecting) {
-  background-color: white;
-}
-
-:local(.ConnectingView__connectingContainer-connected) {
-  background-color: transparent;
 }
 
 :local(.ConnectingView__conectingTitle) {
