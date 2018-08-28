@@ -16,7 +16,7 @@ describe("server/getters/get-markets-info", () => {
           done();
         });
       });
-    });
+    }).timeout(20000);
   };
   test({
     description: "get markets by specifying market IDs",
