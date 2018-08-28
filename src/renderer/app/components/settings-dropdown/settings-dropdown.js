@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Dropdown from "../../../common/components/dropdown/dropdown";
 import settingsPng from '../../../../assets/images/settings.png'
 import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
-import { reset } from '../../actions/localServerCmds'
+import { resetDatabase } from '../../actions/localServerCmds'
 
 export class SettingsDropdown extends Component {
   constructor(props) {
@@ -18,15 +18,15 @@ export class SettingsDropdown extends Component {
     console.log('enable/disable ledger clicked')
   }
 
-  resetDatabase() {
-    reset()
+  reset() {
+    resetDatabase()
   	console.log('reset db clicked')
   }
 
   render() {
   	const options = [
   	  { onClick: this.toggleLedger, label: [<div key="0">{this.props.sslEnabled ? "Disable SSL for Ledger" : "Enable SSL for Ledger"}</div>] },
-  	  { onClick: this.resetDatabase, label: [<div key="0">Reset Database</div>] },
+  	  { onClick: this.reset, label: [<div key="0">Reset Database</div>] },
   	];
 
   	return (
