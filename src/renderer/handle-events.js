@@ -1,5 +1,5 @@
 const {ipcRenderer} = require('electron')
-import { ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
+import { BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
 import { updateBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
@@ -46,6 +46,14 @@ export const handleEvents = () => {
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
     store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
+  })
+
+  ipcRenderer.on(BULK_SYNC_STARTED, () => {
+    store.dispatch(updateServerAttrib({ AUGUR_BULK_SYNCING: true }))
+  })
+
+  ipcRenderer.on(BULK_SYNC_FINISHED, () => {
+    store.dispatch(updateServerAttrib({ AUGUR_BULK_SYNCING: false }))
   })
 
   ipcRenderer.on(INFO_NOTIFICATION, (notification) => {

@@ -88,7 +88,8 @@
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.0.0-rc.2",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
     "electron": "2.0.0",
     "electron-builder": "^20.19.1",
     "electron-builder-squirrel-windows": "^20.19.0",

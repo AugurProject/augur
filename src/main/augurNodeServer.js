@@ -1,4 +1,4 @@
-const { UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { DATABASE_IN_USE, UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -145,7 +145,10 @@ AugurNodeServer.prototype.onBulkSyncFinished = function () {
 AugurNodeServer.prototype.onResetDatabase = function () {
   try {
     if (this.augurNodeController.isRunning()) {
-      return this.sendMsgToWindowContents(NO_RESET_DATABASE)
+      return this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+        messageType: DATABASE_IN_USE,
+        message: 'Database in use, can not reset'
+      })
     } else {
       this.augurNodeController.resetDatabase()
     }
