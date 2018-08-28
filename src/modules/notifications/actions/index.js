@@ -1,4 +1,6 @@
+import store from "src/store";
 import * as notificationLevels from "src/modules/notifications/constants";
+import setNotificationText from "./set-notification-text";
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
@@ -14,16 +16,21 @@ export function addCriticalNotification(notification) {
 
 export function addNotification(notification) {
   if (notification != null) {
-    return {
-      type: ADD_NOTIFICATION,
-      data: {
-        notification: {
-          seen: false,
-          level: notificationLevels.INFO,
-          ...notification
+    const callback = notification => {
+      const fullNotification = {
+        type: ADD_NOTIFICATION,
+        data: {
+          notification: {
+            seen: false,
+            level: notificationLevels.INFO,
+            ...notification
+          }
         }
-      }
+      };
+      return fullNotification;
     };
+
+    return setNotificationText(notification, callback);
   }
 }
 
@@ -35,13 +42,33 @@ export function removeNotification(id) {
 }
 
 export function updateNotification(id, notification) {
-  return {
-    type: UPDATE_NOTIFICATION,
-    data: {
-      id,
-      notification
-    }
+  const callback = notification => {
+    const fullNotification = {
+      type: UPDATE_NOTIFICATION,
+      data: {
+        id,
+        notification
+      }
+    };
+    return fullNotification;
   };
+
+  // Set notification.params if it is not already set.
+  // (This occurs the first time the notification is updated.)
+  if (notification && !notification.params) {
+    const { notifications } = store.getState();
+    for (
+      let index = Object.keys(notifications).length - 1;
+      index >= 0;
+      index--
+    ) {
+      if (notifications[index].id === notification.id) {
+        notification.params = notifications[index].params;
+        notification.to = notifications[index].to;
+      }
+    }
+  }
+  return setNotificationText(notification, callback);
 }
 
 // We clear by 'notification level'.

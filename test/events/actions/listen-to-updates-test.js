@@ -173,6 +173,26 @@ describe("events/actions/listen-to-updates", () => {
           { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] }
         ])
     });
+    test({
+      description:
+        "it should handle calling market state change with log set to empty array",
+      state: {
+        universe: { id: "UNIVERSE_ADDRESS" }
+      },
+      stub: {
+        augur: {
+          events: {
+            stopBlockListeners: () => {},
+            stopAugurNodeEventListeners: () => {},
+            startBlockListeners: () => {},
+            startAugurNodeEventListeners: listeners =>
+              listeners.MarketState(null, []),
+            nodes: { augur: { on: () => {} }, ethereum: { on: () => {} } }
+          }
+        }
+      },
+      assertions: actions => assert.deepEqual(actions, [])
+    });
   });
   describe("InitialReportSubmitted", () => {
     const test = t =>
@@ -260,6 +280,7 @@ describe("events/actions/listen-to-updates", () => {
           { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] },
           { type: "UPDATE_UNCLAIMED_DATA", marketIds: ["MARKET_ADDRESS"] },
           { type: "LOAD_REPORTING" },
+          { type: "UPDATE_ASSETS" },
           {
             type: "UPDATE_LOGGED_TRANSACTIONS",
             log: {
@@ -270,6 +291,139 @@ describe("events/actions/listen-to-updates", () => {
             }
           }
         ])
+    });
+  });
+  describe("InitialReporterRedeemed", () => {
+    const test = t =>
+      it(t.description, () => {
+        const store = mockStore.mockStore(t.state);
+        RewireLogHandlers.__Rewire__("loadMarketsInfo", marketIds => ({
+          type: "LOAD_MARKETS_INFO",
+          marketIds
+        }));
+        RewireLogHandlers.__Rewire__("loadUnclaimedFees", marketIds => ({
+          type: "UPDATE_UNCLAIMED_DATA",
+          marketIds
+        }));
+        RewireLogHandlers.__Rewire__("updateLoggedTransactions", log => ({
+          type: "UPDATE_LOGGED_TRANSACTIONS",
+          log
+        }));
+        RewireLogHandlers.__Rewire__("updateAssets", () => ({
+          type: "UPDATE_ASSETS"
+        }));
+        RewireLogHandlers.__Rewire__("loadReporting", () => ({
+          type: "LOAD_REPORTING"
+        }));
+        RewireListenToUpdates.__Rewire__("augur", t.stub.augur);
+        store.dispatch(listenToUpdates({}));
+        t.assertions(store.getActions());
+      });
+    test({
+      description:
+        "it should handle calling initial reporter redeemed not designated reporter",
+      state: {
+        universe: { id: "UNIVERSE_ADDRESS" },
+        loginAccount: { address: "MY_ADDRESS" }
+      },
+      stub: {
+        augur: {
+          events: {
+            stopBlockListeners: () => {},
+            stopAugurNodeEventListeners: () => {},
+            startBlockListeners: () => {},
+            startAugurNodeEventListeners: listeners =>
+              listeners.InitialReporterRedeemed(null, {
+                eventName: "InitialReporterRedeemed",
+                market: "MARKET_ADDRESS",
+                reporter: "REPORTER_ADDRESS",
+                universe: "UNIVERSE_ADDRESS"
+              }),
+            nodes: { augur: { on: () => {} }, ethereum: { on: () => {} } }
+          }
+        }
+      },
+      assertions: actions =>
+        assert.deepEqual(actions, [
+          { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] },
+          { type: "UPDATE_UNCLAIMED_DATA", marketIds: ["MARKET_ADDRESS"] }
+        ])
+    });
+    test({
+      description:
+        "it should handle calling initial reporter redeemed IS designated reporter",
+      state: {
+        universe: { id: "UNIVERSE_ADDRESS" },
+        loginAccount: { address: "MY_ADDRESS" }
+      },
+      stub: {
+        augur: {
+          events: {
+            stopBlockListeners: () => {},
+            stopAugurNodeEventListeners: () => {},
+            startBlockListeners: () => {},
+            startAugurNodeEventListeners: listeners =>
+              listeners.InitialReporterRedeemed(null, {
+                eventName: "InitialReporterRedeemed",
+                market: "MARKET_ADDRESS",
+                reporter: "MY_ADDRESS",
+                universe: "UNIVERSE_ADDRESS"
+              }),
+            nodes: { augur: { on: () => {} }, ethereum: { on: () => {} } }
+          }
+        }
+      },
+      assertions: actions =>
+        assert.deepEqual(actions, [
+          { type: "LOAD_MARKETS_INFO", marketIds: ["MARKET_ADDRESS"] },
+          { type: "UPDATE_UNCLAIMED_DATA", marketIds: ["MARKET_ADDRESS"] },
+          { type: "UPDATE_ASSETS" },
+          { type: "LOAD_REPORTING" },
+          {
+            type: "UPDATE_LOGGED_TRANSACTIONS",
+            log: {
+              eventName: "InitialReporterRedeemed",
+              market: "MARKET_ADDRESS",
+              reporter: "MY_ADDRESS",
+              universe: "UNIVERSE_ADDRESS"
+            }
+          }
+        ])
+    });
+  });
+  describe("TokensTransferred", () => {
+    const test = t =>
+      it(t.description, () => {
+        const store = mockStore.mockStore(t.state);
+        RewireListenToUpdates.__Rewire__("augur", t.stub.augur);
+        store.dispatch(listenToUpdates({}));
+        t.assertions(store.getActions());
+      });
+    test({
+      description:
+        "it should handle calling TokensTransferred with to address different from current address",
+      state: {
+        universe: { id: "UNIVERSE_ADDRESS" },
+        loginAccount: { address: "MY_ADDRESS" }
+      },
+      stub: {
+        augur: {
+          events: {
+            stopBlockListeners: () => {},
+            stopAugurNodeEventListeners: () => {},
+            startBlockListeners: () => {},
+            startAugurNodeEventListeners: listeners =>
+              listeners.TokensTransferred(null, {
+                eventName: "TokensTransferred",
+                market: "MARKET_ADDRESS",
+                to: "NOT_MY_ADDRESS",
+                universe: "UNIVERSE_ADDRESS"
+              }),
+            nodes: { augur: { on: () => {} }, ethereum: { on: () => {} } }
+          }
+        }
+      },
+      assertions: actions => assert.deepEqual(actions, [])
     });
   });
 });

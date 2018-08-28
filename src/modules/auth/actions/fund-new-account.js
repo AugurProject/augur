@@ -1,7 +1,11 @@
 import { augur } from "services/augurjs";
+import {
+  updateNotification,
+  addNotification
+} from "modules/notifications/actions";
 import { updateAssets } from "modules/auth/actions/update-assets";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
 import LogError from "utils/log-error";
-import noop from "utils/noop";
 
 export function fundNewAccount(callback = LogError) {
   return (dispatch, getState) => {
@@ -9,9 +13,26 @@ export function fundNewAccount(callback = LogError) {
     if (augur.rpc.getNetworkID() !== "1") {
       augur.api.LegacyReputationToken.faucet({
         meta: loginAccount.meta,
-        onSent: noop,
+        onSent: res => {
+          dispatch(
+            addNotification({
+              id: res.hash,
+              status: "Pending",
+              params: {
+                type: "faucet"
+              },
+              timestamp: selectCurrentTimestampInSeconds(getState())
+            })
+          );
+        },
         onSuccess: res => {
-          console.log("LegacyReputationToken.faucet", res);
+          dispatch(
+            updateNotification(res.hash, {
+              id: res.hash,
+              status: "Confirmed",
+              timestamp: selectCurrentTimestampInSeconds(getState())
+            })
+          );
           dispatch(updateAssets());
           callback(null);
         },

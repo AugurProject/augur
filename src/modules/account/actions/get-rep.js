@@ -1,8 +1,12 @@
 import { augur } from "services/augurjs";
-import logError from "utils/log-error";
-import noop from "utils/noop";
+import {
+  updateNotification,
+  addNotification
+} from "modules/notifications/actions";
 import { updateAssets } from "modules/auth/actions/update-assets";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { UNIVERSE_ID } from "modules/app/constants/network";
+import logError from "utils/log-error";
 
 export default function(callback = logError) {
   return (dispatch, getState) => {
@@ -17,10 +21,28 @@ export default function(callback = logError) {
           tx: { to: reputationTokenAddress },
           _amount: 0,
           meta: loginAccount.meta,
-          onSent: noop,
+          onSent: res => {
+            dispatch(
+              addNotification({
+                id: res.hash,
+                status: "Pending",
+                params: {
+                  type: "faucet"
+                },
+                timestamp: selectCurrentTimestampInSeconds(getState())
+              })
+            );
+          },
           onSuccess: res => {
+            dispatch(
+              updateNotification(res.hash, {
+                id: res.hash,
+                status: "Confirmed",
+                timestamp: selectCurrentTimestampInSeconds(getState())
+              })
+            );
             dispatch(updateAssets());
-            callback();
+            callback(null);
           },
           onFailed: callback
         });

@@ -42,19 +42,22 @@ export const cancelOrphanedOrder = (
       dispatch(
         addNotification({
           id: res.hash,
+          params: {
+            type: "cancelOrphanedOrder"
+          },
           timestamp,
-          status: "Sent",
-          title: "Cancelling Orphaned Order"
+          status: "Pending",
+          title: "Cancel orphaned order"
         })
       );
     },
     onSuccess: res => {
       dispatch(removeOrphanedOrder(orderId));
       dispatch(
-        updateNotification({
+        updateNotification(res.hash, {
           id: res.hash,
           timestamp,
-          status: "Completed"
+          status: "Confirmed"
         })
       );
       callback(null);

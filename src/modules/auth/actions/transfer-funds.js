@@ -5,9 +5,6 @@ import {
   addNotification
 } from "modules/notifications/actions";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
-
-import trimString from "utils/trim-string";
-
 import { ETH, REP } from "modules/account/constants/asset-types";
 
 export function transferFunds(amount, currency, toAddress) {
@@ -27,7 +24,11 @@ export function transferFunds(amount, currency, toAddress) {
               addNotification({
                 id: tx.hash,
                 status: "Pending",
-                title: `Transfer ${amount} ETH to ${trimString(to)}`,
+                params: {
+                  etherToSend: amount,
+                  to,
+                  type: "sendEther"
+                },
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })
             );
@@ -35,7 +36,8 @@ export function transferFunds(amount, currency, toAddress) {
           onSuccess: tx => {
             dispatch(
               updateNotification(tx.hash, {
-                status: "Success",
+                id: tx.hash,
+                status: "Confirmed",
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })
             );
@@ -60,15 +62,24 @@ export function transferFunds(amount, currency, toAddress) {
               addNotification({
                 id: `REP-${tx.hash}`,
                 status: "Pending",
-                title: `Transfer ${amount} REP -> ${trimString(to)}`,
-                timestamp: selectCurrentTimestampInSeconds(getState())
+                params: {
+                  universe: universe.id,
+                  reputationToSend: amount,
+                  _to: to,
+                  type: "sendReputation"
+                },
+                timestamp: selectCurrentTimestampInSeconds(getState()),
+                universe: universe.id,
+                reputationToSend: amount,
+                _to: to
               })
             );
           },
           onSuccess: tx => {
             dispatch(
               updateNotification(`REP-${tx.hash}`, {
-                status: "Success",
+                id: `REP-${tx.hash}`,
+                status: "Confirmed",
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })
             );
@@ -76,6 +87,7 @@ export function transferFunds(amount, currency, toAddress) {
           onFailed: tx => {
             dispatch(
               updateNotification(`REP-${tx.hash}`, {
+                id: `REP-${tx.hash}`,
                 status: "Failed",
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })

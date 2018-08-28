@@ -16,13 +16,7 @@ export const loadAccountDataFromLocalStorage = address => (
         dispatch(updateFavorites(storedAccountData.favorites));
       }
       if (storedAccountData.notifications) {
-        storedAccountData.notifications.map(n => {
-          // change pending we don't know what state the tx is in
-          if (n.status && n.status.toLowerCase() === "pending") {
-            n.status = "unknown";
-          }
-          return dispatch(addNotification(n));
-        });
+        storedAccountData.notifications.map(n => dispatch(addNotification(n)));
       }
       if (storedAccountData.scalarMarketsShareDenomination) {
         Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach(

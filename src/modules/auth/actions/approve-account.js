@@ -1,6 +1,11 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
+import {
+  addNotification,
+  updateNotification
+} from "modules/notifications/actions";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 export function checkAccountAllowance(callback = logError) {
   return (dispatch, getState) => {
@@ -30,12 +35,34 @@ export function approveAccount(onSent = logError, onSuccess = logError) {
     augur.accounts.approveAugur({
       meta,
       address,
-      onSent,
+      onSent: res => {
+        dispatch(
+          addNotification({
+            id: res.hash,
+            status: "Pending",
+            params: {
+              type: "approve"
+            },
+            timestamp: selectCurrentTimestampInSeconds(getState())
+          })
+        );
+      },
       onSuccess: res => {
+        updateNotification(res.hash, {
+          id: res.hash,
+          status: "Confirmed",
+          timestamp: selectCurrentTimestampInSeconds(getState())
+        });
         dispatch(checkAccountAllowance());
         onSuccess(null, res);
       },
-      onFailed: err => onSuccess(err)
+      onFailed: res => {
+        updateNotification(res.hash, {
+          id: res.hash,
+          status: "Failed",
+          timestamp: selectCurrentTimestampInSeconds(getState())
+        });
+      }
     });
   };
 }
