@@ -57,10 +57,12 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(INFO_NOTIFICATION, (event, notification) => {
+    notification.timestamp = new Date().getTime()
     store.dispatch(addInfoNotification(notification))
   })
 
   ipcRenderer.on(ERROR_NOTIFICATION, (event, notification) => {
+    notification.timestamp = new Date().getTime()
     store.dispatch(addErrorNotification(notification))
   })
 
