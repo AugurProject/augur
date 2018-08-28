@@ -69,7 +69,7 @@ class Dropdown extends Component {
 
         <div 
           className={classNames(Styles.Dropdown__menu, {
-            [Styles['Dropdown__menuBig']]: big,
+             [Styles['Dropdown__menuBig']]: big,
              [Styles['Dropdown__menu-visible']]: this.state.showList && !big,
              [Styles['Dropdown__menuBig-visible']]: this.state.showList && big,
           })}

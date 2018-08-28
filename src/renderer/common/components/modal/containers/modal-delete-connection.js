@@ -5,18 +5,15 @@ import ModalDeleteConnection from "../components/modal-delete-connection/modal-d
 import { closeModal } from "../actions/close-modal";
 import { removeConnection } from "../../../../app/actions/configuration";
 
-const mapStateToProps = state => ({
-  modal: state.modal
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal()),
   removeConnection: (key) => dispatch(removeConnection(key)),
 });
 
 export default withRouter(
   connect(
-    mapStateToProps,
+  	mapStateToProps,
     mapDispatchToProps
   )(ModalDeleteConnection)
 );

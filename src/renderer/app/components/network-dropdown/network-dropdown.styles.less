@@ -54,6 +54,8 @@
   color: #231a3a;
   padding: 10px 24px;
   display: flex;
+  align-items: center;
+  height: 25px;
 }
 
 :local(.NetworkDropdown__circle) {
@@ -90,6 +92,14 @@
   padding: 10px 46px;
 }
 
+:local(.NetworkDropdown__addNewSvg) {
+  width: 21px;
+  height: 21px;
+  margin-left: 8px;
+  background: url(../../../../assets/images/addNew.svg);
+  background-repeat: no-repeat;
+}
+
 :local(.NetworkDropdown__break) {
   display: flex;
   flex-grow:1;
@@ -97,5 +107,12 @@
   opacity: 0.2;
   background-color: #383b41;
   margin: 16px 24px;
+}
+
+:local(.NetworkDropdown__editButton) {
+  width: 19px;
+  height: 25px;
+  background: url(../../../../assets/images/edit.svg);
+  background-repeat: no-repeat;
 }
 

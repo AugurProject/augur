@@ -82,9 +82,7 @@ export class NetworkDropdown extends Component {
 		            >
 		              <div className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'])} />
 		              <div className={Styles.NetworkDropdown__name}>{connections[key].name}</div>
-	              	  <div onClick={this.editConnection.bind(this, connections[key], key)}>
-	              		Edit
-	              	  </div>
+	              	  <div onClick={this.editConnection.bind(this, connections[key], key)} className={Styles.NetworkDropdown__editButton} />
 		            </div>
 	  			)
 	  		} else {
@@ -129,6 +127,7 @@ export class NetworkDropdown extends Component {
 		          		className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem, Styles.NetworkDropdown__addNewButton)}
 					>
 						Add New
+						<div className={Styles.NetworkDropdown__addNewSvg}/>
 					</div>
 		        </Dropdown>
 			</section>

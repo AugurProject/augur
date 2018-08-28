@@ -6,7 +6,8 @@ import Styles from "./modal-delete-connection.styles.less";
 export default class ModalDeleteConnection extends Component {
   static propTypes = {
     closeModal: PropTypes.func.isRequired,
-    key: PropTypes.string.isRequired,
+    closeModalFully: PropTypes.func.isRequired,
+    keyId: PropTypes.string.isRequired,
     removeConnection: PropTypes.func.isRequired,
   };
 
@@ -18,13 +19,13 @@ export default class ModalDeleteConnection extends Component {
   }
 
   closeModal(e) {
-    this.props.closeModal()
+    this.props.closeModal(e)
     e.stopPropagation()
   }
 
   delete(e) {
-    this.props.removeConnection(this.props.modal.key)
-    this.props.closeModal()
+    this.props.removeConnection(this.props.keyId)
+    this.props.closeModalFully(e)
     e.stopPropagation()
   }
 

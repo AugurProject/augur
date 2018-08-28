@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 import Styles from "./modal-edit-connection.styles.less";
+import ModalDeleteConnection from "../../containers/modal-delete-connection";
 
 export default class ModalEditConnection extends Component {
   static propTypes = {
@@ -24,6 +26,7 @@ export default class ModalEditConnection extends Component {
         selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
       },
       validations: {},
+      showDelete: false,
     };
 
     this.closeModal = this.closeModal.bind(this)
@@ -94,21 +97,33 @@ export default class ModalEditConnection extends Component {
   }
 
   delete(e) {
-    this.props.updateModal({initialConnection: this.props.initialConnection, key: this.props.initialConnection.key})
+    this.setState({showDelete: !this.state.showDelete})
     e.stopPropagation()
   }
 
   render() {
     const { initialConnection } = this.props;
-    const { connection, validations } = this.state
+    const { 
+      connection, 
+      validations,
+      showDelete,
+    } = this.state
 
     let enableButton = (connection.name !== '' && (connection.ws !== '' || connection.https !== '' ))
     if ( validations.name || validations.ws || validations.https ) {
       enableButton = false
     }
-
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
+        
+        <div 
+          className={classNames(Styles.ModalEditConnection__smallBg, {
+            [Styles['ModalEditConnection__smallBg-show']]: showDelete
+          })}
+        >
+          <ModalDeleteConnection closeModal={this.delete} closeModalFully={this.closeModal} keyId={initialConnection.key} />
+        </div>
+        
         <div className={Styles.ModalEditConnection__container}>
           <div className={Styles.ModalEditConnection__header}>{ initialConnection ? 'Edit Connection' : 'Add Connection' }</div>
           <div className={Styles.ModalEditConnection__subheader}>
@@ -122,7 +137,9 @@ export default class ModalEditConnection extends Component {
                   onChange={e => {
                     this.updateField("name", e.target.value);
                   }} 
-                  className={Styles.ModalEditConnection__input}
+                  className={classNames(Styles.ModalEditConnection__input, {
+                     [Styles['ModalEditConnection__inputError']]: validations.name
+                  })}
                   value={connection.name}
               />
               {validations.name &&
@@ -138,7 +155,9 @@ export default class ModalEditConnection extends Component {
                     this.updateField("https", e.target.value);
                   }}
                   value={connection.https} 
-                  className={Styles.ModalEditConnection__input}
+                  className={classNames(Styles.ModalEditConnection__input, {
+                     [Styles['ModalEditConnection__inputError']]: validations.https
+                  })}
                   placeholder="http(s)://" 
               />
               {validations.https &&
@@ -154,7 +173,9 @@ export default class ModalEditConnection extends Component {
                     this.updateField("ws", e.target.value);
                   }}
                   value={connection.ws} 
-                  className={Styles.ModalEditConnection__input}
+                  className={classNames(Styles.ModalEditConnection__input, {
+                     [Styles['ModalEditConnection__inputError']]: validations.ws
+                  })}
                   placeholder="ws://"
               />
               {validations.ws &&
