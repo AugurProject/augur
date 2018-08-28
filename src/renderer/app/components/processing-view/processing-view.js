@@ -21,6 +21,7 @@ export class ProcessingView extends Component {
 	    processing: PropTypes.bool,
 	    fullyProcessed: PropTypes.bool, 
 	    blockInfo: PropTypes.object,
+	    openBrowserEnabled: PropTypes.bool,
 	};
 
 	constructor(props) {
@@ -38,7 +39,9 @@ export class ProcessingView extends Component {
 
   	render() {
   		const { 
-  			processing, blockInfo 
+  			processing, 
+  			blockInfo,
+  			openBrowserEnabled,
   		} = this.props
 
 		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
@@ -54,12 +57,9 @@ export class ProcessingView extends Component {
   		const highestBlocks = addCommas(blockInfo.highestBlockNumber) || 0
 
   		const currentPercentStyle = {
-	      width: `${percent}%`
+	      width: `${percent}%`,
+	      backgroundColor: (openBrowserEnabled ? '#00f1c4' : (processing ? '#cbc5d9' : 'transparent')),
 	    };
-
-	    // if (blocksRemaining <= 15) {
-     //  		this.isSynced = true
-    	// }
 
 	  	return (
 	  		<section className={classNames(Styles.ProcessingView, {

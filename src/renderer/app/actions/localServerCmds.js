@@ -1,4 +1,4 @@
-const {ipcRenderer} = require('electron')
+const {ipcRenderer, shell} = require('electron')
 import { STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
 
 export const requestServerConfigurations = () => {
@@ -35,4 +35,13 @@ export const stopGethNode = () => {
 
 export const saveConfiguration = (config) => {
   ipcRenderer.send(SAVE_CONFIG, config)
+}
+
+export const openAugurUi = () => {
+  // const protocol = this.isSsl ? 'https' : 'http'
+  // const port = this.isSsl ? this.sslPort : this.uiPort
+  // const wssProtocol = 'ws://127.0.0.1:9001'
+  // const networkConfig = this.connectedServer.networkConfig
+  // const queryString = `augur_node=${encodeURIComponent(wssProtocol)}&ethereum_node_http=${encodeURIComponent(networkConfig.http)}&ethereum_node_ws=${encodeURIComponent(networkConfig.ws)}`
+  //shell.openExternal(`${protocol}://127.0.0.1:${port}/#/categories?${queryString}`)
 }

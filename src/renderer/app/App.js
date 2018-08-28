@@ -8,7 +8,7 @@ import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import NotificationContainer from "./containers/notification-container"
-import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode } from './actions/localServerCmds'
+import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 
@@ -18,7 +18,6 @@ export class App extends Component {
 
     this.state = {
       connectedPressed: false,
-      openBrowserEnabled: false,
       processing: props.serverStatus.CONNECTED || false,
     };
 
@@ -55,6 +54,11 @@ export class App extends Component {
     }
   }
 
+  openAugurUi() {
+    console.log('hi')
+    openAugurUi()
+  }
+
   render() {
     const {
       sslEnabled,
@@ -66,8 +70,14 @@ export class App extends Component {
     const {
       connectedPressed,
       processing,
-      openBrowserEnabled,
     } = this.state
+
+    let openBrowserEnabled = false
+    const blocksRemaining = parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)
+    if (blocksRemaining <= 15 && connectedPressed && serverStatus.CONNECTED) {
+      openBrowserEnabled = true
+    }
+
 
     return (
       <div className={Styles.App}>
@@ -92,12 +102,13 @@ export class App extends Component {
             <ProcessingView
               processing={processing}
               blockInfo={blockInfo}
+              openBrowserEnabled={openBrowserEnabled}
             />
           </div>
           <NotificationContainer />
         </div>
         <div className={Styles.App__footer}>
-          <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled}>
+          <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled} onClick={this.openAugurUi}>
             Open in Browser
           </button>
         </div>
