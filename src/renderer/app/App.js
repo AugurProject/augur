@@ -29,10 +29,11 @@ export class App extends Component {
   }
 
   connect() {
+    this.setState(prevState => ({
+      connectedPressed: !prevState.connected
+    }));
     const selected = this.props.selected
     startAugurNode(selected)
-    this.setState({connected: !this.state.connected});
-      //, openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
   render() {
@@ -50,7 +51,7 @@ export class App extends Component {
           <div>
             <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {this.state.connected ? 'Disconnect' : 'Connect'}
+              {this.state.connectedPressed ? 'Disconnect' : 'Connect'}
             </button>
             <ConnectingView 
               connected={this.props.serverStatus.CONNECTED} 
