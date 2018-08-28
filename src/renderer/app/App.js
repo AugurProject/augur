@@ -7,7 +7,7 @@ import { SettingsDropdown } from "./components/settings-dropdown/settings-dropdo
 import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
-import { requestServerConfigurations, startUiServer, startAugurNode } from './actions/localServerCmds'
+import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 
@@ -16,7 +16,6 @@ export class App extends Component {
     super(props);
 
     this.state = {
-      connected: false,
       openBrowserEnabled: false,
       processing: false,
     };
@@ -30,8 +29,9 @@ export class App extends Component {
 
   connect() {
     const selected = this.props.selected
-    startAugurNode(selected)
-    this.setState({connected: !this.state.connected, openBrowserEnabled: !this.state.openBrowserEnabled});
+    if (this.props.connected) stopAugurNode()
+    else startAugurNode(selected)
+    this.setState({openBrowserEnabled: !this.state.openBrowserEnabled});
   }
 
   render() {
@@ -49,7 +49,7 @@ export class App extends Component {
           <div>
             <NetworkDropdownContainer />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {this.state.connected ? 'Disconnect' : 'Connect'}
+              {this.props.connected ? 'Disconnect' : 'Connect'}
             </button>
             <ConnectingView connected={this.state.connected} />
             <ProcessingView processing={this.state.processing} />
@@ -70,4 +70,5 @@ App.propTypes = {
   selected: PropTypes.object,
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
+  connected: PropTypes.bool
 };

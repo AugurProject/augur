@@ -6,6 +6,7 @@ import { updateConfig } from "../actions/configuration"
 const mapStateToProps = state => ({
   connections: state.configuration.networks || {},
   sslEnabled: state.configuration.sslEnabled,
+  connected: state.serverStatus.CONNECTED || false,
   selected: (Object.values(state.configuration.networks || [])).find(network => network.selected === true),
 });
 
