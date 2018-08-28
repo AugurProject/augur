@@ -280,6 +280,7 @@ if __name__ == "__main__":
     verboseprint('directory: {}'.format(directory))
     release = repo.get_release(release_id)
     verboseprint('release object: {}'.format(release))
+    verboseprint('commitish: {}'.format(release.target_commitish))
     if not release.draft:
         print('{red}WARNING{norm}: {tag} is not a draft!'.format(
             red=colors.red,
@@ -306,10 +307,21 @@ if __name__ == "__main__":
         print('uploading to github releases')
         upload_release_checksum(signed_message, tag_name)
     # check for release
-    message_table = release_message_table(github_release_assets, comparison)
-    verboseprint('message table: {}'.format(message_table))
-    markdown_table = message_table_markup(message_table)
-    verboseprint(markdown_table)
-    body = release.body
-    body += markdown_table
-    release.update_release(name=tag_name, message=body, draft=True)
+    print('Ready to release {}?'.format(tag_name))
+    print('commitish: {}'.format(release.target_commitish))
+    ready_to_release = input('Y/N')
+    if 'n' in ready_to_release.lower():
+        print('qyitting without releasing')
+        sys.exit(0)
+    if 'y' in ready_to_release:
+        # tag release and change remove draft flag
+        release.update_release(tag_name=tag_name, draft=False)
+        # update release info so we have correct asset browser_urls
+        release = repo.get_release(release_id)
+        message_table = release_message_table(github_release_assets, comparison)
+        verboseprint('message table: {}'.format(message_table))
+        markdown_table = message_table_markup(message_table)
+        verboseprint(markdown_table)
+        body = release.body
+        body += markdown_table
+        release.update_release(name=tag_name, message=body)
