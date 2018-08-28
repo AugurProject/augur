@@ -1,4 +1,4 @@
-const { DATABASE_IN_USE, UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { GEN_INFO, DATABASE_IN_USE, UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -133,12 +133,29 @@ AugurNodeServer.prototype.restartOnFailure = debounce(function () {
 AugurNodeServer.prototype.onBulkSyncStarted = function () {
   log.info('Sync with blockchain started.')
   if (this.window) this.window.webContents.send(BULK_SYNC_STARTED)
+
+  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+    messageType: GEN_INFO,
+    message: 'Downloading logs'
+  })
+
   this.bulkSyncing = true
 }
 
 AugurNodeServer.prototype.onBulkSyncFinished = function () {
   log.info('Sync with blockchain complete.')
   if (this.window) this.window.webContents.send(BULK_SYNC_FINISHED)
+
+  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+    messageType: GEN_INFO,
+    message: 'Finished Downloading logs'
+  })
+
+  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+    messageType: GEN_INFO,
+    message: 'Starting Stream Sync'
+  })
+
   this.bulkSyncing = false
 }
 
