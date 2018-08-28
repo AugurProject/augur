@@ -1,8 +1,9 @@
 const {ipcRenderer} = require('electron')
-import { TOGGLE_SSL, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
+import { ERROR_NOTIFICATION, INFO_NOTIFICATION, TOGGLE_SSL, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
 import { updateBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
+import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
 import store from './store'
 
 export const handleEvents = () => {
@@ -50,4 +51,13 @@ export const handleEvents = () => {
   ipcRenderer.on(TOGGLE_SSL, () => {
     store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
   })
+
+  ipcRenderer.on(INFO_NOTIFICATION, (notification) => {
+    store.dispatch(addInfoNotification(notification))
+  })
+
+  ipcRenderer.on(ERROR_NOTIFICATION, (notification) => {
+    store.dispatch(addErrorNotification(notification))
+  })
+
 }

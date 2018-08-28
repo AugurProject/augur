@@ -1,4 +1,4 @@
-const { START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ERROR, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
+const { GETH_REMOTE_MSG, ERROR_NOTIFICATION, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
 const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
@@ -140,7 +140,10 @@ GethNodeController.prototype.makeRequest = function (options, data, callback) {
     req.write(data)
     req.end()
   } catch (err) {
-    this.sendMsgToWindowContents(ERROR, {message: err.message})
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: GETH_REMOTE_MSG,
+      message: err.message
+    })
   }
 }
 
@@ -150,7 +153,10 @@ GethNodeController.prototype.updatePeerCount = function (peerCountHex) {
     this.sendMsgToWindowContents(PEER_COUNT_DATA, { peerCount })
     if (peerCount > 0) this.makeRequest(SYNCING_REQUEST_OPTIONS, SYNCING_POST_DATA, this.updateSyncData.bind(this))
   } catch (err) {
-    this.sendMsgToWindowContents(ERROR, {message: err.message})
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: GETH_REMOTE_MSG,
+      message: err.message
+    })
   }
 }
 

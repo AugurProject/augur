@@ -1,4 +1,4 @@
-const { REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, ERROR, SHOW_NOTICE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, NO_RESET_DATABASE,RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -66,35 +66,39 @@ AugurNodeServer.prototype.startServer = function () {
     this.sendMsgToWindowContents(ON_SERVER_CONNECTED)
     this.augurNodeController.start(function (err) {
       if (this.retriesRemaining > 0) {
-        this.sendMsgToWindowContents(ERROR, {
-          error: `ERROR: ${err.message}. RESTARTING.`
+        this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+          messageType: RESTARTING_MSG,
+          message: err.message
         })
         this.retriesRemaining--
         this.restartOnFailure()
       } else {
-        this.sendMsgToWindowContents(ERROR, {
-          error: `ERROR: ${err.message}.`
+        this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+          messageType: RUNNING_FAILURE,
+          message: err.message
         })
       }
     }.bind(this))
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents(ERROR, {
-      error: err.message
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: START_FAILURE,
+      message: err.message
     })
   }
 }
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
-  if (this.window) this.window.webContents.send(ERROR, {
-    error: 'Disconnected from Ethereum Node. Attempting to reconnect...'
+  if (this.window) this.window.webContents.send(ERROR_NOTIFICATION, {
+    messageType: RECONNECT_MSG,
+    message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
   })
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
-  if (this.window) this.window.webContents.send(SHOW_NOTICE, {
-    message: 'Reconnected',
-    class: 'success'
+  if (this.window) this.window.webContents.send(INFO_NOTIFICATION, {
+    messageType: RECONNECT_MSG,
+    message: 'Reconnected to Ethereum Node.'
   })
 }
 
@@ -107,16 +111,18 @@ AugurNodeServer.prototype.restart = function () {
     }, 2000)
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents(ERROR, {
-      error: err
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: START_FAILURE,
+      message: err.message
     })
   }
 }
 
 AugurNodeServer.prototype.onError = function (err) {
   const errorMessage = (err || {}).message || 'Unexpected Error'
-  if (this.window) this.window.webContents.send(ERROR, {
-    error: errorMessage
+  if (this.window) this.window.webContents.send(ERROR_NOTIFICATION, {
+    messageType: UNEXPECTED_ERR,
+    message: errorMessage
   })
 }
 
@@ -145,8 +151,9 @@ AugurNodeServer.prototype.onResetDatabase = function () {
     }
   } catch (err) {
     log.error(err)
-    this.sendMsgToWindowContents(ERROR, {
-      error: err
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: UNEXPECTED_ERR,
+      message: err
     })
   }
   this.sendMsgToWindowContents(RESET_RESPONSE, {})
@@ -167,8 +174,9 @@ AugurNodeServer.prototype.onStartNetwork = function (event, data) {
 
   } catch (err) {
     log.error(err)
-    event.sender.send(ERROR, {
-      error: err
+    event.sender.send(ERROR_NOTIFICATION, {
+      messageType: START_FAILURE,
+      message: err
     })
   }
 }
@@ -182,15 +190,17 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
       if (!this.bulkSyncing && (blocksBehind > MAX_BLOCKS_BEHIND_BEFORE_RESTART)) {
         const message = `Behind by ${blocksBehind}. Restarting to bulk sync.`
         log.info(message)
-        this.sendMsgToWindowContents(ERROR, {
-          error: message
+        this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+          messageType: RUNNING_FAILURE,
+          message
         })
         this.restart()
       }
     }).catch((err) => {
       log.error(err)
-      this.sendMsgToWindowContents(ERROR, {
-        error: err
+      this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+        messageType: RUNNING_FAILURE,
+        message: err
       })
     })
 }
@@ -217,8 +227,9 @@ AugurNodeServer.prototype.shutDownServer = function () {
     if (this.augurNodeController && !this.augurNodeController.isRunning()) {
       this.disconnectServerMessage()
     }
-    this.sendMsgToWindowContents(ERROR, {
-      error: err
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: UNEXPECTED_ERR,
+      message: err
     })
   }
 }
