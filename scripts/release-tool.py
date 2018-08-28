@@ -118,6 +118,14 @@ def tmp_local_dir(name):
     return directory
 
 
+def is_dir_empty(dir):
+    for dirpath, dirnames, files in os.walk(dir):
+        if files:
+            return False
+        if not files:
+            return True
+
+
 def download_asset(asset_name, asset_url, directory):
     local_filename = directory + '/' + asset_name
     print(local_filename)
