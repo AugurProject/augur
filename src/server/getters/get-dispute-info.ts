@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
-import { Address, MarketsRowWithTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
+import { Address, MarketsRowWithTime, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
 import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, groupByAndSum } from "./database";
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";

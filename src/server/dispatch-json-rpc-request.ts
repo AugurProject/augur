@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
-import { JsonRpcRequest, UIStakeInfo } from "../types";
+import { JsonRpcRequest } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
@@ -24,7 +24,7 @@ import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData } from "./getters/get-sync-data";
-import { extractGetDisputeInfoParams, getDisputeInfo, GetDisputeInfoParams } from "./getters/get-dispute-info";
+import { extractGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
