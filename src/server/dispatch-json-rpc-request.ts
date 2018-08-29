@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import Augur from "augur.js";
-import { JsonRpcRequest } from "../types";
+import { JsonRpcRequest, UIStakeInfo } from "../types";
 import { getAccountTransferHistory } from "./getters/get-account-transfer-history";
 import { getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
@@ -24,7 +24,7 @@ import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData } from "./getters/get-sync-data";
-import { extractsGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
+import { extractGetDisputeInfoParams, getDisputeInfo, GetDisputeInfoParams } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
@@ -33,8 +33,45 @@ import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance } from "./getters/get-winning-balance";
 import { logger } from "../utils/logger";
 
+type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
+type ParamExtract<T> = (params: any) => T|undefined;
+
+interface Getter<T, R> {
+  fn: GetterFunction<T, R>;
+  paramExtract: ParamExtract<T>;
+}
+
+// interface Stuffz {
+//   [getterName: string]: Getter<any,any>;
+// }
+
+
+export async function getDisputeInfoProm(db: Knex, augur: Augur, params: GetDisputeInfoParams): Promise<Array<UIStakeInfo<string>|null>> {
+  return [];
+}
+
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   logger.info(JSON.stringify(request));
+
+  function doTheThing<T, R>(getterFunction: GetterFunction<T, R>, paramExtract: ParamExtract<T>) {
+    const extractedParams = paramExtract(request.params);
+    if (extractedParams === undefined) throw new Error("Invalid parameters")
+    getterFunction(db, augur, extractedParams).then((response) => {
+      callback(null, response);
+    }).catch(callback);
+    return;
+  }
+
+  // if (request.method === "getDisputeInfo")
+  // if (request.method === "getReportingSummary")
+
+  // const getterName = request.method;
+  // const getterData = stuff[getterName];
+  //
+  // if (getterData !== undefined) {
+  //   const getterData.paramExtract()
+  // }
+
   switch (request.method) {
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
@@ -47,7 +84,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getReportingHistory":
       return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingSummary":
-      return getReportingSummary(db, request.params.reportingWindow, callback);
+      return doTheThing(getReportingSummary, extractGetReportingSummary);
     case "getTradingHistory":
       return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
     case "getUserTradingHistory":
@@ -70,9 +107,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
     case "getDisputeInfo":
-      const params = extractsGetDisputeInfoParams(request.params);
-      if (params === undefined) return callback(new Error("Bad params"));
-      return getDisputeInfo(db, params, callback);
+      return doTheThing(getDisputeInfoProm, extractGetDisputeInfoParams);
     case "getInitialReporters":
       return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getReportingFees":

@@ -115,12 +115,12 @@ function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completed
   return totalCompletedStakeOnAllPayouts.times(2).minus(completedStakeAmount.times(3));
 }
 
-interface GetDisputeInfoParams {
+export interface GetDisputeInfoParams {
   marketIds: Array<Address>;
   account: Address|null;
 }
 
-export function extractsGetDisputeInfoParams(params: any): GetDisputeInfoParams|undefined {
+export function extractGetDisputeInfoParams(params: any): GetDisputeInfoParams|undefined {
   const pickedParams = _.pick(params, ["marketIds", "account"]);
   if (isGetDisputeInfoParams(pickedParams)) return pickedParams;
   return undefined;
