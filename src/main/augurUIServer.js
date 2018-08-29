@@ -35,8 +35,8 @@ AugurUIServer.prototype.onStartUiServer = function (event, config) {
 
 AugurUIServer.prototype.startServer = function (event) {
   log.info('Starting Augur UI Server')
-  const port = this.uiPort
-  const sslPort = this.sslPort
+  const port = this.portsConfig.uiPort
+  const sslPort = this.portsConfig.sslPort
 
   try {
     this.app = express()
