@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-import { each, pull } from 'lodash'
-import classNames from "classnames";
-import { INFO_NOTIFICATION } from '../../../../utils/constants'
+import { each, pull, take } from 'lodash'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Styles from './notifications.style.less'
@@ -19,9 +17,12 @@ Msg.propTypes = {
   closeToast: PropTypes.func
 }
 
+const NUM_INFOS = 2
+const NUM_SECONDS = 5 * 1000
+
 export class Notifications extends Component {
   static propTypes = {
-    notifications: PropTypes.object.isRequired,
+    infoNotifications: PropTypes.array.isRequired,
     removeNotification: PropTypes.func.isRequired,
   };
 
@@ -29,42 +30,45 @@ export class Notifications extends Component {
     super(props);
 
     this.state = {
-      toasts: []
+      toastIt: take(props.infoNotifications, NUM_INFOS) || []
     }
 
-    this.showToast(this.props.notifications)
+    this.showToast()
     this.removeToast = this.removeToast.bind(this);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.notifications !== this.props.notifications) {
-      this.showToast(this.props.notifications)
+      this.setState({
+        toastIt: take(this.props.infoNotifications, NUM_INFOS - this.state.toastIt.length) || []
+      }, () => {
+        this.showToast()
+      })
     }
   }
 
-  showToast(notifications) {
-    const infos = notifications[INFO_NOTIFICATION]
-
-    if (infos && infos.length > 0) {
-      each(infos, n => {
-        if (this.state.toasts.indexOf(n.message) === -1) {
-          toast(<Msg notification={n} className={Styles.Notification__msgContainer}/>,
-          {
-            position: toast.POSITION.BOTTOM_CENTER,
-            closeButton: false,
-            onClose: () => this.removeToast(n)
-          })
-          this.setState({
-            toasts: [...this.state.toasts, n.message]
-          })
+  showToast() {
+    const { toastIt } = this.state
+    if (toastIt.length > 0) {
+      each(toastIt, t => {
+        if (!t.toastId) {
+          t.toastId = toast(<Msg notification={t} className={Styles.Notification__msgContainer}/>,
+            {
+              position: toast.POSITION.BOTTOM_CENTER,
+              closeButton: false,
+              onClose: () => this.removeToast(t)
+            })
         }
+      })
+      this.setState({
+        toastIt
       })
     }
   }
 
   removeToast(notification) {
     this.setState({
-      toasts: pull(this.state.toasts, notification.message)
+      toasts: pull(this.state.toastIt, notification.message)
     })
     this.props.removeNotification(notification)
   }
@@ -76,7 +80,7 @@ export class Notifications extends Component {
             hideProgressBar={true}
             className={Styles.Notification__container}
             toastClassName={Styles.Notification__toast}
-            autoClose={10000}
+            autoClose={NUM_SECONDS}
           />
       </div>
     )
