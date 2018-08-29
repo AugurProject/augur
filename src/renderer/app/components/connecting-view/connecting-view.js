@@ -13,6 +13,7 @@ export class ConnectingView extends Component {
 	    lookingForPeers: PropTypes.bool,
 	    synced: PropTypes.bool,
 	    syncing: PropTypes.bool,
+	    isLocalLighNode: PropTypes.bool,
 	};
 
 	constructor(props) {
@@ -25,12 +26,13 @@ export class ConnectingView extends Component {
   			connecting,
   			lookingForPeers,
   			synced,
-  			syncing
+  			syncing,
+  			isLocalLighNode,
   		} = this.props
 
   		const showConnecting = connecting && !connected
-  		const showDisconnected = !connecting && !connected
   		const showConnected = connecting && connected
+  		const showDisconnected = !showConnecting && !showConnected
 
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
@@ -57,12 +59,12 @@ export class ConnectingView extends Component {
 	  				>
 				    	{showDisconnected && 'Disconnected'}
 
-				    	{showConnected && 'Connected'}
+				    	{showConnected && (isLocalLighNode ? 'Synced' : 'Connected')}
 				   		{showConnected && 
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{showConnecting && 'Connecting'}
+				    	{showConnecting && (isLocalLighNode ? 'Syncing' : 'Connecting')}
 				    	{showConnecting && 
 				    		<PulseLoader
 				    		  sizeUnit={"px"}

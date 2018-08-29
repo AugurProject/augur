@@ -131,17 +131,17 @@ export class App extends Component {
               stopAugurNode={this.connect}
             />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {serverStatus.CONNECTED ? 'Disconnect' : 'Connect'}
+              {(serverStatus.CONNECTED && connectedPressed) ? 'Disconnect' : 'Connect'}
             </button>
           </div>
           <div style={{marginTop: '215px'}}>
             <ConnectingView
               connected={serverStatus.CONNECTED}
               connecting={connectedPressed}
-              isLocalLighNode={selected.name === localLightNodeName}
+              isLocalLighNode={selected && selected.name === localLightNodeName}
             />
             <ProcessingView
-              processing={processing}
+              processing={processing && connectedPressed}
               blockInfo={blockInfo}
               openBrowserEnabled={openBrowserEnabled}
             />
