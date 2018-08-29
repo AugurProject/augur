@@ -8,7 +8,7 @@ import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import NotificationContainer from "./containers/notification-container"
-import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
+import { requestServerConfigurations, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 import classNames from "classnames";
@@ -61,7 +61,6 @@ export class App extends Component {
       } else {
         this.setState({connectedPressed: true});
         startAugurNode(selected)
-        startUiServer() // start ui server at same time
       }
     }
   }
@@ -70,7 +69,6 @@ export class App extends Component {
     const selected = this.props.selected
     this.setState({connectedPressed: true, showDownloadGeth: false});
     startAugurNode(selected)
-    startUiServer()
   }
 
   cancelDownload() {

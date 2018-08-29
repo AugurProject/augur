@@ -1,5 +1,5 @@
 const {ipcRenderer, shell} = require('electron')
-import { STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
+import { STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
 import store from '../../store'
 
 export const requestServerConfigurations = () => {
@@ -19,12 +19,17 @@ export const startUiServer = () => {
   ipcRenderer.send(START_UI_SERVER, config)
 }
 
+export const stoptUiServer = () => {
+  ipcRenderer.send(STOP_UI_SERVER)
+}
+
 export const startAugurNode = (connection) => {
   ipcRenderer.send(START_AUGUR_NODE, connection)
 }
 
 export const stopAugurNode = () => {
   ipcRenderer.send(STOP_AUGUR_NODE)
+  stoptUiServer() // stop when disconnected from augur node
 }
 
 export const startGethNode = () => {
@@ -40,6 +45,7 @@ export const saveConfiguration = (config) => {
 }
 
 export const openAugurUi = (networkConfig) => {
+  startUiServer() // start UI server before connecting
   const { sslEnabled, sslPort, uiPort } = store.getState().configuration
   const protocol = sslEnabled ? 'https' : 'http'
   const port = sslEnabled ? sslPort : uiPort
