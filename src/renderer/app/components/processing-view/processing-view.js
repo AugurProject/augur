@@ -58,7 +58,7 @@ export class ProcessingView extends Component {
 
   		const currentPercentStyle = {
 	      width: `${percent}%`,
-	      backgroundColor: (openBrowserEnabled ? '#00f1c4' : (processing ? '#cbc5d9' : 'transparent')),
+	      backgroundColor: (openBrowserEnabled && processing ? '#00f1c4' : (processing ? '#cbc5d9' : 'transparent')),
 	    };
 
 	  	return (

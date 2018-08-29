@@ -31,9 +31,15 @@ export default function (configuration = DEFAULT_STATE, action) {
       }
     }
     case REMOVE_CONNECTION:
+      let configNetworks = configuration.networks
+      if (configNetworks[action.key].selected) {
+        configNetworks['mainnet'].selected = true
+      }
+      configNetworks = omit(configNetworks, action.key)
+
       return {
         ...configuration,
-        networks: omit(configuration.networks, action.key)
+        networks: configNetworks
       }
     case RESET_STATE:
       return DEFAULT_STATE
