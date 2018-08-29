@@ -57,7 +57,15 @@
   border-radius: 32px;
   padding: 8px 24px;
   text-transform: none;
-  height: 16px;
+  height: 32px;
   min-height: unset;
   min-width: unset;
+}
+
+:local(.ModalDeleteConnection__save:focus) {
+  outline: none;
+}
+
+:local(.ModalDeleteConnection__save:disabled:hover) {
+  background-color: #dfdfdf;
 }

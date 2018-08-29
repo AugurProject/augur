@@ -9,6 +9,7 @@ import { updateConfig } from "../actions/configuration"
 const mapStateToProps = state => ({
   connections: state.configuration.networks || {},
   animateKey: state.configuration.animateKey,
+  selectedKey: Object.keys(state.configuration.networks || {}).find(key => state.configuration.networks[key].selected === true) || '',
 });
 
 const mapDispatchToProps = dispatch => ({

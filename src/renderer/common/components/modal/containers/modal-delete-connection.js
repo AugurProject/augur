@@ -5,7 +5,10 @@ import ModalDeleteConnection from "../components/modal-delete-connection/modal-d
 import { closeModal } from "../actions/close-modal";
 import { removeConnection } from "../../../../app/actions/configuration";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+	selectedKey: Object.keys(state.configuration.networks || {}).find(key => state.configuration.networks[key].selected === true) || '',
+	serverStatus: state.serverStatus,
+});
 
 const mapDispatchToProps = dispatch => ({
   removeConnection: (key) => dispatch(removeConnection(key)),

@@ -17,15 +17,14 @@ export class NetworkDropdown extends Component {
 	    stopAugurNode: PropTypes.func.isRequired,
 	    animateKey: PropTypes.string,
 	    updateConfig: PropTypes.func.isRequired,
+	    selectedKey: PropTypes.string.isRequired,
 	};
 
 	constructor(props) {
 	    super(props);
 
-	    let selectedKey = this.findSelectedKey(props.connections)
 	    this.state = {
 	      menuIsOpen: false,
-	      selectedNetwork: selectedKey,
 	    };
 
 	    this.addNew = this.addNew.bind(this);
@@ -34,10 +33,6 @@ export class NetworkDropdown extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.connections !== this.props.connections) {
-			const key = this.findSelectedKey(this.props.connections)
-			this.setState({selectedNetwork: key})
-		}
 		if (prevProps.animateKey !== this.props.animateKey) {
 			setTimeout(() => {
 		      this.props.updateConfig({animateKey: ''})
@@ -45,24 +40,20 @@ export class NetworkDropdown extends Component {
 		}
 	}
 
-	findSelectedKey(connections) {
-		let selectedKey = null
-	    for (let key in connections) {
-	    	if (connections[key].selected) {
-	    		selectedKey = key;
-	    		break;
-	    	}
-	    }
-	    return selectedKey
-	}
-
 	selectNetwork(networkId) {
-	    if (this.state.selectedNetwork !== networkId) {
-	      this.props.updateSelectedConnection(networkId)
-	      this.setState({menuIsOpen: false, selectedNetwork: networkId})
+		const {
+			selectedKey,
+			updateSelectedConnection,
+			isConnectedPressed,
+			stopAugurNode,
+		} = this.props
 
-	      if (this.props.isConnectedPressed) {
-	        this.props.stopAugurNode();
+	    if (selectedKey !== networkId) {
+	      updateSelectedConnection(networkId)
+	      this.setState({menuIsOpen: false})
+
+	      if (isConnectedPressed) {
+	        stopAugurNode();
 	      }
 	    }
 	}
@@ -104,13 +95,14 @@ export class NetworkDropdown extends Component {
   			isConnectedPressed,
   			openBrowserEnabled,
   			animateKey,
+  			selectedKey,
   		} = this.props
 
 	  	let options = []
 	  	let userCreatedOptions = []
 
 	  	for (let key in connections) {
-	  		const isSelected = (key === this.state.selectedNetwork)
+	  		const isSelected = (key === selectedKey)
 	  		if (connections[key].userCreated) {
 	  			userCreatedOptions.push(
 		  			<div
@@ -158,7 +150,7 @@ export class NetworkDropdown extends Component {
 			           				})}
 				        		/>
 				        		<div className={Styles.NetworkDropdown__labelText}>
-				        			{connections[this.state.selectedNetwork] && connections[this.state.selectedNetwork].name}
+				        			{connections[selectedKey] && connections[selectedKey].name}
 				        		</div>
 				        		<div className={Styles.NetworkDropdown__svg}>
 				        			<ChevronFlip  pointDown={this.state.menuIsOpen} />

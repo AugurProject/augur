@@ -9,6 +9,8 @@ export default class ModalDeleteConnection extends Component {
     closeModalFully: PropTypes.func.isRequired,
     keyId: PropTypes.string.isRequired,
     removeConnection: PropTypes.func.isRequired,
+    selectedKey: PropTypes.string.isRequired,
+    serverStatus: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -30,6 +32,14 @@ export default class ModalDeleteConnection extends Component {
   }
 
   render() {
+    const {
+      selectedKey,
+      keyId,
+      serverStatus,
+    } = this.props
+    
+    const disableDelete = (selectedKey === keyId && serverStatus.CONNECTED)
+
     return (
       <section id="deleteModal" className={Styles.ModalDeleteConnection}>
         <div className={Styles.ModalDeleteConnection__container}>
@@ -41,7 +51,7 @@ export default class ModalDeleteConnection extends Component {
           </div>
           <div className={Styles.ModalDeleteConnection__buttonContainer}>
               <div className={Styles.ModalDeleteConnection__cancel} onClick={this.closeModal}>Cancel</div>
-              <div className={Styles.ModalDeleteConnection__save} onClick={this.delete}>Delete</div>
+              <button className={Styles.ModalDeleteConnection__save} onClick={this.delete} disabled={disableDelete}>Delete</button>
           </div>
         </div>
       </section>
