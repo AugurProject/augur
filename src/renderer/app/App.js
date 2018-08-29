@@ -15,6 +15,8 @@ import { INFO_NOTIFICATION } from '../../utils/constants'
 import classNames from "classnames";
 import ModalDownloadGeth from "../common/components/modal/components/modal-download-geth/modal-download-geth";
 
+const localLightNodeName = 'Local (Light Node)' // need to use key
+
 export class App extends Component {
    constructor(props) {
     super(props);
@@ -53,7 +55,7 @@ export class App extends Component {
   connect() {
     const selected = this.props.selected
 
-    if (!this.props.serverStatus.CONNECTED && selected.name === 'Local (Light Node)') { // need to switch to key
+    if (!this.props.serverStatus.CONNECTED && selected.name === localLightNodeName) {
       this.setState({showDownloadGeth: true})
     } else {
       if (this.props.serverStatus.CONNECTED) {
@@ -90,6 +92,7 @@ export class App extends Component {
       blockInfo,
       notifications,
       addInfoNotification,
+      selected,
     } = this.props
 
     const {
@@ -139,6 +142,7 @@ export class App extends Component {
             <ConnectingView
               connected={serverStatus.CONNECTED}
               connecting={connectedPressed}
+              isLocalLighNode={selected.name === localLightNodeName}
             />
             <ProcessingView
               processing={processing}
