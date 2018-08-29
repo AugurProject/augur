@@ -7,7 +7,7 @@ export const ShowErrors = ({
   removeError
 }) => {
   return (
-    <section className={Styles.ShowErrors}>
+    <div className={Styles.ShowErrors}>
       { errorNotifications.map((e, i) => {
         <div key={i}className={Styles.ShowErrors__body}>
           <div className={Styles.ShowErrors__icon}>icon</div>
@@ -15,7 +15,7 @@ export const ShowErrors = ({
           <button className={Styles.ShowErrors__close} onClick={ () => removeError(e) } />
         </div>
       })}
-    </section>
+    </div>
   )
 }
 

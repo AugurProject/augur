@@ -10,7 +10,6 @@ const mapStateToProps = state => ({
   selected: (Object.values(state.configuration.networks || [])).find(network => network.selected === true),
   serverStatus: state.serverStatus,
   blockInfo: state.blockInfo,
-  notifications: state.notifications,
 });
 
 const mapDispatchToProps = dispatch => ({
