@@ -105,6 +105,10 @@ async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string
   }
 }
 
+export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?: string) {
+  return renameDatabaseFile(networkId, getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir));
+}
+
 export async function createDbAndConnect(errorCallback: ErrorCallback|undefined, augur: Augur, network: ConnectOptions, databaseDir?: string): Promise<Knex> {
   return new Promise<Knex>((resolve, reject) => {
     const connectOptions = Object.assign(

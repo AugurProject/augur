@@ -399,6 +399,17 @@ describe("server/getters/get-dispute-info", () => {
     },
   });
   test({
+    description: "marketIds array with null",
+    params: {
+      marketIds: [undefined],
+      account: "0x0000000000000000000000000000000000000b0b",
+    },
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
+      assert.deepEqual(disputeInfo, []);
+    },
+  });
+  test({
     description: "Empty marketIds array",
     params: {
       marketIds: [],
