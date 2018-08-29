@@ -137,7 +137,7 @@ export class App extends Component {
               {(serverStatus.CONNECTED && connectedPressed) ? 'Disconnect' : 'Connect'}
             </button>
           </div>
-          <div style={{marginTop: '215px'}}>
+          <div style={{marginTop: '215px', overflowY: 'scroll', maxHeight: '500px'}}>
             <ConnectingView
               connected={serverStatus.CONNECTED}
               connecting={connectedPressed}
