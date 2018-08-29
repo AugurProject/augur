@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
 import { Notifications } from '../components/notifications/notifications'
 import { removeNotification } from '../actions/notifications'
+import { INFO_NOTIFICATION } from '../../../utils/constants'
 
 const mapStateToProps = state => ({
-  notifications: state.notifications
+  infoNotifications: state.notifications[INFO_NOTIFICATION] || []
 })
 
 const mapDispatchToProps = dispatch => ({
