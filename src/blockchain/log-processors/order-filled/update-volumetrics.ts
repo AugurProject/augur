@@ -11,7 +11,7 @@ function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, c
     if (err) return callback(err);
 
     const volume = result.volume;
-    const incremented = new BigNumber(amount, 10).plus(volume);
+    const incremented = amount.plus(volume);
     db("markets").update({ volume: incremented.toString() }).where({ marketId, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
       if (affectedRowsCount === 0) return process.nextTick(() => incrementMarketVolume(db, marketId, amount, callback));
@@ -26,7 +26,7 @@ function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, am
     if (err) return callback(err);
 
     const volume = result.volume;
-    const incremented = new BigNumber(amount, 10).plus(volume);
+    const incremented = amount.plus(volume);
     db("outcomes").update({ volume: incremented.toString() }).where({ marketId, outcome, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
       if (affectedRowsCount === 0) return process.nextTick(() => incrementOutcomeVolume(db, marketId, outcome, amount, callback));
@@ -37,7 +37,7 @@ function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, am
 }
 
 function incrementCategoryPopularity(db: Knex, category: string, amount: BigNumber, callback: ErrorCallback) {
-  db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: new BigNumber(amount, 10).toFixed(), category }).asCallback(callback);
+  db.raw(`UPDATE categories SET popularity = popularity + :amount WHERE category = :category`, { amount: amount.toFixed(), category }).asCallback(callback);
 }
 
 function setMarketLastTrade(db: Knex, marketId: Address, blockNumber: number, callback: ErrorCallback) {
