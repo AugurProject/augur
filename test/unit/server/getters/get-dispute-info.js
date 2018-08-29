@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeInfo, extractsGetDisputeInfoParams } = require("../../../../build/server/getters/get-dispute-info");
+const { getDisputeInfo, extractGetDisputeInfoParams } = require("../../../../build/server/getters/get-dispute-info");
 
 
 describe("server/getters/get-dispute-info", () => {
@@ -10,12 +10,16 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        const params = extractsGetDisputeInfoParams(t.params);
-        getDisputeInfo(db, params, (err, disputeInfo) => {
-          t.assertions(err, disputeInfo);
-          db.destroy();
-          done();
-        });
+        const params = extractGetDisputeInfoParams(t.params);
+        getDisputeInfo(db, null, params)
+          .then((disputeInfo) => {
+            t.assertions(disputeInfo);
+            done();
+          })
+          .catch(done)
+          .then(() => {
+            db.destroy();
+          });
       });
     });
   };
@@ -28,8 +32,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -129,8 +132,7 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -230,8 +232,7 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000077777777777777777",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, [
         null,
         {
@@ -297,8 +298,7 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000000000000000000211",
       ],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -394,8 +394,7 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, [null]);
     },
   });
@@ -404,8 +403,7 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: [],
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, []);
     },
   });

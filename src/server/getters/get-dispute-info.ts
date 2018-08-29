@@ -1,4 +1,3 @@
-import { series } from "async";
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { Address, MarketsRowWithTime, AsyncCallback, Payout, UIStakeInfo, PayoutRow, StakeDetails, ReportingState } from "../../types";
@@ -6,6 +5,7 @@ import { getMarketsWithReportingState, normalizePayouts, uiStakeInfoToFixed, gro
 import { BigNumber } from "bignumber.js";
 import { QueryBuilder } from "knex";
 import { ZERO } from "../../constants";
+import Augur from "augur.js";
 
 interface DisputeRound {
   marketId: Address;
@@ -49,18 +49,16 @@ function isActiveMarketState(reportingState: ReportingState|null|undefined) {
   return activeMarketStates.indexOf(reportingState) !== -1;
 }
 
-function getCurrentStakes(db: Knex, marketIds: Array<Address>, callback: AsyncCallback) {
-  db("crowdsourcers").select(["marketId", "payoutId", "amountStaked", "size"])
-  .whereNull("completed")
-  .whereIn("crowdsourcers.marketId", marketIds)
-  .asCallback((err: Error|null, results: Array<ActiveCrowdsourcer>) => {
-    if (err) return callback(err);
-    callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked", "size"]));
-  });
+async function getCurrentStakes(db: Knex, marketIds: Array<Address>) {
+  const results: Array<ActiveCrowdsourcer> = await db("crowdsourcers").select(["marketId", "payoutId", "amountStaked", "size"])
+    .whereNull("completed")
+    .whereIn("crowdsourcers.marketId", marketIds);
+
+  return groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked", "size"]);
 }
 
-function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: AsyncCallback) {
-  db.select("marketId", "payoutId", "amountStaked")
+async function getCompletedStakes(db: Knex, marketIds: Array<Address>) {
+  const results: Array<StakeRow> = await db.select("marketId", "payoutId", "amountStaked")
     .from((builder: QueryBuilder) => {
       return builder
         .from("crowdsourcers")
@@ -73,19 +71,15 @@ function getCompletedStakes(db: Knex, marketIds: Array<Address>, callback: Async
             .select("marketId", "payoutId", "amountStaked")
             .whereIn("marketId", marketIds);
         });
-    })
-    .asCallback((err: Error|null, results: Array<StakeRow>) => {
-      if (err) return callback(err);
-
-      callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]));
     });
+  return groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]);
 }
 
-function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean, callback: AsyncCallback) {
-  if ( account == null ) {
-    return callback(null, []);
+async function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|null, completed: boolean): Promise<Array<any>> {
+  if (account == null) {
+    return [];
   }
-  let query = db("crowdsourcers")
+  const query = db("crowdsourcers")
     .select(["crowdsourcers.marketId", "crowdsourcers.payoutId", "balances.balance as amountStaked"])
     .join("balances", "balances.token", "crowdsourcers.crowdsourcerId")
     .whereIn("marketId", marketIds)
@@ -97,18 +91,13 @@ function getAccountStakes(db: Knex, marketIds: Array<Address>, account: Address|
         .where("reporter", account || null)
         .whereIn("marketId", marketIds);
     });
-
   if (completed) {
-    query = query.where("crowdsourcers.completed", 1);
+    query.where("crowdsourcers.completed", 1);
   } else {
-    query = query.whereNull("crowdsourcers.completed");
+    query.whereNull("crowdsourcers.completed");
   }
-
-  query.asCallback((err: Error|null, results: Array<StakeRow>) => {
-    if (err) return callback(err);
-
-    callback(null, groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]));
-  });
+  const results: Array<StakeRow> = await query;
+  return groupByAndSum(results, ["marketId", "payoutId"], ["amountStaked"]);
 }
 
 function calculateBondSize(totalCompletedStakeOnAllPayouts: BigNumber, completedStakeAmount: BigNumber): BigNumber {
@@ -127,38 +116,33 @@ export function extractGetDisputeInfoParams(params: any): GetDisputeInfoParams|u
 }
 
 export function isGetDisputeInfoParams(params: any): params is GetDisputeInfoParams {
-  if ( ! _.isObject(params) ) return false;
-  if ( ! _.isArray(params.marketIds) ) return false;
-  return !( params.marketIds.filter((value: any) => typeof value !== "string").length > 0 );
+  if (!_.isObject(params)) return false;
+  if (!_.isArray(params.marketIds)) return false;
+  return !(params.marketIds.filter((value: any) => typeof value !== "string").length > 0);
 }
 
-export function getDisputeInfo(db: Knex, params: GetDisputeInfoParams, callback: (err: Error|null, result?: Array<UIStakeInfo<string>|null>) => void): void {
-  series({
-    markets: (next: AsyncCallback) => getMarketsWithReportingState(db).whereIn("markets.marketId", params.marketIds).asCallback(next),
-    payouts: (next: AsyncCallback) => db("payouts").whereIn("marketId", params.marketIds).asCallback(next),
-    stakesCompleted: (next: AsyncCallback) => getCompletedStakes(db, params.marketIds, next),
-    stakesCurrent: (next: AsyncCallback) => getCurrentStakes(db, params.marketIds, next),
-    accountStakesCurrent: (next: AsyncCallback) => getAccountStakes(db, params.marketIds, params.account, false, next),
-    accountStakesCompleted: (next: AsyncCallback) => getAccountStakes(db, params.marketIds, params.account, true, next),
-    disputeRound: (next: AsyncCallback) => db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", params.marketIds).asCallback(next),
-  }, (err: Error|null, stakeResults: DisputesResult): void => {
-    if (err) return callback(err);
-    if (!stakeResults.markets) return callback(new Error("Could not retrieve markets"));
-
-    const disputeDetailsByMarket: Array<DisputesResult> =
-      _.map(params.marketIds, (marketId: Address): DisputesResult => {
-        return {
-          markets: _.filter(stakeResults.markets, { marketId }),
-          payouts: _.filter(stakeResults.payouts, { marketId }),
-          stakesCompleted: _.filter(stakeResults.stakesCompleted, { marketId }),
-          stakesCurrent: _.filter(stakeResults.stakesCurrent, { marketId }),
-          accountStakesCurrent: _.filter(stakeResults.accountStakesCurrent, { marketId }),
-          accountStakesCompleted: _.filter(stakeResults.accountStakesCompleted, { marketId }),
-          disputeRound: _.filter(stakeResults.disputeRound, { marketId }),
-        };
-      });
-    callback(null, disputeDetailsByMarket.map(reshapeStakeRowToUIStakeInfo));
-  });
+export async function getDisputeInfo(db: Knex, augur: Augur, params: GetDisputeInfoParams): Promise<Array<UIStakeInfo<string>|null>> {
+  const markets: Array<MarketsRowWithTime> = await getMarketsWithReportingState(db).whereIn("markets.marketId", params.marketIds);
+  const payouts: Array<PayoutRow<BigNumber>> = await db("payouts").whereIn("marketId", params.marketIds);
+  const stakesCompleted: Array<StakeRow> = await getCompletedStakes(db, params.marketIds);
+  const stakesCurrent: Array<ActiveCrowdsourcer> = await getCurrentStakes(db, params.marketIds);
+  const accountStakesCurrent: Array<StakeRow> = await getAccountStakes(db, params.marketIds, params.account, false);
+  const accountStakesCompleted: Array<StakeRow> = await getAccountStakes(db, params.marketIds, params.account, true);
+  const disputeRound: Array<DisputeRound> = await db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", params.marketIds);
+  if (!markets) throw new Error("Could not retrieve markets");
+  const disputeDetailsByMarket =
+    _.map(params.marketIds, (marketId: Address): DisputesResult => {
+      return {
+        markets: _.filter(markets, { marketId }),
+        payouts: _.filter(payouts, { marketId }),
+        stakesCompleted: _.filter(stakesCompleted, { marketId }),
+        stakesCurrent: _.filter(stakesCurrent, { marketId }),
+        accountStakesCurrent: _.filter(accountStakesCurrent, { marketId }),
+        accountStakesCompleted: _.filter(accountStakesCompleted, { marketId }),
+        disputeRound: _.filter(disputeRound, { marketId }),
+      };
+    });
+  return disputeDetailsByMarket.map(reshapeStakeRowToUIStakeInfo);
 }
 
 function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<string>|null {
@@ -174,14 +158,13 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
   const stakeCurrentByPayout: { [payoutId: number]: ActiveCrowdsourcer } = _.keyBy(stakeRows.stakesCurrent, "payoutId");
   const accountStakeCompletedByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCompleted, "payoutId");
   const accountStakeCurrentByPayout: { [payoutId: number]: StakeRow } = _.keyBy(stakeRows.accountStakesCurrent, "payoutId");
-
   const stakeResults = _.map(stakeRows.payouts, (payout: PayoutRow<BigNumber>): StakeDetails<BigNumber> => {
     const stakeCompletedRow = stakeCompletedByPayout[payout.payoutId];
     const stakeCurrentRow = stakeCurrentByPayout[payout.payoutId];
     const accountStakeCompletedRow = accountStakeCompletedByPayout[payout.payoutId];
     const accountStakeCurrentRow = accountStakeCurrentByPayout[payout.payoutId];
 
-    const stakeCompleted: BigNumber = !stakeCompletedRow  ? ZERO : stakeCompletedRow.amountStaked;
+    const stakeCompleted: BigNumber = !stakeCompletedRow ? ZERO : stakeCompletedRow.amountStaked;
     const stakeCurrentOnPayout: BigNumber = !stakeCurrentRow ? ZERO : stakeCurrentRow.amountStaked;
 
     let currentAmounts: StakeSizes<BigNumber> = {};
@@ -191,13 +174,13 @@ function reshapeStakeRowToUIStakeInfo(stakeRows: DisputesResult): UIStakeInfo<st
       let stakeCurrent: BigNumber;
       let accountStakeCurrent: BigNumber;
       if (!stakeCurrentRow) {
-          bondSizeCurrent = calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompleted);
-          stakeCurrent = ZERO;
-          accountStakeCurrent = ZERO;
+        bondSizeCurrent = calculateBondSize(totalCompletedStakeOnAllPayouts, stakeCompleted);
+        stakeCurrent = ZERO;
+        accountStakeCurrent = ZERO;
       } else {
-          bondSizeCurrent = stakeCurrentRow.size;
-          stakeCurrent = stakeCurrentRow.amountStaked;
-          accountStakeCurrent = accountStakeCurrentRow ? accountStakeCurrentRow.amountStaked : ZERO;
+        bondSizeCurrent = stakeCurrentRow.size;
+        stakeCurrent = stakeCurrentRow.amountStaked;
+        accountStakeCurrent = accountStakeCurrentRow ? accountStakeCurrentRow.amountStaked : ZERO;
       }
       currentAmounts = {
         bondSizeCurrent,
