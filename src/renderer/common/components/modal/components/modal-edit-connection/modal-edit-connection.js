@@ -12,6 +12,7 @@ export default class ModalEditConnection extends Component {
     addUpdateConnection: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
     connections: PropTypes.object.isRequired,
+    updateConfig: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -50,6 +51,9 @@ export default class ModalEditConnection extends Component {
 
   saveConnection(e) {
     const key = this.props.initialConnection ? this.props.initialConnection.key : this.state.connection.name
+    if (!this.props.initialConnection) { // for add new animation
+      this.props.updateConfig({animateKey: this.state.connection.name})
+    }
     this.props.addUpdateConnection(key, this.state.connection)
     this.closeModal(e)
     e.stopPropagation()

@@ -15,6 +15,8 @@ export class NetworkDropdown extends Component {
 	    isConnectedPressed: PropTypes.bool,
 	    openBrowserEnabled: PropTypes.bool,
 	    stopAugurNode: PropTypes.func.isRequired,
+	    animateKey: PropTypes.string,
+	    updateConfig: PropTypes.func.isRequired,
 	};
 
 	constructor(props) {
@@ -36,6 +38,11 @@ export class NetworkDropdown extends Component {
 			const key = this.findSelectedKey(this.props.connections)
 			this.setState({selectedNetwork: key})
 		}
+		if (prevProps.animateKey !== this.props.animateKey) {
+			setTimeout(() => {
+		      this.props.updateConfig({animateKey: ''})
+		    }, 300)
+		}
 	}
 
 	findSelectedKey(connections) {
@@ -50,15 +57,14 @@ export class NetworkDropdown extends Component {
 	}
 
 	selectNetwork(networkId) {
-    if (this.state.selectedNetwork !== networkId) {
-      this.props.updateSelectedConnection(networkId)
-      this.setState({menuIsOpen: false})
-      this.setState({selectedNetwork: networkId})
+	    if (this.state.selectedNetwork !== networkId) {
+	      this.props.updateSelectedConnection(networkId)
+	      this.setState({menuIsOpen: false, selectedNetwork: networkId})
 
-      if (this.props.isConnectedPressed) {
-        this.props.stopAugurNode();
-      }
-    }
+	      if (this.props.isConnectedPressed) {
+	        this.props.stopAugurNode();
+	      }
+	    }
 	}
 
 	setMenuIsOpen(value) {
@@ -97,6 +103,7 @@ export class NetworkDropdown extends Component {
   			connections,
   			isConnectedPressed,
   			openBrowserEnabled,
+  			animateKey,
   		} = this.props
 
 	  	let options = []
@@ -108,7 +115,13 @@ export class NetworkDropdown extends Component {
 	  			userCreatedOptions.push(
 		  			<div
 		              key={key}
-		              className={classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem)}
+		              className={
+		              	classNames(DropdownStyles.Dropdown__menuItem, Styles.NetworkDropdown__menuItem,
+		              		{
+					        	[Styles['NetworkDropdown__menuItem-hidden']]: animateKey === key,
+					        }
+		           		)
+		              }
 		              onClick={this.selectNetwork.bind(this, key)}
 		            >
 		              {this.renderCircle(isSelected)}
