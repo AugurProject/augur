@@ -45,7 +45,7 @@ export class App extends Component {
       if (this.props.serverStatus.CONNECTED) {
         this.processingTimeout = setTimeout(() => {
           this.setState({processing: true})
-        }, 600);
+        }, 800);
       } else {
         this.setState({processing: false, connectedPressed: false})
       }
