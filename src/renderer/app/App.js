@@ -68,6 +68,7 @@ export class App extends Component {
       serverStatus,
       blockInfo,
       notifications,
+      addInfoNotification,
     } = this.props
 
     const {
@@ -80,7 +81,7 @@ export class App extends Component {
     if (blocksRemaining <= 15 && connectedPressed && serverStatus.CONNECTED) {
       openBrowserEnabled = true
     }
-    
+
     const infos = notifications[INFO_NOTIFICATION]
 
     return (
@@ -93,6 +94,7 @@ export class App extends Component {
               <SettingsDropdown
                 sslEnabled={sslEnabled}
                 updateConfig={updateConfig}
+                addInfoNotification={addInfoNotification}
               />
             </div>
             <NetworkDropdownContainer
@@ -116,7 +118,7 @@ export class App extends Component {
             />
           </div>
         </div>
-        { infos && infos.length > 0 && 
+        { infos && infos.length > 0 &&
           <div className={Styles.App_constantContainer}>
             <NotificationContainer />
           </div>
@@ -139,4 +141,5 @@ App.propTypes = {
   serverStatus: PropTypes.object,
   blockInfo: PropTypes.object,
   notifications: PropTypes.object,
+  addInfoNotification: PropTypes.func,
 };

@@ -146,16 +146,6 @@ AugurNodeServer.prototype.onBulkSyncFinished = function () {
   log.info('Sync with blockchain complete.')
   if (this.window) this.window.webContents.send(BULK_SYNC_FINISHED)
 
-  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
-    messageType: GEN_INFO,
-    message: 'Finished Downloading logs'
-  })
-
-  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
-    messageType: GEN_INFO,
-    message: 'Starting Stream Sync'
-  })
-
   this.bulkSyncing = false
 }
 

@@ -5,6 +5,7 @@ import Dropdown from "../../../common/components/dropdown/dropdown";
 import settingsPng from '../../../../assets/images/settings.png'
 import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
 import { resetDatabase } from '../../actions/localServerCmds'
+import { INFO_NOTIFICATION, GEN_INFO } from '../../../../utils/constants'
 
 export class SettingsDropdown extends Component {
   constructor(props) {
@@ -15,12 +16,16 @@ export class SettingsDropdown extends Component {
 
   toggleLedger() {
     this.props.updateConfig({ sslEnabled: !this.props.sslEnabled })
-    console.log('enable/disable ledger clicked')
+    setTimeout(() => {
+      this.props.addInfoNotification({
+        messageType: GEN_INFO,
+        message: 'SSL enabled Setting Updated'
+      })
+    }, 500)
   }
 
   reset() {
     resetDatabase()
-  	console.log('reset db clicked')
   }
 
   render() {
@@ -51,4 +56,5 @@ export class SettingsDropdown extends Component {
 SettingsDropdown.propTypes = {
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
+  addInfoNotification: PropTypes.func,
 };
