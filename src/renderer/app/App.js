@@ -11,7 +11,6 @@ import NotificationContainer from "./containers/notification-container"
 import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
-import { INFO_NOTIFICATION } from '../../utils/constants'
 import classNames from "classnames";
 import ModalDownloadGeth from "../common/components/modal/components/modal-download-geth/modal-download-geth";
 
@@ -73,7 +72,7 @@ export class App extends Component {
     const selected = this.props.selected
     this.setState({connectedPressed: true, showDownloadGeth: false});
     startAugurNode(selected)
-    startUiServer() 
+    startUiServer()
   }
 
   cancelDownload() {
@@ -90,7 +89,6 @@ export class App extends Component {
       updateConfig,
       serverStatus,
       blockInfo,
-      notifications,
       addInfoNotification,
       selected,
     } = this.props
@@ -107,12 +105,10 @@ export class App extends Component {
       openBrowserEnabled = true
     }
 
-    const infos = notifications[INFO_NOTIFICATION]
-
     return (
       <div className={Styles.App}>
         <Modal />
-          <div 
+          <div
             className={classNames(Styles.App__smallBg, {
               [Styles['App__smallBg-show']]: showDownloadGeth
             })}
@@ -151,11 +147,9 @@ export class App extends Component {
             />
           </div>
         </div>
-        { infos && infos.length > 0 &&
-          <div className={Styles.App_constantContainer}>
-            <NotificationContainer />
-          </div>
-        }
+        <div className={Styles.App_constantContainer}>
+          <NotificationContainer />
+        </div>
         <div className={Styles.App__footer}>
           <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled} onClick={this.callOpenAugurUi}>
             Open in Browser

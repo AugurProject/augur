@@ -158,6 +158,10 @@ AugurNodeServer.prototype.onResetDatabase = function () {
       })
     } else {
       this.augurNodeController.resetDatabase()
+      this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+        messageType: GEN_INFO,
+        message: 'Database Reset'
+      })
     }
   } catch (err) {
     log.error(err)
@@ -166,7 +170,6 @@ AugurNodeServer.prototype.onResetDatabase = function () {
       message: err
     })
   }
-  this.sendMsgToWindowContents(RESET_RESPONSE, {})
 }
 
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {

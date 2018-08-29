@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-import { each, pull, take } from 'lodash'
+import { each, take, isEqual } from 'lodash'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Styles from './notifications.style.less'
@@ -33,17 +33,25 @@ export class Notifications extends Component {
       toastIt: take(props.infoNotifications, NUM_INFOS) || []
     }
 
-    this.showToast()
     this.removeToast = this.removeToast.bind(this);
   }
 
+  componentDidMount() {
+    this.showToast()
+  }
+
   componentDidUpdate(prevProps) {
-    if (prevProps.notifications !== this.props.notifications) {
-      this.setState({
-        toastIt: take(this.props.infoNotifications, NUM_INFOS - this.state.toastIt.length) || []
-      }, () => {
-        this.showToast()
-      })
+    const { infoNotifications } = this.props
+    const { toastIt } = this.state
+    if (!isEqual(prevProps.infoNotifications, infoNotifications)) {
+      const values = take(infoNotifications.filter(n => !n.toastId), NUM_INFOS - toastIt.length)
+      if (values.length > 0) {
+        this.setState({
+          toastIt: [...toastIt, ...values]
+        }, () => {
+          this.showToast()
+        })
+      }
     }
   }
 
@@ -52,7 +60,7 @@ export class Notifications extends Component {
     if (toastIt.length > 0) {
       each(toastIt, t => {
         if (!t.toastId) {
-          t.toastId = toast(<Msg notification={t} className={Styles.Notification__msgContainer}/>,
+          t.toastId = toast(<Msg key={t.timestamp} notification={t} className={Styles.Notification__msgContainer}/>,
             {
               position: toast.POSITION.BOTTOM_CENTER,
               closeButton: false,
@@ -60,17 +68,15 @@ export class Notifications extends Component {
             })
         }
       })
-      this.setState({
-        toastIt
-      })
     }
   }
 
   removeToast(notification) {
     this.setState({
-      toasts: pull(this.state.toastIt, notification.message)
+      toastIt: this.state.toastIt.filter(t => t.toastId !== notification.toastId)
+    }, () => {
+      this.props.removeNotification(notification)
     })
-    this.props.removeNotification(notification)
   }
 
   render() {

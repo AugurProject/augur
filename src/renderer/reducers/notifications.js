@@ -11,15 +11,19 @@ const DEFAULT_STATE = {
 export default function (notifications = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_NOTIFICATION:
-      notifications[action.data.type].push(action.data.message)
+      notifications[action.data.type] = [
+        ...notifications[action.data.type],
+        action.data.message
+      ]
       return {
         ...notifications
       }
     case REMOVE_NOTIFICATION:
-      pull(notifications[INFO_NOTIFICATION], action.data.message)
-      pull(notifications[ERROR_NOTIFICATION], action.data.message)
+      const infos = pull(notifications[INFO_NOTIFICATION], action.data.message)
+      const errors = pull(notifications[ERROR_NOTIFICATION], action.data.message)
       return {
-        ...notifications
+        INFO_NOTIFICATION: infos,
+        ERROR_NOTIFICATION: errors
       }
     case RESET_STATE:
       return DEFAULT_STATE
