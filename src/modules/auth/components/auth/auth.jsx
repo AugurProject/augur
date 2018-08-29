@@ -4,16 +4,8 @@ import { Route } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
 
-import {
-  AUTHENTICATION,
-  CONNECT,
-  CREATE
-} from "modules/routes/constants/views";
-import {
-  AuthAccounts,
-  AuthConnect,
-  AuthCreate
-} from "modules/routes/constants/components";
+import { AUTHENTICATION, CONNECT } from "modules/routes/constants/views";
+import { AuthAccounts, AuthConnect } from "modules/routes/constants/components";
 
 import Styles from "modules/auth/components/auth/auth.styles";
 
@@ -28,7 +20,6 @@ export default function Auth(p) {
         path={makePath([AUTHENTICATION, CONNECT])}
         component={AuthConnect}
       />
-      <Route path={makePath([AUTHENTICATION, CREATE])} component={AuthCreate} />
     </section>
   );
 }
