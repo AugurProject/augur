@@ -8,6 +8,7 @@ import NetworkDropdownContainer from "./containers/network-dropdown-container";
 import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import NotificationContainer from "./containers/notification-container"
+import ShowErrorsContainer from "./containers/show-errors-container"
 import { requestServerConfigurations, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
@@ -145,6 +146,7 @@ export class App extends Component {
             />
           </div>
         </div>
+        <ShowErrorsContainer />
         <div className={Styles.App_constantContainer}>
           <NotificationContainer />
         </div>
@@ -165,6 +167,5 @@ App.propTypes = {
   updateConfig: PropTypes.func,
   serverStatus: PropTypes.object,
   blockInfo: PropTypes.object,
-  notifications: PropTypes.object,
   addInfoNotification: PropTypes.func,
 };

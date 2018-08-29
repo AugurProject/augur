@@ -1,5 +1,6 @@
 const {ipcRenderer, shell} = require('electron')
-import { STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
+import { UNEXPECTED_ERR, STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
+import { addErrorNotification } from './notifications'
 import store from '../../store'
 
 export const requestServerConfigurations = () => {
@@ -12,6 +13,13 @@ export const requestLatestSyncedBlock = () => {
 
 export const resetDatabase = (data) => {
   ipcRenderer.send(RESET_DATABASE, data)
+
+
+  store.dispatch(addErrorNotification({
+    messageType: UNEXPECTED_ERR,
+    message: 'This is a really big error, need to do something about it'
+  }))
+
 }
 
 export const startUiServer = () => {
