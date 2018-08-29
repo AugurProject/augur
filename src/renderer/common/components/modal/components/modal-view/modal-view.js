@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 import ModalEditConnection from "../../containers/modal-edit-connection";
-// import ModalDeleteConnection from "../../containers/modal-delete-connection";
 import * as TYPES from "../../constants/modal-types";
 import Styles from "./modal-view.styles.less";
 
@@ -41,8 +40,7 @@ export default class ModalView extends Component {
         className={
           classNames(
             Styles.ModalView, 
-            {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)},
-            {[Styles.ModalView__small]: (modal.type === TYPES.MODAL_DELETE_CONNECTION)},
+            {[Styles.ModalView__hide]: (Object.keys(modal).length === 0)}
           )
         }
       >

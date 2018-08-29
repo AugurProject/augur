@@ -12,6 +12,8 @@ import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNo
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 import { INFO_NOTIFICATION } from '../../utils/constants'
+import classNames from "classnames";
+import ModalDownloadGeth from "../common/components/modal/components/modal-download-geth/modal-download-geth";
 
 export class App extends Component {
    constructor(props) {
@@ -20,10 +22,13 @@ export class App extends Component {
     this.state = {
       connectedPressed: false,
       processing: props.serverStatus.CONNECTED || false,
+      showDownloadGeth: false,
     };
 
     this.connect = this.connect.bind(this);
     this.callOpenAugurUi = this.callOpenAugurUi.bind(this);
+    this.downloadGeth = this.downloadGeth.bind(this);
+    this.cancelDownload = this.cancelDownload.bind(this);
     this.processingTimeout = null;
   }
 
@@ -47,14 +52,30 @@ export class App extends Component {
 
   connect() {
     const selected = this.props.selected
-    if (this.props.serverStatus.CONNECTED) {
-      this.setState({connectedPressed: false});
-      stopAugurNode()
+
+    if (!this.props.serverStatus.CONNECTED && selected.name === 'Local (Light Node)') { // need to switch to key
+      this.setState({showDownloadGeth: true})
     } else {
-      this.setState({connectedPressed: true});
-      startAugurNode(selected)
-      startUiServer() // start ui server at same time
+      if (this.props.serverStatus.CONNECTED) {
+        this.setState({connectedPressed: false});
+        stopAugurNode()
+      } else {
+        this.setState({connectedPressed: true});
+        startAugurNode(selected)
+        startUiServer() // start ui server at same time
+      }
     }
+  }
+
+  downloadGeth() {
+    const selected = this.props.selected
+    this.setState({connectedPressed: true, showDownloadGeth: false});
+    startAugurNode(selected)
+    startUiServer() 
+  }
+
+  cancelDownload() {
+    this.setState({connectedPressed: false, showDownloadGeth: false});
   }
 
   callOpenAugurUi() {
@@ -74,6 +95,7 @@ export class App extends Component {
     const {
       connectedPressed,
       processing,
+      showDownloadGeth,
     } = this.state
 
     let openBrowserEnabled = false
@@ -87,6 +109,13 @@ export class App extends Component {
     return (
       <div className={Styles.App}>
         <Modal />
+          <div 
+            className={classNames(Styles.App__smallBg, {
+              [Styles['App__smallBg-show']]: showDownloadGeth
+            })}
+          >
+            <ModalDownloadGeth closeModal={this.cancelDownload} download={this.downloadGeth} />
+          </div>
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__scrollContainer}>
             <div className={Styles.App__row}>
