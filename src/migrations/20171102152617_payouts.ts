@@ -12,7 +12,7 @@ exports.up = async (knex: Knex): Promise<any> => {
         table.string(column, 255).nullable();
         uniqueIndex.push(column);
       }
-      table.integer("isInvalid");
+      table.boolean("isInvalid");
       table.integer("tentativeWinning").defaultTo(0);
       table.integer("winning").nullable();
 

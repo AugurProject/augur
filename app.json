@@ -1,18 +1,25 @@
 {
   "name": "Augur Node",
   "description": "A middleware node suitable for aggregating data for Augur from the Ethereum blockchain",
-  "repository": "https://github.com/augurproject/augur-node",
+  "repository": "https://github.com/AugurProject/augur-node",
   "keywords": ["augur", "ethereum"],
-  "formation": {
-    "web": {
-      "quantity": 1,
-      "size": "free"
+  "env": {
+    "ENDPOINT_HTTP": {
+      "description": "The Ethereum node HTTP endpoint.",
+      "value": "https://rinkeby.ethereum.nodes.augur.net"
     },
-    {
-      "plan": "heroku-postgresql",
-      "options": {
-        "version": "9.5"
-      }
+    "ENDPOINT_WS": {
+      "description": "The Ethereum node WSS endpoint.",
+      "value": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
+    },
+    "NETWORK": {
+      "description": "The Ethereum network to connect to. Possible values: `ropsten`, `kovan`, `rinkeby`, `clique`, `aura`",
+      "value": "rinkeby"
+    },
+    "RINKEBY_PRIVATE_KEY": {
+      "description": "The private key for Ethereum. This is the public Augur test key. If you use a different network, change the name of the environment variable accordingly.",
+      "value": "0xfae42052f82bed612a724fec3632f325f377120592c75bb78adfcceae6470c5a"
     }
-  }
+  },
+  "addons": ["heroku-postgresql:hobby-dev"]
 }

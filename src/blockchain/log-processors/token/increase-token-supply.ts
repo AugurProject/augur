@@ -13,7 +13,7 @@ export function increaseTokenSupply(db: Knex, augur: Augur, token: Address, amou
     if (oldSupply == null) {
       db.insert({ token, supply: amount.toFixed() }).into("token_supply").asCallback(callback);
     } else {
-      const supply = oldSupply.supply.plus(amount);
+      const supply = new BigNumber(oldSupply.supply).plus(amount);
       db.update({ supply: supply.toFixed() }).into("token_supply").where({ token }).asCallback(callback);
     }
   });

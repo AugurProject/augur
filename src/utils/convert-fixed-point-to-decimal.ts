@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 
 export function fixedPointToDecimal(fixedPointValue: BigNumber, conversionFactor: BigNumber): BigNumber {
-  return fixedPointValue.dividedBy(conversionFactor);
+  return new BigNumber(fixedPointValue, 10).dividedBy(conversionFactor);
 }
 
 export function convertFixedPointToDecimal(fixedPointValue: string|number|BigNumber, conversionFactor: string|number): string {
@@ -9,7 +9,7 @@ export function convertFixedPointToDecimal(fixedPointValue: string|number|BigNum
 }
 
 export function decimalToFixedPoint(decimalValue: BigNumber, conversionFactor: BigNumber): BigNumber {
-  return decimalValue.times(conversionFactor);
+  return new BigNumber(decimalValue, 10).times(conversionFactor);
 }
 
 export function convertDecimalToFixedPoint(decimalValue: string|number, conversionFactor: string|number): string {
@@ -17,7 +17,7 @@ export function convertDecimalToFixedPoint(decimalValue: string|number, conversi
 }
 
 export function numTicksToTickSize(numTicks: BigNumber, minPrice: BigNumber, maxPrice: BigNumber): BigNumber {
-  return maxPrice.minus(minPrice).dividedBy(numTicks);
+  return new BigNumber(maxPrice, 10).minus(minPrice).dividedBy(numTicks);
 }
 
 export function convertNumTicksToTickSize(numTicks: string|number, minPrice: string|number, maxPrice: string|number): string {
