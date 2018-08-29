@@ -11,6 +11,7 @@ import NotificationContainer from "./containers/notification-container"
 import { requestServerConfigurations, startUiServer, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
+import { INFO_NOTIFICATION } from '../../utils/constants'
 
 export class App extends Component {
    constructor(props) {
@@ -64,6 +65,7 @@ export class App extends Component {
       updateConfig,
       serverStatus,
       blockInfo,
+      notifications,
     } = this.props
 
     const {
@@ -76,7 +78,8 @@ export class App extends Component {
     if (blocksRemaining <= 15 && connectedPressed && serverStatus.CONNECTED) {
       openBrowserEnabled = true
     }
-
+    
+    const infos = notifications[INFO_NOTIFICATION]
 
     return (
       <div className={Styles.App}>
@@ -110,8 +113,12 @@ export class App extends Component {
               openBrowserEnabled={openBrowserEnabled}
             />
           </div>
-          <NotificationContainer />
         </div>
+        { infos && infos.length > 0 && 
+          <div className={Styles.App_constantContainer}>
+            <NotificationContainer />
+          </div>
+        }
         <div className={Styles.App__footer}>
           <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled} onClick={this.openAugurUi}>
             Open in Browser
@@ -129,4 +136,5 @@ App.propTypes = {
   updateConfig: PropTypes.func,
   serverStatus: PropTypes.object,
   blockInfo: PropTypes.object,
+  notifications: PropTypes.object,
 };

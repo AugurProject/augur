@@ -48,7 +48,7 @@ export class Notifications extends Component {
     if (infos && infos.length > 0) {
       each(infos, n => {
         if (this.state.toasts.indexOf(n.message) === -1) {
-          toast(<Msg notification={n} />,
+          toast(<Msg notification={n} className={Styles.Notification__msgContainer}/>,
           {
             position: toast.POSITION.BOTTOM_CENTER,
             closeButton: false,
@@ -71,11 +71,11 @@ export class Notifications extends Component {
 
   render() {
     return (
-      <div>
+      <div className={Styles.Notification}>
           <ToastContainer
             hideProgressBar={true}
             className={Styles.Notification__container}
-            toastClassName={Styles.Notification__container}
+            toastClassName={Styles.Notification__toast}
             autoClose={10000}
           />
       </div>

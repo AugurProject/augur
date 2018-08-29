@@ -10,9 +10,26 @@
 	height: 807px; // had to do some weird stuff for height, really want 100% here but can't find parent to set that
 }
 
+:local(.App_constantContainer) {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: 0;
+    background-color: #231a3a;
+    max-height: 100px;
+    left: 0;
+    right: 0;
+    margin-bottom: 105px;
+    height: 100px;
+}
+
 :local(.App__connectingContainer) {
 	padding: 19px;
 	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 :local(.App__scrollContainer) {
