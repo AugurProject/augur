@@ -5,6 +5,8 @@
     position: absolute;
     right: 0;
     left: 0;
+    max-height: 150px;
+    overflow-y: scroll;
 }
 
 :local(.Notification__container) {
@@ -19,10 +21,16 @@
   // height: 48px;
   border-radius: 2px;
   background-color: #ffffff;
-  padding: 16px 11px;
+  padding: 8px 11px;
+  display: flex;
   // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.12);
   // padding-top: 2rem;
   // padding-left: 0.5rem;
+}
+
+:local(.Notification__bodyText) {
+	display: flex;
+	flex-grow: 1;
 }
 
 :local(.Notification__close) {
@@ -38,7 +46,7 @@
 
 :local(.Notification__toast) {
 	padding: 0;
-	margin: 10px;
+	margin: 5px 10px;
 	font-size: 14px;
 	font-weight: normal;
 	font-style: normal;
@@ -52,4 +60,5 @@
  // 	min-width: 300px;
  	// min-height: 17px;
  	overflow-y: scroll;
+ 	min-height: 47px;
 }
