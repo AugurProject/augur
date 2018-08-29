@@ -55,7 +55,7 @@ export class App extends Component {
   connect() {
     const selected = this.props.selected
 
-    if (!this.props.serverStatus.CONNECTED && selected.name === localLightNodeName) {
+    if (!this.props.serverStatus.CONNECTED && selected.name === localLightNodeName && !this.props.downloadModalSeen) {
       this.setState({showDownloadGeth: true})
     } else {
       if (this.props.serverStatus.CONNECTED) {
@@ -71,6 +71,7 @@ export class App extends Component {
   downloadGeth() {
     const selected = this.props.selected
     this.setState({connectedPressed: true, showDownloadGeth: false});
+    this.props.updateConfig({downloadModalSeen: true})
     startAugurNode(selected)
   }
 
@@ -90,6 +91,7 @@ export class App extends Component {
       blockInfo,
       addInfoNotification,
       selected,
+      downloadModalSeen,
     } = this.props
 
     const {
@@ -107,6 +109,7 @@ export class App extends Component {
     return (
       <div className={Styles.App}>
         <Modal />
+        { !downloadModalSeen && 
           <div
             className={classNames(Styles.App__smallBg, {
               [Styles['App__smallBg-show']]: showDownloadGeth
@@ -114,6 +117,7 @@ export class App extends Component {
           >
             <ModalDownloadGeth closeModal={this.cancelDownload} download={this.downloadGeth} />
           </div>
+        }
         <div className={Styles.App__connectingContainer}>
           <div className={Styles.App__scrollContainer}>
             <div className={Styles.App__row}>
@@ -168,4 +172,5 @@ App.propTypes = {
   serverStatus: PropTypes.object,
   blockInfo: PropTypes.object,
   addInfoNotification: PropTypes.func,
+  downloadModalSeen: PropTypes.bool,
 };
