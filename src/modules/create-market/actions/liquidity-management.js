@@ -51,6 +51,12 @@ export const startOrderSending = options => (dispatch, getState) => {
       )
     );
   }
+  // create a marketOutcomesArray which is an array of descriptions to match categorical outcomes to their proper index
+  const marketOutcomesArray = market.outcomes.reduce((acc, outcome) => {
+    acc.push(outcome.description);
+    return acc;
+  }, []);
+
   eachOfSeries(
     Object.keys(orderBook),
     (outcome, index, seriesCB) => {
@@ -62,7 +68,10 @@ export const startOrderSending = options => (dispatch, getState) => {
         orderBook[outcome],
         1,
         (order, orderId, orderCB) => {
-          const outcomeIndex = marketType === CATEGORICAL ? index : 1; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
+          const outcomeIndex =
+            marketType === CATEGORICAL
+              ? marketOutcomesArray.indexOf(outcome)
+              : 1; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeId 1
           const outcomeId = marketType === CATEGORICAL ? outcome : 1;
           const orderType = order.type === BID ? 0 : 1;
           const tradeCost = augur.trading.calculateTradeCost({

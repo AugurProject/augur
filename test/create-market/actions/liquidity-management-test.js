@@ -26,7 +26,8 @@ describe(`modules/create-market/actions/liquidity-management.js`, () => {
         numTicks: "10000",
         marketType: YES_NO,
         minPrice: "0",
-        maxPrice: "1"
+        maxPrice: "1",
+        outcomes: [{ id: 0, description: null }, { id: 1, description: null }]
       }
     },
     pendingLiquidityOrders: {},
