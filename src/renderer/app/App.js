@@ -22,6 +22,7 @@ export class App extends Component {
     };
 
     this.connect = this.connect.bind(this);
+    this.callOpenAugurUi = this.callOpenAugurUi.bind(this);
     this.processingTimeout = null;
   }
 
@@ -51,11 +52,12 @@ export class App extends Component {
     } else {
       this.setState({connectedPressed: true});
       startAugurNode(selected)
+      startUiServer() // start ui server at same time
     }
   }
 
-  openAugurUi() {
-    openAugurUi()
+  callOpenAugurUi() {
+    openAugurUi(this.props.selected)
   }
 
   render() {
@@ -90,8 +92,8 @@ export class App extends Component {
                 updateConfig={updateConfig}
               />
             </div>
-            <NetworkDropdownContainer 
-              openBrowserEnabled={openBrowserEnabled} 
+            <NetworkDropdownContainer
+              openBrowserEnabled={openBrowserEnabled}
               isConnectedPressed={connectedPressed}
               stopAugurNode={this.connect}
             />
@@ -113,7 +115,7 @@ export class App extends Component {
           <NotificationContainer />
         </div>
         <div className={Styles.App__footer}>
-          <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled} onClick={this.openAugurUi}>
+          <button className={Styles.App__openBrowserButton} disabled={!openBrowserEnabled} onClick={this.callOpenAugurUi}>
             Open in Browser
           </button>
         </div>
@@ -128,5 +130,5 @@ App.propTypes = {
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
   serverStatus: PropTypes.object,
-  blockInfo: PropTypes.object,
+  blockInfo: PropTypes.object
 };
