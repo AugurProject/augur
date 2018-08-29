@@ -3,6 +3,7 @@ export const RESET_DATABASE = 'RESET_DATABASE'
 export const START_AUGUR_NODE = 'START_AUGUR_NODE'
 export const START_GETH = 'START_GETH'
 export const START_UI_SERVER = 'START_UI_SERVER'
+export const STOP_UI_SERVER = 'STOP_UI_SERVER'
 export const STOP_AUGUR_NODE = 'STOP_AUGUR_NODE'
 export const STOP_GETH = 'STOP_GETH'
 

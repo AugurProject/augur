@@ -1,4 +1,4 @@
-const { SSL_GEN_ERROR, UNEXPECTED_ERR, START_FAILURE, PORT_IN_USE, ERROR_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, START_UI_SERVER } = require('../utils/constants')
+const { STOP_UI_SERVER, SSL_GEN_ERROR, UNEXPECTED_ERR, START_FAILURE, PORT_IN_USE, ERROR_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, START_UI_SERVER } = require('../utils/constants')
 const express = require('express')
 const log = require('electron-log')
 const https = require('https')
@@ -20,6 +20,7 @@ function AugurUIServer() {
   }
   this.appDataPath = appData('augur')
   ipcMain.on(START_UI_SERVER, this.onStartUiServer.bind(this))
+  ipcMain.on(STOP_UI_SERVER, this.onStopUiServer.bind(this))
 }
 
 AugurUIServer.prototype.onStartUiServer = function (event, config) {
@@ -105,13 +106,13 @@ AugurUIServer.prototype.startServer = function (event) {
   }
 }
 
-AugurUIServer.prototype.stopServer = function () {
+AugurUIServer.prototype.onStopUiServer = function () {
   log.info('Stopping Augur UI Server')
   this.server && this.server.close()
 }
 
 AugurUIServer.prototype.restart = function (event) {
-  if (this.server !== null) this.stopServer()
+  if (this.server !== null) this.onStopUiServer()
   this.startServer(event)
 }
 
