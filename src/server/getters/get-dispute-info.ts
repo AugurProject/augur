@@ -122,16 +122,17 @@ export function isGetDisputeInfoParams(params: any): params is GetDisputeInfoPar
 }
 
 export async function getDisputeInfo(db: Knex, augur: Augur, params: GetDisputeInfoParams): Promise<Array<UIStakeInfo<string>|null>> {
-  const markets: Array<MarketsRowWithTime> = await getMarketsWithReportingState(db).whereIn("markets.marketId", params.marketIds);
-  const payouts: Array<PayoutRow<BigNumber>> = await db("payouts").whereIn("marketId", params.marketIds);
-  const stakesCompleted: Array<StakeRow> = await getCompletedStakes(db, params.marketIds);
-  const stakesCurrent: Array<ActiveCrowdsourcer> = await getCurrentStakes(db, params.marketIds);
-  const accountStakesCurrent: Array<StakeRow> = await getAccountStakes(db, params.marketIds, params.account, false);
-  const accountStakesCompleted: Array<StakeRow> = await getAccountStakes(db, params.marketIds, params.account, true);
-  const disputeRound: Array<DisputeRound> = await db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", params.marketIds);
+  const cleanMarketIds = _.compact(params.marketIds);
+  const markets: Array<MarketsRowWithTime> = await getMarketsWithReportingState(db).whereIn("markets.marketId", cleanMarketIds);
+  const payouts: Array<PayoutRow<BigNumber>> = await db("payouts").whereIn("marketId", cleanMarketIds);
+  const stakesCompleted: Array<StakeRow> = await getCompletedStakes(db, cleanMarketIds);
+  const stakesCurrent: Array<ActiveCrowdsourcer> = await getCurrentStakes(db, cleanMarketIds);
+  const accountStakesCurrent: Array<StakeRow> = await getAccountStakes(db, cleanMarketIds, params.account, false);
+  const accountStakesCompleted: Array<StakeRow> = await getAccountStakes(db, cleanMarketIds, params.account, true);
+  const disputeRound: Array<DisputeRound> = await db("crowdsourcers").select("marketId").count("* as disputeRound").groupBy("crowdsourcers.marketId").where("crowdsourcers.completed", 1).whereIn("crowdsourcers.marketId", cleanMarketIds);
   if (!markets) throw new Error("Could not retrieve markets");
   const disputeDetailsByMarket =
-    _.map(params.marketIds, (marketId: Address): DisputesResult => {
+    _.map(cleanMarketIds, (marketId: Address): DisputesResult => {
       return {
         markets: _.filter(markets, { marketId }),
         payouts: _.filter(payouts, { marketId }),
