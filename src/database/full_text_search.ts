@@ -40,24 +40,21 @@ export class SqliteSearch extends FullTextSearchProvider {
 
 class PostgreSQLSearch extends FullTextSearchProvider {
   static async migrateUp(db: Knex): Promise<any> {
-    await db.schema.raw(`DROP INDEX market_search_idx IF EXISTS`);
-    await db.schema.raw(`CREATE INDEX market_search_idx
-            ON markets
-            USING gin(
-              to_tsvector('english', category),
-              to_tsvector('english', tag1),
-              to_tsvector('english', tag2),
-              to_tsvector('english', shortDescription),
-              to_tsvector('english', longDescription),
-              to_tsvector('english', scalarDenomination),
-              to_tsvector('english', resolutionSource)
-            );`);
       await db.schema.table("markets", (markets) => {
         markets.specificType("searchProperties", "tsvector");
       });
       await db("markets").update({
-        searchProperties: db.raw(`to_tsvector('english', coalesce(category, '') || ' ' || coalesce(tag1, '') || ' ' || coalesce(tag2, '') || ' ' || coalesce(shortDescription, '') || ' ' || coalesce(longDescription, '') || ' ' || coalesce(scalarDenomination, '') || ' ' || coalesce(resolutionSource, ''))`)
+        searchProperties: db.raw(`
+              setweight(to_tsvector('english', coalesce(category, '')), 'A') ||
+              setweight(to_tsvector('english', coalesce(tag1, '')), 'A') ||
+              setweight(to_tsvector('english', coalesce(tag2, '')), 'A') ||
+              setweight(to_tsvector('english', coalesce(shortDescription, '')), 'B') ||
+              setweight(to_tsvector('english', coalesce(longDescription, '')), 'B') ||
+              setweight(to_tsvector('english', coalesce(scalarDenomination, '')), 'C') ||
+              setweight(to_tsvector('english', coalesce(resolutionSource, '')), 'C')
+              `);
       });
+    await db.schema.raw(`CREATE INDEX market_search_idx ON markets USING gin("searchProperties");`);
   }
 
   static async migrateDown(db: Knex): Promise<any> {
