@@ -45,7 +45,7 @@ export class App extends Component {
       if (this.props.serverStatus.CONNECTED) {
         this.processingTimeout = setTimeout(() => {
           this.setState({processing: true})
-        }, 800);
+        }, 700);
       } else {
         this.setState({processing: false, connectedPressed: false})
       }
@@ -148,9 +148,9 @@ export class App extends Component {
               blockInfo={blockInfo}
               openBrowserEnabled={openBrowserEnabled}
             />
+            <ShowErrorsContainer />
           </div>
         </div>
-        <ShowErrorsContainer />
         <div className={Styles.App_constantContainer}>
           <NotificationContainer />
         </div>

@@ -8,17 +8,16 @@ export const ShowErrors = ({
 }) => {
   return (
     <div className={Styles.ShowErrors}>
-      { errorNotifications.map((e, i) => {
-        <div key={i}className={Styles.ShowErrors__body}>
+      { errorNotifications.map((e, i) => (
+        <div key={i} className={Styles.ShowErrors__body}>
           <div className={Styles.ShowErrors__icon}>icon</div>
           <div className={Styles.ShowErrors__bodyText}>{e.message}</div>
           <button className={Styles.ShowErrors__close} onClick={ () => removeError(e) } />
         </div>
-      })}
+      ))}
     </div>
   )
 }
-
 
 ShowErrors.propTypes = {
   errorNotifications: PropTypes.array.isRequired,
