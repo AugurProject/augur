@@ -50,13 +50,15 @@ export class NetworkDropdown extends Component {
 	}
 
 	selectNetwork(networkId) {
-		this.props.updateSelectedConnection(networkId)
-		this.setState({menuIsOpen: false})
-		this.setState({selectedNetwork: networkId})
+    if (this.state.selectedNetwork !== networkId) {
+      this.props.updateSelectedConnection(networkId)
+      this.setState({menuIsOpen: false})
+      this.setState({selectedNetwork: networkId})
 
-		if (this.props.isConnectedPressed) {
-			this.props.stopAugurNode();
-		}
+      if (this.props.isConnectedPressed) {
+        this.props.stopAugurNode();
+      }
+    }
 	}
 
 	setMenuIsOpen(value) {
@@ -75,13 +77,13 @@ export class NetworkDropdown extends Component {
 	}
 
 	renderCircle(isSelected) {
-		const { 
+		const {
   			isConnectedPressed,
-  			openBrowserEnabled, 
+  			openBrowserEnabled,
   		} = this.props
 
 		return (
-			<div 
+			<div
         		className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'], {
         			[Styles['NetworkDropdown__circle-blue']]: isSelected && isConnectedPressed && !openBrowserEnabled,
        				[Styles['NetworkDropdown__circle-green']]: isSelected && isConnectedPressed && openBrowserEnabled
@@ -91,10 +93,10 @@ export class NetworkDropdown extends Component {
 	}
 
   	render() {
-  		const { 
+  		const {
   			connections,
   			isConnectedPressed,
-  			openBrowserEnabled, 
+  			openBrowserEnabled,
   		} = this.props
 
 	  	let options = []
@@ -136,7 +138,7 @@ export class NetworkDropdown extends Component {
 			        		<div key="0" className={classNames(Styles.NetworkDropdown__label, {
 		               				[Styles['NetworkDropdown__label-open']]: this.state.menuIsOpen
 		           				})}>
-				        		<div 
+				        		<div
 					        		className={classNames(Styles.NetworkDropdown__circle, {
 					        			[Styles['NetworkDropdown__circle-blue']]: isConnectedPressed && !openBrowserEnabled,
 			               				[Styles['NetworkDropdown__circle-green']]: isConnectedPressed && openBrowserEnabled

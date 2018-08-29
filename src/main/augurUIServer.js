@@ -1,4 +1,4 @@
-const { SSL_GEN_ERROR, UNEXPECTED_ERR, START_FAILURE, PORT_IN_USE, ERROR_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, START_UI_SERVER } = require('../utils/constants')
+const { SSL_GEN_ERROR, UNEXPECTED_ERR, START_FAILURE, PORT_IN_USE, ERROR_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, START_UI_SERVER } = require('../utils/constants')
 const express = require('express')
 const log = require('electron-log')
 const https = require('https')
@@ -13,22 +13,30 @@ const helmet = require('helmet')
 
 function AugurUIServer() {
   this.server = null
-  this.portsConfig = null
+  this.portsConfig = {
+    uiPort: 8080,
+    sslPort: 8443,
+    sslEnabled: false
+  }
   this.appDataPath = appData('augur')
   ipcMain.on(START_UI_SERVER, this.onStartUiServer.bind(this))
-  ipcMain.on(REQUEST_CONFIG_RESPONSE, this.onRequestConfigResponse.bind(this))
 }
 
-AugurUIServer.prototype.onStartUiServer = function (event) {
-  this.uiPort = this.portsConfig.uiPort || 8080
-  this.sslPort = this.portsConfig.sslPort || 8443
-  if (this.server === null) this.startServer(event)
+AugurUIServer.prototype.onStartUiServer = function (event, config) {
+  if (config) {
+    const { uiPort, sslPort, sslEnabled } = config
+    this.portsConfig = { uiPort, sslPort, sslEnabled }
+    if (this.portsConfig.sslEnabled) {
+      this.createSSLCertificates(event)
+    }
+  }
+  this.restart(event)
 }
 
 AugurUIServer.prototype.startServer = function (event) {
   log.info('Starting Augur UI Server')
-  const port = this.uiPort
-  const sslPort = this.sslPort
+  const port = this.portsConfig.uiPort
+  const sslPort = this.portsConfig.sslPort
 
   try {
     this.app = express()
@@ -103,23 +111,15 @@ AugurUIServer.prototype.stopServer = function () {
 }
 
 AugurUIServer.prototype.restart = function (event) {
-  this.server && this.server.close()
+  if (this.server !== null) this.stopServer()
   this.startServer(event)
 }
 
-AugurUIServer.prototype.onRequestConfigResponse = function(event, config) {
-  if (config) {
-    const { uiPort, sslPort, sslEnabled } = config
-    this.portsConfig = { uiPort, sslPort, sslEnabled }
-    if (this.portsConfig.sslEnabled) {
-      this.createSSLCertificates()
-    }
-  }
-}
-
-AugurUIServer.prototype.createSSLCertificates = function () {
+AugurUIServer.prototype.createSSLCertificates = function (event) {
   const certPath = path.join(this.appDataPath, 'localhost.crt')
   const keyPath = path.join(this.appDataPath, 'localhost.key')
+
+  if (fs.existsSync(certPath) && fs.existsSync(keyPath)) return
 
   const kg = new KeyGen()
   log.info('start generating self signed certifiate files')
