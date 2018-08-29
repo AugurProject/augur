@@ -17,15 +17,11 @@
 
 :local(.Notification__body) {
   color: #383b41;
-  // width: 324px;
-  // height: 48px;
   border-radius: 2px;
   background-color: #ffffff;
   padding: 8px 11px;
   display: flex;
-  // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.12);
-   // padding-top: 2rem;
-  // padding-left: 0.5rem;
+  align-items: center;
 }
 
 :local(.Notification__bodyText) {
@@ -34,11 +30,15 @@
 }
 
 :local(.Notification__close) {
-
+  border: 0;
+  background: url(../../../../assets/images/notification-close.svg);
+  background-repeat: no-repeat;
+  min-width: 23px;
+  min-height: 23px;
 }
 
-:local(.Notification__close__button) {
-
+:local(.Notification__close:hover) {
+  background: url(../../../../assets/images/notification-close-hover.svg);
 }
 
 :local(.Notification__msgContainer) {
@@ -51,14 +51,9 @@
 	font-weight: normal;
 	font-style: normal;
 	font-stretch: normal;
-	line-height: 1.86;
 	letter-spacing: normal;
 	color: #383b41;
-	max-height: 17px;
-	// position: relative;
- // 	max-width: 300px;
- // 	min-width: 300px;
- 	// min-height: 17px;
+	max-height: unset;
  	overflow-y: scroll;
  	min-height: 47px;
 }

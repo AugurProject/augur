@@ -1,0 +1,16 @@
+
+<svg width="23px" height="23px" viewBox="0 0 23 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Design" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="messages-stacked" transform="translate(-296.000000, -574.000000)" fillRule="nonzero">
+            <g id="messages" transform="translate(8.000000, 562.000000)">
+                <g id="Group-3">
+                    <g id="closeBtn" transform="translate(288.000000, 12.000000)">
+                        <path d="M22.5,11.5006129 C22.5,17.5755645 17.5755645,22.5 11.5006129,22.5 C5.42463401,22.5 0.5,17.5757631 0.5,11.5006129 C0.5,5.42524684 5.42484974,0.5 11.5006129,0.5 C17.5753488,0.5 22.5,5.42544541 22.5,11.5006129 Z" id="Stroke-1" stroke="#F0EFF6"></path>
+                        <rect id="Rectangle-3" fill="#412468" transform="translate(11.500000, 11.500000) rotate(135.000000) translate(-11.500000, -11.500000) " x="11" y="5" width="1" height="13" rx="0.5"></rect>
+                        <rect id="Rectangle-3" fill="#412468" transform="translate(11.500000, 11.500000) rotate(225.000000) translate(-11.500000, -11.500000) " x="11" y="5" width="1" height="13" rx="0.5"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

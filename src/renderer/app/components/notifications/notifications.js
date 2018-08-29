@@ -8,7 +8,7 @@ import Styles from './notifications.style.less'
 const Msg = ({ notification, closeToast }) => (
   <div className={Styles.Notification__body}>
     <div className={Styles.Notification__bodyText}>{notification.message}</div>
-    <button className={Styles.Notification__close} onClick={ closeToast }><span className={Styles.Notification__close__button}>X</span></button>
+    <button className={Styles.Notification__close} onClick={ closeToast } />
   </div>
 )
 
