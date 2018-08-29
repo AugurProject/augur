@@ -21,7 +21,7 @@ export default class ModalEditConnection extends Component {
     this.state = {
       connection: {
         name: (props.initialConnection ? props.initialConnection.name : ''),
-        https: (props.initialConnection ? props.initialConnection.https : ''),
+        http: (props.initialConnection ? props.initialConnection.http : ''),
         ws: (props.initialConnection ? props.initialConnection.ws : ''),
         userCreated: true,
         selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
@@ -40,8 +40,8 @@ export default class ModalEditConnection extends Component {
     if (prevProps.initialConnection !== this.props.initialConnection) {
       const connection = {
         name: this.props.initialConnection ? this.props.initialConnection.name : '',
-        https: this.props.initialConnection ? this.props.initialConnection.name : '',
-        name: this.props.initialConnection ? this.props.initialConnection.name : '',
+        http: this.props.initialConnection ? this.props.initialConnection.http : '',
+        name: this.props.initialConnection ? this.props.initialConnection.ws : '',
         userCreated: true,
         selected: this.props.initialConnection ? this.props.initialConnection.selected : false,
       }
@@ -71,7 +71,7 @@ export default class ModalEditConnection extends Component {
       } else {
         delete validations[name]
       }
-    } else if (name === 'https') {
+    } else if (name === 'http') {
       if (!value.match(urlRegex)) {
         validations[name] = 'Not a valid HTTP Endpoint'
       } else {
@@ -113,8 +113,8 @@ export default class ModalEditConnection extends Component {
       showDelete,
     } = this.state
 
-    let enableButton = (connection.name !== '' && (connection.ws !== '' || connection.https !== '' ))
-    if ( validations.name || validations.ws || validations.https ) {
+    let enableButton = (connection.name !== '' && (connection.ws !== '' || connection.http !== '' ))
+    if ( validations.name || validations.ws || validations.http ) {
       enableButton = false
     }
     return (
@@ -157,16 +157,16 @@ export default class ModalEditConnection extends Component {
           <div className={Styles.ModalEditConnection__inputContainer}>
               <input 
                   onChange={e => {
-                    this.updateField("https", e.target.value);
+                    this.updateField("http", e.target.value);
                   }}
-                  value={connection.https} 
+                  value={connection.http} 
                   className={classNames(Styles.ModalEditConnection__input, {
-                     [Styles['ModalEditConnection__inputError']]: validations.https
+                     [Styles['ModalEditConnection__inputError']]: validations.http
                   })}
                   placeholder="http(s)://" 
               />
-              {validations.https &&
-                <div className={Styles.ModalEditConnection__errorMessage}>{validations.https}</div>
+              {validations.http &&
+                <div className={Styles.ModalEditConnection__errorMessage}>{validations.http}</div>
               }
           </div>
           <div className={Styles.ModalEditConnection__label}>
