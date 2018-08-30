@@ -13,7 +13,7 @@ export const ShowErrors = ({
         <div key={i} className={Styles.ShowErrors__body}>
           <div className={Styles.ShowErrors__icon}/>
           <div className={Styles.ShowErrors__bodyText}>{e.message}</div>
-          <button className={Styles.ShowErrors__close} onClick={ () => removeError(e) } >X</button>
+          <button className={Styles.ShowErrors__close} onClick={ () => removeError(e) } />
         </div>
       ))}
     </div>
