@@ -18,6 +18,9 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(LATEST_SYNCED_BLOCK, (event, info) => {
+    if (info && info.lastSyncBlockNumber) {
+      store.dispatch(updateServerAttrib({ AUGUR_NODE_SYNCING: true }))
+    }
     store.dispatch(updateBlockInfo(info))
   })
 
@@ -30,7 +33,7 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
-    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false }))
+    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false, AUGUR_NODE_SYNCING: false }))
     // clear block info
     store.dispatch(clearBlockInfo())
   })
