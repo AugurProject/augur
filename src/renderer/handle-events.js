@@ -55,7 +55,10 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(PEER_COUNT_DATA, (event, data) => {
-    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount, GETH_SYNCING: data.peerCount > 0 ? true : false }))
+    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount }))
+    if (!store.getState().serverStatus.GETH_FINISHED_SYNCING) {
+      store.dispatch(updateServerAttrib({ GETH_SYNCING: data.peerCount > 0 ? true : false }))
+    }
   })
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
