@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { Address, MarketsContractAddressRow } from "../../types";
 import { queryModifier, getMarketsWithReportingState } from "./database";
-import { getFullTextSearchProvider } from "../../database/full_text_search";
+import { createSearchProvider } from "../../database/fts";
 
 // Returning marketIds should likely be more generalized, since it is a single line change for most getters (awaiting reporting, by user, etc)
 export function getMarkets(db: Knex, universe: Address, creator: Address|null|undefined, category: string|null|undefined, searchQuery: string|null|undefined, reportingState: string|null|undefined, feeWindow: Address|null|undefined, designatedReporter: Address|null|undefined, sortBy: string|null|undefined, isSortDescending: boolean|null|undefined, limit: number|null|undefined, offset: number|null|undefined, callback: (err?: Error|null, result?: any) => void): void {
@@ -17,7 +17,7 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
   if (feeWindow != null) query.where({ feeWindow });
   if (designatedReporter != null) query.where({ designatedReporter });
 
-  const searchProvider = getFullTextSearchProvider(db);
+  const searchProvider = createSearchProvider(db);
   if (searchQuery != null && searchProvider !== null) {
     query.whereIn("markets.marketId", function (this: Knex.QueryBuilder) {
       searchProvider.searchBuilder(this, searchQuery);
