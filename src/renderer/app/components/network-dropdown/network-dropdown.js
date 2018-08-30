@@ -14,7 +14,7 @@ export class NetworkDropdown extends Component {
 	    updateSelectedConnection: PropTypes.func.isRequired,
 	    isConnectedPressed: PropTypes.bool,
 	    openBrowserEnabled: PropTypes.bool,
-	    stopAugurNode: PropTypes.func.isRequired,
+	    stopServer: PropTypes.func.isRequired,
 	    animateKey: PropTypes.string,
 	    updateConfig: PropTypes.func.isRequired,
 	    selectedKey: PropTypes.string.isRequired,
@@ -44,17 +44,14 @@ export class NetworkDropdown extends Component {
 		const {
 			selectedKey,
 			updateSelectedConnection,
-			isConnectedPressed,
-			stopAugurNode,
+			stopServer,
 		} = this.props
 
 	    if (selectedKey !== networkId) {
 	      updateSelectedConnection(networkId)
-	      this.setState({menuIsOpen: false})
+        this.setState({menuIsOpen: false})
 
-	      if (isConnectedPressed) {
-	        stopAugurNode();
-	      }
+        stopServer();
 	    }
 	}
 
