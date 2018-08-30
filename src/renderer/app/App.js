@@ -47,7 +47,7 @@ export class App extends Component {
           this.setState({processing: true})
         }, 700);
       } else {
-        this.setState({processing: false, connectedPressed: false})
+        this.setState({processing: false})
       }
     }
   }
