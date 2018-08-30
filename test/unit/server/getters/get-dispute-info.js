@@ -15,7 +15,7 @@ describe("server/getters/get-dispute-info", () => {
           t.assertions(disputeInfo);
           done(err);
           db.destroy();
-        })
+        });
       });
     });
   };
