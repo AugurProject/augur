@@ -1,1 +1,1 @@
-web: npm run migrate_pg && npm start -- $NETWORK
+web: npm start -- $NETWORK
