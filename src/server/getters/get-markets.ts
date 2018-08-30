@@ -19,8 +19,8 @@ export function getMarkets(db: Knex, universe: Address, creator: Address|null|un
 
   const searchProvider = getFullTextSearchProvider(db);
   if (searchQuery != null && searchProvider !== null) {
-    query.whereIn("markets.marketId", () => {
-      this.modify(searchProvider.searchBuilder, searchQuery);
+    query.whereIn("markets.marketId", function (this: Knex.QueryBuilder) {
+      searchProvider.searchBuilder(this, searchQuery);
     });
   }
 

@@ -5,6 +5,8 @@ import * as Knex from "knex";
 import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, SearchRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
+import { getFullTextSearchProvider } from "../../database/full_text_search";
+import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
@@ -106,7 +108,9 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
             (next: AsyncCallback): void => {
               const searchProvider = getFullTextSearchProvider(db);
               if (searchProvider !== null) {
-                searchProvider.addMarket(db, marketsDataToInsert);
+                searchProvider.addSearchData(contentSearchBuilder(marketsDataToInsert)).then(next).catch(next);
+              } else {
+                next(null);
               }
             },
             (next: AsyncCallback): void => {

@@ -1,50 +1,65 @@
 import * as Knex from "knex";
-import { MarketsRow } from "../types";
-import { contentSearchBuilder} from "../../utils/content-search-builder";
+import BigNumber from "bignumber.js";
+import { MarketsRow, SearchRow, Address } from "../types";
+import { contentSearchBuilder} from "../utils/content-search-builder";
+import { formatBigNumberAsFixed } from "../utils/format-big-number-as-fixed";
 
-export class FullTextSearchProvider {
-  static async migrateUp(): Promise<any>;
-  static async migrateDown(): Promise<any>;
+export interface FullTextSearchProvider {
+  migrateUp(): Promise<any>;
+  migrateDown(): Promise<any>;
+  addSearchData(search: SearchRow): Promise<any>;
+  removeSeachData(marketId: Address): Promise<any>;
+  searchBuilder(builder: Knex.QueryBuilder, query: string): Knex.QueryBuilder;
 };
 
-export class SqliteSearch extends FullTextSearchProvider {
-  static async migrateUp(db: Knex): Promise<any> {
-    await db.schema.dropTableIfExists("search_en");
-    await db.schema.raw(`CREATE VIRTUAL TABLE search_en USING fts4(marketId, category, tags, shortDescription, longDescription, scalarDenomination, resolutionSource)`);
-    const markets: Array<MarketsRow>  = await db.select("*").from("markets");
+export class SqliteSearch implements FullTextSearchProvider {
+  db: Knex;
+
+  constructor(db: Knex) {
+    this.db = db;
+  }
+
+  async migrateUp(): Promise<any> {
+    await this.db.schema.dropTableIfExists("search_en");
+    await this.db.schema.raw(`CREATE VIRTUAL TABLE search_en USING fts4(marketId, category, tags, shortDescription, longDescription, scalarDenomination, resolutionSource)`);
+    const markets: Array<MarketsRow<BigNumber>>  = await this.db.select("*").from("markets");
     for (const market of markets) {
-      await this.constructor.addMarket(contentSearchBuilder(market));
+      await this.addSearchData(formatBigNumberAsFixed(market));
     }
   }
 
-  static async migrateDown(db: Knex): Promise<any> {
-    return db.schema.dropTableIfExists(search_en);
+  async migrateDown(): Promise<any> {
+    return this.db.schema.dropTableIfExists("search_en");
   }
 
 
-  static async addMarket(market: MarketsRow<string|number>): Promise<any> {
-    const marketSearchDataToInsert: SearchRow = contentSearchBuilder(marketsDataToInsert);
-
-    await db("search_en").insert(market).into("search_en");
+  async addSearchData(search: SearchRow): Promise<any> {
+    await this.db("search_en").insert(search).into("search_en");
   }
   
-  static async removeMarket(marketId: Address): Promise<any> {
-    await db("search_en").where({ marketId }).del();
+  async removeSeachData(marketId: Address): Promise<any> {
+    await this.db("search_en").where({ marketId }).del();
   }
-  
-  static searchBuilder(builder: Knex.QueryBuilder, query: String): Knex.QueryBuilder {
+
+  searchBuilder(builder: Knex.QueryBuilder, query: string): Knex.QueryBuilder {
     return builder.select("marketId").from("search_en").whereRaw("search_en MATCH ?", [query]);
   }
 
 };
 
-class PostgreSQLSearch extends FullTextSearchProvider {
-  static async migrateUp(db: Knex): Promise<any> {
-      await db.schema.table("markets", (markets) => {
+class PostgreSQLSearch implements FullTextSearchProvider {
+  db: Knex;
+
+  constructor(db: Knex) {
+    this.db = db;
+  }
+
+  async migrateUp(): Promise<any> {
+      await this.db.schema.table("markets", (markets) => {
         markets.specificType("searchProperties", "tsvector");
       });
-      await db("markets").update({
-        searchProperties: db.raw(`
+      await this.db("markets").update({
+        searchProperties: this.db.raw(`
               setweight(to_tsvector('english', coalesce(category, '')), 'A') ||
               setweight(to_tsvector('english', coalesce(tag1, '')), 'A') ||
               setweight(to_tsvector('english', coalesce(tag2, '')), 'A') ||
@@ -52,35 +67,35 @@ class PostgreSQLSearch extends FullTextSearchProvider {
               setweight(to_tsvector('english', coalesce(longDescription, '')), 'B') ||
               setweight(to_tsvector('english', coalesce(scalarDenomination, '')), 'C') ||
               setweight(to_tsvector('english', coalesce(resolutionSource, '')), 'C')
-              `);
+              `)
       });
-    await db.schema.raw(`CREATE INDEX market_search_idx ON markets USING gin("searchProperties");`);
+    await this.db.schema.raw(`CREATE INDEX market_search_idx ON markets USING gin("searchProperties");`);
   }
 
-  static async migrateDown(db: Knex): Promise<any> {
-    await db.schema.raw(`DROP INDEX market_search_idx IF EXISTS`);
-    await db.schema.table("markets", (markets) => {
+  async migrateDown(): Promise<any> {
+    await this.db.schema.raw(`DROP INDEX market_search_idx IF EXISTS`);
+    await this.db.schema.table("markets", (markets) => {
       markets.dropColumn("searchProperties");
     });
   }
 
-  static async addMarket(market: MarketsRow): Promise<any> {
-    return Promse.resolve();
+  async addSearchData(search: SearchRow): Promise<any> {
+    return Promise.resolve();
   }
   
-  static async removeMarket(marketId: Address): Promise<any> {
-    return Promse.resolve();
+  async removeSeachData(marketId: Address): Promise<any> {
+    return Promise.resolve();
   }
 
-  static searchBuilder(builder: Knex.QueryBuilder, query: String): Knex.QueryBuilder {
+  searchBuilder(builder: Knex.QueryBuilder, query: string): Knex.QueryBuilder {
     return builder.select("marketId").from("markets").whereRaw(`"searchProperties" @@ to_tsquery(?)`, [query]);
   }
 };
 
-export getFullTextSearchProvider(db: Knex): FullTextSearchProvider {
-  switch (db.config.client) {
-    case sqlite3: return SqliteSearch;
-    case pg: return PostgreSQLSearch;
+export function getFullTextSearchProvider(db: Knex): FullTextSearchProvider|null {
+  switch (db.client.config.client) {
+    case "sqlite3": return new SqliteSearch(db);;
+    case "pg": return new PostgreSQLSearch(db);
     default:
       console.log("Full Text Search not available with this database. In the future we will provide a backup.");
   }
