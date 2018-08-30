@@ -108,6 +108,7 @@ AugurNodeServer.prototype.onEthereumDisconnect = function () {
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
+  if (this.isShuttingDown) return
   if (this.window) this.window.webContents.send(INFO_NOTIFICATION, {
     messageType: RECONNECT_MSG,
     message: 'Reconnected to Ethereum Node.'
@@ -188,7 +189,7 @@ AugurNodeServer.prototype.onResetDatabase = function () {
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
   try {
     console.log('onStartNetwork has been called')
-    this.isShuttingDown = true
+    this.isShuttingDown = false
     this.selectedNetwork = data
     this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
     this.restart()
@@ -236,7 +237,9 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
 AugurNodeServer.prototype.disconnectServerMessage = function () {
   try {
     if (this.statusLoop) clearInterval(this.statusLoop)
-    this.sendMsgToWindowContents(ON_SERVER_DISCONNECTED, {})
+    if (this.augurNodeController && !this.augurNodeController.isRunning()) {
+      this.sendMsgToWindowContents(ON_SERVER_DISCONNECTED)
+    }
   } catch (err) {
     log.error(err)
   }
@@ -244,18 +247,17 @@ AugurNodeServer.prototype.disconnectServerMessage = function () {
 
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
+    console.log('Shutdown Augur Node Server')
     this.isShuttingDown = true
     if (this.statusLoop) clearInterval(this.statusLoop)
     this.bulkSyncing = false
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Calling Augur Node Controller Shutdown')
-    this.disconnectServerMessage()
     this.augurNodeController.shutdown()
+    setTimeout(() => this.disconnectServerMessage(), 1000) // give augur node time to shutdown
   } catch (err) {
     log.error(err)
-    if (this.augurNodeController && !this.augurNodeController.isRunning()) {
-      this.disconnectServerMessage()
-    }
+    this.disconnectServerMessage()
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: UNEXPECTED_ERR,
       message: err

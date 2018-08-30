@@ -31,8 +31,7 @@ export const startAugurNode = () => {
   ipcRenderer.send(START_AUGUR_NODE, selected)
 }
 
-export const stopAugurNode = (disableGethInitiated) => {
-  if (disableGethInitiated) store.dispatch(updateServerAttrib({ GETH_INITIATED: false }))
+export const stopAugurNode = () => {
   ipcRenderer.send(STOP_AUGUR_NODE)
   stoptUiServer() // stop when disconnected from augur node
 }
@@ -43,7 +42,6 @@ export const startGethNode = () => {
 }
 
 export const stopGethNode = () => {
-  stopAugurNode()
   setTimeout(() => {
     ipcRenderer.send(STOP_GETH)
   }, 1000)

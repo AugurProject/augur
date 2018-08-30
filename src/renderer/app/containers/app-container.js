@@ -2,11 +2,8 @@ import { connect } from "react-redux";
 import { App } from "../App";
 import { updateConfig } from "../actions/configuration"
 import { addInfoNotification } from "../actions/notifications"
-import { gethPrcessorHandler } from "../actions/geth-prcessor-handler"
 
 const mapStateToProps = state => {
-
-  if (state.serverStatus.GETH_INITIATED) gethPrcessorHandler(state.serverStatus)
 
   return {
     connections: state.configuration.networks || {},

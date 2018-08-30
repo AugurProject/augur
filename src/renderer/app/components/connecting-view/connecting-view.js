@@ -38,9 +38,6 @@ export class ConnectingView extends Component {
   			}
   		}
 
-
-  		
-
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
 		               			[Styles['ConnectingView-connecting']]: connecting,

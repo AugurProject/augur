@@ -75,9 +75,9 @@ export class App extends Component {
   disconnect() {
     if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
       const selected = this.props.selected
-      stopAugurNode(selected.name === localLightNodeName)
+      stopAugurNode()
       if (selected.name === localLightNodeName) stopGethNode()
-    } 
+    }
   }
 
   downloadGeth() {

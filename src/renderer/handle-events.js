@@ -1,9 +1,10 @@
 const {ipcRenderer} = require('electron')
-import { GETH_INITIATED, ON_GETH_SERVER_DISCONNECTED, ON_GETH_SERVER_CONNECTED, BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
+import { ON_GETH_SERVER_DISCONNECTED, ON_GETH_SERVER_CONNECTED, BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
 import { updateBlockInfo, clearBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
+import { startAugurNode } from './app/actions/local-server-cmds'
 import store from './store'
 
 export const handleEvents = () => {
@@ -55,7 +56,10 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
-    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
+    if (store.getState().serverStatus.GETH_INITIATED) {
+      startAugurNode()
+    }
+    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true, GETH_INITIATED: false }))
   })
 
   ipcRenderer.on(BULK_SYNC_STARTED, () => {
@@ -67,7 +71,6 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(INFO_NOTIFICATION, (event, notification) => {
-    notification.timestamp = new Date().getTime()
     setTimeout(() => {
       store.dispatch(addInfoNotification(notification))
     }, 500)
@@ -75,7 +78,6 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ERROR_NOTIFICATION, (event, notification) => {
-    notification.timestamp = new Date().getTime()
     store.dispatch(addErrorNotification(notification))
 
     console.log('ERROR_NOTIFICATION', notification)
