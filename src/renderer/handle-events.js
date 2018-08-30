@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron')
 import { BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
-import { updateBlockInfo } from './app/actions/blockInfo'
+import { updateBlockInfo, clearBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
 import { startAugurNode } from './app/actions/localServerCmds'
@@ -31,7 +31,8 @@ export const handleEvents = () => {
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
     store.dispatch(updateServerAttrib({ CONNECTED: false }))
-    store.dispatch(updateBlockInfo({}))
+    // clear block info
+    store.dispatch(clearBlockInfo())
   })
 
   ipcRenderer.on(ON_UI_SERVER_CONNECTED, () => {
