@@ -14,29 +14,43 @@
 .Notification__link {
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.25rem;
 }
 
 .Notification__row {
   display: flex;
 }
 
+.Notification__closeButton {
+  display: block;
+}
+
+.Notification__closeButtonHidden {
+  display: none;
+}
+
 .Notification__title {
   color: @color-darkpurple;
   flex: 0 1 auto;
-  font-size: @font-size-normal;
-  margin-right: 0.625rem;
+  font-size: @font-size-medium;
+  font-weight: bold;
+  height: 1rem;
+  margin: 0 0.625rem 0.25rem 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   transition: flex 1000ms ease-in;
   white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Notification__title::first-letter {
+  text-transform: capitalize;
 }
 
 .Notification__status {
   color: @color-darkpurple;
   font-size: @font-size-extra-small;
-  font-weight: bold;
+  font-weight: 500;
+  height: 0.688rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
 }
@@ -51,8 +65,8 @@
 .Notification__dot {
   flex: 0 1rem;
   height: 1rem;
-  left: 14px;
-  margin-top: -2px;
+  left: 0.875rem;
+  margin-top: -0.125rem;
   position: absolute;
   transition: flex 500ms ease-out;
   width: 1rem;
@@ -68,18 +82,20 @@
 
 .Notification__close {
   align-self: baseline;
-  flex: 0 0 @font-size-small;
-  font-size: @font-size-small;
+  height: 1.125rem;
   margin-left: auto;
+  width: 1.125rem;
 }
 
 .Notification__description {
   flex: 1 0 100%;
-  font-size: @font-size-rather-large;
-  line-height: 2rem;
+  font-size: @font-size-small;
+  height: 0.875rem;
+  margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 17.188rem;
 }
 
 .Notification__time {
@@ -91,8 +107,7 @@
 @media @breakpoint-mobile {
   .Notification__description {
     flex: 1 0 100%;
-    font-size: @font-size-large;
-    line-height: 1.5rem;
+    font-size: @font-size-small;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
