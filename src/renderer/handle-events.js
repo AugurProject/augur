@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron')
 import { ON_GETH_SERVER_DISCONNECTED, ON_GETH_SERVER_CONNECTED, BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
-import { updateBlockInfo, clearBlockInfo } from './app/actions/blockInfo'
+import { updateGethBlockInfo, clearGethBlockInfo, updateAugurNodeBlockInfo, clearAugurNodeBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
 import { startAugurNode } from './app/actions/local-server-cmds'
@@ -21,11 +21,11 @@ export const handleEvents = () => {
     if (info && info.lastSyncBlockNumber) {
       store.dispatch(updateServerAttrib({ AUGUR_NODE_SYNCING: true }))
     }
-    store.dispatch(updateBlockInfo(info))
+    store.dispatch(updateAugurNodeBlockInfo(info))
   })
 
   ipcRenderer.on(LATEST_SYNCED_GETH_BLOCK, (event, info) => {
-    store.dispatch(updateBlockInfo(info))
+    store.dispatch(updateGethBlockInfo(info))
   })
 
   ipcRenderer.on(ON_SERVER_CONNECTED, () => {
@@ -35,7 +35,7 @@ export const handleEvents = () => {
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
     store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false, AUGUR_NODE_SYNCING: false }))
     // clear block info
-    store.dispatch(clearBlockInfo())
+    store.dispatch(clearAugurNodeBlockInfo())
   })
 
   ipcRenderer.on(ON_GETH_SERVER_CONNECTED, () => {
@@ -44,6 +44,8 @@ export const handleEvents = () => {
 
   ipcRenderer.on(ON_GETH_SERVER_DISCONNECTED, () => {
     store.dispatch(updateServerAttrib({ GETH_CONNECTED: false, CONNECTING: false }))
+    // clear block info
+    store.dispatch(clearGethBlockInfo())
   })
 
   ipcRenderer.on(ON_UI_SERVER_CONNECTED, () => {

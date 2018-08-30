@@ -1,15 +1,30 @@
-export const UPDATE_BLOCK_INFO = 'UPDATE_BLOCK_INFO'
-export const CLEAR_BLOCK_INFO = 'CLEAR_BLOCK_INFO'
+export const UPDATE_GETH_BLOCK_INFO = 'UPDATE_BLOCK_INFO'
+export const CLEAR_GETH_BLOCK_INFO = 'CLEAR_BLOCK_INFO'
+export const UPDATE_AUGUR_NODE_BLOCK_INFO = 'UPDATE_BLOCK_INFO'
+export const CLEAR_AUGUR_NODE_BLOCK_INFO = 'CLEAR_BLOCK_INFO'
 
-export function updateBlockInfo(blockInfo) {
+export function updateGethBlockInfo(blockInfo) {
   return {
-    type: UPDATE_BLOCK_INFO,
+    type: UPDATE_GETH_BLOCK_INFO,
     blockInfo
   }
 }
 
-export function clearBlockInfo() {
+export function clearGethBlockInfo() {
   return {
-    type: CLEAR_BLOCK_INFO,
+    type: CLEAR_GETH_BLOCK_INFO,
+  }
+}
+
+export function updateAugurNodeBlockInfo(blockInfo) {
+  return {
+    type: UPDATE_AUGUR_NODE_BLOCK_INFO,
+    blockInfo
+  }
+}
+
+export function clearAugurNodeBlockInfo() {
+  return {
+    type: CLEAR_AUGUR_NODE_BLOCK_INFO,
   }
 }
