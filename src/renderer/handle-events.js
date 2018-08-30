@@ -70,7 +70,7 @@ export const handleEvents = () => {
     notification.timestamp = new Date().getTime()
     setTimeout(() => {
       store.dispatch(addInfoNotification(notification))
-    }, 300)
+    }, 500)
     console.log('INFO_NOTIFICATION', notification)
   })
 

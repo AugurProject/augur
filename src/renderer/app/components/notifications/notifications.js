@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import { each, take, isEqual } from 'lodash'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Styles from './notifications.style.less'
 
@@ -87,6 +87,7 @@ export class Notifications extends Component {
             className={Styles.Notification__container}
             toastClassName={Styles.Notification__toast}
             autoClose={NUM_SECONDS}
+            transition={Zoom}
           />
       </div>
     )
