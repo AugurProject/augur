@@ -19,7 +19,7 @@ export class SettingsDropdown extends Component {
     setTimeout(() => {
       this.props.addInfoNotification({
         messageType: GEN_INFO,
-        message: 'SSL for Ledger ' + (this.props.sslEnabled ? 'disabled' : 'enabled')
+        message: 'SSL for Ledger ' + (!this.props.sslEnabled ? 'disabled' : 'enabled')
       })
     }, 500)
   }
