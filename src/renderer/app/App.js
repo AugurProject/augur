@@ -22,7 +22,6 @@ export class App extends Component {
     super(props);
 
     this.state = {
-      connectedPressed: false,
       processing: (props.serverStatus.AUGUR_NODE_CONNECTED || props.serverStatus.GETH_CONNECTED) || false,
       showDownloadGeth: false,
     };
@@ -59,12 +58,9 @@ export class App extends Component {
       this.setState({showDownloadGeth: true})
     } else {
       if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
-        this.setState({connectedPressed: false});
         stopAugurNode(selected.name === localLightNodeName)
         if (selected.name === localLightNodeName) stopGethNode()
       } else {
-        this.setState({connectedPressed: true});
-
         if (selected.name === localLightNodeName) {
           // only start geth node, we start augurNode automatically when local geth client is synced
           startGethNode()
@@ -77,12 +73,12 @@ export class App extends Component {
   }
 
   downloadGeth() {
-    this.setState({connectedPressed: true, showDownloadGeth: false});
+    this.setState({showDownloadGeth: false});
     this.props.updateConfig({downloadModalSeen: true})
   }
 
   cancelDownload() {
-    this.setState({connectedPressed: false, showDownloadGeth: false});
+    this.setState({showDownloadGeth: false});
   }
 
   callOpenAugurUi() {
@@ -101,14 +97,13 @@ export class App extends Component {
     } = this.props
 
     const {
-      connectedPressed,
       processing,
       showDownloadGeth,
     } = this.state
 
     let openBrowserEnabled = false
     const blocksRemaining = parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)
-    if (blocksRemaining <= 15 && connectedPressed && (serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)) {
+    if (blocksRemaining <= 15 && (serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)) {
       openBrowserEnabled = true
     }
 
@@ -136,22 +131,22 @@ export class App extends Component {
             </div>
             <NetworkDropdownContainer
               openBrowserEnabled={openBrowserEnabled}
-              isConnectedPressed={connectedPressed}
+              isConnectedPressed={serverStatus.CONNECTING}
               stopAugurNode={this.connect}
             />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {((serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED) && connectedPressed) ? 'Disconnect' : 'Connect'}
+              {(serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)  ? 'Disconnect' : 'Connect'}
             </button>
           </div>
           <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '500px'}}>
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED}
-              connecting={connectedPressed}
+              connecting={serverStatus.CONNECTING}
               isLocalLightNode={selected && selected.name === localLightNodeName}
               serverStatus={serverStatus}
             />
             <ProcessingView
-              processing={processing && connectedPressed}
+              processing={processing && serverStatus.CONNECTING}
               blockInfo={blockInfo}
               openBrowserEnabled={openBrowserEnabled}
             />

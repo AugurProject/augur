@@ -25,6 +25,7 @@ export const stoptUiServer = () => {
 }
 
 export const startAugurNode = () => {
+  store.dispatch(updateServerAttrib({ CONNECTING: true }))
   const { networks } = store.getState().configuration
   const selected = Object.values(networks).find(n => n.selected)
   ipcRenderer.send(START_AUGUR_NODE, selected)
@@ -37,6 +38,7 @@ export const stopAugurNode = (disableGethInitiated) => {
 }
 
 export const startGethNode = () => {
+  store.dispatch(updateServerAttrib({ CONNECTING: true }))
   ipcRenderer.send(START_GETH)
 }
 

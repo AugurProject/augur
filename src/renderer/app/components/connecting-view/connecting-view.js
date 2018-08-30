@@ -26,49 +26,47 @@ export class ConnectingView extends Component {
   			serverStatus,
   		} = this.props
 
-  		const showConnecting = connecting && !connected
-  		const showConnected = connecting && connected
-  		const showDisconnected = !showConnecting && !showConnected
+  		const showDisconnected = !connected && !connecting
 
   		let syncing = false
   		if (isLocalLightNode) {
   			if (serverStatus.PEER_COUNT_DATA > 0 && !serverStatus.GETH_FINISHED_SYNCING) {
   				syncing = true
-  			} 
+  			}
   		}
 
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
-		               			[Styles['ConnectingView-connecting']]: showConnecting,
-		               			[Styles['ConnectingView-connected']]: showConnected,
+		               			[Styles['ConnectingView-connecting']]: connecting,
+		               			[Styles['ConnectingView-connected']]: connected,
 		           			})}
 	  			>
 	  			<div className={classNames(Styles.ConnectingView__connectingContainer, {
-		               			[Styles['ConnectingView__connectingContainer-connecting']]: showConnecting,
-		               			[Styles['ConnectingView__connectingContainer-connected']]: showConnected,
+		               			[Styles['ConnectingView__connectingContainer-connecting']]: connecting,
+		               			[Styles['ConnectingView__connectingContainer-connected']]: connected,
 		           			})}
 	  			>
 					<div className={classNames(Styles.ConnectingView__conectingTitle, {
-		               			[Styles['ConnectingView__conectingTitle-connecting']]: showConnecting,
-		               			[Styles['ConnectingView__conectingTitle-connected']]: showConnected,
+		               			[Styles['ConnectingView__conectingTitle-connecting']]: connecting,
+		               			[Styles['ConnectingView__conectingTitle-connected']]: connected,
 		           			})}
 	  				>
 				    	Connecting to Ethereum
 				    </div>
 				    <div className={classNames(Styles.ConnectingView__conectingText, {
-		               			[Styles['ConnectingView__conectingText-connecting']]: showConnecting,
-		               			[Styles['ConnectingView__conectingText-connected']]: showConnected,
+		               			[Styles['ConnectingView__conectingText-connecting']]: connecting,
+		               			[Styles['ConnectingView__conectingText-connected']]: connected,
 		           			})}
 	  				>
 				    	{showDisconnected && 'Disconnected'}
 
-				    	{showConnected && (isLocalLightNode ? 'Synced' : 'Connected')}
-				   		{showConnected && 
+				    	{connected && (isLocalLightNode ? 'Synced' : 'Connected')}
+				   		{connected &&
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{showConnecting && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
-				    	{showConnecting && 
+				    	{connecting && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
+				    	{connecting &&
 				    		<PulseLoader
 				    		  sizeUnit={"px"}
 					          size={6}
@@ -80,8 +78,8 @@ export class ConnectingView extends Component {
 				    </div>
 			    </div>
 			    <div className={classNames(Styles.ConnectingView__loadingIndicator, {
-		               			[Styles['ConnectingView__loadingIndicator-connecting']]: showConnecting,
-		               			[Styles['ConnectingView__loadingIndicator-connected']]: showConnected,
+		               			[Styles['ConnectingView__loadingIndicator-connecting']]: connecting,
+		               			[Styles['ConnectingView__loadingIndicator-connected']]: connected,
 		           			})}
 	  			/>
 			</section>

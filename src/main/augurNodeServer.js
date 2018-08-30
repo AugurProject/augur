@@ -1,4 +1,4 @@
-const { GEN_INFO, DATABASE_IN_USE, UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
+const { CONNECTION_ERR, GEN_INFO, DATABASE_IN_USE, UNEXPECTED_ERR, RECONNECT_MSG, RUNNING_FAILURE, START_FAILURE, RESTARTING_MSG, INFO_NOTIFICATION, ERROR_NOTIFICATION, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, STOP_AUGUR_NODE, START_AUGUR_NODE, BULK_SYNC_STARTED, BULK_SYNC_FINISHED, ON_SERVER_DISCONNECTED, RESET_RESPONSE, ON_SERVER_CONNECTED, LATEST_SYNCED_BLOCK } = require('../utils/constants')
 const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
@@ -65,11 +65,19 @@ AugurNodeServer.prototype.startServer = function () {
     this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
 
     this.augurNodeController.start(function (err) {
+      console.log('augur-node start:', err.message)
+      if (err && err.message.includes('Could not connect')) {
+        this.disconnectServerMessage()
+        return this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+          messageType: CONNECTION_ERR,
+          message: 'Could not connect to endpoint'
+        })
+      }
       if (this.isShuttingDown) return
       if (this.retriesRemaining > 0) {
         this.sendMsgToWindowContents(INFO_NOTIFICATION, {
           messageType: RESTARTING_MSG,
-          message: err.message
+          message: err.message || err
         })
         this.retriesRemaining--
         this.restartOnFailure()
@@ -77,12 +85,12 @@ AugurNodeServer.prototype.startServer = function () {
         this.disconnectServerMessage()
         this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
           messageType: RUNNING_FAILURE,
-          message: err.message
+          message: err.message || err || 'unknown error'
         })
       }
     }.bind(this))
   } catch (err) {
-    log.error(err)
+    log.error('start catch error:', err)
     this.disconnectServerMessage()
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: START_FAILURE,
@@ -114,7 +122,7 @@ AugurNodeServer.prototype.restart = function () {
       this.startServer()
     }, 2000)
   } catch (err) {
-    log.error(err)
+    log.error('restart:', err)
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: START_FAILURE,
       message: err.message
@@ -192,7 +200,7 @@ AugurNodeServer.prototype.onStartNetwork = function (event, data) {
     }, 1000)
 
   } catch (err) {
-    log.error(err)
+    log.error('onStartNetwork', err)
     event.sender.send(ERROR_NOTIFICATION, {
       messageType: START_FAILURE,
       message: err

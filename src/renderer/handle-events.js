@@ -25,21 +25,21 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ON_SERVER_CONNECTED, () => {
-    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: true }))
+    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: true, CONNECTING: false }))
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
-    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false }))
+    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false }))
     // clear block info
     store.dispatch(clearBlockInfo())
   })
 
   ipcRenderer.on(ON_GETH_SERVER_CONNECTED, () => {
-    store.dispatch(updateServerAttrib({ GETH_CONNECTED: true, GETH_INITIATED: true }))
+    store.dispatch(updateServerAttrib({ GETH_CONNECTED: true, GETH_INITIATED: true, CONNECTING: false }))
   })
 
   ipcRenderer.on(ON_GETH_SERVER_DISCONNECTED, () => {
-    store.dispatch(updateServerAttrib({ GETH_CONNECTED: false }))
+    store.dispatch(updateServerAttrib({ GETH_CONNECTED: false, CONNECTING: false }))
   })
 
   ipcRenderer.on(ON_UI_SERVER_CONNECTED, () => {
