@@ -147,7 +147,8 @@ export class App extends Component {
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED}
               connecting={connectedPressed}
-              isLocalLighNode={selected && selected.name === localLightNodeName}
+              isLocalLightNode={selected && selected.name === localLightNodeName}
+              serverStatus={serverStatus}
             />
             <ProcessingView
               processing={processing && connectedPressed}

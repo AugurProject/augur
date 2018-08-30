@@ -10,10 +10,8 @@ export class ConnectingView extends Component {
  	static propTypes = {
 	    connected: PropTypes.bool,
 	    connecting: PropTypes.bool,
-	    lookingForPeers: PropTypes.bool,
-	    synced: PropTypes.bool,
-	    syncing: PropTypes.bool,
-	    isLocalLighNode: PropTypes.bool,
+	    isLocalLightNode: PropTypes.bool,
+	    serverStatus: PropTypes.object,
 	};
 
 	constructor(props) {
@@ -24,15 +22,20 @@ export class ConnectingView extends Component {
   		const {
   			connected,
   			connecting,
-  			lookingForPeers,
-  			synced,
-  			syncing,
-  			isLocalLighNode,
+  			isLocalLightNode,
+  			serverStatus,
   		} = this.props
 
   		const showConnecting = connecting && !connected
   		const showConnected = connecting && connected
   		const showDisconnected = !showConnecting && !showConnected
+
+  		let syncing = false
+  		if (isLocalLightNode) {
+  			if (serverStatus.PEER_COUNT_DATA > 0 && !serverStatus.GETH_FINISHED_SYNCING) {
+  				syncing = true
+  			} 
+  		}
 
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
@@ -59,12 +62,12 @@ export class ConnectingView extends Component {
 	  				>
 				    	{showDisconnected && 'Disconnected'}
 
-				    	{showConnected && (isLocalLighNode ? 'Synced' : 'Connected')}
+				    	{showConnected && (isLocalLightNode ? 'Synced' : 'Connected')}
 				   		{showConnected && 
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{showConnecting && (isLocalLighNode ? 'Syncing' : 'Connecting')}
+				    	{showConnecting && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
 				    	{showConnecting && 
 				    		<PulseLoader
 				    		  sizeUnit={"px"}
