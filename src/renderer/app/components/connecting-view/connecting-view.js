@@ -29,25 +29,37 @@ export class ConnectingView extends Component {
   		} = this.props
 
   		let showDisconnected = !connected && !connecting
+		
+		let currentPercentStyle = {
+	      width: '0%',
+	      backgroundColor: 'transparent',
+	    };
 
 		let syncing = false
+		// for light node processing is looking for peers
+		// syncing is syncing
+
   		if (isLocalLightNode) {
-  			if (serverStatus.PEER_COUNT_DATA > 0 && !serverStatus.GETH_FINISHED_SYNCING) {
+  			if (serverStatus.GETH_SYNCING) {
   				syncing = true
   			}
   			if (syncing) {
   				showDisconnected = false
   			}
+
+  			const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
+  			let percent = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+  			if (!syncing) {
+  				percent = 0
+  			}
+  			currentPercentStyle = {
+		      width: `${percent}%`,
+		      backgroundColor: (syncing ? '#cbc5d9' : 'transparent'),
+		    };
   		}
 
-  		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
-  		const percent = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
-
-  		const currentPercentStyle = {
-	      width: `${percent}%`,
-	      backgroundColor: (syncing ? '#cbc5d9' : 'transparent'),
-	    };
-
+  		
+  		
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
 		               			[Styles['ConnectingView-connecting']]: connecting,
@@ -78,8 +90,8 @@ export class ConnectingView extends Component {
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{(!connected && connecting) && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
-				    	{(!connected && connecting) &&
+				    	{(!connected && !showDisconnected) && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
+				    	{(!connected && !showDisconnected) &&
 				    		<PulseLoader
 				    		  sizeUnit={"px"}
 					          size={6}
@@ -91,7 +103,7 @@ export class ConnectingView extends Component {
 				    </div>
 			    </div>
 			     <div className={classNames(Styles.ConnectingView__loadingIndicator, {
-		               			[Styles['ConnectingView__loadingIndicator-connecting']]: (!connected && connecting),
+		               			[Styles['ConnectingView__loadingIndicator-connecting']]: (!connected && !showDisconnected),
 		               			[Styles['ConnectingView__loadingIndicator-connected']]: connected,
 		           			})}
 	  			>
