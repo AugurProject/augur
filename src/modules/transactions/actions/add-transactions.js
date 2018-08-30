@@ -432,7 +432,7 @@ function processReport(market, transaction) {
   return header;
 }
 
-function getOutcome(market, outcome) {
+export function getOutcome(market, outcome) {
   let value = null;
   if (!market || isNaN(outcome)) return outcome;
   if (market.marketType === YES_NO) {
@@ -444,6 +444,7 @@ function getOutcome(market, outcome) {
   }
   return value;
 }
+
 function buildHeader(item, type, status) {
   const header = {};
   header.status = status;
