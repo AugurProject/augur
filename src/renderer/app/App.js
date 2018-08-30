@@ -145,7 +145,7 @@ export class App extends Component {
               serverStatus={serverStatus}
             />
             <ProcessingView
-              processing={processing && serverStatus.CONNECTING}
+              processing={processing}
               blockInfo={blockInfo}
               openBrowserEnabled={openBrowserEnabled}
             />

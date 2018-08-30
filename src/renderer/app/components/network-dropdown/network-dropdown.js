@@ -45,13 +45,13 @@ export class NetworkDropdown extends Component {
 			selectedKey,
 			updateSelectedConnection,
 			stopServer,
+			isConnectedPressed,
 		} = this.props
 
 	    if (selectedKey !== networkId) {
 	      updateSelectedConnection(networkId)
-        this.setState({menuIsOpen: false})
-
-        stopServer();
+          this.setState({menuIsOpen: false})
+          stopServer();
 	    }
 	}
 
