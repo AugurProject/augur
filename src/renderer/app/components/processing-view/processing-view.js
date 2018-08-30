@@ -49,7 +49,8 @@ export class ProcessingView extends Component {
   		if (pctLbl > 99.95) {
   			pctLbl = 100 
   		}
-  		const percent = pctLbl
+  		let percent = pctLbl
+  		if (!processing) percent = 0
 
   		const blocksBehind = addCommas(parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)) || 0
 
@@ -60,6 +61,8 @@ export class ProcessingView extends Component {
 	      width: `${percent}%`,
 	      backgroundColor: (openBrowserEnabled && processing ? '#00f1c4' : (processing ? '#cbc5d9' : 'transparent')),
 	    };
+
+
 
 	  	return (
 	  		<section className={classNames(Styles.ProcessingView, {

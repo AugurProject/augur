@@ -42,7 +42,7 @@ export class App extends Component {
     if (prevProps.serverStatus !== this.props.serverStatus) {
       // timeout so that there is time to finish animation
       clearTimeout(this.processingTimeout);
-      if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
+      if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
         this.processingTimeout = setTimeout(() => {
           this.setState({processing: true})
         }, 700);
@@ -150,8 +150,8 @@ export class App extends Component {
           </div>
           <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '500px'}}>
             <ConnectingView
-              connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING)}
-              connecting={serverStatus.CONNECTING}
+              connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING && !serverStatus.GETH_SYNCING)}
+              connecting={serverStatus.CONNECTING || serverStatus.GETH_INITIATED}
               blockInfo={blockInfo}
               isLocalLightNode={selected && selected.name === localLightNodeName}
               serverStatus={serverStatus}
