@@ -21,10 +21,10 @@ export class SearchPostgres implements SearchProvider {
               setweight(to_tsvector('english', coalesce(category, '')), 'A') ||
               setweight(to_tsvector('english', coalesce(tag1, '')), 'A') ||
               setweight(to_tsvector('english', coalesce(tag2, '')), 'A') ||
-              setweight(to_tsvector('english', coalesce(shortDescription, '')), 'B') ||
-              setweight(to_tsvector('english', coalesce(longDescription, '')), 'B') ||
-              setweight(to_tsvector('english', coalesce(scalarDenomination, '')), 'C') ||
-              setweight(to_tsvector('english', coalesce(resolutionSource, '')), 'C')
+              setweight(to_tsvector('english', coalesce("shortDescription", '')), 'B') ||
+              setweight(to_tsvector('english', coalesce("longDescription", '')), 'B') ||
+              setweight(to_tsvector('english', coalesce("scalarDenomination", '')), 'C') ||
+              setweight(to_tsvector('english', coalesce("resolutionSource", '')), 'C')
               `),
       });
       await this.db.schema.raw(`CREATE INDEX market_search_idx ON markets USING gin("searchProperties");`);
