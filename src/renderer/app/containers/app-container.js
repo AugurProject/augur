@@ -10,7 +10,8 @@ const mapStateToProps = state => {
     sslEnabled: state.configuration.sslEnabled,
     selected: (Object.values(state.configuration.networks || [])).find(network => network.selected === true),
     serverStatus: state.serverStatus,
-    blockInfo: state.blockInfo,
+    gethBlockInfo: state.gethBlockInfo,
+    augurNodeBlockInfo: state.augurNodeBlockInfo,
     downloadModalSeen: state.configuration.downloadModalSeen || false,
   }
 }

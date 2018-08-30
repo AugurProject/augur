@@ -19,8 +19,8 @@ function addCommas(number) {
 export class ProcessingView extends Component {
  	static propTypes = {
 	    processing: PropTypes.bool,
-	    fullyProcessed: PropTypes.bool, 
-	    blockInfo: PropTypes.object,
+	    fullyProcessed: PropTypes.bool,
+	    augurNodeBlockInfo: PropTypes.object,
 	    openBrowserEnabled: PropTypes.bool,
 	};
 
@@ -38,24 +38,24 @@ export class ProcessingView extends Component {
 	 }
 
   	render() {
-  		const { 
-  			processing, 
-  			blockInfo,
+  		const {
+  			processing,
+  			augurNodeBlockInfo,
   			openBrowserEnabled,
   		} = this.props
 
-		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
+		const pct = augurNodeBlockInfo.lastSyncBlockNumber ? ((augurNodeBlockInfo.lastSyncBlockNumber - augurNodeBlockInfo.uploadBlockNumber) / (augurNodeBlockInfo.highestBlockNumber - augurNodeBlockInfo.uploadBlockNumber) * 100) : 0
   		let pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
   		if (pctLbl > 99.95) {
-  			pctLbl = 100 
+  			pctLbl = 100
   		}
   		let percent = pctLbl
   		if (!processing) percent = 0
 
-  		const blocksBehind = addCommas(parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)) || 0
+  		const blocksBehind = addCommas(parseInt(augurNodeBlockInfo.highestBlockNumber, 10) - parseInt(augurNodeBlockInfo.lastSyncBlockNumber, 10)) || 0
 
-  		const blocksProcessed = addCommas(blockInfo.lastSyncBlockNumber) || 0
-  		const highestBlocks = addCommas(blockInfo.highestBlockNumber) || 0
+  		const blocksProcessed = addCommas(augurNodeBlockInfo.lastSyncBlockNumber) || 0
+  		const highestBlocks = addCommas(augurNodeBlockInfo.highestBlockNumber) || 0
 
   		const currentPercentStyle = {
 	      width: `${percent}%`,
@@ -75,16 +75,16 @@ export class ProcessingView extends Component {
 		               			[Styles['ProcessingView__processingTitle-processing']]: processing,
 		           			})}
 				    >Processing Market Data</div>
-				    <div 
+				    <div
 				    	className={classNames(Styles.ProcessingView__processingText, {
 		               			[Styles['ProcessingView__processingText-processing']]: processing,
 		           			})}
 				    >
 				    	{percent} <span className={Styles['ProcessingView__processingText-percent']}>%</span>
-				    	{ processing && 
+				    	{ processing &&
 				    		<div className={Styles['ProcessingView__showDetails']} onClick={this.toggleHideDetails}>
 				    			{this.state.hideDetails ? 'Show details' : 'Hide details'}
-				    			<div 
+				    			<div
 						    		className={classNames(Styles['ProcessingView__showDetails-arrow'], {
 				               			[Styles['ProcessingView__showDetails-arrow-turned']]: !this.state.hideDetails,
 				           			})}
@@ -92,7 +92,7 @@ export class ProcessingView extends Component {
 				    		</div>
 				    	}
 				    </div>
-				    { processing && !this.state.hideDetails && 
+				    { processing && !this.state.hideDetails &&
 			    		<div className={Styles.ProcessingView__blocksInfo}>
 			    			<div className={Styles.ProcessingView__blocksBehind}>
 			    				{blocksBehind}

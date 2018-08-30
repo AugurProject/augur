@@ -99,7 +99,8 @@ export class App extends Component {
       sslEnabled,
       updateConfig,
       serverStatus,
-      blockInfo,
+      augurNodeBlockInfo,
+      gethBlockInfo,
       addInfoNotification,
       selected,
       downloadModalSeen,
@@ -111,7 +112,7 @@ export class App extends Component {
     } = this.state
 
     let openBrowserEnabled = false
-    const blocksRemaining = parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)
+    const blocksRemaining = parseInt(augurNodeBlockInfo.highestBlockNumber, 10) - parseInt(augurNodeBlockInfo.lastSyncBlockNumber, 10)
     if (blocksRemaining <= 15 && (serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)) {
       openBrowserEnabled = true
     }
@@ -152,13 +153,13 @@ export class App extends Component {
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING && !serverStatus.GETH_SYNCING)}
               connecting={serverStatus.CONNECTING || serverStatus.GETH_INITIATED}
-              blockInfo={blockInfo}
+              gethBlockInfo={gethBlockInfo}
               isLocalLightNode={selected && selected.name === localLightNodeName}
               serverStatus={serverStatus}
             />
             <ProcessingView
               processing={processing}
-              blockInfo={blockInfo}
+              augurNodeBlockInfo={augurNodeBlockInfo}
               openBrowserEnabled={openBrowserEnabled}
             />
             <ShowErrorsContainer />
@@ -183,7 +184,8 @@ App.propTypes = {
   sslEnabled: PropTypes.bool,
   updateConfig: PropTypes.func,
   serverStatus: PropTypes.object,
-  blockInfo: PropTypes.object,
+  gethBlockInfo: PropTypes.object,
+  augurNodeBlockInfo: PropTypes.object,
   addInfoNotification: PropTypes.func,
   downloadModalSeen: PropTypes.bool,
 };

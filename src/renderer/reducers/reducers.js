@@ -1,5 +1,6 @@
 import configuration from './configuration'
-import blockInfo from './blockInfo'
+import gethBlockInfo from './gethBlockInfo'
+import augurNodeBlockInfo from './augurNodeBlockInfo'
 import serverStatus from './serverStatus'
 import notifications from './notifications'
 import modal from '../common/components/modal/reducers/modal'
@@ -7,7 +8,8 @@ import modal from '../common/components/modal/reducers/modal'
 export function createReducer() {
   return {
     configuration,
-    blockInfo,
+    gethBlockInfo,
+    augurNodeBlockInfo,
     serverStatus,
     modal,
     notifications
