@@ -31,6 +31,7 @@ export const handleEvents = () => {
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
     store.dispatch(updateServerAttrib({ CONNECTED: false }))
+    store.dispatch(updateBlockInfo({}))
   })
 
   ipcRenderer.on(ON_UI_SERVER_CONNECTED, () => {
