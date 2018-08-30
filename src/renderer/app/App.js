@@ -9,7 +9,7 @@ import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import NotificationContainer from "./containers/notification-container"
 import ShowErrorsContainer from "./containers/show-errors-container"
-import { requestServerConfigurations, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
+import { requestServerConfigurations, startGethNode, stopGethNode, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 import classNames from "classnames";
@@ -61,18 +61,24 @@ export class App extends Component {
       if (this.props.serverStatus.CONNECTED) {
         this.setState({connectedPressed: false});
         stopAugurNode()
+        if (selected.name === localLightNodeName) stopGethNode()
       } else {
         this.setState({connectedPressed: true});
-        startAugurNode(selected)
+
+        if (selected.name === localLightNodeName) {
+          // only start geth node, we start augurNode automatically when local geth client is synced
+          startGethNode()
+        } else {
+          startAugurNode()
+        }
+
       }
     }
   }
 
   downloadGeth() {
-    const selected = this.props.selected
     this.setState({connectedPressed: true, showDownloadGeth: false});
     this.props.updateConfig({downloadModalSeen: true})
-    startAugurNode(selected)
   }
 
   cancelDownload() {
@@ -109,7 +115,7 @@ export class App extends Component {
     return (
       <div className={Styles.App}>
         <Modal />
-        { !downloadModalSeen && 
+        { !downloadModalSeen &&
           <div
             className={classNames(Styles.App__smallBg, {
               [Styles['App__smallBg-show']]: showDownloadGeth

@@ -4,6 +4,7 @@ import { initializeConfiguration } from './app/actions/configuration'
 import { updateBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
 import { addInfoNotification, addErrorNotification } from './app/actions/notifications'
+import { startAugurNode } from './app/actions/localServerCmds'
 import store from './store'
 
 export const handleEvents = () => {
@@ -46,6 +47,9 @@ export const handleEvents = () => {
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
     store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true }))
+
+    // go ahead and start augur node
+    startAugurNode()
   })
 
   ipcRenderer.on(BULK_SYNC_STARTED, () => {
@@ -58,7 +62,9 @@ export const handleEvents = () => {
 
   ipcRenderer.on(INFO_NOTIFICATION, (event, notification) => {
     notification.timestamp = new Date().getTime()
-    store.dispatch(addInfoNotification(notification))
+    setTimeout(() => {
+      store.dispatch(addInfoNotification(notification))
+    }, 300)
   })
 
   ipcRenderer.on(ERROR_NOTIFICATION, (event, notification) => {
