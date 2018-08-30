@@ -73,6 +73,7 @@ AugurNodeServer.prototype.startServer = function () {
         this.retriesRemaining--
         this.restartOnFailure()
       } else {
+        this.disconnectServerMessage()
         this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
           messageType: RUNNING_FAILURE,
           message: err.message
@@ -81,6 +82,7 @@ AugurNodeServer.prototype.startServer = function () {
     }.bind(this))
   } catch (err) {
     log.error(err)
+    this.disconnectServerMessage()
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: START_FAILURE,
       message: err.message
