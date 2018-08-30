@@ -18,7 +18,7 @@ export const wrapLogHandler = (logHandler = defaultLogHandler) => (
       log.forEach(log => {
         if (
           find(Object.values(log), value => universeId === value) ||
-          log.contractName === "Cash"
+          (log.contractName === "Cash" && log.eventName === "Approval")
         )
           dispatch(logHandler(log));
       });
@@ -27,7 +27,10 @@ export const wrapLogHandler = (logHandler = defaultLogHandler) => (
         Object.values(log),
         value => universeId === value
       );
-      if (isInCurrentUniverse || log.contractName === "Cash")
+      if (
+        isInCurrentUniverse ||
+        (log.contractName === "Cash" && log.eventName === "Approval")
+      )
         dispatch(logHandler(log));
     }
   }

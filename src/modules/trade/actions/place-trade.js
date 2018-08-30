@@ -6,6 +6,8 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { ZERO } from "modules/trade/constants/numbers";
 import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
+import { updateNotification } from "modules/notifications/actions";
+import { selectCurrentTimestampInSeconds } from "src/select-state";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 
@@ -35,6 +37,9 @@ export const placeTrade = (
   const sharesProvided = sharesDepleted.eq(ZERO)
     ? otherSharesDepleted.toFixed()
     : sharesDepleted.toFixed();
+  // save vars to update notification if can't fill any orders on fillOnly.
+  let sentCallReturn = "";
+  let txHash = "";
   // make sure that we actually have an updated allowance.
   const placeTradeParams = {
     meta: loginAccount.meta,
@@ -49,12 +54,30 @@ export const placeTrade = (
     _outcome: parseInt(outcomeId, 10),
     _tradeGroupId: tradeInProgress.tradeGroupId,
     doNotCreateOrders,
-    onSent: () => {
+    onSent: res => {
+      const { callReturn, hash } = res;
+      sentCallReturn = createBigNumber(callReturn);
+      txHash = hash;
       dispatch(checkAccountAllowance());
       callback(null, tradeInProgress.tradeGroupId);
     },
     onFailed: callback,
     onSuccess: res => {
+      if (doNotCreateOrders && res && sentCallReturn.eq(res)) {
+        // didn't fill any shares on FillOnly
+        dispatch(
+          updateNotification(txHash, {
+            id: txHash,
+            status: "Confirmed",
+            timestamp: selectCurrentTimestampInSeconds(getState()),
+            seen: false,
+            log: {
+              noFill: true,
+              orderType: tradeInProgress.side
+            }
+          })
+        );
+      }
       if (bnAllowance.lte(0)) dispatch(checkAccountAllowance());
       onComplete(res);
     }
