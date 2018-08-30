@@ -118,6 +118,7 @@ export function extractGetDisputeInfoParams(params: any): GetDisputeInfoParams|u
 export function isGetDisputeInfoParams(params: any): params is GetDisputeInfoParams {
   if (!_.isObject(params)) return false;
   if (!_.isArray(params.marketIds)) return false;
+  // return !(params.marketIds.filter((value: any) => typeof value !== "string" && !_.isNull(value) && !_.isUndefined(value)).length > 0);
   return !(params.marketIds.filter((value: any) => typeof value !== "string").length > 0);
 }
 

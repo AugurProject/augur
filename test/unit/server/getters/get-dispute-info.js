@@ -12,8 +12,8 @@ describe("server/getters/get-dispute-info", () => {
         if (err) assert.fail(err);
         t.method = "getDisputeInfo";
         dispatchJsonRpcRequest(db, t, null, (err, disputeInfo) => {
-          t.assertions(disputeInfo);
-          done(err);
+          t.assertions(err, disputeInfo);
+          done();
           db.destroy();
         });
       });
@@ -28,7 +28,8 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -128,7 +129,8 @@ describe("server/getters/get-dispute-info", () => {
       ],
       account: "0x0000000000000000000000000000000000000021",
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000211",
@@ -228,7 +230,8 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000077777777777777777",
       ],
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         null,
         {
@@ -294,7 +297,8 @@ describe("server/getters/get-dispute-info", () => {
         "0x0000000000000000000000000000000000000211",
       ],
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [
         {
           marketId: "0x0000000000000000000000000000000000000011",
@@ -390,18 +394,19 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: ["0x1010101010101010101010101010101010101010"],
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, [null]);
     },
   });
   test({
-    description: "marketIds array with null",
+    description: "marketIds array with null, expect error",
     params: {
       marketIds: [undefined],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (disputeInfo) => {
-      assert.deepEqual(disputeInfo, []);
+    assertions: (err, disputeInfo) => {
+      assert.isNotNull(err);
     },
   });
   test({
@@ -409,7 +414,8 @@ describe("server/getters/get-dispute-info", () => {
     params: {
       marketIds: [],
     },
-    assertions: (disputeInfo) => {
+    assertions: (err, disputeInfo) => {
+      assert.ifError(err);
       assert.deepEqual(disputeInfo, []);
     },
   });

@@ -41,7 +41,7 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
 
   function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, paramExtract: ParamExtract<T>) {
     const extractedParams = paramExtract(request.params);
-    if (extractedParams === undefined) throw new Error("Invalid parameters");
+    if (extractedParams === undefined) return callback(new Error("Invalid parameters"));
     getterFunction(db, augur, extractedParams).then((response) => {
       callback(null, response);
     }).catch(callback);
