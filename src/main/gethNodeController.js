@@ -46,6 +46,8 @@ const PEER_COUNT_REQUEST_OPTIONS = {
   }
 }
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 function getGethPath() {
   let gethExecutablePath = path.join(process.resourcesPath, 'geth')
   if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath + '.exe')) return gethExecutablePath
@@ -53,6 +55,7 @@ function getGethPath() {
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
   if (process.platform === 'darwin') os = 'mac'
+  if (isDevelopment) return path.join(`resources/${os}/geth`)
   return path.join(app.getAppPath(), `resources/${os}/geth`)
 }
 
@@ -61,6 +64,7 @@ function GethNodeController() {
   this.gethProcess = null
   this.statusLoop = null
   this.gethExecutablePath = getGethPath()
+  console.log('gethExecutablePath', this.gethExecutablePath)
   ipcMain.on(START_GETH, this.start.bind(this))
   ipcMain.on(STOP_GETH, this.stop.bind(this))
 }
