@@ -83,6 +83,7 @@ export class App extends Component {
   downloadGeth() {
     this.setState({showDownloadGeth: false});
     this.props.updateConfig({downloadModalSeen: true})
+    startGethNode()
   }
 
   cancelDownload() {
