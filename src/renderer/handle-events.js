@@ -52,14 +52,14 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(PEER_COUNT_DATA, (event, data) => {
-    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount }))
+    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount, GETH_SYNCING: data.peerCount > 0 ? true : false }))
   })
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
     if (store.getState().serverStatus.GETH_INITIATED) {
       startAugurNode()
     }
-    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true, GETH_INITIATED: false }))
+    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true, GETH_INITIATED: false, GETH_SYNCING: false }))
   })
 
   ipcRenderer.on(BULK_SYNC_STARTED, () => {
