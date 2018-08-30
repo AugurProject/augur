@@ -19,7 +19,7 @@ export class About extends Component {
             <div className={Styles.about_version}>
               Version {version}
             </div>
-            
+
             <div>
               <a href="https://github.com/AugurProject/augur-app" target="blank">Source</a>
             </div>
@@ -29,7 +29,7 @@ export class About extends Component {
             
             
             <div className={Styles.about_geth}>
-              Shipped with geth
+              Shipped with Go Ethereum
             </div>
             <div className={Styles.about_geth_info}>
               For more information visit their github repository.
