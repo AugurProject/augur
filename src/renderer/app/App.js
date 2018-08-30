@@ -58,7 +58,7 @@ export class App extends Component {
     if (!this.props.serverStatus.AUGUR_NODE_CONNECTED && selected.name === localLightNodeName && !this.props.downloadModalSeen) {
       this.setState({showDownloadGeth: true})
     } else {
-      if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
+      if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
         this.disconnect()
       } else {
         if (selected.name === localLightNodeName) {

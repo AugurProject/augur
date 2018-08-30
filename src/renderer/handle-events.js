@@ -18,6 +18,9 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(LATEST_SYNCED_BLOCK, (event, info) => {
+    if (info && info.lastSyncBlockNumber) {
+      store.dispatch(updateServerAttrib({ AUGUR_NODE_SYNCING: true }))
+    }
     store.dispatch(updateBlockInfo(info))
   })
 
@@ -30,7 +33,7 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
-    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false }))
+    store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false, AUGUR_NODE_SYNCING: false }))
     // clear block info
     store.dispatch(clearBlockInfo())
   })
@@ -52,14 +55,14 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(PEER_COUNT_DATA, (event, data) => {
-    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount }))
+    store.dispatch(updateServerAttrib({ PEER_COUNT_DATA: data.peerCount, GETH_SYNCING: data.peerCount > 0 ? true : false }))
   })
 
   ipcRenderer.on(GETH_FINISHED_SYNCING, () => {
     if (store.getState().serverStatus.GETH_INITIATED) {
       startAugurNode()
     }
-    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true, GETH_INITIATED: false }))
+    store.dispatch(updateServerAttrib({ GETH_FINISHED_SYNCING: true, GETH_INITIATED: false, GETH_SYNCING: false }))
   })
 
   ipcRenderer.on(BULK_SYNC_STARTED, () => {
