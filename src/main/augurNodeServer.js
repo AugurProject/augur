@@ -228,7 +228,7 @@ AugurNodeServer.prototype.requestLatestSyncedBlock = function () {
       log.error(err)
       this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
         messageType: RUNNING_FAILURE,
-        message: err
+        message: err.message || err || 'Could not process latest block'
       })
     })
 }

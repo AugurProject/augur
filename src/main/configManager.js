@@ -94,7 +94,7 @@ ConfigManager.prototype.onSaveConfig = function (event, config) {
     log.error(err)
     event.sender.send(ERROR_NOTIFICATION, {
       messageType: SAVE_FAILURE,
-      message: err
+      message: err.message || err
     })
   }
 }

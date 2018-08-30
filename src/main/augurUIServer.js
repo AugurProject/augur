@@ -88,7 +88,7 @@ AugurUIServer.prototype.startServer = function (event) {
         } else {
           event.sender.send(ERROR_NOTIFICATION, {
             messageType: START_FAILURE,
-            message: e.toString()
+            message: e.message || e.toString()
           })
         }
       })
@@ -101,7 +101,7 @@ AugurUIServer.prototype.startServer = function (event) {
     event.sender.send(ON_UI_SERVER_DISCONNECTED)
     event.sender.send(ERROR_NOTIFICATION, {
       messageType: UNEXPECTED_ERR,
-      message: err.toString()
+      message: err.message || err.toString()
     })
   }
 }
@@ -129,7 +129,7 @@ AugurUIServer.prototype.createSSLCertificates = function (event) {
       log.error(err)
       event.sender.send(ERROR_NOTIFICATION, {
         messageType: SSL_GEN_ERROR,
-        message: err
+        message: err.message || err
       })
       return
     }
@@ -139,7 +139,7 @@ AugurUIServer.prototype.createSSLCertificates = function (event) {
         log.error(err)
         event.sender.send(ERROR_NOTIFICATION, {
           messageType: SSL_GEN_ERROR,
-          message: err
+          message: err.message || err
         })
         return
       }

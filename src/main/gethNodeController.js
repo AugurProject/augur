@@ -147,7 +147,7 @@ GethNodeController.prototype.makeRequest = function (options, data, callback) {
   } catch (err) {
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: GETH_REMOTE_MSG,
-      message: err.message
+      message: err.message || err
     })
   }
 }
@@ -160,7 +160,7 @@ GethNodeController.prototype.updatePeerCount = function (peerCountHex) {
   } catch (err) {
     this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
       messageType: GETH_REMOTE_MSG,
-      message: err.message
+      message: err.message || err
     })
   }
 }

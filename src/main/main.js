@@ -118,7 +118,7 @@ function createWindow () {
       console.log(err)
       if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
         messageType: APP_ERROR,
-        message: err
+        message: err.message || err
       })
     }
   })
@@ -126,7 +126,7 @@ function createWindow () {
   mainWindow.on('error', function(error) {
     if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
       messageType: APP_ERROR,
-      message: error
+      message: error.message || error
     })
   })
 
