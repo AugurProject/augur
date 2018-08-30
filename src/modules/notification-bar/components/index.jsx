@@ -52,7 +52,11 @@ export const NotificationBar = ({
         onClick={() => dismissFn(notification)}
       >
         <div className={Styles.notificationBar_dismissIcon}>
-          <CloseWithCircle />
+          {CloseWithCircle(
+            Styles.notificationBar_dismissIconImg,
+            "#412468",
+            "#FFF"
+          )}
         </div>
       </button>
     </div>
