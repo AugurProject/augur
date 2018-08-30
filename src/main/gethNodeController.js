@@ -1,4 +1,4 @@
-const { GETH_REMOTE_MSG, ERROR_NOTIFICATION, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ON_SERVER_CONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
+const { GETH_REMOTE_MSG, ERROR_NOTIFICATION, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ON_GETH_SERVER_CONNECTED, ON_GETH_SERVER_DISCONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
 const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
@@ -65,8 +65,8 @@ function GethNodeController() {
   this.statusLoop = null
   this.gethExecutablePath = getGethPath()
   console.log('gethExecutablePath', this.gethExecutablePath)
-  ipcMain.on(START_GETH, this.start.bind(this))
-  ipcMain.on(STOP_GETH, this.stop.bind(this))
+  ipcMain.on(START_GETH, this.onStartGethServer.bind(this))
+  ipcMain.on(STOP_GETH, this.onStopGethServer.bind(this))
 }
 
 GethNodeController.prototype.setWindow = function (window) {
@@ -76,7 +76,7 @@ GethNodeController.prototype.setWindow = function (window) {
   })
 }
 
-GethNodeController.prototype.start = function (event) {
+GethNodeController.prototype.onStartGethServer = function (event) {
   const appDataPath = appData('augur')
   const gethPath = path.join(appDataPath, 'geth')
   if (!fs.existsSync(gethPath)) {
@@ -109,7 +109,7 @@ GethNodeController.prototype.start = function (event) {
   this.gethProcess.on('close', this.onGethClose.bind(this))
 
   this.statusLoop = setInterval(this.checkStatus.bind(this), STATUS_LOOP_INTERVAL)
-  event.sender.send(ON_SERVER_CONNECTED)
+  event.sender.send(ON_GETH_SERVER_CONNECTED)
 }
 
 GethNodeController.prototype.log = function (data) {
@@ -120,10 +120,11 @@ GethNodeController.prototype.onGethClose = function (code) {
   console.log(`GETH child process exited with code ${code}`)
 }
 
-GethNodeController.prototype.stop = function () {
+GethNodeController.prototype.onStopGethServer = function (event) {
   console.log('Stopping geth process')
   if (this.gethProcess) this.gethProcess.kill('SIGINT')
   if (this.statusLoop) clearInterval(this.statusLoop)
+  if (event && event.sender) event.sender.send(ON_GETH_SERVER_DISCONNECTED)
 }
 
 GethNodeController.prototype.checkStatus = function () {

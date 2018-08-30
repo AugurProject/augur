@@ -1,4 +1,4 @@
-import { saveConfiguration } from './localServerCmds'
+import { saveConfiguration } from './local-server-cmds'
 export const INITIALIZE_CONFIG = 'INITIALIZE_CONFIG'
 export const UPDATE_CONFIG = 'UPDATE_CONFIG'
 export const ADD_UPDATE_CONNECTION = 'ADD_UPDATE_CONNECTION'

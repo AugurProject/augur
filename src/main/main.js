@@ -86,13 +86,9 @@ function createWindow () {
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
   })
-  mainWindow.webContents.openDevTools()
 
   if (isDevelopment) {
     mainWindow.openDevTools()
-  }
-
-  if (isDevelopment) {
     mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
   } else {
     // and load the index.html of the app.
@@ -116,8 +112,8 @@ function createWindow () {
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
       augurNodeController.shutDownServer()
-      augurUIServer.stopServer()
-      gethNodeController.stop()
+      augurUIServer.onStopUiServer()
+      gethNodeController.onStopGethServer()
       mainWindow = null
     } catch (err) {
       if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
@@ -144,7 +140,7 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   setTimeout(() => {
-    mainWindow.webContents.send('ready')
+    if (mainWindow) mainWindow.webContents.send('ready')
   }, 1000)
   console.log('app is ready ')
   checkForUpdates()
