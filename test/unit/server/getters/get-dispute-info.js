@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeInfo, extractGetDisputeInfoParams } = require("../../../../build/server/getters/get-dispute-info");
+const { dispatchJsonRpcRequest } = require("../../../../build/server/dispatch-json-rpc-request");
 
 
 describe("server/getters/get-dispute-info", () => {
@@ -10,16 +10,12 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        const params = extractGetDisputeInfoParams(t.params);
-        getDisputeInfo(db, null, params)
-          .then((disputeInfo) => {
-            t.assertions(disputeInfo);
-            done();
-          })
-          .catch(done)
-          .then(() => {
-            db.destroy();
-          });
+        t.method = "getDisputeInfo";
+        dispatchJsonRpcRequest(db, t, null, (err, disputeInfo) => {
+          t.assertions(disputeInfo);
+          done(err);
+          db.destroy();
+        })
       });
     });
   };
@@ -404,8 +400,7 @@ describe("server/getters/get-dispute-info", () => {
       marketIds: [undefined],
       account: "0x0000000000000000000000000000000000000b0b",
     },
-    assertions: (err, disputeInfo) => {
-      assert.ifError(err);
+    assertions: (disputeInfo) => {
       assert.deepEqual(disputeInfo, []);
     },
   });
