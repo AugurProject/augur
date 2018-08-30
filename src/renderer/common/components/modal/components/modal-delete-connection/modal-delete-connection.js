@@ -37,8 +37,8 @@ export default class ModalDeleteConnection extends Component {
       keyId,
       serverStatus,
     } = this.props
-    
-    const disableDelete = (selectedKey === keyId && serverStatus.CONNECTED)
+
+    const disableDelete = (selectedKey === keyId && (serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED))
 
     return (
       <section id="deleteModal" className={Styles.ModalDeleteConnection}>
@@ -47,7 +47,7 @@ export default class ModalDeleteConnection extends Component {
             Delete Connection
           </div>
           <div className={Styles.ModalDeleteConnection__subheader}>
-            Deleting your custom connection will remove it permanently. 
+            Deleting your custom connection will remove it permanently.
           </div>
           <div className={Styles.ModalDeleteConnection__buttonContainer}>
               <div className={Styles.ModalDeleteConnection__cancel} onClick={this.closeModal}>Cancel</div>

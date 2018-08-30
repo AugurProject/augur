@@ -39,7 +39,10 @@ export const startGethNode = () => {
 }
 
 export const stopGethNode = () => {
-  ipcRenderer.send(STOP_GETH)
+  stopAugurNode()
+  setTimeout(() => {
+    ipcRenderer.send(STOP_GETH)
+  }, 1000)
 }
 
 export const saveConfiguration = (config) => {

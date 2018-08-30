@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import Dropdown from "../../../common/components/dropdown/dropdown";
 import settingsPng from '../../../../assets/images/settings.png'
 import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
-import { resetDatabase } from '../../actions/localServerCmds'
-import { INFO_NOTIFICATION, GEN_INFO } from '../../../../utils/constants'
+import { resetDatabase } from '../../actions/local-server-cmds'
+import { GEN_INFO } from '../../../../utils/constants'
 
 export class SettingsDropdown extends Component {
   constructor(props) {

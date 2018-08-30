@@ -9,7 +9,7 @@ import { ProcessingView } from "./components/processing-view/processing-view";
 import { ConnectingView } from "./components/connecting-view/connecting-view";
 import NotificationContainer from "./containers/notification-container"
 import ShowErrorsContainer from "./containers/show-errors-container"
-import { requestServerConfigurations, startGethNode, stopGethNode, startAugurNode, stopAugurNode, openAugurUi } from './actions/localServerCmds'
+import { requestServerConfigurations, startGethNode, stopGethNode, startAugurNode, stopAugurNode, openAugurUi } from './actions/local-server-cmds'
 import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 import classNames from "classnames";
@@ -23,7 +23,7 @@ export class App extends Component {
 
     this.state = {
       connectedPressed: false,
-      processing: props.serverStatus.CONNECTED || false,
+      processing: (props.serverStatus.AUGUR_NODE_CONNECTED || props.serverStatus.GETH_CONNECTED) || false,
       showDownloadGeth: false,
     };
 
@@ -42,7 +42,7 @@ export class App extends Component {
     if (prevProps.serverStatus !== this.props.serverStatus) {
       // timeout so that there is time to finish animation
       clearTimeout(this.processingTimeout);
-      if (this.props.serverStatus.CONNECTED) {
+      if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
         this.processingTimeout = setTimeout(() => {
           this.setState({processing: true})
         }, 700);
@@ -55,10 +55,10 @@ export class App extends Component {
   connect() {
     const selected = this.props.selected
 
-    if (!this.props.serverStatus.CONNECTED && selected.name === localLightNodeName && !this.props.downloadModalSeen) {
+    if (!this.props.serverStatus.AUGUR_NODE_CONNECTED && selected.name === localLightNodeName && !this.props.downloadModalSeen) {
       this.setState({showDownloadGeth: true})
     } else {
-      if (this.props.serverStatus.CONNECTED) {
+      if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
         this.setState({connectedPressed: false});
         stopAugurNode()
         if (selected.name === localLightNodeName) stopGethNode()
@@ -108,7 +108,7 @@ export class App extends Component {
 
     let openBrowserEnabled = false
     const blocksRemaining = parseInt(blockInfo.highestBlockNumber, 10) - parseInt(blockInfo.lastSyncBlockNumber, 10)
-    if (blocksRemaining <= 15 && connectedPressed && serverStatus.CONNECTED) {
+    if (blocksRemaining <= 15 && connectedPressed && (serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)) {
       openBrowserEnabled = true
     }
 
@@ -140,12 +140,12 @@ export class App extends Component {
               stopAugurNode={this.connect}
             />
             <button className={Styles.App__connectButton} onClick={this.connect}>
-              {(serverStatus.CONNECTED && connectedPressed) ? 'Disconnect' : 'Connect'}
+              {((serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED) && connectedPressed) ? 'Disconnect' : 'Connect'}
             </button>
           </div>
           <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '500px'}}>
             <ConnectingView
-              connected={serverStatus.CONNECTED}
+              connected={serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED}
               connecting={connectedPressed}
               isLocalLighNode={selected && selected.name === localLightNodeName}
             />

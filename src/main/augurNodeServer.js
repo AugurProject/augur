@@ -233,8 +233,8 @@ AugurNodeServer.prototype.shutDownServer = function () {
     this.bulkSyncing = false
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return
     log.info('Calling Augur Node Controller Shutdown')
-    this.augurNodeController.shutdown()
     this.disconnectServerMessage()
+    this.augurNodeController.shutdown()
   } catch (err) {
     log.error(err)
     if (this.augurNodeController && !this.augurNodeController.isRunning()) {
