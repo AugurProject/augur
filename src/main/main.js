@@ -4,8 +4,7 @@ const { APP_ERROR, ERROR_NOTIFICATION } = require('../utils/constants')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 
-const checkForUpdates = require('../update/check-for-updates')
-
+const checkForUpdates = require('./check-for-updates')
 const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
