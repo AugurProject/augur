@@ -27,6 +27,7 @@ export class App extends Component {
     };
 
     this.connect = this.connect.bind(this);
+    this.disconnect = this.disconnect.bind(this);
     this.callOpenAugurUi = this.callOpenAugurUi.bind(this);
     this.downloadGeth = this.downloadGeth.bind(this);
     this.cancelDownload = this.cancelDownload.bind(this);
@@ -58,8 +59,7 @@ export class App extends Component {
       this.setState({showDownloadGeth: true})
     } else {
       if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
-        stopAugurNode(selected.name === localLightNodeName)
-        if (selected.name === localLightNodeName) stopGethNode()
+        this.disconnect()
       } else {
         if (selected.name === localLightNodeName) {
           // only start geth node, we start augurNode automatically when local geth client is synced
@@ -69,6 +69,14 @@ export class App extends Component {
         }
 
       }
+    }
+  }
+
+  disconnect() {
+    if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
+      const selected = this.props.selected
+      stopAugurNode(selected.name === localLightNodeName)
+      if (selected.name === localLightNodeName) stopGethNode()
     }
   }
 
@@ -131,7 +139,7 @@ export class App extends Component {
             </div>
             <NetworkDropdownContainer
               openBrowserEnabled={openBrowserEnabled}
-              stopServer={this.connect}
+              stopServer={this.disconnect}
             />
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {(serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)  ? 'Disconnect' : 'Connect'}
