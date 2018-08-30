@@ -72,13 +72,13 @@ export default class ModalEditConnection extends Component {
         delete validations[name]
       }
     } else if (name === 'http') {
-      if (!value.match(urlRegex)) {
+      if (value !== '' && !value.match(urlRegex)) {
         validations[name] = 'Not a valid HTTP Endpoint'
       } else {
         delete validations[name]
       }
     } else if (name === 'ws') {
-      if (!value.match(urlRegex)) {
+      if (value !== '' && !value.match(urlRegex)) {
         validations[name] = 'Not a valid Websocket Endpoint'
       } else {
         delete validations[name]

@@ -146,11 +146,12 @@ AugurNodeServer.prototype.onBulkSyncStarted = function () {
   log.info('Sync with blockchain started.')
   if (this.window) this.window.webContents.send(BULK_SYNC_STARTED)
 
-  this.sendMsgToWindowContents(INFO_NOTIFICATION, {
-    messageType: GEN_INFO,
-    message: 'Downloading logs'
-  })
-
+  setTimeout(() => {
+    this.sendMsgToWindowContents(INFO_NOTIFICATION, {
+      messageType: GEN_INFO,
+      message: 'Downloading logs'
+    })
+  }, 1500);
   this.bulkSyncing = true
 }
 
@@ -166,7 +167,7 @@ AugurNodeServer.prototype.onResetDatabase = function () {
     if (this.augurNodeController.isRunning()) {
       return this.sendMsgToWindowContents(INFO_NOTIFICATION, {
         messageType: DATABASE_IN_USE,
-        message: 'Database in use, can not reset'
+        message: 'Cannot reset database while in use'
       })
     } else {
       this.augurNodeController.resetDatabase()
