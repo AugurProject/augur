@@ -39,7 +39,7 @@ export const handleEvents = () => {
   })
 
   ipcRenderer.on(ON_GETH_SERVER_CONNECTED, () => {
-    store.dispatch(updateServerAttrib({ GETH_CONNECTED: true, GETH_INITIATED: true, CONNECTING: false }))
+    store.dispatch(updateServerAttrib({ GETH_CONNECTED: true, GETH_INITIATED: true, CONNECTING: false, GETH_FINISHED_SYNCING: false }))
   })
 
   ipcRenderer.on(ON_GETH_SERVER_DISCONNECTED, () => {
