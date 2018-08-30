@@ -12,6 +12,7 @@ export class ConnectingView extends Component {
 	    connecting: PropTypes.bool,
 	    isLocalLightNode: PropTypes.bool,
 	    serverStatus: PropTypes.object,
+	    blockInfo: PropTypes.object,
 	};
 
 	constructor(props) {
@@ -24,6 +25,7 @@ export class ConnectingView extends Component {
   			connecting,
   			isLocalLightNode,
   			serverStatus,
+  			blockInfo,
   		} = this.props
 
   		let showDisconnected = !connected && !connecting
@@ -37,6 +39,14 @@ export class ConnectingView extends Component {
   				showDisconnected = false
   			}
   		}
+
+  		const pct = blockInfo.lastSyncBlockNumber ? ((blockInfo.lastSyncBlockNumber - blockInfo.uploadBlockNumber) / (blockInfo.highestBlockNumber - blockInfo.uploadBlockNumber) * 100) : 0
+  		const percent = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+
+  		const currentPercentStyle = {
+	      width: `${percent}%`,
+	      backgroundColor: (syncing ? '#cbc5d9' : 'transparent'),
+	    };
 
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
@@ -80,11 +90,17 @@ export class ConnectingView extends Component {
 				    	}
 				    </div>
 			    </div>
-			    <div className={classNames(Styles.ConnectingView__loadingIndicator, {
+			     <div className={classNames(Styles.ConnectingView__loadingIndicator, {
 		               			[Styles['ConnectingView__loadingIndicator-connecting']]: (!connected && connecting),
 		               			[Styles['ConnectingView__loadingIndicator-connected']]: connected,
 		           			})}
-	  			/>
+	  			>
+	  				<div className={Styles.ConnectingView__graph}>
+                      <div className={Styles["ConnectingView__graph-current"]}>
+                        <div style={currentPercentStyle} />
+                      </div>
+                    </div>
+	  			</div>
 			</section>
 	  	)
 	}

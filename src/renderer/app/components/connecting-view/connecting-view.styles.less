@@ -80,7 +80,6 @@
   opacity: 1;
 }
 
-
 :local(.ConnectingView__loadingIndicator) {
 	max-height: 32px;
 	border-top: solid 1px #736e89;
@@ -106,4 +105,21 @@
   margin-left: 8px;
   background: url(../../../../assets/images/connected.svg);
   background-repeat: no-repeat;
+}
+
+:local(.ConnectingView__graph) {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+:local(.ConnectingView__graph-current) {
+  width: 100%;
+
+  > div {
+    background-color: #cbc5d9;
+    height: 32px;
+    position: relative;
+    transition: width 500ms ease;
+  }
 }
