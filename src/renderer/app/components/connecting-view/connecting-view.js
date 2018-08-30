@@ -35,8 +35,7 @@ export class ConnectingView extends Component {
 	      backgroundColor: 'transparent',
 	    };
 
-		let syncing = serverStatus.GETH_SYNCING
-		// for light node processing is looking for peers
+		let syncing = connecting && serverStatus.GETH_SYNCING
 		// syncing is syncing
 
   		if (isLocalLightNode) {
