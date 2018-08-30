@@ -1,5 +1,6 @@
 const {ipcRenderer, shell} = require('electron')
 import { STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
+import { updateServerAttrib } from './serverStatus'
 import store from '../../store'
 
 export const requestServerConfigurations = () => {
@@ -29,7 +30,8 @@ export const startAugurNode = () => {
   ipcRenderer.send(START_AUGUR_NODE, selected)
 }
 
-export const stopAugurNode = () => {
+export const stopAugurNode = (disableGethInitiated) => {
+  if (disableGethInitiated) store.dispatch(updateServerAttrib({ GETH_INITIATED: false }))
   ipcRenderer.send(STOP_AUGUR_NODE)
   stoptUiServer() // stop when disconnected from augur node
 }

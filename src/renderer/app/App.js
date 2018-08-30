@@ -60,7 +60,7 @@ export class App extends Component {
     } else {
       if (this.props.serverStatus.AUGUR_NODE_CONNECTED) {
         this.setState({connectedPressed: false});
-        stopAugurNode()
+        stopAugurNode(selected.name === localLightNodeName)
         if (selected.name === localLightNodeName) stopGethNode()
       } else {
         this.setState({connectedPressed: true});

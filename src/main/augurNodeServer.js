@@ -17,6 +17,7 @@ const AUGUR_NODE_RESTART_WAIT = 5*1000
 const MAX_BLOCKS_BEHIND_BEFORE_RESTART = 1000
 
 function AugurNodeServer(selectedNetwork) {
+  this.isShuttingDown = false
   this.window = null
   this.statusLoop = null
   this.selectedNetwork = selectedNetwork
@@ -63,8 +64,8 @@ AugurNodeServer.prototype.startServer = function () {
 
     this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
 
-    this.sendMsgToWindowContents(ON_SERVER_CONNECTED)
     this.augurNodeController.start(function (err) {
+      if (this.isShuttingDown) return
       if (this.retriesRemaining > 0) {
         this.sendMsgToWindowContents(INFO_NOTIFICATION, {
           messageType: RESTARTING_MSG,
@@ -91,6 +92,7 @@ AugurNodeServer.prototype.startServer = function () {
 }
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
+  if (this.isShuttingDown) return
   if (this.window) this.window.webContents.send(ERROR_NOTIFICATION, {
     messageType: RECONNECT_MSG,
     message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
@@ -176,6 +178,8 @@ AugurNodeServer.prototype.onResetDatabase = function () {
 
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
   try {
+    console.log('onStartNetwork has been called')
+    this.isShuttingDown = true
     this.selectedNetwork = data
     this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
     this.restart()
@@ -231,6 +235,7 @@ AugurNodeServer.prototype.disconnectServerMessage = function () {
 
 AugurNodeServer.prototype.shutDownServer = function () {
   try {
+    this.isShuttingDown = true
     if (this.statusLoop) clearInterval(this.statusLoop)
     this.bulkSyncing = false
     if (this.augurNodeController == null || !this.augurNodeController.isRunning()) return

@@ -10,7 +10,7 @@ export function gethPrcessorHandler(serverStatus) {
   }
 
   if (!GETH_CONNECTED && AUGUR_NODE_CONNECTED) {
-    stopAugurNode()
+    stopAugurNode(true)
   }
 }
 

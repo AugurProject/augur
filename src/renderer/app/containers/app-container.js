@@ -6,7 +6,7 @@ import { gethPrcessorHandler } from "../actions/geth-prcessor-handler"
 
 const mapStateToProps = state => {
 
-  gethPrcessorHandler(state.serverStatus)
+  if (state.serverStatus.GETH_INITIATED) gethPrcessorHandler(state.serverStatus)
 
   return {
     connections: state.configuration.networks || {},

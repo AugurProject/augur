@@ -116,6 +116,7 @@ function createWindow () {
       gethNodeController.onStopGethServer()
       mainWindow = null
     } catch (err) {
+      console.log(err)
       if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
         messageType: APP_ERROR,
         message: err
