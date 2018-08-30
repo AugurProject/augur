@@ -195,11 +195,6 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Migrate REP";
         break;
 
-      // LegacyReputationToken
-      case "FAUCET":
-        notification.title = "Get REP from faucet";
-        break;
-
       // Mailbox
       case "WITHDRAWETHER":
         notification.title = "Withdraw ETH from mailbox";
@@ -327,6 +322,11 @@ export default function setNotificationText(notification, callback) {
         }
         break;
       }
+
+      // TestNetReputationToken
+      case "FAUCET":
+        notification.title = "Get REP from faucet";
+        break;
 
       // TradingEscapeHatch
       case "CLAIMSHARESINUPDATE":
