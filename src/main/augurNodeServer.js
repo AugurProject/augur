@@ -159,7 +159,7 @@ AugurNodeServer.prototype.onResetDatabase = function () {
     if (this.augurNodeController.isRunning()) {
       return this.sendMsgToWindowContents(INFO_NOTIFICATION, {
         messageType: DATABASE_IN_USE,
-        message: 'Database in use, can not reset'
+        message: 'Cannot reset database while in use'
       })
     } else {
       this.augurNodeController.resetDatabase()
