@@ -35,21 +35,18 @@ export class ConnectingView extends Component {
 	      backgroundColor: 'transparent',
 	    };
 
-		let syncing = false
+		let syncing = serverStatus.GETH_SYNCING
 		// for light node processing is looking for peers
 		// syncing is syncing
 
   		if (isLocalLightNode) {
-  			if (serverStatus.GETH_SYNCING) {
-  				syncing = true
-  			}
   			if (syncing) {
   				showDisconnected = false
   			}
 
   			const pct = gethBlockInfo.lastSyncBlockNumber ? ((gethBlockInfo.lastSyncBlockNumber - gethBlockInfo.uploadBlockNumber) / (gethBlockInfo.highestBlockNumber - gethBlockInfo.uploadBlockNumber) * 100) : 0
   			let percent = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
-  			if (!syncing) {
+  			if (connected) {
   				percent = 0
   			}
   			currentPercentStyle = {
