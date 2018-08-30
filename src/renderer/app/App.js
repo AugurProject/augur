@@ -77,7 +77,7 @@ export class App extends Component {
       const selected = this.props.selected
       stopAugurNode(selected.name === localLightNodeName)
       if (selected.name === localLightNodeName) stopGethNode()
-    }
+    } 
   }
 
   downloadGeth() {
@@ -140,6 +140,8 @@ export class App extends Component {
             <NetworkDropdownContainer
               openBrowserEnabled={openBrowserEnabled}
               stopServer={this.disconnect}
+              isConnectedPressed={serverStatus.CONNECTING}
+              connected={serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED}
             />
             <button className={Styles.App__connectButton} onClick={this.connect}>
               {(serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)  ? 'Disconnect' : 'Connect'}

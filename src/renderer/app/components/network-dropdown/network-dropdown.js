@@ -18,6 +18,7 @@ export class NetworkDropdown extends Component {
 	    animateKey: PropTypes.string,
 	    updateConfig: PropTypes.func.isRequired,
 	    selectedKey: PropTypes.string.isRequired,
+	    connected: PropTypes.bool,
 	};
 
 	constructor(props) {
@@ -74,13 +75,14 @@ export class NetworkDropdown extends Component {
 		const {
   			isConnectedPressed,
   			openBrowserEnabled,
+  			connected,
   		} = this.props
 
 		return (
 			<div
         		className={classNames(Styles.NetworkDropdown__circle, Styles['NetworkDropdown__circle-big'], {
-        			[Styles['NetworkDropdown__circle-blue']]: isSelected && isConnectedPressed && !openBrowserEnabled,
-       				[Styles['NetworkDropdown__circle-green']]: isSelected && isConnectedPressed && openBrowserEnabled
+        			[Styles['NetworkDropdown__circle-blue']]: isSelected && ((isConnectedPressed && !openBrowserEnabled) || connected),
+       				[Styles['NetworkDropdown__circle-green']]: isSelected && openBrowserEnabled
    				})}
     		/>
 		)
@@ -93,6 +95,7 @@ export class NetworkDropdown extends Component {
   			openBrowserEnabled,
   			animateKey,
   			selectedKey,
+  			connected,
   		} = this.props
 
 	  	let options = []
@@ -142,8 +145,8 @@ export class NetworkDropdown extends Component {
 		           				})}>
 				        		<div
 					        		className={classNames(Styles.NetworkDropdown__circle, {
-					        			[Styles['NetworkDropdown__circle-blue']]: isConnectedPressed && !openBrowserEnabled,
-			               				[Styles['NetworkDropdown__circle-green']]: isConnectedPressed && openBrowserEnabled
+					        			[Styles['NetworkDropdown__circle-blue']]: (isConnectedPressed && !openBrowserEnabled) || connected,
+			               				[Styles['NetworkDropdown__circle-green']]: openBrowserEnabled
 			           				})}
 				        		/>
 				        		<div className={Styles.NetworkDropdown__labelText}>

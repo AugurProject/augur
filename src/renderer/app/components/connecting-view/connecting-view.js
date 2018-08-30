@@ -65,8 +65,8 @@ export class ConnectingView extends Component {
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{connecting && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
-				    	{connecting &&
+				    	{(!connected && connecting) && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
+				    	{(!connected && connecting) &&
 				    		<PulseLoader
 				    		  sizeUnit={"px"}
 					          size={6}
@@ -78,7 +78,7 @@ export class ConnectingView extends Component {
 				    </div>
 			    </div>
 			    <div className={classNames(Styles.ConnectingView__loadingIndicator, {
-		               			[Styles['ConnectingView__loadingIndicator-connecting']]: connecting,
+		               			[Styles['ConnectingView__loadingIndicator-connecting']]: (!connected && connecting),
 		               			[Styles['ConnectingView__loadingIndicator-connected']]: connected,
 		           			})}
 	  			/>
