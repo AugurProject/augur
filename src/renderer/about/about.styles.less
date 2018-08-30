@@ -2,11 +2,16 @@
 
 :local(.main_section) {
   font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
+  height: 400px;
 }
 
+:local(.about_img) {
+  margin-top: 60px;
+  margin-left: 45px;
+}
 :local(.label) {
   color: #FFFFFF;
   font-size: 12px;
@@ -17,15 +22,43 @@
 }
 
 :local(.about_versions) {
-  padding: 10px 20px;
+  padding: 10px 30px;
+  padding-left: 30px;
+  margin-top: 30px;
+}
+
+:local(.about_version) {
+  margin-bottom: 8px;
+}
+
+:local(.about_geth) {
+  margin-top: 15px;
+  // font-style: italic;
+  font-weight: 600;
+}
+
+:local(.about_license) {
+  margin-top: 1px;
+  font-weight: 300;
+  font-size: 12px;
+}
+
+:local(.about_license_label) {
+  font-weight: 00;
+}
+
+:local(.about_geth_info) {
+  font-size: 12px;
+  margin-bottom: 4px;
 }
 
 :local(.about_top_section) {
   align-content: center;
   display: flex;
   flex-direction: row;
-  padding: 20px 40px;
+  padding: 20px 0px;
   justify-content: center;
+  padding-left: 0px;
 }
 
 :local(.about_bottom_section) {
@@ -34,4 +67,13 @@
 
 :local(.about_bottom_padding) {
   padding: 10px 10px;
+}
+
+:local(.about_title) {
+  font-weight: 600;
+  font-size: 22px;
+}
+
+:local(.about_version) {
+  font-size: 12px;
 }

@@ -65,7 +65,7 @@ function buildMenu() {
 }
 
 function about() {
-  const aboutWindow = new BrowserWindow({width: 450, height: 350, icon: path.join(__dirname, '../augur.ico')})
+  const aboutWindow = new BrowserWindow({width: 450, height: 350, minHeight: 350, minWidth: 450, maxHeight: 350, maxWidth: 450, icon: path.join(__dirname, '../augur.ico')})
 
   if (isDevelopment) {
     aboutWindow.loadURL(url.format(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}/#about`))

@@ -11,35 +11,40 @@ export class About extends Component {
     return (
       <section className={Styles.main_section}>
         <div className={Styles.about_top_section}>
-          <div>
-            <img src={augurPng} alt="augur logo" height="100" width="100" />
+          <div className={Styles.about_img}>
+            <img src={augurPng} alt="augur logo" height="150" width="150" />
           </div>
           <div className={Styles.about_versions}>
-            <div>Augur App</div>
-            <div>
-              version: {version}
+            <div className={Styles.about_title}>Augur App</div>
+            <div className={Styles.about_version}>
+              Version {version}
             </div>
+            
             <div>
-              repository: <a href="https://github.com/AugurProject/augur-app" target="blank">github source</a>
+              <a href="https://github.com/AugurProject/augur-app" target="blank">Source</a>
             </div>
+            <div className={Styles.about_license}>
+              <span className={Styles.about_license_label}>License</span> MIT
+            </div>
+            
+            
+            <div className={Styles.about_geth}>
+              Shipped with geth
+            </div>
+            <div className={Styles.about_geth_info}>
+              For more information visit their github repository.
+            </div>
+
             <div>
-              license: MIT
+              <a href="https://github.com/ethereum/go-ethereum/releases" target="blank">Releases</a>
+            </div>
+            <div className={Styles.about_license}>
+              <span className={Styles.about_license_label}>License</span> GPLv3
             </div>
           </div>
 
         </div>
-        <div className={Styles.about_bottom_section}>
-          Augur App ships with a version of geth, go to their github repository to get more information.
-          <div className={Styles.about_bottom_padding}>
-            Go Ethereum (geth)
-            <div>
-              Release: <a href="https://github.com/ethereum/go-ethereum/releases" target="blank">github releases</a>
-            </div>
-            <div>
-              license: GPLv3
-            </div>
-          </div>
-        </div>
+      
       </section>
     )
   }
