@@ -21,6 +21,9 @@
   line-height: normal;
   letter-spacing: normal;
   color: #ffffff;
+  max-width: 260px;
+  flex-grow: 1;
+  margin-right: 5px;
 }
 
 :local(.ShowErrors__close) {
@@ -28,6 +31,13 @@
   max-height: 5px;
   min-width: 10px;
   min-height: 20px;
+  cursor: pointer;
+  margin-top: 3px;
+  background: url(../../../../assets/images/notificationClose.svg) no-repeat;
+}
+
+:local(.ShowErrors__close:focus) {
+  outline: none;
 }
 
 :local(.ShowErrors__icon) {
