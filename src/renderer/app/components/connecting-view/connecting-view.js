@@ -26,14 +26,20 @@ export class ConnectingView extends Component {
   			serverStatus,
   		} = this.props
 
-  		const showDisconnected = !connected && !connecting
+  		let showDisconnected = !connected && !connecting
 
-  		let syncing = false
+		let syncing = false
   		if (isLocalLightNode) {
   			if (serverStatus.PEER_COUNT_DATA > 0 && !serverStatus.GETH_FINISHED_SYNCING) {
   				syncing = true
   			}
+  			if (syncing) {
+  				showDisconnected = false
+  			}
   		}
+
+
+  		
 
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
