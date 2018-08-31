@@ -41,6 +41,7 @@
     "reinstall": "./scripts/reinstall.sh",
     "sqlite": "./scripts/sqlite.sh",
     "docker:pg:start": "./scripts/postgres/start.sh",
+    "docker:pg:stop": "./scripts/postgres/stop.sh",
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
     "docker:build": "scripts/docker/build.sh",
     "docker:release": "bash scripts/release-docker.sh"

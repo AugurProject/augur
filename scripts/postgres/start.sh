@@ -6,6 +6,6 @@ docker run \
   -e POSTGRES_PASSWORD=augur \
   -e POSTGRES_DATABASE=augur \
   -p 5432:5432 \
-  -it --rm postgres
+  -d postgres
 
 export DATABASE_URL="postgresql://augur:augur@localhost:5432/augur" 
