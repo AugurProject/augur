@@ -38,7 +38,7 @@ const handleNotificationUpdate = (log, dispatch, getState) => {
       timestamp: selectCurrentTimestampInSeconds(getState()),
       blockNumber: log.blockNumber,
       log,
-      status: "confirmed",
+      status: "Confirmed",
       linkPath: makePath(TRANSACTIONS),
       seen: false // Manually set to false to ensure notification
     })
@@ -227,7 +227,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
               params: {
                 type: "finalize"
               },
-              status: "confirmed",
+              status: "Confirmed",
               linkPath: makePath(MY_MARKETS)
             })
           );
