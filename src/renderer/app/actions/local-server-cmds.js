@@ -1,14 +1,10 @@
 const {ipcRenderer, shell} = require('electron')
-import { STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, REQUEST_LATEST_SYNCED_BLOCK, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
+import { STOP_UI_SERVER, STOP_GETH, START_GETH, REQUEST_CONFIG, RESET_DATABASE, START_UI_SERVER, STOP_AUGUR_NODE, START_AUGUR_NODE, SAVE_CONFIG } from '../../../utils/constants'
 import { updateServerAttrib } from './serverStatus'
 import store from '../../store'
 
 export const requestServerConfigurations = () => {
   ipcRenderer.send(REQUEST_CONFIG)
-}
-
-export const requestLatestSyncedBlock = () => {
-  ipcRenderer.send(REQUEST_LATEST_SYNCED_BLOCK)
 }
 
 export const resetDatabase = (data) => {
