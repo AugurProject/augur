@@ -1,19 +1,17 @@
 /**
- * @todo Make use of getOutcome in addTransactions.js
- * @todo Investigate why fill order tx gets stuck in Pending status
- * @todo Fix bug where createOrder outcome is wrong for categorical markets
+ * @todo Update text for FINALIZE once notification triggering is moved
  */
-
 import store from "src/store";
 import { augur } from "services/augurjs";
 import { isEmpty } from "lodash/fp";
 import { selectMarket } from "modules/market/selectors/market";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 import { TEN_TO_THE_EIGHTEENTH_POWER } from "modules/trade/constants/numbers";
+import { getOutcome } from "modules/transactions/actions/add-transactions";
 import { BUY, SELL } from "modules/trade/constants/types";
 import { formatEther, formatRep, formatShares } from "utils/format-number";
+import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { createBigNumber } from "utils/create-big-number";
-import { getOutcome } from "modules/transactions/actions/add-transactions";
 
 export default function setNotificationText(notification, callback) {
   const result = (dispatch, getState) => {
@@ -47,9 +45,9 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Canceled order for ${
-                formatShares(notification.log.quantity).denomination
-              } of "${outcomeDescription}" at ${
+              notification.description = `Cancel order for ${formatShares(
+                notification.log.quantity
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -67,9 +65,9 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Canceled order for ${
-                formatShares(notification.log.quantity).denomination
-              } of "${outcomeDescription}" at ${
+              notification.description = `Cancel order for ${formatShares(
+                notification.log.quantity
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -113,7 +111,7 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Created ${
+              notification.description = `Create ${
                 notification.log.orderType
               } order for ${
                 formatShares(notification.log.quantity).formatted
@@ -164,7 +162,7 @@ export default function setNotificationText(notification, callback) {
                 ).name
               );
 
-              notification.description = `Filled ${
+              notification.description = `Fill ${
                 notification.log.orderType
               } order(s) for ${
                 formatShares(notification.log.amount || 0).formatted
@@ -177,13 +175,12 @@ export default function setNotificationText(notification, callback) {
               if (notification.log.noFill) {
                 notification.description = `Unable to ${
                   notification.log.orderType
-                } Shares of ${outcomeDescription} at ${augur.utils.convertOnChainPriceToDisplayPrice(
+                } shares of ${outcomeDescription} at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
                   marketInfo.numTicks
                 )} ETH.`;
               }
-
               return callback(notification);
             })
           );
@@ -214,18 +211,20 @@ export default function setNotificationText(notification, callback) {
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
-              // TODO: Set outcome description
-              // const marketInfo = selectMarket(notification.to);
-              // const outcomeDescription = notification.params._invalid
-              //   ? "Invalid"
-              //   : getOutcome(marketInfo, notification.log.outcome);
+              const marketInfo = selectMarket(notification.to);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription = getOutcome(marketInfo, outcome);
               notification.description = `Place ${
                 formatRep(
                   createBigNumber(notification.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on a dispute bond`;
+              } REP on "${outcomeDescription}" dispute bond`;
               return callback(notification);
             })
           );
@@ -241,7 +240,7 @@ export default function setNotificationText(notification, callback) {
             loadMarketsInfoIfNotLoaded([notification.to], () => {
               const marketDescription = selectMarket(notification.to)
                 .description;
-              notification.description = `Submitted Report on "${marketDescription}"`;
+              notification.description = `Submit report on "${marketDescription}"`;
               return callback(notification);
             })
           );
@@ -249,7 +248,9 @@ export default function setNotificationText(notification, callback) {
         break;
       case "FINALIZE":
         notification.title = "Finalize market";
-        // TODO: Test
+        // TODO: Currently, this is being handled by handleMarketFinalizedLog of log-handlers.js
+        // Should probably remove that and have the notification info set here.
+
         // if (!notification.description && notification.log) {
         //   dispatch(
         //     loadMarketsInfoIfNotLoaded([notification.to], () => {
@@ -280,8 +281,32 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Migrate REP into universe";
         break;
       case "MIGRATEOUT":
+        notification.title = "Migrate REP out of universe";
+        break;
       case "MIGRATEOUTBYPAYOUT":
         notification.title = "Migrate REP out of universe";
+        if (!notification.description && notification.log) {
+          const forkingMarketId = getState().universe.forkingMarket;
+          dispatch(
+            loadMarketsInfoIfNotLoaded([forkingMarketId], () => {
+              const marketInfo = selectMarket(forkingMarketId);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription = getOutcome(marketInfo, outcome);
+              notification.description = `Migrate ${
+                formatRep(
+                  createBigNumber(notification.log.value).dividedBy(
+                    TEN_TO_THE_EIGHTEENTH_POWER
+                  )
+                ).formatted
+              } REP to child universe "${outcomeDescription}"`;
+              return callback(notification);
+            })
+          );
+        }
         break;
       case "UPDATEPARENTTOTALTHEORETICALSUPPLY":
         notification.title =
@@ -343,7 +368,9 @@ export default function setNotificationText(notification, callback) {
       case "CREATEYESNOMARKET":
         notification.title = "Create new market";
         if (!notification.description && notification.log) {
-          notification.description = notification.params._description;
+          notification.description = `Create market "${
+            notification.params._description
+          }"`;
         }
         break;
       case "CREATECHILDUNIVERSE":
@@ -402,9 +429,20 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Deposit ETH";
         break;
       case "FORKANDREDEEM":
-      case "REDEEM":
       case "REDEEMFORREPORTINGPARTICIPANT":
-        notification.title = "Claim funds";
+        notification.title = "Redeem funds";
+        break;
+      case "REDEEM":
+        notification.title = "Redeem funds";
+        if (!notification.description && notification.log) {
+          notification.description = `Claim ${
+            formatRep(
+              createBigNumber(notification.log.value).dividedBy(
+                TEN_TO_THE_EIGHTEENTH_POWER
+              )
+            ).formatted
+          } REP`;
+        }
         break;
       case "INCREASEAPPROVAL":
         notification.title = "Increase spending approval";
@@ -415,6 +453,7 @@ export default function setNotificationText(notification, callback) {
       case "TRANSFER":
       case "TRANSFERFROM":
       case "TRANSFEROWNERSHIP":
+        // Ignore this case for now, since it seems redundant with some other notifications
         break;
       case "WITHDRAWETHERTO":
         notification.title = "Withdraw ETH";

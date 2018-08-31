@@ -106,7 +106,7 @@ export const handleTokensBurnedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.target === address;
   if (isStoredTransaction) {
-    dispatch(defaultLogHandler(log));
+    handleNotificationUpdate(log, dispatch, getState);
   }
 };
 
