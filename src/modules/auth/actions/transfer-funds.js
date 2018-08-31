@@ -58,9 +58,12 @@ export function transferFunds(amount, currency, toAddress) {
           reputationToSend: amount,
           _to: to,
           onSent: tx => {
+            // Trigger the notification addition/updates in the callback functions
+            // because we only want to display this TokensTransferred event,
+            // and not ones from other contracts.
             dispatch(
               addNotification({
-                id: `REP-${tx.hash}`,
+                id: tx.hash,
                 status: "Pending",
                 params: {
                   universe: universe.id,
@@ -77,8 +80,8 @@ export function transferFunds(amount, currency, toAddress) {
           },
           onSuccess: tx => {
             dispatch(
-              updateNotification(`REP-${tx.hash}`, {
-                id: `REP-${tx.hash}`,
+              updateNotification(tx.hash, {
+                id: tx.hash,
                 status: "Confirmed",
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })
@@ -86,8 +89,8 @@ export function transferFunds(amount, currency, toAddress) {
           },
           onFailed: tx => {
             dispatch(
-              updateNotification(`REP-${tx.hash}`, {
-                id: `REP-${tx.hash}`,
+              updateNotification(tx.hash, {
+                id: tx.hash,
                 status: "Failed",
                 timestamp: selectCurrentTimestampInSeconds(getState())
               })

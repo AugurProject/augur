@@ -311,9 +311,9 @@ export default function setNotificationText(notification, callback) {
               );
               notification.description = `Place ${orderType} order for ${
                 formatShares(notification.log.amount).formatted
-              } ${
-                formatShares(notification.log.amount).denomination
-              } of "${outcomeDescription}" at ${
+              } ${formatShares(
+                notification.log.amount
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
