@@ -202,7 +202,7 @@ export default function setNotificationText(notification, callback) {
 
       // Market
       case "CONTRIBUTE":
-        notification.title = "Contribute REP to crowdsourcer";
+        notification.title = "Contribute to crowdsourcer";
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
@@ -212,14 +212,17 @@ export default function setNotificationText(notification, callback) {
                 notification.params._payoutNumerators,
                 notification.params._invalid
               );
-              const outcomeDescription = getOutcome(marketInfo, outcome);
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
               notification.description = `Place ${
                 formatRep(
                   createBigNumber(notification.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on "${outcomeDescription}" dispute bond`;
+              } REP on "${outcomeDescription}"`;
               return callback(notification);
             })
           );
@@ -233,9 +236,19 @@ export default function setNotificationText(notification, callback) {
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
-              const marketDescription = selectMarket(notification.to)
-                .description;
-              notification.description = `Submit report on "${marketDescription}"`;
+              const marketInfo = selectMarket(notification.to);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
+              notification.description = `Report "${outcomeDescription}" on "${
+                marketInfo.description
+              }"`;
               return callback(notification);
             })
           );

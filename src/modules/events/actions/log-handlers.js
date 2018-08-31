@@ -220,7 +220,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
           // cause a MarketFinalized event to be logged.
           dispatch(
             addNotification({
-              id: log.transactionHash,
+              id: `${log.transactionHash}_finalize`,
               timestamp: log.timestamp,
               blockNumber: log.blockNumber,
               log,
