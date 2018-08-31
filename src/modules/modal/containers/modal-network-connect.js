@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
   env: state.env,
   connection: state.connection,
   isConnectedThroughWeb3:
+    augur.rpc.getTransport() &&
     augur.rpc.getTransport().getTransportName() === "Web3Transport"
 });
 
