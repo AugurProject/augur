@@ -152,7 +152,7 @@ export class App extends Component {
           <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '500px'}}>
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING && !serverStatus.GETH_SYNCING)}
-              connecting={serverStatus.CONNECTING || serverStatus.GETH_INITIATED}
+              connecting={serverStatus.CONNECTING || (serverStatus.GETH_CONNECTED && serverStatus.GETH_INITIATED)}
               gethBlockInfo={gethBlockInfo}
               isLocalLightNode={selected && selected.name === localLightNodeName}
               serverStatus={serverStatus}
