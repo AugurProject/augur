@@ -46,10 +46,10 @@ module.exports = {
     client: "pg",
     connection: process.env.DATABASE_URL,
     seeds: {
-      directory: "./build/seeds/test",
+      directory: "./src/seeds/test",
     },
     migrations: {
-      directory: "./build/migrations",
+      directory: "./src/migrations",
     },
   },
 };
