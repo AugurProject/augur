@@ -38,7 +38,7 @@ export default class ModalDownloadGeth extends Component {
           </div>
           <div className={Styles.ModalDownloadGeth__buttonContainer}>
               <div className={Styles.ModalDownloadGeth__cancel} onClick={this.closeModal}>Cancel</div>
-              <div className={Styles.ModalDownloadGeth__save} onClick={this.download}>Download</div>
+              <div className={Styles.ModalDownloadGeth__save} onClick={this.download}>Approve</div>
           </div>
         </div>
       </section>
