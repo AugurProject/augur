@@ -45,11 +45,11 @@ export class ProcessingView extends Component {
   		} = this.props
 
 		const pct = augurNodeBlockInfo.lastSyncBlockNumber ? ((augurNodeBlockInfo.lastSyncBlockNumber - augurNodeBlockInfo.uploadBlockNumber) / (augurNodeBlockInfo.highestBlockNumber - augurNodeBlockInfo.uploadBlockNumber) * 100) : 0
-  		let pctLbl = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
+  		let pctLbl = (pct * Math.pow(10, 2)) / Math.pow(10, 2)
   		if (pctLbl > 99.95) {
   			pctLbl = 100
   		}
-  		let percent = pctLbl
+  		let percent = pctLbl.toFixed(2)
   		if (!processing) percent = 0
 
   		const blocksBehind = addCommas(parseInt(augurNodeBlockInfo.highestBlockNumber, 10) - parseInt(augurNodeBlockInfo.lastSyncBlockNumber, 10)) || 0
