@@ -29,19 +29,17 @@ export class ConnectingView extends Component {
   		} = this.props
 
   		let showDisconnected = !connected && !connecting
+		const syncing = connecting && serverStatus.GETH_SYNCING
+  		const showConnecting = !connected && !showDisconnected
 
 		let currentPercentStyle = {
 	      width: '0%',
 	      backgroundColor: 'transparent',
 	    };
 
-		let syncing = connecting && serverStatus.GETH_SYNCING
-		// syncing is syncing
 
   		if (isLocalLightNode) {
-  			if (syncing) {
-  				showDisconnected = false
-  			}
+  			showDisconnected = syncing ? !syncing : showDisconnected
 
   			const pct = gethBlockInfo.lastSyncBlockNumber ? ((gethBlockInfo.lastSyncBlockNumber - gethBlockInfo.uploadBlockNumber) / (gethBlockInfo.highestBlockNumber - gethBlockInfo.uploadBlockNumber) * 100) : 0
   			let percent = Math.floor(pct * Math.pow(10, 2)) / Math.pow(10, 2)
@@ -53,6 +51,7 @@ export class ConnectingView extends Component {
 		      backgroundColor: (syncing ? '#cbc5d9' : 'transparent'),
 		    };
   		}
+
 
 
 
@@ -80,14 +79,14 @@ export class ConnectingView extends Component {
 		           			})}
 	  				>
 				    	{showDisconnected && 'Disconnected'}
-
 				    	{connected && (isLocalLightNode ? 'Synced' : 'Connected')}
 				   		{connected &&
 				   			<div className={Styles.ConnectingView__connectedSvg}/>
 				   		}
 
-				    	{(!connected && !showDisconnected) && (isLocalLightNode ? (syncing ? 'Syncing' : 'Looking For Peers') : 'Connecting')}
-				    	{(!connected && !showDisconnected) &&
+				    	{showConnecting && !isLocalLightNode && 'Connecting'}
+				    	{(showConnecting && isLocalLightNode) && (syncing ? 'Syncing' : 'Looking For Peers')}
+				    	{showConnecting &&
 				    		<PulseLoader
 				    		  sizeUnit={"px"}
 					          size={6}
@@ -99,7 +98,7 @@ export class ConnectingView extends Component {
 				    </div>
 			    </div>
 			     <div className={classNames(Styles.ConnectingView__loadingIndicator, {
-		               			[Styles['ConnectingView__loadingIndicator-connecting']]: (!connected && !showDisconnected),
+		               			[Styles['ConnectingView__loadingIndicator-connecting']]: showConnecting,
 		               			[Styles['ConnectingView__loadingIndicator-connected']]: connected,
 		           			})}
 	  			>
