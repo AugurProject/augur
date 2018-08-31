@@ -21,7 +21,8 @@ export default function(callback = logError) {
           meta: loginAccount.meta,
           onSent: noop,
           onSuccess: res => {
-            // Trigger the notification updates in the callback functions because Augur Node does not emit an event for TokensMinted
+            // Trigger the notification updates in the callback functions
+            // because Augur Node does not emit an event for TokensMinted.
             dispatch(
               updateNotification(res.hash, {
                 id: res.hash,

@@ -20,6 +20,8 @@ export function transferFunds(amount, currency, toAddress) {
           etherToSend: amount,
           from: fromAddress,
           onSent: tx => {
+            // Trigger the notification addition/updates in the callback functions
+            // because Augur Node does not emit an event for transferrring ETH.
             dispatch(
               addNotification({
                 id: tx.hash,

@@ -177,7 +177,7 @@ export default function setNotificationText(notification, callback) {
               if (notification.log.noFill) {
                 notification.description = `Unable to ${
                   notification.log.orderType
-                } Shares of ${outcomeDescription} at ${augur.utils.convertOnChainPriceToDisplayPrice(
+                } shares of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
                   marketInfo.numTicks
@@ -243,19 +243,20 @@ export default function setNotificationText(notification, callback) {
         }
         break;
       case "FINALIZE":
+        // Market finalization notifications should only be displayed if
+        // the market creator is the same as the account that's logged in
         notification.title = "Finalize market";
-        // TODO: Test
-        // if (!notification.description && notification.log) {
-        //   dispatch(
-        //     loadMarketsInfoIfNotLoaded([notification.to], () => {
-        //       const marketDescription = selectMarket(notification.to)
-        //         .description;
-        //       notification.description =
-        //         'Finalize market "' + marketDescription + '"';
-        //       return callback(notification);
-        //     })
-        //   );
-        // }
+        if (!notification.description && notification.log) {
+          dispatch(
+            loadMarketsInfoIfNotLoaded([notification.log.market], () => {
+              const marketDescription = selectMarket(notification.log.market)
+                .description;
+              notification.description =
+                'Finalize market "' + marketDescription + '"';
+              return callback(notification);
+            })
+          );
+        }
         break;
       case "FINALIZEFORK":
         notification.title = "Finalize forked market";
