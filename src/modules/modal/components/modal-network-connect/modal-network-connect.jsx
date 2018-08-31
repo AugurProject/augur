@@ -36,7 +36,8 @@ export default class ModalNetworkConnect extends Component {
     closeModal: PropTypes.func.isRequired,
     updateEnv: PropTypes.func.isRequired,
     connectAugur: PropTypes.func.isRequired,
-    isAugurJSVersionsEqual: PropTypes.func.isRequired
+    isAugurJSVersionsEqual: PropTypes.func.isRequired,
+    isConnectedThroughWeb3: PropTypes.bool
   };
 
   constructor(props) {
@@ -57,7 +58,6 @@ export default class ModalNetworkConnect extends Component {
       augurNode: props.env["augur-node"] || "",
       ethereumNode,
       isAttemptingConnection: false,
-      isWeb3Available: !!window && !!window.web3,
       connectErrors: [],
       formErrors: {
         augurNode: [],
@@ -95,11 +95,12 @@ export default class ModalNetworkConnect extends Component {
   }
 
   isFormInvalid() {
-    const { augurNode, ethereumNode, isWeb3Available } = this.state;
-    if (augurNode.length && (ethereumNode.length || isWeb3Available)) {
-      return false;
-    }
-    return true;
+    const { isConnectedThroughWeb3 } = this.props;
+    const { augurNode, ethereumNode } = this.state;
+    return !(
+      augurNode.length &&
+      (ethereumNode.length || isConnectedThroughWeb3)
+    );
   }
 
   submitForm(e) {
@@ -166,6 +167,7 @@ export default class ModalNetworkConnect extends Component {
   }
 
   render() {
+    const { isConnectedThroughWeb3 } = this.props;
     const s = this.state;
     const AugurNodeInValid = s.formErrors.augurNode.length > 0;
     const ethereumNodeInValid = s.formErrors.ethereumNode.length > 0;
@@ -194,20 +196,20 @@ export default class ModalNetworkConnect extends Component {
         />
         <div className={Styles.ModalNetworkConnect__formErrors}>
           {AugurNodeInValid &&
-            s.formErrors.augurNode.map((error, index) => (
+            s.formErrors.augurNode.map(error => (
               <p key={error} className={Styles.ModalNetworkConnect__error}>
                 {InputErrorIcon} {error}
               </p>
             ))}
         </div>
         <label htmlFor="modal__ethNode-input">Ethereum Node address:</label>
-        {s.isWeb3Available && (
+        {isConnectedThroughWeb3 && (
           <div className={Styles.ModalNetworkConnect__web3}>
             You are already connected to an Ethereum Node through Metamask. If
             you would like to specify a node, please disable Metamask.
           </div>
         )}
-        {!s.isWeb3Available && (
+        {!isConnectedThroughWeb3 && (
           <Input
             id="modal__ethNode-input"
             type="text"
@@ -222,10 +224,10 @@ export default class ModalNetworkConnect extends Component {
             required
           />
         )}
-        {!s.isWeb3Available && (
+        {!isConnectedThroughWeb3 && (
           <div className={Styles.ModalNetworkConnect__formErrors}>
             {ethereumNodeInValid &&
-              s.formErrors.ethereumNode.map((error, index) => (
+              s.formErrors.ethereumNode.map(error => (
                 <p key={error} className={Styles.ModalNetworkConnect__error}>
                   {InputErrorIcon} {error}
                 </p>
