@@ -1,0 +1,68 @@
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.Notification) {
+	bottom: 0;
+    position: absolute;
+    right: 0;
+    left: 0;
+    max-height: 150px;
+    overflow-y: scroll;
+    background-color: @color-almostblack;
+}
+
+:local(.Notification__container) {
+  background: transparent;
+  position: relative;
+}
+
+:local(.Notification__body) {
+  color: #383b41;
+  border-radius: 2px;
+  background-color: @color-white;
+  padding: 8px 11px;
+  display: flex;
+  align-items: center;
+}
+
+:local(.Notification__bodyText) {
+	display: flex;
+	flex-grow: 1;
+  max-width: 330px;
+  word-break: break-all;
+  hyphens: auto;
+  margin-right: 5px;
+}
+
+:local(.Notification__close) {
+  border: 0;
+  background: url(../../../../assets/images/notification-close.svg);
+  background-repeat: no-repeat;
+  min-width: 23px;
+  min-height: 23px;
+  cursor: pointer;
+}
+
+:local(.Notification__close:focus) {
+  outline: none;
+}
+
+:local(.Notification__close:hover) {
+  background: url(../../../../assets/images/notification-close-hover.svg);
+}
+
+:local(.Notification__msgContainer) {
+}
+
+:local(.Notification__toast) {
+	padding: 0;
+	margin: 5px 10px;
+	font-size: 14px;
+	font-weight: normal;
+	font-style: normal;
+	font-stretch: normal;
+	letter-spacing: normal;
+	color: #383b41;
+	max-height: unset;
+ 	overflow-y: scroll;
+ 	min-height: 47px;
+}

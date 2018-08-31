@@ -1,0 +1,159 @@
+@import (reference) '../../../../../../assets/styles/shared';
+
+:local(.ModalEditConnection) {
+	color: black;
+	display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+}
+
+:local(.ModalEditConnection__smallBg) {
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(56, 59, 65, .91);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: all 300ms ease;
+}
+
+:local(.ModalEditConnection__smallBg-show) {
+  opacity: 1;
+  pointer-events: all;
+}
+
+:local(.ModalEditConnection__container) {
+	padding: 112px 24px;
+}
+
+:local(.ModalEditConnection__header) {
+  font-size: 22px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.18;
+  letter-spacing: normal;
+  color: @color-almostblack;
+  margin-bottom: 16px;
+}
+
+:local(.ModalEditConnection__subheader) {
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: @color-almostblack;
+  margin-bottom: 32px;
+}
+
+:local(.ModalEditConnection__label) {
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: @color-almostblack;
+  margin-bottom: 9px;
+}
+
+:local(.ModalEditConnection__input) {
+  border-radius: 2px;
+  background-color: @color-white;
+  padding: 8px 12px;
+  border: solid 1px transparent;
+  width: 93%;
+  font-size: 14px;
+  color: @color-almostblack;
+}
+
+:local(.ModalEditConnection__input::placeholder) { 
+  color: @color-lightgray;
+  opacity: 1; /* Firefox */
+}
+
+:local(.ModalEditConnection__input:focus) {
+  border: solid 1px #402366;
+  outline: none;
+}
+
+:local(.ModalEditConnection__inputError) {
+  background: url(../../../../../../assets/images/error.svg) no-repeat scroll 7px 7px;
+  background-color: white;
+  background-position: 98%;
+}
+
+:local(.ModalEditConnection__inputContainer) {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+:local(.ModalEditConnection__errorMessage) {
+  font-size: 12px;
+  color: @color-almostblack;
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 0;
+}
+
+:local(.ModalEditConnection__buttonContainer) {
+	margin-top: 48px;
+	display: flex;
+}
+
+:local(.ModalEditConnection__cancel) {
+	.button--transparent();
+
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 24px;
+  height: 14px;
+}
+
+:local(.ModalEditConnection__save) {
+	.button--purple();
+	
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 16px;
+  border-radius: 32px;
+	padding: 8px 24px;
+	text-transform: none;
+	max-height: 32px;
+	min-height: unset;
+	min-width: unset;
+}
+
+:local(.ModalEditConnection__save:focus) {
+  outline: none;
+}
+
+:local(.ModalEditConnection__save:disabled),
+:local(.ModalEditConnection__save:disabled:hover) {
+  background-color: @color-lightergray;
+  color: white;
+  cursor: default;
+}
+
+:local(.ModalEditConnection__delete) {
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: @color-almostblack;
+  margin-top: 40px;
+  cursor: pointer;
+}

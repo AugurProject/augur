@@ -1,53 +1,34 @@
 const electron = require('electron')
 const log = require('electron-log')
-
+const { APP_ERROR, ERROR_NOTIFICATION } = require('../utils/constants')
 // LOG ALL THE THINGS!!!!
 log.transports.file.level = 'debug'
 
-const checkForUpdates = require('../update/check-for-updates')
-
-const appData = require('app-data-folder')
-const fs = require('fs')
+const checkForUpdates = require('./check-for-updates')
 const AugurUIServer = require('./augurUIServer')
 const AugurNodeController = require('./augurNodeServer')
 const GethNodeController = require('./gethNodeController')
-const {app, BrowserWindow, Menu, ipcMain} = electron
+const ConfigManager = require('./configManager')
+const {app, BrowserWindow, Menu} = electron
 /* global __dirname process*/
+
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-const augurNodeController = new AugurNodeController()
+const configManager = new ConfigManager()
+const selectedNetwork = configManager.getSelectedNetwork()
+
+const augurNodeController = new AugurNodeController(selectedNetwork)
 const augurUIServer = new AugurUIServer()
 const gethNodeController = new GethNodeController()
 
 const path = require('path')
 const url = require('url')
 
-function toggleEnableSsl() {
-  mainWindow.webContents.send('toggleSsl', true)
-  buildMenu(true)
-}
-
-function buildMenu(showDisable) {
-  // check if ssl files exist
-  const sslMenu = []
-  const appDataPath = appData('augur')
-  const certPath = path.join(appDataPath, 'localhost.crt')
-  const keyPath = path.join(appDataPath, 'localhost.key')
-  if (fs.existsSync(keyPath) && fs.existsSync(certPath) || showDisable) {
-    sslMenu.push({ label: 'Disable SSL for Ledger', enabled: !showDisable, click: function() { mainWindow.webContents.send('toggleSsl', false)}})
-  } else {
-    sslMenu.push({ label: 'Enable SSL for Ledger', click: toggleEnableSsl})
-  }
-  sslMenu.push({ type: 'separator' })
-  sslMenu.push({ label: 'Reset Configuration File', click: function() { mainWindow.webContents.send('reset', '') }})
-  sslMenu.push({ label: 'Reset Database', click: function() { mainWindow.webContents.send('clearDB', '') }})
-  sslMenu.push({ type: 'separator' })
-  sslMenu.push({ label: 'Open Inspector', accelerator: 'CmdOrCtrl+Shift+I', click: function() { mainWindow.webContents.openDevTools() }})
-  sslMenu.push({ type: 'separator' })
-
+function buildMenu() {
   // Create the Application's main menu
   var template = [{
     label: 'Application',
@@ -60,7 +41,11 @@ function buildMenu(showDisable) {
     ]},
   {
     label: 'Settings',
-    submenu: sslMenu
+    submenu: [
+      { type: 'separator' },
+      { label: 'Open Inspector', accelerator: 'CmdOrCtrl+Shift+I', click: function() { mainWindow.webContents.openDevTools() }},
+      { type: 'separator' }
+    ]
   },
   {
     label: 'Edit',
@@ -76,43 +61,48 @@ function buildMenu(showDisable) {
   ]
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
-
 }
 
 function about() {
-  const aboutWindow = new BrowserWindow({width: 450, height: 350, icon: path.join(__dirname, '../augur.ico')})
+  const aboutWindow = new BrowserWindow({width: 450, height: 300, minHeight: 300, minWidth: 450, maxHeight: 300, maxWidth: 450, icon: path.join(__dirname, '../augur.ico')})
 
-  aboutWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '../renderer/about.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  if (isDevelopment) {
+    aboutWindow.loadURL(url.format(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}/#about`))
+  } else {
+    aboutWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'index.html'),
+      hash: 'about',
+      protocol: 'file:',
+      slashes: true
+    }))
+  }
 }
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 650, width: 950, minHeight: 400, height: 800, icon: path.join(__dirname, '../augur.ico')})
+  mainWindow = new BrowserWindow({minWidth: 340, width: 340, maxWidth: 340, minHeight: 700, height: 829, maxHeight: 829, icon: path.join(__dirname, '../augur.ico')})
 
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
   })
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '../renderer/index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  if (isDevelopment) {
+    mainWindow.openDevTools()
+    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
+  } else {
+    // and load the index.html of the app.
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, 'index.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
+  }
 
   // This will initiate an AN instance with the current default network config. We give the window some time to load first in case we need to show errors
   setTimeout(function() {
     augurNodeController.setWindow(mainWindow)
     gethNodeController.setWindow(mainWindow)
   }, 2000)
-
-  ipcMain.on('rebuildMenu', function () {
-    buildMenu(false)
-  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -121,16 +111,23 @@ function createWindow () {
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
       augurNodeController.shutDownServer()
-      augurUIServer.stopServer()
-      gethNodeController.stop()
+      augurUIServer.onStopUiServer()
+      gethNodeController.onStopGethServer()
       mainWindow = null
     } catch (err) {
-      if (mainWindow) mainWindow.webContents.send('error', { error: err })
+      console.log(err)
+      if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
+        messageType: APP_ERROR,
+        message: err.message || err
+      })
     }
   })
 
   mainWindow.on('error', function(error) {
-    if (mainWindow) mainWindow.webContents.send('error', { error })
+    if (mainWindow) mainWindow.webContents.send(ERROR_NOTIFICATION, {
+      messageType: APP_ERROR,
+      message: error.message || error
+    })
   })
 
   // build initial menus
@@ -142,6 +139,10 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  setTimeout(() => {
+    if (mainWindow) mainWindow.webContents.send('ready')
+  }, 1000)
+  console.log('app is ready ')
   checkForUpdates()
     .then(createWindow)
 })

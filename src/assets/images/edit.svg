@@ -1,0 +1,18 @@
+<svg width="17px" height="25px" viewBox="0 0 17 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Design" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="07-Add-new-network---successful" transform="translate(-282.000000, -481.000000)" fillRule="nonzero">
+            <g id="dropdown" transform="translate(16.000000, 139.000000)">
+                <g id="custom01" transform="translate(0.000000, 334.000000)">
+                    <g id="editIcon" transform="translate(265.000000, 8.000000)">
+                        <g id="pencil" transform="translate(9.443593, 11.635620) rotate(34.000000) translate(-9.443593, -11.635620) translate(6.443593, 0.135620)">
+                            <path d="M1,0.5 C0.723857625,0.5 0.5,0.723857625 0.5,1 L0.5,18.8037694 C0.5,18.8919709 0.523331646,18.978603 0.567627448,19.0548749 L2.33685822,22.1012709 C2.38050139,22.1764191 2.44297712,22.2388948 2.51812526,22.282538 C2.75691803,22.4212197 3.06292158,22.3400637 3.20160332,22.1012709 L4.97083409,19.0548749 C5.01512989,18.978603 5.03846154,18.8919709 5.03846154,18.8037694 L5.03846154,1 C5.03846154,0.723857625 4.81460391,0.5 4.53846154,0.5 L1,0.5 Z" id="Rectangle-5" stroke="#553580"></path>
+                            <rect id="Rectangle-7" fill="#553580" x="0" y="17.5384615" width="5.53846154" height="1"></rect>
+                            <rect id="Rectangle-7" fill="#553580" x="0" y="4.61538462" width="5.53846154" height="1"></rect>
+                        </g>
+                        <rect id="Rectangle-8" fill="#553580" x="1.84615385" y="24.0769231" width="15.6923077" height="1" rx="0.5"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

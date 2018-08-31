@@ -1,0 +1,50 @@
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.ShowErrors) {
+  color: white;
+  max-height: 100px;
+  overflow-y: scroll;
+  margin-top: 14px;
+
+}
+
+:local(.ShowErrors__body) {
+  display: flex;
+  margin-top: 5px;
+  align-items: center;
+}
+
+:local(.ShowErrors__bodyText) {
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: @color-white;
+  max-width: 260px;
+  flex-grow: 1;
+  margin-right: 5px;
+  word-break: break-all;
+  hyphens: auto;
+}
+
+:local(.ShowErrors__close) {
+  border: 0;
+  min-width: 10px;
+  height: 11px;
+  cursor: pointer;
+  border: 0;
+  background: url(../../../../assets/images/notificationClose.svg) no-repeat;
+}
+
+:local(.ShowErrors__close:focus) {
+  outline: none;
+}
+
+:local(.ShowErrors__icon) {
+  background: url(../../../../assets/images/error.svg) no-repeat;
+  min-width: 16px;
+  min-height: 16px;
+  margin-right: 8px;
+}
