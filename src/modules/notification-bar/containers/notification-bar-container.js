@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { NotificationBar } from "src/modules/notification-bar/components/index";
-import { selectUndissmissedOrphanedOrders } from "src/modules/orphaned-orders/selectors";
-import { dismissOrphanedOrder } from "src/modules/orphaned-orders/actions";
+import { selectUndissmissedOrphanedOrders } from "modules/orders/selectors/select-undissmissed-orphaned-orders";
+import { dismissOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { selectMarket } from "modules/market/selectors/market";
 
 const mapStateToProps = state => {

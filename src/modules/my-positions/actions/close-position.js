@@ -4,7 +4,7 @@ import { placeTrade } from "modules/trade/actions/place-trade";
 import { addClosePositionTradeGroup } from "modules/my-positions/actions/add-close-position-trade-group";
 import { clearClosePositionOutcome } from "modules/my-positions/actions/clear-close-position-outcome";
 import { selectMarket } from "modules/market/selectors/market";
-import loadBidsAsks from "modules/bids-asks/actions/load-bids-asks";
+import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import {
   CLOSE_DIALOG_FAILED,

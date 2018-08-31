@@ -4,14 +4,11 @@ import { formatPercent, formatShares, formatEther } from "utils/format-number";
 import calcOrderProfitLossPercents from "modules/trade/helpers/calc-order-profit-loss-percents";
 import { augur } from "services/augurjs";
 import { calculateMaxPossibleShares } from "modules/market/selectors/helpers/calculate-max-possible-shares";
-import {
-  BIDS,
-  ASKS
-} from "modules/order-book/constants/order-book-order-types";
+import { BIDS, ASKS } from "modules/orders/constants";
 import { ZERO } from "modules/trade/constants/numbers";
 import * as TRANSACTIONS_TYPES from "modules/transactions/constants/types";
 import { updateTradesInProgress } from "modules/trade/actions/update-trades-in-progress";
-import { selectAggregateOrderBook } from "modules/bids-asks/helpers/select-order-book";
+import { selectAggregateOrderBook } from "modules/orders/helpers/select-order-book";
 import store from "src/store";
 
 /**

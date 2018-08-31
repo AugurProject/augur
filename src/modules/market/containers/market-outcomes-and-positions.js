@@ -3,11 +3,11 @@ import { withRouter } from "react-router-dom";
 
 import MarketOutcomesAndPositions from "modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions";
 import { selectMarket } from "modules/market/selectors/market";
-import { sortOpenOrders } from "modules/user-open-orders/selectors/open-orders";
+import { sortOpenOrders } from "modules/orders/selectors/open-orders";
 import { sellCompleteSets } from "modules/my-positions/actions/sell-complete-sets";
 import getClosePositionStatus from "modules/my-positions/selectors/close-position-status";
 import { selectOrphanOrders } from "src/select-state";
-import { cancelOrphanedOrder } from "src/modules/orphaned-orders/actions";
+import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";
 

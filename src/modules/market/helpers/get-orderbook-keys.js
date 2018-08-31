@@ -1,9 +1,6 @@
 import memoize from "memoizee";
 
-import {
-  BIDS,
-  ASKS
-} from "modules/order-book/constants/order-book-order-types";
+import { BIDS, ASKS } from "modules/orders/constants";
 
 import { createBigNumber } from "utils/create-big-number";
 

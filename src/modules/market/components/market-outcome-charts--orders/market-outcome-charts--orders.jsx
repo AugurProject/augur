@@ -4,10 +4,7 @@ import classNames from "classnames";
 
 import MarketOutcomeChartHeaderOrders from "modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
 
-import {
-  ASKS,
-  BIDS
-} from "modules/order-book/constants/order-book-order-types";
+import { ASKS, BIDS } from "modules/orders/constants";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import MarketOutcomeMidpoint from "modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint";
 

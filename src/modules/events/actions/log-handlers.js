@@ -4,14 +4,14 @@ import {
   updateNotification
 } from "modules/notifications/actions";
 import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
-import loadBidsAsks from "modules/bids-asks/actions/load-bids-asks";
+import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
 import { updateOutcomePrice } from "modules/markets/actions/update-outcome-price";
-import { updateOrder } from "modules/my-orders/actions/update-orders";
-import { removeCanceledOrder } from "modules/bids-asks/actions/update-order-status";
+import { updateOrder } from "modules/orders/actions/update-orders";
+import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
 import { updateMarketCategoryPopularity } from "modules/categories/actions/update-categories";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
 import { isCurrentMarket } from "modules/trade/helpers/is-current-market";

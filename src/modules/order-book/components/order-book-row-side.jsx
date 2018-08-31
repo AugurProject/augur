@@ -8,10 +8,7 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import getValue from "utils/get-value";
 
 import { BUY, SELL } from "modules/transactions/constants/types";
-import {
-  PRICE,
-  SHARE
-} from "modules/order-book/constants/order-book-value-types";
+import { PRICE, SHARE } from "modules/orders/constants";
 
 const OrderBookRowSide = p => {
   const orders = getValue(p, "orders");

@@ -4,7 +4,7 @@ import memoize from "memoizee";
 import { selectCurrentTimestamp, selectOrphanOrders } from "src/select-state";
 import Positions from "modules/portfolio/components/positions/positions";
 import getLoginAccountPositions from "modules/my-positions/selectors/login-account-positions";
-import getOpenOrders from "modules/user-open-orders/selectors/open-orders";
+import getOpenOrders from "modules/orders/selectors/open-orders";
 import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
 import claimTradingProceeds from "modules/my-positions/actions/claim-trading-proceeds";
