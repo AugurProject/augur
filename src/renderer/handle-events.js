@@ -1,5 +1,5 @@
 const {ipcRenderer} = require('electron')
-import { ON_GETH_SERVER_DISCONNECTED, ON_GETH_SERVER_CONNECTED, BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING } from '../utils/constants'
+import { ON_GETH_SERVER_DISCONNECTED, ON_GETH_SERVER_CONNECTED, BULK_SYNC_FINISHED, BULK_SYNC_STARTED, ERROR_NOTIFICATION, INFO_NOTIFICATION, ON_UI_SERVER_CONNECTED, ON_UI_SERVER_DISCONNECTED, REQUEST_CONFIG_RESPONSE, LATEST_SYNCED_BLOCK, LATEST_SYNCED_GETH_BLOCK, ON_SERVER_CONNECTED, ON_SERVER_DISCONNECTED, PEER_COUNT_DATA, GETH_FINISHED_SYNCING, RUNNING_FAILURE } from '../utils/constants'
 import { initializeConfiguration } from './app/actions/configuration'
 import { updateGethBlockInfo, clearGethBlockInfo, updateAugurNodeBlockInfo, clearAugurNodeBlockInfo } from './app/actions/blockInfo'
 import { updateServerAttrib } from './app/actions/serverStatus'
@@ -8,6 +8,9 @@ import { startAugurNode } from './app/actions/local-server-cmds'
 import store from './store'
 
 export const handleEvents = () => {
+
+  let stallChecker = null
+  let lastSyncBlockNumber = null
 
   ipcRenderer.on('ready', () => {
     console.log('app is ready')
@@ -30,12 +33,26 @@ export const handleEvents = () => {
 
   ipcRenderer.on(ON_SERVER_CONNECTED, () => {
     store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: true, CONNECTING: false }))
+
+    // check to see augur node hasn't stalled out
+
+    stallChecker = setInterval(() => {
+      const newLastSyncBlockNumber = store.getState().augurNodeBlockInfo.lastSyncBlockNumber
+      if (lastSyncBlockNumber === newLastSyncBlockNumber) {
+        store.dispatch(addErrorNotification({
+          messageType: RUNNING_FAILURE,
+          message: 'Syncing may have stalled, try disconnecting and reconnecting'
+        }))
+      }
+      lastSyncBlockNumber = newLastSyncBlockNumber
+    }, 5 * 60 * 1000) // 5 minutes
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
     store.dispatch(updateServerAttrib({ AUGUR_NODE_CONNECTED: false, CONNECTING: false, AUGUR_NODE_SYNCING: false }))
     // clear block info
     store.dispatch(clearAugurNodeBlockInfo())
+    clearInterval(stallChecker)
   })
 
   ipcRenderer.on(ON_GETH_SERVER_CONNECTED, () => {
