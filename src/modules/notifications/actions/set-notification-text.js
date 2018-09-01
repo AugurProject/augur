@@ -175,7 +175,7 @@ export default function setNotificationText(notification, callback) {
               if (notification.log.noFill) {
                 notification.description = `Unable to ${
                   notification.log.orderType
-                } shares of ${outcomeDescription} at ${augur.utils.convertOnChainPriceToDisplayPrice(
+                } shares of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
                   marketInfo.numTicks
@@ -192,11 +192,6 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Migrate REP";
         break;
 
-      // LegacyReputationToken
-      case "FAUCET":
-        notification.title = "Get REP from faucet";
-        break;
-
       // Mailbox
       case "WITHDRAWETHER":
         notification.title = "Withdraw ETH from mailbox";
@@ -207,7 +202,7 @@ export default function setNotificationText(notification, callback) {
 
       // Market
       case "CONTRIBUTE":
-        notification.title = "Contribute REP to crowdsourcer";
+        notification.title = "Contribute to crowdsourcer";
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
@@ -217,14 +212,17 @@ export default function setNotificationText(notification, callback) {
                 notification.params._payoutNumerators,
                 notification.params._invalid
               );
-              const outcomeDescription = getOutcome(marketInfo, outcome);
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
               notification.description = `Place ${
                 formatRep(
                   createBigNumber(notification.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on "${outcomeDescription}" dispute bond`;
+              } REP on "${outcomeDescription}"`;
               return callback(notification);
             })
           );
@@ -238,30 +236,39 @@ export default function setNotificationText(notification, callback) {
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
-              const marketDescription = selectMarket(notification.to)
-                .description;
-              notification.description = `Submit report on "${marketDescription}"`;
+              const marketInfo = selectMarket(notification.to);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
+              notification.description = `Report "${outcomeDescription}" on "${
+                marketInfo.description
+              }"`;
               return callback(notification);
             })
           );
         }
         break;
       case "FINALIZE":
+        // Market finalization notifications should only be displayed if
+        // the market creator is the same as the account that's logged in
         notification.title = "Finalize market";
-        // TODO: Currently, this is being handled by handleMarketFinalizedLog of log-handlers.js
-        // Should probably remove that and have the notification info set here.
-
-        // if (!notification.description && notification.log) {
-        //   dispatch(
-        //     loadMarketsInfoIfNotLoaded([notification.to], () => {
-        //       const marketDescription = selectMarket(notification.to)
-        //         .description;
-        //       notification.description =
-        //         'Finalize market "' + marketDescription + '"';
-        //       return callback(notification);
-        //     })
-        //   );
-        // }
+        if (!notification.description && notification.log) {
+          dispatch(
+            loadMarketsInfoIfNotLoaded([notification.log.market], () => {
+              const marketDescription = selectMarket(notification.log.market)
+                .description;
+              notification.description =
+                'Finalize market "' + marketDescription + '"';
+              return callback(notification);
+            })
+          );
+        }
         break;
       case "FINALIZEFORK":
         notification.title = "Finalize forked market";
@@ -341,9 +348,9 @@ export default function setNotificationText(notification, callback) {
               );
               notification.description = `Place ${orderType} order for ${
                 formatShares(notification.log.amount).formatted
-              } ${
-                formatShares(notification.log.amount).denomination
-              } of "${outcomeDescription}" at ${
+              } ${formatShares(
+                notification.log.amount
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -352,6 +359,11 @@ export default function setNotificationText(notification, callback) {
         }
         break;
       }
+
+      // TestNetReputationToken
+      case "FAUCET":
+        notification.title = "Get REP from faucet";
+        break;
 
       // TradingEscapeHatch
       case "CLAIMSHARESINUPDATE":

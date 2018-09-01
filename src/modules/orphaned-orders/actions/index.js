@@ -39,6 +39,9 @@ export const cancelOrphanedOrder = (
     meta: loginAccount.meta,
     _orderId: orderId,
     onSent: res => {
+      // Trigger the notification addition/updates in the callback functions
+      // because there is no other way to distinguish between canceling
+      // regular orders and orphaned orders.
       dispatch(
         addNotification({
           id: res.hash,
