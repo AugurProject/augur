@@ -208,7 +208,12 @@ export default class ReportingHeader extends Component {
                                 >
                                   REP
                                 </span>
-                                <span style={{ marginBottom: "-0.5px", cursor: "pointer" }}>
+                                <span
+                                  style={{
+                                    marginBottom: "-0.5px",
+                                    cursor: "pointer"
+                                  }}
+                                >
                                   {showMore}
                                 </span>
                               </div>
