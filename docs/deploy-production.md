@@ -3,7 +3,7 @@
 ---
 ## Summary and Audience
 
-Augur **_does not_** serve **_any_** of the files required to run the client. Therefore Augur relies on the community to server their own Augur client.
+Augur **_does not_** serve **_any_** of the files required to run the client. Therefore Augur relies on the community to serve their own Augur client.
 
 These instructions are for users who want to run the Augur client to get access to the Augur platform. Some basic knowledge of Docker and git is needed.
 
@@ -19,11 +19,11 @@ Also make sure git is installed and in your execution path.
 ---
 ## Steps
 
-    git clone https://github.com/AugurProject/augur.git
-    cd <augur repository>
+    git clone https://github.com/AugurProject/augur-ui.git
+    cd <augur-ui repository>
     docker build . -t augurclient
 
-The above steps pull down the augur client code and build the Docker file. Take note of the message `Successfully built <image hash>`, as you will need this image hash.
+The above steps pull down the augur-ui client code and build the Docker file. Take note of the message `Successfully built <image hash>`, as you will need this image hash.
 
 Run the following command to bring up the newly-built Docker image and map port 8080 to internal Docker container port 80. 
 
