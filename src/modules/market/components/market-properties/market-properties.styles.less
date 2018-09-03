@@ -104,11 +104,13 @@
     flex-wrap: wrap;
     margin: 0 -1rem -1rem;
     max-width: 75%;
+    width: unset;
 
     > li {
       display: inline-block;
       flex: 1 1 auto;
       margin: 0 1rem 1rem;
+      max-width: 160px;
 
       &:first-child {
         margin-left: 1rem;
@@ -133,12 +135,14 @@
 
   .MarketProperties__meta {
     max-width: unset;
+    width: unset;
   }
 }
 
 @media @breakpoint-mobile-small {
   .MarketProperties__meta {
-    max-width: unset;
+    max-width: unset;   
+    width: unset;
 
     > li {
       max-width: 120px;
