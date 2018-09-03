@@ -91,7 +91,7 @@ export class ProcessingView extends Component {
 				    			{this.state.hideDetails ? 'Show details' : 'Hide details'}
 				    			<div
 						    		className={classNames(Styles['ProcessingView__showDetails-arrow'], {
-				               			[Styles['ProcessingView__showDetails-arrow-turned']]: !this.state.hideDetails,
+				               			[Styles['ProcessingView__showDetails-arrow-turned']]: this.state.hideDetails,
 				           			})}
 				    			/>
 				    		</div>

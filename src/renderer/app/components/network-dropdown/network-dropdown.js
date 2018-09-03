@@ -153,7 +153,7 @@ export class NetworkDropdown extends Component {
 				        			{connections[selectedKey] && connections[selectedKey].name}
 				        		</div>
 				        		<div className={Styles.NetworkDropdown__svg}>
-				        			<ChevronFlip  pointDown={this.state.menuIsOpen} />
+				        			<ChevronFlip  pointDown={!this.state.menuIsOpen} />
 				        		</div>
 				        	</div>
 			        	]
