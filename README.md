@@ -67,7 +67,7 @@ Augur recommends running your parity nodes with either
 - `--no-warp` **or**
 - `--warp-barrier 5900000`
 
-If neither of these options are specified, the node could still be functional. See [https://wiki.parity.io/FAQ#what-does-paritys-command-line-output-mean](this parity documentation) for help determining if your Parity node is ready to answer historic requests.
+If neither of these options are specified, the node could still be functional. See [this parity documentation](https://wiki.parity.io/FAQ#what-does-paritys-command-line-output-mean) for help determining if your Parity node is ready to answer historic requests.
 
 ## Using Ledger Hardware Wallet
 
