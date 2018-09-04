@@ -5,7 +5,7 @@ import { ADD_NOTIFICATION, REMOVE_NOTIFICATION } from '../app/actions/notificati
 
 const DEFAULT_STATE = {
   INFO_NOTIFICATION: [],
-  ERROR_NOTIFICATION: []
+  ERROR_NOTIFICATION: [{desc:'hihi'}]
 }
 
 const MAX_NOTIFICATIONS = 5

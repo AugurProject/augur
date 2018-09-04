@@ -6,13 +6,6 @@ import { HashRouter, Route } from 'react-router-dom'
 import { About } from './about/About'
 import AppContainer from './app/containers/app-container'
 import { handleEvents } from './handle-events'
-// import WebFont from 'webfontloader';
-
-// WebFont.load({
-//   google: {
-//     families: ['Roboto:300, 400, 500, 600, 700', 'sans-serif']
-//   }
-// });
 
 const Root = () => {
   return (
