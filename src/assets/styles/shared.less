@@ -1,26 +1,26 @@
 // NOTE -- There is import order dependence, so please don't reorder before checking inheritence
 // This is so that there is not circular dependencies amoung these stylesheets
-@import '_normalize';
-@import '_colors_OLD';
-@import '_colors';
-@import '_typography';
-@import '_animations';
-@import '_arrangement';
-@import '_borders';
-@import '_box-shadow';
-@import '_buttons';
-@import '_responsive';
-@import '_inputs';
+@import './_normalize';
+@import './_colors_OLD';
+@import './_colors';
+@import './_typography';
+@import './_animations';
+@import './_arrangement';
+@import './_borders';
+@import './_box-shadow';
+@import './_buttons';
+@import './_responsive';
+@import './_inputs';
 
 @max-width: 75rem;
 
-html {
+:local(html) {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+:local(body) {
   color: @color-darkpurple;
   font-family: @roboto;
   font-size: 16px;
@@ -28,7 +28,7 @@ body {
   font-weight: 400;
 }
 
-.view {
+:local(.view) {
   min-height: 100%;
   padding: 2rem;
   width: 100%;
@@ -38,7 +38,7 @@ body {
   }
 }
 
-.view--constrained {
+:local(.view--constrained) {
   max-width: @max-width;
   min-height: 100%;
 }

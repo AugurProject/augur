@@ -86,6 +86,7 @@
     "source-map-support": "^0.5.9",
     "sqlite3": "4.0.2",
     "style-loader": "^0.22.1",
+    "webfontloader": "^1.6.28",
     "webpack-cli": "^3.1.0"
   },
   "devDependencies": {
