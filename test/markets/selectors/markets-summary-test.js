@@ -5,7 +5,7 @@ import sinon from "sinon";
 import proxyquire from "proxyquire";
 import * as mockStore from "test/mockStore";
 
-describe("modules/my-markets/selectors/my-markets-summary", () => {
+describe("modules/markets/selectors/markets-summary", () => {
   proxyquire.noPreserveCache().noCallThru();
   let actual;
   const { store } = mockStore.default;
@@ -27,9 +27,9 @@ describe("modules/my-markets/selectors/my-markets-summary", () => {
   };
 
   const proxiedMyMarkets = proxyquire(
-    "../../../src/modules/my-markets/selectors/my-markets",
+    "../../../src/modules/markets/selectors/user-markets",
     {
-      "../../markets/selectors/markets-all": MarketsAll,
+      "./markets-all": MarketsAll,
       "../../../select-state": SelectState,
       "../../../store": store
     }
@@ -38,9 +38,9 @@ describe("modules/my-markets/selectors/my-markets-summary", () => {
   const spiedMyMarkets = sinon.spy(proxiedMyMarkets, "default");
 
   const proxiedSelector = proxyquire(
-    "../../../src/modules/my-markets/selectors/my-markets-summary",
+    "../../../src/modules/markets/selectors/markets-summary",
     {
-      "./my-markets": proxiedMyMarkets
+      "./user-markets": proxiedMyMarkets
     }
   );
 

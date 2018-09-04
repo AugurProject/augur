@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_CREATOR_FEES } from "modules/my-markets/actions/update-market-creator-fees";
+import { UPDATE_MARKET_CREATOR_FEES } from "modules/markets/actions/update-market-creator-fees";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

@@ -7,7 +7,7 @@ import * as mockStore from "test/mockStore";
 import { formatNumber, formatEther, formatShares } from "utils/format-number";
 import { formatDate } from "utils/format-date";
 
-describe("modules/portfolio/selectors/login-account-markets", () => {
+describe("modules/markets/selectors/user-markets", () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const { store, state } = mockStore.default;
@@ -21,10 +21,10 @@ describe("modules/portfolio/selectors/login-account-markets", () => {
   const MarketsAll = () => allMarkets;
 
   const proxiedSelector = proxyquire(
-    "../../../src/modules/my-markets/selectors/my-markets",
+    "../../../src/modules/markets/selectors/user-markets",
     {
       "../../../store": store,
-      "../../markets/selectors/markets-all": MarketsAll
+      "./markets-all": MarketsAll
     }
   );
 
@@ -144,15 +144,4 @@ describe("modules/portfolio/selectors/login-account-markets", () => {
   it("should return the expected array", () => {
     assert.deepEqual(actual, expected, `Didn't return the expected array`);
   });
-
-  // it('should deliver the expected shape to augur-ui-react-components', () => {
-  //   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-  //     '../../../store': store,
-  //     '../../markets/selectors/markets-all': MarketsAll
-  //   })
-  //
-  //   actual = proxiedSelector.default()
-  //
-  //   myMarketsAssertions(actual)
-  // })
 });

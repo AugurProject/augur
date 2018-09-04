@@ -2,11 +2,11 @@ import { createBigNumber } from "utils/create-big-number";
 import { formatEther } from "utils/format-number";
 import { generateMarketsPositionsSummary } from "modules/positions/selectors/positions-summary";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
-import selectMyMarketsSummary from "modules/my-markets/selectors/my-markets-summary";
+import selectMarketsSummary from "modules/markets/selectors/markets-summary";
 
 export default function() {
   const positionsSummary = generateMarketsPositionsSummary(selectAllMarkets());
-  const marketsSummary = selectMyMarketsSummary();
+  const marketsSummary = selectMarketsSummary();
 
   const totalValue = formatEther(
     createBigNumber(

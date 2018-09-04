@@ -1,5 +1,5 @@
 import { createBigNumber } from "utils/create-big-number";
-import selectMyMarkets from "modules/my-markets/selectors/my-markets";
+import selectMyMarkets from "modules/markets/selectors/user-markets";
 import { ZERO } from "modules/trade/constants/numbers";
 
 export default function() {

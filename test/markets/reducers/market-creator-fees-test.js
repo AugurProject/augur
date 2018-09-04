@@ -1,7 +1,7 @@
-import { UPDATE_MARKET_CREATOR_FEES } from "modules/my-markets/actions/update-market-creator-fees";
-import reducer from "modules/my-markets/reducers/market-creator-fees";
+import { UPDATE_MARKET_CREATOR_FEES } from "modules/markets/actions/update-market-creator-fees";
+import reducer from "modules/markets/reducers/market-creator-fees";
 
-describe("modules/my-markets/reducers/market-creator-fees.js", () => {
+describe("modules/markets/reducers/market-creator-fees.js", () => {
   let state;
   let expected;
 

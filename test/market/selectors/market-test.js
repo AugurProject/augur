@@ -31,8 +31,8 @@ describe(`modules/market/selectors/market.js`, () => {
           "../../../store": store
         }
       ),
-      "../../../modules/my-markets/selectors/my-markets": proxyquire(
-        "../../../src/modules/my-markets/selectors/my-markets",
+      "../../../modules/markets/selectors/user-markets": proxyquire(
+        "../../../src/modules/markets/selectors/user-markets",
         {
           "../../../services/augurjs": stubbedAugurJS,
           "../../../selectors": stubbedSelectors

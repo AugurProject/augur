@@ -24,7 +24,7 @@ import isMobile from "modules/app/reducers/is-mobile";
 import isMobileSmall from "modules/app/reducers/is-mobile-small";
 import ledgerStatus from "modules/auth/reducers/ledger-status";
 import loginAccount from "modules/auth/reducers/login-account";
-import marketCreatorFees from "modules/my-markets/reducers/market-creator-fees";
+import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
 import marketLoading from "modules/market/reducers/market-loading";
 import marketTradingHistory from "modules/market/reducers/market-trading-history";
 import marketReportState from "modules/reporting/reducers/market-report-state";
