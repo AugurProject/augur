@@ -35,6 +35,7 @@ function createKnex(networkId: string, dbPath: string): Knex {
     return Knex({
       client: "pg",
       connection: process.env.DATABASE_URL,
+      postProcessResponse: postProcessDatabaseResults,
     });
   } else {
     sqlite3.verbose();
