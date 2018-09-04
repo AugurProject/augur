@@ -84,7 +84,7 @@ describe("modules/portfolio/selectors/nav-items", () => {
         generateMarketsPositionsSummary: stubbedGenerateMarketsPositionsSummary
       },
       "../../my-markets/selectors/my-markets-summary": stubbedMyMarketsSummary,
-      "../../my-reports/selectors/my-reports-summary": stubbedMyReportsSummary,
+      "../../reports/selectors/reports-summary": stubbedMyReportsSummary,
       "../../markets/selectors/markets-all": stubbedMarketsAll,
       "../../../selectors": stubbedSelectors
     }

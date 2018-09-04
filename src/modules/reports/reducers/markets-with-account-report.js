@@ -1,4 +1,4 @@
-import { UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA } from "modules/my-reports/actions/update-markets-with-account-report-data";
+import { UPDATE_MARKETS_WITH_ACCOUNT_REPORT_DATA } from "modules/reports/actions/update-markets-with-account-report-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 

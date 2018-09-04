@@ -1,7 +1,7 @@
 import { generateMarketsPositionsSummary } from "modules/positions/selectors/positions-summary";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import selectMyMarketsSummary from "modules/my-markets/selectors/my-markets-summary";
-import selectMyReportsSummary from "modules/my-reports/selectors/my-reports-summary";
+import selectReportsSummary from "modules/reports/selectors/reports-summary";
 
 import {
   MY_POSITIONS,
@@ -18,7 +18,7 @@ export const selectPortfolioNavItems = () => {
   const markets = selectAllMarkets();
   const positionsSummary = generateMarketsPositionsSummary(markets);
   const marketsSummary = selectMyMarketsSummary();
-  const reportsSummary = selectMyReportsSummary();
+  const reportsSummary = selectReportsSummary();
   return [
     {
       label: "Positions",

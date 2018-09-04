@@ -1,4 +1,4 @@
-import { loadReportingHistory } from "modules/my-reports/actions/load-reporting-history";
+import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import {
   addOpenOrderTransactions,
   addMarketCreationTransactions,

@@ -1,9 +1,9 @@
 import { createBigNumber } from "utils/create-big-number";
-import selectMyReports from "modules/my-reports/selectors/my-reports";
+import selectReports from "modules/reports/selectors/reports";
 import { ZERO } from "modules/trade/constants/numbers";
 
 export default function() {
-  const reports = selectMyReports();
+  const reports = selectReports();
 
   const numReports = reports.length;
   const netRep = reports

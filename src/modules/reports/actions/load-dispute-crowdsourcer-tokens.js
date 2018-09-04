@@ -2,7 +2,7 @@ import noop from "utils/noop";
 import logError from "utils/log-error";
 import { augur } from "services/augurjs";
 import { UNIVERSE_ID } from "modules/app/constants/network";
-import { updateDisputeCrowdsourcersData } from "./update-dispute-crowdsourcer-tokens";
+import { updateDisputeCrowdsourcersData } from "modules/reports/actions/update-dispute-crowdsourcer-tokens";
 
 export default (callback = logError) => (dispatch, getState) => {
   const { loginAccount, universe } = getState();

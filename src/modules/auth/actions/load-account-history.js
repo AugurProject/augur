@@ -2,7 +2,7 @@ import { parallel } from "async";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { loadCreateMarketHistory } from "modules/create-market/actions/load-create-market-history";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
-import { loadReportingHistory } from "modules/my-reports/actions/load-reporting-history";
+import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
 import { updateTransactionsLoading } from "modules/transactions/actions/update-transactions-loading";
 import { clearTransactions } from "modules/transactions/actions/delete-transaction";
 import { augur } from "services/augurjs";

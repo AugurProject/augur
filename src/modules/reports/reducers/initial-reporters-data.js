@@ -1,7 +1,7 @@
 import {
   UPDATE_INITIAL_REPORTERS_DATA,
   UPDATE_INITIAL_REPORTER_REP_BALANCE
-} from "modules/my-initial-reporters/actions/update-initial-reporters";
+} from "modules/reports/actions/update-initial-reporters";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
