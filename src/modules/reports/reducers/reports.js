@@ -1,6 +1,7 @@
 import {
   UPDATE_REPORTS,
-  UPDATE_REPORT
+  UPDATE_REPORT,
+  MARKETS_REPORT
 } from "modules/reports/actions/update-reports";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
@@ -35,6 +36,13 @@ export default function(reports = DEFAULT_STATE, action) {
         }
       };
     }
+    case MARKETS_REPORT:
+      return {
+        ...reports,
+        markets: {
+          [action.universeId]: action.marketIds
+        }
+      };
     case RESET_STATE:
       return DEFAULT_STATE;
     default:
