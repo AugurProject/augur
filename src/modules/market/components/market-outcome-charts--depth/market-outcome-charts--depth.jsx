@@ -9,7 +9,7 @@ import { isEqual } from "lodash";
 import CustomPropTypes from "utils/custom-prop-types";
 import { ZERO } from "modules/trade/constants/numbers";
 import { BUY, SELL } from "modules/transactions/constants/types";
-import { ASKS, BIDS } from "modules/orders/constants";
+import { ASKS, BIDS } from "modules/orders/constants/orders";
 
 import Styles from "modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.styles";
 

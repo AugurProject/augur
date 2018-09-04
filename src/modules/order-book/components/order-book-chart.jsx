@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Highcharts from "highcharts";
 import noData from "highcharts/modules/no-data-to-display";
 
-import { BIDS, ASKS } from "modules/orders/constants";
+import { BIDS, ASKS } from "modules/orders/constants/orders";
 
 import debounce from "utils/debounce";
 import getValue from "utils/get-value";

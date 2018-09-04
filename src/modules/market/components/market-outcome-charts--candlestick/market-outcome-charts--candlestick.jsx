@@ -14,7 +14,7 @@ import { BUY, SELL } from "modules/transactions/constants/types";
 
 import Styles from "modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
 import { createBigNumber } from "src/utils/create-big-number";
-import { getTickIntervalForRange } from "src/modules/market/helpers";
+import { getTickIntervalForRange } from "src/modules/market/helpers/range";
 
 class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {

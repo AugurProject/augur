@@ -7,7 +7,10 @@ import OrderBookChart from "modules/order-book/components/order-book-chart";
 import ComponentNav from "modules/common/components/component-nav";
 
 import { SCALAR } from "modules/markets/constants/market-types";
-import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from "modules/orders/constants";
+import {
+  ORDER_BOOK_TABLE,
+  ORDER_BOOK_CHART
+} from "modules/orders/constants/orders";
 
 import getValue from "utils/get-value";
 

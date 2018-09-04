@@ -15,7 +15,7 @@ import { BigNumber } from "bignumber.js";
 import {
   clampPeriodByRange,
   defaultRangePeriodDurations
-} from "src/modules/market/helpers";
+} from "src/modules/market/helpers/range";
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {

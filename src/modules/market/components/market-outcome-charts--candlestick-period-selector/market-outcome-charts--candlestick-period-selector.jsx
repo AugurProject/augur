@@ -7,7 +7,7 @@ import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
 import { RANGES, PERIODS } from "modules/market/constants/permissible-periods";
 
 import Styles from "modules/market/components/market-outcome-charts--candlestick-period-selector/market-outcome-charts--candlestick-period-selector.styles";
-import { limitPeriodByRange } from "src/modules/market/helpers";
+import { limitPeriodByRange } from "src/modules/market/helpers/range";
 
 export default class PeriodSelector extends Component {
   static propTypes = {

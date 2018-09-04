@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { ungroupBy } from "utils/ungroupBy";
 import { addOrphanedOrder } from "modules/orders/actions/orphaned-orders";
-import { OPEN } from "modules/orders/constants";
+import { OPEN } from "modules/orders/constants/orders";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 
 export const loadAccountOrphanedOrders = (

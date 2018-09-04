@@ -1,6 +1,6 @@
 import orderBookSeries from "modules/orders/selectors/order-book-series";
 
-import { BIDS, ASKS } from "modules/orders/constants";
+import { BIDS, ASKS } from "modules/orders/constants/orders";
 
 import { formatEther, formatShares } from "utils/format-number";
 

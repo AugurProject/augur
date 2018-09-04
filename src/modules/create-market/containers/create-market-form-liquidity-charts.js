@@ -13,7 +13,7 @@ import getOrderBookKeys from "modules/market/helpers/get-orderbook-keys";
 import { formatEther, formatShares } from "utils/format-number";
 
 import { SCALAR } from "modules/markets/constants/market-types";
-import { BIDS, ASKS } from "modules/orders/constants";
+import { BIDS, ASKS } from "modules/orders/constants/orders";
 import { BID } from "modules/transactions/constants/types";
 
 const mapStateToProps = (state, ownProps) => {

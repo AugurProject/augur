@@ -4,7 +4,7 @@ import { formatPercent, formatShares, formatEther } from "utils/format-number";
 import calcOrderProfitLossPercents from "modules/trade/helpers/calc-order-profit-loss-percents";
 import { augur } from "services/augurjs";
 import { calculateMaxPossibleShares } from "modules/market/selectors/helpers/calculate-max-possible-shares";
-import { BIDS, ASKS } from "modules/orders/constants";
+import { BIDS, ASKS } from "modules/orders/constants/orders";
 import { ZERO } from "modules/trade/constants/numbers";
 import * as TRANSACTIONS_TYPES from "modules/transactions/constants/types";
 import { updateTradesInProgress } from "modules/trade/actions/update-trades-in-progress";

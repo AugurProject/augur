@@ -2,7 +2,7 @@ import { clamp } from "lodash/fp";
 import {
   LOWER_FIXED_PRECISION_BOUND,
   UPPER_FIXED_PRECISION_BOUND
-} from "src/modules/market/constants";
+} from "src/modules/market/constants/precision";
 
 export const precisionClampFunction = clamp(
   LOWER_FIXED_PRECISION_BOUND,

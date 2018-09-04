@@ -1,6 +1,6 @@
 import { nearestCompletelyFillingOrder } from "src/modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth";
 
-import { ASKS, BIDS } from "modules/orders/constants";
+import { ASKS, BIDS } from "modules/orders/constants/orders";
 import { createBigNumber } from "src/utils/create-big-number";
 
 describe("src/modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.jsx", () => {
