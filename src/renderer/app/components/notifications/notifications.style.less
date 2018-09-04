@@ -58,7 +58,7 @@
 	padding: 0;
 	margin: 5px 10px;
 	font-size: 14px;
-	font-weight: normal;
+	font-weight: 400;
 	font-style: normal;
 	font-stretch: normal;
 	letter-spacing: normal;
@@ -66,4 +66,44 @@
 	max-height: unset;
  	overflow-y: scroll;
  	min-height: 47px;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+ 
+  50% {
+    opacity: 1;
+  }
+}
+ 
+.zoomIn {
+  animation-name: zoomIn;
+}
+ 
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+ 
+  50% {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+ 
+  to {
+    opacity: 0;
+  }
+}
+ 
+.zoomOut {
+  animation-name: zoomOut;
+}
+ 
+/* Not needed with the cssTransition helper */
+ 
+:local(.animate) {
+  animation-duration: 800ms;
 }

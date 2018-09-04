@@ -25,7 +25,7 @@ export class ConnectingView extends Component {
   			connecting,
   			isLocalLightNode,
   			serverStatus,
-        gethBlockInfo,
+        	gethBlockInfo,
   		} = this.props
 
   		let showDisconnected = !connected && !connecting
@@ -52,29 +52,26 @@ export class ConnectingView extends Component {
 		    };
   		}
 
-
-
-
 	  	return (
 	  		<section className={classNames(Styles.ConnectingView, {
-		               			[Styles['ConnectingView-connecting']]: connecting,
+		               			[Styles['ConnectingView-connecting']]: showConnecting,
 		               			[Styles['ConnectingView-connected']]: connected,
 		           			})}
 	  			>
 	  			<div className={classNames(Styles.ConnectingView__connectingContainer, {
-		               			[Styles['ConnectingView__connectingContainer-connecting']]: connecting,
+		               			[Styles['ConnectingView__connectingContainer-connecting']]: showConnecting,
 		               			[Styles['ConnectingView__connectingContainer-connected']]: connected,
 		           			})}
 	  			>
 					<div className={classNames(Styles.ConnectingView__conectingTitle, {
-		               			[Styles['ConnectingView__conectingTitle-connecting']]: connecting,
+		               			[Styles['ConnectingView__conectingTitle-connecting']]: showConnecting,
 		               			[Styles['ConnectingView__conectingTitle-connected']]: connected,
 		           			})}
 	  				>
 				    	Connecting to Ethereum
 				    </div>
 				    <div className={classNames(Styles.ConnectingView__conectingText, {
-		               			[Styles['ConnectingView__conectingText-connecting']]: connecting,
+		               			[Styles['ConnectingView__conectingText-connecting']]: showConnecting,
 		               			[Styles['ConnectingView__conectingText-connected']]: connected,
 		           			})}
 	  				>
