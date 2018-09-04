@@ -149,7 +149,7 @@ export class App extends Component {
               {(serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)  ? 'Disconnect' : 'Connect'}
             </button>
           </div>
-          <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '500px'}}>
+          <div style={{marginTop: '195px', overflowY: 'scroll', maxHeight: '490px', paddingBottom: '10px'}}>
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING && !serverStatus.GETH_SYNCING)}
               connecting={serverStatus.CONNECTING || (serverStatus.GETH_CONNECTED && serverStatus.GETH_INITIATED)}
