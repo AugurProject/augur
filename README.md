@@ -59,6 +59,16 @@ You have two options for connecting to an Ethereum node: local or remote.
 
 - Use a remote node, such as [Gethnode.com](https://gethnode.com). This is the default configuration.
 
+### Parity and Warp Sync
+
+By default, Parity uses "warp sync" mode (sometimes referred to as "fast") to sync the blockchain. While this mode does sync significantly faster, it cause issues for any application that relies on historic logs. After warp sync is complete, your node might appear to be sychronized and fully up-to-date, but older blocks are missing while it backfills, which could take several days. It is also not obvious when that backfill has completed.
+
+Augur recommends running your parity nodes with either
+- `--no-warp` **or**
+- `--warp-barrier 5900000`
+
+If neither of these options are specified, the node could still be functional. See [https://wiki.parity.io/FAQ#what-does-paritys-command-line-output-mean](this parity documentation) for help determining if your Parity node is ready to answer historic requests.
+
 ## Using Ledger Hardware Wallet
 
 ### Key Derivation Path
@@ -75,7 +85,7 @@ Due to the current architecture of this implementation, the use of self-signed S
 
 ##  Clearing Configuration File
 
-If you’ve installed a previous pre-release of Augur App locally on your machine prior to the main Ethereum network deployment, **you will need to clear your local Augur App configuration file in order to properly run this Augur App release and connect to the Ethereum main network.** 
+If you've installed a previous pre-release of Augur App locally on your machine prior to the main Ethereum network deployment, **you will need to clear your local Augur App configuration file in order to properly run this Augur App release and connect to the Ethereum main network.**
 
 Please delete the ```augur``` directory (or, just the ```config.json``` file) in the following location:
 
