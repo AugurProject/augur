@@ -38,7 +38,7 @@ const handleNotificationUpdate = (log, dispatch, getState) => {
       timestamp: selectCurrentTimestampInSeconds(getState()),
       blockNumber: log.blockNumber,
       log,
-      status: "confirmed",
+      status: "Confirmed",
       linkPath: makePath(TRANSACTIONS),
       seen: false // Manually set to false to ensure notification
     })
@@ -106,7 +106,7 @@ export const handleTokensBurnedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.target === address;
   if (isStoredTransaction) {
-    dispatch(defaultLogHandler(log));
+    handleNotificationUpdate(log, dispatch, getState);
   }
 };
 
@@ -202,9 +202,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
   dispatch(
     loadMarketsInfo([log.market], err => {
       if (err) return console.error(err);
-      const { volume, author, description } = getState().marketsData[
-        log.market
-      ];
+      const { volume, author } = getState().marketsData[log.market];
       dispatch(
         updateMarketCategoryPopularity(
           log.market,
@@ -217,13 +215,19 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
         if (!log.removed) {
+          // Trigger the notification addition here because calling other
+          // API functions, such as `InitialReporter.redeem` can indirectly
+          // cause a MarketFinalized event to be logged.
           dispatch(
             addNotification({
-              id: log.transactionHash,
+              id: `${log.transactionHash}_finalize`,
               timestamp: log.timestamp,
               blockNumber: log.blockNumber,
-              status: "Success",
-              title: `Finalized Market: "${description}"`,
+              log,
+              params: {
+                type: "finalize"
+              },
+              status: "Confirmed",
               linkPath: makePath(MY_MARKETS)
             })
           );
