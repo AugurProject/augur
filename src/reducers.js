@@ -37,7 +37,7 @@ import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";
 import orphanedOrders from "modules/orders/reducers/orphaned-orders";
 import outcomesData from "modules/markets/reducers/outcomes-data";
-import participationTokens from "modules/my-participation-tokens/reducers/participation-token-data";
+import participationTokens from "modules/reports/reducers/participation-token-data";
 import priceHistory from "modules/markets/reducers/price-history";
 import pendingLiquidityOrders from "modules/create-market/reducers/liquidity-orders";
 import reportingWindowStats from "modules/reporting/reducers/reporting-window-stats";
