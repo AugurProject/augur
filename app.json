@@ -4,17 +4,17 @@
   "repository": "https://github.com/AugurProject/augur-node",
   "keywords": ["augur", "ethereum"],
   "env": {
-    "ENDPOINT_HTTP": {
+    "ETHEREUM_HTTP": {
       "description": "The Ethereum node HTTP endpoint.",
       "value": "https://rinkeby.ethereum.nodes.augur.net"
     },
-    "ENDPOINT_WS": {
+    "ETHEREUM_WS": {
       "description": "The Ethereum node WSS endpoint.",
       "value": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
     },
     "NETWORK": {
-      "description": "The Ethereum network to connect to. Possible values: `ropsten`, `kovan`, `rinkeby`, `clique`, `aura`",
-      "value": "rinkeby"
+      "description": "The Ethereum network to connect to. Possible values: `rinkeby`, `ropsten`, `environment` -- by default this will use the environment above.",
+      "value": "environment"
     }
   },
   "addons": ["heroku-postgresql:hobby-dev"]
