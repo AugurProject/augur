@@ -1,8 +1,8 @@
 import { createBigNumber } from "utils/create-big-number";
 import { updateTradesInProgress } from "modules/trade/actions/update-trades-in-progress";
 import { placeTrade } from "modules/trade/actions/place-trade";
-import { addClosePositionTradeGroup } from "modules/my-positions/actions/add-close-position-trade-group";
-import { clearClosePositionOutcome } from "modules/my-positions/actions/clear-close-position-outcome";
+import { addClosePositionTradeGroup } from "modules/positions/actions/add-close-position-trade-group";
+import { clearClosePositionOutcome } from "modules/positions/actions/clear-close-position-outcome";
 import { selectMarket } from "modules/market/selectors/market";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { BUY, SELL } from "modules/transactions/constants/types";

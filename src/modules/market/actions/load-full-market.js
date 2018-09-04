@@ -1,6 +1,6 @@
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { loadPriceHistory } from "modules/market/actions/load-price-history";
 import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
 import {

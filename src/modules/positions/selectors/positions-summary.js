@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 
 import store from "src/store";
 
-import { closePosition } from "modules/my-positions/actions/close-position";
+import { closePosition } from "modules/positions/actions/close-position";
 
 import { ZERO } from "modules/trade/constants/numbers";
 

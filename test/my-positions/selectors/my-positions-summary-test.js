@@ -2,11 +2,11 @@ import {
   generateOutcomePositionSummary,
   generateMarketsPositionsSummary,
   generatePositionsSummary
-} from "modules/my-positions/selectors/my-positions-summary";
+} from "modules/positions/selectors/positions-summary";
 
 import { formatEther, formatShares, formatNumber } from "utils/format-number";
 
-describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
+describe(`modules/positions/selectors/positions-summary.js`, () => {
   describe("generateOutcomePositionSummary", () => {
     const proxyquire = require("proxyquire");
     proxyquire.noPreserveCache().callThru();

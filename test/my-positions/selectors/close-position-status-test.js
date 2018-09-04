@@ -2,7 +2,7 @@ import sinon from "sinon";
 import {
   selectClosePositionStatus,
   __RewireAPI__ as ReWireModule
-} from "modules/my-positions/selectors/close-position-status";
+} from "modules/positions/selectors/close-position-status";
 
 import {
   CLOSE_DIALOG_CLOSING,
@@ -13,7 +13,7 @@ import {
 } from "modules/market/constants/close-dialog-status";
 import { SUCCESS, FAILED } from "modules/transactions/constants/statuses";
 
-describe("modules/my-positions/selectors/close-position-status", () => {
+describe("modules/positions/selectors/close-position-status", () => {
   // eslint-disable-line func-names, prefer-arrow-callback
   const test = t => {
     it(t.description, () => {

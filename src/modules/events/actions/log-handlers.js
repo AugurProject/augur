@@ -3,7 +3,7 @@ import {
   addNotification,
   updateNotification
 } from "modules/notifications/actions/notifications";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";

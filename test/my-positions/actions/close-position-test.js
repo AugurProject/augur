@@ -6,7 +6,7 @@ import { createBigNumber } from "utils/create-big-number";
 
 import { BUY, SELL } from "modules/transactions/constants/types";
 
-describe("modules/my-positions/actions/close-position.js", () => {
+describe("modules/positions/actions/close-position.js", () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];
@@ -47,7 +47,7 @@ describe("modules/my-positions/actions/close-position.js", () => {
   };
 
   const action = proxyquire(
-    "../../../src/modules/my-positions/actions/close-position.js",
+    "../../../src/modules/positions/actions/close-position.js",
     {
       "../../trade/actions/update-trades-in-progress": mockUpdateTradesInProgress,
       "../../trade/actions/place-trade": mockPlaceTrade,

@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import logError from "utils/log-error";
 import noop from "utils/noop";
 

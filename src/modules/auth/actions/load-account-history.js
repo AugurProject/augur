@@ -1,5 +1,5 @@
 import { parallel } from "async";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { loadCreateMarketHistory } from "modules/create-market/actions/load-create-market-history";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
 import { loadReportingHistory } from "modules/my-reports/actions/load-reporting-history";

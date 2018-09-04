@@ -11,7 +11,7 @@ import { augur } from "services/augurjs";
 import { formatEther } from "utils/format-number";
 import { ZERO } from "modules/trade/constants/numbers";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
-import selectLoginAccountPositions from "modules/my-positions/selectors/login-account-positions";
+import selectLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getValue from "utils/get-value";
 
 export default function() {

@@ -1,9 +1,9 @@
-import accountPositions from "modules/my-positions/reducers/account-positions";
+import accountPositions from "modules/positions/reducers/account-positions";
 
-import { UPDATE_ACCOUNT_POSITIONS_DATA } from "modules/my-positions/actions/update-account-trades-data";
+import { UPDATE_ACCOUNT_POSITIONS_DATA } from "modules/positions/actions/update-account-trades-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 
-describe("modules/my-positions/reducers/account-positions.js", () => {
+describe("modules/positions/reducers/account-positions.js", () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

@@ -76,7 +76,7 @@ import hasUserEnoughFunds from "modules/trade/helpers/has-user-enough-funds";
 import {
   generateOutcomePositionSummary,
   generateMarketsPositionsSummary
-} from "modules/my-positions/selectors/my-positions-summary";
+} from "modules/positions/selectors/positions-summary";
 
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
 

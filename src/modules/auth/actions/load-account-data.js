@@ -1,7 +1,7 @@
 import { loadAccountDataFromLocalStorage } from "modules/auth/actions/load-account-data-from-local-storage";
 import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";

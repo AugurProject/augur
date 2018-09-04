@@ -1,9 +1,9 @@
-import { ADD_CLOSE_POSITION_TRADE_GROUP } from "modules/my-positions/actions/add-close-position-trade-group";
-import { CLEAR_CLOSE_POSITION_OUTCOME } from "modules/my-positions/actions/clear-close-position-outcome";
+import { ADD_CLOSE_POSITION_TRADE_GROUP } from "modules/positions/actions/add-close-position-trade-group";
+import { CLEAR_CLOSE_POSITION_OUTCOME } from "modules/positions/actions/clear-close-position-outcome";
 
-import * as closePositionTradeGroups from "modules/my-positions/reducers/close-position-trade-groups";
+import * as closePositionTradeGroups from "modules/positions/reducers/close-position-trade-groups";
 
-describe("modules/my-positions/reducers/close-position-trade-groups.js", () => {
+describe("modules/positions/reducers/close-position-trade-groups.js", () => {
   describe("closePositionTradeGroups", () => {
     const test = t => {
       it(t.description, () => {

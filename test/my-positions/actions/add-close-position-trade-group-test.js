@@ -1,9 +1,9 @@
 import {
   ADD_CLOSE_POSITION_TRADE_GROUP,
   addClosePositionTradeGroup
-} from "modules/my-positions/actions/add-close-position-trade-group";
+} from "modules/positions/actions/add-close-position-trade-group";
 
-describe("modules/my-positions/actions/add-close-position-trade-group.js", () => {
+describe("modules/positions/actions/add-close-position-trade-group.js", () => {
   describe("addClosePositionTradeGroup", () => {
     const test = t => {
       it(t.description, () => {

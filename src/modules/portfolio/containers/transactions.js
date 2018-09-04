@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import { selectCurrentTimestamp } from "src/select-state";
 import { loadAccountHistory } from "modules/auth/actions/load-account-history";
-import { loadAccountCompleteSets } from "modules/my-positions/actions/load-account-complete-sets";
+import { loadAccountCompleteSets } from "modules/positions/actions/load-account-complete-sets";
 import { selectTransactions } from "modules/transactions/selectors/transactions";
 import TransactionsList from "modules/portfolio/components/transactions/transactions";
 import { updateTransactionPeriod } from "modules/portfolio/actions/update-transaction-period";

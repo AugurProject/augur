@@ -4,7 +4,7 @@ import proxyquire from "proxyquire";
 import sinon from "sinon";
 import { SCALAR } from "../../../src/modules/markets/constants/market-types";
 
-describe(`modules/my-positions/selectors/winning-positions.js`, () => {
+describe(`modules/positions/selectors/winning-positions.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const test = t => {
     it(t.description, () => {
@@ -12,7 +12,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       const SelectLoginAccountPositions = () =>
         t.selectors.loginAccountPositions;
       const selector = proxyquire(
-        "../../../src/modules/my-positions/selectors/winning-positions.js",
+        "../../../src/modules/positions/selectors/winning-positions.js",
         {
           speedomatic: Speedomatic,
           "./login-account-positions": SelectLoginAccountPositions

@@ -5,7 +5,7 @@ import sinon from "sinon";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 
-describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
+describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -27,7 +27,7 @@ describe(`modules/my-positions/actions/claim-trading-proceeds.js`, () => {
         .stub()
         .returns(t.selectors.winningPositions);
       const claimTradingProceeds = proxyquire(
-        "../../../src/modules/my-positions/actions/claim-trading-proceeds.js",
+        "../../../src/modules/positions/actions/claim-trading-proceeds.js",
         {
           "../../../services/augurjs": AugurJS,
           "../../markets/actions/load-markets-info": LoadMarketsInfo,

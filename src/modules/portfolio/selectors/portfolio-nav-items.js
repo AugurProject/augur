@@ -1,4 +1,4 @@
-import { generateMarketsPositionsSummary } from "modules/my-positions/selectors/my-positions-summary";
+import { generateMarketsPositionsSummary } from "modules/positions/selectors/positions-summary";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import selectMyMarketsSummary from "modules/my-markets/selectors/my-markets-summary";
 import selectMyReportsSummary from "modules/my-reports/selectors/my-reports-summary";

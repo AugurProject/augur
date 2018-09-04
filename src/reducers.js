@@ -1,10 +1,10 @@
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
 import accountDisputes from "modules/reporting/reducers/account-disputes-state";
-import accountPositions from "modules/my-positions/reducers/account-positions";
-import accountTrades from "modules/my-positions/reducers/account-trades";
+import accountPositions from "modules/positions/reducers/account-positions";
+import accountTrades from "modules/positions/reducers/account-trades";
 import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
-import closePositionTradeGroups from "modules/my-positions/reducers/close-position-trade-groups";
+import closePositionTradeGroups from "modules/positions/reducers/close-position-trade-groups";
 import connection from "modules/app/reducers/connection";
 import contractAddresses from "modules/contracts/reducers/contract-addresses";
 import disputeCrowdsourcerTokens from "modules/my-dispute-crowdsourcer-tokens/reducers/dispute-crowdsourcer-data";

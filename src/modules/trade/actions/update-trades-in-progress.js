@@ -10,7 +10,7 @@ import {
   selectTopAsk
 } from "modules/orders/helpers/select-order-book";
 import logError from "utils/log-error";
-import { loadUsershareBalances } from "modules/my-positions/actions/load-user-share-balances";
+import { loadUsershareBalances } from "modules/positions/actions/load-user-share-balances";
 
 export const UPDATE_TRADE_IN_PROGRESS = "UPDATE_TRADE_IN_PROGRESS";
 export const CLEAR_TRADE_IN_PROGRESS = "CLEAR_TRADE_IN_PROGRESS";

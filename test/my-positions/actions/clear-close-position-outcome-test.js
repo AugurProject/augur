@@ -1,9 +1,9 @@
 import {
   CLEAR_CLOSE_POSITION_OUTCOME,
   clearClosePositionOutcome
-} from "modules/my-positions/actions/clear-close-position-outcome";
+} from "modules/positions/actions/clear-close-position-outcome";
 
-describe("modules/my-positions/actions/clear-close-position-outcome.js", () => {
+describe("modules/positions/actions/clear-close-position-outcome.js", () => {
   describe("clearClosePositionTradeGroup", () => {
     const test = t => {
       it(t.description, () => {

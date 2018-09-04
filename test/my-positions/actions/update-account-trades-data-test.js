@@ -6,9 +6,9 @@ import thunk from "redux-thunk";
 import {
   UPDATE_ACCOUNT_POSITIONS_DATA,
   updateAccountPositionsData
-} from "modules/my-positions/actions/update-account-trades-data";
+} from "modules/positions/actions/update-account-trades-data";
 
-describe("modules/my-positions/actions/update-account-trades-data.js", () => {
+describe("modules/positions/actions/update-account-trades-data.js", () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];

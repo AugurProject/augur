@@ -1,8 +1,8 @@
 import {
   ADD_CLOSE_POSITION_TRADE_GROUP,
   REMOVE_CLOSE_POSITION_TRADE_GROUP
-} from "modules/my-positions/actions/add-close-position-trade-group";
-import { CLEAR_CLOSE_POSITION_OUTCOME } from "modules/my-positions/actions/clear-close-position-outcome";
+} from "modules/positions/actions/add-close-position-trade-group";
+import { CLEAR_CLOSE_POSITION_OUTCOME } from "modules/positions/actions/clear-close-position-outcome";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

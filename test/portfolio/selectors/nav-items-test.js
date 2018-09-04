@@ -80,7 +80,7 @@ describe("modules/portfolio/selectors/nav-items", () => {
   const proxiedSelector = proxyquire(
     "../../../src/modules/portfolio/selectors/portfolio-nav-items",
     {
-      "../../my-positions/selectors/my-positions-summary": {
+      "../../positions/selectors/positions-summary": {
         generateMarketsPositionsSummary: stubbedGenerateMarketsPositionsSummary
       },
       "../../my-markets/selectors/my-markets-summary": stubbedMyMarketsSummary,

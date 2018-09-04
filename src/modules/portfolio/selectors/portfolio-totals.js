@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther } from "utils/format-number";
-import { generateMarketsPositionsSummary } from "modules/my-positions/selectors/my-positions-summary";
+import { generateMarketsPositionsSummary } from "modules/positions/selectors/positions-summary";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
 import selectMyMarketsSummary from "modules/my-markets/selectors/my-markets-summary";
 

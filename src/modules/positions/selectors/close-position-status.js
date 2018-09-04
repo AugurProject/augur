@@ -4,7 +4,7 @@ import {
   selectClosePositionTradeGroupsState,
   selectTransactionsDataState
 } from "src/select-state";
-import { clearClosePositionOutcome } from "modules/my-positions/actions/clear-close-position-outcome";
+import { clearClosePositionOutcome } from "modules/positions/actions/clear-close-position-outcome";
 import {
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_NO_ORDERS,
@@ -13,7 +13,7 @@ import {
   CLOSE_DIALOG_SUCCESS
 } from "modules/market/constants/close-dialog-status";
 import { SUCCESS, FAILED } from "modules/transactions/constants/statuses";
-import { removeClosePositionTradeGroup } from "modules/my-positions/actions/add-close-position-trade-group";
+import { removeClosePositionTradeGroup } from "modules/positions/actions/add-close-position-trade-group";
 
 export default function() {
   return selectClosePositionStatus(store.getState());

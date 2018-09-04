@@ -22,7 +22,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           "./update-assets": UpdateAssets,
           "../../orders/actions/orphaned-orders": ClearOrphanedOrderData,
           "./update-login-account": UpdateLoginAccount,
-          "../../my-positions/actions/load-account-trades": LoadAccountTrades,
+          "../../positions/actions/load-account-trades": LoadAccountTrades,
           "./approve-account": approveAccount
         }
       );

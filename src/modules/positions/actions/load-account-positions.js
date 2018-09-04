@@ -1,8 +1,8 @@
 import { augur } from "services/augurjs";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
-import { updateAccountPositionsData } from "modules/my-positions/actions/update-account-trades-data";
+import { updateAccountPositionsData } from "modules/positions/actions/update-account-trades-data";
 import logError from "utils/log-error";
-import { updateTopBarPL } from "modules/my-positions/actions/update-top-bar-pl";
+import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";
 
 export const loadAccountPositions = (options = {}, callback = logError) => (
   dispatch,
