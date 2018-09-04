@@ -1,1 +1,1 @@
-web: npm start -- $NETWORK
+web: node ./build/runServer $NETWORK
