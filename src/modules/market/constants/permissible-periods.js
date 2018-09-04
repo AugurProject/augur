@@ -28,7 +28,8 @@ export const RANGES = [
     duration: 604800,
     label: "Past week",
     isDefault: true,
-    tickInterval: axis => axis.ticks(timeDay.every(1))
+    tickInterval: axis =>
+      axis.ticks(timeDay.every(1)).tickFormat(timeFormat("%a %d"))
   },
   {
     duration: 2629800,
