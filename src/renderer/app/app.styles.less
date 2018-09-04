@@ -1,4 +1,5 @@
 @import (reference) '../../assets/styles/shared';
+@import (css) url('https://fonts.googleapis.com/css?family=Roboto:400,500,600');
 
 :local(.App) {
 	font-family: 'Roboto', sans-serif;
@@ -8,6 +9,7 @@
 	flex-direction: column;
 	flex-grow: 1;
 	height: 807px;
+	-webkit-font-smoothing: antialiased;
 }
 
 :local(.App__smallBg) {
@@ -54,8 +56,8 @@
 
 :local(.App__scrollContainer) {
 	position: fixed;
-    height: 215px;
-    top: 0;
+    height: 191px;
+    top: 24px;
     background-color: @color-almostblack;
     z-index: 1;
     max-width: 308px;
@@ -78,9 +80,13 @@
 	font-size: 18px;
 	font-weight: 600;
 	padding: 15px 112px;
+  	font-family: 'Roboto', sans-serif;
 
 	&:focus {
 		outline: none;
+	}
+	&:hover {
+		background-color: #412468;
 	}
 }
 
@@ -97,12 +103,14 @@
 	.button--purple();
 	height: 56px;
 	border-radius: 5px;
-	border: solid 2px #dbdae1;
+	border: solid 0px #dbdae1 !important;
 	width: 100%;
 	text-transform: none;
 	font-size: 18px;
-  	font-weight: 600;
+  	font-weight: 500 !important;
   	border: 0;
+  	color: white !important;
+  	font-family: 'Roboto', sans-serif;
 }
 
 :local(.App__openBrowserButton:focus) {
@@ -112,8 +120,8 @@
 :local(.App__openBrowserButton:disabled) {
 	.button--transparent();
 	border-radius: 5px;
-	border: solid 2px #dbdae1;
+	border: solid 2px #dbdae1 !important;
 	font-size: 18px;
-  	font-weight: 600;
-  	color: #dbdae1;
+  	font-weight: 500 !important;
+  	color: #dbdae1 !important;
 }
