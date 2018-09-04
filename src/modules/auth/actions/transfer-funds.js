@@ -3,7 +3,7 @@ import { augur } from "services/augurjs";
 import {
   updateNotification,
   addNotification
-} from "modules/notifications/actions";
+} from "modules/notifications/actions/notifications";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { ETH, REP } from "modules/account/constants/asset-types";
 

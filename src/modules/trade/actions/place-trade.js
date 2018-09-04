@@ -6,7 +6,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { ZERO } from "modules/trade/constants/numbers";
 import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
-import { updateNotification } from "modules/notifications/actions";
+import { updateNotification } from "modules/notifications/actions/notifications";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import logError from "utils/log-error";
 import noop from "utils/noop";

@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { updateNotification } from "modules/notifications/actions";
+import { updateNotification } from "modules/notifications/actions/notifications";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { UNIVERSE_ID } from "modules/app/constants/network";

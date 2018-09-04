@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import makePath from "modules/routes/helpers/make-path";
-import Styles from "modules/notification-bar/components/notification-bar";
+import Styles from "modules/notifications/components/notification-bar/notification-bar.styles";
 import { CloseWithCircle } from "src/modules/common/components/icons";
 import { Link } from "react-router-dom";
 import { MY_POSITIONS } from "modules/routes/constants/views";

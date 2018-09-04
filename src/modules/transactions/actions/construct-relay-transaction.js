@@ -1,6 +1,6 @@
 import { constructBasicTransaction } from "modules/transactions/actions/construct-transaction";
 import unpackTransactionParameters from "modules/transactions/actions/unpack-transaction-parameters";
-import { addNotification } from "modules/notifications/actions";
+import { addNotification } from "modules/notifications/actions/notifications";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 import makePath from "modules/routes/helpers/make-path";

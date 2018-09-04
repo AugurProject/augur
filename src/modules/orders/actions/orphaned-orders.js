@@ -3,7 +3,7 @@ import logError from "utils/log-error";
 import {
   addNotification,
   updateNotification
-} from "modules/notifications/actions";
+} from "modules/notifications/actions/notifications";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
 export const ADD_ORPHANED_ORDER = "ADD_ORPHANED_ORDER";

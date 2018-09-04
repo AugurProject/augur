@@ -1,5 +1,5 @@
 import store from "src/store";
-import * as notificationLevels from "modules/notifications/constants";
+import * as notificationLevels from "modules/notifications/constants/notifications";
 import setNotificationText from "modules/notifications/actions/set-notification-text";
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";

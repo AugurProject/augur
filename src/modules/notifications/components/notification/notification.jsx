@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 import { AlertCircle, CloseWithCircle } from "modules/common/components/icons";
-import Styles from "modules/notifications/components/notification.styles";
+import Styles from "modules/notifications/components/notification/notification.styles";
 import EtherscanLink from "modules/common/containers/etherscan-link";
 
 export default class Notification extends Component {

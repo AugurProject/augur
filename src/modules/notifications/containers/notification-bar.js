@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { NotificationBar } from "src/modules/notification-bar/components/index";
+import { NotificationBar } from "modules/notifications/components/notification-bar/notification-bar";
 import { selectUndissmissedOrphanedOrders } from "modules/orders/selectors/select-undissmissed-orphaned-orders";
 import { dismissOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { selectMarket } from "modules/market/selectors/market";
