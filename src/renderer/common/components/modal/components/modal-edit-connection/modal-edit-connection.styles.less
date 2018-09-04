@@ -38,10 +38,10 @@
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: 1.18;
   letter-spacing: normal;
   color: @color-almostblack;
   margin-bottom: 16px;
+  display: flex;
 }
 
 :local(.ModalEditConnection__subheader) {
@@ -70,7 +70,7 @@
   border-radius: 2px;
   background-color: @color-white;
   padding: 8px 12px;
-  border: solid 1px transparent;
+  border: solid 1px #DBDAE1;
   width: 93%;
   font-size: 14px;
   color: @color-almostblack;
@@ -154,6 +154,13 @@
   line-height: normal;
   letter-spacing: normal;
   color: @color-almostblack;
-  margin-top: 40px;
+  width: 16px;
   cursor: pointer;
+  background: url(../../../../../../assets/images/trash.svg) no-repeat scroll 100% 0;
+  width: 16px;
+}
+
+:local(.ModalEditConnection__title) {
+  display: flex;
+  flex-grow: 1;
 }

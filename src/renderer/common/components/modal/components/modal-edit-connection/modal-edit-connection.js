@@ -130,7 +130,12 @@ export default class ModalEditConnection extends Component {
         }
         
         <div className={Styles.ModalEditConnection__container}>
-          <div className={Styles.ModalEditConnection__header}>{ initialConnection ? 'Edit Connection' : 'Add Connection' }</div>
+          <div className={Styles.ModalEditConnection__header}>
+            <div className={Styles.ModalEditConnection__title}> { initialConnection ? 'Edit Connection' : 'Add Connection' } </div>
+            { initialConnection &&
+              <div className={Styles.ModalEditConnection__delete} onClick={this.delete} />
+            }
+          </div>
           <div className={Styles.ModalEditConnection__subheader}>
             Only one endpoint (HTTP or Websocket) is required.
           </div>
@@ -152,7 +157,7 @@ export default class ModalEditConnection extends Component {
               }
           </div>
           <div className={Styles.ModalEditConnection__label}>
-              HTTP Endpoint
+              HTTP(S) Endpoint
           </div>
           <div className={Styles.ModalEditConnection__inputContainer}>
               <input 
@@ -191,11 +196,6 @@ export default class ModalEditConnection extends Component {
               <div className={Styles.ModalEditConnection__cancel} onClick={this.closeModal}>Cancel</div>
               <button className={Styles.ModalEditConnection__save} onClick={this.saveConnection} disabled={!enableButton}>Save Connection</button>
           </div>
-          { initialConnection &&
-            <div className={Styles.ModalEditConnection__delete} onClick={this.delete}>
-              Delete connection
-            </div>
-          }
         </div>
       </section>
     )
