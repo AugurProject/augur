@@ -307,6 +307,52 @@ describe("utils/format-number.js", () => {
     });
   });
 
+  const num6 = -0.00004;
+  const utils6 = [
+    {
+      func: "formatEther",
+      denom: "ETH",
+      out: {
+        value: -0.00004,
+        formattedValue: -0.00004,
+        roundedValue: -0,
+        formatted: "-0.000040",
+        rounded: "0.0000",
+        minimized: "-0.00004",
+        denomination: " ETH",
+        full: "-0.000040 ETH",
+        fullPrecision: "-0.00004"
+      }
+    },
+    {
+      func: "formatShares",
+      denom: "Shares",
+      out: {
+        value: -0.00004,
+        formattedValue: -0.00004,
+        roundedValue: -0,
+        formatted: "-0.000040",
+        rounded: "0.0000",
+        minimized: "-0.00004",
+        denomination: " Shares",
+        full: "-0.000040 Shares",
+        fullPrecision: "-0.00004"
+      }
+    }
+  ];
+
+  utils6.forEach(currentUtil => {
+    describe(`${currentUtil.func}`, () => {
+      it("should return a correctly formatted object", () => {
+        assert.deepEqual(
+          formatNumber[`${currentUtil.func}`](currentUtil.num || num6),
+          currentUtil.out,
+          "returned formatted number is not correctly formatted"
+        );
+      });
+    });
+  });
+
   describe("formatNone", () => {
     it("should return a properly formatted `none` number object", () => {
       const out = {
