@@ -44,7 +44,7 @@ describe("Trading page", () => {
     await waitNextBlock(2);
 
     // Perform buy twice since first publicTrade call fails
-    // TODO: Figure out why first publicTrade call fails
+    // TODO: Figure out why first publicTrade call fails after Approve in integration test. (This does not happen when using the UI manually.)
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
@@ -123,7 +123,7 @@ describe("Trading page", () => {
     );
   });
 
-  it("should update the Unrealized & Realized P/L for a binary market when shares are bought/sold with another account", async () => {
+  it("should update the Unrealized & Realized P/L for a binary market when another account buys & sells shares at different prices", async () => {
     // Switch to secondary account
     await page.evaluate(
       account => window.integrationHelpers.updateAccountAddress(account),
