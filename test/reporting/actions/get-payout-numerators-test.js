@@ -5,10 +5,10 @@ import {
   CATEGORICAL,
   SCALAR
 } from "modules/markets/constants/market-types";
-import { getPayoutNumerators } from "modules/reporting/selectors/get-payout-numerators";
+import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { createBigNumber } from "utils/create-big-number";
 
-describe(`modules/reporting/actions/get-payout-numerators.js`, () => {
+describe(`modules/reports/actions/get-payout-numerators.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const test = t => {

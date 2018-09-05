@@ -2,7 +2,7 @@ import sinon from "sinon";
 import marketsAwaitingDispute, {
   selectMarketsAwaitingDispute,
   __RewireAPI__
-} from "modules/reporting/selectors/select-awaiting-dispute-markets";
+} from "modules/reports/selectors/select-awaiting-dispute-markets";
 
 describe(`modules/reports/selectors/select-awaiting-dispute-markets.js`, () => {
   const test = t => it(t.description, done => t.assertions(done));

@@ -3,7 +3,7 @@ import { updateLoginAccount } from "modules/auth/actions/update-login-account";
 import { checkAccountAllowance } from "modules/auth/actions/approve-account";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { updateAssets } from "modules/auth/actions/update-assets";
-import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
+import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { clearOrphanedOrderData } from "modules/orders/actions/orphaned-orders";
 
 import getValue from "utils/get-value";

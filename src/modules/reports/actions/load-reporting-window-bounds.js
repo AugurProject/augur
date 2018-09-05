@@ -1,6 +1,6 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
-import { updateReportingWindowStats } from "modules/reporting/actions/update-reporting-window-stats";
+import { updateReportingWindowStats } from "modules/reports/actions/update-reporting-window-stats";
 
 export const loadReportingWindowBounds = (callback = logError) => (
   dispatch,

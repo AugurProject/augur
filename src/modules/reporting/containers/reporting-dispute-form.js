@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingDisputeForm from "modules/reporting/components/reporting-dispute-form/reporting-dispute-form";
-import { addUpdateAccountDispute } from "modules/reporting/actions/update-account-disputes";
-import marketDisputeOutcomes from "modules/reporting/selectors/select-market-dispute-outcomes";
+import { addUpdateAccountDispute } from "modules/reports/actions/update-account-disputes";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 
 const mapStateToProps = (state, ownProps) => {

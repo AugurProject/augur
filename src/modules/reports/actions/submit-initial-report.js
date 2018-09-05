@@ -1,16 +1,14 @@
 import { augur } from "services/augurjs";
-import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
+import { REPORTING_REPORT_MARKETS } from "modules/routes/constants/views";
 import makePath from "modules/routes/helpers/make-path";
 import logError from "utils/log-error";
-import { getPayoutNumerators } from "modules/reporting/selectors/get-payout-numerators";
-import { removeAccountDispute } from "modules/reporting/actions/update-account-disputes";
+import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 
-export const submitMarketContribute = (
+export const submitInitialReport = (
   estimateGas,
   marketId,
   selectedOutcome,
   invalid,
-  amount,
   history,
   callback = logError
 ) => (dispatch, getState) => {
@@ -27,27 +25,23 @@ export const submitMarketContribute = (
     invalid
   );
 
-  augur.api.Market.contribute({
+  augur.api.Market.doInitialReport({
     meta: loginAccount.meta,
     tx: { to: marketId, estimateGas },
-    _invalid: !!invalid,
+    _invalid: invalid,
     _payoutNumerators: payoutNumerators,
-    _amount: amount,
     onSent: res => {
       if (!estimateGas) {
-        history.push(makePath(REPORTING_DISPUTE_MARKETS));
+        history.push(makePath(REPORTING_REPORT_MARKETS));
       }
     },
     onSuccess: gasCost => {
       if (estimateGas) {
         callback(null, gasCost);
       } else {
-        dispatch(removeAccountDispute({ marketId }));
         callback(null);
       }
     },
-    onFailed: err => {
-      callback(err);
-    }
+    onFailed: err => callback(err)
   });
 };

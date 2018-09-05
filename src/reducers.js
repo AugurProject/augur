@@ -1,5 +1,5 @@
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
-import accountDisputes from "modules/reporting/reducers/account-disputes-state";
+import accountDisputes from "modules/reports/reducers/account-disputes-state";
 import accountPositions from "modules/positions/reducers/account-positions";
 import accountTrades from "modules/positions/reducers/account-trades";
 import blockchain from "modules/app/reducers/blockchain";
@@ -27,7 +27,7 @@ import loginAccount from "modules/auth/reducers/login-account";
 import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
 import marketLoading from "modules/market/reducers/market-loading";
 import marketTradingHistory from "modules/market/reducers/market-trading-history";
-import marketReportState from "modules/reporting/reducers/market-report-state";
+import marketReportState from "modules/reports/reducers/market-report-state";
 import marketsData from "modules/markets/reducers/markets-data";
 import marketsWithAccountReport from "modules/reports/reducers/markets-with-account-report";
 import modal from "modules/modal/reducers/modal";
@@ -40,7 +40,7 @@ import outcomesData from "modules/markets/reducers/outcomes-data";
 import participationTokens from "modules/reports/reducers/participation-token-data";
 import priceHistory from "modules/markets/reducers/price-history";
 import pendingLiquidityOrders from "modules/orders/reducers/liquidity-orders";
-import reportingWindowStats from "modules/reporting/reducers/reporting-window-stats";
+import reportingWindowStats from "modules/reports/reducers/reporting-window-stats";
 import reports from "modules/reports/reducers/reports";
 import scalarMarketsShareDenomination from "modules/market/reducers/scalar-markets-share-denomination";
 import selectedMarketId from "modules/market/reducers/selected-market-id";

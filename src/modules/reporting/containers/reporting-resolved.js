@@ -2,8 +2,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
-import { loadReporting } from "src/modules/reporting/actions/load-reporting";
-import { selectMarketsToReport } from "src/modules/reporting/selectors/select-markets-to-report";
+import { loadReporting } from "src/modules/reports/actions/load-reporting";
+import { selectMarketsToReport } from "modules/reports/selectors/select-markets-to-report";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 

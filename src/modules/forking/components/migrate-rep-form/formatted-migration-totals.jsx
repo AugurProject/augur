@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
 
 import FormStyles from "modules/common/less/form";
-import selectMigrateTotals from "modules/reporting/selectors/select-migrated-totals";
+import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
 import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 
 export default class FormattedMigrationTotals extends Component {

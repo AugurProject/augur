@@ -1,7 +1,7 @@
 import {
   calculateNonAccountPercentage,
   calculatePercentage
-} from "modules/reporting/helpers/progress-calculations";
+} from "modules/reports/helpers/progress-calculations";
 
 export default function(disputeBond, outcome) {
   if (!outcome) return;

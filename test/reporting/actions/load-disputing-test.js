@@ -8,7 +8,7 @@ import { constants } from "src/services/augurjs";
 import {
   loadDisputing,
   __RewireAPI__ as loadDisputingRewire
-} from "modules/reporting/actions/load-disputing";
+} from "modules/reports/actions/load-disputing";
 
 describe("loadDisputing action", () => {
   const universeAddress = "1010101";

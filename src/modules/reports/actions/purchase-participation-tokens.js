@@ -3,7 +3,7 @@ import speedomatic from "speedomatic";
 import logError from "utils/log-error";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
-import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
+import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 
 export const purchaseParticipationTokens = (
   amount,

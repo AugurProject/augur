@@ -8,7 +8,7 @@ import { selectMarket } from "modules/market/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 
-import { submitMarketContribute } from "modules/reporting/actions/submit-market-contribute";
+import { submitMarketContribute } from "modules/reports/actions/submit-market-contribute";
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,

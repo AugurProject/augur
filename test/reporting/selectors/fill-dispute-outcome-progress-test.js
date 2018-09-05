@@ -1,8 +1,8 @@
 import fillDisputeOutcomeProgess, {
   __RewireAPI__ as RewireAPI
-} from "modules/reporting/selectors/fill-dispute-outcome-progress";
+} from "modules/reports/selectors/fill-dispute-outcome-progress";
 
-describe(`modules/reporting/selectors/fill-dispute-outcome-progress.js`, () => {
+describe(`modules/reports/selectors/fill-dispute-outcome-progress.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

@@ -2,7 +2,7 @@ import {
   REMOVE_ACCOUNT_DISPUTE,
   UPDATE_ACCOUNT_DISPUTE,
   CLEAR_ACCOUNT_DISPUTES
-} from "modules/reporting/actions/update-account-disputes";
+} from "modules/reports/actions/update-account-disputes";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 export default function(accountDisputes = {}, action) {

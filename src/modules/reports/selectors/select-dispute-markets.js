@@ -4,7 +4,7 @@ import { selectMarkets } from "modules/markets/selectors/markets-all";
 import { constants } from "services/augurjs";
 import store from "src/store";
 import { isEmpty, orderBy } from "lodash";
-import selectDisputeOutcomes from "modules/reporting/selectors/select-market-dispute-outcomes";
+import selectDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
 
 export default function() {

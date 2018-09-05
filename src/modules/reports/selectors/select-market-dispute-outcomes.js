@@ -4,9 +4,9 @@ import { constants } from "services/augurjs";
 import store from "src/store";
 import { isEmpty } from "lodash";
 
-import selectDisputeOutcomes from "modules/reporting/selectors/select-dispute-outcomes";
+import selectDisputeOutcomes from "modules/reports/selectors/select-dispute-outcomes";
 import { selectUniverseState } from "src/select-state";
-import fillDisputeOutcomeProgress from "modules/reporting/selectors/fill-dispute-outcome-progress";
+import fillDisputeOutcomeProgress from "modules/reports/selectors/fill-dispute-outcome-progress";
 
 export default function() {
   return selectMarketDisputeOutcomes(store.getState());

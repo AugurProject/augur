@@ -1,5 +1,5 @@
 import { updateMarketsDisputeInfo } from "modules/markets/actions/update-markets-data";
-import { getDisputeInfo } from "modules/reporting/actions/get-dispute-info";
+import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import logError from "utils/log-error";
 
 export const loadMarketsDisputeInfo = (marketIds, callback = logError) => (

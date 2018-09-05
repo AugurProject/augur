@@ -6,9 +6,9 @@ import {
 } from "modules/markets/constants/market-types";
 import selectDisputeOutcomes, {
   __RewireAPI__ as RewireAPI
-} from "modules/reporting/selectors/select-dispute-outcomes";
+} from "modules/reports/selectors/select-dispute-outcomes";
 
-describe(`modules/reporting/selectors/select-dispute-outcomes.js`, () => {
+describe(`modules/reports/selectors/select-dispute-outcomes.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

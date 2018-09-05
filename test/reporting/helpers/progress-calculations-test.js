@@ -3,10 +3,10 @@ import {
   calculateTentativeCurrentRep,
   calculateAddedStakePercentage,
   __RewireAPI__ as RewireAPI
-} from "modules/reporting/helpers/progress-calculations";
+} from "modules/reports/helpers/progress-calculations";
 import { createBigNumber } from "src/utils/create-big-number";
 
-describe(`modules/reporting/helpers/progress-calculations.js`, () => {
+describe(`modules/reports/helpers/progress-calculations.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

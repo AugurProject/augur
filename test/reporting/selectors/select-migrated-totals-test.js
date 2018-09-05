@@ -6,9 +6,9 @@ import {
 } from "modules/markets/constants/market-types";
 import selectMigratedTotals, {
   __RewireAPI__ as RewireAPI
-} from "modules/reporting/selectors/select-migrated-totals";
+} from "modules/reports/selectors/select-migrated-totals";
 
-describe(`modules/reporting/selectors/select-migrated-totals.js`, () => {
+describe(`modules/reports/selectors/select-migrated-totals.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

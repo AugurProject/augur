@@ -5,9 +5,9 @@ import thunk from "redux-thunk";
 import {
   submitMarketContribute,
   __RewireAPI__ as submitMarketContributeReqireAPI
-} from "modules/reporting/actions/submit-market-contribute";
+} from "modules/reports/actions/submit-market-contribute";
 
-describe(`modules/reporting/actions/submit-market-contribute.js`, () => {
+describe(`modules/reports/actions/submit-market-contribute.js`, () => {
   const state = Object.assign({}, testState);
   const mockStore = configureMockStore([thunk]);
   const store = mockStore(state);

@@ -5,10 +5,10 @@ import {
   REMOVE_ACCOUNT_DISPUTE,
   UPDATE_ACCOUNT_DISPUTE,
   CLEAR_ACCOUNT_DISPUTES
-} from "modules/reporting/actions/update-account-disputes";
-import reducer from "modules/reporting/reducers/account-disputes-state";
+} from "modules/reports/actions/update-account-disputes";
+import reducer from "modules/reports/reducers/account-disputes-state";
 
-describe(`modules/reporting/reducers/account-disputes-state.js`, () => {
+describe(`modules/reports/reducers/account-disputes-state.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

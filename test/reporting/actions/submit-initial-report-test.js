@@ -5,9 +5,9 @@ import thunk from "redux-thunk";
 import {
   submitInitialReport,
   __RewireAPI__ as submitInitialReportReqireAPI
-} from "modules/reporting/actions/submit-initial-report";
+} from "modules/reports/actions/submit-initial-report";
 
-describe(`modules/reporting/actions/submit-initial-report.js`, () => {
+describe(`modules/reports/actions/submit-initial-report.js`, () => {
   const state = Object.assign({}, testState);
   const mockStore = configureMockStore([thunk]);
   const store = mockStore(state);
