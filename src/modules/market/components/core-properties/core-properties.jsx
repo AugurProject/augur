@@ -9,10 +9,12 @@ import Styles from "modules/market/components/core-properties/core-properties.st
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip";
 
+import MarketLink from "modules/market/components/market-link/market-link";
 import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import { constants } from "services/augurjs";
 import { Hint } from "modules/common/components/icons";
+import { TYPE_REPORT, TYPE_DISPUTE } from "modules/market/constants/link-types";
 
 const Property = p => (
   <div
@@ -61,6 +63,8 @@ export default class CoreProperties extends Component {
     currentTimestamp: PropTypes.number.isRequired,
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
+    isDesignatedReporter: PropTypes.bool,
+    location: PropTypes.object.isRequired
   };
 
   determinePhase() {
@@ -94,11 +98,13 @@ export default class CoreProperties extends Component {
   }
 
   render() {
-    const { 
-      market, 
-      currentTimestamp, 
+    const {
+      market,
+      currentTimestamp,
       tentativeWinner,
       isLogged,
+      isDesignatedReporter,
+      location
     } = this.props;
 
     const marketCreatorFee = getValue(
@@ -206,46 +212,94 @@ export default class CoreProperties extends Component {
       }
     });
 
-    let headerContent = [];
+    let headerContent = null;
     const { reportingState } = this.props.market;
     if (consensus) {
       headerContent = [
-        <div key='consensus'>
+        <div key="consensus">
           <span className={Styles[`CoreProperties__property-name`]}>
             <div>Winning Outcome:</div>
           </span>
-          <span
-            className={Styles[`CoreProperties__property-winningOutcome`]}
-          >
+          <span className={Styles[`CoreProperties__property-winningOutcome`]}>
             {consensus}
           </span>
         </div>
-      ]
-    } else if (reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE && isLogged) {
+      ];
+    } else if (
+      isLogged &&
+      reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE
+    ) {
       headerContent = [
-        <div key='dispute'>
+        <div key="dispute">
           <span className={Styles[`CoreProperties__property-name`]}>
             <div>Tentative Winning Outcome:</div>
           </span>
           <span
-            className={Styles[`CoreProperties__property-winningOutcome`]}
+            className={
+              Styles[`CoreProperties__property-tentativeWinningOutcome`]
+            }
           >
-            {tentativeWinner && tentativeWinner.name}
+            <div className={Styles[`CoreProperties__header-firstElement`]}>
+              {tentativeWinner && tentativeWinner.name}
+            </div>
+            <MarketLink
+              className={Styles[`CoreProperties__property-button`]}
+              id={market.id}
+              linkType={TYPE_DISPUTE}
+              location={location}
+            >
+              DISPUTE
+            </MarketLink>
           </span>
         </div>
-      ]
+      ];
+    } else if (
+      isLogged &&
+      ((reportingState === constants.REPORTING_STATE.DESIGNATED_REPORTING &&
+        isDesignatedReporter) ||
+        reportingState === constants.REPORTING_STATE.OPEN_REPORTING)
+    ) {
+      headerContent = [
+        <div key="report">
+          <span
+            className={
+              Styles[`CoreProperties__property-tentativeWinningOutcome`]
+            }
+          >
+            <div
+              className={
+                (Styles[`CoreProperties__header-firstElement`],
+                Styles[`CoreProperties__header-Submit`])
+              }
+            >
+              Submit a Report
+            </div>
+            <MarketLink
+              className={Styles[`CoreProperties__property-button`]}
+              id={market.id}
+              linkType={TYPE_REPORT}
+              location={location}
+            >
+              REPORT
+            </MarketLink>
+          </span>
+        </div>
+      ];
     }
 
     return (
       <div className={Styles.CoreProperties__coreContainer}>
         {headerContent && (
           <div className={Styles.CoreProperties__row}>
-            <div className={Styles.CoreProperties__property}>
+            <div
+              className={Styles.CoreProperties__property}
+              style={{ flexGrow: "1" }}
+            >
               {headerContent}
             </div>
           </div>
         )}
-        {consensus && <div className={Styles.CoreProperties__lineBreak} />}
+        {headerContent && <div className={Styles.CoreProperties__lineBreak} />}
         {renderedProperties}
       </div>
     );

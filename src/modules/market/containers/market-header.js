@@ -20,9 +20,13 @@ const mapStateToProps = (state, ownProps) => {
     scalarDenomination: market.scalarDenomination,
     resolutionSource: market.resolutionSource,
     currentTimestamp: selectCurrentTimestamp(state) || 0,
-    tentativeWinner: disputeOutcomes[ownProps.marketId] && disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning),
+    tentativeWinner:
+      disputeOutcomes[ownProps.marketId] &&
+      disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning),
     isLogged: state.isLogged,
-    market,
+    isDesignatedReporter:
+      market.designatedReporter === state.loginAccount.address,
+    market
   };
 };
 

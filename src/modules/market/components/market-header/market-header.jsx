@@ -27,6 +27,8 @@ export default class MarketHeader extends Component {
     resolutionSource: PropTypes.any,
     selectedOutcome: PropTypes.any,
     isLogged: PropTypes.bool,
+    isDesignatedReporter: PropTypes.bool,
+    location: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -57,6 +59,7 @@ export default class MarketHeader extends Component {
       currentTimestamp,
       tentativeWinner,
       isLogged,
+      isDesignatedReporter
     } = this.props;
 
     let { details } = this.props;
@@ -140,6 +143,8 @@ export default class MarketHeader extends Component {
               currentTimestamp={currentTimestamp}
               tentativeWinner={tentativeWinner}
               isLogged={isLogged}
+              isDesignatedReporter={isDesignatedReporter}
+              location={location}
             />
           </div>
         </div>
