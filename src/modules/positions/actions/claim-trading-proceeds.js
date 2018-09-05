@@ -3,7 +3,7 @@ import { augur } from "services/augurjs";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import cancelOpenOrdersInClosedMarkets from "modules/orders/actions/cancel-open-orders-in-closed-markets";
 import selectWinningPositions from "modules/positions/selectors/winning-positions";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import noop from "utils/noop";
 import logError from "utils/log-error";
 

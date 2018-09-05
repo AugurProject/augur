@@ -31,7 +31,7 @@ describe(`modules/positions/actions/claim-trading-proceeds.js`, () => {
         {
           "../../../services/augurjs": AugurJS,
           "../../markets/actions/load-markets-info": LoadMarketsInfo,
-          "../../portfolio/actions/get-winning-balance": GetWinningBalance,
+          "../../reports/actions/get-winning-balance": GetWinningBalance,
           "../../auth/actions/update-assets": UpdateAssets,
           "../selectors/winning-positions": WinningPositions
         }

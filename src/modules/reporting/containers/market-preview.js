@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { collectMarketCreatorFees } from "modules/portfolio/actions/collect-market-creator-fees";
-import MarketPreview from "src/modules/market/components/market-preview/market-preview";
+import { collectMarketCreatorFees } from "modules/markets/actions/collect-market-creator-fees";
+import MarketPreview from "modules/market/components/market-preview/market-preview";
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged

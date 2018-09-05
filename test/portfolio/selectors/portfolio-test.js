@@ -5,7 +5,7 @@ import portfolioAssertions from "assertions/portfolio";
 import sinon from "sinon";
 import proxyquire from "proxyquire";
 
-describe("modules/portfolio/selectors/portfolio", () => {
+describe("modules/positions/selectors/portfolio", () => {
   proxyquire.noPreserveCache().noCallThru();
 
   let actual;
@@ -18,7 +18,7 @@ describe("modules/portfolio/selectors/portfolio", () => {
   const stubbedPortfolioTotals = sinon.stub(selectors, "selectPortfolioTotals");
 
   const proxiedSelector = proxyquire(
-    "../../../src/modules/portfolio/selectors/portfolio",
+    "../../../src/modules/positions/selectors/portfolio",
     {
       "./portfolio-totals": stubbedPortfolioTotals
     }

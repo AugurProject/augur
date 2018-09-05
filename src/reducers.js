@@ -46,7 +46,7 @@ import scalarMarketsShareDenomination from "modules/market/reducers/scalar-marke
 import selectedMarketId from "modules/market/reducers/selected-market-id";
 import sortOption from "modules/filter-sort/reducers/sort-option";
 import tradesInProgress from "modules/trade/reducers/trades-in-progress";
-import transactionPeriod from "modules/portfolio/reducers/transaction-period";
+import transactionPeriod from "modules/transactions/reducers/transaction-period";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsLoading from "modules/transactions/reducers/transactions-loading";
 import transactionsOldestLoadedBlock from "modules/transactions/reducers/transactions-oldest-loaded-block";

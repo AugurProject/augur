@@ -10,7 +10,7 @@ import MarketPortfolioCard from "modules/market/components/market-portfolio-card
 import { selectMarket } from "modules/market/selectors/market";
 import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
 import getClosePositionStatus from "modules/positions/selectors/close-position-status";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";
 import { CATEGORICAL } from "modules/markets/constants/market-types";
 import { find } from "lodash";

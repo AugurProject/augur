@@ -3,7 +3,7 @@ import configureMockStore from "redux-mock-store";
 
 import { YES_NO } from "modules/markets/constants/market-types";
 
-describe("modules/portfolio/actions/get-winning-balance.js", () => {
+describe("modules/reports/actions/get-winning-balance.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
@@ -18,7 +18,7 @@ describe("modules/portfolio/actions/get-winning-balance.js", () => {
     const {
       getWinningBalance,
       __RewireAPI__
-    } = require("modules/portfolio/actions/get-winning-balance.js");
+    } = require("modules/reports/actions/get-winning-balance.js");
 
     const ACTIONS = {
       UPDATE_MARKETS_DATA: "UPDATE_MARKETS_DATA"

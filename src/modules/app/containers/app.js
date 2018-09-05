@@ -9,7 +9,7 @@ import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selec
 import { selectMarketsHeader } from "modules/markets/selectors/markets-header";
 import { selectCoreStats } from "modules/account/selectors/core-stats";
 import { selectCategories } from "modules/categories/selectors/categories";
-import portfolio from "modules/portfolio/selectors/portfolio";
+import portfolio from "modules/positions/selectors/portfolio";
 import {
   updateIsMobile,
   updateIsMobileSmall

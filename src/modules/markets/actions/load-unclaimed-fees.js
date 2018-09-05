@@ -1,7 +1,7 @@
 import async from "async";
 import logError from "utils/log-error";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
-import { collectMarketCreatorFees } from "modules/portfolio/actions/collect-market-creator-fees";
+import { collectMarketCreatorFees } from "modules/markets/actions/collect-market-creator-fees";
 
 export const loadUnclaimedFees = (marketIds = [], callback = logError) => (
   dispatch,

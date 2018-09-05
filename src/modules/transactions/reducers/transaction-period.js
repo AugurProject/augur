@@ -1,6 +1,6 @@
-import { UPDATE_TRANSACTION_PERIOD } from "modules/portfolio/actions/update-transaction-period";
+import { UPDATE_TRANSACTION_PERIOD } from "modules/transactions/actions/update-transaction-period";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { DAY } from "modules/portfolio/constants/transaction-periods";
+import { DAY } from "modules/transactions/constants/transaction-periods";
 
 const DEFAULT_STATE = DAY;
 

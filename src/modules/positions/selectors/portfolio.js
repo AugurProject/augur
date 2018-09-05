@@ -1,4 +1,4 @@
-import getPortfolioTotals from "modules/portfolio/selectors/portfolio-totals";
+import getPortfolioTotals from "modules/positions/selectors/portfolio-totals";
 
 export default function() {
   return {

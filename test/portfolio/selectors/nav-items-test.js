@@ -11,7 +11,7 @@ import {
 
 import { formatNumber, formatEther, formatRep } from "utils/format-number";
 
-describe("modules/portfolio/selectors/nav-items", () => {
+describe("modules/positions/selectors/portfolio-nav-items", () => {
   proxyquire.noPreserveCache().noCallThru();
 
   let actual;
@@ -78,9 +78,9 @@ describe("modules/portfolio/selectors/nav-items", () => {
     .returns([]);
 
   const proxiedSelector = proxyquire(
-    "../../../src/modules/portfolio/selectors/portfolio-nav-items",
+    "../../../src/modules/positions/selectors/portfolio-nav-items",
     {
-      "../../positions/selectors/positions-summary": {
+      "./positions-summary": {
         generateMarketsPositionsSummary: stubbedGenerateMarketsPositionsSummary
       },
       "../../markets/selectors/markets-summary": stubbedMyMarketsSummary,

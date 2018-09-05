@@ -3,8 +3,8 @@ import { selectCurrentTimestamp } from "src/select-state";
 
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { getReportingFees } from "modules/portfolio/actions/get-reporting-fees";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
+import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { selectMarket } from "modules/market/selectors/market";
 import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
 
