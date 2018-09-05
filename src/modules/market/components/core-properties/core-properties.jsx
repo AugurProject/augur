@@ -241,7 +241,8 @@ export default class CoreProperties extends Component {
             }
           >
             <div className={Styles[`CoreProperties__header-firstElement`]}>
-              {tentativeWinner && (tentativeWinner.isInvalid ? 'Invalid' : tentativeWinner.name)}
+              {tentativeWinner &&
+                (tentativeWinner.isInvalid ? "Invalid" : tentativeWinner.name)}
             </div>
             <MarketLink
               className={Styles[`CoreProperties__property-button`]}
