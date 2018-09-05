@@ -10,27 +10,29 @@ const timeoutMilliseconds = 15000; // TODO: Figure out a way to reduce timeout r
 jest.setTimeout(100000);
 
 
-function delay(time) {
+function delay(time: any) {
   return new Promise(function(resolve) {
       setTimeout(resolve, time)
   });
 }
 
 describe("Trading page", () => {
-  it("should change Unrealized & Realized P/L correctly when shares are bought/sold with different accounts", async () => {
+  it("should update the Unrealized P/L for a categorical market when another account buys shares at a different price", async () => {
+    // Go to Market trading page
+    await expect(page).toClick("#side-nav-items");
+    await expect(page).toFill(".filter-search-styles_FilterSearch__input", "city", { timeout: timeoutMilliseconds });
+    await expect(page).toClick("a", { text: "Which city will have the highest median single-family home price in 2018?", timeout: timeoutMilliseconds });
+
     // Switch to secondary account
     await page.evaluate(
       account => window.integrationHelpers.updateAccountAddress(account),
       UnlockedAccounts.SECONDARY_ACCOUNT
     );
 
-    // Go to Market trading page
-    await expect(page).toClick("#side-nav-items");
-    await expect(page).toClick("a", { text: "Will the Larsen B ice shelf collapse by the end of November 2019?", timeout: timeoutMilliseconds });
-
-    await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.28", { timeout: timeoutMilliseconds });
+    await expect(page).toClick("li", { text: "London", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
     await delay(1000);
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
@@ -41,8 +43,97 @@ describe("Trading page", () => {
 
     await waitNextBlock(2);
 
-    // Perform sell twice since first publicTrade call fails
+    // Perform buy twice since first publicTrade call fails
     // TODO: Figure out why first publicTrade call fails
+    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
+    await delay(1000);
+    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+
+    await waitNextBlock(10);
+
+    // Ensure that Unrealized P/L and Realized P/L are 0
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+
+    // Switch to contract owner account
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.CONTRACT_OWNER
+    );
+
+    // Ensure that Unrealized P/L and Realized P/L are 0
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+
+    // Switch to secondary account
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.SECONDARY_ACCOUNT
+    );
+
+    await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--quantity", "0.0020", { timeout: timeoutMilliseconds });
+    await expect(page).toFill("input#tr__input--limit-price", "0.3500", { timeout: timeoutMilliseconds });
+    await delay(1000);
+    await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
+    await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
+
+    await waitNextBlock(10);
+
+    // Ensure Unrealized and Realized P/L are correct
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
+      { text: "0.000040", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+
+    // Switch to contract owner account
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.CONTRACT_OWNER
+    );
+
+    // Ensure Unrealized and Realized P/L are correct
+    // TODO: Currently, Unrealized P/L displays as -0.0000. This check should be updated once this bug is fixed.
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
+      { text: "-0.0000", timeout: timeoutMilliseconds }
+    );
+    await expect(page).toMatchElement(
+      ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
+      { text: "0", timeout: timeoutMilliseconds }
+    );
+  });
+
+  it("should update the Unrealized & Realized P/L for a binary market when shares are bought/sold with another account", async () => {
+    // Switch to secondary account
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.SECONDARY_ACCOUNT
+    );
+
+    // Go to Market trading page
+    await expect(page).toClick("#side-nav-items");
+    await expect(page).toClick("a", { text: "Will the Larsen B ice shelf collapse by the end of November 2019?", timeout: timeoutMilliseconds });
+
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.28", { timeout: timeoutMilliseconds });
