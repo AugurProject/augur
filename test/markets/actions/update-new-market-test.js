@@ -13,7 +13,6 @@ import {
   CLEAR_NEW_MARKET
 } from "modules/markets/actions/update-new-market";
 
-
 describe("modules/markets/actions/update-new-market.js", () => {
   const test = t => {
     it(t.description, () => {
