@@ -14,6 +14,7 @@ import Styles from './app.styles.less'
 import Modal from "../common/components/modal/containers/modal-view";
 import classNames from "classnames";
 import ModalDownloadGeth from "../common/components/modal/components/modal-download-geth/modal-download-geth";
+import { GEN_INFO } from '../../utils/constants'
 
 const localLightNodeName = 'Local (Light Node)' // need to use key
 
@@ -74,6 +75,11 @@ export class App extends Component {
 
   disconnect() {
     if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
+      this.props.addInfoNotification({
+        messageType: GEN_INFO,
+        message: 'Network disconnect requested',
+        time: 2000,
+      })
       const selected = this.props.selected
       stopAugurNode()
       if (selected.name === localLightNodeName) stopGethNode()

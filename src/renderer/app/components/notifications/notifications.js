@@ -64,7 +64,8 @@ export class Notifications extends Component {
             {
               position: toast.POSITION.BOTTOM_CENTER,
               closeButton: false,
-              onClose: () => this.removeToast(t)
+              onClose: () => this.removeToast(t),
+              autoClose: t.time,
             })
         }
       })
