@@ -19,6 +19,7 @@ export default function(reports = DEFAULT_STATE, action) {
           ...reports[universeIds[i]],
           ...action.reports[universeIds[i]]
         };
+        updatedReports.markets = [];
       }
       return updatedReports;
     }
