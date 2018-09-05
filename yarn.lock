@@ -606,9 +606,9 @@ augur-core@1.1.0:
     solidity-coverage "0.5.4"
     yargs "11.0.0"
 
-augur.js@5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.4.0.tgz#7e493ed8d670cd90004fc4b206106dd9abdb5460"
+augur.js@5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-5.5.0.tgz#5fc6a59ce5f68faffc1e3c90ff4789c2ca0ecb94"
   dependencies:
     async "1.5.2"
     augur-core "1.1.0"
