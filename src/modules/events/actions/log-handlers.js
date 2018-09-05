@@ -88,6 +88,7 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(loadFundingHistory());
+    dispatch(loadReportingWindowBounds());
     handleNotificationUpdate(log, dispatch, getState);
   }
 };
