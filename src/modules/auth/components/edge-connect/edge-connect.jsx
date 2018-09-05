@@ -19,7 +19,7 @@ const Edge = p => (
       disabled={p.edgeLoading}
       onClick={() => p.edgeLoginLink(p.history)}
     >
-      {p.edgeLoading ? "Loading..." : "Connect Edge Account"}
+      {p.edgeLoading ? "Loading..." : "Login With Edge"}
     </button>
   </section>
 );
