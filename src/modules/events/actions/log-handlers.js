@@ -26,7 +26,7 @@ import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
 import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
 import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
-import { startOrderSending } from "modules/create-market/actions/liquidity-management";
+import { startOrderSending } from "modules/orders/actions/liquidity-management";
 import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";

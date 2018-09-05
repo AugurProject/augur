@@ -1,4 +1,4 @@
-import liquidityOrders from "modules/create-market/reducers/liquidity-orders";
+import liquidityOrders from "modules/orders/reducers/liquidity-orders";
 
 import {
   UPDATE_LIQUIDITY_ORDER,
@@ -6,9 +6,9 @@ import {
   REMOVE_LIQUIDITY_ORDER,
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
-} from "modules/create-market/actions/liquidity-management";
+} from "modules/orders/actions/liquidity-management";
 
-describe("modules/create-market/reducers/liquidity-orders.js", () => {
+describe("modules/orders/reducers/liquidity-orders.js", () => {
   const test = t => {
     it(t.describe, () => {
       t.assertions();

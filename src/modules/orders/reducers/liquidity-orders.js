@@ -4,7 +4,7 @@ import {
   REMOVE_LIQUIDITY_ORDER,
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS
-} from "modules/create-market/actions/liquidity-management";
+} from "modules/orders/actions/liquidity-management";
 
 const DEFAULT_STATE = () => ({});
 

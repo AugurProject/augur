@@ -13,12 +13,12 @@ import {
   LOAD_PENDING_LIQUIDITY_ORDERS,
   CLEAR_ALL_MARKET_ORDERS,
   __RewireAPI__ as liquidityManagementRequireAPI
-} from "modules/create-market/actions/liquidity-management";
+} from "modules/orders/actions/liquidity-management";
 
 import { augur } from "services/augurjs";
 import { YES_NO } from "modules/markets/constants/market-types";
 
-describe(`modules/create-market/actions/liquidity-management.js`, () => {
+describe(`modules/orders/actions/liquidity-management.js`, () => {
   const mockStore = configureMockStore([thunk]);
   const stateData = {
     marketsData: {

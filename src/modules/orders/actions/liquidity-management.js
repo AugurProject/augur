@@ -1,6 +1,6 @@
 import { eachOfSeries, eachOfLimit } from "async";
 import { augur } from "services/augurjs";
-import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
+import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 
 import { BID } from "modules/transactions/constants/types";
 import { CATEGORICAL } from "modules/markets/constants/market-types";

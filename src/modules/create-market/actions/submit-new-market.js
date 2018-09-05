@@ -11,8 +11,8 @@ import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { TRANSACTIONS } from "modules/routes/constants/views";
 import { buildCreateMarket } from "modules/create-market/helpers/build-create-market";
-import { sortOrders } from "modules/create-market/helpers/liquidity";
-import { addMarketLiquidityOrders } from "modules/create-market/actions/liquidity-management";
+import { sortOrders } from "modules/orders/helpers/liquidity";
+import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 
 export function submitNewMarket(newMarket, history, callback = noop) {
   return (dispatch, getState) => {
