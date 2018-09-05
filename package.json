@@ -37,7 +37,6 @@
     "rebuild": "npm run clean && npm run build",
     "clean-start": "npm run rebuild && npm start",
     "clean-start-local": "npm run rebuild && ENDPOINT_HTTP=http://127.0.0.1:8545 ENDPOINT_WS=ws://127.0.0.1:8546 npm start",
-    "preinstall": "npm run init-git",
     "reinstall": "./scripts/reinstall.sh",
     "sqlite": "./scripts/sqlite.sh",
     "docker:pg:start": "./scripts/postgres/start.sh",
