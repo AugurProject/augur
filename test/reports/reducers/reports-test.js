@@ -59,7 +59,8 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isSubmitted: false,
               isIndeterminate: false
             }
-          }
+          },
+          markets: []
         },
         `Didn't update report information`
       );

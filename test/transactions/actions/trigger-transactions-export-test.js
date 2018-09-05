@@ -1,6 +1,10 @@
 import proxyquire from "proxyquire";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
+import {
+  triggerTransactionsExport,
+  __RewireAPI__ as RewireReExport
+} from "modules/transactions/actions/trigger-transactions-export";
 
 describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -11,20 +15,18 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
   const test = t => {
     it(t.description, () => {
       const store = mockStore(t.state);
-      const action = proxyquire(
-        "../../../src/modules/transactions/actions/trigger-transactions-export",
-        {
-          "../selectors/transactions": t.transactionsSelector,
-          "../../auth/actions/load-account-history": t.loadAccountHistory
-        }
-      );
+      RewireReExport.__Rewire__("selectTransactions", t.selectTransactions);
+      RewireReExport.__Rewire__("loadAccountHistory", t.loadAccountHistory);
 
       global.document = t.document;
 
-      store.dispatch(action.triggerTransactionsExport());
+      store.dispatch(triggerTransactionsExport());
       t.assertions(store.getActions(), t.expectedOutput);
 
       global.document = doc;
+
+      RewireReExport.__ResetDependency__("selectTransactions");
+      RewireReExport.__ResetDependency__("loadAccountHistory");
     });
   };
   test({
@@ -36,15 +38,11 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
       ],
       transactionsLoading: false
     },
-    transactionsSelector: {
-      selectTransactions: state => state.transactions
-    },
-    loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => ({
-        type: "LOAD_ACCOUNT_HISTORY",
-        loadAll
-      })
-    },
+    selectTransactions: state => state.transactions,
+    loadAccountHistory: (loadAll, cb) => ({
+      type: "LOAD_ACCOUNT_HISTORY",
+      loadAll
+    }),
     document: {
       createElement: type => {
         assert.equal(type, "a");
@@ -98,18 +96,16 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
     transactionsSelector: {
       selectTransactions: state => state.transactions
     },
-    loadAccountHistory: {
-      loadAccountHistory: (loadAll, cb) => {
-        assert.isTrue(
-          loadAll,
-          "loadAll passed to loadAccountHistory should be true"
-        );
-        assert.isFunction(
-          cb,
-          "cb passed to loadAccountHistory should be a function"
-        );
-        return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
-      }
+    loadAccountHistory: (loadAll, cb) => {
+      assert.isTrue(
+        loadAll,
+        "loadAll passed to loadAccountHistory should be true"
+      );
+      assert.isFunction(
+        cb,
+        "cb passed to loadAccountHistory should be a function"
+      );
+      return { type: "LOAD_ACCOUNT_HISTORY", loadAll };
     },
     expectedOutput: [{ type: "LOAD_ACCOUNT_HISTORY", loadAll: true }],
     assertions: (storeActions, expected) => {

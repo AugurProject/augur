@@ -3,7 +3,14 @@ import { withRouter } from "react-router-dom";
 
 import ReportingDispute from "modules/reporting/components/reporting-dispute/reporting-dispute";
 import { loadFullMarket } from "modules/market/actions/load-full-market";
-import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
+import {
+  MARKET_ID_PARAM_NAME,
+  RETURN_PARAM_NAME
+} from "modules/routes/constants/param-names";
+import {
+  PORTFOLIO_REPORTS,
+  REPORTING_DISPUTE_MARKETS
+} from "modules/routes/constants/views";
 import { selectMarket } from "modules/market/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
@@ -46,7 +53,13 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME];
+  const returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
   const market = selectMarket(marketId);
+
+  let redirectPath = REPORTING_DISPUTE_MARKETS;
+  if (returnPath.indexOf(PORTFOLIO_REPORTS) !== -1) {
+    redirectPath = PORTFOLIO_REPORTS;
+  }
 
   return {
     ...oP,
@@ -73,6 +86,7 @@ const mergeProps = (sP, dP, oP) => {
         invalid,
         amount,
         history,
+        redirectPath,
         callback
       )
   };

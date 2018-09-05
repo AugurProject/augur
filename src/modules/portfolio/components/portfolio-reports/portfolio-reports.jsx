@@ -9,9 +9,25 @@ import {
 } from "modules/modal/constants/modal-types";
 import { TYPE_CLAIM_PROCEEDS } from "modules/market/constants/link-types";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
+import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
+import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 
 export default class PortfolioReports extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    markets: PropTypes.array.isRequired,
+    upcomingMarkets: PropTypes.array.isRequired,
+    upcomingMarketsCount: PropTypes.number.isRequired,
+    isMobile: PropTypes.bool,
+    isConnected: PropTypes.bool.isRequired,
+    outcomes: PropTypes.object.isRequired,
+    isForking: PropTypes.bool.isRequired,
+    forkingMarketId: PropTypes.string.isRequired,
+    pageinationCount: PropTypes.number.isRequired,
+    disputableMarketsLength: PropTypes.number,
+    showPagination: PropTypes.bool,
+    showUpcomingPagination: PropTypes.bool,
     currentTimestamp: PropTypes.number.isRequired,
     getReportingFees: PropTypes.func.isRequired,
     isLogged: PropTypes.bool.isRequired,
@@ -19,7 +35,11 @@ export default class PortfolioReports extends Component {
     forkedMarket: PropTypes.object,
     getWinningBalances: PropTypes.func.isRequired,
     updateModal: PropTypes.func.isRequired,
-    reportingFees: PropTypes.object.isRequired
+    reportingFees: PropTypes.object.isRequired,
+    resolvedMarkets: PropTypes.array.isRequired,
+    toggleFavorite: PropTypes.func.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func,
+    loadMarkets: PropTypes.func
   };
 
   constructor(props) {
@@ -72,7 +92,25 @@ export default class PortfolioReports extends Component {
       currentTimestamp,
       finalizeMarket,
       forkedMarket,
-      reportingFees
+      reportingFees,
+      history,
+      isForking,
+      isMobile,
+      location,
+      markets,
+      upcomingMarkets,
+      isConnected,
+      loadMarkets,
+      outcomes,
+      upcomingMarketsCount,
+      forkingMarketId,
+      pageinationCount,
+      disputableMarketsLength,
+      showPagination,
+      showUpcomingPagination,
+      loadMarketsInfoIfNotLoaded,
+      resolvedMarkets,
+      toggleFavorite
     } = this.props;
     let disableClaimReportingFeesNonforkedMarketsButton = "";
     if (
@@ -137,6 +175,36 @@ export default class PortfolioReports extends Component {
             />
           </section>
         )}
+        <div>
+          <DisputingMarkets
+            location={location}
+            history={history}
+            markets={markets}
+            upcomingMarkets={upcomingMarkets}
+            upcomingMarketsCount={upcomingMarketsCount}
+            isMobile={isMobile}
+            isConnected={isConnected}
+            loadMarkets={loadMarkets}
+            outcomes={outcomes}
+            isForking={isForking}
+            forkingMarketId={forkingMarketId}
+            pageinationCount={pageinationCount}
+            disputableMarketsLength={disputableMarketsLength}
+            showPagination={showPagination}
+            showUpcomingPagination={showUpcomingPagination}
+          />
+        </div>
+        <div className={Styles.PortfolioReports__resloved}>
+          <ReportingResolved
+            location={location}
+            history={history}
+            isLogged={isConnected}
+            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
+            markets={resolvedMarkets}
+            noShowHeader
+            toggleFavorite={toggleFavorite}
+          />
+        </div>
       </div>
     );
   }

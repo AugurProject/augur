@@ -24,12 +24,13 @@ export default class ReportingResolved extends Component {
     history: PropTypes.object,
     isLogged: PropTypes.bool,
     loadMarketsInfoIfNotLoaded: PropTypes.func,
-    loadReporting: PropTypes.func.isRequired,
     location: PropTypes.object,
     markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
     isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.object
+    noShowHeader: PropTypes.bool,
+    forkingMarket: PropTypes.object,
+    loadReporting: PropTypes.func
   };
 
   constructor(props) {
@@ -42,7 +43,7 @@ export default class ReportingResolved extends Component {
 
   componentWillMount() {
     const { loadReporting } = this.props;
-    loadReporting();
+    if (loadReporting) loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,7 +63,8 @@ export default class ReportingResolved extends Component {
       markets,
       toggleFavorite,
       isForkingMarketFinalized,
-      forkingMarket
+      forkingMarket,
+      noShowHeader
     } = this.props;
     const s = this.state;
 
@@ -71,7 +73,7 @@ export default class ReportingResolved extends Component {
         <Helmet>
           <title>Resolved</title>
         </Helmet>
-        <ReportingHeader heading="Resolved" />
+        {!noShowHeader && <ReportingHeader heading="Resolved" />}
         {isForkingMarketFinalized && (
           <div className={Styles["ReportingResolved__forked-market-card"]}>
             <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
