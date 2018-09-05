@@ -266,7 +266,12 @@ export default class CoreProperties extends Component {
               Styles[`CoreProperties__property-tentativeWinningOutcome`]
             }
           >
-            <div className={classNames(Styles[`CoreProperties__header-firstElement`],Styles[`CoreProperties__header-Submit`])}>
+            <div
+              className={classNames(
+                Styles[`CoreProperties__header-firstElement`],
+                Styles[`CoreProperties__header-Submit`]
+              )}
+            >
               Submit a Report
             </div>
             <MarketLink
