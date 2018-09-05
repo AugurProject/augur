@@ -1,4 +1,3 @@
-// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress'
 import accountDisputes from "modules/reports/reducers/account-disputes-state";
 import accountPositions from "modules/positions/reducers/account-positions";
 import accountTrades from "modules/positions/reducers/account-trades";
@@ -31,7 +30,7 @@ import marketReportState from "modules/reports/reducers/market-report-state";
 import marketsData from "modules/markets/reducers/markets-data";
 import marketsWithAccountReport from "modules/reports/reducers/markets-with-account-report";
 import modal from "modules/modal/reducers/modal";
-import newMarket from "modules/create-market/reducers/new-market";
+import newMarket from "modules/markets/reducers/new-market";
 import notifications from "modules/notifications/reducers/notifications";
 import orderBooks from "modules/orders/reducers/order-books";
 import orderCancellation from "modules/orders/reducers/order-cancellation";

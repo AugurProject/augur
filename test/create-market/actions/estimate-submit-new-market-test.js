@@ -3,10 +3,10 @@ import thunk from "redux-thunk";
 import {
   estimateSubmitNewMarket,
   __RewireAPI__ as estimateSubmitNewMarketReqireAPI
-} from "modules/create-market/actions/estimate-submit-new-market";
+} from "modules/markets/actions/estimate-submit-new-market";
 import { YES_NO } from "modules/markets/constants/market-types";
 
-describe(`modules/create-market/actions/estimate-submit-new-market.js`, () => {
+describe(`modules/markets/actions/estimate-submit-new-market.js`, () => {
   const mockStore = configureMockStore([thunk]);
   const newBinaryMarket = { properties: "value", type: YES_NO };
   const stateData = {

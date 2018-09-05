@@ -3,9 +3,9 @@ import {
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET
-} from "modules/create-market/actions/update-new-market";
+} from "modules/markets/actions/update-new-market";
 import { RESET_STATE } from "modules/app/actions/reset-state";
-import { SETTLEMENT_FEE_DEFAULT } from "modules/create-market/constants/new-market-constraints";
+import { SETTLEMENT_FEE_DEFAULT } from "modules/markets/constants/new-market-constraints";
 import { DEFAULT_SCALAR_TICK_SIZE } from "augur.js/src/constants";
 
 import { createBigNumber } from "utils/create-big-number";

@@ -11,11 +11,10 @@ import {
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET
-} from "modules/create-market/actions/update-new-market";
+} from "modules/markets/actions/update-new-market";
 
-// import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
 
-describe("modules/create-market/actions/update-new-market.js", () => {
+describe("modules/markets/actions/update-new-market.js", () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

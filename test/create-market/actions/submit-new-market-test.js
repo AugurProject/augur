@@ -5,7 +5,7 @@ import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import { BUY, SELL } from "modules/transactions/constants/types";
 
-describe("modules/create-market/actions/submit-new-market", () => {
+describe("modules/markets/actions/submit-new-market", () => {
   const mockStore = configureMockStore([thunk]);
   const pendingTransaction = { type: "addPendingTransaction" };
   const clearNewMarket = { type: "clearNewMarket" };
@@ -39,7 +39,7 @@ describe("modules/create-market/actions/submit-new-market", () => {
   const {
     submitNewMarket,
     __RewireAPI__
-  } = require("modules/create-market/actions/submit-new-market");
+  } = require("modules/markets/actions/submit-new-market");
 
   const history = {
     push: sinon.stub()

@@ -1,7 +1,7 @@
 import {
   invalidateMarketCreation,
   clearNewMarket
-} from "modules/create-market/actions/update-new-market";
+} from "modules/markets/actions/update-new-market";
 import { addNewMarketCreationTransactions } from "modules/transactions/actions/add-transactions";
 import { ZERO } from "modules/trade/constants/numbers";
 import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
@@ -10,7 +10,7 @@ import noop from "utils/noop";
 import { createBigNumber } from "utils/create-big-number";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { TRANSACTIONS } from "modules/routes/constants/views";
-import { buildCreateMarket } from "modules/create-market/helpers/build-create-market";
+import { buildCreateMarket } from "modules/markets/helpers/build-create-market";
 import { sortOrders } from "modules/orders/helpers/liquidity";
 import { addMarketLiquidityOrders } from "modules/orders/actions/liquidity-management";
 

@@ -1,4 +1,4 @@
-import newMarket from "modules/create-market/reducers/new-market";
+import newMarket from "modules/markets/reducers/new-market";
 import { DEFAULT_SCALAR_TICK_SIZE } from "augur.js/src/constants";
 
 import {
@@ -6,11 +6,11 @@ import {
   REMOVE_ORDER_FROM_NEW_MARKET,
   UPDATE_NEW_MARKET,
   CLEAR_NEW_MARKET
-} from "modules/create-market/actions/update-new-market";
+} from "modules/markets/actions/update-new-market";
 
 import { createBigNumber } from "utils/create-big-number";
 
-describe("modules/create-market/reducers/new-market.js", () => {
+describe("modules/markets/reducers/new-market.js", () => {
   const test = t => {
     it(t.describe, () => {
       t.assertions();

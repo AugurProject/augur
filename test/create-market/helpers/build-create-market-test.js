@@ -9,9 +9,9 @@ import {
 import {
   DESIGNATED_REPORTER_SELF,
   DESIGNATED_REPORTER_SPECIFIC
-} from "modules/create-market/constants/new-market-constraints";
+} from "modules/markets/constants/new-market-constraints";
 
-describe("modules/create-market/helpers/build-create-market", () => {
+describe("modules/markets/helpers/build-create-market", () => {
   const mockStore = configureMockStore([thunk]);
 
   const test = t =>
@@ -22,7 +22,7 @@ describe("modules/create-market/helpers/build-create-market", () => {
   const {
     buildCreateMarket,
     __RewireAPI__
-  } = require("modules/create-market/helpers/build-create-market");
+  } = require("modules/markets/helpers/build-create-market");
   const mockAugur = {
     createMarket: {
       createCategoricalMarket: () => {},

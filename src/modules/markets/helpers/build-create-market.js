@@ -5,7 +5,7 @@ import {
   CATEGORICAL,
   SCALAR
 } from "modules/markets/constants/market-types";
-import { DESIGNATED_REPORTER_SELF } from "modules/create-market/constants/new-market-constraints";
+import { DESIGNATED_REPORTER_SELF } from "modules/markets/constants/new-market-constraints";
 
 export const buildCreateMarket = (
   newMarket,

@@ -1,8 +1,8 @@
 import { describe, it } from "mocha";
 import { assert } from "chai";
-import insufficientFunds from "modules/create-market/utils/insufficient-funds";
+import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
-describe("src/modules/create-market/utils/insufficient-funds.js", () => {
+describe("src/modules/markets/helpers/insufficient-funds.js", () => {
   describe("when user has insufficient ETH", () => {
     it("should output 'ETH'", () => {
       const validityBond = 0.01;
