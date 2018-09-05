@@ -307,8 +307,54 @@ describe("utils/format-number.js", () => {
     });
   });
 
-  const num6 = -0.00004;
+  const num6 = -0.0000000000234;
   const utils6 = [
+    {
+      func: "formatEther",
+      denom: "ETH",
+      out: {
+        value: -0.0000000000234,
+        formattedValue: -2.34e-11,
+        roundedValue: -0,
+        formatted: "0.0000",
+        rounded: "0.0000",
+        minimized: "-0.0000000000234",
+        denomination: " ETH",
+        full: "0.0000 ETH",
+        fullPrecision: "-0.0000000000234"
+      }
+    },
+    {
+      func: "formatShares",
+      denom: "Shares",
+      out: {
+        value: -0.0000000000234,
+        formattedValue: -2.34e-11,
+        roundedValue: -0,
+        formatted: "0.0000",
+        rounded: "0.0000",
+        minimized: "-0.0000000000234",
+        denomination: " Shares",
+        full: "0.0000 Shares",
+        fullPrecision: "-0.0000000000234"
+      }
+    }
+  ];
+
+  utils6.forEach(currentUtil => {
+    describe(`${currentUtil.func}`, () => {
+      it("should return a correctly formatted object", () => {
+        assert.deepEqual(
+          formatNumber[`${currentUtil.func}`](currentUtil.num || num6),
+          currentUtil.out,
+          "returned formatted number is not correctly formatted"
+        );
+      });
+    });
+  });
+
+  const num7 = -0.00004;
+  const utils7 = [
     {
       func: "formatEther",
       denom: "ETH",
@@ -341,11 +387,11 @@ describe("utils/format-number.js", () => {
     }
   ];
 
-  utils6.forEach(currentUtil => {
+  utils7.forEach(currentUtil => {
     describe(`${currentUtil.func}`, () => {
       it("should return a correctly formatted object", () => {
         assert.deepEqual(
-          formatNumber[`${currentUtil.func}`](currentUtil.num || num6),
+          formatNumber[`${currentUtil.func}`](currentUtil.num || num7),
           currentUtil.out,
           "returned formatted number is not correctly formatted"
         );

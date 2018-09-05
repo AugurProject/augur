@@ -331,7 +331,10 @@ export function formatNumber(
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES);
         if (
           formatted ===
-          constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+            constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
+          formatted ===
+            "-" +
+              constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
         ) {
           formatted = zeroFixed; // if there are no significant digits in the 8 decimal places, just use zero
         } else {
