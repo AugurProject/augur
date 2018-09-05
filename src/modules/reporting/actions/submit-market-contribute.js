@@ -35,7 +35,6 @@ export const submitMarketContribute = (
     _payoutNumerators: payoutNumerators,
     _amount: amount,
     onSent: res => {
-      console.log(returnPath);
       if (!estimateGas) {
         history.push(makePath(returnPath));
       }

@@ -214,6 +214,7 @@ export default class CoreProperties extends Component {
 
     let headerContent = null;
     const { reportingState } = this.props.market;
+
     if (consensus) {
       headerContent = [
         <div key="consensus">
@@ -240,7 +241,7 @@ export default class CoreProperties extends Component {
             }
           >
             <div className={Styles[`CoreProperties__header-firstElement`]}>
-              {tentativeWinner && tentativeWinner.name}
+              {tentativeWinner && (tentativeWinner.isInvalid ? 'Invalid' : tentativeWinner.name)}
             </div>
             <MarketLink
               className={Styles[`CoreProperties__property-button`]}
