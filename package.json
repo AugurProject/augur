@@ -7,9 +7,6 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
-    "start": "npm run compile && electron-forge start ./dist/main/main.js",
-    "debug": "npm run compile && electron-forge start  --inspect-electron ./dist/main/main.js",
-    "package": "npm run compile && electron-forge package",
     "publish": "npm run compile && electron-builder  --publish always",
     "postinstall": "electron-builder install-app-deps",
     "make": "npm run compile && electron-builder --publish always",
@@ -36,22 +33,6 @@
   ],
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-deb",
-          "platforms": [
-            "linux"
-          ],
-          "config": {
-            "icon": "build/icon.png"
-          }
-        }
-      ]
-    }
-  },
   "dependencies": {
     "app-data-folder": "1.0.0",
     "augur-core": "1.1.0",
@@ -93,7 +74,6 @@
     "electron": "2.0.0",
     "electron-builder": "^20.19.1",
     "electron-builder-squirrel-windows": "^20.19.0",
-    "electron-forge": "5.2.0",
     "electron-publisher-s3": "^20.15.0",
     "electron-webpack": "^2.1.2",
     "eslint": "4.19.1",
