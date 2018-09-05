@@ -61,7 +61,7 @@ You have two options for connecting to an Ethereum node: local or remote.
 
 ### Parity and Warp Sync
 
-By default, Parity uses "warp sync" mode (sometimes referred to as "fast") to sync the blockchain. While this mode does sync significantly faster, it cause issues for any application that relies on historic logs. After warp sync is complete, your node might appear to be sychronized and fully up-to-date, but older blocks are missing while it backfills, which could take several days. It is also not obvious when that backfill has completed.
+By default, Parity uses "warp sync" mode (sometimes referred to as "fast") to sync the blockchain. While this mode does sync significantly faster, it causes issues for any application that relies on historic logs. After warp sync is complete, your node might appear to be sychronized and fully up-to-date, but older blocks are missing while it backfills, which could take several days. It is also not obvious when that backfill has completed.
 
 Augur recommends running your parity nodes with either
 - `--no-warp` **or**
