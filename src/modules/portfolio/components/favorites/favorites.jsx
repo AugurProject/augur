@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
-import MarketsList from "modules/markets/components/markets-list";
+import MarketsList from "modules/markets-list/components/markets-list";
 import Styles from "modules/portfolio/components/favorites/favorites.styles";
 import { TYPE_TRADE } from "modules/markets/constants/link-types";
 

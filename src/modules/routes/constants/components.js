@@ -13,7 +13,7 @@ export const Categories = asyncComponent({
 export const Markets = asyncComponent({
   moduleName: "Markets",
   loader: () =>
-    import(/* webpackChunkName: 'markets' */ "modules/markets/container").then(
+    import(/* webpackChunkName: 'markets' */ "modules/markets-list/containers/markets-view-container").then(
       module => module.default
     )
 });

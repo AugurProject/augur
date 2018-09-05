@@ -13,7 +13,7 @@ import parsePath from "modules/routes/helpers/parse-path";
 import { MARKETS } from "modules/routes/constants/views";
 import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
 
-import Styles from "modules/markets/components/markets-header/markets-header.styles";
+import Styles from "modules/markets-list/components/markets-header/markets-header.styles";
 
 // NOTE -- commented out state due to temp lack of utilization + linting
 export default class MarketsHeader extends Component {
