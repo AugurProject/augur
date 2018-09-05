@@ -10,7 +10,7 @@ import {
 import { TYPE_CLAIM_PROCEEDS } from "modules/market/constants/link-types";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
-import ReportingResolved from "../../../reporting/components/reporting-resolved/reporting-resolved";
+import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 
 export default class PortfolioReports extends Component {
   static propTypes = {

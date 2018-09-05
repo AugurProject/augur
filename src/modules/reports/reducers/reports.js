@@ -11,6 +11,7 @@ export default function(reports = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
       const updatedReports = { ...reports };
+      if (!action || !action.reports) return updatedReports;
       const universeIds = Object.keys(action.reports);
       const numUniverseIds = universeIds.length;
       for (let i = 0; i < numUniverseIds; ++i) {
