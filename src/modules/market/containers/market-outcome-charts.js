@@ -5,11 +5,11 @@ import { createBigNumber } from "utils/create-big-number";
 
 import MarketOutcomeCharts from "modules/market/components/market-outcome-charts/market-outcome-charts";
 
-import orderAndAssignCumulativeShares from "modules/market/helpers/order-and-assign-cumulative-shares";
-import orderForMarketDepth from "modules/market/helpers/order-for-market-depth";
-import getOrderBookKeys from "modules/market/helpers/get-orderbook-keys";
+import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
+import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
+import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 import { ASKS, BIDS } from "modules/orders/constants/orders";
 import { selectCurrentTimestampInSeconds } from "src/select-state";

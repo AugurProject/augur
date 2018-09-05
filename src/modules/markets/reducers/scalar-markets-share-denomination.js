@@ -1,4 +1,4 @@
-import { UPDATE_SCALAR_MARKET_SHARE_DENOMINATION } from "modules/market/actions/update-scalar-market-share-denomination";
+import { UPDATE_SCALAR_MARKET_SHARE_DENOMINATION } from "modules/markets/actions/update-scalar-market-share-denomination";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

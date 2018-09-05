@@ -12,7 +12,7 @@ import {
 
 import { formatShares, formatEther } from "utils/format-number";
 
-import { CLOSE_DIALOG_CLOSING } from "modules/market/constants/close-dialog-status";
+import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 
 describe("modules/orders/helpers/select-order-book.js", () => {
   const mockStore = configureMockStore([thunk]);

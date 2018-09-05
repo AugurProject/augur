@@ -121,7 +121,7 @@ describe("modules/trade/actions/update-trades-in-progress.js", () => {
       {
         "../../../store": store,
         "../../positions/actions/load-user-share-balances": mockLoadUserShareBalances,
-        "../../market/selectors/market": mockSelectMarket
+        "../../markets/selectors/market": mockSelectMarket
       }
     );
 
@@ -463,7 +463,7 @@ describe("modules/trade/actions/update-trades-in-progress.js", () => {
       {
         "../../../store": store,
         "../../positions/actions/load-user-share-balances": mockLoadUserShareBalances,
-        "../../market/selectors/market": mockSelectMarket
+        "../../markets/selectors/market": mockSelectMarket
       }
     );
 
@@ -816,7 +816,7 @@ describe("modules/trade/actions/update-trades-in-progress.js", () => {
       {
         "../../../store": store,
         "../../positions/actions/load-user-share-balances": mockLoadUserShareBalances,
-        "../../market/selectors/market": mockSelectMarket
+        "../../markets/selectors/market": mockSelectMarket
       }
     );
 

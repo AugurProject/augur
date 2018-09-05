@@ -1,5 +1,5 @@
 import { compose, inRange, floor, map, sortedUniq } from "lodash/fp";
-import { limitPeriodByRange } from "src/modules/market/helpers/limit-period-by-range";
+import { limitPeriodByRange } from "modules/markets/helpers/limit-period-by-range";
 
 const getMiddleElementOfArray = (arr = []) => {
   const l = arr.length;

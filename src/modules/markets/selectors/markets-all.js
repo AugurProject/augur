@@ -17,7 +17,7 @@ import {
 } from "src/select-state";
 import selectAccountPositions from "modules/orders/selectors/positions-plus-asks";
 
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 export default function() {
   return selectMarkets(store.getState());

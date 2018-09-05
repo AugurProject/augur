@@ -1,5 +1,5 @@
 import { updateFavorites } from "modules/markets/actions/update-favorites";
-import { updateScalarMarketShareDenomination } from "modules/market/actions/update-scalar-market-share-denomination";
+import { updateScalarMarketShareDenomination } from "modules/markets/actions/update-scalar-market-share-denomination";
 import { updateReports } from "modules/reports/actions/update-reports";
 import { addNotification } from "modules/notifications/actions/notifications";
 import { loadPendingLiquidityOrders } from "modules/orders/actions/liquidity-management";

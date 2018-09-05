@@ -1,7 +1,7 @@
 import {
   UPDATE_MARKET_LOADING,
   REMOVE_MARKET_LOADING
-} from "modules/market/actions/update-market-loading";
+} from "modules/markets/actions/update-market-loading";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

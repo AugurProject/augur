@@ -10,7 +10,7 @@ import {
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_PARTIALLY_FAILED,
   CLOSE_DIALOG_SUCCESS
-} from "modules/market/constants/close-dialog-status";
+} from "modules/markets/constants/close-dialog-status";
 import { SUCCESS, FAILED } from "modules/transactions/constants/statuses";
 
 describe("modules/positions/selectors/close-position-status", () => {

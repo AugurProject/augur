@@ -9,7 +9,7 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE,
   TYPE_MIGRATE_REP
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import {
   MARKET,
   REPORT,

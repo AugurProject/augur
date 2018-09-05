@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 
 import MarketOutcomesChart from "modules/market/components/market-outcomes-chart/market-outcomes-chart";
 
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestamp } from "src/select-state";
-import { selectBucketedPriceTimeSeries } from "modules/market/selectors/select-bucketed-price-time-series";
+import { selectBucketedPriceTimeSeries } from "modules/markets/selectors/select-bucketed-price-time-series";
 import { createBigNumber } from "src/utils/create-big-number";
 
 const mapStateToProps = (state, ownProps) => {

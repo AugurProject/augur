@@ -54,7 +54,7 @@ describe("modules/positions/actions/close-position.js", () => {
       "./add-close-position-trade-group": mockAddClosePositionTradeGroup,
       "./clear-close-position-outcome": mockClearClosePositionOutcome,
       "../../orders/actions/load-bids-asks": loadBidsAsks,
-      "../../market/selectors/market": mockSelectMarket
+      "../../markets/selectors/market": mockSelectMarket
     }
   );
 

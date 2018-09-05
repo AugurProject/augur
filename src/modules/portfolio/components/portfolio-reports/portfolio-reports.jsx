@@ -7,7 +7,7 @@ import {
   MODAL_CLAIM_REPORTING_FEES_FORKED_MARKET,
   MODAL_CLAIM_REPORTING_FEES_NONFORKED_MARKETS
 } from "modules/modal/constants/modal-types";
-import { TYPE_CLAIM_PROCEEDS } from "modules/market/constants/link-types";
+import { TYPE_CLAIM_PROCEEDS } from "modules/markets/constants/link-types";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
 
 export default class PortfolioReports extends Component {

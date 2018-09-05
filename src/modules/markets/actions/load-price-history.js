@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { updateMarketPriceHistory } from "modules/market/actions/update-market-price-history";
+import { updateMarketPriceHistory } from "modules/markets/actions/update-market-price-history";
 import logError from "utils/log-error";
 
 export const loadPriceHistory = (options = {}, callback = logError) => (

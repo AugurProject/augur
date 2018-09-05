@@ -1,12 +1,12 @@
-import marketLoading from "modules/market/reducers/market-loading";
+import marketLoading from "modules/markets/reducers/market-loading";
 
 import {
   UPDATE_MARKET_LOADING,
   REMOVE_MARKET_LOADING
-} from "modules/market/actions/update-market-loading";
+} from "modules/markets/actions/update-market-loading";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
-describe("modules/market/reducers/market-loading", () => {
+describe("modules/markets/reducers/market-loading", () => {
   const test = t => it(t.description, () => t.assertions());
 
   test({

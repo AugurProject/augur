@@ -5,8 +5,8 @@ import PortfolioReports from "modules/portfolio/components/portfolio-reports/por
 import { updateModal } from "modules/modal/actions/update-modal";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
-import { selectMarket } from "modules/market/selectors/market";
-import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
+import { selectMarket } from "modules/markets/selectors/market";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 
 const mapStateToProps = state => {
   const forkedMarket = state.universe.isForking

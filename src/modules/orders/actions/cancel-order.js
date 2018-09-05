@@ -3,7 +3,7 @@ import {
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_PENDING
-} from "modules/market/constants/close-dialog-status";
+} from "modules/markets/constants/close-dialog-status";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 import selectOrder from "modules/orders/selectors/select-order";
 import logError from "utils/log-error";

@@ -2,7 +2,7 @@ import { describe, it, afterEach } from "mocha";
 
 import proxyquire from "proxyquire";
 import mocks from "test/mockStore";
-import { CLOSE_DIALOG_CLOSING } from "modules/market/constants/close-dialog-status";
+import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 import { BUY } from "modules/transactions/constants/types";
 import { updateOrderStatus } from "modules/orders/actions/update-order-status";
 

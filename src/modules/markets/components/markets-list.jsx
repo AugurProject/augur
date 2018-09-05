@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import MarketPreview from "modules/market/components/market-preview/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
-import { TYPE_TRADE } from "modules/market/constants/link-types";
+import { TYPE_TRADE } from "modules/markets/constants/link-types";
 import isEqual from "lodash/isEqual";
 
 import debounce from "utils/debounce";

@@ -1,6 +1,6 @@
-import { selectBucketedPriceTimeSeries } from "modules/market/selectors/select-bucketed-price-time-series";
+import { selectBucketedPriceTimeSeries } from "modules/markets/selectors/select-bucketed-price-time-series";
 
-describe(`modules/market/selectors/select-market-outcome-trading-indicator.js`, () => {
+describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`, () => {
   const market1Outcomes = [
     {
       id: 0,

@@ -59,7 +59,7 @@ import selectAccountPositions from "modules/orders/selectors/positions-plus-asks
 import { selectUserOpenOrders } from "modules/orders/selectors/user-open-orders";
 import selectUserOpenOrdersSummary from "modules/orders/selectors/user-open-orders-summary";
 
-import { selectPriceTimeSeries } from "modules/market/selectors/price-time-series";
+import { selectPriceTimeSeries } from "modules/markets/selectors/price-time-series";
 
 import {
   selectAggregateOrderBook,

@@ -11,7 +11,7 @@ import {
   TYPE_TRADE,
   TYPE_REPORT,
   TYPE_CLOSED
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
 

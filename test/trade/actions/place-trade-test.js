@@ -17,7 +17,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const action = proxyquire(
       "../../../src/modules/trade/actions/place-trade.js",
       {
-        "../../market/selectors/market": SelectMarket
+        "../../markets/selectors/market": SelectMarket
       }
     );
     store.dispatch(action.placeTrade("testYesNoMarketId", null));
@@ -56,7 +56,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const action = proxyquire(
       "../../../src/modules/trade/actions/place-trade.js",
       {
-        "../../market/selectors/market": SelectMarket
+        "../../markets/selectors/market": SelectMarket
       }
     );
     store.dispatch(action.placeTrade(null, "1"));
@@ -99,7 +99,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const action = proxyquire(
       "../../../src/modules/trade/actions/place-trade.js",
       {
-        "../../market/selectors/market": SelectMarket,
+        "../../markets/selectors/market": SelectMarket,
         "../../auth/actions/approve-account": CheckAccountAllowance
       }
     );
@@ -161,7 +161,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     const action = proxyquire(
       "../../../src/modules/trade/actions/place-trade.js",
       {
-        "../../market/selectors/market": SelectMarket,
+        "../../markets/selectors/market": SelectMarket,
         "../../auth/actions/approve-account": CheckAccountAllowance,
         "../../../services/augurjs": AugurJS
       }

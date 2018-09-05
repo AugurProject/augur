@@ -12,7 +12,7 @@ import MarketLink from "modules/market/components/market-link/market-link";
 import {
   TYPE_CLAIM_PROCEEDS,
   TYPE_FINALIZE_MARKET
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import { dateHasPassed } from "utils/format-date";
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import PositionStyles from "modules/market/components/market-positions-list/market-positions-list.styles";

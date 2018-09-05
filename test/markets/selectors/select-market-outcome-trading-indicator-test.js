@@ -1,4 +1,4 @@
-import { selectMarketOutcomeTradingIndicator } from "modules/market/selectors/select-market-outcome-trading-indicator";
+import { selectMarketOutcomeTradingIndicator } from "modules/markets/selectors/select-market-outcome-trading-indicator";
 import {
   BUY_UP,
   BUY_DOWN,
@@ -9,7 +9,7 @@ import {
   SELL
 } from "modules/trade/constants/types";
 
-describe(`modules/market/selectors/select-market-outcome-trading-indicator.js`, () => {
+describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`, () => {
   const marketTradingHistory = {
     marketId1_buy: [{ outcome: 1, type: BUY, price: 0.1, timestamp: 1111 }],
     marketId1_sell: [{ outcome: 1, type: SELL, price: 0.1, timestamp: 1111 }],

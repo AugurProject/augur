@@ -6,9 +6,9 @@ import {
   loadFullMarket,
   loadMarketDetails,
   __RewireAPI__
-} from "modules/market/actions/load-full-market";
+} from "modules/markets/actions/load-full-market";
 
-describe("modules/market/actions/load-full-market.js", () => {
+describe("modules/markets/actions/load-full-market.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 

@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 
 import MarketsHeader from "modules/markets/components/markets-header/markets-header";
 import MarketsList from "modules/markets/components/markets-list";
-import { TYPE_TRADE } from "modules/market/constants/link-types";
+import { TYPE_TRADE } from "modules/markets/constants/link-types";
 
 export default class MarketsView extends Component {
   static propTypes = {

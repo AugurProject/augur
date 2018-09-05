@@ -5,7 +5,7 @@ import sinon from "sinon";
 import * as mockStore from "test/mockStore";
 import marketAssertions from "assertions/market";
 
-describe(`modules/market/selectors/market.js`, () => {
+describe(`modules/markets/selectors/market.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
 
@@ -21,7 +21,7 @@ describe(`modules/market/selectors/market.js`, () => {
     .callsFake(() => 10);
 
   const selector = proxyquire(
-    "../../../src/modules/market/selectors/market.js",
+    "../../../src/modules/markets/selectors/market.js",
     {
       "../../../store": store,
       // make selectors/user-open-orders-summary use the same store as selectors/market.js

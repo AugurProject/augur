@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 import ForkMigrationTotalsView from "modules/forking/components/fork-migration-totals/fork-migration-totals";
 

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import ReportingHeader from "modules/reporting/components/reporting-header/reporting-header";
 
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
-import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { updateModal } from "modules/modal/actions/update-modal";
 
 const mapStateToProps = state => ({

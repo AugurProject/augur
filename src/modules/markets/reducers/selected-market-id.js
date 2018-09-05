@@ -1,7 +1,7 @@
 import {
   UPDATE_SELECTED_MARKET_ID,
   CLEAR_SELECTED_MARKET_ID
-} from "modules/market/actions/update-selected-market-id";
+} from "modules/markets/actions/update-selected-market-id";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = null;

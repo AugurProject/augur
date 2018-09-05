@@ -1,6 +1,6 @@
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
-import { isMarketLoaded } from "modules/market/helpers/is-market-loaded";
-import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
+import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
+import { loadMarketTradingHistory } from "modules/markets/actions/load-market-trading-history";
 import logError from "utils/log-error";
 
 export const loadMarketsInfoIfNotLoaded = (marketIds, callback = logError) => (

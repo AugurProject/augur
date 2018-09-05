@@ -4,10 +4,10 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE,
   TYPE_TRADE
-} from "modules/market/constants/link-types";
-import { determineMarketLinkType } from "modules/market/helpers/determine-market-link-type";
+} from "modules/markets/constants/link-types";
+import { determineMarketLinkType } from "modules/markets/helpers/determine-market-link-type";
 
-describe(`modules/market/helpers/determine-market-link-type.js`, () => {
+describe(`modules/markets/helpers/determine-market-link-type.js`, () => {
   const account = { address: "userId" };
 
   const test = t => {

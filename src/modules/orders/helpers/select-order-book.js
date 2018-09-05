@@ -8,7 +8,7 @@ import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
 import { BIDS, ASKS, CANCELED } from "modules/orders/constants/orders";
 import { BUY, SELL } from "modules/trade/constants/types";
-import { CLOSE_DIALOG_CLOSING } from "modules/market/constants/close-dialog-status";
+import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 
 import { has } from "lodash";
 

@@ -3,13 +3,13 @@ import { updateTradesInProgress } from "modules/trade/actions/update-trades-in-p
 import { placeTrade } from "modules/trade/actions/place-trade";
 import { addClosePositionTradeGroup } from "modules/positions/actions/add-close-position-trade-group";
 import { clearClosePositionOutcome } from "modules/positions/actions/clear-close-position-outcome";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import {
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_NO_ORDERS
-} from "modules/market/constants/close-dialog-status";
+} from "modules/markets/constants/close-dialog-status";
 import { ZERO } from "modules/trade/constants/numbers";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";

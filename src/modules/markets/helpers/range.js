@@ -1,13 +1,10 @@
 import { compose, find, partial, property } from "lodash/fp";
 
 // 'full' meaning no partial application
-import { clampPeriodByRange as fullClampPeriodByRange } from "src/modules/market/helpers/clamp-period-by-range";
-import { getDefaultRangePeriodDuration } from "src/modules/market/helpers/get-default-range-period-durations";
-import {
-  PERIODS,
-  RANGES
-} from "src/modules/market/constants/permissible-periods";
-import { limitPeriodByRange as fullLimitPeriodByRange } from "src/modules/market/helpers/limit-period-by-range";
+import { clampPeriodByRange as fullClampPeriodByRange } from "modules/markets/helpers/clamp-period-by-range";
+import { getDefaultRangePeriodDuration } from "modules/markets/helpers/get-default-range-period-durations";
+import { PERIODS, RANGES } from "modules/markets/constants/permissible-periods";
+import { limitPeriodByRange as fullLimitPeriodByRange } from "modules/markets/helpers/limit-period-by-range";
 
 export const clampPeriodByRange = partial(fullClampPeriodByRange, [PERIODS]);
 

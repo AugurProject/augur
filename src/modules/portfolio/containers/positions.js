@@ -10,7 +10,7 @@ import { triggerTransactionsExport } from "modules/transactions/actions/trigger-
 import claimTradingProceeds from "modules/positions/actions/claim-trading-proceeds";
 import { constants } from "services/augurjs";
 import { orderBy } from "lodash";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => {
   const positions = getLoginAccountPositions();

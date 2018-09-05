@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import { createBigNumber } from "utils/create-big-number";
 
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import MarketTrading from "modules/trade/components/trading/trading";
 import { clearTradeInProgress } from "modules/trade/actions/update-trades-in-progress";
 

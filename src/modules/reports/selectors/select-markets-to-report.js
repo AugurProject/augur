@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import store from "src/store";
 import { selectMarketReportState } from "src/select-state";
-import { selectMarket } from "src/modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 function filterForkedMarket(market) {
   const { universe } = store.getState();

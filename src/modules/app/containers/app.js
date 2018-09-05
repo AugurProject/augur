@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import App from "modules/app/components/app/app";
-import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import { selectInfoNotificationsAndSeenCount } from "modules/notifications/selectors/notifications";
 import { selectMarketsHeader } from "modules/markets/selectors/markets-header";
 import { selectCoreStats } from "modules/account/selectors/core-stats";

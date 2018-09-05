@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 
 import MarketsList from "modules/markets/components/markets-list";
 import Styles from "modules/portfolio/components/favorites/favorites.styles";
-import { TYPE_TRADE } from "modules/market/constants/link-types";
+import { TYPE_TRADE } from "modules/markets/constants/link-types";
 
 const Favorites = p => (
   <section className={Styles.Favorites}>

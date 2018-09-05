@@ -9,13 +9,13 @@ import MarketOutcomeDepth from "modules/market/components/market-outcome-charts-
 import MarketOutcomeChartsOrders from "modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders";
 
 import Styles from "modules/market/components/market-outcome-charts/market-outcome-charts.styles";
-import { loadCandleStickData } from "modules/market/actions/load-candlestick-data";
+import { loadCandleStickData } from "modules/markets/actions/load-candlestick-data";
 
 import { BigNumber } from "bignumber.js";
 import {
   clampPeriodByRange,
   defaultRangePeriodDurations
-} from "src/modules/market/helpers/range";
+} from "modules/markets/helpers/range";
 
 export default class MarketOutcomeCharts extends Component {
   static propTypes = {

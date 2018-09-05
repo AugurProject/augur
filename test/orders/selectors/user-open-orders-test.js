@@ -2,7 +2,7 @@ import proxyquire from "proxyquire";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { formatEther, formatShares, formatNone } from "utils/format-number";
-import { CLOSE_DIALOG_CLOSING } from "modules/market/constants/close-dialog-status";
+import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 
 describe(`modules/orders/selectors/user-open-orders.js`, () => {
   proxyquire.noPreserveCache().noCallThru();

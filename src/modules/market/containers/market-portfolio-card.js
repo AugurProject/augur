@@ -5,10 +5,10 @@ import {
   selectCurrentTimestampInSeconds,
   selectOrphanOrders
 } from "src/select-state";
-import { determineMarketLinkType } from "modules/market/helpers/determine-market-link-type";
+import { determineMarketLinkType } from "modules/markets/helpers/determine-market-link-type";
 import MarketPortfolioCard from "modules/market/components/market-portfolio-card/market-portfolio-card";
-import { selectMarket } from "modules/market/selectors/market";
-import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
+import { selectMarket } from "modules/markets/selectors/market";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import getClosePositionStatus from "modules/positions/selectors/close-position-status";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { cancelOrphanedOrder } from "modules/orders/actions/orphaned-orders";

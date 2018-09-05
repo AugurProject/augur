@@ -1,18 +1,18 @@
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
-import { loadPriceHistory } from "modules/market/actions/load-price-history";
-import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
+import { loadPriceHistory } from "modules/markets/actions/load-price-history";
+import { loadMarketTradingHistory } from "modules/markets/actions/load-market-trading-history";
 import {
   updateMarketLoading,
   removeMarketLoading
-} from "modules/market/actions/update-market-loading";
+} from "modules/markets/actions/update-market-loading";
 import logError from "utils/log-error";
 
 import {
   MARKET_FULLY_LOADING,
   MARKET_FULLY_LOADED
-} from "modules/market/constants/market-loading-states";
+} from "modules/markets/constants/market-loading-states";
 
 export const loadFullMarket = (marketId, callback = logError) => (
   dispatch,

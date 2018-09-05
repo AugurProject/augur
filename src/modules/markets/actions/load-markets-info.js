@@ -3,13 +3,13 @@ import { updateMarketsData } from "modules/markets/actions/update-markets-data";
 import {
   updateMarketLoading,
   removeMarketLoading
-} from "modules/market/actions/update-market-loading";
+} from "modules/markets/actions/update-market-loading";
 import logError from "utils/log-error";
 
 import {
   MARKET_INFO_LOADING,
   MARKET_INFO_LOADED
-} from "modules/market/constants/market-loading-states";
+} from "modules/markets/constants/market-loading-states";
 
 export const loadMarketsInfo = (marketIds, callback = logError) => (
   dispatch,

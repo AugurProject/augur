@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import MarketHeader from "modules/market/components/market-header/market-header";
 import { ZERO } from "modules/trade/constants/numbers";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestamp } from "src/select-state";
 
 const mapStateToProps = (state, ownProps) => {

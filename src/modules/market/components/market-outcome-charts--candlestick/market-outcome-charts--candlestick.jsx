@@ -7,14 +7,14 @@ import ReactFauxDOM from "react-faux-dom";
 import { map } from "lodash/fp";
 import { sortBy } from "lodash";
 
-import findPeriodSeriesBounds from "modules/market/helpers/find-period-series-bounds";
+import findPeriodSeriesBounds from "modules/markets/helpers/find-period-series-bounds";
 import MarketOutcomeChartsHeaderCandlestick from "modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
 
 import { BUY, SELL } from "modules/transactions/constants/types";
 
 import Styles from "modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
-import { createBigNumber } from "src/utils/create-big-number";
-import { getTickIntervalForRange } from "src/modules/market/helpers/range";
+import { createBigNumber } from "utils/create-big-number";
+import { getTickIntervalForRange } from "modules/markets/helpers/range";
 
 class MarketOutcomeCandlestick extends React.Component {
   static propTypes = {

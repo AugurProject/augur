@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import MarketOutcomesAndPositions from "modules/market/components/market-outcomes-and-positions/market-outcomes-and-positions";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import { sortOpenOrders } from "modules/orders/selectors/open-orders";
 import { sellCompleteSets } from "modules/positions/actions/sell-complete-sets";
 import getClosePositionStatus from "modules/positions/selectors/close-position-status";

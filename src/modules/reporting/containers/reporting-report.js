@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingReport from "modules/reporting/components/reporting-report/reporting-report";
-import { loadFullMarket } from "modules/market/actions/load-full-market";
+import { loadFullMarket } from "modules/markets/actions/load-full-market";
 import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 import { submitInitialReport } from "modules/reports/actions/submit-initial-report";

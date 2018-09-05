@@ -10,11 +10,11 @@ import {
 import {
   MARKET_INFO_LOADING,
   MARKET_INFO_LOADED
-} from "modules/market/constants/market-loading-states";
+} from "modules/markets/constants/market-loading-states";
 import {
   UPDATE_MARKET_LOADING,
   REMOVE_MARKET_LOADING
-} from "modules/market/actions/update-market-loading";
+} from "modules/markets/actions/update-market-loading";
 import { UPDATE_MARKETS_DATA } from "modules/markets/actions/update-markets-data";
 
 describe("modules/markets/actions/load-markets-info.js", () => {

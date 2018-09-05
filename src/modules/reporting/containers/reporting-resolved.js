@@ -8,7 +8,7 @@ import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 
 import getValue from "utils/get-value";
-import { selectMarket } from "src/modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
