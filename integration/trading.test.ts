@@ -8,7 +8,6 @@ require("./helpers/beforeAll");
 
 const timeoutMilliseconds = 15000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
-// let flash: IFlash = new Flash();
 
 describe("Trading page", () => {
   it("should change unrealized P/L if a share is bought with a different account", async () => {
