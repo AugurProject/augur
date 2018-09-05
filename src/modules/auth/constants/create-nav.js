@@ -7,7 +7,7 @@ export const PARAMS = {
 export const ITEMS = [
   {
     param: PARAMS.EDGE,
-    title: "Edge",
+    title: "Edge (Username & Password)",
     icon: Edge,
     default: true
   }
