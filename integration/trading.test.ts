@@ -9,13 +9,6 @@ const timeoutMilliseconds = 15000; // TODO: Figure out a way to reduce timeout r
 
 jest.setTimeout(100000);
 
-
-function delay(time: any) {
-  return new Promise(function(resolve) {
-      setTimeout(resolve, time)
-  });
-}
-
 describe("Trading page", () => {
   it("should update the Unrealized P/L for a categorical market when another account buys shares at a different price", async () => {
     // Go to Market trading page
@@ -33,11 +26,18 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    let isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
-
-    await delay(500);
 
     await expect(page).toClick("button", { text: "Approve" , timeout: timeoutMilliseconds });
 
@@ -48,7 +48,16 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
 
@@ -89,7 +98,16 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.0020", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.3500", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
 
@@ -112,10 +130,9 @@ describe("Trading page", () => {
     );
 
     // Ensure Unrealized and Realized P/L are correct
-    // TODO: Currently, Unrealized P/L displays as -0.0000. This check should be updated once this bug is fixed.
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
-      { text: "-0.0000", timeout: timeoutMilliseconds }
+      { text: "-0.000040", timeout: timeoutMilliseconds }
     );
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
@@ -137,7 +154,16 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.28", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    let isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
 
@@ -178,7 +204,16 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.002", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.25", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
 
@@ -201,10 +236,9 @@ describe("Trading page", () => {
     );
 
     // Ensure that Unrealized and Realized P/L are correct
-    // TODO: Currently, Unrealized P/L displays as -0.0000. This check should be updated once this bug is fixed.
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
-      { text: "-0.0000", timeout: timeoutMilliseconds }
+      { text: "0.000030", timeout: timeoutMilliseconds }
     );
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
@@ -220,21 +254,29 @@ describe("Trading page", () => {
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--limit-price", "0.31", { timeout: timeoutMilliseconds });
-    await delay(1000);
+    isDisabled = await page.$eval(
+      ".trading--form-styles_TradingForm__form-body li button",
+      el => el.disabled
+    );
+    while (isDisabled) {
+      isDisabled = await page.$eval(
+        ".trading--form-styles_TradingForm__form-body li button",
+        el => el.disabled
+      );
+    }
     await expect(page).toClick("button", { text: "Review", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Confirm", timeout: timeoutMilliseconds });
 
     await waitNextBlock(10);
 
     // Ensure that Unrealized and Realized P/L are correct
-    // TODO: Currently, Realized P/L displays as -0.0000. This check should be updated once this bug is fixed.
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(5)",
       { text: "-0.0001", timeout: timeoutMilliseconds }
     );
     await expect(page).toMatchElement(
       ".market-positions-list--position-styles_Position:nth-child(1) li:nth-child(6)",
-      { text: "-0.0000", timeout: timeoutMilliseconds }
+      { text: "-0.000050", timeout: timeoutMilliseconds }
     );
 
     // Switch to contract owner account
