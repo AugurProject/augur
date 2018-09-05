@@ -38,6 +38,14 @@ const MarketLink = p => {
       path = makePath(MARKET);
   }
 
+  const queryLink = {
+    [MARKET_ID_PARAM_NAME]: p.id
+  };
+
+  if (p.linkType === TYPE_DISPUTE) {
+    queryLink[RETURN_PARAM_NAME] = location.hash;
+  }
+
   return (
     <span>
       {p.id ? (
@@ -46,10 +54,7 @@ const MarketLink = p => {
           className={p.className}
           to={{
             pathname: path,
-            search: makeQuery({
-              [MARKET_ID_PARAM_NAME]: p.id,
-              [RETURN_PARAM_NAME]: location.hash
-            })
+            search: makeQuery(queryLink)
           }}
         >
           {p.children}
