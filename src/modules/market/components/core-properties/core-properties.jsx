@@ -58,7 +58,9 @@ const Property = p => (
 export default class CoreProperties extends Component {
   static propTypes = {
     market: PropTypes.object.isRequired,
-    currentTimestamp: PropTypes.number.isRequired
+    currentTimestamp: PropTypes.number.isRequired,
+    tentativeWinner: PropTypes.object,
+    isLogged: PropTypes.bool,
   };
 
   determinePhase() {
@@ -92,7 +94,12 @@ export default class CoreProperties extends Component {
   }
 
   render() {
-    const { market, currentTimestamp } = this.props;
+    const { 
+      market, 
+      currentTimestamp, 
+      tentativeWinner,
+      isLogged,
+    } = this.props;
 
     const marketCreatorFee = getValue(
       market,
@@ -199,19 +206,42 @@ export default class CoreProperties extends Component {
       }
     });
 
+    let headerContent = [];
+    const { reportingState } = this.props.market;
+    if (consensus) {
+      headerContent = [
+        <div key='consensus'>
+          <span className={Styles[`CoreProperties__property-name`]}>
+            <div>Winning Outcome:</div>
+          </span>
+          <span
+            className={Styles[`CoreProperties__property-winningOutcome`]}
+          >
+            {consensus}
+          </span>
+        </div>
+      ]
+    } else if (reportingState === constants.REPORTING_STATE.CROWDSOURCING_DISPUTE && isLogged) {
+      headerContent = [
+        <div key='dispute'>
+          <span className={Styles[`CoreProperties__property-name`]}>
+            <div>Tentative Winning Outcome:</div>
+          </span>
+          <span
+            className={Styles[`CoreProperties__property-winningOutcome`]}
+          >
+            {tentativeWinner && tentativeWinner.name}
+          </span>
+        </div>
+      ]
+    }
+
     return (
       <div className={Styles.CoreProperties__coreContainer}>
-        {consensus && (
+        {headerContent && (
           <div className={Styles.CoreProperties__row}>
             <div className={Styles.CoreProperties__property}>
-              <span className={Styles[`CoreProperties__property-name`]}>
-                <div>Winning Outcome:</div>
-              </span>
-              <span
-                className={Styles[`CoreProperties__property-winningOutcome`]}
-              >
-                {consensus}
-              </span>
+              {headerContent}
             </div>
           </div>
         )}
