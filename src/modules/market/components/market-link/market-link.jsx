@@ -16,7 +16,10 @@ import {
   DISPUTE,
   MIGRATE_REP
 } from "modules/routes/constants/views";
-import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
+import {
+  MARKET_ID_PARAM_NAME,
+  RETURN_PARAM_NAME
+} from "modules/routes/constants/param-names";
 
 const MarketLink = p => {
   let path;
@@ -44,7 +47,8 @@ const MarketLink = p => {
           to={{
             pathname: path,
             search: makeQuery({
-              [MARKET_ID_PARAM_NAME]: p.id
+              [MARKET_ID_PARAM_NAME]: p.id,
+              [RETURN_PARAM_NAME]: location.hash
             })
           }}
         >
@@ -60,7 +64,8 @@ const MarketLink = p => {
 MarketLink.propTypes = {
   id: PropTypes.string.isRequired,
   linkType: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  location: PropTypes.object
 };
 
 export default MarketLink;
