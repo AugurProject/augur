@@ -6,7 +6,7 @@ export const dismissDisclaimerModal = async (page: Page) => {
   );
   if (isModalDismissed) return;
 
-  const timeoutMilliseconds = 5000;
+  const timeoutMilliseconds = 10000;
   await expect(page).toClick(
     ".modal-disclaimer-styles_ModalDisclaimer__TextBox",
     { timeout: timeoutMilliseconds }
@@ -24,11 +24,14 @@ export const dismissDisclaimerModal = async (page: Page) => {
     );
   }
 
-  await expect(page).toClick("#i_have_read_disclaimer");
+  await expect(page).toClick(
+    "#i_have_read_disclaimer",
+    { timeout: timeoutMilliseconds }
+  );
 
   // dismiss welcome to beta popup.
   return await expect(page).toClick("button", {
     text: "I Agree and Accept the above",
-    timeout: 5000
+    timeout: timeoutMilliseconds
   });
 };
