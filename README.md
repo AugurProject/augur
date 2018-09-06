@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/AugurProject/augur.js.svg?branch=master)](https://travis-ci.org/AugurProject/augur.js)
 [![Coverage Status](https://coveralls.io/repos/AugurProject/augur.js/badge.svg?branch=master&service=github)](https://coveralls.io/github/AugurProject/augur.js?branch=master)
 [![npm version](https://badge.fury.io/js/augur.js.svg)](http://badge.fury.io/js/augur.js)
+[![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/AugurProject/augur.js.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AugurProject/augur.js/context:javascript)
+[![Total Alerts](https://img.shields.io/lgtm/alerts/g/AugurProject/augur.js.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AugurProject/augur.js/alerts)
 
 ## Installation
 
