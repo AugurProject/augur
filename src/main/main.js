@@ -80,7 +80,7 @@ function about() {
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({minWidth: 360, width: 360, maxWidth: 360, minHeight: 700, height: 860, maxHeight: 860, icon: path.join(__dirname, '../augur.ico')})
+  mainWindow = new BrowserWindow({minWidth: 360, width: 360, maxWidth: 360, minHeight: 700, height: 880, maxHeight: 880, icon: path.join(__dirname, '../augur.ico')})
 
   mainWindow.webContents.on('will-navigate', ev => {
     ev.preventDefault()
