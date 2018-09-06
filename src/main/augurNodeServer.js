@@ -3,6 +3,7 @@ const Augur = require('augur.js')
 const log = require('electron-log')
 const { AugurNodeController } = require('augur-node/build/controller')
 const { ControlMessageType } = require('augur-node/build/constants')
+const appData = require('app-data-folder')
 
 const { ipcMain } = require('electron')
 const debounce = require('debounce')
@@ -25,6 +26,7 @@ function AugurNodeServer(selectedNetwork) {
   this.augurNodeController = new AugurNodeController(this.augur, this.selectedNetwork, this.appDataPath)
   this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
   this.bulkSyncing = false
+  this.appDataPath = appData('augur')
   ipcMain.on(START_AUGUR_NODE, this.onStartNetwork.bind(this))
   ipcMain.on(RESET_DATABASE, this.onResetDatabase.bind(this))
   ipcMain.on(STOP_AUGUR_NODE, this.shutDownServer.bind(this))
