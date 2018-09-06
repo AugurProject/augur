@@ -42,7 +42,7 @@ const MarketLink = p => {
     [MARKET_ID_PARAM_NAME]: p.id
   };
 
-  if (p.linkType === TYPE_DISPUTE) {
+  if (p.linkType === TYPE_DISPUTE || p.linkType === TYPE_REPORT) {
     queryLink[RETURN_PARAM_NAME] = location.hash;
   }
 

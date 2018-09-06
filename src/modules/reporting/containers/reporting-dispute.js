@@ -7,10 +7,6 @@ import {
   MARKET_ID_PARAM_NAME,
   RETURN_PARAM_NAME
 } from "modules/routes/constants/param-names";
-import {
-  PORTFOLIO_REPORTS,
-  REPORTING_DISPUTE_MARKETS
-} from "modules/routes/constants/views";
 import { selectMarket } from "modules/market/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
@@ -36,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
     invalid,
     amount,
     history,
+    returnPath,
     callback
   ) =>
     dispatch(
@@ -46,6 +43,7 @@ const mapDispatchToProps = dispatch => ({
         invalid,
         amount,
         history,
+        returnPath,
         callback
       )
     )
@@ -53,12 +51,12 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME];
-  const returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
+  let returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
   const market = selectMarket(marketId);
 
-  let redirectPath = REPORTING_DISPUTE_MARKETS;
-  if (returnPath.indexOf(PORTFOLIO_REPORTS) !== -1) {
-    redirectPath = PORTFOLIO_REPORTS;
+  if (returnPath.substring(0, 2) === "#/") {
+    // need to get rid of this
+    returnPath = returnPath.substring(2, returnPath.length);
   }
 
   return {
@@ -86,7 +84,7 @@ const mergeProps = (sP, dP, oP) => {
         invalid,
         amount,
         history,
-        redirectPath,
+        returnPath,
         callback
       )
   };
