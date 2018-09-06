@@ -68,8 +68,8 @@ export default class ReportingReportForm extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { reportingState } = newProps.market;
-    const updatedValidations = { ...this.state.validations };
+    const { reportingState, validations } = newProps.market;
+    const updatedValidations = { ...validations };
     if (
       reportingState !== this.props.market.reportingState &&
       reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
