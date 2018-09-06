@@ -2,23 +2,19 @@
 
 import "jest-environment-puppeteer";
 import { UnlockedAccounts } from "./constants/accounts";
-import { toMarket } from "./helpers/navigation-helper";
 import { waitNextBlock } from "./helpers/wait-new-block";
 require("./helpers/beforeAll");
 
-const timeoutMilliseconds = 15000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
+const timeoutMilliseconds = 20000; // TODO: Figure out a way to reduce timeout required for certain DOM elements
 
 jest.setTimeout(100000);
 
 describe("Trading page", () => {
   it("should update the Unrealized P/L for a categorical market when another account buys shares at a different price", async () => {
     // Go to Market trading page
-    const marketId = await page.evaluate(
-      marketDescription =>
-        window.integrationHelpers.findMarketId(marketDescription),
-      "Which city will have the highest median single-family home price in 2018?"
-    );
-    await toMarket(marketId);
+    await expect(page).toClick(".side-nav-styles_SideNav__nav li:nth-child(1)", { text: "Markets", timeout: timeoutMilliseconds });
+    await expect(page).toFill(".filter-search-styles_FilterSearch__input", "city", { timeout: timeoutMilliseconds });
+    await expect(page).toClick("a", { text: "Which city will have the highest median single-family home price in 2018?", timeout: timeoutMilliseconds });
 
     // Switch to secondary account
     await page.evaluate(
@@ -28,8 +24,8 @@ describe("Trading page", () => {
 
     await expect(page).toClick("li", { text: "London", timeout: timeoutMilliseconds });
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     let isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
@@ -50,8 +46,8 @@ describe("Trading page", () => {
     // Perform buy twice since first publicTrade call fails
     // TODO: Figure out why first publicTrade call fails after Approve in integration test. (This does not happen when using the UI manually.)
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.0010", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.3100", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
@@ -100,8 +96,8 @@ describe("Trading page", () => {
     );
 
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.0020", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.3500", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.002", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.35", { delay: 100 });
     isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
@@ -152,16 +148,12 @@ describe("Trading page", () => {
     );
 
     // Go to Market trading page
-    const marketId = await page.evaluate(
-      marketDescription =>
-        window.integrationHelpers.findMarketId(marketDescription),
-      "Will the Larsen B ice shelf collapse by the end of November 2019?"
-    );
-    await toMarket(marketId);
+    await expect(page).toClick(".side-nav-styles_SideNav__nav li:nth-child(1)", { text: "Markets", timeout: timeoutMilliseconds });
+    await expect(page).toClick("a", { text: "Will the Larsen B ice shelf collapse by the end of November 2019?", timeout: timeoutMilliseconds });
 
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.28", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.28", { delay: 100 });
     let isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
@@ -210,8 +202,8 @@ describe("Trading page", () => {
     );
 
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.002", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.25", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.002", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.25", { delay: 100 });
     isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
@@ -260,8 +252,8 @@ describe("Trading page", () => {
     );
 
     await expect(page).toClick("button", { text: "Buy", timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
-    await expect(page).toFill("input#tr__input--limit-price", "0.31", { timeout: timeoutMilliseconds });
+    await page.type("input#tr__input--quantity", "0.001", { delay: 100 });
+    await page.type("input#tr__input--limit-price", "0.31", { delay: 100 });
     isDisabled = await page.$eval(
       ".trading--form-styles_TradingForm__form-body li button",
       el => el.disabled
