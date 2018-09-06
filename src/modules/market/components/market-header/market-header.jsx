@@ -73,8 +73,6 @@ export default class MarketHeader extends Component {
       details += warningText;
     }
 
-    console.log(history);
-
     return (
       <section className={Styles.MarketHeader}>
         <div className={Styles.MarketHeader__nav}>
