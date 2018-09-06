@@ -5,9 +5,9 @@ import { YES_NO } from "modules/markets/constants/market-types";
 import {
   loadUniverseInfo,
   __RewireAPI__ as ReWireModule
-} from "modules/account/actions/load-universe-info";
+} from "modules/universe/actions/load-universe-info";
 
-describe("modules/account/actions/load-universe-info.js", () => {
+describe("modules/universe/actions/load-universe-info.js", () => {
   const test = t => it(t.description, () => t.assertions());
 
   describe("loadUniverseInfo", () => {
