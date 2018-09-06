@@ -74,11 +74,13 @@ export class App extends Component {
   }
 
   disconnect() {
-    this.props.addInfoNotification({
-      messageType: GEN_INFO,
-      message: 'Network disconnect requested',
-      time: 2000,
-    })
+    if (this.props.serverStatus.AUGUR_NODE_CONNECTED || this.props.serverStatus.GETH_CONNECTED) {
+      this.props.addInfoNotification({
+        messageType: GEN_INFO,
+        message: 'Network disconnect requested',
+        time: 2000,
+      })
+    }
     const selected = this.props.selected
     stopAugurNode()
     if (selected.name === localLightNodeName) stopGethNode()
