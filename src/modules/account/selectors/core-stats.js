@@ -9,7 +9,7 @@ import {
 } from "src/select-state";
 import { augur } from "services/augurjs";
 import { formatEther } from "utils/format-number";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { selectLoginAccount } from "modules/auth/selectors/login-account";
 import selectLoginAccountPositions from "modules/positions/selectors/login-account-positions";
 import getValue from "utils/get-value";

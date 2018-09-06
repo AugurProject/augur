@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { createBigNumber, BigNumber } from "utils/create-big-number";
 import Input from "modules/common/components/input/input";
 import InputDropdown from "modules/common/components/input-dropdown/input-dropdown";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { ETH, REP } from "modules/account/constants/asset-types";
 import {
   ExclamationCircle as InputErrorIcon,

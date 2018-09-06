@@ -1,7 +1,7 @@
 import { createBigNumber } from "utils/create-big-number";
 import { formatEther, formatPercent, formatRep } from "utils/format-number";
 import { formatDate } from "utils/format-date";
-import { TWO } from "modules/trade/constants/numbers";
+import { TWO } from "modules/trades/constants/numbers";
 import store from "src/store";
 
 export default function() {

@@ -5,7 +5,7 @@ import {
   SELL_DOWN,
   NONE,
   BUY
-} from "modules/trade/constants/types";
+} from "modules/trades/constants/types";
 import { createBigNumber } from "utils/create-big-number";
 import { orderBy, first } from "lodash";
 

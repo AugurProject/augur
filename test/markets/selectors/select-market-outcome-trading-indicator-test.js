@@ -7,7 +7,7 @@ import {
   NONE,
   BUY,
   SELL
-} from "modules/trade/constants/types";
+} from "modules/trades/constants/types";
 
 describe(`modules/markets/selectors/select-market-outcome-trading-indicator.js`, () => {
   const marketTradingHistory = {

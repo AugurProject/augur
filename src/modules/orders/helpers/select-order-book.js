@@ -3,11 +3,11 @@ import memoize from "memoizee";
 
 import store from "src/store";
 
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { isOrderOfUser } from "modules/orders/helpers/is-order-of-user";
 
 import { BIDS, ASKS, CANCELED } from "modules/orders/constants/orders";
-import { BUY, SELL } from "modules/trade/constants/types";
+import { BUY, SELL } from "modules/trades/constants/types";
 import { CLOSE_DIALOG_CLOSING } from "modules/markets/constants/close-dialog-status";
 
 import { has } from "lodash";

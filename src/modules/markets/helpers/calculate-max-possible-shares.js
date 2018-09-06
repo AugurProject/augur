@@ -3,7 +3,7 @@ import { createBigNumber } from "utils/create-big-number";
 import {
   ZERO,
   TEN_TO_THE_EIGHTEENTH_POWER
-} from "modules/trade/constants/numbers";
+} from "modules/trades/constants/numbers";
 import { augur } from "services/augurjs";
 import speedomatic from "speedomatic";
 

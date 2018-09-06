@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import store from "src/store";
 import { selectOutcomesDataState } from "src/select-state";
 import selectLoginAccountPositions from "modules/positions/selectors/login-account-positions";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { SCALAR } from "modules/markets/constants/market-types";
 
 export default function() {

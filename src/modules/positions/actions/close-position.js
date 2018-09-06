@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
-import { updateTradesInProgress } from "modules/trade/actions/update-trades-in-progress";
-import { placeTrade } from "modules/trade/actions/place-trade";
+import { updateTradesInProgress } from "modules/trades/actions/update-trades-in-progress";
+import { placeTrade } from "modules/trades/actions/place-trade";
 import { addClosePositionTradeGroup } from "modules/positions/actions/add-close-position-trade-group";
 import { clearClosePositionOutcome } from "modules/positions/actions/clear-close-position-outcome";
 import { selectMarket } from "modules/markets/selectors/market";
@@ -10,7 +10,7 @@ import {
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_NO_ORDERS
 } from "modules/markets/constants/close-dialog-status";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import getValue from "utils/get-value";
 import logError from "utils/log-error";
 

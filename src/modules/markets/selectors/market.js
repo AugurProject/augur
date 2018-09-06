@@ -37,7 +37,7 @@ import {
   isMarketDataOpen,
   isMarketDataExpired
 } from "utils/is-market-data-open";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { UNIVERSE_ID } from "modules/app/constants/network";
 import {
   YES_NO,
@@ -50,7 +50,7 @@ import {
   INDETERMINATE_OUTCOME_NAME
 } from "modules/markets/constants/market-outcomes";
 
-import { placeTrade } from "modules/trade/actions/place-trade";
+import { placeTrade } from "modules/trades/actions/place-trade";
 import { submitReport } from "modules/reports/actions/submit-report";
 
 import store from "src/store";
@@ -71,8 +71,8 @@ import getOrderBookSeries from "modules/orders/selectors/order-book-series";
 import {
   generateTrade,
   generateTradeSummary
-} from "modules/trade/helpers/generate-trade";
-import hasUserEnoughFunds from "modules/trade/helpers/has-user-enough-funds";
+} from "modules/trades/helpers/generate-trade";
+import hasUserEnoughFunds from "modules/trades/helpers/has-user-enough-funds";
 import {
   generateOutcomePositionSummary,
   generateMarketsPositionsSummary

@@ -1,6 +1,6 @@
 import { createBigNumber } from "utils/create-big-number";
 import selectReports from "modules/reports/selectors/reports";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 
 export default function() {
   const reports = selectReports();

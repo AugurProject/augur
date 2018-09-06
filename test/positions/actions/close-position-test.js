@@ -49,8 +49,8 @@ describe("modules/positions/actions/close-position.js", () => {
   const action = proxyquire(
     "../../../src/modules/positions/actions/close-position.js",
     {
-      "../../trade/actions/update-trades-in-progress": mockUpdateTradesInProgress,
-      "../../trade/actions/place-trade": mockPlaceTrade,
+      "../../trades/actions/update-trades-in-progress": mockUpdateTradesInProgress,
+      "../../trades/actions/place-trade": mockPlaceTrade,
       "./add-close-position-trade-group": mockAddClosePositionTradeGroup,
       "./clear-close-position-outcome": mockClearClosePositionOutcome,
       "../../orders/actions/load-bids-asks": loadBidsAsks,

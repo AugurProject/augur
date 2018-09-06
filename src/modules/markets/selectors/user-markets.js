@@ -8,7 +8,7 @@ import {
   selectMarketCreatorFeesState
 } from "src/select-state";
 import selectAllMarkets from "modules/markets/selectors/markets-all";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { formatNumber, formatEther } from "utils/format-number";
 import { orderBy } from "lodash";
 

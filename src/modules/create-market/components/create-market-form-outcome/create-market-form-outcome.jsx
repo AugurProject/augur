@@ -13,7 +13,7 @@ import {
   CATEGORICAL,
   SCALAR
 } from "modules/markets/constants/market-types";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import {
   CATEGORICAL_OUTCOMES_MIN_NUM,
   CATEGORICAL_OUTCOMES_MAX_NUM,

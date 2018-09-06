@@ -44,7 +44,7 @@ import reports from "modules/reports/reducers/reports";
 import scalarMarketsShareDenomination from "modules/markets/reducers/scalar-markets-share-denomination";
 import selectedMarketId from "modules/markets/reducers/selected-market-id";
 import sortOption from "modules/filter-sort/reducers/sort-option";
-import tradesInProgress from "modules/trade/reducers/trades-in-progress";
+import tradesInProgress from "modules/trades/reducers/trades-in-progress";
 import transactionPeriod from "modules/transactions/reducers/transaction-period";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsLoading from "modules/transactions/reducers/transactions-loading";

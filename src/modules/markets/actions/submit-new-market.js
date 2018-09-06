@@ -3,7 +3,7 @@ import {
   clearNewMarket
 } from "modules/markets/actions/update-new-market";
 import { addNewMarketCreationTransactions } from "modules/transactions/actions/add-transactions";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { MODAL_ACCOUNT_APPROVAL } from "modules/modal/constants/modal-types";
 import makePath from "modules/routes/helpers/make-path";
 import noop from "utils/noop";

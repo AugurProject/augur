@@ -7,7 +7,7 @@ import MarketOutcomeChartHeaderDepth from "modules/market/components/market-outc
 import { createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";
 import CustomPropTypes from "utils/custom-prop-types";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import { ASKS, BIDS } from "modules/orders/constants/orders";
 

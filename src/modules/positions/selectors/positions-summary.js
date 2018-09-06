@@ -5,7 +5,7 @@ import store from "src/store";
 
 import { closePosition } from "modules/positions/actions/close-position";
 
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 
 // import { augur } from 'services/augurjs'
 import { formatEther, formatShares, formatNumber } from "utils/format-number";

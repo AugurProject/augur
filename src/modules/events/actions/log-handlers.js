@@ -14,7 +14,7 @@ import { updateOrder } from "modules/orders/actions/update-orders";
 import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
 import { updateMarketCategoryPopularity } from "modules/categories/actions/update-categories";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { isCurrentMarket } from "modules/trade/helpers/is-current-market";
+import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
 import makePath from "modules/routes/helpers/make-path";
 import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
 import { loadReporting } from "src/modules/reports/actions/load-reporting";

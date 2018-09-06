@@ -2,7 +2,7 @@ import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import { createBigNumber } from "utils/create-big-number";
 
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 
 describe("modules/orders/selectors/positions-plus-asks", () => {
   const middlewares = [thunk];
