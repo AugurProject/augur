@@ -2,6 +2,7 @@
 
 import "jest-environment-puppeteer";
 import { UnlockedAccounts } from "./constants/accounts";
+import { toMarket } from "./helpers/navigation-helper";
 import { waitNextBlock } from "./helpers/wait-new-block";
 require("./helpers/beforeAll");
 
@@ -12,9 +13,12 @@ jest.setTimeout(100000);
 describe("Trading page", () => {
   it("should update the Unrealized P/L for a categorical market when another account buys shares at a different price", async () => {
     // Go to Market trading page
-    await expect(page).toClick("#side-nav-items");
-    await expect(page).toFill(".filter-search-styles_FilterSearch__input", "city", { timeout: timeoutMilliseconds });
-    await expect(page).toClick("a", { text: "Which city will have the highest median single-family home price in 2018?", timeout: timeoutMilliseconds });
+    const marketId = await page.evaluate(
+      marketDescription =>
+        window.integrationHelpers.findMarketId(marketDescription),
+      "Which city will have the highest median single-family home price in 2018?"
+    );
+    await toMarket(marketId);
 
     // Switch to secondary account
     await page.evaluate(
@@ -148,8 +152,12 @@ describe("Trading page", () => {
     );
 
     // Go to Market trading page
-    await expect(page).toClick("#side-nav-items");
-    await expect(page).toClick("a", { text: "Will the Larsen B ice shelf collapse by the end of November 2019?", timeout: timeoutMilliseconds });
+    const marketId = await page.evaluate(
+      marketDescription =>
+        window.integrationHelpers.findMarketId(marketDescription),
+      "Will the Larsen B ice shelf collapse by the end of November 2019?"
+    );
+    await toMarket(marketId);
 
     await expect(page).toClick("button", { text: "Sell", timeout: timeoutMilliseconds });
     await expect(page).toFill("input#tr__input--quantity", "0.001", { timeout: timeoutMilliseconds });
