@@ -325,12 +325,16 @@ export function formatNumber(
     } else if (formatSigFig) {
       // for numbers smaller than the set number of decimals - ie ones with scientific notation
       let formatted = value.toFixed(USUAL_NUMBER_DECIMAL_PLACES);
-      if (formatted === zeroFixed) {
+
+      if (formatted === zeroFixed || formatted === "-" + zeroFixed) {
         // if this is equal to zero, try to show significant digits up to 8 digit places
         formatted = value.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES);
         if (
           formatted ===
-          constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
+            constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES) ||
+          formatted ===
+            "-" +
+              constants.PRECISION.zero.toFixed(SMALLEST_NUMBER_DECIMAL_PLACES)
         ) {
           formatted = zeroFixed; // if there are no significant digits in the 8 decimal places, just use zero
         } else {
