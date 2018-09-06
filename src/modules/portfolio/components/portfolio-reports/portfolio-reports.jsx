@@ -198,7 +198,7 @@ export default class PortfolioReports extends Component {
             disputableMarketsLength={disputableMarketsLength}
             showPagination={showPagination}
             showUpcomingPagination={showUpcomingPagination}
-            nullDisputeMessage="Markets you have staked on previously will be listed here when in dispute."
+            nullDisputeMessage="Markets you have staked on will be listed here when in dispute."
             nullUpcomingMessage="Markets you have staked on previously will be listed here when waiting for dispute."
           />
         </div>
