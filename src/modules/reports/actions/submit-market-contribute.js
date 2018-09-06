@@ -12,6 +12,7 @@ export const submitMarketContribute = (
   invalid,
   amount,
   history,
+  returnPath = REPORTING_DISPUTE_MARKETS,
   callback = logError
 ) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState();
@@ -35,7 +36,7 @@ export const submitMarketContribute = (
     _amount: amount,
     onSent: res => {
       if (!estimateGas) {
-        history.push(makePath(REPORTING_DISPUTE_MARKETS));
+        history.push(makePath(returnPath));
       }
     },
     onSuccess: gasCost => {

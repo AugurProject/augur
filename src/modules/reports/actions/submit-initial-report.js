@@ -10,6 +10,7 @@ export const submitInitialReport = (
   selectedOutcome,
   invalid,
   history,
+  returnPath = REPORTING_REPORT_MARKETS,
   callback = logError
 ) => (dispatch, getState) => {
   const { loginAccount, marketsData } = getState();
@@ -32,7 +33,7 @@ export const submitInitialReport = (
     _payoutNumerators: payoutNumerators,
     onSent: res => {
       if (!estimateGas) {
-        history.push(makePath(REPORTING_REPORT_MARKETS));
+        history.push(makePath(returnPath));
       }
     },
     onSuccess: gasCost => {

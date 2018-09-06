@@ -28,7 +28,7 @@ const ReportingDisputeProgress = p => {
     }).formattedValue;
     userPercentage = calculateAddedStakePercentage(
       bondSizeCurrent.fullPrecision,
-      accountStakeCurrentFormatted,
+      accountStakeCurrentFormatted || 0,
       p.tentativeStake
     );
     repStakedFormatted = calculateTentativeCurrentRep(

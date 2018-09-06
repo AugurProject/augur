@@ -1,6 +1,7 @@
 import sinon from "sinon";
 import testState from "test/testState";
 import configureMockStore from "redux-mock-store";
+import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 import thunk from "redux-thunk";
 import {
   submitMarketContribute,
@@ -72,6 +73,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
         false,
         1000,
         history,
+        REPORTING_DISPUTE_MARKETS,
         callback
       )
     );
@@ -89,6 +91,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
         false,
         1000,
         history,
+        REPORTING_DISPUTE_MARKETS,
         callback
       )
     );
@@ -99,7 +102,16 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
   it(`should only call callback with null market id`, () => {
     submitMarketContributeReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitMarketContribute(false, null, 0, false, 1000, history, callback)
+      submitMarketContribute(
+        false,
+        null,
+        0,
+        false,
+        1000,
+        history,
+        REPORTING_DISPUTE_MARKETS,
+        callback
+      )
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -108,7 +120,16 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
   it(`should only callback with empty market id`, () => {
     submitMarketContributeReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitMarketContribute(false, "", 0, false, 1000, history, callback)
+      submitMarketContribute(
+        false,
+        "",
+        0,
+        false,
+        1000,
+        history,
+        REPORTING_DISPUTE_MARKETS,
+        callback
+      )
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -124,6 +145,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
         false,
         1000,
         history,
+        REPORTING_DISPUTE_MARKETS,
         callback
       )
     );
@@ -141,6 +163,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
         false,
         1000,
         history,
+        REPORTING_DISPUTE_MARKETS,
         callback
       )
     );
@@ -158,6 +181,7 @@ describe(`modules/reports/actions/submit-market-contribute.js`, () => {
         false,
         1000,
         history,
+        REPORTING_DISPUTE_MARKETS,
         callback
       )
     );

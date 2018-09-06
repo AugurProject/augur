@@ -23,7 +23,8 @@ export default class MarketView extends Component {
     loadFullMarket: PropTypes.func.isRequired,
     description: PropTypes.string.isRequired,
     marketType: PropTypes.string,
-    loadingState: PropTypes.any
+    loadingState: PropTypes.any,
+    location: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -140,7 +141,7 @@ export default class MarketView extends Component {
   }
 
   render() {
-    const { description, marketId } = this.props;
+    const { description, marketId, location } = this.props;
     const s = this.state;
 
     return (
@@ -158,6 +159,7 @@ export default class MarketView extends Component {
             selectedOutcome={s.selectedOutcome}
             updateSelectedOutcome={this.updateSelectedOutcome}
             clearSelectedOutcome={this.clearSelectedOutcome}
+            location={location}
           />
           {s.selectedOutcome === null && (
             <MarketOutcomesChart
