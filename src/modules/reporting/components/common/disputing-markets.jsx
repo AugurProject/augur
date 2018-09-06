@@ -23,7 +23,9 @@ export default class DisputingMarkets extends Component {
     disputableMarketsLength: PropTypes.number,
     showPagination: PropTypes.bool,
     showUpcomingPagination: PropTypes.bool,
-    loadMarkets: PropTypes.func
+    loadMarkets: PropTypes.func,
+    nullDisputeMessage: PropTypes.string,
+    nullUpcomingMessage: PropTypes.string
   };
 
   constructor(props) {
@@ -124,7 +126,9 @@ export default class DisputingMarkets extends Component {
       pageinationCount,
       disputableMarketsLength,
       showPagination,
-      showUpcomingPagination
+      showUpcomingPagination,
+      nullDisputeMessage,
+      nullUpcomingMessage
     } = this.props;
     const { filteredMarkets, filteredUpcomingMarkets } = this.state;
 
@@ -178,7 +182,12 @@ export default class DisputingMarkets extends Component {
           )}
         {nonForkingMarketsCount === 0 &&
           !isForking && (
-            <NullStateMessage message="There are currently no markets available for dispute." />
+            <NullStateMessage
+              message={
+                nullDisputeMessage ||
+                "There are currently no markets available for dispute."
+              }
+            />
           )}
         <article className={MarketsHeaderStyles.MarketsHeader}>
           <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>
@@ -224,7 +233,12 @@ export default class DisputingMarkets extends Component {
           (nonForkingMarketsCount === 0 &&
             upcomingMarketsCount === 0 &&
             isForking)) && (
-          <NullStateMessage message="There are currently no markets slated for the upcoming dispute window." />
+          <NullStateMessage
+            message={
+              nullUpcomingMessage ||
+              "There are currently no markets slated for the upcoming dispute window."
+            }
+          />
         )}
       </section>
     );

@@ -24,7 +24,8 @@ export default class MarketsList extends Component {
     showPagination: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
-    pendingLiquidityOrders: PropTypes.object
+    pendingLiquidityOrders: PropTypes.object,
+    nullMessage: PropTypes.string
   };
 
   static defaultProps = {
@@ -112,7 +113,8 @@ export default class MarketsList extends Component {
       showPagination,
       toggleFavorite,
       testid,
-      pendingLiquidityOrders
+      pendingLiquidityOrders,
+      nullMessage
     } = this.props;
     const s = this.state;
 
@@ -147,7 +149,7 @@ export default class MarketsList extends Component {
             return null;
           })
         ) : (
-          <NullStateMessage message="No Markets Available" />
+          <NullStateMessage message={nullMessage || "No Markets Available"} />
         )}
         {!!marketsLength &&
           showPagination && (

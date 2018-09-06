@@ -7,6 +7,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketPreview from "src/modules/reporting/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import Styles from "./reporting-report-markets.styles";
+import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
 
 export const NoMarketsFound = ({ message }) => (
   <article className={Styles.NoMarketsFound}>
@@ -44,8 +45,8 @@ export const ReportSection = ({
   }
 
   return (
-    <article className={Styles.ReportSection}>
-      <h4 className={Styles.ReportSection__heading}>{title}</h4>
+    <article className={MarketsHeaderStyles.MarketsHeader}>
+      <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>{title}</h4>
       <section>{theChildren}</section>
       {count > pageinationCount && (
         <Paginator
