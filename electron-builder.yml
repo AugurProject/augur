@@ -10,7 +10,6 @@ extraFiles:
     filter:
     - "**/*"
 mac:
-  asar: false
   target:
   - default
   icon: build/icon.png
