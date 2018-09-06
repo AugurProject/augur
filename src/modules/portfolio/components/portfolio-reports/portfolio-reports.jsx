@@ -9,6 +9,7 @@ import {
 } from "modules/modal/constants/modal-types";
 import { TYPE_CLAIM_PROCEEDS } from "modules/market/constants/link-types";
 import Styles from "modules/portfolio/components/portfolio-reports/portfolio-reports.styles";
+import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
 import DisputingMarkets from "modules/reporting/components/common/disputing-markets";
 import ReportingResolved from "modules/reporting/components/reporting-resolved/reporting-resolved";
 
@@ -176,6 +177,11 @@ export default class PortfolioReports extends Component {
           </section>
         )}
         <div>
+          <article className={MarketsHeaderStyles.MarketsHeader}>
+            <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>
+              In Dispute
+            </h4>
+          </article>
           <DisputingMarkets
             location={location}
             history={history}
