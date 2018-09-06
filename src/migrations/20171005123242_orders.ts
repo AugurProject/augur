@@ -3,7 +3,7 @@ import * as Knex from "knex";
 exports.up = async (knex: Knex): Promise<any> => {
   return knex.schema.dropTableIfExists("orders").then(async (): Promise<any> => {
     return knex.schema.createTable("orders", (table: Knex.CreateTableBuilder): void => {
-      table.string("orderId", 42).primary().notNullable();
+      table.string("orderId", 66).primary().notNullable();
       table.specificType("blockNumber", "integer NOT NULL CONSTRAINT positiveOrderBlockNumber CHECK (\"blockNumber\" > 0)");
       table.string("transactionHash", 66).notNullable();
       table.specificType("logIndex", "integer NOT NULL CONSTRAINT \"nonnegativelogIndex\" CHECK (\"logIndex\" >= 0)");
@@ -18,11 +18,14 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("originalFullPrecisionAmount", 255).notNullable();
       table.string("price", 255).notNullable();
       table.specificType("amount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
-      table.specificType("originalAmount", "varchar(255) NOT NULL CONSTRAINT nonnegativeAmount CHECK (ltrim(\"amount\", '-') = \"amount\")");
+      // Originally this constraint was called nonnegativeAmount,
+      // but it is not allowed in Postgres to have two constraints with the same name.
+      // So the constraint is renamed but for SQLite3 it is the same to keep compatibility.
+      table.specificType("originalAmount", `varchar(255) NOT NULL CONSTRAINT ${knex.client.config.client === "sqlite3" ? "nonnegativeAmount" : "nonnegativeOriginalAmount"} CHECK (ltrim(\"amount\", '-') = \"amount\")`);
       table.specificType("tokensEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeTokensEscrowed CHECK (ltrim(\"tokensEscrowed\", '-') = \"tokensEscrowed\")");
       table.specificType("sharesEscrowed", "varchar(255) NOT NULL CONSTRAINT nonnegativeSharesEscrowed CHECK (ltrim(\"sharesEscrowed\", '-') = \"sharesEscrowed\")");
       table.boolean("orphaned").defaultTo(0);
-      table.string("tradeGroupId", 42);
+      table.string("tradeGroupId", 66);
     });
   });
 };

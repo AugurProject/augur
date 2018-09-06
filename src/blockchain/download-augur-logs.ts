@@ -51,7 +51,8 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
       db.transaction((trx: Knex.Transaction): void => {
         processBlockByBlockDetails(trx, augur, blockDetailsByBlock[blockNumber], (err: Error|null) => {
           if (err) {
-            return nextBlock(err);
+            trx.rollback(err);
+            return;
           }
           if (logs.length > 0) logger.info(`Processing ${logs.length} logs`);
           eachSeries(logs, (log: FormattedEventLog, nextLog: ErrorCallback) => {
@@ -66,10 +67,11 @@ async function processBatchOfLogs(db: Knex, augur: Augur, allAugurLogs: Array<Fo
           }, (err: Error|null) => {
             if (err) trx.rollback(err);
             else trx.commit();
-            return nextBlock(err);
           });
         });
-      });
+      }).then(() => {
+        nextBlock(null);
+      }).catch(nextBlock);
     }, (err) => {
       if (err) return reject(err);
       resolve();

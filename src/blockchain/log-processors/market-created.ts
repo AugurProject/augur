@@ -4,8 +4,9 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { Address, FormattedEventLog, MarketCreatedLogExtraInfo, MarketsRow, SearchRow, OutcomesRow, TokensRow, CategoriesRow, ErrorCallback, AsyncCallback } from "../../types";
 import { convertDivisorToRate } from "../../utils/convert-divisor-to-rate";
-import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { convertFixedPointToDecimal } from "../../utils/convert-fixed-point-to-decimal";
+import { createSearchProvider } from "../../database/fts";
+import { contentSearchBuilder} from "../../utils/content-search-builder";
 import { formatBigNumberAsFixed } from "../../utils/format-big-number-as-fixed";
 import { augurEmitter } from "../../events";
 import { MarketType, SubscriptionEventNames, WEI_PER_ETHER, ZERO } from "../../constants";
@@ -33,7 +34,11 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
         reportingState: augur.constants.REPORTING_STATE.PRE_REPORTING,
         blockNumber: log.blockNumber,
       };
-      db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
+      let query = db.insert(marketStateDataToInsert).into("market_state");
+      if (db.client.config.client !== "sqlite3") {
+        query = query.returning("marketStateId");
+      }
+      query.asCallback((err: Error|null, marketStateRow?: Array<number>): void => {
         if (err) return callback(err);
         if (!marketStateRow || !marketStateRow.length) return callback(new Error("No market state ID"));
         const marketStateId = marketStateRow[0];
@@ -82,7 +87,6 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)),
           volume: ZERO,
         });
-        const marketSearchDataToInsert: SearchRow = contentSearchBuilder(marketsDataToInsert);
         const tokensDataToInsert: Partial<TokensRow> = {
           marketId: log.market,
           symbol: "shares",
@@ -102,7 +106,12 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
               db.insert(marketsDataToInsert).into("markets").asCallback(next);
             },
             (next: AsyncCallback): void => {
-              db.insert(marketSearchDataToInsert).into("search_en").asCallback(next);
+              const searchProvider = createSearchProvider(db);
+              if (searchProvider !== null) {
+                searchProvider.addSearchData(contentSearchBuilder(marketsDataToInsert)).then(next).catch(next);
+              } else {
+                next(null);
+              }
             },
             (next: AsyncCallback): void => {
               db.batchInsert("outcomes", shareTokens.map((_: Address, outcome: number): Partial<OutcomesRow<string>> => Object.assign({ outcome, description: outcomeNames[outcome] }, outcomesDataToInsert)), numOutcomes).asCallback(next);
