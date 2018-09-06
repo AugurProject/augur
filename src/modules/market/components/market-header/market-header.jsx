@@ -21,10 +21,14 @@ export default class MarketHeader extends Component {
     minPrice: PropTypes.instanceOf(BigNumber).isRequired,
     market: PropTypes.object.isRequired,
     currentTimestamp: PropTypes.number.isRequired,
+    tentativeWinner: PropTypes.object,
     marketType: PropTypes.string,
     scalarDenomination: PropTypes.string,
     resolutionSource: PropTypes.any,
-    selectedOutcome: PropTypes.any
+    selectedOutcome: PropTypes.any,
+    isLogged: PropTypes.bool,
+    isDesignatedReporter: PropTypes.bool,
+    location: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -52,7 +56,10 @@ export default class MarketHeader extends Component {
       maxPrice,
       scalarDenomination,
       market,
-      currentTimestamp
+      currentTimestamp,
+      tentativeWinner,
+      isLogged,
+      isDesignatedReporter
     } = this.props;
 
     let { details } = this.props;
@@ -134,6 +141,10 @@ export default class MarketHeader extends Component {
             <CoreProperties
               market={market}
               currentTimestamp={currentTimestamp}
+              tentativeWinner={tentativeWinner}
+              isLogged={isLogged}
+              isDesignatedReporter={isDesignatedReporter}
+              location={location}
             />
           </div>
         </div>

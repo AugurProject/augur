@@ -18,13 +18,14 @@ export default class MarketsList extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
+    loadMarketsInfoIfNotLoaded: PropTypes.func,
     paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
     showPagination: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
-    pendingLiquidityOrders: PropTypes.object
+    pendingLiquidityOrders: PropTypes.object,
+    nullMessage: PropTypes.string
   };
 
   static defaultProps = {
@@ -48,12 +49,14 @@ export default class MarketsList extends Component {
   }
 
   componentWillMount() {
-    const { filteredMarkets } = this.props;
-    this.loadMarketsInfoIfNotLoaded(filteredMarkets);
+    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
+    if (loadMarketsInfoIfNotLoaded) {
+      this.loadMarketsInfoIfNotLoaded(filteredMarkets);
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { filteredMarkets } = this.props;
+    const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||
@@ -68,8 +71,11 @@ export default class MarketsList extends Component {
 
     if (
       !isEqual(this.state.marketIdsMissingInfo, nextState.marketIdsMissingInfo)
-    )
-      this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
+    ) {
+      if (loadMarketsInfoIfNotLoaded) {
+        this.loadMarketsInfoIfNotLoaded(nextState.marketIdsMissingInfo);
+      }
+    }
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -107,7 +113,8 @@ export default class MarketsList extends Component {
       showPagination,
       toggleFavorite,
       testid,
-      pendingLiquidityOrders
+      pendingLiquidityOrders,
+      nullMessage
     } = this.props;
     const s = this.state;
 
@@ -142,7 +149,7 @@ export default class MarketsList extends Component {
             return null;
           })
         ) : (
-          <NullStateMessage message="No Markets Available" />
+          <NullStateMessage message={nullMessage || "No Markets Available"} />
         )}
         {!!marketsLength &&
           showPagination && (

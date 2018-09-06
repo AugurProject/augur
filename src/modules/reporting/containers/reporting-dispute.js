@@ -3,7 +3,10 @@ import { withRouter } from "react-router-dom";
 
 import ReportingDispute from "modules/reporting/components/reporting-dispute/reporting-dispute";
 import { loadFullMarket } from "modules/market/actions/load-full-market";
-import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
+import {
+  MARKET_ID_PARAM_NAME,
+  RETURN_PARAM_NAME
+} from "modules/routes/constants/param-names";
 import { selectMarket } from "modules/market/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
@@ -29,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
     invalid,
     amount,
     history,
+    returnPath,
     callback
   ) =>
     dispatch(
@@ -39,6 +43,7 @@ const mapDispatchToProps = dispatch => ({
         invalid,
         amount,
         history,
+        returnPath,
         callback
       )
     )
@@ -46,7 +51,13 @@ const mapDispatchToProps = dispatch => ({
 
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME];
+  let returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
   const market = selectMarket(marketId);
+
+  if (returnPath.substring(0, 2) === "#/") {
+    // need to get rid of this
+    returnPath = returnPath.substring(2, returnPath.length);
+  }
 
   return {
     ...oP,
@@ -73,6 +84,7 @@ const mergeProps = (sP, dP, oP) => {
         invalid,
         amount,
         history,
+        returnPath,
         callback
       )
   };
