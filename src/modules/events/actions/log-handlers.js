@@ -21,8 +21,10 @@ import { loadReporting } from "src/modules/reports/actions/load-reporting";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
 import loadCategories from "modules/categories/actions/load-categories";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
-import { loadMarketsInfoIfNotLoaded } from "src/modules/markets/actions/load-markets-info-if-not-loaded";
-import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
+import {
+  loadMarketsInfo,
+  loadMarketsInfoIfNotLoaded
+} from "src/modules/markets/actions/load-markets-info";
 import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";

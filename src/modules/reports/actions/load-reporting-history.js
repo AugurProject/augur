@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { addReportingTransactions } from "modules/transactions/actions/add-transactions";
 import { addMarketsReport } from "modules/reports/actions/update-reports";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";

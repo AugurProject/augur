@@ -1,5 +1,5 @@
 import { augur } from "services/augurjs";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { updateAccountPositionsData } from "modules/positions/actions/update-account-trades-data";
 import logError from "utils/log-error";
 import { updateTopBarPL } from "modules/positions/actions/update-top-bar-pl";

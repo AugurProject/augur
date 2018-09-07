@@ -4,7 +4,7 @@ import { clearAccountTrades } from "modules/positions/actions/clear-account-trad
 import { addTradeTransactions } from "modules/transactions/actions/add-transactions";
 import { loadAccountPositions } from "modules/positions/actions/load-account-positions";
 import { loadAccountOrders } from "modules/orders/actions/load-account-orders";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { updateAccountTradeData } from "modules/positions/actions/update-account-trades-data";
 import logError from "utils/log-error";
 import { loadAccountOrphanedOrders } from "modules/orders/actions/load-account-orphaned-orders";

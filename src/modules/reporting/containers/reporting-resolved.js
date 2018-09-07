@@ -5,7 +5,7 @@ import ReportingResolved from "modules/reporting/components/reporting-resolved/r
 import { loadReporting } from "src/modules/reports/actions/load-reporting";
 import { selectMarketsToReport } from "modules/reports/selectors/select-markets-to-report";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 import getValue from "utils/get-value";
 import { selectMarket } from "modules/markets/selectors/market";

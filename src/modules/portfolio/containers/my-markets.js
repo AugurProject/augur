@@ -6,9 +6,11 @@ import getUserMarkets from "modules/markets/selectors/user-markets";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 import { loadUserMarkets } from "modules/markets/actions/load-markets";
 import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
-import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
+import {
+  loadMarketsInfo,
+  loadMarketsInfoIfNotLoaded
+} from "modules/markets/actions/load-markets-info";
 import { collectMarketCreatorFees } from "modules/markets/actions/collect-market-creator-fees";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 import logError from "utils/log-error";
 
 const mapStateToProps = state =>

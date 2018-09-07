@@ -10,7 +10,7 @@ import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
 const mapStateToProps = state => {

@@ -1,6 +1,6 @@
 import { eachOf } from "async";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import logError from "utils/log-error";
 import { BUY, SELL } from "modules/transactions/constants/types";
 

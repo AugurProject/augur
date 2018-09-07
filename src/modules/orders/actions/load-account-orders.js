@@ -3,7 +3,7 @@ import logError from "utils/log-error";
 import { forEach } from "lodash";
 import { updateOrderBook } from "modules/orders/actions/update-order-book";
 import { addOpenOrderTransactions } from "modules/transactions/actions/add-transactions";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 export const loadAccountOrders = (options = {}, callback = logError) => (
   dispatch,

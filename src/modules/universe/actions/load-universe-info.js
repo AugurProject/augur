@@ -4,7 +4,7 @@ import logError from "utils/log-error";
 import async from "async";
 import { createBigNumber } from "utils/create-big-number";
 import { updateUniverse } from "modules/universe/actions/update-universe";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { selectReportableOutcomes } from "modules/reports/selectors/reportable-outcomes";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { SCALAR } from "modules/markets/constants/market-types";

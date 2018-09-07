@@ -1,7 +1,7 @@
 import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import { addMarketCreationTransactions } from "modules/transactions/actions/add-transactions";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 
 export function loadCreateMarketHistory(options = {}, callback = logError) {
   return (dispatch, getState) => {

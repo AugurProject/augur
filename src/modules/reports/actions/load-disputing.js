@@ -1,6 +1,6 @@
 import { augur, constants } from "services/augurjs";
 import logError from "src/utils/log-error";
-import { loadMarketsInfoIfNotLoaded } from "src/modules/markets/actions/load-markets-info-if-not-loaded";
+import { loadMarketsInfoIfNotLoaded } from "src/modules/markets/actions/load-markets-info";
 import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 import {
   updateAwaitingDisputeMarkets,
