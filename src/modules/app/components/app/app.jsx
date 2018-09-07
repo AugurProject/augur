@@ -470,6 +470,7 @@ export default class AppView extends Component {
 
     const { mainMenu, subMenu } = this.state;
     const unseenCount = getValue(this.props, "notifications.unseenCount");
+    const currentPath = parsePath(location.pathname)[0];
 
     const InnerNav = this.state.currentInnerNavType;
     let innerNavMenuMobileClick;
@@ -482,8 +483,8 @@ export default class AppView extends Component {
 
     if (!isMobile) {
       if (
-        parsePath(location.pathname)[0] === AUTHENTICATION ||
-        (parsePath(location.pathname)[0] === CREATE_MARKET &&
+        currentPath=== AUTHENTICATION ||
+        (currentPath === CREATE_MARKET &&
           mainMenu.scalar === 1)
       ) {
         // NOTE -- quick patch ahead of larger refactor
@@ -590,7 +591,7 @@ export default class AppView extends Component {
               {!InnerNav && <div className="no-nav-placehold" />}
               <section
                 className={Styles.Main__content}
-                style={{ marginLeft: tagsMargin }}
+                style={{ marginLeft: tagsMargin, overflowY: (currentPath === MARKETS ? 'hidden' : 'auto') }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
               >

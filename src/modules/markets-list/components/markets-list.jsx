@@ -27,7 +27,8 @@ export default class MarketsList extends Component {
     isMobile: PropTypes.bool,
     pendingLiquidityOrders: PropTypes.object,
     nullMessage: PropTypes.string,
-    addNullPadding: PropTypes.bool
+    addNullPadding: PropTypes.bool,
+    style: PropTypes.object,
   };
 
   constructor(props) {
@@ -114,14 +115,15 @@ export default class MarketsList extends Component {
       testid,
       pendingLiquidityOrders,
       nullMessage,
-      addNullPadding
+      addNullPadding,
+      style
     } = this.props;
     const s = this.state;
 
     const marketsLength = filteredMarkets.length;
 
     return (
-      <article className="markets-list" data-testid={testid}>
+      <article className="markets-list" data-testid={testid} style={style}>
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
