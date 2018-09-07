@@ -1,7 +1,7 @@
 import {
   UPDATE_DISPUTE_CROWDSOURCERS_DATA,
   UPDATE_DISPUTE_CROWDSOURCERS_BALANCE
-} from "modules/reports/actions/update-dispute-crowdsourcer-tokens";
+} from "modules/reports/actions/dispute-crowdsourcer-tokens-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
