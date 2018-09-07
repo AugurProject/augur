@@ -508,7 +508,7 @@ export default class AppView extends Component {
             [Styles[`App--blur`]]: Object.keys(modal).length !== 0
           })}
         >
-          <section className={Styles.App__loadingIndicator}/>
+          <section className={Styles.App__loadingIndicator} />
           <section
             className={Styles.SideBar}
             onClick={e => this.mainSectionClickHandler(e, false)}
