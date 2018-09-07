@@ -5,7 +5,7 @@ import asyncComponent from "modules/common/components/async-component";
 export const Categories = asyncComponent({
   moduleName: "Categories",
   loader: () =>
-    import(/* webpackChunkName: 'categories' */ "modules/categories/container").then(
+    import(/* webpackChunkName: 'categories' */ "modules/categories/container/categories").then(
       module => module.default
     )
 });
