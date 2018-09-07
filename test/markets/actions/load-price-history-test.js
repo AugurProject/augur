@@ -1,1 +1,1 @@
-describe(`modules/markets/actions/load-price-history.js`, () => {});
+describe(`modules/markets/actions/price-history-management.js`, () => {});

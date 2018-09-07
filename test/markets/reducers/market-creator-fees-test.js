@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_CREATOR_FEES } from "modules/markets/actions/update-market-creator-fees";
+import { UPDATE_MARKET_CREATOR_FEES } from "modules/markets/actions/market-creator-fees-management";
 import reducer from "modules/markets/reducers/market-creator-fees";
 
 describe("modules/markets/reducers/market-creator-fees.js", () => {

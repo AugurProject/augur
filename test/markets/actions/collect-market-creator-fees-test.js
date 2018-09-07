@@ -2,7 +2,7 @@ import speedomatic from "speedomatic";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 
-describe("modules/markets/actions/collect-market-creator-fees.js", () => {
+describe("modules/markets/actions/market-creator-fees-management.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
@@ -16,7 +16,7 @@ describe("modules/markets/actions/collect-market-creator-fees.js", () => {
     const {
       collectMarketCreatorFees,
       __RewireAPI__
-    } = require("modules/markets/actions/collect-market-creator-fees.js");
+    } = require("modules/markets/actions/market-creator-fees-management.js");
 
     const ACTIONS = {
       UPDATE_MARKETS_DATA: "UPDATE_MARKETS_DATA",

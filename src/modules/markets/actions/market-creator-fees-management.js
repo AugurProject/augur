@@ -1,9 +1,52 @@
-import speedomatic from "speedomatic";
-import { augur } from "services/augurjs";
+import async from "async";
 import logError from "utils/log-error";
 import noop from "utils/noop";
-import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
+import speedomatic from "speedomatic";
+import { augur } from "services/augurjs";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
+import { updateMarketsData } from "modules/markets/actions/update-markets-data";
+
+export const UPDATE_MARKET_CREATOR_FEES = "UPDATE_MARKET_CREATOR_FEES";
+
+export function updateMarketCreatorFees(data) {
+  return { type: UPDATE_MARKET_CREATOR_FEES, data };
+}
+
+export const loadUnclaimedFees = (marketIds = [], callback = logError) => (
+  dispatch,
+  getState
+) => {
+  if (marketIds == null || marketIds.length === 0) return callback(null, []);
+  const unclaimedFees = {};
+  async.eachSeries(
+    marketIds,
+    (marketId, nextMarket) => {
+      dispatch(
+        collectMarketCreatorFees(true, marketId, (err, balance) => {
+          if (err) return nextMarket(err);
+          unclaimedFees[marketId] = balance;
+          nextMarket();
+        })
+      );
+    },
+    err => {
+      // log error, but don't stop updating markets unclaimedFees
+      if (err) console.error(err);
+      const updatedMarketsData = marketIds.reduce(
+        (p, marketId, index) => ({
+          ...p,
+          [marketId]: {
+            id: marketId,
+            unclaimedCreatorFees: unclaimedFees[marketId] || "0"
+          }
+        }),
+        {}
+      );
+      dispatch(updateMarketsData(updatedMarketsData));
+      callback(null, updatedMarketsData);
+    }
+  );
+};
 
 export const collectMarketCreatorFees = (
   getBalanceOnly,

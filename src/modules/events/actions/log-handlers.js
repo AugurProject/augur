@@ -5,7 +5,6 @@ import {
 } from "modules/notifications/actions/notifications";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
-import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
@@ -23,13 +22,14 @@ import loadCategories from "modules/categories/actions/load-categories";
 import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
 import {
   loadMarketsInfo,
-  loadMarketsInfoIfNotLoaded
+  loadMarketsInfoIfNotLoaded,
+  loadMarketsDisputeInfo
 } from "src/modules/markets/actions/load-markets-info";
-import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
+import { loadUnclaimedFees } from "modules/markets/actions/market-creator-fees-management";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import { startOrderSending } from "modules/orders/actions/liquidity-management";
-import { loadMarketTradingHistory } from "modules/markets/actions/load-market-trading-history";
+import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 

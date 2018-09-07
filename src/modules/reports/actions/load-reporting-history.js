@@ -1,8 +1,10 @@
 import { augur } from "services/augurjs";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import {
+  loadMarketsInfoIfNotLoaded,
+  loadMarketsDisputeInfo
+} from "modules/markets/actions/load-markets-info";
 import { addReportingTransactions } from "modules/transactions/actions/add-transactions";
 import { addMarketsReport } from "modules/reports/actions/update-reports";
-import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
 import logError from "utils/log-error";
 
 export const loadReportingHistory = (options = {}, callback = logError) => (

@@ -1,8 +1,8 @@
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import loadBidsAsks from "modules/orders/actions/load-bids-asks";
 import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
-import { loadPriceHistory } from "modules/markets/actions/load-price-history";
-import { loadMarketTradingHistory } from "modules/markets/actions/load-market-trading-history";
+import { loadPriceHistory } from "modules/markets/actions/price-history-management";
+import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 import {
   updateMarketLoading,
   removeMarketLoading

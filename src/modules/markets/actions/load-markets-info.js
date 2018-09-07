@@ -1,11 +1,16 @@
 import { augur } from "services/augurjs";
-import { updateMarketsData } from "modules/markets/actions/update-markets-data";
+import { isMarketLoaded } from "modules/markets/helpers/is-market-loaded";
+import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
+import {
+  updateMarketsData,
+  updateMarketsDisputeInfo
+} from "modules/markets/actions/update-markets-data";
+import { getDisputeInfo } from "modules/reports/actions/get-dispute-info";
 import {
   updateMarketLoading,
   removeMarketLoading
 } from "modules/markets/actions/update-market-loading";
 import logError from "utils/log-error";
-
 import {
   MARKET_INFO_LOADING,
   MARKET_INFO_LOADED
@@ -53,6 +58,43 @@ export const loadMarketsInfo = (marketIds, callback = logError) => (
     dispatch(updateMarketsData(marketsData));
     callback(null, marketsData);
   });
+};
+
+export const loadMarketsInfoIfNotLoaded = (marketIds, callback = logError) => (
+  dispatch,
+  getState
+) => {
+  const { marketsData } = getState();
+  const marketIdsToLoad = marketIds.filter(
+    marketId => !isMarketLoaded(marketId, marketsData)
+  );
+
+  if (marketIdsToLoad.length === 0) return callback(null);
+  dispatch(loadMarketsInfo(marketIdsToLoad, callback));
+  marketIdsToLoad.forEach(marketId =>
+    dispatch(loadMarketTradingHistory({ marketId }))
+  );
+};
+
+export const loadMarketsDisputeInfo = (marketIds, callback = logError) => (
+  dispatch,
+  getState
+) => {
+  dispatch(
+    getDisputeInfo(marketIds, (err, marketsDisputeInfoArray) => {
+      if (err) return callback(err);
+      if (!marketsDisputeInfoArray.length) return callback(null);
+      const marketsDisputeInfo = marketsDisputeInfoArray.reduce(
+        (p, marketDisputeInfo) => ({
+          ...p,
+          [marketDisputeInfo.marketId]: marketDisputeInfo
+        }),
+        {}
+      );
+      dispatch(updateMarketsDisputeInfo(marketsDisputeInfo));
+      callback(null);
+    })
+  );
 };
 
 function loadingError(dispatch, callback, error, marketIds) {

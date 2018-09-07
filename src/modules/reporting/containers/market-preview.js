@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { collectMarketCreatorFees } from "modules/markets/actions/collect-market-creator-fees";
+import { collectMarketCreatorFees } from "modules/markets/actions/market-creator-fees-management";
 import MarketPreview from "modules/market/components/market-preview/market-preview";
 
 const mapStateToProps = state => ({
