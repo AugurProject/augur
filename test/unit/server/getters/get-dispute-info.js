@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getDisputeInfo } = require("../../../../build/server/getters/get-dispute-info");
+const { dispatchJsonRpcRequest } = require("../../../../build/server/dispatch-json-rpc-request");
 
 
 describe("server/getters/get-dispute-info", () => {
@@ -10,10 +10,11 @@ describe("server/getters/get-dispute-info", () => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         if (err) assert.fail(err);
-        getDisputeInfo(db, t.params.marketIds, t.params.account, (err, disputeInfo) => {
+        t.method = "getDisputeInfo";
+        dispatchJsonRpcRequest(db, t, null, (err, disputeInfo) => {
           t.assertions(err, disputeInfo);
-          db.destroy();
           done();
+          db.destroy();
         });
       });
     });
@@ -399,14 +400,13 @@ describe("server/getters/get-dispute-info", () => {
     },
   });
   test({
-    description: "marketIds array with null",
+    description: "marketIds array with null, expect error",
     params: {
       marketIds: [undefined],
       account: "0x0000000000000000000000000000000000000b0b",
     },
     assertions: (err, disputeInfo) => {
-      assert.ifError(err);
-      assert.deepEqual(disputeInfo, []);
+      assert.isNotNull(err);
     },
   });
   test({
