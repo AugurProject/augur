@@ -19,8 +19,11 @@ let flash: IFlash = new Flash();
 
 const checkNumElements = async (isMarkets: boolean, num: number) => {
   const selector = isMarkets ? MARKET_SELECTOR : CATEGORY_SELECTOR;
-  const elements = await page.$$(selector);
-  return await expect(elements.length).toEqual(num);
+  let elements = await page.$$(selector);
+  while (elements.length != num) {
+    elements = await page.$$(selector);
+  }
+  return true;
 };
 
 const checkMarketNames = async (expectedMarketTitles: string[]) => {
@@ -101,10 +104,6 @@ describe("Markets List", () => {
   });
 
   describe("Search", () => {
-    beforeEach(async () => {
-      await page.goto(url + "#/markets");
-    });
-
     it("should filter markets to show only ones with searched keyword", async () => {
       // enter in a search keyword
       await expect(page).toFill(
@@ -121,7 +120,7 @@ describe("Markets List", () => {
 
     it("should not have case sensitive search", async () => {
       // make sure clearing search works
-      await expect(page).toClick(".input-styles_close");
+      await expect(page).toClick(".input-styles_close", { timeout: TIMEOUT });
       await expect(page).toFill(
         "input.filter-search-styles_FilterSearch__input",
         "JAIR"
@@ -131,7 +130,7 @@ describe("Markets List", () => {
 
     it("should have markets be searchable by title, tag, or category", async () => {
       // search for a category
-      await expect(page).toClick(".input-styles_close");
+      await expect(page).toClick(".input-styles_close", { timeout: TIMEOUT });
       await expect(page).toFill(
         "input.filter-search-styles_FilterSearch__input",
         "crypto"
