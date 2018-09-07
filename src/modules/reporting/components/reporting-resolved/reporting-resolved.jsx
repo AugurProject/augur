@@ -6,7 +6,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketsList from "modules/markets-list/components/markets-list";
 import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-
+import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
 
 function getMarketIds(markets) {
@@ -21,11 +21,12 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
+    markets: PropTypes.array.isRequired,
+    nullMessage: PropTypes.string,
     history: PropTypes.object,
     isLogged: PropTypes.bool,
     loadMarketsInfoIfNotLoaded: PropTypes.func,
     location: PropTypes.object,
-    markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
     isForkingMarketFinalized: PropTypes.bool,
     noShowHeader: PropTypes.bool,
@@ -64,7 +65,8 @@ export default class ReportingResolved extends Component {
       toggleFavorite,
       isForkingMarketFinalized,
       forkingMarket,
-      noShowHeader
+      noShowHeader,
+      nullMessage
     } = this.props;
     const s = this.state;
 
@@ -87,7 +89,11 @@ export default class ReportingResolved extends Component {
             />
           </div>
         )}
-        <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
+        <article className={MarketsHeaderStyles.MarketsHeader}>
+          <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>
+            Resolved
+          </h4>
+        </article>
         <MarketsList
           isLogged={isLogged}
           markets={markets}
@@ -98,6 +104,7 @@ export default class ReportingResolved extends Component {
           toggleFavorite={toggleFavorite}
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           paginationPageParam="reporting-resolved-page"
+          nullMessage={nullMessage}
         />
       </section>
     );
