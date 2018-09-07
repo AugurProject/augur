@@ -105,7 +105,15 @@ describe("Account", () => {
       await expect(page).toClick(
         "button.top-bar-styles_TopBar__notification-icon"
       );
-      await expect(page).toMatch("faucet - confirmed", { timeout: TIMEOUT });
+      await expect(page).toMatch("Confirmed", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toMatch("Get REP from faucet", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toClick(
+        ".notification-styles_Notification__closeButton"
+      );
 
       // balance should now have 47.00 more REP - compare old and new account balances
       const newRepPlus = await new BigNumber(initialRep).plus(47);
@@ -137,9 +145,18 @@ describe("Account", () => {
       await expect(page).toClick(
         "button.top-bar-styles_TopBar__notification-icon"
       );
-      await expect(page).toMatch("Transfer Ether -- Success", {
+      await expect(page).toMatch("Confirmed", {
         timeout: TIMEOUT
       });
+      await expect(page).toMatch("Send ETH", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toMatch("Send 100.0000 ETH to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toClick(
+        ".notification-styles_Notification__closeButton"
+      );
       await expect(page).toClick(
         "button.top-bar-styles_TopBar__notification-icon"
       );
@@ -158,9 +175,18 @@ describe("Account", () => {
       await expect(page).toClick(
         "button.top-bar-styles_TopBar__notification-icon"
       );
-      await expect(page).toMatch("Transfer REP -- Success", {
+      await expect(page).toMatch("Confirmed", {
         timeout: TIMEOUT
       });
+      await expect(page).toMatch("Send REP", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toMatch("Send 10.0000 REP to 0x913da4198e6be1d5f5e4a40d0667f70c0b5430eb", {
+        timeout: TIMEOUT
+      });
+      await expect(page).toClick(
+        ".notification-styles_Notification__closeButton"
+      );
       await expect(page).toClick(
         "button.top-bar-styles_TopBar__notification-icon"
       );
