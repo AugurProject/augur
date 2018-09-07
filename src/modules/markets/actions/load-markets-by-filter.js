@@ -11,7 +11,7 @@ import {
   MARKET_REPORTING,
   MARKET_CLOSED
 } from "modules/filter-sort/constants/market-states";
-import { updateHasLoadedMarkets } from "modules/markets/actions/update-has-loaded-markets";
+import { updateHasLoadedMarkets } from "modules/markets/actions/update-market-loading";
 
 const { REPORTING_STATE } = constants;
 
