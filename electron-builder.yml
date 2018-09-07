@@ -2,25 +2,29 @@ directories:
   # this contains icons, licence agreement, etc
   buildResources: "./build"
 files:
-  - "!certs/*"
-  - "src/**/*"
+- "!certs/*"
+- "src/**/*"
 extraFiles:
-  - from: "resources/${os}"
-    to: "resources"
-    filter:
-    - "**/*"
-  - from: 'node_modules/augur-node/build/migrations'
-    to: 'resources/migrations'
-    filter:
-    - "**/*"
-  - from: 'node_modules/augur-node/build/utils'
-    to: 'resources/utils'
-    filter:
-    - "**/*"
-  - from: 'node_modules/augur-node/certs'
-    to: 'certs'
-    filter:
-    - "**/*"
+- from: "resources/${os}"
+  to: "resources"
+  filter:
+  - "**/*"
+- from: 'node_modules/augur-node/build/migrations'
+  to: 'resources/migrations'
+  filter:
+  - "**/*"
+- from: 'node_modules/augur-node/build/utils'
+  to: 'resources/utils'
+  filter:
+  - "**/*"
+- from: 'node_modules/augur-node/certs'
+  to: 'certs'
+  filter:
+  - "**/*"
+- from: "node_modules/augur-ui/build"
+  to: "ui-client"
+  filter:
+  - "**/*"
 mac:
   target:
   - default
