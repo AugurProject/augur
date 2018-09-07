@@ -9,6 +9,10 @@ extraFiles:
     to: "resources"
     filter:
     - "**/*"
+  - from: 'node_modules/augur-node/build/migrations'
+    to: 'resources/migrations'
+    filter:
+    - "**/*"
 mac:
   target:
   - default
