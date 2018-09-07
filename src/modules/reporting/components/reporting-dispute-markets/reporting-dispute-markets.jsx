@@ -93,6 +93,7 @@ export default class ReportingDisputeMarkets extends Component {
           disputableMarketsLength={disputableMarketsLength}
           showPagination={showPagination}
           showUpcomingPagination={showUpcomingPagination}
+          addNullPadding
         />
       </section>
     );

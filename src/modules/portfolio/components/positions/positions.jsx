@@ -55,6 +55,7 @@ export default class Positions extends Component {
               currentTimestamp={currentTimestamp}
               isMobile={isMobile}
               pageinationName="open"
+              noTopPadding
             />
             <PositionsMarketsList
               title="In Reporting"
@@ -76,6 +77,7 @@ export default class Positions extends Component {
               claimTradingProceeds={claimTradingProceeds}
               isMobile={isMobile}
               pageinationName="resolved"
+              addNullPadding
             />
           </div>
         )}

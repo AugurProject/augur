@@ -14,6 +14,7 @@ import {
 } from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
+import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
 
 class MyMarkets extends Component {
   static propTypes = {
@@ -130,9 +131,7 @@ class MyMarkets extends Component {
         </Helmet>
         {myMarkets &&
           !!myMarkets.length && (
-            <div className={Styles.Markets__SortBar}>
-              <h2 className={Styles["Markets__SortBar-title"]}>Open</h2>
-            </div>
+            <MarketsHeaderLabel title="Open" noTopPadding />
           )}
         {haveMarkets && (
           <MarketsList
@@ -152,15 +151,7 @@ class MyMarkets extends Component {
             pendingLiquidityOrders={pendingLiquidityOrders}
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsOpen.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
-        {haveMarkets && (
-          <div className={Styles.Markets__SortBar}>
-            <div className={Styles["Markets__SortBar-title"]}>In Reporting</div>
-          </div>
-        )}
+        {haveMarkets && <MarketsHeaderLabel title="In Reporting" />}
         {haveMarkets && (
           <MarketsList
             testid="inReporting"
@@ -178,15 +169,7 @@ class MyMarkets extends Component {
             isMobile={isMobile}
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsReporting.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
-        {haveMarkets && (
-          <div className={Styles.Markets__SortBar}>
-            <div className={Styles["Markets__SortBar-title"]}>Resolved</div>
-          </div>
-        )}
+        {haveMarkets && <MarketsHeaderLabel title="Resolved" />}
         {haveMarkets && (
           <MarketsList
             testid="resolved"
@@ -202,12 +185,9 @@ class MyMarkets extends Component {
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
+            addNullPadding
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsFinal.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
         {(myMarkets == null || (myMarkets && myMarkets.length === 0)) && (
           <div className={PortfolioStyles.NoMarkets__container}>
             <span>You haven&apos;t created any markets.</span>
