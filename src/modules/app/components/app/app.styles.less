@@ -52,7 +52,7 @@ h6 {
   display: grid;
 
   /* topbar height */
-  grid-template-rows: 2.625rem auto;
+  grid-template-rows: 4.5rem auto;
   height: 100vh;
   overflow: hidden;
 
@@ -79,7 +79,7 @@ h6 {
 }
 
 .Main__content {
-  height: calc(~"100vh - 2.625rem");
+  height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -126,4 +126,8 @@ svg.SideBar__mobile-bars-unseen {
 
 .TopBar {
   z-index: @above-all-content-above;
+
+  @media @breakpoint-mobile {
+    height: 50px;
+  }
 }

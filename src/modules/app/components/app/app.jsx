@@ -20,7 +20,6 @@ import PortfolioInnerNav from "modules/app/components/inner-nav/portfolio-inner-
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import ReportingInnerNav from "modules/app/components/inner-nav/reporting-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
-import Origami from "modules/app/components/origami-svg/origami-svg";
 import Logo from "modules/app/components/logo/logo";
 import Routes from "modules/routes/components/routes/routes";
 import NotificationsContainer from "modules/notifications/containers/notifications-view";
@@ -480,7 +479,6 @@ export default class AppView extends Component {
 
     let categoriesMargin;
     let tagsMargin;
-    let origamiScalar = 0;
 
     if (!isMobile) {
       if (
@@ -495,9 +493,6 @@ export default class AppView extends Component {
       }
 
       tagsMargin = 110 * subMenu.scalar;
-
-      // ensure origami fold-out moves perfectly with submenu
-      origamiScalar = Math.max(0, subMenu.scalar + mainMenu.scalar - 1);
     }
 
     return (
@@ -518,7 +513,6 @@ export default class AppView extends Component {
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <Origami isMobile={isMobile} menuScalar={origamiScalar} />
             <Link to={makePath(CATEGORIES)}>
               <Logo isLoading={isLoading} />
             </Link>

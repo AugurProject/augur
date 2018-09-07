@@ -6,7 +6,6 @@ import Styles from "modules/app/components/logo/logo.styles";
 const Logo = props => (
   <section className={Styles.Logo}>
     <LoadingLogo isLoading={props.isLoading} />
-    <span className={Styles.Logo__text}>Augur</span>
   </section>
 );
 
