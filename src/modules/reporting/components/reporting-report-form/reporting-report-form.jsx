@@ -175,9 +175,11 @@ export default class ReportingReportForm extends Component {
       insufficientRep,
       isDesignatedReporter
     } = this.props;
+
+    const { reportingState } = market;
     const s = this.state;
     let errorMessage = null;
-    if (!isDesignatedReporter && !isOpenReporting) {
+    if (!isDesignatedReporter && !isOpenReporting && reportingState !== constants.REPORTING_STATE.AWAITING_NEXT_WINDOW) {
       errorMessage =
         "You are not the Designated Reporter for this market. Only the Designated Reporter may submit a report.";
     } else if (insufficientRep && !isOpenReporting) {
