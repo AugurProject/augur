@@ -11,7 +11,7 @@ import {
   WEEK,
   MONTH,
   ALL
-} from "modules/portfolio/constants/transaction-periods";
+} from "modules/transactions/constants/transaction-periods";
 
 import { getBeginDate } from "src/utils/format-date";
 

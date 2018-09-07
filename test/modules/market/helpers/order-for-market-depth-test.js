@@ -1,8 +1,8 @@
 import { formatEther, formatShares } from "src/utils/format-number";
-import orderForMarketDepth from "src/modules/market/helpers/order-for-market-depth";
+import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
 import { createBigNumber } from "src/utils/create-big-number";
 
-describe("src/modules/market/helpers/order-for-market-depth.js", () => {
+describe("modules/markets/helpers/order-for-market-depth.js", () => {
   let exampleOrderBook;
 
   beforeEach(() => {

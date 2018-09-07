@@ -5,7 +5,7 @@ import {
 } from "modules/markets/constants/market-types";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 
-describe(`modules/reporting/actions/calculate-payout-numerators-value.js`, () => {
+describe(`utils/calculate-payout-numerators-value.js`, () => {
   const test = t => {
     it(t.description, () => {
       t.assertions();

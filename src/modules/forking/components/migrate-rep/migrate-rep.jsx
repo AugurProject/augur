@@ -10,7 +10,7 @@ import MarketPreview from "modules/market/components/market-preview/market-previ
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import MigrateRepForm from "modules/forking/components/migrate-rep-form/migrate-rep-form";
 import MigrateRepConfirm from "modules/forking/components/migrate-rep-confirm/migrate-rep-confirm";
-import { TYPE_VIEW } from "modules/market/constants/link-types";
+import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import MarketAdditonalDetails from "modules/reporting/components/market-additional-details/market-additional-details";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";

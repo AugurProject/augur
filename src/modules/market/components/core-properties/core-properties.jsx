@@ -14,7 +14,10 @@ import getValue from "utils/get-value";
 import { dateHasPassed } from "utils/format-date";
 import { constants } from "services/augurjs";
 import { Hint } from "modules/common/components/icons";
-import { TYPE_REPORT, TYPE_DISPUTE } from "modules/market/constants/link-types";
+import {
+  TYPE_REPORT,
+  TYPE_DISPUTE
+} from "modules/markets/constants/link-types";
 
 const Property = p => (
   <div

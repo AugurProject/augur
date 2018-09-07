@@ -2,7 +2,7 @@ import {
   MICRO_SHARE,
   MILLI_SHARE,
   SHARE
-} from "modules/market/constants/share-denominations";
+} from "modules/markets/constants/share-denominations";
 
 export default function(selectedDenomination, shareDenominations) {
   switch (selectedDenomination) {

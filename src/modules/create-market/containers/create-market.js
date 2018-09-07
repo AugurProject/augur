@@ -1,16 +1,16 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { selectCategories } from "modules/categories/selectors/categories";
-import { submitNewMarket } from "modules/create-market/actions/submit-new-market";
+import { submitNewMarket } from "modules/markets/actions/submit-new-market";
 import {
   addOrderToNewMarket,
   removeOrderFromNewMarket,
   updateNewMarket,
   clearNewMarket
-} from "modules/create-market/actions/update-new-market";
+} from "modules/markets/actions/update-new-market";
 import CreateMarketView from "modules/create-market/components/create-market-view/create-market-view";
 import { selectCurrentTimestamp } from "src/select-state";
-import { estimateSubmitNewMarket } from "modules/create-market/actions/estimate-submit-new-market";
+import { estimateSubmitNewMarket } from "modules/markets/actions/estimate-submit-new-market";
 
 import getValue from "utils/get-value";
 

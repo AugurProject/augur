@@ -4,13 +4,13 @@ import { selectCurrentTimestamp } from "src/select-state";
 import { each, orderBy } from "lodash";
 import PortfolioReports from "modules/portfolio/components/portfolio-reports/portfolio-reports";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { getReportingFees } from "modules/portfolio/actions/get-reporting-fees";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
-import { selectMarket } from "modules/market/selectors/market";
-import { sendFinalizeMarket } from "modules/market/actions/finalize-market";
-import marketDisputeOutcomes from "modules/reporting/selectors/select-market-dispute-outcomes";
-import { loadReportingHistory } from "modules/my-reports/actions/load-reporting-history";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
+import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
+import { selectMarket } from "modules/markets/selectors/market";
+import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
+import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
 
 const mapStateToProps = state => {

@@ -7,7 +7,7 @@ import {
   SELL_UP,
   SELL_DOWN,
   NONE
-} from "modules/trade/constants/types";
+} from "modules/trades/constants/types";
 import Styles from "modules/market/components/common/outcome-trading-indicator/outcome-trading-indicator.style";
 
 export default function OutcomeTradingIndicator({

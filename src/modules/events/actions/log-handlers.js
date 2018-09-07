@@ -2,32 +2,34 @@ import BigNumber from "bignumber.js";
 import {
   addNotification,
   updateNotification
-} from "modules/notifications/actions";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
-import loadBidsAsks from "modules/bids-asks/actions/load-bids-asks";
-import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
-import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
+} from "modules/notifications/actions/notifications";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
+import loadBidsAsks from "modules/orders/actions/load-bids-asks";
+import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
 import { updateOutcomePrice } from "modules/markets/actions/update-outcome-price";
-import { updateOrder } from "modules/my-orders/actions/update-orders";
-import { removeCanceledOrder } from "modules/bids-asks/actions/update-order-status";
+import { updateOrder } from "modules/orders/actions/update-orders";
+import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
 import { updateMarketCategoryPopularity } from "modules/categories/actions/update-categories";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { isCurrentMarket } from "modules/trade/helpers/is-current-market";
+import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
 import makePath from "modules/routes/helpers/make-path";
 import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
-import { loadReporting } from "src/modules/reporting/actions/load-reporting";
-import { loadDisputing } from "modules/reporting/actions/load-disputing";
+import { loadReporting } from "src/modules/reports/actions/load-reporting";
+import { loadDisputing } from "modules/reports/actions/load-disputing";
 import loadCategories from "modules/categories/actions/load-categories";
-import { getReportingFees } from "modules/portfolio/actions/get-reporting-fees";
-import { loadMarketsInfoIfNotLoaded } from "src/modules/markets/actions/load-markets-info-if-not-loaded";
-import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
-import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
+import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+import {
+  loadMarketsInfo,
+  loadMarketsInfoIfNotLoaded,
+  loadMarketsDisputeInfo
+} from "src/modules/markets/actions/load-markets-info";
+import { loadUnclaimedFees } from "modules/markets/actions/market-creator-fees-management";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
-import { startOrderSending } from "modules/create-market/actions/liquidity-management";
-import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
+import { startOrderSending } from "modules/orders/actions/liquidity-management";
+import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 

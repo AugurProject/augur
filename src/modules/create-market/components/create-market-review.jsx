@@ -8,9 +8,9 @@ import { BigNumber } from "utils/create-big-number";
 import { formatEtherEstimate } from "utils/format-number";
 import getValue from "utils/get-value";
 
-import newMarketCreationOrder from "modules/create-market/constants/new-market-creation-order";
+import newMarketCreationOrder from "modules/markets/constants/new-market-creation-order";
 // import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
-import { NEW_MARKET_REVIEW } from "modules/create-market/constants/new-market-creation-steps";
+import { NEW_MARKET_REVIEW } from "modules/markets/constants/new-market-creation-steps";
 
 export default class CreateMarketReview extends Component {
   static propTypes = {

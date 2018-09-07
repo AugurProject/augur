@@ -6,13 +6,13 @@ import { augur } from "services/augurjs";
 
 import speedomatic from "speedomatic";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { formatGasCostToEther } from "utils/format-number";
 import MarketPreview from "modules/market/components/market-preview/market-preview";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
-import { TYPE_VIEW } from "modules/market/constants/link-types";
+import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import MarketAdditonalDetails from "modules/reporting/components/market-additional-details/market-additional-details";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";

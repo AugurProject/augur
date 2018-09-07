@@ -5,7 +5,7 @@ import {
   unfix
 } from "speedomatic";
 import { augur, constants } from "services/augurjs";
-import { ZERO, TEN } from "modules/trade/constants/numbers";
+import { ZERO, TEN } from "modules/trades/constants/numbers";
 import addCommas from "utils/add-commas-to-number";
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

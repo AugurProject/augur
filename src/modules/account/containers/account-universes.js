@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import AccountUniverses from "modules/account/components/account-universes/account-universes";
 
-import { loadUniverseInfo } from "modules/account/actions/load-universe-info";
+import { loadUniverseInfo } from "modules/universe/actions/load-universe-info";
 import { windowRef } from "src/utils/window-ref";
 
 const mapStateToProps = state => ({

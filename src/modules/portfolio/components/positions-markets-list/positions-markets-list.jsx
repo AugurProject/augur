@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import MarketPortfolioCard from "modules/market/containers/market-portfolio-card";
+import MarketPortfolioCard from "modules/portfolio/containers/market-portfolio-card";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Paginator from "modules/common/components/paginator/paginator";
 import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";

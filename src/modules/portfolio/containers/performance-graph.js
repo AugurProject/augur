@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import PerformanceGraph from "modules/portfolio/components/performance-graph/performance-graph";
-import getProfitLoss from "modules/portfolio/actions/get-profit-loss";
+import getProfitLoss from "modules/positions/actions/get-profit-loss";
 import { selectIsAnimating } from "src/select-state";
 
 const mapStateToProps = state => ({

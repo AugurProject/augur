@@ -4,14 +4,14 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
-import MarketsList from "modules/markets/components/markets-list";
+import MarketsList from "modules/markets-list/components/markets-list";
 import Styles from "modules/portfolio/components/markets/markets.styles";
 import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
 import {
   TYPE_TRADE,
   TYPE_REPORT,
   TYPE_CLOSED
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
 import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";

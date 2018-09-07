@@ -14,7 +14,7 @@ import MarketPreview from "modules/market/components/market-preview/market-previ
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
-import { TYPE_VIEW } from "modules/market/constants/link-types";
+import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import MarketAdditonalDetails from "modules/reporting/components/market-additional-details/market-additional-details";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";

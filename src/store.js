@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { helpers } from "src/helpers";
+import { helpers } from "src/helpers/helpers";
 
 import thunk from "redux-thunk";
 

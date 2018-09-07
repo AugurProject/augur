@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
+import MarketsHeaderStyles from "modules/markets-list/components/markets-header/markets-header.styles";
 
 const MarketsHeaderLabel = p => (
   <article

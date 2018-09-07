@@ -23,7 +23,7 @@ import SideNav from "modules/app/components/side-nav/side-nav";
 import Origami from "modules/app/components/origami-svg/origami-svg";
 import Logo from "modules/app/components/logo/logo";
 import Routes from "modules/routes/components/routes/routes";
-import NotificationsContainer from "modules/notifications/container";
+import NotificationsContainer from "modules/notifications/containers/notifications-view";
 
 import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburger-icon";
 import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
@@ -63,8 +63,8 @@ import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
 import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
 
 import Styles from "modules/app/components/app/app.styles";
-import MarketsInnerNavContainer from "src/modules/app/containers/markets-inner-nav";
-import { NotificationBarContainer } from "src/modules/notification-bar/containers/notification-bar-container";
+import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
+import { NotificationBarContainer } from "modules/notifications/containers/notification-bar";
 
 export const mobileMenuStates = {
   CLOSED: 0,

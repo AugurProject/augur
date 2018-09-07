@@ -1,6 +1,6 @@
 import hasLoadedMarkets from "modules/markets/reducers/has-loaded-markets";
 
-import { UPDATE_HAS_LOADED_MARKETS } from "modules/markets/actions/update-has-loaded-markets";
+import { UPDATE_HAS_LOADED_MARKETS } from "modules/markets/actions/update-market-loading";
 
 describe("modules/markets/reducers/has-loaded-markets.js", () => {
   const test = t => {

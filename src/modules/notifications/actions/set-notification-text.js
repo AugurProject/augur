@@ -4,11 +4,11 @@
 import store from "src/store";
 import { augur } from "services/augurjs";
 import { isEmpty } from "lodash/fp";
-import { selectMarket } from "modules/market/selectors/market";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
-import { TEN_TO_THE_EIGHTEENTH_POWER } from "modules/trade/constants/numbers";
+import { selectMarket } from "modules/markets/selectors/market";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { TEN_TO_THE_EIGHTEENTH_POWER } from "modules/trades/constants/numbers";
 import { getOutcome } from "modules/transactions/actions/add-transactions";
-import { BUY, SELL } from "modules/trade/constants/types";
+import { BUY, SELL } from "modules/trades/constants/types";
 import { formatEther, formatRep, formatShares } from "utils/format-number";
 import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
 import { createBigNumber } from "utils/create-big-number";

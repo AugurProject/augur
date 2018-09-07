@@ -5,18 +5,15 @@ import {
   selectCurrentTimestamp,
   selectCurrentTimestampInSeconds
 } from "src/select-state";
-import MarketOutcomeCharts from "modules/market/components/market-outcome-charts/market-outcome-charts";
-import orderAndAssignCumulativeShares from "modules/market/helpers/order-and-assign-cumulative-shares";
-import orderForMarketDepth from "modules/market/helpers/order-for-market-depth";
-import getOrderBookKeys from "modules/market/helpers/get-orderbook-keys";
+import MarketOutcomeCharts from "modules/market-charts/components/market-outcome-charts/market-outcome-charts";
+import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
+import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
+import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";
 
 import { formatEther, formatShares } from "utils/format-number";
 
 import { SCALAR } from "modules/markets/constants/market-types";
-import {
-  BIDS,
-  ASKS
-} from "modules/order-book/constants/order-book-order-types";
+import { BIDS, ASKS } from "modules/orders/constants/orders";
 import { BID } from "modules/transactions/constants/types";
 
 const mapStateToProps = (state, ownProps) => {
