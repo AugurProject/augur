@@ -11,6 +11,19 @@ const KeyGen = require('selfsigned.js')
 const helmet = require('helmet')
 /* global __dirname */
 
+
+const isDevelopment = require('electron-is-dev')
+
+
+function getUIClientBuildPath() {
+  if(isDevelopment) {
+    return path.join(__dirname, '../../node_modules/augur-ui/build')
+  } else {
+    return path.join(process.resourcesPath, 'ui-client')
+  }
+
+}
+
 function AugurUIServer() {
   this.server = null
   this.portsConfig = {
@@ -72,7 +85,7 @@ AugurUIServer.prototype.startServer = function (event) {
     } else {
       if (this.httpListener) this.httpListener.close()
     }
-    const serverBuildPath = path.join(__dirname, '../../node_modules/augur-ui/build')
+    const serverBuildPath = getUIClientBuildPath()
     this.app.use(express.static(serverBuildPath))
 
     this.app.listen = function () {
