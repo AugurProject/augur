@@ -22,7 +22,7 @@ extraFiles:
   filter:
   - "**/*"
 - from: "node_modules/augur-ui/build"
-  to: "ui-client"
+  to: "resources/ui-client"
   filter:
   - "**/*"
 mac:
