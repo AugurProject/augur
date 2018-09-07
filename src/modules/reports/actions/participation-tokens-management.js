@@ -1,9 +1,54 @@
-import { augur } from "services/augurjs";
+import noop from "utils/noop";
 import speedomatic from "speedomatic";
 import logError from "utils/log-error";
+import { augur } from "services/augurjs";
+import { UNIVERSE_ID } from "modules/app/constants/network";
 import { formatGasCostToEther } from "utils/format-number";
 import { closeModal } from "modules/modal/actions/close-modal";
 import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
+
+export const UPDATE_PARTICIPATION_TOKENS_DATA =
+  "UPDATE_PARTICIPATION_TOKENS_DATA";
+export const UPDATE_PARTICIPATION_TOKENS_BALANCE =
+  "UPDATE_PARTICIPATION_TOKENS_BALANCE";
+
+export const updateParticipationTokensData = participationTokensData => ({
+  type: UPDATE_PARTICIPATION_TOKENS_DATA,
+  participationTokensData
+});
+export const updateParticipationTokenBalance = (feeWindowID, balance) => ({
+  type: UPDATE_PARTICIPATION_TOKENS_BALANCE,
+  feeWindowID,
+  balance
+});
+
+// TODO: is this even in use? on a search, i never see it imported...
+export const loadParticipationTokens = (
+  includeCurrent = true,
+  callback = logError
+) => (dispatch, getState) => {
+  const { loginAccount, universe } = getState();
+  const universeID = universe.id || UNIVERSE_ID;
+
+  augur.augurNode.submitRequest(
+    "getFeeWindows",
+    { universe: universeID, account: loginAccount.address, includeCurrent },
+    (err, feeWindowsWithUnclaimedTokens) => {
+      if (err) return callback(err);
+      dispatch(updateParticipationTokensData(feeWindowsWithUnclaimedTokens));
+      Object.keys(feeWindowsWithUnclaimedTokens).forEach(feeWindowID => {
+        augur.api.FeeWindow.withdrawInEmergency({
+          tx: { estimateGas: true, to: feeWindowID },
+          meta: loginAccount.meta,
+          onSent: noop,
+          onSuccess: noop,
+          onFailed: callback
+        });
+      });
+      callback(null, feeWindowsWithUnclaimedTokens);
+    }
+  );
+};
 
 export const purchaseParticipationTokens = (
   amount,

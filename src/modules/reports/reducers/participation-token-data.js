@@ -1,7 +1,7 @@
 import {
   UPDATE_PARTICIPATION_TOKENS_DATA,
   UPDATE_PARTICIPATION_TOKENS_BALANCE
-} from "modules/reports/actions/update-participation-tokens";
+} from "modules/reports/actions/participation-tokens-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

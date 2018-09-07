@@ -7,7 +7,7 @@ import { formatGasCostToEther } from "utils/format-number";
 import {
   purchaseParticipationTokens,
   __RewireAPI__ as ReWireModule
-} from "modules/reports/actions/purchase-participation-tokens";
+} from "modules/reports/actions/participation-tokens-management";
 
 describe("purchase participation tokens tests", () => {
   const test = t => it(t.description, done => t.assertions(done));
