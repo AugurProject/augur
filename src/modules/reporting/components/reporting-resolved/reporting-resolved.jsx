@@ -6,8 +6,8 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketsList from "modules/markets/components/markets-list";
 import { TYPE_VIEW } from "modules/market/constants/link-types";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
+import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
 
 function getMarketIds(markets) {
   const filteredMarkets = [];
@@ -89,11 +89,7 @@ export default class ReportingResolved extends Component {
             />
           </div>
         )}
-        <article className={MarketsHeaderStyles.MarketsHeader}>
-          <h4 className={MarketsHeaderStyles.MarketsHeader__subheading}>
-            Resolved
-          </h4>
-        </article>
+        <MarketsHeaderLabel title="Resolved" />
         <MarketsList
           isLogged={isLogged}
           markets={markets}
@@ -105,6 +101,7 @@ export default class ReportingResolved extends Component {
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           paginationPageParam="reporting-resolved-page"
           nullMessage={nullMessage}
+          addNullPadding
         />
       </section>
     );

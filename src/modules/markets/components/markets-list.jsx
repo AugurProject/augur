@@ -9,6 +9,8 @@ import isEqual from "lodash/isEqual";
 
 import debounce from "utils/debounce";
 
+const PAGINATION_COUNT = 10;
+
 export default class MarketsList extends Component {
   static propTypes = {
     testid: PropTypes.string,
@@ -21,15 +23,11 @@ export default class MarketsList extends Component {
     loadMarketsInfoIfNotLoaded: PropTypes.func,
     paginationPageParam: PropTypes.string,
     linkType: PropTypes.string,
-    showPagination: PropTypes.bool,
     collectMarketCreatorFees: PropTypes.func,
     isMobile: PropTypes.bool,
     pendingLiquidityOrders: PropTypes.object,
-    nullMessage: PropTypes.string
-  };
-
-  static defaultProps = {
-    showPagination: true
+    nullMessage: PropTypes.string,
+    addNullPadding: PropTypes.bool
   };
 
   constructor(props) {
@@ -38,7 +36,8 @@ export default class MarketsList extends Component {
     this.state = {
       lowerBound: 1,
       boundedLength: 10,
-      marketIdsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
+      marketIdsMissingInfo: [], // This is ONLY the currently displayed markets that are missing info
+      showPagination: props.filteredMarkets.length > PAGINATION_COUNT
     };
 
     this.setSegment = this.setSegment.bind(this);
@@ -89,7 +88,8 @@ export default class MarketsList extends Component {
         lowerBound - 1,
         marketIdLength
       );
-      this.setState({ marketIdsMissingInfo });
+      const showPagination = filteredMarkets.length > PAGINATION_COUNT;
+      this.setState({ marketIdsMissingInfo, showPagination });
     }
   }
 
@@ -110,11 +110,11 @@ export default class MarketsList extends Component {
       location,
       markets,
       paginationPageParam,
-      showPagination,
       toggleFavorite,
       testid,
       pendingLiquidityOrders,
-      nullMessage
+      nullMessage,
+      addNullPadding
     } = this.props;
     const s = this.state;
 
@@ -149,13 +149,16 @@ export default class MarketsList extends Component {
             return null;
           })
         ) : (
-          <NullStateMessage message={nullMessage || "No Markets Available"} />
+          <NullStateMessage
+            addNullPadding={addNullPadding}
+            message={nullMessage || "No Markets Available"}
+          />
         )}
         {!!marketsLength &&
-          showPagination && (
+          s.showPagination && (
             <Paginator
               itemsLength={marketsLength}
-              itemsPerPage={10}
+              itemsPerPage={PAGINATION_COUNT}
               location={location}
               history={history}
               setSegment={this.setSegment}
