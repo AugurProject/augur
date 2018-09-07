@@ -483,9 +483,8 @@ export default class AppView extends Component {
 
     if (!isMobile) {
       if (
-        currentPath=== AUTHENTICATION ||
-        (currentPath === CREATE_MARKET &&
-          mainMenu.scalar === 1)
+        currentPath === AUTHENTICATION ||
+        (currentPath === CREATE_MARKET && mainMenu.scalar === 1)
       ) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
@@ -591,7 +590,10 @@ export default class AppView extends Component {
               {!InnerNav && <div className="no-nav-placehold" />}
               <section
                 className={Styles.Main__content}
-                style={{ marginLeft: tagsMargin, overflowY: (currentPath === MARKETS ? 'hidden' : 'auto') }}
+                style={{
+                  marginLeft: tagsMargin,
+                  overflowY: currentPath === MARKETS ? "hidden" : "auto"
+                }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
               >

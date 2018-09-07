@@ -28,7 +28,7 @@ export default class MarketsList extends Component {
     pendingLiquidityOrders: PropTypes.object,
     nullMessage: PropTypes.string,
     addNullPadding: PropTypes.bool,
-    style: PropTypes.object,
+    style: PropTypes.object
   };
 
   constructor(props) {
