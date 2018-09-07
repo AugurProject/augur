@@ -7,7 +7,7 @@ import ReactFauxDOM from "react-faux-dom";
 
 import { createBigNumber } from "utils/create-big-number";
 
-import Styles from "modules/market/components/market-outcomes-chart/market-outcomes-chart.styles";
+import Styles from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart.styles";
 
 export default class MarketOutcomesChart extends Component {
   static propTypes = {

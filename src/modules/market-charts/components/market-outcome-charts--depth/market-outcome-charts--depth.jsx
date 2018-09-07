@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import * as d3 from "d3";
 import ReactFauxDOM from "react-faux-dom";
 
-import MarketOutcomeChartHeaderDepth from "modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth";
+import MarketOutcomeChartHeaderDepth from "modules/market-charts/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth";
 import { createBigNumber } from "utils/create-big-number";
 import { isEqual } from "lodash";
 import CustomPropTypes from "utils/custom-prop-types";
@@ -11,7 +11,7 @@ import { ZERO } from "modules/trades/constants/numbers";
 import { BUY, SELL } from "modules/transactions/constants/types";
 import { ASKS, BIDS } from "modules/orders/constants/orders";
 
-import Styles from "modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.styles";
 
 export default class MarketOutcomeDepth extends Component {
   static propTypes = {

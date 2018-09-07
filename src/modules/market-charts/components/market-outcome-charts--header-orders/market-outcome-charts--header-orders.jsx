@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import Styles from "modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders.styles";
-import StylesHeader from "modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders.styles";
+import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 
 const MarketOutcomeChartsHeaderOrders = p => (
   <section

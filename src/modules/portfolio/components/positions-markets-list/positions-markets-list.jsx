@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
-import MarketPortfolioCard from "modules/market/containers/market-portfolio-card";
+import MarketPortfolioCard from "modules/portfolio/containers/market-portfolio-card";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Paginator from "modules/common/components/paginator/paginator";
 import Styles from "modules/portfolio/components/positions-markets-list/positions-markets-list.styles";

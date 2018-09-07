@@ -6,7 +6,7 @@ import {
   selectOrphanOrders
 } from "src/select-state";
 import { determineMarketLinkType } from "modules/markets/helpers/determine-market-link-type";
-import MarketPortfolioCard from "modules/market/components/market-portfolio-card/market-portfolio-card";
+import MarketPortfolioCard from "modules/portfolio/components/market-portfolio-card/market-portfolio-card";
 import { selectMarket } from "modules/markets/selectors/market";
 import { sendFinalizeMarket } from "modules/markets/actions/finalize-market";
 import getClosePositionStatus from "modules/positions/selectors/close-position-status";

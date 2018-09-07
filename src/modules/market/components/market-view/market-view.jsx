@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
 import MarketHeader from "modules/market/containers/market-header";
-import MarketOutcomesChart from "modules/market/containers/market-outcomes-chart";
-import MarketOutcomeCharts from "modules/market/containers/market-outcome-charts";
+import MarketOutcomesChart from "modules/market-charts/containers/market-outcomes-chart";
+import MarketOutcomeCharts from "modules/market-charts/containers/market-outcome-charts";
 import MarketOutcomesAndPositions from "modules/market/containers/market-outcomes-and-positions";
 import MarketTrading from "modules/trading/containers/trading";
 

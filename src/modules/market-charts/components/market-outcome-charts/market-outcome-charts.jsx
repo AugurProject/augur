@@ -4,11 +4,11 @@ import classNames from "classnames";
 import ScrollSnap from "scroll-snap";
 import logError from "utils/log-error";
 
-import MarketOutcomeCandlestick from "modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick";
-import MarketOutcomeDepth from "modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth";
-import MarketOutcomeChartsOrders from "modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders";
+import MarketOutcomeCandlestick from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick";
+import MarketOutcomeDepth from "modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth";
+import MarketOutcomeChartsOrders from "modules/market-charts/components/market-outcome-charts--orders/market-outcome-charts--orders";
 
-import Styles from "modules/market/components/market-outcome-charts/market-outcome-charts.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts/market-outcome-charts.styles";
 import { loadCandleStickData } from "modules/markets/actions/load-candlestick-data";
 
 import { BigNumber } from "bignumber.js";

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import MarketOutcomesChart from "modules/market/components/market-outcomes-chart/market-outcomes-chart";
+import MarketOutcomesChart from "modules/market-charts/components/market-outcomes-chart/market-outcomes-chart";
 
 import { selectMarket } from "modules/markets/selectors/market";
 import { selectCurrentTimestamp } from "src/select-state";

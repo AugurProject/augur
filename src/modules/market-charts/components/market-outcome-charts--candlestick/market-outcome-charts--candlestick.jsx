@@ -8,11 +8,11 @@ import { map } from "lodash/fp";
 import { sortBy } from "lodash";
 
 import findPeriodSeriesBounds from "modules/markets/helpers/find-period-series-bounds";
-import MarketOutcomeChartsHeaderCandlestick from "modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
+import MarketOutcomeChartsHeaderCandlestick from "modules/market-charts/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
 
 import { BUY, SELL } from "modules/transactions/constants/types";
 
-import Styles from "modules/market/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--candlestick/market-outcome-charts--candlestick.styles";
 import { createBigNumber } from "utils/create-big-number";
 import { getTickIntervalForRange } from "modules/markets/helpers/range";
 

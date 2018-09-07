@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import MarketOutcomeChartsHeaderCandlestick from "modules/market/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
-import MarketOutcomeChartHeaderDepth from "modules/market/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth";
-import MarketOutcomeChartHeaderOrders from "modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
+import MarketOutcomeChartsHeaderCandlestick from "modules/market-charts/components/market-outcome-charts--header-candlestick/market-outcome-charts--header-candlestick";
+import MarketOutcomeChartHeaderDepth from "modules/market-charts/components/market-outcome-charts--header-depth/market-outcome-charts--header-depth";
+import MarketOutcomeChartHeaderOrders from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
 
-import Styles from "modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 
 const MarketOutcomeChartsHeader = p => (
   <section className={Styles.MarketOutcomeChartsHeader}>

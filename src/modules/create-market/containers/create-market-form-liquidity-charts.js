@@ -5,7 +5,7 @@ import {
   selectCurrentTimestamp,
   selectCurrentTimestampInSeconds
 } from "src/select-state";
-import MarketOutcomeCharts from "modules/market/components/market-outcome-charts/market-outcome-charts";
+import MarketOutcomeCharts from "modules/market-charts/components/market-outcome-charts/market-outcome-charts";
 import orderAndAssignCumulativeShares from "modules/markets/helpers/order-and-assign-cumulative-shares";
 import orderForMarketDepth from "modules/markets/helpers/order-for-market-depth";
 import getOrderBookKeys from "modules/markets/helpers/get-orderbook-keys";

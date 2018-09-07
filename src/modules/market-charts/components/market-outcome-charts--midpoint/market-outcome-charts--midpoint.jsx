@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Styles from "modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint.styles";
 
 const Midpoint = props => {
   const { orderBookKeys, fixedPrecision, hasOrders } = props;

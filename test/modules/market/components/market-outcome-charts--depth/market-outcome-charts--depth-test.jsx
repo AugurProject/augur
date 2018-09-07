@@ -1,9 +1,9 @@
-import { nearestCompletelyFillingOrder } from "src/modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth";
+import { nearestCompletelyFillingOrder } from "src/modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth";
 
 import { ASKS, BIDS } from "modules/orders/constants/orders";
 import { createBigNumber } from "src/utils/create-big-number";
 
-describe("src/modules/market/components/market-outcome-charts--depth/market-outcome-charts--depth.jsx", () => {
+describe("src/modules/market-charts/components/market-outcome-charts--depth/market-outcome-charts--depth.jsx", () => {
   let price;
   let result;
 

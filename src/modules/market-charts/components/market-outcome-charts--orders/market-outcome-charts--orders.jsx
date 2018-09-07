@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import MarketOutcomeChartHeaderOrders from "modules/market/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
+import MarketOutcomeChartHeaderOrders from "modules/market-charts/components/market-outcome-charts--header-orders/market-outcome-charts--header-orders";
 
 import { ASKS, BIDS } from "modules/orders/constants/orders";
 import { BUY, SELL } from "modules/transactions/constants/types";
-import MarketOutcomeMidpoint from "modules/market/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint";
+import MarketOutcomeMidpoint from "modules/market-charts/components/market-outcome-charts--midpoint/market-outcome-charts--midpoint";
 
-import Styles from "modules/market/components/market-outcome-charts--orders/market-outcome-charts--orders.styles";
-import StylesHeader from "modules/market/components/market-outcome-charts--header/market-outcome-charts--header.styles";
+import Styles from "modules/market-charts/components/market-outcome-charts--orders/market-outcome-charts--orders.styles";
+import StylesHeader from "modules/market-charts/components/market-outcome-charts--header/market-outcome-charts--header.styles";
 import { isEmpty, isEqual } from "lodash";
 
 function findTrailingZeros(number) {
