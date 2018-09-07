@@ -3,11 +3,8 @@ import { withRouter } from "react-router-dom";
 
 import MyMarkets from "modules/portfolio/components/markets/markets";
 import getUserMarkets from "modules/markets/selectors/user-markets";
-// import { loadAccountHistory } from 'modules/auth/actions/load-account-history'
-// import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export'
 import { toggleFavorite } from "modules/markets/actions/update-favorites";
-// import loadMarkets from 'modules/markets/actions/load-markets'
-import { loadUserMarkets } from "modules/markets/actions/load-user-markets";
+import { loadUserMarkets } from "modules/markets/actions/load-markets";
 import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
 import { collectMarketCreatorFees } from "modules/markets/actions/collect-market-creator-fees";

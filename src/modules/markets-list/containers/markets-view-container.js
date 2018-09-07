@@ -8,7 +8,7 @@ import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets
 import { compose } from "redux";
 import { selectMarkets } from "src/modules/markets/selectors/markets-all";
 import { getSelectedTagsAndCategoriesFromLocation } from "src/modules/markets/helpers/get-selected-tags-and-categories-from-location";
-import { loadMarketsByFilter } from "modules/markets/actions/load-markets-by-filter";
+import { loadMarketsByFilter } from "modules/markets/actions/load-markets";
 import { buildSearchString } from "modules/markets/selectors/build-search-string";
 import debounce from "utils/debounce";
 import { loadDisputing } from "modules/reports/actions/load-disputing";
