@@ -2,10 +2,12 @@ import { augur, constants } from "services/augurjs";
 import logError from "utils/log-error";
 import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
 
-import updateDesignatedReportingMarkets from "modules/reports/actions/update-designated-reporting";
-import updateUpcomingDesignatedReportingMarkets from "modules/reports/actions/update-upcoming-designated-reporting";
-import updateOpenMarkets from "modules/reports/actions/update-open-reporting";
-import updateResolvedMarkets from "modules/reports/actions/update-resolved-reporting";
+import {
+  updateDesignatedReportingMarkets,
+  updateUpcomingDesignatedReportingMarkets,
+  updateOpenMarkets,
+  updateResolvedMarkets
+} from "modules/reports/actions/update-markets-in-reporting-state";
 
 export const loadReporting = (callback = logError) => (dispatch, getState) => {
   const { universe, loginAccount } = getState();

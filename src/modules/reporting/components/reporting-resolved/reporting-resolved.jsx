@@ -6,7 +6,7 @@ import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketsList from "modules/markets-list/components/markets-list";
 import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
+import MarketsHeaderStyles from "modules/markets-list/components/markets-header/markets-header.styles";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
 
 function getMarketIds(markets) {

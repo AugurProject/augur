@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketPreview from "src/modules/reporting/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
-import MarketsHeaderStyles from "modules/markets/components/markets-header/markets-header.styles";
+import MarketsHeaderStyles from "modules/markets-list/components/markets-header/markets-header.styles";
 import Styles from "modules/reporting/components/reporting-report-markets/reporting-report-markets.styles";
 
 export const NoMarketsFound = ({ message }) => (
