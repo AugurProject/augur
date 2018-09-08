@@ -1,15 +1,13 @@
 import * as Knex from "knex";
-import { contentSearchBuilder } from "../utils/content-search-builder";
 
 exports.up = async (knex: Knex): Promise<any> => {
-  await knex("search_en").delete();
+  if (knex.client.config.client !== "sqlite3") return;
 
-  const markets = await knex.select("*").from("markets");
-  for (const market of markets) {
-    await knex("search_en").insert({marketId: market.marketId, content: contentSearchBuilder(market)});
-  }
+  await knex("search_en").delete();
 };
 
 exports.down = async (knex: Knex): Promise<any> => {
+  if (knex.client.config.client !== "sqlite3") return;
+
   knex("search_en").delete();
 };

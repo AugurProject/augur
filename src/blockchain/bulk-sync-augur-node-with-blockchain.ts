@@ -4,6 +4,7 @@ import { promisify } from "util";
 import { downloadAugurLogs } from "./download-augur-logs";
 import { augurEmitter } from "../events";
 import { logger } from "../utils/logger";
+import { SubscriptionEventNames } from "../constants";
 
 const BLOCKSTREAM_HANDOFF_BLOCKS = 5;
 let syncFinished = false;
@@ -18,7 +19,7 @@ export function isSyncFinished() {
 
 function setSyncFinished() {
   syncFinished = true;
-  augurEmitter.emit("SyncFinished");
+  augurEmitter.emit(SubscriptionEventNames.SyncFinished);
 }
 
 export async function bulkSyncAugurNodeWithBlockchain(db: Knex, augur: Augur): Promise<number> {

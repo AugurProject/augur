@@ -1,17 +1,29 @@
-import { MarketsRow, OutcomesRow } from "../types";
+import { MarketsRow, SearchRow } from "../types";
 
-export function contentSearchBuilder(marketsDataToInsert: MarketsRow<string|number>): string {
+export function contentSearchBuilder(marketsDataToInsert: MarketsRow<string|number>): SearchRow {
   if (marketsDataToInsert === null) throw new Error("market insert row object can't be null");
 
-  const content = [
-    marketsDataToInsert.marketId,
-    marketsDataToInsert.category,
-    marketsDataToInsert.shortDescription !== null ? marketsDataToInsert.shortDescription : "",
+  const filteredTags = [
     marketsDataToInsert.tag1 !== null ? marketsDataToInsert.tag1 : "",
     marketsDataToInsert.tag2 !== null ? marketsDataToInsert.tag2 : "",
-    marketsDataToInsert.resolutionSource !== null ? marketsDataToInsert.resolutionSource : "",
-    marketsDataToInsert.scalarDenomination != null ? marketsDataToInsert.scalarDenomination : "",
-  ];
+  ].join(" ").trim();
 
-  return content.join(" ").trim();
+  const {
+    marketId,
+    category,
+    shortDescription,
+    longDescription,
+    resolutionSource,
+    scalarDenomination,
+  } = marketsDataToInsert;
+
+  return {
+    marketId,
+    category,
+    tags: filteredTags.length > 0 ? filteredTags : "",
+    shortDescription: shortDescription || "",
+    longDescription: longDescription || "",
+    resolutionSource: resolutionSource || "",
+    scalarDenomination: scalarDenomination || "",
+  };
 }

@@ -56,7 +56,7 @@ export function getUniversesInfo(db: Knex, augur: Augur, universe: Address, acco
           supply: row.supply || "0",
           numMarkets: row.numMarkets,
           payout: normalizedPayoutsToFixed(normalizePayouts(row)).payout,
-          isInvalid: row.isInvalid,
+          isInvalid: Boolean(row.isInvalid),
         });
       }));
     });

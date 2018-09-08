@@ -8,6 +8,7 @@ import { increaseTokenBalance } from "./increase-token-balance";
 import { increaseTokenSupply } from "./increase-token-supply";
 import { decreaseTokenBalance } from "./decrease-token-balance";
 import { decreaseTokenSupply } from "./decrease-token-supply";
+import { SubscriptionEventNames } from "../../../constants";
 
 export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const value = new BigNumber(log.amount || log.value);
@@ -21,7 +22,8 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
     blockNumber:     log.blockNumber,
     token,
   };
-  augurEmitter.emit(log.eventName, Object.assign({}, log, tokenBurnDataToInsert));
+  const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+  augurEmitter.emit(SubscriptionEventNames[eventName], Object.assign({}, log, tokenBurnDataToInsert));
   db.insert(tokenBurnDataToInsert).into("transfers").asCallback((err: Error|null): void => {
     if (err) return callback(err);
     series([
@@ -34,7 +36,8 @@ export function processBurnLog(db: Knex, augur: Augur, log: FormattedEventLog, c
 export function processBurnLogRemoval(db: Knex, augur: Augur, log: FormattedEventLog, callback: ErrorCallback): void {
   const value = new BigNumber(log.amount || log.value);
   const token = log.token || log.address;
-  augurEmitter.emit(log.eventName, log);
+  const eventName = log.eventName as keyof typeof SubscriptionEventNames;
+  augurEmitter.emit(SubscriptionEventNames[eventName], log);
   db.from("transfers").where({ transactionHash: log.transactionHash, logIndex: log.logIndex }).del().asCallback((err: Error|null): void => {
     if (err) return callback(err);
     series([
