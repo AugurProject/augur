@@ -17,6 +17,10 @@ extraFiles:
   to: 'resources/utils'
   filter:
   - "**/*"
+- from: 'node_modules/augur-node/build/blockchain'
+  to: 'resources/blockchain'
+  filter:
+  - "**/*"
 - from: 'node_modules/augur-node/certs'
   to: 'certs'
   filter:
