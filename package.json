@@ -72,6 +72,7 @@
     "pg": "7.3.0",
     "postinstall-build": "5.0.1",
     "speedomatic": "2.1.5",
+    "helmet": "3.13.0",
     "sqlite3": "4.0.2",
     "ts-node": "^6.1.1",
     "uuid": "3.1.0",
