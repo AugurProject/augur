@@ -135,8 +135,8 @@ export class App extends Component {
             <ModalDownloadGeth closeModal={this.cancelDownload} download={this.downloadGeth} />
           </div>
         }
-        <div className={Styles.App__connectingContainer}>
-          <div className={Styles.App__scrollContainer}>
+        <div className={Styles.App__scrollContainer}>
+          <div className={Styles.App__scrollContainerApp}>
             <div className={Styles.App__row}>
               <Logo />
               <SettingsDropdown
@@ -155,6 +155,8 @@ export class App extends Component {
               {(serverStatus.AUGUR_NODE_CONNECTED || serverStatus.GETH_CONNECTED)  ? 'Disconnect' : 'Connect'}
             </button>
           </div>
+        </div>
+        <div className={Styles.App__connectingContainer}>
           <div style={{marginTop: '195px', overflowY: 'hidden', maxHeight: '490px', paddingBottom: '10px'}}>
             <ConnectingView
               connected={serverStatus.AUGUR_NODE_CONNECTED || (serverStatus.GETH_CONNECTED && serverStatus.GETH_FINISHED_SYNCING && !serverStatus.GETH_SYNCING)}
