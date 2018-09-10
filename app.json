@@ -17,5 +17,5 @@
       "value": "environment"
     }
   },
-  "addons": ["heroku-postgresql:hobby-dev"]
+  "addons": ["heroku-postgresql:standard-0"]
 }
