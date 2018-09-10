@@ -6,6 +6,7 @@ import Paginator from "modules/common/components/paginator/paginator";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import { TYPE_TRADE } from "modules/markets/constants/link-types";
 import isEqual from "lodash/isEqual";
+import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 
 import debounce from "utils/debounce";
 
@@ -28,7 +29,9 @@ export default class MarketsList extends Component {
     pendingLiquidityOrders: PropTypes.object,
     nullMessage: PropTypes.string,
     addNullPadding: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
+    showDisputingCard: PropTypes.bool,
+    outcomes: PropTypes.object
   };
 
   constructor(props) {
@@ -122,7 +125,10 @@ export default class MarketsList extends Component {
       pendingLiquidityOrders,
       nullMessage,
       addNullPadding,
-      style
+      style,
+      showDisputingCard,
+      outcomes,
+      linkType
     } = this.props;
     const s = this.state;
 
@@ -144,6 +150,19 @@ export default class MarketsList extends Component {
             const market = markets.find(market => market.id === id);
 
             if (market && market.id) {
+              if (showDisputingCard) {
+                return (
+                  <DisputeMarketCard
+                    key={market.id}
+                    market={market}
+                    isMobile={isMobile}
+                    location={location}
+                    history={history}
+                    outcomes={outcomes}
+                    isForkingMarket={false}
+                  />
+                );
+              }
               return (
                 <MarketPreview
                   {...market}
@@ -154,7 +173,7 @@ export default class MarketsList extends Component {
                   history={history}
                   collectMarketCreatorFees={collectMarketCreatorFees}
                   isMobile={isMobile}
-                  linkType={TYPE_TRADE}
+                  linkType={linkType || TYPE_TRADE}
                   id={market.id}
                   testid={testid}
                   pendingLiquidityOrders={pendingLiquidityOrders}
