@@ -30,6 +30,7 @@
     "migrate_pg": "knex migrate:latest --env pg",
     "migrate:make": "knex migrate:make -x ts $1",
     "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test/unit",
+    "preinstall": "npm run init-git",
     "postinstall": "postinstall-build build",
     "postdeploy": "npm run migrate_pg",
     "link": "npm link augur.js speedomatic",
