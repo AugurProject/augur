@@ -12,6 +12,10 @@
       "description": "The Ethereum node WSS endpoint.",
       "value": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
     },
+    "PGSSLMODE": {
+      "description": "SSL for sql.",
+      "value": "required
+    },
     "NETWORK": {
       "description": "The Ethereum network to connect to. Possible values: `rinkeby`, `ropsten`, `environment` -- by default this will use the environment above.",
       "value": "environment"
