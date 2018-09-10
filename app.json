@@ -21,10 +21,5 @@
       "value": "required"
     },
   },
-  "addons": ["heroku-postgresql:standard-0"],
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-pgbouncer"
-    }
-  ]
+  "addons": ["heroku-postgresql:standard-0"]
 }
