@@ -1,7 +1,7 @@
 import { each } from "async";
 import { augur } from "services/augurjs";
 import { loadMarketsInfo } from "modules/markets/actions/load-markets-info";
-import cancelOpenOrdersInClosedMarkets from "modules/orders/actions/cancel-open-orders-in-closed-markets";
+import { cancelOpenOrdersInClosedMarkets } from "modules/orders/actions/cancel-order";
 import selectWinningPositions from "modules/positions/selectors/winning-positions";
 import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
 import noop from "utils/noop";

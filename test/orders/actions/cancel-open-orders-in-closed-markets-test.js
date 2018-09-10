@@ -1,38 +1,31 @@
-import proxyquire from "proxyquire";
-import sinon from "sinon";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
+import {
+  cancelOpenOrdersInClosedMarkets,
+  __RewireAPI__ as ReWireModule
+} from "modules/orders/actions/cancel-order";
 
-describe(`modules/orders/actions/cancel-open-orders-in-closed-markets.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+describe(`modules/orders/actions/cancel-order.js`, () => {
   const mockStore = configureMockStore([thunk]);
   const test = t => {
     it(t.description, () => {
       const store = mockStore(t.state);
-      const CancelOrder = { cancelOrder: () => {} };
       const { openOrders } = t;
-      const cancelOpenOrdersInClosedMarkets = proxyquire(
-        "../../../src/modules/orders/actions/cancel-open-orders-in-closed-markets.js",
-        {
-          "./cancel-order": CancelOrder,
-          "../selectors/open-orders": openOrders
+      ReWireModule.__Rewire__(
+        "cancelOrder",
+        (orderId, marketId, outcome, type) => (dispatch, getState) => {
+          dispatch({
+            type: "CANCEL_ORDER",
+            params: {
+              orderId,
+              marketId,
+              outcome,
+              type
+            }
+          });
         }
-      ).default;
-      sinon
-        .stub(CancelOrder, "cancelOrder")
-        .callsFake(
-          (orderId, marketId, outcome, type) => (dispatch, getState) => {
-            dispatch({
-              type: "CANCEL_ORDER",
-              params: {
-                orderId,
-                marketId,
-                outcome,
-                type
-              }
-            });
-          }
-        );
+      );
+      ReWireModule.__Rewire__("getOpenOrders", () => openOrders);
       store.dispatch(cancelOpenOrdersInClosedMarkets());
       t.assertions(store.getActions());
       store.clearActions();
