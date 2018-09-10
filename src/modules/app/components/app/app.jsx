@@ -591,8 +591,7 @@ export default class AppView extends Component {
               <section
                 className={Styles.Main__content}
                 style={{
-                  marginLeft: tagsMargin,
-                  overflowY: currentPath === MARKETS ? "hidden" : "auto"
+                  marginLeft: tagsMargin
                 }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"

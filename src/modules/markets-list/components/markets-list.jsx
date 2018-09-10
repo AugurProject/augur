@@ -55,10 +55,6 @@ export default class MarketsList extends Component {
     }
   }
 
-  componentDidMount() {
-    window.scrollTo(0, 0)
-  }
-
   componentWillUpdate(nextProps, nextState) {
     const { filteredMarkets, loadMarketsInfoIfNotLoaded } = this.props;
     if (
