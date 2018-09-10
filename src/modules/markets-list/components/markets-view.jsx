@@ -38,6 +38,9 @@ export default class MarketsView extends Component {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 0)
+    //this.componentWrapper.scrollTop = 0;
+
     if (this.props.universe) {
       this.updateFilteredMarkets();
     }
@@ -82,6 +85,7 @@ export default class MarketsView extends Component {
       toggleFavorite
     } = this.props;
     const s = this.state;
+      //  style={{position: 'fixed', width: '100%'}}
 
     return (
       <section
