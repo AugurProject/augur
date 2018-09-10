@@ -9,7 +9,7 @@
     "node": "10.4.x",
     "npm": "6.1.x",
     "yarn": "1.9.x"
-  }
+  },
   "typings": "definitions/index",
   "typescript": {
     "definition": "definitions/index"
