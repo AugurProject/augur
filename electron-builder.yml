@@ -9,16 +9,21 @@ extraFiles:
   to: "resources"
   filter:
   - "**/*"
+extraResources:
 - from: 'node_modules/augur-node/build/migrations'
-  to: 'resources/migrations'
+  to: 'migrations'
+  filter:
+  - "**/*"
+- from: 'node_modules/augur-node/build/database'
+  to: 'database'
   filter:
   - "**/*"
 - from: 'node_modules/augur-node/build/utils'
-  to: 'resources/utils'
+  to: 'utils'
   filter:
   - "**/*"
 - from: 'node_modules/augur-node/build/blockchain'
-  to: 'resources/blockchain'
+  to: 'blockchain'
   filter:
   - "**/*"
 - from: 'node_modules/augur-node/certs'
@@ -26,7 +31,7 @@ extraFiles:
   filter:
   - "**/*"
 - from: "node_modules/augur-ui/build"
-  to: "resources/ui-client"
+  to: "ui-client"
   filter:
   - "**/*"
 mac:
