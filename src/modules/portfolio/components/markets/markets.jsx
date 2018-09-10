@@ -14,7 +14,7 @@ import {
 } from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
-import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 
 class MyMarkets extends Component {
   static propTypes = {
