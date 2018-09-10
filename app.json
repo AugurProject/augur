@@ -15,7 +15,10 @@
     "NETWORK": {
       "description": "The Ethereum network to connect to. Possible values: `rinkeby`, `ropsten`, `environment` -- by default this will use the environment above.",
       "value": "environment"
-    }
+    },
+    "PGSSLMODE": {
+      "value": "required"
+    },
   },
   "addons": ["heroku-postgresql:standard-0"]
 }
