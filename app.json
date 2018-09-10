@@ -17,13 +17,14 @@
       "value": "environment"
     },
     "PGSSLMODE": {
+      "description": "SSL required for postgresql",
       "value": "required"
     },
   },
+  "addons": ["heroku-postgresql:standard-0"],
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-buildpack-pgbouncer"
     }
-  ],
-  "addons": ["heroku-postgresql:standard-0"]
+  ]
 }
