@@ -6,11 +6,11 @@
   "env": {
     "ETHEREUM_HTTP": {
       "description": "The Ethereum node HTTP endpoint.",
-      "value": "https://rinkeby.ethereum.nodes.augur.net"
+      "value": "https://gethnode.com/http"
     },
     "ETHEREUM_WS": {
       "description": "The Ethereum node WSS endpoint.",
-      "value": "wss://websocket-rinkeby.ethereum.nodes.augur.net"
+      "value": "wss://gethnode.com/ws"
     },
     "PGSSLMODE": {
       "description": "SSL for sql.",
