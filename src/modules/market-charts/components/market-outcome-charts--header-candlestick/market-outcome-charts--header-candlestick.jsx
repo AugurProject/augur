@@ -25,7 +25,7 @@ const MarketOutcomeCandlestickHeader = ({
   <section>
     {isMobile || (
       <div className={StylesHeader.MarketOutcomeChartsHeader__Header}>
-        { outcomeName && <h2>{outcomeName}</h2> }
+        {outcomeName && <h2>{outcomeName}</h2>}
         <span>price (eth)</span>
       </div>
     )}
