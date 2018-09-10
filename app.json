@@ -19,7 +19,7 @@
     "PGSSLMODE": {
       "description": "SSL required for postgresql",
       "value": "required"
-    },
+    }
   },
   "addons": ["heroku-postgresql:standard-0"]
 }
