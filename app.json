@@ -25,6 +25,9 @@
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-buildpack-pgbouncer"
+    },
+    {
+      "url": "heroku/nodejs"
     }
   ]
 }
