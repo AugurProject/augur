@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 // import Styles from './settings-dropdown.styles.less'
 import Dropdown from "../../../common/components/dropdown/dropdown";
-import settingsPng from '../../../../assets/images/settings.png'
+import settingsSVG from '../../../../assets/images/settings.svg'
 import DropdownStyles from "../../../common/components/dropdown/dropdown.styles.less";
 import { resetDatabase } from '../../actions/local-server-cmds'
 import { GEN_INFO } from '../../../../utils/constants'
@@ -36,7 +36,7 @@ export class SettingsDropdown extends Component {
 
   	return (
   		<section>
-        <Dropdown button={[<img key="0" src={settingsPng} alt="Settings" width="17" style={{marginBottom: '5px'}} />]}>
+        <Dropdown button={[<img key="0" src={settingsSVG} alt="Settings" width="18" height="19" style={{marginBottom: '5px'}} />]}>
           {options.map((option, index) => (
             <div
               key={index}
