@@ -133,9 +133,6 @@ export default class MarketsList extends Component {
         className="markets-list"
         data-testid={testid}
         style={style}
-        ref={additionalDetails => {
-          this.additionalDetails = additionalDetails;
-        }}
       >
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
