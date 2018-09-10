@@ -101,9 +101,9 @@ export default class MarketsList extends Component {
   }
 
   scrolled(e) {
-    console.log('scrolled')
-    console.log(window.scrollY)
-    console.log(this.additionalDetails.scrollTop)
+    console.log("scrolled");
+    console.log(window.scrollY);
+    console.log(this.additionalDetails.scrollTop);
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
@@ -129,9 +129,15 @@ export default class MarketsList extends Component {
     const marketsLength = filteredMarkets.length;
 
     return (
-      <article className="markets-list" data-testid={testid} style={style} onScroll={e => this.scrolled(e)} ref={additionalDetails => {
-                this.additionalDetails = additionalDetails;
-              }}>
+      <article
+        className="markets-list"
+        data-testid={testid}
+        style={style}
+        onScroll={e => this.scrolled(e)}
+        ref={additionalDetails => {
+          this.additionalDetails = additionalDetails;
+        }}
+      >
         {marketsLength && s.boundedLength ? (
           [...Array(s.boundedLength)].map((unused, i) => {
             const id = filteredMarkets[s.lowerBound - 1 + i];
