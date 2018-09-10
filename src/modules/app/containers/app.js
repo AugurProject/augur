@@ -17,7 +17,7 @@ import {
 import getAllMarkets from "modules/markets/selectors/markets-all";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
-import { isLoading } from "modules/app/selectors/is-loading";
+import { isLoading } from "modules/markets/selectors/is-loading";
 import { updateIsAnimating } from "modules/app/actions/update-is-animating";
 import {
   selectBlockchainState,
