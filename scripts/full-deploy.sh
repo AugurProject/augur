@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -ex pipefail
 
 NPM_VERSION=${NPM_VERSION:-prerelease}
 NPM_TAG=${NPM_TAG:-dev}
