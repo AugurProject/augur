@@ -165,6 +165,7 @@ function deployContracts()
 	done
 }
 
+preflightCheck
 if [ "$BUMP_AUGUR_CORE" == true ]; then
 	checkSolidityVersion 0.4.20
 	deployAugurCore
