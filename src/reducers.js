@@ -2,14 +2,13 @@ import accountDisputes from "modules/reports/reducers/account-disputes-state";
 import accountPositions from "modules/positions/reducers/account-positions";
 import accountTrades from "modules/positions/reducers/account-trades";
 import appStatus from "modules/app/reducers/app-status";
+import authStatus from "modules/auth/reducers/auth-status";
 import blockchain from "modules/app/reducers/blockchain";
 import categories from "modules/categories/reducers/categories-data";
 import closePositionTradeGroups from "modules/positions/reducers/close-position-trade-groups";
 import connection from "modules/app/reducers/connection";
 import contractAddresses from "modules/contracts/reducers/contract-addresses";
 import disputeCrowdsourcerTokens from "modules/reports/reducers/dispute-crowdsourcer-data";
-import edgeContext from "modules/auth/reducers/edge-context";
-import edgeLoading from "modules/auth/reducers/edge-loading";
 import env from "modules/app/reducers/env";
 import eventsAPI from "modules/contracts/reducers/events-api";
 import favorites from "modules/markets/reducers/favorites";
@@ -17,8 +16,6 @@ import filterOption from "modules/filter-sort/reducers/filter-option";
 import functionsAPI from "modules/contracts/reducers/functions-api";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import isFirstOrderBookChunkLoaded from "modules/orders/reducers/is-first-order-book-chunk-loaded";
-import isLogged from "modules/auth/reducers/is-logged";
-import ledgerStatus from "modules/auth/reducers/ledger-status";
 import loginAccount from "modules/auth/reducers/login-account";
 import marketCreatorFees from "modules/markets/reducers/market-creator-fees";
 import marketLoading from "modules/markets/reducers/market-loading";
@@ -53,14 +50,13 @@ export function createReducer() {
     accountPositions,
     accountTrades,
     appStatus,
+    authStatus,
     blockchain,
     categories,
     closePositionTradeGroups,
     connection,
     contractAddresses,
     disputeCrowdsourcerTokens,
-    edgeContext,
-    edgeLoading,
     env,
     eventsAPI,
     favorites,
@@ -68,8 +64,6 @@ export function createReducer() {
     functionsAPI,
     initialReporters,
     isFirstOrderBookChunkLoaded,
-    isLogged,
-    ledgerStatus,
     loginAccount,
     marketCreatorFees,
     marketLoading,

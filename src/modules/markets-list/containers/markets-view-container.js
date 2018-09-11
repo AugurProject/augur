@@ -22,7 +22,7 @@ const mapStateToProps = (state, { location }) => {
   const searchPhrase = buildSearchString(keywords, tags);
 
   return {
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     universe: (state.universe || {}).id,
     hasLoadedMarkets: state.appStatus.hasLoadedMarkets,
     search: searchPhrase,

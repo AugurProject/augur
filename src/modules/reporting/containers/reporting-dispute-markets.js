@@ -18,9 +18,9 @@ const mapStateToProps = (state, { history }) => {
   const upcomingDisputableMarkets = awaitingDisputeMarkets() || [];
 
   return {
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     isConnected: state.connection.isConnected && state.universe.id != null,
-    doesUserHaveRep: loginAccount.rep.value > 0 || !state.isLogged,
+    doesUserHaveRep: loginAccount.rep.value > 0 || !state.authStatus.isLogged,
     markets: disputableMarkets,
     showPagination: disputableMarkets.length > PAGINATION_COUNT,
     disputableMarketsLength: disputableMarkets.length,

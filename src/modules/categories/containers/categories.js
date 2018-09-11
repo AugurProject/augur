@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
   isMobile: state.appStatus.isMobile,
   categories: selectCategories(state),
   loginAccount: selectLoginAccount(state),
-  isLogged: state.isLogged
+  isLogged: state.authStatus.isLogged
 });
 
 const Categories = withRouter(connect(mapStateToProps)(CategoriesView));

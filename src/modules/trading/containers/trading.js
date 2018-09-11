@@ -9,7 +9,7 @@ import { clearTradeInProgress } from "modules/trades/actions/update-trades-in-pr
 
 const mapStateToProps = state => ({
   availableFunds: createBigNumber(state.loginAccount.eth || 0),
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   isMobile: state.appStatus.isMobile
 });
 

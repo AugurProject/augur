@@ -18,7 +18,7 @@ import logError from "utils/log-error";
 const mapStateToProps = state =>
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   ({
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     myMarkets: getUserMarkets(),
     transactionsLoading: state.appStatus.transactionsLoading,
     isMobile: state.appStatus.isMobile,

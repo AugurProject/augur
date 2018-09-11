@@ -4,7 +4,7 @@ import { collectMarketCreatorFees } from "modules/markets/actions/market-creator
 import MarketPreview from "modules/market/components/market-preview/market-preview";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged
+  isLogged: state.authStatus.isLogged
 });
 
 const mapDispatchToProps = dispatch => ({

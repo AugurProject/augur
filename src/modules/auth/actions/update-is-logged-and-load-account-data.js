@@ -1,7 +1,10 @@
 import { toChecksumAddress } from "ethereumjs-util";
 import { augur } from "services/augurjs";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
-import { updateIsLogged } from "modules/auth/actions/update-is-logged";
+import {
+  updateAuthStatus,
+  IS_LOGGED
+} from "modules/auth/actions/update-auth-status";
 import { clearLoginAccount } from "modules/auth/actions/update-login-account";
 
 export const updateIsLoggedAndLoadAccountData = (
@@ -17,6 +20,6 @@ export const updateIsLoggedAndLoadAccountData = (
     displayAddress,
     meta: { accountType, address, signer: null }
   };
-  dispatch(updateIsLogged(true));
+  dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(loadAccountData(loginAccount));
 };

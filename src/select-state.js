@@ -13,14 +13,14 @@ export const selectClosePositionTradeGroupsState = state =>
 export const selectConnectionState = state => state.connection;
 export const selectDisputeCrowdsourcerTokens = state =>
   state.disputeCrowdsourcerTokens;
-export const selectEdgeContextState = state => state.edgeContext;
-export const selectEdgeLoadingState = state => state.edgeLoading;
+export const selectEdgeContextState = state => state.authStatus.edgeContext;
+export const selectEdgeLoadingState = state => state.authStatus.edgeLoading;
 export const selectEnvState = state => state.env;
 export const selectFavoritesState = state => state.favorites;
 export const selectHasLoadedMarketsState = state =>
   state.appStatus.hasLoadedMarkets;
 export const selectInitialReporters = state => state.initialReporters;
-export const selectIsLogged = state => state.isLogged;
+export const selectIsLogged = state => state.authStatus.isLogged;
 export const selectIsMobile = state => state.appStatus.isMobile;
 export const selectIsAnimating = state => state.appStatus.isAnimating;
 export const selectIsMobileSmall = state => state.appStatus.isMobileSmall;
