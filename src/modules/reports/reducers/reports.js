@@ -1,6 +1,7 @@
 import {
   UPDATE_REPORTS,
-  UPDATE_REPORT
+  UPDATE_REPORT,
+  MARKETS_REPORT
 } from "modules/reports/actions/update-reports";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
@@ -10,6 +11,7 @@ export default function(reports = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
       const updatedReports = { ...reports };
+      if (!action || !action.reports) return updatedReports;
       const universeIds = Object.keys(action.reports);
       const numUniverseIds = universeIds.length;
       for (let i = 0; i < numUniverseIds; ++i) {
@@ -17,6 +19,7 @@ export default function(reports = DEFAULT_STATE, action) {
           ...reports[universeIds[i]],
           ...action.reports[universeIds[i]]
         };
+        updatedReports.markets = [];
       }
       return updatedReports;
     }
@@ -35,6 +38,13 @@ export default function(reports = DEFAULT_STATE, action) {
         }
       };
     }
+    case MARKETS_REPORT:
+      return {
+        ...reports,
+        markets: {
+          [action.universeId]: action.marketIds
+        }
+      };
     case RESET_STATE:
       return DEFAULT_STATE;
     default:

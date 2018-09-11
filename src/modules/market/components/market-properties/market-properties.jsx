@@ -10,7 +10,7 @@ import {
   TYPE_DISPUTE,
   TYPE_VIEW,
   TYPE_CLAIM_PROCEEDS
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import { SCALAR } from "modules/markets/constants/market-types";
 
 import getValue from "utils/get-value";

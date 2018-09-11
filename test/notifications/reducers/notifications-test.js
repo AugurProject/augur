@@ -1,11 +1,11 @@
-import * as notificationLevels from "src/modules/notifications/constants";
+import * as notificationLevels from "modules/notifications/constants/notifications";
 
 import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION,
   CLEAR_NOTIFICATIONS
-} from "modules/notifications/actions";
+} from "modules/notifications/actions/notifications";
 
 import notifications from "modules/notifications/reducers/notifications";
 

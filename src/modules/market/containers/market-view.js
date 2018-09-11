@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketView from "modules/market/components/market-view/market-view";
-import { loadFullMarket } from "modules/market/actions/load-full-market";
-import { selectMarket } from "modules/market/selectors/market";
+import { loadFullMarket } from "modules/markets/actions/load-full-market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 import parseQuery from "modules/routes/helpers/parse-query";
 

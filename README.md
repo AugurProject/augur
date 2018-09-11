@@ -69,8 +69,8 @@ It's also recommend that you use a Debian based workflow for the installation of
 ## Build From Source
 
 ```
-git clone https://github.com/AugurProject/augur.git
-cd augur
+git clone https://github.com/AugurProject/augur-ui.git
+cd augur-ui
 ```
 
 ### npm
@@ -85,13 +85,13 @@ yarn
 yarn build
 ```
 
-This will create a `build` folder inside of the `augur` directory with all the files necessary to run the client.
+This will create a `build` folder inside of the `augur-ui` directory with all the files necessary to run the client.
 Simply copy these files to your web server of choice.
 
 
 ### [Docker](https://www.docker.com/)
 After git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
-[dockerized augur client](./docs/deploy-production.md)
+[dockerized augur-ui client](./docs/deploy-production.md)
 
 ### [Prettier](https://prettier.io/)
 We are using prettier to maintain formatting standards.Please [install](https://prettier.io/docs/en/editors.html) the relevant editor extension for your editor.

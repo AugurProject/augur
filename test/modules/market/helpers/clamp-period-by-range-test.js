@@ -1,6 +1,6 @@
-import { clampPeriodByRange } from "src/modules/market/helpers/clamp-period-by-range";
+import { clampPeriodByRange } from "modules/markets/helpers/clamp-period-by-range";
 
-describe("src/modules/market/helpers/clamp-period-by-range.js", () => {
+describe("src/modules/markets/helpers/clamp-period-by-range.js", () => {
   let PERIODS;
 
   beforeEach(() => {

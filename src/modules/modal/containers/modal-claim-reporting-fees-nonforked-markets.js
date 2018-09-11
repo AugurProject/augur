@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import { closeModal } from "modules/modal/actions/close-modal";
 import ModalClaimReportingFeesNonforkedMarkets from "modules/modal/components/modal-claim-reporting-fees-nonforked-markets/modal-claim-reporting-fees-nonforked-markets";
-import claimReportingFeesNonforkedMarkets from "modules/portfolio/actions/claim-reporting-fees-nonforked-markets";
+import { claimReportingFeesNonforkedMarkets } from "modules/reports/actions/claim-reporting-fees";
 
 const mapStateToProps = state => ({
   modal: state.modal,

@@ -1,12 +1,10 @@
 import { augur } from "services/augurjs";
-import {
-  updateNotification,
-  addNotification
-} from "modules/notifications/actions";
+import { updateNotification } from "modules/notifications/actions/notifications";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 import { UNIVERSE_ID } from "modules/app/constants/network";
 import logError from "utils/log-error";
+import noop from "utils/noop";
 
 export default function(callback = logError) {
   return (dispatch, getState) => {
@@ -21,19 +19,10 @@ export default function(callback = logError) {
           tx: { to: reputationTokenAddress },
           _amount: 0,
           meta: loginAccount.meta,
-          onSent: res => {
-            dispatch(
-              addNotification({
-                id: res.hash,
-                status: "Pending",
-                params: {
-                  type: "faucet"
-                },
-                timestamp: selectCurrentTimestampInSeconds(getState())
-              })
-            );
-          },
+          onSent: noop,
           onSuccess: res => {
+            // Trigger the notification updates in the callback functions
+            // because Augur Node does not emit an event for TokensMinted.
             dispatch(
               updateNotification(res.hash, {
                 id: res.hash,
@@ -44,7 +33,16 @@ export default function(callback = logError) {
             dispatch(updateAssets());
             callback(null);
           },
-          onFailed: callback
+          onFailed: res => {
+            dispatch(
+              updateNotification(res.hash, {
+                id: res.hash,
+                status: "Failed",
+                timestamp: selectCurrentTimestampInSeconds(getState())
+              })
+            );
+            logError(res);
+          }
         });
       }
     );

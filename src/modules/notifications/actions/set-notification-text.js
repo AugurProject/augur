@@ -1,19 +1,17 @@
 /**
- * @todo Make use of getOutcome in addTransactions.js
- * @todo Investigate why fill order tx gets stuck in Pending status
- * @todo Fix bug where createOrder outcome is wrong for categorical markets
+ * @todo Update text for FINALIZE once notification triggering is moved
  */
-
 import store from "src/store";
 import { augur } from "services/augurjs";
 import { isEmpty } from "lodash/fp";
-import { selectMarket } from "modules/market/selectors/market";
-import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info-if-not-loaded";
-import { TEN_TO_THE_EIGHTEENTH_POWER } from "modules/trade/constants/numbers";
-import { BUY, SELL } from "modules/trade/constants/types";
-import { formatEther, formatRep, formatShares } from "utils/format-number";
-import { createBigNumber } from "utils/create-big-number";
+import { selectMarket } from "modules/markets/selectors/market";
+import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets-info";
+import { TEN_TO_THE_EIGHTEENTH_POWER } from "modules/trades/constants/numbers";
 import { getOutcome } from "modules/transactions/actions/add-transactions";
+import { BUY, SELL } from "modules/trades/constants/types";
+import { formatEther, formatRep, formatShares } from "utils/format-number";
+import calculatePayoutNumeratorsValue from "utils/calculate-payout-numerators-value";
+import { createBigNumber } from "utils/create-big-number";
 
 export default function setNotificationText(notification, callback) {
   const result = (dispatch, getState) => {
@@ -47,9 +45,9 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Canceled order for ${
-                formatShares(notification.log.quantity).denomination
-              } of "${outcomeDescription}" at ${
+              notification.description = `Cancel order for ${formatShares(
+                notification.log.quantity
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -67,9 +65,9 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Canceled order for ${
-                formatShares(notification.log.quantity).denomination
-              } of "${outcomeDescription}" at ${
+              notification.description = `Cancel order for ${formatShares(
+                notification.log.quantity
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -113,7 +111,7 @@ export default function setNotificationText(notification, callback) {
                 marketInfo,
                 notification.log.outcome
               );
-              notification.description = `Created ${
+              notification.description = `Create ${
                 notification.log.orderType
               } order for ${
                 formatShares(notification.log.quantity).formatted
@@ -164,7 +162,7 @@ export default function setNotificationText(notification, callback) {
                 ).name
               );
 
-              notification.description = `Filled ${
+              notification.description = `Fill ${
                 notification.log.orderType
               } order(s) for ${
                 formatShares(notification.log.amount || 0).formatted
@@ -177,13 +175,12 @@ export default function setNotificationText(notification, callback) {
               if (notification.log.noFill) {
                 notification.description = `Unable to ${
                   notification.log.orderType
-                } Shares of ${outcomeDescription} at ${augur.utils.convertOnChainPriceToDisplayPrice(
+                } shares of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
                   marketInfo.numTicks
                 )} ETH.`;
               }
-
               return callback(notification);
             })
           );
@@ -193,11 +190,6 @@ export default function setNotificationText(notification, callback) {
       // InitialReporter
       case "MIGRATEREP":
         notification.title = "Migrate REP";
-        break;
-
-      // LegacyReputationToken
-      case "FAUCET":
-        notification.title = "Get REP from faucet";
         break;
 
       // Mailbox
@@ -210,22 +202,27 @@ export default function setNotificationText(notification, callback) {
 
       // Market
       case "CONTRIBUTE":
-        notification.title = "Contribute REP to crowdsourcer";
+        notification.title = "Contribute to crowdsourcer";
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
-              // TODO: Set outcome description
-              // const marketInfo = selectMarket(notification.to);
-              // const outcomeDescription = notification.params._invalid
-              //   ? "Invalid"
-              //   : getOutcome(marketInfo, notification.log.outcome);
+              const marketInfo = selectMarket(notification.to);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
               notification.description = `Place ${
                 formatRep(
                   createBigNumber(notification.params._amount).dividedBy(
                     TEN_TO_THE_EIGHTEENTH_POWER
                   )
                 ).formatted
-              } REP on a dispute bond`;
+              } REP on "${outcomeDescription}"`;
               return callback(notification);
             })
           );
@@ -239,28 +236,39 @@ export default function setNotificationText(notification, callback) {
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
-              const marketDescription = selectMarket(notification.to)
-                .description;
-              notification.description = `Submitted Report on "${marketDescription}"`;
+              const marketInfo = selectMarket(notification.to);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription =
+                outcome === null
+                  ? "Market Is Invalid"
+                  : getOutcome(marketInfo, outcome);
+              notification.description = `Report "${outcomeDescription}" on "${
+                marketInfo.description
+              }"`;
               return callback(notification);
             })
           );
         }
         break;
       case "FINALIZE":
+        // Market finalization notifications should only be displayed if
+        // the market creator is the same as the account that's logged in
         notification.title = "Finalize market";
-        // TODO: Test
-        // if (!notification.description && notification.log) {
-        //   dispatch(
-        //     loadMarketsInfoIfNotLoaded([notification.to], () => {
-        //       const marketDescription = selectMarket(notification.to)
-        //         .description;
-        //       notification.description =
-        //         'Finalize market "' + marketDescription + '"';
-        //       return callback(notification);
-        //     })
-        //   );
-        // }
+        if (!notification.description && notification.log) {
+          dispatch(
+            loadMarketsInfoIfNotLoaded([notification.log.market], () => {
+              const marketDescription = selectMarket(notification.log.market)
+                .description;
+              notification.description =
+                'Finalize market "' + marketDescription + '"';
+              return callback(notification);
+            })
+          );
+        }
         break;
       case "FINALIZEFORK":
         notification.title = "Finalize forked market";
@@ -280,8 +288,32 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Migrate REP into universe";
         break;
       case "MIGRATEOUT":
+        notification.title = "Migrate REP out of universe";
+        break;
       case "MIGRATEOUTBYPAYOUT":
         notification.title = "Migrate REP out of universe";
+        if (!notification.description && notification.log) {
+          const forkingMarketId = getState().universe.forkingMarket;
+          dispatch(
+            loadMarketsInfoIfNotLoaded([forkingMarketId], () => {
+              const marketInfo = selectMarket(forkingMarketId);
+              const outcome = calculatePayoutNumeratorsValue(
+                marketInfo,
+                notification.params._payoutNumerators,
+                notification.params._invalid
+              );
+              const outcomeDescription = getOutcome(marketInfo, outcome);
+              notification.description = `Migrate ${
+                formatRep(
+                  createBigNumber(notification.log.value).dividedBy(
+                    TEN_TO_THE_EIGHTEENTH_POWER
+                  )
+                ).formatted
+              } REP to child universe "${outcomeDescription}"`;
+              return callback(notification);
+            })
+          );
+        }
         break;
       case "UPDATEPARENTTOTALTHEORETICALSUPPLY":
         notification.title =
@@ -316,9 +348,9 @@ export default function setNotificationText(notification, callback) {
               );
               notification.description = `Place ${orderType} order for ${
                 formatShares(notification.log.amount).formatted
-              } ${
-                formatShares(notification.log.amount).denomination
-              } of "${outcomeDescription}" at ${
+              } ${formatShares(
+                notification.log.amount
+              ).denomination.toLowerCase()} of "${outcomeDescription}" at ${
                 formatEther(notification.log.price).formatted
               } ETH`;
               return callback(notification);
@@ -327,6 +359,11 @@ export default function setNotificationText(notification, callback) {
         }
         break;
       }
+
+      // TestNetReputationToken
+      case "FAUCET":
+        notification.title = "Get REP from faucet";
+        break;
 
       // TradingEscapeHatch
       case "CLAIMSHARESINUPDATE":
@@ -343,7 +380,9 @@ export default function setNotificationText(notification, callback) {
       case "CREATEYESNOMARKET":
         notification.title = "Create new market";
         if (!notification.description && notification.log) {
-          notification.description = notification.params._description;
+          notification.description = `Create market "${
+            notification.params._description
+          }"`;
         }
         break;
       case "CREATECHILDUNIVERSE":
@@ -402,9 +441,20 @@ export default function setNotificationText(notification, callback) {
         notification.title = "Deposit ETH";
         break;
       case "FORKANDREDEEM":
-      case "REDEEM":
       case "REDEEMFORREPORTINGPARTICIPANT":
-        notification.title = "Claim funds";
+        notification.title = "Redeem funds";
+        break;
+      case "REDEEM":
+        notification.title = "Redeem funds";
+        if (!notification.description && notification.log) {
+          notification.description = `Claim ${
+            formatRep(
+              createBigNumber(notification.log.value).dividedBy(
+                TEN_TO_THE_EIGHTEENTH_POWER
+              )
+            ).formatted
+          } REP`;
+        }
         break;
       case "INCREASEAPPROVAL":
         notification.title = "Increase spending approval";
@@ -415,6 +465,7 @@ export default function setNotificationText(notification, callback) {
       case "TRANSFER":
       case "TRANSFERFROM":
       case "TRANSFEROWNERSHIP":
+        // Ignore this case for now, since it seems redundant with some other notifications
         break;
       case "WITHDRAWETHERTO":
         notification.title = "Withdraw ETH";
@@ -442,7 +493,9 @@ export default function setNotificationText(notification, callback) {
         break;
 
       default: {
-        const result = notification.params.type.replace(/([A-Z])/g, " $1");
+        const result = notification.params.type
+          .replace(/([A-Z])/g, " $1")
+          .toLowerCase();
         notification.title = result;
         break;
       }

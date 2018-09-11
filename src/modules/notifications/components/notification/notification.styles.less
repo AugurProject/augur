@@ -1,0 +1,115 @@
+@import (reference) '~assets/styles/shared';
+
+.Notification {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  padding: 0 1.5rem 0 1.75rem;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Notification__link {
+  display: flex;
+  flex-direction: column;
+}
+
+.Notification__row {
+  display: flex;
+}
+
+.Notification__closeButton {
+  display: block;
+}
+
+.Notification__closeButtonHidden {
+  display: none;
+}
+
+.Notification__title {
+  color: @color-darkpurple;
+  flex: 0 1 auto;
+  font-size: @font-size-medium;
+  font-weight: bold;
+  height: 1rem;
+  margin: 0 0.625rem 0.25rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: flex 1000ms ease-in;
+  white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Notification__title::first-letter {
+  text-transform: capitalize;
+}
+
+.Notification__status {
+  color: @color-darkpurple;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  height: 0.688rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.Notification__etherLink {
+  color: @color-lightpurple;
+  font-size: @font-size-extra-small;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.Notification__dot {
+  flex: 0 1rem;
+  height: 1rem;
+  left: 0.875rem;
+  margin-top: -0.125rem;
+  position: absolute;
+  transition: flex 500ms ease-out;
+  width: 1rem;
+}
+
+.Notification__dot-seen {
+  flex: 0 0 0;
+  height: 0;
+  margin: 0;
+  transition: flex 500ms ease-out;
+  width: 0;
+}
+
+.Notification__close {
+  align-self: baseline;
+  height: 1.125rem;
+  margin-left: auto;
+  width: 1.125rem;
+}
+
+.Notification__description {
+  flex: 1 0 100%;
+  font-size: @font-size-small;
+  height: 0.875rem;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 17.188rem;
+}
+
+.Notification__time {
+  color: @color-gray;
+  font-size: @font-size-extra-small;
+  margin-right: 0.25rem;
+}
+
+@media @breakpoint-mobile {
+  .Notification__description {
+    flex: 1 0 100%;
+    font-size: @font-size-small;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

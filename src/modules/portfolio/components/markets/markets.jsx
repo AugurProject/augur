@@ -4,16 +4,22 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 import makePath from "modules/routes/helpers/make-path";
-import MarketsList from "modules/markets/components/markets-list";
+import MarketsList from "modules/markets-list/components/markets-list";
 import Styles from "modules/portfolio/components/markets/markets.styles";
 import PortfolioStyles from "modules/portfolio/components/portfolio-view/portfolio-view.styles";
 import {
   TYPE_TRADE,
   TYPE_REPORT,
   TYPE_CLOSED
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
+import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
+
+const DISPUTING_ORDER = {
+  [constants.REPORTING_STATE.CROWDSOURCING_DISPUTE]: 1,
+  [constants.REPORTING_STATE.AWAITING_NEXT_WINDOW]: 2
+};
 
 class MyMarkets extends Component {
   static propTypes = {
@@ -29,7 +35,9 @@ class MyMarkets extends Component {
     match: PropTypes.object.isRequired,
     myMarkets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
-    pendingLiquidityOrders: PropTypes.object
+    pendingLiquidityOrders: PropTypes.object,
+    outcomes: PropTypes.object.isRequired,
+    loadDisputingMarkets: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -37,6 +45,7 @@ class MyMarkets extends Component {
     // NOTE: from here to this.state was added to sort markets, this might need to be more robust in the future.
     const openMarkets = [];
     const reportingMarkets = [];
+    const disputingMarkets = [];
     const finalMarkets = [];
     const filteredMarketsOpen = [];
     const filteredMarketsReporting = [];
@@ -47,9 +56,17 @@ class MyMarkets extends Component {
       if (market.reportingState === this.reportingStates.PRE_REPORTING) {
         openMarkets.push(market);
         filteredMarketsOpen.push(market.id);
-      } else if (market.reportingState === this.reportingStates.FINALIZED) {
+      } else if (
+        market.reportingState === this.reportingStates.FINALIZED ||
+        market.reportingState === this.reportingStates.AWAITING_FINALIZATION
+      ) {
         finalMarkets.push(market);
         filteredMarketsFinal.push(market.id);
+      } else if (
+        market.reportingState === this.reportingStates.CROWDSOURCING_DISPUTE ||
+        market.reportingState === this.reportingStates.AWAITING_NEXT_WINDOW
+      ) {
+        disputingMarkets.push(market);
       } else {
         reportingMarkets.push(market);
         filteredMarketsReporting.push(market.id);
@@ -59,6 +76,7 @@ class MyMarkets extends Component {
     this.state = {
       openMarkets,
       reportingMarkets,
+      disputingMarkets,
       finalMarkets,
       filteredMarketsOpen,
       filteredMarketsReporting,
@@ -67,15 +85,17 @@ class MyMarkets extends Component {
   }
 
   componentWillMount() {
-    const { loadMarkets } = this.props;
+    const { loadMarkets, loadDisputingMarkets } = this.props;
     // Load all markets incase they haven't been loaded already
     // Eventually replace this with a 1 to 1 call to augurnode for example what we need.
     loadMarkets();
+    loadDisputingMarkets();
   }
 
   componentWillReceiveProps(nextProps) {
     const openMarkets = [];
     const reportingMarkets = [];
+    const disputingMarkets = [];
     const finalMarkets = [];
     const filteredMarketsOpen = [];
     const filteredMarketsReporting = [];
@@ -91,6 +111,11 @@ class MyMarkets extends Component {
       ) {
         finalMarkets.push(market);
         filteredMarketsFinal.push(market.id);
+      } else if (
+        market.reportingState === this.reportingStates.CROWDSOURCING_DISPUTE ||
+        market.reportingState === this.reportingStates.AWAITING_NEXT_WINDOW
+      ) {
+        disputingMarkets.push(market);
       } else {
         reportingMarkets.push(market);
         filteredMarketsReporting.push(market.id);
@@ -100,6 +125,7 @@ class MyMarkets extends Component {
     this.setState({
       openMarkets,
       reportingMarkets,
+      disputingMarkets,
       finalMarkets,
       filteredMarketsOpen,
       filteredMarketsReporting,
@@ -118,10 +144,17 @@ class MyMarkets extends Component {
       location,
       myMarkets,
       toggleFavorite,
-      pendingLiquidityOrders
+      pendingLiquidityOrders,
+      outcomes
     } = this.props;
     const s = this.state;
     const haveMarkets = myMarkets && !!myMarkets.length;
+
+    const disputingMarkets = s.disputingMarkets.sort(
+      (a, b) =>
+        DISPUTING_ORDER[a.reportingState] - DISPUTING_ORDER[b.reportingState]
+    );
+    const filteredMarketsDisputing = disputingMarkets.map(a => a.id);
 
     return (
       <section className={Styles.Markets}>
@@ -130,9 +163,7 @@ class MyMarkets extends Component {
         </Helmet>
         {myMarkets &&
           !!myMarkets.length && (
-            <div className={Styles.Markets__SortBar}>
-              <h2 className={Styles["Markets__SortBar-title"]}>Open</h2>
-            </div>
+            <MarketsHeaderLabel title="Open" noTopPadding />
           )}
         {haveMarkets && (
           <MarketsList
@@ -152,15 +183,7 @@ class MyMarkets extends Component {
             pendingLiquidityOrders={pendingLiquidityOrders}
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsOpen.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
-        {haveMarkets && (
-          <div className={Styles.Markets__SortBar}>
-            <div className={Styles["Markets__SortBar-title"]}>In Reporting</div>
-          </div>
-        )}
+        {haveMarkets && <MarketsHeaderLabel title="In Reporting" />}
         {haveMarkets && (
           <MarketsList
             testid="inReporting"
@@ -178,15 +201,27 @@ class MyMarkets extends Component {
             isMobile={isMobile}
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsReporting.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
+        {haveMarkets && <MarketsHeaderLabel title="In Dispute" />}
         {haveMarkets && (
-          <div className={Styles.Markets__SortBar}>
-            <div className={Styles["Markets__SortBar-title"]}>Resolved</div>
-          </div>
+          <MarketsList
+            testid="inDispute"
+            isLogged={isLogged}
+            markets={disputingMarkets}
+            filteredMarkets={filteredMarketsDisputing}
+            location={location}
+            history={history}
+            toggleFavorite={toggleFavorite}
+            loadMarketsInfo={loadMarketsInfo}
+            linkType={TYPE_REPORT}
+            paginationPageParam="dispute"
+            collectMarketCreatorFees={collectMarketCreatorFees}
+            loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
+            isMobile={isMobile}
+            showDisputingCard
+            outcomes={outcomes}
+          />
         )}
+        {haveMarkets && <MarketsHeaderLabel title="Resolved" />}
         {haveMarkets && (
           <MarketsList
             testid="resolved"
@@ -202,12 +237,9 @@ class MyMarkets extends Component {
             collectMarketCreatorFees={collectMarketCreatorFees}
             loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
             isMobile={isMobile}
+            addNullPadding
           />
         )}
-        {haveMarkets &&
-          s.filteredMarketsFinal.length === 0 && (
-            <div className={Styles["Markets__nullState--spacer"]} />
-          )}
         {(myMarkets == null || (myMarkets && myMarkets.length === 0)) && (
           <div className={PortfolioStyles.NoMarkets__container}>
             <span>You haven&apos;t created any markets.</span>

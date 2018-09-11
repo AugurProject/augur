@@ -1,6 +1,6 @@
-import { limitPeriodByRange } from "src/modules/market/helpers/limit-period-by-range";
+import { limitPeriodByRange } from "modules/markets/helpers/limit-period-by-range";
 
-describe("src/modules/market/helpers/limit-period-by-range.js", () => {
+describe("modules/markets/helpers/limit-period-by-range.js", () => {
   let PERIODS;
 
   beforeEach(() => {

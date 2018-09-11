@@ -9,14 +9,17 @@ import {
   TYPE_REPORT,
   TYPE_DISPUTE,
   TYPE_MIGRATE_REP
-} from "modules/market/constants/link-types";
+} from "modules/markets/constants/link-types";
 import {
   MARKET,
   REPORT,
   DISPUTE,
   MIGRATE_REP
 } from "modules/routes/constants/views";
-import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
+import {
+  MARKET_ID_PARAM_NAME,
+  RETURN_PARAM_NAME
+} from "modules/routes/constants/param-names";
 
 const MarketLink = p => {
   let path;
@@ -35,6 +38,14 @@ const MarketLink = p => {
       path = makePath(MARKET);
   }
 
+  const queryLink = {
+    [MARKET_ID_PARAM_NAME]: p.id
+  };
+
+  if (p.linkType === TYPE_DISPUTE || p.linkType === TYPE_REPORT) {
+    queryLink[RETURN_PARAM_NAME] = location.hash;
+  }
+
   return (
     <span>
       {p.id ? (
@@ -43,9 +54,7 @@ const MarketLink = p => {
           className={p.className}
           to={{
             pathname: path,
-            search: makeQuery({
-              [MARKET_ID_PARAM_NAME]: p.id
-            })
+            search: makeQuery(queryLink)
           }}
         >
           {p.children}
@@ -60,7 +69,8 @@ const MarketLink = p => {
 MarketLink.propTypes = {
   id: PropTypes.string.isRequired,
   linkType: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  location: PropTypes.object
 };
 
 export default MarketLink;

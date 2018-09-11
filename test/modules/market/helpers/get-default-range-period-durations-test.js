@@ -1,6 +1,6 @@
-import { getDefaultRangePeriodDuration } from "src/modules/market/helpers/get-default-range-period-durations";
+import { getDefaultRangePeriodDuration } from "modules/markets/helpers/get-default-range-period-durations";
 
-describe("src/modules/market/helpers/get-default-range-period-durations.js", () => {
+describe("modules/markets/helpers/get-default-range-period-durations.js", () => {
   describe("when pass valid period/range arrays", () => {
     let periodList;
     let rangeList;

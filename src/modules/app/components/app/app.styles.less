@@ -52,7 +52,7 @@ h6 {
   display: grid;
 
   /* topbar height */
-  grid-template-rows: 2.625rem auto;
+  grid-template-rows: 4.5rem auto;
   height: 100vh;
   overflow: hidden;
 
@@ -79,7 +79,7 @@ h6 {
 }
 
 .Main__content {
-  height: calc(~"100vh - 2.625rem");
+  height: calc(~"100vh - 4.5rem");
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -118,6 +118,16 @@ h6 {
   }
 }
 
+.App__loadingIndicator {
+  background: @color-lighter-purple;
+  display: none;
+  height: 0.25rem;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 100;
+}
+
 svg.SideBar__mobile-bars-unseen {
   bottom: 1.4rem;
   position: relative;
@@ -126,4 +136,8 @@ svg.SideBar__mobile-bars-unseen {
 
 .TopBar {
   z-index: @above-all-content-above;
+
+  @media @breakpoint-mobile {
+    height: 50px;
+  }
 }

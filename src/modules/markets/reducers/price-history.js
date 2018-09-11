@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_PRICE_HISTORY } from "modules/market/actions/update-market-price-history";
+import { UPDATE_MARKET_PRICE_HISTORY } from "modules/markets/actions/price-history-management";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};

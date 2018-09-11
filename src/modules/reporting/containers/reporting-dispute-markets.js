@@ -2,13 +2,13 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingDisputeMarkets from "modules/reporting/components/reporting-dispute-markets/reporting-dispute-markets";
-import makePath from "src/modules/routes/helpers/make-path";
-import { ACCOUNT_DEPOSIT } from "src/modules/routes/constants/views";
-import { selectLoginAccount } from "src/modules/auth/selectors/login-account";
-import disputeMarkets from "modules/reporting/selectors/select-dispute-markets";
-import awaitingDisputeMarkets from "modules/reporting/selectors/select-awaiting-dispute-markets";
-import { loadDisputing } from "modules/reporting/actions/load-disputing";
-import marketDisputeOutcomes from "modules/reporting/selectors/select-market-dispute-outcomes";
+import makePath from "modules/routes/helpers/make-path";
+import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
+import { selectLoginAccount } from "modules/auth/selectors/login-account";
+import disputeMarkets from "modules/reports/selectors/select-dispute-markets";
+import awaitingDisputeMarkets from "modules/reports/selectors/select-awaiting-dispute-markets";
+import { loadDisputing } from "modules/reports/actions/load-disputing";
+import marketDisputeOutcomes from "modules/reports/selectors/select-market-dispute-outcomes";
 
 const mapStateToProps = (state, { history }) => {
   const PAGINATION_COUNT = 10;

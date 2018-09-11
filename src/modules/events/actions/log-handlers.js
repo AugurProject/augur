@@ -2,32 +2,34 @@ import BigNumber from "bignumber.js";
 import {
   addNotification,
   updateNotification
-} from "modules/notifications/actions";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
-import loadBidsAsks from "modules/bids-asks/actions/load-bids-asks";
-import { loadMarketsDisputeInfo } from "modules/markets/actions/load-markets-dispute-info";
-import { loadReportingWindowBounds } from "modules/reporting/actions/load-reporting-window-bounds";
+} from "modules/notifications/actions/notifications";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
+import loadBidsAsks from "modules/orders/actions/load-bids-asks";
+import { loadReportingWindowBounds } from "modules/reports/actions/load-reporting-window-bounds";
 import { updateLoggedTransactions } from "modules/transactions/actions/convert-logs-to-transactions";
 import { removeMarket } from "modules/markets/actions/update-markets-data";
 import { updateOutcomePrice } from "modules/markets/actions/update-outcome-price";
-import { updateOrder } from "modules/my-orders/actions/update-orders";
-import { removeCanceledOrder } from "modules/bids-asks/actions/update-order-status";
+import { updateOrder } from "modules/orders/actions/update-orders";
+import { removeCanceledOrder } from "modules/orders/actions/update-order-status";
 import { updateMarketCategoryPopularity } from "modules/categories/actions/update-categories";
 import { defaultLogHandler } from "modules/events/actions/default-log-handler";
-import { isCurrentMarket } from "modules/trade/helpers/is-current-market";
+import { isCurrentMarket } from "modules/trades/helpers/is-current-market";
 import makePath from "modules/routes/helpers/make-path";
 import { MY_MARKETS, TRANSACTIONS } from "modules/routes/constants/views";
-import { loadReporting } from "src/modules/reporting/actions/load-reporting";
-import { loadDisputing } from "modules/reporting/actions/load-disputing";
+import { loadReporting } from "src/modules/reports/actions/load-reporting";
+import { loadDisputing } from "modules/reports/actions/load-disputing";
 import loadCategories from "modules/categories/actions/load-categories";
-import { getReportingFees } from "modules/portfolio/actions/get-reporting-fees";
-import { loadMarketsInfoIfNotLoaded } from "src/modules/markets/actions/load-markets-info-if-not-loaded";
-import { loadMarketsInfo } from "src/modules/markets/actions/load-markets-info";
-import { loadUnclaimedFees } from "modules/markets/actions/load-unclaimed-fees";
+import { getReportingFees } from "modules/reports/actions/get-reporting-fees";
+import {
+  loadMarketsInfo,
+  loadMarketsInfoIfNotLoaded,
+  loadMarketsDisputeInfo
+} from "src/modules/markets/actions/load-markets-info";
+import { loadUnclaimedFees } from "modules/markets/actions/market-creator-fees-management";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
-import { getWinningBalance } from "modules/portfolio/actions/get-winning-balance";
-import { startOrderSending } from "modules/create-market/actions/liquidity-management";
-import { loadMarketTradingHistory } from "modules/market/actions/load-market-trading-history";
+import { getWinningBalance } from "modules/reports/actions/get-winning-balance";
+import { startOrderSending } from "modules/orders/actions/liquidity-management";
+import { loadMarketTradingHistory } from "modules/markets/actions/market-trading-history-management";
 import { updateAssets } from "modules/auth/actions/update-assets";
 import { selectCurrentTimestampInSeconds } from "src/select-state";
 
@@ -38,7 +40,7 @@ const handleNotificationUpdate = (log, dispatch, getState) => {
       timestamp: selectCurrentTimestampInSeconds(getState()),
       blockNumber: log.blockNumber,
       log,
-      status: "confirmed",
+      status: "Confirmed",
       linkPath: makePath(TRANSACTIONS),
       seen: false // Manually set to false to ensure notification
     })
@@ -88,6 +90,7 @@ export const handleTokensTransferredLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     dispatch(updateAssets());
     dispatch(loadFundingHistory());
+    dispatch(loadReportingWindowBounds());
     handleNotificationUpdate(log, dispatch, getState);
   }
 };
@@ -106,7 +109,7 @@ export const handleTokensBurnedLog = log => (dispatch, getState) => {
   const { address } = getState().loginAccount;
   const isStoredTransaction = log.target === address;
   if (isStoredTransaction) {
-    dispatch(defaultLogHandler(log));
+    handleNotificationUpdate(log, dispatch, getState);
   }
 };
 
@@ -202,9 +205,7 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
   dispatch(
     loadMarketsInfo([log.market], err => {
       if (err) return console.error(err);
-      const { volume, author, description } = getState().marketsData[
-        log.market
-      ];
+      const { volume, author } = getState().marketsData[log.market];
       dispatch(
         updateMarketCategoryPopularity(
           log.market,
@@ -217,13 +218,19 @@ export const handleMarketFinalizedLog = log => (dispatch, getState) =>
         dispatch(updateAssets());
         dispatch(updateLoggedTransactions(log));
         if (!log.removed) {
+          // Trigger the notification addition here because calling other
+          // API functions, such as `InitialReporter.redeem` can indirectly
+          // cause a MarketFinalized event to be logged.
           dispatch(
             addNotification({
-              id: log.transactionHash,
+              id: `${log.transactionHash}_finalize`,
               timestamp: log.timestamp,
               blockNumber: log.blockNumber,
-              status: "Success",
-              title: `Finalized Market: "${description}"`,
+              log,
+              params: {
+                type: "finalize"
+              },
+              status: "Confirmed",
               linkPath: makePath(MY_MARKETS)
             })
           );

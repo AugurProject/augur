@@ -3,14 +3,14 @@ import memoize from "memoizee";
 
 import { selectCurrentTimestamp, selectOrphanOrders } from "src/select-state";
 import Positions from "modules/portfolio/components/positions/positions";
-import getLoginAccountPositions from "modules/my-positions/selectors/login-account-positions";
-import getOpenOrders from "modules/user-open-orders/selectors/open-orders";
-import { loadAccountTrades } from "modules/my-positions/actions/load-account-trades";
+import getLoginAccountPositions from "modules/positions/selectors/login-account-positions";
+import getOpenOrders from "modules/orders/selectors/open-orders";
+import { loadAccountTrades } from "modules/positions/actions/load-account-trades";
 import { triggerTransactionsExport } from "modules/transactions/actions/trigger-transactions-export";
-import claimTradingProceeds from "modules/my-positions/actions/claim-trading-proceeds";
+import claimTradingProceeds from "modules/positions/actions/claim-trading-proceeds";
 import { constants } from "services/augurjs";
 import { orderBy } from "lodash";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => {
   const positions = getLoginAccountPositions();

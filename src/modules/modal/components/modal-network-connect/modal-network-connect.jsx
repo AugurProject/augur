@@ -9,21 +9,8 @@ import {
 import Input from "modules/common/components/input/input";
 
 import Styles from "modules/modal/components/modal-network-connect/modal-network-connect.styles";
-
-function calculateConnectionErrors(err, res) {
-  const errors = [];
-
-  if (err || (!!res && !res.ethereumNode && !res.augurNode))
-    errors.push(
-      "There was an issue connecting to the nodes, please try again."
-    );
-  if (!!res && !res.ethereumNode && !err && res.augurNode)
-    errors.push("Failed to connect to the Ethereum Node.");
-  if (!!res && !res.augurNode && !err && res.ethereumNode)
-    errors.push("Failed to connect to the Augur Node.");
-
-  return errors;
-}
+import { windowRef } from "src/utils/window-ref";
+import { editEndpointParams } from "src/utils/edit-endpoint-params";
 
 export default class ModalNetworkConnect extends Component {
   static propTypes = {
@@ -112,6 +99,7 @@ export default class ModalNetworkConnect extends Component {
         [`${protocol}`]: this.state.ethereumNode
       };
     }
+
     // because we prioritize, lets wipe out all previous connection options but not remove things like timeout.
     const updatedEnv = {
       ...this.props.env,
@@ -124,46 +112,17 @@ export default class ModalNetworkConnect extends Component {
         ...ethNode
       }
     };
-    p.updateEnv(updatedEnv);
+    const endpoints = {
+      augurNode: updatedEnv["augur-node"],
+      ethereumNodeHTTP: updatedEnv["ethereum-node"].http,
+      ethereumNodeWS: updatedEnv["ethereum-node"].ws
+    };
+
+    // reloads window
+    editEndpointParams(windowRef, endpoints);
+
     // p.submitForm used as a hook for disconnection modal, normally just preventsDefault
     p.submitForm(e);
-    // reset local error state and initial attemptConnection loading icon
-    this.setState({ isAttemptingConnection: true, connectErrors: [] });
-
-    p.connectAugur(
-      p.history,
-      updatedEnv,
-      !!p.modal.isInitialConnection,
-      (err, res) => {
-        const connectErrors = calculateConnectionErrors(err, res);
-        if (connectErrors.length || err || res) {
-          return this.setState({
-            isAttemptingConnection: false,
-            connectErrors
-          });
-        }
-        // no errors and we didn't get an err or res object? we are connected.
-        if (!connectErrors.length && !err && !res) {
-          let isAugurJSEqual;
-          p.isAugurJSVersionsEqual().then(res => {
-            isAugurJSEqual = res.isEqual;
-            if (isAugurJSEqual) return p.closeModal();
-            const { formErrors } = this.state;
-            formErrors.augurNode = [];
-            formErrors.augurNode.push(
-              `AugurJS version (${res.augurjs}) doesn't match AugurNode (${
-                res.augurNode
-              }).`
-            );
-            this.setState({
-              isAttemptingConnection: false,
-              connectErrors,
-              formErrors
-            });
-          });
-        }
-      }
-    );
   }
 
   render() {

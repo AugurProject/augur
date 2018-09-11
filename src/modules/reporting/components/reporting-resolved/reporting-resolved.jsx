@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
 import ReportingHeader from "modules/reporting/containers/reporting-header";
-import MarketsList from "modules/markets/components/markets-list";
-import { TYPE_VIEW } from "modules/market/constants/link-types";
+import MarketsList from "modules/markets-list/components/markets-list";
+import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
-
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
+import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
 
 function getMarketIds(markets) {
   const filteredMarkets = [];
@@ -21,15 +21,17 @@ function getMarketIds(markets) {
 
 export default class ReportingResolved extends Component {
   static propTypes = {
+    markets: PropTypes.array.isRequired,
+    nullMessage: PropTypes.string,
     history: PropTypes.object,
     isLogged: PropTypes.bool,
     loadMarketsInfoIfNotLoaded: PropTypes.func,
-    loadReporting: PropTypes.func.isRequired,
     location: PropTypes.object,
-    markets: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func,
     isForkingMarketFinalized: PropTypes.bool,
-    forkingMarket: PropTypes.object
+    noShowHeader: PropTypes.bool,
+    forkingMarket: PropTypes.object,
+    loadReporting: PropTypes.func
   };
 
   constructor(props) {
@@ -42,7 +44,7 @@ export default class ReportingResolved extends Component {
 
   componentWillMount() {
     const { loadReporting } = this.props;
-    loadReporting();
+    if (loadReporting) loadReporting();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,7 +64,9 @@ export default class ReportingResolved extends Component {
       markets,
       toggleFavorite,
       isForkingMarketFinalized,
-      forkingMarket
+      forkingMarket,
+      noShowHeader,
+      nullMessage
     } = this.props;
     const s = this.state;
 
@@ -71,7 +75,7 @@ export default class ReportingResolved extends Component {
         <Helmet>
           <title>Resolved</title>
         </Helmet>
-        <ReportingHeader heading="Resolved" />
+        {!noShowHeader && <ReportingHeader heading="Resolved" />}
         {isForkingMarketFinalized && (
           <div className={Styles["ReportingResolved__forked-market-card"]}>
             <h2 className={Styles.ReportingResolved__heading}>Forked Market</h2>
@@ -85,7 +89,7 @@ export default class ReportingResolved extends Component {
             />
           </div>
         )}
-        <h2 className={Styles.ReportingResolved__heading}>Resolved</h2>
+        <MarketsHeaderLabel title="Resolved" />
         <MarketsList
           isLogged={isLogged}
           markets={markets}
@@ -96,6 +100,8 @@ export default class ReportingResolved extends Component {
           toggleFavorite={toggleFavorite}
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           paginationPageParam="reporting-resolved-page"
+          nullMessage={nullMessage}
+          addNullPadding
         />
       </section>
     );

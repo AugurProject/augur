@@ -2,7 +2,7 @@ import { augur } from "services/augurjs";
 import logError from "utils/log-error";
 import makePath from "modules/routes/helpers/make-path";
 import { UNIVERSE_ID } from "modules/app/constants/network";
-import { getPayoutNumerators } from "modules/reporting/selectors/get-payout-numerators";
+import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 
 export const submitMigrateREP = (

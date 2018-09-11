@@ -91,3 +91,42 @@
   font-weight: 700;
   margin-top: 0.3rem;
 }
+
+.CoreProperties__property-tentativeWinningOutcome {
+  color: white !important;
+  display: flex;
+  flex-grow: 1;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+
+.CoreProperties__property-button {
+  &:extend(.button--offWhite all);
+
+  &:visited {
+    background-color: @color-offwhite;
+    color: @color-purple;
+  }
+
+  &:visited:hover {
+    background-color: @color-white;
+  }
+}
+
+.CoreProperties__header-firstElement {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+}
+
+.CoreProperties__header-Submit {
+  align-items: center;
+  color: white !important;
+  display: flex;
+  flex-grow: 1;
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 0.3rem;
+  text-transform: none;
+}

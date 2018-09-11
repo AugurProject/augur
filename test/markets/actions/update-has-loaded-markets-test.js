@@ -1,9 +1,9 @@
 import {
   updateHasLoadedMarkets,
   UPDATE_HAS_LOADED_MARKETS
-} from "modules/markets/actions/update-has-loaded-markets";
+} from "modules/markets/actions/update-market-loading";
 
-describe("modules/markets/actions/update-has-loaded-markets.js", () => {
+describe("modules/markets/actions/update-market-loading.js", () => {
   const test = t => {
     it(t.description, () => {
       t.assertions(updateHasLoadedMarkets(t.hasLoadedMarkets));

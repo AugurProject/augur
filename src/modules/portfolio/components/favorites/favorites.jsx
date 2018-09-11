@@ -2,18 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
-import MarketsList from "modules/markets/components/markets-list";
+import MarketsList from "modules/markets-list/components/markets-list";
+import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
 import Styles from "modules/portfolio/components/favorites/favorites.styles";
-import { TYPE_TRADE } from "modules/market/constants/link-types";
+import { TYPE_TRADE } from "modules/markets/constants/link-types";
 
 const Favorites = p => (
   <section className={Styles.Favorites}>
     <Helmet>
       <title>Favorites</title>
     </Helmet>
-    <div className={Styles.Favorites__SortBar}>
-      <div className={Styles["Favorites__SortBar-title"]}>Favorites</div>
-    </div>
+    <MarketsHeaderLabel title="Favorites" noTopPadding />
     <MarketsList
       isLogged={p.isLogged}
       markets={p.markets}

@@ -1,4 +1,4 @@
-import { UPDATE_HAS_LOADED_MARKETS } from "modules/markets/actions/update-has-loaded-markets";
+import { UPDATE_HAS_LOADED_MARKETS } from "modules/markets/actions/update-market-loading";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = false;

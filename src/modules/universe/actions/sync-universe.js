@@ -2,7 +2,7 @@ import logError from "utils/log-error";
 import {
   getUniverseProperties,
   getForkingInfo
-} from "modules/account/actions/load-universe-info";
+} from "modules/universe/actions/load-universe-info";
 
 // Synchronize front-end universe state with blockchain universe state.
 const syncUniverse = (callback = logError) => (dispatch, getState) => {

@@ -1,13 +1,19 @@
 @import (reference) '~assets/styles/shared';
 
 .Logo {
-  margin: 15px 0 20px 15px;
+  align-items: center;
+  border-right: 0.0625rem solid #553580;
+  display: flex;
+  flex-grow: 1;
+  height: 4.5rem;
+  justify-content: center;
   position: relative;
-  width: 120px;
+  width: 4.5rem;
   z-index: @mask-above;
 
   > * {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -15,8 +21,8 @@
   color: white;
   font-weight: 300;
   letter-spacing: 1.2px;
-  line-height: 44px;
-  margin-left: 8px;
+  line-height: 2.75rem;
+  margin-left: 0.5rem;
   text-transform: uppercase;
   vertical-align: top;
 }

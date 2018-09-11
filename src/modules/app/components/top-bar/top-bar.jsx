@@ -12,7 +12,12 @@ const TopBar = props => (
   <header className={Styles.TopBar}>
     {props.isLogged && (
       <div>
-        <div className={Styles.TopBar__stats}>
+        <div
+          className={classNames(
+            Styles.TopBar__stats,
+            Styles["TopBar__regular-stats"]
+          )}
+        >
           <div className={Styles.TopBar__stat}>
             <span className={Styles["TopBar__stat-label"]}>ETH</span>
             <span className={Styles["TopBar__stat-value"]} id="core-bar-eth">
@@ -32,7 +37,12 @@ const TopBar = props => (
             Styles.TopBar__performance
           )}
         >
-          <div className={Styles.TopBar__stat}>
+          <div
+            className={classNames(
+              Styles.TopBar__stat,
+              Styles["TopBar__performance-stat"]
+            )}
+          >
             <div className={Styles["TopBar__stat-label"]}>
               <span>{props.stats[1].totalPLMonth.label}</span>
             </div>
@@ -50,18 +60,20 @@ const TopBar = props => (
           </div>
         </div>
         <div className={Styles.TopBar__notifications}>
-          <button
-            className={Styles["TopBar__notification-icon"]}
-            onClick={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              props.toggleNotifications();
-            }}
-          >
-            {props.unseenCount > 99
-              ? Notifications("99+", "7.4591451")
-              : Notifications(props.unseenCount, "6.4591451")}
-          </button>
+          <div className={Styles["TopBar__notifications-container"]}>
+            <button
+              className={Styles["TopBar__notification-icon"]}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                props.toggleNotifications();
+              }}
+            >
+              {props.unseenCount > 99
+                ? Notifications("99+", "7.4591451")
+                : Notifications(props.unseenCount, "6.4591451")}
+            </button>
+          </div>
         </div>
       </div>
     )}

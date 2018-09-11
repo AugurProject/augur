@@ -12,7 +12,7 @@ import {
   CLOSE_DIALOG_PARTIALLY_FAILED,
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_FAILED
-} from "modules/market/constants/close-dialog-status";
+} from "modules/markets/constants/close-dialog-status";
 import Styles from "modules/market/components/market-positions-list--position/market-positions-list--position.styles";
 import MarketOutcomeTradingIndicator from "modules/market/containers/market-outcome-trading-indicator";
 

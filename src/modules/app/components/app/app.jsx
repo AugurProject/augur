@@ -20,10 +20,9 @@ import PortfolioInnerNav from "modules/app/components/inner-nav/portfolio-inner-
 import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
 import ReportingInnerNav from "modules/app/components/inner-nav/reporting-inner-nav";
 import SideNav from "modules/app/components/side-nav/side-nav";
-import Origami from "modules/app/components/origami-svg/origami-svg";
 import Logo from "modules/app/components/logo/logo";
 import Routes from "modules/routes/components/routes/routes";
-import NotificationsContainer from "modules/notifications/container";
+import NotificationsContainer from "modules/notifications/containers/notifications-view";
 
 import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburger-icon";
 import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
@@ -63,8 +62,8 @@ import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
 import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
 
 import Styles from "modules/app/components/app/app.styles";
-import MarketsInnerNavContainer from "src/modules/app/containers/markets-inner-nav";
-import { NotificationBarContainer } from "src/modules/notification-bar/containers/notification-bar-container";
+import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
+import { NotificationBarContainer } from "modules/notifications/containers/notification-bar";
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -471,6 +470,7 @@ export default class AppView extends Component {
 
     const { mainMenu, subMenu } = this.state;
     const unseenCount = getValue(this.props, "notifications.unseenCount");
+    const currentPath = parsePath(location.pathname)[0];
 
     const InnerNav = this.state.currentInnerNavType;
     let innerNavMenuMobileClick;
@@ -480,13 +480,11 @@ export default class AppView extends Component {
 
     let categoriesMargin;
     let tagsMargin;
-    let origamiScalar = 0;
 
     if (!isMobile) {
       if (
-        parsePath(location.pathname)[0] === AUTHENTICATION ||
-        (parsePath(location.pathname)[0] === CREATE_MARKET &&
-          mainMenu.scalar === 1)
+        currentPath === AUTHENTICATION ||
+        (currentPath === CREATE_MARKET && mainMenu.scalar === 1)
       ) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
@@ -495,9 +493,6 @@ export default class AppView extends Component {
       }
 
       tagsMargin = 110 * subMenu.scalar;
-
-      // ensure origami fold-out moves perfectly with submenu
-      origamiScalar = Math.max(0, subMenu.scalar + mainMenu.scalar - 1);
     }
 
     return (
@@ -513,12 +508,12 @@ export default class AppView extends Component {
             [Styles[`App--blur`]]: Object.keys(modal).length !== 0
           })}
         >
+          <section className={Styles.App__loadingIndicator} />
           <section
             className={Styles.SideBar}
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <Origami isMobile={isMobile} menuScalar={origamiScalar} />
             <Link to={makePath(CATEGORIES)}>
               <Logo isLoading={isLoading} />
             </Link>
@@ -595,7 +590,9 @@ export default class AppView extends Component {
               {!InnerNav && <div className="no-nav-placehold" />}
               <section
                 className={Styles.Main__content}
-                style={{ marginLeft: tagsMargin }}
+                style={{
+                  marginLeft: tagsMargin
+                }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
               >

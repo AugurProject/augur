@@ -2,12 +2,15 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import ReportingReport from "modules/reporting/components/reporting-report/reporting-report";
-import { loadFullMarket } from "modules/market/actions/load-full-market";
-import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectMarket } from "modules/market/selectors/market";
+import { loadFullMarket } from "modules/markets/actions/load-full-market";
+import {
+  MARKET_ID_PARAM_NAME,
+  RETURN_PARAM_NAME
+} from "modules/routes/constants/param-names";
+import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
-import { submitInitialReport } from "modules/reporting/actions/submit-initial-report";
+import { submitInitialReport } from "modules/reports/actions/submit-initial-report";
 import { constants } from "services/augurjs";
 
 const mapStateToProps = state => ({
@@ -29,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
     outcomeValue,
     invalid,
     history,
+    returnPath,
     callback
   ) =>
     dispatch(
@@ -38,6 +42,7 @@ const mapDispatchToProps = dispatch => ({
         outcomeValue,
         invalid,
         history,
+        returnPath,
         callback
       )
     )
@@ -46,6 +51,11 @@ const mapDispatchToProps = dispatch => ({
 const mergeProps = (sP, dP, oP) => {
   const marketId = parseQuery(oP.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
+  let returnPath = parseQuery(oP.location.search)[RETURN_PARAM_NAME];
+  if (returnPath && returnPath.substring(0, 2) === "#/") {
+    // need to get rid of this
+    returnPath = returnPath.substring(2, returnPath.length);
+  }
   const isOpenReporting =
     market.reportingState === constants.REPORTING_STATE.OPEN_REPORTING;
   const isDesignatedReporter = market.designatedReporter === sP.userAddress;
@@ -74,6 +84,7 @@ const mergeProps = (sP, dP, oP) => {
         outcomeValue,
         invalid,
         history,
+        returnPath,
         callback
       )
   };
