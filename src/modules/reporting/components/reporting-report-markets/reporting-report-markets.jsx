@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import PropTypes from "prop-types";
 
 import ReportingHeader from "modules/reporting/containers/reporting-header";
-import MarketPreview from "src/modules/reporting/containers/market-preview";
+import MarketPreview from "modules/market/containers/market-preview";
 import Paginator from "modules/common/components/paginator/paginator";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";

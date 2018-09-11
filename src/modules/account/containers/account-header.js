@@ -7,8 +7,7 @@ import { selectCoreStats } from "modules/account/selectors/core-stats";
 const mapStateToProps = state => {
   const coreStats = selectCoreStats(state);
   return {
-    stats: coreStats,
-    isMobile: state.isMobile
+    stats: coreStats
   };
 };
 
