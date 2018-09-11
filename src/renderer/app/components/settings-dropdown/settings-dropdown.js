@@ -35,8 +35,8 @@ export class SettingsDropdown extends Component {
   	];
 
   	return (
-  		<section>
-        <Dropdown button={[<img key="0" src={settingsSVG} alt="Settings" width="18" height="19" style={{marginBottom: '5px'}} />]}>
+  		<section style={{marginTop: '-15px'}}>
+        <Dropdown button={[<img key="0" src={settingsSVG} alt="Settings" width="18" height="19" />]}>
           {options.map((option, index) => (
             <div
               key={index}
