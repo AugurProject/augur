@@ -3,33 +3,12 @@ directories:
   buildResources: "./build"
 files:
 - "!certs/*"
-- "src/**/*"
 extraFiles:
 - from: "resources/${os}"
   to: "resources"
   filter:
   - "**/*"
 extraResources:
-- from: 'node_modules/augur-node/build/migrations'
-  to: 'migrations'
-  filter:
-  - "**/*"
-- from: 'node_modules/augur-node/build/database'
-  to: 'database'
-  filter:
-  - "**/*"
-- from: 'node_modules/augur-node/build/utils'
-  to: 'utils'
-  filter:
-  - "**/*"
-- from: 'node_modules/augur-node/build/blockchain'
-  to: 'blockchain'
-  filter:
-  - "**/*"
-- from: 'node_modules/augur-node/certs'
-  to: 'certs'
-  filter:
-  - "**/*"
 - from: "node_modules/augur-ui/build"
   to: "ui-client"
   filter:
