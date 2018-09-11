@@ -111,7 +111,6 @@ export default class MarketsView extends Component {
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           linkType={TYPE_TRADE}
           isMobile={isMobile}
-          style={{ overflowY: "auto", height: "100vh", paddingBottom: "18rem" }}
         />
       </section>
     );
