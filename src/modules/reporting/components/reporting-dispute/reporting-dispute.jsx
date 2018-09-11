@@ -13,7 +13,6 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import ReportingDisputeForm from "modules/reporting/containers/reporting-dispute-form";
 import ReportingDisputeConfirm from "modules/reporting/components/reporting-dispute-confirm/reporting-dispute-confirm";
 import { TYPE_VIEW } from "modules/markets/constants/link-types";
-import MarketAdditonalDetails from "modules/reporting/components/market-additional-details/market-additional-details";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
@@ -38,7 +37,6 @@ export default class ReportingDispute extends Component {
 
     this.state = {
       currentStep: 0,
-      showingDetails: true,
       gasEstimate: "0",
       isMarketInValid: null,
       selectedOutcome: "",
@@ -53,7 +51,6 @@ export default class ReportingDispute extends Component {
     this.prevPage = this.prevPage.bind(this);
     this.nextPage = this.nextPage.bind(this);
     this.updateState = this.updateState.bind(this);
-    this.toggleDetails = this.toggleDetails.bind(this);
   }
 
   componentWillMount() {
@@ -79,10 +76,6 @@ export default class ReportingDispute extends Component {
 
   updateState(newState) {
     this.setState(newState);
-  }
-
-  toggleDetails() {
-    this.setState({ showingDetails: !this.state.showingDetails });
   }
 
   calculateGasEstimates() {
@@ -139,13 +132,9 @@ export default class ReportingDispute extends Component {
             linkType={TYPE_VIEW}
             buttonText="View"
             showAdditionalDetailsToggle
-            showingDetails={s.showingDetails}
-            toggleDetails={this.toggleDetails}
             showDisputeRound
           />
         )}
-        {!isEmpty(market) &&
-          s.showingDetails && <MarketAdditonalDetails market={market} />}
         {!isEmpty(market) && (
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (
