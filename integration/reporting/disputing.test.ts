@@ -317,7 +317,7 @@ describe("Disputing", () => {
         }
       } else if (daysLeftIncr === 6) {
         daysLeftIncr = 0;
-        denomination = " hours";
+        denomination = " minutes";
       }
 
       // check that days left is previous calculation - time pushed
@@ -339,7 +339,7 @@ describe("Disputing", () => {
 
       // check that dispute window ends is displayed correctly
       await expect(page).toMatchElement("[data-testid='endTime']", {
-        text: "Dispute Window ends " + formattedDate.formattedLocal,
+        text: formattedDate.clockTimeLocal,
         timeout: BIG_TIMEOUT
       });
     });
@@ -359,7 +359,7 @@ describe("Disputing", () => {
 
       // check that dispute window ends is displayed correctly
       await expect(page).toMatchElement("[data-testid='endTime']", {
-        text: "Dispute Window ends " + formattedDate.formattedLocal,
+        text: formattedDate.clockTimeLocal,
         timeout: BIG_TIMEOUT
       });
     });
