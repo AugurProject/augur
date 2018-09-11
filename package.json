@@ -5,8 +5,8 @@
   "description": "Augur Desktop Application",
   "main": "./dist/main/main.js",
   "scripts": {
-    "dev": "electron-webpack dev",
-    "compile": "electron-webpack",
+    "dev": "NODE_ENV=production electron-webpack dev",
+    "compile": "NODE_ENV=production electron-webpack",
     "publish": "npm run compile && electron-builder  --publish always",
     "postinstall": "electron-builder install-app-deps",
     "make": "npm run compile && electron-builder --publish always",
