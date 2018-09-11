@@ -146,7 +146,7 @@ export default class CreateMarketForm extends Component {
     let value = rawValue;
 
     const regExp = new RegExp("^[0-9]+\\.[0]{0," + decimals + "}$");
-    if (value !== "" && !regExp.test(value)) {
+    if (value !== "" && value !== ".0" && !regExp.test(value)) {
       value = parseFloat(value);
       value = parseFloat(value.toFixed(decimals));
     }
