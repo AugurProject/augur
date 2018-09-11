@@ -5,8 +5,8 @@ import Flash from "../helpers/flash";
 import { IFlash, IMarket } from "../types/types";
 import {
   toDefaultView,
-  toReporting,
-  toInitialReporting
+  clickToMarkets,
+  searchForMarketByDescription
 } from "../helpers/navigation-helper";
 import {
   createCategoricalMarket,
@@ -15,8 +15,11 @@ import {
 } from "../helpers/create-markets";
 import { UnlockedAccounts } from "../constants/accounts";
 import { waitNextBlock } from "../helpers/wait-new-block";
+require("../helpers/beforeAll");
 
-jest.setTimeout(30000);
+const timeoutMilliseconds = 10000;
+
+jest.setTimeout(100000);
 
 let flash: IFlash = new Flash();
 
@@ -30,85 +33,93 @@ describe("Categorical Initial Report", () => {
   });
 
   beforeEach(async () => {
-    await toReporting();
+    await waitNextBlock(2);
+    clickToMarkets(timeoutMilliseconds);
 
     const market: IMarket = await createCategoricalMarket(4);
+    await waitNextBlock(20);
 
     await flash.setMarketEndTime(market.id);
+    await waitNextBlock(5);
     await flash.pushDays(1); // put market in designated reporting state
+    await waitNextBlock(5);
 
-    await waitNextBlock();
-    await toInitialReporting(market.id);
+    searchForMarketByDescription(market.description, timeoutMilliseconds);
+    await waitNextBlock(10);
   });
 
   it("report on outcome_1", async () => {
     await expect(page).toClick("button", {
       text: "outcome_1",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
-      text: "Review"
+      text: "Review",
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
       text: "Submit",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
   });
 
   it("report on outcome_2", async () => {
     await expect(page).toClick("button", {
       text: "outcome_2",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
-      text: "Review"
+      text: "Review",
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
       text: "Submit",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
   });
 
   it("report on outcome_3", async () => {
     await expect(page).toClick("button", {
       text: "outcome_3",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
-      text: "Review"
+      text: "Review",
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
       text: "Submit",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
   });
 
   it("report on outcome_4", async () => {
     await expect(page).toClick("button", {
       text: "outcome_4",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
-      text: "Review"
+      text: "Review",
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
       text: "Submit",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
   });
 
   it("report on Invalid", async () => {
     await expect(page).toClick("button", {
       text: "Market is invalid",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
 
     await expect(page).toClick("button", {
@@ -117,7 +128,7 @@ describe("Categorical Initial Report", () => {
 
     await expect(page).toClick("button", {
       text: "Submit",
-      timeout: 1000
+      timeout: timeoutMilliseconds
     });
   });
 });
