@@ -24,9 +24,9 @@ const mapStateToProps = (state, { location }) => {
   return {
     isLogged: state.isLogged,
     universe: (state.universe || {}).id,
-    hasLoadedMarkets: state.hasLoadedMarkets,
+    hasLoadedMarkets: state.appStatus.hasLoadedMarkets,
     search: searchPhrase,
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     markets,
     category,
     defaultFilter: state.filterOption,

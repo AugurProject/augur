@@ -53,12 +53,12 @@ const mapStateToProps = state => {
     openPositionMarkets,
     reportingMarkets,
     closedMarkets: orderdClosedMarkets,
-    transactionsLoading: state.transactionsLoading,
+    transactionsLoading: state.appStatus.transactionsLoading,
     hasAllTransactionsLoaded:
       state.transactionsOldestLoadedBlock ===
       state.loginAccount.registerBlockNumber,
     registerBlockNumber: state.loginAccount.registerBlockNumber,
-    isMobile: state.isMobile
+    isMobile: state.appStatus.isMobile
   };
 };
 

@@ -18,7 +18,7 @@ const mapStateToProps = state => {
     isLogged: state.isLogged,
     markets,
     filteredMarkets: Object.keys(favorites),
-    transactionsLoading: state.transactionsLoading,
+    transactionsLoading: state.appStatus.transactionsLoading,
     hasAllTransactionsLoaded:
       state.transactionsOldestLoadedBlock ===
       state.loginAccount.registerBlockNumber // FIXME

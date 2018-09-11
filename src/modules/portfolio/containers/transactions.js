@@ -11,7 +11,7 @@ import { updateTransactionPeriod } from "modules/transactions/actions/update-tra
 const mapStateToProps = state => ({
   currentTimestamp: selectCurrentTimestamp(state),
   transactions: selectTransactions(state),
-  transactionsLoading: state.transactionsLoading,
+  transactionsLoading: state.appStatus.transactionsLoading,
   transactionPeriod: state.transactionPeriod
 });
 

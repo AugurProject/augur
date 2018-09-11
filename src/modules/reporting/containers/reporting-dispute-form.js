@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
     forkThreshold: state.universe.forkThreshold,
     outcomes: disputeOutcomes[ownProps.market.id],
     market: ownProps.market,
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     accountDisputeState: state.accountDisputes
   };
 };

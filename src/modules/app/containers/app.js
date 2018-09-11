@@ -11,14 +11,15 @@ import { selectCoreStats } from "modules/account/selectors/core-stats";
 import { selectCategories } from "modules/categories/selectors/categories";
 import portfolio from "modules/positions/selectors/portfolio";
 import {
-  updateIsMobile,
-  updateIsMobileSmall
-} from "modules/app/actions/update-is-mobile";
+  IS_ANIMATING,
+  IS_MOBILE,
+  IS_MOBILE_SMALL,
+  updateAppStatus
+} from "modules/app/actions/update-app-status";
 import getAllMarkets from "modules/markets/selectors/markets-all";
 import { initAugur } from "modules/app/actions/init-augur";
 import { updateModal } from "modules/modal/actions/update-modal";
 import { isLoading } from "modules/markets/selectors/is-loading";
-import { updateIsAnimating } from "modules/app/actions/update-is-animating";
 import {
   selectBlockchainState,
   selectConnectionState,
@@ -59,10 +60,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   initAugur: (history, overrides, cb) =>
     dispatch(initAugur(history, overrides, cb)),
-  updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
+  updateIsMobile: isMobile => dispatch(updateAppStatus(IS_MOBILE, isMobile)),
   updateIsMobileSmall: isMobileSmall =>
-    dispatch(updateIsMobileSmall(isMobileSmall)),
-  updateIsAnimating: isAnimating => dispatch(updateIsAnimating(isAnimating)),
+    dispatch(updateAppStatus(IS_MOBILE_SMALL, isMobileSmall)),
+  updateIsAnimating: isAnimating =>
+    dispatch(updateAppStatus(IS_ANIMATING, isAnimating)),
   updateModal: modal => dispatch(updateModal(modal)),
   finalizeMarket: marketId => dispatch(sendFinalizeMarket(marketId))
 });

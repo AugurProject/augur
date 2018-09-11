@@ -10,7 +10,7 @@ import { updateModal } from "modules/modal/actions/update-modal";
 const mapStateToProps = (state, ownProps) => ({
   currentTimestamp: selectCurrentTimestamp(state),
   isLogged: state.isLogged,
-  isMobile: state.isMobile,
+  isMobile: state.appStatus.isMobile,
   loginAccount: state.loginAccount,
   linkType:
     ownProps.linkType ||

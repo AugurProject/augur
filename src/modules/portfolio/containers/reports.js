@@ -53,7 +53,7 @@ const mapStateToProps = state => {
     currentTimestamp: selectCurrentTimestamp(state),
     forkedMarket,
     isLogged: state.isLogged,
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     isConnected: state.connection.isConnected && state.universe.id != null,
     reportingFees: state.reportingWindowStats.reportingFees,
     markets: disputableMarkets,

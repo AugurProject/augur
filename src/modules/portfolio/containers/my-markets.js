@@ -20,8 +20,8 @@ const mapStateToProps = state =>
   ({
     isLogged: state.isLogged,
     myMarkets: getUserMarkets(),
-    transactionsLoading: state.transactionsLoading,
-    isMobile: state.isMobile,
+    transactionsLoading: state.appStatus.transactionsLoading,
+    isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
     hasAllTransactionsLoaded:
       state.transactionsOldestLoadedBlock ===
