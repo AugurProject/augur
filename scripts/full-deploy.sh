@@ -17,6 +17,11 @@ GET_VERSION="node $SCRIPT_DIR/get-version.js"
 
 cd $TMP_DIR
 
+function preflightCheck()
+{
+	npm whoami 2> /dev/null || echo "npm auth failed."\nYou need to authorize this machine using `npm adduser`; exit 1
+}
+
 function checkSolidityVersion()
 {
 	if [ -z "$1" ]; then
