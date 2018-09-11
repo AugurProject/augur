@@ -19,7 +19,7 @@ cd $TMP_DIR
 
 function preflightCheck()
 {
-	npm whoami 2> /dev/null || echo "npm auth failed."\nYou need to authorize this machine using `npm adduser`; exit 1
+    npm whoami 2> /dev/null || ((echo "npm auth failed."\nYou need to authorize this machine using `npm adduser`; exit 1))
 }
 
 function checkSolidityVersion()
