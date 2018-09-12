@@ -1,6 +1,5 @@
 import { Augur } from "augur.js";
 import * as Knex from "knex";
-import * as _ from "lodash";
 import { BigNumber } from "bignumber.js";
 import { Address, ErrorCallback } from "../../../types";
 
@@ -12,7 +11,6 @@ export function increaseTokenSupply(db: Knex, augur: Augur, token: Address, amou
   db.first("supply").from("token_supply").where({ token }).asCallback((err: Error|null, oldSupply?: SupplyResult): void => {
     if (err) return callback(err);
     if (oldSupply == null) {
-      _.defer(() => console.log({ token, supply: amount.toFixed() }));
       db.insert({ token, supply: amount.toFixed() }).into("token_supply").asCallback(callback);
     } else {
       const supply = oldSupply.supply.plus(amount);

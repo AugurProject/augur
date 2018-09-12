@@ -52,7 +52,7 @@ function createKnex(networkId: string, dbPath: string): Knex {
 }
 
 async function renameDatabaseFile(networkId: string, dbPath: string) {
-  const backupDbPath = getDatabasePathFromNetworkId(networkId, `backup-augur-%s-${new Date().getTime()}.db`, path.dirname(dbPath));
+  const backupDbPath = getDatabasePathFromNetworkId(networkId, `backup-augur-%s-%s-${new Date().getTime()}.db`, path.dirname(dbPath));
   logger.info(`Moving database ${dbPath} to ${backupDbPath}`);
   await promisify(rename)(dbPath, backupDbPath);
 }
@@ -92,17 +92,16 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 
 async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
   const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
-  let oldUploadBlockNumber = 0;
-  if (existsSync(oldUploadBlockNumberFile)) {
-    oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
-  }
+  const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
   const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
-  if (currentUploadBlockNumber !== oldUploadBlockNumber) {
-    console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
-    const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
-    renameDatabaseFile(networkId, dbPath);
-    await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
+  if (existsSync(dbPath) && existsSync(oldUploadBlockNumberFile)) {
+    const oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
+    if (currentUploadBlockNumber !== oldUploadBlockNumber) {
+      console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
+      renameDatabaseFile(networkId, dbPath);
+    }
   }
+  await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
 }
 
 export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?: string) {
