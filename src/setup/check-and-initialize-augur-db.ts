@@ -102,7 +102,6 @@ async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string
     }
   }
   await promisify(writeFile)(oldUploadBlockNumberFile, currentUploadBlockNumber);
-
 }
 
 export async function renameBulkSyncDatabaseFile(networkId: string, databaseDir?: string) {
