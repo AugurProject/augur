@@ -22,9 +22,9 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
 
 else
     rm -rf node_modules/*
-    sudo apt update
-    sudo apt install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
-    npm install
+    sudo apt-get update
+    sudo apt-get install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
+    npm install 2>&1 /dev/null
     npm run make-linux
     sudo pip install requests
 fi
