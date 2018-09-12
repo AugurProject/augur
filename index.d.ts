@@ -232,6 +232,9 @@ export interface RpcInterface {
   setDebugOptions(debugOptions: {[debugOptionName: string]: boolean}): void;
 }
 
+export type BlockRange = { fromBlock: number; toBlock: number };
+export type BatchCallback = (logs: Array<FormattedEventLog>, blockRange: BlockRange) => void;
+
 export class Augur {
   public version: string;
   public options: AugurJsOptions;
@@ -257,7 +260,7 @@ export class Augur {
     [functionName: string]: ApiFunction,
   };
   public events: {
-    getAllAugurLogs: (p: ApiParams, batchCallback: ApiCallback, finalCallback: (err: Error|null) => void) => any;
+    getAllAugurLogs: (p: ApiParams, batchCallback: BatchCallback, finalCallback: (err: Error|null) => void) => any;
     startBlockListeners(blockCallbacks: BlockSubscriptionCallbacks): boolean;
     stopBlockListeners(): boolean;
     startBlockchainEventListeners(eventCallbacks: EventSubscriptionCallbacksKeyedByContract, startingBlockNumber: number, onSetupComplete?: (err: Error|null) => void): void;
