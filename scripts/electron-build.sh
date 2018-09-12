@@ -32,7 +32,7 @@ else
     nvm use v9.11.2
     npm install
     npm run make -- --linux
-    pip install requests
+    sudo pip install requests
 fi
 
 echo "running post_build.py"
