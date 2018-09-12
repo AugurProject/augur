@@ -12,7 +12,7 @@ import disputeCrowdsourcerTokens from "modules/reports/reducers/dispute-crowdsou
 import env from "modules/app/reducers/env";
 import eventsAPI from "modules/contracts/reducers/events-api";
 import favorites from "modules/markets/reducers/favorites";
-import filterOption from "modules/filter-sort/reducers/filter-option";
+import filterSortOptions from "modules/filter-sort/reducers/filter-sort-options";
 import functionsAPI from "modules/contracts/reducers/functions-api";
 import initialReporters from "modules/reports/reducers/initial-reporters-data";
 import isFirstOrderBookChunkLoaded from "modules/orders/reducers/is-first-order-book-chunk-loaded";
@@ -37,9 +37,7 @@ import reportingWindowStats from "modules/reports/reducers/reporting-window-stat
 import reports from "modules/reports/reducers/reports";
 import scalarMarketsShareDenomination from "modules/markets/reducers/scalar-markets-share-denomination";
 import selectedMarketId from "modules/markets/reducers/selected-market-id";
-import sortOption from "modules/filter-sort/reducers/sort-option";
 import tradesInProgress from "modules/trades/reducers/trades-in-progress";
-import transactionPeriod from "modules/transactions/reducers/transaction-period";
 import transactionsData from "modules/transactions/reducers/transactions-data";
 import transactionsOldestLoadedBlock from "modules/transactions/reducers/transactions-oldest-loaded-block";
 import universe from "modules/universe/reducers/universe";
@@ -60,7 +58,7 @@ export function createReducer() {
     env,
     eventsAPI,
     favorites,
-    filterOption,
+    filterSortOptions,
     functionsAPI,
     initialReporters,
     isFirstOrderBookChunkLoaded,
@@ -85,9 +83,7 @@ export function createReducer() {
     reports,
     scalarMarketsShareDenomination,
     selectedMarketId,
-    sortOption,
     tradesInProgress,
-    transactionPeriod,
     transactionsData,
     transactionsOldestLoadedBlock,
     universe

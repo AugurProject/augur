@@ -16,12 +16,12 @@ const DEFAULT_STATE = {
   [EDGE_LOADING]: false
 };
 
-const keys = Object.keys(DEFAULT_STATE);
+const KEYS = Object.keys(DEFAULT_STATE);
 
 export default function(authStatus = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_AUTH_STATUS: {
-      if (keys.includes(action.data.statusKey))
+      if (KEYS.includes(action.data.statusKey))
         return {
           ...authStatus,
           [action.data.statusKey]: action.data.value

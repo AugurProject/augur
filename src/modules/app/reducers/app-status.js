@@ -16,12 +16,12 @@ const DEFAULT_STATE = {
   [TRANSACTIONS_LOADING]: false
 };
 
-const keys = Object.keys(DEFAULT_STATE);
+const KEYS = Object.keys(DEFAULT_STATE);
 
 export default function(appStatus = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_APP_STATUS: {
-      if (keys.includes(action.data.statusKey))
+      if (KEYS.includes(action.data.statusKey))
         return {
           ...appStatus,
           [action.data.statusKey]: action.data.value

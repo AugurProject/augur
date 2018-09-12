@@ -29,8 +29,8 @@ const mapStateToProps = (state, { location }) => {
     isMobile: state.appStatus.isMobile,
     markets,
     category,
-    defaultFilter: state.filterOption,
-    defaultSort: state.sortOption
+    defaultFilter: state.filterSortOptions.marketFilter,
+    defaultSort: state.filterSortOptions.marketSort
   };
 };
 
