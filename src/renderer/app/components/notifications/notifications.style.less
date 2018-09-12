@@ -64,3 +64,41 @@
  	overflow-y: auto;
  	min-height: 47px;
 }
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: translate(0px, 15px);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(0px);
+  }
+}
+
+:local(.zoomIn) {
+  animation-name: zoomIn;
+}
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+:local(.zoomOut) {
+  animation-name: zoomOut;
+}
+
+:local(.animate) {
+  animation-duration: 600ms;
+}
