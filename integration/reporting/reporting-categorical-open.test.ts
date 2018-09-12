@@ -58,7 +58,7 @@ describe("Categorical Open Report", () => {
     await waitNextBlock(5);
 
     searchForMarketByDescription(market.description, timeoutMilliseconds);
-    await waitNextBlock(10);
+    await waitNextBlock(20);
   });
 
   it("report on outcome_1", async () => {

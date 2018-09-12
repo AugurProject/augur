@@ -45,7 +45,7 @@ describe("YesNo Initial Report", () => {
     await waitNextBlock(2);
 
     searchForMarketByDescription(market.description, timeoutMilliseconds);
-    await waitNextBlock(10);
+    await waitNextBlock(20);
    });
 
   it("report on yes", async () => {
