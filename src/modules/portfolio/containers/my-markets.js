@@ -22,10 +22,7 @@ const mapStateToProps = state =>
     myMarkets: getUserMarkets(),
     transactionsLoading: state.appStatus.transactionsLoading,
     isMobile: state.appStatus.isMobile,
-    pendingLiquidityOrders: state.pendingLiquidityOrders,
-    hasAllTransactionsLoaded:
-      state.transactionsOldestLoadedBlock ===
-      state.loginAccount.registerBlockNumber // FIXME
+    pendingLiquidityOrders: state.pendingLiquidityOrders
   });
 
 const mapDispatchToProps = dispatch => ({

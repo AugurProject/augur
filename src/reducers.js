@@ -39,7 +39,6 @@ import scalarMarketsShareDenomination from "modules/markets/reducers/scalar-mark
 import selectedMarketId from "modules/markets/reducers/selected-market-id";
 import tradesInProgress from "modules/trades/reducers/trades-in-progress";
 import transactionsData from "modules/transactions/reducers/transactions-data";
-import transactionsOldestLoadedBlock from "modules/transactions/reducers/transactions-oldest-loaded-block";
 import universe from "modules/universe/reducers/universe";
 
 export function createReducer() {
@@ -85,7 +84,6 @@ export function createReducer() {
     selectedMarketId,
     tradesInProgress,
     transactionsData,
-    transactionsOldestLoadedBlock,
     universe
   };
 }

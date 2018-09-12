@@ -54,9 +54,6 @@ const mapStateToProps = state => {
     reportingMarkets,
     closedMarkets: orderdClosedMarkets,
     transactionsLoading: state.appStatus.transactionsLoading,
-    hasAllTransactionsLoaded:
-      state.transactionsOldestLoadedBlock ===
-      state.loginAccount.registerBlockNumber,
     registerBlockNumber: state.loginAccount.registerBlockNumber,
     isMobile: state.appStatus.isMobile
   };

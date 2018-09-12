@@ -32,7 +32,6 @@ Favorites.propTypes = {
   markets: PropTypes.array.isRequired,
   filteredMarkets: PropTypes.array.isRequired,
   isLogged: PropTypes.bool.isRequired,
-  hasAllTransactionsLoaded: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,

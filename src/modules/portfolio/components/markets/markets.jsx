@@ -20,7 +20,6 @@ class MyMarkets extends Component {
   static propTypes = {
     collectMarketCreatorFees: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool,
