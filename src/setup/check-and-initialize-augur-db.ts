@@ -92,12 +92,12 @@ async function initializeNetworkInfo(db: Knex, augur: Augur): Promise<void> {
 
 async function checkAndUpdateContractUploadBlock(augur: Augur, networkId: string, databaseDir?: string): Promise<void> {
   const oldUploadBlockNumberFile = getUploadBlockPathFromNetworkId(networkId, databaseDir);
+  const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
   const currentUploadBlockNumber = augur.contracts.uploadBlockNumbers[augur.rpc.getNetworkID()];
-  if (existsSync(oldUploadBlockNumberFile)) {
+  if (existsSync(dbPath) && existsSync(oldUploadBlockNumberFile)) {
     const oldUploadBlockNumber = Number(await promisify(readFile)(oldUploadBlockNumberFile));
     if (currentUploadBlockNumber !== oldUploadBlockNumber) {
       console.log(`Deleting existing DB for this configuration as the upload block number is not equal: OLD: ${oldUploadBlockNumber} NEW: ${currentUploadBlockNumber}`);
-      const dbPath = getDatabasePathFromNetworkId(networkId, DB_FILE, databaseDir);
       renameDatabaseFile(networkId, dbPath);
     }
   }
