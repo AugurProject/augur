@@ -53,7 +53,8 @@
     "docker:geth:pop-45": "scripts/docker/run.sh augurproject/dev-pop-geth-45",
     "docker:geth:pop-normal-time": "scripts/docker/run.sh augurproject/dev-pop-normtime-geth",
     "docker:geth:attach": "docker run --rm --net host -it ethereum/client-go attach rpc:http://127.0.0.1:8545",
-    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)"
+    "docker:geth:files": "scripts/copy-docker-files.sh augurproject/dev-pop-geth:core-$(node scripts/core-version.js)",
+    "prepush": "npm run lint && npm run test -- --reporter min"
   },
   "dependencies": {
     "async": "1.5.2",
@@ -92,13 +93,13 @@
     "coveralls": "3.0.1",
     "eslint": "3.17.1",
     "genversion": "1.1.3",
+    "husky": "^0.14.3",
     "istanbul": "0.4.5",
     "keythereum": "1.0.4",
     "mocha": "5.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "proxyquire": "1.7.11",
     "readline-sync": "1.4.9",
-    "shared-git-hooks": "1.2.1",
     "sinon": "2.0.0",
     "uglify-js": "2.6.1"
   },
