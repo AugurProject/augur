@@ -48,7 +48,7 @@ var SUBSCRIPTION_EVENT_NAMES;
 module.exports = {
   AUGUR_UPLOAD_BLOCK_NUMBER: "0x1",
 
-  BLOCKS_PER_CHUNK: 5760, // 1 days worth. 60*60*24/15 (seconds*minutes*hours/blocks_per_second)
+  BLOCKS_PER_CHUNK: 720, // 1/8 days worth. 60*60*24/15/8 (seconds*minutes*hours/blocks_per_second/8)
 
   CANCEL_ORDER_GAS: "0xC9860",
 
