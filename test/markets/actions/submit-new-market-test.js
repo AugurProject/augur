@@ -17,7 +17,7 @@ describe("modules/markets/actions/submit-new-market", () => {
   const buildCreateMarketSuccess = newMarket => {
     const result = {
       createMarket: options => {
-        options.onSent();
+        options.onSent({ hash: "blah blah blah", callReturn: "marketId" });
         options.onSuccess({ callReturn: "marketId" });
       },
       formattedNewMarket: newMarket

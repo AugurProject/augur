@@ -42,18 +42,18 @@ export function submitNewMarket(newMarket, history, callback = noop) {
             );
             history.push(makePath(TRANSACTIONS));
             dispatch(clearNewMarket());
-          },
-          onSuccess: res => {
-            const marketId = res.callReturn;
             if (hasOrders) {
               dispatch(
                 addMarketLiquidityOrders({
-                  marketId,
+                  marketId: res.callReturn,
                   liquidityOrders: newMarket.orderBook
                 })
               );
               // orders submission will be kicked off from handleMarketCreatedLog event
             }
+          },
+          onSuccess: res => {
+            const marketId = res.callReturn;
             if (callback) callback(null, marketId);
           },
           onFailed: err => {
