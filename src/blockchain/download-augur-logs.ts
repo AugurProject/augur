@@ -20,7 +20,6 @@ function extractBlockNumbers(batchOfAugurLogs: Array<FormattedEventLog>): Array<
 }
 
 function getBlockNumbersInRange(blockRange: BlockRange): Array<number> {
-  console.log("AA", blockRange);
   const middleBlockNumber = Math.floor((blockRange.fromBlock + blockRange.toBlock) / 2);
   return _.uniq([blockRange.fromBlock, middleBlockNumber, blockRange.toBlock]);
 }
