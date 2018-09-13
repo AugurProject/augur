@@ -11,6 +11,9 @@ branches:
   - electron-build
   - "/release-\\d+\\.\\d+\\.\\d+(-\\w+\\.\\d)?$/"
   - petong/ch13701/publish-installer-checksums-for-users-to
+cache:
+    directories:
+        - $HOME/.cache/electron-builder
 
 
 matrix:
