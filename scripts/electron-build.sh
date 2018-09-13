@@ -30,5 +30,5 @@ else
 fi
 
 echo "running post_build.py"
-python scripts/post_build.py
+python3 scripts/post_build.py
 cat dist/*.sha256
