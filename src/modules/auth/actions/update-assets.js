@@ -36,6 +36,7 @@ export function updateAssets(callback = logError) {
     );
     dispatch(
       updateEtherBalance((err, etherBalance) => {
+        if (err) console.log("updateEtherBalance error: ", err);
         balances.eth = etherBalance;
         if (allAssetsLoaded(balances)) callback(null, balances);
       })
