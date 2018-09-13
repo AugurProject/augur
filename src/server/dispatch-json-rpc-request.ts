@@ -6,14 +6,14 @@ import { getCategories } from "./getters/get-categories";
 import { getMarketsInCategory } from "./getters/get-markets-in-category";
 import { getMarketsCreatedByUser } from "./getters/get-markets-created-by-user";
 import { getReportingHistory } from "./getters/get-reporting-history";
-import { getReportingSummary } from "./getters/get-reporting-summary";
+import { extractGetReportingSummaryParams, getReportingSummary } from "./getters/get-reporting-summary";
 import { getTradingHistory } from "./getters/get-trading-history";
 import { getMarketPriceHistory } from "./getters/get-market-price-history";
 import { getMarketPriceCandlesticks } from "./getters/get-market-price-candlesticks";
 import { getUserTradingPositions } from "./getters/get-user-trading-positions";
 import { getUserShareBalances } from "./getters/get-user-share-balances";
 import { getFeeWindows } from "./getters/get-fee-windows";
-import { getFeeWindowCurrent } from "./getters/get-fee-window-current";
+import { getFeeWindow } from "./getters/get-fee-window";
 import { getUnclaimedMarketCreatorFees } from "./getters/get-unclaimed-market-creator-fees";
 import { getDisputeTokens } from "./getters/get-dispute-tokens";
 import { getMarkets } from "./getters/get-markets";
@@ -24,7 +24,7 @@ import { getAllOrders } from "./getters/get-all-orders";
 import { getCompleteSets } from "./getters/get-complete-sets";
 import { getBetterWorseOrders } from "./getters/get-better-worse-orders";
 import { getSyncData } from "./getters/get-sync-data";
-import { getDisputeInfo } from "./getters/get-dispute-info";
+import { extractGetDisputeInfoParams, getDisputeInfo } from "./getters/get-dispute-info";
 import { getInitialReporters } from "./getters/get-initial-reporters";
 import { getForkMigrationTotals } from "./getters/get-fork-migration-totals";
 import { getReportingFees } from "./getters/get-reporting-fees";
@@ -33,9 +33,27 @@ import { getProfitLoss } from "./getters/get-profit-loss";
 import { getWinningBalance } from "./getters/get-winning-balance";
 import { logger } from "../utils/logger";
 
+type GetterFunction<T, R> = (db: Knex, augur: Augur, params: T) => Promise<R>;
+type ParamExtract<T> = (params: any) => T|undefined;
+
 export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur: Augur, callback: (err?: Error|null, result?: any) => void): void {
   logger.info(JSON.stringify(request));
+
+  function dispatchResponse<T, R>(getterFunction: GetterFunction<T, R>, paramExtract: ParamExtract<T>) {
+    const extractedParams = paramExtract(request.params);
+    if (extractedParams === undefined) return callback(new Error("Invalid parameters"));
+    getterFunction(db, augur, extractedParams).then((response) => {
+      callback(null, response);
+    }).catch(callback);
+    return;
+  }
+
   switch (request.method) {
+    case "getDisputeInfo":
+      return dispatchResponse(getDisputeInfo, extractGetDisputeInfoParams);
+    case "getReportingSummary":
+      return dispatchResponse(getReportingSummary, extractGetReportingSummaryParams);
+
     case "getAccountTransferHistory":
       return getAccountTransferHistory(db, request.params.account, request.params.token, request.params.isInternalTransfer, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getCategories":
@@ -46,8 +64,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getMarketsCreatedByUser(db, request.params.universe, request.params.creator, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getReportingHistory":
       return getReportingHistory(db, request.params.reporter, request.params.universe, request.params.marketId, request.params.reportingWindow, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
-    case "getReportingSummary":
-      return getReportingSummary(db, request.params.reportingWindow, callback);
     case "getTradingHistory":
       return getTradingHistory(db, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.orderType, request.params.earliestCreationTime, request.params.latestCreationTime, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, request.params.ignoreSelfTrades, callback);
     case "getUserTradingHistory":
@@ -60,7 +76,9 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
     case "getUserTradingPositions":
       return getUserTradingPositions(db, augur, request.params.universe, request.params.account, request.params.marketId, request.params.outcome, request.params.sortBy, request.params.isSortDescending, request.params.limit, request.params.offset, callback);
     case "getFeeWindowCurrent":
-      return getFeeWindowCurrent(db, augur, request.params.universe, request.params.reporter, callback);
+      return getFeeWindow(db, augur, request.params.universe, request.params.reporter, "current", null, callback);
+    case "getFeeWindow":
+      return getFeeWindow(db, augur, request.params.universe, request.params.reporter, request.params.feeWindowState, request.params.feeWindow, callback);
     case "getFeeWindows":
       return getFeeWindows(db, augur, request.params.universe, request.params.account, request.params.includeCurrent, callback);
     case "getUnclaimedMarketCreatorFees":
@@ -69,8 +87,6 @@ export function dispatchJsonRpcRequest(db: Knex, request: JsonRpcRequest, augur:
       return getWinningBalance(db, augur, request.params.marketIds, request.params.account, callback);
     case "getDisputeTokens":
       return getDisputeTokens(db, request.params.universe, request.params.account, request.params.stakeTokenState, callback);
-    case "getDisputeInfo":
-      return getDisputeInfo(db, request.params.marketIds, request.params.account, callback);
     case "getInitialReporters":
       return getInitialReporters(db, augur, request.params.universe, request.params.reporter, request.params.redeemed, request.params.withRepBalance, callback);
     case "getReportingFees":

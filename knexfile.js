@@ -42,4 +42,14 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
+  pg: {
+    client: "pg",
+    connection: process.env.DATABASE_URL,
+    seeds: {
+      directory: "./src/seeds/test",
+    },
+    migrations: {
+      directory: "./src/migrations",
+    },
+  },
 };

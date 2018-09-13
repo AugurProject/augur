@@ -2,18 +2,23 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {getReportingSummary} = require("../../../../src/server/getters/get-reporting-summary");
+const {getReportingSummary, extractGetReportingSummaryParams} = require("../../../../src/server/getters/get-reporting-summary");
 
 describe("server/getters/get-reporting-summary", () => {
   const test = (t) => {
     it(t.description, (done) => {
       setupTestDb((err, db) => {
         assert.ifError(err);
-        getReportingSummary(db, t.params.feeWindow, (err, reportingSummary) => {
-          t.assertions(err, reportingSummary);
-          db.destroy();
-          done();
-        });
+        const paramsExtracted = extractGetReportingSummaryParams(t.params);
+        getReportingSummary(db, null, paramsExtracted)
+          .then((reportingSummary) => {
+            t.assertions(reportingSummary);
+            done();
+          })
+          .catch(done)
+          .then(() => {
+            db.destroy();
+          });
       });
     });
   };
@@ -22,8 +27,7 @@ describe("server/getters/get-reporting-summary", () => {
     params: {
       feeWindow: "0x1000000000000000000000000000000000000000",
     },
-    assertions: (err, reportingSummary) => {
-      assert.ifError(err);
+    assertions: (reportingSummary) => {
       assert.deepEqual(reportingSummary, {
         "AWAITING_FINALIZATION": 1,
         "DESIGNATED_REPORTING": 9,
@@ -38,8 +42,7 @@ describe("server/getters/get-reporting-summary", () => {
     params: {
       feeWindow: "0xfffffffffffff000000000000000000000000000",
     },
-    assertions: (err, reportingSummary) => {
-      assert.ifError(err);
+    assertions: (reportingSummary) => {
       assert.deepEqual(reportingSummary, {});
     },
   });
