@@ -33,5 +33,4 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_77e0d3261394_key -iv $encrypted_77e0d3261394_iv -in certs/mac.p12.enc -out certs/mac.p12 -d
 
 script:
- - |
-     travis_wait 20 scripts/electron-build.sh && sleep 3
+ - scripts/electron-build.sh
