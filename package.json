@@ -5,7 +5,7 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
   "engines": {
-    "node": ">=6.11.4"
+    "node": "8 || 9"
   },
   "repository": {
     "type": "git",
