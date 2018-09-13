@@ -18,7 +18,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     echo "sourcing virtualenv"
     source augur-venv/bin/activate
     echo "running 'pip install requests'"
-    pyenv use 3.6.3
+    pyenv global 3.6.3
     pip install requests
 
 else
@@ -27,7 +27,7 @@ else
     sudo apt-get install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
     npm install --quiet
     npm run make-linux
-    pyenv use 3.6.3
+    pyenv global 3.6.3
     sudo pip install requests
 fi
 
