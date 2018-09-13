@@ -7,6 +7,7 @@ const mapStateToProps = (state) => {
     1: 'https://etherscan.io/tx/',
     3: 'https://ropsten.etherscan.io/tx/',
     4: 'https://rinkeby.etherscan.io/tx/',
+    19: 'http://scan.thundercore.com/tx/',
   }
 
   return {
