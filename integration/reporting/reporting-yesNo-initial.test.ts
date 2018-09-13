@@ -34,7 +34,7 @@ describe("YesNo Initial Report", () => {
 
   beforeEach(async () => {
     await waitNextBlock(2);
-    clickToMarkets(timeoutMilliseconds);
+    await clickToMarkets(timeoutMilliseconds);
 
     const market: IMarket = await createYesNoMarket();
     await waitNextBlock(20);
@@ -44,7 +44,7 @@ describe("YesNo Initial Report", () => {
     await flash.pushDays(1); // put market in designated reporting state
     await waitNextBlock(2);
 
-    searchForMarketByDescription(market.description, timeoutMilliseconds);
+    await searchForMarketByDescription(market.description, timeoutMilliseconds);
     await waitNextBlock(20);
    });
 

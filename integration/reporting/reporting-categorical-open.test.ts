@@ -35,7 +35,6 @@ describe("Categorical Open Report", () => {
 
   beforeEach(async () => {
     await waitNextBlock(2);
-    clickToMarkets(timeoutMilliseconds);
 
     await page.evaluate(
       account => window.integrationHelpers.updateAccountAddress(account),
@@ -46,18 +45,19 @@ describe("Categorical Open Report", () => {
     const market: IMarket = await createCategoricalMarket(4);
     await waitNextBlock(20);
 
+    await page.evaluate(
+      account => window.integrationHelpers.updateAccountAddress(account),
+      UnlockedAccounts.SECONDARY_ACCOUNT
+    );
+    await waitNextBlock(2);
+
     await flash.setMarketEndTime(market.id);
     await waitNextBlock(5);
     await flash.pushDays(5); // put market in open reporting state
     await waitNextBlock(2);
 
-    await page.evaluate(
-      account => window.integrationHelpers.updateAccountAddress(account),
-      UnlockedAccounts.SECONDARY_ACCOUNT
-    );
-    await waitNextBlock(5);
-
-    searchForMarketByDescription(market.description, timeoutMilliseconds);
+    await clickToMarkets(timeoutMilliseconds);
+    await searchForMarketByDescription(market.description, timeoutMilliseconds);
     await waitNextBlock(20);
   });
 
