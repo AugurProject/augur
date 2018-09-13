@@ -12,7 +12,7 @@ set -x
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     echo "running 'npm run make-mac'"
-    npm run make-mac
+    NODE_ENV=production npm run make-mac
     echo "creating virtualenv"
     virtualenv augur-venv
     echo "sourcing virtualenv"
@@ -26,7 +26,7 @@ else
     sudo apt-get update
     sudo apt-get install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
     npm install --quiet
-    npm run make-linux
+    NODE_ENV=production npm run make-linux
     pyenv global 3.6.3
     pip install requests
 fi
