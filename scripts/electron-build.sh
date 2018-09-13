@@ -18,7 +18,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     echo "sourcing virtualenv"
     source augur-venv/bin/activate
     echo "running 'pip install requests'"
-    pyenv global 3.6.3
+    pyenv versions
     pip install requests
 
 else
