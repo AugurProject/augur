@@ -1,2 +1,2 @@
-export const ETH = 'ETH'
-export const REP = 'REP'
+export const ETH = "ETH";
+export const REP = "REP";

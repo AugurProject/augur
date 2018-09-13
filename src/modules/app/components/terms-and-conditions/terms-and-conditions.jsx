@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-import Styles from 'modules/app/components/terms-and-conditions/terms-and-conditions.styles'
+import Styles from "modules/app/components/terms-and-conditions/terms-and-conditions.styles";
 
 const TermsAndConditions = p => (
   <div className={Styles.TermsAndConditions}>
@@ -17,6 +17,6 @@ const TermsAndConditions = p => (
       Augur UI License
     </a>
   </div>
-)
+);
 
-export default TermsAndConditions
+export default TermsAndConditions;

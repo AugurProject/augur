@@ -1,40 +1,58 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
-import MarketLink from 'modules/market/components/market-link/market-link'
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import MarketLink from "modules/market/components/market-link/market-link";
+import ValueDenomination from "modules/common/components/value-denomination/value-denomination";
 
-import { TYPE_CLOSED, TYPE_DISPUTE, TYPE_VIEW, TYPE_CLAIM_PROCEEDS } from 'modules/market/constants/link-types'
-import { SCALAR } from 'modules/markets/constants/market-types'
+import {
+  TYPE_CLOSED,
+  TYPE_DISPUTE,
+  TYPE_VIEW,
+  TYPE_CLAIM_PROCEEDS
+} from "modules/markets/constants/link-types";
+import { SCALAR } from "modules/markets/constants/market-types";
 
-import getValue from 'utils/get-value'
-import shareDenominationLabel from 'utils/share-denomination-label'
-import { dateHasPassed } from 'utils/format-date'
-import Styles from 'modules/market/components/market-properties/market-properties.styles'
-import ChevronFlip from 'modules/common/components/chevron-flip/chevron-flip'
-import { MODAL_MIGRATE_MARKET } from 'modules/modal/constants/modal-types'
-import { constants } from 'services/augurjs'
+import getValue from "utils/get-value";
+import shareDenominationLabel from "utils/share-denomination-label";
+import { dateHasPassed } from "utils/format-date";
+import Styles from "modules/market/components/market-properties/market-properties.styles";
+import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
+import { MODAL_MIGRATE_MARKET } from "modules/modal/constants/modal-types";
+import { constants } from "services/augurjs";
 
 const {
   DESIGNATED_REPORTING,
   OPEN_REPORTING,
   CROWDSOURCING_DISPUTE,
-  AWAITING_NEXT_WINDOW,
-} = constants.REPORTING_STATE
-const ShowResolutionStates = [DESIGNATED_REPORTING, OPEN_REPORTING, CROWDSOURCING_DISPUTE, AWAITING_NEXT_WINDOW]
+  AWAITING_NEXT_WINDOW
+} = constants.REPORTING_STATE;
+const ShowResolutionStates = [
+  DESIGNATED_REPORTING,
+  OPEN_REPORTING,
+  CROWDSOURCING_DISPUTE,
+  AWAITING_NEXT_WINDOW
+];
 
-const MarketProperties = (p) => {
-  const shareVolumeFormatted = getValue(p, 'volume.formatted')
-  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
-  const isScalar = p.marketType === SCALAR
-  let consensus = getValue(p, isScalar ? 'consensus.winningOutcome' : 'consensus.outcomeName')
-  const linkType = (p.isForking && p.linkType === TYPE_DISPUTE) ? TYPE_VIEW : p.linkType
-  const disableDispute = p.loginAccount.rep === '0' && p.linkType === TYPE_DISPUTE
-  if (getValue(p, 'consensus.isInvalid')) {
-    consensus = 'Invalid'
+const MarketProperties = p => {
+  const shareVolumeFormatted = getValue(p, "volume.formatted");
+  const shareDenomination = shareDenominationLabel(
+    p.selectedShareDenomination,
+    p.shareDenominations
+  );
+  const isScalar = p.marketType === SCALAR;
+  let consensus = getValue(
+    p,
+    isScalar ? "consensus.winningOutcome" : "consensus.outcomeName"
+  );
+  const linkType =
+    p.isForking && p.linkType === TYPE_DISPUTE ? TYPE_VIEW : p.linkType;
+  const disableDispute =
+    p.loginAccount.rep === "0" && p.linkType === TYPE_DISPUTE;
+  if (getValue(p, "consensus.isInvalid")) {
+    consensus = "Invalid";
   }
-  const showResolution = (ShowResolutionStates.indexOf(p.reportingState) !== -1)
+  const showResolution = ShowResolutionStates.indexOf(p.reportingState) !== -1;
 
   return (
     <article>
@@ -42,87 +60,122 @@ const MarketProperties = (p) => {
         <ul className={Styles.MarketProperties__meta}>
           <li>
             <span>Volume</span>
-            <ValueDenomination valueClassname="volume" formatted={shareVolumeFormatted} denomination={shareDenomination} />
+            <ValueDenomination
+              valueClassname="volume"
+              formatted={shareVolumeFormatted}
+              denomination={shareDenomination}
+            />
           </li>
           <li>
             <span>Fee</span>
-            <ValueDenomination valueClassname="fee" {...p.settlementFeePercent} />
+            <ValueDenomination
+              valueClassname="fee"
+              {...p.settlementFeePercent}
+            />
           </li>
           <li>
-            <span>{p.endTime && dateHasPassed(p.currentTimestamp, p.endTime.timestamp) ? 'Expired' : 'Expires'}</span>
-            <span className="value_expires">{ p.isMobile ? p.endTime.formattedLocalShort : p.endTime.formattedLocalShortTime }</span>
+            <span>
+              {p.endTime &&
+              dateHasPassed(p.currentTimestamp, p.endTime.timestamp)
+                ? "Expired"
+                : "Expires"}
+            </span>
+            <span className="value_expires">
+              {p.isMobile
+                ? p.endTime.formattedLocalShort
+                : p.endTime.formattedLocalShortTime}
+            </span>
           </li>
-          {showResolution &&
+          {showResolution && (
             <li className={Styles.MarketProperties__resolutionSource}>
               <span>Resolution Source</span>
-              <span className={Styles.MarketProperties__resolutionSource}>{ p.resolutionSource || 'General Knowledge' }</span>
+              <span className={Styles.MarketProperties__resolutionSource}>
+                {p.resolutionSource || "General Knowledge"}
+              </span>
             </li>
-          }
-          {consensus &&
-          <li>
-            <span>Winning Outcome</span>
-            {consensus}
-          </li>
-          }
+          )}
+          {consensus && (
+            <li>
+              <span>Winning Outcome</span>
+              {consensus}
+            </li>
+          )}
         </ul>
         <div className={Styles.MarketProperties__actions}>
-          { p.isLogged && p.toggleFavorite &&
-            <button
-              className={classNames(Styles.MarketProperties__favorite, { [Styles.favorite]: p.isFavorite })}
-              onClick={() => p.toggleFavorite(p.id)}
-            >
-              {p.isFavorite ?
-                <i className="fa fa-star" /> :
-                <i className="fa fa-star-o" />
-              }
-            </button>
-          }
-          { (linkType === undefined || (linkType && linkType !== TYPE_CLOSED && linkType !== TYPE_CLAIM_PROCEEDS)) &&
+          {p.isLogged &&
+            p.toggleFavorite && (
+              <button
+                className={classNames(Styles.MarketProperties__favorite, {
+                  [Styles.favorite]: p.isFavorite
+                })}
+                onClick={() => p.toggleFavorite(p.id)}
+              >
+                {p.isFavorite ? (
+                  <i className="fa fa-star" />
+                ) : (
+                  <i className="fa fa-star-o" />
+                )}
+              </button>
+            )}
+          {(linkType === undefined ||
+            (linkType &&
+              linkType !== TYPE_CLOSED &&
+              linkType !== TYPE_CLAIM_PROCEEDS)) && (
             <MarketLink
-              className={classNames(Styles.MarketProperties__trade, { [Styles.disabled]: disableDispute })}
+              className={classNames(Styles.MarketProperties__trade, {
+                [Styles.disabled]: disableDispute
+              })}
               id={p.id}
               linkType={linkType}
             >
-              { linkType || 'view'}
+              {linkType || "view"}
             </MarketLink>
-          }
-          { linkType && linkType === TYPE_CLOSED &&
-            <button
-              className={Styles.MarketProperties__trade}
-              onClick={e => console.log('call to finalize market')}
-            >
-              Finalize
-            </button>
-          }
-          { p.isForking && p.isForkingMarketFinalized && p.forkingMarket !== p.id && !p.finalizationTime &&
-            <button
-              className={Styles.MarketProperties__migrate}
-              onClick={() => p.updateModal({
-                type: MODAL_MIGRATE_MARKET,
-                marketId: p.id,
-                marketDescription: p.description,
-                canClose: true,
-              })}
-            >
-              Migrate
-            </button>
-          }
+          )}
+          {linkType &&
+            linkType === TYPE_CLOSED && (
+              <button
+                className={Styles.MarketProperties__trade}
+                onClick={e => console.log("call to finalize market")}
+              >
+                Finalize
+              </button>
+            )}
+          {p.isForking &&
+            p.isForkingMarketFinalized &&
+            p.forkingMarket !== p.id &&
+            !p.finalizationTime && (
+              <button
+                className={Styles.MarketProperties__migrate}
+                onClick={() =>
+                  p.updateModal({
+                    type: MODAL_MIGRATE_MARKET,
+                    marketId: p.id,
+                    marketDescription: p.description,
+                    canClose: true
+                  })
+                }
+              >
+                Migrate
+              </button>
+            )}
         </div>
       </section>
-      { p.showAdditionalDetailsToggle &&
+      {p.showAdditionalDetailsToggle && (
         <button
           className={Styles[`MarketProperties__additional-details`]}
           onClick={() => p.toggleDetails()}
         >
           Additional Details
-          <span className={Styles['MarketProperties__additional-details-chevron']}>
+          <span
+            className={Styles["MarketProperties__additional-details-chevron"]}
+          >
             <ChevronFlip pointDown={p.showingDetails} />
           </span>
         </button>
-      }
+      )}
     </article>
-  )
-}
+  );
+};
 
 MarketProperties.propTypes = {
   currentTimestamp: PropTypes.number.isRequired,
@@ -135,7 +188,7 @@ MarketProperties.propTypes = {
   toggleDetails: PropTypes.func,
   isForking: PropTypes.bool,
   isForkingMarketFinalized: PropTypes.bool,
-  forkingMarket: PropTypes.string,
-}
+  forkingMarket: PropTypes.string
+};
 
-export default MarketProperties
+export default MarketProperties;

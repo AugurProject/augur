@@ -1,39 +1,43 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+import { describe, it } from "mocha";
+import { assert } from "chai";
 
-import { migrateMarketThroughFork, __RewireAPI__ as ReWireModule } from 'modules/forking/actions/migrate-market-through-fork'
+import {
+  migrateMarketThroughFork,
+  __RewireAPI__ as ReWireModule
+} from "modules/forking/actions/migrate-market-through-fork";
 
-describe('modules/forking/actions/migrate-market-through-fork.js', () => {
-  const test = t => it(t.description, () => t.assertions())
+describe("modules/forking/actions/migrate-market-through-fork.js", () => {
+  const test = t => it(t.description, () => t.assertions());
 
-  describe('migrateMarketThroughFork', () => {
+  describe("migrateMarketThroughFork", () => {
     test({
-      description: 'should call the function as expected',
+      description: "should call the function as expected",
       assertions: () => {
         const stateData = {
           loginAccount: {
-            meta: 'META',
-          },
-        }
+            meta: "META"
+          }
+        };
 
-        const getState = () => stateData
+        const getState = () => stateData;
 
-        ReWireModule.__Rewire__('augur', {
+        ReWireModule.__Rewire__("augur", {
           api: {
             Market: {
-              migrateThroughOneFork: (args) => {
+              migrateThroughOneFork: args => {
                 assert.deepEqual(args.tx, {
-                  to: '0xMARKET',
-                  estimateGas: false,
-                })
-                return args.onSuccess(null)
-              },
-            },
-          },
-        })
+                  to: "0xMARKET",
+                  estimateGas: false
+                });
+                return args.onSuccess(null);
+              }
+            }
+          }
+        });
 
-        migrateMarketThroughFork('0xMARKET', false, () => {})(() => {}, getState)
-      },
-    })
-  })
-})
+        migrateMarketThroughFork("0xMARKET", false, () => {})(() => {},
+        getState);
+      }
+    });
+  });
+});

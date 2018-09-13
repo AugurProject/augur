@@ -1,0 +1,302 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketLiquidity__TableScroll {
+  border: 1px solid @color-lightest-gray;
+  max-height: 36.75rem;
+  overflow-y: auto;
+
+  > .MarketLiquidity__TableWrapper {
+    margin-bottom: 0;
+  }
+}
+
+.extended {
+  max-height: 100%;
+}
+
+.MarketLiquidity__hidden {
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.MarketLiquidity__container {
+  background-color: @color-yellow-alert;
+  padding: 0.25rem;
+}
+
+.MarketLiquidity__heading {
+  align-content: space-between;
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0 1.75rem;
+  width: 100%;
+
+  > h1 {
+    &:extend(.caps--small all);
+
+    flex: 1;
+    margin: 0;
+    text-align: left;
+    text-transform: none;
+  }
+}
+
+.MarketLiquidity__showMore {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 1rem 0 0;
+  width: 100%;
+
+  > h1 {
+    &:extend(.caps--small all);
+
+    margin: 0 0.5rem 0 auto;
+  }
+
+  > span {
+    transition: transform 0.3s ease;
+
+    &.is-open {
+      transform: rotate(-180deg);
+    }
+
+    > svg {
+      stroke: @color-darkpurple;
+      width: 0.875rem;
+    }
+  }
+}
+
+.MarketLiquidity__TableHeader {
+  &:extend(.caps--small);
+
+  color: @color-darkpurple;
+  display: table-header-group;
+  font-weight: 500;
+
+  &:first-child > li {
+    padding-top: 0;
+  }
+
+  > li {
+    display: table-cell;
+    min-width: 9.5rem;
+    padding: 2rem 0.5rem 0.625rem 0;
+    text-align: left;
+    width: 12.5rem;
+
+    &:first-child {
+      min-width: 4.25rem;
+      padding-left: 1.5rem;
+      padding-right: 0.5rem;
+      width: 6rem;
+    }
+
+    &:nth-child(2) {
+      min-width: 4.375rem;
+      width: auto;
+    }
+
+    &:last-child {
+      min-width: 9.38rem;
+      text-align: center;
+      width: 9.38rem;
+    }
+  }
+}
+
+.MarketLiquidity__TableWrapper {
+  display: table;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.MarketLiquidity__ExtendedContainer {
+  background-color: @color-yellow-washed;
+  padding: 1rem 2rem;
+
+  > h1 {
+    &:extend(.caps--large all);
+  }
+
+  > .MarketLiquidity__TableWrapper:first-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.MarketLiquidity__ExtendedContainer-outcomeSelectContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 1.5rem;
+  width: 300px;
+
+  > label {
+    color: @color-darkpurple;
+  }
+}
+
+.MarketLiquidity__costs {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 2rem 0;
+}
+
+.MarketLiquidity__costs-labels {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 1rem 0 auto;
+  text-align: right;
+
+  h4 {
+    flex: 1;
+    font-size: @font-size-medium;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    flex: 1;
+    font-size: @font-size-large;
+    font-weight: 500;
+  }
+}
+
+.MarketLiquidity__costs-values {
+  display: flex;
+  flex-flow: column nowrap;
+  text-align: right;
+
+  h4 {
+    flex: 1;
+    font-size: @font-size-medium;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    flex: 1;
+    font-size: @font-size-large;
+    font-weight: 500;
+  }
+}
+
+.MarketLiquidity__submit-container {
+  display: flex;
+  flex-flow: row-reverse nowrap;
+}
+
+.MarketLiquidity__submit {
+  &:extend(.button--purple all);
+
+  padding: 0 1.5rem;
+
+  &.disabled {
+    &:extend(.button--purple--disabled);
+
+    pointer-events: none;
+  }
+}
+
+.MarketLiquidity__clearAll {
+  &:extend(.button--gray all);
+
+  margin-right: 2rem;
+  padding: 0 1.5rem;
+
+  &.disabled {
+    &:extend(.button--grey-disabled);
+
+    pointer-events: none;
+  }
+}
+
+.MarketLiquidity__warning-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+
+  > div {
+    flex: 1;
+    margin-right: 2rem;
+  }
+
+  > button {
+    &:extend(.button--purple all);
+
+    &.disabled {
+      &:extend(.button--purple--disabled);
+
+      pointer-events: none;
+    }
+  }
+
+  > button:first-of-type {
+    &:extend(.button--gray all);
+
+    margin-right: 3rem;
+
+    &.disabled {
+      &:extend(.button--gray--disabled);
+
+      pointer-events: none;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .MarketLiquidity__TableHeader {
+    > li {
+      display: table-cell;
+      min-width: 7.5rem;
+      padding: 1rem 0 0.625rem;
+
+      &:first-child {
+        padding-left: 0.5rem;
+        padding-right: 0;
+      }
+
+      &:last-child {
+        min-width: 7.5rem;
+        padding-right: 0.5rem;
+      }
+    }
+  }
+
+  .MarketLiquidity__warning-container {
+    flex-flow: column nowrap;
+
+    > div {
+      flex: 1 100%;
+      margin: 0;
+    }
+
+    > button {
+      flex: 1 100%;
+      margin-top: 1rem;
+    }
+
+    > button:first-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketLiquidity__TableHeader {
+    > li {
+      display: table-cell;
+      min-width: unset;
+      padding: 1rem 0 0.625rem;
+      width: unset;
+
+      &:first-child {
+        padding-left: 0.5rem;
+      }
+
+      &:last-child {
+        width: unset;
+      }
+    }
+  }
+}

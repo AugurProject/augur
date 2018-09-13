@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { BigNumber, createBigNumber } from 'utils/create-big-number'
-import { PulseLoader } from 'react-spinners'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { BigNumber, createBigNumber } from "utils/create-big-number";
+import { PulseLoader } from "react-spinners";
 
-import { IconSearch, CloseDark } from 'modules/common/components/icons'
+import { IconSearch, CloseDark } from "modules/common/components/icons";
 
-import debounce from 'utils/debounce'
+import debounce from "utils/debounce";
 
-import Styles from 'modules/common/components/input/input.styles'
+import Styles from "modules/common/components/input/input.styles";
 
 export default class Input extends Component {
   // TODO -- Prop Validations
@@ -34,97 +34,137 @@ export default class Input extends Component {
     onMaxButtonClick: PropTypes.func,
     noFocus: PropTypes.bool,
     isLoading: PropTypes.bool,
-    onFocus: PropTypes.func,
+    onFocus: PropTypes.func
   };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      value: this.props.value || '',
-      isHiddenContentVisible: false,
-    }
+      value: this.props.value || "",
+      isHiddenContentVisible: false
+    };
 
-    this.handleOnChange = this.handleOnChange.bind(this)
-    this.handleOnBlur = this.handleOnBlur.bind(this)
-    this.handleClear = this.handleClear.bind(this)
-    this.handleOnFocus = this.handleOnFocus.bind(this)
-    this.handleToggleVisibility = this.handleToggleVisibility.bind(this)
-    this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200)
+    this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
+    this.handleClear = this.handleClear.bind(this);
+    this.handleOnFocus = this.handleOnFocus.bind(this);
+    this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
+    this.timeoutVisibleHiddenContent = debounce(
+      this.timeoutVisibleHiddenContent.bind(this),
+      1200
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    const { value } = this.props
+    const { value } = this.props;
     if (value !== nextProps.value) {
-      this.setState({ value: nextProps.value })
+      this.setState({ value: nextProps.value });
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
-      this.updateIsHiddenContentVisible(false)
+    if (
+      nextProps.canToggleVisibility &&
+      !nextState.value &&
+      nextState.isHiddenContentVisible
+    ) {
+      this.updateIsHiddenContentVisible(false);
     }
 
-    if (this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible && nextState.isHiddenContentVisible) {
-      this.timeoutVisibleHiddenContent()
+    if (
+      this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible &&
+      nextState.isHiddenContentVisible
+    ) {
+      this.timeoutVisibleHiddenContent();
     }
   }
 
-  handleOnChange = (e) => {
-    const newValue = e.target.value
+  handleOnChange = e => {
+    const newValue = e.target.value;
 
-    this.props.onChange(newValue)
-    this.setState({ value: newValue })
+    this.props.onChange(newValue);
+    this.setState({ value: newValue });
   };
 
   handleOnBlur = () => {
-    this.props.onChange(this.state.value)
-    this.props.onBlur && this.props.onBlur()
+    this.props.onChange(this.state.value);
+    this.props.onBlur && this.props.onBlur();
   };
 
   handleOnFocus = () => {
-    this.props.onChange(this.state.value)
-    this.props.onFocus && this.props.onFocus()
+    this.props.onChange(this.state.value);
+    this.props.onFocus && this.props.onFocus();
   };
 
   handleClear = () => {
-    this.setState({ value: '' })
-    this.props.onChange('')
+    this.setState({ value: "" });
+    this.props.onChange("");
   };
 
-  handleToggleVisibility = () => this.updateIsHiddenContentVisible(!this.state.isHiddenContentVisible)
+  handleToggleVisibility = () =>
+    this.updateIsHiddenContentVisible(!this.state.isHiddenContentVisible);
 
-  timeoutVisibleHiddenContent = () => this.updateIsHiddenContentVisible(false)
+  timeoutVisibleHiddenContent = () => this.updateIsHiddenContentVisible(false);
 
   updateIsHiddenContentVisible(isHiddenContentVisible) {
     this.setState({
-      isHiddenContentVisible,
-    })
+      isHiddenContentVisible
+    });
   }
 
   render() {
     const {
-      isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, maxButton, onMaxButtonClick, noFocus, isLoading, ...p
-    } = this.props // eslint-disable-line no-unused-vars
-    const s = this.state
+      isClearable,
+      isIncrementable,
+      incrementAmount,
+      updateValue,
+      canToggleVisibility,
+      shouldMatchValue,
+      comparisonValue,
+      isSearch,
+      min,
+      max,
+      maxButton,
+      onMaxButtonClick,
+      noFocus,
+      isLoading,
+      ...p
+    } = this.props; // eslint-disable-line no-unused-vars
+    const s = this.state;
 
     return (
-      <div className={classNames(isIncrementable ? Styles.Input__Incremental : Styles.Input, p.className, { 'can-toggle-visibility': canToggleVisibility, [`${Styles.noFocus}`]: noFocus })} >
+      <div
+        className={classNames(
+          isIncrementable ? Styles.Input__Incremental : Styles.Input,
+          p.className,
+          {
+            "can-toggle-visibility": canToggleVisibility,
+            [`${Styles.noFocus}`]: noFocus
+          }
+        )}
+      >
         {isSearch && IconSearch}
-        {!p.isMultiline &&
+        {!p.isMultiline && (
           <input
             {...p}
-            className={classNames('box', p.className, { 'search-input': p.isSearch })}
-            type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
+            className={classNames("box", p.className, {
+              "search-input": p.isSearch
+            })}
+            type={
+              p.type === "password" && s.isHiddenContentVisible
+                ? "text"
+                : p.type
+            }
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
             placeholder={p.placeholder}
             onFocus={this.handleOnFocus}
           />
-        }
+        )}
 
-        {p.isMultiline &&
+        {p.isMultiline && (
           <textarea
             {...p}
             className="box"
@@ -133,10 +173,10 @@ export default class Input extends Component {
             onBlur={this.handleOnBlur}
             onFocus={this.handleOnFocus}
           />
-        }
+        )}
 
-        {isSearch &&
-          <div style={{ marginRight: '8px' }}>
+        {isSearch && (
+          <div style={{ marginRight: "8px" }}>
             <PulseLoader
               color="#553580"
               sizeUnit="px"
@@ -144,33 +184,37 @@ export default class Input extends Component {
               loading={isLoading}
             />
           </div>
-        }
+        )}
 
-        {isClearable && !p.isMultiline && !!s.value &&
-          <button
-            type="button"
-            className={Styles.close}
-            onClick={this.handleClear}
-          >
-            {CloseDark}
-          </button>
-        }
+        {isClearable &&
+          !p.isMultiline &&
+          !!s.value && (
+            <button
+              type="button"
+              className={Styles.close}
+              onClick={this.handleClear}
+            >
+              {CloseDark}
+            </button>
+          )}
 
-        {canToggleVisibility && s.value &&
-          <button
-            type="button"
-            className="button--text-only"
-            onClick={this.handleToggleVisibility}
-            tabIndex="-1"
-          >
-            {s.isHiddenContentVisible ?
-              <i className="fa fa-eye-slash" /> :
-              <i className="fa fa-eye" />
-            }
-          </button>
-        }
+        {canToggleVisibility &&
+          s.value && (
+            <button
+              type="button"
+              className="button--text-only"
+              onClick={this.handleToggleVisibility}
+              tabIndex="-1"
+            >
+              {s.isHiddenContentVisible ? (
+                <i className="fa fa-eye-slash" />
+              ) : (
+                <i className="fa fa-eye" />
+              )}
+            </button>
+          )}
 
-        {maxButton &&
+        {maxButton && (
           <button
             type="button"
             className={Styles.Input__max}
@@ -178,44 +222,49 @@ export default class Input extends Component {
           >
             max
           </button>
-        }
+        )}
 
-        {shouldMatchValue && s.value &&
-          <div className="input-value-comparison">
-            {s.value === comparisonValue ?
-              <i className="fa fa-check-circle input-does-match" /> :
-              <i className="fa fa-times-circle input-does-not-match" />
-            }
-          </div>
-        }
+        {shouldMatchValue &&
+          s.value && (
+            <div className="input-value-comparison">
+              {s.value === comparisonValue ? (
+                <i className="fa fa-check-circle input-does-match" />
+              ) : (
+                <i className="fa fa-times-circle input-does-not-match" />
+              )}
+            </div>
+          )}
 
-        {isIncrementable &&
+        {isIncrementable && (
           <div className={Styles.value__incrementers}>
             <button
               type="button"
               tabIndex="-1"
-              className={classNames(Styles['increment-value'], 'unstyled')}
-              onClick={(e) => {
-                e.currentTarget.blur()
+              className={classNames(Styles["increment-value"], "unstyled")}
+              onClick={e => {
+                e.currentTarget.blur();
 
-                if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                  const bnMax = sanitizeBound(max)
-                  const bnMin = sanitizeBound(min)
+                if (
+                  (!isNaN(parseFloat(s.value)) && isFinite(s.value)) ||
+                  !s.value
+                ) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
 
-                  let newValue = createBigNumber(s.value || 0)
+                  let newValue = createBigNumber(s.value || 0);
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                    newValue = bnMax
+                    newValue = bnMax;
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
-                    newValue = bnMin.plus(createBigNumber(incrementAmount))
+                    newValue = bnMin.plus(createBigNumber(incrementAmount));
                   } else {
-                    newValue = newValue.plus(createBigNumber(incrementAmount))
+                    newValue = newValue.plus(createBigNumber(incrementAmount));
                     if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                      newValue = bnMax
+                      newValue = bnMax;
                     }
                   }
 
-                  updateValue(newValue)
+                  updateValue(newValue);
                 }
               }}
             >
@@ -225,45 +274,48 @@ export default class Input extends Component {
               type="button"
               tabIndex="-1"
               className="decrement-value unstyled"
-              onClick={(e) => {
-                e.currentTarget.blur()
+              onClick={e => {
+                e.currentTarget.blur();
 
-                if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                  const bnMax = sanitizeBound(max)
-                  const bnMin = sanitizeBound(min)
+                if (
+                  (!isNaN(parseFloat(s.value)) && isFinite(s.value)) ||
+                  !s.value
+                ) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
 
-                  let newValue = createBigNumber(s.value || 0)
+                  let newValue = createBigNumber(s.value || 0);
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                    newValue = bnMax.minus(createBigNumber(incrementAmount))
+                    newValue = bnMax.minus(createBigNumber(incrementAmount));
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
-                    newValue = bnMin
+                    newValue = bnMin;
                   } else {
-                    newValue = newValue.minus(createBigNumber(incrementAmount))
+                    newValue = newValue.minus(createBigNumber(incrementAmount));
                     if (bnMin !== null && newValue.lessThan(bnMin)) {
-                      newValue = bnMin
+                      newValue = bnMin;
                     }
                   }
 
-                  updateValue(newValue)
+                  updateValue(newValue);
                 }
               }}
             >
               <i className="fa fa-angle-down" />
             </button>
           </div>
-        }
+        )}
       </div>
-    )
+    );
   }
 }
 
 function sanitizeBound(value) {
   if (value == null) {
-    return null
-  } else if (!(BigNumber.isBigNumber(value))) {
-    return createBigNumber(value)
+    return null;
+  } else if (!BigNumber.isBigNumber(value)) {
+    return createBigNumber(value);
   }
 
-  return value
+  return value;
 }

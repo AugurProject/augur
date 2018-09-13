@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+const chalk = require("chalk");
 
 const colors = {
   title: chalk.cyan.bold,

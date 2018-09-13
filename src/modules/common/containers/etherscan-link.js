@@ -1,20 +1,20 @@
-import { connect } from 'react-redux'
-import EtherscanLink from 'modules/common/components/etherscan-link'
+import { connect } from "react-redux";
+import EtherscanLink from "modules/common/components/etherscan-link";
 
-const mapStateToProps = (state) => {
-  const networkId = state.connection.augurNodeNetworkId
+const mapStateToProps = state => {
+  const networkId = state.connection.augurNodeNetworkId;
   const networkLink = {
-    1: 'https://etherscan.io/tx/',
-    3: 'https://ropsten.etherscan.io/tx/',
-    4: 'https://rinkeby.etherscan.io/tx/',
-    19: 'http://scan.thundercore.com/tx/',
+    1: "https://etherscan.io/tx/",
+    3: "https://ropsten.etherscan.io/tx/",
+    4: "https://rinkeby.etherscan.io/tx/",
+    19: "http://scan.thundercore.com/tx/",
   }
 
   return {
-    baseUrl: networkLink[networkId],
-  }
-}
+    baseUrl: networkLink[networkId]
+  };
+};
 
-const etherscan = connect(mapStateToProps)(EtherscanLink)
+const etherscan = connect(mapStateToProps)(EtherscanLink);
 
-export default etherscan
+export default etherscan;

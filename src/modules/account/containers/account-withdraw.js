@@ -1,23 +1,27 @@
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-import AccountWithdraw from 'modules/account/components/account-withdraw/account-withdraw'
+import AccountWithdraw from "modules/account/components/account-withdraw/account-withdraw";
 
-import { transferFunds } from 'modules/auth/actions/transfer-funds'
-import { selectLoginAccount } from 'modules/auth/selectors/login-account'
+import { transferFunds } from "modules/auth/actions/transfer-funds";
+import { selectLoginAccount } from "modules/auth/selectors/login-account";
 
-const mapStateToProps = (state) => {
-  const loginAccount = selectLoginAccount(state)
+const mapStateToProps = state => {
+  const loginAccount = selectLoginAccount(state);
   return {
     eth: loginAccount.eth,
     rep: loginAccount.rep,
-    isMobileSmall: state.isMobileSmall,
-  }
-}
+    isMobileSmall: state.appStatus.isMobileSmall
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
-  transferFunds: (amount, asset, to) => dispatch(transferFunds(amount, asset, to)),
-})
+  transferFunds: (amount, asset, to) =>
+    dispatch(transferFunds(amount, asset, to))
+});
 
-const AccountWithdrawContainer = connect(mapStateToProps, mapDispatchToProps)(AccountWithdraw)
+const AccountWithdrawContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AccountWithdraw);
 
-export default AccountWithdrawContainer
+export default AccountWithdrawContainer;

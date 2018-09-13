@@ -1,3 +1,3 @@
-export default function (positionsSummary) {
+export default function(positionsSummary) {
   // implement me
 }

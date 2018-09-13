@@ -1,26 +1,25 @@
 /* eslint react/no-array-index-key: 0 */ // It's OK in this specific instance as order remains the same
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { augur } from 'services/augurjs'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { augur } from "services/augurjs";
 
-import CreateMarketDefine from 'modules/create-market/components/create-market-form-define/create-market-form-define'
-import CreateMarketOutcome from 'modules/create-market/components/create-market-form-outcome/create-market-form-outcome'
-import CreateMarketResolution from 'modules/create-market/components/create-market-form-resolution/create-market-form-resolution'
-import CreateMarketLiquidity from 'modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity'
-import CreateMarketLiquidityOrders from 'modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders'
-import CreateMarketReview from 'modules/create-market/components/create-market-form-review/create-market-form-review'
-import Styles from 'modules/create-market/components/create-market-form/create-market-form.styles'
-import { ExclamationCircle as InputErrorIcon } from 'modules/common/components/icons'
-import { createBigNumber } from 'utils/create-big-number'
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { BID } from 'modules/transactions/constants/types'
+import CreateMarketDefine from "modules/create-market/components/create-market-form-define/create-market-form-define";
+import CreateMarketOutcome from "modules/create-market/components/create-market-form-outcome/create-market-form-outcome";
+import CreateMarketResolution from "modules/create-market/components/create-market-form-resolution/create-market-form-resolution";
+import CreateMarketLiquidity from "modules/create-market/components/create-market-form-liquidity/create-market-form-liquidity";
+import CreateMarketLiquidityOrders from "modules/create-market/components/create-market-form-liquidity-orders/create-market-form-liquidity-orders";
+import CreateMarketReview from "modules/create-market/components/create-market-form-review/create-market-form-review";
+import Styles from "modules/create-market/components/create-market-form/create-market-form.styles";
+import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
+import { createBigNumber } from "utils/create-big-number";
+import { CATEGORICAL, SCALAR } from "modules/markets/constants/market-types";
+import { BID } from "modules/transactions/constants/types";
 
-const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000)
+const NEW_ORDER_GAS_ESTIMATE = createBigNumber(700000);
 
 export default class CreateMarketForm extends Component {
-
   static propTypes = {
     addOrderToNewMarket: PropTypes.func.isRequired,
     availableEth: PropTypes.string.isRequired,
@@ -35,99 +34,100 @@ export default class CreateMarketForm extends Component {
     submitNewMarket: PropTypes.func.isRequired,
     universe: PropTypes.object.isRequired,
     estimateSubmitNewMarket: PropTypes.func.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-  }
+    updateNewMarket: PropTypes.func.isRequired
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      pages: ['Define', 'Outcome', 'Resolution', 'Liquidity', 'Review'],
+      pages: ["Define", "Outcome", "Resolution", "Liquidity", "Review"],
       liquidityState: {},
       awaitingSignature: false,
-      insufficientFunds: true,
-    }
+      insufficientFunds: true
+    };
 
-    this.prevPage = this.prevPage.bind(this)
-    this.nextPage = this.nextPage.bind(this)
-    this.validateField = this.validateField.bind(this)
-    this.validateNumber = this.validateNumber.bind(this)
-    this.isValid = this.isValid.bind(this)
-    this.keyPressed = this.keyPressed.bind(this)
-    this.updateState = this.updateState.bind(this)
-    this.updateStateValue = this.updateStateValue.bind(this)
-    this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this)
-    this.handleCancelOrder = this.handleCancelOrder.bind(this)
+    this.prevPage = this.prevPage.bind(this);
+    this.nextPage = this.nextPage.bind(this);
+    this.validateField = this.validateField.bind(this);
+    this.validateNumber = this.validateNumber.bind(this);
+    this.isValid = this.isValid.bind(this);
+    this.keyPressed = this.keyPressed.bind(this);
+    this.updateState = this.updateState.bind(this);
+    this.updateStateValue = this.updateStateValue.bind(this);
+    this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(
+      this
+    );
+    this.handleCancelOrder = this.handleCancelOrder.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      newMarket,
-      updateNewMarket,
-    } = this.props
-    if (newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 4) {
-      updateNewMarket({ isValid: this.isValid(nextProps.newMarket.currentStep) })
+    const { newMarket, updateNewMarket } = this.props;
+    if (
+      newMarket.currentStep !== nextProps.newMarket.currentStep &&
+      nextProps.newMarket.currentStep !== 4
+    ) {
+      updateNewMarket({
+        isValid: this.isValid(nextProps.newMarket.currentStep)
+      });
     }
   }
 
   prevPage() {
-    const {
-      newMarket,
-      updateNewMarket,
-    } = this.props
-    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1
-    updateNewMarket({ currentStep: newStep })
+    const { newMarket, updateNewMarket } = this.props;
+    const newStep = newMarket.currentStep <= 0 ? 0 : newMarket.currentStep - 1;
+    updateNewMarket({ currentStep: newStep });
   }
 
   nextPage() {
-    const {
-      newMarket,
-      updateNewMarket,
-    } = this.props
+    const { newMarket, updateNewMarket } = this.props;
     if (newMarket.isValid) {
-      const newStep = newMarket.currentStep >= (this.state.pages.length - 1) ? this.state.pages.length - 1 : newMarket.currentStep + 1
-      updateNewMarket({ currentStep: newStep })
+      const newStep =
+        newMarket.currentStep >= this.state.pages.length - 1
+          ? this.state.pages.length - 1
+          : newMarket.currentStep + 1;
+      updateNewMarket({ currentStep: newStep });
     }
   }
 
   keyPressed(event) {
-    if (event.key === 'Enter') {
-      this.nextPage()
+    if (event.key === "Enter") {
+      this.nextPage();
     }
   }
 
   updateState(newState) {
-    this.setState(newState)
+    this.setState(newState);
   }
 
   updateStateValue(property, value) {
-    this.setState({ [property]: value })
+    this.setState({ [property]: value });
   }
 
   validateField(fieldName, value, maxLength) {
-    const {
-      newMarket,
-      updateNewMarket,
-    } = this.props
-    const { currentStep } = newMarket
+    const { newMarket, updateNewMarket } = this.props;
+    const { currentStep } = newMarket;
 
-    const updatedMarket = { ...newMarket }
+    const updatedMarket = { ...newMarket };
 
     switch (true) {
-      case typeof value === 'string' && !value.trim().length:
-        updatedMarket.validations[currentStep][fieldName] = 'This field is required.'
-        break
+      case typeof value === "string" && !value.trim().length:
+        updatedMarket.validations[currentStep][fieldName] =
+          "This field is required.";
+        break;
       case maxLength && value.length > maxLength:
-        updatedMarket.validations[currentStep][fieldName] = `Maximum length is ${maxLength}.`
-        break
+        updatedMarket.validations[currentStep][
+          fieldName
+        ] = `Maximum length is ${maxLength}.`;
+        break;
       default:
-        updatedMarket.validations[currentStep][fieldName] = true
+        updatedMarket.validations[currentStep][fieldName] = true;
     }
 
-    updatedMarket[fieldName] = value
-    updatedMarket.isValid = this.isValid(currentStep)
+    updatedMarket[fieldName] = value;
+    updatedMarket.isValid = this.isValid(currentStep);
 
-    updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket);
   }
 
   validateNumber(
@@ -137,78 +137,78 @@ export default class CreateMarketForm extends Component {
     min,
     max,
     decimals = 0,
-    leadingZero = false,
+    leadingZero = false
   ) {
-    const {
-      newMarket,
-      updateNewMarket,
-    } = this.props
-    const updatedMarket = { ...newMarket }
-    const { currentStep } = newMarket
+    const { newMarket, updateNewMarket } = this.props;
+    const updatedMarket = { ...newMarket };
+    const { currentStep } = newMarket;
 
-    let value = rawValue
+    let value = rawValue;
 
-    const regExp = new RegExp('^[0-9]+\\.[0]{0,' + decimals + '}$')
-    if (value !== '' && !regExp.test(value)) {
-      value = parseFloat(value)
-      value = parseFloat(value.toFixed(decimals))
+    const regExp = new RegExp("^[0-9]+\\.[0]{0," + decimals + "}$");
+    if (value !== "" && value !== ".0" && !regExp.test(value)) {
+      value = parseFloat(value);
+      value = parseFloat(value.toFixed(decimals));
     }
 
     switch (true) {
-      case value === '':
-        updatedMarket.validations[currentStep][fieldName] = `The ${humanName} field is required.`
-        break
-      case (value > max || value < min):
-        updatedMarket.validations[currentStep][fieldName] = `${humanName}`.charAt(0).toUpperCase()
-        updatedMarket.validations[currentStep][fieldName] += `${humanName} must be between ${min} and ${max}.`.slice(1)
-        break
+      case value === "":
+        updatedMarket.validations[currentStep][
+          fieldName
+        ] = `The ${humanName} field is required.`;
+        break;
+      case value > max || value < min:
+        updatedMarket.validations[currentStep][
+          fieldName
+        ] = `${humanName}`.charAt(0).toUpperCase();
+        updatedMarket.validations[currentStep][
+          fieldName
+        ] += `${humanName} must be between ${min} and ${max}.`.slice(1);
+        break;
       default:
-        updatedMarket.validations[currentStep][fieldName] = true
-        break
+        updatedMarket.validations[currentStep][fieldName] = true;
+        break;
     }
 
     if (leadingZero && value < 10) {
-      value = `0${value}`
+      value = `0${value}`;
     }
 
-    updatedMarket[fieldName] = typeof value === 'number' ? value.toString() : value
-    updatedMarket.isValid = this.isValid(currentStep)
+    updatedMarket[fieldName] =
+      typeof value === "number" ? value.toString() : value;
+    updatedMarket.isValid = this.isValid(currentStep);
 
-    updateNewMarket(updatedMarket)
+    updateNewMarket(updatedMarket);
   }
 
   isValid(currentStep) {
-    const { newMarket } = this.props
-    const validations = newMarket.validations[currentStep]
-    const validationsArray = Object.keys(validations)
-    return validationsArray.every(key => validations[key] === true)
+    const { newMarket } = this.props;
+    const validations = newMarket.validations[currentStep];
+    const validationsArray = Object.keys(validations);
+    return validationsArray.every(key => validations[key] === true);
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const {
-      availableEth,
-      newMarket,
-      updateNewMarket,
-    } = this.props
-    const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0
-    const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1
-    const shareBalances = newMarket.outcomes.map(outcome => 0)
-    let outcome
-    let initialLiquidityEth
-    let initialLiquidityGas
+    const { availableEth, newMarket, updateNewMarket } = this.props;
+    const minPrice = newMarket.type === SCALAR ? newMarket.scalarSmallNum : 0;
+    const maxPrice = newMarket.type === SCALAR ? newMarket.scalarBigNum : 1;
+    const shareBalances = newMarket.outcomes.map(outcome => 0);
+    let outcome;
+    let initialLiquidityEth;
+    let initialLiquidityGas;
 
     switch (newMarket.type) {
       case CATEGORICAL:
         newMarket.outcomes.forEach((outcomeName, index) => {
-          if (order.outcome === outcomeName) outcome = index
-        })
-        break
+          if (order.outcome === outcomeName) outcome = index;
+        });
+        break;
       case SCALAR:
-        ({ outcome } = order)
-        break
+        ({ outcome } = order);
+        break;
       default:
-        outcome = 1
-        break
+        outcome = 1;
+        break;
     }
 
     const orderInfo = {
@@ -222,29 +222,37 @@ export default class CreateMarketForm extends Component {
       marketCreatorFeeRate: newMarket.settlementFee,
       reportingFeeRate: 0,
       shareBalances,
-      singleOutcomeOrderBook: newMarket.orderBook[outcome] || {},
-    }
-    const action = augur.trading.simulateTrade(orderInfo)
+      singleOutcomeOrderBook: newMarket.orderBook[outcome] || {}
+    };
+    const action = augur.trading.simulateTrade(orderInfo);
     // NOTE: Fees are going to always be 0 because we are only opening orders, and there is no costs associated with opening orders other than the escrowed ETH and the gas to put the order up.
     if (shouldReduce) {
-      initialLiquidityEth = newMarket.initialLiquidityEth.minus(action.tokensDepleted)
-      initialLiquidityGas = newMarket.initialLiquidityGas.minus(NEW_ORDER_GAS_ESTIMATE)
+      initialLiquidityEth = newMarket.initialLiquidityEth.minus(
+        action.tokensDepleted
+      );
+      initialLiquidityGas = newMarket.initialLiquidityGas.minus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
     } else {
-      initialLiquidityEth = newMarket.initialLiquidityEth.plus(action.tokensDepleted)
-      initialLiquidityGas = newMarket.initialLiquidityGas.plus(NEW_ORDER_GAS_ESTIMATE)
+      initialLiquidityEth = newMarket.initialLiquidityEth.plus(
+        action.tokensDepleted
+      );
+      initialLiquidityGas = newMarket.initialLiquidityGas.plus(
+        NEW_ORDER_GAS_ESTIMATE
+      );
     }
 
-    updateNewMarket({ initialLiquidityEth, initialLiquidityGas })
+    updateNewMarket({ initialLiquidityEth, initialLiquidityGas });
   }
 
   handleCancelOrder(orderDetails) {
-    const {
-      newMarket,
-      removeOrderFromNewMarket,
-    } = this.props
-    const order = newMarket.orderBook[orderDetails.outcome][orderDetails.index]
-    this.updateInitialLiquidityCosts(order, true)
-    removeOrderFromNewMarket(orderDetails)
+    const { newMarket, removeOrderFromNewMarket } = this.props;
+    const order = newMarket.orderBook[orderDetails.outcome][orderDetails.index];
+    this.updateInitialLiquidityCosts(
+      { ...order, outcome: orderDetails.outcome },
+      true
+    );
+    removeOrderFromNewMarket(orderDetails);
   }
 
   render() {
@@ -261,18 +269,18 @@ export default class CreateMarketForm extends Component {
       submitNewMarket,
       universe,
       updateNewMarket,
-      estimateSubmitNewMarket,
-    } = this.props
-    const s = this.state
+      estimateSubmitNewMarket
+    } = this.props;
+    const s = this.state;
 
     // TODO -- refactor this to derive route based on url path rather than state value
     //  (react-router-dom declarative routing)
 
     return (
       <article className={Styles.CreateMarketForm}>
-        <div className={Styles['CreateMarketForm__form-outer-wrapper']}>
-          <div className={Styles['CreateMarketForm__form-inner-wrapper']}>
-            { newMarket.currentStep === 0 &&
+        <div className={Styles["CreateMarketForm__form-outer-wrapper"]}>
+          <div className={Styles["CreateMarketForm__form-inner-wrapper"]}>
+            {newMarket.currentStep === 0 && (
               <CreateMarketDefine
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -281,8 +289,8 @@ export default class CreateMarketForm extends Component {
                 isValid={this.isValid}
                 keyPressed={this.keyPressed}
               />
-            }
-            { newMarket.currentStep === 1 &&
+            )}
+            {newMarket.currentStep === 1 && (
               <CreateMarketOutcome
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -291,8 +299,8 @@ export default class CreateMarketForm extends Component {
                 isMobileSmall={isMobileSmall}
                 keyPressed={this.keyPressed}
               />
-            }
-            { newMarket.currentStep === 2 &&
+            )}
+            {newMarket.currentStep === 2 && (
               <CreateMarketResolution
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -303,8 +311,8 @@ export default class CreateMarketForm extends Component {
                 currentTimestamp={currentTimestamp}
                 keyPressed={this.keyPressed}
               />
-            }
-            { newMarket.currentStep === 3 &&
+            )}
+            {newMarket.currentStep === 3 && (
               <CreateMarketLiquidity
                 newMarket={newMarket}
                 updateNewMarket={updateNewMarket}
@@ -317,8 +325,8 @@ export default class CreateMarketForm extends Component {
                 liquidityState={s.liquidityState}
                 updateState={this.updateState}
               />
-            }
-            { newMarket.currentStep === 4 &&
+            )}
+            {newMarket.currentStep === 4 && (
               <CreateMarketReview
                 estimateSubmitNewMarket={estimateSubmitNewMarket}
                 meta={meta}
@@ -329,57 +337,67 @@ export default class CreateMarketForm extends Component {
                 updateStateValue={this.updateStateValue}
                 keyPressed={this.keyPressed}
               />
-            }
+            )}
           </div>
-          <div className={Styles['CreateMarketForm__button-outer-wrapper']}>
-            <div className={Styles['CreateMarketForm__button-inner-wrapper']}>
+          <div className={Styles["CreateMarketForm__button-outer-wrapper"]}>
+            <div className={Styles["CreateMarketForm__button-inner-wrapper"]}>
               <div className={Styles.CreateMarketForm__navigation}>
                 <button
-                  className={classNames(Styles.CreateMarketForm__prev, { [`${Styles['hide-button']}`]: newMarket.currentStep === 0 })}
+                  className={classNames(Styles.CreateMarketForm__prev, {
+                    [`${Styles["hide-button"]}`]: newMarket.currentStep === 0
+                  })}
                   onClick={this.prevPage}
-                >Previous: {s.pages[newMarket.currentStep - 1]}
+                >
+                  Previous: {s.pages[newMarket.currentStep - 1]}
                 </button>
-                { newMarket.currentStep < 4 &&
+                {newMarket.currentStep < 4 && (
                   <button
-                    className={classNames(Styles.CreateMarketForm__next, { [`${Styles['hide-button']}`]: newMarket.currentStep === s.pages.length - 1 })}
+                    className={classNames(Styles.CreateMarketForm__next, {
+                      [`${Styles["hide-button"]}`]:
+                        newMarket.currentStep === s.pages.length - 1
+                    })}
                     disabled={!newMarket.isValid}
                     onClick={this.nextPage}
-                  >Next: {s.pages[newMarket.currentStep + 1]}
+                  >
+                    Next: {s.pages[newMarket.currentStep + 1]}
                   </button>
-                }
-                { newMarket.currentStep === 4 &&
+                )}
+                {newMarket.currentStep === 4 && (
                   <button
                     className={Styles.CreateMarketForm__submit}
                     disabled={s.insufficientFunds || s.awaitingSignature}
-                    onClick={(e) => {
+                    onClick={e => {
                       this.setState({ awaitingSignature: true }, () => {
                         submitNewMarket(newMarket, history, (err, market) => {
-                          if (err) this.setState({ awaitingSignature: false })
-                        })
-                      })
+                          if (err) this.setState({ awaitingSignature: false });
+                        });
+                      });
                     }}
-                  >Submit
+                  >
+                    Submit
                   </button>
-                }
+                )}
               </div>
             </div>
           </div>
-          { newMarket.currentStep === 3 &&
+          {newMarket.currentStep === 3 && (
             <CreateMarketLiquidityOrders
               newMarket={newMarket}
               removeOrderFromNewMarket={this.handleCancelOrder}
               liquidityState={s.liquidityState}
             />
-          }
-          { newMarket.currentStep === 4 && s.awaitingSignature &&
-            <div className={Styles['CreateMarketForm__submit-wrapper']}>
-              <div className={Styles.CreateMarketForm__submitWarning}>
-                {InputErrorIcon} Please sign transaction(s) to complete market creation.
+          )}
+          {newMarket.currentStep === 4 &&
+            s.awaitingSignature && (
+              <div className={Styles["CreateMarketForm__submit-wrapper"]}>
+                <div className={Styles.CreateMarketForm__submitWarning}>
+                  {InputErrorIcon} Please sign transaction(s) to complete market
+                  creation.
+                </div>
               </div>
-            </div>
-          }
+            )}
         </div>
       </article>
-    )
+    );
   }
 }

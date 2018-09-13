@@ -1,1 +1,1 @@
-export default item => item != null && item.constructor === Array
+export default item => item != null && item.constructor === Array;
