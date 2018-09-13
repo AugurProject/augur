@@ -45,7 +45,7 @@ export const handleEvents = () => {
         }))
       }
       lastSyncBlockNumber = newLastSyncBlockNumber
-    }, 5 * 60 * 1000) // 5 minutes
+    }, 10 * 60 * 1000) // 10 minutes
   })
 
   ipcRenderer.on(ON_SERVER_DISCONNECTED, () => {
