@@ -221,6 +221,7 @@ export interface OutcomesRow<BigNumberType> {
   outcome: number;
   price: BigNumberType;
   volume: BigNumberType;
+  shareVolume: BigNumberType;
   description: string|null;
 }
 

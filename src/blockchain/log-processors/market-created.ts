@@ -86,6 +86,7 @@ export function processMarketCreatedLog(db: Knex, augur: Augur, log: FormattedEv
           marketId: log.market,
           price: new BigNumber(log.minPrice, 10).plus(new BigNumber(log.maxPrice, 10)).dividedBy(new BigNumber(numOutcomes, 10)),
           volume: ZERO,
+          shareVolume: ZERO,
         });
         const tokensDataToInsert: Partial<TokensRow> = {
           marketId: log.market,
