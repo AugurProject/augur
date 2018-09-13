@@ -14,7 +14,6 @@ import {
 import { SCALAR } from "modules/markets/constants/market-types";
 
 import getValue from "utils/get-value";
-import shareDenominationLabel from "utils/share-denomination-label";
 import { dateHasPassed } from "utils/format-date";
 import Styles from "modules/market/components/market-properties/market-properties.styles";
 import ChevronFlip from "modules/common/components/chevron-flip/chevron-flip";
@@ -35,11 +34,7 @@ const ShowResolutionStates = [
 ];
 
 const MarketProperties = p => {
-  const shareVolumeFormatted = getValue(p, "volume.formatted");
-  const shareDenomination = shareDenominationLabel(
-    p.selectedShareDenomination,
-    p.shareDenominations
-  );
+  const shareVolume = getValue(p, "volume");
   const isScalar = p.marketType === SCALAR;
   let consensus = getValue(
     p,
@@ -62,8 +57,7 @@ const MarketProperties = p => {
             <span>Volume</span>
             <ValueDenomination
               valueClassname="volume"
-              formatted={shareVolumeFormatted}
-              denomination={shareDenomination}
+              formatted={shareVolume.full}
             />
           </li>
           <li>
