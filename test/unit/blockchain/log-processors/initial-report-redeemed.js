@@ -4,7 +4,7 @@ const Augur = require("augur.js");
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } = require("../../../../build/blockchain/log-processors/initial-report-redeemed");
+const { processInitialReporterRedeemedLog, processInitialReporterRedeemedLogRemoval } = require("../../../../src/blockchain/log-processors/initial-report-redeemed");
 
 const getInitialReport = (db, params, callback) => {
   db("initial_reports").first(["redeemed"]).where("initial_reports.marketId", params.log.market).asCallback(callback);

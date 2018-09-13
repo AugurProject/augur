@@ -9,9 +9,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../build/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../build/blockchain/process-block.js");
+  = require("../../../../src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -193,6 +193,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           minPrice: new BigNumber("0", 10),
           numOutcomes: 2,
           numTicks: new BigNumber("10000", 10),
+          openInterest: "0",
           reportingFeeRate: new BigNumber("0.02", 10),
           disputeRounds: 1,
           reportingState: "AWAITING_NEXT_WINDOW",
@@ -246,6 +247,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           shortDescription: "This is a yesNo test market created by b0b awaiting round 1 reporting.",
           longDescription: null,
           scalarDenomination: null,
+          openInterest: "0",
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: new BigNumber("10"),
           resolutionSource: "http://www.trusted-third-party.com",

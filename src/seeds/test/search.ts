@@ -6,28 +6,28 @@ exports.seed = async (knex: Knex): Promise<any> => {
     // Inserts seed entries
     const seedData = [{
       marketId: "0x0000000000000000000000000000000000000015",
-      content: "bob and sue are hanging out",
+      shortDescription: "bob and sue are hanging out",
     }, {
       marketId: "0x0000000000000000000000000000000000000012",
-      content: "bob and jimmy are going to the movies",
+      shortDescription: "bob and jimmy are going to the movies",
     }, {
       marketId: "0x0000000000000000000000000000000000000013",
-      content: "little jonny is going to school",
+      shortDescription: "little jonny is going to school",
     }, {
       marketId: "0x0000000000000000000000000000000000000014",
-      content: "sue and betty are hanging out",
+      shortDescription: "sue and betty are hanging out",
     }, {
       marketId: "0x0000000000000000000000000000000000000016",
-      content: "sue and tina are hanging out",
+      shortDescription: "sue and tina are hanging out",
     }, {
       marketId: "0x0000000000000000000000000000000000000017",
-      content: "sue and debbie went to dinner",
+      shortDescription: "sue and debbie went to dinner",
     }, {
       marketId: "0x0000000000000000000000000000000000000018",
-      content: "sue and jonny went to the store",
+      shortDescription: "sue and jonny went to the store",
     }, {
       marketId: "0x0000000000000000000000000000000000000019",
-      content: "sue went to the store",
+      shortDescription: "sue went to the store",
     }];
     return knex.batchInsert("search_en", seedData, seedData.length);
   });

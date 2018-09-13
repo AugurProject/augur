@@ -3,7 +3,7 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const { BigNumber } = require("bignumber.js");
-const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("../../../../build/blockchain/log-processors/tokens-transferred");
+const { processTokensTransferredLog, processTokensTransferredLogRemoval } = require("../../../../src/blockchain/log-processors/tokens-transferred");
 
 describe("blockchain/log-processors/tokens-transferred", () => {
   const test = (t) => {

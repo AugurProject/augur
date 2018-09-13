@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval} = require("../../../../build/blockchain/log-processors/fee-window-redeemed");
+const {processFeeWindowRedeemedLog, processFeeWindowRedeemedLogRemoval} = require("../../../../src/blockchain/log-processors/fee-window-redeemed");
 
 describe("blockchain/log-processors/fee-window-redeemed", () => {
   const test = (t) => {

@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("../../../../build/blockchain/log-processors/reporting-participant-disavowed");
+const {processReportingParticipantDisavowedLog, processReportingParticipantDisavowedLogRemoval} = require("../../../../src/blockchain/log-processors/reporting-participant-disavowed");
 const {series} = require("async");
 
 const getParticipantState = (db, params, callback) => {

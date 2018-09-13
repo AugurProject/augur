@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getCategories } = require("../../../../build/server/getters/get-categories");
+const { getCategories } = require("../../../../src/server/getters/get-categories");
 
 describe("server/getters/get-categories", () => {
   const test = (t) => {

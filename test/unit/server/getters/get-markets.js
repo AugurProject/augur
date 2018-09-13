@@ -1,9 +1,9 @@
 "use strict";
 
-const ReportingState = require("../../../../build/types").ReportingState;
+const ReportingState = require("../../../../src/types").ReportingState;
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarkets } = require("../../../../build/server/getters/get-markets");
+const { getMarkets } = require("../../../../src/server/getters/get-markets");
 
 
 describe("server/getters/get-markets", () => {
@@ -360,6 +360,21 @@ describe("server/getters/get-markets", () => {
     params: {
       universe: "0x000000000000000000000000000000000000000b",
       search: "bob",
+    },
+    assertions: (err, marketsMatched) => {
+      assert.ifError(err);
+      assert.deepEqual(marketsMatched, [
+        "0x0000000000000000000000000000000000000012",
+        "0x0000000000000000000000000000000000000015",
+      ]);
+    },
+  });
+  test({
+    description: "fts search for bob with category",
+    params: {
+      universe: "0x000000000000000000000000000000000000000b",
+      search: "bob",
+      category: "TEST CATEGORY",
     },
     assertions: (err, marketsMatched) => {
       assert.ifError(err);

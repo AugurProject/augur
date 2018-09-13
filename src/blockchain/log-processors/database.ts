@@ -5,6 +5,7 @@ import { getCurrentTime } from "../process-block";
 import { augurEmitter } from "../../events";
 import * as _ from "lodash";
 import Augur from "augur.js";
+import { SubscriptionEventNames } from "../../constants";
 
 export interface FeeWindowModifications {
   expiredFeeWindows: Array<Address>;
@@ -31,7 +32,11 @@ export function updateMarketFeeWindow(db: Knex, augur: Augur, universe: Address,
 
 export function updateMarketState(db: Knex, marketId: Address, blockNumber: number, reportingState: ReportingState, callback: AsyncCallback) {
   const marketStateDataToInsert = { marketId, reportingState, blockNumber };
-  db.insert(marketStateDataToInsert).into("market_state").asCallback((err: Error|null, marketStateId?: Array<number>): void => {
+  let query = db.insert(marketStateDataToInsert).into("market_state");
+  if (db.client.config.client !== "sqlite3") {
+    query = query.returning("marketStateId");
+  }
+  query.asCallback((err: Error|null, marketStateId?: Array<number>): void => {
     if (err) return callback(err);
     if (!marketStateId || !marketStateId.length) return callback(new Error("Failed to generate new marketStateId for marketId:" + marketId));
     setMarketStateToLatest(db, marketId, callback);
@@ -58,8 +63,7 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     if (err) return callback(err);
                     if (expiredFeeWindowRows != null) {
                       expiredFeeWindowRows.forEach((expiredFeeWindowRow) => {
-                        augurEmitter.emit("FeeWindowClosed", Object.assign({
-                            eventName: "FeeWindowClosed",
+                        augurEmitter.emit(SubscriptionEventNames.FeeWindowClosed, Object.assign({
                             blockNumber,
                             timestamp,
                           },
@@ -68,8 +72,7 @@ export function updateActiveFeeWindows(db: Knex, blockNumber: number, timestamp:
                     }
                     if (newActiveFeeWindowRows != null) {
                       newActiveFeeWindowRows.forEach((newActiveFeeWindowRow) => {
-                        augurEmitter.emit("FeeWindowOpened", Object.assign({
-                            eventName: "FeeWindowOpened",
+                        augurEmitter.emit(SubscriptionEventNames.FeeWindowOpened, Object.assign({
                             blockNumber,
                             timestamp,
                           },
@@ -113,9 +116,13 @@ export function insertPayout(db: Knex, marketId: Address, payoutNumerators: Arra
     } else {
       const payoutRowWithTentativeWinning = Object.assign({},
         payoutRow,
-        { tentativeWinning },
+        { tentativeWinning: Number(tentativeWinning) },
       );
-      db.insert(payoutRowWithTentativeWinning).into("payouts").asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
+      let query = db.insert(payoutRowWithTentativeWinning).into("payouts");
+      if (db.client.config.client !== "sqlite3") {
+        query = query.returning("payoutId");
+      }
+      query.asCallback((err: Error|null, payoutIdRow?: Array<number>): void => {
         if (err) return callback(err);
         if (!payoutIdRow || !payoutIdRow.length) return callback(new Error("No payoutId returned"));
         callback(err, payoutIdRow[0]);

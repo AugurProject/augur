@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUniversesInfo } = require("../../../../build/server/getters/get-universes-info");
+const { getUniversesInfo } = require("../../../../src/server/getters/get-universes-info");
 
 describe("server/getters/get-universes-info", () => {
   const test = (t) => {
@@ -33,7 +33,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "10000",
           numMarkets: 15,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
         {
           universe: "CHILD_UNIVERSE",
@@ -41,7 +41,7 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
-          isInvalid: 0,
+          isInvalid: false,
           payout: [
             "0",
             "10000",
@@ -66,7 +66,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "10000",
           numMarkets: 15,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
         {
           universe: "CHILD_UNIVERSE",
@@ -74,7 +74,7 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
-          isInvalid: 0,
+          isInvalid: false,
           payout: [
             "0",
             "10000",
@@ -87,7 +87,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "200",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -96,7 +96,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "0",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
       ]);
     },
@@ -116,7 +116,7 @@ describe("server/getters/get-universes-info", () => {
           balance: "10",
           supply: "2000",
           numMarkets: 1,
-          isInvalid: 0,
+          isInvalid: false,
           payout: [
             "0",
             "10000",
@@ -129,7 +129,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "200",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -138,7 +138,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "0",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
       ]);
     },
@@ -158,7 +158,7 @@ describe("server/getters/get-universes-info", () => {
           balance: "0",
           supply: "2000",
           numMarkets: 1,
-          isInvalid: 0,
+          isInvalid: false,
           payout: [
             "0",
             "10000",
@@ -171,7 +171,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "200",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
         {
           universe: "SECOND_GRAND_CHILD_UNIVERSE",
@@ -180,7 +180,7 @@ describe("server/getters/get-universes-info", () => {
           supply: "0",
           numMarkets: 0,
           payout: [],
-          isInvalid: null,
+          isInvalid: false,
         },
       ]);
     },

@@ -52,13 +52,13 @@ export function runWebsocketServer(db: Knex, app: express.Application, augur: Au
   }
 
   if ( webSocketConfigs.ws != null ) {
-    logger.info("Starting websocket server on port", webSocketConfigs.ws.port);
+    logger.info("Starting websocket server on port", process.env.PORT || webSocketConfigs.ws.port);
     const server = http.createServer(app);
     httpServers.push(server);
-    server.listen(webSocketConfigs.ws.port);
+    server.listen(process.env.PORT || webSocketConfigs.ws.port);
     servers.push( new WebSocket.Server({ server }) );
   }
-  controlEmitter.emit("serverStart");
+  controlEmitter.emit(ControlMessageType.ServerStart);
 
   servers.forEach((server) => {
     server.on("connection", (websocket: WebSocket): void => {
