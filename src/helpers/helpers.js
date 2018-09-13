@@ -19,6 +19,7 @@ import getMarketDisputeOutcomes from "modules/reports/selectors/select-market-di
 import {
   getDaysRemaining,
   getHoursRemaining,
+  getMinutesRemaining,
   convertUnixToFormattedDate
 } from "utils/format-date";
 
@@ -104,6 +105,11 @@ const getHoursRemainingTime = (
   startTime,
   callback = logError
 ) => dispatch => callback(getHoursRemaining(endTime, startTime));
+const getMinutesRemainingTime = (
+  endTime,
+  startTime,
+  callback = logError
+) => dispatch => callback(getMinutesRemaining(endTime, startTime));
 const convertUnixToFormattedDateTime = (
   date,
   callback = logError
@@ -190,6 +196,10 @@ export const helpers = store => {
     getHoursRemaining: (endTime, startTime) =>
       new Promise(resolve =>
         dispatch(getHoursRemainingTime(endTime, startTime, resolve))
+      ),
+    getMinutesRemaining: (endTime, startTime) =>
+      new Promise(resolve =>
+        dispatch(getMinutesRemainingTime(endTime, startTime, resolve))
       ),
     convertUnixToFormattedDate: date =>
       new Promise(resolve =>

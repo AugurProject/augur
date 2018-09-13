@@ -780,7 +780,19 @@ describe("Create market page", () => {
         outcome: "Outcome 1",
         quantity: "3.0000",
         price: "0.3400"
-      }
+      },
+      {
+        type: OrderType.Bid,
+        outcome: "Outcome 2",
+        quantity: "2.0000",
+        price: "0.5000"
+      },
+      {
+        type: OrderType.Ask,
+        outcome: "Outcome 3",
+        quantity: "2.0000",
+        price: "0.4100"
+      },
     ];
     await createLiquidity(orders);
 

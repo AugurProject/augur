@@ -32,6 +32,7 @@ const shortMonths = [
 
 const NUMBER_OF_SECONDS_IN_A_DAY = 86400;
 const HOURS_IN_A_DAY = 24;
+const MINUTES_IN_A_HOUR = 60;
 
 export function formatDate(d) {
   const date = d instanceof Date ? d : new Date(0);
@@ -142,5 +143,16 @@ export function getHoursRemaining(endUnixTimestamp, startUnixTimestamp) {
   const remainingTicks = endUnixTimestamp - startUnixTimestamp;
   return Math.floor(
     (remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY) * HOURS_IN_A_DAY
+  );
+}
+
+export function getMinutesRemaining(endUnixTimestamp, startUnixTimestamp) {
+  if (!endUnixTimestamp || !startUnixTimestamp) return 0;
+  if (startUnixTimestamp > endUnixTimestamp) return 0;
+  const remainingTicks = endUnixTimestamp - startUnixTimestamp;
+  return Math.floor(
+    (remainingTicks / NUMBER_OF_SECONDS_IN_A_DAY) *
+      HOURS_IN_A_DAY *
+      MINUTES_IN_A_HOUR
   );
 }
