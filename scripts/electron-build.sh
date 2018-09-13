@@ -28,7 +28,7 @@ else
     npm install --quiet
     npm run make-linux
     pyenv global 3.6.3
-    sudo pip install requests
+    pip install requests
 fi
 
 echo "running post_build.py"
