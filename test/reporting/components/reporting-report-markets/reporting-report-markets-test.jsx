@@ -1,8 +1,8 @@
 import React from "react";
 
 import { shallow } from "enzyme";
-import { ReportSection } from "src/modules/reporting/components/reporting-report-markets/reporting-report-markets";
-import ConnectedMarketPreview from "src/modules/reporting/containers/market-preview";
+import { ReportSection } from "modules/reporting/components/reporting-report-markets/reporting-report-markets";
+import ConnectedMarketPreview from "modules/market/containers/market-preview";
 
 describe("reporting-report-markets", () => {
   describe("props", () => {

@@ -10,12 +10,12 @@ const mapStateToProps = (state, ownProps) => {
   const disputeOutcomes = marketDisputeOutcomes() || {};
 
   return {
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     universe: state.universe.id,
     forkThreshold: state.universe.forkThreshold,
     outcomes: disputeOutcomes[ownProps.market.id],
     market: ownProps.market,
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     accountDisputeState: state.accountDisputes
   };
 };

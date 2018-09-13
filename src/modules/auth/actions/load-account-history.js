@@ -3,7 +3,10 @@ import { loadAccountTrades } from "modules/positions/actions/load-account-trades
 import { loadCreateMarketHistory } from "modules/markets/actions/load-create-market-history";
 import { loadFundingHistory } from "modules/account/actions/load-funding-history";
 import { loadReportingHistory } from "modules/reports/actions/load-reporting-history";
-import { updateTransactionsLoading } from "modules/transactions/actions/update-transactions-loading";
+import {
+  TRANSACTIONS_LOADING,
+  updateAppStatus
+} from "modules/app/actions/update-app-status";
 import { clearTransactions } from "modules/transactions/actions/delete-transaction";
 import { augur } from "services/augurjs";
 
@@ -17,7 +20,7 @@ export const loadAccountHistory = (beginTime, endTime) => (
   };
 
   loadTransactions(dispatch, getState, options, () => {
-    dispatch(updateTransactionsLoading(false));
+    dispatch(updateAppStatus(TRANSACTIONS_LOADING, false));
   });
 };
 
@@ -25,7 +28,7 @@ function loadTransactions(dispatch, getState, options, cb) {
   const allOptions = Object.assign(options, {
     orderState: augur.constants.ORDER_STATE.ALL
   });
-  dispatch(updateTransactionsLoading(true));
+  dispatch(updateAppStatus(TRANSACTIONS_LOADING, true));
   dispatch(clearTransactions());
   parallel(
     [

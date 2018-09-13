@@ -13,7 +13,7 @@ const mapStateToProps = (state, { location }) => {
     category,
     tags,
     keywords,
-    hasLoadedMarkets: state.hasLoadedMarkets
+    hasLoadedMarkets: state.appStatus.hasLoadedMarkets
   };
 };
 

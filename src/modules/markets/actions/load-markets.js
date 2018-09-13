@@ -13,7 +13,10 @@ import {
   MARKET_CLOSED
 } from "modules/filter-sort/constants/market-states";
 import { updateMarketsData } from "modules/markets/actions/update-markets-data";
-import { updateHasLoadedMarkets } from "modules/markets/actions/update-market-loading";
+import {
+  updateAppStatus,
+  HAS_LOADED_MARKETS
+} from "modules/app/actions/update-app-status";
 
 const { REPORTING_STATE } = constants;
 
@@ -37,7 +40,7 @@ export const loadMarkets = (type, callback = logError) => (
       {}
     );
 
-    dispatch(updateHasLoadedMarkets(true));
+    dispatch(updateAppStatus(HAS_LOADED_MARKETS, true));
     dispatch(updateMarketsData(marketsData));
     callback(null, marketsArray);
   });
@@ -113,7 +116,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
     }
   }
 
-  dispatch(updateHasLoadedMarkets(false));
+  dispatch(updateAppStatus(HAS_LOADED_MARKETS, false));
 
   const params = {
     universe: universe.id,
@@ -178,7 +181,7 @@ export const loadMarketsByFilter = (filterOptions, cb = () => {}) => (
     });
 
     setTimeout(() => {
-      dispatch(updateHasLoadedMarkets(true));
+      dispatch(updateAppStatus(HAS_LOADED_MARKETS, true));
     }, 2000);
     return cb(null, finalizedMarketList);
   });

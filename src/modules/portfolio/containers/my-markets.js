@@ -20,14 +20,11 @@ import { loadDisputing } from "modules/reports/actions/load-disputing";
 const mapStateToProps = state =>
   // getMyMarkets or it's equivalent will need a way of calculating the outstanding returns for a market and attaching it to each market object. Currently I've just added a key/value pair to the market objects im using below.
   ({
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     myMarkets: getUserMarkets(),
-    transactionsLoading: state.transactionsLoading,
-    isMobile: state.isMobile,
+    transactionsLoading: state.appStatus.transactionsLoading,
+    isMobile: state.appStatus.isMobile,
     pendingLiquidityOrders: state.pendingLiquidityOrders,
-    hasAllTransactionsLoaded:
-      state.transactionsOldestLoadedBlock ===
-      state.loginAccount.registerBlockNumber, // FIXME
     outcomes: marketDisputeOutcomes() || {}
   });
 

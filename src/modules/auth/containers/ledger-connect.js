@@ -4,7 +4,10 @@ import { augur } from "services/augurjs";
 import LedgerConnect from "modules/auth/components/ledger-connect/ledger-connect";
 
 import loginWithLedger from "modules/auth/actions/login-with-ledger";
-import { updateLedgerStatus } from "modules/auth/actions/update-ledger-status";
+import {
+  updateAuthStatus,
+  LEDGER_STATUS
+} from "modules/auth/actions/update-auth-status";
 import {
   onConnectLedgerRequest,
   onOpenEthereumAppRequest,
@@ -14,13 +17,14 @@ import {
 
 const mapStateToProps = state => ({
   networkId: parseInt(augur.rpc.getNetworkID(), 10),
-  ledgerStatus: state.ledgerStatus
+  ledgerStatus: state.authStatus.ledgerStatus
 });
 
 const mapDispatchToProps = dispatch => ({
   loginWithLedger: (address, lib, devPath) =>
     dispatch(loginWithLedger(address, lib, devPath)),
-  updateLedgerStatus: status => dispatch(updateLedgerStatus(status)),
+  updateLedgerStatus: status =>
+    dispatch(updateAuthStatus(LEDGER_STATUS, status)),
   onConnectLedgerRequest: () => dispatch(onConnectLedgerRequest()),
   onOpenEthereumAppRequest: () => dispatch(onOpenEthereumAppRequest()),
   onSwitchLedgerModeRequest: () => dispatch(onSwitchLedgerModeRequest()),

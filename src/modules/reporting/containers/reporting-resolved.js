@@ -11,7 +11,7 @@ import getValue from "utils/get-value";
 import { selectMarket } from "modules/markets/selectors/market";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   markets: getValue(selectMarketsToReport(state), "resolved"),
   isForkingMarketFinalized: state.universe.isForkingMarketFinalized,
   forkingMarket: state.universe.isForking

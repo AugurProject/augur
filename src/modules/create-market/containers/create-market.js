@@ -22,7 +22,7 @@ const mapStateToProps = state => ({
   newMarket: state.newMarket,
   footerHeight: state.footerHeight,
   categories: selectCategories(state),
-  isMobileSmall: state.isMobileSmall,
+  isMobileSmall: state.appStatus.isMobileSmall,
   currentTimestamp: selectCurrentTimestamp(state)
 });
 

@@ -40,7 +40,7 @@ const mapStateToProps = (state, ownProps) => {
     !!cumulativeOrderBook[BIDS].length || !!cumulativeOrderBook[ASKS].length;
 
   return {
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     currentBlock: state.blockchain.currentBlockNumber || 0,
     currentTimestamp: selectCurrentTimestamp(state),
     currentTimeInSeconds: selectCurrentTimestampInSeconds(state),

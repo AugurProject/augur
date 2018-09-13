@@ -22,15 +22,15 @@ const mapStateToProps = (state, { location }) => {
   const searchPhrase = buildSearchString(keywords, tags);
 
   return {
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     universe: (state.universe || {}).id,
-    hasLoadedMarkets: state.hasLoadedMarkets,
+    hasLoadedMarkets: state.appStatus.hasLoadedMarkets,
     search: searchPhrase,
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     markets,
     category,
-    defaultFilter: state.filterOption,
-    defaultSort: state.sortOption
+    defaultFilter: state.filterSortOptions.marketFilter,
+    defaultSort: state.filterSortOptions.marketSort
   };
 };
 

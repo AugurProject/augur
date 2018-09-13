@@ -6,7 +6,7 @@ import { loadReporting } from "modules/reports/actions/load-reporting";
 import { selectMarketsToReport } from "modules/reports/selectors/select-markets-to-report";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   markets: selectMarketsToReport(state)
 });
 

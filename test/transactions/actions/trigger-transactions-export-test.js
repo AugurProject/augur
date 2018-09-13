@@ -36,7 +36,7 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
         { id: 1, text: "a transaction" },
         { id: 2, text: "another transaction" }
       ],
-      transactionsLoading: false
+      appStatus: { transactionsLoading: false }
     },
     selectTransactions: state => state.transactions,
     loadAccountHistory: (loadAll, cb) => ({
@@ -90,8 +90,7 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
         { id: 1, text: "a transaction" },
         { id: 2, text: "another transaction" }
       ],
-      transactionsLoading: true,
-      transactionsOldestLoadedBlock: 150
+      appStatus: { transactionsLoading: true }
     },
     transactionsSelector: {
       selectTransactions: state => state.transactions

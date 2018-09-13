@@ -10,7 +10,7 @@ const mapStateToProps = state => {
   return {
     eth: loginAccount.eth,
     rep: loginAccount.rep,
-    isMobileSmall: state.isMobileSmall
+    isMobileSmall: state.appStatus.isMobileSmall
   };
 };
 

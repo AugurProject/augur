@@ -12,11 +12,11 @@ import { submitMigrateREP } from "modules/forking/actions/submit-migrate-rep";
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
   marketsData: state.marketsData,
-  isMobile: state.isMobile,
+  isMobile: state.appStatus.isMobile,
   accountREP: state.loginAccount.rep,
   currentBlockNumber: state.blockchain.currentBlockNumber
 });

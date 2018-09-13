@@ -4,9 +4,9 @@ import {
   MARKET_FULLY_LOADED,
   MARKET_FULLY_LOADING
 } from "modules/markets/constants/market-loading-states";
-import { isLoading } from "modules/app/selectors/is-loading";
+import { isLoading } from "modules/markets/selectors/is-loading";
 
-describe(`modules/app/selectors/is-loading.js`, () => {
+describe(`modules/markets/selectors/is-loading.js`, () => {
   const test = t => it(t.description, () => t.assertions());
 
   test({

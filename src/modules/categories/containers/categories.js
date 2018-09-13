@@ -7,10 +7,10 @@ import { selectCategories } from "modules/categories/selectors/categories";
 
 const mapStateToProps = state => ({
   universe: state.universe,
-  isMobile: state.isMobile,
+  isMobile: state.appStatus.isMobile,
   categories: selectCategories(state),
   loginAccount: selectLoginAccount(state),
-  isLogged: state.isLogged
+  isLogged: state.authStatus.isLogged
 });
 
 const Categories = withRouter(connect(mapStateToProps)(CategoriesView));
