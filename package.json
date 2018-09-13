@@ -24,7 +24,7 @@
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test/unit",
     "build": "tsc",
     "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
-    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; rm -rf build && npm run clean",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
     "coverage": "nyc npm test",
     "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "migrate_pg": "knex migrate:latest --env pg",
