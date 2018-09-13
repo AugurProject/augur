@@ -27,6 +27,7 @@ const whitelist: TableWhitelist = {
     marketCreatorFeesBalance: true,
     initialReportSize: true,
     volume: true,
+    shareVolume: true,
     sharesOutstanding: true,
     designatedReportStake: true,
   },
@@ -65,6 +66,7 @@ const whitelist: TableWhitelist = {
   outcomes: {
     price: true,
     volume: true,
+    shareVolume: true,
   },
   payouts: {
     payout0: true,
