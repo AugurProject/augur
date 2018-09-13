@@ -23,7 +23,7 @@
     "test:integration:docker": "docker-compose up --force-recreate --abort-on-container-exit",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test/unit",
     "build": "tsc",
-    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; rm -rf build && npm run clean",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
     "test:database": "node ./node_modules/knex/bin/cli.js migrate:latest --env test_file",
     "test:database:seed": "node ./node_modules/knex/bin/cli.js seed:run --env test_file",
     "migrate:make": "node ./node_modules/knex/bin/cli.js migrate:make -x ts $1",
