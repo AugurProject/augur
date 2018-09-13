@@ -2,7 +2,7 @@
 
 const EventEmitter = require("events").EventEmitter;
 const assert = require("chai").assert;
-const { Subscriptions } = require("../../../build/server/subscriptions");
+const { Subscriptions } = require("../../../src/server/subscriptions");
 
 describe("server/subscriptions", () => {
   let emitter;

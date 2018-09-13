@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getReportingSummary, extractGetReportingSummaryParams } = require("../../../../build/server/getters/get-reporting-summary");
+const {getReportingSummary, extractGetReportingSummaryParams} = require("../../../../src/server/getters/get-reporting-summary");
 
 describe("server/getters/get-reporting-summary", () => {
   const test = (t) => {

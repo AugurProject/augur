@@ -5,8 +5,8 @@ const assert = require("chai").assert;
 const {series} = require("async");
 const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../../build/blockchain/log-processors/market-created");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
+const {processMarketCreatedLog, processMarketCreatedLogRemoval} = require("../../../../src/blockchain/log-processors/market-created");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
 
 describe("blockchain/log-processors/market-created", () => {
   const test = (t) => {

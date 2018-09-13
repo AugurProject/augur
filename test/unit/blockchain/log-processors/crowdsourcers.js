@@ -9,9 +9,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../build/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../build/blockchain/process-block.js");
+  = require("../../../../src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {

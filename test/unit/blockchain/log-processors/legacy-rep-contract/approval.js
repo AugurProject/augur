@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../../test.database");
-const { processApprovalLog, processApprovalLogRemoval } = require("../../../../../build/blockchain/log-processors/token/approval");
+const { processApprovalLog, processApprovalLogRemoval } = require("../../../../../src/blockchain/log-processors/token/approval");
 
 describe("blockchain/log-processors/token/approval", () => {
   const test = (t) => {

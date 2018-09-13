@@ -5,8 +5,8 @@ const Augur = require("augur.js");
 const assert = require("chai").assert;
 const {BigNumber} = require("bignumber.js");
 const setupTestDb = require("../../test.database");
-const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval} = require("../../../../build/blockchain/log-processors/initial-report-submitted");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../build/blockchain/process-block.js");
+const {processInitialReportSubmittedLog, processInitialReportSubmittedLogRemoval} = require("../../../../src/blockchain/log-processors/initial-report-submitted");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 const getReportingState = (db, params, callback) => {
   db("markets").first(["reportingState", "initialReportSize", "marketCreatorFeesBalance"]).where("markets.marketId", params.log.market).join("market_state", "market_state.marketStateId", "markets.marketStateId").asCallback(callback);
