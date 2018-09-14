@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  LedgerEthereum,
-  BrowserLedgerConnectionFactory
-} from "ethereumjs-ledger";
+import TransportU2F from "@ledgerhq/hw-transport-u2f";
+import Eth from "@ledgerhq/hw-app-eth";
 
 import * as LEDGER_STATES from "modules/auth/constants/ledger-status";
 
@@ -85,18 +83,11 @@ export default class Ledger extends Component {
       this.props.updateLedgerStatus(LEDGER_STATES.OTHER_ISSUE);
     }
 
-    const ledgerEthereum = new LedgerEthereum(
-      networkId,
-      BrowserLedgerConnectionFactory,
-      this.onConnectLedgerRequestHook,
-      this.onOpenEthereumAppRequestHook,
-      this.onSwitchLedgerModeRequestHook,
-      this.onEnableContractSupportRequestHook
-    );
-
-    const address = await ledgerEthereum.getAddressByBip32Path(
-      this.state.derivationPath
-    );
+    const transport = await TransportU2F.create();
+    const ledgerEthereum = new Eth(transport);
+    const result = await ledgerEthereum.getAddress(this.state.derivationPath);
+    const { address } = result;
+    
 
     if (address) {
       return loginWithLedger(

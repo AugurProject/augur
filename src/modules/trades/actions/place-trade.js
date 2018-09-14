@@ -92,11 +92,11 @@ export const placeTrade = (
     dispatch(
       updateModal({
         type: MODAL_ACCOUNT_APPROVAL,
-        approveOnSent: () => {
-          sendTrade();
-        },
+        approveOnSent: () => {},
         approveCallback: (err, res) => {
           if (err) return callback(err);
+          // TODO: debug why ledger doesn't like sendTrade being in onSent with ledgerjs
+          sendTrade();
         }
       })
     );
