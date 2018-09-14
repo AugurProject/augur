@@ -1,5 +1,10 @@
 import { loginWithEdge } from "modules/auth/actions/login-with-edge";
 import {
+  updateAuthStatus,
+  EDGE_CONTEXT,
+  EDGE_LOADING
+} from "modules/auth/actions/update-auth-status";
+import {
   selectEdgeContextState,
   selectEdgeLoadingState
 } from "src/select-state";
@@ -19,7 +24,7 @@ export const showEdgeLogin = history => (dispatch, getState) => {
   if (edgeContext) {
     edgeContext.openLoginWindow(loginWindowOptions);
   } else if (!edgeLoading) {
-    dispatch({ type: BEGIN_EDGE_LOADING });
+    dispatch(updateAuthStatus(EDGE_LOADING, true));
     makeEdgeUiContext({
       apiKey: "e239ec875955ec7474628a1dc3d449c8ea8e1b48",
       appId: "net.augur.app",
@@ -28,7 +33,8 @@ export const showEdgeLogin = history => (dispatch, getState) => {
       vendorImageUrl:
         "https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png"
     }).then(edgeContext => {
-      dispatch({ type: UPDATE_EDGE_CONTEXT, data: edgeContext });
+      dispatch(updateAuthStatus(EDGE_LOADING, false));
+      dispatch(updateAuthStatus(EDGE_CONTEXT, edgeContext));
       edgeContext.openLoginWindow(loginWindowOptions);
     });
   }

@@ -132,6 +132,7 @@ export const handleOrderCanceledLog = log => (dispatch, getState) => {
   if (isStoredTransaction) {
     if (!log.removed) dispatch(removeCanceledOrder(log.orderId));
     handleNotificationUpdate(log, dispatch, getState);
+    dispatch(updateAssets());
     dispatch(updateOrder(log, false));
     dispatch(loadAccountTrades({ marketId: log.marketId }));
   }

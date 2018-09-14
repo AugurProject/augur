@@ -51,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
         market.myPositionsSummary.numCompleteSets) ||
       undefined,
     closePositionStatus: getClosePositionStatus(),
-    isMobile: state.isMobile,
+    isMobile: state.appStatus.isMobile,
     outcomes: market.outcomes || [],
     positions,
     openOrders,

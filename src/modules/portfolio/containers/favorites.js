@@ -15,13 +15,10 @@ const mapStateToProps = state => {
   const { favorites } = state;
 
   return {
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     markets,
     filteredMarkets: Object.keys(favorites),
-    transactionsLoading: state.transactionsLoading,
-    hasAllTransactionsLoaded:
-      state.transactionsOldestLoadedBlock ===
-      state.loginAccount.registerBlockNumber // FIXME
+    transactionsLoading: state.appStatus.transactionsLoading
   };
 };
 

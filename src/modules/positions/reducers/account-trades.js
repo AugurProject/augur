@@ -1,5 +1,7 @@
-import { UPDATE_ACCOUNT_TRADES_DATA } from "modules/positions/actions/update-account-trades-data";
-import { CLEAR_ACCOUNT_TRADES } from "modules/positions/actions/clear-account-trades";
+import {
+  UPDATE_ACCOUNT_TRADES_DATA,
+  CLEAR_ACCOUNT_TRADES
+} from "modules/positions/actions/update-account-trades-data";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 

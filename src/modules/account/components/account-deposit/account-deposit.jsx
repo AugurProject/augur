@@ -53,8 +53,27 @@ export default class AccountDeposit extends Component {
     address: PropTypes.string.isRequired
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      animateCopy: false
+    };
+
+    this.copyClicked = this.copyClicked.bind(this);
+    this.copyTimeout = null;
+  }
+
   componentDidMount() {
     const clipboard = new Clipboard("#copy_address"); // eslint-disable-line
+  }
+
+  copyClicked() {
+    clearTimeout(this.copyTimeout);
+    this.setState({ animateCopy: true });
+    this.copyTimeout = setTimeout(() => {
+      this.setState({ animateCopy: false });
+    }, 1000);
   }
 
   render() {
@@ -130,11 +149,20 @@ export default class AccountDeposit extends Component {
                 id="copy_address"
                 className={Styles.AccountDeposit__copyButtonElement}
                 data-clipboard-text={address}
+                onClick={this.copyClicked}
               >
                 <span className={Styles.AccountDeposit__addressString}>
                   {address}
                 </span>
-                {CopyIcon}
+                <span className={Styles.AccountDeposit__copyButtonContent}>
+                  {this.state.animateCopy ? (
+                    "Copied!"
+                  ) : (
+                    <span className={Styles.AccountDeposit__copyButtonSvg}>
+                      {CopyIcon}
+                    </span>
+                  )}
+                </span>
               </button>
             </TextFit>
           </div>

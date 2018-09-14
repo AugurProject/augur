@@ -11,11 +11,11 @@ import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
 const mapStateToProps = (state, ownProps) => {
   const {
     marketsData,
-    isLogged,
+    authStatus,
+    appStatus,
     connection,
     universe,
-    orderBooks,
-    isMobile
+    orderBooks
   } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
@@ -25,10 +25,10 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     description: market.description || "",
     loadingState: market.loadingState || null,
-    isLogged,
+    isLogged: authStatus.isLogged,
     universe,
     orderBooks,
-    isMobile,
+    isMobile: appStatus.isMobile,
     marketId,
     marketsData
   };

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import MarketPortfolioCard from "modules/portfolio/containers/market-portfolio-card";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Paginator from "modules/common/components/paginator/paginator";
-import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 import isEqual from "lodash/isEqual";
 
 export default class PositionsMarketsList extends Component {

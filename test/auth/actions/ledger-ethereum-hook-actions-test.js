@@ -1,5 +1,8 @@
 import * as LEDGER_STATES from "modules/auth/constants/ledger-status";
-import { UPDATE_LEDGER_STATUS } from "modules/auth/actions/update-ledger-status";
+import {
+  UPDATE_AUTH_STATUS,
+  LEDGER_STATUS
+} from "modules/auth/actions/update-auth-status";
 import { MODAL_LEDGER } from "modules/modal/constants/modal-types";
 import { UPDATE_MODAL } from "modules/modal/actions/update-modal";
 import {
@@ -24,8 +27,11 @@ describe("modules/auth/actions/ledger-ethereum-hook-actions.js", () => {
       store.dispatch(onConnectLedgerRequest());
       const expected = [
         {
-          type: UPDATE_LEDGER_STATUS,
-          data: LEDGER_STATES.CONNECT_LEDGER
+          type: UPDATE_AUTH_STATUS,
+          data: {
+            statusKey: LEDGER_STATUS,
+            value: LEDGER_STATES.CONNECT_LEDGER
+          }
         }
       ];
       assert.deepEqual(store.getActions(), expected);
@@ -37,8 +43,11 @@ describe("modules/auth/actions/ledger-ethereum-hook-actions.js", () => {
       store.dispatch(onOpenEthereumAppRequest());
       const expected = [
         {
-          type: UPDATE_LEDGER_STATUS,
-          data: LEDGER_STATES.OPEN_APP
+          type: UPDATE_AUTH_STATUS,
+          data: {
+            statusKey: LEDGER_STATUS,
+            value: LEDGER_STATES.OPEN_APP
+          }
         }
       ];
       assert.deepEqual(store.getActions(), expected);
@@ -50,8 +59,11 @@ describe("modules/auth/actions/ledger-ethereum-hook-actions.js", () => {
       store.dispatch(onSwitchLedgerModeRequest());
       const expected = [
         {
-          type: UPDATE_LEDGER_STATUS,
-          data: LEDGER_STATES.SWITCH_MODE
+          type: UPDATE_AUTH_STATUS,
+          data: {
+            statusKey: LEDGER_STATUS,
+            value: LEDGER_STATES.SWITCH_MODE
+          }
         }
       ];
       assert.deepEqual(store.getActions(), expected);
@@ -63,8 +75,11 @@ describe("modules/auth/actions/ledger-ethereum-hook-actions.js", () => {
       store.dispatch(onEnableContractSupportRequest());
       const expected = [
         {
-          type: UPDATE_LEDGER_STATUS,
-          data: LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
+          type: UPDATE_AUTH_STATUS,
+          data: {
+            statusKey: LEDGER_STATUS,
+            value: LEDGER_STATES.ENABLE_CONTRACT_SUPPORT
+          }
         },
         {
           type: UPDATE_MODAL,

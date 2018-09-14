@@ -1,6 +1,6 @@
-import { selectAllCategories } from "src/modules/app/selectors/select-all-categories";
+import { selectAllCategories } from "modules/categories/selectors/select-all-categories";
 
-describe("src/modules/app/selectors/select-all-categories.js", () => {
+describe("modules/categories/selectors/select-all-categories.js", () => {
   let result;
   const state = {
     marketsData: {

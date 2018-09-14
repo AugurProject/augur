@@ -14,12 +14,12 @@ import { submitInitialReport } from "modules/reports/actions/submit-initial-repo
 import { constants } from "services/augurjs";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   // might need to call get market cost breakdown, it's on market from augur-node
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
   marketsData: state.marketsData,
-  isMobile: state.isMobile,
+  isMobile: state.appStatus.isMobile,
   availableRep: getValue(state, "loginAccount.rep") || "0",
   userAddress: state.loginAccount.address
 });

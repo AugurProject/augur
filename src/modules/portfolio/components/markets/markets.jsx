@@ -14,7 +14,7 @@ import {
 } from "modules/markets/constants/link-types";
 import { constants } from "services/augurjs";
 import { CREATE_MARKET } from "modules/routes/constants/views";
-import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 
 const DISPUTING_ORDER = {
   [constants.REPORTING_STATE.CROWDSOURCING_DISPUTE]: 1,
@@ -25,7 +25,6 @@ class MyMarkets extends Component {
   static propTypes = {
     collectMarketCreatorFees: PropTypes.func.isRequired,
     loadMarketsInfoIfNotLoaded: PropTypes.func.isRequired,
-    hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool,

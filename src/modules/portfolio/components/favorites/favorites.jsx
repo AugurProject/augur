@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Helmet } from "react-helmet";
 
 import MarketsList from "modules/markets-list/components/markets-list";
-import MarketsHeaderLabel from "modules/markets/components/markets-header-label/markets-header-label";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 import Styles from "modules/portfolio/components/favorites/favorites.styles";
 import { TYPE_TRADE } from "modules/markets/constants/link-types";
 
@@ -32,7 +32,6 @@ Favorites.propTypes = {
   markets: PropTypes.array.isRequired,
   filteredMarkets: PropTypes.array.isRequired,
   isLogged: PropTypes.bool.isRequired,
-  hasAllTransactionsLoaded: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,

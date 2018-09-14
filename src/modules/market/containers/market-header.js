@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     tentativeWinner:
       disputeOutcomes[ownProps.marketId] &&
       disputeOutcomes[ownProps.marketId].find(o => o.tentativeWinning),
-    isLogged: state.isLogged,
+    isLogged: state.authStatus.isLogged,
     isDesignatedReporter:
       market.designatedReporter === state.loginAccount.address,
     market

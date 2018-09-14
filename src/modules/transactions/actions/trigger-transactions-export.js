@@ -2,7 +2,8 @@ import { loadAccountHistory } from "modules/auth/actions/load-account-history";
 import { selectTransactions } from "modules/transactions/selectors/transactions";
 
 export const triggerTransactionsExport = () => (dispatch, getState) => {
-  const { transactionsLoading } = getState();
+  const { appStatus } = getState();
+  const { transactionsLoading } = appStatus;
 
   if (!transactionsLoading) {
     // trigger download
