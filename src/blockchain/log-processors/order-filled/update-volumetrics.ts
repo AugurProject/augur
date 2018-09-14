@@ -75,10 +75,11 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
               if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
               let amount = tradesRow.amount!;
               if (!isIncrease) amount = amount.negated();
+              const fullPrecisionPrice = augur.utils.convertDisplayPriceToOnChainPrice(tradesRow.price, minPrice, tickSize);
               series({
-                market: (next) => incrementMarketVolume(db, marketId, amount, tradesRow.price!, next),
+                market: (next) => incrementMarketVolume(db, marketId, amount, fullPrecisionPrice, next),
+                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, fullPrecisionPrice, next),
                 marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
-                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, tradesRow.price!, next),
                 category: (next) => incrementCategoryPopularity(db, category, amount, next),
                 openInterest: (next) => updateOpenInterest(db, marketId, next),
               }, callback);
