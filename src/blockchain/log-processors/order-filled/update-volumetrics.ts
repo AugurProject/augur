@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { series } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
-import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
+import { convertFixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
 import { WEI_PER_ETHER } from "../../../constants";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, price: BigNumber, callback: GenericCallback<BigNumber>) {
@@ -75,10 +75,11 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
               if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
               let amount = tradesRow.amount!;
               if (!isIncrease) amount = amount.negated();
+              const fullPrecisionPrice = augur.utils.convertDisplayPriceToOnChainPrice(tradesRow.price, minPrice, tickSize);
               series({
-                market: (next) => incrementMarketVolume(db, marketId, amount, tradesRow.price!, next),
+                market: (next) => incrementMarketVolume(db, marketId, amount, fullPrecisionPrice, next),
+                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, fullPrecisionPrice, next),
                 marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
-                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, tradesRow.price!, next),
                 category: (next) => incrementCategoryPopularity(db, category, amount, next),
                 openInterest: (next) => updateOpenInterest(db, marketId, next),
               }, callback);
