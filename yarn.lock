@@ -7516,7 +7516,7 @@ ledgerco@1.1.3:
   resolved "https://registry.yarnpkg.com/ledgerco/-/ledgerco-1.1.3.tgz#42cdb12e6e55e5512ad2801994ae30417faa3ae4"
   dependencies:
     async "2.1.4"
-    node-hid "0.5.4"
+    node-hid "0.5.7"
     q "1.4.1"
 
 left-pad@^1.3.0:
