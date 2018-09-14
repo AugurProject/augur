@@ -36,6 +36,7 @@
     "rebuild": "npm run clean && npm run build",
     "clean-start": "npm run rebuild && npm start",
     "clean-start-local": "npm run rebuild && ETHEREUM_HTTP=http://127.0.0.1:8545 ETHEREUM_WS=ws://127.0.0.1:8546 npm start",
+    "rinkeby-start": "ETHEREUM_HTTP=https://rinkeby.augur.net/ethereum-http ETHEREUM_WS=wss://rinkeby.augur.net/ethereum-ws npm start",
     "reinstall": "./scripts/reinstall.sh",
     "sqlite": "./scripts/sqlite.sh",
     "docker:pg:start": "./scripts/postgres/start.sh",
