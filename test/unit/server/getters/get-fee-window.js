@@ -2,8 +2,8 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getFeeWindow  } = require("../../../../build/server/getters/get-fee-window");
-const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../build/blockchain/process-block.js");
+const { getFeeWindow } = require("../../../../src/server/getters/get-fee-window");
+const { setOverrideTimestamp, removeOverrideTimestamp } = require("../../../../src/blockchain/process-block");
 
 const augurMock = {
   constants: {

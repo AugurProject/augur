@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getSyncData } = require("../../../../build/server/getters/get-sync-data");
+const { getSyncData } = require("../../../../src/server/getters/get-sync-data");
 
 describe("server/getters/get-sync-data", () => {
   const test = (t) => {

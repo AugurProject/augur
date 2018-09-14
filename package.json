@@ -24,12 +24,11 @@
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test/unit",
     "build": "tsc",
     "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
-    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; rm -rf build && npm run clean",
-    "test:database": "knex migrate:latest --env test_file",
-    "test:database:seed": "knex seed:run --env test_file",
+    "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
+    "coverage": "nyc npm test",
+    "coveralls": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "migrate_pg": "knex migrate:latest --env pg",
     "migrate:make": "knex migrate:make -x ts $1",
-    "coverage": "istanbul cover --include-all-sources --root ./build ./node_modules/mocha/bin/_mocha test/unit",
     "postinstall": "postinstall-build build",
     "postdeploy": "npm run migrate_pg",
     "link": "npm link augur.js speedomatic",
@@ -44,7 +43,8 @@
     "docker:pg:restart": "npm run docker:pg:stop && npm run docker:pg:start",
     "docker:geth:pop": "npm explore augur.js -- npm run docker:geth:pop",
     "docker:build": "scripts/docker/build.sh",
-    "docker:release": "bash scripts/release-docker.sh"
+    "docker:release": "bash scripts/release-docker.sh",
+    "prepush": "npm run lint && npm run test -- --reporter min"
   },
   "repository": {
     "type": "git",
@@ -88,14 +88,14 @@
     "chai": "3.5.0",
     "coveralls": "3.0.1",
     "eslint": "3.17.1",
-    "istanbul": "0.4.5",
+    "husky": "^0.14.3",
     "mocha": "5.1.1",
     "mocha-lcov-reporter": "0.0.2",
     "node-gyp": "3.6.2",
     "node-pre-gyp": "0.10.0",
+    "nyc": "^12.0.2",
     "proxyquire": "1.7.11",
     "replace-in-file": "3.0.0",
-    "shared-git-hooks": "1.2.1",
     "sinon": "^6.0.1",
     "tslint": "5.7.0",
     "tslint-eslint-rules": "4.1.1",
@@ -105,5 +105,22 @@
     "typescript",
     "tslint",
     "tslint-eslint-rules"
-  ]
+  ],
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  }
 }

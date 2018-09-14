@@ -2,41 +2,18 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("../../../../build/blockchain/log-processors/completesets");
+const { processCompleteSetsPurchasedOrSoldLog, processCompleteSetsPurchasedOrSoldLogRemoval } = require("../../../../src/blockchain/log-processors/completesets");
 const Augur = require("augur.js");
 const augur = new Augur();
 
 describe("blockchain/log-processors/completesets", () => {
-  const test = (t) => {
-    const getState = (db, params, callback) => db("completeSets").where({
-      account: params.log.account,
-      marketId: params.log.market,
-    }).asCallback(callback);
-    it(t.description, (done) => {
-      setupTestDb((err, db) => {
-        assert.ifError(err);
-        db.transaction((trx) => {
-          processCompleteSetsPurchasedOrSoldLog(trx, t.params.augur, t.params.log, (err) => {
-            assert.ifError(err);
-            getState(trx, t.params, (err, completeSetsRows) => {
-              t.assertions.onUpdated(err, completeSetsRows);
-              processCompleteSetsPurchasedOrSoldLogRemoval(trx, t.params.augur, t.params.log, (err) => {
-                assert.ifError(err);
-                getState(trx, t.params, (err, completeSetsRows) => {
-                  t.assertions.onRemoved(err, completeSetsRows);
-                  db.destroy();
-                  done();
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-  };
-  test({
-    description: "CompleteSetsPurchased log and removal",
-    params: {
+  const getState = (db, params, callback) => db("completeSets").where({
+    account: params.log.account,
+    marketId: params.log.market,
+  }).asCallback(callback);
+
+  it("CompleteSetsPurchased log and removal", (done) => {
+    const params = {
       log: {
         universe: "0x0000000000000000000000000000000000000001",
         market: "0x0000000000000000000000000000000000000002",
@@ -82,27 +59,41 @@ describe("blockchain/log-processors/completesets", () => {
           normalizePrice: p => p.price,
         },
       },
-    },
-    assertions: {
-      onUpdated: (err, positions) => {
-        assert.ifError(err);
-        assert.deepEqual(positions, [{
-          account: "0x0000000000000000000000000000000000000b0b",
-          blockNumber: 437,
-          logIndex: 0,
-          eventName: "CompleteSetsPurchased",
-          marketId: "0x0000000000000000000000000000000000000002",
-          numCompleteSets: "2",
-          numPurchasedOrSold: "2",
-          tradeGroupId: 12,
-          transactionHash: "0x00000000000000000000000000000000deadbeef",
-          universe: "0x0000000000000000000000000000000000000001",
-        }]);
-      },
-      onRemoved: (err, positions) => {
-        assert.ifError(err);
-        assert.deepEqual(positions, []);
-      },
-    },
+    };
+
+    setupTestDb((err, db) => {
+      assert.ifError(err);
+      db.transaction((trx) => {
+        processCompleteSetsPurchasedOrSoldLog(trx, params.augur, params.log, (err) => {
+          assert.ifError(err);
+          getState(trx, params, (err, completeSetsRows) => {
+            assert.ifError(err);
+            assert.deepEqual(completeSetsRows, [{
+              account: "0x0000000000000000000000000000000000000b0b",
+              blockNumber: 437,
+              logIndex: 0,
+              eventName: "CompleteSetsPurchased",
+              marketId: "0x0000000000000000000000000000000000000002",
+              numCompleteSets: "2",
+              numPurchasedOrSold: "2",
+              tradeGroupId: 12,
+              transactionHash: "0x00000000000000000000000000000000deadbeef",
+              universe: "0x0000000000000000000000000000000000000001",
+            }]);
+            processCompleteSetsPurchasedOrSoldLogRemoval(trx, params.augur, params.log, (err) => {
+              assert.ifError(err);
+              getState(trx, params, (err, completeSetsRows) => {
+                assert.ifError(err);
+                assert.deepEqual(completeSetsRows, []);
+                db.destroy();
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+
   });
 });

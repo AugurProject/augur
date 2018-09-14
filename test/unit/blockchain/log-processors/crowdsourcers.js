@@ -9,9 +9,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../build/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../build/blockchain/process-block.js");
+  = require("../../../../src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -205,6 +205,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           tag2: "test tag 2",
           universe: "0x000000000000000000000000000000000000000b",
           volume: new BigNumber("0", 10),
+          shareVolume: new BigNumber("0", 10),
         });
       },
       onCompletedRemoved: (err, records) => {
@@ -238,6 +239,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           tag1: "test tag 1",
           tag2: "test tag 2",
           volume: new BigNumber("0"),
+          shareVolume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("0"),
           feeWindow: "0x2000000000000000000000000000000000000000",
           endTime: 1507573470,

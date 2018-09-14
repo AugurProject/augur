@@ -6,31 +6,31 @@ import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../
 import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 import { WEI_PER_ETHER } from "../../../constants";
 
-function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, callback: GenericCallback<BigNumber>) {
-  db("markets").first("volume").where({ marketId }).asCallback((err: Error|null, result: { volume: BigNumber }) => {
+function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, price: BigNumber, callback: GenericCallback<BigNumber>) {
+  db("markets").first("volume", "shareVolume").where({ marketId }).asCallback((err: Error|null, result: { volume: BigNumber; shareVolume: BigNumber }) => {
     if (err) return callback(err);
-
+    const incrementedShareVolume = amount.plus(result.shareVolume);
     const volume = result.volume;
-    const incremented = amount.plus(volume);
-    db("markets").update({ volume: incremented.toString() }).where({ marketId, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+    const newVolume = amount.multipliedBy(price);
+    const incremented = newVolume.plus(volume);
+    db("markets").update({ volume: incremented.toString(), shareVolume: incrementedShareVolume.toString() }).where({ marketId }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
-      if (affectedRowsCount === 0) return process.nextTick(() => incrementMarketVolume(db, marketId, amount, callback));
-
+      if (affectedRowsCount === 0) return process.nextTick(() => incrementMarketVolume(db, marketId, amount, price, callback));
       callback(null, incremented);
     });
   });
 }
 
-function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, amount: BigNumber, callback: GenericCallback<BigNumber>) {
-  db("outcomes").first("volume").where({ marketId, outcome }).asCallback((err: Error|null, result: { volume: BigNumber }) => {
+function incrementOutcomeVolume(db: Knex, marketId: Address, outcome: number, amount: BigNumber, price: BigNumber, callback: GenericCallback<BigNumber>) {
+  db("outcomes").first("volume", "shareVolume").where({ marketId, outcome }).asCallback((err: Error|null, result: { volume: BigNumber; shareVolume: BigNumber}) => {
     if (err) return callback(err);
-
+    const incrementedShareVolume = amount.plus(result.shareVolume);
     const volume = result.volume;
-    const incremented = amount.plus(volume);
-    db("outcomes").update({ volume: incremented.toString() }).where({ marketId, outcome, volume: volume.toString() }).asCallback((err: Error|null, affectedRowsCount: number) => {
+    const newVolume = amount.multipliedBy(price);
+    const incremented = newVolume.plus(volume);
+    db("outcomes").update({ volume: incremented.toString(), shareVolume: incrementedShareVolume.toString() }).where({ marketId, outcome }).asCallback((err: Error|null, affectedRowsCount: number) => {
       if (err) return callback(err);
-      if (affectedRowsCount === 0) return process.nextTick(() => incrementOutcomeVolume(db, marketId, outcome, amount, callback));
-
+      if (affectedRowsCount === 0) return process.nextTick(() => incrementOutcomeVolume(db, marketId, outcome, amount, price, callback));
       callback(null, incremented);
     });
   });
@@ -75,11 +75,11 @@ export function updateVolumetrics(db: Knex, augur: Augur, category: string, mark
               if (!tradesRow) return callback(new Error(`trade not found, orderId: ${orderId}`));
               let amount = tradesRow.amount!;
               if (!isIncrease) amount = amount.negated();
-
+              const fullPrecisionPrice = augur.utils.convertDisplayPriceToOnChainPrice(tradesRow.price, minPrice, tickSize);
               series({
-                market: (next) => incrementMarketVolume(db, marketId, amount, next),
+                market: (next) => incrementMarketVolume(db, marketId, amount, fullPrecisionPrice, next),
+                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, fullPrecisionPrice, next),
                 marketLastTrade: (next) => setMarketLastTrade(db, marketId, blockNumber, next),
-                outcome: (next) => incrementOutcomeVolume(db, marketId, outcome, amount, next),
                 category: (next) => incrementCategoryPopularity(db, category, amount, next),
                 openInterest: (next) => updateOpenInterest(db, marketId, next),
               }, callback);

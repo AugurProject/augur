@@ -2,9 +2,9 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../../build/blockchain/log-processors/market-migrated");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const ReportingState = require("../../../../build/types").ReportingState;
+const {processMarketMigratedLog, processMarketMigratedLogRemoval} = require("../../../../src/blockchain/log-processors/market-migrated");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const ReportingState = require("../../../../src/types").ReportingState;
 const updateMarketState = require("../../../../src/blockchain/log-processors/database").updateMarketState;
 
 const getMarket = (db, params, callback) => {
