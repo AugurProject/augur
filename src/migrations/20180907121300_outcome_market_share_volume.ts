@@ -1,6 +1,7 @@
 import * as Knex from "knex";
 import * as _ from "lodash";
 import { ZERO } from "../constants";
+import { numTicksToTickSize } from "../utils/convert-fixed-point-to-decimal";
 
 interface MinimalTradeRow {
   price: BigNumber;
@@ -9,11 +10,18 @@ interface MinimalTradeRow {
   outcome: number;
 }
 
-function getVolumesFromTrades(marketOutcomes: Array<MinimalTradeRow>) {
+interface MarketRow {
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
+  numTicks: BigNumber;
+}
+
+function getVolumesFromTrades(marketOutcomes: Array<MinimalTradeRow>, minPrice: BigNumber, tickSize: BigNumber) {
   const volumes = _.reduce(marketOutcomes, (acc, trade) => {
+    const fullPrecisionPrice = trade.price.minus(minPrice).dividedBy(tickSize);
     return {
       shareVolume: acc.shareVolume.plus(trade.amount),
-      volume: acc.volume.plus(trade.amount.multipliedBy(trade.price)),
+      volume: acc.volume.plus(trade.amount.multipliedBy(fullPrecisionPrice)),
     };
   }, { shareVolume: ZERO, volume: ZERO });
   return _.mapValues(volumes, (volume) => volume.toString());
@@ -37,13 +45,18 @@ exports.up = async (knex: Knex): Promise<any> => {
     for (const marketId in tradeRowsByMarket) {
       if (!tradeRowsByMarket.hasOwnProperty(marketId)) continue;
       const marketTrades = tradeRowsByMarket[marketId];
-      const marketVolumes = getVolumesFromTrades(marketTrades);
+      const marketRow: MarketRow = await knex("markets").select("minPrice", "maxPrice", "numTicks").where({ marketId });
+      const minPrice = marketRow.minPrice!;
+      const maxPrice = marketRow.maxPrice!;
+      const numTicks = marketRow.numTicks!;
+      const tickSize = numTicksToTickSize(numTicks, minPrice, maxPrice);
+      const marketVolumes = getVolumesFromTrades(marketTrades, minPrice, tickSize);
       await knex("markets").update(marketVolumes).where({marketId});
       const outcomeTradesByOutcome = _.groupBy(marketTrades, "outcome");
       for (const outcome in outcomeTradesByOutcome) {
         if (!outcomeTradesByOutcome.hasOwnProperty(outcome)) continue;
         const outcomeTrades = outcomeTradesByOutcome[outcome];
-        const tradeVolumes = getVolumesFromTrades(outcomeTrades);
+        const tradeVolumes = getVolumesFromTrades(outcomeTrades, minPrice, tickSize);
         await knex("outcomes").update(tradeVolumes).where({marketId, outcome});
       }
     }
