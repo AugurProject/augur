@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import * as Knex from "knex";
 import { series } from "async";
 import { Address, Bytes32, TradesRow, ErrorCallback, GenericCallback } from "../../../types";
-import { convertFixedPointToDecimal, numTicksToTickSize } from "../../../utils/convert-fixed-point-to-decimal";
+import { convertFixedPointToDecimal } from "../../../utils/convert-fixed-point-to-decimal";
 import { WEI_PER_ETHER } from "../../../constants";
 
 function incrementMarketVolume(db: Knex, marketId: Address, amount: BigNumber, price: BigNumber, callback: GenericCallback<BigNumber>) {
