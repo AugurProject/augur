@@ -26,7 +26,8 @@ git diff
 echo "commit new snapshot version?"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) git commit -m "$NEW_SNAPSHOT_VERSION";
+        Yes ) git add package.json package-lock.json;
+              git commit -m "$NEW_SNAPSHOT_VERSION";
               git push;
               break
           ;;

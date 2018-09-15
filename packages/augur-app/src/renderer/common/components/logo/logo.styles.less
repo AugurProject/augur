@@ -1,0 +1,28 @@
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.Logo) {
+  flex-grow: 1;
+  position: relative;
+  width: 120px;
+
+  > * {
+    display: inline-block;
+  }
+}
+
+:local(.Logo_image) {
+  display: block;
+  text-indent: -9999px;
+  width: 115px;
+  height: 48px;
+  background: url(../../../../assets/images/augur.svg);
+  background-size: 115px 48px;
+}
+:local(.Logo__text) {
+  color: white;
+  font-weight: 300;
+  letter-spacing: 1.2px;
+  line-height: 44px;
+  text-transform: uppercase;
+  vertical-align: top;
+}

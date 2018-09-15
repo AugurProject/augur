@@ -1,0 +1,15 @@
+<svg width="21px" height="21px" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Design" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <g id="07-Add-new-network---successful" transform="translate(-134.000000, -523.000000)" fillRule="nonzero">
+            <g id="dropdown" transform="translate(16.000000, 139.000000)">
+                <g id="addNew" transform="translate(0.000000, 374.000000)">
+                    <g id="icon/add" transform="translate(118.000000, 10.000000)">
+                        <circle id="Oval-4" fill="#553580" cx="10.5" cy="10.5" r="10.5"></circle>
+                        <rect id="Rectangle-5" fill="#FFFFFF" x="10" y="4" width="1" height="13" rx="0.5"></rect>
+                        <rect id="Rectangle-5" fill="#FFFFFF" transform="translate(10.500000, 10.500000) rotate(-90.000000) translate(-10.500000, -10.500000) " x="10" y="4" width="1" height="13" rx="0.5"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
