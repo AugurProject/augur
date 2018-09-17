@@ -6,13 +6,12 @@
   border-bottom-right-radius: 4px;
   display: flex;
   flex-direction: row;
-  height: 5.315rem;
   left: 20%;
   overflow: hidden;
-  padding: 15px;
+  padding: 1.25rem;
   position: absolute;
   right: 20%;
-  top: 42px; // have to be under core stats bar
+  top: @top-bar-height; // have to be under core stats bar
   z-index: 10;
 }
 
@@ -31,7 +30,6 @@
   flex-direction: column;
   flex-grow: 1;
   max-width: 550px;
-  padding: 5px;
 }
 
 .notificationBar_text {
@@ -57,7 +55,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: 100%;
   justify-content: flex-start;
 }
 
@@ -80,4 +77,10 @@
     background-color: transparent;
     pointer-events: none;
   }
+}
+
+.notificationBar_container {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
 }

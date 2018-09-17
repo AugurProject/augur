@@ -35,7 +35,7 @@ h6 {
   display: grid;
 
   /* sidebar width */
-  grid-template-columns: 4.5rem auto;
+  grid-template-columns: @top-bar-height auto;
   height: 100%;
 
   @media @breakpoint-mobile {
@@ -52,7 +52,7 @@ h6 {
   display: grid;
 
   /* topbar height */
-  grid-template-rows: 4.5rem auto;
+  grid-template-rows: @top-bar-height auto;
   height: 100vh;
   overflow: hidden;
 
@@ -79,7 +79,7 @@ h6 {
 }
 
 .Main__content {
-  height: calc(~"100vh - 4.5rem");
+  height: calc(~"100vh - @{top-bar-height}");
   overflow-x: hidden;
   overflow-y: auto;
 
