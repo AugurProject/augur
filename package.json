@@ -9,7 +9,8 @@
     "yarn": ">=1.6.0"
   },
   "scripts": {
-    "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest"
+    "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
+    "watch": " lerna run watch --parallel"
   },
   "devDependencies": {
     "execa": "^0.10.0",
@@ -24,11 +25,15 @@
       "packages/*"
     ],
     "nohoist": [
+      "**/@babel/**",
       "augur-ui/@types/jest",
       "augur-ui/@types/expect-puppeteer",
-      "**/electron/**",
-      "**/electron-compile/**",
-      "augur.js/uuid-parse"
+      "**/electron-builder",
+      "**/electron-builder/**",
+      "**/electron-webpack",
+      "**/electron-webpack/**",
+      "augur.js/uuid-parse",
+      "augr-app/*"
     ]
   }
 }
