@@ -76,7 +76,7 @@ export default class Ledger extends Component {
   }
 
   async connectLedger() {
-    const { loginWithLedger, networkId } = this.props;
+    const { loginWithLedger } = this.props;
     this.props.updateLedgerStatus(LEDGER_STATES.ATTEMPTING_CONNECTION);
 
     if (location.protocol !== "https:") {
@@ -87,8 +87,7 @@ export default class Ledger extends Component {
     const ledgerEthereum = new Eth(transport);
     const result = await ledgerEthereum.getAddress(this.state.derivationPath);
     const { address } = result;
-    
-
+    // 0x9C5faA7b3C782cab129fb537f6024754eb7A09Bf
     if (address) {
       return loginWithLedger(
         address.toLowerCase(),

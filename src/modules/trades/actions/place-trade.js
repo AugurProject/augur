@@ -92,11 +92,12 @@ export const placeTrade = (
     dispatch(
       updateModal({
         type: MODAL_ACCOUNT_APPROVAL,
-        approveOnSent: () => {},
+        approveOnSent: () => {
+          // FIXME: Ledger lib doesn't like this. trade fails eth_call without prompting, needs to be in onSuccess to "fix" issue.
+          sendTrade();
+        },
         approveCallback: (err, res) => {
           if (err) return callback(err);
-          // TODO: debug why ledger doesn't like sendTrade being in onSent with ledgerjs
-          sendTrade();
         }
       })
     );

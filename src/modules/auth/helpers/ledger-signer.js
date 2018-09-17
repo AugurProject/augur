@@ -17,14 +17,14 @@ const ledgerSigner = async (rawTxArgs, ledgerLib, derivationPath, dispatch) => {
   const callback = rawTxArgs[1];
 
   const formattedTx = new TX(rawTxArgs[0]);
-  
+
   return ledgerLib
     .signTransaction(derivationPath, formattedTx.serialize().toString("hex"))
     .then(res => {
       tx.r = prefixHex(res.r);
       tx.s = prefixHex(res.s);
       tx.v = prefixHex(res.v);
-      
+
       const signedTx = new TX(tx);
 
       callback(null, prefixHex(signedTx.serialize().toString("hex")));
