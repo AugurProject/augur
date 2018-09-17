@@ -317,7 +317,7 @@ if __name__ == "__main__":
     print('commitish: {}'.format(release.target_commitish))
     ready_to_release = input('Y/N')
     if 'n' in ready_to_release.lower():
-        print('qyitting without releasing')
+        print('quitting without releasing')
         sys.exit(0)
     if 'y' in ready_to_release:
         cleanup_sha256_files()
