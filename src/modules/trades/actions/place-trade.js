@@ -93,7 +93,8 @@ export const placeTrade = (
       updateModal({
         type: MODAL_ACCOUNT_APPROVAL,
         approveOnSent: () => {
-          // FIXME: Ledger lib doesn't like this. trade fails eth_call without prompting, needs to be in onSuccess to "fix" issue.
+          // This is done since the approval likely hasn't been minded yet so otherwise an eth_call for a trade will fail
+          placeTradeParams.tx = {returns: "null"};
           sendTrade();
         },
         approveCallback: (err, res) => {
