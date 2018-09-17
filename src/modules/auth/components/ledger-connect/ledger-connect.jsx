@@ -87,7 +87,7 @@ export default class Ledger extends Component {
     const ledgerEthereum = new Eth(transport);
     const result = await ledgerEthereum.getAddress(this.state.derivationPath);
     const { address } = result;
-    // 0x9C5faA7b3C782cab129fb537f6024754eb7A09Bf
+
     if (address) {
       return loginWithLedger(
         address.toLowerCase(),
