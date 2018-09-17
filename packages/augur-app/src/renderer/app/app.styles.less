@@ -1,0 +1,132 @@
+@import (reference) '../../assets/styles/shared';
+@import (css) url('https://fonts.googleapis.com/css?family=Roboto:400,500,600');
+
+:local(.App) {
+	font-family: 'Roboto', sans-serif;
+	margin: -8px; 
+	background-color: @color-almostblack;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	height: 787px;
+	-webkit-font-smoothing: antialiased;
+}
+
+:local(.App__smallBg) {
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(35, 26, 58, .85);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: all 300ms ease;
+}
+
+:local(.App__smallBg-show) {
+  opacity: 1;
+  pointer-events: all;
+}
+
+:local(.App_constantContainer) {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+    position: fixed;
+    bottom: 0;
+    background-color: @color-almostblack;
+    max-height: 100px;
+    left: 0;
+    right: 0;
+    margin-bottom: 103px;
+}
+
+:local(.App__connectingContainer) {
+	padding: 27px;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+:local(.App__scrollContainer) {
+	position: fixed;
+    height: 191px;
+    top: 28px;
+    background-color: @color-almostblack;
+    z-index: 1;
+    left: 0;
+    right: 0;
+}
+
+:local(.App__scrollContainerApp) {
+	padding: 0 24px;
+}
+
+:local(.App__row) {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+:local(.App__connectButton) {
+	.button--transparent();
+
+	color: white;
+	border: solid 2px white;
+	width: 100%;
+	margin-top: 20px;
+	font-size: 18px;
+	font-weight: 600;
+	padding: 15px 112px;
+  	font-family: 'Roboto', sans-serif;
+
+	&:focus {
+		outline: none;
+	}
+	&:hover {
+		background-color: #412468;
+	}
+}
+
+:local(.App__footer) {
+	padding: 24px;
+	background-color: white;
+  	position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+:local(.App__openBrowserButton) {
+	.button--purple();
+	height: 56px;
+	border-radius: 5px;
+	border: solid 0px #dbdae1 !important;
+	width: 100%;
+	text-transform: none;
+	font-size: 18px;
+  	font-weight: 500 !important;
+  	border: 0;
+  	color: white !important;
+  	font-family: 'Roboto', sans-serif;
+}
+
+:local(.App__openBrowserButton:focus) {
+	outline:none;
+}
+
+:local(.App__openBrowserButton:disabled) {
+	.button--transparent();
+	border-radius: 5px;
+	border: solid 2px #dbdae1 !important;
+	font-size: 18px;
+  	font-weight: 500 !important;
+  	color: #dbdae1 !important;
+}
