@@ -289,7 +289,7 @@ if __name__ == "__main__":
     verboseprint('commitish: {}'.format(release.target_commitish))
     if not release.draft:
         print('{red}WARNING{norm}: {tag} is not a draft!'.format(
-            red=colors.red,
+            red=colors.RED,
             norm=colors.ENDC,
             tag=tag_name))
         print('Continue?')
@@ -320,7 +320,7 @@ if __name__ == "__main__":
         print('quitting without releasing')
         sys.exit(0)
     if 'y' in ready_to_release:
-        cleanup_sha256_files()
+        cleanup_sha256_files(github_release_assets)
         # tag release and change remove draft flag
         release.update_release(tag_name=tag_name, draft=False)
         # update release info so we have correct asset browser_urls
