@@ -322,7 +322,7 @@ if __name__ == "__main__":
     if 'y' in ready_to_release:
         cleanup_sha256_files(github_release_assets)
         # tag release and change remove draft flag
-        release.update_release(tag_name=tag_name, draft=False)
+        release.update_release(name=tag_name, message=release.body, draft=False)
         # update release info so we have correct asset browser_urls
         release = repo.get_release(release_id)
         message_table = release_message_table(github_release_assets, comparison)
