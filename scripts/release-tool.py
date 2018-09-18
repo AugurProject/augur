@@ -213,7 +213,7 @@ def upload_release_checksum(signed_checksum, tag_name):
         release_checksum.close()
         rca_obj = get_release_asset_obj(release, release_checksum_name)
         if rca_obj:
-            rca.delete_asset()
+            rca_obj.delete_asset()
         release.upload_asset(release_checksum_path,
                              label=release_checksum_name)
 
@@ -244,14 +244,14 @@ def release_message_table(assets, comparison):
     for platform in message_table.keys():
         for asset in assets:
             ext = message_table[platform]['ext']
-            if ext in asset.name:
+            if asset.name.endswith(ext):
                 message_table[platform]['url'] = asset.browser_download_url
                 message_table[platform]['sha'] = comparison[ext]['sha']
     return message_table
 
 
 def message_table_markup(message_table):
-    markdown_table = 'Platform | Checksum\n-------- | ---------\n'
+    markdown_table = '\n\nPlatform | Checksum\n-------- | ---------\n'
     for p in message_table.keys():
         sha = message_table[p]['sha']
         url = message_table[p]['url']
@@ -263,7 +263,7 @@ def message_table_markup(message_table):
 
 def cleanup_sha256_files(assets):
     for asset in assets:
-        if asset.name.endwith('sha256'):
+        if asset.name.endswith('sha256'):
             asset.delete_asset()
 
 
