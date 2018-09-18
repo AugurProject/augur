@@ -278,14 +278,16 @@ describe("modules/markets/actions/load-markets-info.js", () => {
           },
           {
             type: UPDATE_MARKETS_DATA,
-            marketsData: {
-              "0xMarket1": {
-                id: "0xMarket1",
-                test: "value"
-              },
-              "0xMarket2": {
-                id: "0xMarket2",
-                test: "value"
+            data: {
+              marketsData: {
+                "0xMarket1": {
+                  id: "0xMarket1",
+                  test: "value"
+                },
+                "0xMarket2": {
+                  id: "0xMarket2",
+                  test: "value"
+                }
               }
             }
           }

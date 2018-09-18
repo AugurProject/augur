@@ -68,18 +68,16 @@ const DEFAULT_STATE = () => ({
 export default function(newMarket = DEFAULT_STATE(), action) {
   switch (action.type) {
     case ADD_ORDER_TO_NEW_MARKET: {
-      const existingOrders = newMarket.orderBook[action.data.outcome] || [];
-      const orderToAdd = action.data;
+      const orderToAdd = action.data.order;
+      const { quantity, price, type, orderEstimate, outcome } = orderToAdd;
+      const existingOrders = newMarket.orderBook[outcome] || [];
       let orderAdded = false;
       const updatedOrders = existingOrders.reduce((Orders, order) => {
         const orderInfo = Object.assign({}, order);
-        if (
-          order.price.eq(orderToAdd.price) &&
-          order.type === orderToAdd.type
-        ) {
-          orderInfo.quantity = order.quantity.plus(orderToAdd.quantity);
+        if (order.price.eq(price) && order.type === type) {
+          orderInfo.quantity = order.quantity.plus(quantity);
           orderInfo.orderEstimate = order.orderEstimate.plus(
-            orderToAdd.orderEstimate.replace(" ETH", "")
+            orderEstimate.replace(" ETH", "")
           );
           orderAdded = true;
         }
@@ -89,12 +87,10 @@ export default function(newMarket = DEFAULT_STATE(), action) {
 
       if (!orderAdded) {
         updatedOrders.push({
-          type: orderToAdd.type,
-          price: orderToAdd.price,
-          quantity: orderToAdd.quantity,
-          orderEstimate: createBigNumber(
-            orderToAdd.orderEstimate.replace(" ETH", "")
-          )
+          type,
+          price,
+          quantity,
+          orderEstimate: createBigNumber(orderEstimate.replace(" ETH", ""))
         });
       }
 
@@ -102,29 +98,32 @@ export default function(newMarket = DEFAULT_STATE(), action) {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [orderToAdd.outcome]: updatedOrders
+          [outcome]: updatedOrders
         }
       };
     }
     case REMOVE_ORDER_FROM_NEW_MARKET: {
+      const { outcome, index } = action.data;
       const updatedOutcome = [
-        ...newMarket.orderBook[action.data.outcome].slice(0, action.data.index),
-        ...newMarket.orderBook[action.data.outcome].slice(action.data.index + 1)
+        ...newMarket.orderBook[outcome].slice(0, index),
+        ...newMarket.orderBook[outcome].slice(index + 1)
       ];
 
       return {
         ...newMarket,
         orderBook: {
           ...newMarket.orderBook,
-          [action.data.outcome]: updatedOutcome
+          [outcome]: updatedOutcome
         }
       };
     }
-    case UPDATE_NEW_MARKET:
+    case UPDATE_NEW_MARKET: {
+      const { newMarketData } = action.data;
       return {
         ...newMarket,
-        ...action.data
+        ...newMarketData
       };
+    }
     case RESET_STATE:
     case CLEAR_NEW_MARKET:
       return DEFAULT_STATE();

@@ -35,7 +35,7 @@ describe("modules/markets/actions/update-new-market.js", () => {
         {
           type: UPDATE_NEW_MARKET,
           data: {
-            isValid: false
+            newMarketData: { isValid: false }
           }
         }
       ];
@@ -56,7 +56,7 @@ describe("modules/markets/actions/update-new-market.js", () => {
       const expected = {
         type: ADD_ORDER_TO_NEW_MARKET,
         data: {
-          test: "test"
+          order: { test: "test" }
         }
       };
 
@@ -72,7 +72,7 @@ describe("modules/markets/actions/update-new-market.js", () => {
       const expected = {
         type: REMOVE_ORDER_FROM_NEW_MARKET,
         data: {
-          test: "test"
+          order: { test: "test" }
         }
       };
 
@@ -88,7 +88,7 @@ describe("modules/markets/actions/update-new-market.js", () => {
       const expected = {
         type: UPDATE_NEW_MARKET,
         data: {
-          test: "test"
+          newMarketData: { test: "test" }
         }
       };
 
