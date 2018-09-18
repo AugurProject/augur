@@ -24,72 +24,69 @@ export default function(pendingLiquidityOrders = DEFAULT_STATE(), action) {
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
       return {
-        ...data
+        ...data.pendingLiquidityOrders
       };
     case ADD_MARKET_LIQUIDITY_ORDERS: {
-      const marketOutcomes = Object.keys(data.liquidityOrders);
+      const { liquidityOrders, marketId } = data;
+      const marketOutcomes = Object.keys(liquidityOrders);
       const updatedOrderBook = marketOutcomes.reduce((acc, outcome) => {
-        acc[outcome] = data.liquidityOrders[outcome].map(
-          (order, index, array) => ({
-            ...array[index],
-            index
-          })
-        );
+        acc[outcome] = liquidityOrders[outcome].map((order, index, array) => ({
+          ...array[index],
+          index
+        }));
         return acc;
       }, {});
       return {
         ...pendingLiquidityOrders,
-        [data.marketId]: updatedOrderBook
+        [marketId]: updatedOrderBook
       };
     }
     case CLEAR_ALL_MARKET_ORDERS: {
-      delete pendingLiquidityOrders[data];
+      delete pendingLiquidityOrders[data.marketId];
       return { ...pendingLiquidityOrders };
     }
     case UPDATE_LIQUIDITY_ORDER: {
+      const { order, updates, marketId, outcomeId } = data;
       const updatedOrder = {
-        ...data.order,
-        ...data.updates
+        ...order,
+        ...updates
       };
-      const updatedOutcomeArray = pendingLiquidityOrders[data.marketId][
-        data.outcomeId
+      const updatedOutcomeArray = pendingLiquidityOrders[marketId][
+        outcomeId
       ].map(outcomeOrder => {
         if (outcomeOrder.index !== updatedOrder.index) return outcomeOrder;
         return updatedOrder;
       });
-      pendingLiquidityOrders[data.marketId][
-        data.outcomeId
-      ] = updatedOutcomeArray;
+      pendingLiquidityOrders[marketId][outcomeId] = updatedOutcomeArray;
       return { ...pendingLiquidityOrders };
     }
     case REMOVE_LIQUIDITY_ORDER: {
       // data: marketId, outcomeId, orderId (index)
-      const marketOutcomes = Object.keys(pendingLiquidityOrders[data.marketId]);
+      const { marketId, outcomeId, orderId } = data;
+      const marketOutcomes = Object.keys(pendingLiquidityOrders[marketId]);
       // if removing this order will clear the order array, delete the outcome/market if no other outcomes
-      if (pendingLiquidityOrders[data.marketId][data.outcomeId].length === 1) {
+      if (pendingLiquidityOrders[marketId][outcomeId].length === 1) {
         if (
           marketOutcomes.length === 1 &&
-          marketOutcomes.includes(data.outcomeId.toString())
+          marketOutcomes.includes(outcomeId.toString())
         ) {
           // remove market completely as this is the last outcome and it's about to be empty
-          delete pendingLiquidityOrders[data.marketId];
+          delete pendingLiquidityOrders[marketId];
           return { ...pendingLiquidityOrders };
         }
         // just remove the outcome
-        delete pendingLiquidityOrders[data.marketId][data.outcomeId];
+        delete pendingLiquidityOrders[marketId][outcomeId];
         return { ...pendingLiquidityOrders };
       }
       // just remove a single order
-      const updatedOutcomeOrders = pendingLiquidityOrders[data.marketId][
-        data.outcomeId
+      const updatedOutcomeOrders = pendingLiquidityOrders[marketId][
+        outcomeId
       ].reduce((acc, order) => {
-        if (order.index === data.orderId) return acc;
+        if (order.index === orderId) return acc;
         acc.push(order);
         return acc;
       }, []);
-      pendingLiquidityOrders[data.marketId][
-        data.outcomeId
-      ] = updatedOutcomeOrders;
+      pendingLiquidityOrders[marketId][outcomeId] = updatedOutcomeOrders;
       return { ...pendingLiquidityOrders };
     }
     default:

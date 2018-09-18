@@ -17,7 +17,7 @@ export default function(orderCancellation = DEFAULT_STATE, action) {
         [action.orderId]: action.status
       };
     case UPDATE_ORDER_REMOVE:
-      delete orderCancellation[action.orderId];
+      delete orderCancellation[action.data.orderId];
       return {
         ...orderCancellation
       };

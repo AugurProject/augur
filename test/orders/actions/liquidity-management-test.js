@@ -68,7 +68,12 @@ describe(`modules/orders/actions/liquidity-management.js`, () => {
       store.dispatch(loadPendingLiquidityOrders({}));
       assert.deepEqual(
         store.getActions(),
-        [{ type: LOAD_PENDING_LIQUIDITY_ORDERS, data: {} }],
+        [
+          {
+            type: LOAD_PENDING_LIQUIDITY_ORDERS,
+            data: { pendingLiquidityOrders: {} }
+          }
+        ],
         `expected to dispatch LOAD_PENDING_LIQUIDITY_ORDERS`
       );
     }
@@ -103,7 +108,7 @@ describe(`modules/orders/actions/liquidity-management.js`, () => {
       store.dispatch(clearMarketLiquidityOrders(data));
       assert.deepEqual(
         store.getActions(),
-        [{ type: CLEAR_ALL_MARKET_ORDERS, data }],
+        [{ type: CLEAR_ALL_MARKET_ORDERS, data: { marketId: data } }],
         `expected to dispatch CLEAR_ALL_MARKET_ORDERS`
       );
     }
@@ -205,7 +210,6 @@ describe(`modules/orders/actions/liquidity-management.js`, () => {
                 estimatedCost: "1.5",
                 index: 0
               },
-              orderId: 0,
               outcomeId: 1,
               updates: {
                 onSent: true,
