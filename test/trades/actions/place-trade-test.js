@@ -171,7 +171,6 @@ describe(`modules/trades/actions/place-trade.js`, () => {
       assert.isFunction(params.onSuccess);
       assert.isFunction(params.onFailed);
     });
-    
     const action = proxyquire(
       "../../../src/modules/trades/actions/place-trade.js",
       {
