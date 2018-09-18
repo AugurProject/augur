@@ -315,7 +315,7 @@ if __name__ == "__main__":
     # check for release
     print('Ready to release {}?'.format(tag_name))
     print('commitish: {}'.format(release.target_commitish))
-    ready_to_release = input('Y/N')
+    ready_to_release = input('Y/N: ')
     if 'n' in ready_to_release.lower():
         print('quitting without releasing')
         sys.exit(0)
@@ -324,6 +324,7 @@ if __name__ == "__main__":
         # tag release and change remove draft flag
         release.update_release(name=tag_name, message=release.body, draft=False)
         # update release info so we have correct asset browser_urls
+        repo = g.get_repo("augurproject/augur-app")
         release = repo.get_release(release_id)
         message_table = release_message_table(github_release_assets, comparison)
         verboseprint('message table: {}'.format(message_table))
