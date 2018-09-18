@@ -41,24 +41,28 @@ export const NotificationBar = ({
           </a>
         </span>
       </div>
-      <Link
-        to={makePath(MY_POSITIONS)}
-        className={Styles.notificationBar_button}
-      >
-        View Portfolio
-      </Link>
-      <button
-        className={Styles.notificationBar_dismiss}
-        onClick={() => dismissFn(notification)}
-      >
-        <div className={Styles.notificationBar_dismissIcon}>
-          {CloseWithCircle(
-            Styles.notificationBar_dismissIconImg,
-            "#412468",
-            "#FFF"
-          )}
-        </div>
-      </button>
+      <div className={Styles.notificationBar_container}>
+        <Link
+          to={makePath(MY_POSITIONS)}
+          className={Styles.notificationBar_button}
+        >
+          View Portfolio
+        </Link>
+      </div>
+      <div className={Styles.notificationBar_container}>
+        <button
+          className={Styles.notificationBar_dismiss}
+          onClick={() => dismissFn(notification)}
+        >
+          <div className={Styles.notificationBar_dismissIcon}>
+            {CloseWithCircle(
+              Styles.notificationBar_dismissIconImg,
+              "#412468",
+              "#FFF"
+            )}
+          </div>
+        </button>
+      </div>
     </div>
   ));
 
