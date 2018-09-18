@@ -107,20 +107,20 @@ export default class ModalEditConnection extends Component {
 
   render() {
     const { initialConnection } = this.props;
-    const { 
-      connection, 
+    const {
+      connection,
       validations,
       showDelete,
     } = this.state
 
     let enableButton = (connection.name !== '' && (connection.ws !== '' || connection.http !== '' ))
-    if ( validations.name || validations.ws || validations.http ) {
+    if ( validations.name ) {
       enableButton = false
     }
     return (
       <section id="editModal" className={Styles.ModalEditConnection}>
-        { initialConnection && 
-          <div 
+        { initialConnection &&
+          <div
             className={classNames(Styles.ModalEditConnection__smallBg, {
               [Styles['ModalEditConnection__smallBg-show']]: showDelete
             })}
@@ -128,7 +128,7 @@ export default class ModalEditConnection extends Component {
             <ModalDeleteConnection closeModal={this.delete} closeModalFully={this.closeModal} keyId={initialConnection.key} />
           </div>
         }
-        
+
         <div className={Styles.ModalEditConnection__container}>
           <div className={Styles.ModalEditConnection__header}>
             <div className={Styles.ModalEditConnection__title}> { initialConnection ? 'Edit Connection' : 'Add Connection' } </div>
@@ -143,10 +143,10 @@ export default class ModalEditConnection extends Component {
               Connection Name
           </div>
           <div className={Styles.ModalEditConnection__inputContainer}>
-              <input 
+              <input
                   onChange={e => {
                     this.updateField("name", e.target.value);
-                  }} 
+                  }}
                   className={classNames(Styles.ModalEditConnection__input, {
                      [Styles['ModalEditConnection__inputError']]: validations.name
                   })}
@@ -160,15 +160,15 @@ export default class ModalEditConnection extends Component {
               HTTP(S) Endpoint
           </div>
           <div className={Styles.ModalEditConnection__inputContainer}>
-              <input 
+              <input
                   onChange={e => {
                     this.updateField("http", e.target.value);
                   }}
-                  value={connection.http} 
+                  value={connection.http}
                   className={classNames(Styles.ModalEditConnection__input, {
                      [Styles['ModalEditConnection__inputError']]: validations.http
                   })}
-                  placeholder="http(s)://" 
+                  placeholder="http(s)://"
               />
               {validations.http &&
                 <div className={Styles.ModalEditConnection__errorMessage}>{validations.http}</div>
@@ -178,11 +178,11 @@ export default class ModalEditConnection extends Component {
               Websocket Endpoint
           </div>
           <div className={Styles.ModalEditConnection__inputContainer}>
-              <input 
+              <input
                   onChange={e => {
                     this.updateField("ws", e.target.value);
                   }}
-                  value={connection.ws} 
+                  value={connection.ws}
                   className={classNames(Styles.ModalEditConnection__input, {
                      [Styles['ModalEditConnection__inputError']]: validations.ws
                   })}
