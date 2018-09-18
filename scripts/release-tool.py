@@ -308,6 +308,7 @@ if __name__ == "__main__":
     comparison = compare_checksums_in_dir(directory)
     message_to_sign = visual_checksum_comparison(comparison)
     if args.sign:
+        print('preparing to gpg sign the checksums...')
         signed_message = gpg_sign_checksums(message_to_sign)
         print(signed_message)
         print('uploading to github releases')
