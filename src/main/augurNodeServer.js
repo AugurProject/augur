@@ -42,6 +42,7 @@ AugurNodeServer.prototype.setWindow = function (window) {
 AugurNodeServer.prototype.startServer = function () {
   try {
     log.info('Starting Server')
+    this.isShuttingDown = false
     var propagationDelayWaitMillis = DEFAULT_DELAY_WAIT
     var maxRetries = DEFAULT_MAX_RETRIES
     this.bulkSyncing = false
@@ -101,10 +102,12 @@ AugurNodeServer.prototype.startServer = function () {
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
   if (this.isShuttingDown) return
-  if (this.window) this.window.webContents.send(ERROR_NOTIFICATION, {
-    messageType: RECONNECT_MSG,
-    message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
-  })
+  if (this.window) {
+    this.window.webContents.send(ERROR_NOTIFICATION, {
+      messageType: RECONNECT_MSG,
+      message: 'Disconnected from Ethereum Node. Attempting to reconnect...'
+    });
+  }
 }
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
@@ -189,7 +192,6 @@ AugurNodeServer.prototype.onResetDatabase = function () {
 AugurNodeServer.prototype.onStartNetwork = function (event, data) {
   try {
     console.log('onStartNetwork has been called')
-    this.isShuttingDown = false
     this.selectedNetwork = data
     this.retriesRemaining = AUGUR_NODE_RESTART_RETRIES
     this.restart()
