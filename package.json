@@ -30,6 +30,7 @@
     "___": "",
     "link": "npm link augur.js keythereum",
     "reinstall": "./scripts/reinstall.sh",
+    "regenerate-lockfiles": "rm -f package-lock.json && npm install && rm -f yarn.lock && yarn",
     "----": "",
     "docker:build": "docker build --tag augurproject/augur:latest  .",
     "docker:push": "docker push augurproject/augur:latest",
