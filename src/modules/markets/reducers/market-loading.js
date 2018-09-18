@@ -8,15 +8,17 @@ const DEFAULT_STATE = {};
 
 export default function(marketLoading = DEFAULT_STATE, action) {
   switch (action.type) {
-    case UPDATE_MARKET_LOADING:
+    case UPDATE_MARKET_LOADING: {
+      const { marketLoadingState } = action.data;
       return {
         ...marketLoading,
-        ...action.data
+        ...marketLoadingState
       };
+    }
     case REMOVE_MARKET_LOADING:
       return Object.keys(marketLoading).reduce(
         (p, marketId) =>
-          marketId !== action.data
+          marketId !== action.data.marketLoadingState
             ? { ...p, [marketId]: marketLoading[marketId] }
             : p,
         {}

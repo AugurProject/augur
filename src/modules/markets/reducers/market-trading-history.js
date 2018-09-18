@@ -8,7 +8,7 @@ export default function(tradingHistory = DEFAULT_STATE, action) {
     case UPDATE_MARKET_TRADING_HISTORY:
       return {
         ...tradingHistory,
-        [action.marketId]: action.tradingHistory
+        [action.data.marketId]: action.data.tradingHistory
       };
     case RESET_STATE:
       return DEFAULT_STATE;

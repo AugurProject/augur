@@ -9,14 +9,14 @@ const DEFAULT_STATE = {};
 export default function(functionsAPI = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_FUNCTIONS_API:
-      return action.functionsAPI;
+      return action.data.functionsAPI;
     case UPDATE_FROM_ADDRESS:
       return Object.keys(functionsAPI).reduce((p, contractName) => {
         p[contractName] = Object.keys(functionsAPI[contractName]).reduce(
           (q, functionName) => {
             q[functionName] = {
               ...functionsAPI[contractName][functionName],
-              from: action.fromAddress
+              from: action.data.fromAddress
             };
             return q;
           },

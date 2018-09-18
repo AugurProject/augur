@@ -7,7 +7,7 @@ const DEFAULT_STATE = {
 export default function(env = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ENV:
-      return action.env;
+      return action.data.env;
     default:
       return env;
   }

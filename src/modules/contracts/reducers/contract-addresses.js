@@ -8,7 +8,7 @@ export default function(contractAddresses = DEFAULT_STATE, action) {
     case UPDATE_CONTRACT_ADDRESSES:
       return {
         ...contractAddresses,
-        ...action.contractAddresses
+        ...action.data.contractAddresses
       };
     case RESET_STATE:
       return DEFAULT_STATE;

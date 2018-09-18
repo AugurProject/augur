@@ -6,7 +6,7 @@ const DEFAULT_STATE = {};
 export default function(eventsAPI = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_EVENTS_API:
-      return action.eventsAPI;
+      return action.data.eventsAPI;
     case RESET_STATE:
       return DEFAULT_STATE;
     default:

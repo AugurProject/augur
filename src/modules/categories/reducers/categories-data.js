@@ -13,17 +13,19 @@ export default function(categories = DEFAULT_STATE, action) {
     case UPDATE_CATEGORIES:
       return {
         ...categories,
-        ...action.categories
+        ...action.data.categories
       };
-    case UPDATE_CATEGORY_POPULARITY:
+    case UPDATE_CATEGORY_POPULARITY: {
+      const { category, amount } = action.data;
       return {
         ...categories,
-        [action.category]: !categories[action.category]
-          ? action.amount
-          : new BigNumber(categories[action.category], 10)
-              .plus(new BigNumber(action.amount, 10))
+        [category]: !categories[category]
+          ? amount
+          : new BigNumber(categories[category], 10)
+              .plus(new BigNumber(amount, 10))
               .toFixed()
       };
+    }
     case RESET_STATE:
     case CLEAR_CATEGORIES:
       return DEFAULT_STATE;

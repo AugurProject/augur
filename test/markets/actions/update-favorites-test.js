@@ -5,7 +5,7 @@ describe(`modules/markets/actions/update-favorites.js`, () => {
     const marketId = "market123";
     const expectedOutput = {
       type: actions.TOGGLE_FAVORITE,
-      marketId
+      data: { marketId }
     };
     assert.deepEqual(
       actions.toggleFavorite(marketId),
@@ -18,7 +18,7 @@ describe(`modules/markets/actions/update-favorites.js`, () => {
     const favorites = ["some favorite", "another favorite"];
     const expectedOutput = {
       type: actions.UPDATE_FAVORITES,
-      favorites
+      data: { favorites }
     };
     assert.deepEqual(
       actions.updateFavorites(favorites),

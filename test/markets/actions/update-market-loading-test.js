@@ -15,7 +15,7 @@ describe("modules/markets/actions/update-market-loading.js", () => {
         const actual = updateMarketLoading("0xMARKETID");
         const expected = {
           type: UPDATE_MARKET_LOADING,
-          data: "0xMARKETID"
+          data: { marketLoadingState: "0xMARKETID" }
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -30,7 +30,7 @@ describe("modules/markets/actions/update-market-loading.js", () => {
         const actual = removeMarketLoading("0xMARKETID");
         const expected = {
           type: REMOVE_MARKET_LOADING,
-          data: "0xMARKETID"
+          data: { marketLoadingState: "0xMARKETID" }
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
