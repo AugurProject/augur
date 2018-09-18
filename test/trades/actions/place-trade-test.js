@@ -127,8 +127,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     assert.isObject(approvalAction);
     assert.deepEqual(approvalAction.type, "UPDATE_MODAL");
     assert.isObject(approvalAction.data);
-    assert.deepEqual(approvalAction.data.type, "MODAL_ACCOUNT_APPROVAL");
-    assert.isFunction(approvalAction.data.approveCallback);
+    assert.isObject(approvalAction.data.modalOptions);
+    const { modalOptions } = approvalAction.data;
+    assert.deepEqual(modalOptions.type, "MODAL_ACCOUNT_APPROVAL");
+    assert.isFunction(modalOptions.approveCallback);
     store.clearActions();
   });
   it("should handle a allowance greater than total (no approval needed.)", () => {
