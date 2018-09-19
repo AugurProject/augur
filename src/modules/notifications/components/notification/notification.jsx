@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import moment from "moment";
 
-import { AlertCircle, CloseWithCircle } from "modules/common/components/icons";
+import { AlertCircle, CloseWithCircle, } from "modules/common/components/icons";
 import Styles from "modules/notifications/components/notification/notification.styles";
 import EtherscanLink from "modules/common/containers/etherscan-link";
 
@@ -21,19 +21,6 @@ export default class Notification extends Component {
     status: PropTypes.string,
     toggleNotifications: PropTypes.func.isRequired
   };
-
-  showOnMouseEnterIcon() {
-    this.notificationCloseButton.className =
-      Styles.Notification__closeButtonHidden;
-    this.notificationCloseButtonHover.className =
-      Styles.Notification__closeButton;
-  }
-
-  showOnMouseLeaveIcon() {
-    this.notificationCloseButton.className = Styles.Notification__closeButton;
-    this.notificationCloseButtonHover.className =
-      Styles.Notification__closeButtonHidden;
-  }
 
   render() {
     const {
@@ -75,44 +62,25 @@ export default class Notification extends Component {
           </div>
           <div className={Styles.Notification__row}>
             <span className={Styles.Notification__title}>{title}</span>
-            <button
-              className={Styles.Notification__close}
-              onClick={e => {
-                e.stopPropagation();
-                e.preventDefault();
-                removeNotification();
-              }}
-              onMouseEnter={() => {
-                this.showOnMouseEnterIcon();
-              }}
-              onMouseLeave={() => {
-                this.showOnMouseLeaveIcon();
-              }}
-            >
-              <div
-                ref={notificationCloseButton => {
-                  this.notificationCloseButton = notificationCloseButton;
-                }}
-                className={Styles.Notification__closeButton}
-              >
-                {CloseWithCircle("", "#DBDAE1", "#FFF")}
-              </div>
-              <div
-                ref={notificationCloseButtonHover => {
-                  this.notificationCloseButtonHover = notificationCloseButtonHover;
-                }}
-                className={Styles.Notification__closeButtonHidden}
-              >
-                {CloseWithCircle("", "#412468", "#FFF")}
-              </div>
-            </button>
           </div>
           {description &&
             description !== "" && (
               <span className={Styles.Notification__description}>
                 {description}
               </span>
-            )}
+          )}
+          <div>
+            <button
+              className={Styles.Notification__close}
+              onClick={e => {
+                removeNotification();
+              }}
+            >
+              <div className={Styles.Notification__closeButton}>
+                {CloseWithCircle("", "transparent", "#FFF")}
+              </div>
+            </button>
+          </div>
         </Link>
         <div className={Styles.Notification__row}>
           <span className={Styles.Notification__etherLink}>

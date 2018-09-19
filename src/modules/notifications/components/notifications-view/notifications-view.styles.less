@@ -1,32 +1,24 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationsView {
-  background: @color-offwhite;
-  box-shadow: @box-shadow-notifications;
-  color: @color-text-dark;
+  color: @color-white;
   display: flex;
   height: 30.25rem;
   max-height: 80%;
-  position: absolute;
-  right: 1.65rem;
-  text-align: left;
-  top: 3.6rem;
-  width: 22.75rem;
   z-index: @mask-above;
-}
 
-.NotificationsView::after {
-  border: solid transparent;
-  border-color: @color-transparent @color-transparent @color-offwhite @color-transparent;
-  border-width: 10px;
-  bottom: 100%;
-  content: " ";
-  height: 0;
-  margin-left: -10px;
-  pointer-events: none;
+  background-color: #553580;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  max-height: 80%;
+  height: 30.25rem;
+
   position: absolute;
-  right: 0.2rem;
-  width: 0;
+  right: 0px;
+  text-align: left;
+  top: 4.5rem;
+  width: 360px;
 }
 
 .NotificationsView__box {

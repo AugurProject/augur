@@ -3,12 +3,12 @@
 .Notification {
   display: flex;
   flex-direction: column;
-  margin-top: 1.5rem;
   overflow: hidden;
-  padding: 0 1.5rem 0 1.75rem;
+  padding: 16px 24px;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border-bottom: 1px solid #736e89;
 }
 
 .Notification__link {
@@ -17,6 +17,10 @@
 }
 
 .Notification__row {
+  display: flex;
+}
+
+.Notification__column {
   display: flex;
 }
 
@@ -29,7 +33,7 @@
 }
 
 .Notification__title {
-  color: @color-darkpurple;
+  color: @color-white;
   flex: 0 1 auto;
   font-size: @font-size-medium;
   font-weight: bold;
@@ -47,7 +51,7 @@
 }
 
 .Notification__status {
-  color: @color-darkpurple;
+  color: @color-white;
   font-size: @font-size-extra-small;
   font-weight: 500;
   height: 0.688rem;
@@ -56,7 +60,7 @@
 }
 
 .Notification__etherLink {
-  color: @color-lightpurple;
+  color: @color-white;
   font-size: @font-size-extra-small;
   font-weight: 500;
   text-decoration: underline;
@@ -99,7 +103,7 @@
 }
 
 .Notification__time {
-  color: @color-gray;
+  color: @color-white;
   font-size: @font-size-extra-small;
   margin-right: 0.25rem;
 }
