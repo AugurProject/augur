@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getAccountTransferHistory } = require("../../../../build/server/getters/get-account-transfer-history");
+const { getAccountTransferHistory } = require("../../../../src/server/getters/get-account-transfer-history");
 
 describe("server/getters/get-account-transfer-history", () => {
   const test = (t) => {

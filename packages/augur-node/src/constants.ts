@@ -58,6 +58,8 @@ export enum SubscriptionEventNames {
   InitialReporterRedeemed = "InitialReporterRedeemed",
   InitialReporterTransferred = "InitialReporterTransferred",
   MarketCreated = "MarketCreated",
+  MarketFinalized  = "MarketFinalized",
+  MarketMigrated = "MarketMigrated",
   MarketState = "MarketState",
   OrderCanceled = "OrderCanceled",
   OrderCreated = "OrderCreated",
@@ -67,6 +69,9 @@ export enum SubscriptionEventNames {
   TokensTransferred = "TokensTransferred",
   TradingProceedsClaimed = "TradingProceedsClaimed",
   UniverseCreated = "UniverseCreated",
+  Burn = "Burn",
+  TokensBurned = "TokensBurned",
+  Approval = "Approval",
 }
 
 export enum MarketType {

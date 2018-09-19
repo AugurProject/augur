@@ -10,13 +10,13 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout0: "0",
       payout1: "2",
       tentativeWinning: 0,
-      isInvalid: 0,
+      isInvalid: false,
     }, {
       payoutId: 2,
       marketId: "0x0000000000000000000000000000000000000011",
       payout0: "1",
       payout1: "1",
-      isInvalid: 1,
+      isInvalid: true,
       tentativeWinning: 1,
     }, {
       payoutId: 3,
@@ -26,7 +26,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       payout2: "0",
       payout3: "0",
       payout4: "0",
-      isInvalid: 0,
+      isInvalid: false,
       tentativeWinning: 0,
       winning: 1,
     }, {
@@ -34,7 +34,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "0x0000000000000000000000000000000000000211",
       payout0: "10000",
       payout1: "0",
-      isInvalid: 0,
+      isInvalid: false,
       tentativeWinning: 0,
       winning: null,
     }, {
@@ -42,7 +42,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "0x0000000000000000000000000000000000000211",
       payout0: "0",
       payout1: "10000",
-      isInvalid: 0,
+      isInvalid: false,
       tentativeWinning: 1,
       winning: null,
     }, {
@@ -50,7 +50,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "0x0000000000000000000000000000000000000211",
       payout0: "5000",
       payout1: "5000",
-      isInvalid: 1,
+      isInvalid: true,
       tentativeWinning: 0,
       winning: null,
     }, {
@@ -58,7 +58,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "CHILD_UNIVERSE",
       payout0: "0",
       payout1: "10000",
-      isInvalid: 0,
+      isInvalid: false,
       tentativeWinning: 0,
       winning: null,
     }, {
@@ -66,7 +66,7 @@ exports.seed = async (knex: Knex): Promise<any> => {
       marketId: "0x0000000000000000000000000000000000000013",
       payout0: "0",
       payout1: "10000",
-      isInvalid: 0,
+      isInvalid: false,
       tentativeWinning: 1,
       winning: 1,
     }];

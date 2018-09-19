@@ -3,7 +3,7 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {series} = require("async");
-const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require("../../../../build/blockchain/log-processors/fee-window-created");
+const {processFeeWindowCreatedLog, processFeeWindowCreatedLogRemoval} = require("../../../../src/blockchain/log-processors/fee-window-created");
 
 const getFeeWindow = (db, params, callback) => series({
   fee_windows: next => db("fee_windows").first(["feeWindow", "feeWindowId", "endTime"]).where({feeWindow: params.log.feeWindow}).asCallback(next),

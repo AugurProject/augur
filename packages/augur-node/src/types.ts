@@ -175,6 +175,7 @@ export interface MarketsRow<BigNumberType> extends MarketPricing<BigNumberType> 
   tag1: string|null;
   tag2: string|null;
   volume: BigNumberType;
+  openInterest: BigNumberType;
   sharesOutstanding: BigNumberType;
   marketStateId: number;
   feeWindow: Address;
@@ -220,6 +221,7 @@ export interface OutcomesRow<BigNumberType> {
   outcome: number;
   price: BigNumberType;
   volume: BigNumberType;
+  shareVolume: BigNumberType;
   description: string|null;
 }
 
@@ -362,6 +364,7 @@ export interface UIMarketInfo<BigNumberType> {
   category: string;
   tags: Array<string|null>;
   volume: BigNumberType;
+  openInterest: BigNumberType;
   outstandingShares: BigNumberType;
   feeWindow: Address;
   endTime: number;

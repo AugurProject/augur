@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getMarketsCreatedByUser } = require("../../../../build/server/getters/get-markets-created-by-user");
+const { getMarketsCreatedByUser } = require("../../../../src/server/getters/get-markets-created-by-user");
 
 describe("server/getters/get-markets-created-by-user", () => {
   const test = (t) => {

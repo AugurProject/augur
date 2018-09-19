@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const {processDisputeCrowdsourcerRedeemedLog, processDisputeCrowdsourcerRedeemedLogRemoval} = require("../../../../build/blockchain/log-processors/crowdsourcer");
+const {processDisputeCrowdsourcerRedeemedLog, processDisputeCrowdsourcerRedeemedLogRemoval} = require("../../../../src/blockchain/log-processors/crowdsourcer");
 
 describe("blockchain/log-processors/crowdsourcer-redeemed", () => {
   const test = (t) => {

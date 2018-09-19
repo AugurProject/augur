@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getForkMigrationTotals } = require("../../../../build/server/getters/get-fork-migration-totals");
+const { getForkMigrationTotals } = require("../../../../src/server/getters/get-fork-migration-totals");
 
 describe("server/getters/get-fork-migration-totals", () => {
   const test = (t) => {
@@ -27,7 +27,7 @@ describe("server/getters/get-fork-migration-totals", () => {
       assert.ifError(err);
       assert.deepEqual(forkMigrationTotals, {
         "CHILD_UNIVERSE": {
-          "isInvalid": 0,
+          "isInvalid": false,
           "payout": [
             "0",
             "10000",
