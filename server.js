@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(hotMiddleware(compiler));
 } else {
   // Static Path
-  app.use('/', express.static(path.join(__dirname, "build")));
+  app.use('/', express.static(path.join(process.cwd(), "build")));
 }
 
 app.listen = function() {
