@@ -7,47 +7,54 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(closePositionTradeGroups = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(
+  closePositionTradeGroups = DEFAULT_STATE,
+  { type, data }
+) {
+  switch (type) {
     case ADD_CLOSE_POSITION_TRADE_GROUP: {
+      const { marketId, outcomeId, tradeGroupId } = data;
       const oldTradeGroups =
-        (closePositionTradeGroups[action.marketId] &&
-          closePositionTradeGroups[action.marketId][action.outcomeId]) ||
+        (closePositionTradeGroups[marketId] &&
+          closePositionTradeGroups[marketId][outcomeId]) ||
         [];
-      const updatedTradeGroups = [...oldTradeGroups, action.tradeGroupId];
+      const updatedTradeGroups = [...oldTradeGroups, tradeGroupId];
 
       return {
         ...closePositionTradeGroups,
-        [action.marketId]: {
-          ...closePositionTradeGroups[action.marketId],
-          [action.outcomeId]: updatedTradeGroups
+        [marketId]: {
+          ...closePositionTradeGroups[marketId],
+          [outcomeId]: updatedTradeGroups
         }
       };
     }
     case REMOVE_CLOSE_POSITION_TRADE_GROUP: {
-      return Object.keys(
-        closePositionTradeGroups[action.marketId] || {}
-      ).reduce((p, outcomeId) => {
-        if (outcomeId !== action.outcomeId) {
-          return {
-            ...p,
-            [action.marketId]: {
-              [outcomeId]: closePositionTradeGroups[action.marketId][outcomeId]
-            }
-          };
-        }
+      const { marketId, outcomeId } = data;
+      return Object.keys(closePositionTradeGroups[marketId] || {}).reduce(
+        (p, curOutcomeId) => {
+          if (curOutcomeId !== outcomeId) {
+            return {
+              ...p,
+              [marketId]: {
+                [curOutcomeId]: closePositionTradeGroups[marketId][curOutcomeId]
+              }
+            };
+          }
 
-        return p;
-      }, {});
+          return p;
+        },
+        {}
+      );
     }
     case CLEAR_CLOSE_POSITION_OUTCOME: {
+      const { marketId, outcomeId } = data;
       const updatedOutcomes = Object.keys(
-        closePositionTradeGroups[action.marketId] || {}
-      ).reduce((p, outcomeId) => {
-        if (parseInt(outcomeId, 10) !== action.outcomeId) {
+        closePositionTradeGroups[marketId] || {}
+      ).reduce((p, curOutcomeId) => {
+        if (parseInt(curOutcomeId, 10) !== outcomeId) {
           return {
             ...p,
-            [outcomeId]: closePositionTradeGroups[action.marketId][outcomeId]
+            [curOutcomeId]: closePositionTradeGroups[marketId][curOutcomeId]
           };
         }
 
@@ -59,14 +66,17 @@ export default function(closePositionTradeGroups = DEFAULT_STATE, action) {
       if (Object.keys(updatedOutcomes).length) {
         updatedClosePositionTradeGroups = {
           ...closePositionTradeGroups,
-          [action.marketId]: updatedOutcomes
+          [marketId]: updatedOutcomes
         };
       } else {
         updatedClosePositionTradeGroups = Object.keys(
           closePositionTradeGroups
-        ).reduce((p, marketId) => {
-          if (marketId !== action.marketId) {
-            return { ...p, [marketId]: closePositionTradeGroups[marketId] };
+        ).reduce((p, curMarketId) => {
+          if (curMarketId !== marketId) {
+            return {
+              ...p,
+              [curMarketId]: closePositionTradeGroups[curMarketId]
+            };
           }
 
           return p;
