@@ -67,21 +67,20 @@ export default class NotificationsView extends Component {
             message="No Notifications"
           />
         )}
-        {notifications &&
-          notifications.length && (
-            <div className={Styles.NotificationsView__dismissContainer}>
-              <div className={Styles.NotificationsView__dismissContainerBorder}>
-                <div
-                  className={Styles.NotificationsView__dismissButton}
-                  onClick={clearNotifications}
-                  role="button"
-                  tabIndex={0}
-                >
-                  Dismiss All
-                </div>
+        {notifications && notifications.length ? (
+          <div className={Styles.NotificationsView__dismissContainer}>
+            <div className={Styles.NotificationsView__dismissContainerBorder}>
+              <div
+                className={Styles.NotificationsView__dismissButton}
+                onClick={clearNotifications}
+                role="button"
+                tabIndex="0"
+              >
+                Dismiss All
               </div>
             </div>
-          )}
+          </div>
+        ) : null}
       </section>
     );
   }

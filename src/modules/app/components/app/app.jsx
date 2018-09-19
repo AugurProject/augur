@@ -337,19 +337,9 @@ export default class AppView extends Component {
   }
 
   toggleNotifications() {
-    // console.log('hi')
-    // console.log(this.state.isNotificationsVisible)
-    // console.log(this.refs)
-    // console.log(this.notificationsContainer)
-    // toggleHeight(
-    //   this.notificationsContainer,
-    //   this.state.isNotificationsVisible,
-    //   () => {
     this.setState({
       isNotificationsVisible: !this.state.isNotificationsVisible
     });
-    //   }
-    // );
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
