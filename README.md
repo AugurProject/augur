@@ -87,7 +87,7 @@ Due to the current architecture of this implementation, the use of self-signed S
 
 If you've installed a previous pre-release of Augur App locally on your machine prior to the main Ethereum network deployment, **you will need to clear your local Augur App configuration file in order to properly run this Augur App release and connect to the Ethereum main network.**
 
-Please delete the ```augur``` directory (or, just the ```config.json``` file) in the following location:
+Please delete the ```augur``` directory (or, just the ```app.config``` file) in the following location:
 
 **MacOS** : ```~/Library/Application\ Support/augur```
 
@@ -108,16 +108,13 @@ If you are looking for more information from augur-node and augur-app, checkout 
 
 ## Running UI on different port (change from 8080)
 
-`uiPort` is a new property in config.json (see location above). Change `uiPort` property to whatever port you want. If you select the `reset configuration` in the menu the default config.json will be saved to harddrive. Here is an example of the uiPort property changed:
+`uiPort` is a new property in config.json (see location above). Change `uiPort` property to whatever port you want. Here is an example of the uiPort property changed:
 
 ```
 {
-    "network": "mainnet",
-        "version": "1.0.0",
-        "uiPort": "8181",
-        "networks": {
-            "rinkeby": {
-              ...
+  "uiPort": "8181",
+  "sslPort": "8443"
+        ...
 ```
 
 
