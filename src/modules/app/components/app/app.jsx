@@ -340,7 +340,10 @@ export default class AppView extends Component {
   }
 
   toggleNotifications() {
-    // console.log(this.refs.notificationsContainer)
+    console.log('hi')
+    console.log(this.state.isNotificationsVisible)
+    console.log(this.refs)
+    console.log(this.notificationsContainer)
     toggleHeight(
       this.notificationsContainer,
       this.state.isNotificationsVisible,
@@ -568,9 +571,7 @@ export default class AppView extends Component {
                   ToggleHeightStyles["toggle-height-target"]
                 )}
               >
-                <NotificationsContainer
-                  toggleNotifications={() => this.toggleNotifications()}
-                />
+                <NotificationsContainer toggleNotifications={() => this.toggleNotifications()}/>
               </div>
             )}
             {universe.forkEndTime &&
