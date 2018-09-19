@@ -8,7 +8,8 @@
   color: @color-white;
   display: flex;
   flex-direction: column;
-  max-height: 80%;
+  max-height: 485px;
+  min-height: 200px;
   position: relative;
   text-align: left;
   width: 360px;
@@ -42,13 +43,14 @@
 
 .NotificationsView__dismissContainer {
   align-items: flex-end;
+  background-color: @color-darkpurple;
+  border-top: 1px solid @color-gray;
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
 }
 
 .NotificationsView__dismissContainerBorder {
-  border-top: 1px solid @color-gray;
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
@@ -56,11 +58,16 @@
 }
 
 .NotificationsView__dismissButton {
-  border-bottom: dotted 0.5px @color-white;
-  color: @color-white;
+  border-bottom: dotted 0.5px @color-lightergray;
+  color: @color-lightergray;
   cursor: pointer;
   display: inline;
   font-size: 12px;
+
+  &:hover {
+    border-bottom: dotted 0.5px @color-white;
+    color: @color-white;
+  }
 }
 
 @media @breakpoint-mobile {

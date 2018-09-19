@@ -38,9 +38,6 @@ import parsePath from "modules/routes/helpers/parse-path";
 import makePath from "modules/routes/helpers/make-path";
 import parseQuery from "modules/routes/helpers/parse-query";
 
-import toggleHeight from "utils/toggle-height/toggle-height";
-import ToggleHeightStyles from "utils/toggle-height/toggle-height.styles";
-
 import getValue from "utils/get-value";
 
 import {
@@ -340,19 +337,19 @@ export default class AppView extends Component {
   }
 
   toggleNotifications() {
-    console.log('hi')
-    console.log(this.state.isNotificationsVisible)
-    console.log(this.refs)
-    console.log(this.notificationsContainer)
-    toggleHeight(
-      this.notificationsContainer,
-      this.state.isNotificationsVisible,
-      () => {
-        this.setState({
-          isNotificationsVisible: !this.state.isNotificationsVisible
-        });
-      }
-    );
+    // console.log('hi')
+    // console.log(this.state.isNotificationsVisible)
+    // console.log(this.refs)
+    // console.log(this.notificationsContainer)
+    // toggleHeight(
+    //   this.notificationsContainer,
+    //   this.state.isNotificationsVisible,
+    //   () => {
+    this.setState({
+      isNotificationsVisible: !this.state.isNotificationsVisible
+    });
+    //   }
+    // );
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
@@ -561,19 +558,19 @@ export default class AppView extends Component {
                 isLoading={isLoading}
               />
             </section>
-            {isLogged && (
-              <div
-                ref={notificationsContainer => {
-                  this.notificationsContainer = notificationsContainer;
-                }}
-                className={classNames(
-                  Styles.App__notifications,
-                  ToggleHeightStyles["toggle-height-target"]
-                )}
-              >
-                <NotificationsContainer toggleNotifications={() => this.toggleNotifications()}/>
-              </div>
-            )}
+            {isLogged &&
+              s.isNotificationsVisible && (
+                <div
+                  ref={notificationsContainer => {
+                    this.notificationsContainer = notificationsContainer;
+                  }}
+                  className={classNames(Styles.App__notifications)}
+                >
+                  <NotificationsContainer
+                    toggleNotifications={() => this.toggleNotifications()}
+                  />
+                </div>
+              )}
             {universe.forkEndTime &&
               universe.forkEndTime !== "0" &&
               blockchain &&
