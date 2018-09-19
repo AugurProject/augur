@@ -19,8 +19,10 @@ Example:
 }
 */
 
-export default function(pendingLiquidityOrders = DEFAULT_STATE(), action) {
-  const { type, data } = action;
+export default function(
+  pendingLiquidityOrders = DEFAULT_STATE(),
+  { type, data }
+) {
   switch (type) {
     case LOAD_PENDING_LIQUIDITY_ORDERS:
       return {

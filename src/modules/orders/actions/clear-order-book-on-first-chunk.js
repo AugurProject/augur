@@ -15,7 +15,12 @@ const clearOrderBookOnFirstChunk = (marketId, outcome, orderTypeLabel) => (
   ) {
     console.log("first chunk, clearing order book of", marketId);
     dispatch(
-      updateIsFirstOrderBookChunkLoaded(marketId, outcome, orderTypeLabel, true)
+      updateIsFirstOrderBookChunkLoaded({
+        marketId,
+        outcome,
+        orderTypeLabel,
+        isLoaded: true
+      })
     );
     dispatch(clearOrderBook(marketId, outcome, orderTypeLabel));
   }

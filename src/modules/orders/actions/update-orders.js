@@ -4,19 +4,19 @@ import { loadMarketsInfoIfNotLoaded } from "modules/markets/actions/load-markets
 import logError from "utils/log-error";
 import { BUY, SELL } from "modules/transactions/constants/types";
 
-export const updateSingleMarketOrderBook = (
-  updatedOrdersInMarket,
-  isOrderCreation
-) => (dispatch, getState) =>
+export const updateSingleMarketOrderBook = updatedOrdersInMarket => (
+  dispatch,
+  getState
+) =>
   Object.keys(updatedOrdersInMarket).forEach(outcome =>
     updatedOrdersInMarket[outcome].forEach(orderLog =>
       dispatch(
-        updateOrderBook(
-          orderLog.marketId,
+        updateOrderBook({
+          marketId: orderLog.marketId,
           outcome,
-          orderLog.orderType === "buy" ? BUY : SELL,
-          { [orderLog.orderId]: orderLog }
-        )
+          orderTypeLabel: orderLog.orderType === "buy" ? BUY : SELL,
+          orderBook: { [orderLog.orderId]: orderLog }
+        })
       )
     )
   );
@@ -30,9 +30,7 @@ export const updateOrdersInMarket = (
   dispatch(
     loadMarketsInfoIfNotLoaded([marketId], err => {
       if (err) return callback(err);
-      dispatch(
-        updateSingleMarketOrderBook(updatedOrdersInMarket, isOrderCreation)
-      );
+      dispatch(updateSingleMarketOrderBook(updatedOrdersInMarket));
       callback(null);
     })
   );

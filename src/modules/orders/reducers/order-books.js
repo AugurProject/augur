@@ -9,10 +9,10 @@ const DEFAULT_STATE = {};
  * @param {Object} orderBooks
  * @param {Object} action
  */
-export default function(orderBooks = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(orderBooks = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_ORDER_BOOK: {
-      const { marketId, outcome, orderTypeLabel } = action;
+      const { marketId, outcome, orderTypeLabel, orderBook } = data;
       const marketOrderBook = orderBooks[marketId] || {};
       const outcomeOrderBook = marketOrderBook[outcome] || {};
       return {
@@ -23,14 +23,14 @@ export default function(orderBooks = DEFAULT_STATE, action) {
             ...outcomeOrderBook,
             [orderTypeLabel]: {
               ...(outcomeOrderBook[orderTypeLabel] || {}),
-              ...action.orderBook
+              ...orderBook
             }
           }
         }
       };
     }
     case CLEAR_ORDER_BOOK: {
-      const { marketId, outcome, orderTypeLabel } = action;
+      const { marketId, outcome, orderTypeLabel } = data;
       const marketOrderBook = orderBooks[marketId] || {};
       const outcomeOrderBook = marketOrderBook[outcome] || {};
       return {

@@ -39,7 +39,12 @@ export const loadAccountOrders = (options = {}, callback = logError) => (
                   return p;
                 }, {});
                 dispatch(
-                  updateOrderBook(marketId, outcome, orderTypeLabel, openOrders)
+                  updateOrderBook({
+                    marketId,
+                    outcome,
+                    orderTypeLabel,
+                    orderBook: openOrders
+                  })
                 );
               });
             });
