@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import 'reporting/IMarket.sol';
 import 'libraries/DelegationTarget.sol';
@@ -50,25 +50,29 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     uint256 private validityBondAttoeth;
     IMailbox private marketCreatorMailbox;
     uint256 private finalizationTime;
+    uint256 private noShowBond;
+    bool private disputePacingOn;
+    address private noShowBondOwner;
 
     // Collections
     IReportingParticipant[] public participants;
     Map public crowdsourcers;
     IShareToken[] private shareTokens;
 
-    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoeth, ICash _cash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public onlyInGoodTimes payable beforeInitialized returns (bool _success) {
+    function initialize(IUniverse _universe, uint256 _endTime, uint256 _feePerEthInAttoeth, ICash _cash, address _designatedReporterAddress, address _creator, uint256 _numOutcomes, uint256 _numTicks) public payable beforeInitialized returns (bool _success) {
         endInitialization();
         require(MIN_OUTCOMES <= _numOutcomes && _numOutcomes <= MAX_OUTCOMES);
-        require(_numTicks > 0);
         require(_designatedReporterAddress != NULL_ADDRESS);
         require((_numTicks >= _numOutcomes));
         require(_feePerEthInAttoeth <= MAX_FEE_PER_ETH_IN_ATTOETH);
         require(_creator != NULL_ADDRESS);
-        require(controller.getTimestamp() < _endTime);
-        require(address(_cash) == controller.lookup("Cash"));
+        uint256 _timestamp = controller.getTimestamp();
+        require(_timestamp < _endTime);
+        require(_endTime < _timestamp + Reporting.getMaximumMarketDuration());
         universe = _universe;
         require(!universe.isForking());
         owner = _creator;
+        noShowBondOwner = owner;
         assessFees();
         endTime = _endTime;
         numOutcomes = _numOutcomes;
@@ -91,19 +95,20 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return true;
     }
 
-    function assessFees() private onlyInGoodTimes returns (bool) {
-        require(getReputationToken().balanceOf(this) >= universe.getOrCacheDesignatedReportNoShowBond());
+    function assessFees() private returns (bool) {
+        noShowBond = universe.getOrCacheDesignatedReportNoShowBond();
+        require(getReputationToken().balanceOf(this) >= noShowBond);
         validityBondAttoeth = universe.getOrCacheValidityBond();
         return true;
     }
 
-    function createShareToken(uint256 _outcome) private onlyInGoodTimes returns (IShareToken) {
+    function createShareToken(uint256 _outcome) private returns (IShareToken) {
         return ShareTokenFactory(controller.lookup("ShareTokenFactory")).createShareToken(controller, this, _outcome);
     }
 
     // This will need to be called manually for each open market if a spender contract is updated
-    function approveSpenders() public onlyInGoodTimes returns (bool) {
-        bytes32[5] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("TradingEscapeHatch"), bytes32("ClaimTradingProceeds")];
+    function approveSpenders() public returns (bool) {
+        bytes32[4] memory _names = [bytes32("CancelOrder"), bytes32("CompleteSets"), bytes32("FillOrder"), bytes32("ClaimTradingProceeds")];
         for (uint256 i = 0; i < _names.length; i++) {
             require(cash.approve(controller.lookup(_names[i]), APPROVAL_AMOUNT));
         }
@@ -113,35 +118,52 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return true;
     }
 
-    function doInitialReport(uint256[] _payoutNumerators, bool _invalid) public onlyInGoodTimes returns (bool) {
-        IInitialReporter _initialReporter = getInitialReporter();
-        uint256 _timestamp = controller.getTimestamp();
-        require(_initialReporter.getReportTimestamp() == 0);
-        require(_timestamp > endTime);
-        bool _isDesignatedReporter = msg.sender == _initialReporter.getDesignatedReporter();
-        bool _designatedReportingExpired = _timestamp > getDesignatedReportingEndTime();
-        require(_designatedReportingExpired || _isDesignatedReporter);
-        distributeNoShowBond(_initialReporter, msg.sender);
-        // The designated reporter must actually pay the required REP stake to report
-        if (msg.sender == _initialReporter.getDesignatedReporter()) {
-            IReputationToken _reputationToken = getReputationToken();
-            _reputationToken.trustedMarketTransfer(msg.sender, _initialReporter, universe.getOrCacheDesignatedReportStake());
-        }
-        bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators, _invalid);
-        feeWindow = universe.getOrCreateNextFeeWindow();
-        _initialReporter.report(msg.sender, _payoutDistributionHash, _payoutNumerators, _invalid);
-        controller.getAugur().logInitialReportSubmitted(universe, msg.sender, this, _initialReporter.getStake(), _isDesignatedReporter, _payoutNumerators, _invalid);
+    function doInitialReport(uint256[] _payoutNumerators, bool _invalid, string _description) public returns (bool) {
+        doInitialReportInternal(msg.sender, _payoutNumerators, _invalid, _description);
         return true;
     }
 
-    function contribute(uint256[] _payoutNumerators, bool _invalid, uint256 _amount) public onlyInGoodTimes returns (bool) {
-        require(feeWindow.isActive());
+    function doInitialReportInternal(address _reporter, uint256[] _payoutNumerators, bool _invalid, string _description) private returns (bool) {
+        require(!universe.isForking());
+        IInitialReporter _initialReporter = getInitialReporter();
+        uint256 _timestamp = controller.getTimestamp();
+        require(_timestamp > endTime);
+        uint256 _initialReportStake = distributeInitialReportingRep(_reporter, _initialReporter);
+        bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators, _invalid);
+        feeWindow = universe.getOrCreateNextFeeWindow();
+        _initialReporter.report(_reporter, _payoutDistributionHash, _payoutNumerators, _invalid, _initialReportStake);
+        controller.getAugur().logInitialReportSubmitted(universe, _reporter, this, _initialReportStake, _initialReporter.designatedReporterShowed(), _payoutNumerators, _invalid, _description);
+        return true;
+    }
+
+    function distributeInitialReportingRep(address _reporter, IInitialReporter _initialReporter) private returns (uint256) {
+        IReputationToken _reputationToken = getReputationToken();
+        uint256 _initialReportStake = noShowBond;
+        // If the designated reporter showed up return the no show bond to the bond owner. Otherwise it will be used as stake in the first report.
+        if (_reporter == _initialReporter.getDesignatedReporter()) {
+            require(_reputationToken.transfer(noShowBondOwner, _initialReportStake));
+            _initialReportStake = universe.getOrCacheDesignatedReportStake();
+            _reputationToken.trustedMarketTransfer(_reporter, _initialReporter, _initialReportStake);
+        } else {
+            require(_reputationToken.transfer(_initialReporter, _initialReportStake));
+        }
+        noShowBond = 0;
+        return _initialReportStake;
+    }
+
+    function contribute(uint256[] _payoutNumerators, bool _invalid, uint256 _amount, string _description) public returns (bool) {
+        require(getInitialReporter().getReportTimestamp() != 0);
+        if (disputePacingOn) {
+            require(feeWindow.isActive());
+        } else {
+            require(!feeWindow.isOver());
+        }
         require(!universe.isForking());
         bytes32 _payoutDistributionHash = derivePayoutDistributionHash(_payoutNumerators, _invalid);
         require(_payoutDistributionHash != getWinningReportingParticipant().getPayoutDistributionHash());
         IDisputeCrowdsourcer _crowdsourcer = getOrCreateDisputeCrowdsourcer(_payoutDistributionHash, _payoutNumerators, _invalid);
         uint256 _actualAmount = _crowdsourcer.contribute(msg.sender, _amount);
-        controller.getAugur().logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount);
+        controller.getAugur().logDisputeCrowdsourcerContribution(universe, msg.sender, this, _crowdsourcer, _actualAmount, _description);
         if (_crowdsourcer.totalSupply() == _crowdsourcer.getSize()) {
             finishedCrowdsourcingDisputeBond(_crowdsourcer);
         }
@@ -151,20 +173,27 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
     function finishedCrowdsourcingDisputeBond(IReportingParticipant _reportingParticipant) private returns (bool) {
         participants.push(_reportingParticipant);
         crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this); // disavow other crowdsourcers
-        if (IDisputeCrowdsourcer(_reportingParticipant).getSize() >= universe.getDisputeThresholdForFork()) {
+        uint256 _crowdsourcerSize = IDisputeCrowdsourcer(_reportingParticipant).getSize();
+        if (_crowdsourcerSize >= universe.getDisputeThresholdForFork()) {
             universe.fork();
         } else {
+            if (_crowdsourcerSize >= universe.getDisputeThresholdForDisputePacing()) {
+                disputePacingOn = true;
+            }
+            IFeeWindow _originalFeeWindow = feeWindow;
             feeWindow = universe.getOrCreateNextFeeWindow();
-            // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
-            for (uint256 i = 0; i < participants.length; i++) {
-                participants[i].migrate();
+            if (feeWindow != _originalFeeWindow) {
+                // Participants is implicitly bounded by the floor of the initial report REP cost to be no more than 21
+                for (uint256 i = 0; i < participants.length; i++) {
+                    participants[i].migrate();
+                }
             }
         }
         controller.getAugur().logDisputeCrowdsourcerCompleted(universe, this, _reportingParticipant);
         return true;
     }
 
-    function finalize() public onlyInGoodTimes returns (bool) {
+    function finalize() public returns (bool) {
         if (universe.getForkingMarket() == this) {
             return finalizeFork();
         }
@@ -184,7 +213,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return true;
     }
 
-    function finalizeFork() public onlyInGoodTimes returns (bool) {
+    function finalizeFork() public returns (bool) {
         require(universe.getForkingMarket() == this);
         require(winningPayoutDistributionHash == bytes32(0));
         IUniverse _winningUniverse = universe.getWinningChildUniverse();
@@ -216,20 +245,8 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         for (uint256 j = 0; j < participants.length; j++) {
             _reportingParticipant = participants[j];
             if (_reportingParticipant.getPayoutDistributionHash() == winningPayoutDistributionHash) {
-                require(_reputationToken.transfer(_reportingParticipant, _reportingParticipant.getSize().div(2)));
+                require(_reputationToken.transfer(_reportingParticipant, _reportingParticipant.getSize() / 2));
             }
-        }
-        return true;
-    }
-
-    function distributeNoShowBond(IInitialReporter _initialReporter, address _reporter) private returns (bool) {
-        IReputationToken _reputationToken = getReputationToken();
-        uint256 _repBalance = _reputationToken.balanceOf(this);
-        // If the designated reporter showed up return the no show bond to the market creator. Otherwise it will be used as stake in the first report.
-        if (_reporter == _initialReporter.getDesignatedReporter()) {
-            require(_reputationToken.transfer(owner, _repBalance));
-        } else {
-            require(_reputationToken.transfer(_initialReporter, _repBalance));
         }
         return true;
     }
@@ -267,11 +284,13 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return _crowdsourcer;
     }
 
-    function migrateThroughOneFork() public onlyInGoodTimes returns (bool) {
+    function migrateThroughOneFork(uint256[] _payoutNumerators, bool _invalid, string _description) public returns (bool) {
         // only proceed if the forking market is finalized
         IMarket _forkingMarket = universe.getForkingMarket();
         require(_forkingMarket.isFinalized());
         require(!isFinalized());
+
+        disavowCrowdsourcers();
 
         IUniverse _currentUniverse = universe;
         bytes32 _winningForkPayoutDistributionHash = _forkingMarket.getWinningPayoutDistributionHash();
@@ -287,51 +306,50 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         }
         _destinationUniverse.addMarketTo();
         _currentUniverse.removeMarketFrom();
-        IReputationToken _oldReputationToken = getReputationToken();
         universe = _destinationUniverse;
 
         universe.incrementOpenInterestFromMarket(_marketOI);
 
-        // reset state back to Initial Reporter
-        IInitialReporter _initialParticipant = getInitialReporter();
+        // Pay the No Show REP bond
+        noShowBond = universe.getOrCacheDesignatedReportStake();
+        noShowBondOwner = msg.sender;
+        getReputationToken().trustedMarketTransfer(noShowBondOwner, this, noShowBond);
 
-        delete participants;
-        participants.push(_initialParticipant);
-        _initialParticipant.resetReportTimestamp();
+        // Update the Initial Reporter
+        IInitialReporter _initialReporter = getInitialReporter();
+        _initialReporter.migrateToNewUniverse(msg.sender);
 
-        // Migrate REP
-        _initialParticipant.migrateREP();
-        IReputationToken _newReputationToken = getReputationToken();
-        uint256 _balance = _oldReputationToken.balanceOf(this);
-        if (_balance > 0) {
-            _oldReputationToken.migrateOut(_newReputationToken, _balance);
+        // If the market is past expiration use the reporting data to make an initial report
+        uint256 _timestamp = controller.getTimestamp();
+        if (_timestamp > endTime) {
+            doInitialReportInternal(msg.sender, _payoutNumerators, _invalid, _description);
         }
 
-        // Disavow crowdsourcers
-        crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this);
         return true;
     }
 
-    function disavowCrowdsourcers() public onlyInGoodTimes returns (bool) {
+    function disavowCrowdsourcers() public returns (bool) {
         require(universe.isForking());
         IMarket _forkingMarket = getForkingMarket();
         require(_forkingMarket != this);
         require(!isFinalized());
         IInitialReporter _initialParticipant = getInitialReporter();
+        // Early out if already disavowed or nothing to disavow
+        if (_initialParticipant.getReportTimestamp() == 0) {
+            return true;
+        }
         delete participants;
         participants.push(_initialParticipant);
+        // Send REP from the no show bond back to the address that placed it. If a report has been made tell the InitialReporter to return that REP and reset
+        if (noShowBond > 0) {
+            IReputationToken _reputationToken = getReputationToken();
+            require(_reputationToken.transfer(noShowBondOwner, noShowBond));
+            noShowBond = 0;
+        } else {
+            _initialParticipant.returnRepFromDisavow();
+        }
         crowdsourcers = MapFactory(controller.lookup("MapFactory")).createMap(controller, this);
         controller.getAugur().logMarketParticipantsDisavowed(universe);
-        return true;
-    }
-
-    function withdrawInEmergency() public onlyInBadTimes onlyOwner returns (bool) {
-        IReputationToken _reputationToken = getReputationToken();
-        uint256 _repBalance = _reputationToken.balanceOf(this);
-        require(_reputationToken.transfer(msg.sender, _repBalance));
-        if (this.balance > 0) {
-            msg.sender.transfer(this.balance);
-        }
         return true;
     }
 
@@ -466,6 +484,10 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         return validityBondAttoeth;
     }
 
+    function getDisputePacingOn() public view returns (bool) {
+        return disputePacingOn;
+    }
+
     function derivePayoutDistributionHash(uint256[] _payoutNumerators, bool _invalid) public view returns (bytes32) {
         uint256 _sum = 0;
         uint256 _previousValue = _payoutNumerators[0];
@@ -481,7 +503,7 @@ contract Market is DelegationTarget, ITyped, Initializable, Ownable, IMarket {
         } else {
             require(_sum == numTicks);
         }
-        return keccak256(_payoutNumerators, _invalid);
+        return keccak256(abi.encodePacked(_payoutNumerators, _invalid));
     }
 
     function isContainerForShareToken(IShareToken _shadyShareToken) public view returns (bool) {

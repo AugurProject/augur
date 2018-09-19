@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 import 'libraries/ITyped.sol';
@@ -38,6 +38,7 @@ contract IMarket is ITyped, IOwnable {
     function getReputationToken() public view returns (IReputationToken);
     function getFinalizationTime() public view returns (uint256);
     function getInitialReporterAddress() public view returns (address);
+    function getDesignatedReportingEndTime() public view returns (uint256);
     function deriveMarketCreatorFeeAmount(uint256 _amount) public view returns (uint256);
     function isContainerForShareToken(IShareToken _shadyTarget) public view returns (bool);
     function isContainerForReportingParticipant(IReportingParticipant _reportingParticipant) public view returns (bool);

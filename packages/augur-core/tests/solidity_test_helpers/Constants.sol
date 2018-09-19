@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 
 import 'reporting/IMarket.sol';
 import 'reporting/Reporting.sol';
@@ -10,6 +10,7 @@ contract Constants {
     uint256 public constant DISPUTE_ROUND_DURATION_SECONDS = Reporting.getDisputeRoundDurationSeconds();
     uint256 public constant CLAIM_PROCEEDS_WAIT_TIME = Reporting.getClaimTradingProceedsWaitTime();
     uint256 public constant FORK_DURATION_SECONDS = Reporting.getForkDurationSeconds();
+    uint256 public constant MAXIMUM_MARKET_DURATION = Reporting.getMaximumMarketDuration();
 
     uint256 public constant DEFAULT_VALIDITY_BOND = Reporting.getDefaultValidityBond();
     uint256 public constant VALIDITY_BOND_FLOOR = Reporting.getValidityBondFloor();
@@ -24,7 +25,6 @@ contract Constants {
     uint256 public constant TARGET_REP_MARKET_CAP_DIVISOR = Reporting.getTargetRepMarketCapDivisor();
 
     uint256 public constant INITIAL_REP_SUPPLY = Reporting.getInitialREPSupply();
-    uint256 public constant FORK_MIGRATION_PERCENTAGE_BONUS_DIVISOR = Reporting.getForkMigrationPercentageBonusDivisor();
 
     uint256 public constant BID = uint256(Order.Types.Bid);
     uint256 public constant ASK = uint256(Order.Types.Ask);

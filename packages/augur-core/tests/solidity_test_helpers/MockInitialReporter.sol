@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import 'reporting/IInitialReporter.sol';
 import 'reporting/IMarket.sol';
@@ -33,8 +33,9 @@ contract MockInitialReporter is IInitialReporter {
 
     function reportWasCalled() public returns(bool) { return reportWasCalledValue; }
 
-    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, bool _invalid) public returns (bool) {
+    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, bool _invalid, uint256 _initialReportStake) public returns (bool) {
         reportWasCalledValue = true;
+        reportTimestamp = 1;
         return true;
     }
 
@@ -102,7 +103,11 @@ contract MockInitialReporter is IInitialReporter {
         return 0;
     }
 
-    function migrateREP() public returns (bool) {
+    function returnRepFromDisavow() public returns (bool) {
+        return true;
+    }
+
+    function migrateToNewUniverse(address _designatedReporter) public returns (bool) {
         return true;
     }
 }

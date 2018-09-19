@@ -5,7 +5,7 @@
 // amount is the number of attoshares the order is for (either to buy or to sell).
 // price is the exact price you want to buy/sell at [which may not be the cost, for example to short a yesNo market it'll cost numTicks-price, to go long it'll cost price]
 
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 import 'IAugur.sol';
@@ -54,6 +54,7 @@ library Order {
     function create(IController _controller, address _creator, uint256 _outcome, Order.Types _type, uint256 _attoshares, uint256 _price, IMarket _market, bytes32 _betterOrderId, bytes32 _worseOrderId) internal view returns (Data) {
         require(_outcome < _market.getNumberOfOutcomes());
         require(_price < _market.getNumTicks());
+        require(_attoshares > 0);
 
         IOrders _orders = IOrders(_controller.lookup("Orders"));
         IAugur _augur = _controller.getAugur();

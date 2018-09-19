@@ -49,14 +49,12 @@ def finalizeMarket(fixture, market, payoutNumerators, invalid=False):
     # set timestamp to after market end
     fixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have tester.a0 submit designated report
-    market.doInitialReport(payoutNumerators, invalid)
+    market.doInitialReport(payoutNumerators, invalid, "")
     # set timestamp to after designated dispute end
     feeWindow = fixture.applySignature('FeeWindow', market.getFeeWindow())
     fixture.contracts["Time"].setTimestamp(feeWindow.getEndTime() + 1)
     # finalize the market
     assert market.finalize()
-    # set timestamp to 3 days later (waiting period)
-    fixture.contracts["Time"].incrementTimestamp(long(timedelta(days = 3, seconds = 1).total_seconds()))
 
 def test_helpers(kitchenSinkFixture, scalarMarket):
     market = scalarMarket
@@ -217,7 +215,7 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
     # set timestamp to after market end
     kitchenSinkFixture.contracts["Time"].setTimestamp(market.getEndTime() + 1)
     # have tester.a0 subimt designated report (75% high, 25% low, range -10*10^18 to 30*10^18)
-    market.doInitialReport([0, 10**4], False)
+    market.doInitialReport([0, 10**4], False, "")
     # set timestamp to after designated dispute end
     feeWindow = kitchenSinkFixture.applySignature('FeeWindow', market.getFeeWindow())
     kitchenSinkFixture.contracts["Time"].setTimestamp(feeWindow.getEndTime() + 1)
@@ -227,11 +225,6 @@ def test_reedem_failure(kitchenSinkFixture, cash, market):
         claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
     # finalize the market
     assert market.finalize()
-    # waiting period not over
-    with raises(TransactionFailed):
-        claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)
 
-    # set timestamp to 3 days later (waiting period)
-    kitchenSinkFixture.contracts["Time"].incrementTimestamp(long(timedelta(days = 3, seconds = 1).total_seconds()))
     # validate that everything else is OK
     assert claimTradingProceeds.claimTradingProceeds(market.address, tester.a1)

@@ -13,7 +13,7 @@ def proceedToDesignatedReporting(fixture, market):
 def proceedToInitialReporting(fixture, market):
     fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
-def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees = False, moveTimeForward = True, randomPayoutNumerators = False):
+def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees = False, moveTimeForward = True, randomPayoutNumerators = False, description = ""):
     if fixture.contracts["Controller"].getTimestamp() < market.getEndTime():
         fixture.contracts["Time"].setTimestamp(market.getDesignatedReportingEndTime() + 1)
 
@@ -23,11 +23,12 @@ def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees 
     payoutNumerators[0] = market.getNumTicks()
 
     if (feeWindow == longToHexString(0)):
-        market.doInitialReport(payoutNumerators, False)
+        market.doInitialReport(payoutNumerators, False, "")
         assert market.getFeeWindow()
     else:
         feeWindow = fixture.applySignature('FeeWindow', market.getFeeWindow())
-        fixture.contracts["Time"].setTimestamp(feeWindow.getStartTime() + 1)
+        if market.getDisputePacingOn():
+            fixture.contracts["Time"].setTimestamp(feeWindow.getStartTime() + 1)
         # This will also use the InitialReporter which is not a DisputeCrowdsourcer, but has the called function from abstract inheritance
         winningReport = fixture.applySignature('DisputeCrowdsourcer', market.getWinningReportingParticipant())
         winningPayoutHash = winningReport.getPayoutDistributionHash()
@@ -43,7 +44,7 @@ def proceedToNextRound(fixture, market, contributor = tester.k0, doGenerateFees 
         chosenPayoutHash = market.derivePayoutDistributionHash(chosenPayoutNumerators, False)
         amount = 2 * market.getParticipantStake() - 3 * market.getStakeInOutcome(chosenPayoutHash)
         with PrintGasUsed(fixture, "Contribute:", 0):
-            market.contribute(chosenPayoutNumerators, False, amount, sender=contributor)
+            market.contribute(chosenPayoutNumerators, False, amount, description, sender=contributor)
         assert market.getForkingMarket() or market.getFeeWindow() != feeWindow
 
     if (doGenerateFees):
@@ -84,12 +85,11 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
 
     # A Tester moves some of their REP to the YES universe
     amount = 10 ** 6 * 10 ** 18
-    bonus = amount / fixture.contracts["Constants"].FORK_MIGRATION_PERCENTAGE_BONUS_DIVISOR()
 
     with raises(TransactionFailed):
         reputationToken.migrateOut(yesUniverseReputationToken.address, 0)
 
-    with TokenDelta(yesUniverseReputationToken, amount + bonus, tester.a0, "Yes REP token balance was no correct"):
+    with TokenDelta(yesUniverseReputationToken, amount, tester.a0, "Yes REP token balance was no correct"):
         reputationToken.migrateOut(yesUniverseReputationToken.address, amount)
 
     # Attempting to finalize the fork now will not succeed as a majority or REP has not yet migrated and fork end time has not been reached
@@ -99,8 +99,7 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
     if (finalizeByMigration):
         # Tester 0 moves more than 50% of REP
         amount = reputationToken.balanceOf(tester.a0) - 20
-        bonus = amount / fixture.contracts["Constants"].FORK_MIGRATION_PERCENTAGE_BONUS_DIVISOR()
-        with TokenDelta(noUniverseReputationToken, amount + bonus, tester.a0, "No REP token balance was no correct"):
+        with TokenDelta(noUniverseReputationToken, amount, tester.a0, "No REP token balance was no correct"):
             reputationToken.migrateOut(noUniverseReputationToken.address, amount)
         assert reputationToken.balanceOf(tester.a0) == 20
         assert market.getWinningPayoutDistributionHash() == noUniverse.getParentPayoutDistributionHash()
@@ -109,16 +108,9 @@ def finalizeFork(fixture, market, universe, finalizeByMigration = True):
         fixture.contracts["Time"].setTimestamp(universe.getForkEndTime() + 1)
         assert market.finalize()
         assert market.getWinningPayoutDistributionHash() == yesUniverse.getParentPayoutDistributionHash()
-
-    # if the fork finalized by migration we're still in the 60 day fork window and can still get a bonus for migrating. If the fork is past the fork period we can no longer get the 5% bonus
-    amount = 20
-    amountAdded = amount
-    if finalizeByMigration:
-        bonus = amount / fixture.contracts["Constants"].FORK_MIGRATION_PERCENTAGE_BONUS_DIVISOR()
-        amountAdded += bonus
-
-    with TokenDelta(yesUniverseReputationToken, amountAdded, tester.a0, "reputation migration bonus did not work correctly"):
-        reputationToken.migrateOut(yesUniverseReputationToken.address, amount)
+        # If the fork is past the fork period we can not migrate
+        with raises(TransactionFailed):
+            reputationToken.migrateOut(yesUniverseReputationToken.address, 1)
 
     # Finalize fork cannot be called again
     with raises(TransactionFailed):

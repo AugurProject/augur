@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 
 import 'reporting/IMarket.sol';
 import 'reporting/IUniverse.sol';
@@ -58,6 +58,7 @@ contract MockUniverse is Initializable, IUniverse {
     bool private getOrCacheValidityBondWallCalledValue;
     bool private getOrCacheTargetReporterGasCostsWasCalledValue;
     uint256 private setDisputeThresholdForForkValue;
+    uint256 private setDisputeThresholdForDisputePacingValue;
     bool private getOrCreateNextFeeWindowWasCalledValue;
     IUniverse private setWinningChildUniverseValue;
     bool private addMarketToWasCalledValue;
@@ -482,8 +483,14 @@ contract MockUniverse is Initializable, IUniverse {
 
     function setDisputeThresholdForFork(uint256 _value) public { setDisputeThresholdForForkValue = _value; }
 
+    function setDisputeThresholdForDisputePacing(uint256 _value) public { setDisputeThresholdForDisputePacingValue = _value; }
+
     function getDisputeThresholdForFork() public view returns (uint256) {
         return setDisputeThresholdForForkValue;
+    }
+
+    function getDisputeThresholdForDisputePacing() public view returns (uint256) {
+        return setDisputeThresholdForDisputePacingValue;
     }
 
     function getInitialReportMinValue() public view returns (uint256) {

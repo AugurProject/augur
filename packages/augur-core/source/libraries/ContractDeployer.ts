@@ -54,7 +54,6 @@ Deploying to: ${networkConfiguration.networkName}
         this.controller = await this.uploadController();
         await this.uploadAugur();
         await this.uploadAllContracts();
-        await this.uploadOrdersFinder();
 
         if (this.configuration.isProduction) {
             console.log(`Registering Legacy Rep Contract at ${this.configuration.legacyRepAddress}`);
@@ -72,13 +71,15 @@ Deploying to: ${networkConfiguration.networkName}
 
         if(this.configuration.createGenesisUniverse) {
             if (!this.configuration.isProduction) {
-                this.initializeLegacyRep();
+                console.log("Initializing legacy REP");
+                await this.initializeLegacyRep();
             }
 
             this.universe = await this.createGenesisUniverse();
 
             if (!this.configuration.isProduction) {
-                this.migrateFromLegacyRep();
+                console.log("Migrating from legacy REP");
+                await this.migrateFromLegacyRep();
             }
         }
 
@@ -182,14 +183,6 @@ Deploying to: ${networkConfiguration.networkName}
         await this.controller.registerContract(stringTo32ByteHex("Augur"), address, commitHash, bytecodeHash);
     }
 
-    private async uploadOrdersFinder(): Promise<void> {
-        const contract = await this.contracts.get("OrdersFinder");
-        const ordersAddress = this.contracts.get("Orders").address;
-        if (ordersAddress === undefined) throw new Error("Orders contract not uploaded");
-        const address = await this.construct(contract, [ordersAddress], `Uploading ${contract.contractName}`);
-        contract.address = address;
-    }
-
     private async uploadAllContracts(): Promise<void> {
         console.log('Uploading contracts...');
         const promises: Array<Promise<any>> = [];
@@ -210,7 +203,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (contractName === 'Time') contract = this.configuration.useNormalTime ? contract : this.contracts.get('TimeControlled');
         if (contractName === 'ReputationToken') contract = this.configuration.isProduction ? contract : this.contracts.get('TestNetReputationToken');
         if (contract.relativeFilePath.startsWith('legacy_reputation/')) return;
-        if (contractName !== 'OrdersFinder' && contract.relativeFilePath.startsWith('external/')) return;
         if (this.configuration.isProduction && contractName === 'LegacyReputationToken') return;
         if (contractName !== 'Map' && contract.relativeFilePath.startsWith('libraries/')) return;
         // Check to see if we have already uploded this version of the contract
@@ -318,6 +310,7 @@ Deploying to: ${networkConfiguration.networkName}
             throw new Error("Faucet call to Legacy REP failed");
         }
     }
+
     private async resetTimeControlled(): Promise<void> {
       console.log('Resetting Timestamp for false time...');
       const time = new TimeControlled(this.connector, this.accountManager, this.getContract("TimeControlled").address, this.connector.gasPrice);
@@ -345,14 +338,13 @@ Deploying to: ${networkConfiguration.networkName}
     private async migrateFromLegacyRep(): Promise<void> {
         const reputationTokenAddress = await this.universe.getReputationToken_();
         const reputationToken = new ReputationToken(this.connector, this.accountManager, reputationTokenAddress, this.connector.gasPrice);
-        await reputationToken.migrateBalancesFromLegacyRep([this.accountManager.defaultAddress]);
+        const legacyReputationToken = new LegacyReputationToken(this.connector, this.accountManager, this.getContract('LegacyReputationToken').address, this.connector.gasPrice);
+        const legacyBalance = await legacyReputationToken.balanceOf_(this.accountManager.defaultAddress);
+        await legacyReputationToken.approve(reputationTokenAddress, legacyBalance);
+        await reputationToken.migrateFromLegacyReputationToken();
         const balance = await reputationToken.balanceOf_(this.accountManager.defaultAddress);
         if (!balance || balance == new BN(0)) {
             throw new Error("Migration from Legacy REP failed");
-        }
-        const migrationOngoing = await reputationToken.getIsMigratingFromLegacy_();
-        if (migrationOngoing) {
-            throw new Error("Still migrating from Legacy REP");
         }
     }
 
@@ -365,7 +357,6 @@ Deploying to: ${networkConfiguration.networkName}
         if (this.universe) mapping['Universe'] = this.universe.address;
         if (this.contracts.get('Augur').address === undefined) throw new Error(`Augur not uploaded.`);
         mapping['Augur'] = this.contracts.get('Augur').address!;
-        mapping['OrdersFinder'] = this.contracts.get('OrdersFinder').address!;
         mapping['LegacyReputationToken'] = this.contracts.get('LegacyReputationToken').address!;
         for (let contract of this.contracts) {
             if (!contract.relativeFilePath.startsWith('trading/')) continue;
