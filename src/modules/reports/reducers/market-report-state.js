@@ -18,50 +18,50 @@ const DEFAULT_STATE = {
   resolved: []
 };
 
-export default function(marketReportState = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(marketReportState = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        designated: action.data
+        designated: data.marketIds
       };
 
     case UPDATE_OPEN_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        open: action.data
+        open: data.marketIds
       };
 
     case UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        upcoming: action.data
+        upcoming: data.marketIds
       };
 
     case UPDATE_AWAITING_DISPUTE_MARKETS:
       return {
         ...marketReportState,
-        awaiting: action.data
+        awaiting: data.marketIds
       };
 
     case UPDATE_CROWD_DISPUTE_MARKETS:
       return {
         ...marketReportState,
-        dispute: action.data
+        dispute: data.marketIds
       };
     case UPDATE_RESOLVED_REPORTING_MARKETS:
       return {
         ...marketReportState,
-        resolved: action.data
+        resolved: data.marketIds
       };
     case REMOVE_MARKET:
-      return Object.keys(marketReportState).reduce((p, type) => {
-        const markets = marketReportState[type].filter(
-          marketId => marketId !== action.marketId
+      return Object.keys(marketReportState).reduce((p, reportType) => {
+        const markets = marketReportState[reportType].filter(
+          marketId => marketId !== data.marketId
         );
         return {
           ...p,
-          [type]: markets
+          [reportType]: markets
         };
       }, {});
     case RESET_STATE:

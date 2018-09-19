@@ -44,7 +44,7 @@ describe(`modules/reports/reducers/account-disputes-state.js`, () => {
       assert.deepEqual(
         reducer(undefined, {
           type: UPDATE_ACCOUNT_DISPUTE,
-          data: marketId1Data
+          data: { accountDisputesData: marketId1Data }
         }),
         expected,
         `Didn't return expected`
@@ -57,11 +57,14 @@ describe(`modules/reports/reducers/account-disputes-state.js`, () => {
     assertions: () => {
       const state = reducer(
         {},
-        { type: UPDATE_ACCOUNT_DISPUTE, data: marketId1Data }
+        {
+          type: UPDATE_ACCOUNT_DISPUTE,
+          data: { accountDisputesData: marketId1Data }
+        }
       );
       const actual = reducer(state, {
         type: UPDATE_ACCOUNT_DISPUTE,
-        data: marketId2Data
+        data: { accountDisputesData: marketId2Data }
       });
       const expected = {
         marketId1: marketId1Data,
@@ -80,7 +83,7 @@ describe(`modules/reports/reducers/account-disputes-state.js`, () => {
       };
       const actual = reducer(data, {
         type: REMOVE_ACCOUNT_DISPUTE,
-        data: marketId1Data
+        data: { accountDisputesData: marketId1Data }
       });
       const expected = {
         marketId2: marketId2Data
