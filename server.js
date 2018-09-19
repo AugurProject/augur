@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
-const path = require("path");
+
 const app = express();
 
 if (process.env.NODE_ENV === "development") {
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(hotMiddleware(compiler));
 } else {
   // Static Path
-  app.use('/', express.static(path.join(process.cwd(), "build")));
+  app.use(express.static("build"));
 }
 
 app.listen = function() {
