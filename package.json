@@ -29,7 +29,7 @@
     "kickoff": "./scripts/setup-local-dev.sh",
     "___": "",
     "link": "npm link augur.js keythereum",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "webpack  --debug --config config/webpack.heroku.config.js",
     "reinstall": "./scripts/reinstall.sh",
     "regenerate-lockfiles": "rm -f package-lock.json && npm install && rm -f yarn.lock && yarn",
     "----": "",
