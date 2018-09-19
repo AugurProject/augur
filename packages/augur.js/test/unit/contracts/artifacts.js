@@ -7,7 +7,7 @@ var expect = require("chai").expect;
 var fs = require("fs");
 var path = require("path");
 
-var NETWORK_IDS = ["1", "3", "4", "19", "42", "8995", "101", "102", "103"];
+var NETWORK_IDS = ["1", "3", "4", "19", "42", "8995", "101", "102", "103", "104"];
 
 describe("artifacts", function () {
   it("has a well-formed addresses.json", function (done) {

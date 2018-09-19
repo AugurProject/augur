@@ -30,6 +30,7 @@
  * @property {string} category Name of the category the market is in.
  * @property {Array<string|null>} tags Names with which the market has been tagged.
  * @property {number} volume Trading volume for this outcome. (Method for calculating this is pending.)
+ * @property {string} openInterest Open interest for the Market.
  * @property {number} outstandingShares Total shares in the market. (Method for calculating this is pending.)
  * @property {REPORTING_STATE|null} reportingState Reporting state name.
  * @property {string} reportingWindow Contract address of the reporting window the market is in, as a hexadecimal string.
