@@ -1,3 +1,4 @@
+const { GETH_REMOTE_MSG, ERROR_NOTIFICATION, START_GETH, STOP_GETH, GETH_FINISHED_SYNCING, PEER_COUNT_DATA, ON_GETH_SERVER_CONNECTED, ON_GETH_SERVER_DISCONNECTED, LATEST_SYNCED_GETH_BLOCK } = require('../utils/constants')
 const { ipcMain, app} = require('electron')
 const { spawn } = require('child_process')
 const { request } = require('http')
@@ -45,13 +46,16 @@ const PEER_COUNT_REQUEST_OPTIONS = {
   }
 }
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 function getGethPath() {
   let gethExecutablePath = path.join(process.resourcesPath, 'geth')
-  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath+".exe")) return gethExecutablePath;
+  if (fs.existsSync(gethExecutablePath) || fs.existsSync(gethExecutablePath + '.exe')) return gethExecutablePath
 
   let os = 'linux'
   if (process.platform === 'win32') os = 'win'
   if (process.platform === 'darwin') os = 'mac'
+  if (isDevelopment) return path.join(`resources/${os}/geth`)
   return path.join(app.getAppPath(), `resources/${os}/geth`)
 }
 
@@ -60,9 +64,9 @@ function GethNodeController() {
   this.gethProcess = null
   this.statusLoop = null
   this.gethExecutablePath = getGethPath()
-  ipcMain.on('toggleGeth', this.toggle.bind(this))
-  ipcMain.on('startGeth', this.start.bind(this))
-  ipcMain.on('stopGeth', this.stop.bind(this))
+  console.log('gethExecutablePath', this.gethExecutablePath)
+  ipcMain.on(START_GETH, this.onStartGethServer.bind(this))
+  ipcMain.on(STOP_GETH, this.onStopGethServer.bind(this))
 }
 
 GethNodeController.prototype.setWindow = function (window) {
@@ -72,7 +76,7 @@ GethNodeController.prototype.setWindow = function (window) {
   })
 }
 
-GethNodeController.prototype.start = function (event) {
+GethNodeController.prototype.onStartGethServer = function (event) {
   const appDataPath = appData('augur')
   const gethPath = path.join(appDataPath, 'geth')
   if (!fs.existsSync(gethPath)) {
@@ -105,7 +109,7 @@ GethNodeController.prototype.start = function (event) {
   this.gethProcess.on('close', this.onGethClose.bind(this))
 
   this.statusLoop = setInterval(this.checkStatus.bind(this), STATUS_LOOP_INTERVAL)
-  event.sender.send('onServerConnected')
+  event.sender.send(ON_GETH_SERVER_CONNECTED)
 }
 
 GethNodeController.prototype.log = function (data) {
@@ -116,16 +120,11 @@ GethNodeController.prototype.onGethClose = function (code) {
   console.log(`GETH child process exited with code ${code}`)
 }
 
-GethNodeController.prototype.stop = function () {
+GethNodeController.prototype.onStopGethServer = function (event) {
   console.log('Stopping geth process')
   if (this.gethProcess) this.gethProcess.kill('SIGINT')
   if (this.statusLoop) clearInterval(this.statusLoop)
-}
-
-GethNodeController.prototype.toggle = function (event) {
-  console.log('Toggling geth process')
-  if (this.gethProcess && !this.gethProcess.killed) return this.stop()
-  this.start(event)
+  if (event && event.sender) event.sender.send(ON_GETH_SERVER_DISCONNECTED)
 }
 
 GethNodeController.prototype.checkStatus = function () {
@@ -146,23 +145,29 @@ GethNodeController.prototype.makeRequest = function (options, data, callback) {
     req.write(data)
     req.end()
   } catch (err) {
-    this.sendMsgToWindowContents('error', {message: err.message})
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: GETH_REMOTE_MSG,
+      message: err.message || err
+    })
   }
 }
 
 GethNodeController.prototype.updatePeerCount = function (peerCountHex) {
   try {
     const peerCount = parseInt(peerCountHex, 16)
-    this.sendMsgToWindowContents('peerCountData', { peerCount })
+    this.sendMsgToWindowContents(PEER_COUNT_DATA, { peerCount })
     if (peerCount > 0) this.makeRequest(SYNCING_REQUEST_OPTIONS, SYNCING_POST_DATA, this.updateSyncData.bind(this))
   } catch (err) {
-    this.sendMsgToWindowContents('error', {message: err.message})
+    this.sendMsgToWindowContents(ERROR_NOTIFICATION, {
+      messageType: GETH_REMOTE_MSG,
+      message: err.message || err
+    })
   }
 }
 
 GethNodeController.prototype.updateSyncData = function (syncData) {
-  if (syncData === false) return this.sendMsgToWindowContents('gethFinishedSyncing')
-  this.sendMsgToWindowContents('latestSyncedGethBlock', {
+  if (syncData === false) return this.sendMsgToWindowContents(GETH_FINISHED_SYNCING)
+  this.sendMsgToWindowContents(LATEST_SYNCED_GETH_BLOCK, {
     lastSyncBlockNumber: parseInt(syncData.currentBlock, 16),
     highestBlockNumber: parseInt(syncData.highestBlock, 16),
     uploadBlockNumber: parseInt(syncData.startingBlock, 16),

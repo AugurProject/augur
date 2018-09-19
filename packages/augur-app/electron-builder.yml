@@ -2,15 +2,18 @@ directories:
   # this contains icons, licence agreement, etc
   buildResources: "./build"
 files:
-  - "!certs/*"
-  - "src/**/*"
+- "!certs/*"
 extraFiles:
-  - from: "resources/${os}"
-    to: "resources"
-    filter:
-    - "**/*"
+- from: "resources/${os}"
+  to: "resources"
+  filter:
+  - "**/*"
+extraResources:
+- from: "node_modules/augur-ui/build"
+  to: "ui-client"
+  filter:
+  - "**/*"
 mac:
-  asar: false
   target:
   - default
   icon: build/icon.png

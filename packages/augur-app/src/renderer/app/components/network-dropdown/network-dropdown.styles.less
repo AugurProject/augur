@@ -1,0 +1,134 @@
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.NetworkDropdown) {
+  display: flex;
+  justify-content: flex-end;
+  color: white;
+}
+
+:local(.NetworkDropdown__label) {
+  width: 154px;
+  height: 12px;
+  border-radius: 15px;
+  background-color: #2d2543;
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: @color-white;
+  margin-bottom: 5px;
+}
+
+:local(.NetworkDropdown__label-open) {
+  background-color: #412468;
+}
+
+:local(.NetworkDropdown__label:hover) {
+  background-color: #412468;
+}
+
+:local(.NetworkDropdown__labelText) {
+  text-overflow: ellipsis;
+  width: 115px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+:local(.NetworkDropdown__name) {
+  text-overflow: ellipsis;
+  width: 240px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+:local(.NetworkDropdown__svg) {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+	width: 1rem;
+  height: 1rem;
+}
+
+:local(.NetworkDropdown__menuItem) {
+  font-size: 16px;
+  color: @color-almostblack;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  transition: all 300ms ease;
+  margin-top: 0;
+}
+
+:local(.NetworkDropdown__menuItem-hidden) {
+  margin-top: -10px;
+  opacity: 0;
+}
+
+:local(.NetworkDropdown__circle) {
+  border-radius: 50%;
+  display: inline-block;
+  min-width: 12px;
+  min-height: 12px;
+  width: 12px;
+  height: 12px;
+  background-color: #f0edfe;
+  margin-right: 8px;
+}
+
+:local(.NetworkDropdown__circle-blue) {
+  background-color: @color-outcome-five;
+}
+
+:local(.NetworkDropdown__circle-green) {
+  background-color: @color-positive;
+}
+
+:local(.NetworkDropdown__circle-big) {
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+:local(.NetworkDropdown__dropdownLabel) {
+  font-size: 22px;
+  font-weight: 600;
+  color: @color-almostblack;
+  margin-bottom: 12px;
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+:local(.NetworkDropdown__addNewButton) {
+  font-size: 16px;
+  font-weight: 400;
+  color: #5b3c84;
+  padding: 10px 46px;
+}
+
+:local(.NetworkDropdown__addNewSvg) {
+  width: 21px;
+  height: 21px;
+  margin-left: 8px;
+  background: url(../../../../assets/images/addNew.svg);
+  background-repeat: no-repeat;
+}
+
+:local(.NetworkDropdown__break) {
+  display: flex;
+  flex-grow:1;
+  height: 1px;
+  opacity: 0.2;
+  background-color: #383b41;
+  margin: 16px 24px;
+}
+
+:local(.NetworkDropdown__editButton) {
+  width: 19px;
+  height: 25px;
+  background: url(../../../../assets/images/edit.svg);
+  background-repeat: no-repeat;
+}
+
