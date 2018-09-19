@@ -15,6 +15,6 @@ export const syncBlockchain = () => dispatch => {
         currentAugurTimestamp: parseInt(augurTimestamp, 10)
       })
     );
-    dispatch(updateAssets());
   });
+  dispatch(updateAssets());
 };
