@@ -5,8 +5,8 @@ var readJsonFile = require("../utils/read-json-file");
 
 var e = module.exports = {
   abi: generateAbiMap(require("augur-core").abi),
-  addresses: require("./addresses"),
-  uploadBlockNumbers: require("./upload-block-numbers"),
+  addresses: require("augur-artifacts/addresses"),
+  uploadBlockNumbers: require("augur-artifacts/upload-block-numbers"),
 };
 
 module.exports.reloadAddresses = function (callback) {
