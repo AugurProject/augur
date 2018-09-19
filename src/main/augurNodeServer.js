@@ -63,6 +63,7 @@ AugurNodeServer.prototype.startServer = function () {
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncStarted, this.onBulkSyncStarted.bind(this))
     this.augurNodeController.controlEmitter.on(ControlMessageType.BulkSyncFinished, this.onBulkSyncFinished.bind(this))
 
+    if (this.statusLoop) clearInterval(this.statusLoop)
     this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
 
     this.augurNodeController.start(function (err) {
@@ -102,6 +103,7 @@ AugurNodeServer.prototype.startServer = function () {
 
 AugurNodeServer.prototype.onEthereumDisconnect = function () {
   if (this.isShuttingDown) return
+  if (this.statusLoop) clearInterval(this.statusLoop)
   if (this.window) {
     this.window.webContents.send(ERROR_NOTIFICATION, {
       messageType: RECONNECT_MSG,
@@ -112,6 +114,7 @@ AugurNodeServer.prototype.onEthereumDisconnect = function () {
 
 AugurNodeServer.prototype.onEthereumReconnect = function () {
   if (this.isShuttingDown) return
+  this.statusLoop = setInterval(this.requestLatestSyncedBlock.bind(this), STATUS_LOOP_INTERVAL)
   if (this.window) this.window.webContents.send(INFO_NOTIFICATION, {
     messageType: RECONNECT_MSG,
     message: 'Reconnected to Ethereum Node.'
