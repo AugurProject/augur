@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import 'libraries/Initializable.sol';
 import 'libraries/DelegationTarget.sol';
@@ -13,7 +13,7 @@ contract InitialReporter is DelegationTarget, Ownable, BaseReportingParticipant,
     address private actualReporter;
     uint256 private reportTimestamp;
 
-    function initialize(IMarket _market, address _designatedReporter) public onlyInGoodTimes beforeInitialized returns (bool) {
+    function initialize(IMarket _market, address _designatedReporter) public beforeInitialized returns (bool) {
         endInitialization();
         market = _market;
         reputationToken = market.getUniverse().getReputationToken();
@@ -40,51 +40,40 @@ contract InitialReporter is DelegationTarget, Ownable, BaseReportingParticipant,
         return true;
     }
 
-    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, bool _invalid) public onlyInGoodTimes returns (bool) {
+    function report(address _reporter, bytes32 _payoutDistributionHash, uint256[] _payoutNumerators, bool _invalid, uint256 _initialReportStake) public returns (bool) {
         require(IMarket(msg.sender) == market);
+        require(reportTimestamp == 0);
+        uint256 _timestamp = controller.getTimestamp();
+        bool _isDesignatedReporter = _reporter == getDesignatedReporter();
+        bool _designatedReportingExpired = _timestamp > market.getDesignatedReportingEndTime();
+        require(_designatedReportingExpired || _isDesignatedReporter);
         actualReporter = _reporter;
         owner = _reporter;
         payoutDistributionHash = _payoutDistributionHash;
-        reportTimestamp = controller.getTimestamp();
+        reportTimestamp = _timestamp;
         invalid = _invalid;
         payoutNumerators = _payoutNumerators;
-        size = reputationToken.balanceOf(this);
+        size = _initialReportStake;
         feeWindow = market.getFeeWindow();
         feeWindow.mintFeeTokens(size);
         return true;
     }
 
-    function withdrawInEmergency() public onlyInBadTimes returns (bool) {
+    function returnRepFromDisavow() public returns (bool) {
+        require(IMarket(msg.sender) == market);
         require(reputationToken.transfer(owner, reputationToken.balanceOf(this)));
-        uint256 _cashBalance = cash.balanceOf(this);
-        if (_cashBalance > 0) {
-            cash.withdrawEtherTo(owner, _cashBalance);
-        }
+        reportTimestamp = 0;
         return true;
     }
 
-    function resetReportTimestamp() public onlyInGoodTimes returns (bool) {
+    function migrateToNewUniverse(address _designatedReporter) public returns (bool) {
         require(IMarket(msg.sender) == market);
-        if (reportTimestamp == 0) {
-            return;
-        }
-        reportTimestamp = controller.getTimestamp();
+        designatedReporter = _designatedReporter;
+        reputationToken = market.getUniverse().getReputationToken();
         return true;
     }
 
-    function migrateREP() public returns (bool) {
-        require(IMarket(msg.sender) == market);
-        IUniverse _newUniverse = market.getUniverse();
-        IReputationToken _newReputationToken = _newUniverse.getReputationToken();
-        uint256 _balance = reputationToken.balanceOf(this);
-        if (_balance > 0) {
-            reputationToken.migrateOut(_newReputationToken, _balance);
-        }
-        reputationToken = _newReputationToken;
-        return true;
-    }
-
-    function forkAndRedeem() public onlyInGoodTimes returns (bool) {
+    function forkAndRedeem() public returns (bool) {
         if (!isDisavowed()) {
             controller.getAugur().logInitialReporterRedeemed(market.getUniverse(), owner, market, size, reputationToken.balanceOf(this), cash.balanceOf(this), payoutNumerators);
         }

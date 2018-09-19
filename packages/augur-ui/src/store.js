@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { helpers } from "src/helpers";
+import { helpers } from "src/helpers/helpers";
 
 import thunk from "redux-thunk";
 
@@ -10,6 +10,7 @@ import { windowRef } from "src/utils/window-ref";
 
 // console log middleware
 const consoleLog = store => next => action => {
+  if (!action) return;
   const isIgnoreFlag = action.meta != null && action.meta.ignore === true;
   if (typeof action !== "function" && !isIgnoreFlag) {
     // console.log(action);

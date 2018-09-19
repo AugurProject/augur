@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 import { SCALAR } from "modules/markets/constants/market-types";
 import { formatAttoRep, formatNumber } from "utils/format-number";
 import { augur } from "services/augurjs";

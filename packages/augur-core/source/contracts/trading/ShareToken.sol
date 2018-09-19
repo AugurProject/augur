@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 
 import 'trading/IShareToken.sol';
@@ -35,11 +35,11 @@ contract ShareToken is DelegationTarget, ITyped, Initializable, VariableSupplyTo
         return true;
     }
 
-    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("CreateOrder") onlyInGoodTimes afterInitialized returns (bool) {
+    function trustedOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("CreateOrder") afterInitialized returns (bool) {
         return internalTransfer(_source, _destination, _attotokens);
     }
 
-    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("FillOrder") onlyInGoodTimes afterInitialized returns (bool) {
+    function trustedFillOrderTransfer(address _source, address _destination, uint256 _attotokens) public onlyCaller("FillOrder") afterInitialized returns (bool) {
         return internalTransfer(_source, _destination, _attotokens);
     }
 

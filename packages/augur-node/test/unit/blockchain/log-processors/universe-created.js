@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("../../../../build/blockchain/log-processors/universe-created");
+const { processUniverseCreatedLog, processUniverseCreatedLogRemoval } = require("../../../../src/blockchain/log-processors/universe-created");
 
 describe("blockchain/log-processors/universe-created", () => {
   const test = (t) => {

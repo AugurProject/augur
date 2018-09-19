@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
-const { getUnclaimedMarketCreatorFees } = require("../../../../build/server/getters/get-unclaimed-market-creator-fees");
+const { getUnclaimedMarketCreatorFees } = require("../../../../src/server/getters/get-unclaimed-market-creator-fees");
 
 
 describe("server/getters/get-unclaimed-market-creator-fees", () => {

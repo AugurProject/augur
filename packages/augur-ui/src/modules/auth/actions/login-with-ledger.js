@@ -1,12 +1,15 @@
 import { augur } from "services/augurjs";
-import { updateIsLogged } from "modules/auth/actions/update-is-logged";
+import {
+  updateAuthStatus,
+  IS_LOGGED
+} from "modules/auth/actions/update-auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import { toChecksumAddress } from "ethereumjs-util";
 import ledgerSigner from "modules/auth/helpers/ledger-signer";
 
 export default function loginWithLedger(address, ledgerLib, derivationPath) {
   return dispatch => {
-    dispatch(updateIsLogged(true));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(
       loadAccountData({
         address,

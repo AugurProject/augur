@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import MarketView from "modules/market/components/market-view/market-view";
-import { loadFullMarket } from "modules/market/actions/load-full-market";
-import { selectMarket } from "modules/market/selectors/market";
+import { loadFullMarket } from "modules/markets/actions/load-full-market";
+import { selectMarket } from "modules/markets/selectors/market";
 
 import parseQuery from "modules/routes/helpers/parse-query";
 
@@ -11,11 +11,11 @@ import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
 const mapStateToProps = (state, ownProps) => {
   const {
     marketsData,
-    isLogged,
+    authStatus,
+    appStatus,
     connection,
     universe,
-    orderBooks,
-    isMobile
+    orderBooks
   } = state;
   const marketId = parseQuery(ownProps.location.search)[MARKET_ID_PARAM_NAME];
   const market = selectMarket(marketId);
@@ -25,10 +25,10 @@ const mapStateToProps = (state, ownProps) => {
     marketType: market.marketType,
     description: market.description || "",
     loadingState: market.loadingState || null,
-    isLogged,
+    isLogged: authStatus.isLogged,
     universe,
     orderBooks,
-    isMobile,
+    isMobile: appStatus.isMobile,
     marketId,
     marketsData
   };

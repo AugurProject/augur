@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 
 import 'reporting/IMarket.sol';
 import 'reporting/IUniverse.sol';
@@ -275,6 +275,10 @@ contract MockMarket is IMarket {
 
     function getDesignatedReporter() public view returns (address) {
         return designatedReporter;
+    }
+
+    function getDesignatedReportingEndTime() public view returns (uint256) {
+        0;
     }
 
     function getMarketCreatorSettlementFeeDivisor() public view returns (uint256) {

@@ -4,8 +4,8 @@
 // import { loginWithUport } from 'modules/auth/actions/login-with-uport'
 
 // const mapStateToProps = state => ({
-//   isMobile: state.isMobile,
-//   isMobileSmall: state.isMobileSmall,
+//   isMobile: state.appStatus.isMobile,
+//   isMobileSmall: state.appStatus.isMobileSmall,
 //   networkId: augur.rpc.getNetworkID(),
 // })
 

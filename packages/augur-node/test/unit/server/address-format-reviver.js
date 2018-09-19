@@ -3,7 +3,7 @@
 const fs = require("fs");
 const { expect } = require("chai");
 
-const { inputsExpectedAsAddress, addressFormatReviver } = require("../../../build/server/address-format-reviver");
+const { inputsExpectedAsAddress, addressFormatReviver } = require("../../../src/server/address-format-reviver");
 
 describe("server/address-format-reviver", () => {
   describe("addressFormatReviver unit tests", () => {

@@ -24,6 +24,7 @@ def test_reputation_token_migrate_in(localFixture, mockUniverse, initializedRepu
     parentUniverse = localFixture.upload('solidity_test_helpers/MockUniverse.sol', 'parentUniverse')
     parentUniverse.setReputationToken(mockReputationToken.address)
     mockUniverse.setParentUniverse(parentUniverse.address)
+    parentUniverse.setForkEndTime(1000000000000000)
     mockReputationToken.setUniverse(mockUniverse.address)
     with raises(TransactionFailed, message="parent universe needs to have a forking market"):
         mockReputationToken.callMigrateIn(initializedReputationToken.address, tester.a1, 100)
@@ -118,10 +119,12 @@ def mockAugur(localFixture):
     return localFixture.contracts['MockAugur']
 
 @fixture
-def initializedReputationToken(localFixture, mockUniverse):
+def initializedReputationToken(localFixture, mockUniverse, mockLegacyReputationToken):
     reputationToken = localFixture.upload('../source/contracts/reporting/ReputationToken.sol', 'reputationToken')
     reputationToken.setController(localFixture.contracts['Controller'].address)
     assert reputationToken.initialize(mockUniverse.address)
-    assert reputationToken.migrateBalancesFromLegacyRep([tester.a0])
-    assert reputationToken.getIsMigratingFromLegacy() == False
+    totalSupply = 11 * 10**6 * 10**18
+    assert mockLegacyReputationToken.faucet(totalSupply)
+    assert mockLegacyReputationToken.approve(reputationToken.address, totalSupply)
+    assert reputationToken.migrateFromLegacyReputationToken()
     return reputationToken

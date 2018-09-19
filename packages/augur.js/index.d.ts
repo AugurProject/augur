@@ -11,7 +11,6 @@ type Bytes32 = string;
 type Int256 = string;
 
 export enum SUBSCRIPTION_EVENT_NAMES {
-  FEE_WINDOW_OPENED = "FeeWindowOpened",
   COMPLETE_SETS_PURCHASED = "CompleteSetsPurchased",
   COMPLETE_SETS_SOLD = "CompleteSetsSold",
   DISPUTE_CROWDSOURCER_COMPLETED = "DisputeCrowdsourcerCompleted",
@@ -20,11 +19,14 @@ export enum SUBSCRIPTION_EVENT_NAMES {
   DISPUTE_CROWDSOURCER_REDEEMED_LOG = "DisputeCrowdsourcerRedeemedLog",
   FEE_WINDOW_CLOSED = "FeeWindowClosed",
   FEE_WINDOW_CREATED = "FeeWindowCreated",
+  FEE_WINDOW_OPENED = "FeeWindowOpened",
   FEE_WINDOW_REDEEMED = "FeeWindowRedeemed",
   INITIAL_REPORT_SUBMITTED = "InitialReportSubmitted",
   INITIAL_REPORT_REDEEMED = "InitialReporterRedeemed",
   INITIAL_REPORT_TRANSFERRED = "InitialReporterTransferred",
   MARKET_CREATED = "MarketCreated",
+  MARKET_FINALIZED = "MarketFinalized",
+  MARKET_MIGRATED = "MarketMigrated",
   MARKET_STATE = "MarketState",
   ORDER_CANCELLED = "OrderCanceled",
   ORDER_CREATED = "OrderCreated",
@@ -34,6 +36,10 @@ export enum SUBSCRIPTION_EVENT_NAMES {
   TOKENS_TRANSFERRED = "TokensTransferred",
   TRADING_PROCEEDS_CLAIMED = "TradingProceedsClaimed",
   UNIVERSE_CREATED = "UniverseCreated",
+
+  BURN = "Burn",
+  TOKENS_BURNED = "TokensBurned",
+  APPROVAL = "Approval",
 }
 
 interface AugurJsOptions {

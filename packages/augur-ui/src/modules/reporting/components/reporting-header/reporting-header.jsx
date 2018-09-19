@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import {
   getDaysRemaining,
   convertUnixToFormattedDate,
-  getHoursRemaining
+  getHoursRemaining,
+  getMinutesRemaining
 } from "utils/format-date";
 import { formatAttoRep, formatAttoEth } from "utils/format-number";
 import Styles from "modules/reporting/components/reporting-header/reporting-header.styles";
@@ -98,6 +99,10 @@ export default class ReportingHeader extends Component {
       reportingWindowStats.endTime,
       currentTime
     );
+    const minutesLeft = getMinutesRemaining(
+      reportingWindowStats.endTime,
+      currentTime
+    );
     const daysLeft = getDaysRemaining(
       reportingWindowStats.endTime,
       currentTime
@@ -145,6 +150,11 @@ export default class ReportingHeader extends Component {
     let timeLeft = `${daysLeft} ${daysLeft === 1 ? "day" : "days"} left`;
     if (daysLeft === 0)
       timeLeft = `${hoursLeft} ${hoursLeft === 1 ? "hour" : "hours"} left`;
+    if (hoursLeft === 0) {
+      timeLeft = `${minutesLeft} ${
+        minutesLeft === 1 ? "minute" : "minutes"
+      } left`;
+    }
 
     return (
       <article className={Styles.ReportingHeader}>
@@ -208,7 +218,12 @@ export default class ReportingHeader extends Component {
                                 >
                                   REP
                                 </span>
-                                <span style={{ marginBottom: "-0.5px" }}>
+                                <span
+                                  style={{
+                                    marginBottom: "-0.5px",
+                                    cursor: "pointer"
+                                  }}
+                                >
                                   {showMore}
                                 </span>
                               </div>

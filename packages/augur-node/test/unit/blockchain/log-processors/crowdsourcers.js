@@ -9,9 +9,9 @@ const {
   processDisputeCrowdsourcerContributionLog, processDisputeCrowdsourcerContributionLogRemoval,
   processDisputeCrowdsourcerCompletedLog, processDisputeCrowdsourcerCompletedLogRemoval,
 }
-  = require("../../../../build/blockchain/log-processors/crowdsourcer");
-const {getMarketsWithReportingState} = require("../../../../build/server/getters/database");
-const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../build/blockchain/process-block.js");
+  = require("../../../../src/blockchain/log-processors/crowdsourcer");
+const {getMarketsWithReportingState} = require("../../../../src/server/getters/database");
+const {setOverrideTimestamp, removeOverrideTimestamp} = require("../../../../src/blockchain/process-block");
 
 
 const getCrowdsourcer = (db, params, callback) => {
@@ -193,6 +193,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           minPrice: new BigNumber("0", 10),
           numOutcomes: 2,
           numTicks: new BigNumber("10000", 10),
+          openInterest: "0",
           reportingFeeRate: new BigNumber("0.02", 10),
           disputeRounds: 1,
           reportingState: "AWAITING_NEXT_WINDOW",
@@ -204,6 +205,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           tag2: "test tag 2",
           universe: "0x000000000000000000000000000000000000000b",
           volume: new BigNumber("0", 10),
+          shareVolume: new BigNumber("0", 10),
         });
       },
       onCompletedRemoved: (err, records) => {
@@ -237,6 +239,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           tag1: "test tag 1",
           tag2: "test tag 2",
           volume: new BigNumber("0"),
+          shareVolume: new BigNumber("0", 10),
           sharesOutstanding: new BigNumber("0"),
           feeWindow: "0x2000000000000000000000000000000000000000",
           endTime: 1507573470,
@@ -246,6 +249,7 @@ describe("blockchain/log-processors/crowdsourcers", () => {
           shortDescription: "This is a yesNo test market created by b0b awaiting round 1 reporting.",
           longDescription: null,
           scalarDenomination: null,
+          openInterest: "0",
           designatedReporter: "0x0000000000000000000000000000000000000b0b",
           designatedReportStake: new BigNumber("10"),
           resolutionSource: "http://www.trusted-third-party.com",

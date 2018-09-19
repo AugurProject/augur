@@ -94,9 +94,10 @@ class PerformanceGraph extends Component {
   }
 
   chartFullRefresh(forceUpdate = false) {
-    this.chartSetup(() => {
-      if (forceUpdate) this.updatePerformanceData();
-    });
+    if (this.componentWrapper)
+      this.chartSetup(() => {
+        if (forceUpdate && this.componentWrapper) this.updatePerformanceData();
+      });
   }
 
   chartSetup(callback = () => {}) {
@@ -319,7 +320,8 @@ class PerformanceGraph extends Component {
       startTime = this.timeFrames[graphPeriod];
     }
 
-    this.setState({ graphType, graphPeriod, startTime });
+    if (this.componentWrapper)
+      this.setState({ graphType, graphPeriod, startTime });
   }
 
   parsePerformanceData() {
@@ -343,9 +345,10 @@ class PerformanceGraph extends Component {
       seriesData.push(plotPoint);
     });
     selectedSeriesData[0].data = seriesData;
-    this.setState({ selectedSeriesData }, () => {
-      this.updateChart();
-    });
+    if (this.componentWrapper)
+      this.setState({ selectedSeriesData }, () => {
+        if (this.componentWrapper) this.updateChart();
+      });
   }
 
   updatePerformanceData() {
@@ -369,9 +372,10 @@ class PerformanceGraph extends Component {
           }
         ];
         performanceData = performanceData.concat(aggregate);
-        this.setState({ performanceData }, () => {
-          this.parsePerformanceData();
-        });
+        if (this.componentWrapper)
+          this.setState({ performanceData }, () => {
+            if (this.componentWrapper) this.parsePerformanceData();
+          });
       }
     );
   }
@@ -406,7 +410,12 @@ class PerformanceGraph extends Component {
     const s = this.state;
 
     return (
-      <section className={Styles.PerformanceGraph}>
+      <section
+        className={Styles.PerformanceGraph}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
         <div className={Styles.PerformanceGraph__SortBar}>
           <div className={Styles["PerformanceGraph__SortBar-title"]}>
             Profits/losses

@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { augur } from "services/augurjs";
 import { createBigNumber } from "utils/create-big-number";
 import getValue from "src/utils/get-value";
-import insufficientFunds from "src/modules/create-market/utils/insufficient-funds";
+import insufficientFunds from "modules/markets/helpers/insufficient-funds";
 
 import { formatEtherEstimate, formatGasCostToEther } from "utils/format-number";
 import {
   EXPIRY_SOURCE_GENERIC,
   DESIGNATED_REPORTER_SELF
-} from "modules/create-market/constants/new-market-constraints";
+} from "modules/markets/constants/new-market-constraints";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 import Styles from "modules/create-market/components/create-market-form-review/create-market-form-review.styles";

@@ -30,9 +30,7 @@ const AccountHeader = p => {
 };
 
 AccountHeader.propTypes = {
-  isMobile: PropTypes.bool.isRequired,
-  series: PropTypes.object,
-  stats: PropTypes.array
+  stats: PropTypes.array.isRequired
 };
 
 export default AccountHeader;

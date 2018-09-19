@@ -244,7 +244,7 @@ describe("Disputing", () => {
         reportingWindowStats.endTime,
         currentTimestamp
       );
-      const denomination = daysLeft === 1 ? " day" : " days";
+      let denomination = daysLeft === 1 ? " day" : " days";
 
       if (daysLeft === 0) {
         const hoursLeft = await page.evaluate(
@@ -253,12 +253,31 @@ describe("Disputing", () => {
           reportingWindowStats.endTime,
           currentTimestamp
         );
+
         denomination = hoursLeft === 1 ? " hour" : " hours";
-        // check that days left is expected number
-        await expect(page).toMatchElement("[data-testid='daysLeft']", {
-          text: hoursLeft + denomination + " left",
-          timeout: SMALL_TIMEOUT
-        });
+
+        if(hoursLeft === 0) {
+          const minutesLeft = await page.evaluate(
+            (endTime, startTime) =>
+              window.integrationHelpers.getMinutesRemaining(endTime, startTime),
+            reportingWindowStats.endTime,
+            currentTimestamp
+          );
+          denomination = minutesLeft === 1 ? " minute" : " minutes";
+
+          // check that days left is expected number
+          await expect(page).toMatchElement("[data-testid='daysLeft']", {
+            text: minutesLeft + denomination + " left",
+            timeout: SMALL_TIMEOUT
+          });
+
+        } else {
+          // check that days left is expected number
+          await expect(page).toMatchElement("[data-testid='daysLeft']", {
+            text: hoursLeft + denomination + " left",
+            timeout: SMALL_TIMEOUT
+          });
+        }
       } else {
         // check that days left is expected number
         await expect(page).toMatchElement("[data-testid='daysLeft']", {
@@ -271,8 +290,8 @@ describe("Disputing", () => {
     it("should have days remaining increment properly", async () => {
       // push time
       await flash.pushDays(1);
-      const daysLeftIncr = daysLeft === 0 ? 6 : daysLeft - 1;
-      const denomination = daysLeftIncr === 1 ? " day" : " days";
+      let daysLeftIncr = daysLeft === 0 ? 6 : daysLeft - 1;
+      let denomination = daysLeftIncr === 1 ? " day" : " days";
 
       if (daysLeftIncr === 0) {
         let currentTimestamp = await page.evaluate(() =>
@@ -286,9 +305,19 @@ describe("Disputing", () => {
           currentTimestamp
         );
         denomination = daysLeftIncr === 1 ? " hour" : " hours";
+
+        if (daysLeftIncr === 0) {
+          daysLeftIncr = await page.evaluate(
+            (endTime, startTime) =>
+              window.integrationHelpers.getMinutesRemaining(endTime, startTime),
+            reportingWindowStats.endTime,
+            currentTimestamp
+          );
+          denomination = daysLeftIncr === 1 ? " minute" : " minutes";
+        }
       } else if (daysLeftIncr === 6) {
         daysLeftIncr = 0;
-        denomination = " hours";
+        denomination = " minutes";
       }
 
       // check that days left is previous calculation - time pushed
@@ -310,7 +339,7 @@ describe("Disputing", () => {
 
       // check that dispute window ends is displayed correctly
       await expect(page).toMatchElement("[data-testid='endTime']", {
-        text: "Dispute Window ends " + formattedDate.formattedLocal,
+        text: formattedDate.clockTimeLocal,
         timeout: BIG_TIMEOUT
       });
     });
@@ -330,7 +359,7 @@ describe("Disputing", () => {
 
       // check that dispute window ends is displayed correctly
       await expect(page).toMatchElement("[data-testid='endTime']", {
-        text: "Dispute Window ends " + formattedDate.formattedLocal,
+        text: formattedDate.clockTimeLocal,
         timeout: BIG_TIMEOUT
       });
     });

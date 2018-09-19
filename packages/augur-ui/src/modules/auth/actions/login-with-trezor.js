@@ -1,12 +1,15 @@
 import { augur } from "services/augurjs";
-import { updateIsLogged } from "modules/auth/actions/update-is-logged";
+import {
+  updateAuthStatus,
+  IS_LOGGED
+} from "modules/auth/actions/update-auth-status";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
 import trezorSigner from "modules/auth/helpers/trezor-signer";
 import { toChecksumAddress } from "ethereumjs-util";
 
 export default function loginWithTrezor(address, connect, addressPath) {
   return dispatch => {
-    dispatch(updateIsLogged(true));
+    dispatch(updateAuthStatus(IS_LOGGED, true));
     dispatch(
       loadAccountData({
         address,

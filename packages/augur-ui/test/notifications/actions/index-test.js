@@ -1,7 +1,7 @@
-import * as updateNotifications from "modules/notifications/actions";
-import * as notificationLevels from "src/modules/notifications/constants";
+import * as updateNotifications from "modules/notifications/actions/notifications";
+import * as notificationLevels from "modules/notifications/constants/notifications";
 
-describe("modules/notifications/actions/update-notifications", () => {
+describe("modules/notifications/actions/notifications", () => {
   describe("addNotification", () => {
     it("should return nothing when the notifications param is null/undefined", () => {
       const actual = updateNotifications.addNotification();

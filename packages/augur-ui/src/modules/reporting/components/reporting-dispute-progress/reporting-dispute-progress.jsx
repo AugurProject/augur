@@ -5,7 +5,7 @@ import Styles from "modules/reporting/components/reporting-dispute-progress/repo
 import {
   calculateAddedStakePercentage,
   calculateTentativeCurrentRep
-} from "modules/reporting/helpers/progress-calculations";
+} from "modules/reports/helpers/progress-calculations";
 
 const ReportingDisputeProgress = p => {
   let totalPercentageComplete = p.percentageComplete || 0;
@@ -28,7 +28,7 @@ const ReportingDisputeProgress = p => {
     }).formattedValue;
     userPercentage = calculateAddedStakePercentage(
       bondSizeCurrent.fullPrecision,
-      accountStakeCurrentFormatted,
+      accountStakeCurrentFormatted || 0,
       p.tentativeStake
     );
     repStakedFormatted = calculateTentativeCurrentRep(

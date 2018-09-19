@@ -16,7 +16,7 @@ exports.up = async (knex: Knex): Promise<any> => {
       table.string("size", 255);
       table.string("amountStaked", 255).defaultTo("0").notNullable();
       table.integer("completed").nullable();
-      table.boolean("disavowed").defaultTo(0).notNullable();
+      table.integer("disavowed").defaultTo(0).notNullable();
 
       table.index(["marketId"]);
     });

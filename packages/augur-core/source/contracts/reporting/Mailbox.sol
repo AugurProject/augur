@@ -1,4 +1,4 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.24;
 
 import 'libraries/DelegationTarget.sol';
 import 'libraries/Ownable.sol';
@@ -12,7 +12,7 @@ import 'trading/ICash.sol';
 contract Mailbox is DelegationTarget, Ownable, Initializable, IMailbox {
     IMarket private market;
 
-    function initialize(address _owner, IMarket _market) public onlyInGoodTimes beforeInitialized returns (bool) {
+    function initialize(address _owner, IMarket _market) public beforeInitialized returns (bool) {
         endInitialization();
         owner = _owner;
         market = _market;
@@ -20,7 +20,7 @@ contract Mailbox is DelegationTarget, Ownable, Initializable, IMailbox {
     }
 
     //As a delegation target we cannot override the fallback, so we provide a specific method to deposit ETH
-    function depositEther() public payable onlyInGoodTimes returns (bool) {
+    function depositEther() public payable returns (bool) {
         return true;
     }
 
@@ -32,8 +32,8 @@ contract Mailbox is DelegationTarget, Ownable, Initializable, IMailbox {
             _cash.withdrawEtherTo(owner, _tokenBalance);
         }
         // Withdraw any ETH balance
-        if (this.balance > 0) {
-            owner.transfer(this.balance);
+        if (address(this).balance > 0) {
+            owner.transfer(address(this).balance);
         }
         return true;
     }

@@ -3,7 +3,7 @@ export const MARKET_CREATION_TIME = "creationTime";
 export const MARKET_END_DATE = "endTime";
 export const MARKET_RECENTLY_TRADED = "recentlyTraded";
 export const MARKET_FEE = "marketFee";
-
+export const MARKET_OPEN_INTEREST = "openInterest";
 // The user should be able to sort by:
 
 // Volume

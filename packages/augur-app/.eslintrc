@@ -23,5 +23,13 @@
           "error",
           "single"
       ]
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "extensions": [".js", ".jsx", ".less"]
+      }
+    }
   }
+
 }

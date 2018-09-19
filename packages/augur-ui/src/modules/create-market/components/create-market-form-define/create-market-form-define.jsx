@@ -8,7 +8,7 @@ import { uniqBy, isEmpty } from "lodash";
 import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_LENGTH
-} from "modules/create-market/constants/new-market-constraints";
+} from "modules/markets/constants/new-market-constraints";
 
 import { ExclamationCircle as InputErrorIcon } from "modules/common/components/icons";
 

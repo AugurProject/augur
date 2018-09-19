@@ -2,7 +2,10 @@ import { prefixHex } from "speedomatic";
 import { augur } from "services/augurjs";
 import { EDGE_WALLET_TYPE } from "modules/auth/constants/auth-types";
 import { loadAccountData } from "modules/auth/actions/load-account-data";
-import { updateIsLogged } from "modules/auth/actions/update-is-logged";
+import {
+  updateAuthStatus,
+  IS_LOGGED
+} from "modules/auth/actions/update-auth-status";
 import logError from "utils/log-error";
 
 export const loginWithEdgeEthereumWallet = (
@@ -12,7 +15,7 @@ export const loginWithEdgeEthereumWallet = (
 ) => dispatch => {
   const mixedCaseAddress = ethereumWallet.keys.ethereumAddress;
   const lowerCaseAddress = mixedCaseAddress.toLowerCase();
-  dispatch(updateIsLogged(true));
+  dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(
     loadAccountData({
       address: lowerCaseAddress,

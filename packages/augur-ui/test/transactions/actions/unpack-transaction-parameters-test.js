@@ -1,11 +1,11 @@
 import proxyquire from "proxyquire";
 
-describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => {
+describe(`modules/transactions/helpers/unpack-transaction-parameters.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const test = t => {
     it(t.description, () => {
       const action = proxyquire(
-        "../../../src/modules/transactions/actions/unpack-transaction-parameters.js",
+        "../../../src/modules/transactions/helpers/unpack-transaction-parameters.js",
         {}
       );
       t.assertions(action.default(t.params.tx));

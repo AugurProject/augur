@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import MarketLink from "modules/market/components/market-link/market-link";
 import CommonStyles from "modules/market/components/common/market-common.styles";
 import DisputeMarketCardStyles from "modules/reporting/components/dispute-market-card/dispute-market-card.style";
-import Styles from "modules/market/components/market-portfolio-card/market-portfolio-card.styles";
-import MarketPortfolioCardFooter from "modules/market/components/market-portfolio-card/market-portfolio-card-footer";
+import Styles from "modules/portfolio/components/market-portfolio-card/market-portfolio-card.styles";
+import MarketPortfolioCardFooter from "modules/portfolio/components/market-portfolio-card/market-portfolio-card-footer";
 import MarketProperties from "modules/market/containers/market-properties";
 import ForkMigrationTotals from "modules/forking/containers/fork-migration-totals";
 import { CategoryTagTrail } from "modules/common/components/category-tag-trail/category-tag-trail";
@@ -86,6 +86,7 @@ const PortfolioReportsForkedMarketCard = ({
         currentTimestamp={currentTimestamp}
         unclaimedForkEth={unclaimedForkEth}
         unclaimedForkRepStaked={unclaimedForkRepStaked}
+        marketId={market.id}
       />
     </article>
   );

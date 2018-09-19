@@ -27,6 +27,7 @@ describe("modules/events/actions/log-handlers.js", () => {
     const ACTIONS = {
       LOAD_ACCOUNT_TRADES: "LOAD_ACCOUNT_TRADES",
       UPDATE_LOGGED_TRANSACTIONS: "UPDATE_LOGGED_TRANSACTIONS",
+      UPDATE_ASSETS: "UPDATE_ASSETS",
       LOAD_REPORTING_WINDOW: "LOAD_REPORTING_WINDOW",
       GET_WINNING_BALANCE: "GET_WINNING_BALANCE",
       LOAD_BID_ASKS: "LOAD_BID_ASKS"
@@ -92,6 +93,9 @@ describe("modules/events/actions/log-handlers.js", () => {
 
         const expected = [
           {
+            type: ACTIONS.UPDATE_ASSETS
+          },
+          {
             type: ACTIONS.UPDATE_LOGGED_TRANSACTIONS,
             data: {
               log
@@ -151,7 +155,10 @@ describe("modules/events/actions/log-handlers.js", () => {
         };
         store.dispatch(handleTokensMintedLog(log));
         const actual = store.getActions();
-        const expected = [{ type: ACTIONS.LOAD_REPORTING_WINDOW }];
+        const expected = [
+          { type: ACTIONS.UPDATE_ASSETS },
+          { type: ACTIONS.LOAD_REPORTING_WINDOW }
+        ];
         assert.deepEqual(actual, expected, `Dispatched unexpected actions.`);
       }
     });
@@ -199,6 +206,9 @@ describe("modules/events/actions/log-handlers.js", () => {
         store.dispatch(handleTradingProceedsClaimedLog(log));
         const actual = store.getActions();
         const expected = [
+          {
+            type: ACTIONS.UPDATE_ASSETS
+          },
           {
             type: ACTIONS.UPDATE_LOGGED_TRANSACTIONS,
             data: {

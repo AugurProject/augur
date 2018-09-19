@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import classNames from "classnames";
 
 import getValue from "utils/get-value";
-import { SELL } from "modules/trade/constants/types";
+import { SELL } from "modules/trades/constants/types";
 
 import Styles from "modules/market/components/market-positions-list--order/market-positions-list--order.styles";
 

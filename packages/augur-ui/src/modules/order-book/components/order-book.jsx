@@ -10,7 +10,7 @@ import { SCALAR } from "modules/markets/constants/market-types";
 import {
   ORDER_BOOK_TABLE,
   ORDER_BOOK_CHART
-} from "modules/order-book/constants/order-book-internal-views";
+} from "modules/orders/constants/orders";
 
 import getValue from "utils/get-value";
 

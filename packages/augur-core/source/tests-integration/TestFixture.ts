@@ -82,6 +82,7 @@ export class TestFixture {
     public async createMarket(universe: Universe, outcomes: string[], endTime: BN, feePerEthInWei: BN, denominationToken: string, designatedReporter: string): Promise<Market> {
         const marketCreationFee = await universe.getOrCacheMarketCreationCost_();
 
+        console.log("Creating Market");
         const marketAddress = await universe.createCategoricalMarket_(endTime, feePerEthInWei, denominationToken, designatedReporter, outcomes, stringTo32ByteHex(" "), 'description', '', { attachedEth: marketCreationFee });
         if (!marketAddress || marketAddress == "0x") {
             throw new Error("Unable to get address for new categorical market.");
@@ -195,7 +196,7 @@ export class TestFixture {
     }
 
     public async contribute(market: Market, payoutNumerators: Array<BN>, invalid: boolean, amount: BN): Promise<void> {
-        await market.contribute(payoutNumerators, invalid, amount);
+        await market.contribute(payoutNumerators, invalid, amount, "");
         return;
     }
 
@@ -250,19 +251,13 @@ export class TestFixture {
     }
 
     public async doInitialReport(market: Market, payoutNumerators: Array<BN>, invalid: boolean): Promise<void> {
-        await market.doInitialReport(payoutNumerators, invalid);
+        await market.doInitialReport(payoutNumerators, invalid, "");
         return;
     }
 
     public async finalizeMarket(market: Market): Promise<void> {
         await market.finalize();
         return;
-    }
-
-    public async isLegacyRepPaused(): Promise<boolean> {
-        const legacyRepContract = await this.contractDeployer.getContract("LegacyReputationToken");
-        const legacyRep = new LegacyReputationToken(this.connector, this.accountManager, legacyRepContract.address, TestFixture.GAS_PRICE);
-        return await legacyRep.paused_();
     }
 
     public async getLegacyRepBalance(owner: string): Promise<BN> {
@@ -291,13 +286,6 @@ export class TestFixture {
         return;
     }
 
-    public async pauseLegacyRep(): Promise<void> {
-        const legacyRepContract = await this.contractDeployer.getContract("LegacyReputationToken");
-        const legacyRep = new LegacyReputationToken(this.connector, this.accountManager, legacyRepContract.address, TestFixture.GAS_PRICE);
-        await legacyRep.pause();
-        return;
-    }
-
     public async getChildUniverseReputationToken(parentPayoutDistributionHash: string) {
         const childUniverseAddress = await this.contractDeployer.universe!.getChildUniverse_(parentPayoutDistributionHash);
         const childUniverse = new Universe(this.connector, this.accountManager, childUniverseAddress, TestFixture.GAS_PRICE);
@@ -308,11 +296,6 @@ export class TestFixture {
     public async getReputationToken(): Promise<ReputationToken> {
         const repContractAddress = await this.contractDeployer.universe!.getReputationToken_();
         return new ReputationToken(this.connector, this.accountManager, repContractAddress, TestFixture.GAS_PRICE);
-    }
-
-    public async isRepMigratingFromLegacy(): Promise<boolean> {
-        const rep = await this.getReputationToken();
-        return await rep.getIsMigratingFromLegacy_();
     }
 
     // TODO: Determine why ETH balance doesn't change when buying complete sets or redeeming reporting participants

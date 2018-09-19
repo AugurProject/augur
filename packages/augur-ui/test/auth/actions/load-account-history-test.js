@@ -16,9 +16,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     LOAD_FUNDING_HISTORY: "LOAD_FUNDING_HISTORY",
     LOAD_CREATE_MARKET_HISTORY: "LOAD_CREATE_MARKET_HISTORY",
     LOAD_REPORTING_HISTORY: "LOAD_REPORTING_HISTORY",
-    UPDATE_TRANSACTIONS_LOADING: "UPDATE_TRANSACTIONS_LOADING",
+    UPDATE_APP_STATUS: "UPDATE_APP_STATUS",
     CLEAR_TRANSACTION_DATA: "CLEAR_TRANSACTION_DATA"
   };
+  const TRANSACTIONS_LOADING = "transactionsLoading";
 
   beforeEach(() => {
     __RewireAPI__.__Rewire__("loadAccountTrades", () => ({
@@ -52,9 +53,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     const expected = [
       {
         data: {
-          isLoading: true
+          statusKey: TRANSACTIONS_LOADING,
+          value: true
         },
-        type: ACTIONS.UPDATE_TRANSACTIONS_LOADING
+        type: ACTIONS.UPDATE_APP_STATUS
       },
       {
         type: ACTIONS.CLEAR_TRANSACTION_DATA

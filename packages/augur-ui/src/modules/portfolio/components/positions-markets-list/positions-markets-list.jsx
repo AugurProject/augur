@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import MarketPortfolioCard from "modules/market/containers/market-portfolio-card";
+import MarketPortfolioCard from "modules/portfolio/containers/market-portfolio-card";
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import Paginator from "modules/common/components/paginator/paginator";
-import Styles from "modules/portfolio/components/positions-markets-list/positions-markets-list.styles";
+import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
 import isEqual from "lodash/isEqual";
 
 export default class PositionsMarketsList extends Component {
@@ -18,7 +17,9 @@ export default class PositionsMarketsList extends Component {
     linkType: PropTypes.string,
     positionsDefault: PropTypes.bool,
     claimTradingProceeds: PropTypes.func,
-    isMobile: PropTypes.bool
+    isMobile: PropTypes.bool,
+    noTopPadding: PropTypes.bool,
+    addNullPadding: PropTypes.bool
   };
 
   constructor(props) {
@@ -80,21 +81,15 @@ export default class PositionsMarketsList extends Component {
       isMobile,
       currentTimestamp,
       title,
-      pageinationName
+      pageinationName,
+      noTopPadding,
+      addNullPadding
     } = this.props;
     const { pageinationCount, filteredMarkets } = this.state;
 
     return (
-      <div
-        className={classNames(Styles.PositionsMarketsList, {
-          [`${Styles.PositionMarketsListNullState}`]: markets.length === 0
-        })}
-      >
-        <div className={Styles.PositionsMarketsList__SortBar}>
-          <div className={Styles["PositionsMarketsList__SortBar-title"]}>
-            {title}
-          </div>
-        </div>
+      <div>
+        <MarketsHeaderLabel title={title} noTopPadding={noTopPadding} />
         {markets &&
           markets.length > 0 &&
           filteredMarkets.map(market => (
@@ -121,7 +116,10 @@ export default class PositionsMarketsList extends Component {
           />
         )}
         {markets.length === 0 && (
-          <NullStateMessage message="No Markets Available" />
+          <NullStateMessage
+            addNullPadding={addNullPadding}
+            message="No Markets Available"
+          />
         )}
       </div>
     );

@@ -3,7 +3,7 @@
 const assert = require("chai").assert;
 const setupTestDb = require("../../test.database");
 const {series} = require("async");
-const {processUniverseForkedLog, processUniverseForkedLogRemoval} = require("../../../../build/blockchain/log-processors/universe-forked");
+const {processUniverseForkedLog, processUniverseForkedLogRemoval} = require("../../../../src/blockchain/log-processors/universe-forked");
 
 const otherMarket = "0x0000000000000000000000000000000000000222";
 

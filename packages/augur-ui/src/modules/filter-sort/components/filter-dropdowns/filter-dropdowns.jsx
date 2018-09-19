@@ -5,7 +5,8 @@ import {
   MARKET_CREATION_TIME,
   MARKET_END_DATE,
   MARKET_RECENTLY_TRADED,
-  MARKET_FEE
+  MARKET_FEE,
+  MARKET_OPEN_INTEREST
 } from "modules/filter-sort/constants/market-sort-params";
 import {
   MARKET_OPEN,
@@ -20,7 +21,8 @@ const sortOptions = [
   { value: MARKET_END_DATE, label: "End Time" },
   { value: MARKET_RECENTLY_TRADED, label: "Recently Traded" },
   { value: MARKET_VOLUME, label: "Volume" },
-  { value: MARKET_FEE, label: "Settlement Fee" }
+  { value: MARKET_FEE, label: "Settlement Fee" },
+  { value: MARKET_OPEN_INTEREST, label: "Open Interest" }
 ];
 
 const filterOptions = [

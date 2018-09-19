@@ -12,29 +12,27 @@ set -x
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     echo "running 'npm run make-mac'"
-    npm run make-mac
+    NODE_ENV=production npm run make-mac
     echo "creating virtualenv"
     virtualenv augur-venv
     echo "sourcing virtualenv"
     source augur-venv/bin/activate
     echo "running 'pip install requests'"
+    pyenv versions
     pip install requests
 
 else
     rm -rf node_modules/*
-    apt update
-    apt install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
-    export NVM_DIR="$HOME/.nvm"
-    mkdir -p $HOME/.nvm
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install v9.11.2
-    nvm use v9.11.2
-    npm install
-    npm run make -- --linux
+    sudo apt-get update
+    sudo apt-get install -y libusb-{dev,1.0-0-dev} rpm curl tzdata python-pip
+    npm install --quiet
+    NODE_ENV=production npm run make-linux
+    pyenv global 3.6.3
     pip install requests
 fi
 
 echo "running post_build.py"
+echo "travis branch: $TRAVIS_BRANCH"
+which python
 python scripts/post_build.py
 cat dist/*.sha256
