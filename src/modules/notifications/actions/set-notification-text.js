@@ -178,7 +178,7 @@ export default function setNotificationText(notification, callback) {
                 } shares of "${outcomeDescription}" at ${augur.utils.convertOnChainPriceToDisplayPrice(
                   createBigNumber(notification.params._price),
                   createBigNumber(marketInfo.minPrice),
-                  marketInfo.numTicks
+                  marketInfo.tickSize
                 )} ETH.`;
               }
               return callback(notification);

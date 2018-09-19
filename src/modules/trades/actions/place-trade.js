@@ -38,8 +38,17 @@ export const placeTrade = (
     ? otherSharesDepleted.toFixed()
     : sharesDepleted.toFixed();
   // save vars to update notification if can't fill any orders on fillOnly.
-  let sentCallReturn = "";
   let txHash = "";
+  const tradeCost = augur.trading.calculateTradeCost({
+    displayPrice: tradeInProgress.limitPrice,
+    displayAmount: tradeInProgress.numShares,
+    sharesProvided,
+    numTicks: market.numTicks,
+    orderType: tradeInProgress.side === BUY ? 0 : 1,
+    minDisplayPrice: market.minPrice,
+    maxDisplayPrice: market.maxPrice
+  });
+  const sharesToFill = tradeCost.onChainAmount;
   // make sure that we actually have an updated allowance.
   const placeTradeParams = {
     meta: loginAccount.meta,
@@ -55,15 +64,14 @@ export const placeTrade = (
     _tradeGroupId: tradeInProgress.tradeGroupId,
     doNotCreateOrders,
     onSent: res => {
-      const { callReturn, hash } = res;
-      sentCallReturn = createBigNumber(callReturn);
+      const { hash } = res;
       txHash = hash;
       dispatch(checkAccountAllowance());
       callback(null, tradeInProgress.tradeGroupId);
     },
     onFailed: callback,
     onSuccess: res => {
-      if (doNotCreateOrders && res && sentCallReturn.eq(res)) {
+      if (doNotCreateOrders && res && sharesToFill.eq(res)) {
         // didn't fill any shares on FillOnly
         dispatch(
           updateNotification(txHash, {
@@ -93,6 +101,9 @@ export const placeTrade = (
       updateModal({
         type: MODAL_ACCOUNT_APPROVAL,
         approveOnSent: () => {
+          // This is done since the approval likely hasn't been minded yet so otherwise an eth_call for a trade will fail.
+          // NOTE: augur.js is looking for specifically the string "null", not the actual null.
+          placeTradeParams.tx = { returns: "null" };
           sendTrade();
         },
         approveCallback: (err, res) => {

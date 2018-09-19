@@ -23,7 +23,7 @@ describe("modules/auth/helpers/ledger-signer", () => {
 
   beforeEach(() => {
     ledgerLib = {
-      signTransactionByBip32Path: sinon.stub()
+      signTransaction: sinon.stub()
     };
 
     store.clearActions();
@@ -42,7 +42,7 @@ describe("modules/auth/helpers/ledger-signer", () => {
         }
       ];
 
-      ledgerLib.signTransactionByBip32Path.resolves({
+      ledgerLib.signTransaction.resolves({
         r: "blah",
         s: "test",
         v: "bob"
@@ -83,7 +83,7 @@ describe("modules/auth/helpers/ledger-signer", () => {
         }
       ];
 
-      ledgerLib.signTransactionByBip32Path.rejects();
+      ledgerLib.signTransaction.rejects();
 
       await ledgerSigner(
         [{}, () => {}],
