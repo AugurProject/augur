@@ -1,19 +1,23 @@
 @import (reference) '~assets/styles/shared';
 
 .Notification {
+  background-color: @color-darkpurple;
+  border-bottom: 1px solid @color-gray;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   overflow: hidden;
   padding: 16px 24px;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border-bottom: 1px solid #736e89;
+
+  &:last-of-type {
+    border-bottom: 0;
+  }
 }
 
-.Notification__link {
-  display: flex;
-  flex-direction: column;
+.Notification__seen {
+  background-color: @color-lightpurple;
 }
 
 .Notification__row {
@@ -22,6 +26,7 @@
 
 .Notification__column {
   display: flex;
+  flex-direction: column;
 }
 
 .Notification__closeButton {
@@ -69,8 +74,8 @@
 .Notification__dot {
   flex: 0 1rem;
   height: 1rem;
-  left: 0.875rem;
-  margin-top: -0.125rem;
+  left: 0.5rem;
+  margin-top: -0.025rem;
   position: absolute;
   transition: flex 500ms ease-out;
   width: 1rem;
@@ -86,9 +91,8 @@
 
 .Notification__close {
   align-self: baseline;
-  height: 1.125rem;
   margin-left: auto;
-  width: 1.125rem;
+  width: 12px;
 }
 
 .Notification__description {
@@ -97,6 +101,7 @@
   height: 0.875rem;
   margin-bottom: 0.25rem;
   overflow: hidden;
+  padding-right: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 17.188rem;

@@ -1,29 +1,22 @@
 @import (reference) '~assets/styles/shared';
 
 .NotificationsView {
-  color: @color-white;
-  display: flex;
-  height: 30.25rem;
-  max-height: 80%;
-  z-index: @mask-above;
-
-  background-color: #553580;
+  background-color: @color-lightpurple;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   box-shadow: 0 3px 4px -4px rgba(0, 0, 0, 0.5);
+  color: @color-white;
+  display: flex;
+  flex-direction: column;
   max-height: 80%;
-  height: 30.25rem;
-
-  position: absolute;
-  right: 0px;
+  position: relative;
   text-align: left;
-  top: 4.5rem;
   width: 360px;
+  z-index: @mask-above;
 }
 
 .NotificationsView__box {
   overflow-y: auto;
-  padding-bottom: 1.5rem;
   width: 100%;
 }
 
@@ -42,15 +35,39 @@
   color: @color-lightgray;
   font-size: 1rem;
   font-weight: 400;
+  margin-top: 0.5rem;
   text-align: center;
   width: 100%;
 }
 
+.NotificationsView__dismissContainer {
+  align-items: flex-end;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  min-height: 32px;
+}
+
+.NotificationsView__dismissContainerBorder {
+  border-top: 1px solid @color-gray;
+  display: flex;
+  flex-grow: 1;
+  height: 32px;
+  justify-content: flex-end;
+  padding: 7px 16px;
+}
+
+.NotificationsView__dismissButton {
+  border-bottom: dotted 0.5px @color-white;
+  color: @color-white;
+  cursor: pointer;
+  display: inline;
+  font-size: 12px;
+}
+
 @media @breakpoint-mobile {
   .NotificationsView {
-    background: @color-lightergray;
     bottom: 0;
-    color: @color-text-dark;
     display: flex;
     flex-flow: column nowrap;
     height: 100%;

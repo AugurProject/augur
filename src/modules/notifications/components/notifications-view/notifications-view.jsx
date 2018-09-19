@@ -5,7 +5,7 @@ import NullStateMessage from "modules/common/components/null-state-message/null-
 import Notification from "modules/notifications/components/notification/notification";
 
 import getValue from "utils/get-value";
-import { CloseBlack } from "modules/common/components/icons";
+import { Close } from "modules/common/components/icons";
 
 import Styles from "modules/notifications/components/notifications-view/notifications-view.styles";
 
@@ -27,7 +27,11 @@ export default class NotificationsView extends Component {
   }
 
   render() {
-    const { removeNotification, toggleNotifications } = this.props;
+    const {
+      removeNotification,
+      toggleNotifications,
+      clearNotifications
+    } = this.props;
 
     const notifications = getValue(this.props, "notifications.notifications");
     return (
@@ -39,7 +43,7 @@ export default class NotificationsView extends Component {
             toggleNotifications();
           }}
         >
-          {CloseBlack}
+          {Close}
         </button>
         {notifications && notifications.length ? (
           <div
@@ -63,6 +67,21 @@ export default class NotificationsView extends Component {
             message="No Notifications"
           />
         )}
+        {notifications &&
+          notifications.length && (
+            <div className={Styles.NotificationsView__dismissContainer}>
+              <div className={Styles.NotificationsView__dismissContainerBorder}>
+                <div
+                  className={Styles.NotificationsView__dismissButton}
+                  onClick={clearNotifications}
+                  role="button"
+                  tabIndex={0}
+                >
+                  Dismiss All
+                </div>
+              </div>
+            </div>
+          )}
       </section>
     );
   }
