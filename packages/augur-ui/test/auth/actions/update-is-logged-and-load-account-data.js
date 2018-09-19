@@ -43,7 +43,13 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
       assert.deepEqual(actions, [
         { type: "AUGURJS_RPC_CLEAR" },
         { type: "CLEAR_LOGIN_ACCOUNT" },
-        { type: "UPDATE_IS_LOGGED", data: { isLogged: true } },
+        {
+          type: "UPDATE_AUTH_STATUS",
+          data: {
+            statusKey: "isLogged",
+            value: true
+          }
+        },
         {
           type: "LOAD_ACCOUNT_DATA",
           account: {
@@ -68,7 +74,13 @@ describe(`modules/auth/actions/update-is-logged-and-load-account-data.js`, () =>
       assert.deepEqual(actions, [
         { type: "AUGURJS_RPC_CLEAR" },
         { type: "CLEAR_LOGIN_ACCOUNT" },
-        { type: "UPDATE_IS_LOGGED", data: { isLogged: true } },
+        {
+          type: "UPDATE_AUTH_STATUS",
+          data: {
+            statusKey: "isLogged",
+            value: true
+          }
+        },
         {
           type: "LOAD_ACCOUNT_DATA",
           account: {

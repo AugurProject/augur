@@ -6,7 +6,7 @@ import { selectCurrentTimestamp } from "src/select-state";
 
 const mapStateToProps = state => ({
   currentTimestamp: selectCurrentTimestamp(state),
-  isMobile: state.isMobile
+  isMobile: state.appStatus.isMobile
 });
 
 const MarketBasicsContainer = connect(mapStateToProps)(MarketBasics);

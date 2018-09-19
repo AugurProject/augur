@@ -22,7 +22,7 @@ const DEFAULT_ITEM_INDEX = 0;
 export const ITEMS = [
   {
     param: PARAMS.METAMASK,
-    title: "MetaMask",
+    title: "Metamask / Web 3 Provider",
     icon: MetaMask
   },
   {
@@ -40,7 +40,7 @@ export const ITEMS = [
 if (!process.env.AUGUR_HOSTED) {
   ITEMS.unshift({
     param: PARAMS.EDGE,
-    title: "Edge",
+    title: "Edge (Username & Password)",
     icon: Edge
   });
 }

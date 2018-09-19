@@ -2,9 +2,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import MigrateRepView from "modules/forking/components/migrate-rep/migrate-rep";
-import { loadFullMarket } from "modules/market/actions/load-full-market";
+import { loadFullMarket } from "modules/markets/actions/load-full-market";
 import { MARKET_ID_PARAM_NAME } from "modules/routes/constants/param-names";
-import { selectMarket } from "modules/market/selectors/market";
+import { selectMarket } from "modules/markets/selectors/market";
 import parseQuery from "modules/routes/helpers/parse-query";
 import getValue from "utils/get-value";
 
@@ -12,11 +12,11 @@ import { submitMigrateREP } from "modules/forking/actions/submit-migrate-rep";
 import { getForkMigrationTotals } from "modules/forking/actions/get-fork-migration-totals";
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
+  isLogged: state.authStatus.isLogged,
   isConnected: state.connection.isConnected,
   universe: state.universe.id,
   marketsData: state.marketsData,
-  isMobile: state.isMobile,
+  isMobile: state.appStatus.isMobile,
   accountREP: state.loginAccount.rep,
   currentBlockNumber: state.blockchain.currentBlockNumber
 });

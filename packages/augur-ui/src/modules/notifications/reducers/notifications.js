@@ -3,7 +3,7 @@ import {
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION,
   CLEAR_NOTIFICATIONS
-} from "modules/notifications/actions";
+} from "modules/notifications/actions/notifications";
 import { RESET_STATE } from "modules/app/actions/reset-state";
 import { CLEAR_LOGIN_ACCOUNT } from "modules/auth/actions/update-login-account";
 

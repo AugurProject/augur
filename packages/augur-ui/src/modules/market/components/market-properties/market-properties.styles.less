@@ -43,7 +43,7 @@
 .MarketProperties__meta {
   display: flex;
   flex-wrap: nowrap;
-  max-width: 85%;
+  width: 80%;
 
   > li {
     display: inline-block;
@@ -60,8 +60,6 @@
     }
 
     > span {
-      &:extend(.caps--medium);
-
       color: @color-purple;
       display: block;
 
@@ -106,6 +104,7 @@
     flex-wrap: wrap;
     margin: 0 -1rem -1rem;
     max-width: 75%;
+    width: unset;
 
     > li {
       display: inline-block;
@@ -136,12 +135,14 @@
 
   .MarketProperties__meta {
     max-width: unset;
+    width: unset;
   }
 }
 
 @media @breakpoint-mobile-small {
   .MarketProperties__meta {
     max-width: unset;
+    width: unset;
 
     > li {
       max-width: 120px;

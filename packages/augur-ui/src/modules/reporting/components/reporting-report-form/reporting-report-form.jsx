@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { createBigNumber } from "utils/create-big-number";
+import { constants } from "services/augurjs";
 
 import {
   YES_NO,
@@ -64,6 +65,20 @@ export default class ReportingReportForm extends Component {
     this.state.outcomes.sort((a, b) => a.name - b.name);
 
     this.focusTextInput = this.focusTextInput.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    const { reportingState, validations } = newProps.market;
+    const updatedValidations = { ...validations };
+    if (
+      reportingState !== this.props.market.reportingState &&
+      reportingState === constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+    ) {
+      updatedValidations.neverReported = false;
+      this.props.updateState({
+        validations: updatedValidations
+      });
+    }
   }
 
   setMarketInvalid(buttonName) {
@@ -160,9 +175,15 @@ export default class ReportingReportForm extends Component {
       insufficientRep,
       isDesignatedReporter
     } = this.props;
+
+    const { reportingState } = market;
     const s = this.state;
     let errorMessage = null;
-    if (!isDesignatedReporter && !isOpenReporting) {
+    if (
+      !isDesignatedReporter &&
+      !isOpenReporting &&
+      reportingState !== constants.REPORTING_STATE.AWAITING_NEXT_WINDOW
+    ) {
       errorMessage =
         "You are not the Designated Reporter for this market. Only the Designated Reporter may submit a report.";
     } else if (insufficientRep && !isOpenReporting) {
@@ -310,6 +331,15 @@ export default class ReportingReportForm extends Component {
             <p>{stake} REP</p>
           </li>
         )}
+        {validations.hasOwnProperty("neverReported") &&
+          !validations.neverReported && (
+            <label>
+              <span className={Styles["ReportingReport__insufficient-funds"]}>
+                {InputErrorIcon}
+                {`Market has already been reported on`}
+              </span>
+            </label>
+          )}
       </ul>
     );
   }

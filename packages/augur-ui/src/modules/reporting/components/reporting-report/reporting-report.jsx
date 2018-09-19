@@ -14,8 +14,7 @@ import MarketPreview from "modules/market/components/market-preview/market-previ
 import NullStateMessage from "modules/common/components/null-state-message/null-state-message";
 import ReportingReportForm from "modules/reporting/components/reporting-report-form/reporting-report-form";
 import ReportingReportConfirm from "modules/reporting/components/reporting-report-confirm/reporting-report-confirm";
-import { TYPE_VIEW } from "modules/market/constants/link-types";
-import MarketAdditonalDetails from "modules/reporting/components/market-additional-details/market-additional-details";
+import { TYPE_VIEW } from "modules/markets/constants/link-types";
 import { isEmpty } from "lodash";
 import FormStyles from "modules/common/less/form";
 import Styles from "modules/reporting/components/reporting-report/reporting-report.styles";
@@ -42,7 +41,6 @@ export default class ReportingReport extends Component {
 
     this.state = {
       currentStep: 0,
-      showingDetails: true,
       isMarketInValid: null,
       selectedOutcome: "",
       selectedOutcomeName: "",
@@ -61,7 +59,6 @@ export default class ReportingReport extends Component {
     this.prevPage = this.prevPage.bind(this);
     this.nextPage = this.nextPage.bind(this);
     this.updateState = this.updateState.bind(this);
-    this.toggleDetails = this.toggleDetails.bind(this);
   }
 
   componentWillMount() {
@@ -88,10 +85,6 @@ export default class ReportingReport extends Component {
 
   updateState(newState) {
     this.setState(newState);
-  }
-
-  toggleDetails() {
-    this.setState({ showingDetails: !this.state.showingDetails });
   }
 
   calculateMarketCreationCosts() {
@@ -173,12 +166,8 @@ export default class ReportingReport extends Component {
             linkType={TYPE_VIEW}
             buttonText="View"
             showAdditionalDetailsToggle
-            showingDetails={s.showingDetails}
-            toggleDetails={this.toggleDetails}
           />
         )}
-        {!isEmpty(market) &&
-          s.showingDetails && <MarketAdditonalDetails market={market} />}
         {!isEmpty(market) && (
           <article className={FormStyles.Form}>
             {s.currentStep === 0 && (

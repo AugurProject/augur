@@ -61,17 +61,17 @@ export default class CreateMarketPreview extends Component {
     return endTime.format("MMM D, YYYY h:mm a");
   }
 
-  static calculateShares(orderBook) {
-    let totalShares = createBigNumber(0);
+  static calculateVolume(orderBook) {
+    let totalVolume = createBigNumber(0);
     if (Object.keys(orderBook).length) {
       Object.keys(orderBook).forEach(option => {
         orderBook[option].forEach(order => {
-          totalShares = totalShares.plus(order.quantity);
+          totalVolume = totalVolume.plus(order.quantity.times(order.price));
         });
       });
-      return `${totalShares} Shares`;
+      return `${totalVolume} ETH`;
     }
-    return "- Shares";
+    return "- ETH";
   }
 
   constructor(props) {
@@ -79,7 +79,7 @@ export default class CreateMarketPreview extends Component {
 
     this.state = {
       expirationDate: CreateMarketPreview.getExpirationDate(props),
-      shares: CreateMarketPreview.calculateShares(
+      volume: CreateMarketPreview.calculateVolume(
         this.props.newMarket.orderBook
       ),
       reporterFeePercentage: 1
@@ -88,7 +88,7 @@ export default class CreateMarketPreview extends Component {
     CreateMarketPreview.getExpirationDate = CreateMarketPreview.getExpirationDate.bind(
       this
     );
-    CreateMarketPreview.calculateShares = CreateMarketPreview.calculateShares.bind(
+    CreateMarketPreview.calculateVolume = CreateMarketPreview.calculateVolume.bind(
       this
     );
   }
@@ -111,7 +111,7 @@ export default class CreateMarketPreview extends Component {
     }
     if (newMarket.orderBook !== nextProps.newMarket.orderBook) {
       this.setState({
-        shares: CreateMarketPreview.calculateShares(
+        volume: CreateMarketPreview.calculateVolume(
           nextProps.newMarket.orderBook
         )
       });
@@ -124,11 +124,12 @@ export default class CreateMarketPreview extends Component {
       { universe: universe.id },
       (err, marketCreationCostBreakdown) => {
         if (err) return console.error(err);
-        this.setState({
-          reporterFeePercentage: CreateMarketPreview.formatReporterFee(
-            marketCreationCostBreakdown.reportingFeeDivisor
-          )
-        });
+        if (this.componentWrapper)
+          this.setState({
+            reporterFeePercentage: CreateMarketPreview.formatReporterFee(
+              marketCreationCostBreakdown.reportingFeeDivisor
+            )
+          });
       }
     );
   }
@@ -146,7 +147,12 @@ export default class CreateMarketPreview extends Component {
     const tagsWithClick = process(newMarket.tag1, newMarket.tag2);
 
     return (
-      <article className={Styles.CreateMarketPreview}>
+      <article
+        className={Styles.CreateMarketPreview}
+        ref={componentWrapper => {
+          this.componentWrapper = componentWrapper;
+        }}
+      >
         <div className={Styles.CreateMarketPreview__header}>
           <div className={Styles["CreateMarketPreview__header-wrapper"]}>
             <div className={Styles.CreateMarketPreview__tags}>
@@ -181,7 +187,7 @@ export default class CreateMarketPreview extends Component {
             <ul className={Styles.CreateMarketPreview__meta}>
               <li>
                 <span>Volume</span>
-                <span>{s.shares}</span>
+                <span>{s.volume}</span>
               </li>
               <li>
                 <span>Fee</span>

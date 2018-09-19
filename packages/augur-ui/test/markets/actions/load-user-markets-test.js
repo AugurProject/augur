@@ -1,7 +1,7 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 
-describe("modules/markets/actions/load-user-markets.js", () => {
+describe("modules/markets/actions/load-markets.js", () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const mockEnv = {
@@ -20,7 +20,7 @@ describe("modules/markets/actions/load-user-markets.js", () => {
     const {
       loadUserMarkets,
       __RewireAPI__
-    } = require("modules/markets/actions/load-user-markets");
+    } = require("modules/markets/actions/load-markets");
 
     const ACTIONS = {
       UPDATE_MARKETS_DATA: "UPDATE_MARKETS_DATA"

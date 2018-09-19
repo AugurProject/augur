@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { selectNotificationsState } from "src/select-state";
 
-import * as notificationLevels from "src/modules/notifications/constants";
+import * as notificationLevels from "modules/notifications/constants/notifications";
 
 import getValue from "utils/get-value";
 

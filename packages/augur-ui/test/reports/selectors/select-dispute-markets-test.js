@@ -23,7 +23,7 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
           })
         };
         const selector = proxyquire(
-          "../../../src/modules/reporting/selectors/select-dispute-markets.js",
+          "../../../src/modules/reports/selectors/select-dispute-markets.js",
           {
             "../../markets/selectors/markets-all": mockMarketsAll,
             "../../../select-state": mockSelectUniverseState
@@ -63,7 +63,7 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
           })
         };
         const selector = proxyquire(
-          "../../../src/modules/reporting/selectors/select-dispute-markets.js",
+          "../../../src/modules/reports/selectors/select-dispute-markets.js",
           {
             "../../markets/selectors/markets-all": mockMarketsAll,
             "../../../select-state": mockSelectUniverseState
@@ -154,7 +154,7 @@ describe(`modules/reports/selectors/select-dispute-markets.js`, () => {
           })
         };
         const selector = proxyquire(
-          "../../../src/modules/reporting/selectors/select-dispute-markets.js",
+          "../../../src/modules/reports/selectors/select-dispute-markets.js",
           {
             "../../markets/selectors/markets-all": mockMarketsAll,
             "../../../select-state": mockSelectUniverseState

@@ -88,7 +88,9 @@ const DisputeMarketCard = ({
           </div>
         </div>
         <h1 className={CommonStyles.MarketCommon__description}>
-          <MarketLink id={market.id}>{market.description}</MarketLink>
+          <MarketLink id={market.id} location={location}>
+            {market.description}
+          </MarketLink>
         </h1>
         {isForkingMarket && <ForkMigrationTotals />}
         {!isForkingMarket && (

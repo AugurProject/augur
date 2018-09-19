@@ -8,7 +8,7 @@ import coreStats, {
 } from "modules/account/selectors/core-stats";
 // import { formatEther, formatRep } from 'utils/format-number'
 
-import { ZERO } from "modules/trade/constants/numbers";
+import { ZERO } from "modules/trades/constants/numbers";
 
 describe("modules/account/selectors/core-stats", () => {
   const test = t => it(t.description, () => t.assertions());
