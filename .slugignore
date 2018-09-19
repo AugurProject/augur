@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 package-lock.json
+=======
+yarn.lock
+>>>>>>> 03b06ca3f07ef7ca2698021d854e583b27a42e1c
