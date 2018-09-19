@@ -1,5 +1,6 @@
 import { augur } from "services/augurjs";
 import { updateBlockchain } from "modules/app/actions/update-blockchain";
+import { updateAssets } from "modules/auth/actions/update-assets";
 
 export const syncBlockchain = () => dispatch => {
   augur.api.Controller.getTimestamp((err, augurTimestamp) => {
@@ -15,4 +16,5 @@ export const syncBlockchain = () => dispatch => {
       })
     );
   });
+  dispatch(updateAssets());
 };
