@@ -16,6 +16,40 @@
       "broadcast": false
     }
   },
+  "thunder": {
+    "augur-node": "ws://127.0.0.1:9001",
+    "ethereum-node": {
+      "http": "http://manual-auger-development-2001306376.us-west-2.elb.amazonaws.com:8545",
+      "ws": null,
+      "pollingIntervalMilliseconds": 500,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
+  "thunder-nodepool": {
+    "augur-node": "ws://127.0.0.1:9001",
+    "ethereum-node": {
+      "http": "http://testnet-rpc.thundercore.com:8545",
+      "ws": null,
+      "pollingIntervalMilliseconds": 500,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
   "ropsten": {
     "augur-node": "wss://ropsten.augur.nodes.augur.net",
     "ethereum-node": {
