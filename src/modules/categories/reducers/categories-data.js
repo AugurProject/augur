@@ -8,15 +8,15 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(categories = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(categories = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_CATEGORIES:
       return {
         ...categories,
-        ...action.data.categories
+        ...data.categories
       };
     case UPDATE_CATEGORY_POPULARITY: {
-      const { category, amount } = action.data;
+      const { category, amount } = data;
       return {
         ...categories,
         [category]: !categories[category]

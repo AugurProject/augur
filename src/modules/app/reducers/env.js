@@ -4,10 +4,10 @@ const DEFAULT_STATE = {
   useWeb3Transport: false
 };
 
-export default function(env = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(env = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_ENV:
-      return action.data.env;
+      return data.env;
     default:
       return env;
   }

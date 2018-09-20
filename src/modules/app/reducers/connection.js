@@ -13,31 +13,31 @@ const DEFAULT_STATE = {
   isReconnectionPaused: false
 };
 
-export default function(connection = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(connection = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_CONNECTION_STATUS: {
-      const { isConnected } = action.data;
+      const { isConnected } = data;
       return {
         ...connection,
         isConnected
       };
     }
     case UPDATE_AUGUR_NODE_CONNECTION_STATUS: {
-      const { isConnectedToAugurNode } = action.data;
+      const { isConnectedToAugurNode } = data;
       return {
         ...connection,
         isConnectedToAugurNode
       };
     }
     case UPDATE_AUGUR_NODE_NETWORK_ID: {
-      const { augurNodeNetworkId } = action.data;
+      const { augurNodeNetworkId } = data;
       return {
         ...connection,
         augurNodeNetworkId
       };
     }
     case UPDATE_IS_RECONNECTION_PAUSED: {
-      const { isReconnectionPaused } = action.data;
+      const { isReconnectionPaused } = data;
       return {
         ...connection,
         isReconnectionPaused
