@@ -115,7 +115,8 @@ export default class ReportingReport extends Component {
       selectedOutcome,
       invalid: isMarketInValid,
       history: null,
-      returnPath: (err, gasEstimateValue) => {
+      returnPath: null,
+      callback: (err, gasEstimateValue) => {
         if (err) return console.error(err);
         const gasPrice = augur.rpc.getGasPrice();
         this.setState({

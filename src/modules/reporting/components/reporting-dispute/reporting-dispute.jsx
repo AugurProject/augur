@@ -90,7 +90,8 @@ export default class ReportingDispute extends Component {
         invalid: isMarketInValid,
         amount,
         history: null,
-        returnPath: (err, gasEstimateValue) => {
+        returnPath: null,
+        callback: (err, gasEstimateValue) => {
           if (err) return console.error(err);
 
           const gasPrice = augur.rpc.getGasPrice();
