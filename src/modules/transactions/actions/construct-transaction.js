@@ -13,7 +13,7 @@ import { formatEther } from "utils/format-number";
 import { convertUnixToFormattedDate } from "utils/format-date";
 import logError from "utils/log-error";
 
-export const constructBasicTransaction = (
+export const constructBasicTransaction = ({
   eventName,
   hash,
   blockNumber,
@@ -22,7 +22,7 @@ export const constructBasicTransaction = (
   description,
   gasFees = 0,
   status = SUCCESS
-) => {
+}) => {
   const transaction = { hash, status, data: {} };
   if (eventName) transaction.type = eventName;
   if (blockNumber) transaction.blockNumber = blockNumber;
@@ -83,14 +83,14 @@ export const constructTransaction = (log, callback = logError) => (
       );
       dispatch(
         updateTransactionsData({
-          [log.transactionHash]: constructBasicTransaction(
-            log.eventName,
-            log.transactionHash,
-            log.blockNumber,
-            log.timestamp,
-            log.message,
-            log.description
-          )
+          [log.transactionHash]: constructBasicTransaction({
+            eventName: log.eventName,
+            hash: log.transactionHash,
+            blockNumber: log.blockNumber,
+            timestamp: log.timestamp,
+            message: log.message,
+            description: log.description
+          })
         })
       );
   }
