@@ -83,14 +83,14 @@ export default class ReportingDispute extends Component {
     const { selectedOutcome, isMarketInValid, stakeInfo } = this.state;
     if (createBigNumber(stakeInfo.repValue).gt(ZERO)) {
       const amount = speedomatic.fix(stakeInfo.repValue, "hex");
-      submitMarketContribute(
-        true,
-        market.id,
+      submitMarketContribute({
+        estimateGas: true,
+        marketId: market.id,
         selectedOutcome,
-        isMarketInValid,
+        invalid: isMarketInValid,
         amount,
-        null,
-        (err, gasEstimateValue) => {
+        history: null,
+        returnPath: (err, gasEstimateValue) => {
           if (err) return console.error(err);
 
           const gasPrice = augur.rpc.getGasPrice();
@@ -102,7 +102,7 @@ export default class ReportingDispute extends Component {
             )
           });
         }
-      );
+      });
     }
   }
 
@@ -186,14 +186,14 @@ export default class ReportingDispute extends Component {
                 <button
                   className={FormStyles.Form__submit}
                   onClick={() =>
-                    submitMarketContribute(
-                      false,
-                      market.id,
-                      s.selectedOutcome,
-                      s.isMarketInValid,
-                      speedomatic.fix(s.stakeInfo.repValue, "hex"),
+                    submitMarketContribute({
+                      estimateGas: false,
+                      marketId: market.id,
+                      selectedOutcome: s.selectedOutcome,
+                      invalid: s.isMarketInValid,
+                      amount: speedomatic.fix(s.stakeInfo.repValue, "hex"),
                       history
-                    )
+                    })
                   }
                 >
                   Submit

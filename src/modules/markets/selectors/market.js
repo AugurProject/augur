@@ -294,13 +294,13 @@ export function assembleMarket(
             history
           ) =>
             dispatch(
-              submitReport(
+              submitReport({
                 market,
                 reportedOutcomeId,
                 amountToStake,
                 isIndeterminate,
                 history
-              )
+              })
             )
         };
 

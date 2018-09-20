@@ -109,13 +109,13 @@ export default class ReportingReport extends Component {
   calculateGasEstimates() {
     const { submitInitialReport, market } = this.props;
     const { selectedOutcome, isMarketInValid } = this.state;
-    submitInitialReport(
-      true,
-      market.id,
+    submitInitialReport({
+      estimateGas: true,
+      marketId: market.id,
       selectedOutcome,
-      isMarketInValid,
-      null,
-      (err, gasEstimateValue) => {
+      invalid: isMarketInValid,
+      history: null,
+      returnPath: (err, gasEstimateValue) => {
         if (err) return console.error(err);
         const gasPrice = augur.rpc.getGasPrice();
         this.setState({
@@ -126,7 +126,7 @@ export default class ReportingReport extends Component {
           )
         });
       }
-    );
+    });
   }
 
   render() {
@@ -224,13 +224,13 @@ export default class ReportingReport extends Component {
                 <button
                   className={FormStyles.Form__submit}
                   onClick={() =>
-                    submitInitialReport(
-                      false,
-                      market.id,
-                      s.selectedOutcome,
-                      s.isMarketInValid,
+                    submitInitialReport({
+                      estimateGas: false,
+                      marketId: market.id,
+                      selectedOutcome: s.selectedOutcome,
+                      invalid: s.isMarketInValid,
                       history
-                    )
+                    })
                   }
                 >
                   Submit
