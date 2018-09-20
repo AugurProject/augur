@@ -84,6 +84,23 @@
       "broadcast": false
     }
   },
+  "kovan": {
+    "augur-node": "ws://127.0.0.1:9001",
+    "ethereum-node": {
+      "http": "https://kovan.augur.net/ethereum-http",
+      "ws": null,
+      "pollingIntervalMilliseconds": 500,
+      "blockRetention": 100,
+      "connectionTimeout": 60000
+    },
+    "universe": null,
+    "bug-bounty": false,
+    "bug-bounty-address": null,
+    "debug": {
+      "connect": true,
+      "broadcast": false
+    }
+  },
   "srt": {
     "augur-node": "wss://srt.augur.net/augur-node",
     "ethereum-node": {

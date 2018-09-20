@@ -550,9 +550,16 @@ export default class AppView extends Component {
             </section>
             {isLogged &&
               s.isNotificationsVisible && (
-                <NotificationsContainer
-                  toggleNotifications={() => this.toggleNotifications()}
-                />
+                <div
+                  ref={notificationsContainer => {
+                    this.notificationsContainer = notificationsContainer;
+                  }}
+                  className={classNames(Styles.App__notifications)}
+                >
+                  <NotificationsContainer
+                    toggleNotifications={() => this.toggleNotifications()}
+                  />
+                </div>
               )}
             {universe.forkEndTime &&
               universe.forkEndTime !== "0" &&
