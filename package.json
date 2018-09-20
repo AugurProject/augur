@@ -5,13 +5,7 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
   "engines": {
-<<<<<<< HEAD
-    "node": "8 || 9",
-    "npm": "5.6.0",
-    "yarn": "1.7.0"
-=======
-    "node": "8 || 9 || 10"
->>>>>>> 03b06ca3f07ef7ca2698021d854e583b27a42e1c
+  "node": "8 || 9 || 10"
   },
   "repository": {
     "type": "git",
