@@ -2,6 +2,7 @@ import proxyquire from "proxyquire";
 import sinon from "sinon";
 import * as mocks from "test/mockStore";
 import { tradeTestState } from "test/trades/constants";
+import { createBigNumber } from "utils/create-big-number";
 
 describe(`modules/trades/actions/place-trade.js`, () => {
   proxyquire.noPreserveCache();
@@ -114,7 +115,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
         tradeInProgress: {
           totalCost: "10000000",
           sharesDepleted: "0",
-          otherSharesDepleted: "0"
+          otherSharesDepleted: "0",
+          limitPrice: "0.3",
+          numShares: "1",
+          side: "buy"
         }
       })
     );
@@ -151,7 +155,16 @@ describe(`modules/trades/actions/place-trade.js`, () => {
     const store = mockStore(testState);
     const CheckAccountAllowance = { checkAccountAllowance: () => {} };
     const SelectMarket = { selectMarket: () => {} };
-    const AugurJS = { augur: { trading: { placeTrade: () => {} } } };
+    const AugurJS = {
+      augur: {
+        trading: {
+          placeTrade: () => {},
+          calculateTradeCost: () => ({
+            onChainAmount: createBigNumber("100000000000")
+          })
+        }
+      }
+    };
     const checkAllownaceActionObject = {
       type: "UPDATE_LOGIN_ACCOUNT",
       allowance: "10000000000000000000000000000000000000000000"
@@ -183,7 +196,10 @@ describe(`modules/trades/actions/place-trade.js`, () => {
         tradeInProgress: {
           totalCost: "10000000",
           sharesDepleted: "0",
-          otherSharesDepleted: "0"
+          otherSharesDepleted: "0",
+          limitPrice: "0.3",
+          amount: "1",
+          side: "buy"
         }
       })
     );
