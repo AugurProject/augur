@@ -28,7 +28,8 @@ export default class MarketHeader extends Component {
     selectedOutcome: PropTypes.any,
     isLogged: PropTypes.bool,
     isDesignatedReporter: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    finalizeMarket: PropTypes.func
   };
 
   constructor(props) {
@@ -59,7 +60,8 @@ export default class MarketHeader extends Component {
       currentTimestamp,
       tentativeWinner,
       isLogged,
-      isDesignatedReporter
+      isDesignatedReporter,
+      finalizeMarket
     } = this.props;
 
     let { details } = this.props;
@@ -143,6 +145,7 @@ export default class MarketHeader extends Component {
               isLogged={isLogged}
               isDesignatedReporter={isDesignatedReporter}
               location={location}
+              finalizeMarket={finalizeMarket}
             />
           </div>
         </div>
