@@ -1,14 +1,13 @@
 import logError from "utils/log-error";
-import { initAugur } from "src/modules/app/actions/init-augur";
+import { augur } from "services/augurjs";
+import { useUnlockedAccount } from "modules/auth/actions/use-unlocked-account";
+import { first } from "lodash";
 
-export const loginWithMetaMask = (history, callback = logError) => dispatch => {
-  dispatch(
-    initAugur(
-      history,
-      {
-        useWeb3Transport: true
-      },
-      callback
-    )
-  );
+export const loginWithMetaMask = (callback = logError) => dispatch => {
+  augur.rpc.eth.accounts((err, accounts) => {
+    const account = first(accounts);
+    if (err || !account) return callback("NOT_SIGNED_IN");
+    dispatch(useUnlockedAccount(account));
+    callback(null, account);
+  });
 };
