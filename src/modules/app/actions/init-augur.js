@@ -77,7 +77,7 @@ function loadAccount(dispatch, existing, env, callback) {
     let account = existing;
     if (existing !== accounts[0]) {
       account = accounts[0];
-      if (account &&  process.env.AUTO_LOGIN) {
+      if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
       } else {
         dispatch(logout());
