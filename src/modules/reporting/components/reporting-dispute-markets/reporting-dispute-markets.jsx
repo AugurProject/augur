@@ -31,8 +31,8 @@ export default class ReportingDisputeMarkets extends Component {
   };
 
   componentWillMount() {
-    const { loadMarkets } = this.props;
-    loadMarkets();
+    const { loadMarkets, isConnected } = this.props;
+    if (isConnected) loadMarkets();
   }
 
   render() {
