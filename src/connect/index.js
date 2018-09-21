@@ -86,7 +86,6 @@ function connect(connectOptions, callback) {
       if (!connectOptions.ethereumNode) return next(null);
       connectToEthereum(ethrpc, ethereumNodeConnectOptions, function (err, contracts, functionsAbi, eventsAbi) {
         if (err) {
-
           console.warn("could not connect to ethereum-node at", JSON.stringify(connectOptions.ethereumNode), err);
           return next(null);
         }
