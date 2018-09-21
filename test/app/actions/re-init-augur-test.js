@@ -55,49 +55,57 @@ describe("app/actions/re-init-augur", () => {
         {
           type: "UPDATE_MODAL",
           data: {
-            type: "MODAL_NETWORK_DISCONNECTED",
-            connection: {
-              isConnected: false,
-              isConnectedToAugurNode: true,
-              isReconnectionPaused: false
-            },
-            env: undefined
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: false,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
           }
         },
         {
           type: "UPDATE_MODAL",
           data: {
-            type: "MODAL_NETWORK_DISCONNECTED",
-            connection: {
-              isConnected: false,
-              isConnectedToAugurNode: true,
-              isReconnectionPaused: false
-            },
-            env: undefined
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: false,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
           }
         },
         {
           type: "UPDATE_MODAL",
           data: {
-            type: "MODAL_NETWORK_DISCONNECTED",
-            connection: {
-              isConnected: false,
-              isConnectedToAugurNode: true,
-              isReconnectionPaused: false
-            },
-            env: undefined
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: false,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
           }
         },
         {
           type: "UPDATE_MODAL",
           data: {
-            type: "MODAL_NETWORK_DISCONNECTED",
-            connection: {
-              isConnected: false,
-              isConnectedToAugurNode: true,
-              isReconnectionPaused: false
-            },
-            env: undefined
+            modalOptions: {
+              type: "MODAL_NETWORK_DISCONNECTED",
+              connection: {
+                isConnected: false,
+                isConnectedToAugurNode: true,
+                isReconnectionPaused: false
+              },
+              env: undefined
+            }
           }
         },
         { type: "CONNECT_AUGUR" },

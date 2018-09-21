@@ -8,7 +8,7 @@ export default function(marketCreatorFees = DEFAULT_STATE, action) {
     case UPDATE_MARKET_CREATOR_FEES:
       return {
         ...marketCreatorFees,
-        ...action.data
+        ...action.data.marketCreatorFees
       };
     case RESET_STATE:
       return DEFAULT_STATE;

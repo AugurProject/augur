@@ -17,7 +17,7 @@ export const UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS =
 export function updateDesignatedReportingMarkets(marketIds) {
   return {
     type: UPDATE_DESIGNATED_REPORTING_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }
 
@@ -29,7 +29,7 @@ export function updateDesignatedReportingMarkets(marketIds) {
 export function updateAwaitingDisputeMarkets(marketIds) {
   return {
     type: UPDATE_AWAITING_DISPUTE_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }
 
@@ -41,7 +41,7 @@ export function updateAwaitingDisputeMarkets(marketIds) {
 export function updateCrowdDisputeMarkets(marketIds) {
   return {
     type: UPDATE_CROWD_DISPUTE_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }
 
@@ -53,7 +53,7 @@ export function updateCrowdDisputeMarkets(marketIds) {
 export function updateResolvedMarkets(marketIds) {
   return {
     type: UPDATE_RESOLVED_REPORTING_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }
 
@@ -65,7 +65,7 @@ export function updateResolvedMarkets(marketIds) {
 export function updateOpenMarkets(marketIds) {
   return {
     type: UPDATE_OPEN_REPORTING_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }
 
@@ -77,6 +77,6 @@ export function updateOpenMarkets(marketIds) {
 export function updateUpcomingDesignatedReportingMarkets(marketIds) {
   return {
     type: UPDATE_UPCOMING_DESIGNATED_REPORTING_MARKETS,
-    data: marketIds
+    data: { marketIds }
   };
 }

@@ -84,9 +84,11 @@ describe("modules/auth/actions/ledger-ethereum-hook-actions.js", () => {
         {
           type: UPDATE_MODAL,
           data: {
-            type: MODAL_LEDGER,
-            error: "Please enable Contract Data on your Ledger to use Augur.",
-            canClose: true
+            modalOptions: {
+              type: MODAL_LEDGER,
+              error: "Please enable Contract Data on your Ledger to use Augur.",
+              canClose: true
+            }
           }
         }
       ];

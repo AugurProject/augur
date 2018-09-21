@@ -4,10 +4,10 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(modal = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(modal = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_MODAL:
-      return action.data;
+      return data.modalOptions;
     case RESET_STATE:
     case CLOSE_MODAL:
       return DEFAULT_STATE;

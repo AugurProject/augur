@@ -19,13 +19,15 @@ const DEFAULT_STATE = {
   }
 };
 
-export default function(reportingWindowStats = DEFAULT_STATE, action) {
-  switch (action.type) {
-    case UPDATE_REPORTING_WINDOW_STATS:
+export default function(reportingWindowStats = DEFAULT_STATE, { type, data }) {
+  switch (type) {
+    case UPDATE_REPORTING_WINDOW_STATS: {
+      const { windowStats } = data;
       return {
         ...reportingWindowStats,
-        ...action.data
+        ...windowStats
       };
+    }
     case RESET_STATE:
       return DEFAULT_STATE;
     default:

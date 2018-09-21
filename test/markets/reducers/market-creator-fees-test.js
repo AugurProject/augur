@@ -20,12 +20,10 @@ describe("modules/markets/reducers/market-creator-fees.js", () => {
 
   it("should return an object with a first update", () => {
     action.data = {
-      "0xtest1": "a big num"
+      marketCreatorFees: { "0xtest1": "a big num" }
     };
 
-    expected = {
-      ...action.data
-    };
+    expected = { "0xtest1": "a big num" };
 
     assert.deepEqual(
       reducer(state, action),
@@ -38,12 +36,12 @@ describe("modules/markets/reducers/market-creator-fees.js", () => {
     state = action.data;
 
     action.data = {
-      "0xtest2": "a big num"
+      marketCreatorFees: { "0xtest2": "a big num" }
     };
 
     expected = {
       ...state,
-      ...action.data
+      "0xtest2": "a big num"
     };
 
     assert.deepEqual(
@@ -57,12 +55,12 @@ describe("modules/markets/reducers/market-creator-fees.js", () => {
     state = expected;
 
     action.data = {
-      "0xtest1": "a different big num"
+      marketCreatorFees: { "0xtest1": "a different big num" }
     };
 
     expected = {
       ...state,
-      ...action.data
+      "0xtest1": "a different big num"
     };
 
     assert.deepEqual(

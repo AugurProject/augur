@@ -34,7 +34,7 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
         {
           type: "UPDATE_LOGIN_ACCOUNT",
           data: {
-            address: "0xb0b"
+            loginAccount: { address: "0xb0b" }
           }
         },
         {

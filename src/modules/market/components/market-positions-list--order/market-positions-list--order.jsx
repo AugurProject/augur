@@ -145,12 +145,7 @@ export default class Order extends Component {
               <div className={Styles["Order__confirm-options"]}>
                 <button
                   onClick={e => {
-                    order.cancelOrder(
-                      order.id,
-                      order.marketId,
-                      order.outcomeId,
-                      order.type
-                    );
+                    order.cancelOrder(order);
                     this.toggleConfirm();
                   }}
                 >

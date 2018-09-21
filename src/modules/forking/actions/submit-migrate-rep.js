@@ -5,7 +5,7 @@ import { UNIVERSE_ID } from "modules/app/constants/network";
 import { getPayoutNumerators } from "modules/reports/selectors/get-payout-numerators";
 import { REPORTING_DISPUTE_MARKETS } from "modules/routes/constants/views";
 
-export const submitMigrateREP = (
+export const submitMigrateREP = ({
   estimateGas,
   marketId,
   selectedOutcome,
@@ -13,7 +13,7 @@ export const submitMigrateREP = (
   amount,
   history,
   callback = logError
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   const { loginAccount, marketsData, universe } = getState();
   const outcome = parseFloat(selectedOutcome);
   const universeID = universe.id || UNIVERSE_ID;

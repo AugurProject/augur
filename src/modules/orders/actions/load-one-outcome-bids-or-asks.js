@@ -20,7 +20,12 @@ const loadOneOutcomeBidsOrAsks = (
   const market = marketsData[marketId];
   if (!market) return callback(`market ${marketId} data not found`);
   dispatch(
-    updateIsFirstOrderBookChunkLoaded(marketId, outcome, orderTypeLabel, false)
+    updateIsFirstOrderBookChunkLoaded({
+      marketId,
+      outcome,
+      orderTypeLabel,
+      isLoaded: false
+    })
   );
   augur.trading.getOrders(
     {
@@ -33,14 +38,14 @@ const loadOneOutcomeBidsOrAsks = (
       if (err) return callback(err);
       if (orders != null) {
         dispatch(
-          insertOrderBookChunkToOrderBook(
+          insertOrderBookChunkToOrderBook({
             marketId,
             outcome,
             orderTypeLabel,
-            has(orders, [marketId, outcome, orderTypeLabel])
+            orderBookChunk: has(orders, [marketId, outcome, orderTypeLabel])
               ? orders[marketId][outcome][orderTypeLabel]
               : {}
-          )
+          })
         );
       }
       callback(null);

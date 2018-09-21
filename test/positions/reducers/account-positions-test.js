@@ -39,11 +39,13 @@ describe("modules/positions/reducers/account-positions.js", () => {
       const actual = accountPositions(undefined, {
         type: UPDATE_ACCOUNT_POSITIONS_DATA,
         data: {
-          "0xMARKETID1": {
-            test: "test"
-          }
-        },
-        marketId: "0xMARKETID1"
+          positionData: {
+            "0xMARKETID1": {
+              test: "test"
+            }
+          },
+          marketId: "0xMARKETID1"
+        }
       });
       const expected = {
         "0xMARKETID1": {
@@ -70,11 +72,13 @@ describe("modules/positions/reducers/account-positions.js", () => {
         {
           type: UPDATE_ACCOUNT_POSITIONS_DATA,
           data: {
-            "0xMARKETID1": {
-              test: "test"
-            }
-          },
-          marketId: "0xMARKETID1"
+            positionData: {
+              "0xMARKETID1": {
+                test: "test"
+              }
+            },
+            marketId: "0xMARKETID1"
+          }
         }
       );
       const expected = {

@@ -7,23 +7,27 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(tradesInProgress = DEFAULT_STATE, action) {
-  switch (action.type) {
-    case UPDATE_TRADE_IN_PROGRESS:
+export default function(tradesInProgress = DEFAULT_STATE, { type, data }) {
+  switch (type) {
+    case UPDATE_TRADE_IN_PROGRESS: {
+      const { marketId, outcomeId, details } = data;
       return {
         ...tradesInProgress,
-        [action.data.marketId]: {
-          ...tradesInProgress[action.data.marketId],
-          [action.data.outcomeId]: {
-            ...action.data.details
+        [marketId]: {
+          ...tradesInProgress[marketId],
+          [outcomeId]: {
+            ...details
           }
         }
       };
-    case CLEAR_TRADE_IN_PROGRESS:
+    }
+    case CLEAR_TRADE_IN_PROGRESS: {
+      const { marketId } = data;
       return {
         ...tradesInProgress,
-        [action.marketId]: {}
+        [marketId]: {}
       };
+    }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;

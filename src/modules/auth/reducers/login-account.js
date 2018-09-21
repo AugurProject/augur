@@ -6,12 +6,12 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 
 const DEFAULT_STATE = {};
 
-export default function(loginAccount = DEFAULT_STATE, action) {
-  switch (action.type) {
+export default function(loginAccount = DEFAULT_STATE, { type, data }) {
+  switch (type) {
     case UPDATE_LOGIN_ACCOUNT:
       return {
         ...loginAccount,
-        ...(action.data || {})
+        ...(data.loginAccount || {})
       };
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:

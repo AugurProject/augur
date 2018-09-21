@@ -26,12 +26,14 @@ describe(`modules/universe/actions/update-universe.js`, () => {
     assert.deepEqual(store.getActions(), [
       {
         type: "UPDATE_UNIVERSE",
-        universe: {
-          currentPeriod: 20,
-          currentPeriodProgress: 52,
-          isReportRevealPhase: true,
-          reportPeriod: 18,
-          periodLength: 900
+        data: {
+          updatedUniverse: {
+            currentPeriod: 20,
+            currentPeriodProgress: 52,
+            isReportRevealPhase: true,
+            reportPeriod: 18,
+            periodLength: 900
+          }
         }
       }
     ]);

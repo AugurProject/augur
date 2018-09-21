@@ -135,28 +135,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for buying 10 shares of YES at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for buying 10 shares of YES at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -190,28 +190,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for Selling 10 shares of YES at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          1,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 1,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for selling 10 shares of YES at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          1,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 1,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -245,14 +245,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should reset the tradeDetails object if 0 shares are passed in as a buy", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          "0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -276,14 +276,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          undefined,
-          "0.5",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "0.5",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -321,14 +321,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
         }
       };
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          undefined,
-          "0.15",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "0.15",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -362,14 +362,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          "25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -403,14 +403,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testYesNoMarketId",
-          0,
-          BUY,
-          "-25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testYesNoMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "-25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -477,28 +477,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for buying 10 shares of Outcome 0 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for buying 10 shares of Outcome 1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          1,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 1,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -532,28 +532,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for Selling 10 shares of Outcome 0 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for selling 10 shares of Outcome 1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          1,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 1,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -587,14 +587,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should reset the tradeDetails object if 0 shares are passed in as a buy", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          "0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -618,14 +618,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          undefined,
-          "0.5",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "0.5",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -674,14 +674,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
         }
       };
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          undefined,
-          "0.15",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "0.15",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -715,14 +715,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          "25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -756,14 +756,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testCategoricalMarketId",
-          0,
-          BUY,
-          "-25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testCategoricalMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "-25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -830,28 +830,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for buying 10 shares of outcome1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          1,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 1,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for buying 10 shares of outcome 1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          1,
-          BUY,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 1,
+          side: BUY,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -885,28 +885,28 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should pass shape tests for Selling 10 shares of outcome 1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          1,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 1,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
     it("should pass calculation tests for selling 10 shares of outcome1 at the default limitPrice", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          1,
-          SELL,
-          "10.0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 1,
+          side: SELL,
+          numShares: "10.0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -940,14 +940,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should reset the tradeDetails object if 0 shares are passed in as a buy", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          "0",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "0",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -971,14 +971,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          undefined,
-          "65",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "65",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -1015,14 +1015,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
         }
       };
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          undefined,
-          "70",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "70",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -1056,14 +1056,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          "25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -1097,14 +1097,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          "-25",
-          undefined,
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: "-25",
+          limitPrice: undefined,
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
@@ -1138,14 +1138,14 @@ describe("modules/trades/actions/update-trades-in-progress.js", () => {
 
     it("should handle the tradeDetails object if limitPrice is negative but valid for this scalar market", () => {
       store.dispatch(
-        action.updateTradesInProgress(
-          "testScalarMarketId",
-          0,
-          BUY,
-          undefined,
-          "-5",
-          undefined
-        )
+        action.updateTradesInProgress({
+          marketId: "testScalarMarketId",
+          outcomeId: 0,
+          side: BUY,
+          numShares: undefined,
+          limitPrice: "-5",
+          maxCost: undefined
+        })
       );
       assert.deepEqual(
         store.getActions()[0],
