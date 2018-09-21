@@ -67,7 +67,8 @@ export default class CoreProperties extends Component {
     tentativeWinner: PropTypes.object,
     isLogged: PropTypes.bool,
     isDesignatedReporter: PropTypes.bool,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    finalizeMarket: PropTypes.func.isRequired
   };
 
   determinePhase() {
@@ -107,7 +108,8 @@ export default class CoreProperties extends Component {
       tentativeWinner,
       isLogged,
       isDesignatedReporter,
-      location
+      location,
+      finalizeMarket
     } = this.props;
 
     const marketCreatorFee = getValue(
@@ -225,7 +227,19 @@ export default class CoreProperties extends Component {
             <div>Winning Outcome:</div>
           </span>
           <span className={Styles[`CoreProperties__property-winningOutcome`]}>
-            {consensus}
+            <div className={Styles[`CoreProperties__header-firstElement`]}>
+              {consensus}
+            </div>
+            {isLogged &&
+              reportingState ===
+                constants.REPORTING_STATE.AWAITING_FINALIZATION && (
+                <button
+                  className={Styles[`CoreProperties__property-button`]}
+                  onClick={() => finalizeMarket(market.id)}
+                >
+                  FINALIZE
+                </button>
+              )}
           </span>
         </div>
       ];
