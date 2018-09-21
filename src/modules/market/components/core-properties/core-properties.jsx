@@ -240,12 +240,12 @@ export default class CoreProperties extends Component {
                       Styles.CoreProperties__header__tooltip
                     )}
                     data-tip
-                    data-for="tooltip--market-fees"
+                    data-for="tooltip--finalize"
                   >
                     {Hint}
                   </label>
                   <ReactTooltip
-                    id="tooltip--market-fees"
+                    id="tooltip--finalize"
                     className={TooltipStyles.Tooltip}
                     effect="solid"
                     place="right"
