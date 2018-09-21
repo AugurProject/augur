@@ -5,6 +5,8 @@ const https = require("https");
 const fs = require("fs");
 
 const app = express();
+app.use(helmet());
+
 
 if (process.env.NODE_ENV === "development") {
   const webpack = require("webpack");
