@@ -24,80 +24,27 @@
 
   > li {
     display: table-cell;
+    min-width: 9.5rem;
     padding: 2rem 0 0.625rem;
-    text-align: right;
+    text-align: left;
+    width: 12.5rem;
 
     &:first-child {
-      padding-left: 2rem;
-      text-align: left;
+      min-width: 4.25rem;
+      padding-left: 1.5rem;
+      padding-right: 0.5rem;
+      width: 6rem;
     }
 
     &:nth-child(2) {
-      text-align: left;
+      min-width: 4.375rem;
+      width: auto;
     }
 
     &:last-child {
-      padding-right: 2rem;
-    }
-  }
-}
-
-.LiquidityOrders__table-body {
-  background-color: @color-input-background;
-  display: table-row-group;
-  font-size: @font-size-large;
-  line-height: @font-size-large;
-}
-
-.LiquidityOrders__Order {
-  display: table-row;
-  transition: background-color 0.15s ease;
-
-  &:first-child > li {
-    border-top-width: 0;
-  }
-
-  &.positive > li:first-child {
-    border-left: 0.5rem solid @color-positive;
-  }
-
-  &.negative > li:first-child {
-    border-left: 0.5rem solid @color-negative;
-  }
-
-  > li {
-    border-top: 1px solid @color-lightest-gray;
-    display: table-cell;
-    overflow: hidden;
-    padding: 1.125rem 0;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 8.5rem;
-
-    &:first-child {
-      padding-left: 1.5rem;
-      position: relative;
-      text-align: left;
-      text-transform: capitalize;
-      width: 7rem;
-
-      > .Order__pending {
-        justify-content: flex-start;
-      }
-    }
-
-    &:nth-child(2) {
-      text-align: left;
-      width: 11.5rem;
-    }
-
-    &:last-of-type {
-      padding-right: 2rem;
-
-      > button {
-        font-weight: 500;
-      }
+      min-width: 9.38rem;
+      text-align: center;
+      width: 9.38rem;
     }
   }
 }
@@ -118,71 +65,40 @@
     padding-top: 0;
   }
 
-  .LiquidityOrders__table {
-    background-color: @color-input-background;
-    display: table-row-group;
-    font-size: @font-size-small;
-    line-height: @font-size-small;
-  }
-
   .LiquidityOrders__TableHeader {
     > li {
       display: table-cell;
+      min-width: 7.5rem;
       padding: 1rem 0 0.625rem;
-      text-align: right;
 
       &:first-child {
-        padding-left: 0.75rem;
-        text-align: left;
+        padding-left: 0.5rem;
+        padding-right: 0;
       }
 
       &:last-child {
+        min-width: 7.5rem;
         padding-right: 0.5rem;
-      }
-    }
-  }
-
-  .LiquidityOrders__Order {
-    &.active,
-    &:hover {
-      background-color: @color-darkpurple;
-    }
-
-    &.positive > li:first-child {
-      border-left: 0.35rem solid @color-positive;
-    }
-
-    &.negative > li:first-child {
-      border-left: 0.35rem solid @color-negative;
-    }
-
-    > li {
-      border-top-color: @color-darkpurple;
-      color: inherit;
-
-      &:first-child {
-        padding-left: 0;
-        text-align: center;
-      }
-
-      &:last-of-type {
-        padding-right: 0;
-        text-align: center;
       }
     }
   }
 }
 
 @media @breakpoint-mobile-medium {
-  .LiquidityOrders__Order {
-    &:first-child > li {
-      border-top-width: 1px;
-    }
-
+  .LiquidityOrders__TableHeader {
     > li {
-      font-size: @font-size-medium;
-      line-height: @font-size-medium;
-      max-width: 25vw;
+      min-width: unset;
+      padding: 1rem 0 0.625rem;
+      text-align: center;
+      width: unset;
+
+      &:first-child {
+        padding-left: 0.5rem;
+      }
+
+      &:last-child {
+        width: unset;
+      }
     }
   }
 }

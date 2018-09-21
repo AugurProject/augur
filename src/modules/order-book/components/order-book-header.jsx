@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const OrderBookHeader = () => (
   <article className="order-book-header">
@@ -7,6 +7,6 @@ const OrderBookHeader = () => (
     <span>Ask</span>
     <span>Ask Qty</span>
   </article>
-)
+);
 
-export default OrderBookHeader
+export default OrderBookHeader;

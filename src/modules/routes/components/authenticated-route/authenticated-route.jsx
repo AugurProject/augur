@@ -1,32 +1,32 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Route } from 'react-router-dom'
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Route, Redirect } from "react-router-dom";
 
-import { Redirect } from 'modules/common/containers/sticky-params-components'
+import makePath from "modules/routes/helpers/make-path";
 
-import makePath from 'modules/routes/helpers/make-path'
-
-import { AUTHENTICATION } from 'modules/routes/constants/views'
+import { DEFAULT_VIEW } from "modules/routes/constants/views";
 
 const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
     {...rest}
-    render={props => (
-      isLogged ?
-        <Component {...props} /> :
-        <Redirect push to={makePath(AUTHENTICATION)} />
-    )}
+    render={props =>
+      isLogged ? (
+        <Component {...props} />
+      ) : (
+        <Redirect push to={makePath(DEFAULT_VIEW)} />
+      )
+    }
   />
-)
+);
 
 AuthenticatedRoute.propTypes = {
   component: PropTypes.any, // TODO
-  isLogged: PropTypes.bool.isRequired,
-}
+  isLogged: PropTypes.bool.isRequired
+};
 
 const mapStateToProps = state => ({
-  isLogged: state.isLogged,
-})
+  isLogged: state.authStatus.isLogged
+});
 
-export default connect(mapStateToProps)(AuthenticatedRoute)
+export default connect(mapStateToProps)(AuthenticatedRoute);

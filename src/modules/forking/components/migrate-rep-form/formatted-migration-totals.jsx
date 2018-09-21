@@ -1,98 +1,108 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
-import { createBigNumber } from 'utils/create-big-number'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { createBigNumber } from "utils/create-big-number";
 
-import FormStyles from 'modules/common/less/form'
-import selectMigrateTotals from 'modules/reporting/selectors/select-migrated-totals'
-import Styles from 'modules/forking/components/migrate-rep-form/migrate-rep-form.styles'
+import FormStyles from "modules/common/less/form";
+import selectMigrateTotals from "modules/reports/selectors/select-migrated-totals";
+import Styles from "modules/forking/components/migrate-rep-form/migrate-rep-form.styles";
 
 export default class FormattedMigrationTotals extends Component {
-
   static propTypes = {
-    selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    selectedOutcome: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     forkMigrationTotals: PropTypes.object,
     currentBlockNumber: PropTypes.number.isRequired,
     getForkMigrationTotals: PropTypes.func.isRequired,
     market: PropTypes.object.isRequired,
-    validateOutcome: PropTypes.func.isRequired,
-  }
+    validateOutcome: PropTypes.func.isRequired
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       formattedMigrationTotals: null,
-      blockNumber: props.currentBlockNumber,
-    }
+      blockNumber: props.currentBlockNumber
+    };
   }
 
   componentWillMount() {
-    this.getForkMigrationTotals()
+    this.getForkMigrationTotals();
   }
 
   componentWillReceiveProps(newProps) {
-    const updateBlock = createBigNumber(this.state.blockNumber)
-    const currentBlock = createBigNumber(newProps.currentBlockNumber)
+    const updateBlock = createBigNumber(this.state.blockNumber);
+    const currentBlock = createBigNumber(newProps.currentBlockNumber);
     if (currentBlock.gt(updateBlock)) {
       this.setState({
-        blockNumber: newProps.currentBlockNumber,
-      })
+        blockNumber: newProps.currentBlockNumber
+      });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const updateBlock = createBigNumber(this.state.blockNumber)
-    const currentBlock = createBigNumber(nextProps.currentBlockNumber)
-    if (currentBlock.gt(updateBlock)) return true
-    return false
+    const updateBlock = createBigNumber(this.state.blockNumber);
+    const currentBlock = createBigNumber(nextProps.currentBlockNumber);
+    if (currentBlock.gt(updateBlock)) return true;
+    return false;
   }
 
   componentWillUpdate() {
-    this.getForkMigrationTotals()
+    this.getForkMigrationTotals();
   }
 
   getForkMigrationTotals() {
-    const {
-      getForkMigrationTotals,
-    } = this.props
+    const { getForkMigrationTotals } = this.props;
     getForkMigrationTotals((err, forkMigrationTotals) => {
-      if (err) return console.error(err)
-      const { reportableOutcomes } = this.props.market
-      const formattedMigrationTotals = selectMigrateTotals(reportableOutcomes, forkMigrationTotals)
+      if (err) return console.error(err);
+      const { reportableOutcomes } = this.props.market;
+      const formattedMigrationTotals = selectMigrateTotals(
+        reportableOutcomes,
+        forkMigrationTotals
+      );
       this.setState({
-        formattedMigrationTotals,
-      })
-    })
+        formattedMigrationTotals
+      });
+    });
   }
 
   render() {
-    const {
-      selectedOutcome,
-      validateOutcome,
-    } = this.props
+    const { selectedOutcome, validateOutcome } = this.props;
 
-    const {
-      formattedMigrationTotals,
-    } = this.state
+    const { formattedMigrationTotals } = this.state;
 
     return (
-      <ul className={FormStyles['Form__radio-buttons--per-line']}>
-        { formattedMigrationTotals && formattedMigrationTotals.length > 0 && (formattedMigrationTotals).map(outcome => (
-          <li key={outcome.id}>
-            <button
-              className={classNames({ [`${FormStyles.active}`]: selectedOutcome === outcome.id })}
-              onClick={(e) => { validateOutcome(outcome.id, outcome.name, false) }}
-            >{outcome.name === 'Indeterminate' ? 'Market is Invalid': outcome.name}
-              <span className={Styles.MigrateRepForm__outcome_rep_total}>{ (outcome && outcome.rep.formatted) || '0'} REP Migrated</span>
-              { outcome && outcome.winner &&
-                <span className={Styles.MigrateRepForm__winning_outcome}> WINNING UNIVERSE</span>
-              }
-            </button>
-          </li>
-        ))
-        }
+      <ul className={FormStyles["Form__radio-buttons--per-line"]}>
+        {formattedMigrationTotals &&
+          formattedMigrationTotals.length > 0 &&
+          formattedMigrationTotals.map(outcome => (
+            <li key={outcome.id}>
+              <button
+                className={classNames({
+                  [`${FormStyles.active}`]: selectedOutcome === outcome.id
+                })}
+                onClick={e => {
+                  validateOutcome(outcome.id, outcome.name, false);
+                }}
+              >
+                {outcome.name === "Indeterminate"
+                  ? "Market is Invalid"
+                  : outcome.name}
+                <span className={Styles.MigrateRepForm__outcome_rep_total}>
+                  {(outcome && outcome.rep.formatted) || "0"} REP Migrated
+                </span>
+                {outcome &&
+                  outcome.winner && (
+                    <span className={Styles.MigrateRepForm__winning_outcome}>
+                      {" "}
+                      WINNING UNIVERSE
+                    </span>
+                  )}
+              </button>
+            </li>
+          ))}
       </ul>
-    )
+    );
   }
 }

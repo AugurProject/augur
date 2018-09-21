@@ -1,0 +1,13 @@
+@import (reference) '~assets/styles/shared';
+
+.FilterDropdowns {
+  display: flex;
+  flex-flow: row nowrap;
+
+  > div > button:first-child {
+    &:extend(.caps--small);
+
+    color: @color-white;
+    font-size: 14px;
+  }
+}

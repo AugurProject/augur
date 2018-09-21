@@ -1,5 +1,5 @@
-import React from 'react'
-import Styles from 'modules/modal/components/modal-network-disabled/modal-network-disabled.styles'
+import React from "react";
+import Styles from "modules/modal/components/modal-network-disabled/modal-network-disabled.styles";
 
 const ModalNetworkDisabled = p => (
   <section className={Styles.NetworkDisabled}>
@@ -8,6 +8,6 @@ const ModalNetworkDisabled = p => (
       <span>Connecting to mainnet through this UI is disabled.</span>
     </section>
   </section>
-)
+);
 
-export default ModalNetworkDisabled
+export default ModalNetworkDisabled;

@@ -1,59 +1,76 @@
-import { describe, it } from 'mocha'
-import { assert } from 'chai'
+import { describe, it } from "mocha";
+import { assert } from "chai";
 
-import { YES_NO } from 'modules/markets/constants/market-types'
-import { submitMigrateREP, __RewireAPI__ as ReWireModule } from 'modules/forking/actions/submit-migrate-rep'
+import { YES_NO } from "modules/markets/constants/market-types";
+import {
+  submitMigrateREP,
+  __RewireAPI__ as ReWireModule
+} from "modules/forking/actions/submit-migrate-rep";
 
-describe('modules/forking/actions/submit-migrate-rep.js', () => {
-  const test = t => it(t.description, () => t.assertions())
+describe("modules/forking/actions/submit-migrate-rep.js", () => {
+  const test = t => it(t.description, () => t.assertions());
 
-  describe('submitMigrateREP', () => {
+  describe("submitMigrateREP", () => {
     test({
-      description: 'should call the function as expected',
+      description: "should call the function as expected",
       assertions: () => {
         const stateData = {
           loginAccount: {
-            meta: 'META',
+            meta: "META"
           },
           universe: {
-            id: '0xUNIVERSE',
+            id: "0xUNIVERSE"
           },
           marketsData: {
-            '0xMARKET': {
+            "0xMARKET": {
               maxPrice: 1,
               minPrice: 0,
               numTicks: 10000,
-              marketType: YES_NO,
-            },
-          },
-        }
+              marketType: YES_NO
+            }
+          }
+        };
 
-        const getState = () => stateData
+        const getState = () => stateData;
 
-        ReWireModule.__Rewire__('augur', {
+        ReWireModule.__Rewire__("augur", {
           api: {
             Universe: {
               getReputationToken: (args, callback) => {
                 assert.deepEqual(args, {
-                  tx: { to: '0xUNIVERSE' },
-                })
-                return callback(null, '0xREP_TOKEN')
-              },
+                  tx: { to: "0xUNIVERSE" }
+                });
+                return callback(null, "0xREP_TOKEN");
+              }
             },
             ReputationToken: {
-              migrateOutByPayout: (args) => {
-                assert.deepEqual(args.tx, { to: '0xREP_TOKEN', estimateGas: false })
-                assert.equal(args.meta, 'META')
-                assert.equal(args._invalid, false)
-                assert.deepEqual(args._payoutNumerators.map(n => n.toString()), ['0', '10000'])
-                assert.equal(args._attotokens, 42)
-              },
-            },
-          },
-        })
+              migrateOutByPayout: args => {
+                assert.deepEqual(args.tx, {
+                  to: "0xREP_TOKEN",
+                  estimateGas: false
+                });
+                assert.equal(args.meta, "META");
+                assert.equal(args._invalid, false);
+                assert.deepEqual(
+                  args._payoutNumerators.map(n => n.toString()),
+                  ["0", "10000"]
+                );
+                assert.equal(args._attotokens, 42);
+              }
+            }
+          }
+        });
 
-        submitMigrateREP(false, '0xMARKET', 1, false, 42, null, () => {})(null, getState)
-      },
-    })
-  })
-})
+        submitMigrateREP({
+          estimateGas: false,
+          marketId: "0xMARKET",
+          selectedOutcome: 1,
+          invalid: false,
+          amount: 42,
+          history: null,
+          callback: () => {}
+        })(null, getState);
+      }
+    });
+  });
+});

@@ -1,5 +1,5 @@
-import React from 'react'
+import React from "react";
 
-const Bullet = () => <span>&middot;</span>
+const Bullet = () => <span>&middot;</span>;
 
-export default Bullet
+export default Bullet;

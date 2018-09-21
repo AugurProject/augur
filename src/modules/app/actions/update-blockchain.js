@@ -1,3 +1,6 @@
-export const UPDATE_BLOCKCHAIN = 'UPDATE_BLOCKCHAIN'
+export const UPDATE_BLOCKCHAIN = "UPDATE_BLOCKCHAIN";
 
-export const updateBlockchain = data => ({ type: UPDATE_BLOCKCHAIN, data })
+export const updateBlockchain = blockchainData => ({
+  type: UPDATE_BLOCKCHAIN,
+  data: { blockchainData }
+});

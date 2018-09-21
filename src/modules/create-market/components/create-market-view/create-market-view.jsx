@@ -1,11 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
+import React from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
 
-import CreateMarketPreview from 'modules/create-market/components/create-market-preview/create-market-preview'
-import CreateMarketForm from 'modules/create-market/components/create-market-form/create-market-form'
+import CreateMarketPreview from "modules/create-market/components/create-market-preview/create-market-preview";
+import CreateMarketForm from "modules/create-market/components/create-market-form/create-market-form";
 
-import Styles from 'modules/create-market/components/create-market-view/create-market-view.styles'
+import Styles from "modules/create-market/components/create-market-view/create-market-view.styles";
 
 const CreateMarketView = p => (
   <section className={Styles.CreateMarketView}>
@@ -36,7 +36,7 @@ const CreateMarketView = p => (
       />
     </div>
   </section>
-)
+);
 
 CreateMarketView.propTypes = {
   currentTimestamp: PropTypes.number.isRequired,
@@ -46,7 +46,7 @@ CreateMarketView.propTypes = {
   history: PropTypes.object.isRequired,
   universe: PropTypes.object.isRequired,
   isMobileSmall: PropTypes.bool.isRequired,
-  estimateSubmitNewMarket: PropTypes.func.isRequired,
-}
+  estimateSubmitNewMarket: PropTypes.func.isRequired
+};
 
-export default CreateMarketView
+export default CreateMarketView;

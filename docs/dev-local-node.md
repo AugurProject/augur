@@ -11,9 +11,9 @@ You'll need to clone the following repositories prior to starting:
 
 * [augur.js](https://github.com/AugurProject/augur.js)
 * [augur-node](https://github.com/AugurProject/augur-node)
-* [augur](https://github.com/AugurProject/augur)
-* node and npm installed
-* yarn installed
+* [augur-ui](https://github.com/AugurProject/augur-ui)
+* [node and npm](https://nodejs.org/en/download/)
+* [yarn](https://yarnpkg.com/lang/en/docs/install/)
 
 If you know the versions of augur-node and augur ui use the same version of augur.js, then you can use the non-linking version [quick start](./dev-local-non-linking.md)
 

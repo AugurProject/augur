@@ -1,64 +1,78 @@
 // TODO -- this component needs to be broken up
 //         all logic related to sidebar(s) need to be housed w/in a separate component
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
-import { Link } from 'modules/common/containers/sticky-params-components'
-import classNames from 'classnames'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
 
-import shouldComponentUpdatePure from 'utils/should-component-update-pure'
-import debounce from 'utils/debounce'
+import shouldComponentUpdatePure from "utils/should-component-update-pure";
+import debounce from "utils/debounce";
 
-import { tween } from 'shifty'
-import { isEqual } from 'lodash'
+import { tween } from "shifty";
+import { isEqual } from "lodash";
 
-import Modal from 'modules/modal/containers/modal-view'
-import TopBar from 'modules/app/components/top-bar/top-bar'
-import ForkingNotification from 'modules/forking/components/forking-notification/forking-notification'
-import PortfolioInnerNav from 'modules/app/components/inner-nav/portfolio-inner-nav'
-import AccountInnerNav from 'modules/app/components/inner-nav/account-inner-nav'
-import ReportingInnerNav from 'modules/app/components/inner-nav/reporting-inner-nav'
-import SideNav from 'modules/app/components/side-nav/side-nav'
-import Origami from 'modules/app/components/origami-svg/origami-svg'
-import Logo from 'modules/app/components/logo/logo'
-import Routes from 'modules/routes/components/routes/routes'
-import NotificationsContainer from 'modules/notifications/container'
+import Modal from "modules/modal/containers/modal-view";
+import TopBar from "modules/app/components/top-bar/top-bar";
+import ForkingNotification from "modules/forking/components/forking-notification/forking-notification";
+import PortfolioInnerNav from "modules/app/components/inner-nav/portfolio-inner-nav";
+import AccountInnerNav from "modules/app/components/inner-nav/account-inner-nav";
+import ReportingInnerNav from "modules/app/components/inner-nav/reporting-inner-nav";
+import SideNav from "modules/app/components/side-nav/side-nav";
+import Logo from "modules/app/components/logo/logo";
+import Routes from "modules/routes/components/routes/routes";
+import NotificationsContainer from "modules/notifications/containers/notifications-view";
 
-import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon'
-import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon'
-import MobileNavBackIcon from 'modules/common/components/mobile-nav-back-icon'
+import MobileNavHamburgerIcon from "modules/common/components/mobile-nav-hamburger-icon";
+import MobileNavCloseIcon from "modules/common/components/mobile-nav-close-icon";
+import MobileNavBackIcon from "modules/common/components/mobile-nav-back-icon";
 
-import NavAccountIcon from 'modules/common/components/nav-account-icon'
-import NavCreateIcon from 'modules/common/components/nav-create-icon'
-import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
-import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
-import { AlertCircle, NavReportingIcon } from 'modules/common/components/icons'
+import NavAccountIcon from "modules/common/components/nav-account-icon";
+import NavCreateIcon from "modules/common/components/nav-create-icon";
+import NavMarketsIcon from "modules/common/components/nav-markets-icon";
+import NavPortfolioIcon from "modules/common/components/nav-portfolio-icon";
+import { AlertCircle, NavReportingIcon } from "modules/common/components/icons";
 
-import parsePath from 'modules/routes/helpers/parse-path'
-import makePath from 'modules/routes/helpers/make-path'
-import parseQuery from 'modules/routes/helpers/parse-query'
+import parsePath from "modules/routes/helpers/parse-path";
+import makePath from "modules/routes/helpers/make-path";
+import parseQuery from "modules/routes/helpers/parse-query";
 
-import getValue from 'utils/get-value'
+import getValue from "utils/get-value";
 
-import { MARKETS, ACCOUNT_DEPOSIT, ACCOUNT_WITHDRAW, ACCOUNT_REP_FAUCET, ACCOUNT_UNIVERSES, MY_MARKETS, MY_POSITIONS, FAVORITES, PORTFOLIO_TRANSACTIONS, PORTFOLIO_REPORTS, CREATE_MARKET, CATEGORIES, REPORTING_DISPUTE_MARKETS, REPORTING_REPORT_MARKETS, REPORTING_RESOLVED_MARKETS, AUTHENTICATION } from 'modules/routes/constants/views'
-import { MODAL_NETWORK_CONNECT } from 'modules/modal/constants/modal-types'
-import { CATEGORY_PARAM_NAME } from 'modules/filter-sort/constants/param-names'
+import {
+  MARKETS,
+  ACCOUNT_DEPOSIT,
+  ACCOUNT_WITHDRAW,
+  ACCOUNT_REP_FAUCET,
+  ACCOUNT_UNIVERSES,
+  MY_MARKETS,
+  MY_POSITIONS,
+  FAVORITES,
+  PORTFOLIO_TRANSACTIONS,
+  PORTFOLIO_REPORTS,
+  CREATE_MARKET,
+  CATEGORIES,
+  REPORTING_DISPUTE_MARKETS,
+  REPORTING_REPORT_MARKETS,
+  REPORTING_RESOLVED_MARKETS
+} from "modules/routes/constants/views";
+import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
+import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
 
-import Styles from 'modules/app/components/app/app.styles'
-import MarketsInnerNavContainer from 'src/modules/app/containers/markets-inner-nav'
-import { NotificationBarContainer } from 'src/modules/notification-bar/containers/notification-bar-container'
-import * as qs from 'query-string'
+import Styles from "modules/app/components/app/app.styles";
+import MarketsInnerNavContainer from "modules/app/containers/markets-inner-nav";
+import { NotificationBarContainer } from "modules/notifications/containers/notification-bar";
 
 export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
   FIRSTMENU_OPEN: 2,
-  SUBMENU_OPEN: 3,
-}
+  SUBMENU_OPEN: 3
+};
 
-const SUB_MENU = 'subMenu'
-const MAIN_MENU = 'mainMenu'
+const SUB_MENU = "subMenu";
+const MAIN_MENU = "mainMenu";
 
 const navTypes = {
   [MARKETS]: MarketsInnerNavContainer,
@@ -73,8 +87,8 @@ const navTypes = {
   [ACCOUNT_UNIVERSES]: AccountInnerNav,
   [REPORTING_DISPUTE_MARKETS]: ReportingInnerNav,
   [REPORTING_REPORT_MARKETS]: ReportingInnerNav,
-  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav,
-}
+  [REPORTING_RESOLVED_MARKETS]: ReportingInnerNav
+};
 
 export default class AppView extends Component {
   static propTypes = {
@@ -101,10 +115,13 @@ export default class AppView extends Component {
     finalizeMarket: PropTypes.func.isRequired,
     url: PropTypes.string,
     isLoading: PropTypes.bool,
-  }
+    augurNode: PropTypes.string,
+    ethereumNodeHttp: PropTypes.string,
+    ethereumNodeWs: PropTypes.string
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       mainMenu: { scalar: 0, open: false, currentTween: null },
@@ -112,160 +129,168 @@ export default class AppView extends Component {
       mobileMenuState: mobileMenuStates.CLOSED,
       currentBasePath: null,
       currentInnerNavType: null,
-      isNotificationsVisible: false,
-    }
+      isNotificationsVisible: false
+    };
 
     this.sideNavMenuData = [
       {
-        title: 'Markets',
+        title: "Markets",
         icon: NavMarketsIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: MARKETS,
+        mobileClick: () =>
+          this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
+        route: MARKETS
       },
       {
-        title: 'Create',
-        iconName: 'nav-create-icon',
+        title: "Create",
+        iconName: "nav-create-icon",
         icon: NavCreateIcon,
         route: CREATE_MARKET,
         requireLogin: true,
-        disabled: this.props.universe.isForking,
+        disabled: this.props.universe.isForking
       },
       {
-        title: 'Portfolio',
-        iconName: 'nav-portfolio-icon',
+        title: "Portfolio",
+        iconName: "nav-portfolio-icon",
         icon: NavPortfolioIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
+        mobileClick: () =>
+          this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: MY_POSITIONS,
-        requireLogin: true,
+        requireLogin: true
       },
       {
-        title: 'Reporting',
-        iconName: 'nav-reporting-icon',
+        title: "Reporting",
+        iconName: "nav-reporting-icon",
         icon: NavReportingIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: REPORTING_REPORT_MARKETS,
+        mobileClick: () =>
+          this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
+        route: REPORTING_REPORT_MARKETS
       },
       {
-        title: 'Account',
-        iconName: 'nav-account-icon',
+        title: "Account",
+        iconName: "nav-account-icon",
         icon: NavAccountIcon,
-        mobileClick: () => this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
+        mobileClick: () =>
+          this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
         route: ACCOUNT_DEPOSIT,
-      },
-    ]
+        requireLogin: true
+      }
+    ];
 
-    this.shouldComponentUpdate = shouldComponentUpdatePure
+    this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-    this.openSubMenu = this.openSubMenu.bind(this)
-    this.handleWindowResize = debounce(this.handleWindowResize.bind(this))
-    this.innerNavMenuMobileClick = this.innerNavMenuMobileClick.bind(this)
-    this.checkIsMobile = this.checkIsMobile.bind(this)
-    this.toggleNotifications = this.toggleNotifications.bind(this)
-    this.mainSectionClickHandler = this.mainSectionClickHandler.bind(this)
+    this.openSubMenu = this.openSubMenu.bind(this);
+    this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
+    this.innerNavMenuMobileClick = this.innerNavMenuMobileClick.bind(this);
+    this.checkIsMobile = this.checkIsMobile.bind(this);
+    this.toggleNotifications = this.toggleNotifications.bind(this);
+    this.mainSectionClickHandler = this.mainSectionClickHandler.bind(this);
   }
 
   componentWillMount() {
     const {
+      augurNode,
       env,
+      ethereumNodeHttp,
+      ethereumNodeWs,
       history,
       initAugur,
       location,
-      updateModal,
-    } = this.props
-    const queryArgs = qs.parse(location.search)
-    initAugur(history, {
-      ...env,
-      ...queryArgs,
-    }, (err, res) => {
-      if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
-        updateModal({
-          type: MODAL_NETWORK_CONNECT,
-          isInitialConnection: true,
-        })
+      updateModal
+    } = this.props;
+    initAugur(
+      history,
+      {
+        ...env,
+        augurNode,
+        ethereumNodeHttp,
+        ethereumNodeWs
+      },
+      (err, res) => {
+        if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
+          updateModal({
+            type: MODAL_NETWORK_CONNECT,
+            isInitialConnection: true
+          });
+        }
       }
-    })
+    );
 
-    const currentPath = parsePath(location.pathname)[0]
-    this.setState({ currentBasePath: currentPath })
+    const currentPath = parsePath(location.pathname)[0];
+    this.setState({ currentBasePath: currentPath });
 
-    this.changeMenu(currentPath)
+    this.changeMenu(currentPath);
     if (currentPath === MARKETS) {
-      const selectedCategory = parseQuery(location.search)[CATEGORY_PARAM_NAME]
-      if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
+      const selectedCategory = parseQuery(location.search)[CATEGORY_PARAM_NAME];
+      if (selectedCategory) this.toggleMenuTween(SUB_MENU, true);
     }
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleWindowResize)
+    window.addEventListener("resize", this.handleWindowResize);
 
-    this.checkIsMobile()
+    this.checkIsMobile();
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      isMobile,
-      location,
-      universe,
-    } = this.props
+    const { isMobile, location, universe } = this.props;
     if (isMobile !== nextProps.isMobile) {
       this.setState({
-        mobileMenuState: mobileMenuStates.CLOSED,
-      })
+        mobileMenuState: mobileMenuStates.CLOSED
+      });
     }
 
     if (!isEqual(universe.isForking, nextProps.universe.isForking)) {
-      this.sideNavMenuData[1].disabled = nextProps.universe.isForking
+      this.sideNavMenuData[1].disabled = nextProps.universe.isForking;
     }
 
     if (!isEqual(location, nextProps.location)) {
-      const lastBasePath = parsePath(location.pathname)[0]
-      const nextBasePath = parsePath(nextProps.location.pathname)[0]
+      const lastBasePath = parsePath(location.pathname)[0];
+      const nextBasePath = parsePath(nextProps.location.pathname)[0];
 
-      const selectedCategory = parseQuery(nextProps.location.search)[CATEGORY_PARAM_NAME]
+      const selectedCategory = parseQuery(nextProps.location.search)[
+        CATEGORY_PARAM_NAME
+      ];
 
       if (lastBasePath !== nextBasePath) {
-        this.setState({ currentBasePath: nextBasePath })
-        this.changeMenu(nextBasePath)
+        this.setState({ currentBasePath: nextBasePath });
+        this.changeMenu(nextBasePath);
       }
 
       if (nextBasePath === MARKETS && selectedCategory) {
-        this.toggleMenuTween(SUB_MENU, true)
+        this.toggleMenuTween(SUB_MENU, true);
       }
     }
   }
 
   openSubMenu() {
-    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
+    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN });
   }
 
   changeMenu(nextBasePath) {
-    const { isLogged } = this.props
-    const oldType = this.state.currentInnerNavType
-    const newType = navTypes[nextBasePath]
+    const { isLogged } = this.props;
+    const oldType = this.state.currentInnerNavType;
+    const newType = navTypes[nextBasePath];
 
-    if (
-      (newType === AccountInnerNav && !isLogged) ||
-      oldType === newType
-    ) {
-      return
+    if ((newType === AccountInnerNav && !isLogged) || oldType === newType) {
+      return;
     }
 
     const openNewMenu = () => {
-      this.setState({ currentInnerNavType: newType })
-      if (newType) this.toggleMenuTween(MAIN_MENU, true)
-    }
+      this.setState({ currentInnerNavType: newType });
+      if (newType) this.toggleMenuTween(MAIN_MENU, true);
+    };
 
     if (!oldType) {
-      openNewMenu()
-      return
+      openNewMenu();
+      return;
     }
 
-    const menuExitPromise = new Promise((resolve) => {
-      this.toggleMenuTween(MAIN_MENU, false, () => resolve())
-    })
-    const submenuExitPromise = new Promise((resolve) => {
-      this.toggleMenuTween(SUB_MENU, false, () => resolve())
-    })
+    const menuExitPromise = new Promise(resolve => {
+      this.toggleMenuTween(MAIN_MENU, false, () => resolve());
+    });
+    const submenuExitPromise = new Promise(resolve => {
+      this.toggleMenuTween(SUB_MENU, false, () => resolve());
+    });
 
     Promise.all([menuExitPromise, submenuExitPromise]).then(() => {
       switch (nextBasePath) {
@@ -279,133 +304,151 @@ export default class AppView extends Component {
         case REPORTING_DISPUTE_MARKETS:
         case REPORTING_REPORT_MARKETS:
         case REPORTING_RESOLVED_MARKETS:
-          openNewMenu()
-          break
+          openNewMenu();
+          break;
         default:
-          this.setState({ currentInnerNavType: newType })
-          openNewMenu()
+          this.setState({ currentInnerNavType: newType });
+          openNewMenu();
       }
-    })
+    });
   }
 
   handleWindowResize() {
-    this.checkIsMobile()
+    this.checkIsMobile();
   }
 
   checkIsMobile() {
-    const {
-      updateIsMobile,
-      updateIsMobileSmall,
-    } = this.props
+    const { updateIsMobile, updateIsMobileSmall } = this.props;
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
-    const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1
-    const isMobileSmall = window.getComputedStyle(document.body).getPropertyValue('--is-mobile-small').indexOf('true') !== -1
+    const isMobile =
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--is-mobile")
+        .indexOf("true") !== -1;
+    const isMobileSmall =
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--is-mobile-small")
+        .indexOf("true") !== -1;
 
-    updateIsMobile(isMobile)
-    updateIsMobileSmall(isMobileSmall)
+    updateIsMobile(isMobile);
+    updateIsMobileSmall(isMobileSmall);
   }
 
   toggleNotifications() {
-    this.setState({ isNotificationsVisible: !this.state.isNotificationsVisible })
+    this.setState({
+      isNotificationsVisible: !this.state.isNotificationsVisible
+    });
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
-    if (getValue(this.state[menuKey], 'currentTween.stop')) this.state[menuKey].currentTween.stop()
+    if (getValue(this.state[menuKey], "currentTween.stop"))
+      this.state[menuKey].currentTween.stop();
 
-    let nowOpen = !this.state[menuKey].open
-    if ((typeof forceOpen) === 'boolean') nowOpen = forceOpen
+    let nowOpen = !this.state[menuKey].open;
+    if (typeof forceOpen === "boolean") nowOpen = forceOpen;
 
-    const setMenuState = (newState) => {
+    const setMenuState = newState => {
       this.setState({
         [menuKey]: {
           ...this.state[menuKey],
-          ...newState,
-        },
-      })
-    }
+          ...newState
+        }
+      });
+    };
 
-    const alreadyDone = ((!nowOpen && (this.state[menuKey].scalar === 0)) ||
-                          (nowOpen && (this.state[menuKey].scalar === 1)))
+    const alreadyDone =
+      (!nowOpen && this.state[menuKey].scalar === 0) ||
+      (nowOpen && this.state[menuKey].scalar === 1);
     if (alreadyDone) {
-      if (cb && (typeof cb) === 'function') cb()
-      this.props.updateIsAnimating(false)
+      if (cb && typeof cb === "function") cb();
+      this.props.updateIsAnimating(false);
     } else {
-      const baseMenuState = { open: nowOpen }
+      const baseMenuState = { open: nowOpen };
       const currentTween = tween({
         from: { value: this.state[menuKey].scalar },
-        to: { value: (nowOpen ? 1 : 0) },
+        to: { value: nowOpen ? 1 : 0 },
         duration: 500,
-        easing: 'easeOutQuad',
-        step: (newState) => {
-          setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
-        },
+        easing: "easeOutQuad",
+        step: newState => {
+          setMenuState(
+            Object.assign({}, baseMenuState, { scalar: newState.value })
+          );
+        }
       }).then(() => {
-        this.props.updateIsAnimating(false)
-        if (cb && (typeof cb) === 'function') cb()
-        setMenuState({ locked: false, currentTween: null })
-      })
-      this.props.updateIsAnimating(true)
-      setMenuState({ currentTween })
+        this.props.updateIsAnimating(false);
+        if (cb && typeof cb === "function") cb();
+        setMenuState({ locked: false, currentTween: null });
+      });
+      this.props.updateIsAnimating(true);
+      setMenuState({ currentTween });
     }
   }
 
   mobileMenuButtonClick() {
-    const menuState = this.state.mobileMenuState
+    const menuState = this.state.mobileMenuState;
 
     switch (menuState) {
       case mobileMenuStates.CLOSED:
-        this.setState({ mobileMenuState: mobileMenuStates.SIDEBAR_OPEN })
-        break
+        this.setState({ mobileMenuState: mobileMenuStates.SIDEBAR_OPEN });
+        break;
       default:
-        this.setState({ mobileMenuState: menuState - 1 })
-        break
+        this.setState({ mobileMenuState: menuState - 1 });
+        break;
     }
   }
 
   mainSectionClickHandler = (e, testSideNav = true) => {
-    const stateUpdate = {}
-    const { isMobile } = this.props
-    let updateState = false
+    const stateUpdate = {};
+    const { isMobile } = this.props;
+    let updateState = false;
 
-    if (testSideNav && isMobile && this.state.mobileMenuState !== mobileMenuStates.CLOSED) {
-      stateUpdate.mobileMenuState = mobileMenuStates.CLOSED
-      updateState = true
+    if (
+      testSideNav &&
+      isMobile &&
+      this.state.mobileMenuState !== mobileMenuStates.CLOSED
+    ) {
+      stateUpdate.mobileMenuState = mobileMenuStates.CLOSED;
+      updateState = true;
     }
 
     if (this.state.isNotificationsVisible) {
-      stateUpdate.isNotificationsVisible = false
-      updateState = true
+      stateUpdate.isNotificationsVisible = false;
+      updateState = true;
     }
 
     if (updateState) {
-      this.setState(stateUpdate)
+      this.setState(stateUpdate);
     }
-  }
+  };
 
   innerNavMenuMobileClick() {
-    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN })
+    this.setState({ mobileMenuState: mobileMenuStates.SUBMENU_OPEN });
   }
 
   renderMobileMenuButton(unseenCount) {
-    const menuState = this.state.mobileMenuState
+    const menuState = this.state.mobileMenuState;
 
-    let icon = null
-    if (menuState === mobileMenuStates.CLOSED) icon = <MobileNavHamburgerIcon />
-    else if (menuState === mobileMenuStates.SIDEBAR_OPEN) icon = <MobileNavCloseIcon />
-    else if (menuState >= mobileMenuStates.FIRSTMENU_OPEN) icon = <MobileNavBackIcon />
+    let icon = null;
+    if (menuState === mobileMenuStates.CLOSED)
+      icon = <MobileNavHamburgerIcon />;
+    else if (menuState === mobileMenuStates.SIDEBAR_OPEN)
+      icon = <MobileNavCloseIcon />;
+    else if (menuState >= mobileMenuStates.FIRSTMENU_OPEN)
+      icon = <MobileNavBackIcon />;
 
     return (
       <button
-        className={Styles['SideBar__mobile-bars']}
+        className={Styles["SideBar__mobile-bars"]}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
-        {menuState === mobileMenuStates.CLOSED && !!unseenCount &&
-        AlertCircle(Styles['SideBar__mobile-bars-unseen'])
-        }
+        {menuState === mobileMenuStates.CLOSED &&
+          !!unseenCount &&
+          AlertCircle(Styles["SideBar__mobile-bars-unseen"])}
       </button>
-    )
+    );
   }
 
   render() {
@@ -421,34 +464,32 @@ export default class AppView extends Component {
       modal,
       universe,
       isLoading,
-      finalizeMarket,
-    } = this.props
-    const s = this.state
+      finalizeMarket
+    } = this.props;
+    const s = this.state;
 
-    const { mainMenu, subMenu } = this.state
-    const unseenCount = getValue(this.props, 'notifications.unseenCount')
+    const { mainMenu, subMenu } = this.state;
+    const unseenCount = getValue(this.props, "notifications.unseenCount");
+    const currentPath = parsePath(location.pathname)[0];
 
-    const InnerNav = this.state.currentInnerNavType
-    let innerNavMenuMobileClick
+    const InnerNav = this.state.currentInnerNavType;
+    let innerNavMenuMobileClick;
     if (InnerNav === MarketsInnerNavContainer) {
-      innerNavMenuMobileClick = this.innerNavMenuMobileClick // eslint-disable-line prefer-destructuring
+      innerNavMenuMobileClick = this.innerNavMenuMobileClick; // eslint-disable-line prefer-destructuring
     }
 
-    let categoriesMargin
-    let tagsMargin
-    let origamiScalar = 0
+    let categoriesMargin;
+    let tagsMargin;
 
     if (!isMobile) {
-      if (parsePath(location.pathname)[0] === AUTHENTICATION) { // NOTE -- quick patch ahead of larger refactor
-        categoriesMargin = -110
+      if (currentPath === CREATE_MARKET && mainMenu.scalar === 1) {
+        // NOTE -- quick patch ahead of larger refactor
+        categoriesMargin = -110;
       } else {
-        categoriesMargin = -110 + (110 * mainMenu.scalar)
+        categoriesMargin = -110 + 110 * mainMenu.scalar;
       }
 
-      tagsMargin = 110 * subMenu.scalar
-
-      // ensure origami fold-out moves perfectly with submenu
-      origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
+      tagsMargin = 110 * subMenu.scalar;
     }
 
     return (
@@ -458,34 +499,26 @@ export default class AppView extends Component {
           titleTemplate="%s | Augur"
         />
         <NotificationBarContainer />
-        {Object.keys(modal).length !== 0 &&
-          <Modal />
-        }
+        {Object.keys(modal).length !== 0 && <Modal />}
         <div
-          className={classNames(
-            Styles.App,
-            {
-              [Styles[`App--blur`]]: Object.keys(modal).length !== 0,
-            },
-          )}
+          className={classNames(Styles.App, {
+            [Styles[`App--blur`]]: Object.keys(modal).length !== 0
+          })}
         >
+          <section className={Styles.App__loadingIndicator} />
           <section
             className={Styles.SideBar}
             onClick={e => this.mainSectionClickHandler(e, false)}
             role="presentation"
           >
-            <Origami
-              isMobile={isMobile}
-              menuScalar={origamiScalar}
-            />
             <Link to={makePath(CATEGORIES)}>
-              <Logo
-                isLoading={isLoading}
-              />
+              <Logo isLoading={isLoading} />
             </Link>
             {this.renderMobileMenuButton(unseenCount)}
             <SideNav
-              defaultMobileClick={() => this.setState({ mobileMenuState: mobileMenuStates.CLOSED })}
+              defaultMobileClick={() =>
+                this.setState({ mobileMenuState: mobileMenuStates.CLOSED })
+              }
               isMobile={isMobile}
               isLogged={isLogged}
               mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
@@ -512,28 +545,39 @@ export default class AppView extends Component {
                 isLoading={isLoading}
               />
             </section>
-            {isLogged && s.isNotificationsVisible &&
-              <NotificationsContainer
-                toggleNotifications={() => this.toggleNotifications()}
-              />
-            }
-            {universe.forkEndTime && universe.forkEndTime !== '0' && blockchain && blockchain.currentAugurTimestamp &&
-              <section className={Styles.TopBar}>
-                <ForkingNotification
-                  location={location}
-                  universe={universe}
-                  currentTime={blockchain.currentAugurTimestamp}
-                  doesUserHaveRep={loginAccount.rep > 0}
-                  marginLeft={tagsMargin}
-                  finalizeMarket={finalizeMarket}
-                />
-              </section>
-            }
+            {isLogged &&
+              s.isNotificationsVisible && (
+                <div
+                  ref={notificationsContainer => {
+                    this.notificationsContainer = notificationsContainer;
+                  }}
+                  className={classNames(Styles.App__notifications)}
+                >
+                  <NotificationsContainer
+                    toggleNotifications={() => this.toggleNotifications()}
+                  />
+                </div>
+              )}
+            {universe.forkEndTime &&
+              universe.forkEndTime !== "0" &&
+              blockchain &&
+              blockchain.currentAugurTimestamp && (
+                <section className={Styles.TopBar}>
+                  <ForkingNotification
+                    location={location}
+                    universe={universe}
+                    currentTime={blockchain.currentAugurTimestamp}
+                    doesUserHaveRep={loginAccount.rep > 0}
+                    marginLeft={tagsMargin}
+                    finalizeMarket={finalizeMarket}
+                  />
+                </section>
+              )}
             <section
               className={Styles.Main__wrap}
               style={{ marginLeft: categoriesMargin }}
             >
-              {InnerNav &&
+              {InnerNav && (
                 <InnerNav
                   currentBasePath={this.state.currentBasePath}
                   isMobile={isMobile}
@@ -546,13 +590,13 @@ export default class AppView extends Component {
                   openSubMenu={this.openSubMenu}
                   privateKey={loginAccount.privateKey}
                 />
-              }
-              {!InnerNav &&
-                <div className="no-nav-placehold" />
-              }
+              )}
+              {!InnerNav && <div className="no-nav-placehold" />}
               <section
                 className={Styles.Main__content}
-                style={{ marginLeft: tagsMargin }}
+                style={{
+                  marginLeft: tagsMargin
+                }}
                 onClick={this.mainSectionClickHandler}
                 role="presentation"
               >
@@ -562,6 +606,6 @@ export default class AppView extends Component {
           </section>
         </div>
       </main>
-    )
+    );
   }
 }

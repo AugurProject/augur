@@ -43,6 +43,7 @@
 .MarketProperties__meta {
   display: flex;
   flex-wrap: nowrap;
+  width: 80%;
 
   > li {
     display: inline-block;
@@ -55,11 +56,10 @@
     &.MarketProperties__resolutionSource {
       flex: 1 0 160px;
       padding-right: 1rem;
+      white-space: nowrap;
     }
 
     > span {
-      &:extend(.caps--medium);
-
       color: @color-purple;
       display: block;
 
@@ -103,6 +103,8 @@
     display: flex;
     flex-wrap: wrap;
     margin: 0 -1rem -1rem;
+    max-width: 75%;
+    width: unset;
 
     > li {
       display: inline-block;
@@ -130,10 +132,18 @@
   .MarketProperties__actions {
     margin-top: 1.5rem;
   }
+
+  .MarketProperties__meta {
+    max-width: unset;
+    width: unset;
+  }
 }
 
 @media @breakpoint-mobile-small {
   .MarketProperties__meta {
+    max-width: unset;
+    width: unset;
+
     > li {
       max-width: 120px;
     }

@@ -113,6 +113,47 @@
   }
 }
 
+.button--transparent {
+  .button;
+
+  background-color: @color-transparent;
+  border: solid 1px @color-purple;
+  border-radius: 32px;
+  color: @color-purple;
+  line-height: unset;
+  min-height: unset;
+  min-width: unset;
+  padding: 8px 24px;
+  text-transform: none;
+
+  &:hover,
+  &:visited:hover {
+    background-color: @color-lightpurple;
+    color: @color-white;
+  }
+
+  &:disabled,
+  &:disabled:hover {
+    background-color: transparent;
+    border: 1px solid @color-lightgray;
+    color: @color-lightgray;
+    cursor: default;
+  }
+
+  &:visited {
+    color: @color-purple;
+  }
+}
+
+.button--transparent--disabled,
+.button--transparent:disabled,
+.button--transparent:disabled:hover {
+  background-color: transparent;
+  border: 1px solid @color-lightgray;
+  color: @color-lightgray;
+  cursor: default;
+}
+
 .button--white--short {
   .button;
 
@@ -136,4 +177,26 @@
   .button--white--short;
 
   padding: 1.1em 2em;
+}
+
+.button--gray {
+  .button;
+
+  background-color: @color-transparent;
+  border: 2px solid @color-gray;
+  color: @color-gray;
+
+  &:hover {
+    background-color: @color-lightgray;
+    border: 2px solid black;
+    color: black;
+  }
+}
+
+.button--gray--disabled,
+.button--gray:disabled,
+.button--gray:disabled:hover {
+  background-color: @color-lightgray;
+  color: @color-lightergray;
+  cursor: default;
 }

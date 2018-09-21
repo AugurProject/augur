@@ -1,6 +1,7 @@
 # augur | client
-[![Build Status](https://travis-ci.org/AugurProject/augur.svg?branch=master)](https://travis-ci.org/AugurProject/augur)
-[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur?branch=master)
+[![Build Status](https://travis-ci.com/AugurProject/augur-ui.svg?branch=master)](https://travis-ci.com/AugurProject/augur-ui)
+[![Coverage Status](https://coveralls.io/repos/github/AugurProject/augur-ui/badge.svg?branch=master)](https://coveralls.io/github/AugurProject/augur-ui?branch=master)
+[![Language Grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/AugurProject/augur-ui.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/AugurProject/augur-ui/context:javascript)
 
 Augur is a decentralized prediction market platform built on Ethereum.  
 It runs locally in your browser and communicates directly with the ethereum network, without going through intermediate servers.
@@ -10,7 +11,7 @@ There are several configurations to run it on testnet:
 * Easiest: **visit [dev.augur.net](http://dev.augur.net)**  
 * Partial Local: [run ethereum client locally](#partial-local-)
 * Full Local: [run everything locally](#run-everything-locally-)
-* Development Environment Setups: [various configurations](https://github.com/AugurProject/augur/blob/master/docs/dev-local-node.md)
+* Development Environment Setups: [various configurations](https://github.com/AugurProject/augur-ui/blob/master/docs/dev-local-node.md)
 
 Production: 
 
@@ -58,11 +59,18 @@ Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that y
 Run all subsequent commands within the bash command prompt.  
 It's also recommend that you use a Debian based workflow for the installation of packages (makes things much easier).
 
+* Because of issues with node v10 doesn't support node-hid we are using v9. Here are the versions we used for development.
+```
+    node: v9.11.1
+    npm: 5.6.0
+    yarn: 1.7.0
+    docker: Docker version 18.06.0-ce
+```    
 ## Build From Source
 
 ```
-git clone https://github.com/AugurProject/augur.git
-cd augur
+git clone https://github.com/AugurProject/augur-ui.git
+cd augur-ui
 ```
 
 ### npm
@@ -77,20 +85,23 @@ yarn
 yarn build
 ```
 
-This will create a `build` folder inside of the `augur` directory with all the files necessary to run the client.
+This will create a `build` folder inside of the `augur-ui` directory with all the files necessary to run the client.
 Simply copy these files to your web server of choice.
 
 
 ### [Docker](https://www.docker.com/)
 After git cloning UI source let docker build UI and create a docker image. Then run the docker container (from just built image) that will host augur UI locally and usings rinkeby augur-node and rinkeby ethereum node
-[dockerized augur client](./docs/deploy-production.md)
+[dockerized augur-ui client](./docs/deploy-production.md)
+
+### [Prettier](https://prettier.io/)
+We are using prettier to maintain formatting standards.Please [install](https://prettier.io/docs/en/editors.html) the relevant editor extension for your editor.
 
 ***
 
 ## Run everything Locally <a name="totally_local"></a>
 These instructions go through running local ethereum node, augur-node and augur UI. This will create a local environment contracts loaded with canned data.
 
-Full instructions are here [dev-local-node](https://github.com/AugurProject/augur/blob/master/docs/dev-local-node.md)
+Full instructions are here [dev-local-node](https://github.com/AugurProject/augur-ui/blob/master/docs/dev-local-node.md)
 
 
 

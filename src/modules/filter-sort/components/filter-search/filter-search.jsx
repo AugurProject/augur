@@ -1,77 +1,114 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Input from 'modules/common/components/input/input'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Input from "modules/common/components/input/input";
 
-import parseQuery from 'modules/routes/helpers/parse-query'
-import makeQuery from 'modules/routes/helpers/make-query'
+import parseQuery from "modules/routes/helpers/parse-query";
+import makeQuery from "modules/routes/helpers/make-query";
 
-import { FILTER_SEARCH_PARAM } from 'modules/filter-sort/constants/param-names'
+import { FILTER_SEARCH_PARAM } from "modules/filter-sort/constants/param-names";
 
-import Styles from 'modules/filter-sort/components/filter-search/filter-search.styles'
+import Styles from "modules/filter-sort/components/filter-search/filter-search.styles";
 
 export default class FilterSearch extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    searchPlaceholder: PropTypes.string,
-  }
+    hasLoadedMarkets: PropTypes.bool
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      search: '',
-    }
+      search: "",
+      placeholder: "Search",
+      width: "250px"
+    };
 
-    this.updateQuery = this.updateQuery.bind(this)
+    this.updateQuery = this.updateQuery.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.resetSearch = this.resetSearch.bind(this);
+    this.timeout = null;
   }
 
   componentWillMount() {
-    const { location } = this.props
-    const search = parseQuery(location.search)[FILTER_SEARCH_PARAM]
-    if (search) this.setState({ search })
+    const { location } = this.props;
+    const search = parseQuery(location.search)[FILTER_SEARCH_PARAM];
+    if (search) this.setState({ search });
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.search !== nextState.search) {
-      this.updateQuery(nextState.search, nextProps.location)
+    if (
+      nextProps.location !== this.props.location &&
+      !nextProps.location.search.includes(FILTER_SEARCH_PARAM)
+    ) {
+      clearTimeout(this.timeout);
+      this.resetSearch();
     }
+    if (this.state.search !== nextState.search) {
+      this.updateQuery(nextState.search, nextProps.location);
+    }
+  }
+
+  onFocus() {
+    this.setState({ placeholder: "", width: "400px" });
+  }
+
+  onBlur() {
+    this.setState({ placeholder: "Search", width: "250px" });
+  }
+
+  onChange(search) {
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(() => {
+      this.setState({ search });
+    }, 500);
+  }
+
+  resetSearch() {
+    this.setState({ search: "", placeholder: "Search" });
   }
 
   updateQuery(search, location) {
-    const { history } = this.props
-    let updatedSearch = parseQuery(location.search)
+    const { history } = this.props;
+    let updatedSearch = parseQuery(location.search);
 
-    if (search === '') {
-      delete updatedSearch[FILTER_SEARCH_PARAM]
+    if (search === "") {
+      delete updatedSearch[FILTER_SEARCH_PARAM];
     } else {
-      updatedSearch[FILTER_SEARCH_PARAM] = search
+      updatedSearch[FILTER_SEARCH_PARAM] = search;
     }
 
-    updatedSearch = makeQuery(updatedSearch)
+    updatedSearch = makeQuery(updatedSearch);
 
     history.push({
       ...location,
-      search: updatedSearch,
-    })
+      search: updatedSearch
+    });
   }
 
   render() {
-    const { searchPlaceholder } = this.props
-    const s = this.state
+    const { hasLoadedMarkets } = this.props;
+    const s = this.state;
 
     return (
-      <article className={Styles.FilterSearch}>
+      <article className={Styles.FilterSearch} style={{ minWidth: s.width }}>
         <Input
           className={Styles.FilterSearch__input}
           isSearch
           isClearable
           noFocus
-          placeholder={searchPlaceholder || 'Search'}
+          placeholder={s.placeholder}
           value={s.search}
-          onChange={search => this.setState({ search })}
+          onChange={this.onChange}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          isLoading={Boolean(!hasLoadedMarkets && s.search && s.search !== "")}
         />
       </article>
-    )
+    );
   }
 }
