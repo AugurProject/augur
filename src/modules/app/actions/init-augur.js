@@ -33,7 +33,6 @@ import { windowRef } from "src/utils/window-ref";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
-const NOT_SIGNED_IN_ERROR = "NOT_SIGNED_IN";
 
 const NETWORK_NAMES = {
   1: "Mainnet",
@@ -78,14 +77,11 @@ function loadAccount(dispatch, existing, env, callback) {
     let account = existing;
     if (existing !== accounts[0]) {
       account = accounts[0];
-      if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
+      if (account &&  process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
       } else {
         dispatch(logout());
       }
-    }
-    if (!account) {
-      return callback(NOT_SIGNED_IN_ERROR, account);
     }
     callback(null, account);
   });
@@ -170,7 +166,7 @@ export function connectAugur(
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
-            pollForAccount(dispatch, getState, callback);
+            pollForAccount(dispatch, getState);
             pollForNetwork(dispatch, getState);
           }
           callback();
