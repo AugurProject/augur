@@ -237,12 +237,6 @@ export default class CoreProperties extends Component {
               reportingState ===
                 constants.REPORTING_STATE.AWAITING_FINALIZATION && (
                 <div className={Styles.CoreProperties__header__finalize}>
-                  <button
-                    className={Styles[`CoreProperties__property-button`]}
-                    onClick={() => finalizeMarket(market.id)}
-                  >
-                    FINALIZE
-                  </button>
                   <label
                     className={classNames(
                       TooltipStyles.TooltipHint,
@@ -262,10 +256,16 @@ export default class CoreProperties extends Component {
                   >
                     <h4>Market Finalization</h4>
                     <p>
-                      Finalizing a market allows users to trade in winning shares
-                      for ETH.
+                      Finalizing a market allows users to trade in winning
+                      shares for ETH.
                     </p>
                   </ReactTooltip>
+                  <button
+                    className={Styles[`CoreProperties__property-button`]}
+                    onClick={() => finalizeMarket(market.id)}
+                  >
+                    FINALIZE
+                  </button>
                 </div>
               )}
           </span>
