@@ -14,7 +14,6 @@ var createRpcInterface = function (ethrpc) {
     getGasPrice: ethrpc.getGasPrice,
     getNetworkID: ethrpc.getNetworkID,
     getLogs: ethrpc.getLogs,
-    getTransport: ethrpc.getTransport,
     getTransactionReceipt: ethrpc.getTransactionReceipt,
     isUnlocked: ethrpc.isUnlocked,
     packageAndSubmitRawTransaction: ethrpc.packageAndSubmitRawTransaction,
