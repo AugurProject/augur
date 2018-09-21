@@ -227,13 +227,22 @@ export default class CoreProperties extends Component {
             <div>Winning Outcome:</div>
           </span>
           <span className={Styles[`CoreProperties__property-winningOutcome`]}>
-            <div className={Styles[`CoreProperties__header-firstElement`]}>
+            <div
+              className={Styles[`CoreProperties__header-firstElement`]}
+              style={{ fontWeight: "700" }}
+            >
               {consensus}
             </div>
             {isLogged &&
               reportingState ===
                 constants.REPORTING_STATE.AWAITING_FINALIZATION && (
                 <div className={Styles.CoreProperties__header__finalize}>
+                  <button
+                    className={Styles[`CoreProperties__property-button`]}
+                    onClick={() => finalizeMarket(market.id)}
+                  >
+                    FINALIZE
+                  </button>
                   <label
                     className={classNames(
                       TooltipStyles.TooltipHint,
@@ -248,22 +257,15 @@ export default class CoreProperties extends Component {
                     id="tooltip--finalize"
                     className={TooltipStyles.Tooltip}
                     effect="solid"
-                    place="right"
+                    place="bottom"
                     type="light"
                   >
                     <h4>Market Finalization</h4>
-                    <p style={{ color: "#372e4b" }}>
-                      {
-                        "Finalized market allows users to trade in winning shares for ETH."
-                      }
+                    <p>
+                      Finalizing a market allows users to trade in winning shares
+                      for ETH.
                     </p>
                   </ReactTooltip>
-                  <button
-                    className={Styles[`CoreProperties__property-button`]}
-                    onClick={() => finalizeMarket(market.id)}
-                  >
-                    FINALIZE
-                  </button>
                 </div>
               )}
           </span>
