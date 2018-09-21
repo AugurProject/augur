@@ -120,12 +120,12 @@ export default class MarketHeader extends Component {
                     {details}
                   </label>
                   {detailsTooLong && (
-                    <div
+                    <button
                       className={Styles.MarketHeader__readMoreButton}
                       onClick={this.toggleReadMore}
                     >
                       {!this.state.showReadMore ? "read more" : "read less"}
-                    </div>
+                    </button>
                   )}
                 </div>
               )}
