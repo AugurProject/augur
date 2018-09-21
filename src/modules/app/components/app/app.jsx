@@ -55,8 +55,7 @@ import {
   CATEGORIES,
   REPORTING_DISPUTE_MARKETS,
   REPORTING_REPORT_MARKETS,
-  REPORTING_RESOLVED_MARKETS,
-  AUTHENTICATION
+  REPORTING_RESOLVED_MARKETS
 } from "modules/routes/constants/views";
 import { MODAL_NETWORK_CONNECT } from "modules/modal/constants/modal-types";
 import { CATEGORY_PARAM_NAME } from "modules/filter-sort/constants/param-names";
@@ -172,7 +171,8 @@ export default class AppView extends Component {
         icon: NavAccountIcon,
         mobileClick: () =>
           this.setState({ mobileMenuState: mobileMenuStates.FIRSTMENU_OPEN }),
-        route: ACCOUNT_DEPOSIT
+        route: ACCOUNT_DEPOSIT,
+        requireLogin: true
       }
     ];
 
@@ -482,10 +482,7 @@ export default class AppView extends Component {
     let tagsMargin;
 
     if (!isMobile) {
-      if (
-        currentPath === AUTHENTICATION ||
-        (currentPath === CREATE_MARKET && mainMenu.scalar === 1)
-      ) {
+      if (currentPath === CREATE_MARKET && mainMenu.scalar === 1) {
         // NOTE -- quick patch ahead of larger refactor
         categoriesMargin = -110;
       } else {

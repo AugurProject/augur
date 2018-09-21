@@ -33,6 +33,7 @@ import { windowRef } from "src/utils/window-ref";
 
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
+const NOT_SIGNED_IN_ERROR = "NOT_SIGNED_IN";
 
 const NETWORK_NAMES = {
   1: "Mainnet",
@@ -40,16 +41,22 @@ const NETWORK_NAMES = {
   12346: "Private"
 };
 
-function pollForAccount(dispatch, getState) {
+function pollForAccount(dispatch, getState, callback) {
   const { env } = getState();
   loadAccount(dispatch, null, env, (err, loadedAccount) => {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err);
+      return callback(err);
+    }
     let account = loadedAccount;
     setInterval(() => {
-      loadAccount(dispatch, account, env, (err, loadedAccount) => {
-        if (err) console.error(err);
-        account = loadedAccount;
-      });
+      const { authStatus } = getState();
+      if (authStatus.isLogged) {
+        loadAccount(dispatch, account, env, (err, loadedAccount) => {
+          if (err) console.error(err);
+          account = loadedAccount;
+        });
+      }
       const disclaimerSeen =
         windowRef &&
         windowRef.localStorage &&
@@ -76,6 +83,9 @@ function loadAccount(dispatch, existing, env, callback) {
       } else {
         dispatch(logout());
       }
+    }
+    if (!account) {
+      return callback(NOT_SIGNED_IN_ERROR, account);
     }
     callback(null, account);
   });
@@ -160,7 +170,7 @@ export function connectAugur(
           if (modal && modal.type === MODAL_NETWORK_DISCONNECTED)
             dispatch(closeModal());
           if (isInitialConnection) {
-            pollForAccount(dispatch, getState);
+            pollForAccount(dispatch, getState, callback);
             pollForNetwork(dispatch, getState);
           }
           callback();

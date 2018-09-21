@@ -207,13 +207,10 @@ describe("modules/app/actions/init-augur.js", () => {
 
         store.dispatch(
           initAugur({}, {}, (err, connInfo) => {
-            assert.isUndefined(
+            assert.deepEqual(
+              "NOT_SIGNED_IN",
               err,
               "callback passed to initAugur had a first argument when expecting undefined."
-            );
-            assert.isUndefined(
-              connInfo,
-              "callback passed to initAugur had a second argument when expecting undefined."
             );
             done();
           })
@@ -274,13 +271,10 @@ describe("modules/app/actions/init-augur.js", () => {
 
         store.dispatch(
           initAugur({}, {}, (err, connInfo) => {
-            assert.isUndefined(
+            assert.deepEqual(
+              "NOT_SIGNED_IN",
               err,
               "callback passed to initAugur had a first argument when expecting undefined."
-            );
-            assert.isUndefined(
-              connInfo,
-              "callback passed to initAugur had a second argument when expecting undefined."
             );
             done();
           })
