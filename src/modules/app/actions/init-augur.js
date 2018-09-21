@@ -85,11 +85,17 @@ function loadAccount(dispatch, existing, env, callback) {
       account = accounts[0];
       if (account && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
         dispatch(useUnlockedAccount(account));
-      } else if (loggedInAccount && account === loggedInAccount) {
+      } else if (loggedInAccount && accounts.includes(loggedInAccount)) {
         dispatch(useUnlockedAccount(loggedInAccount));
       } else {
         dispatch(logout());
       }
+
+      if (loggedInAccount && account !== loggedInAccount) {
+        dispatch(logout());
+      }
+    } else if (existing !== loggedInAccount) {
+      dispatch(logout());
     }
     if (!existing && loggedInAccount && accounts.includes(loggedInAccount)) {
       dispatch(useUnlockedAccount(loggedInAccount));
