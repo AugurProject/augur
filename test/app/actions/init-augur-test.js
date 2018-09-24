@@ -138,7 +138,13 @@ describe("modules/app/actions/init-augur.js", () => {
             contracts: { addresses: { 4: { Universe: "0xb0b" } } },
             rpc: {
               getNetworkID: () => 4,
-              eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+              eth: { accounts: cb => cb(null, ["0xa11ce"]) },
+              constants: {
+                ACCOUNT_TYPES: {
+                  UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                  META_MASK: "metaMask"
+                }
+              },
             },
             api: { Controller: { stopped: () => {} } }
           }
@@ -204,7 +210,13 @@ describe("modules/app/actions/init-augur.js", () => {
               contracts: { addresses: { 4: { Universe: "0xb0b" } } },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, ["0xa11ce"]) }
+                eth: { accounts: cb => cb(null, ["0xa11ce"]) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                },
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -264,7 +276,13 @@ describe("modules/app/actions/init-augur.js", () => {
               contracts: { addresses: { 4: { Universe: "0xb0b" } } },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                },
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -327,7 +345,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                },
               }
             }
           });
@@ -386,7 +410,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                },
               }
             }
           });
@@ -440,7 +470,13 @@ describe("modules/app/actions/init-augur.js", () => {
               },
               rpc: {
                 getNetworkID: () => 4,
-                eth: { accounts: cb => cb(null, []) }
+                eth: { accounts: cb => cb(null, []) },
+                constants: {
+                  ACCOUNT_TYPES: {
+                    UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
+                    META_MASK: "metaMask"
+                  }
+                },
               }
             }
           });
