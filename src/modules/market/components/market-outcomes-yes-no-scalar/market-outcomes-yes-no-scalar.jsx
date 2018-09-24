@@ -30,6 +30,16 @@ const MarketOutcomes = p => {
     left: calculatePosition() + "%"
   };
 
+  const labelMargins = p => {
+    console.log(p);
+    const l = p < 5 ? 47 : 0;
+    const r = p > 95 ? 47 : 0;
+    return {
+      marginLeft: l,
+      marginRight: r
+    };
+  };
+
   const minValue =
     !isNaN(p.min) && p.type !== YES_NO
       ? `${p.min} ${scalarDenomination}`
@@ -60,6 +70,7 @@ const MarketOutcomes = p => {
         <span
           className={Styles["MarketOutcomes__current-value"]}
           data-testid="midpoint"
+          style={labelMargins(calculatePosition())}
         >
           {getValue(p.outcomes[0], "lastPricePercent.formatted")}
         </span>
