@@ -42,11 +42,11 @@ const NETWORK_NAMES = {
 };
 
 function pollForAccount(dispatch, getState, callback) {
-  const { env, loginAccount } = getState();
+  const { loginAccount } = getState();
   let accountType =
     loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
-  loadAccount(dispatch, null, env, accountType, (err, loadedAccount) => {
+  loadAccount(dispatch, null, accountType, (err, loadedAccount) => {
     if (err) {
       console.error(err);
       return callback(err);
@@ -58,16 +58,10 @@ function pollForAccount(dispatch, getState, callback) {
         loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
       if (authStatus.isLogged) {
-        loadAccount(
-          dispatch,
-          account,
-          env,
-          accountType,
-          (err, loadedAccount) => {
-            if (err) console.error(err);
-            account = loadedAccount;
-          }
-        );
+        loadAccount(dispatch, account, accountType, (err, loadedAccount) => {
+          if (err) console.error(err);
+          account = loadedAccount;
+        });
       }
       const disclaimerSeen =
         windowRef &&
@@ -84,7 +78,7 @@ function pollForAccount(dispatch, getState, callback) {
   });
 }
 
-function loadAccount(dispatch, existing, env, accountType, callback) {
+function loadAccount(dispatch, existing, accountType, callback) {
   let loggedInAccount = null;
   const usingMetaMask = accountType === ACCOUNT_TYPES.META_MASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
