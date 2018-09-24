@@ -202,7 +202,7 @@ export default function setNotificationText(notification, callback) {
 
       // Market
       case "CONTRIBUTE":
-        notification.title = "Contribute to crowdsourcer";
+        notification.title = "Contribute to Dispute Bond";
         if (!notification.description && notification.log) {
           dispatch(
             loadMarketsInfoIfNotLoaded([notification.to], () => {
