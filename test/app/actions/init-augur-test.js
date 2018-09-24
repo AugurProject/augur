@@ -144,7 +144,7 @@ describe("modules/app/actions/init-augur.js", () => {
                   UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                   META_MASK: "metaMask"
                 }
-              },
+              }
             },
             api: { Controller: { stopped: () => {} } }
           }
@@ -216,7 +216,7 @@ describe("modules/app/actions/init-augur.js", () => {
                     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                     META_MASK: "metaMask"
                   }
-                },
+                }
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -282,7 +282,7 @@ describe("modules/app/actions/init-augur.js", () => {
                     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                     META_MASK: "metaMask"
                   }
-                },
+                }
               },
               api: { Controller: { stopped: () => {} } }
             }
@@ -351,7 +351,7 @@ describe("modules/app/actions/init-augur.js", () => {
                     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                     META_MASK: "metaMask"
                   }
-                },
+                }
               }
             }
           });
@@ -416,7 +416,7 @@ describe("modules/app/actions/init-augur.js", () => {
                     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                     META_MASK: "metaMask"
                   }
-                },
+                }
               }
             }
           });
@@ -476,7 +476,7 @@ describe("modules/app/actions/init-augur.js", () => {
                     UNLOCKED_ETHEREUM_NODE: "unlockedEthereumNode",
                     META_MASK: "metaMask"
                   }
-                },
+                }
               }
             }
           });
