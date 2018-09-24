@@ -100,7 +100,7 @@ function loadAccount(dispatch, existing, env, accountType, callback) {
       } else if (usingMetaMask && loggedInAccount !== account) {
         dispatch(logout());
         account = null;
-      } else if (loggedInAccount) {
+      } else if (loggedInAccount && loggedInAccount === account) {
         dispatch(useUnlockedAccount(loggedInAccount));
         account = loggedInAccount;
       } else if (usingMetaMask) {
