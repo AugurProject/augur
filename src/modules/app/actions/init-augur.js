@@ -77,27 +77,24 @@ function pollForAccount(dispatch, getState, callback) {
 
 function loadAccount(dispatch, existing, env, accountType, callback) {
   let loggedInAccount = null;
-
+  const usingMetaMask = accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
-    console.log(accounts)
-    console.log('existing:  ' + existing)
-    console.log('loggedInAccount: ' + loggedInAccount)
     if (err) return callback(err);
     let account = existing;
     if (existing !== accounts[0]) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      } else if (accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK && loggedInAccount !== account) {
+      } else if (usingMetaMask && loggedInAccount !== account) {
         dispatch(logout());
         account = null
       } else if (loggedInAccount) {
         dispatch(useUnlockedAccount(loggedInAccount));
         account = loggedInAccount
-      } else if (accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK) {
+      } else if (usingMetaMask) {
         dispatch(logout());
         account = null
       }
