@@ -6,11 +6,18 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
+strategy:
+  matrix:
+    node_8_x:
+      node_version: 8.x
+    node_9_x:
+      node_version: 9.x
+
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: yarn
+  displayName: 'running yarn'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    yarn run build
+    yarn run test
+  displayName: 'build and test'
