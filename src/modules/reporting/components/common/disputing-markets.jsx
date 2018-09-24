@@ -18,7 +18,7 @@ export default class DisputingMarkets extends Component {
     isConnected: PropTypes.bool.isRequired,
     outcomes: PropTypes.object.isRequired,
     isForking: PropTypes.bool.isRequired,
-    forkingMarketId: PropTypes.string.isRequired,
+    forkingMarketId: PropTypes.string,
     pageinationCount: PropTypes.number.isRequired,
     disputableMarketsLength: PropTypes.number,
     showPagination: PropTypes.bool,
@@ -48,11 +48,13 @@ export default class DisputingMarkets extends Component {
   }
 
   componentWillMount() {
-    const { loadMarkets } = this.props;
-    if (loadMarkets) loadMarkets();
+    const { loadMarkets, isConnected } = this.props;
+    if (loadMarkets && isConnected) loadMarkets();
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if (this.props.isConnected !== nextProps.isConnected)
+      this.props.loadMarkets();
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||

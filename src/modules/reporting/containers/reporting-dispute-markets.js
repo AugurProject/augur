@@ -32,7 +32,7 @@ const mapStateToProps = (state, { history }) => {
     navigateToAccountDepositHandler: () =>
       history.push(makePath(ACCOUNT_DEPOSIT)),
     outcomes: disputeOutcomes,
-    isForking: state.universe.isForking,
+    isForking: state.universe.isForking || false,
     forkEndTime: state.universe.forkEndTime,
     forkingMarketId: state.universe.forkingMarket
   };
