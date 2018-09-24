@@ -163,17 +163,16 @@ export default class CreateMarketOutcome extends Component {
     updateNewMarket(updatedMarket);
   }
 
-  validateScalarNum(rawValue, limitDigits, type) {
+  validateScalarNum(rawValue, type, limitDigits) {
     const { isValid, newMarket, updateNewMarket } = this.props;
     const { currentStep } = newMarket;
     const { scalarType } = this.state;
 
     let value = rawValue;
 
-    const regExp = new RegExp("^[0-9]+\\.[0]{0," + NUM_DIGITS_LIMIT + "}$");
-    if (limitDigits && value !== "" && value !== ".0" && !regExp.test(value)) {
-      value = parseFloat(value);
-      value = value.toFixed(NUM_DIGITS_LIMIT);
+    const decimals = (value + '').split(".")
+    if (limitDigits && decimals[1] && decimals[1].length > NUM_DIGITS_LIMIT) {
+      value = decimals[0] + "." + decimals[1].substring(0, NUM_DIGITS_LIMIT)
     }
 
     const updatedMarket = { ...newMarket };
@@ -494,8 +493,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
+                      s.scalarType.MIN_PRICE,
                       true,
-                      s.scalarType.MIN_PRICE
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -528,8 +527,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
+                      s.scalarType.MAX_PRICE,
                       true,
-                      s.scalarType.MAX_PRICE
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -583,8 +582,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
-                      false,
-                      s.scalarType.DENOMINATION
+                      s.scalarType.DENOMINATION,
+                      false
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
@@ -610,8 +609,8 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
+                      s.scalarType.TICK_SIZE,
                       true,
-                      s.scalarType.TICK_SIZE
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
