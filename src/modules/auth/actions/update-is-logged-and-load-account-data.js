@@ -20,6 +20,12 @@ export const updateIsLoggedAndLoadAccountData = (
     displayAddress,
     meta: { accountType, address, signer: null }
   };
+
+  const localStorageRef = typeof window !== "undefined" && window.localStorage;
+  if (localStorageRef && localStorageRef.setItem && !process.env.AUGUR_HOSTED && accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK) {
+    localStorageRef.setItem("loggedInAccount", account.address);
+  }
+
   dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(loadAccountData(loginAccount));
 };
