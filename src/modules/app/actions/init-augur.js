@@ -78,26 +78,33 @@ function loadAccount(dispatch, existing, env, callback) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
   AugurJS.augur.rpc.eth.accounts((err, accounts) => {
+    console.log(accounts)
+    console.log('existing:  ' + existing)
+    console.log('loggedInAccount: ' + loggedInAccount)
     if (err) return callback(err);
     let account = existing;
     if (existing !== accounts[0]) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      } 
+      // } else if (existing !== loggedInAccount) {
+      //   dispatch(logout());
+      // } else if (loggedInAccount) {
+       // dispatch(useUnlockedAccount(loggedInAccount));
+      } else {
+        dispatch(logout());
+      }
       
       // else if (loggedInAccount && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
       //   dispatch(useUnlockedAccount(loggedInAccount));
       // } 
 
-      else {
-        dispatch(logout());
-      }
+      
 
       // if (loggedInAccount && account !== loggedInAccount) {
       //   dispatch(logout());
       // }
-    } 
+    // } 
     // else if (existing !== loggedInAccount) {
     //   dispatch(logout());
     // }
