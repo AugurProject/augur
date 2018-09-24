@@ -31,7 +31,6 @@ const MarketOutcomes = p => {
   };
 
   const labelMargins = p => {
-    console.log(p);
     const l = p < 5 ? 47 : 0;
     const r = p > 95 ? 47 : 0;
     return {
