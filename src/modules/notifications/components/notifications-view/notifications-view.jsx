@@ -56,7 +56,8 @@ export default class NotificationsView extends Component {
         }}
         className={classNames(
           Styles.NotificationsView__parent,
-          ToggleHeightStyles["toggle-height-target"]
+          ToggleHeightStyles["toggle-height-target"],
+          ToggleHeightStyles["toggle-height-target-quick"]
         )}
       >
         <section id="notifications_view" className={Styles.NotificationsView}>
