@@ -12,11 +12,11 @@ import logError from "utils/log-error";
 export const loadAccountData = (account, callback = logError) => dispatch => {
   const address = getValue(account, "address");
   if (!address) return callback("account address required");
+  dispatch(loadAccountDataFromLocalStorage(account.address));
   dispatch(clearOrphanedOrderData());
   dispatch(updateLoginAccount(account));
   dispatch(loadAccountTrades());
   dispatch(checkAccountAllowance());
   dispatch(updateAssets());
   dispatch(loadReportingWindowBounds());
-  dispatch(loadAccountDataFromLocalStorage(account.address));
 };

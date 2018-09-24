@@ -84,12 +84,12 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: actions => {
       assert.deepEqual(actions, [
+        { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
         { type: "UPDATE_LOGIN_ACCOUNT", data: { address: "0xb0b" } },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
-        { type: "UPDATE_ASSETS" },
-        { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" }
+        { type: "UPDATE_ASSETS" }
       ]);
     }
   });
@@ -113,6 +113,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: actions => {
       assert.deepEqual(actions, [
+        { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" },
         { type: "CLEAR_ORPHANED_ORDER_DATA" },
         {
           type: "UPDATE_LOGIN_ACCOUNT",
@@ -125,8 +126,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         },
         { type: "UPDATE_ACCOUNT_TRADES_DATA" },
         { type: "CHECK_ACCOUNT_ALLOWANCE" },
-        { type: "UPDATE_ASSETS" },
-        { type: "LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE" }
+        { type: "UPDATE_ASSETS" }
       ]);
     }
   });
