@@ -14,14 +14,16 @@ const ChevronFlip = p => (
       ? ChevronFlipFilledIcon(
           classNames(Styles.ChevronFlip, p.className, {
             [Styles.pointDown]: p.pointDown,
-            [Styles.big]: p.big
+            [Styles.big]: p.big,
+            [Styles.quick]: p.quick
           }),
           p.stroke
         )
       : ChevronFlipIcon(
           classNames(Styles.ChevronFlip, p.className, {
             [Styles.pointDown]: p.pointDown,
-            [Styles.big]: p.big
+            [Styles.big]: p.big,
+            [Styles.quick]: p.quick
           }),
           p.stroke
         )}
@@ -33,7 +35,8 @@ ChevronFlip.propTypes = {
   pointDown: PropTypes.bool,
   stroke: PropTypes.string,
   big: PropTypes.bool,
-  filledInIcon: PropTypes.bool
+  filledInIcon: PropTypes.bool,
+  quick: PropTypes.bool
 };
 
 export default ChevronFlip;
