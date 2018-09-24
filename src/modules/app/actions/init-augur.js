@@ -41,17 +41,21 @@ const NETWORK_NAMES = {
 };
 
 function pollForAccount(dispatch, getState, callback) {
-  const { env } = getState();
-  loadAccount(dispatch, null, env, (err, loadedAccount) => {
+  const { env, loginAccount } = getState();
+  let accountType = loginAccount && loginAccount.meta && loginAccount.meta.accountType
+
+  loadAccount(dispatch, null, env, accountType, (err, loadedAccount) => {
     if (err) {
       console.error(err);
       return callback(err);
     }
     let account = loadedAccount;
     setInterval(() => {
-      const { authStatus } = getState();
+      const { authStatus, loginAccount } = getState();
+      accountType = loginAccount && loginAccount.meta && loginAccount.meta.accountType
+
       if (authStatus.isLogged) {
-        loadAccount(dispatch, account, env, (err, loadedAccount) => {
+        loadAccount(dispatch, account, env, accountType, (err, loadedAccount) => {
           if (err) console.error(err);
           account = loadedAccount;
         });
@@ -71,7 +75,7 @@ function pollForAccount(dispatch, getState, callback) {
   });
 }
 
-function loadAccount(dispatch, existing, env, callback) {
+function loadAccount(dispatch, existing, env, accountType, callback) {
   let loggedInAccount = null;
 
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
@@ -87,31 +91,16 @@ function loadAccount(dispatch, existing, env, callback) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      // } else if (existing !== loggedInAccount) {
-      //   dispatch(logout());
-      // } else if (loggedInAccount) {
-       // dispatch(useUnlockedAccount(loggedInAccount));
-      } else {
+      } else if (accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK && loggedInAccount !== account) {
         dispatch(logout());
+        account = null
+      } else if (loggedInAccount) {
+        dispatch(useUnlockedAccount(loggedInAccount));
+        account = loggedInAccount
+      } else if (accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK) {
+        dispatch(logout());
+        account = null
       }
-      
-      // else if (loggedInAccount && (env.useWeb3Transport || process.env.AUTO_LOGIN)) {
-      //   dispatch(useUnlockedAccount(loggedInAccount));
-      // } 
-
-      
-
-      // if (loggedInAccount && account !== loggedInAccount) {
-      //   dispatch(logout());
-      // }
-    // } 
-    // else if (existing !== loggedInAccount) {
-    //   dispatch(logout());
-    // }
-    // if (loggedInAccount && accounts.includes(loggedInAccount)) {
-    //   dispatch(useUnlockedAccount(loggedInAccount));
-    // }
-  
     }
     callback(null, account);
   });
