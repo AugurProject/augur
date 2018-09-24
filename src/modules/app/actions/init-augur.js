@@ -42,7 +42,8 @@ const NETWORK_NAMES = {
 
 function pollForAccount(dispatch, getState, callback) {
   const { env, loginAccount } = getState();
-  let accountType = loginAccount && loginAccount.meta && loginAccount.meta.accountType
+  let accountType =
+    loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
   loadAccount(dispatch, null, env, accountType, (err, loadedAccount) => {
     if (err) {
@@ -52,13 +53,20 @@ function pollForAccount(dispatch, getState, callback) {
     let account = loadedAccount;
     setInterval(() => {
       const { authStatus, loginAccount } = getState();
-      accountType = loginAccount && loginAccount.meta && loginAccount.meta.accountType
+      accountType =
+        loginAccount && loginAccount.meta && loginAccount.meta.accountType;
 
       if (authStatus.isLogged) {
-        loadAccount(dispatch, account, env, accountType, (err, loadedAccount) => {
-          if (err) console.error(err);
-          account = loadedAccount;
-        });
+        loadAccount(
+          dispatch,
+          account,
+          env,
+          accountType,
+          (err, loadedAccount) => {
+            if (err) console.error(err);
+            account = loadedAccount;
+          }
+        );
       }
       const disclaimerSeen =
         windowRef &&
@@ -77,7 +85,8 @@ function pollForAccount(dispatch, getState, callback) {
 
 function loadAccount(dispatch, existing, env, accountType, callback) {
   let loggedInAccount = null;
-  const usingMetaMask = accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK
+  const usingMetaMask =
+    accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
@@ -90,13 +99,13 @@ function loadAccount(dispatch, existing, env, accountType, callback) {
         dispatch(useUnlockedAccount(account));
       } else if (usingMetaMask && loggedInAccount !== account) {
         dispatch(logout());
-        account = null
+        account = null;
       } else if (loggedInAccount) {
         dispatch(useUnlockedAccount(loggedInAccount));
-        account = loggedInAccount
+        account = loggedInAccount;
       } else if (usingMetaMask) {
         dispatch(logout());
-        account = null
+        account = null;
       }
     }
     callback(null, account);
