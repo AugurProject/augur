@@ -545,19 +545,10 @@ export default class AppView extends Component {
                 isLoading={isLoading}
               />
             </section>
-            {isLogged &&
-              s.isNotificationsVisible && (
-                <div
-                  ref={notificationsContainer => {
-                    this.notificationsContainer = notificationsContainer;
-                  }}
-                  className={classNames(Styles.App__notifications)}
-                >
-                  <NotificationsContainer
-                    toggleNotifications={() => this.toggleNotifications()}
-                  />
-                </div>
-              )}
+            <NotificationsContainer
+              notificationsVisible={isLogged && s.isNotificationsVisible}
+              toggleNotifications={() => this.toggleNotifications()}
+            />
             {universe.forkEndTime &&
               universe.forkEndTime !== "0" &&
               blockchain &&
