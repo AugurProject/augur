@@ -29,6 +29,8 @@ import StylesForm from "modules/create-market/components/create-market-form/crea
 import ReactTooltip from "react-tooltip";
 import TooltipStyles from "modules/common/less/tooltip";
 
+const NUM_DIGITS_LIMIT = 4;
+
 export default class CreateMarketOutcome extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
@@ -161,10 +163,18 @@ export default class CreateMarketOutcome extends Component {
     updateNewMarket(updatedMarket);
   }
 
-  validateScalarNum(value, type) {
+  validateScalarNum(rawValue, limitDigits, type) {
     const { isValid, newMarket, updateNewMarket } = this.props;
     const { currentStep } = newMarket;
     const { scalarType } = this.state;
+
+    let value = rawValue;
+
+    const regExp = new RegExp("^[0-9]+\\.[0]{0," + NUM_DIGITS_LIMIT + "}$");
+    if (limitDigits && value !== "" && value !== ".0" && !regExp.test(value)) {
+      value = parseFloat(value);
+      value = value.toFixed(NUM_DIGITS_LIMIT);
+    }
 
     const updatedMarket = { ...newMarket };
     let scalarSmallNum =
@@ -484,6 +494,7 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
+                      true,
                       s.scalarType.MIN_PRICE
                     );
                   }}
@@ -517,6 +528,7 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e => {
                     this.validateScalarNum(
                       e.target.value,
+                      true,
                       s.scalarType.MAX_PRICE
                     );
                   }}
@@ -571,6 +583,7 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
+                      false,
                       s.scalarType.DENOMINATION
                     )
                   }
@@ -597,6 +610,7 @@ export default class CreateMarketOutcome extends Component {
                   onChange={e =>
                     this.validateScalarNum(
                       e.target.value,
+                      true,
                       s.scalarType.TICK_SIZE
                     )
                   }
