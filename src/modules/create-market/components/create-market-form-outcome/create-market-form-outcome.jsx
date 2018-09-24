@@ -170,9 +170,9 @@ export default class CreateMarketOutcome extends Component {
 
     let value = rawValue;
 
-    const decimals = (value + '').split(".")
+    const decimals = (value + "").split(".");
     if (limitDigits && decimals[1] && decimals[1].length > NUM_DIGITS_LIMIT) {
-      value = decimals[0] + "." + decimals[1].substring(0, NUM_DIGITS_LIMIT)
+      value = decimals[0] + "." + decimals[1].substring(0, NUM_DIGITS_LIMIT);
     }
 
     const updatedMarket = { ...newMarket };
@@ -494,7 +494,7 @@ export default class CreateMarketOutcome extends Component {
                     this.validateScalarNum(
                       e.target.value,
                       s.scalarType.MIN_PRICE,
-                      true,
+                      true
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -528,7 +528,7 @@ export default class CreateMarketOutcome extends Component {
                     this.validateScalarNum(
                       e.target.value,
                       s.scalarType.MAX_PRICE,
-                      true,
+                      true
                     );
                   }}
                   onKeyPress={e => keyPressed(e)}
@@ -610,7 +610,7 @@ export default class CreateMarketOutcome extends Component {
                     this.validateScalarNum(
                       e.target.value,
                       s.scalarType.TICK_SIZE,
-                      true,
+                      true
                     )
                   }
                   onKeyPress={e => keyPressed(e)}
