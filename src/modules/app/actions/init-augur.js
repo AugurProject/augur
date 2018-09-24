@@ -31,6 +31,7 @@ import {
 import { DISCLAIMER_SEEN } from "src/modules/modal/constants/local-storage-keys";
 import { windowRef } from "src/utils/window-ref";
 
+const { ACCOUNT_TYPES } = augur.rpc.constants;
 const ACCOUNTS_POLL_INTERVAL_DURATION = 10000;
 const NETWORK_ID_POLL_INTERVAL_DURATION = 10000;
 
@@ -86,7 +87,7 @@ function pollForAccount(dispatch, getState, callback) {
 function loadAccount(dispatch, existing, env, accountType, callback) {
   let loggedInAccount = null;
   const usingMetaMask =
-    accountType === augur.rpc.constants.ACCOUNT_TYPES.META_MASK;
+    accountType === ACCOUNT_TYPES.META_MASK;
   if (windowRef.localStorage && windowRef.localStorage.getItem) {
     loggedInAccount = windowRef.localStorage.getItem("loggedInAccount");
   }
