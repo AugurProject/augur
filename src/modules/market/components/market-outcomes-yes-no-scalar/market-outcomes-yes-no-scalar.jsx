@@ -36,7 +36,7 @@ const MarketOutcomes = p => {
       "lastPricePercent.formatted"
     ).toString().length;
     const isMobileAttrs =
-      window.outerWidth < 450
+      window.outerWidth < 590
         ? { charLen: 8, marginTop: 4, fontSize: 16 }
         : { charLen: 10, marginTop: 7, fontSize: 20 };
     const marginLeft = pos < 5 ? size * isMobileAttrs.charLen : 0;
