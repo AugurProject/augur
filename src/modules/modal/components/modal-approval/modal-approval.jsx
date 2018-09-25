@@ -17,7 +17,15 @@ const ModalApproval = p => (
       trade.
     </p>
     <div className={Styles.ModalApproval__ActionButtons}>
-      <button onClick={p.closeModal}>Cancel</button>
+      <button
+        onClick={() => {
+          // throw an error of some kind so we can reset state if needed.
+          p.modal.approveCallback("close_modal");
+          p.closeModal();
+        }}
+      >
+        Cancel
+      </button>
       <button
         onClick={e => {
           if (!p.modal.continueDefault) e.preventDefault();

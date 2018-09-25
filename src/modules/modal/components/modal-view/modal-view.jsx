@@ -63,6 +63,7 @@ export default class ModalView extends Component {
   render() {
     const { closeModal, modal } = this.props;
     const s = this.state;
+    console.log("render view", modal, this.props);
     // in place to keep big Cancel button func for ledger/uport
     const showBigCancel =
       modal.canClose &&
@@ -83,7 +84,7 @@ export default class ModalView extends Component {
               </button>
             )}
           {modal.type === TYPES.MODAL_CONFIRM && (
-            <ModalConfirm {...this.props} />
+            <ModalConfirm {...this.props.modal} closeModal={closeModal} />
           )}
           {modal.type === TYPES.MODAL_LEDGER && <ModalLedger {...modal} />}
           {modal.type === TYPES.MODAL_UPORT && (
