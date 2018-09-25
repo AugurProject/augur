@@ -31,9 +31,6 @@ const MarketOutcomes = p => {
   };
 
   const outcomeMargins = pos => {
-    if (p.type === YES_NO) {
-      return {};
-    }
     const size = getValue(
       p.outcomes[0],
       "lastPricePercent.formatted"
@@ -88,7 +85,10 @@ const MarketOutcomes = p => {
           {getValue(p.outcomes[0], "lastPricePercent.formatted")}
         </span>
         <div style={{ position: "relative", display: "inline" }}>
-          <span className={Styles["MarketOutcomes__current-denomination"]}>
+          <span
+            className={Styles["MarketOutcomes__current-denomination"]}
+            style={outcomeMargins(calculatePosition())}
+          >
             {lastPriceDenomination}
           </span>
           <MarketOutcomeTradingIndicator
