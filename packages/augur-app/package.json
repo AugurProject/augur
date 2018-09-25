@@ -1,11 +1,13 @@
 {
-  "name": "augur",
+  "name": "augur-app",
+  "private": "true",
   "productName": "Augur",
   "version": "1.6.0-snapshot",
   "description": "Augur Desktop Application",
   "main": "./dist/main/main.js",
   "scripts": {
     "dev": "electron-webpack dev",
+    "watch": "electron-webpack dev",
     "compile": "electron-webpack",
     "publish": "npm run compile && electron-builder  --publish always",
     "postinstall": "electron-builder install-app-deps",
@@ -49,7 +51,7 @@
     "helmet": "3.13.0",
     "immutable-delete": "^1.1.0",
     "knex": "0.14.6",
-    "lodash": "^4.17.10",
+    "lodash": "4.17.10",
     "node-pre-gyp": "~0.6.38",
     "postcss-loader": "^3.0.0",
     "react": "^16.4.2",
@@ -93,7 +95,11 @@
     "uglifyjs-webpack-plugin": "1.2.2",
     "url-loader": "^1.1.1",
     "webpack": "^4.17.0",
+    "webpack-dev-server": "3.1.7",
     "webpack-dev-middleware": "^3.1.3",
     "webpack-hot-middleware": "^2.22.3"
+  },
+  "electronWebpack": {
+    "electronVersion": "2.0.0"
   }
 }

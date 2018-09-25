@@ -23,6 +23,7 @@
     "test:integration:docker": "docker-compose up --force-recreate --abort-on-container-exit",
     "lint": "tslint -c tslint.json -p . ./src/*.ts ./src/**/*.ts ./src/**/**/*.ts ./src/**/**/**/*.ts && eslint test/unit",
     "build": "tsc",
+    "watch": "tsc -w",
     "init-git": "if [ -d \".git\" ]; then exit 0; else git init; fi",
     "nuke": "rm -f package-lock.json; rm -f yarn.lock; rm -rf node_modules; npm run clean",
     "coverage": "nyc npm test",

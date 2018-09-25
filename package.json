@@ -5,24 +5,35 @@
   "description": "Augur Top-Level Monorepo",
   "author": "The Augur Developers <team@augur.net>",
   "engines": {
-    "node": ">=8",
-    "yarn": "~1.6.0"
+    "node": ">=8 <10",
+    "yarn": ">=1.6.0"
+  },
+  "scripts": {
+    "build:ci-docker": "docker build . -t augurproject/gitlab-ci-base-node:latest",
+    "watch": " lerna run watch --parallel"
   },
   "devDependencies": {
     "execa": "^0.10.0",
     "lerna": "^2.11.0",
     "listr": "^0.14.1",
     "mocha": "5.1.1",
-    "rxjs-compat": "^6.2.2"
+    "rxjs-compat": "^6.2.2",
+    "typescript": "2.9.2"
   },
   "workspaces": {
     "packages": [
       "packages/*"
     ],
     "nohoist": [
-      "augur-app/electron",
-      "augur-app/electron/**",
-      "augur-app/electron-compile"
+      "**/@babel/**",
+      "augur-ui/@types/jest",
+      "augur-ui/@types/expect-puppeteer",
+      "**/electron-builder",
+      "**/electron-builder/**",
+      "**/electron-webpack",
+      "**/electron-webpack/**",
+      "augur.js/uuid-parse",
+      "augr-app/*"
     ]
   }
 }

@@ -15,21 +15,19 @@
     "rootDir": "src",
     "baseUrl": "./",
     "paths": {
-      "*":  ["node_modules/augur-core/typings/*"]
+      "*":  [
+        "*",
+        "../augur-core/typings/*"
+      ]
     },
     "typeRoots": [
-      "node_modules/augur-core/typings",
-      "node_modules/@types"
+      "../../node_modules/@types",
+      "../augur-core/typings",
+      "./node_modules/@types"
     ],
-    "types": [
-      "ethereum"
-    ]
+    "types": [ ]
   },
   "include": [
     "src/**/*"
-  ],
-  "exclude": [
-    "**/*.pem",
-    "**/*.key"
   ]
 }
