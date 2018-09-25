@@ -18,6 +18,12 @@ steps:
     yarn install --ignore-scripts --frozen-lockfile
     git config --global user.email "team@augur.net"
     git config --global user.name "Augur Developers"
+  displayName: 'running yarn'
+
+- script: |
+    env
+    echo $PATH
+    PATH=$PATH;node_modules/.bin
     lerna run build --stream --scope augur-core
     lerna run build --stream --scope augur-node
   displayName: 'build and test'
