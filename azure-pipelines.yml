@@ -18,7 +18,9 @@ steps:
     yarn install --ignore-scripts --frozen-lockfile
     git config --global user.email "team@augur.net"
     git config --global user.name "Augur Developers"
-  displayName: 'running yarn'
+    python -m pip install --upgrade pip setuptools wheel django
+    pip install virtualenv
+  displayName: 'setup'
 
 - script: |
     env
