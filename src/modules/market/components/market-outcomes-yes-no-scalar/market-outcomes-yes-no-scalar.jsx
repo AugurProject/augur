@@ -30,7 +30,7 @@ const MarketOutcomes = p => {
     left: calculatePosition() + "%"
   };
 
-  const labelMargins = pos => {
+  const outcomeMargins = pos => {
     if (p.type === YES_NO) {
       return {};
     }
@@ -83,7 +83,7 @@ const MarketOutcomes = p => {
         <span
           className={Styles["MarketOutcomes__current-value"]}
           data-testid="midpoint"
-          style={labelMargins(calculatePosition())}
+          style={outcomeMargins(calculatePosition())}
         >
           {getValue(p.outcomes[0], "lastPricePercent.formatted")}
         </span>
