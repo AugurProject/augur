@@ -23,25 +23,25 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
-  submitMigrateREP: (
+  submitMigrateREP: ({
     estimateGas,
     marketId,
-    outcomeValue,
+    selectedOutcome,
     invalid,
     amount,
     history,
     callback
-  ) =>
+  }) =>
     dispatch(
-      submitMigrateREP(
+      submitMigrateREP({
         estimateGas,
         marketId,
-        outcomeValue,
+        selectedOutcome,
         invalid,
         amount,
         history,
         callback
-      )
+      })
     ),
   getForkMigrationTotals: (universe, callback) =>
     dispatch(getForkMigrationTotals(universe, callback))
@@ -60,24 +60,24 @@ const mergeProps = (sP, dP, oP) => {
     isMarketLoaded: sP.marketsData[marketId] != null,
     market,
     loadFullMarket: () => dP.loadFullMarket(marketId),
-    submitMigrateREP: (
+    submitMigrateREP: ({
       estimateGas,
       marketId,
-      outcomeValue,
+      selectedOutcome,
       invalid,
       amount,
       history,
       callback
-    ) =>
-      dP.submitMigrateREP(
+    }) =>
+      dP.submitMigrateREP({
         estimateGas,
         marketId,
-        outcomeValue,
+        selectedOutcome,
         invalid,
         amount,
         history,
         callback
-      ),
+      }),
     getForkMigrationTotals: callback =>
       dP.getForkMigrationTotals(sP.universe, callback)
   };

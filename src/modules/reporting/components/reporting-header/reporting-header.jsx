@@ -22,7 +22,7 @@ export default class ReportingHeader extends Component {
     reportingWindowStats: PropTypes.object.isRequired,
     repBalance: PropTypes.string.isRequired,
     updateModal: PropTypes.func.isRequired,
-    currentTime: PropTypes.number.isRequired,
+    currentTime: PropTypes.number,
     doesUserHaveRep: PropTypes.bool.isRequired,
     finalizeMarket: PropTypes.func.isRequired,
     isForking: PropTypes.bool,
@@ -31,7 +31,7 @@ export default class ReportingHeader extends Component {
     forkReputationGoal: PropTypes.string,
     isForkingMarketFinalized: PropTypes.bool,
     isLogged: PropTypes.bool,
-    universe: PropTypes.string.isRequired
+    universe: PropTypes.string
   };
 
   constructor(props) {
@@ -46,8 +46,10 @@ export default class ReportingHeader extends Component {
   }
 
   componentWillMount() {
-    const { loadReportingWindowBounds } = this.props;
-    loadReportingWindowBounds();
+    const { loadReportingWindowBounds, universe } = this.props;
+    if (universe) {
+      loadReportingWindowBounds();
+    }
   }
 
   componentDidMount() {

@@ -31,15 +31,15 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
     );
   }
   return {
-    [hash]: constructBasicTransaction(
-      unpackedParams.type,
+    [hash]: constructBasicTransaction({
+      eventName: unpackedParams.type,
       hash,
       blockNumber,
       timestamp,
-      "",
-      unpackedParams._description || "",
-      tx.response.gasFees,
+      message: "",
+      description: unpackedParams._description || "",
+      gasFees: tx.response.gasFees,
       status
-    )
+    })
   };
 };

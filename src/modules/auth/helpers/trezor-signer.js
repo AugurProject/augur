@@ -6,7 +6,7 @@ import { augur } from "services/augurjs";
 
 import { MODAL_TREZOR } from "modules/modal/constants/modal-types";
 
-const trezorSigner = async (connect, addressPath, dispatch, rawTxArgs) => {
+const trezorSigner = async (connect, path, dispatch, rawTxArgs) => {
   function hex(num) {
     let str = prefixHex(num).slice(2);
     if (str.length % 2 !== 0) str = "0" + str;
@@ -23,40 +23,38 @@ const trezorSigner = async (connect, addressPath, dispatch, rawTxArgs) => {
   const tx = rawTxArgs[0];
   const callback = rawTxArgs[1];
 
-  return new Promise((resolve, reject) => {
-    tx.gasLimit || (tx.gasLimit = tx.gas);
+  tx.gasLimit || (tx.gasLimit = tx.gas);
 
-    const chain = augur.rpc.getNetworkID();
+  const chain = augur.rpc.getNetworkID();
 
-    connect.ethereumSignTx(
-      addressPath,
-      hex(tx.nonce),
-      hex(tx.gasPrice),
-      hex(tx.gas),
-      tx.to.slice(2),
-      hex(tx.value),
-      hex(tx.data),
-      parseInt(chain, 10),
-      response => {
-        if (response.success) {
-          tx.v = parseInt("" + response.v, 10);
-          tx.r = "0x" + response.r;
-          tx.s = "0x" + response.s;
+  const transaction = {
+    to: tx.to.slice(2),
+    value: hex(tx.value),
+    data: hex(tx.data),
+    chainId: parseInt(chain, 10),
+    nonce: hex(tx.nonce),
+    gasLimit: hex(tx.gas),
+    gasPrice: hex(tx.gasPrice)
+  };
 
-          const signedTx = new TX(tx);
+  return connect
+    .ethereumSignTransaction({
+      path,
+      transaction
+    })
+    .then(response => {
+      if (response.success) {
+        tx.r = response.payload.r;
+        tx.s = response.payload.s;
+        tx.v = response.payload.v;
 
-          const serialized = "0x" + signedTx.serialize().toString("hex");
+        const signedTx = new TX(tx);
+        const serialized = "0x" + signedTx.serialize().toString("hex");
 
-          resolve(serialized);
-        } else {
-          reject(response.error);
-        }
+        callback(null, serialized);
+      } else {
+        callback(response.error);
       }
-    );
-  })
-    .then(res => {
-      callback(null, res);
-
       dispatch(closeModal());
     })
     .catch(err => {

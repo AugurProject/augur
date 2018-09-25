@@ -20,6 +20,7 @@ export const updateIsLoggedAndLoadAccountData = (
     displayAddress,
     meta: { accountType, address, signer: null }
   };
+
   dispatch(updateAuthStatus(IS_LOGGED, true));
   dispatch(loadAccountData(loginAccount));
 };

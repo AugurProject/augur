@@ -8,7 +8,7 @@ export default function(priceHistory = DEFAULT_STATE, action) {
     case UPDATE_MARKET_PRICE_HISTORY:
       return {
         ...priceHistory,
-        [action.marketId]: action.priceHistory
+        [action.data.marketId]: action.data.priceHistory
       };
     case RESET_STATE:
       return DEFAULT_STATE;

@@ -5,13 +5,10 @@ import { Link } from "react-router-dom";
 import MarketTradingWrapper from "modules/trading/components/trading--wrapper/trading--wrapper";
 import { Check, Close } from "modules/common/components/icons";
 import { isEqual } from "lodash";
-import makePath from "modules/routes/helpers/make-path";
 import classNames from "classnames";
-import {
-  AUTHENTICATION,
-  ACCOUNT_DEPOSIT
-} from "modules/routes/constants/views";
+import { ACCOUNT_DEPOSIT } from "modules/routes/constants/views";
 import { BigNumber } from "utils/create-big-number";
+import makePath from "modules/routes/helpers/make-path";
 import Styles from "modules/trading/components/trading/trading.styles";
 
 class MarketTrading extends Component {
@@ -137,22 +134,7 @@ class MarketTrading extends Component {
           initialMessage && (
             <div className={Styles["Trading__initial-message"]}>
               <p>
-                {!isLogged ? (
-                  <span>
-                    <Link
-                      to={makePath(AUTHENTICATION)}
-                      style={{
-                        textDecoration: "underline",
-                        marginRight: "4px"
-                      }}
-                    >
-                      Log in
-                    </Link>
-                    to trade.
-                  </span>
-                ) : (
-                  initialMessage
-                )}
+                {!isLogged ? <span>Log in to trade.</span> : initialMessage}
               </p>
               {!hasFunds &&
                 isLogged && (

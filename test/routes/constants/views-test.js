@@ -82,38 +82,12 @@ describe("modules/app/constants/views", () => {
   });
 
   test({
-    description: `should return the expected value 'AUTHENTICATION'`,
-    assertions: () => {
-      const expected = "authentication";
-
-      assert.strictEqual(
-        views.AUTHENTICATION,
-        expected,
-        `didn't return the expected string`
-      );
-    }
-  });
-
-  test({
     description: `should return the expected value 'CATEGORIES'`,
     assertions: () => {
       const expected = "categories";
 
       assert.strictEqual(
         views.CATEGORIES,
-        expected,
-        `didn't return the expected string`
-      );
-    }
-  });
-
-  test({
-    description: `should return the expected value 'AUTH_LOGIN'`,
-    assertions: () => {
-      const expected = "authentication";
-
-      assert.strictEqual(
-        views.AUTHENTICATION,
         expected,
         `didn't return the expected string`
       );

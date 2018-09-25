@@ -8,23 +8,24 @@ import { RESET_STATE } from "modules/app/actions/reset-state";
 const DEFAULT_STATE = {};
 
 export default function(favorites = DEFAULT_STATE, action) {
-  let newFavorites;
   switch (action.type) {
     case UPDATE_FAVORITES:
       return {
         ...favorites,
-        ...action.favorites
+        ...action.data.favorites
       };
-    case TOGGLE_FAVORITE:
-      newFavorites = {
+    case TOGGLE_FAVORITE: {
+      const { marketId } = action.data;
+      const newFavorites = {
         ...favorites
       };
-      if (newFavorites[action.marketId]) {
-        delete newFavorites[action.marketId];
+      if (newFavorites[marketId]) {
+        delete newFavorites[marketId];
       } else {
-        newFavorites[action.marketId] = Date.now();
+        newFavorites[marketId] = Date.now();
       }
       return newFavorites;
+    }
     case RESET_STATE:
     case CLEAR_LOGIN_ACCOUNT:
       return DEFAULT_STATE;

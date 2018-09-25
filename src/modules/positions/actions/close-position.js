@@ -53,21 +53,21 @@ export function closePosition(marketId, outcomeId, callback = logError) {
           );
         } else {
           dispatch(
-            updateTradesInProgress(
+            updateTradesInProgress({
               marketId,
               outcomeId,
-              positionShares.gt(ZERO) ? SELL : BUY,
-              bestFill.amountOfShares.toFixed(),
-              bestFill.price.toNumber(),
-              null,
-              (err, tradesInProgress) => {
+              side: positionShares.gt(ZERO) ? SELL : BUY,
+              numShares: bestFill.amountOfShares.toFixed(),
+              limitPrice: bestFill.price.toNumber(),
+              maxCost: null,
+              callback: (err, tradesInProgress) => {
                 dispatch(
-                  placeTrade(
+                  placeTrade({
                     marketId,
                     outcomeId,
-                    tradesInProgress,
-                    true,
-                    (err, tradeGroupId) => {
+                    tradeInProgress: tradesInProgress,
+                    doNotCreateOrders: true,
+                    callback: (err, tradeGroupId) => {
                       if (err) {
                         console.error("placeTrade err -- ", err);
                         dispatch(
@@ -87,10 +87,10 @@ export function closePosition(marketId, outcomeId, callback = logError) {
                         );
                       }
                     }
-                  )
+                  })
                 );
               }
-            )
+            })
           );
         }
       })

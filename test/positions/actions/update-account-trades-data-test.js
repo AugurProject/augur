@@ -85,9 +85,11 @@ describe("modules/positions/actions/update-account-trades-data.js", () => {
           {
             type: UPDATE_ACCOUNT_POSITIONS_DATA,
             data: {
-              "0xMARKETID": {}
-            },
-            marketId: "0xMARKETID"
+              positionData: {
+                "0xMARKETID": {}
+              },
+              marketId: "0xMARKETID"
+            }
           }
         ];
 

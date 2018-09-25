@@ -66,7 +66,7 @@ describe("modules/notifications/reducers/notifications", () => {
       ],
       {
         type: REMOVE_NOTIFICATION,
-        data: "0xTEST"
+        data: { id: "0xTEST" }
       }
     );
 

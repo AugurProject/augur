@@ -402,3 +402,11 @@ function addBigUnitPostfix(value, formattedValue) {
 export function makeFull(formatted, denomination) {
   return formatted + denomination;
 }
+
+export function cutOffDecimal(value, numDigits) {
+  const decimals = (value + "").split(".");
+  if (decimals[1] && decimals[1].length > numDigits) {
+    return decimals[0] + "." + decimals[1].substring(0, numDigits);
+  }
+  return value;
+}

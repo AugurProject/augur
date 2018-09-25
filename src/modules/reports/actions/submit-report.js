@@ -5,14 +5,14 @@ import { nextReportPage } from "modules/reports/actions/next-report-page";
 import noop from "utils/noop";
 import logError from "utils/log-error";
 
-export const submitReport = (
+export const submitReport = ({
   market,
   reportedOutcomeId,
   amountToStake,
   isIndeterminate,
   history,
   callback = logError
-) => (dispatch, getState) => {
+}) => (dispatch, getState) => {
   const { universe, loginAccount } = getState();
   if (
     !loginAccount.address ||

@@ -35,7 +35,7 @@ describe("modules/modal/reducers/modal", () => {
     assertions: () => {
       const actual = reducer(
         { test: "TEST" },
-        { type: UPDATE_MODAL, data: { test: "NEW" } }
+        { type: UPDATE_MODAL, data: { modalOptions: { test: "NEW" } } }
       );
 
       const expected = {

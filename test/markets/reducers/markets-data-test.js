@@ -21,8 +21,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: "UPDATE_MARKET_CATEGORY",
-        marketId: undefined,
-        category: "potent potables"
+        data: {
+          marketId: undefined,
+          category: "potent potables"
+        }
       },
       assertions: reducedData => {
         assert.deepEqual(reducedData, {
@@ -51,8 +53,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: "UPDATE_MARKET_CATEGORY",
-        marketId: "0xa1",
-        category: "potent potables"
+        data: {
+          marketId: "0xa1",
+          category: "potent potables"
+        }
       },
       assertions: reducedData => {
         assert.deepEqual(reducedData, {
@@ -81,8 +85,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: "UPDATE_MARKET_CATEGORY",
-        marketId: "0xa1",
-        category: undefined
+        data: {
+          marketId: "0xa1",
+          category: undefined
+        }
       },
       assertions: reducedData => {
         assert.deepEqual(reducedData, {
@@ -111,8 +117,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       },
       action: {
         type: "UPDATE_MARKET_CATEGORY",
-        marketId: "0xa1",
-        category: "potent potables"
+        data: {
+          marketId: "0xa1",
+          category: "potent potables"
+        }
       },
       assertions: reducedData => {
         assert.deepEqual(reducedData, {
@@ -136,8 +144,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
         },
         {
           type: UPDATE_MARKET_REP_BALANCE,
-          marketId: "0xa2",
-          repBalance: 0.3496805826822917
+          data: {
+            marketId: "0xa2",
+            repBalance: 0.3496805826822917
+          }
         }
       );
 
@@ -216,11 +226,11 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
       };
       const action = {
         type: "UPDATE_MARKETS_DATA",
-        marketsData
+        data: { marketsData }
       };
       const action2 = {
         type: "UPDATE_MARKETS_DATA",
-        marketsData: marketsData2
+        data: { marketsData: marketsData2 }
       };
       assert.deepEqual(
         reducer(curMarketsData1, action),

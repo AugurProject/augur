@@ -5,7 +5,7 @@
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
   "engines": {
-    "node": "8 || 9 || 10"
+  "node": "8 || 9 || 10"
   },
   "repository": {
     "type": "git",
@@ -93,7 +93,8 @@
     "scroll-snap": "1.0.5",
     "shelljs": "0.7.8",
     "shifty": "2.1.0",
-    "speedomatic": "2.1.4"
+    "speedomatic": "2.1.4",
+    "trezor-connect": "5.0.31"
   },
   "devDependencies": {
     "@types/expect-puppeteer": "^2.2.2",

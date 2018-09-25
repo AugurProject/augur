@@ -13,13 +13,14 @@ describe(`modules/orders/actions/insert-order-book-chunk-to-order-book.js`, () =
           "./clear-order-book-on-first-chunk": t.stub.clearOrderBookOnFirstChunk
         }
       ).default;
+      const { marketId, outcome, orderTypeLabel, orderBookChunk } = t.params;
       store.dispatch(
-        insertOrderBookChunkToOrderBook(
-          t.params.marketId,
-          t.params.outcome,
-          t.params.orderTypeLabel,
-          t.params.orderBookChunk
-        )
+        insertOrderBookChunkToOrderBook({
+          marketId,
+          outcome,
+          orderTypeLabel,
+          orderBookChunk
+        })
       );
       t.assertions(store.getActions());
       store.clearActions();
@@ -39,9 +40,11 @@ describe(`modules/orders/actions/insert-order-book-chunk-to-order-book.js`, () =
         default: (marketId, outcome, orderTypeLabel) => dispatch =>
           dispatch({
             type: "CLEAR_ORDER_BOOK_ON_FIRST_CHUNK",
-            marketId,
-            outcome,
-            orderTypeLabel
+            data: {
+              marketId,
+              outcome,
+              orderTypeLabel
+            }
           })
       }
     },
@@ -49,17 +52,21 @@ describe(`modules/orders/actions/insert-order-book-chunk-to-order-book.js`, () =
       assert.deepEqual(actions, [
         {
           type: "CLEAR_ORDER_BOOK_ON_FIRST_CHUNK",
-          marketId: "MARKET_0",
-          outcome: 2,
-          orderTypeLabel: "buy"
+          data: {
+            marketId: "MARKET_0",
+            outcome: 2,
+            orderTypeLabel: "buy"
+          }
         },
         {
           type: "UPDATE_ORDER_BOOK",
-          marketId: "MARKET_0",
-          outcome: 2,
-          orderTypeLabel: "buy",
-          orderBook: {
-            "0x1": { amount: "1" }
+          data: {
+            marketId: "MARKET_0",
+            outcome: 2,
+            orderTypeLabel: "buy",
+            orderBook: {
+              "0x1": { amount: "1" }
+            }
           }
         }
       ]);

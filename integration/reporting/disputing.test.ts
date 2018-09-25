@@ -256,7 +256,7 @@ describe("Disputing", () => {
 
         denomination = hoursLeft === 1 ? " hour" : " hours";
 
-        if(hoursLeft === 0) {
+        if (hoursLeft === 0) {
           const minutesLeft = await page.evaluate(
             (endTime, startTime) =>
               window.integrationHelpers.getMinutesRemaining(endTime, startTime),
@@ -270,7 +270,6 @@ describe("Disputing", () => {
             text: minutesLeft + denomination + " left",
             timeout: SMALL_TIMEOUT
           });
-
         } else {
           // check that days left is expected number
           await expect(page).toMatchElement("[data-testid='daysLeft']", {

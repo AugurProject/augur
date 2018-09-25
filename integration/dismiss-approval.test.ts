@@ -23,16 +23,12 @@ describe("Trading", () => {
       timeout: timeoutMilliseconds
     });
 
-    await expect(page).toFill(
-      "input#tr__input--quantity",
-      "0.0001",
-      { timeout: timeoutMilliseconds }
-    );
-    await expect(page).toFill(
-      "input#tr__input--limit-price",
-      "0.0001",
-      { timeout: timeoutMilliseconds }
-    );
+    await expect(page).toFill("input#tr__input--quantity", "0.0001", {
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toFill("input#tr__input--limit-price", "0.0001", {
+      timeout: timeoutMilliseconds
+    });
 
     await expect(page).toClick("button", {
       text: "Review",
@@ -55,16 +51,12 @@ describe("Trading", () => {
       timeout: timeoutMilliseconds
     });
 
-    await expect(page).toFill(
-      "input#tr__input--quantity",
-      "0.0001",
-      { timeout: timeoutMilliseconds }
-    );
-    await expect(page).toFill(
-      "input#tr__input--limit-price",
-      "0.0001",
-      { timeout: timeoutMilliseconds }
-    );
+    await expect(page).toFill("input#tr__input--quantity", "0.0001", {
+      timeout: timeoutMilliseconds
+    });
+    await expect(page).toFill("input#tr__input--limit-price", "0.0001", {
+      timeout: timeoutMilliseconds
+    });
 
     await expect(page).toClick("button", {
       text: "Review",

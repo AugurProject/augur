@@ -60,15 +60,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call callback and history`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "testMarketId",
-        0,
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "testMarketId",
+        selectedOutcome: 0,
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.calledOnce, `Didn't call 'history' once as expected`);
@@ -77,15 +77,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call only callback`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        null,
-        0,
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: null,
+        selectedOutcome: 0,
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -94,15 +94,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call only callback with empty market id`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "",
-        0,
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "",
+        selectedOutcome: 0,
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -111,15 +111,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call only callback with empty market id and bad outcome`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "",
-        "blah",
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "",
+        selectedOutcome: "blah",
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -128,15 +128,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should only call callback with empty market id, bad outcome and is invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "",
-        "blah",
-        true,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "",
+        selectedOutcome: "blah",
+        invalid: true,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -145,15 +145,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should only call callback with bad outcome`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "testMarketId",
-        "blah",
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "testMarketId",
+        selectedOutcome: "blah",
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);
@@ -162,15 +162,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call both callback and history with good data not invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurFailed);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "testMarketId",
-        0,
-        false,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "testMarketId",
+        selectedOutcome: 0,
+        invalid: false,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.calledOnce, `Did call 'history' not expected`);
@@ -179,15 +179,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call callback and history with good data and is invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurFailed);
     store.dispatch(
-      submitInitialReport(
-        false,
-        "testMarketId",
-        0,
-        true,
+      submitInitialReport({
+        estimateGas: false,
+        marketId: "testMarketId",
+        selectedOutcome: 0,
+        invalid: true,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.calledOnce, `Did call 'history' not expected`);
@@ -196,15 +196,15 @@ describe(`modules/reports/actions/submit-initial-report.js`, () => {
   it(`should call callback and not history with good data and is invalid`, () => {
     submitInitialReportReqireAPI.__Rewire__("augur", augurSuccess);
     store.dispatch(
-      submitInitialReport(
-        true,
-        "testMarketId",
-        0,
-        true,
+      submitInitialReport({
+        estimateGas: true,
+        marketId: "testMarketId",
+        selectedOutcome: 0,
+        invalid: true,
         history,
-        REPORTING_REPORT_MARKETS,
+        returnPath: REPORTING_REPORT_MARKETS,
         callback
-      )
+      })
     );
     assert(callback.calledOnce, `Didn't call 'callback' once as expected`);
     assert(history.push.notCalled, `Did call 'history' not expected`);

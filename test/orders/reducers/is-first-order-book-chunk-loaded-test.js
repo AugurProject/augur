@@ -14,10 +14,12 @@ describe(`modules/orders/reducers/is-first-order-book-chunk-loaded.js`, () => {
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
-        marketId: "MARKET_0",
-        outcome: 3,
-        orderTypeLabel: "buy",
-        isLoaded: false
+        data: {
+          marketId: "MARKET_0",
+          outcome: 3,
+          orderTypeLabel: "buy",
+          isLoaded: false
+        }
       }
     },
     assertions: output => {
@@ -36,10 +38,12 @@ describe(`modules/orders/reducers/is-first-order-book-chunk-loaded.js`, () => {
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
-        marketId: "MARKET_0",
-        outcome: 3,
-        orderTypeLabel: "buy",
-        isLoaded: true
+        data: {
+          marketId: "MARKET_0",
+          outcome: 3,
+          orderTypeLabel: "buy",
+          isLoaded: true
+        }
       }
     },
     assertions: output => {
