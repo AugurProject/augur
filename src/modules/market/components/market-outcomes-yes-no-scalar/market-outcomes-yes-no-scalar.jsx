@@ -63,7 +63,8 @@ const MarketOutcomes = p => {
       : getValue(p.outcomes[0], "lastPricePercent.denomination");
   const arrowStyles = {
     left: p.type === YES_NO ? "0.9375rem" : "0.5rem",
-    marginLeft: p.type === YES_NO ? "0.625rem" : "0"
+    marginLeft: p.type === YES_NO ? "0.625rem" : "0",
+    marginBottom: -5
   };
 
   return (
@@ -91,7 +92,7 @@ const MarketOutcomes = p => {
           </span>
           <MarketOutcomeTradingIndicator
             outcome={p.outcomes[0]}
-            style={{ arrowStyles, marginBottom: -5 }}
+            style={arrowStyles}
           />
         </div>
       </span>
