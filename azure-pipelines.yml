@@ -26,6 +26,8 @@ steps:
   displayName: 'setup'
 
 - script: |
+    set -euxo pipefail
+    PATH=$(Agent.BuildDirectory)/bin:$PATH
     echo $(Agent.BuildDirectory)
     mkdir $(Agent.BuildDirectory)/bin
     echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
