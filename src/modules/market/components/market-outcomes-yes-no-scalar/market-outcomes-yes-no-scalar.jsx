@@ -31,6 +31,9 @@ const MarketOutcomes = p => {
   };
 
   const labelMargins = pos => {
+    if (p.type === YES_NO) {
+      return {};
+    }
     const size = getValue(
       p.outcomes[0],
       "lastPricePercent.formatted"
