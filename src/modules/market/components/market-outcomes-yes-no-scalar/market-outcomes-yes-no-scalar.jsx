@@ -46,7 +46,7 @@ const MarketOutcomes = p => {
       marginRight,
       marginTop: isMobileAttrs.marginTop,
       display: "inline-block",
-      "font-size": isMobileAttrs.fontSize
+      fontSize: isMobileAttrs.fontSize
     };
   };
 
