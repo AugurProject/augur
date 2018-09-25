@@ -16,7 +16,7 @@ export const selectMarketDisputeOutcomes = createSelector(
   selectMarkets,
   selectUniverseState,
   (markets, universe) => {
-    if (isEmpty(markets)) {
+    if (isEmpty(markets) || !universe.forkThreshold) {
       return {};
     }
     const disputeMarkets = markets.filter(
