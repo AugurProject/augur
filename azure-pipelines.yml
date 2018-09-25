@@ -14,18 +14,25 @@ strategy:
       node_version: 9.x
 
 steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.6.5'
+
 - script: |
     yarn install --ignore-scripts --frozen-lockfile
     git config --global user.email "team@augur.net"
     git config --global user.name "Augur Developers"
-    python -m pip install --upgrade pip setuptools wheel django
+    python -m pip install --upgrade pip setuptools wheel
     pip install virtualenv
+    pip install --upgrade pip setuptools
+    pip install --upgrade pip-tools
+    pip install -r requirements.txt
   displayName: 'setup'
 
 - script: |
-    env
-    echo $PATH
-    PATH=$PATH:node_modules/.bin
-    lerna run build --stream --scope augur-core
-    lerna run build --stream --scope augur-node
+    #env
+    #echo $PATH
+    #PATH=$PATH:node_modules/.bin
+    yarn workspace augur-core run build
+    yarn workspace augur-node run build
   displayName: 'build and test'
