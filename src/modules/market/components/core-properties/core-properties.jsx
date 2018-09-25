@@ -202,8 +202,8 @@ export default class CoreProperties extends Component {
         }
       });
       renderedProperties.push(
-        <div 
-          key={"row" + numRow} 
+        <div
+          key={"row" + numRow}
           className={classNames(Styles.CoreProperties__row, {
             [Styles.CoreProperties__rowBorder]: numRow === 0
           })}
