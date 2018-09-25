@@ -1,5 +1,5 @@
 variables:
-    SOLC_VERSION: v0.4.20
+    SOLC_VERSION: v0.4.25
     SOLC_MD5: ae7047eb018ec59d241b478ae6ea1f8a
 
 pool:
