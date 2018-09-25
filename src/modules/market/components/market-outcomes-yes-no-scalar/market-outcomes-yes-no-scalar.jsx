@@ -31,15 +31,22 @@ const MarketOutcomes = p => {
   };
 
   const labelMargins = pos => {
+    const isMobile = window.outerWidth < 450;
     const size = getValue(
       p.outcomes[0],
       "lastPricePercent.formatted"
     ).toString().length;
-    const l = pos < 5 ? size * 10 : 0;
-    const r = pos > 95 ? size * 10 : 0;
+    const charLen = isMobile ? 8 : 10;
+    const marginLeft = pos < 5 ? size * charLen : 0;
+    const marginRight = pos > 95 ? size * charLen : 0;
+    const marginTop = isMobile ? 4 : 7;
+    const fontSize = isMobile ? 16 : 20;
     return {
-      marginLeft: l,
-      marginRight: r
+      marginLeft,
+      marginRight,
+      marginTop,
+      display: "inline-block",
+      "font-size": fontSize
     };
   };
 
