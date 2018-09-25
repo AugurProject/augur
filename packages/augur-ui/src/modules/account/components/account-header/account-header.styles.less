@@ -1,0 +1,42 @@
+@import (reference) '~assets/styles/shared';
+
+.AccountHeader {
+  color: white;
+  display: flex;
+  margin: 10rem 4.625rem 1.75rem;
+}
+
+.AccountHeader__Currency {
+  font-weight: 200;
+  letter-spacing: 0.004em;
+
+  &:not(:first-child) {
+    margin-left: 0.4em;
+  }
+}
+
+.AccountHeader__Currency-label {
+  font-size: 0.33em;
+  font-weight: 500;
+  letter-spacing: 0.001em;
+  text-transform: uppercase;
+}
+
+@media @breakpoint-mobile {
+  .AccountHeader {
+    display: block;
+    margin: 4rem 2.25rem 3.2rem;
+  }
+
+  .AccountHeader__Currency:not(:first-child) {
+    margin-left: 0;
+    margin-top: 0.2em;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .AccountHeader {
+    margin-bottom: 2.2rem;
+    margin-top: 3rem;
+  }
+}

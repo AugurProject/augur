@@ -1,0 +1,151 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketProperties {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketProperties__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.MarketProperties__favorite {
+  color: @color-lightgray;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-right: 1rem;
+  position: relative;
+  transition: color 0.15s ease;
+
+  :global {
+    .fa-star {
+      color: @color-lighter-purple;
+    }
+  }
+}
+
+.MarketProperties__additional-details {
+  &:extend(.caps--small);
+
+  color: @color-lightgray;
+  display: inline-block;
+  margin-top: 2rem;
+}
+
+.MarketProperties__additional-details-chevron {
+  display: inline-block;
+  margin-left: 0.7rem;
+  vertical-align: middle;
+}
+
+.MarketProperties__meta {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 80%;
+
+  > li {
+    display: inline-block;
+    margin-left: 2em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &.MarketProperties__resolutionSource {
+      flex: 1 0 160px;
+      padding-right: 1rem;
+      white-space: nowrap;
+    }
+
+    > span {
+      color: @color-purple;
+      display: block;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightgray;
+        margin-bottom: 0.625rem;
+      }
+    }
+  }
+}
+
+.MarketProperties__resolutionSource {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.MarketProperties__trade {
+  &:extend(.button--purple all);
+
+  &.disabled {
+    &:extend(.button--purple--disabled);
+
+    pointer-events: none;
+  }
+}
+
+.MarketProperties__migrate {
+  &:extend(.button--lightpurple all);
+
+  margin-left: 3em;
+}
+
+@media @breakpoint-small-desktop {
+  .MarketProperties {
+    align-items: flex-end;
+  }
+
+  .MarketProperties__meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem -1rem;
+    max-width: 75%;
+    width: unset;
+
+    > li {
+      display: inline-block;
+      flex: 1 1 auto;
+      margin: 0 1rem 1rem;
+      max-width: 160px;
+
+      &:first-child {
+        margin-left: 1rem;
+      }
+
+      &.MarketProperties__resolutionSource {
+        flex: 1 0 auto;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketProperties {
+    display: block;
+  }
+
+  .MarketProperties__actions {
+    margin-top: 1.5rem;
+  }
+
+  .MarketProperties__meta {
+    max-width: unset;
+    width: unset;
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .MarketProperties__meta {
+    max-width: unset;
+    width: unset;
+
+    > li {
+      max-width: 120px;
+    }
+  }
+}

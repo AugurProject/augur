@@ -1,0 +1,36 @@
+@import (reference) "~assets/styles/shared";
+
+.Uport__connect {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.Uport__apps {
+  display: flex;
+  justify-content: center;
+
+  & > *:not(:last-child) {
+    margin-right: 1rem;
+  }
+}
+
+.Uport__qr {
+  margin: 1rem;
+
+  h4 {
+    align-self: flex-start;
+  }
+}
+
+@media @breakpoint-mobile {
+  .Uport__connect-wrapper {
+    > h3 {
+      margin-bottom: 2rem;
+    }
+  }
+}

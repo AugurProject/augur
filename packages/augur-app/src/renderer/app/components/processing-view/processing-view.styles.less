@@ -1,0 +1,178 @@
+@import (css) url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,600,700');
+@import (reference) '../../../../assets/styles/shared';
+
+:local(.ProcessingView) {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+	border: solid 1px #736e89;
+  transition: all 300ms ease;
+  overflow: hidden;
+  height: 169px;
+}
+
+:local(.ProcessingView-processing) {
+  background-color: white;
+  border: 0;
+}
+
+:local(.ProcessingView-tall) {
+  height: 310px;
+}
+
+:local(.ProcessingView__connectingContainer) {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+	padding: 24px 16px;
+}
+
+:local(.ProcessingView__processingTitle) {
+  opacity: 0.8;
+  font-size: 22px;
+  font-weight: 600;
+  color: @color-gray;
+  margin-bottom: 10px;
+}
+
+:local(.ProcessingView__processingTitle-processing) {
+  color: #383b41;
+  opacity: 1;
+} 
+
+:local(.ProcessingView__processingText) {
+  opacity: 0.8;
+  font-size: 48px;
+  font-weight: 500; 
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: rgba(115, 110, 137, 0.99);
+  text-transform: uppercase;
+  display: flex;
+  align-items: baseline;
+}
+
+:local(.ProcessingView__processingText-processing) {
+  color: #383b41;
+  opacity: 1;
+  font-weight: 600;
+}
+
+:local(.ProcessingView__processingText-percent) {
+  font-size: 24px;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+:local(.ProcessingView__loadingIndicator) {
+	max-height: 32px;
+	height: 32px;
+  min-height: 32px;
+	border-top: solid 1px @color-gray;
+}
+
+:local(.ProcessingView__loadingIndicator-processing) {
+  background-color: #39314e;
+  border: 0;
+}
+
+:local(.ProcessingView__showDetails) {
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: right;
+  color: @color-purple;
+  text-transform: none;
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  cursor: pointer;
+  align-items: center;
+}
+
+:local(.ProcessingView__showDetails-arrow) {
+  transition: transform 0.3s ease;
+  width: 11.1px;
+  height: 8px;
+  background: url(../../../../assets/images/detailsArrow.svg);
+  background-repeat: no-repeat;
+  margin-left: 8px;
+}
+
+:local(.ProcessingView__showDetails-arrow-turned) {
+  transform: rotate(-180deg);
+}
+
+:local(.ProcessingView__blocksInfo) {
+  padding: 0 3px;
+  margin-top: 80px;
+}
+
+:local(.ProcessingView__blocksBehind) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 24px;
+  font-weight: 600;
+  color: #383b41;
+}
+
+:local(.ProcessingView__blocksLabel) {
+  font-size: 14px;
+  color: #383b41;
+  font-family: @roboto;
+  margin-top: 3px;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+:local(.ProcessingView__blocksInfoBreak) {
+  height: 1px;
+  background-color: #383b41;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+:local(.ProcessingView__blocksFraction) {
+  display: flex;
+}
+
+:local(.ProcessingView__blocksProcessed) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: #383b41;
+  margin-right: 8px;
+}
+
+:local(.ProcessingView__highestBlocks) {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  color: @color-lightgray;
+}
+
+:local(.ProcessingView__graph) {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+:local(.ProcessingView__graph-current) {
+  width: 100%;
+
+  > div {
+    background-color: #cbc5d9;
+    height: 32px;
+    position: relative;
+    transition: width 500ms ease;
+  }
+}
+

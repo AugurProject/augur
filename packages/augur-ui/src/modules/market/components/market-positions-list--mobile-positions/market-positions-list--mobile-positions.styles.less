@@ -1,0 +1,122 @@
+@import (reference) '~assets/styles/shared';
+
+.MobilePositions__close {
+  &:extend(.caps--small);
+
+  color: @color-white;
+  font-weight: 500;
+}
+
+.MobilePositions__confirm {
+  align-items: center;
+  background-color: @color-gray2;
+  bottom: 0;
+  color: @color-white;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  padding: 0 1rem;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.15s ease;
+  width: 100%;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.MobilePositions__confirm-details {
+  max-width: 14.5rem;
+  text-align: center;
+
+  > h3 {
+    &:extend(.caps--large);
+
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  > p {
+    color: @color-lightergray;
+    line-height: @font-size-somewhat-large;
+    margin-top: 0;
+  }
+}
+
+.MobilePositions__confirm-options {
+  color: @color-white;
+  display: flex;
+  justify-content: center;
+
+  > button {
+    &:extend(.caps--large);
+
+    color: @color-lightergray;
+    font-weight: 500;
+
+    &:not(:first-child) {
+      color: @color-white;
+      margin-left: 2rem;
+    }
+  }
+}
+
+.MobilePositions__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  > h2 {
+    margin-bottom: 0;
+  }
+}
+
+.MobilePositions__position {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  > li {
+    color: @color-white;
+
+    > span {
+      &:extend(.caps--small);
+
+      color: @color-lightgray;
+      display: block;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+.MobilePositions__pending {
+  color: @color-lighter-purple;
+  font-size: @font-size-small;
+  font-weight: 500;
+  line-height: @font-size-small;
+  margin-left: 0.5rem;
+}
+
+@media @breakpoint-mobile-medium {
+  .MobilePositions__position > li {
+    width: 50%;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+@media @breakpoint-mobile-small {
+  .MobilePositions__position {
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,86 @@
+.auth-signup-form {
+  input[name='username'] {
+    display: none;
+  }
+
+  .auth-signup-password {
+    z-index: 30;
+  }
+
+  .auth-signup-password-confirm {
+    border-top: 0;
+    height: 0;
+    opacity: 0;
+    z-index: 20;
+  }
+
+  .auth-signup-password-suggestions {
+    color: @color-orange-light;
+    display: flex;
+    height: 0;
+    opacity: 0;
+
+    &.animateOut {
+      margin-top: 0;
+    }
+
+    ul {
+      list-style-type: disc;
+      margin-top: 0.6em;
+
+      li {
+        margin: 0.2em 0 0.2em 2em;
+      }
+    }
+  }
+
+  .auth-generating-login-id {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    justify-content: center;
+    opacity: 0;
+    z-index: 10;
+
+    span {
+      align-self: center;
+      margin-top: 2em;
+    }
+
+    .spinner-container {
+      height: 3em;
+    }
+  }
+
+  .auth-signup-actions {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    opacity: 0;
+    z-index: 10;
+
+    .login-id {
+      resize: none;
+    }
+
+    .login-id-messaging {
+      display: flex;
+      flex-direction: column;
+      margin: 1em 0;
+
+      span {
+        align-self: center;
+        margin: 0;
+
+        &:first-of-type {
+          margin-bottom: 1em;
+        }
+
+        &.important {
+          color: @color-orange-light;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}

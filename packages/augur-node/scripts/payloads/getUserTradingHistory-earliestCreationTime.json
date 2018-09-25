@@ -1,0 +1,18 @@
+{
+  "id": 6,
+  "jsonrpc": "2.0",
+  "method": "getUserTradingHistory",
+  "params": {
+      "universe": "0x000000000000000000000000000000000000000b",
+      "account": "0x0000000000000000000000000000000000000b0b",
+      "marketId": null,
+      "outcome": 0,
+      "orderType": null,
+      "earliestCreationTime": 1506474514,
+      "latestCreationTime": 1506474516,
+      "sortBy": null,
+      "isSortDescending": null,
+      "limit": null,
+      "offset": null
+  }
+}

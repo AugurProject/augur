@@ -1,0 +1,839 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "disputer",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "reportingPhase",
+        "type": "uint8"
+      },
+      {
+        "name": "disputeBondAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "reportsDisputed",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "name": "amountRedeemed",
+        "type": "uint256"
+      },
+      {
+        "name": "reportingFeesReceived",
+        "type": "uint256"
+      },
+      {
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "winningTokensRedeemed",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "name": "amountStaked",
+        "type": "uint256"
+      },
+      {
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "designatedReportSubmitted",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      }
+    ],
+    "name": "marketFinalized",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "marketCreator",
+        "type": "address"
+      },
+      {
+        "name": "marketCreationFee",
+        "type": "uint256"
+      },
+      {
+        "name": "extraInfo",
+        "type": "string"
+      }
+    ],
+    "name": "marketCreated",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "parentUniverse",
+        "type": "address"
+      },
+      {
+        "name": "childUniverse",
+        "type": "address"
+      }
+    ],
+    "name": "universeCreated",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      }
+    ],
+    "name": "universeForked",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "filler",
+        "type": "address"
+      },
+      {
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "name": "numCreatorShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numCreatorTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "numFillerShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numFillerTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "marketCreatorFees",
+        "type": "uint256"
+      },
+      {
+        "name": "reporterFees",
+        "type": "uint256"
+      },
+      {
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "orderFilled",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "orderCreated",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "tokensTransferred",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "name": "orderType",
+        "type": "uint8"
+      },
+      {
+        "name": "tokenRefund",
+        "type": "uint256"
+      },
+      {
+        "name": "sharesRefund",
+        "type": "uint256"
+      }
+    ],
+    "name": "orderCanceled",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "numShares",
+        "type": "uint256"
+      },
+      {
+        "name": "numPayoutTokens",
+        "type": "uint256"
+      },
+      {
+        "name": "finalTokenBalance",
+        "type": "uint256"
+      }
+    ],
+    "name": "proceedsClaimed",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "name": "amountStaked",
+        "type": "uint256"
+      },
+      {
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "reportSubmitted",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "marketCreator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "marketCreationFee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "extraInfo",
+        "type": "string"
+      }
+    ],
+    "name": "MarketCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amountStaked",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "DesignatedReportSubmitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amountStaked",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "ReportSubmitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "reporter",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "stakeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amountRedeemed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "reportingFeesReceived",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "payoutNumerators",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "WinningTokensRedeemed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "disputer",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "reportingPhase",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "name": "disputeBondAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ReportsDisputed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "market",
+        "type": "address"
+      }
+    ],
+    "name": "MarketFinalized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      }
+    ],
+    "name": "UniverseForked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "orderType",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "name": "tokenRefund",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "sharesRefund",
+        "type": "uint256"
+      }
+    ],
+    "name": "OrderCanceled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "OrderCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "filler",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "orderId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "numCreatorShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "numCreatorTokens",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "numFillerShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "numFillerTokens",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "reporterFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "tradeGroupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "OrderFilled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "shareToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "market",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "numShares",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "numPayoutTokens",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "finalTokenBalance",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProceedsClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "parentUniverse",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "childUniverse",
+        "type": "address"
+      }
+    ],
+    "name": "UniverseCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "universe",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "TokensTransferred",
+    "type": "event"
+  }
+]

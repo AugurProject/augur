@@ -1,0 +1,65 @@
+.component-nav {
+
+  .border(true, @border-bottom, @border-muted);
+
+  display: flex;
+
+  &.full-width-nav > * {
+    flex: 1;
+
+    &.selected {
+
+      .border(true, @border-bottom, @color-purple, @border-width-3);
+    }
+
+    &:hover:not(.selected) {
+
+      .border(true, @border-bottom, @color-purple, @border-width-2);
+    }
+
+    li {
+      display: flex;
+      justify-content: center;
+      margin: 0;
+
+      &.selected {
+
+        .border(false);
+      }
+
+      &:hover:not(.selected) {
+
+        .border(false);
+      }
+    }
+  }
+
+  .link {
+    cursor: default;
+
+    &.mobile-only {
+      display: none;
+
+      @media @breakpoint-mobile {
+        display: block;
+      }
+    }
+  }
+
+  li {
+    margin: 0 1em -1px; // -1px pulls bottom `up` one pixel to stylistically overlap w/ component-nav bottom border
+    padding: 1em 0 0.5em;
+
+    // .transition(border-bottom @animation-speed-very-fast); // Not a great transition in testing...leaving for now
+
+    &.selected {
+
+      .border(true, @border-bottom, @color-purple, @border-width-3);
+    }
+
+    &:hover:not(.selected) {
+
+      .border(true, @border-bottom, @color-purple, @border-width-2);
+    }
+  }
+}

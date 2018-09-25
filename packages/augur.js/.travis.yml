@@ -1,0 +1,24 @@
+sudo: false
+
+language: node_js
+
+env:
+  - CXX=g++-4.8
+
+node_js:
+  - "8"
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
+
+before_script:
+  - npm install
+
+script:
+  - npm run lint
+  - istanbul cover --include-all-sources --root ./src ./node_modules/mocha/bin/_mocha test/unit/ --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage

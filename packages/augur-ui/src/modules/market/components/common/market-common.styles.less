@@ -1,0 +1,72 @@
+@import (reference) '~assets/styles/shared';
+
+.MarketCommon__container {
+  .border(true);
+
+  background-color: @color-white;
+  margin: 0.5em 0;
+
+  &.single-card {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
+
+.MarketCommon__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.625rem;
+}
+
+.MarketCommon__small-label {
+  color: @color-lightgray;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-right: 2.16em;
+  text-transform: uppercase;
+}
+
+.MarketCommon_description {
+  position: relative;
+}
+
+.MarketCommon__topcontent {
+  padding: 1.5rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+    padding-top: 4.25rem;
+  }
+}
+
+.MarketCommon__maincontent {
+  padding: 1.5rem 1.5rem 1.0625rem;
+}
+
+.MarketCommon__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding: 1rem 2rem;
+
+  &.single-card {
+    margin: auto;
+    max-width: 62.75rem;
+  }
+}
+
+@media @breakpoint-mobile-medium {
+  .MarketCommon__topcontent {
+    padding: 1rem;
+  }
+
+  .MarketCommon__content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .MarketCommon__footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

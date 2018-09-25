@@ -1,0 +1,5 @@
+**/__pycache__/
+**/*.pyc
+**/.cache/
+**/compilation_cache/
+node_modules/

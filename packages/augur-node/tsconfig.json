@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "watch": false,
+    "declaration": true,
+    "declarationDir": "definitions",
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "*":  ["node_modules/augur-core/typings/*"]
+    },
+    "typeRoots": [
+      "node_modules/augur-core/typings",
+      "node_modules/@types"
+    ],
+    "types": [
+      "ethereum"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.pem",
+    "**/*.key"
+  ]
+}

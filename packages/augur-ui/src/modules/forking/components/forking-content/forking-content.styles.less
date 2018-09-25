@@ -1,0 +1,62 @@
+@import (reference) '~assets/styles/shared';
+
+.ForkingContent {
+  color: white;
+  width: 100%;
+
+  h4 {
+    font-size: @font-size-small;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-size: 0.8em;
+    line-height: 1.5em;
+    margin-top: 1.25rem;
+  }
+
+  &.expanded {
+    background: @color-darkgray;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.ForkingContent__container {
+  padding-top: 1em;
+
+  &.expanded {
+    margin-left: 15%;
+    margin-right: 5%;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    width: 80%;
+  }
+}
+
+.ForkingContent__buttonBar {
+  display: flex;
+
+  > button,
+  > span {
+    margin-right: 1em;
+  }
+}
+
+.ForkingContent__no_rep_migrate_button,
+.ForkingContent__migrate_rep_button {
+  &:extend(.button--white);
+
+  margin-top: 2em;
+  padding: 0 0.4em;
+  width: 9.75em;
+
+  &:disabled,
+  &:disabled:hover {
+    background-color: @color-lightgray;
+    color: @color-lightergray;
+    cursor: auto;
+  }
+}
