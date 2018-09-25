@@ -30,9 +30,13 @@ const MarketOutcomes = p => {
     left: calculatePosition() + "%"
   };
 
-  const labelMargins = p => {
-    const l = p < 5 ? 47 : 0;
-    const r = p > 95 ? 47 : 0;
+  const labelMargins = pos => {
+    const size = getValue(
+      p.outcomes[0],
+      "lastPricePercent.formatted"
+    ).toString().length;
+    const l = pos < 5 ? size * 10 : 0;
+    const r = pos > 95 ? size * 10 : 0;
     return {
       marginLeft: l,
       marginRight: r
