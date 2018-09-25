@@ -18,6 +18,7 @@ steps:
     versionSpec: '3.6.5'
 
 - script: |
+    set -euxo pipefail
     yarn install --ignore-scripts --frozen-lockfile
     git config --global user.email "team@augur.net"
     git config --global user.name "Augur Developers"
@@ -39,9 +40,8 @@ steps:
   displayName: 'contracts'
 
 - script: |
-    #env
-    #echo $PATH
-    #PATH=$PATH:node_modules/.bin
+    set -euxo pipefail
+    PATH=$(Agent.BuildDirectory)/bin:$PATH
     yarn workspace augur-core run build
     yarn workspace augur-node run build
   displayName: 'build and test'
