@@ -32,8 +32,10 @@ steps:
 
 - script: |
     echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5
-    curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
-    md5sum -b -c solc.md5
+    curl -vL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
+    md5sum -c solc.md5
+    ls -l /usr/local
+    ls -l /usr/local/bin
     chmod a+x /usr/local/bin/solc
   displayName: 'contracts'
 
