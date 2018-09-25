@@ -26,7 +26,8 @@ steps:
   displayName: 'setup'
 
 - script: |
-    mkdir ~/bin
+    echo $(Agent.BuildDirectory)
+    mkdir $(Agent.BuildDirectory)/bin
     echo "$(SOLC_MD5) *$(Agent.BuildDirectory)/bin/solc" > solc.md5
     curl -vL -o ~/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
     md5sum -c solc.md5
