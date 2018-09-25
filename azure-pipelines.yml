@@ -3,6 +3,10 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+variables:
+    SOLC_VERSION: v0.4.20
+    SOLC_MD5: ae7047eb018ec59d241b478ae6ea1f8a
+
 pool:
   vmImage: 'Ubuntu 16.04'
 
@@ -22,12 +26,16 @@ steps:
     yarn install --ignore-scripts --frozen-lockfile
     git config --global user.email "team@augur.net"
     git config --global user.name "Augur Developers"
-    python -m pip install --upgrade pip setuptools wheel
+    python -m pip install --upgrade pip pip-tools setuptools wheel
     pip install virtualenv
-    pip install --upgrade pip setuptools
-    pip install --upgrade pip-tools
-    pip install -r requirements.txt
   displayName: 'setup'
+
+- script: |
+    echo "$(SOLC_MD5) */usr/local/bin/solc" > solc.md5
+    curl -sL -o /usr/local/bin/solc https://github.com/ethereum/solidity/releases/download/$(SOLC_VERSION)/solc-static-linux
+    md5sum -b -c solc.md5
+    chmod a+x /usr/local/bin/solc
+  displayName: 'contracts'
 
 - script: |
     #env
