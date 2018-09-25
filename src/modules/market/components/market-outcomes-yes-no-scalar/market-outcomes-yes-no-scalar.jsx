@@ -30,7 +30,7 @@ const MarketOutcomes = p => {
     left: calculatePosition() + "%"
   };
 
-  const outcomeMargins = pos => {
+  const outcomeStyles = pos => {
     const size = getValue(
       p.outcomes[0],
       "lastPricePercent.formatted"
@@ -79,14 +79,14 @@ const MarketOutcomes = p => {
         <span
           className={Styles["MarketOutcomes__current-value"]}
           data-testid="midpoint"
-          style={outcomeMargins(calculatePosition())}
+          style={outcomeStyles(calculatePosition())}
         >
           {getValue(p.outcomes[0], "lastPricePercent.formatted")}
         </span>
         <div style={{ position: "relative", display: "inline" }}>
           <span
             className={Styles["MarketOutcomes__current-denomination"]}
-            style={outcomeMargins(calculatePosition())}
+            style={outcomeStyles(calculatePosition())}
           >
             {lastPriceDenomination}
           </span>
