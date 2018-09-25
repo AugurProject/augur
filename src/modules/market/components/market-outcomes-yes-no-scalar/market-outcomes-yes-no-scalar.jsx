@@ -39,11 +39,9 @@ const MarketOutcomes = p => {
       window.outerWidth < 590
         ? { charLen: 8, marginTop: 4, fontSize: 16 }
         : { charLen: 10, marginTop: 7, fontSize: 20 };
-    const marginLeft = pos < 5 ? size * isMobileAttrs.charLen : 0;
-    const marginRight = pos > 95 ? size * isMobileAttrs.charLen : 0;
     return {
-      marginLeft,
-      marginRight,
+      marginLeft: pos < 5 ? size * isMobileAttrs.charLen : 0,
+      marginRight: pos > 95 ? size * isMobileAttrs.charLen : 0,
       marginTop: isMobileAttrs.marginTop,
       display: "inline-block",
       fontSize: isMobileAttrs.fontSize
@@ -93,7 +91,7 @@ const MarketOutcomes = p => {
           </span>
           <MarketOutcomeTradingIndicator
             outcome={p.outcomes[0]}
-            style={arrowStyles}
+            style={{ arrowStyles, marginBottom: -5 }}
           />
         </div>
       </span>
