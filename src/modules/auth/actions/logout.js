@@ -10,6 +10,7 @@ export function logout() {
     if (localStorageRef && localStorageRef.removeItem) {
       localStorageRef.removeItem("airbitz.current_user");
       localStorageRef.removeItem("airbitz.users");
+      localStorageRef.removeItem("loggedInAccount");
     }
     dispatch(clearOrphanedOrderData());
     dispatch(clearLoginAccount());
