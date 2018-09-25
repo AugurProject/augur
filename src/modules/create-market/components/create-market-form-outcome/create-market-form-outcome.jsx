@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { BigNumber, createBigNumber } from "utils/create-big-number";
 import speedomatic from "speedomatic";
 import { uniq, isEmpty } from "lodash";
-import { formatNumber } from "utils/format-number";
+import { formatNumber, cutOffDecimal } from "utils/format-number";
 import {
   YES_NO,
   CATEGORICAL,
@@ -170,9 +170,8 @@ export default class CreateMarketOutcome extends Component {
 
     let value = rawValue;
 
-    const decimals = (value + "").split(".");
-    if (limitDigits && decimals[1] && decimals[1].length > NUM_DIGITS_LIMIT) {
-      value = decimals[0] + "." + decimals[1].substring(0, NUM_DIGITS_LIMIT);
+    if (limitDigits) {
+      value = cutOffDecimal(value, NUM_DIGITS_LIMIT);
     }
 
     const updatedMarket = { ...newMarket };
