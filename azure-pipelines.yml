@@ -1,6 +1,6 @@
 variables:
     SOLC_VERSION: v0.4.25
-    SOLC_MD5: ae7047eb018ec59d241b478ae6ea1f8a
+    SOLC_MD5: e23b084d90965928d56453ae5a57796e
 
 pool:
   vmImage: 'Ubuntu 16.04'
