@@ -33,11 +33,10 @@ jobs:
         test12:
           TESTS: security:maian
 
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '9.x'
-
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '9.x'
       - script: |
           set -euxo pipefail
           if [[ "$TESTS" == "integration:geth" ]]; then
