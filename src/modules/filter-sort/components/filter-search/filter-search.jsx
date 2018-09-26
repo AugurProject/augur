@@ -136,7 +136,7 @@ export default class FilterSearch extends Component {
           </ul>
           <p style={{ color: "#372e4b" }} />
           <p>
-            example, title: ethereum, returns only markets with ethereum in
+            example, <b>title: ethereum</b>, returns only markets with ethereum in
             market title.
           </p>
           <p>
