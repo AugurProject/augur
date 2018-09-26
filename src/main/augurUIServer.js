@@ -126,6 +126,7 @@ AugurUIServer.prototype.onStopUiServer = function () {
 
 AugurUIServer.prototype.restart = function (event) {
   if (this.server !== null) this.onStopUiServer()
+  if (this.httpListener) this.httpListener.close()
   this.startServer(event)
 }
 
