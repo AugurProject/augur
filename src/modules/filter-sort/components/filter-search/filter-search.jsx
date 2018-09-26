@@ -116,7 +116,7 @@ export default class FilterSearch extends Component {
           type="light"
         >
           <h4>Search Syntax</h4>
-          Search specific fields, prepend
+          Search specific fields,
           <ul>
             <li>
               <b>category:</b> word or phrase
@@ -136,15 +136,17 @@ export default class FilterSearch extends Component {
           </ul>
           <p style={{ color: "#372e4b" }} />
           <p>
-            example, <b>title: ethereum</b>, returns only markets with ethereum in
-            market title.
+            example, <b>title: ethereum</b>, returns only markets with ethereum
+            in market title.
           </p>
+          <hr />
           <p>
-            Use <b>double quoted string</b> to search exact phrase.
+            Use a <b>double quoted string</b> to search exact phrase.
           </p>
           <p>
             example, <b>&#34;price of bitcoin&#34;</b>
           </p>
+          <hr />
           <p>
             Use capitalized <b>OR</b> between word(s) and/or phrase(s) to get
             matches for either word(s) or phrase(s)
@@ -152,6 +154,7 @@ export default class FilterSearch extends Component {
           <p>
             example, <b>bitcoin OR ethereum OR litecoin</b>
           </p>
+          <hr />
           <p>
             By default words and phrases are ANDed. Markets returned will
             contain all word(s) and phrase(s)
