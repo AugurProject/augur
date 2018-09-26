@@ -17,8 +17,8 @@ describe("events/get-all-augur-logs", function () {
         "../rpc-interface": t.stub.rpcInterface,
         "../utils/chunk-blocks": chunkBlocks,
       });
-      var processBatchLogs = sinon.spy(function (batchAugurLogs) {
-        t.assertions(batchAugurLogs, processBatchLogs.callCount);
+      var processBatchLogs = sinon.spy(function (batchAugurLogs, chunkOfBlocks) {
+        t.assertions(batchAugurLogs, chunkOfBlocks, processBatchLogs.callCount);
       });
       getAllAugurLogs(t.params, processBatchLogs, function (err) {
         assert.equal(processBatchLogs.callCount, 2);
@@ -124,7 +124,7 @@ describe("events/get-all-augur-logs", function () {
         },
       },
     },
-    assertions: function (batchAugurLogs, callCount) {
+    assertions: function (batchAugurLogs, chunkOfBlocks, callCount) {
       switch (callCount) {
         case 1:
           assert.deepEqual(batchAugurLogs, [
@@ -141,6 +141,10 @@ describe("events/get-all-augur-logs", function () {
               contractName: "TestContractName",
               eventName: "TestEventName",
             }]);
+          assert.deepEqual(chunkOfBlocks, {
+            fromBlock: 10,
+            toBlock: 10,
+          });
           break;
         case 2:
           assert.deepEqual(batchAugurLogs, [{
@@ -168,6 +172,10 @@ describe("events/get-all-augur-logs", function () {
             contractName: "TestContractName",
             eventName: "TestEventName",
           }]);
+          assert.deepEqual(chunkOfBlocks, {
+            fromBlock: 11,
+            toBlock: 21,
+          });
           break;
         default:
           assert.fail();
