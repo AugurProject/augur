@@ -135,6 +135,18 @@ const MarketProperties = p => {
                 Finalize
               </button>
             )}
+          {linkType &&
+            p.finalizationTime && (
+              <MarketLink
+                className={classNames(Styles.MarketProperties__trade, {
+                  [Styles.disabled]: disableDispute
+                })}
+                id={p.id}
+                linkType={TYPE_VIEW}
+              >
+                {TYPE_VIEW}
+              </MarketLink>
+            )}
           {p.isForking &&
             p.isForkingMarketFinalized &&
             p.forkingMarket !== p.id &&
