@@ -42,7 +42,8 @@ export default class Input extends Component {
 
     this.state = {
       value: this.props.value || "",
-      isHiddenContentVisible: false
+      isHiddenContentVisible: false,
+      focused: false
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -50,10 +51,15 @@ export default class Input extends Component {
     this.handleClear = this.handleClear.bind(this);
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
     this.timeoutVisibleHiddenContent = debounce(
       this.timeoutVisibleHiddenContent.bind(this),
       1200
     );
+  }
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleWindowOnClick);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,6 +84,10 @@ export default class Input extends Component {
     ) {
       this.timeoutVisibleHiddenContent();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleWindowOnClick);
   }
 
   handleOnChange = e => {
@@ -106,6 +116,12 @@ export default class Input extends Component {
     this.updateIsHiddenContentVisible(!this.state.isHiddenContentVisible);
 
   timeoutVisibleHiddenContent = () => this.updateIsHiddenContentVisible(false);
+
+  handleWindowOnClick(event) {
+    this.setState({
+      focused: this.inputHandler && this.inputHandler.contains(event.target)
+    });
+  }
 
   updateIsHiddenContentVisible(isHiddenContentVisible) {
     this.setState({
@@ -140,9 +156,15 @@ export default class Input extends Component {
           p.className,
           {
             "can-toggle-visibility": canToggleVisibility,
+            [Styles.focusBorder]: s.focused && !noFocus,
             [`${Styles.noFocus}`]: noFocus
           }
         )}
+        ref={inputHandler => {
+          this.inputHandler = inputHandler;
+        }}
+        onFocus={this.onFocusIn}
+        onBlur={this.onBlurThing}
       >
         {isSearch && IconSearch}
         {!p.isMultiline && (
