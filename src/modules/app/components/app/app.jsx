@@ -117,7 +117,8 @@ export default class AppView extends Component {
     isLoading: PropTypes.bool,
     augurNode: PropTypes.string,
     ethereumNodeHttp: PropTypes.string,
-    ethereumNodeWs: PropTypes.string
+    ethereumNodeWs: PropTypes.string,
+    useWeb3Transport: PropTypes.bool
   };
 
   constructor(props) {
@@ -195,7 +196,8 @@ export default class AppView extends Component {
       history,
       initAugur,
       location,
-      updateModal
+      updateModal,
+      useWeb3Transport
     } = this.props;
     initAugur(
       history,
@@ -203,7 +205,8 @@ export default class AppView extends Component {
         ...env,
         augurNode,
         ethereumNodeHttp,
-        ethereumNodeWs
+        ethereumNodeWs,
+        useWeb3Transport
       },
       (err, res) => {
         if (err || (res && !res.ethereumNode) || (res && !res.augurNode)) {
