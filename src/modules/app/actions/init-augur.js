@@ -97,8 +97,8 @@ function loadAccount(dispatch, existing, accountType, callback) {
         loggedInAccount !== account
       ) {
         // local storage does not match mm account
-        dispatch(logout());
-        account = null;
+        dispatch(useUnlockedAccount(account));
+        loggedInAccount = account;
       } else if (loggedInAccount && loggedInAccount === account) {
         // local storage matchs mm account
         dispatch(useUnlockedAccount(loggedInAccount));
