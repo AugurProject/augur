@@ -125,9 +125,14 @@ AugurUIServer.prototype.onStopUiServer = function () {
 }
 
 AugurUIServer.prototype.restart = function (event) {
-  if (this.server !== null) this.onStopUiServer()
-  if (this.httpListener) this.httpListener.close()
-  this.startServer(event)
+  if (this.server !== null) {
+    this.server.close(() => {
+      if (this.httpListener) this.httpListener.close()
+      this.startServer(event)
+    })
+  } else {
+    this.startServer(event)
+  }
 }
 
 AugurUIServer.prototype.createSSLCertificates = function (event) {
