@@ -4,7 +4,10 @@ import { Helmet } from "react-helmet";
 
 import ReportingHeader from "modules/reporting/containers/reporting-header";
 import MarketsList from "modules/markets-list/components/markets-list";
-import { TYPE_VIEW } from "modules/markets/constants/link-types";
+import {
+  TYPE_VIEW,
+  TYPE_FINALIZE_MARKET
+} from "modules/markets/constants/link-types";
 import DisputeMarketCard from "modules/reporting/components/dispute-market-card/dispute-market-card";
 import Styles from "modules/reporting/components/reporting-resolved/reporting-resolved.styles";
 import MarketsHeaderLabel from "modules/markets-list/components/markets-header-label/markets-header-label";
@@ -96,7 +99,7 @@ export default class ReportingResolved extends Component {
           filteredMarkets={s.filteredMarkets}
           location={location}
           history={history}
-          linkType={TYPE_VIEW}
+          linkType={TYPE_FINALIZE_MARKET}
           toggleFavorite={toggleFavorite}
           loadMarketsInfoIfNotLoaded={loadMarketsInfoIfNotLoaded}
           paginationPageParam="reporting-resolved-page"

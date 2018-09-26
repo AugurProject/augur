@@ -136,6 +136,7 @@ const MarketProperties = p => {
               </button>
             )}
           {linkType &&
+            linkType !== TYPE_VIEW &&
             p.finalizationTime && (
               <MarketLink
                 className={classNames(Styles.MarketProperties__trade, {
