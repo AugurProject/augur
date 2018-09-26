@@ -91,7 +91,11 @@ function loadAccount(dispatch, existing, accountType, callback) {
       account = accounts[0];
       if (account && process.env.AUTO_LOGIN) {
         dispatch(useUnlockedAccount(account));
-      } else if (loggedInAccount && usingMetaMask && loggedInAccount !== account) {
+      } else if (
+        loggedInAccount &&
+        usingMetaMask &&
+        loggedInAccount !== account
+      ) {
         dispatch(logout());
         account = null;
       } else if (loggedInAccount && loggedInAccount === account) {
