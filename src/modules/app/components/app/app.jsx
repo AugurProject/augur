@@ -546,6 +546,7 @@ export default class AppView extends Component {
                 unseenCount={unseenCount}
                 toggleNotifications={this.toggleNotifications}
                 isLoading={isLoading}
+                notificationsVisible={isLogged && s.isNotificationsVisible}
               />
             </section>
             <NotificationsContainer

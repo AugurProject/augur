@@ -30,15 +30,13 @@ export default class NotificationsView extends Component {
       !nextProps.notificationsVisible
     ) {
       toggleHeight(this.notificationsContainer, true, () => {});
-    }
-  }
 
-  componentWillUnmount() {
-    const notifications = getValue(this.props, "notifications.notifications");
-    const { updateNotification } = this.props;
-    notifications.forEach(notification => {
-      updateNotification(notification.id, { seen: true });
-    });
+      const notifications = getValue(this.props, "notifications.notifications");
+      const { updateNotification } = this.props;
+      notifications.forEach(notification => {
+        updateNotification(notification.id, { seen: true });
+      });
+    }
   }
 
   render() {

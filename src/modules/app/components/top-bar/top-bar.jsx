@@ -71,18 +71,22 @@ const TopBar = props => (
     )}
     <ConnectAccount />
     {props.isLogged && (
-      <div className={Styles.TopBar__notifications}>
+      <div
+        className={classNames(Styles.TopBar__notifications, {
+          [Styles.TopBar__notificationsDark]: props.notificationsVisible
+        })}
+        onClick={e => {
+          props.toggleNotifications();
+        }}
+        role="button"
+        tabIndex="-1"
+      >
         <div className={Styles["TopBar__notifications-container"]}>
-          <button
-            className={Styles["TopBar__notification-icon"]}
-            onClick={e => {
-              props.toggleNotifications();
-            }}
-          >
+          <div className={Styles["TopBar__notification-icon"]}>
             {props.unseenCount > 99
               ? Notifications("99+", "7.4591451")
               : Notifications(props.unseenCount, "6.4591451")}
-          </button>
+          </div>
         </div>
       </div>
     )}
@@ -96,7 +100,8 @@ TopBar.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   stats: PropTypes.array.isRequired,
   unseenCount: PropTypes.number.isRequired,
-  toggleNotifications: PropTypes.func.isRequired
+  toggleNotifications: PropTypes.func.isRequired,
+  notificationsVisible: PropTypes.bool.isRequired
 };
 
 export default TopBar;
